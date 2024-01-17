@@ -1,0 +1,44 @@
+{
+  "name": "curve-dapp",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.17"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev --parallel",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prepare": "is-ci || husky install"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
+    "@commitlint/load": "17.5.0",
+    "cross-env": "^7.0.3",
+    "eslint-config-custom": "*",
+    "husky": "^8.0.1",
+    "is-ci": "^3.0.1",
+    "lint-staged": "12.3.8",
+    "prettier": "latest",
+    "turbo": "1.8.8",
+    "typescript": "^4"
+  },
+  "dependencies": {},
+  "packageManager": "yarn@1.22.19",
+  "lint-staged": {
+    "apps/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "packages/ui/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
+  }
+}

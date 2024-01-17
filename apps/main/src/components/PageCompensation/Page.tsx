@@ -1,0 +1,122 @@
+import type { NextPage } from 'next'
+import type { EtherContract } from '@/components/PageCompensation/types'
+
+import { Contract, Interface } from 'ethers'
+import { t } from '@lingui/macro'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
+
+import { parseParams } from '@/utils/utilsRouter'
+import { scrollToTop } from '@/utils'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
+
+import Box, { BoxHeader } from '@/ui/Box'
+import Button from '@/ui/Button'
+import DocumentHead from '@/layout/default/DocumentHead'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import FormCompensation from '@/components/PageCompensation/index'
+import IconButton from '@/ui/IconButton'
+import Settings from '@/layout/default/Settings'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+
+const Page: NextPage<PageProps> = ({ curve }) => {
+  const params = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  usePageOnMount(params, location, navigate)
+  const { rChainId } = parseParams(params, location)
+
+  const provider = useStore((state) => state.wallet.provider)
+  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
+
+  const [contracts, setContracts] = useState<EtherContract[]>([])
+
+  const fetchData = useCallback(async (provider: Provider) => {
+    const signer = await provider.getSigner()
+    const contracts = await import('@/components/PageCompensation/abis').then((modules) => {
+      return Object.entries(modules).map(([, { contractAddress, abi, ...rest }]) => {
+        const iface = new Interface(abi)
+        const contract = new Contract(contractAddress, iface.format(), signer)
+        return { ...rest, contractAddress, contract }
+      })
+    })
+    setContracts(contracts)
+  }, [])
+
+  // onMount
+  useEffect(() => {
+    scrollToTop()
+  }, [])
+
+  // get initial data
+  useEffect(() => {
+    if (provider) fetchData(provider)
+  }, [fetchData, provider])
+
+  return (
+    <>
+      <DocumentHead title={t`Compensation`} />
+      <Container variant="primary" shadowed>
+        <BoxHeader className="title-text">
+          <IconButton hidden />
+          {t`Compensation`}
+          <IconButton hidden />
+        </BoxHeader>
+
+        <Content grid gridRowGap={3} padding>
+          {rChainId !== 1 ? (
+            <strong>
+              <i>Claimable compensation is only available on Ethereum network.</i>
+            </strong>
+          ) : !provider ? (
+            <>
+              <strong>Please connect your wallet to view compensation</strong>
+              <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+                {t`Connect Wallet`}
+              </Button>
+            </>
+          ) : !rChainId || contracts.length === 0 ? (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          ) : (
+            <FormCompensation curve={curve} rChainId={rChainId} contracts={contracts} />
+          )}
+          <i>
+            For additional information, please see{' '}
+            <ExternalLink $noStyles href="https://github.com/curvefi/vest-split/?tab=readme-ov-file#deployed-splitters">
+              Github
+            </ExternalLink>{' '}
+            or{' '}
+            <ExternalLink
+              $noStyles
+              href="https://gov.curve.fi/t/proposal-to-recompensate-lps-affected-by-curve-pool-exploit/9825"
+            >
+              gov.curve.fi
+            </ExternalLink>
+          </i>
+          <i>
+            Please note: wETH and alETH are distributed immediately, whereas CRV (from the community fund) will be
+            vested or distributed linearly over a one-year period.
+          </i>
+        </Content>
+      </Container>
+      <Settings showScrollButton />
+    </>
+  )
+}
+
+const Container = styled(Box)`
+  margin: 1.5rem auto;
+  max-width: var(--transfer-min-width);
+  width: 100%;
+`
+
+const Content = styled(Box)`
+  align-content: flex-start;
+  min-height: 14.8125rem; //237px
+`
+
+export default Page

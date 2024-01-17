@@ -1,0 +1,90 @@
+import React from 'react'
+import styled from 'styled-components'
+
+import Button from 'ui/src/Button/Button'
+
+const GlobalBanner = React.forwardRef<
+  HTMLDivElement,
+  {
+    networkName: string
+    showSwitchNetworkMessage: boolean
+    maintenanceMessage: string | undefined
+    handleNetworkChange(): void
+  }
+>(({ networkName, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange }, ref) => {
+  return (
+    <Wrapper ref={ref} show={showSwitchNetworkMessage || !!maintenanceMessage}>
+      {!!maintenanceMessage ? <Message padding="1rem 0">{maintenanceMessage}</Message> : null}
+      {showSwitchNetworkMessage ? (
+        <Message>
+          Please switch your wallet&apos;s network to <strong>{networkName}</strong> to use Curve on{' '}
+          <strong>{networkName}</strong>.{' '}
+          <StyledButton size="small" variant="outlined" onClick={handleNetworkChange}>
+            Change network
+          </StyledButton>
+        </Message>
+      ) : null}
+    </Wrapper>
+  )
+})
+
+GlobalBanner.displayName = 'GlobalBanner'
+
+export default GlobalBanner
+
+const Wrapper = styled.div<{
+  show: boolean
+}>`
+  margin: 0;
+  max-height: ${({ show }) => (show ? '500px' : '0')};
+  overflow: hidden;
+
+  background-color: var(--danger-400);
+
+  transition: max-height 0.25s ease-in;
+`
+
+const Message = styled.p<{ padding?: string }>`
+  padding: ${({ padding }) => {
+    if (padding) {
+      return padding
+    }
+    return `var(--spacing-2);`
+  }};
+
+  text-align: center;
+  color: var(--white);
+  line-height: 1.5;
+
+  strong {
+    margin-right: 0.25em;
+    text-transform: uppercase;
+  }
+
+  a {
+    color: inherit;
+    text-transform: inherit;
+    word-wrap: break-word;
+    text-decoration-color: var(--whitea20);
+    :hover {
+      color: inherit;
+      text-decoration-color: var(--white);
+    }
+  }
+`
+
+const StyledButton = styled(Button)`
+  margin-left: var(--spacing-2);
+
+  color: inherit;
+  background-color: var(--whitea10);
+  border: 1px solid var(--whitea20);
+  text-transform: uppercase;
+
+  :hover:not(:disabled) {
+    color: inherit;
+    border-color: inherit;
+    background-color: var(--whitea20);
+    box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+  }
+`

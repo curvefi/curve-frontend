@@ -1,0 +1,27 @@
+:root {
+  --font-size-0: 0.625rem;
+  --font-size-1: 0.75rem;
+  --font-size-2: 0.875rem;
+  --font-size-3: 1rem;
+  --font-size-4: 1.125rem;
+  --font-size-5: 1.375rem;
+  --font-size-6: 1.625rem;
+  --font-size-7: 1.875rem;
+  --font-size-8: 2.125rem;
+  --font-size-9: 2.375rem;
+  --font-size-10: 2.5rem;
+
+  --font: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-mono: monospace;
+  --font-display: 'Commodore', monospace;
+
+  --bold: 700;
+  --semi-bold: 500;
+  --normal: 400;
+}
+
+* {
+  -webkit-font-feature-settings: 'liga' on, 'calt' on;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}

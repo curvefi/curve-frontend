@@ -1,0 +1,3271 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2022-10-31 18:13-0700\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: src/components/PageDashboard/index.tsx:205
+msgid ". Please click on the pool name to view them on"
+msgstr ". Please click on the pool name to view them on"
+
+#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:27
+msgid "(incl. fees):"
+msgstr "(incl. fees):"
+
+#: src/components/PageCreatePool/constants.ts:185
+#: src/components/PageCreatePool/constants.ts:191
+msgid "(only available for pools with pegged assets)"
+msgstr "(only available for pools with pegged assets)"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:595
+msgid "(Switch)"
+msgstr "(Switch)"
+
+#: src/components/PageCreatePool/components/InfoBox.tsx:27
+#: src/components/PageCreatePool/components/InfoBox.tsx:33
+#: src/components/PageCreatePool/constants.ts:184
+msgid "{0}"
+msgstr "{0}"
+
+#: src/domain/create-pool/constants.ts:50
+#~ msgid "{0} (currently not available)"
+#~ msgstr "{0} (currently not available)"
+
+#: src/domain/layout/default/index.tsx:61
+#~ msgid "{0} <0>{1}</0>to use Curve on <1>{2}</1>."
+#~ msgstr "{0} <0>{1}</0>to use Curve on <1>{2}</1>."
+
+#: src/domain/create-pool/tokens-in-pool/index.tsx:758
+#~ msgid "{0} can only be placed at Token A"
+#~ msgstr "{0} can only be placed at Token A"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:161
+#~ msgid "{0} claimed rewards"
+#~ msgstr "{0} claimed rewards"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:358
+#~ msgid "{0} deposit approved"
+#~ msgstr "{0} deposit approved"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:263
+#~ msgid "{0} deposited"
+#~ msgstr "{0} deposited"
+
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:261
+#~ msgid "{0} deposited and staked"
+#~ msgstr "{0} deposited and staked"
+
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:361
+#~ msgid "{0} deposited and staked approved"
+#~ msgstr "{0} deposited and staked approved"
+
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:78
+msgid "{0} is a v2 pool"
+msgstr "{0} is a v2 pool"
+
+#: src/domain/create-pool/parameters/initial-price.tsx:33
+#: src/domain/create-pool/parameters/initial-price.tsx:42
+#~ msgid "{0} price"
+#~ msgstr "{0} price"
+
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:32
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:43
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:55
+msgid "{0} price in USD"
+msgstr "{0} price in USD"
+
+#: src/domain/transfer/deposit/form-stake/index.tsx:132
+#~ msgid "{0} stake approved"
+#~ msgstr "{0} stake approved"
+
+#: src/domain/transfer/deposit/form-stake/index.tsx:172
+#~ msgid "{0} staked"
+#~ msgstr "{0} staked"
+
+#: src/domain/transfer/swap/index.tsx:378
+#~ msgid "{0} swap approved"
+#~ msgstr "{0} swap approved"
+
+#: src/domain/transfer/swap/index.tsx:259
+#~ msgid "{0} swapped"
+#~ msgstr "{0} swapped"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:123
+#~ msgid "{0} unstaked"
+#~ msgstr "{0} unstaked"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:216
+#~ msgid "{0} withdraw"
+#~ msgstr "{0} withdraw"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:135
+#~ msgid "{0} withdraw approved"
+#~ msgstr "{0} withdraw approved"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:54
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:47
+msgid "{title} {0} Oracle"
+msgstr "{title} {0} Oracle"
+
+#: src/components/PageDashboard/index.tsx:194
+msgid "*This UI does not support the following pools:"
+msgstr "*This UI does not support the following pools:"
+
+#: src/components/PageDashboard/index.tsx:66
+#: src/components/PagePoolList/Page.tsx:68
+msgid "+ Incentives)"
+msgstr "+ Incentives)"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:18
+msgid "1 month"
+msgstr "1 month"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:17
+msgid "1 week"
+msgstr "1 week"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:21
+msgid "1 year"
+msgstr "1 year"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:76
+msgid "24h Volume/Liquidity ratio"
+msgstr "24h Volume/Liquidity ratio"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:19
+msgid "3 months"
+msgstr "3 months"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:22
+msgid "4 years"
+msgstr "4 years"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:20
+msgid "6 months"
+msgstr "6 months"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:114
+#~ msgid "A"
+#~ msgstr "A"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:296
+#: src/components/PageCreatePool/Parameters/index.tsx:329
+msgid "A ({0} - {1})"
+msgstr "A ({0} - {1})"
+
+#: src/components/PageCreatePool/constants.ts:192
+msgid "A more gas-efficient implementation that can be used when every token in the pool has 18 decimals and returns True on success / reverts on error"
+msgstr "A more gas-efficient implementation that can be used when every token in the pool has 18 decimals and returns True on success / reverts on error"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:83
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:65
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:169
+msgid "A:"
+msgstr "A:"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:71
+msgid "Action"
+msgstr "Action"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/LiquidityData.tsx:42
+msgid "Add"
+msgstr "Add"
+
+#: src/components/PagePool/Deposit/components/FieldsDeposit.tsx:114
+msgid "Add all coins in a balanced proportion"
+msgstr "Add all coins in a balanced proportion"
+
+#: src/components/PagePool/components/AddGaugeLink.tsx:50
+msgid "Add Gauge"
+msgstr "Add Gauge"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:639
+msgid "Add token"
+msgstr "Add token"
+
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:280
+msgid "Additional slippage tolerance"
+msgstr "Additional slippage tolerance"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:288
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:475
+msgid "Additional slippage tolerance:"
+msgstr "Additional slippage tolerance:"
+
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:53
+msgid "Address (e.g 0x123...)"
+msgstr "Address (e.g 0x123...)"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:57
+msgid "Address:"
+msgstr "Address:"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:138
+msgid "Adjust veCrv"
+msgstr "Adjust veCrv"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:375
+msgid "Adjustment Step ({0} - {1})"
+msgstr "Adjustment Step ({0} - {1})"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:115
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:118
+msgid "Adjustment Step:"
+msgstr "Adjustment Step:"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:57
+#~ msgid "Admin fee"
+#~ msgstr "Admin fee"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:284
+#: src/components/PageCreatePool/Summary/index.tsx:41
+#: src/components/PagePool/index.tsx:106
+#: src/components/PagePool/index.tsx:115
+msgid "Advanced"
+msgstr "Advanced"
+
+#: src/components/AdvancedSettings.tsx:131
+msgid "Advanced Settings"
+msgstr "Advanced Settings"
+
+#: src/components/PagePoolList/index.tsx:102
+msgid "ALL"
+msgstr "ALL"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:353
+msgid "Allowed Extra Profit ({0} - {1})"
+msgstr "Allowed Extra Profit ({0} - {1})"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:99
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:106
+msgid "Allowed Extra Profit:"
+msgstr "Allowed Extra Profit:"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:173
+msgid "Amplification coefficient chosen from fluctuation of prices around 1"
+msgstr "Amplification coefficient chosen from fluctuation of prices around 1"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:311
+#~ msgid "Approve Remove Liquidity"
+#~ msgstr "Approve Remove Liquidity"
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:149
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:92
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:133
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:134
+#: src/components/PagePool/Deposit/components/FormStake.tsx:98
+#: src/components/PagePool/Swap/index.tsx:177
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:148
+#: src/components/PageRouterSwap/index.tsx:204
+msgid "Approve Spending"
+msgstr "Approve Spending"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:121
+#~ msgid "Approving"
+#~ msgstr "Approving"
+
+#: src/components/PagePoolList/components/DialogSort/DialogSortContent.tsx:27
+msgid "Asc"
+msgstr "Asc"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:76
+msgid "Asset Type:"
+msgstr "Asset Type:"
+
+#: src/domain/transfer/components/transfer-actions.tsx:51
+#~ msgid "Assuming an exchange rate of 1:1, this pool should be seeded with {tokensMessage}."
+#~ msgstr "Assuming an exchange rate of 1:1, this pool should be seeded with {tokensMessage}."
+
+#: src/components/layout/dao/index.tsx:123
+#~ msgid "Audit"
+#~ msgstr "Audit"
+
+#: src/layout/default/Footer.tsx:102
+msgid "Audits"
+msgstr "Audits"
+
+#: src/components/PagePool/components/FieldToken.tsx:69
+#: src/components/PagePool/Swap/index.tsx:347
+#: src/components/PagePool/Swap/index.tsx:438
+#: src/components/PageRouterSwap/index.tsx:370
+#: src/components/PageRouterSwap/index.tsx:427
+msgid "Avail."
+msgstr "Avail."
+
+#: src/domain/crv-locker/components/field-locked-amt.tsx:32
+#~ msgid "Avail. {0}"
+#~ msgstr "Avail. {0}"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:65
+#~ msgid "Average value of pool token"
+#~ msgstr "Average value of pool token"
+
+#: src/components/PageDashboard/components/TableRow.tsx:179
+#: src/components/PageDashboard/index.tsx:67
+msgid "Balance"
+msgstr "Balance"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:172
+msgid "Balance in voting escrow:"
+msgstr "Balance in voting escrow:"
+
+#: src/components/input-comp/input-max-button.tsx:26
+#~ msgid "Balance minus estimated gas"
+#~ msgstr "Balance minus estimated gas"
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:353
+msgid "Balanced"
+msgstr "Balanced"
+
+#: src/domain/transfer/withdraw/form-withdraw/index.tsx:780
+#~ msgid "Balanced amounts"
+#~ msgstr "Balanced amounts"
+
+#: src/components/PagePool/UserDetails/index.tsx:139
+msgid "Balanced withdraw amounts"
+msgstr "Balanced withdraw amounts"
+
+#: src/components/PageCreatePool/constants.ts:178
+msgid "Balances"
+msgstr "Balances"
+
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:40
+msgid "Base"
+msgstr "Base"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:129
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:201
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:126
+msgid "BASE"
+msgstr "BASE"
+
+#: src/components/PageDashboard/index.tsx:55
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:48
+#: src/components/PagePoolList/Page.tsx:57
+msgid "Base vAPY"
+msgstr "Base vAPY"
+
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:41
+msgid "Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance."
+msgstr "Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance."
+
+#: src/components/PageCreatePool/constants.ts:172
+#: src/components/PageCreatePool/Parameters/SelectPoolImplementation.tsx:34
+msgid "Basic"
+msgstr "Basic"
+
+#: src/domain/dialogs/dialog-waves-provider.tsx:71
+#~ msgid "Beta"
+#~ msgstr "Beta"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:30
+msgid "Bonding Curve specialising in pegged assets."
+msgstr "Bonding Curve specialising in pegged assets."
+
+#: src/components/PageCreatePool/PoolType/index.tsx:43
+msgid "Bonding Curve specialising in unpegged assets."
+msgstr "Bonding Curve specialising in unpegged assets."
+
+#: src/components/PagePool/components/DetailInfoSlippage.tsx:53
+msgid "Bonus comes as an advantage from current coin prices which usually appears for coins which are low in balance"
+msgstr "Bonus comes as an advantage from current coin prices which usually appears for coins which are low in balance"
+
+#: src/layout/default/Footer.tsx:119
+msgid "Bug Bounty"
+msgstr "Bug Bounty"
+
+#: src/components/layout/dao/index.tsx:75
+#~ msgid "Calc"
+#~ msgstr "Calc"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:156
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:157
+#: src/components/PagePool/Swap/index.tsx:200
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:171
+#: src/components/PageRouterSwap/index.tsx:232
+msgid "Cancel"
+msgstr "Cancel"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:235
+#: src/domain/create-pool/confirm-modal/index.tsx:328
+#: src/domain/create-pool/confirm-modal/index.tsx:365
+#: src/domain/create-pool/confirm-modal/index.tsx:442
+#: src/domain/create-pool/confirm-modal/index.tsx:483
+#~ msgid "Category checkmarked"
+#~ msgstr "Category checkmarked"
+
+#: src/domain/layout/default/index.tsx:67
+#~ msgid "Change network"
+#~ msgstr "Change network"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:209
+msgid "Chart"
+msgstr "Chart"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:38
+#: src/components/PageCreatePool/components/Navigation.tsx:62
+#: src/components/PageCreatePool/components/Navigation.tsx:105
+#: src/components/PageCreatePool/components/Navigation.tsx:156
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:236
+#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:46
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:55
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:26
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:57
+#: src/components/PageDeployGauge/ProcessSummary.tsx:39
+#: src/components/PageDeployGauge/ProcessSummary.tsx:60
+msgid "Checkmark filled"
+msgstr "Checkmark filled"
+
+#: src/components/PageCreatePool/index.tsx:181
+#: src/components/PageCreatePool/index.tsx:228
+msgid "Chevron left"
+msgstr "Chevron left"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:41
+#: src/components/PageCreatePool/components/Navigation.tsx:64
+#: src/components/PageCreatePool/components/Navigation.tsx:107
+#: src/components/PageCreatePool/components/Navigation.tsx:158
+#: src/components/PageCreatePool/index.tsx:191
+#: src/components/PageCreatePool/index.tsx:238
+msgid "Chevron right"
+msgstr "Chevron right"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:241
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:245
+#~ msgid "Claim"
+#~ msgstr "Claim"
+
+#: src/components/PagePool/Withdraw/utils.ts:87
+msgid "Claim CRV"
+msgstr "Claim CRV"
+
+#: src/components/PagePool/Withdraw/utils.ts:77
+msgid "Claim CRV Complete"
+msgstr "Claim CRV Complete"
+
+#: src/domain/transfer/withdraw/form-claim/index.tsx:149
+#~ msgid "Claim Failed"
+#~ msgstr "Claim Failed"
+
+#: src/components/PageDashboard/components/FormClaimFees.tsx:119
+msgid "Claim LP rewards"
+msgstr "Claim LP rewards"
+
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:110
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:247
+#: src/components/PagePool/Withdraw/index.tsx:33
+msgid "Claim Rewards"
+msgstr "Claim Rewards"
+
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:107
+msgid "Claim Rewards Complete"
+msgstr "Claim Rewards Complete"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:193
+#~ msgid "Claim Rewards Failed"
+#~ msgstr "Claim Rewards Failed"
+
+#: src/components/PageDashboard/components/Summary.tsx:65
+#: src/components/PageDashboard/components/TableRow.tsx:174
+#: src/components/PageDashboard/index.tsx:70
+msgid "Claimable Tokens"
+msgstr "Claimable Tokens"
+
+#: src/components/PageCompensation/components/Compensation.tsx:68
+msgid "Claimed {balance}"
+msgstr "Claimed {balance}"
+
+#: src/components/PagePool/Withdraw/utils.ts:82
+msgid "Claimed {tokensMessage}"
+msgstr "Claimed {tokensMessage}"
+
+#: src/domain/transfer/withdraw/form-claim/index.tsx:125
+#~ msgid "Claimed rewards"
+#~ msgstr "Claimed rewards"
+
+#: src/components/PagePool/Withdraw/utils.ts:72
+msgid "Claiming"
+msgstr "Claiming"
+
+#: src/layout/default/HeaderMobile.tsx:162
+#: src/layout/default/HeaderSecondary.tsx:79
+msgid "Classic UI"
+msgstr "Classic UI"
+
+#: src/domain/transfer/pool-stats/rewards.tsx:45
+#~ msgid "Click here to learn more about Base vAPY."
+#~ msgstr "Click here to learn more about Base vAPY."
+
+#: src/domain/transfer/pool-stats/rewards.tsx:68
+#~ msgid "Click here to learn more about Boosting your CRV rewards."
+#~ msgstr "Click here to learn more about Boosting your CRV rewards."
+
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:81
+msgid "Click here to learn more about v2 pools"
+msgstr "Click here to learn more about v2 pools"
+
+#: src/layout/default/Footer.tsx:39
+#: src/layout/default/Footer.tsx:60
+msgid "CN"
+msgstr "CN"
+
+#: src/layout/default/HeaderMobile.tsx:172
+msgid "Community"
+msgstr "Community"
+
+#: src/components/PageCompensation/Page.tsx:60
+#: src/components/PageCompensation/Page.tsx:64
+msgid "Compensation"
+msgstr "Compensation"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:253
+msgid "Confirm pool setup"
+msgstr "Confirm pool setup"
+
+#: src/components/PagePool/components/WarningModal.tsx:82
+msgid "Confirm warning to proceed."
+msgstr "Confirm warning to proceed."
+
+#: src/domain/dialogs/dialog-waves-provider.tsx:73
+#~ msgid "Connect"
+#~ msgstr "Connect"
+
+#: src/components/PageDeployGauge/DeploySidechain.tsx:79
+msgid "Connect to a sidechain in order to complete the first step and deploy a sidechain gauge."
+msgstr "Connect to a sidechain in order to complete the first step and deploy a sidechain gauge."
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:560
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:625
+msgid "Connect to Ethereum"
+msgstr "Connect to Ethereum"
+
+#: src/components/PageDeployGauge/DeployMainnet.tsx:64
+msgid "Connect to Ethereum in order to deploy gauge."
+msgstr "Connect to Ethereum in order to deploy gauge."
+
+#: src/components/PageDeployGauge/DeploySidechain.tsx:75
+msgid "Connect to Ethereum in order to deploy mirror gauge."
+msgstr "Connect to Ethereum in order to deploy mirror gauge."
+
+#: src/components/ConnectWallet.tsx:46
+#: src/components/PageCompensation/Page.tsx:77
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:375
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:78
+#: src/components/PageCrvLocker/components/FormActions.tsx:23
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:570
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:635
+#: src/components/PagePool/components/TransferActions.tsx:62
+#: src/components/PageRouterSwap/components/RouterSwapActions.tsx:29
+msgid "Connect Wallet"
+msgstr "Connect Wallet"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:564
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:629
+msgid "Connecting"
+msgstr "Connecting"
+
+#: src/components/PageCreatePool/index.tsx:113
+msgid "Connecting to network"
+msgstr "Connecting to network"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:268
+#: src/components/PageCreatePool/TokensInPool/index.tsx:621
+msgid "Consider choosing the token with the higher unit price as the first token for a more performant AMM"
+msgstr "Consider choosing the token with the higher unit price as the first token for a more performant AMM"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:318
+#: src/domain/create-pool/summary/index.tsx:146
+#~ msgid "Contains rebasing tokens:"
+#~ msgstr "Contains rebasing tokens:"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:23
+#: src/layout/default/Footer.tsx:114
+msgid "Contracts"
+msgstr "Contracts"
+
+#: src/domain/create-pool/index.tsx:82
+#~ msgid "CREATE CURVE POOL"
+#~ msgstr "CREATE CURVE POOL"
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:160
+msgid "Create Lock"
+msgstr "Create Lock"
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:197
+#~ msgid "Create lock spending approved"
+#~ msgstr "Create lock spending approved"
+
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:383
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:388
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:218
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:248
+#: src/components/PageCreatePool/Page.tsx:28
+msgid "Create Pool"
+msgstr "Create Pool"
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:122
+#~ msgid "CRV approved"
+#~ msgstr "CRV approved"
+
+#: src/components/PageCrvLocker/components/FieldLockedAmt.tsx:42
+msgid "CRV Avail."
+msgstr "CRV Avail."
+
+#: src/domain/user-dashboard/components/vecrv-info.tsx:48
+#~ msgid "CRV balance:"
+#~ msgstr "CRV balance:"
+
+#: src/domain/crv-locker/components/field-locked-amt.tsx:27
+#~ msgid "CRV lock amount"
+#~ msgstr "CRV lock amount"
+
+#: src/domain/crv-locker/components/field-locked-amt.tsx:46
+#~ msgid "CRV locked {0}"
+#~ msgstr "CRV locked {0}"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:181
+msgid "CRV locked:"
+msgstr "CRV locked:"
+
+#: src/domain/user-dashboard/form-vecrv/index.tsx:200
+#~ msgid "CRV Locked:"
+#~ msgstr "CRV Locked:"
+
+#: src/components/PageCrvLocker/components/FieldLockedAmt.tsx:56
+msgid "CRV Locked: {0}"
+msgstr "CRV Locked: {0}"
+
+#: src/components/PageCrvLocker/Page.tsx:75
+#: src/components/PageCrvLocker/Page.tsx:79
+msgid "CRV Locker"
+msgstr "CRV Locker"
+
+#~ msgid "CRV LP reward annualized (max APY can be reached with max boost of 2.50)"
+#~ msgstr "CRV LP reward annualized (max APY can be reached with max boost of 2.50)"
+
+#: src/components/PoolRewardsCrv.tsx:73
+msgid "CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)"
+msgstr "CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)"
+
+#: src/components/PageDashboard/index.tsx:69
+msgid "CRV Profits"
+msgstr "CRV Profits"
+
+#: src/components/PagePoolList/index.tsx:107
+#: src/layout/default/Header.tsx:120
+#: src/layout/default/HeaderMobile.tsx:143
+msgid "crvUSD"
+msgstr "crvUSD"
+
+#: src/components/PageCreatePool/constants.ts:87
+#: src/components/PagePoolList/index.tsx:109
+msgid "Crypto"
+msgstr "Crypto"
+
+#: src/domain/transfer/index.tsx:193
+#~ msgid "CRYPTO"
+#~ msgstr "CRYPTO"
+
+#: src/domain/create-pool/constants.ts:13
+#~ msgid "Crypto collateralized stablecoin"
+#~ msgstr "Crypto collateralized stablecoin"
+
+#: src/components/PageCreatePool/constants.ts:74
+msgid "Crypto Collateralized Stablecoins"
+msgstr "Crypto Collateralized Stablecoins"
+
+#: src/components/layout/default/header-mobile.tsx:178
+#: src/components/layout/default/header-secondary.tsx:46
+#~ msgid "Crypto Share"
+#~ msgstr "Crypto Share"
+
+#: src/components/PagePool/index.tsx:201
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:11
+msgid "CRYPTO V2"
+msgstr "CRYPTO V2"
+
+#: src/layout/default/HeaderMobile.tsx:225
+#: src/layout/default/HeaderSecondary.tsx:66
+msgid "Crypto Volume Share"
+msgstr "Crypto Volume Share"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:42
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:34
+msgid "Cryptoswap"
+msgstr "Cryptoswap"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:48
+msgid "Cryptoswap pools are currently unavailable on this chain"
+msgstr "Cryptoswap pools are currently unavailable on this chain"
+
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:40
+msgid "Currency reserves"
+msgstr "Currency reserves"
+
+#: src/components/charts/gauge-relative-weight.tsx:172
+#~ msgid "Current"
+#~ msgstr "Current"
+
+#: src/components/PagePool/UserDetails/index.tsx:127
+msgid "Current Boost:"
+msgstr "Current Boost:"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:127
+msgid "Current unlock date:"
+msgstr "Current unlock date:"
+
+#: src/domain/crv-locker/components/field-date-picker.tsx:125
+#~ msgid "Current unlocked date"
+#~ msgstr "Current unlocked date"
+
+#: src/components/AdvancedSettings.tsx:195
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:357
+msgid "Custom"
+msgstr "Custom"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:33
+msgid "Daily"
+msgstr "Daily"
+
+#: src/components/PageDashboard/components/Summary.tsx:64
+msgid "Daily Profits"
+msgstr "Daily Profits"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:148
+#~ msgid "Daily USD volume"
+#~ msgstr "Daily USD volume"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:69
+msgid "Daily USD volume:"
+msgstr "Daily USD volume:"
+
+#: src/layout/default/HeaderMobile.tsx:216
+#: src/layout/default/HeaderSecondary.tsx:58
+msgid "Daily Volume"
+msgstr "Daily Volume"
+
+#: src/layout/default/HeaderMobile.tsx:163
+#: src/layout/default/HeaderSecondary.tsx:82
+msgid "DAO"
+msgstr "DAO"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:20
+msgid "DAO fee:"
+msgstr "DAO fee:"
+
+#: src/components/PageDashboard/Page.tsx:32
+#: src/layout/default/Header.tsx:34
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: src/domain/user-dashboard/summary.tsx:210
+#~ msgid "days"
+#~ msgstr "days"
+
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:86
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:646
+#: src/components/PageDeployGauge/Page.tsx:28
+msgid "Deploy Gauge"
+msgstr "Deploy Gauge"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:35
+msgid "Deploy gauge on sidechain"
+msgstr "Deploy gauge on sidechain"
+
+#: src/components/PageDeployGauge/index.tsx:79
+msgid "Deploy Mainnet Gauge"
+msgstr "Deploy Mainnet Gauge"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:603
+msgid "Deploy Mirror Gauge"
+msgstr "Deploy Mirror Gauge"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:55
+msgid "Deploy mirror gauge on Ethereum using the same sidechain LP token address"
+msgstr "Deploy mirror gauge on Ethereum using the same sidechain LP token address"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:598
+#: src/components/PageDeployGauge/index.tsx:79
+msgid "Deploy Sidechain Gauge"
+msgstr "Deploy Sidechain Gauge"
+
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:91
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:651
+msgid "Deploying Gauge"
+msgstr "Deploying Gauge"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:615
+msgid "Deploying Mirror Gauge"
+msgstr "Deploying Mirror Gauge"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:609
+msgid "Deploying Sidechain Gauge"
+msgstr "Deploying Sidechain Gauge"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:140
+#: src/components/PagePool/Deposit/index.tsx:34
+#: src/components/PagePool/index.tsx:189
+#: src/components/PagePoolList/components/TableRowMobile.tsx:165
+msgid "Deposit"
+msgstr "Deposit"
+
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:141
+#: src/components/PagePool/Deposit/index.tsx:36
+msgid "Deposit & Stake"
+msgstr "Deposit & Stake"
+
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:141
+msgid "Deposit & Stake Complete"
+msgstr "Deposit & Stake Complete"
+
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:302
+#~ msgid "Deposit & Stake Failed"
+#~ msgstr "Deposit & Stake Failed"
+
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:104
+msgid "Deposit and staked {tokenText}"
+msgstr "Deposit and staked {tokenText}"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:140
+msgid "Deposit Complete"
+msgstr "Deposit Complete"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:299
+#~ msgid "Deposit Failed"
+#~ msgstr "Deposit Failed"
+
+#: src/components/PagePool/Deposit/components/FieldsDeposit.tsx:139
+msgid "Deposit Wrapped"
+msgstr "Deposit Wrapped"
+
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:271
+#~ msgid "Deposited {tokenText} and staked {receivedStakedLpTokens} LP Tokens"
+#~ msgstr "Deposited {tokenText} and staked {receivedStakedLpTokens} LP Tokens"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:273
+#~ msgid "Deposited {tokenText}, received {receivedLpTokens} LP Tokens"
+#~ msgstr "Deposited {tokenText}, received {receivedLpTokens} LP Tokens"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:103
+msgid "Deposited {tokenText}."
+msgstr "Deposited {tokenText}."
+
+#: src/components/PagePoolList/components/DialogSort/DialogSortContent.tsx:27
+msgid "Desc"
+msgstr "Desc"
+
+#: src/layout/default/Footer.tsx:137
+msgid "Developer Docs"
+msgstr "Developer Docs"
+
+#: src/components/PagePoolList/index.tsx:261
+msgid "Didn't find what you're looking for?"
+msgstr "Didn't find what you're looking for?"
+
+#: src/components/AdvancedSettings.tsx:136
+msgid "Discard"
+msgstr "Discard"
+
+#: src/layout/default/Footer.tsx:47
+msgid "Dodo"
+msgstr "Dodo"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:261
+msgid "Dollar prices are fetched from coingecko."
+msgstr "Dollar prices are fetched from coingecko."
+
+#: src/domain/create-pool/parameters/index.tsx:204
+#~ msgid "Dollar prices are fetched from coingecko. {0}"
+#~ msgstr "Dollar prices are fetched from coingecko. {0}"
+
+#: src/layout/default/Footer.tsx:132
+msgid "Donate"
+msgstr "Donate"
+
+#: src/domain/dialogs/dialog-waves-provider.tsx:21
+#~ msgid "Email"
+#~ msgstr "Email"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:90
+#~ msgid "Enable to process transaction."
+#~ msgstr "Enable to process transaction."
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:134
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:101
+msgid "ERC4626"
+msgstr "ERC4626"
+
+#: src/components/Page404/Page.tsx:11
+#: src/pages/404.tsx:11
+msgid "Error 404"
+msgstr "Error 404"
+
+#: src/components/PagePool/components/DetailInfoEstTokens.tsx:18
+msgid "Estimated Received:"
+msgstr "Estimated Received:"
+
+#: src/domain/detail-info/detail-info-est-gas.tsx:75
+#~ msgid "Estimated TX cost"
+#~ msgstr "Estimated TX cost"
+
+#: src/components/DetailInfoEstGas.tsx:78
+msgid "Estimated TX cost:"
+msgstr "Estimated TX cost:"
+
+#: src/layout/default/Footer.tsx:109
+msgid "Events"
+msgstr "Events"
+
+#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:27
+msgid "Exchange rate"
+msgstr "Exchange rate"
+
+#: src/domain/transfer/components/warning-modal.tsx:59
+#~ msgid "Exchange rate is too low!"
+#~ msgstr "Exchange rate is too low!"
+
+#: src/components/PagePool/index.tsx:227
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:221
+msgid "Expand chart"
+msgstr "Expand chart"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:47
+msgid "EYWA fee:"
+msgstr "EYWA fee:"
+
+#: src/hooks/usePoolAlert.tsx:91
+msgid "EYWA Links:"
+msgstr "EYWA Links:"
+
+#: src/components/PagePoolList/components/TableCellFactory.tsx:15
+msgid "Factory"
+msgstr "Factory"
+
+#: src/components/PagePool/index.tsx:210
+msgid "FACTORY"
+msgstr "FACTORY"
+
+#: src/components/PagePoolList/components/TableCellFactory.tsx:14
+msgid "Factory pools are permissionless, deployed by anyone."
+msgstr "Factory pools are permissionless, deployed by anyone."
+
+#: src/layout/default/Footer.tsx:134
+#~ msgid "FAQ"
+#~ msgstr "FAQ"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:50
+#~ msgid "Fee"
+#~ msgstr "Fee"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:364
+msgid "Fee Gamma ({0} - {1})"
+msgstr "Fee Gamma ({0} - {1})"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:107
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:112
+msgid "Fee Gamma:"
+msgstr "Fee Gamma:"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:91
+msgid "Fee:"
+msgstr "Fee:"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:207
+msgid "Fees"
+msgstr "Fees"
+
+#: src/domain/create-pool/constants.ts:8
+#~ msgid "Fiat Redeemable Stablecoin"
+#~ msgstr "Fiat Redeemable Stablecoin"
+
+#: src/components/PageCreatePool/constants.ts:62
+msgid "Fiat Redeemable Stablecoins"
+msgstr "Fiat Redeemable Stablecoins"
+
+#: src/domain/pool-list/components/dialog-filter-reference-asset.tsx:31
+#~ msgid "Filter by"
+#~ msgstr "Filter by"
+
+#: src/components/PageCreatePool/constants.ts:186
+msgid "For pools containing native {0} (represented as 0xEE…EE)"
+msgstr "For pools containing native {0} (represented as 0xEE…EE)"
+
+#: src/components/PageCreatePool/constants.ts:174
+msgid "For pools that supports any major ERC20 return implementation (”return True / revert”, “return None / revert”, “return True / return False”), and any number of decimal places up to 18"
+msgstr "For pools that supports any major ERC20 return implementation (”return True / revert”, “return None / revert”, “return True / return False”), and any number of decimal places up to 18"
+
+#: src/components/PageCreatePool/constants.ts:180
+msgid "For pools with rebase tokens like aTokens, or where there's a fee-on-transfer."
+msgstr "For pools with rebase tokens like aTokens, or where there's a fee-on-transfer."
+
+#: src/components/PageCreatePool/constants.ts:103
+msgid "Forex"
+msgstr "Forex"
+
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:66
+msgid "Function (e.g exchangeRate())"
+msgstr "Function (e.g exchangeRate())"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:76
+msgid "Function:"
+msgstr "Function:"
+
+#: src/components/charts/gauge-relative-weight.tsx:176
+#~ msgid "Future"
+#~ msgstr "Future"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:42
+msgid "Gauge"
+msgstr "Gauge"
+
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:95
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:642
+msgid "Gauge Deployed Successfully"
+msgstr "Gauge Deployed Successfully"
+
+#: src/components/PageDeployGauge/index.tsx:136
+msgid "Gauge deployment is not supported on this network."
+msgstr "Gauge deployment is not supported on this network."
+
+#: src/components/layout/dao/index.tsx:59
+#~ msgid "Gauge Weight Vote"
+#~ msgstr "Gauge Weight Vote"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:290
+msgid "Go to deploy sidechain gauge"
+msgstr "Go to deploy sidechain gauge"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:297
+msgid "Go to pool"
+msgstr "Go to pool"
+
+#: src/layout/default/HeaderMobile.tsx:164
+#: src/layout/default/HeaderSecondary.tsx:83
+msgid "Governance"
+msgstr "Governance"
+
+#: src/components/layout/default/footer.tsx:46
+#~ msgid "Help"
+#~ msgstr "Help"
+
+#: src/components/ComboBoxSelectToken/index.tsx:136
+msgid "Hide tokens from very small pools"
+msgstr "Hide tokens from very small pools"
+
+#: src/components/PagePoolList/index.tsx:220
+msgid "Hide very small pools"
+msgstr "Hide very small pools"
+
+#: src/domain/transfer/utils.ts:123
+#~ msgid "High price impact and low exchange rate!"
+#~ msgstr "High price impact and low exchange rate!"
+
+#: src/domain/transfer/components/warning-modal.tsx:70
+#~ msgid "High price impact and low exchange rate!<0/> Swap will have {0}% price impact and exchange rate at {1}%."
+#~ msgstr "High price impact and low exchange rate!<0/> Swap will have {0}% price impact and exchange rate at {1}%."
+
+#: src/domain/transfer/components/warning-modal.tsx:71
+#~ msgid "High price impact and low exchange rate!<0/> Swap will have {0}% price impact and low exchange rate."
+#~ msgstr "High price impact and low exchange rate!<0/> Swap will have {0}% price impact and low exchange rate."
+
+#: src/domain/transfer/components/warning-modal.tsx:64
+#~ msgid "High price impact warning!<0/>Swap will have {0}% price impact."
+#~ msgstr "High price impact warning!<0/>Swap will have {0}% price impact."
+
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:21
+msgid "High price impact:"
+msgstr "High price impact:"
+
+#: src/domain/transfer/utils.ts:128
+#~ msgid "High price impact!"
+#~ msgstr "High price impact!"
+
+#: src/components/PagePool/components/WarningModal.tsx:56
+msgid "High slippage!<0/>{0} will have {1}% loss."
+msgstr "High slippage!<0/>{0} will have {1}% loss."
+
+#: src/components/PageCrvLocker/index.tsx:28
+msgid "Increase Amount"
+msgstr "Increase Amount"
+
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:142
+#: src/components/PageCrvLocker/index.tsx:29
+msgid "Increase Lock"
+msgstr "Increase Lock"
+
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:103
+msgid "Increase Lock Amount"
+msgstr "Increase Lock Amount"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:255
+msgid "Initial Liquidity Concentration Price"
+msgstr "Initial Liquidity Concentration Price"
+
+#: src/domain/create-pool/parameters/initial-price.tsx:56
+#~ msgid "Initial Price"
+#~ msgstr "Initial Price"
+
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:75
+msgid "Initial Price {0}"
+msgstr "Initial Price {0}"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:71
+msgid "Initial Price B:"
+msgstr "Initial Price B:"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:273
+msgid "Initial price can't be 0. The price fetch didn't return a price. Please enter the token dollar price manually in the input."
+msgstr "Initial price can't be 0. The price fetch didn't return a price. Please enter the token dollar price manually in the input."
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:46
+msgid "Initial Price{0}:"
+msgstr "Initial Price{0}:"
+
+#: src/components/PageIntegrations/Page.tsx:38
+#: src/layout/default/Footer.tsx:127
+#: src/layout/default/Header.tsx:35
+msgid "Integrations"
+msgstr "Integrations"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:119
+msgid "Invalid date"
+msgstr "Invalid date"
+
+#: src/components/PagePoolList/index.tsx:263
+msgid "Join the Telegram"
+msgstr "Join the Telegram"
+
+#: src/components/PageDeployGauge/InfoBox.tsx:26
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:54
+msgid "Learn more"
+msgstr "Learn more"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:136
+msgid "Learn more about Boosting your CRV rewards"
+msgstr "Learn more about Boosting your CRV rewards"
+
+#: src/domain/create-pool/index.tsx:124
+#~ msgid "Learn more about V1 pools"
+#~ msgstr "Learn more about V1 pools"
+
+#: src/domain/create-pool/index.tsx:116
+#~ msgid "Learn more about V2 parameters"
+#~ msgstr "Learn more about V2 parameters"
+
+#: src/domain/create-pool/index.tsx:112
+#~ msgid "Learn more about V2 pools"
+#~ msgstr "Learn more about V2 pools"
+
+#: src/components/PageCreatePool/index.tsx:152
+msgid "Learn more: Creating Cryptoswap pools"
+msgstr "Learn more: Creating Cryptoswap pools"
+
+#: src/components/PageCreatePool/index.tsx:148
+msgid "Learn more: Creating Stableswap pools"
+msgstr "Learn more: Creating Stableswap pools"
+
+#: src/components/PageCreatePool/index.tsx:164
+msgid "Learn more: Read about Cryptoswap parameters"
+msgstr "Learn more: Read about Cryptoswap parameters"
+
+#: src/components/PageCreatePool/index.tsx:160
+msgid "Learn more: Understanding Cryptoswap"
+msgstr "Learn more: Understanding Cryptoswap"
+
+#: src/components/PageCreatePool/index.tsx:172
+msgid "Learn more: Understanding Stableswap"
+msgstr "Learn more: Understanding Stableswap"
+
+#: src/components/PageCreatePool/components/InfoBox.tsx:28
+#: src/components/PageCreatePool/components/InfoBox.tsx:34
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:65
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:140
+msgid "Link to address"
+msgstr "Link to address"
+
+#: src/components/PageCreatePool/constants.ts:119
+msgid "Liquid Staking Derivatives"
+msgstr "Liquid Staking Derivatives"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:48
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:62
+msgid "Liquidity"
+msgstr "Liquidity"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:142
+#~ msgid "Liquidity utilization"
+#~ msgstr "Liquidity utilization"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:72
+msgid "Liquidity utilization:"
+msgstr "Liquidity utilization:"
+
+#: src/domain/layout/default/footer.tsx:83
+#~ msgid "Llama Airforce"
+#~ msgstr "Llama Airforce"
+
+#: src/components/PageCrvLocker/components/FormActions.tsx:27
+#: src/components/PagePool/components/TransferActions.tsx:66
+#: src/components/PageRouterSwap/components/RouterSwapActions.tsx:35
+msgid "Loading"
+msgstr "Loading"
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:155
+#~ msgid "Lock amount increased"
+#~ msgstr "Lock amount increased"
+
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:103
+msgid "Lock Amount Increased"
+msgstr "Lock Amount Increased"
+
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:67
+msgid "Lock amount updated"
+msgstr "Lock amount updated"
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:200
+#~ msgid "Lock created"
+#~ msgstr "Lock created"
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:160
+msgid "Lock Created"
+msgstr "Lock Created"
+
+#: src/domain/crv-locker/index.tsx:46
+#~ msgid "Lock CRV"
+#~ msgstr "Lock CRV"
+
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:122
+msgid "Lock date updated"
+msgstr "Lock date updated"
+
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:142
+msgid "Lock Increased"
+msgstr "Lock Increased"
+
+#: src/domain/crv-locker/components/field-locked-amt.tsx:46
+#~ msgid "Locked CRV {0}"
+#~ msgstr "Locked CRV {0}"
+
+#: src/domain/user-dashboard/summary.tsx:206
+#~ msgid "Locked for"
+#~ msgstr "Locked for"
+
+#: src/domain/crv-locker/components/field-date-picker.tsx:125
+#~ msgid "Locked until"
+#~ msgstr "Locked until"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:184
+msgid "Locked until:"
+msgstr "Locked until:"
+
+#: src/domain/transfer/utils.ts:133
+#~ msgid "Low Exchange Rate!"
+#~ msgstr "Low Exchange Rate!"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:139
+msgid "LP Token ({0})"
+msgstr "LP Token ({0})"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:142
+msgid "LP Token (USD)"
+msgstr "LP Token (USD)"
+
+#: src/components/PageDeployGauge/DeploySidechain.tsx:109
+msgid "LP Token Address"
+msgstr "LP Token Address"
+
+#: src/components/PagePool/components/FieldLpToken.tsx:42
+#: src/components/PagePool/UserDetails/index.tsx:102
+msgid "LP Tokens"
+msgstr "LP Tokens"
+
+#: src/components/PagePool/components/FieldLpToken.tsx:42
+msgid "LP Tokens Avail."
+msgstr "LP Tokens Avail."
+
+#: src/components/input-comp/input-max-button.tsx:35
+#~ msgid "MAX"
+#~ msgstr "MAX"
+
+#: src/domain/crv-locker/components/field-locked-amt.tsx:40
+#~ msgid "Max amount"
+#~ msgstr "Max amount"
+
+#: src/components/AdvancedSettings.tsx:157
+msgid "Max Slippage"
+msgstr "Max Slippage"
+
+#: src/components/input-comp/input-max-button.tsx:32
+#~ msgid "MAX*"
+#~ msgstr "MAX*"
+
+#: src/components/AdvancedSettings.tsx:159
+msgid "Maximum difference between expected price of the trade, versus the price when the trade is executed."
+msgstr "Maximum difference between expected price of the trade, versus the price when the trade is executed."
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:107
+msgid "Measures pool growth; this is not a dollar value"
+msgstr "Measures pool growth; this is not a dollar value"
+
+#: src/domain/dialogs/dialog-waves-provider.tsx:23
+#~ msgid "MetaMask"
+#~ msgstr "MetaMask"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:239
+msgid "Mid fee governs fees charged during low volatility."
+msgstr "Mid fee governs fees charged during low volatility."
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:30
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:53
+msgid "Mid Fee:"
+msgstr "Mid Fee:"
+
+#: src/domain/create-pool/parameters/index.tsx:171
+#~ msgid "Mid fee: ({0} - {1}%)"
+#~ msgstr "Mid fee: ({0} - {1}%)"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:230
+msgid "Mid Fee: ({0} - {1}%)"
+msgstr "Mid Fee: ({0} - {1}%)"
+
+#: src/components/PagePool/UserDetails/index.tsx:75
+msgid "min. CRV tAPR %"
+msgstr "min. CRV tAPR %"
+
+#: src/domain/transfer/components/detail-info-est-lptokens.tsx:91
+#~ msgid "Min. Curve {0} LP Tokens:"
+#~ msgstr "Min. Curve {0} LP Tokens:"
+
+#: src/components/AdvancedSettings.tsx:111
+msgid "Min. slippage is {MIN_SLIPPAGE}%"
+msgstr "Min. slippage is {MIN_SLIPPAGE}%"
+
+#: src/domain/advanced-settings/index.tsx:105
+#~ msgid "Min. slippage is 0.01%"
+#~ msgstr "Min. slippage is 0.01%"
+
+#: src/components/PagePool/components/DetailInfoEstLpTokens.tsx:42
+msgid "Minimum LP Tokens:"
+msgstr "Minimum LP Tokens:"
+
+#: src/components/layout/dao/index.tsx:91
+#~ msgid "Minter"
+#~ msgstr "Minter"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:584
+#: src/components/PageDeployGauge/ProcessSummary.tsx:61
+msgid "Mirror gauge successfully deployed"
+msgstr "Mirror gauge successfully deployed"
+
+#: src/layout/default/HeaderMobile.tsx:146
+msgid "Mode"
+msgstr "Mode"
+
+#: src/layout/default/HeaderMobile.tsx:154
+msgid "More"
+msgstr "More"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:313
+#: src/components/PageCreatePool/Parameters/index.tsx:386
+msgid "Moving Average Time ({0} - {1}) seconds"
+msgstr "Moving Average Time ({0} - {1}) seconds"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:123
+#: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:57
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:124
+msgid "Moving Average Time:"
+msgstr "Moving Average Time:"
+
+#: src/components/PagePoolList/index.tsx:111
+msgid "My Pools"
+msgstr "My Pools"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:59
+msgid "Name:"
+msgstr "Name:"
+
+#: src/components/PageDeployGauge/DeploySidechain.tsx:84
+msgid "Network:"
+msgstr "Network:"
+
+#: src/layout/default/Footer.tsx:142
+msgid "News"
+msgstr "News"
+
+#: src/components/PageCreatePool/index.tsx:191
+#: src/components/PageCreatePool/index.tsx:238
+msgid "Next"
+msgstr "Next"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:319
+#: src/domain/create-pool/summary/index.tsx:147
+#~ msgid "No"
+#~ msgstr "No"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:381
+#: src/domain/create-pool/summary/index.tsx:209
+#~ msgid "No A value set"
+#~ msgstr "No A value set"
+
+#: src/components/PageDashboard/index.tsx:166
+msgid "No active pool found for"
+msgstr "No active pool found for"
+
+#: src/domain/user-dashboard/index.tsx:219
+#~ msgid "No active pool found."
+#~ msgstr "No active pool found."
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:59
+msgid "No address set"
+msgstr "No address set"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:78
+msgid "No asset type set"
+msgstr "No asset type set"
+
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:213
+msgid "No claimable rewards"
+msgstr "No claimable rewards"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:78
+msgid "No function set"
+msgstr "No function set"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:401
+#: src/domain/create-pool/confirm-modal/index.tsx:470
+#: src/domain/create-pool/summary/index.tsx:229
+#: src/domain/create-pool/summary/index.tsx:297
+#~ msgid "No initial price set"
+#~ msgstr "No initial price set"
+
+#: src/components/PageIntegrations/index.tsx:115
+msgid "No integration apps found with for {0} {1}{2}"
+msgstr "No integration apps found with for {0} {1}{2}"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:61
+msgid "No name set"
+msgstr "No name set"
+
+#: src/components/PagePoolList/index.tsx:268
+msgid "No pool found for \"{0}\". Feel free to search other tabs, or"
+msgstr "No pool found for \"{0}\". Feel free to search other tabs, or"
+
+#: src/components/PagePoolList/index.tsx:275
+msgid "No pool found in this category"
+msgstr "No pool found in this category"
+
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:32
+msgid "No pool type selected"
+msgstr "No pool type selected"
+
+#: src/components/PageCreatePool/Summary/PoolPresetSummary.tsx:23
+msgid "No preset set"
+msgstr "No preset set"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:373
+#: src/domain/create-pool/confirm-modal/index.tsx:450
+#: src/domain/create-pool/summary/index.tsx:201
+#: src/domain/create-pool/summary/index.tsx:277
+#~ msgid "No swap fee set"
+#~ msgstr "No swap fee set"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:69
+msgid "No symbol set"
+msgstr "No symbol set"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:235
+msgid "No token found for address {0}"
+msgstr "No token found for address {0}"
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:69
+msgid "No tokens selected"
+msgstr "No tokens selected"
+
+#: src/components/PageDashboard/components/TableRow.tsx:92
+msgid "None"
+msgstr "None"
+
+#: src/components/PagePool/Swap/index.tsx:396
+msgid "Not enough balance for {0}"
+msgstr "Not enough balance for {0}"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:95
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:96
+#~ msgid "Not enough balance for {amountsError}."
+#~ msgstr "Not enough balance for {amountsError}."
+
+#: src/components/PagePool/Deposit/components/FormStake.tsx:198
+msgid "Not enough LP Tokens balances."
+msgstr "Not enough LP Tokens balances."
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:110
+#~ msgid "Not enough LP Tokens. Unable to approve withdraw."
+#~ msgstr "Not enough LP Tokens. Unable to approve withdraw."
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:105
+#~ msgid "Not enough LP Tokens. Unable to unstake."
+#~ msgstr "Not enough LP Tokens. Unable to unstake."
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:173
+#~ msgid "Not enough LP Tokens. Unable to withdraw."
+#~ msgstr "Not enough LP Tokens. Unable to withdraw."
+
+#: src/hooks/useTokenAlert.tsx:15
+msgid "Note: maDAI, maUSDC and maUSDT are LP tokens from the Morpho protocol, a third-party service not affiliated with Curve. <0>Learn more here</0>."
+msgstr "Note: maDAI, maUSDC and maUSDT are LP tokens from the Morpho protocol, a third-party service not affiliated with Curve. <0>Learn more here</0>."
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:241
+#~ msgid "Nudge"
+#~ msgstr "Nudge"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:241
+#~ msgid "Nudge & Claim"
+#~ msgstr "Nudge & Claim"
+
+#: src/components/PagePool/Withdraw/utils.ts:88
+msgid "Nudge and Claim CRV"
+msgstr "Nudge and Claim CRV"
+
+#: src/components/PagePool/Withdraw/utils.ts:78
+msgid "Nudge and Claim CRV Complete"
+msgstr "Nudge and Claim CRV Complete"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:125
+#~ msgid "Nudge and Claim Rewards Complete"
+#~ msgstr "Nudge and Claim Rewards Complete"
+
+#: src/components/PagePool/Withdraw/utils.ts:79
+msgid "Nudge Complete"
+msgstr "Nudge Complete"
+
+#: src/components/PagePool/Withdraw/utils.ts:89
+msgid "Nudge CRV"
+msgstr "Nudge CRV"
+
+#: src/components/PagePool/Withdraw/utils.ts:83
+msgid "Nudged and Claimed {tokensMessage}"
+msgstr "Nudged and Claimed {tokensMessage}"
+
+#: src/components/PagePool/Withdraw/utils.ts:84
+msgid "Nudged Rewards Tx"
+msgstr "Nudged Rewards Tx"
+
+#: src/components/PagePool/Withdraw/utils.ts:74
+msgid "Nudging"
+msgstr "Nudging"
+
+#: src/components/PagePool/Withdraw/utils.ts:73
+msgid "Nudging and Claiming"
+msgstr "Nudging and Claiming"
+
+#: src/components/PagePool/UserDetails/index.tsx:97
+msgid "of pool"
+msgstr "of pool"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:94
+msgid "Off Peg Multiplier:"
+msgstr "Off Peg Multiplier:"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:305
+msgid "Offpeg Fee Multiplier ({0} - {1})"
+msgstr "Offpeg Fee Multiplier ({0} - {1})"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:49
+msgid "Offpeg Fee Multiplier:"
+msgstr "Offpeg Fee Multiplier:"
+
+#: src/store/createPoolsSlice.ts:24
+#~ msgid "On March 15th, all protocol owned dex liquidity will be removed. You must remove your own dex liquidity before March 15th. After the new STG token is airdropped, the old STG will be worthless. If you continue to provide LP at this point, the old STG token will be sold into your LP removing the other asset you are providing and you will lose funds!!. It is recommended you withdraw and unwrap the LP and (if you wish) re-add the LP with the new STG token after you receive it."
+#~ msgstr "On March 15th, all protocol owned dex liquidity will be removed. You must remove your own dex liquidity before March 15th. After the new STG token is airdropped, the old STG will be worthless. If you continue to provide LP at this point, the old STG token will be sold into your LP removing the other asset you are providing and you will lose funds!!. It is recommended you withdraw and unwrap the LP and (if you wish) re-add the LP with the new STG token after you receive it."
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:350
+msgid "One coin"
+msgstr "One coin"
+
+#: src/components/PageDeployGauge/InfoBox.tsx:18
+msgid "Only admin/manager can set reward token, set reward token distributor address."
+msgstr "Only admin/manager can set reward token, set reward token distributor address."
+
+#: src/components/PageCreatePool/constants.ts:190
+#: src/components/PageCreatePool/Parameters/SelectPoolImplementation.tsx:44
+msgid "Optimised"
+msgstr "Optimised"
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:132
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:91
+msgid "Oracle"
+msgstr "Oracle"
+
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:56
+msgid "Oracle address needs to start with '0x'."
+msgstr "Oracle address needs to start with '0x'."
+
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:69
+msgid "Oracle function name needs to end with '()'."
+msgstr "Oracle function name needs to end with '()'."
+
+#: src/components/PagePool/index.tsx:202
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:12
+msgid "OTHER"
+msgstr "OTHER"
+
+#: src/domain/pool-list/index.tsx:105
+#~ msgid "Others"
+#~ msgstr "Others"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:252
+msgid "Out fee governs fees charged during high volatility."
+msgstr "Out fee governs fees charged during high volatility."
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:38
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:59
+msgid "Out Fee:"
+msgstr "Out Fee:"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:242
+msgid "Out fee: ({midFee} - {0}%)"
+msgstr "Out fee: ({midFee} - {0}%)"
+
+#: src/domain/page404.tsx:44
+#~ msgid "Page not found"
+#~ msgstr "Page not found"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:366
+#: src/domain/create-pool/confirm-modal/index.tsx:443
+#: src/domain/create-pool/summary/index.tsx:194
+#: src/domain/create-pool/summary/index.tsx:270
+#~ msgid "Parameters"
+#~ msgstr "Parameters"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:106
+msgid "PARAMETERS"
+msgstr "PARAMETERS"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:47
+msgid "Parameters:"
+msgstr "Parameters:"
+
+#: src/domain/transfer/my-shares-stats/index.tsx:66
+#~ msgid "Percent share in pool"
+#~ msgstr "Percent share in pool"
+
+#: src/domain/quick-swap/index.tsx:330
+#~ msgid "Please approve {0} {1} for exchange"
+#~ msgstr "Please approve {0} {1} for exchange"
+
+#: src/components/PageDashboard/components/FormClaimFees.tsx:57
+msgid "Please approve claim veCRV rewards."
+msgstr "Please approve claim veCRV rewards."
+
+#: src/domain/quick-swap/index.tsx:245
+#~ msgid "Please approve spending {fromToken}"
+#~ msgstr "Please approve spending {fromToken}"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:87
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:88
+#: src/components/PagePool/Swap/index.tsx:179
+#: src/components/PageRouterSwap/index.tsx:206
+msgid "Please approve spending your {0}."
+msgstr "Please approve spending your {0}."
+
+#: src/domain/quick-swap/index.tsx:278
+#: src/domain/transfer/swap/index.tsx:278
+#~ msgid "Please approve spending your {fromToken}."
+#~ msgstr "Please approve spending your {fromToken}."
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:101
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:52
+msgid "Please approve spending your CRV."
+msgstr "Please approve spending your CRV."
+
+#: src/components/PagePool/Deposit/components/FormStake.tsx:57
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:94
+msgid "Please approve spending your LP Tokens."
+msgstr "Please approve spending your LP Tokens."
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:133
+#~ msgid "Please confirm changing lock date to {0}."
+#~ msgstr "Please confirm changing lock date to {0}."
+
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:117
+msgid "Please confirm changing unlock date to {localUtcDate}."
+msgstr "Please confirm changing unlock date to {localUtcDate}."
+
+#: src/components/PageCompensation/components/Compensation.tsx:59
+msgid "Please confirm claim {balance} compensation."
+msgstr "Please confirm claim {balance} compensation."
+
+#: src/components/PagePool/Withdraw/utils.ts:67
+msgid "Please confirm claim of {tokensMessage}"
+msgstr "Please confirm claim of {tokensMessage}"
+
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:99
+msgid "Please confirm deposit and staking of {tokenText} LP Tokens at max {maxSlippage}% slippage."
+msgstr "Please confirm deposit and staking of {tokenText} LP Tokens at max {maxSlippage}% slippage."
+
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:225
+#~ msgid "Please confirm deposit and staking of {tokenText} LP Tokens."
+#~ msgstr "Please confirm deposit and staking of {tokenText} LP Tokens."
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:98
+msgid "Please confirm deposit of {tokenText} at max {maxSlippage}% slippage."
+msgstr "Please confirm deposit of {tokenText} at max {maxSlippage}% slippage."
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:236
+#~ msgid "Please confirm deposit of {tokenText}."
+#~ msgstr "Please confirm deposit of {tokenText}."
+
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:62
+msgid "Please confirm increasing lock amount by {0} CRV."
+msgstr "Please confirm increasing lock amount by {0} CRV."
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:165
+#~ msgid "Please confirm increasing lock to {localUtcDate}."
+#~ msgstr "Please confirm increasing lock to {localUtcDate}."
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:187
+#~ msgid "Please confirm locking {0} CRV until {formattedUnlockDate}."
+#~ msgstr "Please confirm locking {0} CRV until {formattedUnlockDate}."
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:113
+msgid "Please confirm locking {0} CRV until {localUtcDate}."
+msgstr "Please confirm locking {0} CRV until {localUtcDate}."
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:149
+#~ msgid "Please confirm locking {0} CRV."
+#~ msgstr "Please confirm locking {0} CRV."
+
+#: src/components/PagePool/Withdraw/utils.ts:68
+msgid "Please confirm nudge and claim of {tokensMessage}"
+msgstr "Please confirm nudge and claim of {tokensMessage}"
+
+#: src/components/PagePool/Withdraw/utils.ts:69
+msgid "Please confirm nudge rewards"
+msgstr "Please confirm nudge rewards"
+
+#: src/components/PagePool/Deposit/components/FormStake.tsx:67
+msgid "Please confirm staking of {0} LP Tokens"
+msgstr "Please confirm staking of {0} LP Tokens"
+
+#: src/domain/quick-swap/index.tsx:233
+#~ msgid "Please confirm swap {0} {1} for min {2} {3} with max slippage {maxSlippage}%."
+#~ msgstr "Please confirm swap {0} {1} for min {2} {3} with max slippage {maxSlippage}%."
+
+#: src/domain/quick-swap/index.tsx:200
+#~ msgid "Please confirm swap {fromAmount} {fromToken} at max slippage {maxSlippage}%."
+#~ msgstr "Please confirm swap {fromAmount} {fromToken} at max slippage {maxSlippage}%."
+
+#: src/domain/transfer/swap/index.tsx:223
+#~ msgid "Please confirm swap {fromAmount} {fromToken} for {toToken} at max {maxSlippage}% slippage."
+#~ msgstr "Please confirm swap {fromAmount} {fromToken} for {toToken} at max {maxSlippage}% slippage."
+
+#: src/components/PagePool/Swap/index.tsx:126
+#: src/components/PageRouterSwap/index.tsx:155
+msgid "Please confirm swap {fromAmount} {fromToken} for {toToken} at max slippage {maxSlippage}%."
+msgstr "Please confirm swap {fromAmount} {fromToken} for {toToken} at max slippage {maxSlippage}%."
+
+#: src/domain/quick-swap/index.tsx:250
+#~ msgid "Please confirm swap from {0} {1} for min {2} {3}"
+#~ msgstr "Please confirm swap from {0} {1} for min {2} {3}"
+
+#: src/domain/transfer/swap/index.tsx:236
+#~ msgid "Please confirm swapping {0} {1}"
+#~ msgstr "Please confirm swapping {0} {1}"
+
+#: src/domain/transfer/swap/index.tsx:244
+#~ msgid "Please confirm swapping {0} {1} at max {maxSlippage}% slippage."
+#~ msgstr "Please confirm swapping {0} {1} at max {maxSlippage}% slippage."
+
+#: src/domain/transfer/swap/index.tsx:223
+#~ msgid "Please confirm swapping {fromAmount} {fromToken} at max {maxSlippage}% slippage."
+#~ msgstr "Please confirm swapping {fromAmount} {fromToken} at max {maxSlippage}% slippage."
+
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:80
+msgid "Please confirm to create pool {poolName}."
+msgstr "Please confirm to create pool {poolName}."
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:116
+msgid "Please confirm to deploy gauge for {0}."
+msgstr "Please confirm to deploy gauge for {0}."
+
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:46
+msgid "Please confirm to deploy gauge."
+msgstr "Please confirm to deploy gauge."
+
+#: src/components/PagePool/Withdraw/components/FormUnstake.tsx:51
+msgid "Please confirm unstaking of {0} LP Tokens"
+msgstr "Please confirm unstaking of {0} LP Tokens"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:115
+#~ msgid "Please confirm unstaking of {lpTokenPayload} LP Tokens"
+#~ msgstr "Please confirm unstaking of {lpTokenPayload} LP Tokens"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:67
+msgid "Please confirm withdraw of {lockedAmount} CRV."
+msgstr "Please confirm withdraw of {lockedAmount} CRV."
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:105
+msgid "Please confirm withdrawal of {0} LP Tokens at max {maxSlippage}% slippage."
+msgstr "Please confirm withdrawal of {0} LP Tokens at max {maxSlippage}% slippage."
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:183
+#~ msgid "Please confirm withdrawal of {lpTokenPayload} LP Tokens at max {maxSlippage}% slippage."
+#~ msgstr "Please confirm withdrawal of {lpTokenPayload} LP Tokens at max {maxSlippage}% slippage."
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:187
+#~ msgid "Please confirm withdrawal of {lpTokenPayload} LP Tokens."
+#~ msgstr "Please confirm withdrawal of {lpTokenPayload} LP Tokens."
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:583
+msgid "Please connect a wallet to select tokens"
+msgstr "Please connect a wallet to select tokens"
+
+#: src/components/PageDashboard/index.tsx:153
+msgid "Please connect wallet or enter a wallet address to view active pools."
+msgstr "Please connect wallet or enter a wallet address to view active pools."
+
+#: src/domain/user-dashboard/index.tsx:192
+#~ msgid "Please connect wallet to view active pools."
+#~ msgstr "Please connect wallet to view active pools."
+
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:26
+msgid "Please select tokens to be able to set initial price"
+msgstr "Please select tokens to be able to set initial price"
+
+#: src/domain/layout/default/index.tsx:57
+#~ msgid "Please switch your wallet's network chain to Testnet"
+#~ msgstr "Please switch your wallet's network chain to Testnet"
+
+#: src/domain/layout/default/index.tsx:62
+#~ msgid "Please switch your wallet's network to"
+#~ msgstr "Please switch your wallet's network to"
+
+#: src/components/PageDashboard/index.tsx:54
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:29
+#: src/components/PagePoolList/Page.tsx:56
+msgid "Pool"
+msgstr "Pool"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:265
+msgid "Pool {poolName} was successfully created!"
+msgstr "Pool {poolName} was successfully created!"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:29
+msgid "Pool / Token"
+msgstr "Pool / Token"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:216
+msgid "Pool Activity"
+msgstr "Pool Activity"
+
+#: src/components/PageDeployGauge/DeployMainnet.tsx:61
+msgid "Pool Address"
+msgstr "Pool Address"
+
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:15
+msgid "Pool APY"
+msgstr "Pool APY"
+
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:26
+msgid "Pool APY + Interest APY"
+msgstr "Pool APY + Interest APY"
+
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:18
+msgid "Pool APY + Lending APY"
+msgstr "Pool APY + Lending APY"
+
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:21
+msgid "Pool APY + Staking APY"
+msgstr "Pool APY + Staking APY"
+
+#: src/domain/create-pool/tokens-in-pool/index.tsx:775
+#~ msgid "Pool contains rebasing tokens"
+#~ msgstr "Pool contains rebasing tokens"
+
+#: src/components/PageCreatePool/index.tsx:119
+#: src/layout/default/Header.tsx:33
+msgid "Pool Creation"
+msgstr "Pool Creation"
+
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:392
+msgid "Pool Creation Complete"
+msgstr "Pool Creation Complete"
+
+#: src/components/PageCreatePool/index.tsx:256
+msgid "Pool creation is not yet available on this network."
+msgstr "Pool creation is not yet available on this network."
+
+#: src/components/PagePool/index.tsx:104
+#: src/components/PagePool/index.tsx:109
+#: src/components/PagePool/index.tsx:114
+#: src/components/PagePool/index.tsx:117
+msgid "Pool Details"
+msgstr "Pool Details"
+
+#: src/components/PageCreatePool/Parameters/SelectPoolImplementation.tsx:27
+msgid "Pool Implementation"
+msgstr "Pool Implementation"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:68
+msgid "Pool Implementation:"
+msgstr "Pool Implementation:"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:157
+msgid "POOL INFO"
+msgstr "POOL INFO"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:56
+msgid "Pool Info:"
+msgstr "Pool Info:"
+
+#: src/domain/create-pool/pool-info/index.tsx:29
+#~ msgid "Pool name (e.g. CRV/ETH)"
+#~ msgstr "Pool name (e.g. CRV/ETH)"
+
+#: src/components/PageCreatePool/PoolInfo/index.tsx:30
+msgid "Pool Name (e.g. CRV/ETH)"
+msgstr "Pool Name (e.g. CRV/ETH)"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:50
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:159
+msgid "Pool Parameters"
+msgstr "Pool Parameters"
+
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:45
+msgid "Pool Parameters Presets"
+msgstr "Pool Parameters Presets"
+
+#: src/domain/create-pool/components/navigation.tsx:59
+#~ msgid "POOL PRESETS"
+#~ msgstr "POOL PRESETS"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:330
+#: src/domain/create-pool/summary/index.tsx:159
+#~ msgid "Pool Presets:"
+#~ msgstr "Pool Presets:"
+
+#: src/domain/create-pool/summary/index.tsx:52
+#~ msgid "POOL SETUP"
+#~ msgstr "POOL SETUP"
+
+#: src/components/PageCreatePool/Summary/index.tsx:40
+msgid "Pool Summary"
+msgstr "Pool Summary"
+
+#: src/domain/create-pool/pool-info/index.tsx:35
+#~ msgid "Pool symbol (e.g. CRVETH)"
+#~ msgstr "Pool symbol (e.g. CRVETH)"
+
+#: src/components/PageCreatePool/PoolInfo/index.tsx:35
+msgid "Pool Symbol (e.g. CRVETH)"
+msgstr "Pool Symbol (e.g. CRVETH)"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:24
+msgid "Pool Type"
+msgstr "Pool Type"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:40
+msgid "POOL TYPE"
+msgstr "POOL TYPE"
+
+#: src/domain/create-pool/parameters/index.tsx:179
+#: src/domain/create-pool/parameters/index.tsx:193
+#~ msgid "Pool type needs to be set before adjusting mid fee"
+#~ msgstr "Pool type needs to be set before adjusting mid fee"
+
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:29
+#: src/components/PageDeployGauge/DeployMainnet.tsx:51
+#: src/components/PageDeployGauge/DeploySidechain.tsx:98
+msgid "Pool Type:"
+msgstr "Pool Type:"
+
+#: src/components/PagePoolList/Page.tsx:122
+#: src/layout/default/Header.tsx:32
+msgid "Pools"
+msgstr "Pools"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:602
+msgid "Pools with basepools ({0}) allow a maximum of 2 tokens"
+msgstr "Pools with basepools ({0}) allow a maximum of 2 tokens"
+
+#: src/domain/create-pool/tokens-in-pool/index.tsx:757
+#~ msgid "Pools with basepools (3Crv, FRAXBP, sbtc2Crv) allow a maximum of 2 tokens"
+#~ msgstr "Pools with basepools (3Crv, FRAXBP, sbtc2Crv) allow a maximum of 2 tokens"
+
+#: src/components/PageCreatePool/Summary/PoolPresetSummary.tsx:22
+#: src/components/PageCreatePool/Summary/PoolPresetSummary.tsx:27
+msgid "Preset:"
+msgstr "Preset:"
+
+#: src/components/PageCreatePool/index.tsx:181
+#: src/components/PageCreatePool/index.tsx:228
+msgid "Previous"
+msgstr "Previous"
+
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:80
+msgid "Price A ({0})"
+msgstr "Price A ({0})"
+
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:85
+msgid "Price B ({0})"
+msgstr "Price B ({0})"
+
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:24
+msgid "Price change in the market that happens when a trader buys or sells an asset."
+msgstr "Price change in the market that happens when a trader buys or sells an asset."
+
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:21
+msgid "Price impact:"
+msgstr "Price impact:"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:135
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:125
+msgid "Price Oracle:"
+msgstr "Price Oracle:"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:154
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:143
+msgid "Price Scale:"
+msgstr "Price Scale:"
+
+#: src/components/layout/default/header.tsx:26
+#~ msgid "Quick Swap"
+#~ msgstr "Quick Swap"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:134
+#~ msgid "Ramp up A ends on"
+#~ msgstr "Ramp up A ends on"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:87
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:202
+msgid "Ramp up A ends on:"
+msgstr "Ramp up A ends on:"
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:124
+#~ msgid "Ramping up A"
+#~ msgstr "Ramping up A"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:72
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:186
+msgid "Ramping up A:"
+msgstr "Ramping up A:"
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:133
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:96
+msgid "Rebasing"
+msgstr "Rebasing"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:622
+msgid "Rebasing tokens are not supported in {CRYPTOSWAP} pools"
+msgstr "Rebasing tokens are not supported in {CRYPTOSWAP} pools"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:613
+msgid "Rebasing tokens are not supported in this version of Stableswap"
+msgstr "Rebasing tokens are not supported in this version of Stableswap"
+
+#: src/components/PageDashboard/components/Summary.tsx:136
+msgid "Recently viewed addresses"
+msgstr "Recently viewed addresses"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/LiquidityData.tsx:68
+msgid "Remove"
+msgstr "Remove"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:311
+#~ msgid "Remove Liquidity Approved"
+#~ msgstr "Remove Liquidity Approved"
+
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:57
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:66
+msgid "Remove token"
+msgstr "Remove token"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:289
+msgid "Reset advanced"
+msgstr "Reset advanced"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:209
+msgid "Reset Fees"
+msgstr "Reset Fees"
+
+#: src/layout/default/Footer.tsx:147
+#: src/layout/default/HeaderMobile.tsx:189
+msgid "Resources"
+msgstr "Resources"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:226
+#~ msgid "Restart Unstake"
+#~ msgstr "Restart Unstake"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:373
+#~ msgid "Restart Withdraw"
+#~ msgstr "Restart Withdraw"
+
+#: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:223
+#~ msgid "Retry Claim Rewards"
+#~ msgstr "Retry Claim Rewards"
+
+#: src/components/PagePoolList/Page.tsx:57
+msgid "Rewards Base vAPY"
+msgstr "Rewards Base vAPY"
+
+#: src/components/PagePoolList/Page.tsx:66
+msgid "Rewards CRV tAPR"
+msgstr "Rewards CRV tAPR"
+
+#: src/components/PagePoolList/Page.tsx:68
+msgid "Rewards Incentives tAPR"
+msgstr "Rewards Incentives tAPR"
+
+#: src/components/PageDashboard/index.tsx:59
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:94
+#: src/components/PagePoolList/Page.tsx:61
+msgid "Rewards tAPR"
+msgstr "Rewards tAPR"
+
+#: src/components/PageDashboard/index.tsx:64
+msgid "Rewards tAPR (CRV)"
+msgstr "Rewards tAPR (CRV)"
+
+#: src/components/PageDashboard/index.tsx:66
+msgid "Rewards tAPR (Incentives)"
+msgstr "Rewards tAPR (Incentives)"
+
+#: src/domain/pageRisks.tsx:31
+#~ msgid "Risk"
+#~ msgstr "Risk"
+
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:89
+msgid "Risks of using {0}"
+msgstr "Risks of using {0}"
+
+#: src/components/AdvancedSettings.tsx:149
+msgid "Save"
+msgstr "Save"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:151
+msgid "Search by name or paste address"
+msgstr "Search by name or paste address"
+
+#: src/components/PagePoolList/index.tsx:185
+msgid "Search by pool name, pool address, token name or token address"
+msgstr "Search by pool name, pool address, token name or token address"
+
+#: src/components/ComboBoxSelectToken/index.tsx:117
+#: src/components/ComboBoxSelectToken/index.tsx:129
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:163
+msgid "Search by token name or address"
+msgstr "Search by token name or address"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:219
+msgid "Search generated no results"
+msgstr "Search generated no results"
+
+#: src/domain/dialogs/dialog-waves-provider.tsx:20
+#~ msgid "Seed or Key"
+#~ msgstr "Seed or Key"
+
+#: src/components/select.tsx:54
+#~ msgid "Select"
+#~ msgstr "Select"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:136
+msgid "Select a token"
+msgstr "Select a token"
+
+#: src/components/PagePool/Swap/index.tsx:366
+#: src/components/PagePool/Swap/index.tsx:449
+msgid "Select a Token"
+msgstr "Select a Token"
+
+#: src/domain/crv-locker/components/field-date-picker.tsx:87
+#~ msgid "Select date"
+#~ msgstr "Select date"
+
+#: src/components/PageDeployGauge/DeploySidechain.tsx:87
+msgid "Select Network"
+msgstr "Select Network"
+
+#: src/domain/create-pool/pool-info/index.tsx:40
+#~ msgid "Select pool asset type tag"
+#~ msgstr "Select pool asset type tag"
+
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:55
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:61
+msgid "Select preset"
+msgstr "Select preset"
+
+#: src/components/PageCrvLocker/components/FieldDatePicker.tsx:91
+msgid "Select unlock date"
+msgstr "Select unlock date"
+
+#: src/components/PageCreatePool/PoolInfo/index.tsx:41
+msgid "Set pool asset type tag:"
+msgstr "Set pool asset type tag:"
+
+#: src/components/PageDeployGauge/DeployMainnet.tsx:53
+#: src/components/PageDeployGauge/DeploySidechain.tsx:100
+msgid "Set Pool Type"
+msgstr "Set Pool Type"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:174
+msgid "share of total"
+msgstr "share of total"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:581
+#: src/components/PageDeployGauge/ProcessSummary.tsx:40
+msgid "Sidechain gauge successfully deployed"
+msgstr "Sidechain gauge successfully deployed"
+
+#: src/components/PagePool/components/DetailInfoSlippage.tsx:25
+msgid "Slippage"
+msgstr "Slippage"
+
+#: src/components/PagePool/components/DetailInfoSlippage.tsx:47
+msgid "Slippage Bonus"
+msgstr "Slippage Bonus"
+
+#: src/components/PagePool/components/DetailInfoSlippage.tsx:41
+msgid "Slippage comes from depositing too many coins not in balance, and current coin prices are additionally accounted for"
+msgstr "Slippage comes from depositing too many coins not in balance, and current coin prices are additionally accounted for"
+
+#: src/components/PagePool/components/DetailInfoSlippage.tsx:35
+msgid "Slippage Loss"
+msgstr "Slippage Loss"
+
+#: src/components/PagePool/components/DetailInfoSlippageTolerance.tsx:18
+msgid "Slippage tolerance:"
+msgstr "Slippage tolerance:"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:77
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:190
+msgid "Slowly changing up A so that it doesn't negatively change virtual price growth of shares"
+msgstr "Slowly changing up A so that it doesn't negatively change virtual price growth of shares"
+
+#: src/components/PagePoolList/index.tsx:257
+msgid "Sorry, we are unable to load your pools."
+msgstr "Sorry, we are unable to load your pools."
+
+#: src/components/PagePoolList/components/DialogSort/DialogSortDesktop.tsx:40
+#: src/components/PagePoolList/components/DialogSort/DialogSortDesktop.tsx:47
+msgid "Sort by"
+msgstr "Sort by"
+
+#: src/components/PagePoolList/components/DialogSort/DialogSortMobile.tsx:57
+msgid "Sort By"
+msgstr "Sort By"
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:149
+#: src/components/PageCrvLocker/components/FormLockCrv.tsx:92
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:133
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:134
+#: src/components/PagePool/Deposit/components/FormStake.tsx:98
+#: src/components/PagePool/Swap/index.tsx:177
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:148
+#: src/components/PageRouterSwap/index.tsx:204
+msgid "Spending Approved"
+msgstr "Spending Approved"
+
+#: src/components/PagePoolList/index.tsx:110
+msgid "Stable NG"
+msgstr "Stable NG"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:29
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:34
+msgid "Stableswap"
+msgstr "Stableswap"
+
+#: src/components/PageCreatePool/PoolType/index.tsx:35
+msgid "Stableswap pools are currently unavailable on this chain"
+msgstr "Stableswap pools are currently unavailable on this chain"
+
+#: src/components/PagePool/Deposit/components/FormStake.tsx:105
+#: src/components/PagePool/Deposit/index.tsx:35
+msgid "Stake"
+msgstr "Stake"
+
+#: src/components/PagePool/Deposit/components/FormStake.tsx:105
+msgid "Stake Complete"
+msgstr "Stake Complete"
+
+#: src/domain/transfer/my-shares-stats/index.tsx:91
+#~ msgid "Staked"
+#~ msgstr "Staked"
+
+#: src/domain/transfer/withdraw/form-unstake/index.tsx:261
+#~ msgid "Staked LP Tokens"
+#~ msgstr "Staked LP Tokens"
+
+#: src/components/PagePool/UserDetails/index.tsx:97
+msgid "Staked share:"
+msgstr "Staked share:"
+
+#: src/components/PagePool/UserDetails/index.tsx:104
+msgid "Staked:"
+msgstr "Staked:"
+
+#: src/components/PagePool/Deposit/index.tsx:119
+#: src/components/PagePool/Deposit/index.tsx:128
+msgid "Staking is disabled due to inactive Gauge."
+msgstr "Staking is disabled due to inactive Gauge."
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:131
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:86
+msgid "Standard"
+msgstr "Standard"
+
+#: src/components/layout/dao/index.tsx:99
+#~ msgid "Stats"
+#~ msgstr "Stats"
+
+#: src/components/DetailInfoEstGas.tsx:82
+msgid "Step {0} of {1}"
+msgstr "Step {0} of {1}"
+
+#: src/components/PageDeployGauge/index.tsx:93
+msgid "Step 1"
+msgstr "Step 1"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:72
+msgid "Step 1 and Step 2 must be completed using the same wallet"
+msgstr "Step 1 and Step 2 must be completed using the same wallet"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:33
+msgid "Step 1:"
+msgstr "Step 1:"
+
+#: src/components/PageDeployGauge/index.tsx:105
+msgid "Step 2"
+msgstr "Step 2"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:52
+msgid "Step 2:"
+msgstr "Step 2:"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:157
+#~ msgid "Successfully changed unlock date to {fetchedLockedDate}"
+#~ msgstr "Successfully changed unlock date to {fetchedLockedDate}"
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:163
+#~ msgid "Successfully increased lock amount."
+#~ msgstr "Successfully increased lock amount."
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:157
+#~ msgid "Successfully increased lock date to {fetchedLockedDate}"
+#~ msgstr "Successfully increased lock date to {fetchedLockedDate}"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:182
+#~ msgid "Successfully increased lock to {fetchedLockedDate}"
+#~ msgstr "Successfully increased lock to {fetchedLockedDate}"
+
+#: src/components/PageCrvLocker/components/FormLockCreate.tsx:118
+msgid "Successfully locked {0} CRV until {1}"
+msgstr "Successfully locked {0} CRV until {1}"
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:211
+#~ msgid "Successfully locked {fetchedLockedAmt} till {fetchedLockedDate}"
+#~ msgstr "Successfully locked {fetchedLockedAmt} till {fetchedLockedDate}"
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:248
+#~ msgid "Successfully locked {fetchedLockedAmt}CRV until {fetchedLockedDate}"
+#~ msgstr "Successfully locked {fetchedLockedAmt}CRV until {fetchedLockedDate}"
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:162
+#~ msgid "Successfully locked additional {0} CRV."
+#~ msgstr "Successfully locked additional {0} CRV."
+
+#: src/components/PageCreatePool/constants.ts:104
+msgid "Suitable for forex pairs with low relative volatility"
+msgstr "Suitable for forex pairs with low relative volatility"
+
+#: src/components/PageCreatePool/constants.ts:120
+msgid "Suitable for liquid staking derivatives soft-pegged to its underlying asset."
+msgstr "Suitable for liquid staking derivatives soft-pegged to its underlying asset."
+
+#: src/components/PageCreatePool/constants.ts:88
+msgid "Suitable for most volatile pairs such as LDO <> ETH"
+msgstr "Suitable for most volatile pairs such as LDO <> ETH"
+
+#: src/components/PageCreatePool/constants.ts:75
+msgid "Suitable for stablecoins that are crypto-backed"
+msgstr "Suitable for stablecoins that are crypto-backed"
+
+#: src/components/PageCreatePool/constants.ts:63
+msgid "Suitable for stablecoins that are fiat-redeemable"
+msgstr "Suitable for stablecoins that are fiat-redeemable"
+
+#: src/components/PageCreatePool/constants.ts:137
+msgid "Suitable for USD stablecoin <> BTC stablecoin <> ETH."
+msgstr "Suitable for USD stablecoin <> BTC stablecoin <> ETH."
+
+#: src/components/PageCreatePool/constants.ts:153
+msgid "Suitable for volatile tokens paired against ETH and USD stablecoins"
+msgstr "Suitable for volatile tokens paired against ETH and USD stablecoins"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:167
+msgid "Summary"
+msgstr "Summary"
+
+#: src/components/PagePool/index.tsx:191
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:71
+#: src/components/PagePool/Swap/index.tsx:189
+#: src/components/PagePoolList/components/TableRowMobile.tsx:171
+#: src/components/PageRouterSwap/index.tsx:216
+#: src/components/PageRouterSwap/Page.tsx:112
+#: src/components/PageRouterSwap/Page.tsx:116
+#: src/layout/default/Header.tsx:31
+msgid "Swap"
+msgstr "Swap"
+
+#: src/components/PagePool/Swap/index.tsx:189
+#: src/components/PageRouterSwap/index.tsx:216
+msgid "Swap Complete"
+msgstr "Swap Complete"
+
+#: src/domain/create-pool/parameters/index.tsx:156
+#~ msgid "Swap fee ({0} - {1}%)"
+#~ msgstr "Swap fee ({0} - {1}%)"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:215
+msgid "Swap Fee ({0} - {1}%)"
+msgstr "Swap Fee ({0} - {1}%)"
+
+#: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:32
+msgid "Swap Fee:"
+msgstr "Swap Fee:"
+
+#: src/domain/alert-form-error.tsx:29
+#~ msgid "Swap is not available"
+#~ msgstr "Swap is not available"
+
+#: src/components/AlertFormError.tsx:50
+msgid "Swap is not available."
+msgstr "Swap is not available."
+
+#: src/domain/create-pool/confirm-modal/index.tsx:227
+#~ msgid "Swap type:"
+#~ msgstr "Swap type:"
+
+#: src/components/PagePool/Swap/index.tsx:512
+msgid "Swap Wrapped"
+msgstr "Swap Wrapped"
+
+#: src/domain/quick-swap/index.tsx:249
+#~ msgid "Swapped {0} {1} for {2} {3}"
+#~ msgstr "Swapped {0} {1} for {2} {3}"
+
+#: src/domain/quick-swap/index.tsx:250
+#~ msgid "Swapped {0} to {1}"
+#~ msgstr "Swapped {0} to {1}"
+
+#: src/domain/quick-swap/index.tsx:346
+#~ msgid "Swapped {0} to {1} approved"
+#~ msgstr "Swapped {0} to {1} approved"
+
+#: src/components/PageRouterSwap/index.tsx:162
+msgid "Swapped {fromAmount} {fromToken} for {0} {toToken}"
+msgstr "Swapped {fromAmount} {fromToken} for {0} {toToken}"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:48
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:55
+msgid "Swaps"
+msgstr "Swaps"
+
+#: src/components/PageCreatePool/components/SwitchTokensButton.tsx:37
+msgid "Switch tokens"
+msgstr "Switch tokens"
+
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:67
+msgid "Symbol:"
+msgstr "Symbol:"
+
+#: src/hooks/useTokenAlert.tsx:39
+msgid "tBTC v1 is in sunset mode: Threshold Network is offering bonds to bring those deprecated v1 out of circulation. Lps in this pool can use those LP tokens to acquire our bonds in <0>https://app.bondprotocol.finance/#/market/1/115</0>"
+msgstr "tBTC v1 is in sunset mode: Threshold Network is offering bonds to bring those deprecated v1 out of circulation. Lps in this pool can use those LP tokens to acquire our bonds in <0>https://app.bondprotocol.finance/#/market/1/115</0>"
+
+#: src/components/layout/default/footer.tsx:52
+#~ msgid "Technical Docs"
+#~ msgstr "Technical Docs"
+
+#: src/layout/default/Footer.tsx:33
+msgid "Telegram"
+msgstr "Telegram"
+
+#: src/components/layout/default/footer.tsx:22
+#~ msgid "Telegram Announcements"
+#~ msgstr "Telegram Announcements"
+
+#: src/components/layout/default/footer.tsx:31
+#~ msgid "Telegram CN"
+#~ msgstr "Telegram CN"
+
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:59
+msgid "The address needs to be 42 characters long."
+msgstr "The address needs to be 42 characters long."
+
+#: src/components/PageDeployGauge/InfoBox.tsx:13
+msgid "The address that deploys a gauge is set as the gauge admin/manager."
+msgstr "The address that deploys a gauge is set as the gauge admin/manager."
+
+#: src/domain/create-pool/index.tsx:204
+#~ msgid "The Curve pool creation factory is not yet available on this network."
+#~ msgstr "The Curve pool creation factory is not yet available on this network."
+
+#: src/components/PagePool/Swap/index.tsx:478
+msgid "The entered amount exceeds the available currency reserves."
+msgstr "The entered amount exceeds the available currency reserves."
+
+#: src/components/PageIntegrations/Page.tsx:43
+msgid "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
+msgstr "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
+
+#: src/domain/create-pool/confirm-modal/index.tsx:209
+#~ msgid "The next step is depositing liquidity."
+#~ msgstr "The next step is depositing liquidity."
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:268
+msgid "The next step is to deploy a gauge."
+msgstr "The next step is to deploy a gauge."
+
+#: src/hooks/useTokenAlert.tsx:27
+msgid "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown."
+msgstr "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown."
+
+#: src/hooks/useTokenAlert.tsx:34
+#~ msgid "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown. This is out of our control, but we will do everything in our power to make sure the peg of Ren assets is maintained."
+#~ msgstr "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown. This is out of our control, but we will do everything in our power to make sure the peg of Ren assets is maintained."
+
+#: src/components/PageDashboard/components/FormClaimFees.tsx:68
+msgid "The rewards you claimed are viewable in 3pool."
+msgstr "The rewards you claimed are viewable in 3pool."
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:25
+msgid "The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)"
+msgstr "The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:90
+msgid "There was an error fetching the pool activity data."
+msgstr "There was an error fetching the pool activity data."
+
+#: src/components/PoolRewardsCrv.tsx:43
+msgid "This pool has CRV rewards that aren’t currently being distributed.<0/>This pool has a very small amount of rewards waiting to be distributed to it; but since the amount of rewards is very small, the bridge used to send these CRV tokens over is holding onto those tokens until they grow to an amount big enough to be bridged. If this pool continues receiving votes, the amount of tokens to be distributed will grow every Thursday, and eventually unlock and be distributed then."
+msgstr "This pool has CRV rewards that aren’t currently being distributed.<0/>This pool has a very small amount of rewards waiting to be distributed to it; but since the amount of rewards is very small, the bridge used to send these CRV tokens over is holding onto those tokens until they grow to an amount big enough to be bridged. If this pool continues receiving votes, the amount of tokens to be distributed will grow every Thursday, and eventually unlock and be distributed then."
+
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:219
+msgid "This pool has CRV rewards that aren’t streaming yet. Click ‘Claim CRV’ to resume reward streaming for you and everyone else!"
+msgstr "This pool has CRV rewards that aren’t streaming yet. Click ‘Claim CRV’ to resume reward streaming for you and everyone else!"
+
+#: src/domain/pool-list/components/table-cell-rewards.tsx:91
+#~ msgid "This pool has CRV rewards that aren’t streaming yet. Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
+#~ msgstr "This pool has CRV rewards that aren’t streaming yet. Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
+
+#: src/components/PoolRewardsCrv.tsx:28
+msgid "This pool has CRV rewards that aren’t streaming yet.<0/>Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
+msgstr "This pool has CRV rewards that aren’t streaming yet.<0/>Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
+
+#: src/components/PagePool/components/TransferActions.tsx:47
+msgid "This pool is still empty, it should be seeded with the following rate {0}"
+msgstr "This pool is still empty, it should be seeded with the following rate {0}"
+
+#: src/components/PagePool/components/TransferActions.tsx:48
+msgid "This pool is still empty. Assuming an exchange rate of 1:1, it should be seeded with {0}."
+msgstr "This pool is still empty. Assuming an exchange rate of 1:1, it should be seeded with {0}."
+
+#: src/domain/transfer/components/transfer-actions.tsx:49
+#~ msgid "This pool is still empty. It needs to be seeded with an initial deposit in order to enable swaps."
+#~ msgstr "This pool is still empty. It needs to be seeded with an initial deposit in order to enable swaps."
+
+#: src/components/PagePool/components/WarningModal.tsx:71
+msgid "This swap has a high price impact ({0}%) and low exchange rate ({1}%)."
+msgstr "This swap has a high price impact ({0}%) and low exchange rate ({1}%)."
+
+#: src/components/PagePool/components/WarningModal.tsx:69
+msgid "This swap has a high price impact ({0}%)."
+msgstr "This swap has a high price impact ({0}%)."
+
+#: src/components/PagePool/components/WarningModal.tsx:67
+msgid "This swap has a low exchange rate ({0}%)."
+msgstr "This swap has a low exchange rate ({0}%)."
+
+#: src/components/PageCreatePool/constants.ts:152
+msgid "Three Coin Volatile"
+msgstr "Three Coin Volatile"
+
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:72
+msgid "Time"
+msgstr "Time"
+
+#: src/components/PageDeployGauge/index.tsx:83
+msgid "Toggle between mainnet and sidechain gauge deployment"
+msgstr "Toggle between mainnet and sidechain gauge deployment"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:34
+msgid "Token"
+msgstr "Token"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:36
+#: src/components/PageCreatePool/TokensInPool/index.tsx:510
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:26
+msgid "Token A"
+msgstr "Token A"
+
+#: src/components/PageDashboard/index.tsx:60
+#: src/components/PagePoolList/Page.tsx:62
+msgid "Token APR based on current prices of tokens and reward rates"
+msgstr "Token APR based on current prices of tokens and reward rates"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:97
+msgid "Token APR based on current prices of tokens and reward rates."
+msgstr "Token APR based on current prices of tokens and reward rates."
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:39
+#: src/components/PageCreatePool/TokensInPool/index.tsx:529
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:29
+msgid "Token B"
+msgstr "Token B"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:42
+#: src/components/PageCreatePool/TokensInPool/index.tsx:550
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:53
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:32
+msgid "Token C"
+msgstr "Token C"
+
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:45
+#: src/components/PageCreatePool/TokensInPool/index.tsx:574
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:64
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:35
+msgid "Token D"
+msgstr "Token D"
+
+#: src/components/PageCreatePool/TokensInPool/index.tsx:589
+msgid ""
+"Tokens appear to be unpegged (>5% deviation from 1:1).\n"
+"Consider using Cryptoswap instead."
+msgstr ""
+"Tokens appear to be unpegged (>5% deviation from 1:1).\n"
+"Consider using Cryptoswap instead."
+
+#: src/domain/create-pool/tokens-in-pool/index.tsx:753
+#~ msgid "Tokens appear to be unpegged. Consider using Cryptoswap instead."
+#~ msgstr "Tokens appear to be unpegged. Consider using Cryptoswap instead."
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:149
+#~ msgid "Tokens Approval Failed"
+#~ msgstr "Tokens Approval Failed"
+
+#: src/components/PageCreatePool/components/Navigation.tsx:63
+msgid "TOKENS IN POOL"
+msgstr "TOKENS IN POOL"
+
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:58
+msgid "Tokens In Pool:"
+msgstr "Tokens In Pool:"
+
+#: src/components/PageDashboard/components/Summary.tsx:96
+msgid "Total Balances"
+msgstr "Total Balances"
+
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:32
+msgid "Total Daily Profits"
+msgstr "Total Daily Profits"
+
+#: src/layout/default/HeaderMobile.tsx:207
+#: src/layout/default/HeaderSecondary.tsx:50
+msgid "Total Deposits"
+msgstr "Total Deposits"
+
+#: src/components/PageDashboard/components/Summary.tsx:165
+msgid "Total Summary"
+msgstr "Total Summary"
+
+#: src/domain/user-dashboard/summary.tsx:189
+#~ msgid "Total veCRV"
+#~ msgstr "Total veCRV"
+
+#: src/components/PageRouterSwap/components/DetailInfoTradeRoute.tsx:31
+msgid "Trade routed through:"
+msgstr "Trade routed through:"
+
+#: src/domain/user-dashboard/components/form-claim-lp-rewards.tsx:98
+#~ msgid "trading fees distributed to CRV lockers"
+#~ msgstr "trading fees distributed to CRV lockers"
+
+#: src/components/PageDashboard/components/FormClaimFees.tsx:93
+msgid "Trading fees distributed to CRV lockers"
+msgstr "Trading fees distributed to CRV lockers"
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:43
+#: src/components/PageDeployGauge/ProcessSummary.tsx:64
+msgid "Transaction:"
+msgstr "Transaction:"
+
+#: src/components/PageCreatePool/constants.ts:136
+#: src/components/PagePoolList/index.tsx:108
+msgid "Tricrypto"
+msgstr "Tricrypto"
+
+#: src/components/PagePoolList/Page.tsx:69
+msgid "TVL"
+msgstr "TVL"
+
+#: src/layout/default/Footer.tsx:30
+#~ msgid "Twitter"
+#~ msgstr "Twitter"
+
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:122
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:165
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:227
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:262
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:301
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:351
+msgid "Tx: {0} created"
+msgstr "Tx: {0} created"
+
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:64
+msgid "Tx: Gauge deployed"
+msgstr "Tx: Gauge deployed"
+
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:148
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:184
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:220
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:256
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:294
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:328
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:362
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:396
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:434
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:467
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:500
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:533
+msgid "Tx: Gauge for {0} deployed"
+msgstr "Tx: Gauge for {0} deployed"
+
+#: src/domain/pool-list/index.tsx:90
+#~ msgid "Type"
+#~ msgstr "Type"
+
+#: src/components/PageCreatePool/SelectTokenModal/ComboBox.tsx:97
+msgid "Type the full token address to add a new token"
+msgstr "Type the full token address to add a new token"
+
+#: src/components/AlertFormError.tsx:58
+msgid "Unable to approve spending"
+msgstr "Unable to approve spending"
+
+#: src/domain/alert-form-error.tsx:36
+#~ msgid "Unable to approve spending."
+#~ msgstr "Unable to approve spending."
+
+#: src/components/AlertFormError.tsx:75
+msgid "Unable to claim"
+msgstr "Unable to claim"
+
+#: src/components/AlertFormError.tsx:78
+msgid "Unable to claim veCRV 3pool LP"
+msgstr "Unable to claim veCRV 3pool LP"
+
+#: src/store/createGlobalSlice.ts:173
+#~ msgid "Unable to connect to curvejs"
+#~ msgstr "Unable to connect to curvejs"
+
+#: src/domain/layout/default/index.tsx:72
+#~ msgid "Unable to connect to Keeper Wallet. Please install at"
+#~ msgstr "Unable to connect to Keeper Wallet. Please install at"
+
+#: src/domain/crv-locker/form-lock-create/index.tsx:272
+#~ msgid "Unable to create lock"
+#~ msgstr "Unable to create lock"
+
+#: src/components/AlertFormError.tsx:82
+msgid "Unable to create locked CRV"
+msgstr "Unable to create locked CRV"
+
+#: src/components/AlertFormError.tsx:66
+msgid "Unable to deposit"
+msgstr "Unable to deposit"
+
+#: src/domain/quick-swap/index.tsx:192
+#~ msgid "Unable to estimate gas"
+#~ msgstr "Unable to estimate gas"
+
+#: src/components/AlertFormError.tsx:57
+msgid "Unable to find provider"
+msgstr "Unable to find provider"
+
+#: src/domain/alert-form-error.tsx:35
+#~ msgid "Unable to find provider."
+#~ msgstr "Unable to find provider."
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:155
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:153
+#: src/domain/transfer/deposit/form-stake/index.tsx:75
+#~ msgid "Unable to get approval"
+#~ msgstr "Unable to get approval"
+
+#: src/components/AlertFormError.tsx:56
+msgid "Unable to get approval or estimated gas"
+msgstr "Unable to get approval or estimated gas"
+
+#: src/domain/alert-form-error.tsx:34
+#~ msgid "Unable to get approval or estimated gas."
+#~ msgstr "Unable to get approval or estimated gas."
+
+#: src/components/AlertFormError.tsx:69
+msgid "Unable to get balanced amounts"
+msgstr "Unable to get balanced amounts"
+
+#: src/domain/quick-swap/index.tsx:595
+#~ msgid "Unable to get best rate data"
+#~ msgstr "Unable to get best rate data"
+
+#: src/components/AlertFormError.tsx:67
+msgid "Unable to get bonus"
+msgstr "Unable to get bonus"
+
+#: src/components/AlertFormError.tsx:60
+msgid "Unable to get bonus or expected"
+msgstr "Unable to get bonus or expected"
+
+#: src/domain/user-dashboard/index.tsx:102
+#~ msgid "Unable to get claimable amount"
+#~ msgstr "Unable to get claimable amount"
+
+#: src/components/AlertFormError.tsx:72
+msgid "Unable to get claimable amounts"
+msgstr "Unable to get claimable amounts"
+
+#: src/domain/transfer/withdraw/form-claim/index.tsx:86
+#~ msgid "Unable to get claimable rewards info."
+#~ msgstr "Unable to get claimable rewards info."
+
+#: src/components/AlertFormError.tsx:62
+msgid "Unable to get dashboard data"
+msgstr "Unable to get dashboard data"
+
+#: src/domain/transfer/withdraw/form-unstake/index.tsx:207
+#~ msgid "Unable to get estimated gas value."
+#~ msgstr "Unable to get estimated gas value."
+
+#: src/components/AlertFormError.tsx:51
+msgid "Unable to get exchange rates and swap amount"
+msgstr "Unable to get exchange rates and swap amount"
+
+#: src/domain/alert-form-error.tsx:30
+#~ msgid "Unable to get exchange rates and swap amount."
+#~ msgstr "Unable to get exchange rates and swap amount."
+
+#: src/components/AlertFormError.tsx:59
+msgid "Unable to get expected"
+msgstr "Unable to get expected"
+
+#: src/domain/transfer/withdraw/form-withdraw/index.tsx:869
+#~ msgid "Unable to get expected withdraw amount"
+#~ msgstr "Unable to get expected withdraw amount"
+
+#: src/components/AlertFormError.tsx:63
+msgid "Unable to get gas price"
+msgstr "Unable to get gas price"
+
+#: src/components/AlertFormError.tsx:81
+msgid "Unable to get locked CRV info"
+msgstr "Unable to get locked CRV info"
+
+#: src/components/AlertFormError.tsx:61
+#: src/components/PageDashboard/index.tsx:159
+msgid "Unable to get pool list"
+msgstr "Unable to get pool list"
+
+#: src/store/createDashboardSlice.ts:279
+#: src/store/createUserSlice.ts:104
+#~ msgid "Unable to get pools"
+#~ msgstr "Unable to get pools"
+
+#: src/domain/transfer/withdraw/form-claim/index.tsx:122
+#~ msgid "Unable to get rewards"
+#~ msgstr "Unable to get rewards"
+
+#: src/components/PagePool/index.tsx:151
+msgid "Unable to get seed initial rate"
+msgstr "Unable to get seed initial rate"
+
+#: src/domain/transfer/deposit/form-deposit/index.tsx:191
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:189
+#~ msgid "Unable to get slippage"
+#~ msgstr "Unable to get slippage"
+
+#: src/components/DetailInfoEstGas.tsx:98
+msgid "Unable to get USD rate"
+msgstr "Unable to get USD rate"
+
+#: src/components/PagePool/components/TransferActions.tsx:58
+msgid "Unable to get wallet balances"
+msgstr "Unable to get wallet balances"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:197
+#~ msgid "Unable to increase lock"
+#~ msgstr "Unable to increase lock"
+
+#: src/domain/crv-locker/form-lock-crv/index.tsx:182
+#~ msgid "Unable to increase lock CRV"
+#~ msgstr "Unable to increase lock CRV"
+
+#: src/components/AlertFormError.tsx:83
+msgid "Unable to lock crv"
+msgstr "Unable to lock crv"
+
+#: src/components/AlertFormError.tsx:84
+msgid "Unable to lock date"
+msgstr "Unable to lock date"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:86
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:90
+#~ msgid "Unable to process transaction."
+#~ msgstr "Unable to process transaction."
+
+#: src/components/AlertFormError.tsx:68
+msgid "Unable to stake"
+msgstr "Unable to stake"
+
+#: src/domain/transfer/deposit/form-stake/index.tsx:204
+#~ msgid "Unable to stake LP Tokens"
+#~ msgstr "Unable to stake LP Tokens"
+
+#: src/components/AlertFormError.tsx:52
+msgid "Unable to swap"
+msgstr "Unable to swap"
+
+#: src/domain/alert-form-error.tsx:31
+#~ msgid "Unable to swap."
+#~ msgstr "Unable to swap."
+
+#: src/components/AlertFormError.tsx:74
+msgid "Unable to unstake"
+msgstr "Unable to unstake"
+
+#: src/domain/transfer/withdraw/form-unstake/index.tsx:155
+#~ msgid "Unable to Unstake from {0}"
+#~ msgstr "Unable to Unstake from {0}"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:174
+#~ msgid "Unable to update unlock date"
+#~ msgstr "Unable to update unlock date"
+
+#: src/components/AlertFormError.tsx:73
+msgid "Unable to withdraw"
+msgstr "Unable to withdraw"
+
+#: src/components/AlertFormError.tsx:85
+msgid "Unable to withdraw locked CRV"
+msgstr "Unable to withdraw locked CRV"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:147
+#~ msgid "Unlock created"
+#~ msgstr "Unlock created"
+
+#: src/domain/crv-locker/index.tsx:50
+#~ msgid "Unlock date"
+#~ msgstr "Unlock date"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:204
+#~ msgid "Unlock Date Updated"
+#~ msgstr "Unlock Date Updated"
+
+#: src/domain/crv-locker/components/detail-info-calculated-unlock-date.tsx:28
+#~ msgid "Unlock date:"
+#~ msgstr "Unlock date:"
+
+#: src/components/PagePool/Withdraw/components/FormUnstake.tsx:82
+#: src/components/PagePool/Withdraw/index.tsx:32
+msgid "Unstake"
+msgstr "Unstake"
+
+#: src/components/PagePool/Withdraw/components/FormUnstake.tsx:82
+msgid "Unstake Complete"
+msgstr "Unstake Complete"
+
+#: src/components/PagePool/Withdraw/components/FormUnstake.tsx:56
+msgid "Unstaked {0} LP Tokens"
+msgstr "Unstaked {0} LP Tokens"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:128
+#~ msgid "Unstaked {lpTokenPayload} LP Tokens"
+#~ msgstr "Unstaked {lpTokenPayload} LP Tokens"
+
+#: src/components/PagePool/UserDetails/index.tsx:107
+msgid "Unstaked:"
+msgstr "Unstaked:"
+
+#: src/domain/transfer/withdraw/form-unstake/withdraw-actions.tsx:116
+#~ msgid "Unstaking"
+#~ msgstr "Unstaking"
+
+#: src/components/PageCreatePool/Parameters/index.tsx:257
+msgid "Update Quote"
+msgstr "Update Quote"
+
+#: src/domain/crv-locker/form-unlock-time/index.tsx:204
+#~ msgid "Update Unlock Date"
+#~ msgstr "Update Unlock Date"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:304
+msgid "Upload an icon for a new token"
+msgstr "Upload an icon for a new token"
+
+#: src/components/PagePool/UserDetails/index.tsx:174
+msgid "USD balance"
+msgstr "USD balance"
+
+#: src/components/PageDashboard/index.tsx:68
+msgid "USD Profits"
+msgstr "USD Profits"
+
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:60
+msgid "USD total"
+msgstr "USD total"
+
+#: src/components/PageDashboard/components/SummaryClaimable.tsx:59
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:65
+msgid "USD Total"
+msgstr "USD Total"
+
+#: src/domain/transfer/pool-stats/currency-reserves.tsx:121
+#~ msgid "USD total balance updates every ~1 minute"
+#~ msgstr "USD total balance updates every ~1 minute"
+
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:64
+msgid "USD total balance updates every ~5 minute"
+msgstr "USD total balance updates every ~5 minute"
+
+#: src/components/AlertFormError.tsx:55
+msgid "User rejected action"
+msgstr "User rejected action"
+
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:79
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:16
+msgid "V2 pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools."
+msgstr "V2 pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools."
+
+#: src/components/PageDashboard/components/TableHead.tsx:85
+#: src/components/PagePoolList/components/TableHead.tsx:91
+#: src/components/PagePoolList/components/TableHead.tsx:113
+msgid "Variable APY based on today's trading activity"
+msgstr "Variable APY based on today's trading activity"
+
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:49
+msgid "Variable APY based on today's trading activity."
+msgstr "Variable APY based on today's trading activity."
+
+#: src/domain/user-dashboard/summary.tsx:215
+#~ msgid "veCRV rewards"
+#~ msgstr "veCRV rewards"
+
+#: src/domain/user-dashboard/summary.tsx:215
+#~ msgid "veCRV rewards:"
+#~ msgstr "veCRV rewards:"
+
+#: src/components/PageDashboard/components/FormClaimFees.tsx:89
+msgid "veCRV rewards: <0>{0}</0> 3CRV"
+msgstr "veCRV rewards: <0>{0}</0> 3CRV"
+
+#: src/domain/user-dashboard/components/form-claim-lp-rewards.tsx:95
+#~ msgid "veCRV rewards: <0>{claimFeesAmount}</0> 3CRV"
+#~ msgstr "veCRV rewards: <0>{claimFeesAmount}</0> 3CRV"
+
+#: src/components/layout/dao/index.tsx:107
+#~ msgid "Vesting"
+#~ msgstr "Vesting"
+
+#: src/components/PageDashboard/components/Summary.tsx:128
+msgid "View address"
+msgstr "View address"
+
+#: src/components/PagePoolList/index.tsx:270
+msgid "view all pools."
+msgstr "view all pools."
+
+#: src/domain/transfer/pool-stats/pool-parameters.tsx:66
+#~ msgid "Virtual price"
+#~ msgstr "Virtual price"
+
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:103
+msgid "Virtual price:"
+msgstr "Virtual price:"
+
+#: src/domain/layout/default/header-secondary.tsx:57
+#~ msgid "Visit"
+#~ msgstr "Visit"
+
+#: src/domain/layout/default/header-mobile.tsx:129
+#~ msgid "Visit Classic UI"
+#~ msgstr "Visit Classic UI"
+
+#: src/domain/layout/default/header-mobile.tsx:130
+#~ msgid "Visit crvUSD"
+#~ msgstr "Visit crvUSD"
+
+#: src/components/layout/default/header-mobile.tsx:129
+#: src/components/layout/default/header-secondary.tsx:56
+#~ msgid "Visit old UI"
+#~ msgstr "Visit old UI"
+
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:295
+msgid "Visit the new pool to deposit liquidity."
+msgstr "Visit the new pool to deposit liquidity."
+
+#: src/components/PageDeployGauge/ProcessSummary.tsx:76
+msgid "Visit the pool"
+msgstr "Visit the pool"
+
+#: src/components/PagePoolList/Page.tsx:70
+msgid "Volume"
+msgstr "Volume"
+
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:144
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:145
+#: src/components/PagePool/Swap/index.tsx:193
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:159
+#: src/components/PageRouterSwap/index.tsx:221
+msgid "Warning!"
+msgstr "Warning!"
+
+#: src/components/PageRouterSwap/index.tsx:500
+msgid "Warning! Due to slippage, the expected amount you would like to receive ({0}) will actually be {1}"
+msgstr "Warning! Due to slippage, the expected amount you would like to receive ({0}) will actually be {1}"
+
+#: src/components/AlertFormWarning.tsx:22
+msgid "Warning! Exchange rate is too low!"
+msgstr "Warning! Exchange rate is too low!"
+
+#: src/components/PageRouterSwap/index.tsx:496
+msgid "Warning! The exchange rate is too low, and due to slippage, the expected amount you would like to receive ({0}) will actually be {1}."
+msgstr "Warning! The exchange rate is too low, and due to slippage, the expected amount you would like to receive ({0}) will actually be {1}."
+
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:34
+msgid "Weekly"
+msgstr "Weekly"
+
+#: src/layout/default/Footer.tsx:97
+msgid "Whitepaper"
+msgstr "Whitepaper"
+
+#: src/layout/default/Footer.tsx:68
+msgid "Wiki CN"
+msgstr "Wiki CN"
+
+#: src/components/AlertSlippage.tsx:24
+msgid "With your current slippage tolerance setting ({maxSlippage}%), the expected output displayed above might incur up to <0>${0} worth of slippage</0> (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above."
+msgstr "With your current slippage tolerance setting ({maxSlippage}%), the expected output displayed above might incur up to <0>${0} worth of slippage</0> (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above."
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:155
+#: src/components/PagePool/Withdraw/index.tsx:31
+#: src/components/PagePoolList/components/TableRowMobile.tsx:168
+msgid "Withdraw"
+msgstr "Withdraw"
+
+#: src/components/PagePool/index.tsx:190
+msgid "Withdraw Claim"
+msgstr "Withdraw Claim"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:72
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:155
+msgid "Withdraw Complete"
+msgstr "Withdraw Complete"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:100
+#: src/components/PageDashboard/components/FormVecrv.tsx:164
+msgid "Withdraw CRV"
+msgstr "Withdraw CRV"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:100
+msgid "Withdraw CRV Complete"
+msgstr "Withdraw CRV Complete"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:243
+#: src/domain/user-dashboard/form-vecrv/index.tsx:102
+#~ msgid "Withdraw Failed"
+#~ msgstr "Withdraw Failed"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:146
+#~ msgid "Withdraw Liquidity Approval Failed"
+#~ msgstr "Withdraw Liquidity Approval Failed"
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:459
+msgid "Withdraw Wrapped"
+msgstr "Withdraw Wrapped"
+
+#: src/domain/transfer/index.tsx:126
+#~ msgid "Withdraw/ Claim"
+#~ msgstr "Withdraw/ Claim"
+
+#: src/components/PagePool/index.tsx:190
+msgid "Withdraw/Claim"
+msgstr "Withdraw/Claim"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:190
+#~ msgid "Withdrawing"
+#~ msgstr "Withdrawing"
+
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:110
+msgid "Withdrew {0} LP Tokens for {tokenText}"
+msgstr "Withdrew {0} LP Tokens for {tokenText}"
+
+#: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:221
+#~ msgid "Withdrew {lpTokenPayload} LP Tokens, received {0}"
+#~ msgstr "Withdrew {lpTokenPayload} LP Tokens, received {0}"
+
+#: src/domain/user-dashboard/form-vecrv/index.tsx:86
+#~ msgid "Withdrew CRV"
+#~ msgstr "Withdrew CRV"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:178
+msgid "Xcp Profit A:"
+msgstr "Xcp Profit A:"
+
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:172
+msgid "Xcp Profit:"
+msgstr "Xcp Profit:"
+
+#: src/domain/create-pool/confirm-modal/index.tsx:319
+#: src/domain/create-pool/summary/index.tsx:147
+#~ msgid "Yes"
+#~ msgstr "Yes"
+
+#: src/components/PagePoolList/components/TableCellInPool.tsx:9
+msgid "You have a balance in this pool"
+msgstr "You have a balance in this pool"
+
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:215
+msgid "You have reached the maximum locked date."
+msgstr "You have reached the maximum locked date."
+
+#: src/components/PagePool/UserDetails/index.tsx:79
+msgid "your boost"
+msgstr "your boost"
+
+#: src/components/PagePool/UserDetails/index.tsx:114
+#: src/components/PagePool/UserDetails/index.tsx:119
+msgid "Your CRV Rewards tAPR:"
+msgstr "Your CRV Rewards tAPR:"
+
+#: src/components/PagePool/index.tsx:105
+#: src/components/PagePool/index.tsx:110
+msgid "Your Details"
+msgstr "Your Details"
+
+#: src/components/PageDashboard/components/FormVecrv.tsx:142
+msgid "Your lock has expired, claim your <0>{lockedAmountDisplay}</0> CRV"
+msgstr "Your lock has expired, claim your <0>{lockedAmountDisplay}</0> CRV"
+
+#: src/components/PagePool/UserDetails/index.tsx:95
+msgid "Your position"
+msgstr "Your position"

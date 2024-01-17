@@ -1,0 +1,37 @@
+{
+  "$schema": "https://turborepo.org/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["out/**", ".next/**", "!.next/cache/**"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  },
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
+  "globalEnv": [
+    "NEXT_PUBLIC_MAINTENANCE_MESSAGE",
+    "NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL",
+    "NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL",
+    "NEXT_PUBLIC_GNOSIS_DEV_RPC_URL",
+    "NEXT_PUBLIC_MOONBEAM_DEV_RPC_URL",
+    "NEXT_PUBLIC_POLYGON_DEV_RPC_URL",
+    "NEXT_PUBLIC_KAVA_DEV_RPC_URL",
+    "NEXT_PUBLIC_FANTOM_DEV_RPC_URL",
+    "NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL",
+    "NEXT_PUBLIC_AVALANCHE_DEV_RPC_URL",
+    "NEXT_PUBLIC_CELO_DEV_RPC_URL",
+    "NEXT_PUBLIC_AURORA_DEV_RPC_URL",
+    "NEXT_PUBLIC_ZKSYNC_DEV_RPC_URL",
+    "NEXT_PUBLIC_BASE_DEV_RPC_URL",
+    "NEXT_PUBLIC_BSC_DEV_RPC_URL",
+    "NEXT_PUBLIC_LLAMARPC_API_KEY",
+    "ANALYZE",
+    "NODE_ENV"
+  ]
+}

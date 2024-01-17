@@ -1,0 +1,67 @@
+:root {
+  /* Spacing */
+  --spacing-narrow: 0.75rem;
+  --spacing-normal: 1.25rem;
+  --spacing-wide: 2.25rem;
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 1rem;
+  --spacing-4: 2rem;
+  --spacing-5: 4rem;
+  --spacing-6: 8rem;
+  --spacing-7: 16rem;
+  --spacing-8: 32rem;
+
+  --height-small: 1.9219rem;
+  --height-medium: 2.2813rem;
+  --height-large: 2.75rem;
+  --height-x-large: 3.4375rem;
+  --box_header--height: 3.5rem;
+
+  /* Fixed layout */
+  --width: 79.5rem;
+  --width-wide: 120rem;
+  /* 87.5rem; */
+
+  /* Swap, Deposit, Withdraw */
+  --transfer-min-width: 23.3125rem;
+
+  /* DAO layout */
+  --dao-sidebar-width: 15rem;
+
+  /* Header */
+  --header-height: 78px;
+  --top-nav-height: 43px;
+  --top-nav-bottom: 44px;
+
+  /* Footer */
+  --footer-height: 325px;
+
+  /* header + footer height */
+  --header-footer-height: 347px;
+
+  /* Hero */
+  --hero-height: 21.25rem;
+
+  /* Create Pool Nav Footer Height */
+  --footer-create-pool-height: 58px;
+
+  /* z-index */
+  --account-center-z-index: 999; /* blocknative notify */
+  --onboard-modal-z-index: 88; /* blocknative connect wallet modal */
+  --z-index-select-dropdown: 999;
+  --z-index-modal: 101;
+  --z-index-chip: 89;
+  --z-index-icon-tooltip: 89;
+  --z-index-overlay: 89;
+  --z-index-page-settings: 98;
+  --z-index-page--top-nav: 88;
+  --z-index-page-nav: 87;
+  --z-index-main-content-scrolled: 86;
+  --z-index-page-nav-scrolled: 85;
+  --z-index-page-mobile-nav: 1;
+  --z-index-stepper: 1;
+  --z-index-tab: 1;
+  --z-index-tooltip: 1;
+}

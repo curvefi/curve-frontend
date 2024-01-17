@@ -1,0 +1,816 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type {
+  PricesApiPool,
+  PricesApiPoolResponse,
+  TimeOptions,
+  LpPriceApiResponse,
+  LpPriceOhlcData,
+  LpTradesApiResponse,
+  LpTradesData,
+  LpLiquidityEventsApiResponse,
+  FetchingStatus,
+  PricesApiCoin,
+  LpPriceOhlcDataFormatted,
+  LpLiquidityEventsData,
+} from '@/ui/Chart/types'
+import type { UTCTimestamp } from 'lightweight-charts'
+
+import { BigNumber } from 'bignumber.js'
+import { PromisePool } from '@supercharge/promise-pool'
+import countBy from 'lodash/countBy'
+import produce from 'immer'
+import cloneDeep from 'lodash/cloneDeep'
+import chunk from 'lodash/chunk'
+import groupBy from 'lodash/groupBy'
+import isNaN from 'lodash/isNaN'
+import pick from 'lodash/pick'
+
+import { INVALID_ADDRESS } from '@/constants'
+import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl, log } from '@/utils'
+import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import networks from '@/networks'
+
+type StateKey = keyof typeof DEFAULT_STATE
+
+type SliceState = {
+  pools: { [chainId: string]: PoolData[] }
+  poolsMapper: { [chainId: string]: PoolDataMapper }
+  poolsLoading: { [chainId: string]: boolean }
+  currencyReserves: CurrencyReservesMapper
+  haveAllPools: { [chainId: string]: boolean }
+  rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
+  tvlMapper: { [chainId: string]: TvlMapper }
+  tvlTotal: number | null
+  volumeMapper: { [chainId: string]: VolumeMapper }
+  volumeTotal: number | null
+  volumeCryptoShare: number | null
+  pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
+  snapshotsMapper: SnapshotsMapper
+  pricesApiState: {
+    chartOhlcData: LpPriceOhlcDataFormatted[]
+    tradeEventsData: LpTradesData[]
+    liquidityEventsData: LpLiquidityEventsData[]
+    timeOption: TimeOptions
+    selectedChartIndex: number
+    chartExpanded: boolean
+    activityHidden: boolean
+    chartStatus: FetchingStatus
+    activityStatus: FetchingStatus
+  }
+  error: string
+}
+
+const sliceKey = 'pools'
+
+// prettier-ignore
+export type PoolsSlice = {
+  [sliceKey]: SliceState & {
+    fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
+    fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
+    fetchPools( curve: CurveApi, poolIds: string[], failedFetching24hOldVprice: { [poolAddress:string]: boolean } | null): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
+    fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
+    fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
+    fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
+    fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
+    fetchTotalVolumeAndTvl(curve: CurveApi): Promise<void>
+    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): ({ tokens: string[], tokenAddresses: string[]})
+    updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
+    fetchPricesApiPools: (chainId: ChainId) => Promise<void>
+    fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
+    fetchPricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
+    fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
+    setChartTimeOption: (timeOption: TimeOptions) => void
+    setChartSelectedIndex: (index: number) => void
+    setChartExpanded: (expanded: boolean) => void
+    setActivityHidden: (hidden: boolean) => void
+
+    setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
+    setStateByKey<T>(key: StateKey, value: T): void
+    setStateByKeys(SliceState: Partial<SliceState>): void
+    resetState(): void
+  }
+}
+
+const DEFAULT_STATE: SliceState = {
+  pools: {},
+  poolsMapper: {},
+  poolsLoading: {},
+  haveAllPools: {},
+  currencyReserves: {},
+  rewardsApyMapper: {},
+  tvlMapper: {},
+  tvlTotal: null,
+  volumeMapper: {},
+  volumeTotal: null,
+  volumeCryptoShare: null,
+  pricesApiPoolsMapper: {},
+  snapshotsMapper: {},
+  pricesApiState: {
+    chartOhlcData: [],
+    tradeEventsData: [],
+    liquidityEventsData: [],
+    timeOption: '1d',
+    selectedChartIndex: 0,
+    chartExpanded: false,
+    activityHidden: false,
+    chartStatus: 'LOADING',
+    activityStatus: 'LOADING',
+  },
+  error: '',
+}
+
+const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlice => ({
+  [sliceKey]: {
+    ...DEFAULT_STATE,
+
+    fetchPoolsTvl: async (curve, poolDatas) => {
+      log('fetchPoolsTvl', curve.chainId, poolDatas.length)
+      const chainId = curve.chainId
+
+      const { results } = await PromisePool.for(poolDatas)
+        .withConcurrency(10)
+        .process(async (poolData) => {
+          return await networks[chainId].api.pool.getTvl(poolData.pool, chainId)
+        })
+
+      const tvlMapper = cloneDeep(get()[sliceKey].tvlMapper[chainId] ?? {})
+      for (const idx in results) {
+        const r = results[idx]
+        tvlMapper[r.poolId] = r
+      }
+      get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
+
+      //  update cache
+      get().storeCache.setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
+    },
+    fetchPoolsVolume: async (chainId, poolDatas) => {
+      log('fetchPoolsVolume', chainId, poolDatas.length)
+
+      const { results } = await PromisePool.for(poolDatas)
+        .withConcurrency(10)
+        .process(async (poolData) => {
+          return await networks[chainId].api.pool.getVolume(poolData.pool)
+        })
+
+      // update volumeMapper
+      let volumeMapper: VolumeMapper = cloneDeep(get()[sliceKey].volumeMapper[chainId] ?? {})
+      for (const idx in results) {
+        const r = results[idx]
+        volumeMapper[r.poolId] = r
+      }
+      get()[sliceKey].setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
+
+      //  update cache
+      get().storeCache.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
+    },
+    fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
+      const chainId = curve.chainId
+
+      try {
+        set(
+          produce((state: State) => {
+            state.pools.error = ''
+            state.pools.poolsLoading[chainId] = true
+          })
+        )
+
+        const currentPoolsMapper = get()[sliceKey].poolsMapper[chainId] ?? {}
+        const currentPoolsMapperCached = get().storeCache.poolsMapper[chainId] ?? {}
+        const { poolsMapper, poolsMapperCache } = getPools(
+          curve,
+          poolIds,
+          currentPoolsMapper,
+          currentPoolsMapperCached,
+          failedFetching24hOldVprice
+        )
+
+        const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
+        const showHideSmallPools = networks[curve.chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
+        const tokensNameMapper = parsedTokensNameMapper(poolDatas)
+
+        set(
+          produce((state: State) => {
+            state.pools.pools[chainId] = filterCustomPools(poolDatas, chainId)
+            state.pools.poolsMapper[chainId] = poolsMapper
+            state.poolList.showHideSmallPools = showHideSmallPools
+            state.tokens.tokensNameMapper[chainId] = tokensNameMapper
+            state.pools.haveAllPools[chainId] = true
+            state.pools.poolsLoading[chainId] = false
+          })
+        )
+
+        // update cache
+        get().storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), cloneDeep(poolsMapperCache))
+        get().storeCache.setStateByActiveKey('tokensNameMapper', chainId.toString(), cloneDeep(tokensNameMapper))
+
+        const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
+
+        // fetch tvls and volumes
+        await Promise.all([
+          get().pools.fetchPoolsVolume(chainId, partialPoolDatas),
+          get().pools.fetchPoolsTvl(curve, partialPoolDatas),
+        ])
+        const partialTokens = await get().tokens.setTokensMapper(chainId, partialPoolDatas)
+
+        if (curve.signerAddress) {
+          get().userBalances.fetchUserBalancesByTokens(curve, partialTokens)
+        }
+
+        return { poolsMapper, poolDatas: partialPoolDatas }
+      } catch (error) {
+        console.error(error)
+
+        set(
+          produce((state: State) => {
+            state.pools.error = 'Unable to load pool list, please refresh or try again later.'
+            state.pools.poolsLoading[chainId] = false
+          })
+        )
+      }
+    },
+    fetchNewPool: async (curve, poolId) => {
+      await Promise.allSettled([
+        curve.factory.fetchNewPools(),
+        curve.cryptoFactory.fetchNewPools(),
+        curve.tricryptoFactory.fetchNewPools(),
+        curve.stableNgFactory.fetchNewPools(),
+      ])
+      const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
+      return resp?.poolsMapper?.[poolId]
+    },
+    fetchPoolCurrenciesReserves: async (curve, poolData) => {
+      const { chainId } = curve
+      const { pool, isWrapped, tokens, tokenAddresses } = poolData
+
+      const [balancesResp, usdRatesMapper] = await Promise.all([
+        networks[chainId].api.pool.poolBalances(pool, isWrapped),
+        get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses),
+      ])
+
+      const { balances } = balancesResp
+      const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
+      let crTokens: CurrencyReservesToken[] = []
+      let total = new BigNumber(0)
+      let totalUsd = new BigNumber(0)
+
+      for (const idx in tokenAddresses) {
+        const tokenAddress = tokenAddresses[idx]
+        const usdRate = usdRatesMapper[tokenAddress] ?? 0
+        const usdRateError = isNaN(usdRate)
+        const balance = balances[idx]
+        const balanceUsd =
+          !isEmpty && +usdRate > 0 && !usdRateError ? new BigNumber(balance).multipliedBy(usdRate).toString() : '0'
+
+        total = total.plus(balance)
+        totalUsd = totalUsd.plus(balanceUsd)
+        const crToken: CurrencyReservesToken = {
+          token: tokens[idx],
+          tokenAddress,
+          balance,
+          balanceUsd,
+          usdRate,
+          percentShareInPool: '',
+        }
+        crTokens.push(crToken)
+      }
+
+      // update percentShareInPool
+      crTokens.map((cr: CurrencyReservesToken) => {
+        if (isEmpty) {
+          cr.percentShareInPool = '0'
+        } else if (poolData.pool.isCrypto && isNaN(cr.usdRate)) {
+          cr.percentShareInPool = 'NaN'
+        } else if (poolData.pool.isCrypto) {
+          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
+        } else {
+          cr.percentShareInPool = new BigNumber(cr.balance).dividedBy(total).multipliedBy(100).toFixed(2)
+        }
+        return cr
+      })
+
+      const result: CurrencyReserves = {
+        poolId: pool.id,
+        tokens: crTokens,
+        total: total.toString(),
+        totalUsd: totalUsd.toString(),
+      }
+
+      get()[sliceKey].setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
+    },
+    fetchPoolsChunkRewardsApy: async (chainId, poolDatas) => {
+      const { results } = await PromisePool.for(poolDatas).process(
+        async (poolData: PoolData) => await networks[chainId].api.pool.poolAllRewardsApy(chainId, poolData.pool)
+      )
+      // create mapper
+      const rewardsApyMapper: RewardsApyMapper = cloneDeep(get()[sliceKey].rewardsApyMapper[chainId] ?? {})
+      for (const idx in results) {
+        const rewardsApy = results[idx]
+        rewardsApyMapper[rewardsApy.poolId] = rewardsApy
+      }
+      get()[sliceKey].setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
+      return rewardsApyMapper
+    },
+    fetchPoolsRewardsApy: async (chainId, poolDatas) => {
+      log('fetchPoolsRewardsApy', chainId, poolDatas.length)
+
+      let chunks = [poolDatas]
+      let currenChunk = 0
+
+      if (poolDatas.length > 200) {
+        chunks = chunk(poolDatas, 200)
+      }
+
+      while (currenChunk < chunks.length) {
+        const chunkResult = await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currenChunk])
+        currenChunk++
+
+        // set result to cache once complete
+        if (typeof chunks[currenChunk] === 'undefined') {
+          get().storeCache.setStateByActiveKey('rewardsApyMapper', chainId.toString(), chunkResult)
+        }
+      }
+    },
+    fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
+      const rewardsApyMapper = get().pools.rewardsApyMapper[chainId] ?? {}
+      const missingRewardsApyList = []
+      for (const idx in poolDatas) {
+        const poolData = poolDatas[idx]
+        if (!rewardsApyMapper[poolData.pool.id]) {
+          missingRewardsApyList.push(poolData)
+        }
+      }
+
+      if (missingRewardsApyList.length > 0) {
+        log('fetchMissingPoolsRewardsApy', chainId, missingRewardsApyList.length)
+        get().pools.fetchPoolsRewardsApy(chainId, missingRewardsApyList)
+      }
+    },
+    fetchPoolStats: async (curve, poolData) => {
+      log('fetchPoolStats', curve.chainId, poolData.pool.id)
+      const chainId = curve.chainId
+      const pool = poolData.pool
+
+      try {
+        const [, , volume, { parameters }] = await Promise.all([
+          get().pools.fetchPoolCurrenciesReserves(curve, poolData),
+          get().pools.fetchPoolsRewardsApy(chainId, [poolData]),
+          networks[chainId].api.pool.getVolume(pool),
+          networks[chainId].api.pool.poolParameters(pool),
+        ])
+
+        set(
+          produce((state: State) => {
+            state.pools.poolsMapper[chainId][pool.id].parameters = parameters
+            state.pools.volumeMapper[chainId][pool.id] = volume
+          })
+        )
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    fetchTotalVolumeAndTvl: async (curve) => {
+      log('fetchTotalVolumeAndTvl', curve.chainId)
+      const chainId = curve.chainId
+      const [tvlResult, volumeResult] = await Promise.allSettled([
+        networks[chainId].api.network.getTVL(curve),
+        networks[chainId].api.network.getVolume(curve),
+      ])
+      const tvl = fulfilledValue(tvlResult) ?? 0
+      const volumeObj = fulfilledValue(volumeResult) ?? { totalVolume: 0, cryptoVolume: 0, cryptoShare: 0 }
+
+      get()[sliceKey].setStateByKeys({
+        tvlTotal: tvl,
+        volumeTotal: volumeObj.totalVolume,
+        volumeCryptoShare: volumeObj.cryptoShare,
+      })
+
+      // add to storeCache
+      get().storeCache.setStateByActiveKey('tvlTotal', chainId.toString(), tvl)
+      get().storeCache.setStateByActiveKey('volumeTotal', chainId.toString(), volumeObj.totalVolume)
+      get().storeCache.setStateByActiveKey('volumeCryptoShare', chainId.toString(), volumeObj.cryptoShare)
+    },
+    setPoolIsWrapped: (poolData, isWrapped) => {
+      const curve = get().curve
+      const chainId = curve.chainId
+
+      const tokens = networks[chainId].api.pool.poolTokens(poolData.pool, isWrapped)
+      const tokenAddresses = networks[chainId].api.pool.poolTokenAddresses(poolData.pool, isWrapped)
+      const cPoolData = cloneDeep(poolData)
+      cPoolData.isWrapped = isWrapped
+      cPoolData.tokens = tokens
+      cPoolData.tokensCountBy = countBy(tokens)
+      cPoolData.tokenAddresses = tokenAddresses
+
+      set(
+        produce((state) => {
+          state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
+        })
+      )
+      get().pools.fetchPoolCurrenciesReserves(curve, cPoolData)
+      return { tokens, tokenAddresses }
+    },
+    updatePool: (chainId, poolId, updatedPoolData) => {
+      const pools = get().pools.pools[chainId]
+      const poolIdx = pools.findIndex((poolData) => poolData.pool.id === poolId)
+
+      set(
+        produce((state) => {
+          state.pools.pools[poolIdx] = updatedPoolData
+          state.pools.poolsMapper[chainId][poolId] = updatedPoolData
+        })
+      )
+    },
+    fetchPricesApiPools: async (chainId: ChainId) => {
+      if (networks[chainId].pricesApi) {
+        const networkName = networks[chainId]?.id
+
+        try {
+          const response = await fetch(`https://prices.curve.fi/v1/chains/${networkName}`)
+          const data: PricesApiPoolResponse = await response.json()
+
+          let pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
+          data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
+
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiPoolsMapper = pricesApiPoolsMapper
+            })
+          )
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+    fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
+      if (networks[chainId].pricesApi) {
+        const startTime = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000)
+        const endTime = Math.floor(Date.now() / 1000)
+        const network = networks[chainId].id.toLowerCase()
+
+        try {
+          const response = await fetch(
+            `https://prices.curve.fi/v1/snapshots/${network}/${poolAddress}?start=${startTime}&end=${endTime}`
+          )
+          const data: PricesApiSnapshotsResponse = await response.json()
+
+          set(
+            produce((state: State) => {
+              state.pools.snapshotsMapper[poolAddress] = data.data[0]
+            })
+          )
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+    fetchPricesApiCharts: async (
+      chainId: ChainId,
+      selectedChartIndex: number,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      end: number,
+      start: number,
+      chartCombinations: PricesApiCoin[][],
+      isFlipped: boolean[]
+    ) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.chartStatus = 'LOADING'
+        })
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+
+      if (selectedChartIndex === 0 || selectedChartIndex === 1) {
+        try {
+          const priceUnit = selectedChartIndex === 0 ? 'token0' : 'usd'
+
+          const lpPriceRes = await fetch(
+            `https://prices.curve.fi/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`
+          )
+          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
+          const filteredLpPriceData = {
+            ...lpPriceDataResponse,
+            data: lpPriceDataResponse.data
+              .filter((item) => {
+                if (item.open === null || item.close === null || item.high === null || item.low === null) {
+                  return
+                }
+                return item
+              })
+              .map((data: LpPriceOhlcData) => {
+                return { ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp }
+              }),
+          }
+          if (filteredLpPriceData) {
+            set(
+              produce((state: State) => {
+                state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
+              })
+            )
+          }
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'READY'
+            })
+          )
+        } catch (error) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'ERROR'
+            })
+          )
+          console.log(error)
+        }
+      } else {
+        try {
+          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
+          const ifPairFlipped = isFlipped[selectedChartIndex - 2]
+          const main_token = ifPairFlipped ? pair[1].address : pair[0].address
+          const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
+          const lpPriceRes = await fetch(
+            `https://prices.curve.fi/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          )
+          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
+          const filteredLpPriceData = {
+            ...lpPriceDataResponse,
+            data: lpPriceDataResponse.data
+              .filter((item) => {
+                if (item.open === null || item.close === null || item.high === null || item.low === null) {
+                  return
+                }
+                return item
+              })
+              .map((data: LpPriceOhlcData) => {
+                return { ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp }
+              }),
+          }
+          if (filteredLpPriceData) {
+            set(
+              produce((state: State) => {
+                state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
+              })
+            )
+          }
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'READY'
+            })
+          )
+        } catch (error) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'ERROR'
+            })
+          )
+          console.log(error)
+        }
+      }
+    },
+    fetchPricesApiActivity: async (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.activityStatus = 'LOADING'
+        })
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+
+      try {
+        const promises = chartCombinations.map((coin: PricesApiCoin[]) => {
+          return fetch(
+            `https://prices.curve.fi/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`
+          )
+        })
+        const lpTradesRes = await Promise.all(promises)
+        const lpTradesData: LpTradesApiResponse[] = await Promise.all(lpTradesRes.map((res) => res.json()))
+        const flattenData: LpTradesData[] = lpTradesData.reduce(
+          (acc: LpTradesData[], item: LpTradesApiResponse) => acc.concat(item.data),
+          []
+        )
+        const sortedData = flattenData.sort((a: LpTradesData, b: LpTradesData) => {
+          const timestampA = new Date(a.time).getTime()
+          const timestampB = new Date(b.time).getTime()
+          return timestampB - timestampA
+        })
+
+        if (lpTradesData) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.tradeEventsData = sortedData
+            })
+          )
+        }
+        const liqudityEventsRes = await fetch(
+          `https://prices.curve.fi/v1/liquidity/${network}/${poolAddress}?page=1&per_page=100`
+        )
+        const liquidityEventsData: LpLiquidityEventsApiResponse = await liqudityEventsRes.json()
+
+        if (liquidityEventsData) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.liquidityEventsData = liquidityEventsData.data
+            })
+          )
+        }
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.activityStatus = 'READY'
+          })
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state.pools.pricesApiState.activityStatus = 'ERROR'
+          })
+        )
+        console.log(error)
+      }
+    },
+    setChartTimeOption: (timeOption: TimeOptions) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.timeOption = timeOption
+        })
+      )
+    },
+    setChartSelectedIndex: (index: number) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.selectedChartIndex = index
+        })
+      )
+    },
+    setChartExpanded: (expanded: boolean) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.chartExpanded = expanded
+        })
+      )
+    },
+    setActivityHidden: (hidden: boolean) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.activityHidden = hidden
+        })
+      )
+    },
+
+    // slice helpers
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
+      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
+    },
+    setStateByKey: <T>(key: StateKey, value: T) => {
+      get().setAppStateByKey(sliceKey, key, value)
+    },
+    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+      get().setAppStateByKeys(sliceKey, sliceState)
+    },
+    resetState: () => {
+      get().resetAppState(sliceKey, {
+        ...DEFAULT_STATE,
+        pools: get()[sliceKey].pools,
+        poolsMapper: get()[sliceKey].poolsMapper,
+        currencyReserves: get()[sliceKey].currencyReserves,
+        rewardsApyMapper: get()[sliceKey].rewardsApyMapper,
+        tvlMapper: get()[sliceKey].tvlMapper,
+        volumeMapper: get()[sliceKey].volumeMapper,
+      })
+    },
+  },
+})
+
+export default createPoolsSlice
+
+// check for duplicate token name
+export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
+  const grouped = groupBy(tokensMapper, (v) => v!.symbol)
+  const duplicatedTokenNames = Object.entries(grouped)
+    .filter(([_, v]) => v.length > 1)
+    .map((v) => v[0])
+
+  if (duplicatedTokenNames.length) {
+    Object.entries(tokensMapper).forEach(([key, tokenObj]) => {
+      tokensMapper[key]!.haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
+    })
+  }
+
+  return tokensMapper
+}
+
+function getPools(
+  curve: CurveApi,
+  poolList: string[],
+  currentPoolsMapper: PoolDataMapper,
+  currentPoolsMapperCached: PoolDataCacheMapper,
+  failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null
+) {
+  const chainId = curve.chainId
+  const poolsMapper: PoolDataMapper = cloneDeep(currentPoolsMapper)
+  const poolsMapperCache: PoolDataCacheMapper = cloneDeep(currentPoolsMapperCached)
+
+  for (const idx in poolList) {
+    const poolId = poolList[idx]
+    const pool = curve.getPool(poolId) as Pool
+    const poolData = networks[chainId].api.pool.getPoolData(pool, chainId, poolsMapper[poolId])
+    poolData.failedFetching24hOldVprice = failedFetching24hOldVprice
+      ? failedFetching24hOldVprice[pool.address] ?? false
+      : false
+    poolsMapper[poolId] = poolData
+    poolsMapper[poolId].seedData = getSeedAmounts(poolData)
+    poolsMapper[poolId].curvefiUrl = getCurvefiUrl(poolId, networks[chainId].orgUIPath)
+
+    if (pool.gaugeStatus && (pool.gaugeStatus.rewardsNeedNudging || pool.gaugeStatus.areCrvRewardsStuckInBridge)) {
+      log(
+        'rewardsNeedNudging, areCrvRewardsStuckInBridge',
+        pool.id,
+        pool.gaugeStatus.rewardsNeedNudging,
+        pool.gaugeStatus.areCrvRewardsStuckInBridge
+      )
+    }
+
+    // poolDataCached
+    const poolDataCache = pick(poolsMapper[poolId], [
+      'hasWrapped',
+      'tokens',
+      'tokensCountBy',
+      'tokensAll',
+      'tokensLowercase',
+      'tokenAddresses',
+      'tokenAddressesAll',
+      'pool.id',
+      'pool.name',
+      'pool.address',
+      'pool.gauge',
+      'pool.lpToken',
+      'pool.implementation',
+      'pool.isCrypto',
+      'pool.isFactory',
+      'pool.isLending',
+      'pool.isGaugeKilled',
+      'pool.referenceAsset',
+    ]) as PoolDataCache
+
+    if (poolDataCache) {
+      poolsMapperCache[poolId] = poolDataCache
+    }
+  }
+
+  return { poolsMapper, poolsMapperCache }
+}
+
+function getSeedAmounts({ pool }: PoolData) {
+  if (pool.isMeta && !pool.isCrypto) {
+    const total = pool.underlyingCoins.length
+    const wrappedTotal = pool.wrappedCoins.length
+    return pool.underlyingCoins.map((token, idx) => {
+      if (idx === 0) {
+        return { token, percent: 100 / wrappedTotal }
+      } else {
+        const metaTokensTotal = total - 1
+        return { token, percent: 100 / wrappedTotal / metaTokensTotal }
+      }
+    })
+  } else {
+    const total = pool.underlyingCoins.length
+    return pool.underlyingCoins.map((token) => ({ token, percent: 100 / total }))
+  }
+}
+
+// remove pools we do not want to display in pool list
+export function filterCustomPools(poolDatas: PoolData[], chainId: ChainId) {
+  const filteredPoolsDatas = []
+  const customPoolIds = networks[chainId].customPoolIds
+
+  for (const idx in poolDatas) {
+    const poolData = poolDatas[idx]
+    if (!customPoolIds[poolData.pool.id]) {
+      filteredPoolsDatas.push(poolData)
+    }
+  }
+  return filteredPoolsDatas
+}
+
+export function parsedTokensNameMapper(poolDatas: PoolData[]) {
+  const tokensNameMapper: { [address: string]: string } = {}
+
+  for (const idx in poolDatas) {
+    const { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins, id, lpToken } =
+      poolDatas[idx].pool
+    const addresses = [...underlyingCoinAddresses, ...wrappedCoinAddresses]
+    const tokens = [...underlyingCoins, ...wrappedCoins]
+
+    addresses.map((address, idx) => {
+      tokensNameMapper[address] = tokens[idx]
+    })
+
+    if (lpToken !== INVALID_ADDRESS) {
+      tokensNameMapper[lpToken] = `${id} LP`
+    }
+  }
+  return tokensNameMapper
+}

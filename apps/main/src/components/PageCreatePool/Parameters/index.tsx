@@ -1,0 +1,469 @@
+import { useState, useEffect, useMemo } from 'react'
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
+import { BigNumber } from 'bignumber.js'
+
+import useStore from '@/store/useStore'
+
+import {
+  STABLESWAP_MIN_MAX_PARAMETERS,
+  CRYPTOSWAP_MIN_MAX_PARAMETERS,
+  STABLESWAP,
+  POOL_PRESETS,
+} from '@/components/PageCreatePool/constants'
+
+import SelectPreset from '@/components/PageCreatePool/Parameters/SelectPreset'
+import SelectPoolImplementation from '@/components/PageCreatePool/Parameters/SelectPoolImplementation'
+import NumberField from '@/components/PageCreatePool/components/NumberField'
+import InitialPrice from '@/components/PageCreatePool/Parameters/InitialPrice'
+import Switch from '@/components/PageCreatePool/components/Switch'
+import TokenWarningBox from '@/components/PageCreatePool/components/WarningBox'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import networks from '@/networks'
+
+type Props = {
+  curve: CurveApi
+  chainId: ChainId
+  haveSigner: boolean
+}
+
+const Parameters = ({ curve, chainId, haveSigner }: Props) => {
+  const {
+    advanced,
+    parameters: {
+      midFee,
+      outFee,
+      stableSwapFee,
+      stableA,
+      cryptoA,
+      gamma,
+      allowedExtraProfit,
+      feeGamma,
+      adjustmentStep,
+      maHalfTime,
+      maExpTime,
+      offpegFeeMultiplier,
+    },
+    tokensInPool,
+    swapType,
+    poolPresetIndex,
+    updateStableSwapFee,
+    updateMidFee,
+    updateOutFee,
+    updateStableA,
+    updateCryptoA,
+    updateGamma,
+    updateAllowedExtraProfit,
+    updateFeeGamma,
+    updateAdjustmentStep,
+    updateMaHalfTime,
+    updateMaExpTime,
+    updateOffpegFeeMultiplier,
+    updateAdvanced,
+    refreshInitialPrice,
+    initialPrice,
+  } = useStore((state) => state.createPool)
+
+  const [stableFeeValue, setStableFeeValue] = useState<string>(stableSwapFee)
+  const [midValue, setMidValue] = useState<string>(midFee)
+  const [outValue, setOutValue] = useState<string>(outFee)
+
+  const STABLESWAP_MIN_MAX = STABLESWAP_MIN_MAX_PARAMETERS(+stableSwapFee)
+
+  const updateStableFeeValue = (value: number) => {
+    updateStableSwapFee(new BigNumber(value).toString())
+    setStableFeeValue(new BigNumber(value).toString())
+  }
+  const updateMidValue = (value: number) => {
+    updateMidFee(new BigNumber(value).toString())
+    setMidValue(new BigNumber(value).toString())
+  }
+  const updateOutValue = (value: number) => {
+    updateOutFee(new BigNumber(value).toString())
+    setOutValue(new BigNumber(value).toString())
+  }
+
+  useEffect(() => {
+    setStableFeeValue(stableSwapFee)
+    setMidValue(midFee)
+    setOutValue(outFee)
+    if (+offpegFeeMultiplier > STABLESWAP_MIN_MAX.offpegFeeMultiplier.max) {
+      updateOffpegFeeMultiplier(STABLESWAP_MIN_MAX.offpegFeeMultiplier.max.toString())
+    }
+  }, [
+    STABLESWAP_MIN_MAX.offpegFeeMultiplier.max,
+    midFee,
+    offpegFeeMultiplier,
+    outFee,
+    poolPresetIndex,
+    stableSwapFee,
+    updateOffpegFeeMultiplier,
+  ])
+
+  useEffect(() => {
+    if (midFee > outValue) {
+      updateOutFee(new BigNumber(midFee).toString())
+      setOutValue(new BigNumber(midFee).toString())
+    }
+  }, [midFee, outValue, updateOutFee])
+
+  // manage case where user removes value from input and unfocuses input
+  useEffect(() => {
+    if (swapType === STABLESWAP) {
+      if (stableFeeValue === 'NaN') updateStableSwapFee(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
+      if (stableA === 'NaN') updateStableA(POOL_PRESETS[poolPresetIndex].defaultParams.stableA)
+      if (maExpTime === 'NaN') updateMaExpTime(POOL_PRESETS[poolPresetIndex].defaultParams.maExpTime)
+      if (offpegFeeMultiplier === 'NaN')
+        updateOffpegFeeMultiplier(POOL_PRESETS[poolPresetIndex].defaultParams.offpegFeeMultiplier)
+    } else {
+      if (midFee === 'NaN') {
+        updateMidFee(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
+        updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+      }
+      if (outFee === 'NaN') {
+        updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+        setMidValue(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
+        setOutValue(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+      }
+      if (cryptoA === 'NaN') updateCryptoA(POOL_PRESETS[poolPresetIndex].defaultParams.cryptoA)
+      if (gamma === 'NaN') updateGamma(POOL_PRESETS[poolPresetIndex].defaultParams.gamma)
+      if (allowedExtraProfit === 'NaN')
+        updateAllowedExtraProfit(POOL_PRESETS[poolPresetIndex].defaultParams.allowedExtraProfit)
+      if (feeGamma === 'NaN') updateFeeGamma(POOL_PRESETS[poolPresetIndex].defaultParams.feeGamma)
+      if (adjustmentStep === 'NaN') updateAdjustmentStep(POOL_PRESETS[poolPresetIndex].defaultParams.adjustmentStep)
+      if (maHalfTime === 'NaN') updateMaHalfTime(POOL_PRESETS[poolPresetIndex].defaultParams.maHalfTime)
+    }
+  }, [
+    adjustmentStep,
+    allowedExtraProfit,
+    cryptoA,
+    feeGamma,
+    gamma,
+    maExpTime,
+    maHalfTime,
+    midFee,
+    offpegFeeMultiplier,
+    outFee,
+    poolPresetIndex,
+    stableA,
+    stableFeeValue,
+    swapType,
+    updateAdjustmentStep,
+    updateAllowedExtraProfit,
+    updateCryptoA,
+    updateFeeGamma,
+    updateGamma,
+    updateMaExpTime,
+    updateMaHalfTime,
+    updateMidFee,
+    updateOffpegFeeMultiplier,
+    updateOutFee,
+    updateStableA,
+    updateStableSwapFee,
+  ])
+
+  const resetFees = (poolPresetIndex: number) => {
+    if (swapType === STABLESWAP) {
+      updateStableSwapFee(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
+      setStableFeeValue(POOL_PRESETS[poolPresetIndex].defaultParams.stableSwapFee)
+    } else {
+      updateMidFee(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
+      updateOutFee(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+      setMidValue(POOL_PRESETS[poolPresetIndex].defaultParams.midFee)
+      setOutValue(POOL_PRESETS[poolPresetIndex].defaultParams.outFee)
+    }
+  }
+
+  const resetAdvanced = () => {
+    if (swapType === STABLESWAP) {
+      updateStableA(POOL_PRESETS[poolPresetIndex].defaultParams.stableA)
+      updateMaExpTime(POOL_PRESETS[poolPresetIndex].defaultParams.maExpTime)
+      updateOffpegFeeMultiplier(POOL_PRESETS[poolPresetIndex].defaultParams.offpegFeeMultiplier)
+    } else {
+      updateCryptoA(POOL_PRESETS[poolPresetIndex].defaultParams.cryptoA)
+      updateGamma(POOL_PRESETS[poolPresetIndex].defaultParams.gamma)
+      updateAllowedExtraProfit(POOL_PRESETS[poolPresetIndex].defaultParams.allowedExtraProfit)
+      updateFeeGamma(POOL_PRESETS[poolPresetIndex].defaultParams.feeGamma)
+      updateAdjustmentStep(POOL_PRESETS[poolPresetIndex].defaultParams.adjustmentStep)
+      updateMaHalfTime(POOL_PRESETS[poolPresetIndex].defaultParams.maHalfTime)
+    }
+  }
+
+  const checkInitialPrice = useMemo(() => {
+    if (tokensInPool.tokenAmount === 3) {
+      return initialPrice.initialPrice[0] === '0' || initialPrice.initialPrice[1] === '0'
+    }
+    return initialPrice.initialPrice[0] === '0'
+  }, [initialPrice.initialPrice, tokensInPool.tokenAmount])
+
+  return (
+    <>
+      <Wrapper>
+        {/* Presets */}
+        <SelectPresetsWrapper>
+          <SelectPreset setStableFeeValue={setStableFeeValue} setMidValue={setMidValue} setOutValue={setOutValue} />
+        </SelectPresetsWrapper>
+        {/* Fees */}
+        <BlurWrapper blur={poolPresetIndex === null}>
+          <TitleRow flex flexAlignItems={'center'}>
+            <SectionTitle>{t`Fees`}</SectionTitle>
+            <ResetButton size={'small'} onClick={() => resetFees(poolPresetIndex)}>
+              {t`Reset Fees`}
+            </ResetButton>
+          </TitleRow>
+          {swapType === STABLESWAP && (
+            <>
+              <NumberField
+                label={t`Swap Fee (${STABLESWAP_MIN_MAX.swapFee.min}% - ${STABLESWAP_MIN_MAX.swapFee.max}%)`}
+                value={+stableFeeValue}
+                minValue={STABLESWAP_MIN_MAX.swapFee.min}
+                maxValue={STABLESWAP_MIN_MAX.swapFee.max}
+                formatOptions={{
+                  maximumFractionDigits: 8,
+                }}
+                onChange={updateStableFeeValue}
+              />
+            </>
+          )}
+          {swapType !== STABLESWAP && (
+            <>
+              <NumberField
+                isDisabled={poolPresetIndex === null}
+                label={t`Mid Fee: (${CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.min}% - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.max}%)`}
+                value={+midValue}
+                onChange={updateMidValue}
+                minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.min}
+                maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.max}
+                formatOptions={{
+                  maximumFractionDigits: 8,
+                }}
+              />
+              <Description>{t`Mid fee governs fees charged during low volatility.`}</Description>
+              <NumberField
+                isDisabled={poolPresetIndex === null}
+                label={t`Out fee: (${midFee}% - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.outFee.max}%)`}
+                defaultValue={+outFee}
+                value={+outValue}
+                onChange={updateOutValue}
+                minValue={+midFee}
+                maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.outFee.max}
+                formatOptions={{
+                  maximumFractionDigits: 8,
+                }}
+              />
+              <Description>{t`Out fee governs fees charged during high volatility.`}</Description>
+              <InitialPriceWrapper>
+                <TitleRow flex flexAlignItems={'center'}>
+                  <SectionTitle>{t`Initial Liquidity Concentration Price`}</SectionTitle>
+                  <ResetButton size={'small'} onClick={() => refreshInitialPrice(curve)}>
+                    {t`Update Quote`}
+                  </ResetButton>
+                </TitleRow>
+                {(tokensInPool.tokenA.address && tokensInPool.tokenB.address) !== '' && (
+                  <Description>{t`Dollar prices are fetched from coingecko.`}</Description>
+                )}
+                <InitialPrice curve={curve} chainId={chainId} haveSigner={haveSigner} />
+              </InitialPriceWrapper>
+              {(initialPrice.tokenAPrice < initialPrice.tokenBPrice ||
+                (tokensInPool.tokenAmount === 3 && initialPrice.tokenAPrice < initialPrice.tokenCPrice)) && (
+                <TokenWarningBox
+                  message={t`Consider choosing the token with the higher unit price as the first token for a more performant AMM`}
+                />
+              )}
+              {checkInitialPrice && (
+                <TokenWarningBox
+                  message={t`Initial price can't be 0. The price fetch didn't return a price. Please enter the token dollar price manually in the input.`}
+                />
+              )}
+            </>
+          )}
+          {/* Advanced */}
+          <>
+            <AdvancedParametersWrapper>
+              <TitleRow flex flexAlignItems={'center'} flexJustifyContent="space-between">
+                <SwitchWrapper>
+                  <Switch isActive={!advanced} onChange={() => updateAdvanced(!advanced)} defaultSelected={advanced}>
+                    {t`Advanced`}
+                  </Switch>
+                </SwitchWrapper>
+                {advanced && (
+                  <ResetButton size={'small'} onClick={() => resetAdvanced()}>
+                    {t`Reset advanced`}
+                  </ResetButton>
+                )}
+              </TitleRow>
+              {advanced && swapType === STABLESWAP && (
+                <>
+                  <NumberField
+                    label={t`A (${STABLESWAP_MIN_MAX.a.min} - ${STABLESWAP_MIN_MAX.a.max})`}
+                    value={+stableA}
+                    minValue={STABLESWAP_MIN_MAX.a.min}
+                    maxValue={STABLESWAP_MIN_MAX.a.max}
+                    onChange={updateStableA}
+                  />
+                  {networks[chainId].stableSwapNg && (
+                    <>
+                      <NumberField
+                        label={t`Offpeg Fee Multiplier (${STABLESWAP_MIN_MAX.offpegFeeMultiplier.min} - ${STABLESWAP_MIN_MAX.offpegFeeMultiplier.max})`}
+                        value={+offpegFeeMultiplier}
+                        minValue={STABLESWAP_MIN_MAX.offpegFeeMultiplier.min}
+                        maxValue={STABLESWAP_MIN_MAX.offpegFeeMultiplier.max}
+                        onChange={updateOffpegFeeMultiplier}
+                      />
+                      {/* maExpTime renamed to Moving Average Time to simplify for the user */}
+                      <NumberField
+                        label={t`Moving Average Time (${STABLESWAP_MIN_MAX.maExpTime.min} - ${STABLESWAP_MIN_MAX.maExpTime.max}) seconds`}
+                        value={+maExpTime}
+                        minValue={STABLESWAP_MIN_MAX.maExpTime.min}
+                        maxValue={STABLESWAP_MIN_MAX.maExpTime.max}
+                        onChange={updateMaExpTime}
+                        description={`Contract interprets time at a different scale: so, 600 seconds is 600 / log(2), which is 866 when the contract's ma_exp_time method is queried.`}
+                      />
+                    </>
+                  )}
+                  {/* Select pool implementation when stableswap-ng is not available on the current chain */}
+                  {!networks[chainId].stableSwapNg && <SelectPoolImplementation chainId={chainId} />}
+                </>
+              )}
+              {advanced && swapType !== STABLESWAP && (
+                <>
+                  <NumberField
+                    label={t`A (${CRYPTOSWAP_MIN_MAX_PARAMETERS.a.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.a.max})`}
+                    value={+cryptoA}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.a.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.a.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateCryptoA}
+                  />
+                  <NumberField
+                    label={`Gamma (${new BigNumber(
+                      CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.min
+                    ).toString()} - ${new BigNumber(CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.max).toString()})`}
+                    value={+gamma}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateGamma}
+                  />
+                  <NumberField
+                    label={t`Allowed Extra Profit (${CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.max})`}
+                    value={+allowedExtraProfit}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateAllowedExtraProfit}
+                  />
+                  <NumberField
+                    label={t`Fee Gamma (${CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.max})`}
+                    value={+feeGamma}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateFeeGamma}
+                  />
+                  <NumberField
+                    label={t`Adjustment Step (${CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.max})`}
+                    value={+adjustmentStep}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateAdjustmentStep}
+                  />
+                  <NumberField
+                    label={t`Moving Average Time (${CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.max}) seconds`}
+                    value={+maHalfTime}
+                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.max}
+                    formatOptions={{
+                      maximumSignificantDigits: 21,
+                      maximumFractionDigits: 21,
+                    }}
+                    onChange={updateMaHalfTime}
+                  />
+                </>
+              )}
+            </AdvancedParametersWrapper>
+          </>
+        </BlurWrapper>
+      </Wrapper>
+    </>
+  )
+}
+
+const Wrapper = styled.div`
+  padding: 0 var(--spacing-normal) var(--spacing-wide);
+  margin-bottom: var(--spacing-normal);
+  min-height: 380px;
+  @media (min-width: 33.75rem) {
+    padding: var(--spacing-narrow) var(--spacing-normal) var(--spacing-wide);
+  }
+`
+
+const BlurWrapper = styled.div<{ blur: boolean }>`
+  ${(props) => props.blur && 'opacity: 0.6; filter: blur(1px); pointer-events: none;'}
+`
+
+const Description = styled.p`
+  padding: var(--spacing-2) 0;
+  margin: var(--spacing-1) var(--spacing-narrow) var(--spacing-narrow);
+  font-size: var(--font-size-1);
+  font-style: italic;
+  color: var(--box--primary--color);
+`
+
+const InitialPriceWrapper = styled.div`
+  margin-top: var(--spacing-5);
+`
+
+const AdvancedParametersWrapper = styled.div`
+  margin-top: var(--spacing-5);
+`
+
+const SelectPresetsWrapper = styled.div``
+
+const TitleRow = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  margin-bottom: var(--spacing-narrow);
+  margin-top: var(--spacing-5);
+`
+
+const ResetButton = styled(Button)`
+  background: none;
+  color: var(--box--primary--color);
+  opacity: 0.7;
+  font-size: var(--font-size-1);
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  :hover:not(:disabled),
+  :active:not(:disabled) {
+    color: var(--button_filled-hover-contrast--background-color);
+  }
+`
+
+const SectionTitle = styled.h4`
+  color: var(--box--primary--color);
+  margin: 0 auto 0 0;
+`
+
+const SwitchWrapper = styled.div`
+  height: 30.75px;
+`
+
+export default Parameters

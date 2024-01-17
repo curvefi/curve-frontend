@@ -1,0 +1,44 @@
+import styled from 'styled-components'
+
+export const Tab = styled.button<{ variant?: 'secondary' }>`
+  background-color: transparent;
+  box-shadow: none;
+  color: ${({ variant }) => (variant === 'secondary' ? `var(--tab_secondary--color);` : `var(--tab--color);`)}
+  cursor: pointer;
+  font-size: var(--font-size-2);
+  font-family: var(--button--font);
+  font-weight: var(--button--font-weight);
+  min-height: var(--height-large);
+  padding: 0 1rem;
+  position: relative;
+  transition: none;
+  
+  :hover {
+    background-color: var(--tab--content--background-color);
+  }
+  
+  &.active {
+    color: ${({ variant }) => (variant === 'secondary' ? `var(--tab-secondary--active--color);` : `inherit;`)}
+    background-color: ${({ variant }) =>
+      variant === 'secondary' ? `var(--tab-secondary--background-color);` : `var(--tab--content--background-color);`}
+    position: relative;
+
+    &:not(:disabled) {
+      transform: none;
+    }
+
+    ::before {
+      background-color: ${({ variant }) =>
+        variant === 'secondary' ? `var(--tab-secondary--background-color);` : `var(--tab--content--background-color);`}
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      bottom: -3px; //to place it in bottom
+      left: 0;
+      z-index: var(--z-index-tab);
+    }
+  }
+`
+
+export default Tab

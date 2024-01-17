@@ -1,0 +1,33 @@
+{
+  "name": "onboard-helpers",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@safe-global/safe-apps-provider": "^0.17.1",
+    "@safe-global/safe-apps-sdk": "^8.0.0",
+    "@web3-onboard/bitget": "^2.0.1",
+    "@web3-onboard/coinbase": "^2.2.5",
+    "@web3-onboard/fortmatic": "^2.0.19",
+    "@web3-onboard/frontier": "^2.0.4",
+    "@web3-onboard/gnosis": "^2.2.0",
+    "@web3-onboard/injected-wallets": "^2.10.9",
+    "@web3-onboard/phantom": "^2.0.3",
+    "@web3-onboard/portis": "^2.1.7",
+    "@web3-onboard/react": "^2.8.13",
+    "@web3-onboard/torus": "^2.2.5",
+    "@web3-onboard/trezor": "^2.4.3",
+    "@web3-onboard/trust": "^2.0.4",
+    "@web3-onboard/walletconnect": "2.5.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/runtime": "^7.21.5"
+  },
+  "peerDependencies": {
+    "react": "^18",
+    "react-dom": "^18"
+  }
+}

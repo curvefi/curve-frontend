@@ -1,0 +1,88 @@
+:root {
+  /* General */
+  --border-color: #afbec8;
+  --border-light-color: rgba(199, 195, 219, 0.5);
+  --text-color: #4c4a52;
+  --text-light-color: #a5bdf6;
+  --text-highlight-color: #a5a4ce;
+  --shadow-color: #5d6369;
+  --primary-color: #1763fd;
+  --black-color: #000;
+  --white-color: #fff;
+  --red-color: #eb3a43;
+  --red-color-semi: #f7b2b5;
+  --green-color: #088001;
+  --green-color-semi: #d5f5e9;
+  --link-color: #246bfd;
+  --error-color: #ea3943;
+  --info-color: #5c92ff;
+
+  /* Layout */
+  --home-bg: #fafafa;
+  --dark-bg: #4e4a66;
+  --grey-bg: #ebebeb;
+  --grey-box: #d9d9d9;
+
+  /* Header */
+  --header-bg-color: #f9f9f9;
+  --header-hover-color: #4c4a52;
+  --header-text-color: var(--text-color);
+
+  /* Hero */
+  --hero-bg: #1d1d22;
+
+  /* Footer */
+  --footer-bg-color: #505050;
+  --footer-text-color: #b8b8b8;
+
+  /* Buttons */
+  --button-active-color: #2432ea;
+  --button-hover-color: #2764e5;
+  --button-disabled-color: #bcbdc3;
+  --button-disabled-box-shadow: 3px 3px #686e74;
+  --button-shadow-color: #0d3993;
+  --button-box-shadow: 3px 3px var(--button-shadow-color);
+
+  --secondary-button-color: #e6e6ea;
+  --secondary-button-active-color: #d7d7df;
+  --secondary-button-hover-color: #dbdbe2;
+  --secondary-button-disabled-color: #eeeef1;
+  --secondary-button-shadow-color: #686e74;
+  --secondary-button-box-shadow: 3px 3px var(--secondary-button-shadow-color);
+  --secondary-button-border: 1px solid rgba(165, 164, 206, 0.2);
+
+  /* Inputs */
+  --input-border-color: #4c4a52;
+  --input-placeholder-color: #9895a7;
+  --input-shadow: inset 0.5px 0.5px 0px 0.5px var(--input-border-color);
+  --input-warning-color: #deb216;
+  --input-warning-shadow: inset 0.5px 0.5px 0px 0.5px var(--input-warning-color);
+  --input-error-color: #ea3943;
+  --input-error-shadow: inset 0.5px 0.5px 0px 0.5px var(--input-error-color);
+
+  --select-bg-color: #fdfafa;
+
+  --switch-border-color: #4c4a52;
+  --switch-slider-off-color: #979797;
+  --switch-slider-on-color: #1763fd;
+
+  /* Carousel */
+  --carousel-indicator-color: #ffffff;
+  --carousel-indicator-active-color: #1763fd;
+
+  /* DAO */
+  --dao-bg-color: #f2f2f2;
+  --dao-text-color: #4c4a52;
+  --dao-overlay-color: rgba(23, 99, 253, 0.5);
+  --sidebar-hover-color: var(--dao-text-color);
+  --sidebar-active-color: #454259;
+
+  /* Dashboard */
+  --dashboard-light-bg: rgba(69, 66, 89, 0.2);
+  --dashboard-dark-bg: #454259;
+
+  /* Charts */
+  --chart-green: #26a69a;
+  --chart-red: #ef5350;
+  --chart-label: #9B7DFF;
+}

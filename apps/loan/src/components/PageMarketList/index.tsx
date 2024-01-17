@@ -1,0 +1,338 @@
+import type { FormValues, PageCollateralList, TableLabel, TableRowProps } from '@/components/PageMarketList/types'
+
+import { t } from '@lingui/macro'
+import { useNavigate } from 'react-router-dom'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import styled from 'styled-components'
+
+import { DEFAULT_FORM_VALUES, getCollateralDatasCached } from '@/store/createCollateralListSlice'
+import { REFRESH_INTERVAL } from '@/constants'
+import { breakpoints } from '@/ui/utils/responsive'
+import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
+import cloneDeep from 'lodash/cloneDeep'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import useStore from '@/store/useStore'
+
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import DialogSortContent from '@/components/PageMarketList/components/DialogSortContent'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import IconTooltip from '@/ui/IconTooltip'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Table from '@/ui/Table'
+import TableHead from '@/components/PageMarketList/components/TableHead'
+import TableHeadMobile from '@/components/PageMarketList/components/TableHeadMobile'
+import TableRow from '@/components/PageMarketList/components/TableRow'
+import TableRowMobile from '@/components/PageMarketList/components/TableRowMobile'
+
+const CollateralList = ({ params, rChainId }: PageCollateralList) => {
+  const navigate = useNavigate()
+  const settingsRef = useRef<HTMLDivElement>(null)
+
+  const curve = useStore((state) => state.curve)
+  const activeKey = useStore((state) => state.collateralList.activeKey)
+  const formStatus = useStore((state) => state.collateralList.formStatus)
+  const formValues = useStore((state) => state.collateralList.formValues)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const collateralDatasCachedMapper = useStore((state) => state.storeCache.collateralDatasMapper[rChainId])
+  const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
+  const collateralDatas = useStore((state) => state.collaterals.collateralDatas[rChainId])
+  const result = useStore((state) => state.collateralList.result[activeKey])
+  const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
+  const loanExistsMapper = useStore((state) => state.loans.existsMapper)
+  const fetchLoansDetails = useStore((state) => state.loans.fetchLoansDetails)
+  const fetchUserLoanPartialDetails = useStore((state) => state.loans.fetchUserLoanPartialDetails)
+  const setFormValues = useStore((state) => state.collateralList.setFormValues)
+
+  const [showDetail, setShowDetail] = useState<string>('')
+
+  const collateralDatasCached = getCollateralDatasCached(collateralDatasCachedMapper)
+  const collateralDatasCachedOrApi = collateralDatas ?? collateralDatasCached
+  const isReady = collateralDatasCachedOrApi.length > 0
+
+  const loansDetailsMapperState = useMemo(() => {
+    return Object.keys(loansDetailsMapper).join(',')
+  }, [loansDetailsMapper])
+
+  const TABLE_LABEL: TableLabel = {
+    name: { name: t`Markets` },
+    myHealth: { name: t`My health` },
+    myDebt: { name: t`My debt` },
+    rate: {
+      name: (
+        <>
+          {t`Borrow rate`}{' '}
+          <IconTooltip placement="top">{t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`}</IconTooltip>
+        </>
+      ),
+    },
+    totalBorrowed: { name: t`Total debt` },
+    cap: { name: t`Cap` },
+    available: { name: t`Available to borrow` },
+    totalCollateral: { name: t`Total collateral value` },
+  }
+
+  const updateFormValues = useCallback(
+    (updatedFormValues: Partial<FormValues>) => {
+      setFormValues(rChainId, updatedFormValues, collateralDatasCachedOrApi, loansDetailsMapper)
+    },
+    [rChainId, collateralDatasCachedOrApi, loansDetailsMapper, setFormValues]
+  )
+
+  usePageVisibleInterval(
+    () => {
+      //  re-fetch data
+      if (curve && collateralDatas) {
+        fetchLoansDetails(curve, collateralDatas)
+      }
+    },
+    REFRESH_INTERVAL['5m'],
+    isPageVisible
+  )
+
+  // init
+  useEffect(() => {
+    let updatedFormValues: FormValues = {
+      ...cloneDeep(formValues),
+      filterKey: formValues.filterKey || 'all',
+      sortBy: formValues.sortBy || 'rate',
+      sortByOrder: formValues.sortByOrder || 'desc',
+    }
+    updateFormValues(updatedFormValues)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rChainId, isReady, isLoadingApi, loansDetailsMapperState])
+
+  // fetch partial user loan details
+  const someLoanExists = useMemo(() => {
+    let loansExists = false
+
+    if (result?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && !isLoadingApi) {
+      result.map((collateralId) => {
+        const collateralData = collateralDatasMapper?.[collateralId]
+
+        if (collateralData) {
+          const loanExists = loanExistsMapper[collateralId]?.loanExists
+          if (loanExists) {
+            loansExists = true
+            fetchUserLoanPartialDetails(curve, collateralData.llamma)
+          }
+        }
+      })
+    }
+    return loansExists
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [curve, collateralDatasMapper, isLoadingApi, loanExistsMapper, result])
+
+  let colSpan = isMdUp ? 7 : 4
+  const showMobileView = !isMdUp
+
+  return (
+    <>
+      {showMobileView && (
+        <Box ref={settingsRef} grid gridRowGap={2}>
+          <TableFilterSettings>
+            <Box flex gridColumnGap={2} margin="1rem 0 0 0.25rem">
+              <DialogSortContent
+                formValues={formValues}
+                tableLabels={TABLE_LABEL}
+                updateFormValues={updateFormValues}
+              />
+            </Box>
+          </TableFilterSettings>
+        </Box>
+      )}
+      <StyledTable cellPadding={0} cellSpacing={0}>
+        {showMobileView ? (
+          <TableHeadMobile />
+        ) : (
+          <TableHead
+            formValues={formValues}
+            isReadyDetail={!!loanExistsMapper}
+            someLoanExists={someLoanExists}
+            tableLabels={TABLE_LABEL}
+            updateFormValues={updateFormValues}
+          />
+        )}
+        <tbody>
+          {formStatus.noResult ? (
+            <tr>
+              <TableRowNotFound colSpan={colSpan}>
+                {formValues.searchText.length > 0 ? (
+                  formValues.filterKey === 'all' ? (
+                    <>
+                      {t`Didn't find what you're looking for?`}{' '}
+                      <ExternalLink $noStyles href="https://t.me/curvefi">
+                        {t`Join the Telegram`}
+                      </ExternalLink>
+                    </>
+                  ) : (
+                    <>
+                      {t`No collateral found for "${formValues.searchText}". Feel free to search other tabs, or`}{' '}
+                      <Button variant="text" onClick={() => updateFormValues(DEFAULT_FORM_VALUES)}>
+                        {t`view all collateral.`}
+                      </Button>
+                    </>
+                  )
+                ) : (
+                  <>{t`No collateral found in this category`}</>
+                )}
+              </TableRowNotFound>
+            </tr>
+          ) : result ? (
+            result.map((collateralId: string) => {
+              const loanExists = loanExistsMapper[collateralId]?.loanExists
+
+              const handleCellClick = () => {
+                if (loanExists) {
+                  navigate(getLoanManagePathname(params, collateralId, 'loan'))
+                } else {
+                  navigate(getLoanCreatePathname(params, collateralId))
+                }
+              }
+
+              const collateralDataCached = collateralDatasCachedMapper?.[collateralId]
+              const collateralData = collateralDatasMapper?.[collateralId]
+
+              const tableRowProps: Pick<PageCollateralList, 'rChainId'> & TableRowProps = {
+                rChainId,
+                collateralId,
+                collateralData,
+                collateralDataCachedOrApi: collateralData ?? collateralDataCached,
+                loanDetails: loansDetailsMapper[collateralId],
+                loanExists,
+                handleCellClick,
+              }
+
+              return showMobileView ? (
+                <TableRowMobile
+                  key={collateralId}
+                  {...tableRowProps}
+                  tableLabel={TABLE_LABEL}
+                  showDetail={showDetail}
+                  setShowDetail={setShowDetail}
+                />
+              ) : (
+                <TableRow key={collateralId} {...tableRowProps} someLoanExists={someLoanExists} />
+              )
+            })
+          ) : (
+            <tr>
+              <td colSpan={colSpan}>
+                <SpinnerWrapper>
+                  <Spinner />
+                </SpinnerWrapper>
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </StyledTable>
+    </>
+  )
+}
+
+const TableRowNotFound = styled.td`
+  padding: var(--spacing-5);
+  text-align: center;
+`
+
+const TableFilterSettings = styled(Box)`
+  align-items: flex-start;
+  display: grid;
+  margin: 1rem;
+  grid-row-gap: var(--spacing-2);
+
+  @media (min-width: ${breakpoints.lg}rem) {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+`
+
+const StyledTable = styled(Table)`
+  background-color: var(--table--background-color);
+
+  th,
+  th button {
+    align-items: flex-end;
+    vertical-align: bottom;
+    font-size: var(--font-size-2);
+  }
+
+  thead {
+    border-bottom: 1px solid var(--border-400);
+  }
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    tr.row--info {
+      border-bottom: 1px solid var(--border-400);
+    }
+
+    tr:not(.disabled):not(.row-in-pool) > td {
+      cursor: pointer;
+    }
+
+    tr.row--info td,
+    th {
+      height: 1px;
+      line-height: 1;
+
+      &.row-in-pool {
+        padding-left: 0.375rem; //6px
+        padding-right: 0.375rem; //6px
+        padding-top: inherit;
+        padding-bottom: inherit;
+
+        + td {
+          padding-left: 0;
+        }
+      }
+
+      &.center {
+        text-align: center;
+      }
+
+      &.left {
+        justify-content: left;
+        text-align: left;
+      }
+
+      &.right {
+        justify-content: right;
+        text-align: right;
+
+        > div,
+        > div button {
+          justify-content: right;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  @media (min-width: ${breakpoints.md}rem) {
+    tr.row--info td,
+    th {
+      padding: 0.75rem;
+    }
+
+    tr.row--info td:not(.row-in-pool),
+    th {
+      &:first-of-type {
+        padding-left: 1rem;
+      }
+
+      &:last-of-type {
+        padding-right: 1rem;
+      }
+    }
+
+    .border-right {
+      border-right: 1px solid var(--border-400);
+    }
+  }
+`
+
+export default CollateralList
