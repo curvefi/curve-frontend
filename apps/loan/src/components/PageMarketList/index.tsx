@@ -17,7 +17,7 @@ import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import DialogSortContent from '@/components/PageMarketList/components/DialogSortContent'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
 import TableHead from '@/components/PageMarketList/components/TableHead'
@@ -64,7 +64,7 @@ const CollateralList = ({ params, rChainId }: PageCollateralList) => {
       name: (
         <>
           {t`Borrow rate`}{' '}
-          <IconTooltip placement="top">{t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`}</IconTooltip>
+          <IconTooltip minWidth="200px">{t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`}</IconTooltip>
         </>
       ),
     },

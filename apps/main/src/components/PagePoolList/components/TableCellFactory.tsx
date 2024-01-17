@@ -12,6 +12,7 @@ const TableCellFactory = ({ isFactory }: Props) => {
     <FactoryLabel
       size="xs"
       tooltip={t`Factory pools are permissionless, deployed by anyone.`}
+      tooltipProps={{ placement: 'start' }}
     >{t`Factory`}</FactoryLabel>
   ) : null
 }

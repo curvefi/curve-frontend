@@ -13,7 +13,7 @@ import useStore from '@/store/useStore'
 
 import AlertFormError from '@/components/AlertFormError'
 import Button from '@/ui/Button'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 

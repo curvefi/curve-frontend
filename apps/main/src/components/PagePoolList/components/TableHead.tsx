@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils/responsive'
 import { TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TableHeadRewards from '@/components/PagePoolList/components/TableHeadRewards'
 
 const TableHead = ({

@@ -9,7 +9,7 @@ import { formatNumber } from '@/ui/utils'
 
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 

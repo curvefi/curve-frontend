@@ -4,7 +4,7 @@ import { t } from '@lingui/macro'
 import React from 'react'
 
 import Box from '@/ui/Box'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TheadSortButton from '@/ui/Table/TheadSortButton'
 
 const TableHeadRewards = ({

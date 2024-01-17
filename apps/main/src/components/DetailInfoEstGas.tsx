@@ -10,7 +10,7 @@ import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 export type StepProgress = {
   active: number
