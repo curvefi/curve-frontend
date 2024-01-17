@@ -1,21 +1,18 @@
+gitignore
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
+node_modules
+.pnp
 .pnp.js
- 
+
 # testing
-/coverage
-cypress/videos
-cypress/screenshots
+coverage
 
 # next.js
-/.next/
-/out/
-
-# production
-/build
+.next/
+out/
+build
 
 # misc
 .DS_Store
@@ -25,6 +22,7 @@ cypress/screenshots
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 # local env files
 .env.local
@@ -51,3 +49,6 @@ src/sdk/types/ethers-contracts
 
 # crash report
 report.*.json
+
+# turbo
+.turbo
