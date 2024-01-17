@@ -3,13 +3,16 @@ import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import * as React from 'react'
 import Icon from 'ui/src/Icon'
-import IconTooltip from 'ui/src/IconTooltip'
+import IconTooltip from 'ui/src/Tooltip/TooltipIcon'
 
-interface Props extends TooltipProps {
-  alertType: AlertType
-}
-
-const AlertTooltipIcon = ({ alertType, ...props }: React.PropsWithChildren<Props>) => {
+const TooltipAlert = ({
+  alertType,
+  ...props
+}: React.PropsWithChildren<
+  TooltipProps & {
+    alertType: AlertType
+  }
+>) => {
   return (
     <IconTooltip {...props} customIcon={<Icon name="WarningSquareFilled" size={24} fill={getColor(alertType)} />} />
   )
@@ -25,4 +28,4 @@ function getColor(alertType: AlertType) {
   }
 }
 
-export default AlertTooltipIcon
+export default TooltipAlert

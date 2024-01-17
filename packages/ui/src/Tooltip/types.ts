@@ -1,11 +1,17 @@
 import type { CSSProperties } from 'styled-components'
-import type { Placement } from '@react-types/overlays'
 
 type ValueOf<T> = T[keyof T]
+
+export type IsClosePlacement = {
+  top: boolean
+  bottom: boolean
+  left: boolean
+  right: boolean
+}
 
 export type TooltipProps = {
   minWidth?: string
   noWrap?: boolean
-  placement?: Placement
+  placement?: string
   textAlign?: ValueOf<Pick<CSSProperties, 'textAlign'>>
 }
