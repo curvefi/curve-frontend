@@ -41,7 +41,18 @@ const multichainNetworks: { [chainId: string]: boolean } = {
 }
 
 const helpers = {
-  fetchL1GasPrice: async (curve: CurveApi) => {
+  fetchL2GasPrice: async (curve: CurveApi) => {
+    let resp = { l2GasPriceWei: 0, error: '' }
+    try {
+      resp.l2GasPriceWei = await curve.getGasPriceFromL2()
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-get-gas')
+      return resp
+    }
+  },
+  fetchL1AndL2GasPrice: async (curve: CurveApi) => {
     let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
       if (networks[curve.chainId].gasL2) {
