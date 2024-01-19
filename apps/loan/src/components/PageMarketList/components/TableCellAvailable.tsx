@@ -14,11 +14,7 @@ const TableCellAvailable = ({ available }: Props) => {
       {isUndefined(available) ? (
         ''
       ) : (
-        <Chip
-          size="md"
-          tooltip={formatNumber(available, { ...getFractionDigitsOptions(available, 2) })}
-          tooltipProps={{ placement: 'bottom end', minWidth: '300px' }}
-        >
+        <Chip size="md" tooltip={formatNumber(available, { ...getFractionDigitsOptions(available, 2) })}>
           {formatNumber(available, { notation: 'compact' })}
         </Chip>
       )}

@@ -14,11 +14,7 @@ const TableCellTotalBorrowed = ({ totalDebt }: Props) => {
       {isUndefined(totalDebt) ? (
         ''
       ) : (
-        <Chip
-          size="md"
-          tooltip={formatNumber(totalDebt, { ...getFractionDigitsOptions(totalDebt, 2) })}
-          tooltipProps={{ placement: 'bottom end', minWidth: '300px' }}
-        >
+        <Chip size="md" tooltip={formatNumber(totalDebt, { ...getFractionDigitsOptions(totalDebt, 2) })}>
           {formatNumber(totalDebt, { notation: 'compact' })}
         </Chip>
       )}
