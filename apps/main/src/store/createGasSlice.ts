@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai } from '@/ui/utils/utilsWeb3'
+import { gweiToWai, weiToGwei } from '@/ui/utils/utilsWeb3'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@/utils'
 import networks from '@/networks'
@@ -78,6 +78,23 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxFeePerGas: fetchedData.fast.maxFee,
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
+          }
+        } else if (chainId === 42161) {
+          const provider = get().wallet.provider
+
+          if (provider) {
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              const { l2GasPriceWei } = await networks[curve.chainId].api.helpers.fetchL2GasPrice(curve)
+              parsedGasInfo.gasInfo.l2GasPriceWei = l2GasPriceWei
+
+              if (l2GasPriceWei) {
+                curve.setCustomFeeData({
+                  maxFeePerGas: weiToGwei(l2GasPriceWei),
+                })
+              }
+            }
           }
         }
 
@@ -200,7 +217,7 @@ async function calcBasePlusPriority(
     result.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
     result.basePlusPriorityL1 = [gasInfo.base * 6000]
 
-    const { l2GasPriceWei, l1GasPriceWei } = await networks[curve.chainId].api.helpers.fetchL1GasPrice(curve)
+    const { l2GasPriceWei, l1GasPriceWei } = await networks[curve.chainId].api.helpers.fetchL1AndL2GasPrice(curve)
     result.l1GasPriceWei = l1GasPriceWei
     result.l2GasPriceWei = l2GasPriceWei
   } else if (gasFeeDataWei.gasPrice) {
