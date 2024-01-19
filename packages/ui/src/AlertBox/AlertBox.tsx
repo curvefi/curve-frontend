@@ -23,7 +23,11 @@ const AlertBox = ({
   const [showFullHeight, setShowFullHeight] = useState(false)
   const IconComp =
     alertType === '' ? null : (
-      <StyledIcon handleBtnClose={handleBtnClose !== undefined} name="InformationSquareFilled" size={24} />
+      <StyledIcon
+        className={handleBtnClose !== undefined ? 'extra-margin' : ''}
+        name="InformationSquareFilled"
+        size={24}
+      />
     )
 
   const alertContentRef = useRef<HTMLDivElement>(null)
@@ -54,7 +58,7 @@ const AlertBox = ({
         <ContentWrapper
           data-tag="content"
           grid
-          gridTemplateColumns={handleBtnClose ? 'auto 1fr auto' : 'auto 1fr'}
+          gridTemplateColumns={handleBtnClose !== undefined ? 'auto 1fr auto' : 'auto 1fr'}
           gridColumnGap={1}
           flexAlignItems={'flex-start'}
           {...props}
@@ -63,7 +67,7 @@ const AlertBox = ({
           <Content flex showFullHeight={showFullHeight} limitHeight={limitHeight} ref={alertContentRef}>
             {showFullHeight ? children : cutAlert}
           </Content>
-          {!!handleBtnClose && (
+          {handleBtnClose !== undefined && (
             <IconButton size="small" onClick={handleBtnClose}>
               <Icon name="Close" size={24} />
             </IconButton>
@@ -141,8 +145,10 @@ const Wrapper = styled(Box)<Pick<AlertBoxProps, 'alertType'> & { enabledHeightTo
   }}
 `
 
-const StyledIcon = styled(Icon)<{ handleBtnClose: boolean }>`
-  ${(props) => (props.handleBtnClose ? 'margin-top: 0.2rem;' : '')}
+const StyledIcon = styled(Icon)`
+  &.extra-margin {
+    margin-top: 0.2rem;
+  }
 `
 
 const AdjustHeightWrapper = styled.div`

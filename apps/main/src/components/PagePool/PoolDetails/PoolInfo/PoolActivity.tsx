@@ -1,4 +1,4 @@
-import type { PricesApiCoin } from '@/ui/Chart/types'
+import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -17,11 +17,20 @@ interface Props {
   chainId: ChainId
   chartExpanded: boolean
   coins: PricesApiCoin[]
+  tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
   refetchPricesData: () => void
 }
 
-const PoolActivity = ({ chainId, poolAddress, chartExpanded, coins, chartCombinations, refetchPricesData }: Props) => {
+const PoolActivity = ({
+  chainId,
+  poolAddress,
+  chartExpanded,
+  coins,
+  tradesTokens,
+  chartCombinations,
+  refetchPricesData,
+}: Props) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {
     pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },
@@ -73,7 +82,7 @@ const PoolActivity = ({ chainId, poolAddress, chartExpanded, coins, chartCombina
           </TitlesRow>
           <ElementsContainer>
             {eventOption === 'TRADE' ? (
-              <TradesData lpTradesData={tradeEventsData} chainId={chainId} coins={coins} />
+              <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
             ) : (
               <LiquidityData lpEventsData={liquidityEventsData} chainId={chainId} coins={coins} />
             )}
