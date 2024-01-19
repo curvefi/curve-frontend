@@ -27,7 +27,9 @@ const ComboBoxSelectedToken = ({
         />
       </TokenIconWrapper>
       <LabelTextWrapper grid>
-        <SelectedLabelText data-testid={`label-${testId}`}>{selected.symbol}</SelectedLabelText>{' '}
+        <SelectedLabelText data-testid={`label-${testId}`} title={selected.symbol}>
+          {selected.symbol}
+        </SelectedLabelText>{' '}
         {selected?.haveSameTokenName && (
           <AddressChip isMono size="xs">
             {shortenTokenAddress(selected.address)}
