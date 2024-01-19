@@ -13,6 +13,7 @@ import type {
   PricesApiCoin,
   LpPriceOhlcDataFormatted,
   LpLiquidityEventsData,
+  LpTradeToken,
 } from '@/ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -49,6 +50,7 @@ type SliceState = {
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
     chartOhlcData: LpPriceOhlcDataFormatted[]
+    tradesTokens: LpTradeToken[]
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
     timeOption: TimeOptions
@@ -110,6 +112,7 @@ const DEFAULT_STATE: SliceState = {
   snapshotsMapper: {},
   pricesApiState: {
     chartOhlcData: [],
+    tradesTokens: [],
     tradeEventsData: [],
     liquidityEventsData: [],
     timeOption: '1d',
@@ -598,9 +601,25 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           return timestampB - timestampA
         })
 
+        const tradesTokens: LpTradeToken[] = []
+        const seenIndexes = new Set<number>()
+
+        lpTradesData.forEach((item) => {
+          if (!seenIndexes.has(item.main_token.event_index)) {
+            seenIndexes.add(item.main_token.event_index)
+            tradesTokens.push(item.main_token)
+          }
+
+          if (!seenIndexes.has(item.reference_token.event_index)) {
+            seenIndexes.add(item.reference_token.event_index)
+            tradesTokens.push(item.reference_token)
+          }
+        })
+
         if (lpTradesData) {
           set(
             produce((state: State) => {
+              state.pools.pricesApiState.tradesTokens = tradesTokens
               state.pools.pricesApiState.tradeEventsData = sortedData
             })
           )

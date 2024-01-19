@@ -24,7 +24,15 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
   const { rChainId } = routerParams
   const themeType = useStore((state) => state.themeType)
   const {
-    pricesApiState: { chartOhlcData, chartStatus, selectedChartIndex, timeOption, chartExpanded, activityHidden },
+    pricesApiState: {
+      chartOhlcData,
+      chartStatus,
+      selectedChartIndex,
+      timeOption,
+      chartExpanded,
+      activityHidden,
+      tradesTokens,
+    },
     setChartSelectedIndex,
     setChartTimeOption,
     setChartExpanded,
@@ -191,6 +199,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
         <PoolActivity
           chartExpanded={chartExpanded}
           coins={pricesApiPoolData.coins}
+          tradesTokens={tradesTokens}
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}
@@ -226,6 +235,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
         <PoolActivity
           chartExpanded={chartExpanded}
           coins={pricesApiPoolData.coins}
+          tradesTokens={tradesTokens}
           poolAddress={pricesApiPoolData.address}
           chainId={rChainId}
           chartCombinations={chartCombinations}

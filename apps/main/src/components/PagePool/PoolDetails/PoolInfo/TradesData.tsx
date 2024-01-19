@@ -1,4 +1,4 @@
-import type { LpTradesData, PricesApiCoin } from '@/ui/Chart/types'
+import type { LpTradesData, LpTradeToken } from '@/ui/Chart/types'
 
 import styled from 'styled-components'
 
@@ -15,15 +15,15 @@ import Tooltip from '@/ui/Tooltip'
 type Props = {
   lpTradesData: LpTradesData[]
   chainId: ChainId
-  coins: PricesApiCoin[]
+  tradesTokens: LpTradeToken[]
 }
 
-const TradesData = ({ lpTradesData, chainId, coins }: Props) => {
+const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
   return (
     <>
       {lpTradesData.map((transaction, index) => {
-        const boughtToken = coins.find((token) => token.pool_index === transaction.bought_id)
-        const soldToken = coins.find((token) => token.pool_index === transaction.sold_id)
+        const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
+        const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
 
         return (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
