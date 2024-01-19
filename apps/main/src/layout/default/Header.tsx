@@ -115,6 +115,7 @@ const Header = (pageProps: PageProps) => {
 
   const SelectNetworkComp = (
     <StyledSelectNetwork
+      buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
       minWidth="9rem"
       mobileRightAlign

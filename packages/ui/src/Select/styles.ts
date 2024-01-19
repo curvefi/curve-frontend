@@ -7,7 +7,7 @@ export const StyledBtn = styled.button<{ $loading?: boolean }>`
   color: inherit;
   cursor: pointer;
   display: flex;
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   font-weight: bold;
   height: 100%;
   min-height: var(--height-medium);
