@@ -12,7 +12,7 @@ const DEFAULT_NETWORK_CONFIG = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
   gasPricesDefault: 1,
-  orgUIPath: 'https://curve.fi',
+  orgUIPath: 'https://classic.curve.fi',
   integrations: {
     imageBaseurl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
     listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
