@@ -41,6 +41,9 @@ type SliceState = {
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
+  stakedMapper: {
+    [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
+  }
   tvlMapper: { [chainId: string]: TvlMapper }
   tvlTotal: number | null
   volumeMapper: { [chainId: string]: VolumeMapper }
@@ -103,6 +106,7 @@ const DEFAULT_STATE: SliceState = {
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
+  stakedMapper: {},
   tvlMapper: {},
   tvlTotal: null,
   volumeMapper: {},

@@ -22,7 +22,7 @@ const TableHeadRewards = ({
   return (
     <>
       <div>
-        {t`Rewards tAPY`}{' '}
+        {t`Rewards tAPR`}{' '}
         <IconTooltip placement="top">{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
       </div>
       <Box grid gridAutoFlow="column" flexAlignItems="center" gridColumnGap={1}>

@@ -12,6 +12,7 @@ import { Item, Items } from '@/ui/Items'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import Box from '@/ui/Box'
 import PoolParametersDaoFees from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees'
+import PoolTotalStaked from '@/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked'
 import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
 import networks from '@/networks'
@@ -87,6 +88,8 @@ const PoolParameters = ({
           </Item>
         </Items>
       </article>
+
+      <PoolTotalStaked poolDataCacheOrApi={poolDataCacheOrApi} />
 
       <article>
         <Items listItemMargin="var(--spacing-1)">
