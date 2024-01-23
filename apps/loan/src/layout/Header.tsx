@@ -72,6 +72,7 @@ const Header = ({ chainId }: { chainId: ChainId | undefined }) => {
 
   const SelectNetworkComp = (
     <StyledSelectNetwork
+      buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
       minWidth="9rem"
       mobileRightAlign

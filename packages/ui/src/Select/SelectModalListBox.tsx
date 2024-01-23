@@ -32,7 +32,7 @@ const StyledListBox = styled.ul<{ minWidth?: string }>`
   background-color: var(--page--background-color);
   border: 3px solid var(--dropdown--background-color);
   box-shadow: 6px 6px 0 var(--box--primary--shadow-color);
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   max-height: 80vh;
   ${({ minWidth }) => minWidth && `min-width: ${minWidth};`}//overflow: auto;
 `

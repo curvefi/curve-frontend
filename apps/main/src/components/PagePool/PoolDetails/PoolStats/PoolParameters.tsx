@@ -5,6 +5,7 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
@@ -14,7 +15,7 @@ import Box from '@/ui/Box'
 import PoolParametersDaoFees from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees'
 import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
-import networks from '@/networks'
+import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 
 const PoolParameters = ({
   parameters,
@@ -48,18 +49,7 @@ const PoolParameters = ({
     }
   }, [tvl, volume])
 
-  const { gamma, adminFee, fee, A, future_A, future_A_time, initial_A, virtualPrice } = parameters ?? {}
-
-  const rampUpA = useMemo(() => {
-    return future_A_time && initial_A && future_A
-      ? `${formatNumber(initial_A, { useGrouping: false })} → ${formatNumber(future_A, { useGrouping: false })}`
-      : null
-  }, [future_A, future_A_time, initial_A])
-
-  // TODO: format date by locale
-  const rampUpAEndsTime = useMemo(() => {
-    return future_A_time ? new Date(future_A_time).toLocaleString() : null
-  }, [future_A_time])
+  const { gamma, adminFee, fee } = parameters ?? {}
 
   return (
     <>
@@ -167,46 +157,7 @@ const PoolParameters = ({
               </Item>
             )}
 
-            {virtualPrice && (
-              <Item>
-                {t`A:`}{' '}
-                <Chip
-                  isBold
-                  size="md"
-                  tooltip={t`Amplification coefficient chosen from fluctuation of prices around 1`}
-                  tooltipProps={{
-                    placement: 'bottom end',
-                  }}
-                >
-                  {formatNumber(A, { useGrouping: false })}
-                  <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-                </Chip>
-              </Item>
-            )}
-
-            {rampUpA && (
-              <Item>
-                {t`Ramping up A:`}{' '}
-                <Chip
-                  isBold
-                  size="md"
-                  tooltip={t`Slowly changing up A so that it doesn't negatively change virtual price growth of shares`}
-                  tooltipProps={{
-                    placement: 'bottom end',
-                  }}
-                >
-                  {rampUpA} <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-                </Chip>
-              </Item>
-            )}
-
-            {rampUpAEndsTime && (
-              <Item>
-                {t`Ramp up A ends on: `}
-                <br />
-                <strong>{rampUpAEndsTime}</strong>
-              </Item>
-            )}
+            <PoolParametersA parameters={parameters} />
           </Items>
         </article>
       )}
