@@ -19,6 +19,7 @@ import FieldsDeposit from '@/components/PagePool/Deposit/components/FieldsDeposi
 import DetailInfoSlippage from '@/components/PagePool/components/DetailInfoSlippage'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import DetailInfoEstLpTokens from '@/components/PagePool/components/DetailInfoEstLpTokens'
+import DetailInfoExpectedApy from '@/components/PagePool/components/DetailInfoExpectedApy'
 import DetailInfoSlippageTolerance from '@/components/PagePool/components/DetailInfoSlippageTolerance'
 import HighSlippagePriceImpactModal from '@/components/PagePool/components/WarningModal'
 import Stepper from '@/ui/Stepper'
@@ -47,6 +48,7 @@ const FormDepositStake = ({
   )
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const slippage = useStore((state) => state.poolDeposit.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepApprove)
   const fetchStepDepositStake = useStore((state) => state.poolDeposit.fetchStepDepositStake)
@@ -264,6 +266,12 @@ const FormDepositStake = ({
           formLpTokenExpected={formLpTokenExpected}
           maxSlippage={maxSlippage}
           poolDataCacheOrApi={poolDataCacheOrApi}
+        />
+
+        <DetailInfoExpectedApy
+          lpTokenAmount={formLpTokenExpected.expected}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          crvApr={rewardsApy?.crv?.[0]}
         />
 
         <DetailInfoSlippage {...slippage} />

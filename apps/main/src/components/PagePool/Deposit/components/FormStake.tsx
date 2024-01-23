@@ -16,6 +16,7 @@ import useStore from '@/store/useStore'
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import AlertFormError from '@/components/AlertFormError'
 import AlertBox from '@/ui/AlertBox'
+import DetailInfoExpectedApy from '@/components/PagePool/components/DetailInfoExpectedApy'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
 import Stepper from '@/ui/Stepper'
@@ -32,6 +33,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
   const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
   const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
@@ -176,14 +178,22 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
         />
       </FieldsWrapper>
 
-      {haveSigner && (
-        <DetailInfoEstGas
-          curve={curve}
-          chainId={rChainId}
-          {...formEstGas}
-          stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+      <div>
+        <DetailInfoExpectedApy
+          lpTokenAmount={formValues.lpToken}
+          poolDataCacheOrApi={poolDataCacheOrApi}
+          crvApr={rewardsApy?.crv?.[0]}
         />
-      )}
+
+        {haveSigner && (
+          <DetailInfoEstGas
+            curve={curve}
+            chainId={rChainId}
+            {...formEstGas}
+            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+          />
+        )}
+      </div>
 
       <TransferActions
         curve={curve}

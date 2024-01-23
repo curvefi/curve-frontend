@@ -149,11 +149,8 @@ const TableRowMobile = ({
                   {!poolData?.pool?.isGaugeKilled && (
                     <div>
                       <MobileTableTitle>
-                        {t`Rewards tAPY`}{' '}
-                        <IconTooltip
-                          placement="top"
-                          minWidth="200px"
-                        >{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
+                        {t`Rewards tAPR`}{' '}
+                        <IconTooltip placement="top" minWidth="200px">{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
                         {tableLabel.rewardsCrv.name} + {tableLabel.rewardsOther.name}
                       </MobileTableTitle>
                       <TCellRewards
