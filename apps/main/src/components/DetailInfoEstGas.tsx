@@ -44,7 +44,9 @@ const DetailInfoEstGas = ({
       const { symbol, gasPricesUnit } = networks[chainId]
       let gasCostInWei = 0
 
-      if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curve) {
+      if (chainId === 42161 && gasInfo?.l2GasPriceWei && typeof estimatedGas === 'number') {
+        gasCostInWei = gasInfo.l2GasPriceWei * estimatedGas
+      } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curve) {
         if (gasInfo?.l2GasPriceWei && gasInfo?.l1GasPriceWei) {
           const [l2GasUsedWei, l1GasUsedWei] = estimatedGas
           const l2GasCostWei = l2GasUsedWei * gasInfo.l2GasPriceWei
