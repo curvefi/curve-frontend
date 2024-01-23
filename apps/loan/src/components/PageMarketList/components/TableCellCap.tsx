@@ -14,7 +14,7 @@ const TableCellCap = ({ cap }: Props) => {
       {isUndefined(cap) ? (
         ''
       ) : (
-        <Chip size="md" tooltip={formatNumber(cap)} tooltipProps={{ placement: 'bottom end', minWidth: '300px' }}>
+        <Chip size="md" tooltip={formatNumber(cap)}>
           {formatNumber(cap, { notation: 'compact' })}
         </Chip>
       )}

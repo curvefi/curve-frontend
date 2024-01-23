@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { useNumberFieldState } from 'react-stately'
 import { useLocale, useNumberField } from 'react-aria'
 
-import IconTooltip from '@/ui/IconTooltip/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 

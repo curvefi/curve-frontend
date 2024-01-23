@@ -16,7 +16,7 @@ import TableCellInPool from '@/components/PagePoolList/components/TableCellInPoo
 import styled from 'styled-components'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
 import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
@@ -150,7 +150,10 @@ const TableRowMobile = ({
                     <div>
                       <MobileTableTitle>
                         {t`Rewards tAPY`}{' '}
-                        <IconTooltip placement="top">{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
+                        <IconTooltip
+                          placement="top"
+                          minWidth="200px"
+                        >{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
                         {tableLabel.rewardsCrv.name} + {tableLabel.rewardsOther.name}
                       </MobileTableTitle>
                       <TCellRewards

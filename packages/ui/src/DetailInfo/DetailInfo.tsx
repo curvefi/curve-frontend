@@ -95,11 +95,6 @@ const DetailValue = styled.div<DetailValeProps>`
       return 'inherit'
     }
   }};
-
-  button {
-    display: flex;
-    padding: 0 0.25rem;
-  }
 `
 
 interface WrapperProps extends Pick<Props, 'isDivider' | 'isMultiLine' | 'size' | 'textLeft'> {}

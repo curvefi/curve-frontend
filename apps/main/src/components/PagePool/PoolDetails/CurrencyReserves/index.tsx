@@ -13,7 +13,7 @@ import { Chip } from '@/ui/Typography'
 import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import CrMobile from '@/components/PagePool/PoolDetails/CurrencyReserves/CrMobile'
 import CrDesktop from '@/components/PagePool/PoolDetails/CurrencyReserves/CrDesktop'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 interface Props {
   routerParams: RouterParams

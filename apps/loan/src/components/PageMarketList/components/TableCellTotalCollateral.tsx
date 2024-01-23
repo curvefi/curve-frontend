@@ -1,12 +1,12 @@
 import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
-import styled from 'styled-components'
 
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getTokenName } from '@/utils/utilsLoan'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
+import Box from '@/ui/Box'
 
 type Props = {
   llamma: Llamma | undefined
@@ -36,43 +36,30 @@ const TableCellTotalCollateral = ({ llamma, loanDetails }: Props) => {
     <Chip
       size="md"
       tooltip={
-        llamma ? (
-          <TooltipTable>
-            <tbody>
-              <tr>
-                <th>{getTokenName(llamma).stablecoin}</th>
-                <td className="right">
-                  {formatNumber(totalStablecoin, { ...getFractionDigitsOptions(totalStablecoin, 2) })}
-                </td>
-              </tr>
-              <tr>
-                <th>{getTokenName(llamma).collateral}</th>
-                <td className="right">
-                  {formatNumber(totalCollateralUsd, { ...getFractionDigitsOptions(totalCollateralUsd, 2) })}
-                </td>
-              </tr>
-              <tr>
-                <td colSpan={2} className="right" style={{ borderTop: '1px solid var(--border-600)' }}>
-                  ≈ {formatNumber(totalCollateralValue, { ...getFractionDigitsOptions(totalCollateralValue, 2) })}
-                </td>
-              </tr>
-            </tbody>
-          </TooltipTable>
-        ) : null
+        <>
+          {llamma ? (
+            <Box gridGap={1} padding="0.25rem">
+              {[
+                { label: getTokenName(llamma).stablecoin, value: totalStablecoin },
+                { label: getTokenName(llamma).collateral, value: totalCollateralUsd },
+              ].map(({ label, value }) => (
+                <Box key={label} grid gridTemplateColumns="repeat(2, minmax(100px, 1fr))" gridGap={1}>
+                  <strong>{label}</strong>
+                  {formatNumber(value, { ...getFractionDigitsOptions(value, 2) })}
+                </Box>
+              ))}
+              <hr />
+              <div>
+                ≈ {formatNumber(totalCollateralValue, { ...getFractionDigitsOptions(totalCollateralValue, 2) })}
+              </div>
+            </Box>
+          ) : null}
+        </>
       }
-      tooltipProps={{ placement: 'bottom end' }}
     >
       {formatNumber(totalCollateralValue, { notation: 'compact', currency: 'USD' })}
     </Chip>
   )
 }
-
-const TooltipTable = styled.table`
-  width: 100%;
-
-  td {
-    padding: 0.2rem;
-  }
-`
 
 export default TableCellTotalCollateral

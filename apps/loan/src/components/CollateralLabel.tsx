@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import useCollateralAlert from '@/hooks/useCollateralAlert'
 
-import AlertTooltipIcon from '@/ui/AlertTooltipIcon'
+import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
 import Box from '@/ui/Box'
 import CollateralLabelNameAddress from '@/components/CollateralLabelNameAddress'
 import TokenIcons from '@/components/TokenIcons'

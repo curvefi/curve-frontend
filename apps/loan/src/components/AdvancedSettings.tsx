@@ -14,7 +14,7 @@ import { Radio, RadioGroup } from '@/ui/Radio'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
 import InputProvider, { InputField } from '@/ui/InputComp'
 

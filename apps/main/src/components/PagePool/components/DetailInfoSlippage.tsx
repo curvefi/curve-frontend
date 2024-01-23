@@ -7,7 +7,7 @@ import { formatNumber } from '@/ui/utils'
 
 import { Chip } from '@/ui/Typography'
 import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 interface Props extends Slippage {}
 

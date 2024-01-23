@@ -7,7 +7,7 @@ import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokenAlert from '@/hooks/useTokenAlert'
 
 import { Chip } from '@/ui/Typography'
-import AlertTooltipIcon from '@/ui/AlertTooltipIcon'
+import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
 import Box from '@/ui/Box'
 import ChipPool from '@/components/ChipPool'
 import ChipToken from '@/components/ChipToken'

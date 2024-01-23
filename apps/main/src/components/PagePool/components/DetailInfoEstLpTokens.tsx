@@ -6,7 +6,7 @@ import { t } from '@lingui/macro'
 import { formatNumber } from '@/ui/utils'
 
 import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 const DetailInfoEstLpTokens = ({
   formLpTokenExpected,

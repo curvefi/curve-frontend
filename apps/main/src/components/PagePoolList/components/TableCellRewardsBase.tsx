@@ -4,7 +4,7 @@ import { LARGE_APY } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
 import { Chip } from '@/ui/Typography'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TooltipBaseApy from '@/components/PagePoolList/components/TooltipBaseApy'
 
 type Props = {

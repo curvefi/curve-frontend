@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 
 import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 interface TheadBtnProps {
   align: string[]

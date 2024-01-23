@@ -14,7 +14,7 @@ import { DescriptionChip, StyledIconButton, StyledStats } from '@/components/Pag
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/IconTooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Tooltip from '@/ui/Tooltip'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
