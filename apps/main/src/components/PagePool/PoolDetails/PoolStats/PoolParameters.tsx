@@ -150,7 +150,7 @@ const PoolParameters = ({
         </article>
       )}
 
-      {(!pricesApi || !poolData?.pool.isCrypto) && (
+      {!pricesApi && (
         <article>
           <Title>{t`Pool Parameters`}</Title>
           <Items listItemMargin="var(--spacing-1)">

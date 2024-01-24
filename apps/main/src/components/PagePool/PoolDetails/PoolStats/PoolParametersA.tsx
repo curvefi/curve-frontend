@@ -19,7 +19,7 @@ const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] })
         isRampUp: Number(future_A) > Number(initial_A),
       }
     }
-  }, [future_A_time])
+  }, [future_A, future_A_time, initial_A, initial_A_time])
 
   return (
     <>

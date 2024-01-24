@@ -245,7 +245,7 @@ declare global {
     }[]
     pool_type: string
     metapool: boolean | null
-    base_pool: boolean | null
+    base_pool: string | null
     asset_types: number[]
     oracles: {
       oracle_address: string

@@ -9,6 +9,7 @@ import { formatNumber, getFractionDigitsOptions, formatNumberUsdRate } from '@/u
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { shortenTokenAddress, getChainPoolIdActiveKey } from '@/utils'
 import { copyToClipboard } from '@/lib/utils'
+import dayjs from '@/lib/dayjs'
 
 import Box from '@/ui/Box'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
@@ -36,7 +37,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
   const convertSmallNumber = (number: number) => formatNumber(number / 10 ** 8, { showAllFractionDigits: true })
   const convertNumber = (number: number) => formatNumber(number / 10 ** 18, { showAllFractionDigits: true })
 
-  const { gamma, A, future_A, future_A_time, initial_A } = poolData.parameters ?? {}
+  const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolData.parameters ?? {}
 
   const haveWrappedCoins = useMemo(() => {
     if (!!poolData?.pool?.wrappedCoins) {
@@ -53,6 +54,16 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
   const rampUpAEndsTime = useMemo(() => {
     return future_A_time ? new Date(future_A_time).toLocaleString() : null
   }, [future_A_time])
+
+  const rampADetails = useMemo(() => {
+    if (initial_A_time && initial_A && future_A_time && future_A) {
+      return {
+        isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
+        isFutureATimeToday: dayjs().isSame(future_A_time, 'day'),
+        isRampUp: Number(future_A) > Number(initial_A),
+      }
+    }
+  }, [future_A, future_A_time, initial_A, initial_A_time])
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
@@ -83,8 +94,19 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
           <SectionTitle>{t`Pool Info:`}</SectionTitle>
           <PoolParameter>
             <PoolParameterTitle>{t`Pool Type:`}</PoolParameterTitle>
-            <PoolParameterValue>{returnPoolType(pricesData.pool_type, pricesData.coins.length)}</PoolParameterValue>
+            <PoolParameterValue>
+              {returnPoolType(pricesData.pool_type, pricesData.coins.length)}
+              {pricesData.metapool && `, ${t`Metapool`}`}
+            </PoolParameterValue>
           </PoolParameter>
+          {pricesData.base_pool && (
+            <PoolParameter>
+              <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
+              <DataAddressLink href={networks[rChainId].scanTokenPath(pricesData.base_pool)}>
+                {shortenTokenAddress(pricesData.base_pool)}
+              </DataAddressLink>
+            </PoolParameter>
+          )}
           <PoolParameter>
             <PoolParameterTitle>{t`Vyper Version:`}</PoolParameterTitle>
             <PoolParameterValue>{pricesData.vyper_version}</PoolParameterValue>
@@ -123,25 +145,27 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
                   )}
                 </Box>
                 {pricesData && pricesData.asset_types[idx] === 1 && (
-                  <OracleWrapper>
+                  <IndentWrapper>
                     <Box flex>
                       <Numeral>├─</Numeral>
-                      <OracleTitle>{t`Oracle Address:`}</OracleTitle>
-                      <OracleAddressLink href={networks[rChainId].scanTokenPath(pricesData.oracles[0].oracle_address)}>
+                      <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
+                      <IndentDataAddressLink
+                        href={networks[rChainId].scanTokenPath(pricesData.oracles[0].oracle_address)}
+                      >
                         {shortenTokenAddress(pricesData.oracles[0].oracle_address)}
-                      </OracleAddressLink>
+                      </IndentDataAddressLink>
                     </Box>
                     <Box flex>
                       <Numeral>├─</Numeral>
-                      <OracleTitle>{t`Function:`}</OracleTitle>
-                      <OracleData>{pricesData.oracles[0].method}</OracleData>
+                      <IndentDataTitle>{t`Function:`}</IndentDataTitle>
+                      <IndentData>{pricesData.oracles[0].method}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
-                      <OracleTitle>{t`Function ID:`}</OracleTitle>
-                      <OracleData>{pricesData.oracles[0].method_id}</OracleData>
+                      <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
+                      <IndentData>{pricesData.oracles[0].method_id}</IndentData>
                     </Box>
-                  </OracleWrapper>
+                  </IndentWrapper>
                 )}
               </Coin>
             ))}
@@ -162,33 +186,53 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
             </PoolParameter>
           )}
           {snapshotData.a !== null && (
-            <PoolParameter noBorder={rampUpA !== null}>
+            <PoolParameter noBorder={rampADetails && rampADetails.isRampUp !== null}>
               <PoolParameterTitle>{t`A:`}</PoolParameterTitle>
               <PoolParameterValue>
-                {formatNumber(pricesApi ? snapshotData.a : A, { useGrouping: false })}
+                <Chip
+                  isBold
+                  size="sm"
+                  tooltip={
+                    <>
+                      {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
+                      {rampADetails && rampADetails?.isFutureATimePassedToday && (
+                        <>
+                          <br />{' '}
+                          {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
+                            future_A_time
+                          ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
+                        </>
+                      )}
+                    </>
+                  }
+                  tooltipProps={{ minWidth: '200px' }}
+                >
+                  {formatNumber(pricesApi ? snapshotData.a : A, { useGrouping: false })}
+                  <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+                </Chip>
               </PoolParameterValue>
             </PoolParameter>
           )}
-          {rampUpA && (
+          {rampADetails && rampADetails.isRampUp && (
             <RampUpContainer>
               <Box flex>
                 <Numeral>├─</Numeral>
                 <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
-                  <PoolParameterTitle>{t`Ramping ${
-                    future_A_time! > +initial_A! ? 'up' : 'down'
-                  } A:`}</PoolParameterTitle>
+                  <PoolParameterTitle>{t`Ramping ${future_A! > initial_A! ? 'up' : 'down'} A:`}</PoolParameterTitle>
                   <PoolParameterValue>
                     <StyledChip
                       isBold
                       size="md"
                       tooltip={t`Slowly changing ${
-                        future_A_time! > +initial_A! ? 'up' : 'down'
+                        future_A! > initial_A! ? 'up' : 'down'
                       } A so that it doesn't negatively change virtual price growth of shares`}
                       tooltipProps={{
                         placement: 'bottom end',
                       }}
                     >
-                      {rampUpA} <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+                      {formatNumber(initial_A, { useGrouping: false })} →{' '}
+                      {formatNumber(future_A, { useGrouping: false })}{' '}
+                      <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
                     </StyledChip>
                   </PoolParameterValue>
                 </Box>
@@ -196,7 +240,9 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
               <Box flex>
                 <Numeral>└─</Numeral>
                 <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
-                  <PoolParameterTitle>{t`Ramp up A ends on: `}</PoolParameterTitle>
+                  <PoolParameterTitle>{t`Ramp ${
+                    future_A! > initial_A! ? 'up' : 'down'
+                  } A ends on: `}</PoolParameterTitle>
                   <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
                 </Box>
               </Box>
@@ -359,7 +405,7 @@ const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);
 `
 
-const OracleWrapper = styled(Box)`
+const IndentWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   margin: 0 0 var(--spacing-2) var(--spacing-2);
@@ -369,18 +415,25 @@ const Numeral = styled.p`
   font-family: var(--font-mono);
 `
 
-const OracleTitle = styled.p`
+const IndentDataTitle = styled.p`
   margin-left: var(--spacing-2);
   font-size: var(--font-size-2);
 `
 
-const OracleAddressLink = styled(ExternalLink)`
+const DataAddressLink = styled(ExternalLink)`
+  margin: var(--spacing-1) 0 0 auto;
+  font-size: var(--font-size-2);
+  color: inherit;
+  font-weight: var(--bold);
+`
+
+const IndentDataAddressLink = styled(ExternalLink)`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
   color: inherit;
 `
 
-const OracleData = styled.p`
+const IndentData = styled.p`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
 `
