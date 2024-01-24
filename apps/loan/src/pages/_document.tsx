@@ -49,6 +49,33 @@ export default class CurveDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Primary Meta Tags */}
+          <meta name="title" content="Curve.fi" />
+          <meta
+            name="description"
+            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+          />
+
+          {/* Open Graph */}
+          <meta property="og:type" content="website" />
+          <meta property="og:url" content="https://curve.fi" />
+          <meta property="og:title" content="Curve.fi" />
+          <meta
+            property="og:description"
+            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+          />
+          <meta property="og:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+
+          {/* Twitter */}
+          <meta property="twitter:card" content="summary" />
+          <meta property="twitter:url" content="https://curve.fi" />
+          <meta property="twitter:title" content="Curve.fi" />
+          <meta
+            property="twitter:description"
+            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+          />
+          <meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
           <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
