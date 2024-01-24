@@ -46,7 +46,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
   }, [poolData?.pool?.wrappedCoins])
 
   const rampUpA = useMemo(() => {
-    return future_A_time && initial_A && future_A ? `${initial_A} → ${future_A}` : null
+    return future_A_time && initial_A && future_A && future_A_time > Date.now() ? `${initial_A} → ${future_A}` : null
   }, [future_A, future_A_time, initial_A])
 
   // TODO: format date by locale
@@ -64,6 +64,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
     if (poolType === 'crypto' && coins === 2) return t`Two Coin Cryptoswap`
     if (poolType === 'crypto' && coins === 3) return t`Tricrypto`
     if (poolType === 'factory_tricrypto') return t`Three Coin Cryptoswap-NG`
+    if (poolType === 'crvusd') return 'crvUSD'
   }
 
   const returnAssetType = (id: number) => {
@@ -170,24 +171,34 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
           )}
           {rampUpA && (
             <RampUpContainer>
-              <Box flex flexJustifyContent="space-between">
-                <PoolParameterTitle>{t`Ramping up A:`}</PoolParameterTitle>
-                <PoolParameterValue>
-                  <Chip
-                    isBold
-                    size="md"
-                    tooltip={t`Slowly changing up A so that it doesn't negatively change virtual price growth of shares`}
-                    tooltipProps={{
-                      placement: 'bottom end',
-                    }}
-                  >
-                    {rampUpA} <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-                  </Chip>
-                </PoolParameterValue>
+              <Box flex>
+                <Numeral>├─</Numeral>
+                <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
+                  <PoolParameterTitle>{t`Ramping ${
+                    future_A_time! > +initial_A! ? 'up' : 'down'
+                  } A:`}</PoolParameterTitle>
+                  <PoolParameterValue>
+                    <StyledChip
+                      isBold
+                      size="md"
+                      tooltip={t`Slowly changing ${
+                        future_A_time! > +initial_A! ? 'up' : 'down'
+                      } A so that it doesn't negatively change virtual price growth of shares`}
+                      tooltipProps={{
+                        placement: 'bottom end',
+                      }}
+                    >
+                      {rampUpA} <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+                    </StyledChip>
+                  </PoolParameterValue>
+                </Box>
               </Box>
-              <Box flex flexJustifyContent="space-between">
-                <PoolParameterTitle>{t`Ramp up A ends on: `}</PoolParameterTitle>
-                <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
+              <Box flex>
+                <Numeral>└─</Numeral>
+                <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
+                  <PoolParameterTitle>{t`Ramp up A ends on: `}</PoolParameterTitle>
+                  <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
+                </Box>
               </Box>
             </RampUpContainer>
           )}
@@ -401,6 +412,10 @@ const PoolDataWrapper = styled.div`
   }
 `
 
+const StyledChip = styled(Chip)`
+  font-size: var(--font-size-2);
+`
+
 const PoolParameterTitle = styled.p`
   font-weight: var(--semi-bold);
   font-size: var(--font-size-2);
@@ -421,8 +436,6 @@ const PoolParameterLink = styled(ExternalLink)`
 const RampUpContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-2);
-  background-color: var(--box--secondary--content--background-color);
 `
 
 const StatsSection = styled(Box)`
