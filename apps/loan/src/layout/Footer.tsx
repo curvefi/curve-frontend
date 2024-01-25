@@ -35,7 +35,7 @@ export const CommunitySection = ({ className, locale }: { locale: Locale['value'
     </SectionItem>
     {(locale === 'zh-Hans' || locale === 'zh-Hant') && (
       <SectionItem>
-        <StyledExternalLink href="https://imdodo.com/s/147186?inv=7J46">{t`Dodo`}</StyledExternalLink>
+        <StyledExternalLink href="https://imdodo.com/s/147186?inv=7J46">{t`Dodo`}</StyledExternalLink> 
       </SectionItem>
     )}
     <SectionItem>
@@ -86,7 +86,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         <StyledExternalLink href="https://docs.curve.fi/references/audits/audits_pdf/">{t`Audits`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/contracts`}>{t`Contracts`}</StyledExternalLink>
+        <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">{t`Contracts`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
         <StyledExternalLink href={`${orgUIPath}/bugbounty`}>{t`Bug Bounty`}</StyledExternalLink>
@@ -109,7 +109,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         <StyledExternalLink href="https://resources.curve.fi/">{t`Resources`}</StyledExternalLink>
       </SectionItem>
 
-      {/* section 3 */}
+      {/* section 3 */} 
       <SectionItem>
         <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
       </SectionItem>
@@ -142,7 +142,7 @@ const Footer = ({ chainId }: { chainId: ChainId }) => {
             <ExternalLinkButton href="https://t.me/curvefi" size="small" variant="contained">
               <RCTelegramLogo />
             </ExternalLinkButton>
-            <ExternalLinkButton href="https://github.com/curvefi/curve-contract" size="small" variant="contained">
+            <ExternalLinkButton href="https://github.com/curvefi" size="small" variant="contained">
               <RCGithubLogo />
             </ExternalLinkButton>
             <ExternalLinkButton href="https://discord.gg/9uEHakc" size="small" variant="contained">

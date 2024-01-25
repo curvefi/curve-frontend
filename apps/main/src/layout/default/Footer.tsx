@@ -181,7 +181,7 @@ const Footer = ({ chainId }: { chainId: ChainId | null }) => {
             <ExternalLinkButton href="https://t.me/curvefi" size="small" variant="contained">
               <RCTelegramLogo />
             </ExternalLinkButton>
-            <ExternalLinkButton href="https://github.com/curvefi/curve-contract" size="small" variant="contained">
+            <ExternalLinkButton href="https://github.com/curvefi" size="small" variant="contained">
               <RCGithubLogo />
             </ExternalLinkButton>
             <ExternalLinkButton href="https://discord.gg/9uEHakc" size="small" variant="contained">
