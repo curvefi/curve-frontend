@@ -93,7 +93,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
   return (
     <ResourcesWrapper className={className}>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/whitepaper`}>
+        <StyledExternalLink href="https://docs.curve.fi/references/whitepapers/overview/">
           <Trans>Whitepaper</Trans>
         </StyledExternalLink>
       </SectionItem>
@@ -110,7 +110,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/contracts`}>
+        <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">
           <Trans>Contracts</Trans>
         </StyledExternalLink>
       </SectionItem>
@@ -133,7 +133,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/devdocs`}>
+        <StyledExternalLink href="https://docs.curve.fi">
           <Trans>Developer Docs</Trans>
         </StyledExternalLink>
       </SectionItem>
@@ -150,7 +150,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
 
       {/* section 3 */}
       <SectionItem>
-        <StyledExternalLink href={`https://github.com/curvefi/curve-contract`}>Github</StyledExternalLink>
+        <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
       </SectionItem>
     </ResourcesWrapper>
   )
@@ -181,7 +181,7 @@ const Footer = ({ chainId }: { chainId: ChainId | null }) => {
             <ExternalLinkButton href="https://t.me/curvefi" size="small" variant="contained">
               <RCTelegramLogo />
             </ExternalLinkButton>
-            <ExternalLinkButton href="https://github.com/curvefi/curve-contract" size="small" variant="contained">
+            <ExternalLinkButton href="https://github.com/curvefi" size="small" variant="contained">
               <RCGithubLogo />
             </ExternalLinkButton>
             <ExternalLinkButton href="https://discord.gg/9uEHakc" size="small" variant="contained">
