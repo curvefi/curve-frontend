@@ -80,7 +80,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     }
 
     // Fantom networks
-    const eymaAlert = (liquidityLink: string, swapLink: string): PoolAlert => ({
+    const eymaAlert = (liquidityLink: string, swapLink: string, mintTokenLabel?: string): PoolAlert => ({
       alertType: '',
       message: (
         <MessageWrapper>
@@ -93,7 +93,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
           <MessageLinksWrapper>
             <StyledChip isBold>
               <StyledExternalLink href={liquidityLink}>
-                mint s-tokens <Icon className="svg-tooltip" name="Launch" size={16} />
+                {mintTokenLabel || 'mint s-tokens'} <Icon className="svg-tooltip" name="Launch" size={16} />
               </StyledExternalLink>
             </StyledChip>{' '}
             <StyledChip isBold>
@@ -145,11 +145,11 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // fantom
-      '0x939721ce04332ca04b100154e0c8fcbb4ebaf695': eymaAlert('https://app.eywa.fi/swap?inputChainId=15&inputToken=0x6bb9a6b7066445da6bef268b91810ae750431587&outputChainId=15&outputToken=0x939721ce04332ca04b100154e0c8fcbb4ebaf695', 'https://app.eywa.fi/swap?inputChainId=15&inputToken=0x6bb9a6b7066445da6bef268b91810ae750431587&outputChainId=15&outputToken=0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c'), // eyma EUSD
-      '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c': eymaAlert('https://app.eywa.fi/swap?inputChainId=15&inputToken=0x5211176fc476da0601b42cf71518d026fc093de6&outputChainId=15&outputToken=0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c', 'https://app.eywa.fi/swap?inputChainId=15&inputToken=0x5211176fc476da0601b42cf71518d026fc093de6&outputChainId=15&outputToken=0x40fc7408a060cbef1fe63f7182870184d7ff95e3'), // eyma eUSDT
-      '0x6bb9a6b7066445da6bef268b91810ae750431587': eymaAlert('https://app.eywa.fi/swap?inputChainId=15&inputToken=0x11326a37e262189aefb03484a681539afb80c1a2&outputChainId=15&outputToken=0x6bb9a6b7066445da6bef268b91810ae750431587', 'https://app.eywa.fi/swap?inputChainId=15&inputToken=0x11326a37e262189aefb03484a681539afb80c1a2&outputChainId=15&outputToken=0xbf25a2cb61f453ce8ea84c369a9907abdaaa6056'), // eyma eUSDC
-      '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2': eymaAlert('https://app.eywa.fi/swap?inputChainId=15&inputToken=0x7e1f532f86bca89d91f61085a26bfc3ab3264fe8&outputChainId=15&outputToken=0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2', 'https://app.eywa.fi/swap?inputChainId=15&inputToken=0x7e1f532f86bca89d91f61085a26bfc3ab3264fe8&outputChainId=15&outputToken=0xd33fbb4951fc744af374595cf7f0a5b62b0540a7'), // eyma eDAI
-      '0x6e0dc5a4ef555277db3435703f0e287040013763': eymaAlert('https://app.eywa.fi/swap?inputChainId=15&inputToken=0x399991f54ec6e4353d18a8e975ae4f68cfa234d6&outputChainId=15&outputToken=0x6e0dc5a4ef555277db3435703f0e287040013763', 'https://app.eywa.fi/swap?inputChainId=15&inputToken=0x399991f54ec6e4353d18a8e975ae4f68cfa234d6&outputChainId=15&outputToken=0xf4cd12d90b407d2bbc2ce4047d673f29c5513097'), // eyma eTUSD
+      '0x939721ce04332ca04b100154e0c8fcbb4ebaf695': eymaAlert('https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=15&outputToken=0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c', 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d', 'mint e-tokens'), // eyma EUSD
+      '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c': eymaAlert('https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=15&outputToken=0x3d947fa82723b78e67730c113188bed865167a31', 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x55d398326f99059ff775485246999027b3197955'), // eyma eUSDT
+      '0x6bb9a6b7066445da6bef268b91810ae750431587': eymaAlert('https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2791bca1f2de4661ed88a30c99a7a9449aa84174&outputChainId=15&outputToken=0xff78828a56543476875551d31792137848e626c5', 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2791bca1f2de4661ed88a30c99a7a9449aa84174&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'), // eyma eUSDC
+      '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2': eymaAlert('https://app.eywa.fi/swap?inputChainId=3&inputToken=0x8f3cf7ad23cd3cadbd9735aff958023239c6a063&outputChainId=15&outputToken=0xdcd1dd03b2c7ed2ea127c968d4c032130f6baee6', 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x8f3cf7ad23cd3cadbd9735aff958023239c6a063&outputChainId=1&outputToken=0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'), // eyma eDAI
+      '0x6e0dc5a4ef555277db3435703f0e287040013763': eymaAlert('https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2e1ad108ff1d8c782fcbbb89aad783ac49586756&outputChainId=15&outputToken=0x1123f3a1394f0efc2f34a1cbec887873361e96f0', 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2e1ad108ff1d8c782fcbbb89aad783ac49586756&outputChainId=1&outputToken=0x40af3827f39d0eacbf4a168f8d4ee67c121d11c9'), // eyma eTUSD
       // ethereum
       '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
       '0xfc636d819d1a98433402ec9dec633d864014f28c': zunamiAlert(),
