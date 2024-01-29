@@ -470,8 +470,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const poolInfoData: PricesApiPoolData = await response[0].json()
           const snapShotsData: PricesApiSnapshotsResponse = await response[1].json()
 
-          console.log(poolInfoData)
-
           set(
             produce((state: State) => {
               state.pools.snapshotsMapper[poolAddress] = snapShotsData.data[0]

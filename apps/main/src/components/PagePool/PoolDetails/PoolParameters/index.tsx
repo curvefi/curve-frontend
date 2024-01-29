@@ -5,9 +5,9 @@ import { t } from '@lingui/macro'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
-import { formatNumber, getFractionDigitsOptions, formatNumberUsdRate } from '@/ui/utils'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { shortenTokenAddress, getChainPoolIdActiveKey } from '@/utils'
+import { shortenTokenAddress } from '@/utils'
 import { copyToClipboard } from '@/lib/utils'
 import dayjs from '@/lib/dayjs'
 
@@ -18,7 +18,7 @@ import { ExternalLink } from '@/ui/Link'
 import TokenIcon from '@/components/TokenIcon'
 import Icon from '@/ui/Icon'
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import { ExternalLinkToken, TokenInfo } from '@/components/PagePool/PoolDetails/CurrencyReserves/styles'
+import { ExternalLinkToken } from '@/components/PagePool/PoolDetails/CurrencyReserves/styles'
 
 type Props = {
   pricesApi: boolean
@@ -46,10 +46,6 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
     return false
   }, [poolData?.pool?.wrappedCoins])
 
-  const rampUpA = useMemo(() => {
-    return future_A_time && initial_A && future_A && future_A_time > Date.now() ? `${initial_A} → ${future_A}` : null
-  }, [future_A, future_A_time, initial_A])
-
   // TODO: format date by locale
   const rampUpAEndsTime = useMemo(() => {
     return future_A_time ? new Date(future_A_time).toLocaleString() : null
@@ -71,6 +67,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
 
   const returnPoolType = (poolType: string, coins: number) => {
     if (poolType === 'main') return t`Stableswap`
+    if (poolType === 'factory') return t`Stableswap`
     if (poolType === 'stableswapng') return t`Stableswap-NG`
     if (poolType === 'crypto' && coins === 2) return t`Two Coin Cryptoswap`
     if (poolType === 'crypto' && coins === 3) return t`Tricrypto`
@@ -84,8 +81,6 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
     if (id === 2) return t`Rebasing`
     return t`ERC4626`
   }
-
-  console.log('pricesData: ', pricesData)
 
   return (
     <GridContainer variant="secondary">
@@ -118,6 +113,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
             </PoolParameterLink>
           </PoolParameter>
         </SectionWrapper>
+        {/* Coins with Asset types */}
         {poolData.pool.isStableNg && pricesData.asset_types && (
           <SectionWrapper>
             <SectionTitle>{t`Coins:`}</SectionTitle>
@@ -144,26 +140,27 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
                     <AssetType>{returnAssetType(pricesData.asset_types[idx])}</AssetType>
                   )}
                 </Box>
+                {/* Oracle */}
                 {pricesData && pricesData.asset_types[idx] === 1 && (
                   <IndentWrapper>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
                       <IndentDataAddressLink
-                        href={networks[rChainId].scanTokenPath(pricesData.oracles[0].oracle_address)}
+                        href={networks[rChainId].scanTokenPath(pricesData.oracles[idx].oracle_address)}
                       >
-                        {shortenTokenAddress(pricesData.oracles[0].oracle_address)}
+                        {shortenTokenAddress(pricesData.oracles[idx].oracle_address)}
                       </IndentDataAddressLink>
                     </Box>
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Function:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[0].method}</IndentData>
+                      <IndentData>{pricesData.oracles[idx].method}</IndentData>
                     </Box>
                     <Box flex>
                       <Numeral>└─</Numeral>
                       <IndentDataTitle>{t`Function ID:`}</IndentDataTitle>
-                      <IndentData>{pricesData.oracles[0].method_id}</IndentData>
+                      <IndentData>{pricesData.oracles[idx].method_id}</IndentData>
                     </Box>
                   </IndentWrapper>
                 )}
@@ -213,7 +210,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
               </PoolParameterValue>
             </PoolParameter>
           )}
-          {rampADetails && rampADetails.isRampUp && (
+          {rampADetails && !rampADetails.isFutureATimePassedToday && (
             <RampUpContainer>
               <Box flex>
                 <Numeral>├─</Numeral>
@@ -381,7 +378,7 @@ const Coin = styled(Box)`
 
 const AssetType = styled.p`
   margin: auto 0 auto auto;
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   font-weight: var(--bold);
 `
 
@@ -431,11 +428,13 @@ const IndentDataAddressLink = styled(ExternalLink)`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
   color: inherit;
+  font-weight: var(--bold);
 `
 
 const IndentData = styled.p`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
+  font-weight: var(--bold);
 `
 
 const PoolParameter = styled.div<{ noBorder?: boolean }>`
