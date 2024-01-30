@@ -428,13 +428,13 @@ const IndentDataAddressLink = styled(ExternalLink)`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
   color: inherit;
-  font-weight: var(--bold);
+  font-weight: var(--semi-bold);
 `
 
 const IndentData = styled.p`
   margin: var(--spacing-1) 0 0 auto;
   font-size: var(--font-size-2);
-  font-weight: var(--bold);
+  font-weight: var(--semi-bold);
 `
 
 const PoolParameter = styled.div<{ noBorder?: boolean }>`
