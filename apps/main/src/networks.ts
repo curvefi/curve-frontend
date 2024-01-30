@@ -226,7 +226,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-optimism/`,
     networkId: 10,
     orgUIPath: 'https://optimism.curve.fi',
-    rpcUrlConnectWallet: `https://optimism.llamarpc.com`,
+    rpcUrlConnectWallet: 'https://optimism.drpc.org',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=optimism',
@@ -379,10 +379,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     ],
     networkId: 137,
     orgUIPath: 'https://polygon.curve.fi',
-    rpcUrlConnectWallet: 'https://polygon.llamarpc.com',
+    rpcUrlConnectWallet: 'https://polygon.drpc.org',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL!
-      : `https://polygon.llamarpc.com/rpc/${process.env.NEXT_PUBLIC_LLAMARPC_API_KEY}`,
+      : `https://curve.drpc.org/ogrpc?network=polygon`,
     swap: {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
       toAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
@@ -491,7 +491,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-arbitrum/`,
     networkId: 42161,
     orgUIPath: 'https://arbitrum.curve.fi',
-    rpcUrlConnectWallet: 'https://arbitrum.llamarpc.com',
+    rpcUrlConnectWallet: 'https://arbitrum.drpc.org',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=arbitrum',
@@ -670,7 +670,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-base/`,
     networkId: 8453,
     orgUIPath: '',
-    rpcUrlConnectWallet: 'https://base.llamarpc.com',
+    rpcUrlConnectWallet: 'https://base.drpc.org',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=base',
     showHideSmallPoolsCheckbox: true,
     symbol: 'ETH',
@@ -702,7 +702,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-bsc/`,
     networkId: 56,
     orgUIPath: '',
-    rpcUrlConnectWallet: 'https://binance.llamarpc.com',
+    rpcUrlConnectWallet: 'https://bsc.drpc.org',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=bsc',
     symbol: 'BNB',
     swap: {
