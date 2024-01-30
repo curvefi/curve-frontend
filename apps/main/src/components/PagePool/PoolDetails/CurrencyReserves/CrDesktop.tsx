@@ -42,7 +42,7 @@ const CrDesktop = ({
             <ExternalLinkToken>{token}</ExternalLinkToken>
           </ExternalLinkTokenWrapper>{' '}
           {haveSameTokenName ? <TokenInfo>{shortenTokenAddress(tokenAddress)}</TokenInfo> : null}
-          <TokenInfo>{formatNumberUsdRate(cr?.usdRate)}</TokenInfo> <Icon name="Launch" size={16} />
+          <TokenInfo>{formatNumberUsdRate(cr?.usdRate)}</TokenInfo>
         </StyledExternalLink>
 
         <StyledIconButton size="medium" onClick={() => handleCopyClick(tokenAddress)}>

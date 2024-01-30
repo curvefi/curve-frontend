@@ -99,7 +99,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(() => {
     return haveSigner
-      ? pricesApi && pricesApiPoolData && poolData?.pool.isCrypto && snapshotsMapper[poolData?.pool.address]
+      ? pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]
         ? [
             { label: t`Pool Details`, key: 'pool' },
             { label: t`Your Details`, key: 'user' },
@@ -109,13 +109,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
             { label: t`Pool Details`, key: 'pool' },
             { label: t`Your Details`, key: 'user' },
           ]
-      : pricesApi && pricesApiPoolData && poolData?.pool.isCrypto && snapshotsMapper[poolData?.pool.address]
+      : pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]
       ? [
           { label: t`Pool Details`, key: 'pool' },
           { label: t`Advanced`, key: 'advanced' },
         ]
       : [{ label: t`Pool Details`, key: 'pool' }]
-  }, [haveSigner, poolData?.pool.address, poolData?.pool.isCrypto, pricesApi, pricesApiPoolData, snapshotsMapper])
+  }, [haveSigner, poolData?.pool.address, pricesApi, pricesApiPoolData, snapshotsMapper])
 
   const maxSlippage = useMemo(() => {
     return pool ? (globalMaxSlippage ? globalMaxSlippage : pool?.isCrypto ? '0.1' : '0.03') : ''
@@ -344,7 +344,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               </StatsWrapper>
             )}
             {selectedTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
-              <PoolParameters pricesApi={pricesApi} poolData={poolData} />
+              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
             )}
           </DetailContentWrapper>
         </PoolInfoWrapper>

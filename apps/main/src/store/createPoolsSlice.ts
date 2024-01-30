@@ -50,6 +50,7 @@ type SliceState = {
   volumeTotal: number | null
   volumeCryptoShare: number | null
   pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
+  pricesApiPoolDataMapper: { [poolAddress: string]: PricesApiPoolData }
   snapshotsMapper: SnapshotsMapper
   pricesApiState: {
     chartOhlcData: LpPriceOhlcDataFormatted[]
@@ -113,6 +114,7 @@ const DEFAULT_STATE: SliceState = {
   volumeTotal: null,
   volumeCryptoShare: null,
   pricesApiPoolsMapper: {},
+  pricesApiPoolDataMapper: {},
   snapshotsMapper: {},
   pricesApiState: {
     chartOhlcData: [],
@@ -458,14 +460,20 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const network = networks[chainId].id.toLowerCase()
 
         try {
-          const response = await fetch(
+          const poolInfoPromise = fetch(`https://prices.curve.fi/v1/pools/${network}/${poolAddress}/metadata`)
+          const snapshotsPromise = fetch(
             `https://prices.curve.fi/v1/snapshots/${network}/${poolAddress}?start=${startTime}&end=${endTime}`
           )
-          const data: PricesApiSnapshotsResponse = await response.json()
+
+          const response = await Promise.all([poolInfoPromise, snapshotsPromise])
+
+          const poolInfoData: PricesApiPoolData = await response[0].json()
+          const snapShotsData: PricesApiSnapshotsResponse = await response[1].json()
 
           set(
             produce((state: State) => {
-              state.pools.snapshotsMapper[poolAddress] = data.data[0]
+              state.pools.snapshotsMapper[poolAddress] = snapShotsData.data[0]
+              state.pools.pricesApiPoolDataMapper[poolAddress] = poolInfoData
             })
           )
         } catch (error) {

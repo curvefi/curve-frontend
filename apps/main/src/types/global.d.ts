@@ -232,6 +232,29 @@ declare global {
     }
   }
 
+  type PricesApiPoolDataMapper = { [poolAddress: string]: PricesApiPoolData }
+
+  type PricesApiPoolData = {
+    name: string
+    registry: string
+    lp_token_address: string
+    coins: {
+      pool_index: number
+      symbol: string
+      address: string
+    }[]
+    pool_type: string
+    metapool: boolean | null
+    base_pool: string | null
+    asset_types: number[]
+    oracles: {
+      oracle_address: string
+      method_id: string
+      method: string
+    }[]
+    vyper_version: string
+  }
+
   type SnapshotsMapper = { [poolAddress: string]: PricesApiSnapshotsData }
 
   type PricesApiSnapshotsData = {
