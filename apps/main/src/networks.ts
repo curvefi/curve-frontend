@@ -190,12 +190,22 @@ const networks: Record<ChainId, NetworkConfig> = {
         ],
       },
       {
-        name: 'PayPool',
+        name: 'fraxpyusd',
         pool: '0x383e6b4437b59fff47b619cba855ca29342a8559',
         token: '0x383e6b4437b59fff47b619cba855ca29342a8559',
         coins: [
+          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
           '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
-          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
+        ],
+      },
+      {
+        name: '3payllama',
+        pool: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
+        token: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
+        coins: [
+          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
+          '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
+          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
         ],
       },
       {
