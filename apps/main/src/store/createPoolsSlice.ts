@@ -62,6 +62,7 @@ type SliceState = {
     chartExpanded: boolean
     activityHidden: boolean
     chartStatus: FetchingStatus
+    fetchingHistory: boolean
     activityStatus: FetchingStatus
   }
   error: string
@@ -87,6 +88,7 @@ export type PoolsSlice = {
     fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
+    fetchHistoricalChartData: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
     setChartSelectedIndex: (index: number) => void
@@ -126,6 +128,7 @@ const DEFAULT_STATE: SliceState = {
     chartExpanded: false,
     activityHidden: false,
     chartStatus: 'LOADING',
+    fetchingHistory: false,
     activityStatus: 'LOADING',
   },
   error: '',
@@ -568,6 +571,117 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
+              })
+            )
+          }
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'READY'
+            })
+          )
+        } catch (error) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.chartStatus = 'ERROR'
+            })
+          )
+          console.log(error)
+        }
+      }
+    },
+    fetchHistoricalChartData: async (
+      chainId: ChainId,
+      selectedChartIndex: number,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      end: number,
+      start: number,
+      chartCombinations: PricesApiCoin[][],
+      isFlipped: boolean[]
+    ) => {
+      set(
+        produce((state: State) => {
+          state.pools.pricesApiState.fetchingHistory = true
+        })
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+
+      if (selectedChartIndex === 0 || selectedChartIndex === 1) {
+        try {
+          const priceUnit = selectedChartIndex === 0 ? 'token0' : 'usd'
+
+          const lpPriceRes = await fetch(
+            `https://prices.curve.fi/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`
+          )
+          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
+          const filteredLpPriceData = {
+            ...lpPriceDataResponse,
+            data: lpPriceDataResponse.data
+              .filter((item) => {
+                if (item.open === null || item.close === null || item.high === null || item.low === null) {
+                  return
+                }
+                return item
+              })
+              .map((data: LpPriceOhlcData) => {
+                return { ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp }
+              }),
+          }
+          if (filteredLpPriceData) {
+            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
+
+            console.log(updatedData)
+
+            set(
+              produce((state: State) => {
+                state.pools.pricesApiState.chartOhlcData = updatedData
+              })
+            )
+          }
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.fetchingHistory = false
+            })
+          )
+        } catch (error) {
+          set(
+            produce((state: State) => {
+              state.pools.pricesApiState.fetchingHistory = false
+            })
+          )
+          console.log(error)
+        }
+      } else {
+        try {
+          const pair: PricesApiCoin[] = chartCombinations[selectedChartIndex - 2]
+          const ifPairFlipped = isFlipped[selectedChartIndex - 2]
+          const main_token = ifPairFlipped ? pair[1].address : pair[0].address
+          const ref_token = ifPairFlipped ? pair[0].address : pair[1].address
+          const lpPriceRes = await fetch(
+            `https://prices.curve.fi/v1/ohlc/${network}/${poolAddress}?main_token=${main_token}&reference_token=${ref_token}&agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          )
+          const lpPriceDataResponse: LpPriceApiResponse = await lpPriceRes.json()
+          const filteredLpPriceData = {
+            ...lpPriceDataResponse,
+            data: lpPriceDataResponse.data
+              .filter((item) => {
+                if (item.open === null || item.close === null || item.high === null || item.low === null) {
+                  return
+                }
+                return item
+              })
+              .map((data: LpPriceOhlcData) => {
+                return { ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp }
+              }),
+          }
+          if (filteredLpPriceData) {
+            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
+
+            set(
+              produce((state: State) => {
+                state.pools.pricesApiState.chartOhlcData = updatedData
               })
             )
           }

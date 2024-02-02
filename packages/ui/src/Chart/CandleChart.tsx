@@ -13,6 +13,8 @@ type Props = {
   chartExpanded?: boolean
   magnet: boolean
   themeType: string
+  fetchingHistory: boolean
+  fetchMoreChartData: () => void
 }
 
 const CandleChart = ({
@@ -24,6 +26,8 @@ const CandleChart = ({
   chartExpanded,
   magnet,
   themeType,
+  fetchingHistory,
+  fetchMoreChartData,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
@@ -151,6 +155,26 @@ const CandleChart = ({
 
       setChartCreated(true)
 
+      const timeScale = chartRef.current.timeScale()
+
+      let timer: NodeJS.Timeout | null = null
+      timeScale.subscribeVisibleLogicalRangeChange(() => {
+        if (timer !== null || fetchingHistory) {
+          return
+        }
+        timer = setTimeout(() => {
+          var logicalRange = timeScale.getVisibleLogicalRange()
+          if (logicalRange !== null) {
+            var barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
+            if (barsInfo !== null && barsInfo.barsBefore < 50) {
+              console.log('fetching more data')
+              fetchMoreChartData()
+            }
+          }
+          timer = null
+        }, 150)
+      })
+
       return () => {
         chartRef.current?.remove()
       }
@@ -166,6 +190,8 @@ const CandleChart = ({
     chartType,
     chartHeight.expanded,
     chartHeight.standard,
+    fetchMoreChartData,
+    fetchingHistory,
   ])
 
   useEffect(() => {

@@ -10,7 +10,6 @@ import type {
 
 import { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
 import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
@@ -36,6 +35,8 @@ type Props = {
   setChartTimeOption: (option: TimeOptions) => void
   flipChart: () => void
   refetchPricesData: () => void
+  fetchMoreChartData: () => void
+  fetchingHistory: boolean
   selectChartList: LabelList[]
 }
 
@@ -53,6 +54,8 @@ const ChartWrapper = ({
   setChartTimeOption,
   flipChart,
   refetchPricesData,
+  fetchMoreChartData,
+  fetchingHistory,
   selectChartList,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
@@ -122,6 +125,8 @@ const ChartWrapper = ({
               chartExpanded={chartExpanded}
               magnet={magnet}
               themeType={themeType}
+              fetchingHistory={fetchingHistory}
+              fetchMoreChartData={fetchMoreChartData}
             />
           </ResponsiveContainer>
         )}
