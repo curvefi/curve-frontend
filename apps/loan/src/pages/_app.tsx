@@ -1,17 +1,18 @@
 import type { AppProps } from 'next/app'
+import type { Locale } from '@/lib/i18n'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import dynamic from 'next/dynamic'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 
-import { dynamicActivate, initTranslation, Locale, parseLocale } from '@/lib/i18n'
+import { dynamicActivate, initTranslation } from '@/lib/i18n'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import { getStorageValue } from '@/utils/storage'
@@ -26,8 +27,6 @@ import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 
 import Page from '@/layout/index'
 import GlobalStyle from '@/globalStyle'
-
-const NetworkProvider = dynamic(() => import('@/components/NetworkProvider'), { ssr: false })
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -45,31 +44,11 @@ function CurveApp({ Component }: AppProps) {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
 
+  const [appLoaded, setAppLoaded] = useState(false)
+
   const handleResizeListener = useCallback(() => {
     updateGlobalStoreByKey('isMobile', isMobile())
-    const pageWidth = window.innerWidth
-
-    if (pageWidth) {
-      let updatedPageWidthClassName
-
-      if (pageWidth > 1920) {
-        updatedPageWidthClassName = 'page-wide'
-      } else if (pageWidth > 1280 && pageWidth <= 1920) {
-        updatedPageWidthClassName = 'page-large'
-      } else if (pageWidth > 960 && pageWidth <= 1280) {
-        updatedPageWidthClassName = 'page-medium'
-      } else if (pageWidth > 450 && pageWidth <= 960) {
-        updatedPageWidthClassName = 'page-small'
-      } else if (pageWidth > 321 && pageWidth <= 450) {
-        updatedPageWidthClassName = 'page-small-x'
-      } else {
-        updatedPageWidthClassName = 'page-small-xx'
-      }
-
-      if (updatedPageWidthClassName) {
-        setLayoutWidth(updatedPageWidthClassName as PageWidthClassName)
-      }
-    }
+    if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth, updateGlobalStoreByKey])
 
   const initOnboardApi = useCallback(
@@ -109,7 +88,7 @@ function CurveApp({ Component }: AppProps) {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    const { locale, themeType, isAdvanceMode } = getStorageValue('APP_CACHE') ?? {}
+    const { themeType, isAdvanceMode } = getStorageValue('APP_CACHE') ?? {}
 
     // init advanceMode
     updateGlobalStoreByKey('isAdvanceMode', isAdvanceMode)
@@ -119,25 +98,30 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
 
     // init locale
-    const { parsedLocale } = parseLocale(locale)
+    const { rLocale } = getLocaleFromUrl()
+    const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
     dynamicActivate(parsedLocale)
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    initOnboardApi(parsedLocale, themeType)
-
-    // layout sizes
-    const pageWidth = window.innerWidth
-    const pageWidthClassName = getPageWidthClassName(pageWidth)
-    setLayoutWidth(pageWidthClassName)
+    const onboardInstance = initOnboard(
+      {
+        'zh-Hans': zhHans,
+        'zh-Hant': zhHant,
+      },
+      locale,
+      themeType,
+      networks
+    )
+    updateWalletStateByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
     }
 
+    setAppLoaded(true)
     handleResizeListener()
-    updateGlobalStoreByKey('scrollY', 0)
     handleVisibilityChange()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
@@ -166,18 +150,16 @@ function CurveApp({ Component }: AppProps) {
 
   return (
     <div suppressHydrationWarning>
-      {typeof window === 'undefined' ? null : (
+      {typeof window === 'undefined' || !appLoaded ? null : (
         <HashRouter>
-          <NetworkProvider>
-            <I18nProvider i18n={i18n}>
-              <OverlayProvider>
-                <Page>
-                  <Component curve={curve} />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
-            </I18nProvider>
-          </NetworkProvider>
+          <I18nProvider i18n={i18n}>
+            <OverlayProvider>
+              <Page>
+                <Component />
+              </Page>
+              <GlobalStyle />
+            </OverlayProvider>
+          </I18nProvider>
         </HashRouter>
       )}
     </div>

@@ -12,8 +12,7 @@ import {
   DEFAULT_FORM_EST_GAS,
 } from '@/components/PageCrvLocker/utils'
 
-import { shortenAccount } from '@/lib/utils'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber, shortenAccount } from '@/ui/utils'
 import dayjs from '@/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -201,7 +200,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         await get().gas.fetchGasInfo(curve)
         const { chainId } = curve
         const fn = networks[chainId].api.lockCrv.createLock
-        const resp = await fn(activeKey, provider, curve, formValues.lockedAmt, formValues.utcDate, formValues.days)
+        const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           cFormStatus = cloneDeep(get()[sliceKey].formStatus)

@@ -1,18 +1,6 @@
 import fetch from 'cross-fetch'
 import networks from '@/networks'
 
-export function shortenAccount(account: string, visibleLength = 4) {
-  if (account.length === 42) {
-    return (
-      account.slice(0, account.startsWith('0x') ? visibleLength + 2 : visibleLength) +
-      '…' +
-      account.slice(account.length - visibleLength)
-    )
-  } else {
-    return account
-  }
-}
-
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
 export function copyToClipboard(text: string) {

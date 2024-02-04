@@ -4,27 +4,14 @@ import type { CustomNotification, NotificationType } from '@web3-onboard/core/di
 import type { Provider } from '@/store/types'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 
-import { ethers } from 'ethers'
-
-import { log } from '@/utils/helpers'
-import { setStorageValue } from '@/utils/storage'
 import cloneDeep from 'lodash/cloneDeep'
+import { ethers } from 'ethers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  isConnectWallet: boolean
-  isDisconnectWallet: boolean
-  isNetworkChangedFromApp: boolean
-  isNetworkMismatched: boolean
-  isSwitchNetwork: boolean
-  loaded: boolean
   onboard: OnboardAPI | null
   provider: Provider | null
-  showProviderDialog: boolean
-  showProviderDialogDiscarded: boolean
-  signer: null
-  wallet: Wallet | null
 }
 
 type ProviderSliceKey =
@@ -39,16 +26,12 @@ type ProviderSliceKey =
 
 const sliceKey = 'wallet'
 
+// prettier-ignore
 export type WalletSlice = {
   [sliceKey]: SliceState & {
-    notifyNotification(
-      message: string,
-      type: NotificationType,
-      autoDismiss?: number
-    ): { dismiss: () => void; update?: UpdateNotification }
-    getProvider(sliceKey: ProviderSliceKey): ethers.providers.Web3Provider | null
-    updateConnectWalletStateKeys(): void
-    setWallet(chainId: ChainId, wallet: Wallet | null): void
+    notifyNotification(message: string, type: NotificationType, autoDismiss?: number): { dismiss: () => void; update?: UpdateNotification }
+    updateProvider(wallet: Wallet | null): Promise<void>
+    getProvider(sliceKey: string): Provider | null
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -59,21 +42,11 @@ export type WalletSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  isConnectWallet: false,
-  isDisconnectWallet: false,
-  isNetworkChangedFromApp: false,
-  isNetworkMismatched: false,
-  isSwitchNetwork: false,
-  loaded: false,
   onboard: null,
   provider: null,
-  showProviderDialog: false,
-  showProviderDialogDiscarded: false,
-  signer: null,
-  wallet: null,
 }
 
-const createWalletSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -92,50 +65,36 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
       return { dismiss: () => {} }
     },
-    updateConnectWalletStateKeys: () => {
-      get().wallet.setStateByKeys({
-        isConnectWallet: true,
-        isNetworkChangedFromApp: true,
-      })
-    },
-    setWallet: (chainId: ChainId, wallet: Wallet | null) => {
-      log('setWallet', chainId, { wallet })
-      let updatedProvider = null
-
-      if (wallet?.provider) {
-        if ('isExodus' in wallet.provider) {
-          updatedProvider = wallet.provider
-        } else {
-          updatedProvider = new ethers.providers.Web3Provider(wallet.provider)
-        }
+    updateProvider: async (wallet) => {
+      try {
+        const storedProvider = get().wallet.provider
+        const newProvider = wallet ? getProvider(wallet) : null
+        if (storedProvider) await storedProvider.removeAllListeners()
+        get().wallet.setStateByKey('provider', newProvider)
+      } catch (error) {
+        console.error(error)
       }
-
-      get().wallet.setStateByKeys({
-        // @ts-ignore
-        provider: updatedProvider,
-        wallet: wallet || null,
-        signer: null,
-        isConnectWallet: false,
-        isNetworkChangedFromApp: false,
-        isSwitchNetwork: false,
-      })
-
-      const appCache = { walletName: wallet ? wallet.label : '' }
-      setStorageValue('APP_CACHE', appCache)
     },
     getProvider: (sliceKey: ProviderSliceKey) => {
       const provider = get().wallet.provider
-      if (provider) {
-        return provider
-      } else {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          step: '',
-          formProcessing: false,
-          error: 'error-invalid-provider',
-        })
-        return null
+      if (!provider) {
+        const storedFormStatus = get()[sliceKey]?.formStatus
+        if (
+          storedFormStatus &&
+          typeof storedFormStatus === 'object' &&
+          'step' in storedFormStatus &&
+          'formProcessing' in storedFormStatus &&
+          'error' in storedFormStatus
+        ) {
+          get()[sliceKey].setStateByKey('formStatus', {
+            ...storedFormStatus,
+            step: '',
+            formProcessing: false,
+            error: 'error-invalid-provider',
+          })
+        }
       }
+      return provider
     },
 
     // slice helpers
@@ -156,7 +115,17 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>) => ({
 
 export default createWalletSlice
 
-export function getWalletChainId(wallet: Wallet): number {
+export function getProvider(wallet: Wallet) {
+  return new ethers.providers.Web3Provider(wallet.provider)
+}
+
+export function getWalletChainId(wallet: Wallet | undefined | null) {
+  if (!wallet) return null
   const chainId = (wallet as Wallet).chains[0].id
   return ethers.BigNumber.from(chainId).toNumber()
+}
+
+export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
+  if (!wallet) return ''
+  return wallet.accounts[0]?.address
 }

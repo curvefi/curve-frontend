@@ -37,21 +37,12 @@ type SliceState = {
 
 const sliceKey = 'collateralList'
 
+// prettier-ignore
 export type CollateralListSlice = {
   [sliceKey]: SliceState & {
     filterBySearchText(searchText: string, poolDatas: CollateralDataCacheOrApi[]): CollateralDataCacheOrApi[]
-    sortFn(
-      sortKey: SortKey,
-      order: Order,
-      collateralDataCacheOrApi: CollateralDataCacheOrApi[],
-      loanDetailsMapper: LoanDetailsMapper
-    ): CollateralDataCacheOrApi[]
-    setFormValues(
-      rChainId: ChainId,
-      formValues: Partial<FormValues>,
-      collateralDataCacheOrApi: CollateralDataCacheOrApi[],
-      loansDetailsMapper: LoanDetailsMapper
-    ): Promise<void>
+    sortFn(sortKey: SortKey, order: Order, collateralDataCacheOrApi: CollateralDataCacheOrApi[], loanDetailsMapper: LoanDetailsMapper): CollateralDataCacheOrApi[]
+    setFormValues(pageLoaded: boolean, rChainId: ChainId, formValues: Partial<FormValues>, collateralDataCacheOrApi: CollateralDataCacheOrApi[], loansDetailsMapper: LoanDetailsMapper): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -68,7 +59,7 @@ const DEFAULT_STATE: SliceState = {
   showHideSmallPools: false,
 }
 
-const createCollateralListSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): CollateralListSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -201,12 +192,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>) =
 
       return collateralDatas
     },
-    setFormValues: async (
-      rChainId: ChainId,
-      formValues: Partial<FormValues>,
-      collateralDataCacheOrApi: CollateralDataCacheOrApi[],
-      loansDetailsMapper: { [collateralId: string]: LoanDetails }
-    ) => {
+    setFormValues: async (pageLoaded, rChainId, formValues, collateralDataCacheOrApi, loansDetailsMapper) => {
       const storedActiveKey = get()[sliceKey].activeKey
       const storedFormValues = get()[sliceKey].formValues
 
@@ -270,8 +256,8 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>) =
       get()[sliceKey].setStateByActiveKey('result', activeKey, result)
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
-        noResult: chainIdSwitched ? false : result.length === 0,
-        isLoading: chainIdSwitched,
+        noResult: chainIdSwitched || !pageLoaded ? false : result.length === 0,
+        isLoading: chainIdSwitched || !pageLoaded,
       })
     },
 

@@ -1,21 +1,19 @@
 import type { AppProps } from 'next/app'
-import type { Locale } from '@/lib/i18n'
-import type { Theme } from '@/store/createGlobalSlice'
 
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import dynamic from 'next/dynamic'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 
-import { curveProps } from '@/lib/utils'
-import { dynamicActivate, initTranslation, parseLocale, updateAppLocale } from '@/lib/i18n'
+import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
+import { getPageWidthClassName } from '@/ui/utils'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { isMobile, getStorageValue, removeExtraSpaces } from '@/utils'
 import { REFRESH_INTERVAL } from '@/constants'
 import { initOnboard } from 'onboard-helpers'
@@ -29,12 +27,10 @@ import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import Page from '@/layout/default'
 import GlobalStyle from '@/globalStyle'
 
-const NetworkProvider = dynamic(() => import('@/components/NetworkProvider'), { ssr: false })
-
 i18n.load({ en: messagesEn })
 i18n.activate('en')
 
-function CurveApp({ Component, pageProps }: AppProps) {
+function CurveApp({ Component }: AppProps) {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -52,33 +48,13 @@ function CurveApp({ Component, pageProps }: AppProps) {
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.updateWalletStoreByKey)
+  const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
+
+  const [appLoaded, setAppLoaded] = useState(false)
 
   const handleResizeListener = useCallback(() => {
     updateGlobalStoreByKey('isMobile', isMobile())
-    const pageWidth = window.innerWidth
-
-    if (pageWidth) {
-      let updatedPageWidthClassName
-
-      if (pageWidth > 1920) {
-        updatedPageWidthClassName = 'page-wide'
-      } else if (pageWidth > 1280 && pageWidth <= 1920) {
-        updatedPageWidthClassName = 'page-large'
-      } else if (pageWidth > 960 && pageWidth <= 1280) {
-        updatedPageWidthClassName = 'page-medium'
-      } else if (pageWidth > 450 && pageWidth <= 960) {
-        updatedPageWidthClassName = 'page-small'
-      } else if (pageWidth > 321 && pageWidth <= 450) {
-        updatedPageWidthClassName = 'page-small-x'
-      } else {
-        updatedPageWidthClassName = 'page-small-xx'
-      }
-
-      if (updatedPageWidthClassName) {
-        setPageWidth(updatedPageWidthClassName as PageWidthClassName)
-      }
-    }
+    if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
   }, [setPageWidth, updateGlobalStoreByKey])
 
   const fetchPoolsVolumeTvl = useCallback(
@@ -90,33 +66,11 @@ function CurveApp({ Component, pageProps }: AppProps) {
     [fetchPoolsTvl, fetchPoolsVolume, poolDatas, setTokensMapper]
   )
 
-  const initOnboardApi = useCallback(
-    async (locale: Locale['value'], themeType?: Theme) => {
-      let theme = 'system'
-      if (themeType === 'default' || themeType === 'chad') {
-        theme = 'light'
-      } else if (themeType === 'dark') {
-        theme = 'dark'
-      }
-
-      const onboardInstance = initOnboard(
-        {
-          'zh-Hans': zhHans,
-          'zh-Hant': zhHant,
-        },
-        locale,
-        theme,
-        networks
-      )
-      updateWalletStoreByKey('onboard', onboardInstance)
-    },
-    [updateWalletStoreByKey]
-  )
-
   useEffect(() => {
     if (!pageWidth) return
 
     document.body.className = removeExtraSpaces(`theme-${themeType} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
+    document.body.setAttribute('data-theme', themeType || '')
     document.documentElement.lang = locale
   })
 
@@ -125,27 +79,38 @@ function CurveApp({ Component, pageProps }: AppProps) {
       updateShowScrollButton(window.scrollY)
     }
 
-    const { locale, themeType } = getStorageValue('APP_CACHE') ?? {}
+    const { themeType } = getStorageValue('APP_CACHE') ?? {}
 
     // init theme
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
     updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
 
     // init locale
-    const { parsedLocale } = parseLocale(locale)
+    const { rLocale } = getLocaleFromUrl()
+    const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
     dynamicActivate(parsedLocale)
     updateAppLocale(parsedLocale, updateGlobalStoreByKey)
 
     // init onboard
-    initOnboardApi(parsedLocale, themeType)
+    const onboardInstance = initOnboard(
+      {
+        'zh-Hans': zhHans,
+        'zh-Hant': zhHant,
+      },
+      locale,
+      themeType,
+      networks
+    )
+    updateWalletStoreByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
       updateGlobalStoreByKey('isPageVisible', !document.hidden)
     }
 
-    handleResizeListener()
+    setAppLoaded(true)
     updateGlobalStoreByKey('loaded', true)
+    handleResizeListener()
     handleVisibilityChange()
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
@@ -171,9 +136,8 @@ function CurveApp({ Component, pageProps }: AppProps) {
 
   usePageVisibleInterval(
     () => {
-      fetchGasInfo(curve)
-
       if (curve) {
+        fetchGasInfo(curve)
         fetchAllStoredUsdRates(curve)
         fetchPoolsVolumeTvl(curve)
 
@@ -196,28 +160,20 @@ function CurveApp({ Component, pageProps }: AppProps) {
     isPageVisible
   )
 
-  const props = {
-    ...pageProps,
-    curve,
-    ...curveProps(curve),
-  }
-
   return (
     <div suppressHydrationWarning>
-      {typeof window === 'undefined' ? null : (
+      {typeof window === 'undefined' || !appLoaded ? null : (
         <HashRouter>
-          <NetworkProvider>
-            <I18nProvider i18n={i18n}>
-              <AriaI18nProvider locale={locale}>
-                <OverlayProvider>
-                  <Page {...props}>
-                    <Component {...props} />
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </AriaI18nProvider>
-            </I18nProvider>
-          </NetworkProvider>
+          <I18nProvider i18n={i18n}>
+            <AriaI18nProvider locale={locale}>
+              <OverlayProvider>
+                <Page>
+                  <Component />
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </AriaI18nProvider>
+          </I18nProvider>
         </HashRouter>
       )}
     </div>

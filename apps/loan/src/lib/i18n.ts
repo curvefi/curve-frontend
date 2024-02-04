@@ -7,14 +7,18 @@ import { setStorageValue } from '@/utils/storage'
 export type Locale = {
   name: string
   value: 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
+  lang: string
 }
 
-export const DEFAULT_LOCALES: Locale[] = [
-  { name: 'English', value: 'en' },
-  { name: '简体中文', value: 'zh-Hans' },
-  { name: '繁體中文', value: 'zh-Hant' },
-  { name: 'pseudo', value: 'pseudo' },
-]
+export const DEFAULT_LOCALES: Locale[] = [{ name: 'English', value: 'en', lang: 'en' }]
+
+if (process.env.NODE_ENV === 'development') {
+  ;[
+    { name: '简体中文', value: 'zh-Hans' as const, lang: 'zh-Hans' },
+    { name: '繁體中文', value: 'zh-Hant' as const, lang: 'zh-Hant' },
+    { name: 'pseudo', value: 'pseudo' as const, lang: 'en' },
+  ].map((l) => DEFAULT_LOCALES.push(l))
+}
 
 export function initTranslation(i18n: I18n, defaultLocale: string): void {
   i18n.loadLocaleData({
@@ -55,19 +59,4 @@ export async function dynamicActivate(locale: string) {
 export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void) {
   updateGlobalStoreByKey('locale', locale)
   setStorageValue('APP_CACHE', { locale })
-}
-
-export function parseLocaleFromPathname(pathname: string | undefined) {
-  if (pathname) {
-    const foundLocale = pathname.split('/').find((p) => {
-      return DEFAULT_LOCALES.find((l) => {
-        return l.value.toLowerCase() === p.toLowerCase()
-      })
-    })
-
-    if (foundLocale) {
-      return parseLocale(foundLocale)
-    }
-  }
-  return parseLocale('')
 }

@@ -292,7 +292,7 @@ const LoanDeleverage = ({
             labelProps={{
               label: t`LLAMMA ${collateralName} Avail.`,
               descriptionLoading: userWalletBalancesLoading,
-              description: formatNumber(userState.collateral, { defaultValue: '-' }),
+              description: formatNumber(userState?.collateral, { defaultValue: '-' }),
             }}
             value={formValues.collateral}
             onChange={(collateral) => updateFormValues({ collateral }, '', false)}

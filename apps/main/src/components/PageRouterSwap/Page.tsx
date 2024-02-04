@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
-import { getPath, parseParams } from '@/utils/utilsRouter'
+import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
@@ -20,13 +20,13 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import IconButton from '@/ui/IconButton'
 import QuickSwap from '@/components/PageRouterSwap/index'
 
-const Page: NextPage<PageProps> = ({ curve }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const pageLoaded = usePageOnMount(params, location, navigate)
-  const { rChainId } = parseParams(params, location)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)

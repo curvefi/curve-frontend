@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { ROUTE } from '@/constants'
-import { getPath, parseParams } from '@/utils/utilsRouter'
+import { getPath } from '@/utils/utilsRouter'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
@@ -13,12 +13,12 @@ import { scrollToTop } from '@/utils'
 import DocumentHead from '@/layout/default/DocumentHead'
 import Transfer from '@/components/PagePool/index'
 
-const Page: NextPage<PageProps> = ({ curve }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const pageLoaded = usePageOnMount(params, location, navigate)
-  const { rChainId, rPoolId, rFormType } = parseParams(params, location)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId, rPoolId, rFormType } = routerParams
 
   const parsedRPoolId = rPoolId || ''
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)

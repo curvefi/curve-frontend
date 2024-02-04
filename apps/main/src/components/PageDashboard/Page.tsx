@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { parseParams } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 
@@ -15,13 +14,12 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import Settings from '@/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
-const Page: NextPage<PageProps> = ({ curve, chainId }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  usePageOnMount(params, location, navigate)
-
-  const { rChainId } = parseParams(params, location)
+  const { curve, routerParams } = usePageOnMount(params, location, navigate)
+  const { rChainId } = routerParams
 
   useEffect(() => {
     scrollToTop()

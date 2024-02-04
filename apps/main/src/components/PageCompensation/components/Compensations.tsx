@@ -8,6 +8,7 @@ const Compensations = ({
   poolId,
   contracts,
   balances,
+  provider,
   vestedTotals,
   ...rest
 }: {
@@ -16,6 +17,7 @@ const Compensations = ({
   poolId: string
   contracts: EtherContract[]
   balances: Balances
+  provider: Provider
   vestedTotals: VestedTotals
   haveBalancesError: boolean
 }) => {
@@ -34,6 +36,7 @@ const Compensations = ({
             {...rest}
             activeKey={activeKey}
             balance={balance}
+            provider={provider}
             vestedTotal={vestedTotal}
           />
         )

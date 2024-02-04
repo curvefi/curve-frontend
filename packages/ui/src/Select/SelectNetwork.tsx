@@ -1,3 +1,4 @@
+import type { ConnectState } from 'ui/src/utils'
 import type { SelectProps } from 'ui/src/Select/Select'
 
 import * as React from 'react'
@@ -13,9 +14,10 @@ type ItemObj = {
 }
 
 export function SelectNetwork<T extends object>({
+  connectState,
   hideIcon,
   ...props
-}: Omit<SelectProps<T>, 'children'> & { hideIcon?: boolean }) {
+}: Omit<SelectProps<T>, 'children'> & { connectState: ConnectState; hideIcon?: boolean }) {
   return (
     <Select {...props} aria-label="Select network" label="">
       {(item) => {

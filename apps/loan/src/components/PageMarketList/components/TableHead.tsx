@@ -5,7 +5,6 @@ import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
 import { TheadSortButton } from '@/ui/Table'
-import Box from '@/ui/Box'
 
 interface TheadBtnProps {
   align: string[]

@@ -21,8 +21,17 @@ export const ROUTE = {
   PAGE_COMPENSATION: '/compensation',
 } as const
 
+// TODO rename to MS
 export const REFRESH_INTERVAL = {
+  '3s': 3000,
   '1m': 60000,
   '5m': 300000,
   '11m': 660000,
 }
+
+export const CONNECT_STAGE = {
+  CONNECT_API: 'api',
+  CONNECT_WALLET: 'connect-wallet',
+  DISCONNECT_WALLET: 'disconnect-wallet',
+  SWITCH_NETWORK: 'switch-network',
+} as const

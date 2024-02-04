@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams, useSearchParams } from 'react-rout
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { parseParams } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
@@ -21,8 +20,8 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  usePageOnMount(params, location, navigate, true)
-  const { rChainId } = parseParams(params, location)
+  const { routerParams } = usePageOnMount(params, location, navigate, true)
+  const { rChainId } = routerParams
 
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)

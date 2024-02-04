@@ -1,5 +1,6 @@
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
+import type { Locale } from '@/lib/i18n'
 import type { NavigateFunction, Location, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import type { TooltipProps } from '@/ui/Tooltip/types'
@@ -25,6 +26,28 @@ declare global {
   type ChainId = 1
   type Curve = typeof stablecoinApi & { chainId: ChainId }
   type NetworkEnum = INetworkName
+  type Provider = ethers.providers.web3Provider
+
+  type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
+  type RouterParams = {
+    rLocale: Locale | null
+    rLocalePathname: string
+    rChainId: ChainId
+    rNetwork: NetworkEnum
+    rNetworkIdx: number
+    rSubdirectory: string
+    rSubdirectoryUseDefault: boolean
+    rCollateralId: string
+    rFormType: RFormType
+    redirectPathname: string
+    restFullPathname: string
+  }
+
+  type PageProps = {
+    pageLoaded: boolean
+    routerParams: RouterParams
+    curve: Curve | null
+  }
 
   interface NetworkConfig {
     api: typeof curvejsApi

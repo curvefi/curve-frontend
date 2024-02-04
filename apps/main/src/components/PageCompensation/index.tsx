@@ -5,7 +5,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
 
 import { getErrorMessage } from '@/utils'
-import useStore from '@/store/useStore'
 
 import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
@@ -15,14 +14,14 @@ const FormCompensation = ({
   rChainId,
   curve,
   contracts,
+  provider,
 }: {
   rChainId: ChainId
   curve: CurveApi | null
   contracts: EtherContract[]
+  provider: Provider
 }) => {
   const { signerAddress } = curve ?? {}
-
-  const provider = useStore((state) => state.wallet.provider)
 
   const [error, setError] = useState('')
   const [balances, setBalances] = useState<Balances>({})
@@ -117,6 +116,7 @@ const FormCompensation = ({
               poolId={poolId}
               contracts={contracts}
               balances={balances}
+              provider={provider}
               vestedTotals={vestedTotals}
               haveBalancesError={!!error}
             />

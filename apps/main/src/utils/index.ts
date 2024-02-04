@@ -4,7 +4,7 @@ import numbro from 'numbro'
 import BigNumber from 'bignumber.js'
 
 export { getStorageValue, setStorageValue } from '@/utils/storage'
-import { shortenAccount } from '@/lib/utils'
+import { shortenAccount } from '@/ui/utils'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
 export function isMobile() {

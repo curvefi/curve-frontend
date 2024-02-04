@@ -13,3 +13,19 @@ export const mediaQueries = (key: keyof typeof breakpoints) => {
   return (style: TemplateStringsArray | String | FlattenSimpleInterpolation) =>
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`
 }
+
+export function getPageWidthClassName(innerWidth: number) {
+  if (innerWidth > 1920) {
+    return 'page-wide'
+  } else if (innerWidth > 1280 && innerWidth <= 1920) {
+    return 'page-large'
+  } else if (innerWidth > 960 && innerWidth <= 1280) {
+    return 'page-medium'
+  } else if (innerWidth > 450 && innerWidth <= 960) {
+    return 'page-small'
+  } else if (innerWidth > 321 && innerWidth <= 450) {
+    return 'page-small-x'
+  } else {
+    return 'page-small-xx'
+  }
+}

@@ -2,6 +2,7 @@ import { t } from '@lingui/macro'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
+import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { CRVUSD_ADDRESS } from '@/constants'
 import { breakpoints, formatNumber } from '@/ui/utils'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -11,19 +12,25 @@ import { Menu } from '@/layout/Header'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
+import SelectLocale from '@/ui/Select/SelectLocale'
 import SelectThemes from '@/components/SelectThemes'
 import Switch from '@/ui/Switch'
 
-const HeaderSecondary = () => {
-  const curve = useStore((state) => state.curve)
-  const chainId = curve?.chainId ?? ''
+const HeaderSecondary = ({
+  rChainId,
+  handleLocaleChange,
+}: {
+  rChainId: ChainId | ''
+  handleLocaleChange: (selectedLocale: React.Key) => void
+}) => {
   const secondaryNavRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(secondaryNavRef, 'secondaryNav')
 
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const crvusdTotalSupplyCached = useStore((state) => state.storeCache.crvusdTotalSupply[chainId])
+  const crvusdTotalSupplyCached = useStore((state) => state.storeCache.crvusdTotalSupply[rChainId])
   const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply.amount)
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
+  const locale = useStore((state) => state.locale)
   const scrollY = useStore((state) => state.layout.scrollY)
   const setAppCache = useStore((state) => state.setAppCache)
 
@@ -58,7 +65,11 @@ const HeaderSecondary = () => {
 
         <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
           <ExternalLinkText href="https://curve.fi">Visit Curve.fi</ExternalLinkText>
-          <StyledSelectThemes /> {/* TODO: add select locale */}
+          <StyledSelectThemes />
+          {/* TODO: remove isDevelopment when translation is ready */}
+          {process.env.NODE_ENV === 'development' && (
+            <SelectLocale locales={DEFAULT_LOCALES} selectedLocale={locale} handleLocaleChange={handleLocaleChange} />
+          )}
           <Switch isSelected={isAdvanceMode} onChange={handleInpChangeAdvanceMode}>
             Advanced mode {isAdvanceMode ? t`on` : t`off`}
           </Switch>

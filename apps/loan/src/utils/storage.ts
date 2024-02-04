@@ -1,9 +1,8 @@
 import merge from 'lodash/merge'
-import { findLocale } from '@/lib/i18n'
+import dayjs from 'dayjs'
 
 export const APP_STORAGE = {
   APP_CACHE: 'crvusd-app-cache',
-  APP_MAIN_CACHE: 'curve-app-cache',
 }
 
 type Key = keyof typeof APP_STORAGE
@@ -21,36 +20,25 @@ export function getStorageValue(key: Key) {
   }
 
   if (key === 'APP_CACHE') {
-    let locale = 'en'
-    let themeType: Theme = 'default'
-    let isAdvanceMode: boolean = false
-
-    if (parsedStoredValue.locale) {
-      const foundLocale = findLocale(parsedStoredValue.locale)
-      if (foundLocale) {
-        locale = foundLocale.value
-      }
-    }
-
-    if (parsedStoredValue.themeType) {
-      const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === parsedStoredValue.themeType) as Theme
-      if (foundThemeType) {
-        themeType = foundThemeType
-      }
-    }
-
-    if (parsedStoredValue.isAdvanceMode) {
-      // @ts-ignore
-      isAdvanceMode = parsedStoredValue.isAdvanceMode
-    }
-
     return {
-      walletName: parsedStoredValue.walletName || '',
-      themeType,
-      locale,
-      isAdvanceMode,
+      themeType: getTheme(parsedStoredValue.themeType),
+      timestamp: parsedStoredValue.timestamp ?? '',
+      walletName: getWalletName(parsedStoredValue.walletName, parsedStoredValue.timestamp),
+      isAdvanceMode: parsedStoredValue.isAdvanceMode ?? false,
     }
   }
+}
+
+function getTheme(svThemeType: string | undefined) {
+  if (svThemeType) {
+    const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as Theme
+    return (foundThemeType || 'default') as Theme
+  }
+}
+
+function getWalletName(walletName: string | undefined, timestamp: string | undefined) {
+  const isStaled = walletName && timestamp && dayjs().diff(+timestamp, 'days') > 5
+  return isStaled || !walletName ? '' : walletName
 }
 
 export function setStorageValue<T>(key: Key, updatedValue: T) {

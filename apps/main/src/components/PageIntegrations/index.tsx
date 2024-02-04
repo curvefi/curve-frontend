@@ -36,6 +36,7 @@ const IntegrationsComp = ({
 }) => {
   const { isFocusVisible, focusProps } = useFocusRing()
 
+  const connectState = useStore((state) => state.connectState)
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
   const integrationsList = useStore((state) => state.integrations.integrationsList)
@@ -110,13 +111,16 @@ const IntegrationsComp = ({
             updatePath={updatePath}
           />
           <SelectNetwork
+            connectState={connectState}
             hideIcon
             items={visibleNetworksList}
             minWidth="8.5em"
             selectedKey={filterNetworkId}
             onSelectionChange={(filterNetworkId: React.Key) => updatePath({ filterNetworkId })}
             onSelectionDelete={
-              +filterNetworkId !== rChainId ? () => updatePath({ filterNetworkId: rChainId }) : undefined
+              filterNetworkId && +filterNetworkId !== rChainId
+                ? () => updatePath({ filterNetworkId: rChainId })
+                : undefined
             }
           />
         </Box>

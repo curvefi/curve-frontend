@@ -22,7 +22,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   )
 
   const getContract = useCallback(
-    async (contract: string, address: string, provider: Provider) => {
+    async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
         const abi = await import(`@/components/PagePool/abis/${contract}.json`).then((module) => module.default.abi)
         const iface = new Interface(abi)

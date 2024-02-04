@@ -68,7 +68,7 @@ const PoolStats = ({
       <MainStatsContainer flex flexColumn>
         <MainStatsWrapper grid>
           <Box grid gridRowGap={3}>
-            <CurrencyReserves routerParams={routerParams} tvl={tvl} tokensMapper={tokensMapper} />
+            <CurrencyReserves rChainId={rChainId} rPoolId={rPoolId} tvl={tvl} tokensMapper={tokensMapper} />
             {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
               {poolAlert && !poolAlert.isDisableDeposit && <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>}

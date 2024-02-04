@@ -3,21 +3,24 @@ import type { DefaultStateKeys } from '@/store/createGlobalSlice'
 import { I18n, i18n } from '@lingui/core'
 import { en, zh } from 'make-plural/plurals'
 import { setDayjsLocale } from '@/lib/dayjs'
-import { setStorageValue } from '@/utils'
 import numbro from 'numbro'
 import 'numbro/dist/languages.min.js'
 
 export type Locale = {
   name: string
   value: 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
+  lang: string
 }
 
 export const DEFAULT_LOCALES: Locale[] = [
-  { name: 'English', value: 'en' },
-  { name: '简体中文', value: 'zh-Hans' },
-  { name: '繁體中文', value: 'zh-Hant' },
-  { name: 'pseudo', value: 'pseudo' },
+  { name: 'English', value: 'en', lang: 'en' },
+  { name: '简体中文', value: 'zh-Hans', lang: 'zh-Hans' },
+  { name: '繁體中文', value: 'zh-Hant', lang: 'zh-Hant' },
 ]
+
+if (process.env.NODE_ENV === 'development') {
+  DEFAULT_LOCALES.push({ name: 'pseudo', value: 'pseudo', lang: 'en' })
+}
 
 export function initTranslation(i18n: I18n, defaultLocale: string): void {
   i18n.loadLocaleData({
@@ -61,7 +64,6 @@ export async function dynamicActivate(locale: string) {
 
 export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void) {
   updateGlobalStoreByKey('locale', locale)
-  setStorageValue('APP_CACHE', { locale })
   setDayjsLocale(locale as Locale['value'])
 
   let numbroLang = ''
@@ -75,19 +77,4 @@ export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key:
       numbro.setLanguage(numbroLang)
     })
   }
-}
-
-export function parseLocaleFromPathname(pathname: string | undefined) {
-  if (pathname) {
-    const foundLocale = pathname.split('/').find((p) => {
-      return DEFAULT_LOCALES.find((l) => {
-        return l.value.toLowerCase() === p.toLowerCase()
-      })
-    })
-
-    if (foundLocale) {
-      return parseLocale(foundLocale)
-    }
-  }
-  return parseLocale('')
 }

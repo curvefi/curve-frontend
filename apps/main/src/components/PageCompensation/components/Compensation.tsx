@@ -1,7 +1,6 @@
 import type { EtherContract } from '@/components/PageCompensation/types'
 
 import { t } from '@lingui/macro'
-import { Typed } from 'ethers'
 import React, { useCallback, useEffect, useState } from 'react'
 import numbro from 'numbro'
 import styled from 'styled-components'
@@ -26,6 +25,7 @@ const Compensation = ({
   contract,
   contractAddress,
   balance,
+  provider,
   haveBalancesError,
   token,
   vestedTotal,
@@ -36,11 +36,11 @@ const Compensation = ({
   contract: EtherContract['contract']
   contractAddress: string
   balance: number
+  provider: Provider
   haveBalancesError: boolean
   token: string
   vestedTotal: number
 }) => {
-  const provider = useStore((state) => state.wallet.provider)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
 
@@ -62,7 +62,7 @@ const Compensation = ({
       try {
         setStep('claiming')
         await fetchGasInfo(curve)
-        const hash = await contract.claim(Typed.address(curve.signerAddress))
+        const hash = await contract.claim()
         await networks[curve.chainId].api.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`

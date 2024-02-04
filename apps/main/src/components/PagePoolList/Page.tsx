@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getPoolDatasCached } from '@/store/createPoolListSlice'
-import { getPath, parseParams } from '@/utils/utilsRouter'
+import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
@@ -19,13 +19,14 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
 
-const Page: NextPage<PageProps> = ({ curve, chainId }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const pageLoaded = usePageOnMount(params, location, navigate)
-  const { rChainId } = parseParams(params, location)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId } = routerParams
+  const { chainId } = curve ?? {}
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isLoadingPools = useStore((state) => state.pools.poolsLoading[rChainId])

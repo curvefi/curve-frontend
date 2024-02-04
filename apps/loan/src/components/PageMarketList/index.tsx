@@ -25,7 +25,7 @@ import TableHeadMobile from '@/components/PageMarketList/components/TableHeadMob
 import TableRow from '@/components/PageMarketList/components/TableRow'
 import TableRowMobile from '@/components/PageMarketList/components/TableRowMobile'
 
-const CollateralList = ({ params, rChainId }: PageCollateralList) => {
+const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) => {
   const navigate = useNavigate()
   const settingsRef = useRef<HTMLDivElement>(null)
 
@@ -76,9 +76,9 @@ const CollateralList = ({ params, rChainId }: PageCollateralList) => {
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, updatedFormValues, collateralDatasCachedOrApi, loansDetailsMapper)
+      setFormValues(pageLoaded, rChainId, updatedFormValues, collateralDatasCachedOrApi, loansDetailsMapper)
     },
-    [rChainId, collateralDatasCachedOrApi, loansDetailsMapper, setFormValues]
+    [pageLoaded, rChainId, collateralDatasCachedOrApi, loansDetailsMapper, setFormValues]
   )
 
   usePageVisibleInterval(
@@ -149,7 +149,7 @@ const CollateralList = ({ params, rChainId }: PageCollateralList) => {
         ) : (
           <TableHead
             formValues={formValues}
-            isReadyDetail={!!loanExistsMapper}
+            isReadyDetail={!!loanExistsMapper && pageLoaded}
             someLoanExists={someLoanExists}
             tableLabels={TABLE_LABEL}
             updateFormValues={updateFormValues}

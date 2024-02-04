@@ -1,22 +1,24 @@
 import type { MessageDescriptor } from '@lingui/core'
 
-import { useMemo, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useMemo, useRef } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { msg, t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
 
-import { Locale } from '@/lib/i18n'
-import { ROUTE } from '@/constants'
+import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { isLoading } from '@/ui/utils'
 import { breakpoints } from '@/ui/utils/responsive'
-import { parseParams } from '@/utils/utilsRouter'
+import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import networks, { visibleNetworksList } from '@/networks'
+import { useConnectWallet } from '@/onboard'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/ui/Button/ConnectWallet'
 import CurveLogoLink from '@/layout/default/CurveLogoLink'
 import DividerHorizontal from '@/ui/DividerHorizontal'
 import HeaderMobile from '@/layout/default/HeaderMobile'
@@ -37,20 +39,20 @@ const PAGES: Page[] = [
   { route: ROUTE.PAGE_INTEGRATIONS, label: msg`Integrations` },
 ]
 
-const Header = (pageProps: PageProps) => {
+const Header = () => {
+  const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
+  const location = useLocation()
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const pageWidth = useStore((state) => state.pageWidth)
-  const routerProps = useStore((state) => state.routerProps)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.updateWalletStoreByKey)
+  const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { params, location } = routerProps || {}
-  const { rChainId, rLocale, rPoolId } = parseParams(params, location)
+  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -83,50 +85,47 @@ const Header = (pageProps: PageProps) => {
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
-    if (rLocale.pathnameLocale && networkName) {
-      return `#/${rLocale.pathnameLocale}/${networkName}${route}`
-    }
-    return `#/${networkName}${route}`
+    return `#${rLocalePathname}/${networkName}${route}`
   }
 
   const handleNetworkChange = (selectedChainId: React.Key) => {
     if (rChainId !== selectedChainId) {
-      updateWalletStoreByKey('isNetworkChangedFromApp', true)
-      const selectedNetworkName = networks[selectedChainId as ChainId]?.id
-
-      if (location?.pathname && selectedNetworkName) {
-        let redirectPathname
-        if (rChainId && params?.network) {
-          if (rPoolId) {
-            redirectPathname = parsePoolPathname(rLocale, selectedNetworkName)
-          } else if (location.pathname.endsWith(ROUTE.PAGE_POOLS)) {
-            redirectPathname = `${parsePoolPathname(rLocale, selectedNetworkName)}${location.search}`
-          } else {
-            redirectPathname = location.pathname.replace(`/${params.network}`, `/${selectedNetworkName}`)
-          }
-        } else {
-          redirectPathname = parseNonNetworkWithLocalePathname(rLocale, selectedNetworkName, location.pathname)
-        }
-        updateGlobalStoreByKey('isLoadingApi', true)
-        navigate(redirectPathname)
-      }
+      const network = networks[selectedChainId as ChainId].id
+      navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
     }
   }
 
+  const handleConnectWallet = useCallback(() => {
+    if (wallet) {
+      updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
+    } else {
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+    }
+  }, [updateConnectState, wallet])
+
   const SelectNetworkComp = (
     <StyledSelectNetwork
+      connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
+      loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
       minWidth="9rem"
       mobileRightAlign
-      selectedKey={(rChainId || '').toString()}
+      selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
       onSelectionChange={handleNetworkChange}
     />
   )
 
+  const handleLocaleChange = (selectedLocale: string) => {
+    const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+    const { rNetwork } = getNetworkFromUrl()
+    navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+  }
+
   return (
     <>
-      {isMdUp && <HeaderSecondary rChainId={rChainId} />}
+      {isMdUp && <HeaderSecondary rChainId={rChainId} handleLocaleChange={handleLocaleChange} />}
       <StyledNavBar as="nav" ref={mainNavRef} aria-label="Main menu" flex flexAlignItems="stretch" isMdUp={isMdUp}>
         <NavBarContent
           className="nav-content"
@@ -143,9 +142,9 @@ const Header = (pageProps: PageProps) => {
                   let isActive = false
                   if (location?.pathname) {
                     if (route === ROUTE.PAGE_SWAP) {
-                      isActive = !location.pathname.includes('/pools/') && !!location.pathname.endsWith(route)
+                      isActive = !location.pathname.includes('/pools/') && location.pathname.endsWith(route)
                     } else {
-                      isActive = !!location.pathname.endsWith(route)
+                      isActive = location.pathname.endsWith(route)
                     }
                   }
 
@@ -161,11 +160,21 @@ const Header = (pageProps: PageProps) => {
 
               <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">
                 {SelectNetworkComp}
-                <ConnectWallet />
+                <ConnectWallet
+                  connectState={connectState}
+                  walletSignerAddress={getWalletSignerAddress(wallet)}
+                  handleClick={handleConnectWallet}
+                />
               </Menu>
             </>
           ) : (
-            <HeaderMobile {...pageProps} pages={pages} rChainId={rChainId} selectNetwork={SelectNetworkComp} />
+            <HeaderMobile
+              pages={pages}
+              rChainId={rChainId}
+              selectNetwork={SelectNetworkComp}
+              handleConnectWallet={handleConnectWallet}
+              handleLocaleChange={handleLocaleChange}
+            />
           )}
         </NavBarContent>
       </StyledNavBar>
@@ -268,25 +277,5 @@ const StyledSelectNetwork = styled(SelectNetwork)`
     height: var(--height-medium);
   }
 `
-
-function parsePoolPathname(
-  { pathnameLocale }: { parsedLocale: Locale['value']; pathnameLocale: string },
-  selectedNetworkName: string
-) {
-  return pathnameLocale ? `/${pathnameLocale}/${selectedNetworkName}/pools` : `/${selectedNetworkName}/pools`
-}
-
-function parseNonNetworkWithLocalePathname(
-  { pathnameLocale }: { parsedLocale: Locale['value']; pathnameLocale: string },
-  selectedNetworkName: string,
-  pathname: string
-) {
-  if (pathnameLocale) {
-    const parsedPathname = pathname.replace(`/${pathnameLocale}`, '')
-    return `/${pathnameLocale}/${selectedNetworkName}${parsedPathname}`
-  } else {
-    return `/${selectedNetworkName}${pathname}`
-  }
-}
 
 export default Header
