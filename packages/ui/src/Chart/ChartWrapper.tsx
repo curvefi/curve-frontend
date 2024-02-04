@@ -36,7 +36,9 @@ type Props = {
   flipChart: () => void
   refetchPricesData: () => void
   fetchMoreChartData: () => void
-  fetchingHistory: boolean
+  refetchingHistory: boolean
+  refetchingCapped: boolean
+  lastRefetchLength: number
   selectChartList: LabelList[]
 }
 
@@ -55,11 +57,13 @@ const ChartWrapper = ({
   flipChart,
   refetchPricesData,
   fetchMoreChartData,
-  fetchingHistory,
+  refetchingHistory,
+  refetchingCapped,
+  lastRefetchLength,
   selectChartList,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
-  const clonedOhlcData = cloneDeep(ohlcData)
+  // const clonedOhlcData = cloneDeep(ohlcData)
 
   const wrapperRef = useRef(null)
 
@@ -119,13 +123,15 @@ const ChartWrapper = ({
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
-              lpTokenData={clonedOhlcData}
+              ohlcData={ohlcData}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}
               magnet={magnet}
               themeType={themeType}
-              fetchingHistory={fetchingHistory}
+              refetchingHistory={refetchingHistory}
+              refetchingCapped={refetchingCapped}
+              lastRefetchLength={lastRefetchLength}
               fetchMoreChartData={fetchMoreChartData}
             />
           </ResponsiveContainer>

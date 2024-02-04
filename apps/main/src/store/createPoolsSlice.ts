@@ -62,7 +62,9 @@ type SliceState = {
     chartExpanded: boolean
     activityHidden: boolean
     chartStatus: FetchingStatus
-    fetchingHistory: boolean
+    refetchingHistory: boolean
+    refetchingCapped: boolean
+    lastRefetchLength: number
     activityStatus: FetchingStatus
   }
   error: string
@@ -128,7 +130,9 @@ const DEFAULT_STATE: SliceState = {
     chartExpanded: false,
     activityHidden: false,
     chartStatus: 'LOADING',
-    fetchingHistory: false,
+    refetchingHistory: false,
+    refetchingCapped: false,
+    lastRefetchLength: 0,
     activityStatus: 'LOADING',
   },
   error: '',
@@ -498,6 +502,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       set(
         produce((state: State) => {
           state.pools.pricesApiState.chartStatus = 'LOADING'
+          state.pools.pricesApiState.refetchingCapped = false
         })
       )
 
@@ -528,6 +533,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
+                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
               })
             )
           }
@@ -571,6 +577,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
+                state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
               })
             )
           }
@@ -600,9 +607,12 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       chartCombinations: PricesApiCoin[][],
       isFlipped: boolean[]
     ) => {
+      if (get().pools.pricesApiState.refetchingHistory) return
+
       set(
         produce((state: State) => {
-          state.pools.pricesApiState.fetchingHistory = true
+          state.pools.pricesApiState.refetchingHistory = true
+          state.pools.pricesApiState.lastRefetchLength = get().pools.pricesApiState.chartOhlcData.length
         })
       )
 
@@ -642,13 +652,14 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           }
           set(
             produce((state: State) => {
-              state.pools.pricesApiState.fetchingHistory = false
+              state.pools.pricesApiState.refetchingHistory = false
+              state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
             })
           )
         } catch (error) {
           set(
             produce((state: State) => {
-              state.pools.pricesApiState.fetchingHistory = false
+              state.pools.pricesApiState.refetchingHistory = false
             })
           )
           console.log(error)
@@ -687,7 +698,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           }
           set(
             produce((state: State) => {
-              state.pools.pricesApiState.chartStatus = 'READY'
+              state.pools.pricesApiState.refetchingHistory = false
+              state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
             })
           )
         } catch (error) {

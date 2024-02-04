@@ -32,7 +32,9 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       chartExpanded,
       activityHidden,
       tradesTokens,
-      fetchingHistory,
+      refetchingHistory,
+      refetchingCapped,
+      lastRefetchLength,
     },
     setChartSelectedIndex,
     setChartTimeOption,
@@ -145,10 +147,6 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     const endTime = subtractTimeUnit(timeOption, chartOhlcData[0].time)
     const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-    console.log(chartOhlcData[0].time)
-    console.log('end', endTime)
-    console.log('start', startTime)
-
     fetchHistoricalChartData(
       chainId,
       selectedChartIndex,
@@ -227,7 +225,9 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           flipChart={flipChart}
-          fetchingHistory={fetchingHistory}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
         />
       </Wrapper>
@@ -293,7 +293,9 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
           setChartTimeOption={setChartTimeOption}
           flipChart={flipChart}
           refetchPricesData={refetchPricesData}
-          fetchingHistory={fetchingHistory}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
         />
       )}
