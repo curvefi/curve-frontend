@@ -151,7 +151,15 @@ const IntegrationsComp = ({
                         if (networkName in networksIdMapper) {
                           const chainId = networksIdMapper[networkName]
                           const Icon = networks[chainId].icon
-                          return <Icon aria-label={networkName} title={networkName} width="18" height="18" />
+                          return (
+                            <Icon
+                              key={networkName}
+                              aria-label={networkName}
+                              title={networkName}
+                              width="18"
+                              height="18"
+                            />
+                          )
                         }
                         return null
                       })}
