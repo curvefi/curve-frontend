@@ -41,7 +41,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     setChartExpanded,
     fetchPricesApiCharts,
     fetchPricesApiActivity,
-    fetchHistoricalChartData,
+    fetchMorePricesApiCharts,
   } = useStore((state) => state.pools)
   const isMdUp = useStore((state) => state.isMdUp)
 
@@ -145,9 +145,12 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
 
   const fetchMoreChartData = useCallback(() => {
     const endTime = subtractTimeUnit(timeOption, chartOhlcData[0].time)
+    console.log(endTime)
+    console.log(timeOption)
+    console.log(chartOhlcData[0].time)
     const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-    fetchHistoricalChartData(
+    fetchMorePricesApiCharts(
       chainId,
       selectedChartIndex,
       pricesApiPoolData.address,
@@ -163,7 +166,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     chartCombinations,
     chartInterval,
     chartOhlcData,
-    fetchHistoricalChartData,
+    fetchMorePricesApiCharts,
     isFlipped,
     pricesApiPoolData.address,
     selectedChartIndex,

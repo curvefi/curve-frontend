@@ -63,7 +63,7 @@ const ChartWrapper = ({
   selectChartList,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
-  // const clonedOhlcData = cloneDeep(ohlcData)
+  const clonedOhlcData = cloneDeep(ohlcData)
 
   const wrapperRef = useRef(null)
 
@@ -123,7 +123,7 @@ const ChartWrapper = ({
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
-              ohlcData={ohlcData}
+              ohlcData={clonedOhlcData}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}

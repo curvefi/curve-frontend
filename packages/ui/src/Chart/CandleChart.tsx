@@ -164,24 +164,27 @@ const CandleChart = ({
       const timeScale = chartRef.current.timeScale()
 
       if (lastTimescale) {
-        console.log('setting timescale: ', lastTimescale)
         timeScale.setVisibleRange(lastTimescale)
       }
 
       let timer: NodeJS.Timeout | null = null
       timeScale.subscribeVisibleLogicalRangeChange(() => {
-        if (timer !== null || refetchingHistory || refetchingCapped || lastRefetchLength >= ohlcData.length) {
+        if (timer !== null || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
           return
         }
         timer = setTimeout(() => {
           const logicalRange = timeScale.getVisibleLogicalRange()
           if (
             logicalRange !== null &&
-            (!refetchingHistory || !refetchingCapped || lastRefetchLength <= ohlcData.length)
+            (!refetchingHistory || !refetchingCapped || lastRefetchLength !== ohlcData.length)
           ) {
             const barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
             if (barsInfo !== null && barsInfo.barsBefore < 50) {
               console.log('fetching')
+              console.log('timer: ', timer !== null)
+              console.log('refetchingHistory: ', refetchingHistory)
+              console.log('refetchingCapped: ', refetchingCapped)
+              console.log('lastRefetchLength === ohlcData.length: ', lastRefetchLength === ohlcData.length)
               setLastTimescale(timeScale.getVisibleRange())
               console.log(lastTimescale)
               fetchMoreChartData()
@@ -192,6 +195,10 @@ const CandleChart = ({
       })
 
       return () => {
+        if (timer !== null) {
+          clearTimeout(timer) // Clear any pending timer when the component unmounts or before re-subscribing.
+        }
+
         chartRef.current?.remove()
       }
     }

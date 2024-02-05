@@ -90,7 +90,7 @@ export type PoolsSlice = {
     fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
     fetchPricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
-    fetchHistoricalChartData: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
+    fetchMorePricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
     setChartSelectedIndex: (index: number) => void
@@ -502,7 +502,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       set(
         produce((state: State) => {
           state.pools.pricesApiState.chartStatus = 'LOADING'
-          state.pools.pricesApiState.refetchingCapped = false
+          state.pools.pricesApiState.refetchingCapped = DEFAULT_STATE.pricesApiState.refetchingCapped
+          state.pools.pricesApiState.refetchingHistory = DEFAULT_STATE.pricesApiState.refetchingHistory
         })
       )
 
@@ -596,7 +597,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         }
       }
     },
-    fetchHistoricalChartData: async (
+    fetchMorePricesApiCharts: async (
       chainId: ChainId,
       selectedChartIndex: number,
       poolAddress: string,
@@ -607,7 +608,11 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       chartCombinations: PricesApiCoin[][],
       isFlipped: boolean[]
     ) => {
-      if (get().pools.pricesApiState.refetchingHistory) return
+      if (
+        get().pools.pricesApiState.refetchingHistory ||
+        get().pools.pricesApiState.lastRefetchLength === get().pools.pricesApiState.chartOhlcData.length
+      )
+        return
 
       set(
         produce((state: State) => {
