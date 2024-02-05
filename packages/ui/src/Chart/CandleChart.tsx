@@ -1,29 +1,38 @@
 import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight } from './types'
+import type { IChartApi, Time } from 'lightweight-charts'
 
-import { createChart, ColorType, CrosshairMode, LineStyle, IChartApi } from 'lightweight-charts'
+import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 type Props = {
   chartType: ChartType
   chartHeight: ChartHeight
-  lpTokenData: LpPriceOhlcDataFormatted[]
+  ohlcData: LpPriceOhlcDataFormatted[]
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
   magnet: boolean
   themeType: string
+  refetchingHistory: boolean
+  refetchingCapped: boolean
+  lastRefetchLength: number
+  fetchMoreChartData: () => void
 }
 
 const CandleChart = ({
   chartType,
   chartHeight,
-  lpTokenData,
+  ohlcData,
   timeOption,
   wrapperRef,
   chartExpanded,
   magnet,
   themeType,
+  refetchingHistory,
+  refetchingCapped,
+  lastRefetchLength,
+  fetchMoreChartData,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
@@ -31,6 +40,7 @@ const CandleChart = ({
   const [chartCreated, setChartCreated] = useState(false)
   const [lastTheme, setLastTheme] = useState(themeType)
   const [isUnmounting, setIsUnmounting] = useState(false)
+  const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
 
   const [colors, setColors] = useState({
     backgroundColor: '#fafafa',
@@ -72,7 +82,7 @@ const CandleChart = ({
   }, [chartType, lastTheme, themeType])
 
   useEffect(() => {
-    if (chartCreated && !lpTokenData) return
+    if (chartCreated && !ohlcData) return
 
     if (chartContainerRef.current) {
       chartRef.current = createChart(chartContainerRef.current, {
@@ -147,16 +157,47 @@ const CandleChart = ({
         },
       })
 
-      candlestickSeries.setData(lpTokenData)
+      candlestickSeries.setData(ohlcData)
 
       setChartCreated(true)
 
+      const timeScale = chartRef.current.timeScale()
+
+      if (lastTimescale) {
+        timeScale.setVisibleRange(lastTimescale)
+      }
+
+      let timer: NodeJS.Timeout | null = null
+      timeScale.subscribeVisibleLogicalRangeChange(() => {
+        if (timer !== null || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
+          return
+        }
+        timer = setTimeout(() => {
+          const logicalRange = timeScale.getVisibleLogicalRange()
+          if (
+            logicalRange !== null &&
+            (!refetchingHistory || !refetchingCapped || lastRefetchLength !== ohlcData.length)
+          ) {
+            const barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
+            if (barsInfo !== null && barsInfo.barsBefore < 50) {
+              setLastTimescale(timeScale.getVisibleRange())
+              fetchMoreChartData()
+            }
+          }
+          timer = null
+        }, 150)
+      })
+
       return () => {
+        if (timer !== null) {
+          clearTimeout(timer) // Clear any pending timer when the component unmounts or before re-subscribing.
+        }
+
         chartRef.current?.remove()
       }
     }
   }, [
-    lpTokenData,
+    ohlcData,
     colors,
     timeOption,
     chartCreated,
@@ -166,6 +207,11 @@ const CandleChart = ({
     chartType,
     chartHeight.expanded,
     chartHeight.standard,
+    fetchMoreChartData,
+    refetchingHistory,
+    refetchingCapped,
+    lastRefetchLength,
+    lastTimescale,
   ])
 
   useEffect(() => {

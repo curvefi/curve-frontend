@@ -1,3 +1,5 @@
+import type { TimeOptions } from './types'
+
 export const combinations = <T>(inputArray: T[], size: number): T[][] => {
   const combinationHelper = (start: number, chosen: T[]): T[][] => {
     if (chosen.length === size) {
@@ -14,28 +16,41 @@ export const combinations = <T>(inputArray: T[], size: number): T[][] => {
   return combinationHelper(0, [])
 }
 
-export const getThreeHundredResultsAgo = (timeOption: string) => {
-  // 300 units ago
+export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => {
+  const seconds = {
+    '5m': 5 * 60,
+    '15m': 15 * 60,
+    '30m': 30 * 60,
+    '1h': 60 * 60,
+    '4h': 4 * 60 * 60,
+    '6h': 6 * 60 * 60,
+    '12h': 12 * 60 * 60,
+    '1d': 24 * 60 * 60,
+    '7d': 7 * 24 * 60 * 60,
+    '14d': 14 * 24 * 60 * 60,
+  }
 
-  // x minutes ago
-  if (timeOption === '5m') return Math.floor((Date.now() - 299 * 300 * 1000) / 1000).toString()
-  if (timeOption === '15m') return Math.floor((Date.now() - 299 * 900 * 1000) / 1000).toString()
-  if (timeOption === '30m') return Math.floor((Date.now() - 299 * 1800 * 1000) / 1000).toString()
-  // x hours ago
-  if (timeOption === '1h') return Math.floor((Date.now() - 299 * 60 * 60 * 1000) / 1000).toString()
-  if (timeOption === '4h') return Math.floor((Date.now() - 299 * 240 * 60 * 1000) / 1000).toString()
-  if (timeOption === '6h') return Math.floor((Date.now() - 299 * 360 * 60 * 1000) / 1000).toString()
-  if (timeOption === '12h') return Math.floor((Date.now() - 299 * 720 * 60 * 1000) / 1000).toString()
-  // x days ago
-
-  // 1d
-  if (timeOption === '7d') return Math.floor((Date.now() - 299 * 168 * 60 * 60 * 1000) / 1000).toString()
-  if (timeOption === '14d') return Math.floor((Date.now() - 299 * 336 * 60 * 60 * 1000) / 1000).toString()
-  return Math.floor((Date.now() - 299 * 24 * 60 * 60 * 1000) / 1000).toString()
+  return timestamp - seconds[timeOption]
 }
 
-export const getAggNumber = (timeOption: string) => {
-  if (timeOption === '5m') return 5
+export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) => {
+  const seconds = {
+    '5m': 5 * 60,
+    '15m': 15 * 60,
+    '30m': 30 * 60,
+    '1h': 60 * 60,
+    '4h': 4 * 60 * 60,
+    '6h': 6 * 60 * 60,
+    '12h': 12 * 60 * 60,
+    '1d': 24 * 60 * 60,
+    '7d': 7 * 24 * 60 * 60,
+    '14d': 14 * 24 * 60 * 60,
+  }
+
+  return Math.floor(timestamp - 299 * seconds[timeOption])
+}
+
+export const getAggNumber = (timeOption: TimeOptions) => {
   if (timeOption === '15m') return 15 // interval 900
   if (timeOption === '30m') return 30
   if (timeOption === '1h') return 1 // interval 3600
@@ -47,8 +62,7 @@ export const getAggNumber = (timeOption: string) => {
   if (timeOption === '14d') return 14
 }
 
-export const getTimeUnit = (timeOption: string) => {
-  if (timeOption === '5m') return 'minute'
+export const getTimeUnit = (timeOption: TimeOptions) => {
   if (timeOption === '15m') return 'minute'
   if (timeOption === '30m') return 'minute'
   if (timeOption === '1h') return 'hour'
@@ -60,9 +74,8 @@ export const getTimeUnit = (timeOption: string) => {
   if (timeOption === '14d') return 'day'
 }
 
-export const getMilliseconds = (timeOption: string) => {
+export const getMilliseconds = (timeOption: TimeOptions) => {
   // return timeOption in milliseconds
-  if (timeOption === '5m') return 5 * 60 * 1000
   if (timeOption === '15m') return 15 * 60 * 1000
   if (timeOption === '30m') return 30 * 60 * 1000
   if (timeOption === '1h') return 60 * 60 * 1000
@@ -75,7 +88,12 @@ export const getMilliseconds = (timeOption: string) => {
   return 24 * 60 * 60 * 1000 // 1d
 }
 
-export const getLiquidationRange = (price1: string, price2: string, priceDataLength: number, timeOption: string) => {
+export const getLiquidationRange = (
+  price1: string,
+  price2: string,
+  priceDataLength: number,
+  timeOption: TimeOptions
+) => {
   const endDate = new Date()
   const interval = getMilliseconds(timeOption)
   const startDate = new Date(endDate.getTime() - priceDataLength * interval)

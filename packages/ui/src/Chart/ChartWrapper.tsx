@@ -10,7 +10,6 @@ import type {
 
 import { useState, useRef } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
 import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
@@ -36,6 +35,10 @@ type Props = {
   setChartTimeOption: (option: TimeOptions) => void
   flipChart: () => void
   refetchPricesData: () => void
+  fetchMoreChartData: () => void
+  refetchingHistory: boolean
+  refetchingCapped: boolean
+  lastRefetchLength: number
   selectChartList: LabelList[]
 }
 
@@ -53,6 +56,10 @@ const ChartWrapper = ({
   setChartTimeOption,
   flipChart,
   refetchPricesData,
+  fetchMoreChartData,
+  refetchingHistory,
+  refetchingCapped,
+  lastRefetchLength,
   selectChartList,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
@@ -116,12 +123,16 @@ const ChartWrapper = ({
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
-              lpTokenData={clonedOhlcData}
+              ohlcData={clonedOhlcData}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}
               magnet={magnet}
               themeType={themeType}
+              refetchingHistory={refetchingHistory}
+              refetchingCapped={refetchingCapped}
+              lastRefetchLength={lastRefetchLength}
+              fetchMoreChartData={fetchMoreChartData}
             />
           </ResponsiveContainer>
         )}

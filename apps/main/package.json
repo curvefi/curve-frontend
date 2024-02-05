@@ -32,7 +32,7 @@
     "fuse.js": "^6.6.2",
     "immer": "^9.0.12",
     "intersection-observer": "^0.12.0",
-    "lightweight-charts": "4.0.1",
+    "lightweight-charts": "4.1.2",
     "lodash": "4.17.21",
     "make-plural": "^7.1.0",
     "memoizee": "^0.4.15",

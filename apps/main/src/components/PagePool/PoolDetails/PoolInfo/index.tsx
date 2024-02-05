@@ -1,6 +1,6 @@
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -11,7 +11,7 @@ import Button from '@/ui/Button'
 import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
 import PoolActivity from '@/components/PagePool/PoolDetails/PoolInfo/PoolActivity'
-import { getThreeHundredResultsAgo } from '@/ui/Chart/utils'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 
 type Props = {
@@ -32,12 +32,17 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       chartExpanded,
       activityHidden,
       tradesTokens,
+      refetchingHistory,
+      refetchingCapped,
+      lastFetchEndTime,
+      lastRefetchLength,
     },
     setChartSelectedIndex,
     setChartTimeOption,
     setChartExpanded,
     fetchPricesApiCharts,
     fetchPricesApiActivity,
+    fetchMorePricesApiCharts,
   } = useStore((state) => state.pools)
   const isMdUp = useStore((state) => state.isMdUp)
 
@@ -66,7 +71,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
   }, [pricesApiPoolData.coins, pricesApiPoolData.n_coins])
 
   const chartTimeSettings = useMemo(() => {
-    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption)
+    const threeHundredResultsAgo = getThreeHundredResultsAgo(timeOption, Date.now() / 1000)
 
     return {
       start: +threeHundredResultsAgo,
@@ -139,6 +144,34 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     timeUnit,
   ])
 
+  const fetchMoreChartData = useCallback(() => {
+    const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+    const startTime = getThreeHundredResultsAgo(timeOption, endTime)
+
+    fetchMorePricesApiCharts(
+      chainId,
+      selectedChartIndex,
+      pricesApiPoolData.address,
+      chartInterval,
+      timeUnit,
+      endTime,
+      +startTime,
+      chartCombinations,
+      isFlipped
+    )
+  }, [
+    chainId,
+    chartCombinations,
+    chartInterval,
+    fetchMorePricesApiCharts,
+    isFlipped,
+    lastFetchEndTime,
+    pricesApiPoolData.address,
+    selectedChartIndex,
+    timeOption,
+    timeUnit,
+  ])
+
   useEffect(() => {
     const chartsList: LabelList[] =
       chartOhlcData.length !== 0
@@ -193,6 +226,10 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           flipChart={flipChart}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
+          fetchMoreChartData={fetchMoreChartData}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -257,6 +294,10 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
           setChartTimeOption={setChartTimeOption}
           flipChart={flipChart}
           refetchPricesData={refetchPricesData}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
+          fetchMoreChartData={fetchMoreChartData}
         />
       )}
     </Wrapper>
