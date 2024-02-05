@@ -180,13 +180,7 @@ const CandleChart = ({
           ) {
             const barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
             if (barsInfo !== null && barsInfo.barsBefore < 50) {
-              console.log('fetching')
-              console.log('timer: ', timer !== null)
-              console.log('refetchingHistory: ', refetchingHistory)
-              console.log('refetchingCapped: ', refetchingCapped)
-              console.log('lastRefetchLength === ohlcData.length: ', lastRefetchLength === ohlcData.length)
               setLastTimescale(timeScale.getVisibleRange())
-              console.log(lastTimescale)
               fetchMoreChartData()
             }
           }

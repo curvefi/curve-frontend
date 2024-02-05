@@ -64,6 +64,7 @@ type SliceState = {
     chartStatus: FetchingStatus
     refetchingHistory: boolean
     refetchingCapped: boolean
+    lastFetchEndTime: number
     lastRefetchLength: number
     activityStatus: FetchingStatus
   }
@@ -132,6 +133,7 @@ const DEFAULT_STATE: SliceState = {
     chartStatus: 'LOADING',
     refetchingHistory: false,
     refetchingCapped: false,
+    lastFetchEndTime: 0,
     lastRefetchLength: 0,
     activityStatus: 'LOADING',
   },
@@ -535,6 +537,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
                 state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
+                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
               })
             )
           }
@@ -579,6 +582,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = filteredLpPriceData.data
                 state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
+                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
               })
             )
           }
@@ -647,8 +651,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           if (filteredLpPriceData) {
             const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
 
-            console.log(updatedData)
-
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = updatedData
@@ -659,6 +661,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             produce((state: State) => {
               state.pools.pricesApiState.refetchingHistory = false
               state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
+              state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
             })
           )
         } catch (error) {
@@ -705,6 +708,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             produce((state: State) => {
               state.pools.pricesApiState.refetchingHistory = false
               state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 298
+              state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
             })
           )
         } catch (error) {

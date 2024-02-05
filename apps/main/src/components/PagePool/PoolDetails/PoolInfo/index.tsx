@@ -34,6 +34,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       tradesTokens,
       refetchingHistory,
       refetchingCapped,
+      lastFetchEndTime,
       lastRefetchLength,
     },
     setChartSelectedIndex,
@@ -144,10 +145,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
   ])
 
   const fetchMoreChartData = useCallback(() => {
-    const endTime = subtractTimeUnit(timeOption, chartOhlcData[0].time)
-    console.log(endTime)
-    console.log(timeOption)
-    console.log(chartOhlcData[0].time)
+    const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
     const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
     fetchMorePricesApiCharts(
@@ -165,9 +163,9 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     chainId,
     chartCombinations,
     chartInterval,
-    chartOhlcData,
     fetchMorePricesApiCharts,
     isFlipped,
+    lastFetchEndTime,
     pricesApiPoolData.address,
     selectedChartIndex,
     timeOption,
