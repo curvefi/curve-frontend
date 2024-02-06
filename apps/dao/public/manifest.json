@@ -1,0 +1,27 @@
+{
+  "short_name": "Curve",
+  "name": "Curve",
+  "description": "Decentralized exchange liquidity pool designed for extremely efficient stablecoin trading and low-risk income for liquidity providers",
+  "iconPath": "logo-square.svg",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

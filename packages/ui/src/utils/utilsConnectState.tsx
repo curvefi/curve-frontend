@@ -4,6 +4,13 @@ export type ConnectState = {
   options?: any[] | undefined
 }
 
+export const CONNECT_STAGE = {
+  CONNECT_API: 'api',
+  CONNECT_WALLET: 'connect-wallet',
+  DISCONNECT_WALLET: 'disconnect-wallet',
+  SWITCH_NETWORK: 'switch-network',
+} as const
+
 export function isSuccess(connectState: ConnectState) {
   return connectState.status === 'success'
 }
