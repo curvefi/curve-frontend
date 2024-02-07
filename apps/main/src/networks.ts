@@ -200,8 +200,8 @@ const networks: Record<ChainId, NetworkConfig> = {
       },
       {
         name: 'fraxpyusd',
-        pool: '0x383e6b4437b59fff47b619cba855ca29342a8559',
-        token: '0x383e6b4437b59fff47b619cba855ca29342a8559',
+        pool: '0xa5588f7cdf560811710a2d82d3c9c99769db1dcb',
+        token: '0xa5588f7cdf560811710a2d82d3c9c99769db1dcb',
         coins: [
           '0x853d955acef822db058eb8505911ed77f175b99e', // frax
           '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd

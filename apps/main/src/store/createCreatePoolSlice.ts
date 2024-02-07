@@ -105,7 +105,7 @@ export type CreatePoolSlice = {
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => void
-    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean) => void
+    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => void
     updateInitialPrice: (priceA: number, priceB: number, priceC?: number) => void
     updateTokenPrice: (tokenId: TokenId, price: number) => void
     refreshInitialPrice: (curve: CurveApi) => void
@@ -470,14 +470,15 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.tokensInPool.tokenAmount = amount
         })
       ),
-    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean) => {
+    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => {
       set(
         produce((state) => {
           state.createPool.userAddedTokens.push({
-            address: address,
+            address: address.toLowerCase(),
             symbol: symbol,
             haveSameTokenName: haveSameTokenName,
             userAddedToken: true,
+            basePool: basePool,
           })
         })
       )
@@ -964,6 +965,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             dismissNotificationHandler = dismissDeploying
 
             const poolAddress = await curve.stableNgFactory.getDeployedMetaPoolAddress(deployPoolTx)
+
             // deploy pool tx success
             set(
               produce((state) => {
