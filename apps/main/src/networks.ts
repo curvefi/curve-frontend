@@ -181,7 +181,7 @@ const networks: Record<ChainId, NetworkConfig> = {
         ],
       },
       {
-        name: 'fraxusdp',
+        name: 'sbtc2Crv',
         pool: '0xae34574ac03a15cd58a92dc79de7b1a0800f1ce3',
         token: '0xfc2838a17d8e8b1d5456e0a351b0708a09211147',
         coins: [
@@ -190,7 +190,35 @@ const networks: Record<ChainId, NetworkConfig> = {
         ],
       },
       {
-        name: 'sbtc2Crv',
+        name: 'paypool',
+        pool: '0x383e6b4437b59fff47b619cba855ca29342a8559',
+        token: '0x383e6b4437b59fff47b619cba855ca29342a8559',
+        coins: [
+          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
+          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
+        ],
+      },
+      {
+        name: 'fraxpyusd',
+        pool: '0x383e6b4437b59fff47b619cba855ca29342a8559',
+        token: '0x383e6b4437b59fff47b619cba855ca29342a8559',
+        coins: [
+          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
+          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
+        ],
+      },
+      {
+        name: '3payllama',
+        pool: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
+        token: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
+        coins: [
+          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
+          '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
+          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
+        ],
+      },
+      {
+        name: 'fraxusdp',
         pool: '0xf253f83aca21aabd2a20553ae0bf7f65c755a07f',
         token: '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',
         coins: [

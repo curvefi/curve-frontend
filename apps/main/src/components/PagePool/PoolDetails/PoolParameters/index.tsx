@@ -92,6 +92,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
             <PoolParameterValue>
               {returnPoolType(pricesData.pool_type, pricesData.coins.length)}
               {pricesData.metapool && `, ${t`Metapool`}`}
+              {networks[rChainId].basePools.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
           {pricesData.base_pool && (
