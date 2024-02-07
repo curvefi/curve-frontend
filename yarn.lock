@@ -1439,10 +1439,10 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@curvefi/api@^2.54.4":
-  version "2.54.4"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.54.4.tgz#10e8ab24dca6b5eccbe2a159cd4917514cd3af21"
-  integrity sha512-oRVS7CGzhsVOunolkQp2ihrar0PlfSB41BKiCvLT9Fm/j2vkc6FGN3RieA0Wk9afdCiEwpnvwtZuztqvbhKz9w==
+"@curvefi/api@^2.54.5":
+  version "2.54.5"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.54.5.tgz#5bb4e41bacddc35b7c2692c539982a3ca9342894"
+  integrity sha512-QY+L6nSD1z0ThBrbQZ/QuaHD27wjBbZd12wcb/DB+7e3TN/Nu/iwTCLwz3y2HKRenT/78ZY15Cs04Ms+GNQSyQ==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"
