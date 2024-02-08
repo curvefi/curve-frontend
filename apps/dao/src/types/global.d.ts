@@ -85,4 +85,21 @@ declare global {
     l1GasPriceWei?: number
     l2GasPriceWei?: number
   }
+
+  type ProposalData = {
+    voteId: number
+    voteType: 'PARAMETER' | 'OWNERSHIP'
+    creator: string
+    startDate: number
+    snapshotBlock: number
+    ipfsMetadata: string
+    metadata: string
+    votesFor: string
+    votesAgainst: string
+    voteCount: number
+    supportRequired: string
+    minAcceptQuorum: string
+    totalSupply: string
+    executed: boolean
+  }
 }

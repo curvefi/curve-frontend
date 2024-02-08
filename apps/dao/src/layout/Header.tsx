@@ -3,6 +3,7 @@ import type { MessageDescriptor } from '@lingui/core'
 import { useCallback, useEffect, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { msg, t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
 
 import { CONNECT_STAGE, breakpoints, isLoading } from '@/ui/utils'
@@ -26,7 +27,10 @@ export type Page = {
   label: MessageDescriptor
 }
 
-const PAGES: Page[] = []
+const PAGES: Page[] = [
+  { route: ROUTE.PAGE_PROPOSALS, label: msg`Proposals` },
+  { route: ROUTE.PAGE_GAUGEVOTING, label: msg`Gauge Voting` },
+]
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()

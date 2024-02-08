@@ -7,7 +7,7 @@ import styled from 'styled-components'
 import { breakpoints, scrollToTop } from '@/ui/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 
-import Dao from '@/components/PageDao/index'
+import Dao from '@/components/PageProposals/index'
 import DocumentHead from '@/layout/DocumentHead'
 import Settings from '@/layout/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
@@ -41,7 +41,6 @@ const Page: NextPage = () => {
 }
 
 const Container = styled.div`
-  background-color: var(--table--background-color);
   min-height: 50vh;
   @media (min-width: ${breakpoints.lg}rem) {
     margin: 1.5rem;
