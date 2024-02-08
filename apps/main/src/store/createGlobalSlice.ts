@@ -1,13 +1,12 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { Locale } from '@/lib/i18n'
+import type { ConnectState } from '@/ui/utils'
 
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
 import { log, setStorageValue } from '@/utils'
-import { httpFetcher } from '@/lib/utils'
-import { initCurveJs } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -23,11 +22,10 @@ export type LayoutHeight = {
 }
 
 type GlobalState = {
-  appNetworkId: ChainId
+  connectState: ConnectState
   curve: CurveApi
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
-  isErrorApi: boolean
   isLoadingApi: boolean
   isLoadingCurve: boolean
   isMobile: boolean
@@ -41,22 +39,21 @@ type GlobalState = {
   layoutHeight: LayoutHeight
   loaded: boolean
   locale: Locale['value']
-  pageWidth: PageWidthClassName
+  pageWidth: PageWidthClassName | null
   maxSlippage: string
-  routerAppNetworkId: ChainId | null
   routerProps: RouterProps | null
   showScrollButton: boolean
   themeType: Theme
 }
 
+// prettier-ignore
 export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
-  setAppNetworkId: (appNetworkId: ChainId) => void
   setPageWidth: (pageWidthClassName: PageWidthClassName) => void
   setThemeType: (themeType: Theme) => void
-  updateAppCache: () => void
-  updateCurveJs(appNetworkId: ChainId, wallet: Wallet | null): Promise<void>
+  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
@@ -68,12 +65,10 @@ export interface GlobalSlice extends GlobalState {
 }
 
 const DEFAULT_STATE = {
-  appNetworkId: null,
-  routerAppNetworkId: null,
+  connectState: { status: '' as const, stage: '' },
   curve: null,
   hasDepositAndStake: {},
   hasRouter: {},
-  isErrorApi: false,
   isMobile: false,
   isLoadingApi: false,
   isLoadingCurve: true,
@@ -96,7 +91,7 @@ const DEFAULT_STATE = {
   maxSlippage: '',
   routerProps: null,
   showScrollButton: false,
-  themeType: null,
+  themeType: 'default',
 }
 
 const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -125,21 +120,13 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       })
     )
   },
-  setAppNetworkId: (appNetworkId: ChainId) => {
-    set(
-      produce((state: State) => {
-        state.appNetworkId = appNetworkId
-      })
-    )
-    get().updateAppCache()
-  },
   setThemeType: (themeType: Theme) => {
     set(
       produce((state: State) => {
         state.themeType = themeType
       })
     )
-    get().updateAppCache()
+    setStorageValue('APP_CACHE', { themeType })
   },
   setPageWidth: (pageWidthClassName: PageWidthClassName) => {
     const isXLgUp = pageWidthClassName.startsWith('page-wide')
@@ -161,23 +148,26 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       })
     )
   },
-  updateAppCache: () => {
-    setStorageValue('APP_CACHE', {
-      appNetworkId: get().appNetworkId || 1,
-      themeType: get().themeType || 'default',
-    })
+  updateConnectState: (
+    status: ConnectState['status'],
+    stage: ConnectState['stage'],
+    options?: ConnectState['options']
+  ) => {
+    const value = options ? { status, stage, options } : { status, stage }
+    get().updateGlobalStoreByKey('connectState', value)
   },
-  updateCurveJs: async (appNetworkId: ChainId, wallet: Wallet | null) => {
-    log('updateCurveJs', appNetworkId, { wallet })
-
-    get().updateGlobalStoreByKey('isErrorApi', false)
-    get().updateGlobalStoreByKey('isLoadingCurve', true)
-    get().updateGlobalStoreByKey('isLoadingApi', true)
-    const { chainId: prevChainId, signerAddress: prevSignerAddress } = get().curve ?? {}
-    const isNetworkSwitch = !!prevChainId && prevChainId !== appNetworkId
+  updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
+    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
+    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
+    const { chainId } = curveApi
+    log('updateCurveJs', curveApi?.chainId, {
+      wallet: wallet?.chains[0]?.id ?? '',
+      isNetworkSwitched,
+      isUserSwitched,
+    })
 
     // reset store
-    if (isNetworkSwitch) {
+    if (isNetworkSwitched) {
       get().gas.resetState()
       get().pools.resetState()
       get().quickSwap.resetState()
@@ -190,66 +180,46 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().createPool.resetState()
     }
 
-    const curveApi = await initCurveJs(appNetworkId, wallet)
-    const callAdditionalApis = !prevChainId || isNetworkSwitch
+    if (isUserSwitched || !curveApi.signerAddress) {
+      get().user.resetState()
+      get().userBalances.resetState()
+    }
 
-    if (curveApi) {
-      get().updateGlobalStoreByKey('curve', curveApi)
-      get().updateGlobalStoreByKey('isLoadingCurve', false)
-      const chainId = curveApi.chainId
+    // update network settings from api
+    get().setNetworkConfigFromApi(curveApi)
+    get().updateGlobalStoreByKey('curve', curveApi)
+    get().updateGlobalStoreByKey('isLoadingCurve', false)
 
-      if (prevSignerAddress !== curveApi?.signerAddress) {
-        get().user.resetState()
-        get().userBalances.resetState()
-      }
+    // get poolList
+    const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curveApi)
 
-      // update network settings from api
-      get().setNetworkConfigFromApi(curveApi)
+    // default hideSmallPools to false if poolIds length < 10
+    get().poolList.setStateByKey('formValues', { ...get().poolList.formValues, hideSmallPools: poolIds.length > 10 })
 
-      // get poolList
-      const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curveApi)
+    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
+    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
+      chainId === 2222 ? await networks[chainId].api.network.getFailedFetching24hOldVprice() : {}
 
-      // default hideSmallPools to false if poolIds length < 10
-      get().poolList.setStateByKey('formValues', { ...get().poolList.formValues, hideSmallPools: poolIds.length > 10 })
+    await get().pools.fetchPools(
+      curveApi,
+      [...poolIds, ...Object.keys(networks[chainId].customPoolIds)],
+      failedFetching24hOldVprice
+    )
 
-      // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
-      // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
-      // something like a dash with a tooltip "not available currently"
-      let failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
-      if (chainId === 2222) {
-        try {
-          const resp = await httpFetcher('https://api.curve.fi/api/getFactoryAPYs-kava')
-          if (resp.success && Object.keys(resp.data.poolDetails).length) {
-            for (const poolDetail of resp.data.poolDetails) {
-              failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
-            }
-          }
-        } catch (error) {
-          console.warn('Unable to fetch failedFetching24hOldVprice from https://api.curve.fi/api/getFactoryAPYs-kava')
-        }
-      }
+    if (!prevCurveApi || isNetworkSwitched) {
+      get().gas.fetchGasInfo(curveApi)
+      get().updateGlobalStoreByKey('isLoadingApi', false)
+      get().pools.fetchPricesApiPools(chainId)
 
-      await get().pools.fetchPools(
-        curveApi,
-        [...poolIds, ...Object.keys(networks[chainId].customPoolIds)],
-        failedFetching24hOldVprice
-      )
+      // pull all api calls before isLoadingApi if it is not needed for initial load
+      get().usdRates.fetchAllStoredUsdRates(curveApi)
+      get().pools.fetchTotalVolumeAndTvl(curveApi)
+    } else {
+      get().updateGlobalStoreByKey('isLoadingApi', false)
+    }
 
-      if (callAdditionalApis) {
-        get().gas.fetchGasInfo(curveApi)
-        get().updateGlobalStoreByKey('isLoadingApi', false)
-        get().pools.fetchPricesApiPools(chainId)
-
-        // pull all api calls before isLoadingApi if it is not needed for initial load
-        get().usdRates.fetchAllStoredUsdRates(curveApi)
-        get().pools.fetchTotalVolumeAndTvl(curveApi)
-      } else {
-        get().updateGlobalStoreByKey('isLoadingApi', false)
-      }
-
-      if (curveApi.signerAddress) {
-        get().user.fetchUserPoolList(curveApi)
-      }
+    if (curveApi.signerAddress) {
+      get().user.fetchUserPoolList(curveApi)
     }
   },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => {

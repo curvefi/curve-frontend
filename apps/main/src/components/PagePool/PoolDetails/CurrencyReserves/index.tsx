@@ -16,13 +16,13 @@ import CrDesktop from '@/components/PagePool/PoolDetails/CurrencyReserves/CrDesk
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 interface Props {
-  routerParams: RouterParams
+  rChainId: ChainId
+  rPoolId: string
   tokensMapper: TokensMapper
   tvl: Tvl
 }
 
-const CurrencyReserves = ({ routerParams, tokensMapper, tvl }: Props) => {
-  const { rChainId, rPoolId } = routerParams
+const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
   const isXSmDown = useStore((state) => state.isXSmDown)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])

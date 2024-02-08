@@ -2,9 +2,11 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
+import { CONNECT_STAGE } from '@/constants'
 import useStore from '@/store/useStore'
 import { curveProps } from '@/lib/utils'
 import networks from '@/networks'
+import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
 
 import Button from '@/ui/Button'
@@ -25,16 +27,14 @@ type InfoLinkBar = {
 }
 
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
-  const routerProps = useStore((state) => state.routerProps)
   const { haveSigner } = curveProps(curve)
   const navigate = useNavigate()
-  const { params, location } = routerProps || {}
 
   const { resetState, lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
     useStore((state) => state.deployGauge)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.updateWalletStoreByKey)
+  const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
 
   // cleanup and reset on dismount if success
@@ -48,11 +48,10 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   // }, [resetState, success, setSuccess])
 
   const handleConnectEth = () => {
-    if (location?.pathname && params?.network) {
-      updateWalletStoreByKey('isNetworkChangedFromApp', true)
-      updateGlobalStoreByKey('isLoadingApi', true)
-      navigate(location.pathname.replace(`/${params.network}`, `/${networks[1].name.toLowerCase()}`))
-    }
+    const { rChainId, rNetwork } = getNetworkFromUrl()
+    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
+    updateGlobalStoreByKey('isLoadingApi', true)
+    navigate(`/${window.location.hash.substring(2).replace(rNetwork, networks[1].id)}`)
   }
 
   const handleClick = async () => {

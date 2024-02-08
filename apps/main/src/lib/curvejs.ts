@@ -23,6 +23,7 @@ import {
 import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
 import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
+import { httpFetcher } from '@/lib/utils'
 import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
 import {
   excludeLowExchangeRateCheck,
@@ -132,6 +133,24 @@ const network = {
     log('getChainVolume', curve.chainId)
     let api = curve as CurveApi
     return api.getVolume()
+  },
+  getFailedFetching24hOldVprice: async () => {
+    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
+    // If `failedFetching24hOldVprice` is true, it means the base apy couldn't be calculated, display in UI
+    // something like a dash with a tooltip "not available currently"
+    let failedFetching24hOldVprice: { [poolAddress: string]: boolean } = {}
+    try {
+      const resp = await httpFetcher('https://api.curve.fi/api/getFactoryAPYs-kava')
+      if (resp.success && Object.keys(resp.data.poolDetails).length) {
+        for (const poolDetail of resp.data.poolDetails) {
+          failedFetching24hOldVprice[poolDetail.poolAddress.toLowerCase()] = poolDetail.failedFetching24hOldVprice
+        }
+      }
+      return failedFetching24hOldVprice
+    } catch (error) {
+      console.warn('Unable to fetch failedFetching24hOldVprice from https://api.curve.fi/api/getFactoryAPYs-kava')
+      return failedFetching24hOldVprice
+    }
   },
 }
 

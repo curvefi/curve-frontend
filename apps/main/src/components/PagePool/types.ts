@@ -26,7 +26,7 @@ export type Seed = {
 export type PageTransferProps = {
   curve: CurveApi | null
   params: Params
-  routerParams: RouterParams
+  routerParams: { rChainId: ChainId; rPoolId: string; rFormType: RFormType }
   hasDepositAndStake: boolean
   poolData: PoolData | undefined
   poolDataCacheOrApi: PoolData | PoolDataCache

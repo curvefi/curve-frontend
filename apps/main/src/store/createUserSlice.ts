@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
-import { shortenAccount } from '@/lib/utils'
+import { shortenAccount } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 

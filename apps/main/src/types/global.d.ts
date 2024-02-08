@@ -4,6 +4,7 @@ import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
+import type { Locale } from '@/lib/i18n'
 import type curveApi from '@curvefi/api'
 
 import { ethers } from 'ethers'
@@ -109,15 +110,29 @@ declare global {
   }
   type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
 
+  type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | ''
+  type RouterParams = {
+    rLocale: Locale | null
+    rLocalePathname: string
+    rChainId: ChainId
+    rNetwork: NetworkEnum
+    rNetworkIdx: number
+    rSubdirectory: string
+    rSubdirectoryUseDefault: boolean
+    rPoolId: string
+    rFormType: RFormType
+    redirectPathname: string
+    restFullPathname: string
+  }
+
   type PageProps = {
     curve: CurveApi | null
-    chainId: ChainId | null
-    haveSigner: boolean
-    signerAddress: string
+    pageLoaded: boolean
+    routerParams: RouterParams
   }
 
   type Pool = PoolTemplate
-  type Provider = ethers.BrowserProvider | Eip1193Provider
+  type Provider = ethers.Provider.BrowserProvider
 
   // pool rewards
   export type ClaimableReward = {
@@ -292,12 +307,6 @@ declare global {
   type PoolDataCacheOrApi = PoolData | PoolDataCache
 
   type PageWidthClassName = 'page-wide' | 'page-large' | 'page-medium' | 'page-small' | 'page-small-x' | 'page-small-xx'
-
-  type RouterParams = {
-    rChainId: ChainId
-    rPoolId: string
-    rFormType: 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create'
-  }
 
   type RouterProps = {
     params: Params

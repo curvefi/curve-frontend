@@ -18,7 +18,14 @@ import {
 export * from '@web3-onboard/react'
 
 // @ts-ignore
-export function initOnboard(i18n, locale, theme, networks) {
+export function initOnboard(i18n, locale, themeType, networks) {
+  let theme: 'system' | 'light' | 'dark' = 'system'
+  if (themeType === 'default' || themeType === 'chad') {
+    theme = 'light'
+  } else if (themeType === 'dark') {
+    theme = 'dark'
+  }
+
   const chains = Object.keys(networks).map((key) => {
     const network = networks[+key]
     return {
@@ -28,6 +35,7 @@ export function initOnboard(i18n, locale, theme, networks) {
       rpcUrl: network.rpcUrlConnectWallet,
     }
   })
+
   const walletState = onboard.init({
     wallets: [
       injected,

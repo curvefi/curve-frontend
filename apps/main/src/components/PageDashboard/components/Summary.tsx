@@ -9,8 +9,7 @@ import styled from 'styled-components'
 
 import { DEFAULT_WALLET_DASHBOARD_DATA } from '@/components/PageDashboard/utils'
 import { breakpoints } from '@/ui/utils/responsive'
-import { shortenAccount } from '@/lib/utils'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 

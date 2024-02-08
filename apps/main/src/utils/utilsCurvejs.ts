@@ -4,7 +4,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
-  let curveApi = null
+  let curveApi: CurveApi | undefined
   const { networkId, rpcUrl } = networks[chainId] ?? {}
 
   try {
@@ -12,14 +12,7 @@ export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
       curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
 
       if (wallet) {
-        await curveApi.init(
-          'Web3',
-          {
-            network: networkId,
-            externalProvider: getWalletProvider(wallet),
-          },
-          { chainId }
-        )
+        await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
         return curveApi
       } else if (rpcUrl) {
         await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })

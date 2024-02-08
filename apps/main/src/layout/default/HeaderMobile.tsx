@@ -6,11 +6,15 @@ import { useNavigate } from 'react-router-dom'
 import React, { useMemo, useRef, useState } from 'react'
 import { useOverlay } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
+import delay from 'lodash/delay'
 import Image from 'next/image'
 import styled, { css } from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { parseLocale } from '@/lib/i18n'
+import { getLocaleFromUrl, getNetworkFromUrl } from '@/utils/utilsRouter'
+import { getWalletSignerAddress } from '@/store/createWalletSlice'
+import { DEFAULT_LOCALES } from '@/lib/i18n'
+import { useConnectWallet } from '@/onboard'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -18,14 +22,14 @@ import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
 import { LlamaImg } from '@/images'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/ui/Button/ConnectWallet'
 import CurveLogoLink from '@/layout/default/CurveLogoLink'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import Overlay from '@/ui/Overlay'
-import SelectLocale from '@/components/SelectLocale'
+import SelectLocale from '@/ui/Select/SelectLocale'
 import SelectThemes from '@/components/SelectThemes'
 import Spacer from '@/ui/Spacer'
 
@@ -33,18 +37,23 @@ const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const HeaderMobile = ({
   pages,
-  chainId,
   rChainId,
   selectNetwork: SelectNetwork,
-}: PageProps & {
+  handleConnectWallet,
+  handleLocaleChange,
+}: {
   pages: Page[]
-  rChainId: ChainId | ''
+  rChainId: ChainId
   selectNetwork: React.ReactElement
+  handleConnectWallet(): void
+  handleLocaleChange(selectedLocale: React.Key): void
 }) => {
+  const [{ wallet }] = useConnectWallet()
+
+  const connectState = useStore((state) => state.connectState)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
-  const routerProps = useStore((state) => state.routerProps)
   const tvlTotalCached = useStore((state) => state.storeCache.tvlTotal?.[rChainId])
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotalCached = useStore((state) => state.storeCache.volumeTotal?.[rChainId])
@@ -64,15 +73,9 @@ const HeaderMobile = ({
   const [showCommunity, setShowCommunity] = useState(false)
   const [showLocaleList, setShowLocaleList] = useState(false)
 
-  const { params } = routerProps || {}
   const menuWidth = useMemo(() => (pageWidth === 'page-small-x' ? 270 : 300), [pageWidth])
 
-  const curveOrgPathname = useMemo(() => {
-    if (chainId) {
-      return networks[chainId].orgUIPath
-    }
-    return '/'
-  }, [chainId])
+  const curveOrgPathname = networks[rChainId ?? '1'].orgUIPath
 
   const openMenu = (updatedMenusWidth: number[]) => {
     setMenusWidth(updatedMenusWidth)
@@ -99,14 +102,11 @@ const HeaderMobile = ({
   }
 
   const handleRouteClick = (route: string) => {
-    const { pathnameLocale } = parseLocale(params?.locale)
-    const network = params?.network ?? 'ethereum'
+    const { rLocalePathname } = getLocaleFromUrl()
+    const { rNetwork } = getNetworkFromUrl()
 
-    if (navigate) {
-      const reRoutePathname = pathnameLocale ? `/${pathnameLocale}/${network}${route}` : `/${network}${route}`
-      navigate(reRoutePathname)
-    }
-    closeMenu([menuWidth, 0])
+    delay(() => closeMenu([menuWidth, 0]), 100)
+    navigate(`${rLocalePathname}/${rNetwork}${route}`)
   }
 
   const leftOverlay = useOverlay(leftOverlayProps, leftMenuRef)
@@ -147,7 +147,15 @@ const HeaderMobile = ({
               </Box>
 
               <div>
-                <SelectLocale mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }} />
+                <SelectLocale
+                  locales={DEFAULT_LOCALES}
+                  selectedLocale={locale}
+                  mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }}
+                  handleLocaleChange={(selectedLocale: React.Key) => {
+                    handleLocaleChange(selectedLocale)
+                    delay(() => closeMenu([menuWidth, 0]), 300)
+                  }}
+                />
               </div>
               <MoreContainer>
                 <MobileButton size="medium" variant="text" fillWidth onClick={() => setShowMore((prev) => !prev)}>
@@ -193,13 +201,13 @@ const HeaderMobile = ({
                         <Icon name="CaretDown" size={16} aria-label="show icon" />
                       )}
                     </MobileButton>
-                    <StyledResourcesSection chainId={chainId} className={`collapsed ${showResources ? 'show' : ''}`} />
+                    <StyledResourcesSection chainId={rChainId} className={`collapsed ${showResources ? 'show' : ''}`} />
                   </div>
                 </More>
               </MoreContainer>
             </Box>
 
-            {chainId && (
+            {rChainId && (
               <>
                 <Stats grid>
                   <HeaderStats
@@ -240,7 +248,14 @@ const HeaderMobile = ({
           </ModalContent>
           <Spacer />
           <ModalFooter>
-            <StyledConnectWallet onClick={() => closeMenu([menuWidth, 0])} />
+            <StyledConnectWallet
+              connectState={connectState}
+              walletSignerAddress={getWalletSignerAddress(wallet)}
+              handleClick={() => {
+                handleConnectWallet()
+                delay(() => closeMenu([menuWidth, 0]), 300)
+              }}
+            />
           </ModalFooter>
         </ModalWrapper>
       </Overlay>

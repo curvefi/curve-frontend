@@ -1,6 +1,6 @@
 import type { TransferProps } from '@/components/PagePool/types'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils'
@@ -9,8 +9,7 @@ import useStore from '@/store/useStore'
 import useTokenAlert from '@/hooks/useTokenAlert'
 
 import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
-import Spinner from '@/ui/Spinner'
+import FormConnectWallet from '@/components/FormConnectWallet'
 
 const TransferActions = ({
   children,
@@ -28,14 +27,13 @@ const TransferActions = ({
   const { signerAddress } = curve || {}
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
+  const connectState = useStore((state) => state.connectState)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const poolTotal = currencyReserves?.total
 
-  const isLoading = useMemo(() => {
-    return loading || typeof poolData === 'undefined' || typeof poolTotal === 'undefined'
-  }, [loading, poolData, poolTotal])
+  const isLoading =
+    loading || typeof poolData === 'undefined' || typeof poolTotal === 'undefined' || connectState.status === 'loading'
 
   return (
     <>
@@ -63,17 +61,9 @@ const TransferActions = ({
       {signerAddress && !isLoading && !walletBalancesLoading && typeof userPoolBalances === 'undefined' && (
         <AlertBox alertType="error">{t`Unable to get wallet balances`}</AlertBox>
       )}
-      {!signerAddress && !isLoading ? (
-        <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
-          {t`Connect Wallet`}
-        </Button>
-      ) : isLoading ? (
-        <Button fillWidth size="large" disabled variant="icon-filled">
-          {t`Loading`} <Spinner isDisabled size={15} />
-        </Button>
-      ) : (
-        children
-      )}
+      <FormConnectWallet curve={curve} loading={isLoading}>
+        {children}
+      </FormConnectWallet>
     </>
   )
 }

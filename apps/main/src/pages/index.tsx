@@ -1,10 +1,11 @@
 import type { NextPage } from 'next'
 
 import { Navigate, Route, Routes } from 'react-router'
-import { ROUTE } from '@/constants'
 import dynamic from 'next/dynamic'
 
-const PageIndex = dynamic(() => import('@/components/PageIndex'), { ssr: false })
+import { ROUTE } from '@/constants'
+import { getNetworkFromUrl } from '@/utils/utilsRouter'
+
 const PageDashboard = dynamic(() => import('@/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/components/PageCrvLocker/Page'), { ssr: false })
 const PagePoolTransfer = dynamic(() => import('@/components/PagePool/Page'), { ssr: false })
@@ -16,21 +17,21 @@ const PageDeployGauge = dynamic(() => import('@/components/PageDeployGauge/Page'
 const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
 const PageCompensation = dynamic(() => import('@/components/PageCompensation/Page'), { ssr: false })
 
-const App: NextPage<PageProps> = (pageProps) => {
+const App: NextPage = () => {
   const SubRoutes = (
     <>
-      <Route path=":network/dashboard" element={<PageDashboard {...pageProps} />} />
-      <Route path=":network/create-pool" element={<PageCreatePool {...pageProps} />} />
-      <Route path=":network/locker" element={<PageLockedCrv {...pageProps} />} />
-      <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv {...pageProps} />} />
-      <Route path=":network/create-pool" element={<PageCreatePool {...pageProps} />} />
-      <Route path=":network/deploy-gauge" element={<PageDeployGauge {...pageProps} />} />
-      <Route path=":network/integrations" element={<PageIntegrations {...pageProps} />} />
-      <Route path=":network/pools" element={<PagePools {...pageProps} />} />
+      <Route path=":network" element={<Navigate to={`/${getNetworkFromUrl().rNetwork}${ROUTE.PAGE_SWAP}`} replace />} />
+      <Route path=":network/dashboard" element={<PageDashboard />} />
+      <Route path=":network/locker" element={<PageLockedCrv />} />
+      <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />
+      <Route path=":network/create-pool" element={<PageCreatePool />} />
+      <Route path=":network/deploy-gauge" element={<PageDeployGauge />} />
+      <Route path=":network/integrations" element={<PageIntegrations />} />
+      <Route path=":network/pools" element={<PagePools />} />
       <Route path=":network/pools/:pool" element={<Navigate to="deposit" replace />} />
-      <Route path=":network/pools/:pool/:transfer" element={<PagePoolTransfer {...pageProps} />} />
-      <Route path=":network/swap" element={<PageSwap {...pageProps} />} />
-      <Route path=":network/compensation" element={<PageCompensation {...pageProps} />} />
+      <Route path=":network/pools/:pool/:transfer" element={<PagePoolTransfer />} />
+      <Route path=":network/swap" element={<PageSwap />} />
+      <Route path=":network/compensation" element={<PageCompensation />} />
     </>
   )
 
@@ -42,13 +43,13 @@ const App: NextPage<PageProps> = (pageProps) => {
       <Route path="/deploy-gauge" element={<Navigate to={`/ethereum${ROUTE.PAGE_DEPLOY_GAUGE}`} replace />} />
       <Route path="/locker" element={<Navigate to={`/ethereum${ROUTE.PAGE_LOCKER}`} replace />} />
       <Route path="/create-pool" element={<Navigate to={`/ethereum${ROUTE.PAGE_CREATE_POOL}`} replace />} />
-      <Route path="/integrations" element={<PageIntegrations {...pageProps} />} />
+      <Route path="/integrations" element={<PageIntegrations />} />
       <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
       <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
       <Route path="/compensation" element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />} />
-      <Route path="/" element={<PageIndex {...pageProps} />} />
-      <Route path="404" element={<Page404 {...pageProps} />} />
-      <Route path="*" element={<Page404 {...pageProps} />} />
+      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
+      <Route path="404" element={<Page404 />} />
+      <Route path="*" element={<Page404 />} />
     </Routes>
   )
 }

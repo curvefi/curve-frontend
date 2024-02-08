@@ -38,7 +38,7 @@ import DetailInfoTradeRoute from '@/components/PageRouterSwap/components/DetailI
 import FieldHelperUsdRate from '@/components/FieldHelperUsdRate'
 import Icon from '@/ui/Icon'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import RouterSwapActions from '@/components/PageRouterSwap/components/RouterSwapActions'
+import FormConnectWallet from '@/components/FormConnectWallet'
 import Stepper from '@/ui/Stepper'
 import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -513,10 +513,10 @@ const QuickSwap = ({
         <AlertBox alertType="error">{t`Not enough balance for ${tokensNameMapper[searchedParams.toAddress]}`}</AlertBox>
       ) : null}
 
-      <RouterSwapActions loading={!steps.length} curve={curve}>
+      <FormConnectWallet loading={!steps.length} curve={curve}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
-      </RouterSwapActions>
+      </FormConnectWallet>
     </>
   )
 }

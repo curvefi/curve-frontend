@@ -20,7 +20,7 @@ import {
   DEFAULT_WALLET_DASHBOARD_DATA,
 } from '@/components/PageDashboard/utils'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue } from '@/utils'
-import { shortenAccount } from '@/lib/utils'
+import { shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

@@ -7,12 +7,7 @@ import styled from 'styled-components'
 
 import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
-import {
-  getCollateralListPathname,
-  getLoanCreatePathname,
-  getLoanManagePathname,
-  parseParams,
-} from '@/utils/utilsRouter'
+import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 import { getTokenName } from '@/utils/utilsLoan'
 import { hasLeverage } from '@/components/PageLoanCreate/utils'
 import { scrollToTop } from '@/utils/helpers'
@@ -31,10 +26,9 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  usePageOnMount(params, location, navigate)
-  const { rChainId, rCollateralId, rFormType } = parseParams(params, location)
+  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId, rCollateralId, rFormType } = routerParams
 
-  const curve = useStore((state) => state.curve)
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)

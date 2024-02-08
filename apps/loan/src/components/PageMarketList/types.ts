@@ -28,6 +28,7 @@ export type FormValues = {
 
 export type PageCollateralList = {
   curve: Curve | null
+  pageLoaded: boolean
   params: Params
   rChainId: ChainId
 }

@@ -36,7 +36,6 @@ import { ExternalLink } from '@/ui/Link'
 
 import PoolInfoData from '@/components/PagePool/PoolDetails/PoolInfo'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
-import { props } from 'cypress/types/bluebird'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -228,7 +227,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <PoolInfoData chainId={rChainId} pricesApiPoolData={pricesApiPoolData} routerParams={routerParams} />
+            <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -296,7 +295,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           {isMdUp && !chartExpanded && <TitleComp />}
           {pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
-              <PoolInfoData chainId={rChainId} pricesApiPoolData={pricesApiPoolData} routerParams={routerParams} />
+              <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
             </PriceAndTradesWrapper>
           )}
           <DetailTabsWrapper>

@@ -1,7 +1,11 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import networks from '@/networks'
+import { CONNECT_STAGE } from '@/constants'
+import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { getWalletChainId } from '@/store/createWalletSlice'
+import { isFailure, isLoading } from '@/ui/utils'
+import { useConnectWallet } from '@/onboard'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
@@ -9,23 +13,30 @@ import Header from '@/layout/default/Header'
 import Footer from '@/layout/default/Footer'
 import GlobalBanner from '@/ui/Banner'
 
-const BaseLayout = ({ children, ...pageProps }: React.PropsWithChildren<PageProps>) => {
-  const { chainId } = pageProps
+const BaseLayout = ({ children }: { children: React.ReactNode }) => {
+  const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 
-  const curve = useStore((state) => state.curve)
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
-  const isNetworkMismatched = useStore((state) => state.wallet.isNetworkMismatched)
   const layoutHeight = useStore((state) => state.layoutHeight)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.updateWalletStoreByKey)
+  const updateConnectState = useStore((state) => state.updateConnectState)
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
-  const showSwitchNetworkMessage = isNetworkMismatched
+
+  const [networkSwitch, setNetworkSwitch] = useState('')
+
+  const { rChainId, rNetwork } = getNetworkFromUrl()
+
+  const showSwitchNetworkMessage =
+    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
 
   const handleNetworkChange = () => {
-    updateWalletStoreByKey('isSwitchNetwork', true)
+    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
+    setNetworkSwitch(connectStage)
+    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
   }
 
   const minHeight = useMemo(() => {
@@ -42,15 +53,16 @@ const BaseLayout = ({ children, ...pageProps }: React.PropsWithChildren<PageProp
     <>
       <GlobalBanner
         ref={globalAlertRef}
-        networkName={curve?.chainId ? networks[curve.chainId].name : ''}
+        networkName={rNetwork}
+        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
         showSwitchNetworkMessage={showSwitchNetworkMessage}
         maintenanceMessage={maintenanceMessage}
         handleNetworkChange={handleNetworkChange}
       />
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header {...pageProps} />
+        <Header />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer chainId={chainId} />}
+        {isMdUp && <Footer chainId={rChainId} />}
       </Container>
     </>
   )

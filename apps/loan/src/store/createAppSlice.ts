@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
+import type { ConnectState } from '@/ui/utils'
 import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
-import { initCurveJs } from '@/utils/utilsCurvejs'
 import { log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
 import isEqual from 'lodash/isEqual'
@@ -14,19 +14,17 @@ export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type AppCacheKeys = 'appNetworkId' | 'themeType' | 'isAdvanceMode'
+type AppCacheKeys = 'themeType' | 'isAdvanceMode'
 
 type SliceState = {
-  appNetworkId: ChainId | null
-  routerAppNetworkId: ChainId | null
+  connectState: ConnectState
   curve: Curve | null
   crvusdTotalSupply: { amount: string | null; error: string }
   isAdvanceMode: boolean
-  isErrorApi: boolean
-  isLoadingApi: boolean
+  isLoadingApi: false
+  isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  loading: boolean
   locale: Locale['value']
   maxSlippage: string
   routerProps: RouterProps | null
@@ -34,10 +32,12 @@ type SliceState = {
   themeType: Theme
 }
 
+// prettier-ignore
 export interface AppSlice extends SliceState {
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   setAppCache<T>(key: AppCacheKeys, value: T): void
-  updateCurveJs(appNetworkId: ChainId, wallet: Wallet | null): Promise<void>
+  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -47,16 +47,14 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  appNetworkId: null,
-  routerAppNetworkId: null,
+  connectState: { status: '' as const, stage: '' },
   curve: null,
   crvusdTotalSupply: { amount: '', error: '' },
   isAdvanceMode: false,
-  isErrorApi: false,
-  isLoadingApi: true,
+  isLoadingApi: false,
+  isLoadingCurve: true,
   isMobile: false,
   isPageVisible: true,
-  loading: true,
   locale: 'en' as const,
   maxSlippage: '0.1',
   routerProps: null,
@@ -78,56 +76,48 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
   setAppCache: <T>(key: AppCacheKeys, value: T) => {
     get().updateGlobalStoreByKey(key, value)
     setStorageValue('APP_CACHE', {
-      appNetworkId: key === 'appNetworkId' ? value : get().appNetworkId || 1,
       themeType: key === 'themeType' ? value : get().themeType || 'default',
       isAdvanceMode: key === 'isAdvanceMode' ? value : get().isAdvanceMode || false,
     })
   },
-  updateCurveJs: async (appNetworkId: ChainId, wallet: Wallet | null) => {
-    log('updateCurveJs', appNetworkId, { wallet })
-
-    get().updateGlobalStoreByKey('isErrorApi', false)
-    get().updateGlobalStoreByKey('isLoadingApi', true)
-    const prevChainId = get().curve?.chainId
-    const isNetworkSwitch = !!prevChainId && prevChainId !== appNetworkId
-    const prevSignerAddress = get().curve?.signerAddress
-    const walletSignerAddress = wallet?.accounts?.[0]?.address
-    const isSwitchSigner = !!prevSignerAddress && !!walletSignerAddress && prevSignerAddress !== walletSignerAddress
+  updateConnectState: (
+    status: ConnectState['status'],
+    stage: ConnectState['stage'],
+    options?: ConnectState['options']
+  ) => {
+    const value = options ? { status, stage, options } : { status, stage }
+    get().updateGlobalStoreByKey('connectState', value)
+  },
+  updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
+    const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
+    const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
+    log('updateCurveJs', curveApi?.chainId, {
+      wallet: wallet?.chains[0]?.id ?? '',
+      isNetworkSwitched,
+      isUserSwitched,
+    })
 
     // reset store
-    if (isNetworkSwitch) {
-      // add resetState once it is available to > 1 network
+    if (isUserSwitched || !curveApi.signerAddress) {
+      get().loans.setStateByKey('userWalletBalancesMapper', {})
+      get().loans.setStateByKey('userDetailsMapper', {})
     }
 
-    const api = await initCurveJs(appNetworkId, wallet)
-    // TODO: hard coding chainId to 1
-    const curveApi = { ...api, chainId: 1 } as Curve
+    // update network settings from api
+    get().updateGlobalStoreByKey('curve', curveApi)
+    get().updateGlobalStoreByKey('isLoadingCurve', false)
 
-    if (api) {
-      get().updateGlobalStoreByKey('curve', curveApi)
+    // get collateral list
+    const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
+    await get().loans.fetchLoansDetails(curveApi, collateralDatas)
 
-      const callAdditionalApis = !prevChainId || isNetworkSwitch
-      const haveSigner = !!curveApi.signerAddress
-
-      // get collateral list
-      const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
-
-      if (callAdditionalApis) {
-        get().gas.fetchGasInfo(curveApi)
-        get().usdRates.fetchAllStoredUsdRates(curveApi)
-        get().fetchCrvUSDTotalSupply(curveApi)
-      }
-
-      await get().loans.fetchLoansDetails(curveApi, collateralDatas)
-
-      if (!haveSigner || isSwitchSigner) {
-        get().loans.setStateByKey('userWalletBalancesMapper', {})
-        get().loans.setStateByKey('userDetailsMapper', {})
-        get().updateGlobalStoreByKey('isLoadingApi', false)
-      } else {
-        get().updateGlobalStoreByKey('isLoadingApi', false)
-      }
+    if (!prevCurveApi || isNetworkSwitched) {
+      get().gas.fetchGasInfo(curveApi)
+      get().usdRates.fetchAllStoredUsdRates(curveApi)
+      get().fetchCrvUSDTotalSupply(curveApi)
     }
+
+    get().updateGlobalStoreByKey('isLoadingApi', false)
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(

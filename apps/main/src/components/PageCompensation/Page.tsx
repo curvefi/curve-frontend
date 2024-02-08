@@ -7,7 +7,6 @@ import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { parseParams } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
@@ -21,12 +20,12 @@ import IconButton from '@/ui/IconButton'
 import Settings from '@/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
-const Page: NextPage<PageProps> = ({ curve }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  usePageOnMount(params, location, navigate)
-  const { rChainId } = parseParams(params, location)
+  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId } = routerParams
 
   const provider = useStore((state) => state.wallet.provider)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
@@ -82,7 +81,7 @@ const Page: NextPage<PageProps> = ({ curve }) => {
               <Spinner />
             </SpinnerWrapper>
           ) : (
-            <FormCompensation curve={curve} rChainId={rChainId} contracts={contracts} />
+            <FormCompensation curve={curve} rChainId={rChainId} contracts={contracts} provider={provider} />
           )}
           <i>
             For additional information, please see{' '}

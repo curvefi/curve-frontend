@@ -3,12 +3,10 @@ import type { AlertBoxProps } from 'ui/src/AlertBox/types'
 import * as React from 'react'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
-import { ConnectSource } from '@carbon/icons-react'
 
 const AlertBox = ({
   className,
@@ -78,7 +76,7 @@ const AlertBox = ({
         <AdjustHeightWrapper>
           <ButtonContainer>
             <AdjustHeightButton onClick={() => setShowFullHeight(!showFullHeight)}>
-              {showFullHeight ? t`Minimize` : t`Expand`}
+              {showFullHeight ? 'Minimize' : 'Expand'}
               {showFullHeight ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </AdjustHeightButton>
           </ButtonContainer>

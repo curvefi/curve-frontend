@@ -1,20 +1,21 @@
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 
-import { CURVE_FI_ROUTE, ROUTE } from '@/constants'
-import { parseLocale } from '@/lib/i18n'
-import { parseParams } from '@/utils/utilsRouter'
+import { CONNECT_STAGE, CURVE_FI_ROUTE, ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
+import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
+import { getWalletSignerAddress } from '@/store/createWalletSlice'
+import { isLoading } from '@/ui/utils'
+import { useConnectWallet } from '@/onboard'
 import { visibleNetworksList } from '@/networks'
-import networks from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/ui/Button/ConnectWallet'
 import BrandingLink from '@/components/BrandingLink'
 import DividerHorizontal from '@/ui/DividerHorizontal'
 import ExternalLink from '@/ui/Link/ExternalLink'
@@ -27,63 +28,56 @@ export type Page = {
   label: string
 }
 
-const Header = ({ chainId }: { chainId: ChainId | undefined }) => {
+const Header = () => {
+  const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
+  const location = useLocation()
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const routerProps = useStore((state) => state.routerProps)
-  const setWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { params = {}, location } = routerProps || {}
-  const { rChainId = '1' } = parseParams(params, location)
-  const { pathnameLocale } = parseLocale(params?.locale)
-  const network = networks[rChainId as ChainId]?.id
+  const { rChainId, rNetwork, rNetworkIdx } = getNetworkFromUrl()
+  const rLocale = getLocaleFromUrl()
+
   const pages = [
     { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
     { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
     { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
   ]
 
-  const handleNetworkChange = (selectedNetwork: React.Key) => {
-    const numSelectedNetwork = Number(selectedNetwork)
-
-    if (rChainId !== numSelectedNetwork) {
-      setWalletStoreByKey('isNetworkChangedFromApp', true)
-      const updatedNetworkName = networks[selectedNetwork as ChainId]?.id
-
-      if (location?.pathname && params?.network && updatedNetworkName) {
-        let redirectPathname
-        if (params.pool) {
-          const { pathnameLocale } = parseLocale(params?.locale)
-          redirectPathname = pathnameLocale
-            ? `/${pathnameLocale}/${updatedNetworkName}/pools`
-            : `/${updatedNetworkName}/pools`
-        } else {
-          redirectPathname = location.pathname.replace(`/${params.network}`, `/${updatedNetworkName}`)
-        }
-        updateGlobalStoreByKey('isLoadingApi', true)
-        navigate(redirectPathname)
-      }
+  const handleConnectWallet = (wallet: Wallet | null) => {
+    if (wallet) {
+      updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
+    } else {
+      updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
     }
   }
 
   const SelectNetworkComp = (
     <StyledSelectNetwork
+      connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
+      loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
       minWidth="9rem"
       mobileRightAlign
-      selectedKey={(rChainId || '').toString()}
-      onSelectionChange={handleNetworkChange}
+      selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
+      onSelectionChange={() => {}}
     />
   )
 
+  const handleLocaleChange = (selectedLocale: React.Key) => {
+    const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+    const { rNetwork } = getNetworkFromUrl()
+    navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+  }
+
   return (
     <>
-      {isMdUp && <HeaderSecondary />}
+      {isMdUp && <HeaderSecondary rChainId={rChainId} handleLocaleChange={handleLocaleChange} />}
       <StyledNavBar as="nav" ref={mainNavRef} aria-label="Main menu" flex flexAlignItems="stretch" isMdUp={isMdUp}>
         <NavBarContent className="nav-content" grid gridAutoFlow="column" flexJustifyContent="space-between">
           {isMdUp ? (
@@ -97,16 +91,13 @@ const Header = ({ chainId }: { chainId: ChainId | undefined }) => {
                   if (pathname) {
                     isActive = pathname.endsWith(route)
 
-                    let url = `#/`
-
-                    if (pathnameLocale && network) {
-                      url = `#/${pathnameLocale}/${network}${route}`
-                    } else if (network) {
-                      url = `#/${network}${route}`
-                    }
-
                     return (
-                      <InternalLinkText as="a" key={route} className={isActive ? 'active' : ''} href={url}>
+                      <InternalLinkText
+                        as="a"
+                        key={route}
+                        className={isActive ? 'active' : ''}
+                        href={`#${rLocale.rLocalePathname}/${rNetwork}${route}`}
+                      >
                         {label}
                       </InternalLinkText>
                     )
@@ -119,11 +110,20 @@ const Header = ({ chainId }: { chainId: ChainId | undefined }) => {
 
               <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
                 {SelectNetworkComp}
-                <ConnectWallet />
+                <ConnectWallet
+                  connectState={connectState}
+                  walletSignerAddress={getWalletSignerAddress(wallet)}
+                  handleClick={() => handleConnectWallet(wallet)}
+                />
               </Menu>
             </>
           ) : (
-            <HeaderMobile pages={pages} selectNetwork={SelectNetworkComp} />
+            <HeaderMobile
+              pages={pages}
+              selectNetwork={SelectNetworkComp}
+              handleConnectWallet={handleConnectWallet}
+              handleLocaleChange={handleLocaleChange}
+            />
           )}
         </NavBarContent>
       </StyledNavBar>

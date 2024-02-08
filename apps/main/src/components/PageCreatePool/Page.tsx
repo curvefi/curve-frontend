@@ -13,11 +13,11 @@ import PoolCreation from '@/components/PageCreatePool/index'
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 
-const Page: NextPage<PageProps> = ({ curve }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  usePageOnMount(params, location, navigate)
+  const { curve } = usePageOnMount(params, location, navigate)
 
   useEffect(() => {
     scrollToTop()

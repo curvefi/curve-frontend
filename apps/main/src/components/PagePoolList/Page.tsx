@@ -3,13 +3,13 @@ import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getPoolDatasCached } from '@/store/createPoolListSlice'
-import { getPath, parseParams } from '@/utils/utilsRouter'
+import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
@@ -19,13 +19,14 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
 
-const Page: NextPage<PageProps> = ({ curve, chainId }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const pageLoaded = usePageOnMount(params, location, navigate)
-  const { rChainId } = parseParams(params, location)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId } = routerParams
+  const { chainId } = curve ?? {}
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isLoadingPools = useStore((state) => state.pools.poolsLoading[rChainId])
@@ -50,16 +51,14 @@ const Page: NextPage<PageProps> = ({ curve, chainId }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isLoadingPools, isLoadingApi, pageLoaded])
 
-  const TABLE_LABEL: PoolListTableLabel = useMemo(() => {
-    return {
-      name: { name: t`Pool` },
-      rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
-      rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
-      rewardsOther: { name: t`Incentives`, mobile: t`Rewards Incentives` },
-      tvl: { name: t`TVL` },
-      volume: { name: t`Volume` },
-    }
-  }, [])
+  const TABLE_LABEL: PoolListTableLabel = {
+    name: { name: t`Pool` },
+    rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
+    rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
+    rewardsOther: { name: t`Incentives`, mobile: t`Rewards Incentives` },
+    tvl: { name: t`TVL` },
+    volume: { name: t`Volume` },
+  }
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
     const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
@@ -105,7 +104,7 @@ const Page: NextPage<PageProps> = ({ curve, chainId }) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [TABLE_LABEL, curve?.signerAddress, poolDatasLength, rChainId, searchParams])
+  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams])
 
   return (
     <>

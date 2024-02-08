@@ -15,13 +15,11 @@ import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 
 type Props = {
-  chainId: ChainId
+  rChainId: ChainId
   pricesApiPoolData: PricesApiPool
-  routerParams: RouterParams
 }
 
-const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
-  const { rChainId } = routerParams
+const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
   const themeType = useStore((state) => state.themeType)
   const {
     pricesApiState: {
@@ -105,7 +103,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
 
   const refetchPricesData = () => {
     fetchPricesApiCharts(
-      chainId,
+      rChainId,
       selectedChartIndex,
       pricesApiPoolData.address,
       chartInterval,
@@ -115,13 +113,13 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       chartCombinations,
       isFlipped
     )
-    fetchPricesApiActivity(chainId, pricesApiPoolData.address, chartCombinations)
+    fetchPricesApiActivity(rChainId, pricesApiPoolData.address, chartCombinations)
   }
 
   // set snapshot data and subscribe to new data
   useEffect(() => {
     fetchPricesApiCharts(
-      chainId,
+      rChainId,
       selectedChartIndex,
       pricesApiPoolData.address,
       chartInterval,
@@ -132,7 +130,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       isFlipped
     )
   }, [
-    chainId,
+    rChainId,
     chartCombinations,
     pricesApiPoolData.address,
     chartInterval,
@@ -149,7 +147,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
     const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
     fetchMorePricesApiCharts(
-      chainId,
+      rChainId,
       selectedChartIndex,
       pricesApiPoolData.address,
       chartInterval,
@@ -160,7 +158,7 @@ const PoolInfoData = ({ chainId, pricesApiPoolData, routerParams }: Props) => {
       isFlipped
     )
   }, [
-    chainId,
+    rChainId,
     chartCombinations,
     chartInterval,
     fetchMorePricesApiCharts,

@@ -8,36 +8,47 @@ import { useOverlayTriggerState } from '@react-stately/overlays'
 import Image from 'next/image'
 import styled, { css } from 'styled-components'
 
+import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { CRVUSD_ADDRESS, CURVE_FI_ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
+import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { formatNumber, formatNumberUsdRate } from '@/ui/utils'
+import { useConnectWallet } from '@/onboard'
 import useStore from '@/store/useStore'
 
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import { LlamaImg } from '@/images'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import ConnectWallet from '@/components/ConnectWallet'
+import ConnectWallet from '@/ui/Button/ConnectWallet'
 import BrandingLink from '@/components/BrandingLink'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import Overlay from '@/ui/Overlay'
+import SelectLocale from '@/ui/Select/SelectLocale'
 import SelectThemes from '@/components/SelectThemes'
 import Spacer from '@/ui/Spacer'
 import Switch from '@/ui/Switch'
-// import SelectLocale from '@/domain/SelectLocale'
+import delay from 'lodash/delay'
 
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const HeaderMobile = ({
   pages,
   selectNetwork: SelectNetwork,
+  handleConnectWallet,
+  handleLocaleChange,
 }: {
   pages: Page[]
   selectNetwork: React.ReactElement
+  handleConnectWallet(wallet: Wallet | null): void
+  handleLocaleChange(selectedLocale: React.Key): void
 }) => {
+  const [{ wallet }] = useConnectWallet()
+
+  const connectState = useStore((state) => state.connectState)
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
@@ -58,7 +69,7 @@ const HeaderMobile = ({
   const [menusWidth, setMenusWidth] = useState(DEFAULT_MENUS_WIDTH)
   const [showResources, setShowResources] = useState(false)
   const [showCommunity, setShowCommunity] = useState(false)
-  // const [showLocaleList, setShowLocaleList] = useState(false)
+  const [showLocaleList, setShowLocaleList] = useState(false)
 
   const { params } = routerProps || {}
   const menuWidth = useMemo(() => (pageWidth === 'page-small-x' ? 270 : 300), [pageWidth])
@@ -162,9 +173,20 @@ const HeaderMobile = ({
 
               <StyledSelectThemes label={t`Mode`} />
 
-              {/*<div>*/}
-              {/*  <SelectLocale mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }} />*/}
-              {/*</div>*/}
+              {/* TODO: remove isDevelopment when translation is ready */}
+              {process.env.NODE_ENV === 'development' && (
+                <div>
+                  <SelectLocale
+                    locales={DEFAULT_LOCALES}
+                    selectedLocale={locale}
+                    mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }}
+                    handleLocaleChange={(value) => {
+                      handleLocaleChange(value)
+                      delay(() => closeMenu([menuWidth, 0]), 300)
+                    }}
+                  />
+                </div>
+              )}
 
               <div>
                 <Switch isSelected={isAdvanceMode} onChange={handleInpChangeAdvanceMode}>
@@ -198,7 +220,14 @@ const HeaderMobile = ({
           </ModalContent>
           <Spacer />
           <ModalFooter>
-            <StyledConnectWallet onClick={() => closeMenu([menuWidth, 0])} />
+            <StyledConnectWallet
+              connectState={connectState}
+              walletSignerAddress={getWalletSignerAddress(wallet)}
+              handleClick={() => {
+                handleConnectWallet(wallet)
+                delay(() => closeMenu([menuWidth, 0]), 300)
+              }}
+            />
           </ModalFooter>
         </ModalWrapper>
       </Overlay>

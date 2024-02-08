@@ -7,7 +7,7 @@ import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
-import { getPath, parseParams } from '@/utils/utilsRouter'
+import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
@@ -19,19 +19,18 @@ import IconButton from '@/ui/IconButton'
 import Settings from '@/layout/default/Settings'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
-const Page: NextPage<PageProps> = ({ curve }) => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  usePageOnMount(params, location, navigate)
+  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { rChainId, rFormType } = routerParams
 
   const activeKeyVecrvInfo = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const vecrvInfo = useStore((state) => state.lockedCrv.vecrvInfo[activeKeyVecrvInfo])
   const fetchVecrvInfo = useStore((state) => state.lockedCrv.fetchVecrvInfo)
   const resetState = useStore((state) => state.lockedCrv.resetState)
-
-  const { rChainId, rFormType } = parseParams(params, location)
 
   const toggleForm = useCallback(
     (formType: FormType) => {

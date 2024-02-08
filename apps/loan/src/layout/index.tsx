@@ -1,8 +1,12 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
+import { CONNECT_STAGE } from '@/constants'
 import { layoutHeightKeys } from '@/store/createLayoutSlice'
-import networks from '@/networks'
+import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { getWalletChainId } from '@/store/createWalletSlice'
+import { isFailure, isLoading } from '@/ui/utils'
+import { useConnectWallet } from '@/onboard'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
@@ -11,18 +15,26 @@ import Footer from '@/layout/Footer'
 import GlobalBanner from '@/ui/Banner'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
+  const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 
-  const curve = useStore((state) => state.curve)
+  const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isNetworkMismatched = useStore((state) => state.wallet.isNetworkMismatched)
   const layoutHeight = useStore((state) => state.layout.height)
-  const setWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
-  const chainId = curve?.chainId
+  const updateConnectState = useStore((state) => state.updateConnectState)
+
+  const [networkSwitch, setNetworkSwitch] = useState('')
+
+  const { rChainId, rNetwork } = getNetworkFromUrl()
+
+  const showSwitchNetworkMessage =
+    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
 
   const handleNetworkChange = () => {
-    setWalletStateByKey('isSwitchNetwork', true)
+    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
+    setNetworkSwitch(connectStage)
+    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
   }
 
   const minHeight = useMemo(() => {
@@ -40,15 +52,16 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     <>
       <GlobalBanner
         ref={globalAlertRef}
-        networkName={curve?.chainId ? networks[curve.chainId].name : ''}
-        showSwitchNetworkMessage={isNetworkMismatched && !!chainId}
+        networkName={rNetwork}
+        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
+        showSwitchNetworkMessage={showSwitchNetworkMessage}
         maintenanceMessage=""
         handleNetworkChange={handleNetworkChange}
       />
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header chainId={chainId} />
+        <Header />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && chainId && <Footer chainId={chainId} />}
+        {isMdUp && <Footer chainId={rChainId} />}
       </Container>
     </>
   )
@@ -69,6 +82,7 @@ const Container = styled.div<{ globalAlertHeight: number }>`
 
   &.hasFooter {
     min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
+  }
 `
 
 export default BaseLayout

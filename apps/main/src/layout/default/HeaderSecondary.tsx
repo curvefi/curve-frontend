@@ -2,6 +2,7 @@ import { t } from '@lingui/macro'
 import { useRef } from 'react'
 import styled from 'styled-components'
 
+import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { breakpoints } from '@/ui/utils/responsive'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -12,11 +13,19 @@ import { Menu } from '@/layout/default/Header'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
-import SelectLocale from '@/components/SelectLocale'
+import SelectLocale from '@/ui/Select/SelectLocale'
 import SelectThemes from '@/components/SelectThemes'
 
-const HeaderSecondary = ({ rChainId }: { rChainId: ChainId | '' }) => {
+const HeaderSecondary = ({
+  rChainId,
+  handleLocaleChange,
+}: {
+  rChainId: ChainId | ''
+  handleLocaleChange(selectedLocale: string): void
+}) => {
   const secondaryNavRef = useRef<HTMLDivElement>(null)
+
+  const locale = useStore((state) => state.locale)
   const tvlTotalCached = useStore((state) => state.storeCache.tvlTotal?.[rChainId])
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotalCached = useStore((state) => state.storeCache.volumeTotal?.[rChainId])
@@ -26,7 +35,7 @@ const HeaderSecondary = ({ rChainId }: { rChainId: ChainId | '' }) => {
 
   useLayoutHeight(secondaryNavRef, 'secondaryNav')
 
-  const orgUIPath = rChainId ? networks[rChainId].orgUIPath : ''
+  const orgUIPath = networks[(rChainId ?? '1') as ChainId].orgUIPath
 
   return (
     <Wrapper ref={secondaryNavRef} aria-label="Secondary menu">
@@ -75,15 +84,15 @@ const HeaderSecondary = ({ rChainId }: { rChainId: ChainId | '' }) => {
         </Menu>
 
         <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-1)" flexAlignItems="center">
-          {orgUIPath && (
-            <>
-              <ExternalLinkText href={orgUIPath}>{t`Classic UI`}</ExternalLinkText> <Divider>|</Divider>
-            </>
-          )}
+          <ExternalLinkText href={orgUIPath}>{t`Classic UI`}</ExternalLinkText> <Divider>|</Divider>
           <ExternalLinkText href="https://dao.curve.fi/">{t`DAO`}</ExternalLinkText> <Divider>|</Divider>
           <ExternalLinkText href="https://gov.curve.fi/">{t`Governance`}</ExternalLinkText> <Divider>|</Divider>
           <StyledSelectThemes /> <Divider>|</Divider>
-          <StyledSelectLocale />
+          <StyledSelectLocale
+            locales={DEFAULT_LOCALES}
+            selectedLocale={locale}
+            handleLocaleChange={handleLocaleChange}
+          />
         </Menu>
       </SecondaryNav>
     </Wrapper>

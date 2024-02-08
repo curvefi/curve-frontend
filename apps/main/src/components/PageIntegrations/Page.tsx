@@ -6,7 +6,6 @@ import { useLocation, useNavigate, useParams, useSearchParams } from 'react-rout
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { parseParams } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
@@ -16,13 +15,14 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import IntegrationsComp from '@/components/PageIntegrations/index'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
-const Page: NextPage<PageProps> = () => {
+const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  usePageOnMount(params, location, navigate, true)
-  const { rChainId } = parseParams(params, location)
+  const { routerParams } = usePageOnMount(params, location, navigate, true)
+  const { rNetworkIdx } = routerParams
+  const rChainId = rNetworkIdx === -1 ? '' : routerParams.rChainId
 
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)

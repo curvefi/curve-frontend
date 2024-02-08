@@ -6,7 +6,7 @@ import Image from 'next/image'
 import React, { useRef } from 'react'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { sizes } from 'main/src/globalStyle'
+import { sizes } from '@/globalStyle'
 import networks from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
@@ -35,7 +35,7 @@ export const CommunitySection = ({ className, locale }: { locale: Locale['value'
     </SectionItem>
     {(locale === 'zh-Hans' || locale === 'zh-Hant') && (
       <SectionItem>
-        <StyledExternalLink href="https://imdodo.com/s/147186?inv=7J46">{t`Dodo`}</StyledExternalLink> 
+        <StyledExternalLink href="https://imdodo.com/s/147186?inv=7J46">{t`Dodo`}</StyledExternalLink>
       </SectionItem>
     )}
     <SectionItem>
@@ -109,7 +109,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         <StyledExternalLink href="https://resources.curve.fi/">{t`Resources`}</StyledExternalLink>
       </SectionItem>
 
-      {/* section 3 */} 
+      {/* section 3 */}
       <SectionItem>
         <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
       </SectionItem>
