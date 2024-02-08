@@ -184,6 +184,12 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
+      const proposals = await curve.dao.getProposalList()
+      const gauges = await curve.dao.getVotingGaugeList()
+
+      console.log(proposals.sort((a, b) => a.voteId - b.voteId))
+      console.log(gauges)
+
       const chainId = curve.chainId
 
       try {
