@@ -35,6 +35,7 @@ function CurveApp({ Component }: AppProps) {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
+  const getProposals = useStore((state) => state.daoProposals.getProposals)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
