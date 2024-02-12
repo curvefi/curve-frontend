@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { msg, t } from '@lingui/macro'
 import { i18n } from '@lingui/core'
 
+import { ROUTE } from '@/constants'
 import { CONNECT_STAGE, breakpoints, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
