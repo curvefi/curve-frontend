@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 
-import { shortenTokenAddress } from '@/utils'
+import { shortenTokenAddress } from '@/ui/utils'
 import networks from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
