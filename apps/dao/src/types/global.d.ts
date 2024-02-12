@@ -86,7 +86,7 @@ declare global {
     l2GasPriceWei?: number
   }
 
-  type ProposalData = {
+  type ProposalResponseData = {
     voteId: number
     voteType: 'PARAMETER' | 'OWNERSHIP'
     creator: string
@@ -101,5 +101,9 @@ declare global {
     minAcceptQuorum: string
     totalSupply: string
     executed: boolean
+  }
+
+  interface ProposalData extends ProposalResponseData {
+    status: 'Active' | 'Passed' | 'Denied'
   }
 }
