@@ -10,7 +10,8 @@ const PageDao = dynamic(() => import('@/components/PageProposals/Page'), { ssr: 
 const App: NextPage = (pageProps) => {
   const SubRoutes = (
     <>
-      <Route path=":network/" element={<PageDao {...pageProps} />} />
+      <Route path=":network/" element={<PageDao />} />
+      <Route path=":network/proposals" element={<PageDao />} />
     </>
   )
 
