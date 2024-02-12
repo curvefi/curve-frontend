@@ -1,9 +1,13 @@
 import type { Params } from 'react-router'
+import type { ProposalListFilter } from './types'
+
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 
+import ProposalsFilters from './Proposal/components/ProposalsFilters'
 import Proposal from './Proposal'
 import Box from '@/ui/Box'
 import SearchInput from '@/ui/SearchInput'
@@ -36,13 +40,27 @@ const Proposals = ({
       voteType: 'OWNERSHIP',
       votesAgainst: '0',
       votesFor: '273493296797183379082898042',
+      status: 'Active',
     },
   ]
+
+  const FILTERS: ProposalListFilter[] = useMemo(
+    () => [
+      { key: 'all', label: 'All' },
+      { key: 'active', label: 'Active' },
+      { key: 'passed', label: 'Passed' },
+      { key: 'denied', label: 'Denied' },
+    ],
+    []
+  )
 
   return (
     <ProposalsContainer variant="primary">
       <PageTitle>DAO Proposals</PageTitle>
       <SearchInput id="inpSearchProposals" placeholder={t`Search`} />
+      <ListManagerContainer>
+        <ProposalsFilters filters={FILTERS} />
+      </ListManagerContainer>
       <Box>
         {proposalsLoading ? (
           <SpinnerWrapper>
@@ -63,6 +81,12 @@ const ProposalsContainer = styled(Box)`
   max-width: 60rem;
   margin: var(--spacing-5) auto;
   row-gap: var(--spacing-3);
+`
+
+const ListManagerContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin: var(--spacing-2);
 `
 
 const PageTitle = styled.h2``
