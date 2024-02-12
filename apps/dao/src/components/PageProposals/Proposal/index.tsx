@@ -1,6 +1,9 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import { shortenTokenAddress } from '@/utils'
+import networks from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
@@ -22,17 +25,27 @@ const Proposal = ({
   minAcceptQuorum,
   totalSupply,
   executed,
+  status,
 }: Props) => {
   return (
     <ProposalContainer>
       <InformationWrapper>
+        <ProposalStatus
+          className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+            status === 'Passed' && 'passed'
+          }`}
+        >
+          {status}
+        </ProposalStatus>
         <ProposalType>
           #{voteId} | {voteType}
         </ProposalType>
         <ProposalMetadata>{metadata}</ProposalMetadata>
         <Box flex>
-          <ProposalProposer>Proposer:</ProposalProposer>
-          <StyledExternalLink>{shortenTokenAddress(creator)}</StyledExternalLink>
+          <ProposalProposer>{t`Proposer:`}</ProposalProposer>
+          <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
+            {shortenTokenAddress(creator)}
+          </StyledExternalLink>
         </Box>
       </InformationWrapper>
       <VoteWrapper></VoteWrapper>
@@ -44,6 +57,27 @@ const ProposalContainer = styled.div`
   display: grid;
   grid-template-columns: 1.3fr 1fr;
   background-color: var(--table--background-color);
+`
+
+const ProposalStatus = styled.h4`
+  font-size: var(--font-size-1);
+  text-transform: uppercase;
+  background-color: var(--table--background-color);
+  outline: 3px solid var(--box--primary--background);
+  margin-top: calc(-24px - var(--spacing-1));
+  margin-bottom: var(--spacing-2);
+  margin-left: var(--spacing-1);
+  margin-right: auto;
+  padding: 0.2rem 0.5rem;
+  /* &.passed {
+    border-left: 0.4rem solid green;
+  }
+  &.denied {
+    border-left: 0.4rem solid red;
+  }
+  &.active {
+    border-left: 0.4rem solid yellow;
+  } */
 `
 
 const InformationWrapper = styled.div`
@@ -60,8 +94,8 @@ const ProposalType = styled.p`
 
 const ProposalMetadata = styled.p`
   margin: var(--spacing-4) 0;
-  font-size: var(--font-size-3);
-  font-weight: var(--semi-bold);
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
 `
 
 const ProposalProposer = styled.p`
