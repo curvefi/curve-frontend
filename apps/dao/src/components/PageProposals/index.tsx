@@ -1,4 +1,3 @@
-import type { Params } from 'react-router'
 import type { ProposalListFilter } from './types'
 
 import styled from 'styled-components'
@@ -13,15 +12,7 @@ import Box from '@/ui/Box'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
-const Proposals = ({
-  rChainId,
-  params,
-  curve,
-}: {
-  rChainId: ChainId
-  params: Readonly<Params<string>>
-  curve: CurveApi | null
-}) => {
+const Proposals = () => {
   const { proposalsLoading, proposals } = useStore((state) => state.daoProposals)
 
   const tempProposal: ProposalData[] = [
@@ -57,7 +48,13 @@ const Proposals = ({
   return (
     <ProposalsContainer variant="primary">
       <PageTitle>DAO Proposals</PageTitle>
-      <SearchInput id="inpSearchProposals" placeholder={t`Search`} />
+      <SearchInput
+        id="inpSearchProposals"
+        placeholder={t`Search`}
+        handleInputChange={() => {}}
+        handleSearchClose={() => {}}
+        value={''}
+      />
       <ListManagerContainer>
         <ProposalsFilters filters={FILTERS} />
       </ListManagerContainer>
