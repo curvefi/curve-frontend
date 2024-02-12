@@ -42,9 +42,24 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       try {
         const proposals = await curve.dao.getProposalList()
 
+        const formattedProposals: ProposalData[] = proposals.map((proposal) => {
+          const minAcceptQuorumPercent = converNumber(+proposal.minAcceptQuorum)
+          const totalVeCrv = converNumber(+proposal.totalSupply)
+          const quorumVeCrv = minAcceptQuorumPercent * totalVeCrv
+          const votesFor = converNumber(+proposal.votesFor)
+          const votesAgainst = converNumber(+proposal.votesAgainst)
+
+          const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst)
+
+          return {
+            ...proposal,
+            status: status,
+          }
+        })
+
         set(
           produce((state: State) => {
-            state.daoProposals.proposals = proposals
+            state.daoProposals.proposals = formattedProposals
             state.daoProposals.proposalsLoading = false
           })
         )
@@ -57,5 +72,18 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     },
   },
 })
+
+const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: number, votesAgainst: number) => {
+  const totalVotes = votesFor + votesAgainst
+  const passedQuorum = totalVotes >= quorumVeCrv
+
+  if (startDate + 604800 > Math.floor(Date.now() / 1000)) return 'Active'
+  if (passedQuorum && votesFor > votesAgainst) return 'Passed'
+  return 'Denied'
+}
+
+const converNumber = (number: number) => {
+  return number / 10 ** 18
+}
 
 export default createDaoProposalsSlice
