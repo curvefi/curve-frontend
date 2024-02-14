@@ -10,7 +10,16 @@ import useStore from '@/store/useStore'
 import TextInput from '@/components/PageCreatePool/components/TextInput'
 import Box from '@/ui/Box'
 import WarningBox from '@/components/PageCreatePool/components/WarningBox'
-import { TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D } from '@/components/PageCreatePool/constants'
+import {
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 import { validateOracleFunction } from '@/components/PageCreatePool/utils'
 
 type OracleInputProps = {
@@ -20,7 +29,9 @@ type OracleInputProps = {
 }
 
 const SetOracle = () => {
-  const { tokenA, tokenB, tokenC, tokenD } = useStore((state) => state.createPool.tokensInPool)
+  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
+    (state) => state.createPool.tokensInPool
+  )
 
   return (
     <OracleWrapper>
@@ -35,6 +46,18 @@ const SetOracle = () => {
       )}
       {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
         <OracleInputs token={tokenD} tokenId={TOKEN_D} title={t`Token D`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
+        <OracleInputs token={tokenE} tokenId={TOKEN_E} title={t`Token E`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
+        <OracleInputs token={tokenF} tokenId={TOKEN_F} title={t`Token F`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
+        <OracleInputs token={tokenG} tokenId={TOKEN_G} title={t`Token G`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
+        <OracleInputs token={tokenH} tokenId={TOKEN_H} title={t`Token H`} />
       )}
     </OracleWrapper>
   )

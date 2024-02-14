@@ -10,6 +10,10 @@ export const TOKEN_A = 'tokenA'
 export const TOKEN_B = 'tokenB'
 export const TOKEN_C = 'tokenC'
 export const TOKEN_D = 'tokenD'
+export const TOKEN_E = 'tokenE'
+export const TOKEN_F = 'tokenF'
+export const TOKEN_G = 'tokenG'
+export const TOKEN_H = 'tokenH'
 
 export type PRESETS = {
   [index: number]: {

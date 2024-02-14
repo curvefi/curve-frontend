@@ -28,7 +28,9 @@ type OracleTokenSummaryProps = {
 }
 
 const OracleSummary = ({ chainId }: Props) => {
-  const { tokenA, tokenB, tokenC, tokenD } = useStore((state) => state.createPool.tokensInPool)
+  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
+    (state) => state.createPool.tokensInPool
+  )
 
   return (
     <OraclesWrapper>
@@ -43,6 +45,18 @@ const OracleSummary = ({ chainId }: Props) => {
       )}
       {tokenD.ngAssetType === 1 && tokenD.address !== '' && (
         <OracleTokenSummary chainId={chainId} token={tokenD} title={t`Token D`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenE.address !== '' && (
+        <OracleTokenSummary chainId={chainId} token={tokenE} title={t`Token E`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenF.address !== '' && (
+        <OracleTokenSummary chainId={chainId} token={tokenF} title={t`Token F`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenG.address !== '' && (
+        <OracleTokenSummary chainId={chainId} token={tokenG} title={t`Token G`} />
+      )}
+      {tokenD.ngAssetType === 1 && tokenH.address !== '' && (
+        <OracleTokenSummary chainId={chainId} token={tokenH} title={t`Token H`} />
       )}
     </OraclesWrapper>
   )

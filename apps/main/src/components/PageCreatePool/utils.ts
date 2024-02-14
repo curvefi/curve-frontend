@@ -11,8 +11,20 @@ export const checkTokensInPoolUnset = (
   tokenA: TokenState,
   tokenB: TokenState,
   tokenC: TokenState,
-  tokenD: TokenState
-) => tokenA.address !== '' || tokenB.address !== '' || tokenC.address !== '' || tokenD.address !== ''
+  tokenD: TokenState,
+  tokenE: TokenState,
+  tokenF: TokenState,
+  tokenG: TokenState,
+  tokenH: TokenState
+) =>
+  tokenA.address !== '' ||
+  tokenB.address !== '' ||
+  tokenC.address !== '' ||
+  tokenD.address !== '' ||
+  tokenE.address !== '' ||
+  tokenF.address !== '' ||
+  tokenG.address !== '' ||
+  tokenH.address !== ''
 
 export const checkTokensInPool = (
   swapType: SwapType,
@@ -20,6 +32,10 @@ export const checkTokensInPool = (
   tokenB: TokenState,
   tokenC: TokenState,
   tokenD: TokenState,
+  tokenE: TokenState,
+  tokenF: TokenState,
+  tokenG: TokenState,
+  tokenH: TokenState,
   tricryptoEnabled: boolean,
   cryptoSwapEnabled: boolean
 ) => {
@@ -28,8 +44,12 @@ export const checkTokensInPool = (
     return tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
   }
 
-  if (containsOracle([tokenA, tokenB, tokenC, tokenD]) && swapType === STABLESWAP) {
-    return oraclesReady([tokenA, tokenB, tokenC, tokenD]) && tokenA.address !== '' && tokenB.address !== ''
+  if (containsOracle([tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH]) && swapType === STABLESWAP) {
+    return (
+      oraclesReady([tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH]) &&
+      tokenA.address !== '' &&
+      tokenB.address !== ''
+    )
   }
 
   return tokenA.address !== '' && tokenB.address !== ''
@@ -82,6 +102,7 @@ export const validateOracleFunction = (functionName: string) => {
 }
 
 export const oraclesReady = (tokens: TokenState[]) => {
+  console.log(tokens)
   const oracleTokens = tokens.filter((token) => token.ngAssetType === 1)
   const allValid = oracleTokens.every((token) => checkOracle(token.oracleAddress))
   const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracleFunction))

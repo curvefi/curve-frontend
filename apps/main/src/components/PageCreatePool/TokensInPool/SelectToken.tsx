@@ -6,7 +6,18 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 
-import { STABLESWAP, CRYPTOSWAP, TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D } from '@/components/PageCreatePool/constants'
+import {
+  STABLESWAP,
+  CRYPTOSWAP,
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 
 import ComboBoxTokenPicker from '@/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
 import Box from '@/ui/Box'
@@ -41,6 +52,14 @@ const SelectToken = ({
 }: Props) => {
   const { updateNgAssetType, swapType } = useStore((state) => state.createPool)
 
+  const getTokenName = (tokenId: TokenId) => {
+    if (tokenId === TOKEN_D) return t`Token D`
+    if (tokenId === TOKEN_E) return t`Token E`
+    if (tokenId === TOKEN_F) return t`Token F`
+    if (tokenId === TOKEN_G) return t`Token G`
+    if (tokenId === TOKEN_H) return t`Token H`
+  }
+
   return (
     <TokenPickerContainer>
       {(tokenId === TOKEN_A || tokenId === TOKEN_B) && (
@@ -59,14 +78,19 @@ const SelectToken = ({
             )}
         </LabelRow>
       )}
-      {tokenId === TOKEN_D && removeToken && (
-        <LabelRow flex flexJustifyContent={'space-between'}>
-          <p>{t`Token D`}</p>
-          <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_D)}>
-            <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
-          </RemoveButton>
-        </LabelRow>
-      )}
+      {(tokenId === TOKEN_D ||
+        tokenId === TOKEN_E ||
+        tokenId === TOKEN_F ||
+        tokenId === TOKEN_G ||
+        tokenId === TOKEN_H) &&
+        removeToken && (
+          <LabelRow flex flexJustifyContent={'space-between'}>
+            <p>{getTokenName(tokenId)}</p>
+            <RemoveButton variant={'text'} onClick={() => removeToken(tokenId)}>
+              <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+            </RemoveButton>
+          </LabelRow>
+        )}
       <ComboBoxTokenPicker
         curve={curve}
         haveSigner={haveSigner}
