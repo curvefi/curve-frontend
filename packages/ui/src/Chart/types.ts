@@ -45,6 +45,12 @@ export interface LpPriceOhlcData {
   low: number
 }
 
+export interface LlammaPriceOhlcData extends LpPriceOhlcData {
+  base_price: number
+  oracle_price: number
+  volume: number
+}
+
 export interface LpPriceOhlcDataFormatted {
   time: UTCTimestamp
   open: number
@@ -53,10 +59,31 @@ export interface LpPriceOhlcDataFormatted {
   low: number
 }
 
+export interface LlamaVolumeData {
+  time: UTCTimestamp
+  volume: number
+}
+
+export interface LlamaBaselinePriceData {
+  time: UTCTimestamp
+  base_price: number
+}
+
+export interface LlamaOraclePriceData {
+  time: UTCTimestamp
+  oracle_price: number
+}
+
 export interface LpPriceApiResponse {
   chain: string
   address: string
   data: LpPriceOhlcData[]
+}
+
+export interface LlammaOhlcApiResponse {
+  chain: string
+  address: string
+  data: LlammaPriceOhlcData[]
 }
 
 export interface LpExchangeRateObject {

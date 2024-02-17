@@ -13,6 +13,7 @@ import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
+import ChartOhlcWrapper from '../ChartOhlc'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId'> {
   className?: string
@@ -75,6 +76,12 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
 
   return (
     <Wrapper>
+      {llamma && (
+        <div className="wrapper">
+          <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} />
+        </div>
+      )}
+
       <div className="wrapper">
         <ChartBandBalances
           llamma={llamma}

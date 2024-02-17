@@ -25,28 +25,26 @@ type Props = {
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
-  liqPriceRange?: LiqPriceRange
   chartExpanded: boolean
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
-  selectedChartIndex: number
-  setChartSelectedIndex: (index: number) => void
+  selectedChartIndex?: number
+  setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
   setChartTimeOption: (option: TimeOptions) => void
-  flipChart: () => void
+  flipChart?: () => void
   refetchPricesData: () => void
   fetchMoreChartData: () => void
   refetchingHistory: boolean
   refetchingCapped: boolean
   lastRefetchLength: number
-  selectChartList: LabelList[]
+  selectChartList?: LabelList[]
 }
 
 const ChartWrapper = ({
   chartType,
   chartStatus,
   chartHeight,
-  liqPriceRange,
   chartExpanded,
   themeType,
   ohlcData,
@@ -72,16 +70,22 @@ const ChartWrapper = ({
       <ContentWrapper>
         <SectionHeader>
           <ChartSelectGroup>
-            <DialogSelectChart
-              isDisabled={chartStatus !== 'READY'}
-              selectedChartIndex={selectedChartIndex}
-              selectChartList={selectChartList}
-              setChartSelectedIndex={setChartSelectedIndex}
-            />
-            {selectedChartIndex > 1 && (
-              <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
-                <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
-              </StyledFlipButton>
+            {selectChartList && selectedChartIndex && setChartSelectedIndex && flipChart ? (
+              <>
+                <DialogSelectChart
+                  isDisabled={chartStatus !== 'READY'}
+                  selectedChartIndex={selectedChartIndex}
+                  selectChartList={selectChartList}
+                  setChartSelectedIndex={setChartSelectedIndex}
+                />
+                {selectedChartIndex > 1 && (
+                  <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
+                    <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
+                  </StyledFlipButton>
+                )}
+              </>
+            ) : (
+              ''
             )}
           </ChartSelectGroup>
           <RefreshButton
@@ -109,7 +113,7 @@ const ChartWrapper = ({
         </SectionHeader>
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
-            {chartType === 'crvusd' && (
+            {/* {chartType === 'crvusd' && (
               <TipContent>
                 <TipIcon
                   name="StopFilledAlt"
@@ -119,7 +123,7 @@ const ChartWrapper = ({
                 />{' '}
                 <TipText>{'Liquidation range (${liqPriceRange?.price1} - ${liqPriceRange?.price2})'}</TipText>
               </TipContent>
-            )}
+            )} */}
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
