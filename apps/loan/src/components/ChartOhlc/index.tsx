@@ -28,6 +28,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
     lastFetchEndTime,
     lastRefetchLength,
     chartOhlcData,
+    volumeData,
     setChartTimeOption,
     fetchOhlcData,
     fetchMoreOhlcData,
@@ -96,8 +97,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
         chartExpanded={false}
         themeType={themeType}
         ohlcData={chartOhlcData}
-        // selectedChartIndex={selectedChartIndex}
-        // setChartSelectedIndex={setChartSelectedIndex}
+        volumeData={volumeData}
         timeOption={timeOption}
         setChartTimeOption={setChartTimeOption}
         refetchPricesData={refetchPricesData}

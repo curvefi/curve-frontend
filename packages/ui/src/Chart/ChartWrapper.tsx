@@ -6,6 +6,7 @@ import type {
   ChartType,
   FetchingStatus,
   ChartHeight,
+  VolumeData,
 } from './types'
 
 import { useState, useRef } from 'react'
@@ -28,6 +29,7 @@ type Props = {
   chartExpanded: boolean
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
+  volumeData?: VolumeData[]
   selectedChartIndex?: number
   setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
@@ -48,6 +50,7 @@ const ChartWrapper = ({
   chartExpanded,
   themeType,
   ohlcData,
+  volumeData,
   selectedChartIndex,
   setChartSelectedIndex,
   timeOption,
@@ -113,21 +116,11 @@ const ChartWrapper = ({
         </SectionHeader>
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
-            {/* {chartType === 'crvusd' && (
-              <TipContent>
-                <TipIcon
-                  name="StopFilledAlt"
-                  size={20}
-                  fill="var(--health_mode_soft_liquidation--color)"
-                  stroke={'var(--health_mode_soft_liquidation--color)'}
-                />{' '}
-                <TipText>{'Liquidation range (${liqPriceRange?.price1} - ${liqPriceRange?.price2})'}</TipText>
-              </TipContent>
-            )} */}
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
+              volumeData={volumeData}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}

@@ -84,5 +84,7 @@
   /* Charts */
   --chart-green: #26a69a;
   --chart-red: #ef5350;
-  --chart-label: #9B7DFF;
+  --chart-label: #9b7dff;
+  --chart-volume-green: #26a6997e;
+  --chart-volume-red: #ef53507e;
 }

@@ -1,4 +1,4 @@
-import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight } from './types'
+import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight, VolumeData } from './types'
 import type { IChartApi, Time } from 'lightweight-charts'
 
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
@@ -9,6 +9,7 @@ type Props = {
   chartType: ChartType
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
+  volumeData?: VolumeData[]
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
@@ -24,6 +25,7 @@ const CandleChart = ({
   chartType,
   chartHeight,
   ohlcData,
+  volumeData,
   timeOption,
   wrapperRef,
   chartExpanded,
@@ -51,6 +53,8 @@ const CandleChart = ({
     chartGreenColor: '#2962FF',
     chartRedColor: '#ef5350',
     chartLabelColor: '#9B7DFF',
+    chartVolumeGreen: '#ef53507e',
+    chartVolumeRed: '#26a6997e',
   })
 
   useEffect(() => {
@@ -66,6 +70,8 @@ const CandleChart = ({
     const chartGreenColor = style.getPropertyValue('--chart-green')
     const chartRedColor = style.getPropertyValue('--chart-red')
     const chartLabelColor = style.getPropertyValue('--chart-label')
+    const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
+    const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
     const warningColor = style.getPropertyValue('--warning-400')
 
     setColors({
@@ -77,6 +83,8 @@ const CandleChart = ({
       chartGreenColor,
       chartRedColor,
       chartLabelColor,
+      chartVolumeRed,
+      chartVolumeGreen,
     })
     setLastTheme(themeType)
   }, [chartType, lastTheme, themeType])
@@ -101,7 +109,7 @@ const CandleChart = ({
           borderVisible: false,
           scaleMargins: {
             top: 0.1,
-            bottom: 0.1,
+            bottom: 0.3,
           },
         },
         grid: {
@@ -129,6 +137,24 @@ const CandleChart = ({
       chartRef.current.timeScale()
 
       let totalDecimalPlaces = 4
+
+      if (volumeData !== undefined) {
+        const volumeSeries = chartRef.current.addHistogramSeries({
+          priceFormat: {
+            type: 'volume',
+          },
+          priceScaleId: '', // set as an overlay by setting a blank priceScaleId
+        })
+        volumeSeries.priceScale().applyOptions({
+          // set the positioning of the volume series
+          scaleMargins: {
+            top: 0.7, // highest point of the series will be 70% away from the top
+            bottom: 0,
+          },
+        })
+
+        volumeSeries.setData(volumeData)
+      }
 
       const candlestickSeries = chartRef.current.addCandlestickSeries({
         upColor: '#26a69a',
@@ -212,6 +238,7 @@ const CandleChart = ({
     refetchingCapped,
     lastRefetchLength,
     lastTimescale,
+    volumeData,
   ])
 
   useEffect(() => {

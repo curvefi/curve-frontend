@@ -6,7 +6,7 @@ import type {
   FetchingStatus,
   LpPriceOhlcDataFormatted,
   LlammaOhlcApiResponse,
-  LlamaVolumeData,
+  VolumeData,
   LlamaBaselinePriceData,
   LlamaOraclePriceData,
 } from 'ui/src/Chart/types'
@@ -22,7 +22,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]
-  volumeData: LlamaVolumeData[]
+  volumeData: VolumeData[]
   oraclePriceData: LlamaOraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
   fetchStatus: FetchingStatus
@@ -104,7 +104,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         const llamaOhlcResponse: LlammaOhlcApiResponse = await llamaOhlcFetch.json()
 
-        let volumeArray: LlamaVolumeData[] = []
+        let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: LlamaOraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
@@ -114,7 +114,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             ...volumeArray,
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              volume: item.volume,
+              value: item.volume,
+              color: item.open > item.close ? '#26a69982' : '#ef53507e',
             },
           ]
 
@@ -158,6 +159,11 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           )
         }
       } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].fetchStatus = 'ERROR'
+          })
+        )
         console.log(error)
       }
     },
@@ -190,7 +196,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         const llamaOhlcResponse: LlammaOhlcApiResponse = await llamaOhlcFetch.json()
 
-        let volumeArray: LlamaVolumeData[] = []
+        let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: LlamaOraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
@@ -200,7 +206,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             ...volumeArray,
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              volume: item.volume,
+              value: item.volume,
+              color: item.open > item.close ? '#26a69982' : '#ef53507e',
             },
           ]
 
@@ -244,6 +251,11 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           })
         )
       } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].fetchStatus = 'ERROR'
+          })
+        )
         console.log(error)
       }
     },
