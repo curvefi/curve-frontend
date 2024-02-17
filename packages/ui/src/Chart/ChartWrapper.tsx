@@ -7,6 +7,7 @@ import type {
   FetchingStatus,
   ChartHeight,
   VolumeData,
+  OraclePriceData,
 } from './types'
 
 import { useState, useRef } from 'react'
@@ -30,6 +31,7 @@ type Props = {
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
+  oraclePriceData?: OraclePriceData[]
   selectedChartIndex?: number
   setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
@@ -51,6 +53,7 @@ const ChartWrapper = ({
   themeType,
   ohlcData,
   volumeData,
+  oraclePriceData,
   selectedChartIndex,
   setChartSelectedIndex,
   timeOption,
@@ -73,12 +76,12 @@ const ChartWrapper = ({
       <ContentWrapper>
         <SectionHeader>
           <ChartSelectGroup>
-            {selectChartList && selectedChartIndex && setChartSelectedIndex && flipChart ? (
+            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined && flipChart !== undefined ? (
               <>
                 <DialogSelectChart
                   isDisabled={chartStatus !== 'READY'}
                   selectedChartIndex={selectedChartIndex}
-                  selectChartList={selectChartList}
+                  selectChartList={selectChartList ?? []}
                   setChartSelectedIndex={setChartSelectedIndex}
                 />
                 {selectedChartIndex > 1 && (
@@ -88,7 +91,12 @@ const ChartWrapper = ({
                 )}
               </>
             ) : (
-              ''
+              <DialogSelectChart
+                isDisabled={false}
+                selectedChartIndex={0}
+                selectChartList={selectChartList ?? []}
+                setChartSelectedIndex={() => 0}
+              />
             )}
           </ChartSelectGroup>
           <RefreshButton
@@ -121,6 +129,7 @@ const ChartWrapper = ({
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
               volumeData={volumeData}
+              oraclePriceData={oraclePriceData}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}

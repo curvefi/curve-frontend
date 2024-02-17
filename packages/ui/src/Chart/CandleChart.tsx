@@ -1,4 +1,4 @@
-import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight, VolumeData } from './types'
+import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight, VolumeData, OraclePriceData } from './types'
 import type { IChartApi, Time } from 'lightweight-charts'
 
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
@@ -10,6 +10,7 @@ type Props = {
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
+  oraclePriceData?: OraclePriceData[]
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
@@ -26,6 +27,7 @@ const CandleChart = ({
   chartHeight,
   ohlcData,
   volumeData,
+  oraclePriceData,
   timeOption,
   wrapperRef,
   chartExpanded,
@@ -109,7 +111,7 @@ const CandleChart = ({
           borderVisible: false,
           scaleMargins: {
             top: 0.1,
-            bottom: 0.3,
+            bottom: 0.1,
           },
         },
         grid: {
@@ -185,6 +187,15 @@ const CandleChart = ({
 
       candlestickSeries.setData(ohlcData)
 
+      if (oraclePriceData !== undefined) {
+        const lineSeries = chartRef.current.addLineSeries({
+          color: '#46519d',
+          lineWidth: 2,
+        })
+
+        lineSeries.setData(oraclePriceData)
+      }
+
       setChartCreated(true)
 
       const timeScale = chartRef.current.timeScale()
@@ -239,6 +250,7 @@ const CandleChart = ({
     lastRefetchLength,
     lastTimescale,
     volumeData,
+    oraclePriceData,
   ])
 
   useEffect(() => {

@@ -8,7 +8,7 @@ import type {
   LlammaOhlcApiResponse,
   VolumeData,
   LlamaBaselinePriceData,
-  LlamaOraclePriceData,
+  OraclePriceData,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -23,7 +23,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]
   volumeData: VolumeData[]
-  oraclePriceData: LlamaOraclePriceData[]
+  oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
   fetchStatus: FetchingStatus
   timeOption: TimeOptions
@@ -106,7 +106,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: LlamaOraclePriceData[] = []
+        let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of llamaOhlcResponse.data) {
@@ -131,7 +131,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             ...oraclePriceArray,
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              oracle_price: item.oracle_price,
+              value: item.oracle_price,
             },
           ]
 
@@ -198,7 +198,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
-        let oraclePriceArray: LlamaOraclePriceData[] = []
+        let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of llamaOhlcResponse.data) {
@@ -223,7 +223,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             ...oraclePriceArray,
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
-              oracle_price: item.oracle_price,
+              value: item.oracle_price,
             },
           ]
 

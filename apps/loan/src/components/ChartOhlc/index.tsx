@@ -29,6 +29,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
     lastRefetchLength,
     chartOhlcData,
     volumeData,
+    oraclePriceData,
     setChartTimeOption,
     fetchOhlcData,
     fetchMoreOhlcData,
@@ -98,7 +99,9 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
         themeType={themeType}
         ohlcData={chartOhlcData}
         volumeData={volumeData}
+        oraclePriceData={oraclePriceData}
         timeOption={timeOption}
+        selectChartList={[{ label: `${llamma.collateralSymbol} / USD` }]}
         setChartTimeOption={setChartTimeOption}
         refetchPricesData={refetchPricesData}
         refetchingHistory={refetchingHistory}

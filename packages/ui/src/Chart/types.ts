@@ -70,9 +70,9 @@ export interface LlamaBaselinePriceData {
   base_price: number
 }
 
-export interface LlamaOraclePriceData {
+export interface OraclePriceData {
   time: UTCTimestamp
-  oracle_price: number
+  value: number
 }
 
 export interface LpPriceApiResponse {
