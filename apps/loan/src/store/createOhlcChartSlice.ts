@@ -115,7 +115,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
               value: item.volume,
-              color: item.open > item.close ? '#26a69982' : '#ef53507e',
+              color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
           ]
 
@@ -207,7 +207,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             {
               time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
               value: item.volume,
-              color: item.open > item.close ? '#26a69982' : '#ef53507e',
+              color: item.open < item.close ? '#26a69982' : '#ef53507e',
             },
           ]
 

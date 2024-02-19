@@ -12,6 +12,7 @@ import type {
 
 import { useState, useRef } from 'react'
 import styled from 'styled-components'
+import { cloneDeep } from 'lodash'
 
 import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
@@ -21,7 +22,6 @@ import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
 import Box from 'ui/src/Box'
-import { cloneDeep } from 'lodash'
 
 type Props = {
   chartType: ChartType
@@ -122,6 +122,14 @@ const ChartWrapper = ({
             setCurrentTimeOption={setChartTimeOption}
           />
         </SectionHeader>
+        {chartType === 'crvusd' && (
+          <>
+            <TipContent>
+              <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-oracle-price-line)" />
+              Oracle Price
+            </TipContent>
+          </>
+        )}
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
             <CandleChart
@@ -244,8 +252,10 @@ const ContentWrapper = styled.div`
 
 const TipContent = styled(Box)`
   align-items: center;
+  justify-content: center;
   display: flex;
   justify-content: center;
+  font-size: var(--font-size-1);
 `
 
 const TipIcon = styled(Icon)`

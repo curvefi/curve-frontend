@@ -57,6 +57,7 @@ const CandleChart = ({
     chartLabelColor: '#9B7DFF',
     chartVolumeGreen: '#ef53507e',
     chartVolumeRed: '#26a6997e',
+    chartOraclePrice: '#3360c9c0',
   })
 
   useEffect(() => {
@@ -74,6 +75,7 @@ const CandleChart = ({
     const chartLabelColor = style.getPropertyValue('--chart-label')
     const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
     const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
+    const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
     const warningColor = style.getPropertyValue('--warning-400')
 
     setColors({
@@ -87,6 +89,7 @@ const CandleChart = ({
       chartLabelColor,
       chartVolumeRed,
       chartVolumeGreen,
+      chartOraclePrice,
     })
     setLastTheme(themeType)
   }, [chartType, lastTheme, themeType])
@@ -189,7 +192,7 @@ const CandleChart = ({
 
       if (oraclePriceData !== undefined) {
         const lineSeries = chartRef.current.addLineSeries({
-          color: '#46519d',
+          color: colors.chartOraclePrice,
           lineWidth: 2,
         })
 

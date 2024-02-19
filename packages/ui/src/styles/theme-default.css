@@ -318,4 +318,7 @@ body.theme-default {
   --chart-green: #26a69a;
   --chart-red: #ef5350;
   --chart-label: #9b7dff;
+  --chart-volume-green: #26a6997e;
+  --chart-volume-red: #ef53507e;
+  --chart-oracle-price-line: #3360c9c0;
 }
