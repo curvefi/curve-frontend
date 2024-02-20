@@ -9,46 +9,36 @@ import useStore from '@/store/useStore'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
-import TradesData from '@/components/PagePool/PoolDetails/PoolInfo/TradesData'
-import LiquidityData from '@/components/PagePool/PoolDetails/PoolInfo/LiquidityData'
+import TradesData from '@/components/PoolInfoData/TradesData'
+import LiquidityData from '@/components/PoolInfoData/LiquidityData'
 
 interface Props {
   poolAddress: string
   chainId: ChainId
-  chartExpanded: boolean
-  coins: PricesApiCoin[]
-  tradesTokens: LpTradeToken[]
-  chartCombinations: PricesApiCoin[][]
-  refetchPricesData: () => void
 }
 
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  chartExpanded,
-  coins,
-  tradesTokens,
-  chartCombinations,
-  refetchPricesData,
-}: Props) => {
-  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
+const PoolActivity = ({ chainId, poolAddress }: Props) => {
+  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
   const {
-    pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },
+    activityFetchStatus,
+    llammaTradesData,
+    llammaLiquidityData,
     setActivityHidden,
-    fetchPricesApiActivity,
-  } = useStore((state) => state.pools)
+    fetchPoolActivity,
+    chartExpanded,
+  } = useStore((state) => state.ohlcCharts)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
   useEffect(() => {
-    fetchPricesApiActivity(chainId, poolAddress, chartCombinations)
-  }, [chainId, chartCombinations, fetchPricesApiActivity, poolAddress])
+    fetchPoolActivity(chainId, poolAddress)
+  }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
     <Wrapper chartExpanded={chartExpanded}>
       <SectionHeader>
         {chartExpanded && (
-          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden(!activityHidden)}>
+          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden()}>
             <Icon name={activityHidden ? 'SidePanelClose' : 'SidePanelOpen'} size={16} />
           </HidePoolActivityButton>
         )}
@@ -74,7 +64,7 @@ const PoolActivity = ({
           </>
         )}
       </SectionHeader>
-      {!activityHidden && activityStatus === 'READY' && (
+      {!activityHidden && activityFetchStatus === 'READY' && (
         <GridContainer>
           <TitlesRow key={'titles'}>
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
@@ -82,19 +72,20 @@ const PoolActivity = ({
           </TitlesRow>
           <ElementsContainer>
             {eventOption === 'TRADE' ? (
-              <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
+              <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
             ) : (
-              <LiquidityData lpEventsData={liquidityEventsData} chainId={chainId} coins={coins} />
+              // <LiquidityData llammaLiquidityData={llammaLiquidityData} chainId={chainId} />
+              ''
             )}
           </ElementsContainer>
         </GridContainer>
       )}
-      {!activityHidden && activityStatus === 'LOADING' && (
+      {!activityHidden && activityFetchStatus === 'LOADING' && (
         <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
-      {!activityHidden && activityStatus === 'ERROR' && (
+      {!activityHidden && activityFetchStatus === 'ERROR' && (
         <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>

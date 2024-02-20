@@ -1,11 +1,11 @@
-import type { LpTradesData, LpTradeToken } from '@/ui/Chart/types'
+import type { LlammaTradeEvent } from '@/ui/Chart/types'
 
 import styled from 'styled-components'
 
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/PoolInfo/utils'
+import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PoolInfoData/utils'
 
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
@@ -13,18 +13,14 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
 type Props = {
-  lpTradesData: LpTradesData[]
+  llammaTradesData: LlammaTradeEvent[]
   chainId: ChainId
-  tradesTokens: LpTradeToken[]
 }
 
-const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
+const TradesData = ({ llammaTradesData, chainId }: Props) => {
   return (
     <>
-      {lpTradesData.map((transaction, index) => {
-        const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
-        const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
-
+      {llammaTradesData.map((transaction, index) => {
         return (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
             <Event href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
@@ -32,15 +28,15 @@ const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
                 <StyledTokenIcon
                   size="sm"
                   imageBaseUrl={getImageBaseUrl(chainId)}
-                  token={soldToken?.address ?? transaction.token_sold}
-                  address={soldToken?.address ?? transaction.token_sold}
+                  token={transaction.token_sold.address}
+                  address={transaction.token_sold.address}
                 />
                 <Box flex flexColumn>
-                  <TradeFromSymbol>{soldToken?.symbol ?? transaction.token_sold_symbol}</TradeFromSymbol>
+                  <TradeFromSymbol>{transaction.token_sold.symbol}</TradeFromSymbol>
                   <TradeFromAmount>
                     <Chip isBold isNumber>
-                      {formatNumber(transaction.tokens_sold, {
-                        ...getFractionDigitsOptions(transaction.tokens_sold, 2),
+                      {formatNumber(transaction.amount_sold, {
+                        ...getFractionDigitsOptions(transaction.amount_sold, 2),
                       })}
                     </Chip>
                   </TradeFromAmount>
@@ -49,11 +45,11 @@ const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
               <Arrow>→</Arrow>
               <TradeTo>
                 <Box flex flexColumn>
-                  <TradeToSymbol>{boughtToken?.symbol ?? transaction.token_bought_symbol}</TradeToSymbol>
+                  <TradeToSymbol>{transaction.token_bought.symbol}</TradeToSymbol>
                   <TradeToAmount>
                     <Chip isBold isNumber>
-                      {formatNumber(transaction.tokens_bought, {
-                        ...getFractionDigitsOptions(transaction.tokens_bought, 2),
+                      {formatNumber(transaction.amount_bought, {
+                        ...getFractionDigitsOptions(transaction.amount_bought, 2),
                       })}
                     </Chip>
                   </TradeToAmount>
@@ -62,14 +58,14 @@ const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
                   className="bought"
                   size="sm"
                   imageBaseUrl={getImageBaseUrl(chainId)}
-                  token={boughtToken?.address ?? transaction.token_bought}
-                  address={boughtToken?.address ?? transaction.token_bought}
+                  token={transaction.token_bought.address}
+                  address={transaction.token_bought.address}
                 />
               </TradeTo>
             </Event>
             <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
-                {convertTimeAgo(transaction.time)}
+              <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+                {convertTimeAgo(transaction.timestamp)}
               </Tooltip>
             </TimestampColumn>
           </TransactionRow>

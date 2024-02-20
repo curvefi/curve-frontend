@@ -8,10 +8,10 @@ import type {
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
-  LpTradesData,
-  LpLiquidityEventsData,
-  LpTradesApiResponse,
-  LpLiquidityEventsApiResponse,
+  LlammaTradesApiResponse,
+  LlammaLiquidityApiResponse,
+  LlammaTradeEvent,
+  LlammaLiquidityEvent,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -27,8 +27,8 @@ type SliceState = {
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
-  poolTradesData: LpTradesData[]
-  poolLiquidityData: LpLiquidityEventsData[]
+  llammaTradesData: LlammaTradeEvent[]
+  llammaLiquidityData: LlammaLiquidityEvent[]
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
@@ -73,8 +73,8 @@ const DEFAULT_STATE: SliceState = {
   volumeData: [],
   oraclePriceData: [],
   baselinePriceData: [],
-  poolTradesData: [],
-  poolLiquidityData: [],
+  llammaTradesData: [],
+  llammaLiquidityData: [],
   chartFetchStatus: 'LOADING',
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
@@ -288,17 +288,17 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           `https://prices.curve.fi/v1/crvusd/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
           `
         )
-        const lpTradesRes: LpTradesApiResponse = await tradesFetch.json()
-        const sortedData = lpTradesRes.data.sort((a: LpTradesData, b: LpTradesData) => {
-          const timestampA = new Date(a.time).getTime()
-          const timestampB = new Date(b.time).getTime()
+        const lpTradesRes: LlammaTradesApiResponse = await tradesFetch.json()
+        const sortedData = lpTradesRes.data.sort((a: LlammaTradeEvent, b: LlammaTradeEvent) => {
+          const timestampA = new Date(a.timestamp).getTime()
+          const timestampB = new Date(b.timestamp).getTime()
           return timestampB - timestampA
         })
 
         if (sortedData) {
           set(
             produce((state: State) => {
-              state[sliceKey].poolTradesData = sortedData
+              state[sliceKey].llammaTradesData = sortedData
             })
           )
         }
@@ -306,12 +306,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         const liqudityEventsRes = await fetch(
           `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
         )
-        const liquidityEventsData: LpLiquidityEventsApiResponse = await liqudityEventsRes.json()
+        const liquidityEventsData: LlammaLiquidityApiResponse = await liqudityEventsRes.json()
 
         if (liquidityEventsData) {
           set(
             produce((state: State) => {
-              state[sliceKey].poolLiquidityData = liquidityEventsData.data
+              state[sliceKey].llammaLiquidityData = liquidityEventsData.data
               state[sliceKey].activityFetchStatus = 'READY'
             })
           )

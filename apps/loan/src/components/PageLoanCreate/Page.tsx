@@ -133,6 +133,10 @@ const Page: NextPage = () => {
     isPageVisible
   )
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) setChartExpanded()
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
   const TitleComp = () => (
     <TitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
@@ -185,7 +189,7 @@ const Page: NextPage = () => {
 
         {isAdvanceMode && (
           <LoanInfoWrapper>
-            {isMdUp && <TitleComp />}
+            {isMdUp && !chartExpanded && <TitleComp />}
             <LoanInfoContentWrapper variant="secondary">
               <StyledBoxHeader>LLAMMA Details</StyledBoxHeader>
               {isValidRouterParams && rChainId && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}

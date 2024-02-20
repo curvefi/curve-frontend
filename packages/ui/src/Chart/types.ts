@@ -111,6 +111,53 @@ export interface LpTradeToken {
   event_index: number
 }
 
+export interface LlammaTradeEvent {
+  sold_id: number
+  bought_id: number
+  token_sold: {
+    symbol: string
+    address: string
+  }
+  token_bought: {
+    symbol: string
+    address: string
+  }
+  amount_sold: number
+  amount_bought: number
+  price: number
+  buyer: string
+  fee_x: number
+  fee_y: number
+  block_number: number
+  timestamp: number
+  transaction_hash: string
+}
+
+export interface LlammaLiquidityEvent {
+  provider: string
+  deposit: {
+    amount: number
+    n1: number
+    n2: number
+  } | null
+  withdrawal: { amount_borrowed: number; amount_collateral: number } | null
+  block_number: number
+  timestamp: number
+  transaction_hash: string
+}
+
+export interface LlammaTradesApiResponse {
+  chain: string
+  address: string
+  data: LlammaTradeEvent[]
+}
+
+export interface LlammaLiquidityApiResponse {
+  chain: string
+  address: string
+  data: LlammaLiquidityEvent[]
+}
+
 export interface LpTradesData {
   sold_id: number
   bought_id: number
@@ -168,21 +215,4 @@ export interface LpLiquidityEventsApiResponse {
   chain: string
   address: string
   data: LpLiquidityEventsData[]
-}
-
-export interface LiqPriceRange {
-  price1: string
-  price2: string
-  band1: number
-  band2: number
-}
-
-export interface LiqRangeData {
-  time: number
-  value: number
-}
-
-export interface LiqRangeObject {
-  upperRange: LiqRangeData[]
-  lowerRange: LiqRangeData[]
 }

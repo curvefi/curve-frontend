@@ -5,12 +5,13 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 
 import Button from '@/ui/Button'
 import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
+import PoolActivity from '@/components/PoolInfoData/PoolActivity'
 
 type Props = {
   rChainId: ChainId
@@ -129,17 +130,9 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           fetchMoreChartData={fetchMoreChartData}
         />
       </Wrapper>
-      {/* <LpEventsWrapperExpanded>
-        <PoolActivity
-          chartExpanded={chartExpanded}
-          coins={pricesApiPoolData.coins}
-          tradesTokens={tradesTokens}
-          poolAddress={pricesApiPoolData.address}
-          chainId={rChainId}
-          chartCombinations={chartCombinations}
-          refetchPricesData={refetchPricesData}
-        />
-      </LpEventsWrapperExpanded> */}
+      <LpEventsWrapperExpanded>
+        <PoolActivity poolAddress={address} chainId={rChainId} />
+      </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
     <Wrapper chartExpanded={chartExpanded}>
@@ -165,35 +158,27 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           </ExpandButton>
         )}
       </SelectorRow>
-      {/* {pricesApiPoolData && poolInfo === 'poolActivity' && (
-        <PoolActivity
-          chartExpanded={chartExpanded}
-          coins={pricesApiPoolData.coins}
-          tradesTokens={tradesTokens}
-          poolAddress={pricesApiPoolData.address}
-          chainId={rChainId}
-          chartCombinations={chartCombinations}
+      {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} />}
+      {poolInfo === 'chart' && (
+        <ChartWrapper
+          chartType="crvusd"
+          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
+          chartHeight={chartHeight}
+          chartExpanded={false}
+          themeType={themeType}
+          ohlcData={chartOhlcData}
+          volumeData={volumeData}
+          oraclePriceData={oraclePriceData}
+          timeOption={timeOption}
+          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
+          setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
+          fetchMoreChartData={fetchMoreChartData}
         />
-      )} */}
-      <ChartWrapper
-        chartType="crvusd"
-        chartStatus={llamma ? chartFetchStatus : 'LOADING'}
-        chartHeight={chartHeight}
-        chartExpanded={false}
-        themeType={themeType}
-        ohlcData={chartOhlcData}
-        volumeData={volumeData}
-        oraclePriceData={oraclePriceData}
-        timeOption={timeOption}
-        selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
-        setChartTimeOption={setChartTimeOption}
-        refetchPricesData={refetchPricesData}
-        refetchingHistory={refetchingHistory}
-        refetchingCapped={refetchingCapped}
-        lastRefetchLength={lastRefetchLength}
-        fetchMoreChartData={fetchMoreChartData}
-      />
+      )}
     </Wrapper>
   )
 }
