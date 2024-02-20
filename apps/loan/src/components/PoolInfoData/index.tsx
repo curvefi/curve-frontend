@@ -14,14 +14,16 @@ import Box from '@/ui/Box'
 
 type Props = {
   rChainId: ChainId
-  llamma: Llamma
+  llamma: Llamma | null
 }
 
-const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
-  const address = llamma.address
+const PoolInfoData = ({ rChainId, llamma }: Props) => {
+  const address = llamma?.address ?? ''
   const themeType = useStore((state) => state.themeType)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
-    fetchStatus,
+    chartFetchStatus,
+    activityFetchStatus,
     timeOption,
     refetchingHistory,
     refetchingCapped,
@@ -33,7 +35,12 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
     setChartTimeOption,
     fetchOhlcData,
     fetchMoreOhlcData,
+    setActivityHidden,
+    activityHidden,
+    chartExpanded,
+    setChartExpanded,
   } = useStore((state) => state.ohlcCharts)
+  const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   const chartHeight = {
     expanded: 500,
@@ -79,8 +86,19 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
 
   // set snapshot data and subscribe to new data
   useEffect(() => {
-    fetchOhlcData(rChainId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
-  }, [rChainId, chartInterval, chartTimeSettings.end, chartTimeSettings.start, timeUnit, fetchOhlcData, address])
+    if (llamma !== undefined) {
+      fetchOhlcData(rChainId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
+    }
+  }, [
+    rChainId,
+    chartInterval,
+    chartTimeSettings.end,
+    chartTimeSettings.start,
+    timeUnit,
+    fetchOhlcData,
+    address,
+    llamma,
+  ])
 
   const fetchMoreChartData = useCallback(() => {
     const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
@@ -89,11 +107,78 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
     fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, endTime, +startTime)
   }, [timeOption, lastFetchEndTime, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit])
 
-  return (
-    <Wrapper chartExpanded={false}>
+  return chartExpanded ? (
+    <ExpandedWrapper activityHidden={activityHidden}>
+      <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
+        <ChartWrapper
+          chartType="crvusd"
+          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
+          chartHeight={chartHeight}
+          chartExpanded={chartExpanded}
+          themeType={themeType}
+          ohlcData={chartOhlcData}
+          volumeData={volumeData}
+          oraclePriceData={oraclePriceData}
+          timeOption={timeOption}
+          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
+          setChartTimeOption={setChartTimeOption}
+          refetchPricesData={refetchPricesData}
+          refetchingHistory={refetchingHistory}
+          refetchingCapped={refetchingCapped}
+          lastRefetchLength={lastRefetchLength}
+          fetchMoreChartData={fetchMoreChartData}
+        />
+      </Wrapper>
+      {/* <LpEventsWrapperExpanded>
+        <PoolActivity
+          chartExpanded={chartExpanded}
+          coins={pricesApiPoolData.coins}
+          tradesTokens={tradesTokens}
+          poolAddress={pricesApiPoolData.address}
+          chainId={rChainId}
+          chartCombinations={chartCombinations}
+          refetchPricesData={refetchPricesData}
+        />
+      </LpEventsWrapperExpanded> */}
+    </ExpandedWrapper>
+  ) : (
+    <Wrapper chartExpanded={chartExpanded}>
+      <SelectorRow>
+        <SelectorButton
+          variant={'text'}
+          className={poolInfo === 'chart' ? 'active' : ''}
+          onClick={() => setPoolInfo('chart')}
+        >
+          {t`Chart`}
+        </SelectorButton>
+        <SelectorButton
+          variant={'text'}
+          className={poolInfo === 'poolActivity' ? 'active' : ''}
+          onClick={() => setPoolInfo('poolActivity')}
+        >
+          {t`Pool Activity`}
+        </SelectorButton>
+        {isMdUp && (
+          <ExpandButton variant={'text'} onClick={() => setChartExpanded()}>
+            {chartExpanded ? 'Minimize' : 'Expand'}
+            <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+          </ExpandButton>
+        )}
+      </SelectorRow>
+      {/* {pricesApiPoolData && poolInfo === 'poolActivity' && (
+        <PoolActivity
+          chartExpanded={chartExpanded}
+          coins={pricesApiPoolData.coins}
+          tradesTokens={tradesTokens}
+          poolAddress={pricesApiPoolData.address}
+          chainId={rChainId}
+          chartCombinations={chartCombinations}
+          refetchPricesData={refetchPricesData}
+        />
+      )} */}
       <ChartWrapper
         chartType="crvusd"
-        chartStatus={fetchStatus}
+        chartStatus={llamma ? chartFetchStatus : 'LOADING'}
         chartHeight={chartHeight}
         chartExpanded={false}
         themeType={themeType}
@@ -101,7 +186,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma }: Props) => {
         volumeData={volumeData}
         oraclePriceData={oraclePriceData}
         timeOption={timeOption}
-        selectChartList={[{ label: `${llamma.collateralSymbol} / crvUSD` }]}
+        selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
         setChartTimeOption={setChartTimeOption}
         refetchPricesData={refetchPricesData}
         refetchingHistory={refetchingHistory}
@@ -161,4 +246,4 @@ const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
 `
 
-export default ChartOhlcWrapper
+export default PoolInfoData

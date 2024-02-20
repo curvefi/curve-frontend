@@ -14,6 +14,7 @@ import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
+import PoolInfoData from '@/components/PoolInfoData'
 import { TabContentWrapper } from '@/ui/Tab'
 import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/DocumentHead'
@@ -21,6 +22,8 @@ import LoanCreate from '@/components/PageLoanCreate/index'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import TextEllipsis from '@/ui/TextEllipsis'
+import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -43,6 +46,7 @@ const Page: NextPage = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
+  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
   const [loaded, setLoaded] = useState(false)
 
@@ -145,6 +149,20 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`${rCollateralId}` ?? t`Create`} />
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex>
+            <TitleComp />
+            <ExpandButton variant={'select'} onClick={() => setChartExpanded()}>
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <PoolInfoData rChainId={rChainId} llamma={llamma} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
       <Wrapper isAdvanceMode={isAdvanceMode}>
         <FormWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}
@@ -249,6 +267,30 @@ const LoanInfoWrapper = styled.div`
 const LoanInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
+`
+
+const PriceAndTradesExpandedContainer = styled(Box)`
+  margin: 1.5rem 0 0;
+  display: flex;
+  @media (min-width: ${breakpoints.md}rem) {
+    flex-direction: column;
+  }
+`
+
+const PriceAndTradesExpandedWrapper = styled(Box)`
+  background-color: var(--tab-secondary--content--background-color);
+`
+
+const ExpandButton = styled(Button)`
+  margin: auto var(--spacing-3) auto auto;
+  display: flex;
+  align-content: center;
+  color: inherit;
+  font-size: var(--font-size-2);
+`
+
+const ExpandIcon = styled(Icon)`
+  margin-left: var(--spacing-1);
 `
 
 export default Page

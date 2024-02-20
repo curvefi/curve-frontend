@@ -122,7 +122,7 @@ const ChartWrapper = ({
             setCurrentTimeOption={setChartTimeOption}
           />
         </SectionHeader>
-        {chartType === 'crvusd' && (
+        {chartType === 'crvusd' && chartStatus === 'READY' && (
           <>
             <TipContent>
               <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-oracle-price-line)" />

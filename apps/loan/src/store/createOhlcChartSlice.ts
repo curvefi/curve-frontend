@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type {
-  ChartType,
   TimeOptions,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
@@ -9,11 +8,14 @@ import type {
   VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
+  LpTradesData,
+  LpLiquidityEventsData,
+  LpTradesApiResponse,
+  LpLiquidityEventsApiResponse,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
-import { slice } from 'lodash'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
@@ -25,12 +27,17 @@ type SliceState = {
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
-  fetchStatus: FetchingStatus
+  poolTradesData: LpTradesData[]
+  poolLiquidityData: LpLiquidityEventsData[]
+  chartFetchStatus: FetchingStatus
+  activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
   refetchingHistory: boolean
   refetchingCapped: boolean
   lastFetchEndTime: number
   lastRefetchLength: number
+  activityHidden: boolean
+  chartExpanded: boolean
 }
 
 const sliceKey = 'ohlcCharts'
@@ -54,6 +61,9 @@ export type OhlcChartSlice = {
       start: number,
       end: number
     ): void
+    fetchPoolActivity(chainId: ChainId, poolAddress: string): void
+    setActivityHidden(): void
+    setChartExpanded(): void
     resetState(chainId: ChainId): void
   }
 }
@@ -63,12 +73,17 @@ const DEFAULT_STATE: SliceState = {
   volumeData: [],
   oraclePriceData: [],
   baselinePriceData: [],
-  fetchStatus: 'LOADING',
+  poolTradesData: [],
+  poolLiquidityData: [],
+  chartFetchStatus: 'LOADING',
+  activityFetchStatus: 'LOADING',
   timeOption: '1d',
   refetchingHistory: false,
   refetchingCapped: false,
   lastFetchEndTime: 0,
   lastRefetchLength: 0,
+  activityHidden: false,
+  chartExpanded: false,
 }
 
 const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
@@ -91,7 +106,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     ) => {
       set(
         produce((state: State) => {
-          state[sliceKey].fetchStatus = 'LOADING'
+          state[sliceKey].chartFetchStatus = 'LOADING'
           state[sliceKey].refetchingCapped = DEFAULT_STATE.refetchingCapped
           state[sliceKey].refetchingHistory = DEFAULT_STATE.refetchingHistory
         })
@@ -154,14 +169,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               state[sliceKey].baselinePriceData = baselinePriceArray
               state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
               state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
-              state[sliceKey].fetchStatus = 'READY'
+              state[sliceKey].chartFetchStatus = 'READY'
             })
           )
         }
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].fetchStatus = 'ERROR'
+            state[sliceKey].chartFetchStatus = 'ERROR'
           })
         )
         console.log(error)
@@ -253,11 +268,76 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].fetchStatus = 'ERROR'
+            state[sliceKey].chartFetchStatus = 'ERROR'
           })
         )
         console.log(error)
       }
+    },
+    fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].activityFetchStatus = 'LOADING'
+        })
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+
+      try {
+        const tradesFetch = await fetch(
+          `https://prices.curve.fi/v1/crvusd/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
+          `
+        )
+        const lpTradesRes: LpTradesApiResponse = await tradesFetch.json()
+        const sortedData = lpTradesRes.data.sort((a: LpTradesData, b: LpTradesData) => {
+          const timestampA = new Date(a.time).getTime()
+          const timestampB = new Date(b.time).getTime()
+          return timestampB - timestampA
+        })
+
+        if (sortedData) {
+          set(
+            produce((state: State) => {
+              state[sliceKey].poolTradesData = sortedData
+            })
+          )
+        }
+
+        const liqudityEventsRes = await fetch(
+          `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
+        )
+        const liquidityEventsData: LpLiquidityEventsApiResponse = await liqudityEventsRes.json()
+
+        if (liquidityEventsData) {
+          set(
+            produce((state: State) => {
+              state[sliceKey].poolLiquidityData = liquidityEventsData.data
+              state[sliceKey].activityFetchStatus = 'READY'
+            })
+          )
+        }
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].activityFetchStatus = 'ERROR'
+          })
+        )
+        console.log(error)
+      }
+    },
+    setActivityHidden: () => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].activityHidden = !get()[sliceKey].activityHidden
+        })
+      )
+    },
+    setChartExpanded: () => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].chartExpanded = !get()[sliceKey].chartExpanded
+        })
+      )
     },
     resetState: () => {
       get().resetAppState(sliceKey, DEFAULT_STATE)

@@ -63,7 +63,7 @@ const CandleChart = ({
   useEffect(() => {
     const style = getComputedStyle(document.body)
     const backgroundColor =
-      chartType === 'crvusd'
+      chartType === 'crvusd' && !chartExpanded
         ? style.getPropertyValue('--tab-secondary--content--background-color')
         : style.getPropertyValue('--box--secondary--background-color')
     const lineColor = style.getPropertyValue('--line-color')

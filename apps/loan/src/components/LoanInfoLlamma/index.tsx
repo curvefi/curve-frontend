@@ -13,7 +13,7 @@ import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
-import ChartOhlcWrapper from '@/components/ChartOhlc'
+import PoolInfoData from '@/components/PoolInfoData'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId'> {
   className?: string
@@ -34,6 +34,7 @@ const DEFAULT_BAND_CHART_DATA = {
 
 const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -76,9 +77,9 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
 
   return (
     <Wrapper>
-      {llamma && (
+      {!chartExpanded && (
         <div className="wrapper">
-          <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} />
+          <PoolInfoData rChainId={rChainId} llamma={llamma} />
         </div>
       )}
 
