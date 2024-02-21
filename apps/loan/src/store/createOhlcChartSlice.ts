@@ -16,6 +16,7 @@ import type {
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
+import { ethers } from 'ethers'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
@@ -62,8 +63,8 @@ export type OhlcChartSlice = {
       end: number
     ): void
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
-    setActivityHidden(): void
-    setChartExpanded(): void
+    setActivityHidden(bool?: boolean): void
+    setChartExpanded(bool?: boolean): void
     resetState(chainId: ChainId): void
   }
 }
@@ -307,11 +308,31 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
         )
         const liquidityEventsData: LlammaLiquidityApiResponse = await liqudityEventsRes.json()
+        const formattedLiquidityEventsData = liquidityEventsData.data.map((data) => {
+          return {
+            ...data,
+            deposit:
+              data.deposit === null
+                ? null
+                : {
+                    ...data.deposit,
+                    amount: formatContractValue(data.deposit.amount, poolAddress),
+                  },
+            withdrawal:
+              data.withdrawal === null
+                ? null
+                : {
+                    ...data.withdrawal,
+                    amount_borrowed: formatContractValue(data.withdrawal.amount_borrowed, poolAddress),
+                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, poolAddress),
+                  },
+          }
+        })
 
         if (liquidityEventsData) {
           set(
             produce((state: State) => {
-              state[sliceKey].llammaLiquidityData = liquidityEventsData.data
+              state[sliceKey].llammaLiquidityData = formattedLiquidityEventsData
               state[sliceKey].activityFetchStatus = 'READY'
             })
           )
@@ -325,17 +346,18 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         console.log(error)
       }
     },
-    setActivityHidden: () => {
+    setActivityHidden: (bool?: boolean) => {
       set(
         produce((state: State) => {
-          state[sliceKey].activityHidden = !get()[sliceKey].activityHidden
+          state[sliceKey].activityHidden = bool !== undefined ? bool : !get()[sliceKey].activityHidden
         })
       )
     },
-    setChartExpanded: () => {
+    setChartExpanded: (bool?: boolean) => {
       set(
         produce((state: State) => {
-          state[sliceKey].chartExpanded = !get()[sliceKey].chartExpanded
+          state[sliceKey].chartExpanded = bool !== undefined ? bool : !get()[sliceKey].chartExpanded
+          state[sliceKey].activityHidden = false
         })
       )
     },
@@ -344,5 +366,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     },
   },
 })
+
+const eightDecimalPools = '0xe0438eb3703bf871e31ce639bd351109c88666ea' // wbtc
+
+const formatContractValue = (value: string, poolAddress: string) => {
+  if (poolAddress === eightDecimalPools) {
+    return ethers.utils.formatUnits(value, 8)
+  }
+  return ethers.utils.formatEther(value)
+}
 
 export default createOhlcChart

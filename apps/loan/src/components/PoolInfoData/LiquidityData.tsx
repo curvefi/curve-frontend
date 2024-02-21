@@ -1,7 +1,9 @@
-import type { LpLiquidityEventsData, PricesApiCoin } from '@/ui/Chart/types'
+import type { LlammaLiquidityEvent, PricesApiCoin } from '@/ui/Chart/types'
+import { LlammaLiquidityCoins } from './types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { ethers } from 'ethers'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
@@ -15,93 +17,95 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
 type Props = {
-  lpEventsData: LpLiquidityEventsData[]
+  llammaLiquidityData: LlammaLiquidityEvent[]
   chainId: ChainId
-  coins: PricesApiCoin[]
+  coins: LlammaLiquidityCoins
 }
 
-const LiquidityData = ({ lpEventsData, chainId, coins }: Props) => {
-  const tokensMapper = useStore((state) => state.tokens.tokensMapper)
-
+const LiquidityData = ({ llammaLiquidityData, chainId, coins }: Props) => {
   return (
     <>
-      {lpEventsData
-        .filter((transaction) => {
-          if (
-            transaction.token_amounts.reduce((acc, data) => {
-              return acc + data
-            }, 0) !== 0
+      {coins &&
+        llammaLiquidityData.map((transaction, index) => {
+          return (
+            <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
+              <LiquidityEvent
+                href={networks[chainId].scanTxPath(transaction.transaction_hash)}
+                rel="noopener"
+                target="_blank"
+              >
+                {transaction.deposit !== null && (
+                  <>
+                    <Box flex flexColumn>
+                      <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
+                      <Nrange>
+                        N: {transaction.deposit.n1} / {transaction.deposit.n2}
+                      </Nrange>
+                    </Box>
+                    <LiquidityEventRow>
+                      <Chip isBold isNumber>
+                        {formatNumber(transaction.deposit.amount, {
+                          ...getFractionDigitsOptions(transaction.deposit.amount, 2),
+                        })}
+                      </Chip>
+                      <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                      <StyledTokenIcon
+                        size="sm"
+                        imageBaseUrl={getImageBaseUrl(chainId)}
+                        token={coins.collateral.address}
+                        address={coins.collateral.address}
+                      />
+                    </LiquidityEventRow>
+                  </>
+                )}
+                {transaction.withdrawal !== null && (
+                  <>
+                    <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
+                    <Box flex flexColumn margin="0 0 0 auto">
+                      {+transaction.withdrawal.amount_collateral !== 0 && (
+                        <LiquidityEventRow>
+                          <Chip isBold isNumber>
+                            {formatNumber(transaction.withdrawal.amount_collateral, {
+                              ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
+                            })}
+                          </Chip>
+                          <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                          <StyledTokenIcon
+                            size="sm"
+                            imageBaseUrl={getImageBaseUrl(chainId)}
+                            token={coins.collateral.address}
+                            address={coins.collateral.address}
+                          />
+                        </LiquidityEventRow>
+                      )}
+                      {+transaction.withdrawal.amount_borrowed !== 0 && (
+                        <LiquidityEventRow>
+                          <Chip isBold isNumber>
+                            {formatNumber(transaction.withdrawal.amount_borrowed, {
+                              ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
+                            })}
+                          </Chip>
+                          <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
+                          <StyledTokenIcon
+                            size="sm"
+                            imageBaseUrl={getImageBaseUrl(chainId)}
+                            token={coins.crvusd.address}
+                            address={coins.crvusd.address}
+                          />
+                        </LiquidityEventRow>
+                      )}
+                    </Box>
+                  </>
+                )}
+              </LiquidityEvent>
+              <TimestampColumn>
+                <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+                  {convertTimeAgo(transaction.timestamp)}
+                </Tooltip>
+              </TimestampColumn>
+            </TransactionRow>
           )
-            return transaction
-        })
-        .map((transaction, index) => (
-          <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-            <LpEvent href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
-              {transaction.liquidity_event_type === 'AddLiquidity' ? (
-                <>
-                  <LpEventType>{t`Add`}</LpEventType>
-                  <Box flex flexColumn>
-                    {transaction.token_amounts.map((tx, index) => {
-                      return (
-                        tx !== 0 && (
-                          <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
-                            <Chip isBold isNumber>
-                              {formatNumber(transaction.token_amounts[index], {
-                                ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
-                              })}
-                            </Chip>
-                            <LpSymbol>{coins[index].symbol}</LpSymbol>
-                            <StyledTokenIcon
-                              size="sm"
-                              imageBaseUrl={getImageBaseUrl(chainId)}
-                              token={coins[index].address}
-                              address={
-                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
-                              }
-                            />
-                          </LpAssetRow>
-                        )
-                      )
-                    })}
-                  </Box>
-                </>
-              ) : (
-                <>
-                  <LpEventType className="remove">{t`Remove`}</LpEventType>
-                  <LpTokensContainer>
-                    {transaction.token_amounts.map((tx, index) => {
-                      return (
-                        tx !== 0 && (
-                          <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
-                            <Chip isBold isNumber>
-                              {formatNumber(transaction.token_amounts[index], {
-                                ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
-                              })}
-                            </Chip>
-                            <LpSymbol>{coins[index].symbol}</LpSymbol>
-                            <StyledTokenIcon
-                              size="sm"
-                              imageBaseUrl={getImageBaseUrl(chainId)}
-                              token={coins[index].address}
-                              address={
-                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
-                              }
-                            />
-                          </LpAssetRow>
-                        )
-                      )
-                    })}
-                  </LpTokensContainer>
-                </>
-              )}
-            </LpEvent>
-            <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
-                {convertTimeAgo(transaction.time)}
-              </Tooltip>
-            </TimestampColumn>
-          </TransactionRow>
-        ))}
+        })}
     </>
   )
 }
@@ -123,7 +127,7 @@ const StyledTokenIcon = styled(TokenIcon)`
   }
 `
 
-const LpEvent = styled.a`
+const LiquidityEvent = styled.a`
   box-sizing: border-box;
   font-variant-numeric: tabular-nums;
   display: grid;
@@ -137,9 +141,9 @@ const LpEvent = styled.a`
   }
 `
 
-const LpEventType = styled.span`
+const LiquidityEventTitle = styled.span`
   text-align: left;
-  margin: auto 0;
+  margin: auto auto auto 0;
   font-weight: var(--bold);
   font-size: var(--font-size-1);
   color: var(--chart-green);
@@ -153,13 +157,19 @@ const LpTokensContainer = styled.div`
   flex-direction: column;
 `
 
-const LpAssetRow = styled.div`
+const Nrange = styled.p`
+  font-size: var(--font-size-1);
+  font-weight: var(--bold);
+  margin: var(--spacing-1) 0 auto;
+`
+
+const LiquidityEventRow = styled.div`
   display: flex;
   margin: var(--spacing-1) 0 var(--spacing-1) auto;
   align-items: center;
 `
 
-const LpSymbol = styled.span`
+const LiquiditySymbol = styled.span`
   font-weight: var(--bold);
   font-size: var(--font-size-1);
   opacity: 0.7;

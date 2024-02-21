@@ -1,4 +1,5 @@
 import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
+import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
@@ -42,6 +43,19 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
     setChartExpanded,
   } = useStore((state) => state.ohlcCharts)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+
+  const coins: LlammaLiquidityCoins = llamma
+    ? {
+        crvusd: {
+          symbol: llamma?.coins[0],
+          address: llamma?.coinAddresses[0],
+        },
+        collateral: {
+          symbol: llamma?.coins[1],
+          address: llamma?.coinAddresses[1],
+        },
+      }
+    : null
 
   const chartHeight = {
     expanded: 500,
@@ -131,7 +145,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
-        <PoolActivity poolAddress={address} chainId={rChainId} />
+        <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
@@ -149,7 +163,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           className={poolInfo === 'poolActivity' ? 'active' : ''}
           onClick={() => setPoolInfo('poolActivity')}
         >
-          {t`Pool Activity`}
+          {t`LLAMMA Activity`}
         </SelectorButton>
         {isMdUp && (
           <ExpandButton variant={'text'} onClick={() => setChartExpanded()}>
@@ -158,7 +172,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           </ExpandButton>
         )}
       </SelectorRow>
-      {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} />}
+      {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />}
       {poolInfo === 'chart' && (
         <ChartWrapper
           chartType="crvusd"

@@ -62,9 +62,6 @@ export const convertTimeAgo = (input: string | number) => {
     inputString = dateString
   }
 
-  console.log(input)
-  console.log(inputString)
-
   const now = new Date()
   const dateObj = new Date(inputString)
 

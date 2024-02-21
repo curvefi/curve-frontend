@@ -1,4 +1,5 @@
 import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
+import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -15,9 +16,10 @@ import LiquidityData from '@/components/PoolInfoData/LiquidityData'
 interface Props {
   poolAddress: string
   chainId: ChainId
+  coins: LlammaLiquidityCoins
 }
 
-const PoolActivity = ({ chainId, poolAddress }: Props) => {
+const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
   const {
     activityFetchStatus,
@@ -74,8 +76,7 @@ const PoolActivity = ({ chainId, poolAddress }: Props) => {
             {eventOption === 'TRADE' ? (
               <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
             ) : (
-              // <LiquidityData llammaLiquidityData={llammaLiquidityData} chainId={chainId} />
-              ''
+              <LiquidityData llammaLiquidityData={llammaLiquidityData} chainId={chainId} coins={coins} />
             )}
           </ElementsContainer>
         </GridContainer>

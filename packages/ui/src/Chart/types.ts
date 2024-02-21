@@ -136,11 +136,11 @@ export interface LlammaTradeEvent {
 export interface LlammaLiquidityEvent {
   provider: string
   deposit: {
-    amount: number
+    amount: string
     n1: number
     n2: number
   } | null
-  withdrawal: { amount_borrowed: number; amount_collateral: number } | null
+  withdrawal: { amount_borrowed: string; amount_collateral: string } | null
   block_number: number
   timestamp: number
   transaction_hash: string

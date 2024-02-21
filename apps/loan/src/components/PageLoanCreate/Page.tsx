@@ -134,7 +134,9 @@ const Page: NextPage = () => {
   )
 
   useEffect(() => {
-    if (!isMdUp && chartExpanded) setChartExpanded()
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
   }, [chartExpanded, isMdUp, setChartExpanded])
 
   const TitleComp = () => (
@@ -156,8 +158,13 @@ const Page: NextPage = () => {
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
-            <TitleComp />
-            <ExpandButton variant={'select'} onClick={() => setChartExpanded()}>
+            <TitleComp chartExpanded={chartExpanded} />
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
               {chartExpanded ? 'Minimize' : 'Expand'}
               <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
             </ExpandButton>
@@ -167,7 +174,7 @@ const Page: NextPage = () => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <Wrapper isAdvanceMode={isAdvanceMode}>
+      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}
           {rChainId && rCollateralId && (
@@ -201,7 +208,7 @@ const Page: NextPage = () => {
   )
 }
 
-const Wrapper = styled(Box)<{ isAdvanceMode: boolean }>`
+const Wrapper = styled(Box)<{ isAdvanceMode: boolean; chartExpanded: boolean }>`
   margin: 2rem auto 0 auto;
 
   @media (min-width: 425px) {
@@ -216,6 +223,7 @@ const Wrapper = styled(Box)<{ isAdvanceMode: boolean }>`
     margin-left: 1rem;
     margin-right: 1rem;
     margin-top: 3rem;
+    ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
     ${({ isAdvanceMode }) => (isAdvanceMode ? `align-items: flex-start;` : `justify-content: center;`)};
     display: flex;
   }
@@ -226,6 +234,7 @@ const TitleWrapper = styled.header`
   display: flex;
   min-height: 46px;
   padding-left: 0.5rem;
+  margin-left: 1rem;
 
   @media (min-width: ${breakpoints.md}rem) {
     padding-left: 0;
