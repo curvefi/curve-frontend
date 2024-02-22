@@ -265,8 +265,8 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 )}
                 <InitialPrice curve={curve} chainId={chainId} haveSigner={haveSigner} />
               </InitialPriceWrapper>
-              {(initialPrice.tokenAPrice < initialPrice.tokenBPrice ||
-                (tokensInPool.tokenAmount === 3 && initialPrice.tokenAPrice < initialPrice.tokenCPrice)) && (
+              {(initialPrice.tokenA < initialPrice.tokenB ||
+                (tokensInPool.tokenAmount === 3 && initialPrice.tokenA < initialPrice.tokenC)) && (
                 <TokenWarningBox
                   message={t`Consider choosing the token with the higher unit price as the first token for a more performant AMM`}
                 />
