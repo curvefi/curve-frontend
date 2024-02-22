@@ -80,6 +80,10 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenB,
           tokensInPool.tokenC,
           tokensInPool.tokenD,
+          tokensInPool.tokenE,
+          tokensInPool.tokenF,
+          tokensInPool.tokenG,
+          tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
           networks[chainId].cryptoSwapFactory
         )
@@ -92,9 +96,23 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenB,
           tokensInPool.tokenC,
           tokensInPool.tokenD,
+          tokensInPool.tokenE,
+          tokensInPool.tokenF,
+          tokensInPool.tokenG,
+          tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
           networks[chainId].cryptoSwapFactory
-        ) && oraclesReady([tokensInPool.tokenA, tokensInPool.tokenB, tokensInPool.tokenC, tokensInPool.tokenD])
+        ) &&
+          oraclesReady([
+            tokensInPool.tokenA,
+            tokensInPool.tokenB,
+            tokensInPool.tokenC,
+            tokensInPool.tokenD,
+            tokensInPool.tokenE,
+            tokensInPool.tokenF,
+            tokensInPool.tokenG,
+            tokensInPool.tokenH,
+          ])
       )
     }
   }, [
@@ -104,6 +122,10 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool.tokenB,
     tokensInPool.tokenC,
     tokensInPool.tokenD,
+    tokensInPool.tokenE,
+    tokensInPool.tokenF,
+    tokensInPool.tokenG,
+    tokensInPool.tokenH,
     updateTokensInPoolValidation,
   ])
 

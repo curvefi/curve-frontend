@@ -9,7 +9,18 @@ import useStore from '@/store/useStore'
 import networks from '@/networks'
 import useTokensMapper from '@/hooks/useTokensMapper'
 
-import { STABLESWAP, CRYPTOSWAP, TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D } from '@/components/PageCreatePool/constants'
+import {
+  STABLESWAP,
+  CRYPTOSWAP,
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { checkMetaPool, containsOracle } from '@/components/PageCreatePool/utils'
 
@@ -33,11 +44,11 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     resetPoolPresetIndex,
     swapType,
     tokensInPool,
+    initialPrice,
     updateTokensInPool,
     updateTokenAmount,
     updateSwapType,
   } = useStore((state) => state.createPool)
-  const { tokenAPrice, tokenBPrice, tokenCPrice, tokenDPrice } = useStore((state) => state.createPool.initialPrice)
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -92,10 +103,14 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const handleInpChange = useCallback(
     (name: keyof SelectTokenFormValues, value: string) => {
       let updatedFormValues = {
-        [TOKEN_A]: tokensInPool.tokenA,
-        [TOKEN_B]: tokensInPool.tokenB,
-        [TOKEN_C]: tokensInPool.tokenC,
-        [TOKEN_D]: tokensInPool.tokenD,
+        [TOKEN_A]: tokensInPool[TOKEN_A],
+        [TOKEN_B]: tokensInPool[TOKEN_B],
+        [TOKEN_C]: tokensInPool[TOKEN_C],
+        [TOKEN_D]: tokensInPool[TOKEN_D],
+        [TOKEN_E]: tokensInPool[TOKEN_E],
+        [TOKEN_F]: tokensInPool[TOKEN_F],
+        [TOKEN_G]: tokensInPool[TOKEN_G],
+        [TOKEN_H]: tokensInPool[TOKEN_H],
       }
 
       if (name === TOKEN_A) {
@@ -103,42 +118,78 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         if (swapType === STABLESWAP && checkMetaPool(value, chainId) && tokensInPool.metaPoolToken) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
             },
-            tokenB: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
               address: '',
             },
           }
-        } else if (value === tokensInPool.tokenB.address) {
+        } else if (value === tokensInPool[TOKEN_B].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_B],
               address: value,
             },
-            tokenB: tokensInPool.tokenA,
+            [TOKEN_B]: tokensInPool[TOKEN_A],
           }
-        } else if (value === tokensInPool.tokenC.address) {
+        } else if (value === tokensInPool[TOKEN_C].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenC,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_C],
               address: value,
             },
-            tokenC: tokensInPool.tokenA,
+            [TOKEN_C]: tokensInPool[TOKEN_A],
           }
-        } else if (value === tokensInPool.tokenD.address) {
+        } else if (value === tokensInPool[TOKEN_D].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenD,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_D],
               address: value,
             },
-            tokenD: tokensInPool.tokenA,
+            [TOKEN_D]: tokensInPool[TOKEN_A],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_A],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_A],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_A],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_A],
           }
           // reset token b if it exists in basepools
         } else if (
@@ -151,20 +202,20 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               address: value,
             },
-            tokenB: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
               address: '',
             },
           }
         } else {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               address: value,
             },
           }
@@ -176,43 +227,79 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         if (swapType === STABLESWAP && checkMetaPool(value, chainId) && tokensInPool.metaPoolToken) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenB: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
               ngAssetType: 0,
               address: value,
             },
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               address: '',
             },
           }
-          // tokenB handle selecting already selected token
-        } else if (value === tokensInPool.tokenA.address) {
+          // [TOKEN_B] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenB: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_A],
               address: value,
             },
-            tokenA: tokensInPool.tokenB,
+            [TOKEN_A]: tokensInPool[TOKEN_B],
           }
-        } else if (value === tokensInPool.tokenC.address) {
+        } else if (value === tokensInPool[TOKEN_C].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenB: {
-              ...updatedFormValues.tokenC,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_C],
               address: value,
             },
-            tokenC: tokensInPool.tokenB,
+            [TOKEN_C]: tokensInPool[TOKEN_B],
           }
-        } else if (value === tokensInPool.tokenD.address) {
+        } else if (value === tokensInPool[TOKEN_D].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenB: {
-              ...updatedFormValues.tokenD,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_D],
               address: value,
             },
-            tokenD: tokensInPool.tokenB,
+            [TOKEN_D]: tokensInPool[TOKEN_B],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_B],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_B],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_B],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_B],
           }
           // reset token b if it exists in basepools
         } else if (
@@ -225,20 +312,20 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               address: '',
             },
-            tokenB: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
               address: value,
             },
           }
         } else {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenB: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
               address: value,
             },
           }
@@ -250,49 +337,85 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
             },
-            tokenC: {
-              ...updatedFormValues.tokenC,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_C],
               address: '',
             },
           }
-          // tokenC handle selecting already selected token
-        } else if (value === tokensInPool.tokenA.address) {
+          // [TOKEN_C] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenC: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_A],
               address: value,
             },
-            tokenA: tokensInPool.tokenC,
+            [TOKEN_A]: tokensInPool[TOKEN_C],
           }
-        } else if (value === tokensInPool.tokenB.address) {
+        } else if (value === tokensInPool[TOKEN_B].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenC: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_B],
               address: value,
             },
-            tokenB: tokensInPool.tokenC,
+            [TOKEN_B]: tokensInPool[TOKEN_C],
           }
-        } else if (value === tokensInPool.tokenD.address) {
+        } else if (value === tokensInPool[TOKEN_D].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenC: {
-              ...updatedFormValues.tokenD,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_D],
               address: value,
             },
-            tokenD: tokensInPool.tokenC,
+            [TOKEN_D]: tokensInPool[TOKEN_C],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_C],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_C],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_C],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_C],
           }
         } else {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenC: {
-              ...updatedFormValues.tokenC,
+            [TOKEN_C]: {
+              ...updatedFormValues[TOKEN_C],
               address: value,
             },
           }
@@ -304,49 +427,445 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenA: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
             },
-            tokenD: {
-              ...updatedFormValues.tokenD,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_D],
               address: '',
             },
           }
-          // tokenD handle selecting already selected token
-        } else if (value === tokensInPool.tokenA.address) {
+          // [TOKEN_D] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenD: {
-              ...updatedFormValues.tokenA,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_A],
               address: value,
             },
-            tokenA: tokensInPool.tokenD,
+            [TOKEN_A]: tokensInPool[TOKEN_D],
           }
-        } else if (value === tokensInPool.tokenB.address) {
+        } else if (value === tokensInPool[TOKEN_B].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenD: {
-              ...updatedFormValues.tokenB,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_B],
               address: value,
             },
-            tokenB: tokensInPool.tokenD,
+            [TOKEN_B]: tokensInPool[TOKEN_D],
           }
-        } else if (value === tokensInPool.tokenC.address) {
+        } else if (value === tokensInPool[TOKEN_C].address) {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenD: {
-              ...updatedFormValues.tokenC,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_C],
               address: value,
             },
-            tokenC: tokensInPool.tokenD,
+            [TOKEN_C]: tokensInPool[TOKEN_D],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_D],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_D],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_D],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_D],
           }
         } else {
           updatedFormValues = {
             ...updatedFormValues,
-            tokenD: {
-              ...updatedFormValues.tokenD,
+            [TOKEN_D]: {
+              ...updatedFormValues[TOKEN_D],
+              address: value,
+            },
+          }
+        }
+      }
+
+      // token E
+      if (name === TOKEN_E) {
+        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              ngAssetType: 0,
+              address: value,
+            },
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_E],
+              address: '',
+            },
+          }
+          // [TOKEN_E] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+            },
+            [TOKEN_A]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_B].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+            },
+            [TOKEN_B]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_C].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_C],
+              address: value,
+            },
+            [TOKEN_C]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_D].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_D],
+              address: value,
+            },
+            [TOKEN_D]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_E],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_E],
+          }
+        } else {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_E]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+          }
+        }
+      }
+
+      // token F
+      if (name === TOKEN_F) {
+        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              ngAssetType: 0,
+              address: value,
+            },
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_F],
+              address: '',
+            },
+          }
+          // [TOKEN_F] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+            },
+            [TOKEN_A]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_B].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+            },
+            [TOKEN_B]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_C].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_C],
+              address: value,
+            },
+            [TOKEN_C]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_D].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_D],
+              address: value,
+            },
+            [TOKEN_D]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_F],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_F],
+          }
+        } else {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_F]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+          }
+        }
+      }
+
+      // token G
+      if (name === TOKEN_G) {
+        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              ngAssetType: 0,
+              address: value,
+            },
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_G],
+              address: '',
+            },
+          }
+          // [TOKEN_G] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+            },
+            [TOKEN_A]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_B].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+            },
+            [TOKEN_B]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_C].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_C],
+              address: value,
+            },
+            [TOKEN_C]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_D].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_D],
+              address: value,
+            },
+            [TOKEN_D]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_G],
+          }
+        } else if (value === tokensInPool[TOKEN_H].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_H],
+              address: value,
+            },
+            [TOKEN_H]: tokensInPool[TOKEN_G],
+          }
+        } else {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_G]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+          }
+        }
+      }
+
+      // token H
+      if (name === TOKEN_H) {
+        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              ngAssetType: 0,
+              address: value,
+            },
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_H],
+              address: '',
+            },
+          }
+          // [TOKEN_H] handle selecting already selected token
+        } else if (value === tokensInPool[TOKEN_A].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+            },
+            [TOKEN_A]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_B].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+            },
+            [TOKEN_B]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_C].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_C],
+              address: value,
+            },
+            [TOKEN_C]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_D].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_D],
+              address: value,
+            },
+            [TOKEN_D]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_E].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_E],
+              address: value,
+            },
+            [TOKEN_E]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_F].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_F],
+              address: value,
+            },
+            [TOKEN_F]: tokensInPool[TOKEN_H],
+          }
+        } else if (value === tokensInPool[TOKEN_G].address) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_G],
+              address: value,
+            },
+            [TOKEN_G]: tokensInPool[TOKEN_H],
+          }
+        } else {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_H]: {
+              ...updatedFormValues[TOKEN_H],
               address: value,
             },
           }
@@ -356,37 +875,65 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       updateTokensInPool(
         curve,
         {
-          ...updatedFormValues.tokenA,
-          symbol: findSymbol(updatedFormValues.tokenA.address),
+          ...updatedFormValues[TOKEN_A],
+          symbol:
+            tokensInPool[TOKEN_A].symbol !== ''
+              ? tokensInPool[TOKEN_A].symbol
+              : findSymbol(updatedFormValues[TOKEN_A].address),
         },
         {
-          ...updatedFormValues.tokenB,
-          symbol: findSymbol(updatedFormValues.tokenB.address),
+          ...updatedFormValues[TOKEN_B],
+          symbol:
+            tokensInPool[TOKEN_B].symbol !== ''
+              ? tokensInPool[TOKEN_B].symbol
+              : findSymbol(updatedFormValues[TOKEN_B].address),
         },
         {
-          ...updatedFormValues.tokenC,
-          symbol: findSymbol(updatedFormValues.tokenC.address),
+          ...updatedFormValues[TOKEN_C],
+          symbol:
+            tokensInPool[TOKEN_C].symbol !== ''
+              ? tokensInPool[TOKEN_C].symbol
+              : findSymbol(updatedFormValues[TOKEN_C].address),
         },
         {
-          ...updatedFormValues.tokenD,
-          symbol: findSymbol(updatedFormValues.tokenD.address),
+          ...updatedFormValues[TOKEN_D],
+          symbol:
+            tokensInPool[TOKEN_D].symbol !== ''
+              ? tokensInPool[TOKEN_D].symbol
+              : findSymbol(updatedFormValues[TOKEN_D].address),
+        },
+        {
+          ...updatedFormValues[TOKEN_E],
+          symbol:
+            tokensInPool[TOKEN_E].symbol !== ''
+              ? tokensInPool[TOKEN_E].symbol
+              : findSymbol(updatedFormValues[TOKEN_E].address),
+        },
+        {
+          ...updatedFormValues[TOKEN_F],
+          symbol:
+            tokensInPool[TOKEN_F].symbol !== ''
+              ? tokensInPool[TOKEN_F].symbol
+              : findSymbol(updatedFormValues[TOKEN_F].address),
+        },
+        {
+          ...updatedFormValues[TOKEN_G],
+          symbol:
+            tokensInPool[TOKEN_G].symbol !== ''
+              ? tokensInPool[TOKEN_G].symbol
+              : findSymbol(updatedFormValues[TOKEN_G].address),
+        },
+        {
+          ...updatedFormValues[TOKEN_H],
+          symbol:
+            tokensInPool[TOKEN_H].symbol !== ''
+              ? tokensInPool[TOKEN_H].symbol
+              : findSymbol(updatedFormValues[TOKEN_H].address),
         },
         chainId
       )
     },
-    [
-      tokensInPool.tokenA,
-      tokensInPool.tokenB,
-      tokensInPool.tokenC,
-      tokensInPool.tokenD,
-      tokensInPool.metaPoolToken,
-      updateTokensInPool,
-      curve,
-      findSymbol,
-      chainId,
-      swapType,
-      BASEPOOL_COINS,
-    ]
+    [tokensInPool, updateTokensInPool, curve, findSymbol, chainId, swapType, BASEPOOL_COINS]
   )
 
   const addToken = () => {
@@ -409,95 +956,89 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
     updateTokensInPool(
       curve,
-      tokensInPool.tokenA,
-      tokensInPool.tokenB,
+      tokensInPool[TOKEN_A],
+      tokensInPool[TOKEN_B],
       {
-        ...tokensInPool.tokenC,
-        address: tokenId === TOKEN_C ? '' : tokensInPool.tokenC.address,
-        symbol: tokenId === TOKEN_C ? '' : tokensInPool.tokenC.symbol,
-        ngAssetType: tokenId === TOKEN_C ? 0 : tokensInPool.tokenC.ngAssetType,
-        oracleAddress: tokenId === TOKEN_C ? '' : tokensInPool.tokenC.oracleAddress,
-        oracleFunction: tokenId === TOKEN_C ? '' : tokensInPool.tokenC.oracleFunction,
+        ...tokensInPool[TOKEN_C],
+        address: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].address,
+        symbol: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].symbol,
+        ngAssetType: tokenId === TOKEN_C ? 0 : tokensInPool[TOKEN_C].ngAssetType,
+        oracleAddress: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleAddress,
+        oracleFunction: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleFunction,
       },
       {
-        ...tokensInPool.tokenD,
-        address: tokenId === TOKEN_D ? '' : tokensInPool.tokenD.address,
-        symbol: tokenId === TOKEN_D ? '' : tokensInPool.tokenD.symbol,
-        ngAssetType: tokenId === TOKEN_D ? 0 : tokensInPool.tokenD.ngAssetType,
-        oracleAddress: tokenId === TOKEN_D ? '' : tokensInPool.tokenD.oracleAddress,
-        oracleFunction: tokenId === TOKEN_D ? '' : tokensInPool.tokenD.oracleFunction,
+        ...tokensInPool[TOKEN_D],
+        address: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].address,
+        symbol: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].symbol,
+        ngAssetType: tokenId === TOKEN_D ? 0 : tokensInPool[TOKEN_D].ngAssetType,
+        oracleAddress: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleAddress,
+        oracleFunction: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleFunction,
+      },
+      {
+        ...tokensInPool[TOKEN_E],
+        address: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].address,
+        symbol: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].symbol,
+        ngAssetType: tokenId === TOKEN_E ? 0 : tokensInPool[TOKEN_E].ngAssetType,
+        oracleAddress: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleAddress,
+        oracleFunction: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleFunction,
+      },
+      {
+        ...tokensInPool[TOKEN_F],
+        address: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].address,
+        symbol: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].symbol,
+        ngAssetType: tokenId === TOKEN_F ? 0 : tokensInPool[TOKEN_F].ngAssetType,
+        oracleAddress: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleAddress,
+        oracleFunction: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleFunction,
+      },
+      {
+        ...tokensInPool[TOKEN_G],
+        address: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].address,
+        symbol: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].symbol,
+        ngAssetType: tokenId === TOKEN_G ? 0 : tokensInPool[TOKEN_G].ngAssetType,
+        oracleAddress: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleAddress,
+        oracleFunction: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleFunction,
+      },
+      {
+        ...tokensInPool[TOKEN_H],
+        address: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].address,
+        symbol: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].symbol,
+        ngAssetType: tokenId === TOKEN_H ? 0 : tokensInPool[TOKEN_H].ngAssetType,
+        oracleAddress: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleAddress,
+        oracleFunction: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleFunction,
       },
       chainId
     )
   }
 
-  // check if the tokens are withing 0.95 and 1.05 threshold, won't display check if coingecko returned 0 price
+  // check if the tokens are withing 0.95 and 1.05 threshold
   const checkThreshold = useMemo(() => {
-    if (
-      tokensInPool.tokenA.address !== '' &&
-      tokensInPool.tokenB.address !== '' &&
-      tokensInPool.tokenC.address !== '' &&
-      tokensInPool.tokenD.address !== '' &&
-      tokenAPrice !== 0 &&
-      tokenBPrice !== 0 &&
-      tokenCPrice !== 0 &&
-      tokenDPrice !== 0
-    ) {
-      const results = [
-        tokenAPrice / tokenBPrice,
-        tokenAPrice / tokenCPrice,
-        tokenAPrice / tokenDPrice,
-        tokenBPrice / tokenCPrice,
-        tokenBPrice / tokenDPrice,
-        tokenCPrice / tokenDPrice,
-      ]
+    // Array of token IDs you want to check
+    const tokenIds: TokenId[] = [TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D, TOKEN_E, TOKEN_F, TOKEN_G, TOKEN_H]
 
-      return results.some((result) => result > 1.05 || result < 0.95)
-    }
-    if (
-      tokensInPool.tokenA.address !== '' &&
-      tokensInPool.tokenB.address !== '' &&
-      tokensInPool.tokenD.address !== '' &&
-      tokenAPrice !== 0 &&
-      tokenBPrice !== 0 &&
-      tokenDPrice !== 0
-    ) {
-      const results = [tokenAPrice / tokenBPrice, tokenAPrice / tokenDPrice, tokenBPrice / tokenDPrice]
+    // Filter out tokens with empty addresses or zero initial price
+    const validTokens = tokenIds.filter(
+      (tokenId) => tokensInPool[tokenId].address !== '' && initialPrice[tokenId] !== 0
+    )
 
-      return results.some((result) => result > 1.05 || result < 0.95)
+    if (validTokens.length <= 1) {
+      // Not enough tokens for comparison
+      return false
     }
-    if (
-      tokensInPool.tokenA.address !== '' &&
-      tokensInPool.tokenB.address !== '' &&
-      tokensInPool.tokenC.address !== '' &&
-      tokenAPrice !== 0 &&
-      tokenBPrice !== 0 &&
-      tokenCPrice !== 0
-    ) {
-      const results = [tokenAPrice / tokenBPrice, tokenAPrice / tokenCPrice, tokenBPrice / tokenCPrice]
 
-      return results.some((result) => result > 1.05 || result < 0.95)
+    // Generate all unique pairs of valid tokens for comparison
+    const pairs = []
+    for (let i = 0; i < validTokens.length; i++) {
+      for (let j = i + 1; j < validTokens.length; j++) {
+        pairs.push([validTokens[i], validTokens[j]])
+      }
     }
-    if (
-      tokensInPool.tokenA.address !== '' &&
-      tokensInPool.tokenB.address !== '' &&
-      tokenAPrice !== 0 &&
-      tokenBPrice !== 0
-    ) {
-      const AB = tokenAPrice / tokenBPrice
-      return AB > 1.05 || AB < 0.95
-    }
-    return false
-  }, [
-    tokenAPrice,
-    tokenBPrice,
-    tokenCPrice,
-    tokenDPrice,
-    tokensInPool.tokenA.address,
-    tokensInPool.tokenB.address,
-    tokensInPool.tokenC.address,
-    tokensInPool.tokenD.address,
-  ])
+
+    // Check if any pair is outside the threshold
+    return pairs.some(([tokenId1, tokenId2]) => {
+      const ratio = initialPrice[tokenId1] / initialPrice[tokenId2]
+      return ratio > 1.05 || ratio < 0.95
+    })
+  }, [initialPrice, tokensInPool])
 
   return (
     <Wrapper>
@@ -508,9 +1049,9 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           haveSigner={haveSigner}
           chainId={chainId}
           tokenId={TOKEN_A}
-          token={tokensInPool.tokenA}
+          token={tokensInPool[TOKEN_A]}
           tokenTitle={t`Token A`}
-          disabledTokens={tokensInPool.tokenB.basePool ? DISABLED_TOKENS : [ETH]}
+          disabledTokens={tokensInPool[TOKEN_B].basePool ? DISABLED_TOKENS : [ETH]}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -527,9 +1068,9 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           haveSigner={haveSigner}
           chainId={chainId}
           tokenId={TOKEN_B}
-          token={tokensInPool.tokenB}
+          token={tokensInPool[TOKEN_B]}
           tokenTitle={t`Token B`}
-          disabledTokens={tokensInPool.tokenA.basePool ? DISABLED_TOKENS : [ETH]}
+          disabledTokens={tokensInPool[TOKEN_A].basePool ? DISABLED_TOKENS : [ETH]}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -548,7 +1089,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               haveSigner={haveSigner}
               chainId={chainId}
               tokenId={TOKEN_C}
-              token={tokensInPool.tokenC}
+              token={tokensInPool[TOKEN_C]}
               tokenTitle={t`Token C`}
               disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
               selTokens={selTokens}
@@ -559,11 +1100,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         )}
         {tokensInPool.tokenAmount > 3 && (
           <>
-            <SwitchWrapper
-              flex
-              flexJustifyContent="center"
-              className={`${swapType === CRYPTOSWAP ? 'extra-margin-top' : ''}`}
-            >
+            <SwitchWrapper flex flexJustifyContent="center">
               <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_C} to={TOKEN_D} />
             </SwitchWrapper>
             {/* Token D */}
@@ -572,8 +1109,88 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               haveSigner={haveSigner}
               chainId={chainId}
               tokenId={TOKEN_D}
-              token={tokensInPool.tokenD}
+              token={tokensInPool[TOKEN_D]}
               tokenTitle={t`Token D`}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
+              selTokens={selTokens}
+              handleInpChange={handleInpChange}
+              removeToken={removeToken}
+            />
+          </>
+        )}
+        {tokensInPool.tokenAmount > 4 && (
+          <>
+            <SwitchWrapper flex flexJustifyContent="center">
+              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_D} to={TOKEN_E} />
+            </SwitchWrapper>
+            {/* Token D */}
+            <SelectToken
+              curve={curve}
+              haveSigner={haveSigner}
+              chainId={chainId}
+              tokenId={TOKEN_E}
+              token={tokensInPool[TOKEN_E]}
+              tokenTitle={t`Token E`}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
+              selTokens={selTokens}
+              handleInpChange={handleInpChange}
+              removeToken={removeToken}
+            />
+          </>
+        )}
+        {tokensInPool.tokenAmount > 5 && (
+          <>
+            <SwitchWrapper flex flexJustifyContent="center">
+              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_E} to={TOKEN_F} />
+            </SwitchWrapper>
+            {/* Token D */}
+            <SelectToken
+              curve={curve}
+              haveSigner={haveSigner}
+              chainId={chainId}
+              tokenId={TOKEN_F}
+              token={tokensInPool[TOKEN_F]}
+              tokenTitle={t`Token F`}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
+              selTokens={selTokens}
+              handleInpChange={handleInpChange}
+              removeToken={removeToken}
+            />
+          </>
+        )}
+        {tokensInPool.tokenAmount > 6 && (
+          <>
+            <SwitchWrapper flex flexJustifyContent="center">
+              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_F} to={TOKEN_G} />
+            </SwitchWrapper>
+            {/* Token D */}
+            <SelectToken
+              curve={curve}
+              haveSigner={haveSigner}
+              chainId={chainId}
+              tokenId={TOKEN_G}
+              token={tokensInPool[TOKEN_G]}
+              tokenTitle={t`Token G`}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
+              selTokens={selTokens}
+              handleInpChange={handleInpChange}
+              removeToken={removeToken}
+            />
+          </>
+        )}
+        {tokensInPool.tokenAmount > 7 && (
+          <>
+            <SwitchWrapper flex flexJustifyContent="center">
+              <SwitchTokensButton curve={curve} chainId={chainId} from={TOKEN_G} to={TOKEN_H} />
+            </SwitchWrapper>
+            {/* Token D */}
+            <SelectToken
+              curve={curve}
+              haveSigner={haveSigner}
+              chainId={chainId}
+              tokenId={TOKEN_H}
+              token={tokensInPool[TOKEN_H]}
+              tokenTitle={t`Token H`}
               disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : [ETH]}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
@@ -631,7 +1248,8 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           onClick={addToken}
           variant="filled"
           disabled={
-            (swapType === STABLESWAP && tokensInPool.tokenAmount === 4) ||
+            (swapType === STABLESWAP && networks[chainId].stableSwapNg && tokensInPool.tokenAmount === 8) ||
+            (swapType === STABLESWAP && !networks[chainId].stableSwapNg && tokensInPool.tokenAmount === 4) ||
             (swapType === STABLESWAP && tokensInPool.metaPoolToken) ||
             (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && tokensInPool.tokenAmount === 3) ||
             (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && !networks[chainId].cryptoSwapFactory) ||
@@ -643,7 +1261,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       </RebaseAddRow>
 
       {swapType === STABLESWAP &&
-        containsOracle([tokensInPool.tokenA, tokensInPool.tokenB, tokensInPool.tokenC, tokensInPool.tokenD]) && (
+        containsOracle([tokensInPool.tokenA, tokensInPool[TOKEN_B], tokensInPool[TOKEN_C], tokensInPool[TOKEN_D]]) && (
           <SetOracle />
         )}
     </Wrapper>

@@ -16,8 +16,10 @@ type Props = {
 }
 
 const InitialPrice = ({ curve, chainId }: Props) => {
-  const { tokenA, tokenB, tokenC, tokenAmount } = useStore((state) => state.createPool.tokensInPool)
-  const { tokenAPrice, tokenBPrice, tokenCPrice, initialPrice } = useStore((state) => state.createPool.initialPrice)
+  const {
+    tokensInPool: { tokenA, tokenB, tokenC, tokenAmount },
+    initialPrice,
+  } = useStore((state) => state.createPool)
   const updateTokenPrice = useStore((state) => state.createPool.updateTokenPrice)
 
   return (
@@ -30,36 +32,36 @@ const InitialPrice = ({ curve, chainId }: Props) => {
             <InputsWrapper flex flexColumn>
               <InitialPriceInput
                 label={t`${tokenA.symbol} price in USD`}
-                value={tokenAPrice}
+                value={initialPrice[TOKEN_A]}
                 onChange={(value) => updateTokenPrice(TOKEN_A, value)}
                 formatOptions={{
                   maximumSignificantDigits: 21,
                   maximumFractionDigits: 21,
                 }}
-                className={tokenAPrice === 0 ? 'warning' : ''}
+                className={initialPrice[TOKEN_A] === 0 ? 'warning' : ''}
               />
 
               <InitialPriceInput
                 label={t`${tokenB.symbol} price in USD`}
-                value={tokenBPrice}
+                value={initialPrice[TOKEN_B]}
                 onChange={(value) => updateTokenPrice(TOKEN_B, value)}
                 formatOptions={{
                   maximumSignificantDigits: 21,
                   maximumFractionDigits: 21,
                 }}
-                className={tokenBPrice === 0 ? 'warning' : ''}
+                className={initialPrice[TOKEN_B] === 0 ? 'warning' : ''}
               />
               {tokenAmount === 3 && (
                 <>
                   <InitialPriceInput
                     label={t`${tokenC.symbol} price in USD`}
-                    value={tokenCPrice}
+                    value={initialPrice[TOKEN_C]}
                     onChange={(value) => updateTokenPrice(TOKEN_C, value)}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
                     }}
-                    className={tokenCPrice === 0 ? 'warning' : ''}
+                    className={initialPrice[TOKEN_C] === 0 ? 'warning' : ''}
                   />
                 </>
               )}
@@ -78,12 +80,12 @@ const InitialPrice = ({ curve, chainId }: Props) => {
             <SumWrapper>
               <InitialPriceSumData>
                 {tokenAmount === 3 && <InitialPriceTitle>{t`Price A (${tokenA.symbol})`}</InitialPriceTitle>}
-                <InitialPriceSum>{initialPrice[0]}</InitialPriceSum>
+                <InitialPriceSum>{initialPrice.initialPrice[0]}</InitialPriceSum>
               </InitialPriceSumData>
               {tokenAmount === 3 && (
                 <InitialPriceSumData>
                   <InitialPriceTitle>{t`Price B (${tokenA.symbol})`}</InitialPriceTitle>
-                  <InitialPriceSum>{initialPrice[1]}</InitialPriceSum>
+                  <InitialPriceSum>{initialPrice.initialPrice[1]}</InitialPriceSum>
                 </InitialPriceSumData>
               )}
             </SumWrapper>

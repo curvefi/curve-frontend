@@ -2,6 +2,16 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
+import {
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
@@ -9,26 +19,54 @@ import IconButton from '@/ui/IconButton'
 type Props = {
   curve: CurveApi
   chainId: ChainId
-  from: 'tokenA' | 'tokenB' | 'tokenC'
-  to: 'tokenB' | 'tokenC' | 'tokenD'
+  from:
+    | typeof TOKEN_A
+    | typeof TOKEN_B
+    | typeof TOKEN_C
+    | typeof TOKEN_D
+    | typeof TOKEN_E
+    | typeof TOKEN_F
+    | typeof TOKEN_G
+  to:
+    | typeof TOKEN_B
+    | typeof TOKEN_C
+    | typeof TOKEN_D
+    | typeof TOKEN_E
+    | typeof TOKEN_F
+    | typeof TOKEN_G
+    | typeof TOKEN_H
   disabled?: boolean
   className?: string
 }
 
 const SwitchTokensButton = ({ curve, chainId, from, to, disabled, className }: Props) => {
-  const { tokenA, tokenB, tokenC, tokenD } = useStore((state) => state.createPool.tokensInPool)
+  const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
+    (state) => state.createPool.tokensInPool
+  )
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
 
   const handleClick = () => {
     // switch between token A and B
-    if (from === 'tokenA') {
-      updateTokensInPool(curve, tokenB, tokenA, tokenC, tokenD, chainId)
+    if (from === TOKEN_A) {
+      updateTokensInPool(curve, tokenB, tokenA, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH, chainId)
     }
-    if (from === 'tokenB' && to === 'tokenC') {
-      updateTokensInPool(curve, tokenA, tokenC, tokenB, tokenD, chainId)
+    if (from === TOKEN_B && to === TOKEN_C) {
+      updateTokensInPool(curve, tokenA, tokenC, tokenB, tokenD, tokenE, tokenF, tokenG, tokenH, chainId)
     }
-    if (from === 'tokenC' && to === 'tokenD') {
-      updateTokensInPool(curve, tokenA, tokenB, tokenD, tokenC, chainId)
+    if (from === TOKEN_C && to === TOKEN_D) {
+      updateTokensInPool(curve, tokenA, tokenB, tokenD, tokenC, tokenE, tokenF, tokenG, tokenH, chainId)
+    }
+    if (from === TOKEN_D && to === TOKEN_E) {
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenE, tokenD, tokenF, tokenG, tokenH, chainId)
+    }
+    if (from === TOKEN_E && to === TOKEN_F) {
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenF, tokenE, tokenG, tokenH, chainId)
+    }
+    if (from === TOKEN_F && to === TOKEN_G) {
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenG, tokenF, tokenH, chainId)
+    }
+    if (from === TOKEN_G && to === TOKEN_H) {
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenH, tokenG, chainId)
     }
   }
 

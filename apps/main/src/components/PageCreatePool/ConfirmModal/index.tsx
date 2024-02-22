@@ -184,11 +184,13 @@ const ConfirmModal = ({
                   </SuccessBox>
                 </SuccessWrapper>
                 {checkIfUserAddedToken() && (
-                  <StyledInfoLinkBar
-                    link="https://github.com/curvefi/curve-assets"
-                    description={t`Upload an icon for a new token`}
-                    theme="plain"
-                  />
+                  <Box margin={'0 var(--spacing-normal)'}>
+                    <StyledInfoLinkBar
+                      link="https://github.com/curvefi/curve-assets"
+                      description={t`Upload an icon for a new token`}
+                      theme="plain"
+                    />
+                  </Box>
                 )}
               </>
             )}
@@ -325,7 +327,7 @@ const SuccessBox = styled.div`
 `
 
 const StyledInfoLinkBar = styled(InfoLinkBar)`
-  margin-bottom: var(--spacing-2);
+  margin-bottom: var(--spacing-1);
 `
 
 const StyledLinkButtonWrapper = styled.div`

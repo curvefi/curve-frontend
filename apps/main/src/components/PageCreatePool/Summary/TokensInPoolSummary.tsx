@@ -9,6 +9,16 @@ import styled from 'styled-components'
 import useStore from '@/store/useStore'
 
 import { checkTokensInPoolUnset, checkTokensInPool, containsOracle } from '@/components/PageCreatePool/utils'
+import {
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 
 import {
   CategoryColumn,
@@ -52,33 +62,47 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
       </Box>
       <CategoryDataColumn>
         {!checkTokensInPoolUnset(
-          tokensInPool.tokenA,
-          tokensInPool.tokenB,
-          tokensInPool.tokenC,
-          tokensInPool.tokenD
+          tokensInPool[TOKEN_A],
+          tokensInPool[TOKEN_B],
+          tokensInPool[TOKEN_C],
+          tokensInPool[TOKEN_D],
+          tokensInPool[TOKEN_E],
+          tokensInPool[TOKEN_F],
+          tokensInPool[TOKEN_G],
+          tokensInPool[TOKEN_H]
         ) && (
           <Box flex flexAlignItems="center">
             <StyledBWButtonTokenIcon imageBaseUrl={''} token={''} address={''} />
             <SummaryDataPlaceholder>{t`No tokens selected`}</SummaryDataPlaceholder>
           </Box>
         )}
-        {tokensInPool.tokenA.address === '' ? (
+        {tokensInPool[TOKEN_A].address === '' ? (
           ''
         ) : (
-          <TokenSummary imageBaseUrl={imageBaseUrl} token={tokensInPool.tokenA} chainId={chainId} swapType={swapType} />
+          <TokenSummary
+            imageBaseUrl={imageBaseUrl}
+            token={tokensInPool[TOKEN_A]}
+            chainId={chainId}
+            swapType={swapType}
+          />
         )}
-        {tokensInPool.tokenB.address === '' ? (
+        {tokensInPool[TOKEN_B].address === '' ? (
           ''
         ) : (
-          <TokenSummary imageBaseUrl={imageBaseUrl} token={tokensInPool.tokenB} chainId={chainId} swapType={swapType} />
+          <TokenSummary
+            imageBaseUrl={imageBaseUrl}
+            token={tokensInPool[TOKEN_B]}
+            chainId={chainId}
+            swapType={swapType}
+          />
         )}
         {tokensInPool.tokenAmount > 2 ? (
-          tokensInPool.tokenC.address === '' ? (
+          tokensInPool[TOKEN_C].address === '' ? (
             ''
           ) : (
             <TokenSummary
               imageBaseUrl={imageBaseUrl}
-              token={tokensInPool.tokenC}
+              token={tokensInPool[TOKEN_C]}
               chainId={chainId}
               swapType={swapType}
             />
@@ -87,12 +111,68 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           ''
         )}
         {tokensInPool.tokenAmount > 3 ? (
-          tokensInPool.tokenD.address === '' ? (
+          tokensInPool[TOKEN_D].address === '' ? (
             ''
           ) : (
             <TokenSummary
               imageBaseUrl={imageBaseUrl}
-              token={tokensInPool.tokenD}
+              token={tokensInPool[TOKEN_D]}
+              chainId={chainId}
+              swapType={swapType}
+            />
+          )
+        ) : (
+          ''
+        )}
+        {tokensInPool.tokenAmount > 4 ? (
+          tokensInPool[TOKEN_E].address === '' ? (
+            ''
+          ) : (
+            <TokenSummary
+              imageBaseUrl={imageBaseUrl}
+              token={tokensInPool[TOKEN_E]}
+              chainId={chainId}
+              swapType={swapType}
+            />
+          )
+        ) : (
+          ''
+        )}
+        {tokensInPool.tokenAmount > 5 ? (
+          tokensInPool[TOKEN_F].address === '' ? (
+            ''
+          ) : (
+            <TokenSummary
+              imageBaseUrl={imageBaseUrl}
+              token={tokensInPool[TOKEN_F]}
+              chainId={chainId}
+              swapType={swapType}
+            />
+          )
+        ) : (
+          ''
+        )}
+        {tokensInPool.tokenAmount > 6 ? (
+          tokensInPool[TOKEN_G].address === '' ? (
+            ''
+          ) : (
+            <TokenSummary
+              imageBaseUrl={imageBaseUrl}
+              token={tokensInPool[TOKEN_G]}
+              chainId={chainId}
+              swapType={swapType}
+            />
+          )
+        ) : (
+          ''
+        )}
+        {tokensInPool.tokenAmount > 7 ? (
+          tokensInPool[TOKEN_H].address === '' ? (
+            ''
+          ) : (
+            <TokenSummary
+              imageBaseUrl={imageBaseUrl}
+              token={tokensInPool[TOKEN_H]}
               chainId={chainId}
               swapType={swapType}
             />
@@ -102,9 +182,16 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
         )}
       </CategoryDataColumn>
       {swapType === STABLESWAP &&
-        containsOracle([tokensInPool.tokenA, tokensInPool.tokenB, tokensInPool.tokenC, tokensInPool.tokenD]) && (
-          <OracleSummary chainId={chainId} />
-        )}
+        containsOracle([
+          tokensInPool[TOKEN_A],
+          tokensInPool[TOKEN_B],
+          tokensInPool[TOKEN_C],
+          tokensInPool[TOKEN_D],
+          tokensInPool[TOKEN_E],
+          tokensInPool[TOKEN_F],
+          tokensInPool[TOKEN_G],
+          tokensInPool[TOKEN_H],
+        ]) && <OracleSummary chainId={chainId} />}
     </CategoryColumn>
   )
 }

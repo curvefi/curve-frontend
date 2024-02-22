@@ -67,7 +67,10 @@ const ComboBoxTokenPicker = ({
   const verifyTokens = async () => {
     try {
       const token = await curve.getCoinsData([filterValue])
-      updateUserAddedTokens(filterValue, token[0].symbol, false)
+      const isBasePool = networks[chainId].basePools.some(
+        (basepool) => basepool.token.toLowerCase() === filterValue.toLowerCase()
+      )
+      updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
     } catch (error) {
       console.log('error')
       settokenQueryStatus('ERROR')

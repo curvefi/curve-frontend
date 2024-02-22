@@ -1,4 +1,15 @@
-import { CRYPTOSWAP, STABLESWAP, TOKEN_A, TOKEN_B, TOKEN_C, TOKEN_D } from '@/components/PageCreatePool/constants'
+import {
+  CRYPTOSWAP,
+  STABLESWAP,
+  TOKEN_A,
+  TOKEN_B,
+  TOKEN_C,
+  TOKEN_D,
+  TOKEN_E,
+  TOKEN_F,
+  TOKEN_G,
+  TOKEN_H,
+} from '@/components/PageCreatePool/constants'
 
 export type CreateToken = {
   address: string
@@ -47,9 +58,21 @@ export type SelectTokenFormValues = {
   [TOKEN_B]: TokenState
   [TOKEN_C]: TokenState
   [TOKEN_D]: TokenState
+  [TOKEN_E]: TokenState
+  [TOKEN_F]: TokenState
+  [TOKEN_G]: TokenState
+  [TOKEN_H]: TokenState
 }
 
 export type SwapType = typeof CRYPTOSWAP | typeof STABLESWAP | ''
 export type ImplementationId = 0 | 1 | 2 | 3
 export type NgAssetType = 0 | 1 | 2 | 3
-export type TokenId = typeof TOKEN_A | typeof TOKEN_B | typeof TOKEN_C | typeof TOKEN_D
+export type TokenId =
+  | typeof TOKEN_A
+  | typeof TOKEN_B
+  | typeof TOKEN_C
+  | typeof TOKEN_D
+  | typeof TOKEN_E
+  | typeof TOKEN_F
+  | typeof TOKEN_G
+  | typeof TOKEN_H
