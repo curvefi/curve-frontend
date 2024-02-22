@@ -102,7 +102,6 @@ export const validateOracleFunction = (functionName: string) => {
 }
 
 export const oraclesReady = (tokens: TokenState[]) => {
-  console.log(tokens)
   const oracleTokens = tokens.filter((token) => token.ngAssetType === 1)
   const allValid = oracleTokens.every((token) => checkOracle(token.oracleAddress))
   const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracleFunction))

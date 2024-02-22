@@ -441,74 +441,34 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       // set token prices
       if (tokenA.address !== '') {
         const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenA.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_A] = Number(tokenAPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenA = Number(tokenAPriceRaw)
       }
       if (tokenB.address !== '') {
         const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenB.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_B] = Number(tokenBPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenB = Number(tokenBPriceRaw)
       }
       if (tokenC.address !== '') {
         const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenC.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_C] = Number(tokenCPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenC = Number(tokenCPriceRaw)
       }
       if (tokenD.address !== '') {
         const tokenDPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenD.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_D] = Number(tokenDPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenD = Number(tokenDPriceRaw)
       }
       if (tokenE.address !== '') {
         const tokenEPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenE.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_E] = Number(tokenEPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenE = Number(tokenEPriceRaw)
       }
       if (tokenF.address !== '') {
         const tokenFPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenF.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_F] = Number(tokenFPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenF = Number(tokenFPriceRaw)
       }
       if (tokenG.address !== '') {
         const tokenGPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenG.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_G] = Number(tokenGPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenG = Number(tokenGPriceRaw)
       }
       if (tokenH.address !== '') {
         const tokenHPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenH.address)
-        // set(
-        //   produce((state) => {
-        //     state.createPool.initialPrice[TOKEN_H] = Number(tokenHPriceRaw)
-        //   })
-        // )
         initialPriceUpdates.tokenH = Number(tokenHPriceRaw)
       }
 
