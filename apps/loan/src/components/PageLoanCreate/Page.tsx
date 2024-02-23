@@ -158,7 +158,7 @@ const Page: NextPage = () => {
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
-            <TitleComp chartExpanded={chartExpanded} />
+            {isMdUp && <TitleComp />}
             <ExpandButton
               variant={'select'}
               onClick={() => {
@@ -176,7 +176,7 @@ const Page: NextPage = () => {
       )}
       <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+          {!isMdUp && !isAdvanceMode && <TitleComp />}
           {rChainId && rCollateralId && (
             <LoanCreate
               curve={curve}
@@ -193,6 +193,15 @@ const Page: NextPage = () => {
             />
           )}
         </FormWrapper>
+
+        {!isAdvanceMode && !chartExpanded && (
+          <PoolInfoWrapper>
+            {isMdUp && <TitleComp />}
+            <PoolInfoContainer variant="secondary">
+              <PoolInfoData rChainId={rChainId} llamma={llamma} />
+            </PoolInfoContainer>
+          </PoolInfoWrapper>
+        )}
 
         {isAdvanceMode && (
           <LoanInfoWrapper>
@@ -261,6 +270,17 @@ const FormWrapper = styled(Box)<{ navHeight: number }>`
     //position: sticky;
     top: ${({ navHeight }) => `${navHeight + 40}px;`};
   }
+`
+
+// None advanced pool info
+const PoolInfoWrapper = styled(Box)`
+  width: 100%;
+  margin: 0 0 auto 1.5rem;
+`
+
+const PoolInfoContainer = styled(Box)`
+  padding: 2rem;
+  background-color: var(--tab-secondary--content--background-color);
 `
 
 // Loan Info

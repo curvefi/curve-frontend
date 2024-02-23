@@ -129,12 +129,10 @@ LoanInfoLlamma.defaultProps = {
 const Wrapper = styled.div`
   .wrapper {
     border-bottom: 1px solid var(--border-600);
-    padding: 2rem 0.75rem 1.5rem 0.75rem;
+    padding: 1.5em 0.75rem 1.5rem 0.75rem;
 
     @media (min-width: ${breakpoints.sm}rem) {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      padding-top: 2.5rem;
+      padding: 2rem;
     }
   }
 `
