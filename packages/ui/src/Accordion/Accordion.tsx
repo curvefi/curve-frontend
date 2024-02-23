@@ -2,69 +2,95 @@ import type { AriaButtonProps } from 'react-aria'
 
 import * as React from 'react'
 import { useButton } from 'react-aria'
-import { useRef, useState } from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import Icon from 'ui/src/Icon/Icon'
 
-interface ButtonProps extends AriaButtonProps {
-  className?: string
-}
-
-function Button(props: ButtonProps) {
-  let ref = useRef<HTMLButtonElement>(null)
+function Button(
+  props: AriaButtonProps & {
+    className?: string
+    isHideTopBorder?: boolean
+  }
+) {
+  let ref = React.useRef<HTMLButtonElement>(null)
   let { buttonProps } = useButton(props, ref)
-  let { className, children } = props
+  let { className = '', children, isHideTopBorder } = props
 
   return (
-    <StyledButton className={className} {...buttonProps} ref={ref}>
+    <StyledButton className={className} isHideTopBorder={isHideTopBorder} {...buttonProps} ref={ref}>
       {children}
     </StyledButton>
   )
 }
 
-Button.defaultProps = {
-  className: '',
-}
+const Accordion = ({
+  className,
+  children,
+  btnLabel,
+  defaultOpen,
+  isHideTopBorder,
+  ...props
+}: React.PropsWithChildren<
+  AriaButtonProps & {
+    className?: string
+    btnLabel: string | React.ReactNode
+    defaultOpen?: boolean
+    isHideTopBorder?: boolean
+  }
+>) => {
+  const contentRef = React.useRef<HTMLDivElement>(null)
 
-interface Props extends AriaButtonProps {
-  btnLabel: string
-}
+  const [show, setShow] = React.useState(defaultOpen ?? false)
 
-const Accordion = ({ children, btnLabel, ...props }: React.PropsWithChildren<Props>) => {
-  const contentRef = useRef<HTMLDivElement>(null)
+  const { scrollHeight } = contentRef.current ?? {}
 
-  const [show, setShow] = useState(false)
+  const MAX_HEIGHT = '1000px'
 
   const handleClickBtn = () => {
     if (contentRef.current) {
-      // @ts-ignore
-      contentRef.current.style.maxHeight = show ? null : `${contentRef.current.scrollHeight}px`
+      contentRef.current.style.maxHeight = show ? '0px' : MAX_HEIGHT
       setShow(!show)
     }
   }
 
+  React.useLayoutEffect(() => {
+    if (defaultOpen && contentRef.current) {
+      contentRef.current.style.maxHeight = MAX_HEIGHT
+    }
+  }, [defaultOpen, scrollHeight])
+
   return (
     <div>
-      <Button {...props} onPress={handleClickBtn} className={show ? 'show' : ''}>
-        <h3>{btnLabel}</h3>
+      <Button
+        {...props}
+        onPress={handleClickBtn}
+        isHideTopBorder={isHideTopBorder}
+        className={`${className} ${show ? 'show' : ''} `}
+      >
+        {typeof btnLabel === 'string' ? <h3>{btnLabel}</h3> : btnLabel}
         <span>
           <Icon name="CaretDown" size={16} className={`caret-${!show}`} />
           <Icon name="CaretUp" size={16} className={`caret-${show}`} />
         </span>
       </Button>
-      <CollapsibleContentWrapper ref={contentRef} className={show ? 'show' : ''}>
+      <CollapsibleContentWrapper ref={contentRef} show={show} className={show ? 'show' : ''}>
         <CollapsibleContent>{children}</CollapsibleContent>
       </CollapsibleContentWrapper>
     </div>
   )
 }
 
-const buttonOutlinedStyles = css`
-  color: var(--button_outlined--color);
+const StyledButton = styled.button<{ isHideTopBorder?: boolean }>`
+  align-items: center;
   background-color: transparent;
   border: 1px solid var(--button_outlined--border-color);
-
+  ${({ isHideTopBorder }) => isHideTopBorder && `border-top: none;`}
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  opacity: 0.8;
+  padding: 8px;
+  width: 100%;
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
@@ -76,31 +102,15 @@ const buttonOutlinedStyles = css`
   }
 
   :hover:not(:disabled) {
-    color: var(--button_outlined--hover--color);
-    border-color: var(--button_outlined--hover--color);
-    background-color: var(--button_outlined--hover--background-color);
-  }
-`
-
-const StyledButton = styled.button`
-  ${buttonOutlinedStyles};
-
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  padding: 8px;
-  width: 100%;
-
-  color: inherit;
-
-  :hover:not(:disabled) {
     color: inherit;
-    border-color: inherit;
-    opacity: 0.8;
+    cursor: pointer;
+    opacity: 1;
   }
 
   &.show {
+    background-color: var(--button_outlined--hover--background-color);
     border-bottom: none;
+    opacity: 1;
   }
 
   .caret-true {
@@ -112,10 +122,10 @@ const StyledButton = styled.button`
   }
 `
 
-const CollapsibleContentWrapper = styled.div`
+const CollapsibleContentWrapper = styled.div<{ show: boolean }>`
   max-height: 0;
 
-  border: 1px solid var(--nav_button--border-color);
+  border: 1px solid var(--button_outlined--border-color);
   border-top: none;
 
   overflow: hidden;
@@ -127,7 +137,7 @@ const CollapsibleContentWrapper = styled.div`
 `
 
 const CollapsibleContent = styled.div`
-  padding: 8px;
+  padding: var(--spacing-narrow);
 `
 
 export default Accordion

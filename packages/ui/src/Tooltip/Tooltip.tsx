@@ -77,26 +77,50 @@ const StyledTooltip = styled.span<TooltipProps & { charCount: number | null; isC
   }}
 
   ${({ isClosePlacement, placement }) => {
+    let resp: { [key: string]: string | number } = {}
     if (isClosePlacement.top || isClosePlacement.bottom || isClosePlacement.left || isClosePlacement.right) {
       if (isClosePlacement.bottom) {
         if (isClosePlacement.left) {
-          return `top: initial; left: 0; bottom: 20px;`
+          resp = { top: 'initial', left: 0, bottom: '20px' }
         } else {
-          return `top: initial; right: 0; bottom: 20px;`
+          resp = { top: 'initial', right: 0, bottom: '20px' }
         }
       } else if (isClosePlacement.left) {
-        return `left: 0;`
+        resp = { left: 0 }
       } else {
-        return `right: 0;`
+        resp = { right: 0 }
       }
-    } else if (placement) {
+    }
+
+    if (placement) {
       if (placement === 'top end' || placement === 'top') {
-        return `top: initial; right: 0; bottom: 20px;`
+        if (typeof resp['top'] === 'undefined') {
+          resp.top = 'initial'
+        }
+        if (typeof resp['right'] === 'undefined') {
+          resp.right = 0
+        }
+        if (typeof resp['bottom'] === 'undefined') {
+          resp.bottom = '20px'
+        }
+        // return `top: initial; right: 0; bottom: 20px;`
       } else if (placement === 'start') {
+        if (typeof resp.left === 'undefined') {
+          resp.left = 0
+        }
         return `left: 0;`
       }
     }
-    return `right: 0;`
+    if (Object.keys(resp).length > 0) {
+      let value = ''
+      Object.keys(resp).forEach((k) => {
+        value += ` ${k}: ${resp[k]};`
+      })
+      return value
+    } else {
+      return `right: 0;`
+    }
+    // return `right: 0;`
   }};
 `
 

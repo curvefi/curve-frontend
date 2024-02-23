@@ -5,6 +5,7 @@ export type Variant = 'primary' | 'secondary'
 
 export type BoxProps = {
   className?: string
+  display?: ValueOf<Pick<CSSProperties, 'display'>>
   fillHeight?: boolean
   fillWidth?: boolean
   padding?: boolean | string
