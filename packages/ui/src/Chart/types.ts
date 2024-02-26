@@ -158,6 +158,13 @@ export interface LlammaLiquidityApiResponse {
   data: LlammaLiquidityEvent[]
 }
 
+export type LiquidationRange = { value: number; time: UTCTimestamp }[]
+
+export type LlammaLiquididationRange = {
+  price1: LiquidationRange
+  price2: LiquidationRange
+}
+
 export interface LpTradesData {
   sold_id: number
   bought_id: number

@@ -1,4 +1,10 @@
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
+import type {
+  PricesApiPool,
+  PricesApiCoin,
+  LabelList,
+  LlammaLiquididationRange,
+  LiquidationRange,
+} from '@/ui/Chart/types'
 import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
@@ -22,6 +28,8 @@ type Props = {
 const PoolInfoData = ({ rChainId, llamma }: Props) => {
   const address = llamma?.address ?? ''
   const themeType = useStore((state) => state.themeType)
+  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartFetchStatus,
@@ -43,6 +51,31 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
     setChartExpanded,
   } = useStore((state) => state.ohlcCharts)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+
+  const selectedLiqRange = useMemo(() => {
+    if (formValues.n && liqRangesMapper && chartOhlcData) {
+      const prices = liqRangesMapper[formValues.n].prices
+      let price1: LiquidationRange = []
+      let price2: LiquidationRange = []
+      for (const data of chartOhlcData) {
+        price1 = [
+          ...price1,
+          {
+            time: data.time,
+            value: +prices[0],
+          },
+        ]
+        price2 = [
+          ...price2,
+          {
+            time: data.time,
+            value: +prices[1],
+          },
+        ]
+      }
+      return { price1, price2 }
+    }
+  }, [chartOhlcData, formValues.n, liqRangesMapper])
 
   const coins: LlammaLiquidityCoins = llamma
     ? {
@@ -134,6 +167,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           ohlcData={chartOhlcData}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}
+          liquidationRange={selectedLiqRange}
           timeOption={timeOption}
           selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
           setChartTimeOption={setChartTimeOption}
@@ -183,6 +217,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
           ohlcData={chartOhlcData}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}
+          liquidationRange={selectedLiqRange}
           timeOption={timeOption}
           selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
           setChartTimeOption={setChartTimeOption}

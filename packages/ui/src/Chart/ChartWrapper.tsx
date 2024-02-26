@@ -2,7 +2,7 @@ import type {
   TimeOptions,
   LpPriceOhlcDataFormatted,
   LabelList,
-  LiqPriceRange,
+  LlammaLiquididationRange,
   ChartType,
   FetchingStatus,
   ChartHeight,
@@ -32,6 +32,7 @@ type Props = {
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
+  liquidationRange?: LlammaLiquididationRange
   selectedChartIndex?: number
   setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
@@ -54,6 +55,7 @@ const ChartWrapper = ({
   ohlcData,
   volumeData,
   oraclePriceData,
+  liquidationRange,
   selectedChartIndex,
   setChartSelectedIndex,
   timeOption,
@@ -123,12 +125,18 @@ const ChartWrapper = ({
           />
         </SectionHeader>
         {chartType === 'crvusd' && chartStatus === 'READY' && (
-          <>
+          <TipWrapper>
             <TipContent>
               <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-oracle-price-line)" />
               Oracle Price
             </TipContent>
-          </>
+            {liquidationRange !== undefined && liquidationRange.price1.length !== 0 && (
+              <TipContent>
+                <TipIcon name="StopFilledAlt" size={20} fill="var(--warning-400)" />
+                <TipText>Liquidation Range</TipText>
+              </TipContent>
+            )}
+          </TipWrapper>
         )}
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
@@ -138,6 +146,7 @@ const ChartWrapper = ({
               ohlcData={clonedOhlcData}
               volumeData={volumeData}
               oraclePriceData={oraclePriceData}
+              liquidationRange={liquidationRange}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}
@@ -250,12 +259,19 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `
 
+const TipWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--spacing-2);
+`
+
 const TipContent = styled(Box)`
   align-items: center;
   justify-content: center;
   display: flex;
-  justify-content: center;
   font-size: var(--font-size-1);
+  font-weight: var(--font-weight);
 `
 
 const TipIcon = styled(Icon)`

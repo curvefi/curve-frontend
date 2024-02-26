@@ -34,7 +34,7 @@ body.theme-default {
   --success-400: hsl(117, 98%, 25%);
   --success-600: hsl(117, 98%, 91%);
 
-  --warning-400: hsl(47, 82%, 48%);
+  --warning-400: hwb(47 9% 13%);
   --warning-text-400: hsl(47, 92%, 31%);
 
   --info-400: hsl(220, 100%, 68%);
@@ -320,5 +320,7 @@ body.theme-default {
   --chart-label: #9b7dff;
   --chart-volume-green: #26a6997e;
   --chart-volume-red: #ef53507e;
-  --chart-oracle-price-line: #3360c9c0;
+  --chart-oracle-price-line: #3360c9;
+  --chart-liq-range: #ddb138;
+  --chart-liq-range-a25: #ddb1383c;
 }

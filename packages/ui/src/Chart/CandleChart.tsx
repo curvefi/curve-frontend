@@ -1,4 +1,11 @@
-import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight, VolumeData, OraclePriceData } from './types'
+import type {
+  LpPriceOhlcDataFormatted,
+  ChartType,
+  ChartHeight,
+  VolumeData,
+  OraclePriceData,
+  LlammaLiquididationRange,
+} from './types'
 import type { IChartApi, Time } from 'lightweight-charts'
 
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
@@ -11,6 +18,7 @@ type Props = {
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
+  liquidationRange?: LlammaLiquididationRange
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
@@ -28,6 +36,7 @@ const CandleChart = ({
   ohlcData,
   volumeData,
   oraclePriceData,
+  liquidationRange,
   timeOption,
   wrapperRef,
   chartExpanded,
@@ -45,6 +54,7 @@ const CandleChart = ({
   const [lastTheme, setLastTheme] = useState(themeType)
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
+  const [priceRanges, setTimeRanges] = useState([])
 
   const [colors, setColors] = useState({
     backgroundColor: '#fafafa',
@@ -55,9 +65,11 @@ const CandleChart = ({
     chartGreenColor: '#2962FF',
     chartRedColor: '#ef5350',
     chartLabelColor: '#9B7DFF',
-    chartVolumeGreen: '#ef53507e',
-    chartVolumeRed: '#26a6997e',
+    chartVolumeRed: '#ef53507e',
+    chartVolumeGreen: '#26a6997e',
     chartOraclePrice: '#3360c9c0',
+    warningColor: '#dfb316',
+    warningColorA25: '#dfb4167f',
   })
 
   useEffect(() => {
@@ -76,7 +88,8 @@ const CandleChart = ({
     const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
     const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
     const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
-    const warningColor = style.getPropertyValue('--warning-400')
+    const warningColor = style.getPropertyValue('--chart-liq-range')
+    const warningColorA25 = style.getPropertyValue('--chart-liq-range-a25')
 
     setColors({
       backgroundColor,
@@ -90,9 +103,11 @@ const CandleChart = ({
       chartVolumeRed,
       chartVolumeGreen,
       chartOraclePrice,
+      warningColor,
+      warningColorA25,
     })
     setLastTheme(themeType)
-  }, [chartType, lastTheme, themeType])
+  }, [chartExpanded, chartType, lastTheme, themeType])
 
   useEffect(() => {
     if (chartCreated && !ohlcData) return
@@ -143,6 +158,33 @@ const CandleChart = ({
 
       let totalDecimalPlaces = 4
 
+      if (liquidationRange !== undefined) {
+        const areaSeries1 = chartRef.current.addAreaSeries({
+          topColor: colors.warningColorA25,
+          bottomColor: 'rgba(255, 255, 255, 0.0)', // semi-transparent color
+          lineColor: colors.warningColorA25, // transparent color
+          lineWidth: 1,
+          lineStyle: 0,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          priceLineVisible: false,
+        })
+
+        const areaSeries2 = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor, // transparent color
+          bottomColor: colors.backgroundColor, // transparent color
+          lineColor: colors.warningColorA25, // transparent color
+          lineWidth: 1,
+          lineStyle: 0,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          priceLineVisible: false,
+        })
+
+        areaSeries1.setData(liquidationRange.price1)
+        areaSeries2.setData(liquidationRange.price2)
+      }
+
       if (volumeData !== undefined) {
         const volumeSeries = chartRef.current.addHistogramSeries({
           priceFormat: {
@@ -162,6 +204,7 @@ const CandleChart = ({
       }
 
       const candlestickSeries = chartRef.current.addCandlestickSeries({
+        priceLineStyle: 3,
         upColor: '#26a69a',
         downColor: '#ef5350',
         borderVisible: false,
@@ -194,6 +237,7 @@ const CandleChart = ({
         const lineSeries = chartRef.current.addLineSeries({
           color: colors.chartOraclePrice,
           lineWidth: 2,
+          priceLineStyle: 3,
         })
 
         lineSeries.setData(oraclePriceData)
