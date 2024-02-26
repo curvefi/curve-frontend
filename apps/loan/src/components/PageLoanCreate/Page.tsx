@@ -170,7 +170,7 @@ const Page: NextPage = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} llamma={llamma} />
+            <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -198,7 +198,7 @@ const Page: NextPage = () => {
           <PoolInfoWrapper>
             {isMdUp && <TitleComp />}
             <PoolInfoContainer variant="secondary">
-              <PoolInfoData rChainId={rChainId} llamma={llamma} />
+              <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
             </PoolInfoContainer>
           </PoolInfoWrapper>
         )}

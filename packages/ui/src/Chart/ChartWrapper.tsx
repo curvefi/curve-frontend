@@ -10,7 +10,7 @@ import type {
   OraclePriceData,
 } from './types'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { cloneDeep } from 'lodash'
 
@@ -73,6 +73,60 @@ const ChartWrapper = ({
 
   const wrapperRef = useRef(null)
 
+  const [lastTheme, setLastTheme] = useState(themeType)
+  const [colors, setColors] = useState({
+    backgroundColor: '#fafafa',
+    lineColor: '#2962FF',
+    textColor: 'black',
+    areaTopColor: '#2962FF',
+    areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+    chartGreenColor: '#2962FF',
+    chartRedColor: '#ef5350',
+    chartLabelColor: '#9B7DFF',
+    chartVolumeRed: '#ef53507e',
+    chartVolumeGreen: '#26a6997e',
+    chartOraclePrice: '#3360c9c0',
+    rangeColor: '#dfb316',
+    rangeColorA25: '#dfb4167f',
+  })
+
+  useEffect(() => {
+    const style = getComputedStyle(document.body)
+    const backgroundColor =
+      chartType === 'crvusd' && !chartExpanded
+        ? style.getPropertyValue('--tab-secondary--content--background-color')
+        : style.getPropertyValue('--box--secondary--background-color')
+    const lineColor = style.getPropertyValue('--line-color')
+    const textColor = style.getPropertyValue('--page--text-color')
+    const areaTopColor = style.getPropertyValue('--area-top-color')
+    const areaBottomColor = style.getPropertyValue('--area-bottom-color')
+    const chartGreenColor = style.getPropertyValue('--chart-green')
+    const chartRedColor = style.getPropertyValue('--chart-red')
+    const chartLabelColor = style.getPropertyValue('--chart-label')
+    const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
+    const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
+    const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
+    const rangeColor = style.getPropertyValue('--chart-liq-range')
+    const rangeColorA25 = style.getPropertyValue('--chart-liq-range-a25')
+
+    setColors({
+      backgroundColor,
+      lineColor,
+      textColor,
+      areaTopColor,
+      areaBottomColor,
+      chartGreenColor,
+      chartRedColor,
+      chartLabelColor,
+      chartVolumeRed,
+      chartVolumeGreen,
+      chartOraclePrice,
+      rangeColor,
+      rangeColorA25,
+    })
+    setLastTheme(themeType)
+  }, [chartExpanded, chartType, lastTheme, themeType])
+
   return (
     <Wrapper>
       <ContentWrapper>
@@ -132,7 +186,7 @@ const ChartWrapper = ({
             </TipContent>
             {liquidationRange !== undefined && liquidationRange.price1.length !== 0 && (
               <TipContent>
-                <TipIcon name="StopFilledAlt" size={20} fill="var(--warning-400)" />
+                <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range)" />
                 <TipText>Liquidation Range</TipText>
               </TipContent>
             )}
@@ -151,7 +205,7 @@ const ChartWrapper = ({
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}
               magnet={magnet}
-              themeType={themeType}
+              colors={colors}
               refetchingHistory={refetchingHistory}
               refetchingCapped={refetchingCapped}
               lastRefetchLength={lastRefetchLength}

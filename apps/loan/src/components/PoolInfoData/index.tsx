@@ -23,12 +23,14 @@ import PoolActivity from '@/components/PoolInfoData/PoolActivity'
 type Props = {
   rChainId: ChainId
   llamma: Llamma | null
+  llammaId: string
 }
 
-const PoolInfoData = ({ rChainId, llamma }: Props) => {
+const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   const address = llamma?.address ?? ''
   const themeType = useStore((state) => state.themeType)
   const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
@@ -51,6 +53,7 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
     setChartExpanded,
   } = useStore((state) => state.ohlcCharts)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+  const userPrices = userLoanDetails?.userPrices
 
   const selectedLiqRange = useMemo(() => {
     if (formValues.n && liqRangesMapper && chartOhlcData) {
@@ -75,7 +78,29 @@ const PoolInfoData = ({ rChainId, llamma }: Props) => {
       }
       return { price1, price2 }
     }
-  }, [chartOhlcData, formValues.n, liqRangesMapper])
+    if (userPrices !== undefined && chartOhlcData) {
+      let price1: LiquidationRange = []
+      let price2: LiquidationRange = []
+      for (const data of chartOhlcData) {
+        price1 = [
+          ...price1,
+          {
+            time: data.time,
+            value: +userPrices[1],
+          },
+        ]
+        price2 = [
+          ...price2,
+          {
+            time: data.time,
+            value: +userPrices[0],
+          },
+        ]
+      }
+      console.log({ price1, price2 })
+      return { price1, price2 }
+    }
+  }, [chartOhlcData, formValues.n, liqRangesMapper, userPrices])
 
   const coins: LlammaLiquidityCoins = llamma
     ? {

@@ -79,7 +79,7 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
     <Wrapper>
       {!chartExpanded && (
         <div className="wrapper">
-          <PoolInfoData rChainId={rChainId} llamma={llamma} />
+          <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
         </div>
       )}
 

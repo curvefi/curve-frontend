@@ -321,6 +321,6 @@ body.theme-default {
   --chart-volume-green: #26a6997e;
   --chart-volume-red: #ef53507e;
   --chart-oracle-price-line: #3360c9;
-  --chart-liq-range: #ddb138;
-  --chart-liq-range-a25: #ddb1383c;
+  --chart-liq-range: #ea920e;
+  --chart-liq-range-a25: #ea920e21;
 }

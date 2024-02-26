@@ -23,7 +23,21 @@ type Props = {
   wrapperRef: any
   chartExpanded?: boolean
   magnet: boolean
-  themeType: string
+  colors: {
+    backgroundColor: string
+    lineColor: string
+    textColor: string
+    areaTopColor: string
+    areaBottomColor: string
+    chartGreenColor: string
+    chartRedColor: string
+    chartLabelColor: string
+    chartVolumeRed: string
+    chartVolumeGreen: string
+    chartOraclePrice: string
+    rangeColor: string
+    rangeColorA25: string
+  }
   refetchingHistory: boolean
   refetchingCapped: boolean
   lastRefetchLength: number
@@ -41,7 +55,7 @@ const CandleChart = ({
   wrapperRef,
   chartExpanded,
   magnet,
-  themeType,
+  colors,
   refetchingHistory,
   refetchingCapped,
   lastRefetchLength,
@@ -51,63 +65,8 @@ const CandleChart = ({
   const chartRef = useRef<IChartApi | null>(null)
 
   const [chartCreated, setChartCreated] = useState(false)
-  const [lastTheme, setLastTheme] = useState(themeType)
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
-  const [priceRanges, setTimeRanges] = useState([])
-
-  const [colors, setColors] = useState({
-    backgroundColor: '#fafafa',
-    lineColor: '#2962FF',
-    textColor: 'black',
-    areaTopColor: '#2962FF',
-    areaBottomColor: 'rgba(41, 98, 255, 0.28)',
-    chartGreenColor: '#2962FF',
-    chartRedColor: '#ef5350',
-    chartLabelColor: '#9B7DFF',
-    chartVolumeRed: '#ef53507e',
-    chartVolumeGreen: '#26a6997e',
-    chartOraclePrice: '#3360c9c0',
-    warningColor: '#dfb316',
-    warningColorA25: '#dfb4167f',
-  })
-
-  useEffect(() => {
-    const style = getComputedStyle(document.body)
-    const backgroundColor =
-      chartType === 'crvusd' && !chartExpanded
-        ? style.getPropertyValue('--tab-secondary--content--background-color')
-        : style.getPropertyValue('--box--secondary--background-color')
-    const lineColor = style.getPropertyValue('--line-color')
-    const textColor = style.getPropertyValue('--page--text-color')
-    const areaTopColor = style.getPropertyValue('--area-top-color')
-    const areaBottomColor = style.getPropertyValue('--area-bottom-color')
-    const chartGreenColor = style.getPropertyValue('--chart-green')
-    const chartRedColor = style.getPropertyValue('--chart-red')
-    const chartLabelColor = style.getPropertyValue('--chart-label')
-    const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
-    const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
-    const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
-    const warningColor = style.getPropertyValue('--chart-liq-range')
-    const warningColorA25 = style.getPropertyValue('--chart-liq-range-a25')
-
-    setColors({
-      backgroundColor,
-      lineColor,
-      textColor,
-      areaTopColor,
-      areaBottomColor,
-      chartGreenColor,
-      chartRedColor,
-      chartLabelColor,
-      chartVolumeRed,
-      chartVolumeGreen,
-      chartOraclePrice,
-      warningColor,
-      warningColorA25,
-    })
-    setLastTheme(themeType)
-  }, [chartExpanded, chartType, lastTheme, themeType])
 
   useEffect(() => {
     if (chartCreated && !ohlcData) return
@@ -160,11 +119,11 @@ const CandleChart = ({
 
       if (liquidationRange !== undefined) {
         const areaSeries1 = chartRef.current.addAreaSeries({
-          topColor: colors.warningColorA25,
-          bottomColor: 'rgba(255, 255, 255, 0.0)', // semi-transparent color
-          lineColor: colors.warningColorA25, // transparent color
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25, // semi-transparent color
+          lineColor: colors.rangeColor, // transparent color
           lineWidth: 1,
-          lineStyle: 0,
+          lineStyle: 3,
           crosshairMarkerVisible: false,
           pointMarkersVisible: false,
           priceLineVisible: false,
@@ -173,9 +132,9 @@ const CandleChart = ({
         const areaSeries2 = chartRef.current.addAreaSeries({
           topColor: colors.backgroundColor, // transparent color
           bottomColor: colors.backgroundColor, // transparent color
-          lineColor: colors.warningColorA25, // transparent color
+          lineColor: colors.rangeColor, // transparent color
           lineWidth: 1,
-          lineStyle: 0,
+          lineStyle: 3,
           crosshairMarkerVisible: false,
           pointMarkersVisible: false,
           priceLineVisible: false,

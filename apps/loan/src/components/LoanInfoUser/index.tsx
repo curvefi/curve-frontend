@@ -17,6 +17,7 @@ import useStore from '@/store/useStore'
 import { Chip } from '@/ui/Typography'
 import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import AlertBox from '@/ui/AlertBox'
+import PoolInfoData from '@/components/PoolInfoData'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfo from '@/ui/DetailInfo'
 import UserInfoStats from '@/components/LoanInfoUser/components/UserInfoStats'
@@ -24,8 +25,11 @@ import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import TextCaption from '@/ui/TextCaption'
 import Button from '@/ui/Button/Button'
+import Box from '@/ui/Box'
 
-interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId'> {}
+interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId'> {
+  rChainId: ChainId
+}
 
 const DEFAULT_BAND_CHART_DATA = {
   collateral: '0',
@@ -41,12 +45,13 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-const LoanInfoUser = ({ isReady, llamma, llammaId }: Props) => {
+const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId }: Props) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const theme = useStore((state) => state.themeType)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
+  const { chartExpanded } = useStore((state) => state.ohlcCharts)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -250,6 +255,16 @@ const LoanInfoUser = ({ isReady, llamma, llammaId }: Props) => {
         </CollateralStatsWrapper>
       </StatsWrapper>
 
+      {!chartExpanded && (
+        <div className="wrapper">
+          <PoolInfoWrapper>
+            <PoolInfoContainer>
+              <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+            </PoolInfoContainer>
+          </PoolInfoWrapper>
+        </div>
+      )}
+
       <div className="wrapper">
         {isAdvanceMode ? (
           <>
@@ -439,6 +454,14 @@ const SelectorButton = styled(Button)`
     opacity: 1;
     border-bottom: 2px solid var(--page--text-color);
   }
+`
+
+const PoolInfoWrapper = styled(Box)`
+  width: 100%;
+`
+
+const PoolInfoContainer = styled(Box)`
+  background-color: var(--tab-secondary--content--background-color);
 `
 
 export default LoanInfoUser
