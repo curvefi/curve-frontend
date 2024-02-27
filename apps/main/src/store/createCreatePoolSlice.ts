@@ -879,7 +879,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           const coins = [tokenA.address, tokenB.address]
 
           try {
-            const deployPoolTx = await curve.cryptoFactory.deployPool(
+            const deployPoolTx = await curve.twocryptoFactory.deployPool(
               poolName,
               poolSymbol,
               coins,
@@ -907,7 +907,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
             dismissNotificationHandler = dismissDeploying
 
-            const poolAddress = await curve.cryptoFactory.getDeployedPoolAddress(deployPoolTx)
+            const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
               produce((state) => {
@@ -923,7 +923,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notifyNotification(successNotificationMessage, 'success', 15000)
 
-            const poolId = await curve.cryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+            const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
