@@ -21,7 +21,7 @@
     "test": "start-server-and-test server-start http://localhost:3000 cypress:open"
   },
   "dependencies": {
-    "@curvefi/api": "^2.55.0",
+    "@curvefi/api": "^2.55.2",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.0.1",
