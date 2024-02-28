@@ -106,6 +106,7 @@ const network = {
     await Promise.allSettled([
       curve.factory.fetchPools(true),
       curve.cryptoFactory.fetchPools(true),
+      curve.twocryptoFactory.fetchPools(true),
       curve.crvUSDFactory.fetchPools(true),
       curve.tricryptoFactory.fetchPools(true),
       curve.stableNgFactory.fetchPools(true),
@@ -113,6 +114,7 @@ const network = {
     await Promise.allSettled([
       curve.factory.fetchNewPools(),
       curve.cryptoFactory.fetchNewPools(),
+      curve.twocryptoFactory.fetchNewPools(),
       curve.tricryptoFactory.fetchNewPools(),
       curve.stableNgFactory.fetchNewPools(),
     ])
