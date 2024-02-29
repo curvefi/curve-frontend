@@ -85,7 +85,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].cryptoSwapFactory
+          networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory
         )
       )
     } else {
@@ -101,7 +101,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].cryptoSwapFactory
+          networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory
         ) &&
           oraclesReady([
             tokensInPool.tokenA,
