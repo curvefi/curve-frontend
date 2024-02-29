@@ -5,7 +5,13 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
-import { TWOCOINCRYPTOSWAP, THREECOINCRYPTOSWAP, STABLESWAP, STABLESWAPOLD } from '@/components/PageDeployGauge/constants'
+import {
+  TWOCOINCRYPTOSWAP,
+  THREECOINCRYPTOSWAP,
+  STABLESWAP,
+  STABLESWAPOLD,
+  TWOCOINCRYPTOSWAPNG,
+} from '@/components/PageDeployGauge/constants'
 
 import Box from '@/ui/Box'
 import TextInput from '@/components/PageDeployGauge/components/TextInput'
@@ -50,14 +56,17 @@ const DeploySidechain = ({ chainId }: Props) => {
     if (poolTypes.stableswap) {
       list.push(STABLESWAP)
     }
+    if (poolTypes.twoCryptoNg) {
+      list.push(TWOCOINCRYPTOSWAPNG)
+    }
+    if (poolTypes.threeCrypto) {
+      list.push(THREECOINCRYPTOSWAP)
+    }
     if (poolTypes.stableswapOld) {
       list.push(STABLESWAPOLD)
     }
     if (poolTypes.twoCrypto) {
       list.push(TWOCOINCRYPTOSWAP)
-    }
-    if (poolTypes.threeCrypto) {
-      list.push(THREECOINCRYPTOSWAP)
     }
     return list
   }, [currentChainId, curveNetworks])
