@@ -253,6 +253,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       await Promise.allSettled([
         curve.factory.fetchNewPools(),
         curve.cryptoFactory.fetchNewPools(),
+        curve.twocryptoFactory.fetchNewPools(),
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])

@@ -85,6 +85,7 @@ declare global {
     }[]
     stableSwapFactory: boolean
     cryptoSwapFactory: boolean
+    twocryptoFactory: boolean
     tricryptoFactory: boolean
     stableSwapNg: boolean
     hasFactory: boolean

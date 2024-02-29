@@ -6,7 +6,13 @@ import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
-import { TWOCOINCRYPTOSWAP, THREECOINCRYPTOSWAP, STABLESWAP, STABLESWAPOLD } from '@/components/PageDeployGauge/constants'
+import {
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
+  THREECOINCRYPTOSWAP,
+  STABLESWAP,
+  STABLESWAPOLD,
+} from '@/components/PageDeployGauge/constants'
 
 import Box from '@/ui/Box/Box'
 import TextInput from '@/components/PageDeployGauge/components/TextInput'
@@ -30,14 +36,17 @@ const DeployMainnet = ({ chainId }: Props) => {
     if (networks[mainnet].stableSwapNg) {
       list.push(STABLESWAP)
     }
+    if (networks[mainnet].twocryptoFactory) {
+      list.push(TWOCOINCRYPTOSWAPNG)
+    }
+    if (networks[mainnet].tricryptoFactory) {
+      list.push(THREECOINCRYPTOSWAP)
+    }
     if (networks[mainnet].hasFactory) {
       list.push(STABLESWAPOLD)
     }
     if (networks[mainnet].cryptoSwapFactory) {
       list.push(TWOCOINCRYPTOSWAP)
-    }
-    if (networks[mainnet].tricryptoFactory) {
-      list.push(THREECOINCRYPTOSWAP)
     }
     return list
   }, [])

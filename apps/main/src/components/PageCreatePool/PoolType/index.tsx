@@ -42,11 +42,17 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Cryptoswap`}
               description={t`Bonding Curve specialising in unpegged assets.`}
               handleClick={() => updateSwapType(CRYPTOSWAP, chainId)}
-              disabled={!networks[chainId].cryptoSwapFactory && !networks[chainId].tricryptoFactory}
+              disabled={
+                !networks[chainId].cryptoSwapFactory &&
+                !networks[chainId].tricryptoFactory &&
+                !networks[chainId].twocryptoFactory
+              }
             />
-            {!networks[chainId].cryptoSwapFactory && !networks[chainId].tricryptoFactory && (
-              <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
-            )}
+            {!networks[chainId].cryptoSwapFactory &&
+              !networks[chainId].tricryptoFactory &&
+              !networks[chainId].twocryptoFactory && (
+                <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
+              )}
           </SelectButtonWrapper>
         </OptionsWrapper>
       </Wrapper>
