@@ -105,6 +105,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               stableswap: chain.stableSwapNg,
               stableswapOld: chain.stableSwapFactory,
               twoCrypto: chain.cryptoSwapFactory,
+              twoCryptoNg: chain.twocryptoFactory,
               threeCrypto: chain.tricryptoFactory,
             },
           }
@@ -273,6 +274,44 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             console.log(error)
           }
         }
+
+        if (gaugeType === 'TWOCRYPTONG') {
+          try {
+            const deployGaugeTx = await curve.twocryptoFactory.deployGauge(tokenAddress)
+
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
+                state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
+              })
+            )
+            dismissConfirm()
+            const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
+            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+
+            dismissNotificationHandler = dismissDeploying
+
+            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
+              })
+            )
+            dismissDeploying()
+            const successNotificationMessage = t`Mainnet gauge deployment successful.`
+            notifyNotification(successNotificationMessage, 'success', 15000)
+          } catch (error) {
+            dismissNotificationHandler()
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
+                state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
+              })
+            )
+            console.log(error)
+          }
+        }
+
         if (gaugeType === 'THREECRYPTO') {
           try {
             const deployGaugeTx = await curve.tricryptoFactory.deployGauge(tokenAddress)
@@ -431,6 +470,44 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             console.log(error)
           }
         }
+        if (gaugeType === 'TWOCRYPTONG') {
+          try {
+            const deployGaugeTx = await curve.twocryptoFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
+
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
+                state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
+              })
+            )
+            dismissConfirm()
+            const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
+            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+
+            dismissNotificationHandler = dismissDeploying
+
+            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeAddress(deployGaugeTx)
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
+                state.deployGauge.sidechainNav = 1
+                state.deployGauge.currentSidechain = chainId
+              })
+            )
+            dismissDeploying()
+            const successNotificationMessage = t`Sidechain gauge deployment successful.`
+            notifyNotification(successNotificationMessage, 'success', 15000)
+          } catch (error) {
+            dismissNotificationHandler()
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
+                state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
+              })
+            )
+            console.log(error)
+          }
+        }
         if (gaugeType === 'THREECRYPTO') {
           try {
             const deployGaugeTx = await curve.tricryptoFactory.deployGaugeSidechain(tokenAddress, cutSalt(tokenAddress))
@@ -517,8 +594,6 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
           })
         )
 
-        console.log(currentSidechain, lpTokenAddress)
-
         if (gaugeType === 'STABLENG') {
           try {
             const deployGaugeTx = await curve.stableNgFactory.deployGaugeMirror(
@@ -578,6 +653,45 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             dismissNotificationHandler = dismissDeploying
 
             const gaugeAddress = await curve.cryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
+              })
+            )
+            dismissDeploying()
+            const successNotificationMessage = t`Mirror gauge deployment successful.`
+            notifyNotification(successNotificationMessage, 'success', 15000)
+          } catch (error) {
+            dismissNotificationHandler()
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
+                state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
+              })
+            )
+            console.log(error)
+          }
+        }
+        if (gaugeType === 'TWOCRYPTONG') {
+          try {
+            const deployGaugeTx = await curve.twocryptoFactory.deployGaugeMirror(
+              currentSidechain!,
+              cutSalt(lpTokenAddress)
+            )
+
+            set(
+              produce((state) => {
+                state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
+                state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
+              })
+            )
+            dismissConfirm()
+            const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
+            const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+
+            dismissNotificationHandler = dismissDeploying
+
+            const gaugeAddress = await curve.twocryptoFactory.getDeployedGaugeMirrorAddressByTx(deployGaugeTx)
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'

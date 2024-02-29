@@ -8,6 +8,13 @@ import { curveProps } from '@/lib/utils'
 import networks from '@/networks'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
+import {
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
+  THREECOINCRYPTOSWAP,
+  STABLESWAP,
+  STABLESWAPOLD,
+} from '@/components/PageDeployGauge/constants'
 
 import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
@@ -37,16 +44,6 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
 
-  // cleanup and reset on dismount if success
-  // useEffect(() => {
-  //   return () => {
-  //     if (success) {
-  //       setSuccess(false)
-  //       // resetState()
-  //     }
-  //   }
-  // }, [resetState, success, setSuccess])
-
   const handleConnectEth = () => {
     const { rChainId, rNetwork } = getNetworkFromUrl()
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
@@ -57,23 +54,26 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const handleClick = async () => {
     if (sidechainGauge) {
       if (sidechainNav === 0) {
-        if (currentPoolType === 'Stableswap') deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
-        if (currentPoolType === 'Stableswap (Old)') deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
-        if (currentPoolType === 'Two Coin Cryptoswap') deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE')
-        if (currentPoolType === 'Three Coin Cryptoswap') deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
+        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE')
+        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE')
+        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE')
       }
       if (sidechainNav === 1) {
-        if (currentPoolType === 'Stableswap') deployGauge(curve, 'STABLENG', 'MIRRORGAUGE')
-        if (currentPoolType === 'Stableswap (Old)') deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
-        if (currentPoolType === 'Two Coin Cryptoswap') deployGauge(curve, 'TWOCRYPTO', 'MIRRORGAUGE')
-        if (currentPoolType === 'Three Coin Cryptoswap') deployGauge(curve, 'THREECRYPTO', 'MIRRORGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'MIRRORGAUGE')
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
+        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'MIRRORGAUGE')
+        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'MIRRORGAUGE')
+        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'MIRRORGAUGE')
       }
     }
     if (!sidechainGauge) {
-      if (currentPoolType === 'Stableswap') deployGauge(curve, 'STABLENG', 'MAINNETGAUGE')
-      if (currentPoolType === 'Stableswap (Old)') deployGauge(curve, 'STABLEOLD', 'MAINNETGAUGE')
-      if (currentPoolType === 'Two Coin Cryptoswap') deployGauge(curve, 'TWOCRYPTO', 'MAINNETGAUGE')
-      if (currentPoolType === 'Three Coin Cryptoswap') deployGauge(curve, 'THREECRYPTO', 'MAINNETGAUGE')
+      if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'MAINNETGAUGE')
+      if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'MAINNETGAUGE')
+      if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'MAINNETGAUGE')
+      if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'MAINNETGAUGE')
+      if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'MAINNETGAUGE')
     }
   }
 

@@ -6,7 +6,13 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { getPath } from '@/utils/utilsRouter'
 import useStore from '@/store/useStore'
-import { TWOCOINCRYPTOSWAP, THREECOINCRYPTOSWAP, STABLESWAP, STABLESWAPOLD } from '@/components/PageDeployGauge/constants'
+import {
+  TWOCOINCRYPTOSWAP,
+  TWOCOINCRYPTOSWAPNG,
+  THREECOINCRYPTOSWAP,
+  STABLESWAP,
+  STABLESWAPOLD,
+} from '@/components/PageDeployGauge/constants'
 
 import InteralLinkButton from '@/ui/InternalLinkButton'
 
@@ -23,6 +29,8 @@ const AddGaugeLink = ({
   const params = useParams()
   const navigate = useNavigate()
 
+  console.log(poolDataCacheOrApi.pool.id)
+
   const handleClick = () => {
     if (chainId === 1) {
       setSidechainGauge(false)
@@ -32,7 +40,9 @@ const AddGaugeLink = ({
       setLpTokenAddress(lpToken)
     }
 
-    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
+    if (poolDataCacheOrApi.pool.id.includes('factory-twocrypto')) {
+      setCurrentPoolType(TWOCOINCRYPTOSWAPNG)
+    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAP)
     } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
       setCurrentPoolType(THREECOINCRYPTOSWAP)
