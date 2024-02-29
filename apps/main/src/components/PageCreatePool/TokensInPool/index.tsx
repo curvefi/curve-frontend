@@ -1252,7 +1252,10 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             (swapType === STABLESWAP && !networks[chainId].stableSwapNg && tokensInPool.tokenAmount === 4) ||
             (swapType === STABLESWAP && tokensInPool.metaPoolToken) ||
             (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && tokensInPool.tokenAmount === 3) ||
-            (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && !networks[chainId].cryptoSwapFactory) ||
+            (swapType === CRYPTOSWAP &&
+              networks[chainId].tricryptoFactory &&
+              !networks[chainId].cryptoSwapFactory &&
+              !networks[chainId].twocryptoFactory) ||
             (swapType === CRYPTOSWAP && !networks[chainId].tricryptoFactory)
           }
         >
