@@ -1,13 +1,13 @@
 import type { PageTransferProps } from '@/components/PagePool/types'
 
 import { t } from '@lingui/macro'
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import networks from '@/networks'
 import useTokenAlert from '@/hooks/useTokenAlert'
 import useStore from '@/store/useStore'
+import { getPath } from '@/utils/utilsRouter'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
@@ -15,6 +15,7 @@ import CurrencyReserves from '@/components/PagePool/PoolDetails/CurrencyReserves
 import ExternalLink from '@/ui/Link/ExternalLink'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/components/PagePool/PoolDetails/PoolStats/Rewards'
+import { InternalLink } from '@/ui/Link'
 
 const PoolStats = ({
   curve,
@@ -36,24 +37,11 @@ const PoolStats = ({
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
+  const params = useStore((state) => state.routerProps?.params)
 
   const poolId = poolData?.pool?.id
-  const pathname = networks[rChainId].orgUIPath
 
-  const risksPathname = useMemo(() => {
-    let [, , id] = poolDataCacheOrApi.pool.id.split('-')
-
-    if (poolDataCacheOrApi.pool.id.startsWith('factory-crypto')) {
-      return `${pathname}/factory-crypto/${id}/risks`
-    } else if (poolDataCacheOrApi.pool.id.startsWith('factory-')) {
-      return `${pathname}/factory/${id}/risks`
-    }
-
-    id = poolDataCacheOrApi.pool.id
-    if (poolDataCacheOrApi.pool.id === 'susd') id = 'susdv2'
-
-    return `${pathname}/${id}/risks`
-  }, [pathname, poolDataCacheOrApi.pool.id])
+  const risksPathname = params && getPath(params, `/risk-disclaimer`)
 
   // fetch stats
   useEffect(() => {
@@ -82,12 +70,11 @@ const PoolStats = ({
                   </ExternalLink>
                 </AlertBox>
               )}
-
-              {risksPathname && (
+              {params && (
                 <AlertBox alertType="info" flexAlignItems="center">
-                  <ExternalLink $noStyles href={risksPathname}>
+                  <InternalLink $noStyles href={risksPathname} target="_blank">
                     {t`Risks of using ${poolDataCacheOrApi.pool.name}`}
-                  </ExternalLink>
+                  </InternalLink>
                 </AlertBox>
               )}
             </Box>
