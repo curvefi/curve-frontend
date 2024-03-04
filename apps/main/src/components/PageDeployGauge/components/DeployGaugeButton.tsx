@@ -54,23 +54,23 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const handleClick = async () => {
     if (sidechainGauge) {
       if (sidechainNav === 0) {
-        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
-        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
         if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE')
         if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE')
         if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE')
       }
       if (sidechainNav === 1) {
-        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'MIRRORGAUGE')
-        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'MIRRORGAUGE')
         if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'MIRRORGAUGE')
         if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'MIRRORGAUGE')
         if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'MIRRORGAUGE')
       }
     }
     if (!sidechainGauge) {
-      if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLENG', 'MAINNETGAUGE')
-      if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLEOLD', 'MAINNETGAUGE')
+      if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'MAINNETGAUGE')
+      if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'MAINNETGAUGE')
       if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'MAINNETGAUGE')
       if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'MAINNETGAUGE')
       if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'MAINNETGAUGE')
