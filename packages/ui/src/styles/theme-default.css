@@ -322,5 +322,7 @@ body.theme-default {
   --chart-volume-red: #ef53507e;
   --chart-oracle-price-line: #3360c9;
   --chart-liq-range: #ea920e;
-  --chart-liq-range-a25: #ea920e21;
+  --chart-liq-range-a25: #ea920e25;
+  --chart-liq-range-old: #bababa;
+  --chart-liq-range-a25-old: #aaaaaa25;
 }

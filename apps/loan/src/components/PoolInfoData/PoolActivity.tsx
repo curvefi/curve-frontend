@@ -46,21 +46,21 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
         )}
         {!activityHidden && (
           <>
-            <SectionTitle>{eventOption === 'TRADE' ? t`Swaps` : t`Liquidity`}</SectionTitle>
+            <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
             <ButtonGroup>
               <Button
                 className={eventOption === 'TRADE' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('TRADE')}
               >
-                {t`Swaps`}
+                {t`AMM`}
               </Button>
               <Button
                 className={eventOption === 'LP' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('LP')}
               >
-                {t`Liquidity`}
+                {t`Controller`}
               </Button>
             </ButtonGroup>
           </>

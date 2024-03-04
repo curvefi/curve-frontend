@@ -324,7 +324,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
                 : {
                     ...data.withdrawal,
                     amount_borrowed: formatContractValue(data.withdrawal.amount_borrowed, poolAddress),
-                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, poolAddress),
+                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, ''),
                   },
           }
         })

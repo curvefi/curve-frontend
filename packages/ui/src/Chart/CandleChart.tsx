@@ -4,7 +4,8 @@ import type {
   ChartHeight,
   VolumeData,
   OraclePriceData,
-  LlammaLiquididationRange,
+  LiquidationRanges,
+  ChartColors,
 } from './types'
 import type { IChartApi, Time } from 'lightweight-charts'
 
@@ -18,26 +19,12 @@ type Props = {
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
-  liquidationRange?: LlammaLiquididationRange
+  liquidationRange?: LiquidationRanges
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
   magnet: boolean
-  colors: {
-    backgroundColor: string
-    lineColor: string
-    textColor: string
-    areaTopColor: string
-    areaBottomColor: string
-    chartGreenColor: string
-    chartRedColor: string
-    chartLabelColor: string
-    chartVolumeRed: string
-    chartVolumeGreen: string
-    chartOraclePrice: string
-    rangeColor: string
-    rangeColorA25: string
-  }
+  colors: ChartColors
   refetchingHistory: boolean
   refetchingCapped: boolean
   lastRefetchLength: number
@@ -67,6 +54,8 @@ const CandleChart = ({
   const [chartCreated, setChartCreated] = useState(false)
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
+
+  console.log(liquidationRange)
 
   useEffect(() => {
     if (chartCreated && !ohlcData) return
@@ -117,31 +106,135 @@ const CandleChart = ({
 
       let totalDecimalPlaces = 4
 
+      // ordered to ensure that the bottom color doesn't cover a series
       if (liquidationRange !== undefined) {
-        const areaSeries1 = chartRef.current.addAreaSeries({
-          topColor: colors.rangeColorA25,
-          bottomColor: colors.rangeColorA25, // semi-transparent color
-          lineColor: colors.rangeColor, // transparent color
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          priceLineVisible: false,
-        })
+        if (liquidationRange?.new !== null) {
+          const areaSeries2 = chartRef.current.addAreaSeries({
+            topColor: colors.rangeColorA25,
+            bottomColor: colors.rangeColorA25,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
 
-        const areaSeries2 = chartRef.current.addAreaSeries({
-          topColor: colors.backgroundColor, // transparent color
-          bottomColor: colors.backgroundColor, // transparent color
-          lineColor: colors.rangeColor, // transparent color
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          priceLineVisible: false,
-        })
+          const areaSeries3 = chartRef.current.addAreaSeries({
+            topColor: colors.backgroundColor,
+            bottomColor: colors.backgroundColor,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
 
-        areaSeries1.setData(liquidationRange.price1)
-        areaSeries2.setData(liquidationRange.price2)
+          areaSeries2.setData(liquidationRange.new.price1)
+          areaSeries3.setData(liquidationRange.new.price2)
+        }
+
+        if (liquidationRange?.increase !== null) {
+          const areaSeries2 = chartRef.current.addAreaSeries({
+            topColor: colors.rangeColorA25,
+            bottomColor: colors.rangeColorA25,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          const areaSeries3 = chartRef.current.addAreaSeries({
+            topColor: colors.backgroundColor,
+            bottomColor: colors.backgroundColor,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          areaSeries2.setData(liquidationRange.increase.price1)
+          areaSeries3.setData(liquidationRange.increase.price2)
+        }
+
+        if (liquidationRange?.current !== null) {
+          const areaSeries1 = chartRef.current.addAreaSeries({
+            topColor:
+              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
+                ? colors.rangeColorA25Old
+                : colors.rangeColorA25,
+            bottomColor:
+              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
+                ? colors.rangeColorA25Old
+                : colors.rangeColorA25,
+            lineColor:
+              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
+                ? colors.rangeColorOld
+                : colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          const areaSeries2 = chartRef.current.addAreaSeries({
+            topColor: colors.backgroundColor,
+            bottomColor: colors.backgroundColor,
+            lineColor:
+              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
+                ? colors.rangeColorOld
+                : colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          areaSeries1.setData(liquidationRange.current.price1)
+          areaSeries2.setData(liquidationRange.current.price2)
+        }
+
+        if (liquidationRange?.decrease !== null) {
+          const areaSeries1 = chartRef.current.addAreaSeries({
+            topColor: colors.rangeColorA25,
+            bottomColor: colors.rangeColorA25,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          const areaSeries2 = chartRef.current.addAreaSeries({
+            topColor: colors.backgroundColor,
+            bottomColor: colors.backgroundColor,
+            lineColor: colors.rangeColor,
+            lineWidth: 1,
+            lineStyle: 3,
+            crosshairMarkerVisible: false,
+            pointMarkersVisible: false,
+            lineVisible: false,
+            priceLineStyle: 2,
+          })
+
+          areaSeries1.setData(liquidationRange.decrease.price1)
+          areaSeries2.setData(liquidationRange.decrease.price2)
+        }
       }
 
       if (volumeData !== undefined) {
@@ -163,7 +256,7 @@ const CandleChart = ({
       }
 
       const candlestickSeries = chartRef.current.addCandlestickSeries({
-        priceLineStyle: 3,
+        priceLineStyle: 2,
         upColor: '#26a69a',
         downColor: '#ef5350',
         borderVisible: false,
@@ -196,7 +289,7 @@ const CandleChart = ({
         const lineSeries = chartRef.current.addLineSeries({
           color: colors.chartOraclePrice,
           lineWidth: 2,
-          priceLineStyle: 3,
+          priceLineStyle: 2,
         })
 
         lineSeries.setData(oraclePriceData)

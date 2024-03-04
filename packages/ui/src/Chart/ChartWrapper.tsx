@@ -2,12 +2,13 @@ import type {
   TimeOptions,
   LpPriceOhlcDataFormatted,
   LabelList,
-  LlammaLiquididationRange,
+  LiquidationRanges,
   ChartType,
   FetchingStatus,
   ChartHeight,
   VolumeData,
   OraclePriceData,
+  ChartColors,
 } from './types'
 
 import { useState, useRef, useEffect } from 'react'
@@ -32,7 +33,7 @@ type Props = {
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
-  liquidationRange?: LlammaLiquididationRange
+  liquidationRange?: LiquidationRanges
   selectedChartIndex?: number
   setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
@@ -44,6 +45,24 @@ type Props = {
   refetchingCapped: boolean
   lastRefetchLength: number
   selectChartList?: LabelList[]
+}
+
+const DEFAULT_CHART_COLORS: ChartColors = {
+  backgroundColor: '#fafafa',
+  lineColor: '#2962FF',
+  textColor: 'black',
+  areaTopColor: '#2962FF',
+  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+  chartGreenColor: '#2962FF',
+  chartRedColor: '#ef5350',
+  chartLabelColor: '#9B7DFF',
+  chartVolumeRed: '#ef53507e',
+  chartVolumeGreen: '#26a6997e',
+  chartOraclePrice: '#3360c9c0',
+  rangeColor: '#dfb316',
+  rangeColorA25: '#dfb4167f',
+  rangeColorOld: '#ab792f',
+  rangeColorA25Old: '#ab792f25',
 }
 
 const ChartWrapper = ({
@@ -74,21 +93,7 @@ const ChartWrapper = ({
   const wrapperRef = useRef(null)
 
   const [lastTheme, setLastTheme] = useState(themeType)
-  const [colors, setColors] = useState({
-    backgroundColor: '#fafafa',
-    lineColor: '#2962FF',
-    textColor: 'black',
-    areaTopColor: '#2962FF',
-    areaBottomColor: 'rgba(41, 98, 255, 0.28)',
-    chartGreenColor: '#2962FF',
-    chartRedColor: '#ef5350',
-    chartLabelColor: '#9B7DFF',
-    chartVolumeRed: '#ef53507e',
-    chartVolumeGreen: '#26a6997e',
-    chartOraclePrice: '#3360c9c0',
-    rangeColor: '#dfb316',
-    rangeColorA25: '#dfb4167f',
-  })
+  const [colors, setColors] = useState<ChartColors>(DEFAULT_CHART_COLORS)
 
   useEffect(() => {
     const style = getComputedStyle(document.body)
@@ -108,6 +113,8 @@ const ChartWrapper = ({
     const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
     const rangeColor = style.getPropertyValue('--chart-liq-range')
     const rangeColorA25 = style.getPropertyValue('--chart-liq-range-a25')
+    const rangeColorOld = style.getPropertyValue('--chart-liq-range-old')
+    const rangeColorA25Old = style.getPropertyValue('--chart-liq-range-a25-old')
 
     setColors({
       backgroundColor,
@@ -123,6 +130,8 @@ const ChartWrapper = ({
       chartOraclePrice,
       rangeColor,
       rangeColorA25,
+      rangeColorOld,
+      rangeColorA25Old,
     })
     setLastTheme(themeType)
   }, [chartExpanded, chartType, lastTheme, themeType])
@@ -178,18 +187,16 @@ const ChartWrapper = ({
             setCurrentTimeOption={setChartTimeOption}
           />
         </SectionHeader>
-        {chartType === 'crvusd' && chartStatus === 'READY' && (
+        {chartType === 'crvusd' && (
           <TipWrapper>
             <TipContent>
               <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-oracle-price-line)" />
               Oracle Price
             </TipContent>
-            {liquidationRange !== undefined && liquidationRange.price1.length !== 0 && (
-              <TipContent>
-                <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range)" />
-                <TipText>Liquidation Range</TipText>
-              </TipContent>
-            )}
+            <TipContent>
+              <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range)" />
+              <TipText>Liquidation Range</TipText>
+            </TipContent>
           </TipWrapper>
         )}
         {chartStatus === 'READY' && (

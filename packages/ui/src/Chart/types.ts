@@ -4,6 +4,42 @@ export type ChartType = 'swap' | 'crvusd' | 'poolPage'
 export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
+export const DEFAULT_CHART_COLORS: ChartColors = {
+  backgroundColor: '#fafafa',
+  lineColor: '#2962FF',
+  textColor: 'black',
+  areaTopColor: '#2962FF',
+  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+  chartGreenColor: '#2962FF',
+  chartRedColor: '#ef5350',
+  chartLabelColor: '#9B7DFF',
+  chartVolumeRed: '#ef53507e',
+  chartVolumeGreen: '#26a6997e',
+  chartOraclePrice: '#3360c9c0',
+  rangeColor: '#dfb316',
+  rangeColorA25: '#dfb4167f',
+  rangeColorOld: '#ab792f',
+  rangeColorA25Old: '#ab792f25',
+}
+
+export type ChartColors = {
+  backgroundColor: string
+  lineColor: string
+  textColor: string
+  areaTopColor: string
+  areaBottomColor: string
+  chartGreenColor: string
+  chartRedColor: string
+  chartLabelColor: string
+  chartVolumeRed: string
+  chartVolumeGreen: string
+  chartOraclePrice: string
+  rangeColor: string
+  rangeColorA25: string
+  rangeColorOld: string
+  rangeColorA25Old: string
+}
+
 export type ChartHeight = {
   expanded: number
   standard: number
@@ -158,11 +194,18 @@ export interface LlammaLiquidityApiResponse {
   data: LlammaLiquidityEvent[]
 }
 
-export type LiquidationRange = { value: number; time: UTCTimestamp }[]
+export type LiquidationRange = { value: number; time: UTCTimestamp }
 
 export type LlammaLiquididationRange = {
-  price1: LiquidationRange
-  price2: LiquidationRange
+  price1: LiquidationRange[]
+  price2: LiquidationRange[]
+}
+
+export type LiquidationRanges = {
+  new: LlammaLiquididationRange | null
+  current: LlammaLiquididationRange | null
+  increase: LlammaLiquididationRange | null
+  decrease: LlammaLiquididationRange | null
 }
 
 export interface LpTradesData {

@@ -3,6 +3,7 @@ import type {
   PricesApiCoin,
   LabelList,
   LlammaLiquididationRange,
+  LiquidationRanges,
   LiquidationRange,
 } from '@/ui/Chart/types'
 import { LlammaLiquidityCoins } from './types'
@@ -28,10 +29,13 @@ type Props = {
 
 const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   const address = llamma?.address ?? ''
+  const activeKey = useStore((state) => state.loanIncrease.activeKey)
   const themeType = useStore((state) => state.themeType)
   const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
+  const increasePrices = useStore((state) => state.loanIncrease.detailInfo[activeKey]?.prices ?? null)
+  const decreasePrices = useStore((state) => state.loanDecrease.detailInfo[activeKey]?.prices ?? null)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartFetchStatus,
@@ -53,54 +57,123 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     setChartExpanded,
   } = useStore((state) => state.ohlcCharts)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
-  const userPrices = userLoanDetails?.userPrices
 
   const selectedLiqRange = useMemo(() => {
+    let liqRanges: LiquidationRanges = {
+      new: null,
+      current: null,
+      increase: null,
+      decrease: null,
+    }
+
+    // increase loan prices
+    if (increasePrices !== null && increasePrices.length !== 0 && chartOhlcData) {
+      console.log(increasePrices)
+      let range: LlammaLiquididationRange = {
+        price1: [],
+        price2: [],
+      }
+      for (const data of chartOhlcData) {
+        range.price1 = [
+          ...range.price1,
+          {
+            time: data.time,
+            value: +increasePrices[1],
+          },
+        ]
+        range.price2 = [
+          ...range.price2,
+          {
+            time: data.time,
+            value: +increasePrices[0],
+          },
+        ]
+      }
+
+      liqRanges.increase = range
+    }
+
+    // create loan prices
     if (formValues.n && liqRangesMapper && chartOhlcData) {
       const prices = liqRangesMapper[formValues.n].prices
-      let price1: LiquidationRange = []
-      let price2: LiquidationRange = []
+      let range: LlammaLiquididationRange = {
+        price1: [],
+        price2: [],
+      }
       for (const data of chartOhlcData) {
-        price1 = [
-          ...price1,
+        range.price1 = [
+          ...range.price1,
           {
             time: data.time,
             value: +prices[0],
           },
         ]
-        price2 = [
-          ...price2,
+        range.price2 = [
+          ...range.price2,
           {
             time: data.time,
             value: +prices[1],
           },
         ]
       }
-      return { price1, price2 }
+
+      liqRanges.new = range
     }
-    if (userPrices !== undefined && chartOhlcData) {
-      let price1: LiquidationRange = []
-      let price2: LiquidationRange = []
+
+    // existing loan prices
+    if (userPrices !== null && chartOhlcData) {
+      let range: LlammaLiquididationRange = {
+        price1: [],
+        price2: [],
+      }
       for (const data of chartOhlcData) {
-        price1 = [
-          ...price1,
+        range.price1 = [
+          ...range.price1,
           {
             time: data.time,
             value: +userPrices[1],
           },
         ]
-        price2 = [
-          ...price2,
+        range.price2 = [
+          ...range.price2,
           {
             time: data.time,
             value: +userPrices[0],
           },
         ]
       }
-      console.log({ price1, price2 })
-      return { price1, price2 }
+
+      liqRanges.current = range
     }
-  }, [chartOhlcData, formValues.n, liqRangesMapper, userPrices])
+
+    // decrease loan prices
+    if (decreasePrices !== null && decreasePrices.length !== 0 && chartOhlcData) {
+      let range: LlammaLiquididationRange = {
+        price1: [],
+        price2: [],
+      }
+      for (const data of chartOhlcData) {
+        range.price1 = [
+          ...range.price1,
+          {
+            time: data.time,
+            value: +decreasePrices[1],
+          },
+        ]
+        range.price2 = [
+          ...range.price2,
+          {
+            time: data.time,
+            value: +decreasePrices[0],
+          },
+        ]
+      }
+
+      liqRanges.decrease = range
+    }
+
+    return liqRanges
+  }, [chartOhlcData, increasePrices, decreasePrices, formValues.n, liqRangesMapper, userPrices])
 
   const coins: LlammaLiquidityCoins = llamma
     ? {
