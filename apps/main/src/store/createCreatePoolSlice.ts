@@ -534,54 +534,48 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
       ),
     updateTokenPrice: (tokenId: TokenId, price: number) => {
+      console.log(tokenId, price)
+
       if (tokenId === TOKEN_A) {
+        get().createPool.updateInitialPrice(
+          price,
+          get().createPool.initialPrice[TOKEN_B],
+          get().createPool.initialPrice[TOKEN_C]
+        )
+
         set(
           produce((state) => {
-            get().createPool.updateInitialPrice(
-              price,
-              get().createPool.initialPrice[TOKEN_B],
-              get().createPool.initialPrice[TOKEN_C]
-            )
-
-            state.createPool.initialPrice = {
-              ...get().createPool.initialPrice,
-              tokenAPrice: price,
-            }
+            state.createPool.initialPrice[TOKEN_A] = price
           })
         )
       }
       if (tokenId === TOKEN_B) {
+        get().createPool.updateInitialPrice(
+          get().createPool.initialPrice[TOKEN_A],
+          price,
+          get().createPool.initialPrice[TOKEN_C]
+        )
+
         set(
           produce((state) => {
-            get().createPool.updateInitialPrice(
-              get().createPool.initialPrice[TOKEN_A],
-              price,
-              get().createPool.initialPrice[TOKEN_C]
-            )
-
-            state.createPool.initialPrice = {
-              ...get().createPool.initialPrice,
-              tokenBPrice: price,
-            }
+            state.createPool.initialPrice[TOKEN_B] = price
           })
         )
       }
       if (tokenId === TOKEN_C) {
+        get().createPool.updateInitialPrice(
+          get().createPool.initialPrice[TOKEN_A],
+          get().createPool.initialPrice[TOKEN_B],
+          price
+        )
+
         set(
           produce((state) => {
-            get().createPool.updateInitialPrice(
-              get().createPool.initialPrice[TOKEN_A],
-              get().createPool.initialPrice[TOKEN_B],
-              price
-            )
-
-            state.createPool.initialPrice = {
-              ...get().createPool.initialPrice,
-              tokenCPrice: price,
-            }
+            state.createPool.initialPrice[TOKEN_C] = price
           })
         )
       }
+      console.log(get().createPool.initialPrice)
     },
     refreshInitialPrice: async (curve: CurveApi) => {
       const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(
@@ -877,6 +871,21 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           // ----- TWOCRYPTO -----
         } else {
           const coins = [tokenA.address, tokenB.address]
+
+          console.log(
+            poolName,
+            poolSymbol,
+            coins,
+            cryptoA,
+            gamma,
+            midFee,
+            outFee,
+            allowedExtraProfit,
+            feeGamma,
+            adjustmentStep,
+            +maHalfTime,
+            initialPrice.initialPrice[0]
+          )
 
           try {
             const deployPoolTx = await curve.twocryptoFactory.deployPool(
