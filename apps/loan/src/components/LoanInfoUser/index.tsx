@@ -382,7 +382,7 @@ const StatsContentWrapper = styled.div<{ rowGridTemplate: string }>`
     margin-bottom: 8px;
 
     // label
-    > span:first-child {
+    .label {
       opacity: 0.7;
       white-space: nowrap;
     }
