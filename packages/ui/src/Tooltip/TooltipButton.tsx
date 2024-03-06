@@ -36,16 +36,19 @@ function TooltipButton({
     }
   }, [scrollY, state])
 
-  const handleBtnClick = useCallback((evt: React.MouseEvent<HTMLButtonElement>) => {
-    if (typeof triggerProps.onClick === 'function') triggerProps.onClick(evt)
+  const handleBtnClick = useCallback(
+    (evt: React.MouseEvent<HTMLButtonElement>) => {
+      if (typeof triggerProps.onClick === 'function') triggerProps.onClick(evt)
 
-    // handle mobile click tooltip
-    if (getIsMobile()) {
-      state.open()
-      setScrollY(window.scrollY)
-      window.addEventListener('scroll', handleScroll)
-    }
-  }, [])
+      // handle mobile click tooltip
+      if (getIsMobile()) {
+        state.open()
+        setScrollY(window.scrollY)
+        window.addEventListener('scroll', handleScroll)
+      }
+    },
+    [handleScroll, state, triggerProps]
+  )
 
   return (
     <StyledTooltipButton>

@@ -18,10 +18,10 @@ const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: Pro
     <div {...props}>
       {tooltip ? (
         <StyledChip tooltip={tooltip} tooltipProps={tooltipProps} isBlock isBold>
-          {title} <Icon className="svg-tooltip" size={16} name="InformationSquare" />
+          <span className="label">{title}</span> <Icon className="svg-tooltip" size={16} name="InformationSquare" />
         </StyledChip>
       ) : (
-        <TextCaption isBlock isBold isCaps>
+        <TextCaption className="label" isBlock isBold isCaps>
           {title}
         </TextCaption>
       )}
