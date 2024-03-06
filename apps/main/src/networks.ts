@@ -601,7 +601,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     name: 'Celo',
     id: 'celo',
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
-    excludeRoutes: [ROUTE.PAGE_LOCKER, ROUTE.PAGE_CREATE_POOL],
+    excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
@@ -621,6 +621,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'CELO',
     stableSwapNg: true,
     twocryptoFactory: true,
+    hasFactory: true,
     scanAddressPath: (hash: string) => `https://celoscan.io/address/${hash}`,
     scanTxPath: (hash: string) => `https://celoscan.io/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://celoscan.io/address/${hash}`,
@@ -630,7 +631,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     name: 'Aurora',
     id: 'aurora',
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
-    excludeRoutes: [ROUTE.PAGE_LOCKER, ROUTE.PAGE_CREATE_POOL],
+    excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
@@ -648,8 +649,9 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0x4988a896b1227218e4a686fde5eabdcabd91571f',
     },
     symbol: 'aETH',
-    stableSwapNg: true,
+    // stableSwapNg: true, does not support EIP-1559 txs
     twocryptoFactory: true,
+    hasFactory: true,
     scanAddressPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
     scanTxPath: (hash: string) => `https://aurorascan.dev/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
