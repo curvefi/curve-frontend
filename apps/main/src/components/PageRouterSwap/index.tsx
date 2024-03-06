@@ -510,7 +510,9 @@ const QuickSwap = ({
       <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false, '', false)} />
 
       {formValues.fromError ? (
-        <AlertBox alertType="error">{t`Not enough balance for ${tokensNameMapper[searchedParams.toAddress]}`}</AlertBox>
+        <AlertBox alertType="error">{t`Not enough balance for ${
+          tokensNameMapper[searchedParams.fromAddress]
+        }`}</AlertBox>
       ) : null}
 
       <FormConnectWallet loading={!steps.length} curve={curve}>
