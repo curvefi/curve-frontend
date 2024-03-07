@@ -13,6 +13,7 @@ import {
   RCZksyncLogo,
   RCBaseLogo,
   RCBSCLogo,
+  RCFraxtalLogo,
 } from 'ui/src/images'
 
 const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
@@ -269,5 +270,20 @@ export const baseNetworksConfig = {
     scanAddressPath: (hash: string) => `https://bscscan.com/address/${hash}`,
     scanTxPath: (hash: string) => `https://bscscan.com/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://bscscan.com/token/${hash}`,
+  },
+  252: {
+    ...NETWORK_CONFIG_DEFAULT,
+    name: 'Fraxtal',
+    id: 'fraxtal' as const,
+    hex: '0xfc',
+    icon: RCFraxtalLogo,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
+    networkId: 252 as const,
+    orgUIPath: '',
+    rpcUrlConnectWallet: `https://rpc.frax.com`,
+    symbol: 'frxETH',
+    scanAddressPath: (hash: string) => `https://fraxscan.com/address/${hash}`,
+    scanTxPath: (hash: string) => `https://fraxscan.com/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://fraxscan.com/token/${hash}`,
   },
 }

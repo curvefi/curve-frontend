@@ -541,6 +541,18 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
   },
+  252: {
+    ...NETWORK_CONFIG_DEFAULT,
+    ...baseNetworksConfig['252'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FRAXTAL_DEV_RPC_URL! : `https://rpc.frax.com`,
+    // TODO: use correct address once there is a pool
+    swap: {
+      fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
+    showInSelectNetwork: false,
+  },
 }
 
 export const networksIdMapper = Object.keys(networks).reduce((prev, curr: unknown) => {
