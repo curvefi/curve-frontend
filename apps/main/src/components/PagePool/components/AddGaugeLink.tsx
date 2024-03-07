@@ -29,8 +29,6 @@ const AddGaugeLink = ({
   const params = useParams()
   const navigate = useNavigate()
 
-  console.log(poolDataCacheOrApi.pool.id)
-
   const handleClick = () => {
     if (chainId === 1) {
       setSidechainGauge(false)

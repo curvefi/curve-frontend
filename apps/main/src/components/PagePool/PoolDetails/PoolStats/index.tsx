@@ -63,10 +63,10 @@ const PoolStats = ({
               {tokenAlert && tokenAlert.isInformationOnly && <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>}
 
               {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
-                <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a v2 pool`}>
-                  {t`V2 pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
-                  <ExternalLink $noStyles href="https://resources.curve.fi/base-features/understanding-crypto-pools">
-                    {t`Click here to learn more about v2 pools`}
+                <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>
+                  {t`Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
+                  <ExternalLink $noStyles href="https://resources.curve.fi/base-features/understanding-crypto-pools/">
+                    {t`Click here to learn more about Cryptoswap pools`}
                   </ExternalLink>
                 </AlertBox>
               )}

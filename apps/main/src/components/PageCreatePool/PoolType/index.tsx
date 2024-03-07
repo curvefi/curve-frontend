@@ -29,9 +29,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Stableswap`}
               description={t`Bonding Curve specialising in pegged assets.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
-              disabled={!networks[chainId].stableSwapFactory}
+              disabled={!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg}
             />
-            {!networks[chainId].stableSwapFactory && (
+            {!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg && (
               <DisabledMessage>{t`Stableswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>
