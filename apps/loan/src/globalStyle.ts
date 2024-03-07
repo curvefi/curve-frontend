@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
+import { CURVE_ASSETS_URL } from '@/ui/utils'
 
 export const sizes = {
   sm: '0.875rem', //14px
@@ -23,7 +24,7 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    background-image: url(/images/hero-bg.webp);
+    background-image: url(${CURVE_ASSETS_URL + '/branding/curve-app-header.webp'});
     background-size: auto 400px;
     background-repeat: repeat-x;
     background-attachment: fixed;
