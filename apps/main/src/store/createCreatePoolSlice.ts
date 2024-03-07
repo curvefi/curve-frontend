@@ -534,8 +534,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
       ),
     updateTokenPrice: (tokenId: TokenId, price: number) => {
-      console.log(tokenId, price)
-
       if (tokenId === TOKEN_A) {
         get().createPool.updateInitialPrice(
           price,
@@ -872,21 +870,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         } else {
           const coins = [tokenA.address, tokenB.address]
 
-          console.log(
-            poolName,
-            poolSymbol,
-            coins,
-            cryptoA,
-            gamma,
-            midFee,
-            outFee,
-            allowedExtraProfit,
-            feeGamma,
-            adjustmentStep,
-            +maHalfTime,
-            initialPrice.initialPrice[0]
-          )
-
           try {
             const deployPoolTx = await curve.twocryptoFactory.deployPool(
               poolName,
@@ -932,7 +915,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             const successNotificationMessage = t`Pool ${poolName} deployment successful.`
             notifyNotification(successNotificationMessage, 'success', 15000)
 
-            console.log('getting pool id')
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
               produce((state) => {
@@ -940,7 +922,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               })
             )
 
-            console.log('getting pool data')
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(

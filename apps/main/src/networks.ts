@@ -651,7 +651,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'aETH',
     // stableSwapNg: true, does not support EIP-1559 txs
     twocryptoFactory: true,
-    hasFactory: true,
+    // hasFactory: true,
     scanAddressPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
     scanTxPath: (hash: string) => `https://aurorascan.dev/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
