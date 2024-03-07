@@ -34,7 +34,7 @@ const Page: NextPage = () => {
           decreases, the system automatically sells off collateral in a &lsquo;soft liquidation mode&rsquo;. If the
           collateral&apos;s price increases, the system recovers the collateral. This process could lead to some losses
           due to liquidation and de-liquidation. Additional information can be found on{' '}
-          <StyledExternalLink href="https://docs.curve.fi/LLAMMA/overview/">LLAMMA Overview</StyledExternalLink>.
+          <StyledExternalLink href="https://docs.curve.fi/crvUSD/amm/">LLAMMA Overview</StyledExternalLink>.
         </p>
 
         <p>Please consider the following risk disclaimers when using the Curve Stablecoin infrastructure:</p>
