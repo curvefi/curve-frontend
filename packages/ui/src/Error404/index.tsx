@@ -1,38 +1,19 @@
-import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import Box from '@/ui/Box'
+import { CURVE_ASSETS_URL } from 'ui/src/utils'
+import { breakpoints } from 'ui/src/utils/responsive'
+import Box from 'ui/src/Box'
+import Image from 'next/image'
 
-export function ErrorVideo() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.5
-    }
-  }, [])
-
+export function Error404() {
   return (
     <Container variant="secondary">
-      <Video ref={videoRef} autoPlay muted poster="/images/error-404.jpg">
-        <source src="/images/error-404.mp4" type="video/mp4" />
-        <source src="/images/error-404.webm" type="video/webm" />
-      </Video>
+      <Image src={`${CURVE_ASSETS_URL}/branding/four-oh-llama.jpg`} alt="404" layout="fill" />
       <Title>404</Title>
       <Description>Page not found</Description>
     </Container>
   )
 }
-
-const Video = styled.video`
-  object-fit: cover;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-`
 
 const Description = styled.p`
   font-size: 2rem;
@@ -66,4 +47,4 @@ const Container = styled(Box)`
   }
 `
 
-export default ErrorVideo
+export default Error404

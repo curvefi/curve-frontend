@@ -1,15 +1,13 @@
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
-
 import DocumentHead from '@/layout/DocumentHead'
-import ErrorVideo from '@/components/Page404/index'
+import Error404 from '@/ui/Error404'
 
 const Page: NextPage = () => {
   return (
     <>
-      <DocumentHead title={t`Error 404`} />
-      <ErrorVideo />
+      <DocumentHead title="Error 404" />
+      <Error404 />
     </>
   )
 }
