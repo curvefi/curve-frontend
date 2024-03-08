@@ -1,31 +1,13 @@
 import sortBy from 'lodash/sortBy'
 
 import { ROUTE } from '@/constants'
+import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
-import {
-  RCArbitrumLogo,
-  RCAvalancheLogo,
-  RCAuroraLogo,
-  RCCeloLogo,
-  RCEthereumLogo,
-  RCFantomLogo,
-  RCKavaLogo,
-  RCMoonbeamLogo,
-  RCOptimismLogo,
-  RCPolygonLogo,
-  RCGnosisLogo,
-  RCZksyncLogo,
-  RCBaseLogo,
-  RCBSCLogo,
-} from '@/ui/images'
-
-const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 const NETWORK_CONFIG_DEFAULT = {
   api: curvejsApi,
-  blocknativeSupport: true,
   compensations: {},
   customPoolIds: {}, // remove pools from pool list
   ethTokenAddress: {},
@@ -44,10 +26,6 @@ const NETWORK_CONFIG_DEFAULT = {
     'BOOSTING',
     'LOCKER',
   ],
-  gasL2: false,
-  gasPricesUnit: 'GWEI',
-  gasPricesUrl: 'https://api.curve.fi/api/getGas',
-  gasPricesDefault: 0,
   hidePoolRewards: {},
   hideSmallPoolsTvl: 10000,
   missingPools: [],
@@ -67,18 +45,12 @@ const NETWORK_CONFIG_DEFAULT = {
   stableSwapNg: false,
   hasFactory: false,
   pricesApi: false,
-  integrations: {
-    imageBaseurl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
-    listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
-    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
-  },
 }
 
 const networks: Record<ChainId, NetworkConfig> = {
   1: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Ethereum',
-    id: 'ethereum',
+    ...baseNetworksConfig['1'],
     compensations: {
       crveth: true,
       'factory-v2-38': true, // alETH,
@@ -100,8 +72,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       y: true,
     },
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
-    gasPricesDefault: 1,
-    hex: '0x1',
     hidePoolRewards: {
       crveth: true,
       'factory-v2-38': true,
@@ -109,15 +79,10 @@ const networks: Record<ChainId, NetworkConfig> = {
       'factory-v2-194': true,
       'factory-v2-56': true, // Ankr Reward-Earning Staked ETH
     },
-    icon: RCEthereumLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
     missingPools: [
       { name: 'linkusd', url: 'https://classic.curve.fi/linkusd/withdraw' },
       { name: 'tricrypto', url: 'https://classic.curve.fi/tricrypto/withdraw' },
     ],
-    networkId: 1,
-    orgUIPath: 'https://classic.curve.fi',
-    rpcUrlConnectWallet: `https://eth.drpc.org`,
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
       : `https://curve.drpc.org/ogrpc?network=ethereum`,
@@ -143,7 +108,6 @@ const networks: Record<ChainId, NetworkConfig> = {
     swapCustomRouteRedirect: {
       'sfrxeth-llamma': 'https://crvusd.curve.fi/',
     },
-    symbol: 'ETH',
     createQuickList: [
       {
         address: '0x6c3f90f043a72fa612cbac8115ee7e52bde6e490',
@@ -235,28 +199,15 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://etherscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://etherscan.com/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://etherscan.io/token/${hash}`,
   },
   10: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Optimism',
-    id: 'optimism',
+    ...baseNetworksConfig['10'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasL2: true,
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0xa',
-    icon: RCOptimismLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-optimism/`,
-    networkId: 10,
-    orgUIPath: 'https://optimism.curve.fi',
-    rpcUrlConnectWallet: 'https://optimism.drpc.org',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=optimism',
@@ -300,27 +251,15 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://optimistic.etherscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://optimistic.etherscan.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://optimistic.etherscan.io/token/${hash}`,
   },
   100: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Gnosis',
-    id: 'xdai',
+    ...baseNetworksConfig['100'],
     poolFilters: ['all', 'usd', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x64',
-    icon: RCGnosisLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-xdai/`,
-    networkId: 100,
-    orgUIPath: 'https://xdai.curve.fi',
-    rpcUrlConnectWallet: 'https://rpc.gnosischain.com',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_GNOSIS_DEV_RPC_URL! : 'https://rpc.gnosischain.com',
     swap: {
       fromAddress: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
@@ -350,62 +289,37 @@ const networks: Record<ChainId, NetworkConfig> = {
     twocryptoFactory: true,
     stableSwapNg: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://gnosisscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://gnosisscan.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://gnosisscan.io/address/${hash}`,
   },
   1284: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Moonbeam',
-    id: 'moonbeam',
+    ...baseNetworksConfig['1284'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x504',
-    icon: RCMoonbeamLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-moonbeam/`,
-    networkId: 1284,
-    orgUIPath: 'https://moonbeam.curve.fi',
-    rpcUrlConnectWallet: 'https://moonbeam.public.blastapi.io',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_MOONBEAM_DEV_RPC_URL! : 'https://moonbeam.public.blastapi.io',
     swap: {
       fromAddress: '0xffffffff1fcacbd218edc0eba20fc2308c778080',
       toAddress: '0xfa36fe1da08c89ec72ea1f0143a35bfd5daea108',
     },
-    symbol: 'GLMR',
     createQuickList: [],
     basePools: [],
     stableSwapFactory: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://moonscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://moonscan.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://moonscan.io/address/${hash}`,
   },
   137: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Polygon',
-    id: 'polygon',
+    ...baseNetworksConfig['137'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: 'https://gasstation.polygon.technology/v2',
-    gasPricesDefault: 0,
-    hex: '0x89',
-    icon: RCPolygonLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-polygon/`,
     missingPools: [
       { name: 'atricrypto', url: 'https://polygon.curve.fi/atricrypto/withdraw' },
       { name: 'atricrypto2', url: 'https://polygon.curve.fi/atricrypto2/withdraw' },
     ],
-    networkId: 137,
-    orgUIPath: 'https://polygon.curve.fi',
-    rpcUrlConnectWallet: 'https://polygon-rpc.com',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=polygon',
@@ -413,7 +327,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
       toAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
     },
-    symbol: 'MATIC',
     basePools: [],
     stableSwapFactory: true,
     cryptoSwapFactory: true,
@@ -421,49 +334,31 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://polygonscan.com/address/${hash}`,
-    scanTxPath: (hash: string) => `https://polygonscan.com/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://polygonscan.com/token/${hash}`,
   },
   2222: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Kava',
-    id: 'kava',
+    ...baseNetworksConfig['2222'],
     poolFilters: ['all', 'usd', 'btc', 'kava', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUnit: 'UKAVA',
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x8ae',
-    icon: RCKavaLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-kava/`,
-    networkId: 2222,
-    orgUIPath: 'https://kava.curve.fi',
     poolListFormValuesDefault: { hideSmallPools: false }, // remove if Kava have > 10 pools
-    rpcUrlConnectWallet: 'https://evm.kava.io',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_KAVA_DEV_RPC_URL! : 'https://evm.kava.io',
     swap: {
       fromAddress: '0x765277eebeca2e31912c9946eae1021199b39c61',
       toAddress: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
     },
-    symbol: 'KAVA',
     createQuickList: [],
     basePools: [],
     stableSwapFactory: true,
     twocryptoFactory: true,
     stableSwapNg: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://explorer.kava.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://explorer.kava.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://explorer.kava.io/address/${hash}`,
   },
   250: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Fantom',
-    id: 'fantom',
+    ...baseNetworksConfig['250'],
     customPoolIds: {
       'factory-v2-137': true, // old eywa pool
       'factory-v2-140': true, // old eywa pool
@@ -474,20 +369,11 @@ const networks: Record<ChainId, NetworkConfig> = {
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0xfa',
-    icon: RCFantomLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-fantom/`,
-    networkId: 250,
-    orgUIPath: 'https://ftm.curve.fi',
-    rpcUrlConnectWallet: 'https://rpc.ftm.tools/',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FANTOM_DEV_RPC_URL! : 'https://rpc.ftm.tools/',
     swap: {
       fromAddress: '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
       toAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     },
-    symbol: 'FTM',
     createQuickList: [],
     basePools: [],
     stableSwapFactory: true,
@@ -496,29 +382,17 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://ftmscan.com/address/${hash}`,
-    scanTxPath: (hash: string) => `https://ftmscan.com/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://ftmscan.com/token/${hash}`,
   },
   42161: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Arbitrum',
-    id: 'arbitrum',
+    ...baseNetworksConfig['42161'],
     excludeGetUserBalancesTokens: ['0x3aef260cb6a5b469f970fae7a1e233dbd5939378'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0xa4b1',
     hidePoolRewards: { tricrypto: true },
-    icon: RCArbitrumLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-arbitrum/`,
-    networkId: 42161,
-    orgUIPath: 'https://arbitrum.curve.fi',
-    rpcUrlConnectWallet: 'https://arb1.arbitrum.io/rpc',
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=arbitrum',
@@ -526,7 +400,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       toAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
     },
-    symbol: 'ETH',
     createQuickList: [
       {
         address: '0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5',
@@ -559,151 +432,84 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://arbiscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://arbiscan.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://arbiscan.io/token/${hash}`,
   },
   43114: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Avalanche',
-    id: 'avalanche',
+    ...baseNetworksConfig['43114'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUnit: 'nAVAX',
-    gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
-    gasPricesDefault: 0,
-    hex: '0xa86a',
-    icon: RCAvalancheLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-avalanche/`,
-    networkId: 43114,
-    orgUIPath: 'https://avax.curve.fi',
-    rpcUrlConnectWallet: 'https://api.avax.network/ext/bc/C/rpc',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_AVALANCHE_DEV_RPC_URL! : 'https://api.avax.network/ext/bc/C/rpc',
     swap: {
       fromAddress: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
       toAddress: '0xc7198437980c041c805a1edcba50c1ce5db95118',
     },
-    symbol: 'AVAX',
     basePools: [],
     stableSwapFactory: true,
     twocryptoFactory: true,
     stableSwapNg: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://snowtrace.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://snowtrace.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://snowtrace.io/token/${hash}`,
   },
   42220: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Celo',
-    id: 'celo',
+    ...baseNetworksConfig['42220'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0xa4ec',
-    icon: RCCeloLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-celo/`,
-    networkId: 42220,
-    orgUIPath: 'https://celo.curve.fi',
-    rpcUrlConnectWallet: 'https://forno.celo.org',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_CELO_DEV_RPC_URL! : 'https://forno.celo.org',
     swap: {
       fromAddress: '0x37f750b7cc259a2f741af45294f6a16572cf5cad',
       toAddress: '0x617f3112bf5397d0467d315cc709ef968d9ba546',
     },
-    symbol: 'CELO',
     stableSwapNg: true,
     twocryptoFactory: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://celoscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://celoscan.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://celoscan.io/address/${hash}`,
   },
   1313161554: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Aurora',
-    id: 'aurora',
+    ...baseNetworksConfig['1313161554'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x4e454152',
-    icon: RCAuroraLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-aurora/`,
-    networkId: 1313161554,
-    orgUIPath: 'https://aurora.curve.fi',
-    rpcUrlConnectWallet: 'https://mainnet.aurora.dev',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_AURORA_DEV_RPC_URL! : 'https://mainnet.aurora.dev',
     swap: {
       fromAddress: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802',
       toAddress: '0x4988a896b1227218e4a686fde5eabdcabd91571f',
     },
-    symbol: 'aETH',
     // stableSwapNg: true, does not support EIP-1559 txs
     twocryptoFactory: true,
     // hasFactory: true,
-    scanAddressPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
-    scanTxPath: (hash: string) => `https://aurorascan.dev/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://aurorascan.dev/address/${hash}`,
   },
   324: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'zkSync Era',
-    id: 'zksync',
+    ...baseNetworksConfig['324'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x144',
-    icon: RCZksyncLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-zksync/`,
-    networkId: 324,
-    orgUIPath: '',
-    rpcUrlConnectWallet: 'https://mainnet.era.zksync.io',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ZKSYNC_DEV_RPC_URL! : 'https://mainnet.era.zksync.io',
     showInSelectNetwork: false,
-    symbol: 'ETH',
     stableSwapNg: true,
-    scanAddressPath: (hash: string) => `https://explorer.zksync.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://explorer.zksync.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://explorer.zksync.io/token/${hash}`,
   },
   8453: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'Base',
-    id: 'base',
+    ...baseNetworksConfig['8453'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER' && f !== 'SWAP_REQUIRED'
     }),
-    gasL2: true,
-    gasPricesUrl: '',
-    gasPricesDefault: 0,
-    hex: '0x2105',
     customPoolIds: { 'factory-v2-4': true, 'factory-v2-5': true },
     hideSmallPoolsTvl: 5000,
-    icon: RCBaseLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-base/`,
-    networkId: 8453,
-    orgUIPath: '',
-    rpcUrlConnectWallet: 'https://base.drpc.org',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=base',
     showHideSmallPoolsCheckbox: true,
-    symbol: 'ETH',
     swap: {
       fromAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
       toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
@@ -715,27 +521,16 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
-    scanAddressPath: (hash: string) => `https://basescan.org/address/${hash}`,
-    scanTxPath: (hash: string) => `https://basescan.org/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://basescan.org/token/${hash}`,
   },
   56: {
     ...NETWORK_CONFIG_DEFAULT,
-    name: 'BSC',
-    id: 'bsc',
+    ...baseNetworksConfig['56'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER' && f !== 'SWAP_REQUIRED'
     }),
-    hex: '0x38',
-    icon: RCBSCLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-bsc/`,
-    networkId: 56,
-    orgUIPath: '',
-    rpcUrlConnectWallet: 'https://bsc-dataseed1.binance.org/',
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=bsc',
-    symbol: 'BNB',
     swap: {
       fromAddress: '0xe9c803f48dffe50180bd5b01dc04da939e3445fc',
       toAddress: '0xcba2aeec821b0b119857a9ab39e09b034249681a',
@@ -745,9 +540,18 @@ const networks: Record<ChainId, NetworkConfig> = {
     twocryptoFactory: true,
     stableSwapNg: true,
     hasFactory: true,
-    scanAddressPath: (hash: string) => `https://bscscan.com/address/${hash}`,
-    scanTxPath: (hash: string) => `https://bscscan.com/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://bscscan.com/token/${hash}`,
+  },
+  252: {
+    ...NETWORK_CONFIG_DEFAULT,
+    ...baseNetworksConfig['252'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FRAXTAL_DEV_RPC_URL! : `https://rpc.frax.com`,
+    // TODO: use correct address once there is a pool
+    swap: {
+      fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
+      toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    },
+    showInSelectNetwork: false,
   },
 }
 
