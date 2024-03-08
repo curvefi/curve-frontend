@@ -215,11 +215,14 @@ const pool = {
 
     try {
       const customTvl = networks[chainId].poolCustomTVL[p.id]
-      resp.value = p.inApi && !customTvl ? await p.stats.totalLiquidity() : customTvl ?? '0'
+      resp.value = customTvl ? customTvl : await p.stats.totalLiquidity()
       return resp
     } catch (error) {
       console.error(error)
-      resp.errorMessage = 'Unable to get tvl'
+      if (p.inApi) {
+        console.error(error)
+        resp.errorMessage = 'Unable to get tvl'
+      }
       return resp
     }
   },
@@ -227,11 +230,13 @@ const pool = {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }
 
     try {
-      resp.value = p.inApi ? await p.stats.volume() : '0'
+      resp.value = await p.stats.volume()
       return resp
     } catch (error) {
-      console.error(error)
-      resp.errorMessage = 'Unable to get volume'
+      if (p.inApi) {
+        console.error(error)
+        resp.errorMessage = 'Unable to get volume'
+      }
       return resp
     }
   },
@@ -273,10 +278,10 @@ const pool = {
 
     // get base vAPY
     const DEFAULT_BASE = { day: '0', week: '0' }
-    const [baseApyResult] = await Promise.allSettled([p.inApi ? p.stats.baseApy() : Promise.resolve(DEFAULT_BASE)])
+    const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
     resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
     if (baseApyResult.status === 'rejected') {
-      resp.error['base'] = true
+      if (p.inApi) resp.error['base'] = true
     } else {
       resp.base.day = new BN(resp.base.day).toFixed(8)
       resp.base.week = new BN(resp.base.week).toFixed(8)
