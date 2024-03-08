@@ -7,7 +7,7 @@ import type {
   LiquidationRanges,
   ChartColors,
 } from './types'
-import type { IChartApi, Time } from 'lightweight-charts'
+import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
 
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
@@ -51,211 +51,196 @@ const CandleChart = ({
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
 
-  const [chartCreated, setChartCreated] = useState(false)
+  const newAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const increaseAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const increaseAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const decreaseAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const decreaseAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
+  const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
+
+  const isMounted = useRef(true)
+  const totalDecimalPlacesRef = useRef(4)
+
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
 
-  console.log(liquidationRange)
+  // console.log('new: ', liquidationRange?.new)
+  // console.log('current: ', liquidationRange?.current)
+  // console.log('increase: ', liquidationRange?.increase)
+  // console.log('decrease: ', liquidationRange?.decrease)
 
   useEffect(() => {
-    if (chartCreated && !ohlcData) return
+    if (!chartContainerRef.current) return
 
-    if (chartContainerRef.current) {
-      chartRef.current = createChart(chartContainerRef.current, {
-        layout: {
-          background: { type: ColorType.Solid, color: colors.backgroundColor },
-          textColor: colors.textColor,
+    chartRef.current = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: colors.backgroundColor },
+        textColor: colors.textColor,
+      },
+      width: wrapperRef.current.clientWidth,
+      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+      timeScale: {
+        timeVisible: timeOption === 'day' ? false : true,
+      },
+      rightPriceScale: {
+        autoScale: true,
+        alignLabels: true,
+        borderVisible: false,
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.1,
         },
-        width: wrapperRef.current.clientWidth,
-        height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
-        timeScale: {
-          timeVisible: timeOption === 'day' ? false : true,
+      },
+      grid: {
+        vertLines: {
+          visible: false,
         },
-        rightPriceScale: {
-          autoScale: true,
-          alignLabels: true,
-          borderVisible: false,
-          scaleMargins: {
-            top: 0.1,
-            bottom: 0.1,
-          },
+        horzLines: {
+          visible: false,
         },
-        grid: {
-          vertLines: {
-            visible: false,
-          },
-          horzLines: {
-            visible: false,
-          },
+      },
+      crosshair: {
+        mode: CrosshairMode.Normal,
+        vertLine: {
+          width: 4,
+          color: '#C3BCDB44',
+          style: LineStyle.Solid,
+          labelBackgroundColor: '#9B7DFF',
         },
-        crosshair: {
-          mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
-          vertLine: {
-            width: 4,
-            color: '#C3BCDB44',
-            style: LineStyle.Solid,
-            labelBackgroundColor: '#9B7DFF',
-          },
-          horzLine: {
-            color: '#9B7DFF',
-            labelBackgroundColor: '#9B7DFF',
-          },
+        horzLine: {
+          color: '#9B7DFF',
+          labelBackgroundColor: '#9B7DFF',
         },
-      })
-      chartRef.current.timeScale()
+      },
+    })
+    chartRef.current.timeScale()
+    isMounted.current = true
 
-      let totalDecimalPlaces = 4
+    // liquidation range series
 
-      // ordered to ensure that the bottom color doesn't cover a series
-      if (liquidationRange !== undefined) {
-        if (liquidationRange?.new !== null) {
-          const areaSeries2 = chartRef.current.addAreaSeries({
-            topColor: colors.rangeColorA25,
-            bottomColor: colors.rangeColorA25,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          const areaSeries3 = chartRef.current.addAreaSeries({
-            topColor: colors.backgroundColor,
-            bottomColor: colors.backgroundColor,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          areaSeries2.setData(liquidationRange.new.price1)
-          areaSeries3.setData(liquidationRange.new.price2)
-        }
-
-        if (liquidationRange?.increase !== null) {
-          const areaSeries2 = chartRef.current.addAreaSeries({
-            topColor: colors.rangeColorA25,
-            bottomColor: colors.rangeColorA25,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          const areaSeries3 = chartRef.current.addAreaSeries({
-            topColor: colors.backgroundColor,
-            bottomColor: colors.backgroundColor,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          areaSeries2.setData(liquidationRange.increase.price1)
-          areaSeries3.setData(liquidationRange.increase.price2)
-        }
-
-        if (liquidationRange?.current !== null) {
-          const areaSeries1 = chartRef.current.addAreaSeries({
-            topColor:
-              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
-                ? colors.rangeColorA25Old
-                : colors.rangeColorA25,
-            bottomColor:
-              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
-                ? colors.rangeColorA25Old
-                : colors.rangeColorA25,
-            lineColor:
-              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
-                ? colors.rangeColorOld
-                : colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          const areaSeries2 = chartRef.current.addAreaSeries({
-            topColor: colors.backgroundColor,
-            bottomColor: colors.backgroundColor,
-            lineColor:
-              liquidationRange.new !== null || liquidationRange.increase !== null || liquidationRange.decrease !== null
-                ? colors.rangeColorOld
-                : colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          areaSeries1.setData(liquidationRange.current.price1)
-          areaSeries2.setData(liquidationRange.current.price2)
-        }
-
-        if (liquidationRange?.decrease !== null) {
-          const areaSeries1 = chartRef.current.addAreaSeries({
-            topColor: colors.rangeColorA25,
-            bottomColor: colors.rangeColorA25,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          const areaSeries2 = chartRef.current.addAreaSeries({
-            topColor: colors.backgroundColor,
-            bottomColor: colors.backgroundColor,
-            lineColor: colors.rangeColor,
-            lineWidth: 1,
-            lineStyle: 3,
-            crosshairMarkerVisible: false,
-            pointMarkersVisible: false,
-            lineVisible: false,
-            priceLineStyle: 2,
-          })
-
-          areaSeries1.setData(liquidationRange.decrease.price1)
-          areaSeries2.setData(liquidationRange.decrease.price2)
-        }
-      }
-
-      if (volumeData !== undefined) {
-        const volumeSeries = chartRef.current.addHistogramSeries({
-          priceFormat: {
-            type: 'volume',
-          },
-          priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-        })
-        volumeSeries.priceScale().applyOptions({
-          // set the positioning of the volume series
-          scaleMargins: {
-            top: 0.7, // highest point of the series will be 70% away from the top
-            bottom: 0,
-          },
+    // new
+    if (liquidationRange && !newAreaSeriesRef.current) {
+      if (liquidationRange?.new) {
+        newAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
         })
 
-        volumeSeries.setData(volumeData)
+        newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
       }
+    }
 
-      const candlestickSeries = chartRef.current.addCandlestickSeries({
+    // increase
+    if (liquidationRange && !increaseAreaSeriesRef.current) {
+      if (liquidationRange?.increase) {
+        increaseAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+
+        increaseAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+      }
+    }
+
+    // current
+    if (liquidationRange && !currentAreaSeriesRef.current) {
+      if (liquidationRange?.current) {
+        currentAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+
+        currentAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+      }
+    }
+
+    // decrease
+    if (liquidationRange && !decreaseAreaSeriesRef.current) {
+      if (liquidationRange?.decrease) {
+        decreaseAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+
+        decreaseAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+        })
+      }
+    }
+
+    if (ohlcData && !candlestickSeriesRef.current) {
+      candlestickSeriesRef.current = chartRef.current.addCandlestickSeries({
         priceLineStyle: 2,
         upColor: '#26a69a',
         downColor: '#ef5350',
@@ -275,27 +260,139 @@ const CandleChart = ({
 
             // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
             // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-            totalDecimalPlaces = price >= 1 ? 4 : nonZeroIndex + 4
+            totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
 
-            return price.toFixed(totalDecimalPlaces)
+            return price.toFixed(totalDecimalPlacesRef.current)
           },
           minMove: 0.0000001,
         },
       })
+    }
 
-      candlestickSeries.setData(ohlcData)
+    if (volumeData && !volumeSeriesRef.current) {
+      volumeSeriesRef.current = chartRef.current.addHistogramSeries({
+        priceFormat: {
+          type: 'volume',
+        },
+        priceScaleId: '', // set as an overlay by setting a blank priceScaleId
+      })
+      volumeSeriesRef.current.priceScale().applyOptions({
+        // set the positioning of the volume series
+        scaleMargins: {
+          top: 0.7, // highest point of the series will be 70% away from the top
+          bottom: 0,
+        },
+      })
+    }
 
-      if (oraclePriceData !== undefined) {
-        const lineSeries = chartRef.current.addLineSeries({
-          color: colors.chartOraclePrice,
-          lineWidth: 2,
-          priceLineStyle: 2,
-        })
+    if (oraclePriceData && !oraclePriceSeriesRef.current) {
+      oraclePriceSeriesRef.current = chartRef.current.addLineSeries({
+        color: colors.chartOraclePrice,
+        lineWidth: 2,
+        priceLineStyle: 2,
+      })
+    }
 
-        lineSeries.setData(oraclePriceData)
+    return () => {
+      candlestickSeriesRef.current = null
+
+      if (chartRef.current) {
+        chartRef.current.remove()
+        chartRef.current = null
       }
 
-      setChartCreated(true)
+      newAreaSeriesRef.current = null
+      newAreaBgSeriesRef.current = null
+      currentAreaSeriesRef.current = null
+      currentAreaBgSeriesRef.current = null
+      increaseAreaSeriesRef.current = null
+      increaseAreaBgSeriesRef.current = null
+      decreaseAreaBgSeriesRef.current = null
+      decreaseAreaSeriesRef.current = null
+      candlestickSeriesRef.current = null
+      volumeSeriesRef.current = null
+      oraclePriceSeriesRef.current = null
+    }
+  }, [
+    chartExpanded,
+    chartHeight.expanded,
+    chartHeight.standard,
+    colors.backgroundColor,
+    colors.chartOraclePrice,
+    colors.rangeColor,
+    colors.rangeColorA25,
+    colors.textColor,
+    liquidationRange,
+    magnet,
+    ohlcData,
+    oraclePriceData,
+    timeOption,
+    volumeData,
+    wrapperRef,
+  ])
+
+  useEffect(() => {
+    if (chartRef.current) {
+      chartRef.current.applyOptions({
+        crosshair: {
+          mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
+        },
+      })
+    }
+  }, [magnet])
+
+  useEffect(() => {
+    if (
+      currentAreaSeriesRef.current &&
+      currentAreaBgSeriesRef.current &&
+      (liquidationRange?.new || liquidationRange?.increase || liquidationRange?.decrease)
+    ) {
+      currentAreaSeriesRef.current.applyOptions({
+        topColor: colors.rangeColorA25Old,
+        bottomColor: colors.rangeColorA25Old,
+        lineColor: colors.rangeColorOld,
+      })
+      currentAreaBgSeriesRef.current.applyOptions({
+        topColor: colors.backgroundColor,
+        bottomColor: colors.backgroundColor,
+        lineColor: colors.rangeColorOld,
+      })
+    }
+  }, [
+    colors.backgroundColor,
+    colors.rangeColorA25Old,
+    colors.rangeColorOld,
+    liquidationRange?.decrease,
+    liquidationRange?.increase,
+    liquidationRange?.new,
+    magnet,
+  ])
+
+  useEffect(() => {
+    if (liquidationRange !== undefined) {
+      if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
+        newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+        newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
+      }
+
+      if (liquidationRange.increase && increaseAreaSeriesRef.current && increaseAreaBgSeriesRef.current) {
+        increaseAreaSeriesRef.current.setData(liquidationRange.increase.price1)
+        increaseAreaBgSeriesRef.current.setData(liquidationRange.increase.price2)
+      }
+
+      if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
+        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+        currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
+      }
+
+      if (liquidationRange.decrease && decreaseAreaSeriesRef.current && decreaseAreaBgSeriesRef.current) {
+        decreaseAreaSeriesRef.current.setData(liquidationRange.decrease.price1)
+        decreaseAreaBgSeriesRef.current.setData(liquidationRange.decrease.price2)
+      }
+    }
+
+    if (candlestickSeriesRef.current && chartRef.current) {
+      candlestickSeriesRef.current.setData(ohlcData)
 
       const timeScale = chartRef.current.timeScale()
 
@@ -305,17 +402,18 @@ const CandleChart = ({
 
       let timer: NodeJS.Timeout | null = null
       timeScale.subscribeVisibleLogicalRangeChange(() => {
-        if (timer !== null || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
+        if (timer || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
           return
         }
         timer = setTimeout(() => {
           const logicalRange = timeScale.getVisibleLogicalRange()
           if (
-            logicalRange !== null &&
+            logicalRange &&
+            candlestickSeriesRef.current &&
             (!refetchingHistory || !refetchingCapped || lastRefetchLength !== ohlcData.length)
           ) {
-            const barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
-            if (barsInfo !== null && barsInfo.barsBefore < 50) {
+            const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+            if (barsInfo && barsInfo.barsBefore < 50) {
               setLastTimescale(timeScale.getVisibleRange())
               fetchMoreChartData()
             }
@@ -323,33 +421,25 @@ const CandleChart = ({
           timer = null
         }, 150)
       })
+    }
 
-      return () => {
-        if (timer !== null) {
-          clearTimeout(timer) // Clear any pending timer when the component unmounts or before re-subscribing.
-        }
+    if (volumeSeriesRef.current && volumeData !== undefined) {
+      volumeSeriesRef.current.setData(volumeData)
+    }
 
-        chartRef.current?.remove()
-      }
+    if (oraclePriceSeriesRef.current && oraclePriceData !== undefined) {
+      oraclePriceSeriesRef.current.setData(oraclePriceData)
     }
   }, [
-    ohlcData,
-    colors,
-    timeOption,
-    chartCreated,
-    wrapperRef,
-    chartExpanded,
-    magnet,
-    chartType,
-    chartHeight.expanded,
-    chartHeight.standard,
     fetchMoreChartData,
-    refetchingHistory,
-    refetchingCapped,
     lastRefetchLength,
     lastTimescale,
-    volumeData,
+    liquidationRange,
+    ohlcData,
     oraclePriceData,
+    refetchingCapped,
+    refetchingHistory,
+    volumeData,
   ])
 
   useEffect(() => {
@@ -368,6 +458,7 @@ const CandleChart = ({
 
     return () => {
       setIsUnmounting(true)
+
       wrapperRef?.current && wrapperRef.current.disconnect()
     }
   }, [wrapperRef, isUnmounting])
