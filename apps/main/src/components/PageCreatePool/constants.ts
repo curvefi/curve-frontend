@@ -110,8 +110,8 @@ export const POOL_PRESETS: PRESETS = {
       ...fillerParams,
       midFee: '0.05',
       outFee: '0.45',
-      cryptoA: '200000000',
-      gamma: '0.0001',
+      cryptoA: '20000000',
+      gamma: '0.001',
       allowedExtraProfit: '0.00000001',
       feeGamma: '0.005',
       adjustmentStep: '0.0000055',
@@ -248,7 +248,7 @@ export const CRYPTOSWAP_MIN_MAX_PARAMETERS = {
   },
   a: {
     min: (2 ** 2 * 10000) / 10,
-    max: 2 ** 2 * 10000 * 100000,
+    max: 2 ** 2 * 1000 * 100000,
   },
   gamma: {
     min: 10 ** 10 / 1e18,
