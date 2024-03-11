@@ -50,6 +50,7 @@
   /* z-index */
   --account-center-z-index: 999; /* blocknative notify */
   --onboard-modal-z-index: 88; /* blocknative connect wallet modal */
+  --onboard-account-select-modal-z-index: 88;
   --z-index-select-dropdown: 999;
   --z-index-modal: 101;
   --z-index-chip: 89;
