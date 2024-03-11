@@ -1,7 +1,7 @@
 // @ts-nocheck
 import injectedModule from '@web3-onboard/injected-wallets'
 import trezorModule from '@web3-onboard/trezor'
-// import ledgerModule from '@web3-onboard/ledger'
+import ledgerModule from '@web3-onboard/ledger'
 import gnosisModule from '@web3-onboard/gnosis'
 import coinbaseWalletModule from '@web3-onboard/coinbase'
 import fortmaticModule from '@web3-onboard/fortmatic'
@@ -20,10 +20,10 @@ export const trezor = trezorModule({
   email: 'info@curve.fi',
   appUrl: 'https://curve.fi',
 })
-// export const ledger = ledgerModule({
-//   walletConnectVersion: 2,
-//   projectId: WALLET_CONNECT_PROJECT_ID,
-// })
+export const ledger = ledgerModule({
+  walletConnectVersion: 2,
+  projectId: WALLET_CONNECT_PROJECT_ID,
+})
 export const gnosis = gnosisModule()
 export const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 export const fortmatic = fortmaticModule({ apiKey: 'pk_live_190B10CE18F47DCD' })
