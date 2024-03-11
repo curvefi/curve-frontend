@@ -90,16 +90,18 @@ const ComboBoxTokenPicker = ({
 
     const result = fuse.search(filterValue)
 
+    const checkedResult = filterValue.length !== 42 ? result : result[0].item.address === filterValue ? result : []
+
     settokenQueryStatus('')
-    if (filterValue.length === 42 && result.length === 0) {
+    if (filterValue.length === 42 && checkedResult.length === 0) {
       settokenQueryStatus('LOADING')
       verifyTokens()
     }
 
     if (filterValue.length === 0) {
       return filteredTokens
-    } else if (result.length > 0) {
-      return result.map((r) => r.item)
+    } else if (checkedResult.length > 0) {
+      return checkedResult.map((r) => r.item)
     } else {
       return tokens.filter((item) => endsWith(item.address, filterValue))
     }

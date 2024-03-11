@@ -552,6 +552,10 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     },
     showInSelectNetwork: false,
+    hasFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    stableSwapNg: true,
   },
 }
 
