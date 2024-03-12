@@ -10,14 +10,12 @@ import MarketListItemContentBody from '@/components/PageMarketList/components/Ma
 const MarketListItemContent = ({
   navigate,
   pageProps,
-  isLastItem,
   marketListItem,
   showSignerCell,
   tableLabels,
 }: {
   navigate: NavigateFunction
   pageProps: PageMarketList
-  isLastItem: boolean
   marketListItem: MarketListItem
   showSignerCell: boolean
   tableLabels: TableLabel[]
@@ -28,12 +26,7 @@ const MarketListItemContent = ({
 
   return (
     <React.Fragment>
-      <MarketListItemHeader
-        {...pageProps}
-        isLastItem={isLastItem}
-        marketListItem={marketListItem}
-        tableRowSettings={tableRowSettings}
-      />
+      <MarketListItemHeader {...pageProps} marketListItem={marketListItem} />
       <MarketListItemContentBody
         {...pageProps}
         navigate={navigate}

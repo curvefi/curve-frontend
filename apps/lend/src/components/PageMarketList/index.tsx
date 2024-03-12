@@ -86,13 +86,12 @@ const MarketList = (pageProps: PageMarketList) => {
         {formStatus.noResult && !formStatus.isLoading ? (
           <MarketListNoResult searchParams={searchParams} updatePath={updatePath} />
         ) : Array.isArray(result) ? (
-          result.map((marketListItem, idx) => (
+          result.map((marketListItem) => (
             <MarketListItemContent
               key={marketListItem.address}
               navigate={navigate}
               pageProps={pageProps}
               marketListItem={marketListItem}
-              isLastItem={result.length - 1 === idx}
               showSignerCell={showSignerCell}
               tableLabels={tableLabels}
             />

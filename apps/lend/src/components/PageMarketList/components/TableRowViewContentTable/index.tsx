@@ -7,7 +7,7 @@ import type {
 } from '@/components/PageMarketList/types'
 import type { Params, NavigateFunction } from 'react-router-dom'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -43,16 +43,19 @@ const TableRowViewContentTable = ({
   tableRowSettings: TableRowSettings
 }) => {
   const { rChainId, api, isBorrow, searchParams, tableLabelsMapper } = pageProps
-
-  const { address } = marketListItem
-  const { borrowKey = searchParams.borrowKey } = tableRowSettings ?? {}
+  const { address, long, short } = marketListItem
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const owmDatasCachedMapper = useStore((state) => state.storeCache.owmDatasMapper[rChainId])
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
-  const result = useStore((state) => state.marketList.tokenResult[address]?.[borrowKey])
   const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
+
+  const result = useMemo(() => {
+    if (long || short) {
+      return [...Object.keys(long ?? {}), ...Object.keys(short ?? {})]
+    }
+  }, [long, short])
 
   const defaultTableProps: TableRowProps = {
     rChainId,
