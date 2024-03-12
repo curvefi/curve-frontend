@@ -41,6 +41,8 @@ const Box = styled.div.attrs(attributes)<BoxProps>`
   ${({ gridTemplateColumns }) => gridTemplateColumns && `grid-template-columns: ${gridTemplateColumns};`};
   ${({ gridTemplateRows }) => gridTemplateRows && `grid-template-rows: ${gridTemplateRows};`};
 
+  ${({ display }) => display && `display: ${display};`}
+
   /* Box - spacing */
   ${({ padding }) => {
     if (padding === true) {

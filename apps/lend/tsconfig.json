@@ -1,0 +1,16 @@
+{
+  "extends": "tsconfig/nextjs.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@/ui": ["../../../packages/ui/src/index.ts"],
+      "@/ui/*": ["../../../packages/ui/src/*"],
+      "@/images": ["../../../packages/ui/src/images/index.ts"],
+      "@/images/*": ["../../../packages/ui/src/images/*"],
+      "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"]
+    },
+  },
+  "exclude": ["node_modules"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+}

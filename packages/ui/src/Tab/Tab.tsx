@@ -4,7 +4,6 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   background-color: transparent;
   box-shadow: none;
   color: ${({ variant }) => (variant === 'secondary' ? `var(--tab_secondary--color);` : `var(--tab--color);`)}
-  cursor: pointer;
   font-size: var(--font-size-2);
   font-family: var(--button--font);
   font-weight: var(--button--font-weight);
@@ -12,6 +11,10 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   padding: 0 1rem;
   position: relative;
   transition: none;
+  
+  &:not(:disabled) {
+    cursor: pointer;
+  }
   
   :hover {
     background-color: var(--tab--content--background-color);

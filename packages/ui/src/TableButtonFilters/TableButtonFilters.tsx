@@ -7,6 +7,7 @@ import Icon from 'ui/src/Icon'
 import Spinner from 'ui/src/Spinner'
 
 const TableButtonFilters = ({
+  className = '',
   disabled,
   filters,
   filterKey,
@@ -14,17 +15,18 @@ const TableButtonFilters = ({
   resultsLength,
   updateRouteFilterKey,
 }: {
+  className?: string
   disabled: boolean | undefined
   filters: {
     [_: string]: { id: string; displayName: string; color?: string }
   }
   filterKey: string
-  isLoading: boolean
-  resultsLength: number | undefined
+  isLoading?: boolean
+  resultsLength?: number | undefined
   updateRouteFilterKey(filterKey: string): void
 }) => {
   return (
-    <Wrapper flex flexAlignItems="center">
+    <Wrapper flex flexAlignItems="center" className={className}>
       {Object.keys(filters).map((k) => {
         const { id, color, displayName } = filters[k]
         const isActive = filterKey === id
@@ -40,7 +42,13 @@ const TableButtonFilters = ({
           >
             {color && <FilterIcon size={16} name="StopFilledAlt" fill={color} strokeWidth="1px" stroke="white" />}
             {displayName}{' '}
-            {isLoading && isActive ? <FilterSpinner isDisabled size={10} /> : isActive ? resultsLength || '0' : ''}
+            {isLoading && isActive ? (
+              <FilterSpinner isDisabled size={10} />
+            ) : isActive ? (
+              typeof resultsLength !== 'undefined' && resultsLength
+            ) : (
+              ''
+            )}
           </Button>
         )
       })}

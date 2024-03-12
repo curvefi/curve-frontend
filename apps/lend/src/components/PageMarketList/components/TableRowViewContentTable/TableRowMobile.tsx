@@ -1,0 +1,272 @@
+import type {
+  PageMarketList,
+  TableCellProps,
+  TableRowProps,
+  TableLabelsMapper,
+} from '@/components/PageMarketList/types'
+
+import React, { useRef, useState } from 'react'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
+import useStore from '@/store/useStore'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+
+import { Tr } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import MarketLabel from '@/components/MarketLabel'
+import Icon from '@/ui/Icon'
+import IconButton from '@/ui/IconButton'
+import CellCap from '@/components/SharedCellData/CellCap'
+import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
+import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
+import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
+import CellRate from '@/components/SharedCellData/CellRate'
+import CellRewards from '@/components/SharedCellData/CellRewards'
+import CellToken from '@/components/SharedCellData/CellToken'
+import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
+import TextCaption from '@/ui/TextCaption'
+
+type Content = {
+  sortIdKey: keyof TableLabelsMapper | ''
+  label: string
+  labels?: { sortIdKey: keyof TableLabelsMapper; label: string }[]
+  show?: boolean
+  showLine?: boolean
+  content: React.ReactNode
+}
+
+const TableRowMobile = ({
+  rChainId,
+  api,
+  owmId,
+  owmDataCachedOrApi,
+  isBorrow,
+  loanExists,
+  searchParams,
+  tableLabelsMapper,
+  userActiveKey,
+  handleCellClick,
+}: Pick<PageMarketList, 'tableLabelsMapper'> & TableRowProps) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+
+  const userVaultShares = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
+
+  const [showDetail, setShowDetail] = useState<string>('')
+
+  const { signerAddress } = api ?? {}
+  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { searchText } = searchParams
+
+  const isVisible = !!entry?.isIntersecting
+  const isHideDetail = showDetail === owmId
+
+  const cellProps: TableCellProps = {
+    rChainId,
+    rOwmId: owmId,
+    owmId,
+    owmDataCachedOrApi,
+    userActiveKey,
+    isBorrow,
+    isBold: false,
+    size: 'md',
+  }
+
+  const someLoanExists = !!signerAddress && loanExists
+
+  // prettier-ignore
+  const content: { borrow: Content[][], supply: Content[][] } = {
+    borrow: [
+      [
+        { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, content: <CellRate {...cellProps} type='borrow' /> },
+        { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, content: <CellToken {...cellProps} type='collateral' hideIcon /> },
+        { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
+      ],
+      [
+        { sortIdKey: 'available', label: tableLabelsMapper.available.name, content: <CellCap {...cellProps} type='available' /> },
+      ],
+      [
+        { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, content: <CellLoanTotalDebt {...cellProps} /> },
+      ],
+      [
+        { sortIdKey: 'cap', label: `Total supplied`, content: <CellCap {...cellProps} type='cap' /> },
+        { sortIdKey: 'cap', label: `Utilization %`, content: <CellCap {...cellProps} type='utilization' /> },
+      ],
+      [
+        { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: someLoanExists, showLine: true },
+        { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: someLoanExists },
+      ]
+    ],
+    supply: [
+      [
+        { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
+        { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, content: <CellRate {...cellProps} type='supply' />, },
+      ],
+      [
+        { sortIdKey: '', label: t`Rewards APR`, labels: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], content: <CellRewards {...cellProps} type='crv-other' /> }
+      ],
+      [
+        { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, content: <CellUserVaultShares {...cellProps} />, show: !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0, showLine: true }
+      ]
+    ]
+  }
+
+  return (
+    <TableItem ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`}>
+      <TCell>
+        <MobileLabelWrapper flex>
+          <MobileLabelContent>
+            <MarketLabel
+              rChainId={rChainId}
+              isMobile
+              isVisible={isVisible}
+              owmDataCachedOrApi={owmDataCachedOrApi}
+              tableListProps={{
+                hideTokens: true,
+                searchText,
+                onClick: () => setShowDetail((prevState) => (prevState === owmId ? '' : owmId)),
+              }}
+            />
+            {
+              <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
+                {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
+              </IconButton>
+            }
+          </MobileLabelContent>
+        </MobileLabelWrapper>
+
+        <MobileTableContentWrapper className={isHideDetail ? '' : 'show'}>
+          <MobileTableContent onClick={handleCellClick}>
+            {!isHideDetail && (
+              <>
+                <DetailsContent>
+                  {content[isBorrow ? 'borrow' : 'supply'].map((details) => {
+                    const show = details.some(
+                      ({ show }) => typeof show === 'undefined' || (typeof show !== 'undefined' && show)
+                    )
+                    return (
+                      show && (
+                        <DetailContent key={details[0].label}>
+                          {details.map(({ label, labels, content, show }, idx) => {
+                            const key = `detail-${label}-${idx}`
+                            const showContent = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
+                            return (
+                              showContent && (
+                                <DetailWrapper key={key}>
+                                  {typeof labels !== 'undefined' ? (
+                                    <Box flex flexDirection="column">
+                                      <TextCaption isBold isCaps>
+                                        {label}
+                                      </TextCaption>
+                                      <TextCaption isBold isCaps>
+                                        {labels.map(({ label }, idx) => {
+                                          const isNotLast = idx !== labels.length - 1
+                                          return (
+                                            <React.Fragment key={`${key}-${label}`}>
+                                              {label}
+                                              {isNotLast && '+'}
+                                            </React.Fragment>
+                                          )
+                                        })}
+                                      </TextCaption>
+                                    </Box>
+                                  ) : (
+                                    <TextCaption isBold isCaps>
+                                      {label}
+                                    </TextCaption>
+                                  )}
+                                  {content}
+                                </DetailWrapper>
+                              )
+                            )
+                          })}
+                        </DetailContent>
+                      )
+                    )
+                  })}
+                </DetailsContent>
+                <MobileTableActions>
+                  {isBorrow ? (
+                    <Button variant="filled" onClick={handleCellClick}>
+                      {loanExists ? t`Manage Loan` : t`Create Loan`}
+                    </Button>
+                  ) : (
+                    <Button variant="filled" onClick={handleCellClick}>
+                      {t`Supply ${borrowed_token?.symbol ?? ''}`}
+                    </Button>
+                  )}
+                </MobileTableActions>
+              </>
+            )}
+          </MobileTableContent>
+        </MobileTableContentWrapper>
+      </TCell>
+    </TableItem>
+  )
+}
+
+const DetailWrapper = styled.div`
+  display: grid;
+  grid-gap: var(--spacing-1);
+  margin-right: var(--spacing-narrow);
+`
+
+const DetailContent = styled.div`
+  display: flex;
+  margin-top: var(--spacing-2);
+`
+
+const DetailsContent = styled.div`
+  > ${DetailContent}:not(:last-child) {
+    margin-bottom: var(--spacing-3);
+  }
+`
+
+const TableItem = styled(Tr)`
+  border-top: 1px solid transparent;
+`
+
+const MobileLabelWrapper = styled(Box)`
+  .row-in-pool {
+    align-items: center;
+    display: inline-flex;
+    min-width: 1rem;
+  }
+`
+
+const MobileLabelContent = styled.div`
+  display: grid;
+  grid-template-columns: 1fr auto;
+  padding: var(--spacing-1) 0 0 var(--spacing-2);
+  width: 100%;
+`
+
+const MobileTableContent = styled.div`
+  padding-top: 0;
+  padding-left: var(--spacing-narrow);
+  padding-right: var(--spacing-narrow);
+  padding-bottom: var(--spacing-normal);
+`
+
+const MobileTableActions = styled.div`
+  margin-top: 1rem;
+`
+
+const MobileTableContentWrapper = styled.div`
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0, 1, 0, 1);
+
+  &.show {
+    max-height: 100rem;
+    transition: max-height 1s ease-in-out;
+  }
+`
+
+const TCell = styled.td`
+  border-bottom: 1px solid var(--border-400);
+`
+
+export default TableRowMobile
