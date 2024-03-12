@@ -277,7 +277,7 @@ export const baseNetworksConfig = {
     id: 'fraxtal' as const,
     hex: '0xfc',
     icon: RCFraxtalLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-fraxtal/`,
     networkId: 252 as const,
     orgUIPath: '',
     rpcUrlConnectWallet: `https://rpc.frax.com`,
