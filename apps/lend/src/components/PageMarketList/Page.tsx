@@ -55,7 +55,7 @@ const Page: NextPage = () => {
     name: { name: t`Markets` },
     available: { name: t`Available` },
     cap: { name: t`Total supplied Utilization %` },
-    rateBorrow: { name: t`Borrow APR` },
+    rateBorrow: { name: t`Borrow APY` },
     rateLend: { name: t`Lend APY` },
     myDebt: { name: t`My debt` },
     myHealth: { name: t`My health` },

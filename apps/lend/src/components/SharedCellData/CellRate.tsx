@@ -20,7 +20,7 @@ const CellRate = ({
   const resp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
   const { rates, error } = resp ?? {}
-  const rate = type === 'borrow' ? rates?.borrowApr : rates?.lendApy
+  const rate = type === 'borrow' ? rates?.borrowApy : rates?.lendApy
 
   return (
     <>

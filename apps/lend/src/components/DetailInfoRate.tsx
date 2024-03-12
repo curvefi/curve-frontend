@@ -21,20 +21,20 @@ const DetailInfoRate = ({
   const ratesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
   const { rates, error } = ratesResp ?? {}
-  const futureRate = isBorrow ? futureRates?.borrowApr : futureRates?.lendApy
+  const futureRate = isBorrow ? futureRates?.borrowApy : futureRates?.lendApy
 
   return (
     <DetailInfo
       loading={typeof ratesResp === 'undefined'}
       loadingSkeleton={[100, 20]}
-      label={isBorrow ? t`Borrow APR:` : t`Lend APY:`}
+      label={isBorrow ? t`Borrow APY:` : t`Lend APY:`}
     >
       <span>
         {error ? (
           '?'
         ) : (
           <strong>
-            {formatNumber(isBorrow ? rates?.borrowApr : rates?.lendApy, {
+            {formatNumber(isBorrow ? rates?.borrowApy : rates?.lendApy, {
               ...FORMAT_OPTIONS.PERCENT,
               defaultValue: '-',
             })}
