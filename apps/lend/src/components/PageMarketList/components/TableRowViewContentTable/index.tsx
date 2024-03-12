@@ -29,7 +29,8 @@ const TableRowViewContentTable = ({
   navigate,
   someLoanExists,
   marketListItem,
-  showSignerCell,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   tableLabels,
   tableRowSettings,
   ...pageProps
@@ -38,7 +39,8 @@ const TableRowViewContentTable = ({
   navigate: NavigateFunction
   marketListItem: MarketListItem
   someLoanExists: boolean
-  showSignerCell: boolean
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   tableLabels: TableLabel[]
   tableRowSettings: TableRowSettings
 }) => {
@@ -65,7 +67,8 @@ const TableRowViewContentTable = ({
     isBorrow,
     loanExists: false,
     searchParams,
-    showSignerCell,
+    showBorrowSignerCell,
+    showSupplySignerCell,
     userActiveKey: '',
     handleCellClick: () => {},
   }
@@ -111,7 +114,8 @@ const TableRowViewContentTable = ({
               isBorrow,
               loanExists,
               searchParams,
-              showSignerCell,
+              showBorrowSignerCell,
+              showSupplySignerCell,
               userActiveKey,
               handleCellClick,
             }

@@ -13,7 +13,8 @@ const MarketListItemContentBody = ({
   params,
   navigate,
   marketListItem,
-  showSignerCell,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   tableLabels,
   tableRowSettings,
   ...pageProps
@@ -21,7 +22,8 @@ const MarketListItemContentBody = ({
   params: Params
   navigate: NavigateFunction
   marketListItem: MarketListItem
-  showSignerCell: boolean
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   tableLabels: TableLabel[]
   tableRowSettings: TableRowSettings
 }) => {
@@ -54,7 +56,8 @@ const MarketListItemContentBody = ({
         navigate={navigate}
         marketListItem={marketListItem}
         someLoanExists={someLoanExists}
-        showSignerCell={showSignerCell}
+        showBorrowSignerCell={showBorrowSignerCell}
+        showSupplySignerCell={showSupplySignerCell}
         tableRowSettings={tableRowSettings}
         tableLabels={tableLabels}
       />

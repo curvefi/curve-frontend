@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 
+import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import { TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
 
@@ -100,12 +101,7 @@ const TableHead = ({
 }
 
 const Th = styled.th`
-  padding: var(--spacing-1);
-  padding-top: var(--spacing-2);
-
-  &.noPadding {
-    padding: 0;
-  }
+  ${cellCss};
 `
 
 const StyledTheadSortButton = styled(TheadSortButton)`

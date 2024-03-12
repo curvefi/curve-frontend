@@ -11,13 +11,15 @@ const MarketListItemContent = ({
   navigate,
   pageProps,
   marketListItem,
-  showSignerCell,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   tableLabels,
 }: {
   navigate: NavigateFunction
   pageProps: PageMarketList
   marketListItem: MarketListItem
-  showSignerCell: boolean
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
   const { address } = marketListItem
@@ -32,7 +34,8 @@ const MarketListItemContent = ({
         navigate={navigate}
         marketListItem={marketListItem}
         tableRowSettings={tableRowSettings}
-        showSignerCell={showSignerCell}
+        showBorrowSignerCell={showBorrowSignerCell}
+        showSupplySignerCell={showSupplySignerCell}
         tableLabels={tableLabels}
       />
     </React.Fragment>

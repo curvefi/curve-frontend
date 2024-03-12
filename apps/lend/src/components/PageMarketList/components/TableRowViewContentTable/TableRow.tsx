@@ -1,7 +1,7 @@
 import type { TableRowProps, TableCellProps } from '@/components/PageMarketList/types'
 
 import React, { useRef } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
@@ -32,7 +32,8 @@ const TableRow = ({
   owmDataCachedOrApi,
   isBorrow,
   loanExists,
-  showSignerCell,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   userActiveKey,
   handleCellClick,
 }: TableRowProps) => {
@@ -61,25 +62,25 @@ const TableRow = ({
   // prettier-ignore
   const CONTENT: { borrow: Content[], supply: Content[] } = {
     borrow: [
-      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showSignerCell },
-      { className: 'left', content: <CellMarket {...cellProps} isVisible={isVisible} /> },
-      { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showSignerCell },
-      { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showSignerCell },
+      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showBorrowSignerCell },
+      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellMarket {...cellProps} isVisible={isVisible} /> },
+      { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
+      { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
       { className: 'center', content: <CellToken {...cellProps} type='collateral' hideIcon /> },
       { className: 'center', content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
       { className: 'center', content: <CellRate {...cellProps} type='borrow' /> },
       { className: 'right', content: <CellCap {...cellProps} type='available' /> },
       { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
-      { className: 'right', content: <CellCap {...cellProps} type='cap-utilization' /> },
+      { className: 'right paddingRight', content: <CellCap {...cellProps} type='cap-utilization' /> },
     ],
     supply: [
-      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSignerCell },
-      { className: 'left', content: <CellMarket {...cellProps} isVisible={isVisible} /> },
-      { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSignerCell },
+      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
+      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellMarket {...cellProps} isVisible={isVisible} /> },
+      { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
       { className: 'center', content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
       { className: 'center', content: <CellRate {...cellProps} type='supply' /> },
       { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },
-      { className: 'right', content: <CellSupplyTotalLiquidity {...cellProps} /> },
+      { className: 'right paddingRight', content: <CellSupplyTotalLiquidity {...cellProps} /> },
     ]
   }
 
@@ -112,13 +113,25 @@ export const Tr = styled.tr`
   }
 `
 
-const Td = styled.td`
+export const cellCss = css`
   padding: var(--spacing-1);
   padding-top: var(--spacing-2);
 
   &.noPadding {
     padding: 0;
   }
+
+  &.paddingLeft {
+    padding-left: var(--spacing-2);
+  }
+
+  &.paddingRight {
+    padding-right: var(--spacing-2);
+  }
+`
+
+const Td = styled.td`
+  ${cellCss};
 `
 
 export default TableRow
