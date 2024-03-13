@@ -179,7 +179,12 @@ const CandleChart = ({
       }
     }
 
-    // current
+    // only new
+    if (liquidationRange && !liquidationRange.current && liquidationRange.new && !newAreaSeriesRef.current) {
+      addNewSeries()
+    }
+
+    // only current
     if (liquidationRange && liquidationRange.current && !liquidationRange.new && !currentAreaSeriesRef.current) {
       addCurrentSeries()
     }

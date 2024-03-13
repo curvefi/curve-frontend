@@ -101,7 +101,8 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     // create loan prices
     if (formValues.n && liqRangesMapper && chartOhlcData) {
       const currentPrices = liqRangesMapper[formValues.n].prices
-      const range = formatRange(currentPrices)
+      // flip order to match other data
+      const range = formatRange([currentPrices[1], currentPrices[0]])
       liqRanges.new = range
     }
     // current loan prices
