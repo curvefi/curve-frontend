@@ -2,7 +2,7 @@ import * as onboard from '@web3-onboard/react'
 import {
   injected,
   trezor,
-  // ledger,
+  ledger,
   gnosis,
   coinbaseWalletSdk,
   fortmatic,
@@ -40,7 +40,7 @@ export function initOnboard(i18n, locale, themeType, networks) {
     wallets: [
       injected,
       trezor,
-      // ledger, //compromised remove for now
+      ledger,
       gnosis,
       coinbaseWalletSdk,
       fortmatic,
