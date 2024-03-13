@@ -105,6 +105,7 @@ export const ContentStatTitle = styled.span`
   font-size: var(--font-size-1);
   font-weight: bold;
   text-transform: uppercase;
+  white-space: nowrap;
 `
 
 export const ContentStatValue = styled.span`

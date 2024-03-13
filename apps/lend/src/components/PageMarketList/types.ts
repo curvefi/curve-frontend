@@ -96,7 +96,8 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchPar
   owmDataCachedOrApi: OWMDataCacheOrApi
   isBorrow: boolean
   loanExists: boolean | undefined
-  showSignerCell: boolean
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   userActiveKey: string
   handleCellClick(): void
 }

@@ -81,7 +81,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     [
       { title: t`Status`, value: <CellHealthStatus {...cellProps} healthPercent={healthMode.percent}  type="status"  /> },
       { title: t`Health`, value: <CellHealthStatus {...cellProps} healthPercent={healthMode.percent} type="percent"  /> },
-      { title: t`Borrow APR`, value: <CellRate {...cellProps} type="borrow" /> }
+      { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" /> }
     ],
     [
       { title: t`Liquidation range`, value: <CellLiquidationRange {...cellProps} type='range' /> },

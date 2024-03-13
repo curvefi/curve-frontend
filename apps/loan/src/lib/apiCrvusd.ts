@@ -256,7 +256,6 @@ const detailInfo = {
 
     const reversedUserBands = reverseBands(userBands)
     const userIsCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], userLiquidationBand, activeBand)
-    const parsedHealthFull = +healthFull > 100 ? '100' : healthFull
 
     const fetchedUserDetails: {
       healthFull: UserLoanDetails['healthFull']
@@ -267,10 +266,10 @@ const detailInfo = {
       userState: UserLoanDetails['userState']
       userLiquidationBand: UserLoanDetails['userLiquidationBand']
     } = {
-      healthFull: parsedHealthFull,
+      healthFull,
       healthNotFull,
       userBands: reversedUserBands,
-      userHealth: userIsCloseToLiquidation ? healthNotFull : parsedHealthFull,
+      userHealth: userIsCloseToLiquidation ? healthNotFull : healthFull,
       userIsCloseToLiquidation,
       userState,
       userLiquidationBand,

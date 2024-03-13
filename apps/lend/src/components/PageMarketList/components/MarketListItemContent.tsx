@@ -10,16 +10,16 @@ import MarketListItemContentBody from '@/components/PageMarketList/components/Ma
 const MarketListItemContent = ({
   navigate,
   pageProps,
-  isLastItem,
   marketListItem,
-  showSignerCell,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   tableLabels,
 }: {
   navigate: NavigateFunction
   pageProps: PageMarketList
-  isLastItem: boolean
   marketListItem: MarketListItem
-  showSignerCell: boolean
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
   const { address } = marketListItem
@@ -28,18 +28,14 @@ const MarketListItemContent = ({
 
   return (
     <React.Fragment>
-      <MarketListItemHeader
-        {...pageProps}
-        isLastItem={isLastItem}
-        marketListItem={marketListItem}
-        tableRowSettings={tableRowSettings}
-      />
+      <MarketListItemHeader {...pageProps} marketListItem={marketListItem} />
       <MarketListItemContentBody
         {...pageProps}
         navigate={navigate}
         marketListItem={marketListItem}
         tableRowSettings={tableRowSettings}
-        showSignerCell={showSignerCell}
+        showBorrowSignerCell={showBorrowSignerCell}
+        showSupplySignerCell={showSupplySignerCell}
         tableLabels={tableLabels}
       />
     </React.Fragment>

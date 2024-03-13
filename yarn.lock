@@ -1450,10 +1450,10 @@
     ethers "^6.10.0"
     memoizee "^0.4.15"
 
-"@curvefi/lending-api@^1.4.0":
-  version "1.4.0"
-  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-1.4.0.tgz#02cb11e121c42b2e56cb9498530d0c6e8bce6866"
-  integrity sha512-NY8gpjRllzwT5z4uvIWxsTOtAE8z1KWF8JQi36NPRufwoN9mKvYulbUSCcuqB8s2PVpB/xWHEkQrVFeUaQ21Mw==
+"@curvefi/lending-api@^1.5.0":
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-1.5.0.tgz#7886cb9a34dfb0839886e9b046dcc57f9134c510"
+  integrity sha512-K1zrSvrt4x01bWTnZ+EbJC0SSOJqPZ5Z2MtaFV2HG6IltV5Cuz5nWjqcqiDlyN+WBiZKsR3UavWDEM2c3sb4TQ==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"

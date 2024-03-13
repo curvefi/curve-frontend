@@ -1,15 +1,12 @@
-import type { BorrowKey, FilterTypeKey, PageMarketList } from '@/components/PageMarketList/types'
+import type { FilterTypeKey, PageMarketList } from '@/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
 import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
 import networks from '@/networks'
-import useStore from '@/store/useStore'
 
-import { LongShortButton } from '@/components/PageMarketList/components/MarketListItemHeader'
 import Box from '@/ui/Box'
 import SearchInput from '@/ui/SearchInput'
 import SelectFilter from '@/components/PageMarketList/components/TableSettings/SelectFilter'
@@ -25,14 +22,7 @@ const TableSettings = ({
 }: Pick<PageMarketList, 'rChainId' | 'api' | 'searchParams' | 'filterMapper' | 'filterTypeMapper' | 'updatePath'>) => {
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const tableRowsSettings = useStore((state) => state.marketList.tableRowsSettings)
-
   const { signerAddress } = api ?? {}
-
-  const TABS: { key: BorrowKey; label: string }[] = [
-    { key: 'long', label: t`Long` },
-    { key: 'short', label: t`Short` },
-  ]
 
   const filterList = useMemo(() => {
     return networks[rChainId].marketListFilter.map((key) => filterMapper[key])
@@ -62,31 +52,6 @@ const TableSettings = ({
           {signerAddress && (
             <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
           )}
-        </FiltersWrapper>
-        <FiltersWrapper grid gridArea="long-short" flexJustifyContent="flex-start" gridAutoFlow="column">
-          <div>
-            {TABS.map(({ key, label }, idx) => {
-              const isActive =
-                searchParams.borrowKey === key &&
-                Object.values(tableRowsSettings).every((v) => {
-                  const isUndefined = typeof v?.borrowKey === 'undefined'
-                  return isUndefined || (!isUndefined && v.borrowKey === key)
-                })
-
-              return (
-                <React.Fragment key={key}>
-                  <LongShortButton
-                    variant="text"
-                    className={isActive ? 'active' : ''}
-                    onClick={() => updatePath({ borrowKey: key })}
-                  >
-                    {label}
-                  </LongShortButton>
-                  {idx !== TABS.length - 1 ? '|' : ''}
-                </React.Fragment>
-              )
-            })}
-          </div>
         </FiltersWrapper>
       </SettingsWrapper>
     </>

@@ -55,7 +55,7 @@ const Page: NextPage = () => {
     name: { name: t`Markets` },
     available: { name: t`Available` },
     cap: { name: t`Total supplied Utilization %` },
-    rateBorrow: { name: t`Borrow APR` },
+    rateBorrow: { name: t`Borrow APY` },
     rateLend: { name: t`Lend APY` },
     myDebt: { name: t`My debt` },
     myHealth: { name: t`My health` },
@@ -77,7 +77,7 @@ const Page: NextPage = () => {
   }, [])
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
-    const { filterKey, filterTypeKey, borrowKey, hideSmallMarkets, searchText } = {
+    const { filterKey, filterTypeKey, hideSmallMarkets, searchText } = {
       ...parsedSearchParams,
       ...updatedSearchParams,
     }
@@ -85,7 +85,6 @@ const Page: NextPage = () => {
     let searchPath = '?'
     if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
     if (filterTypeKey && filterTypeKey !== 'borrow') searchPath += `${_querySymbol(searchPath)}type=${filterTypeKey}`
-    if (borrowKey !== 'long') searchPath += `${_querySymbol(searchPath)}borrow=${borrowKey}`
     if (hideSmallMarkets === false) searchPath += `${_querySymbol(searchPath)}hideSmallMarkets=false`
     if (searchText) searchPath += `${_querySymbol(searchPath)}search=${encodeURIComponent(searchText)}`
 
@@ -100,7 +99,6 @@ const Page: NextPage = () => {
     if (!isLoadingApi) {
       const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
       const paramFilterTypeKey = (searchParams.get('type') || 'borrow').toLowerCase()
-      const paramBorrowKey = (searchParams.get('borrow') || 'long').toLowerCase()
       const paramHideSmallPools = searchParams.get('hideSmallMarkets') || 'true'
       const sortByDefault: keyof TableLabelsMapper = paramFilterTypeKey === 'borrow' ? 'available' : 'totalLiquidity'
       const paramSortBy = (searchParams.get('sortBy') || sortByDefault).toLowerCase()
@@ -110,7 +108,7 @@ const Page: NextPage = () => {
       const parsedSearchParams = {
         filterKey: paramFilterKey as FilterKey,
         filterTypeKey: paramFilterTypeKey as FilterTypeKey,
-        borrowKey: paramBorrowKey as BorrowKey,
+        borrowKey: 'long' as BorrowKey,
         hideSmallMarkets: paramHideSmallPools === 'true',
         sortBy: paramSortBy as keyof TableLabelsMapper,
         sortByOrder: paramSortByOrder as Order,

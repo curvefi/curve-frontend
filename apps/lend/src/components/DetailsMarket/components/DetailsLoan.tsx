@@ -36,7 +36,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
       { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" /> },
       { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" /> },
       { title: t`Lend APY`, value: <CellRate {...cellProps} type="supply" /> },
-      { title: t`Borrow APR`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
+      { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
     ],
     [
       { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
