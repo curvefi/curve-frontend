@@ -91,7 +91,7 @@ const cache = {
   },
   // @ts-ignore
   merge: (persistedState, currentState) => merge(persistedState, currentState),
-  version: 1, // update version number to prevent UI from using cache
+  version: 2, // update version number to prevent UI from using cache
 }
 
 const useStore =
