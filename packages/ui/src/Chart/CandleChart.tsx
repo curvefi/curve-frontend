@@ -288,36 +288,6 @@ const CandleChart = ({
   }, [magnet])
 
   useEffect(() => {
-    if (liquidationRange !== undefined) {
-      if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
-        newAreaSeriesRef.current.setData(liquidationRange.new.price1)
-        newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
-      }
-
-      if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
-        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
-        currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
-      }
-      if (
-        currentAreaSeriesRef.current &&
-        currentAreaBgSeriesRef.current &&
-        liquidationRange &&
-        liquidationRange.current &&
-        liquidationRange.new
-      ) {
-        currentAreaSeriesRef.current.applyOptions({
-          topColor: colors.rangeColorA25Old,
-          bottomColor: colors.rangeColorA25Old,
-          lineColor: colors.rangeColorOld,
-        })
-        currentAreaBgSeriesRef.current.applyOptions({
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColorOld,
-        })
-      }
-    }
-
     if (candlestickSeriesRef.current && chartRef.current) {
       candlestickSeriesRef.current.setData(ohlcData)
 
@@ -356,6 +326,36 @@ const CandleChart = ({
 
     if (oraclePriceSeriesRef.current && oraclePriceData !== undefined) {
       oraclePriceSeriesRef.current.setData(oraclePriceData)
+    }
+
+    if (liquidationRange !== undefined) {
+      if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
+        newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+        newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
+      }
+
+      if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
+        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+        currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
+      }
+      if (
+        currentAreaSeriesRef.current &&
+        currentAreaBgSeriesRef.current &&
+        liquidationRange &&
+        liquidationRange.current &&
+        liquidationRange.new
+      ) {
+        currentAreaSeriesRef.current.applyOptions({
+          topColor: colors.rangeColorA25Old,
+          bottomColor: colors.rangeColorA25Old,
+          lineColor: colors.rangeColorOld,
+        })
+        currentAreaBgSeriesRef.current.applyOptions({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColorOld,
+        })
+      }
     }
   }, [
     colors.backgroundColor,

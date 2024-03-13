@@ -1,4 +1,3 @@
-import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
 import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState } from 'react'
@@ -20,14 +19,14 @@ interface Props {
 }
 
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
-  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
   const {
     activityFetchStatus,
     llammaTradesData,
-    llammaLiquidityData,
+    llammaControllerData,
     setActivityHidden,
     fetchPoolActivity,
     chartExpanded,
+    activityHidden,
   } = useStore((state) => state.ohlcCharts)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
@@ -76,7 +75,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
             {eventOption === 'TRADE' ? (
               <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
             ) : (
-              <LiquidityData llammaLiquidityData={llammaLiquidityData} chainId={chainId} coins={coins} />
+              <LiquidityData llammaControllerData={llammaControllerData} chainId={chainId} coins={coins} />
             )}
           </ElementsContainer>
         </GridContainer>

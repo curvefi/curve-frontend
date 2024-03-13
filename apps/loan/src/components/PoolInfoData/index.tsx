@@ -1,11 +1,4 @@
-import type {
-  PricesApiPool,
-  PricesApiCoin,
-  LabelList,
-  LlammaLiquididationRange,
-  LiquidationRanges,
-  LiquidationRange,
-} from '@/ui/Chart/types'
+import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
 import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'

@@ -1,4 +1,4 @@
-import type { LlammaLiquidityEvent, PricesApiCoin } from '@/ui/Chart/types'
+import type { LlammaControllerEvent, PricesApiCoin } from '@/ui/Chart/types'
 import { LlammaLiquidityCoins } from './types'
 
 import styled from 'styled-components'
@@ -17,16 +17,16 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
 type Props = {
-  llammaLiquidityData: LlammaLiquidityEvent[]
+  llammaControllerData: LlammaControllerEvent[]
   chainId: ChainId
   coins: LlammaLiquidityCoins
 }
 
-const LiquidityData = ({ llammaLiquidityData, chainId, coins }: Props) => {
+const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
   return (
     <>
       {coins &&
-        llammaLiquidityData.map((transaction, index) => {
+        llammaControllerData.map((transaction, index) => {
           return (
             <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
               <LiquidityEvent

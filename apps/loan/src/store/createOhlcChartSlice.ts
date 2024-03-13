@@ -9,9 +9,9 @@ import type {
   LlamaBaselinePriceData,
   OraclePriceData,
   LlammaTradesApiResponse,
-  LlammaLiquidityApiResponse,
+  LlammaControllerApiResponse,
   LlammaTradeEvent,
-  LlammaLiquidityEvent,
+  LlammaControllerEvent,
 } from 'ui/src/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -29,7 +29,7 @@ type SliceState = {
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
   llammaTradesData: LlammaTradeEvent[]
-  llammaLiquidityData: LlammaLiquidityEvent[]
+  llammaControllerData: LlammaControllerEvent[]
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
@@ -75,7 +75,7 @@ const DEFAULT_STATE: SliceState = {
   oraclePriceData: [],
   baselinePriceData: [],
   llammaTradesData: [],
-  llammaLiquidityData: [],
+  llammaControllerData: [],
   chartFetchStatus: 'LOADING',
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
@@ -304,11 +304,11 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           )
         }
 
-        const liqudityEventsRes = await fetch(
+        const controllerEventsRes = await fetch(
           `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
         )
-        const liquidityEventsData: LlammaLiquidityApiResponse = await liqudityEventsRes.json()
-        const formattedLiquidityEventsData = liquidityEventsData.data.map((data) => {
+        const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
+        const formattedLiquidityEventsData = controllerEventsData.data.map((data) => {
           return {
             ...data,
             deposit:
@@ -324,15 +324,15 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
                 : {
                     ...data.withdrawal,
                     amount_borrowed: formatContractValue(data.withdrawal.amount_borrowed, poolAddress),
-                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, ''),
+                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, poolAddress),
                   },
           }
         })
 
-        if (liquidityEventsData) {
+        if (controllerEventsData) {
           set(
             produce((state: State) => {
-              state[sliceKey].llammaLiquidityData = formattedLiquidityEventsData
+              state[sliceKey].llammaControllerData = formattedLiquidityEventsData
               state[sliceKey].activityFetchStatus = 'READY'
             })
           )

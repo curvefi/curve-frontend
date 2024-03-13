@@ -169,7 +169,7 @@ export interface LlammaTradeEvent {
   transaction_hash: string
 }
 
-export interface LlammaLiquidityEvent {
+export interface LlammaControllerEvent {
   provider: string
   deposit: {
     amount: string
@@ -188,10 +188,10 @@ export interface LlammaTradesApiResponse {
   data: LlammaTradeEvent[]
 }
 
-export interface LlammaLiquidityApiResponse {
+export interface LlammaControllerApiResponse {
   chain: string
   address: string
-  data: LlammaLiquidityEvent[]
+  data: LlammaControllerEvent[]
 }
 
 export type LiquidationRange = { value: number; time: UTCTimestamp }
