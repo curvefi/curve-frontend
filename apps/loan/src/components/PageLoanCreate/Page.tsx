@@ -176,7 +176,7 @@ const Page: NextPage = () => {
       )}
       <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
-          {!isMdUp && !isAdvanceMode && <TitleComp />}
+          {!isMdUp && !isAdvanceMode && !chartExpanded && <TitleComp />}
           {rChainId && rCollateralId && (
             <LoanCreate
               curve={curve}

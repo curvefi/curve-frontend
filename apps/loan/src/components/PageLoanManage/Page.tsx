@@ -115,6 +115,12 @@ const Page: NextPage = () => {
     isPageVisible
   )
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
   const TitleComp = () => (
     <TitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
@@ -153,7 +159,7 @@ const Page: NextPage = () => {
       )}
       <Wrapper chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+          {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
           {isValidRouterParams && (
             <LoanMange
               {...formProps}
@@ -166,7 +172,7 @@ const Page: NextPage = () => {
         </FormWrapper>
 
         <LoanInfoWrapper>
-          {isMdUp && <TitleComp />}
+          {isMdUp && !chartExpanded && <TitleComp />}
           <LoanInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (

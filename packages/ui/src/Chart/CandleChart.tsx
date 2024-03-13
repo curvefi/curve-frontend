@@ -55,10 +55,6 @@ const CandleChart = ({
   const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const increaseAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const increaseAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const decreaseAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
-  const decreaseAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
@@ -68,11 +64,6 @@ const CandleChart = ({
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
-
-  // console.log('new: ', liquidationRange?.new)
-  // console.log('current: ', liquidationRange?.current)
-  // console.log('increase: ', liquidationRange?.increase)
-  // console.log('decrease: ', liquidationRange?.decrease)
 
   useEffect(() => {
     if (!chartContainerRef.current) return
@@ -123,67 +114,8 @@ const CandleChart = ({
 
     // liquidation range series
 
-    // new
-    if (liquidationRange && !newAreaSeriesRef.current) {
-      if (liquidationRange?.new) {
-        newAreaSeriesRef.current = chartRef.current.addAreaSeries({
-          topColor: colors.rangeColorA25,
-          bottomColor: colors.rangeColorA25,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-        })
-
-        newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-        })
-      }
-    }
-
-    // increase
-    if (liquidationRange && !increaseAreaSeriesRef.current) {
-      if (liquidationRange?.increase) {
-        increaseAreaSeriesRef.current = chartRef.current.addAreaSeries({
-          topColor: colors.rangeColorA25,
-          bottomColor: colors.rangeColorA25,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-        })
-
-        increaseAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-        })
-      }
-    }
-
-    // current
-    if (liquidationRange && !currentAreaSeriesRef.current) {
-      if (liquidationRange?.current) {
+    const addCurrentSeries = () => {
+      if (chartRef.current) {
         currentAreaSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.rangeColorA25,
           bottomColor: colors.rangeColorA25,
@@ -195,7 +127,6 @@ const CandleChart = ({
           lineVisible: false,
           priceLineStyle: 2,
         })
-
         currentAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.backgroundColor,
           bottomColor: colors.backgroundColor,
@@ -209,11 +140,9 @@ const CandleChart = ({
         })
       }
     }
-
-    // decrease
-    if (liquidationRange && !decreaseAreaSeriesRef.current) {
-      if (liquidationRange?.decrease) {
-        decreaseAreaSeriesRef.current = chartRef.current.addAreaSeries({
+    const addNewSeries = () => {
+      if (chartRef.current) {
+        newAreaSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.rangeColorA25,
           bottomColor: colors.rangeColorA25,
           lineColor: colors.rangeColor,
@@ -224,8 +153,7 @@ const CandleChart = ({
           lineVisible: false,
           priceLineStyle: 2,
         })
-
-        decreaseAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+        newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.backgroundColor,
           bottomColor: colors.backgroundColor,
           lineColor: colors.rangeColor,
@@ -237,6 +165,23 @@ const CandleChart = ({
           priceLineStyle: 2,
         })
       }
+    }
+    // new
+    if (liquidationRange && liquidationRange.current && liquidationRange.new) {
+      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+
+      if (addNewFirst) {
+        addNewSeries()
+        addCurrentSeries()
+      } else {
+        addCurrentSeries()
+        addNewSeries()
+      }
+    }
+
+    // current
+    if (liquidationRange && liquidationRange.current && !liquidationRange.new && !currentAreaSeriesRef.current) {
+      addCurrentSeries()
     }
 
     if (ohlcData && !candlestickSeriesRef.current) {
@@ -305,10 +250,6 @@ const CandleChart = ({
       newAreaBgSeriesRef.current = null
       currentAreaSeriesRef.current = null
       currentAreaBgSeriesRef.current = null
-      increaseAreaSeriesRef.current = null
-      increaseAreaBgSeriesRef.current = null
-      decreaseAreaBgSeriesRef.current = null
-      decreaseAreaSeriesRef.current = null
       candlestickSeriesRef.current = null
       volumeSeriesRef.current = null
       oraclePriceSeriesRef.current = null
@@ -342,52 +283,33 @@ const CandleChart = ({
   }, [magnet])
 
   useEffect(() => {
-    if (
-      currentAreaSeriesRef.current &&
-      currentAreaBgSeriesRef.current &&
-      (liquidationRange?.new || liquidationRange?.increase || liquidationRange?.decrease)
-    ) {
-      currentAreaSeriesRef.current.applyOptions({
-        topColor: colors.rangeColorA25Old,
-        bottomColor: colors.rangeColorA25Old,
-        lineColor: colors.rangeColorOld,
-      })
-      currentAreaBgSeriesRef.current.applyOptions({
-        topColor: colors.backgroundColor,
-        bottomColor: colors.backgroundColor,
-        lineColor: colors.rangeColorOld,
-      })
-    }
-  }, [
-    colors.backgroundColor,
-    colors.rangeColorA25Old,
-    colors.rangeColorOld,
-    liquidationRange?.decrease,
-    liquidationRange?.increase,
-    liquidationRange?.new,
-    magnet,
-  ])
-
-  useEffect(() => {
     if (liquidationRange !== undefined) {
       if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
         newAreaSeriesRef.current.setData(liquidationRange.new.price1)
         newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
       }
 
-      if (liquidationRange.increase && increaseAreaSeriesRef.current && increaseAreaBgSeriesRef.current) {
-        increaseAreaSeriesRef.current.setData(liquidationRange.increase.price1)
-        increaseAreaBgSeriesRef.current.setData(liquidationRange.increase.price2)
-      }
-
       if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
         currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
         currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
       }
-
-      if (liquidationRange.decrease && decreaseAreaSeriesRef.current && decreaseAreaBgSeriesRef.current) {
-        decreaseAreaSeriesRef.current.setData(liquidationRange.decrease.price1)
-        decreaseAreaBgSeriesRef.current.setData(liquidationRange.decrease.price2)
+      if (
+        currentAreaSeriesRef.current &&
+        currentAreaBgSeriesRef.current &&
+        liquidationRange &&
+        liquidationRange.current &&
+        liquidationRange.new
+      ) {
+        currentAreaSeriesRef.current.applyOptions({
+          topColor: colors.rangeColorA25Old,
+          bottomColor: colors.rangeColorA25Old,
+          lineColor: colors.rangeColorOld,
+        })
+        currentAreaBgSeriesRef.current.applyOptions({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColorOld,
+        })
       }
     }
 
@@ -431,6 +353,9 @@ const CandleChart = ({
       oraclePriceSeriesRef.current.setData(oraclePriceData)
     }
   }, [
+    colors.backgroundColor,
+    colors.rangeColorA25Old,
+    colors.rangeColorOld,
     fetchMoreChartData,
     lastRefetchLength,
     lastTimescale,

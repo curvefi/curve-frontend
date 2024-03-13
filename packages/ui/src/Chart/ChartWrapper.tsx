@@ -195,8 +195,14 @@ const ChartWrapper = ({
             </TipContent>
             <TipContent>
               <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range)" />
-              <TipText>Liquidation Range</TipText>
+              <TipText>Liquidation Range {liquidationRange?.current && liquidationRange.new && '(New)'}</TipText>
             </TipContent>
+            {liquidationRange?.current && liquidationRange.new && (
+              <TipContent>
+                <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range-old)" />
+                <TipText>Liquidation Range (Current)</TipText>
+              </TipContent>
+            )}
           </TipWrapper>
         )}
         {chartStatus === 'READY' && (

@@ -204,8 +204,6 @@ export type LlammaLiquididationRange = {
 export type LiquidationRanges = {
   new: LlammaLiquididationRange | null
   current: LlammaLiquididationRange | null
-  increase: LlammaLiquididationRange | null
-  decrease: LlammaLiquididationRange | null
 }
 
 export interface LpTradesData {
