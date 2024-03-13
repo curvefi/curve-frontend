@@ -101,9 +101,7 @@ const DetailInfoHealth = ({
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
-      return +healthMode.percent > 100
-        ? formatNumber(100, { style: 'percent' })
-        : formatNumber(healthMode.percent, { style: 'percent', maximumFractionDigits: 2 })
+      return formatNumber(healthMode.percent, { style: 'percent', maximumFractionDigits: 2 })
     }
     return ''
   }, [healthMode.percent])

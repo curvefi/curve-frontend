@@ -90,12 +90,6 @@ const LoanInfoUser = ({ isReady, llamma, llammaId }: Props) => {
     }
   }, [userPrices, userBands])
 
-  const parsedHealthModePercent = useMemo(() => {
-    if (healthMode.percent) {
-      return Number(healthMode.percent) > 100 ? '100' : healthMode.percent
-    }
-  }, [healthMode.percent])
-
   const chartBandBalancesData = useMemo(() => {
     const data = cloneDeep(userBandsBalances ?? [])
     if (data.length > 0 && typeof oraclePriceBand === 'number') {
@@ -183,9 +177,9 @@ const LoanInfoUser = ({ isReady, llamma, llammaId }: Props) => {
             )}
           </UserInfoStats>
           <UserInfoStats title={t`Health`}>
-            {parsedHealthModePercent && userStatus && (
+            {healthMode?.percent && userStatus && (
               <HealthColorText as="strong" colorKey={userStatus.colorKey}>
-                {formatNumber(parsedHealthModePercent, FORMAT_OPTIONS.PERCENT)}
+                {formatNumber(healthMode.percent, FORMAT_OPTIONS.PERCENT)}
               </HealthColorText>
             )}
           </UserInfoStats>

@@ -93,9 +93,7 @@ const DetailInfoHealth = ({
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
-      return +healthMode.percent > 100
-        ? formatNumber(100, { style: 'percent' })
-        : formatNumber(healthMode.percent, { style: 'percent', maximumFractionDigits: 2 })
+      return formatNumber(healthMode.percent, { style: 'percent', maximumFractionDigits: 2 })
     }
     return ''
   }, [healthMode.percent])
@@ -115,7 +113,7 @@ const DetailInfoHealth = ({
         healthPercent && currentHealthMode.percent ? (
           <span>
             <HealthPercent colorKey={currentHealthMode.colorKey}>
-              {_parseHealthPercent(currentHealthMode.percent)}
+              {formatNumber(healthPercent, { style: 'percent', maximumFractionDigits: 2 })}
             </HealthPercent>{' '}
             <HealthPercent colorKey={healthMode.colorKey}>
               <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
@@ -193,12 +191,4 @@ export function getHealthMode(
   }
 
   return healthMode
-}
-
-function _parseHealthPercent(healthPercent: string) {
-  let percent = 0
-  if (healthPercent) {
-    percent = Number(healthPercent) > 100 ? 100 : Number(healthPercent)
-  }
-  return formatNumber(percent, { style: 'percent', maximumFractionDigits: 2 })
 }

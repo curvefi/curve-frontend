@@ -404,7 +404,7 @@ const user = {
         const { owm } = owmData
         const [healthFull, healthNotFull] = await Promise.all([owm.userHealth(), owm.userHealth(false)])
 
-        results[userActiveKey] = { healthFull: _parseHealthFull(healthFull), healthNotFull, error: '' }
+        results[userActiveKey] = { healthFull, healthNotFull, error: '' }
       })
 
     return results
@@ -466,7 +466,6 @@ const user = {
           liquidationBand,
           activeBand
         )
-        const parsedHealthFull = _parseHealthFull(healthFull)
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,
@@ -476,8 +475,8 @@ const user = {
         results[userActiveKey] = {
           details: {
             state,
-            health: isCloseToLiquidation ? healthNotFull : parsedHealthFull,
-            healthFull: parsedHealthFull,
+            health: isCloseToLiquidation ? healthNotFull : healthFull,
+            healthFull,
             healthNotFull,
             bands: reversedUserBands,
             bandsBalances: parsedBandsBalances,
@@ -1656,10 +1655,6 @@ function _parseUserLoss(userLoss: UserLoss) {
   resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 
   return resp
-}
-
-function _parseHealthFull(healthFull: string) {
-  return +healthFull > 100 ? '100' : healthFull
 }
 
 // TODO: refactor shared between pool and lend
