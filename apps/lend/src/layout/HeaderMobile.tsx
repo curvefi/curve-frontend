@@ -1,4 +1,5 @@
 import type { Page } from '@/layout/Header'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
 import { t } from '@lingui/macro'
 import React, { useMemo, useRef, useState } from 'react'
@@ -11,7 +12,6 @@ import styled, { css } from 'styled-components'
 
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { CURVE_FI_ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/onboard'
@@ -19,11 +19,10 @@ import useStore from '@/store/useStore'
 
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import { LlamaImg } from '@/images'
-import Beta from '@/components/Beta'
+import AppLogo from '@/ui/Brand'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import BrandingLink from '@/components/BrandingLink'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
@@ -36,11 +35,13 @@ import Switch from '@/ui/Switch'
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const HeaderMobile = ({
+  appLogoProps,
   pages,
   selectNetwork: SelectNetwork,
   handleConnectWallet,
   handleLocaleChange,
 }: {
+  appLogoProps: AppLogoProps
   pages: Page[]
   selectNetwork: React.ReactElement
   handleConnectWallet(wallet: Wallet | null): void
@@ -111,13 +112,11 @@ const HeaderMobile = ({
 
   return (
     <>
-      <Box grid flexAlignItems="center" gridTemplateColumns="auto 1fr">
-        <MenuIcon ref={leftButtonRef} onClick={() => openMenu([menuWidth, 0])}>
+      <Box display="inline-flex" flexAlignItems="center">
+        <IconButton ref={leftButtonRef} onClick={() => openMenu([menuWidth, 0])}>
           <Icon name="Menu" size={24} aria-label="menu icon" />
-        </MenuIcon>
-        <BrandWrapper>
-          <BrandingLink className="main" pathname={CURVE_FI_ROUTE.MAIN} /> <Beta />
-        </BrandWrapper>
+        </IconButton>
+        <StyledAppLogo showBeta {...appLogoProps} />
       </Box>
       <Spacer />
       <Menu>{SelectNetwork}</Menu>
@@ -125,7 +124,7 @@ const HeaderMobile = ({
       <Overlay isOpen={leftOverlayProps.isOpen} {...leftOverlay.underlayProps}>
         <ModalWrapper ref={leftMenuRef} placement="left" width={menusWidth[0]} {...leftOverlay.overlayProps}>
           <ModalHeader>
-            <BrandingLink pathname={CURVE_FI_ROUTE.MAIN} />
+            <AppLogo showBeta {...appLogoProps} />
             <IconButton ref={leftButtonCloseRef} onClick={() => closeMenu([menuWidth, 0])}>
               <Icon name="Close" size={24} aria-label="close icon" />
             </IconButton>
@@ -214,21 +213,9 @@ const HeaderMobile = ({
   )
 }
 
-const BrandWrapper = styled(Box)`
-  @media (min-width: ${breakpoints.sm}rem) {
-    align-items: center;
-    display: inline-flex;
-    flex-direction: row;
-  }
-`
-
-const MenuIcon = styled(IconButton)`
-  min-width: auto;
-  padding-right: var(--spacing-narrow);
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    min-width: var(--height-large);
-  }
+const StyledAppLogo = styled(AppLogo)`
+  transform: scale(80%) translate(-15%, 0%);
+  width: 110px;
 `
 
 const StyledExternalLink = styled(ExternalLink)`
@@ -287,8 +274,7 @@ const ModalHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--spacing-2) 0 var(--spacing-3);
-
+  padding: var(--spacing-narrow) var(--spacing-2) 0 var(--spacing-narrow);
   min-height: var(--box_header--height);
 `
 
