@@ -1,4 +1,5 @@
 import type { MessageDescriptor } from '@lingui/core'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
 import { useCallback, useMemo, useRef } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
@@ -17,9 +18,9 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
+import AppLogo from '@/ui/Brand'
 import Box from '@/ui/Box'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import CurveLogoLink from '@/layout/default/CurveLogoLink'
 import DividerHorizontal from '@/ui/DividerHorizontal'
 import HeaderMobile from '@/layout/default/HeaderMobile'
 import HeaderSecondary from '@/layout/default/HeaderSecondary'
@@ -55,6 +56,13 @@ const Header = () => {
   const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+
+  const network = networks[rChainId]?.networkId
+  const appLogoProps: AppLogoProps = {
+    appName: '',
+    pathname: hasRouter ? ROUTE.PAGE_SWAP : ROUTE.PAGE_POOLS,
+    internalPathname: `${rLocalePathname}/${network}${hasRouter ? ROUTE.PAGE_SWAP : ROUTE.PAGE_POOLS}`,
+  }
 
   const pages = useMemo(() => {
     const routerDefault = rChainId ? networks[rChainId].swap : {}
@@ -137,7 +145,7 @@ const Header = () => {
           {isMdUp ? (
             <>
               <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">
-                <CurveLogoLink />
+                <AppLogo {...appLogoProps} />
                 {pages.map(({ route, label }) => {
                   let isActive = false
                   if (location?.pathname) {
@@ -169,6 +177,7 @@ const Header = () => {
             </>
           ) : (
             <HeaderMobile
+              appLogoProps={appLogoProps}
               pages={pages}
               rChainId={rChainId}
               selectNetwork={SelectNetworkComp}
@@ -247,7 +256,7 @@ type NavBarContentProps = {
 const NavBarContent = styled(Box)<NavBarContentProps>`
   margin: 0 auto;
   max-width: var(--width);
-  padding: 0 var(--spacing-narrow);
+  padding: 0 var(--spacing-narrow) 0 0;
   width: 100%;
 
   @media (min-width: ${breakpoints.md}rem) {

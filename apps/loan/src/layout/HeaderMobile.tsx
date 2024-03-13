@@ -1,4 +1,5 @@
 import type { Page } from '@/layout/Header'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
 import { t } from '@lingui/macro'
 import React, { useMemo, useRef, useState } from 'react'
@@ -18,10 +19,10 @@ import useStore from '@/store/useStore'
 
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import { LlamaImg } from '@/images'
+import AppLogo from '@/ui/Brand'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import BrandingLink from '@/components/BrandingLink'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
 import Icon from '@/ui/Icon'
@@ -36,11 +37,13 @@ import delay from 'lodash/delay'
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const HeaderMobile = ({
+  appLogoProps,
   pages,
   selectNetwork: SelectNetwork,
   handleConnectWallet,
   handleLocaleChange,
 }: {
+  appLogoProps: AppLogoProps
   pages: Page[]
   selectNetwork: React.ReactElement
   handleConnectWallet(wallet: Wallet | null): void
@@ -113,11 +116,11 @@ const HeaderMobile = ({
 
   return (
     <>
-      <Box grid gridTemplateColumns="repeat(2, auto)" gridColumnGap={2} flexAlignItems="center">
+      <Box display="inline-flex" flexAlignItems="center">
         <IconButton ref={leftButtonRef} onClick={() => openMenu([menuWidth, 0])}>
           <Icon name="Menu" size={24} aria-label="menu icon" />
         </IconButton>
-        <BrandingLink className="main" pathname={CURVE_FI_ROUTE.MAIN} />
+        <StyledAppLogo {...appLogoProps} />
       </Box>
       <Spacer />
       <Menu>{SelectNetwork}</Menu>
@@ -125,7 +128,7 @@ const HeaderMobile = ({
       <Overlay isOpen={leftOverlayProps.isOpen} {...leftOverlay.underlayProps}>
         <ModalWrapper ref={leftMenuRef} placement="left" width={menusWidth[0]} {...leftOverlay.overlayProps}>
           <ModalHeader>
-            <BrandingLink pathname={CURVE_FI_ROUTE.MAIN} />
+            <AppLogo {...appLogoProps} />
             <IconButton ref={leftButtonCloseRef} onClick={() => closeMenu([menuWidth, 0])}>
               <Icon name="Close" size={24} aria-label="close icon" />
             </IconButton>
@@ -235,6 +238,11 @@ const HeaderMobile = ({
   )
 }
 
+const StyledAppLogo = styled(AppLogo)`
+  transform: scale(90%) translate(-5%, 0%);
+  width: 110px;
+`
+
 const Stats = styled(Box)`
   padding-top: var(--spacing-normal);
   border-top: 1px solid var(--border-400);
@@ -296,8 +304,7 @@ const ModalHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--spacing-2) 0 var(--spacing-3);
-
+  padding: var(--spacing-narrow) var(--spacing-2) 0 var(--spacing-narrow);
   min-height: var(--box_header--height);
 `
 

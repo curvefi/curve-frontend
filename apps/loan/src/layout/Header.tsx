@@ -1,3 +1,5 @@
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate } from 'react-router-dom'
 import React, { useRef } from 'react'
@@ -9,14 +11,14 @@ import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/util
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
-import { visibleNetworksList } from '@/networks'
+import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
+import AppLogo from '@/ui/Brand'
 import Box from '@/ui/Box'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import BrandingLink from '@/components/BrandingLink'
 import DividerHorizontal from '@/ui/DividerHorizontal'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderMobile from '@/layout/HeaderMobile'
@@ -41,6 +43,13 @@ const Header = () => {
 
   const { rChainId, rNetwork, rNetworkIdx } = getNetworkFromUrl()
   const rLocale = getLocaleFromUrl()
+
+  const network = networks[rChainId]?.id
+  const appLogoProps: AppLogoProps = {
+    appName: 'Crvusd',
+    pathname: CURVE_FI_ROUTE.MAIN,
+    internalPathname: `${rLocale?.rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
+  }
 
   const pages = [
     { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
@@ -83,7 +92,7 @@ const Header = () => {
           {isMdUp ? (
             <>
               <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
-                <BrandingLink pathname={CURVE_FI_ROUTE.MAIN} />
+                <AppLogo {...appLogoProps} />
                 {pages.map(({ route, label }) => {
                   let isActive = false
                   const { pathname } = location || {}
@@ -119,6 +128,7 @@ const Header = () => {
             </>
           ) : (
             <HeaderMobile
+              appLogoProps={appLogoProps}
               pages={pages}
               selectNetwork={SelectNetworkComp}
               handleConnectWallet={handleConnectWallet}
@@ -174,7 +184,7 @@ export const Menu = styled(Box)`
 const NavBarContent = styled(Box)`
   margin: 0 auto;
   max-width: var(--width);
-  padding: 0 var(--spacing-narrow);
+  padding: 0 var(--spacing-narrow) 0 0;
   width: 100%;
 
   @media (min-width: ${breakpoints.md}rem) {

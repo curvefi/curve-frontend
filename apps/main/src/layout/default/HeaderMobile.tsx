@@ -1,4 +1,5 @@
 import type { Page } from '@/layout/default/Header'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/macro'
@@ -10,7 +11,7 @@ import delay from 'lodash/delay'
 import Image from 'next/image'
 import styled, { css } from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getLocaleFromUrl, getNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
@@ -20,10 +21,10 @@ import useStore from '@/store/useStore'
 
 import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
 import { LlamaImg } from '@/images'
+import AppLogo from '@/ui/Brand'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import CurveLogoLink from '@/layout/default/CurveLogoLink'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import HeaderStats from '@/ui/HeaderStats'
 import Icon from '@/ui/Icon'
@@ -36,12 +37,14 @@ import Spacer from '@/ui/Spacer'
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const HeaderMobile = ({
+  appLogoProps,
   pages,
   rChainId,
   selectNetwork: SelectNetwork,
   handleConnectWallet,
   handleLocaleChange,
 }: {
+  appLogoProps: AppLogoProps
   pages: Page[]
   rChainId: ChainId
   selectNetwork: React.ReactElement
@@ -51,7 +54,6 @@ const HeaderMobile = ({
   const [{ wallet }] = useConnectWallet()
 
   const connectState = useStore((state) => state.connectState)
-  const isXSmDown = useStore((state) => state.isXSmDown)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
   const tvlTotalCached = useStore((state) => state.storeCache.tvlTotal?.[rChainId])
@@ -113,11 +115,11 @@ const HeaderMobile = ({
 
   return (
     <>
-      <Box grid gridTemplateColumns="repeat(2, auto)" gridColumnGap={2} flexAlignItems="center">
+      <Box display="inline-flex" flexAlignItems="center">
         <IconButton ref={leftButtonRef} onClick={() => openMenu([menuWidth, 0])}>
           <Icon name="Menu" size={24} aria-label="menu icon" />
         </IconButton>
-        <CurveLogoLink className="main" hideLabel={isXSmDown} />
+        <StyledAppLogo {...appLogoProps} />
       </Box>
       <Spacer />
       <Menu>{SelectNetwork}</Menu>
@@ -125,7 +127,7 @@ const HeaderMobile = ({
       <Overlay isOpen={leftOverlayProps.isOpen} {...leftOverlay.underlayProps}>
         <ModalWrapper ref={leftMenuRef} placement="left" width={menusWidth[0]} {...leftOverlay.overlayProps}>
           <ModalHeader>
-            <CurveLogoLink />
+            <AppLogo {...appLogoProps} />
             <IconButton ref={leftButtonCloseRef} onClick={() => closeMenu([menuWidth, 0])}>
               <Icon name="Close" size={24} aria-label="close icon" />
             </IconButton>
@@ -263,6 +265,11 @@ const HeaderMobile = ({
   )
 }
 
+const StyledAppLogo = styled(AppLogo)`
+  transform: scale(80%) translate(-15%, 0%);
+  width: 110px;
+`
+
 const Stats = styled(Box)`
   padding-top: var(--spacing-normal);
   border-top: 1px solid var(--border-400);
@@ -331,8 +338,7 @@ const ModalHeader = styled.header`
   align-items: center;
   display: flex;
   justify-content: space-between;
-  padding: 0 var(--spacing-2) 0 var(--spacing-3);
-
+  padding: var(--spacing-narrow) var(--spacing-2) 0 var(--spacing-narrow);
   min-height: var(--box_header--height);
 `
 

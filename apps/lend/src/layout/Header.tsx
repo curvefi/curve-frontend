@@ -16,9 +16,8 @@ import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
-import Beta from '@/components/Beta'
 import Box from '@/ui/Box'
-import BrandingLink from '@/components/BrandingLink'
+import AppLogo, { AppLogoProps } from '@/ui/Brand/AppLogo'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
 import HeaderMobile from '@/layout/HeaderMobile'
 import HeaderSecondary from '@/layout/HeaderSecondary'
@@ -41,7 +40,15 @@ const Header = () => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rLocale, rLocalePathname } = getParamsFromUrl()
+
+  const network = networks[rChainId].id
+  const appLogoProps: AppLogoProps = {
+    showBeta: true,
+    appName: 'LlamaLend',
+    pathname: CURVE_FI_ROUTE.MAIN,
+    internalPathname: `${rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
+  }
 
   const pages = [
     { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
@@ -103,7 +110,7 @@ const Header = () => {
             <>
               <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
                 <Box grid gridTemplateColumns="auto auto" flexAlignItems="center">
-                  <BrandingLink pathname={CURVE_FI_ROUTE.MAIN} /> <Beta />
+                  <AppLogo showBeta {...appLogoProps} />
                 </Box>
                 {pages.map(({ route, label }) => {
                   let isActive = false
@@ -135,6 +142,7 @@ const Header = () => {
             </>
           ) : (
             <HeaderMobile
+              appLogoProps={appLogoProps}
               pages={pages}
               selectNetwork={SelectNetworkComp}
               handleConnectWallet={handleConnectWallet}
@@ -186,7 +194,7 @@ export const Menu = styled(Box)`
 const NavBarContent = styled(Box)`
   margin: 0 auto;
   max-width: var(--width);
-  padding: 0 var(--spacing-narrow);
+  padding: 0 var(--spacing-narrow) 0 0;
   width: 100%;
 
   @media (min-width: ${breakpoints.md}rem) {
