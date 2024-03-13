@@ -71,7 +71,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       busd: true,
       y: true,
     },
-    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     hidePoolRewards: {
       crveth: true,
       'factory-v2-38': true,
@@ -387,7 +387,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig['42161'],
     excludeGetUserBalancesTokens: ['0x3aef260cb6a5b469f970fae7a1e233dbd5939378'],
-    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
@@ -501,7 +501,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   8453: {
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig['8453'],
-    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER' && f !== 'SWAP_REQUIRED'
