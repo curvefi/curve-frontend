@@ -15,7 +15,6 @@ import useStore from '@/store/useStore'
 import {
   PageFormContainer,
   PageFormsWrapper,
-  PageFormTitleContent,
   PageFormTitleWrapper,
   PageInfoContentWrapper,
   PageInfoTabsWrapper,
@@ -50,7 +49,7 @@ const Page: NextPage = () => {
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
 
   const { signerAddress } = api ?? {}
-  const { displayName } = owmDataCachedOrApi ?? {}
+  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
 
@@ -106,7 +105,6 @@ const Page: NextPage = () => {
         activeKey="supply"
         owmDataCachedOrApi={owmDataCachedOrApi}
       />
-      <PageFormTitleContent>{displayName}</PageFormTitleContent>
     </PageFormTitleWrapper>
   )
 
@@ -126,7 +124,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={`${displayName}: supply`} />
+      <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
       <PageFormContainer isAdvanceMode={isAdvanceMode}>
         <PageFormsWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}

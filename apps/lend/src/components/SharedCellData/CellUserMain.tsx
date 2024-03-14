@@ -42,7 +42,7 @@ const CellUserMain = ({
       {type === 'borrow' ? (
         <InpChipUsdRate isBold hideRate address={borrowed_token?.address} amount={details?.state?.debt} />
       ) : (
-        <InpChipVaultShareUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={vaultShares} />
+        <InpChipVaultShareUsdRate noPadding rChainId={rChainId} rOwmId={rOwmId} amount={vaultShares} />
       )}
     </Wrapper>
   )

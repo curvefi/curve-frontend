@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import { Chip } from '@/ui/Typography'
 
-export const StyledInpChip = styled(Chip)`
-  padding: 0 0.3125rem; // 5px
+export const StyledInpChip = styled(Chip)<{ noPadding?: boolean }>`
+  padding: ${({ noPadding }) => (noPadding ? '0' : '0 0.3125rem')}; // 5px
   min-height: 0.875rem; // 14px
   opacity: 0.9;
 `

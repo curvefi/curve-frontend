@@ -59,12 +59,12 @@ const TableHead = ({
       </colgroup>
       <thead>
         <tr>
-          {tableLabels.map(({ sortIdKey, label, buttons, className, show, isNotSortable }) => {
+          {tableLabels.map(({ sortIdKey, label, buttons, className, show, isNotSortable }, idx) => {
             const showCell = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
 
             return (
               showCell && (
-                <Th key={sortIdKey || label} className={className}>
+                <Th key={`${sortIdKey}-${idx}`} className={className}>
                   {isNotSortable ? (
                     label
                   ) : typeof buttons !== 'undefined' ? (
