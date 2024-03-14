@@ -26,11 +26,11 @@ const AppLogo = ({ className = '', appName, internalPathname, pathname, showBeta
   return (
     <Wrapper className={className}>
       {pathname?.startsWith('http') ? (
-        <StyledExternalLink $noStyles haveAppName={!!appName} href={pathname} target="_self">
+        <StyledExternalLink $noStyles $haveAppName={!!appName} href={pathname} target="_self">
           {LogoContent}
         </StyledExternalLink>
       ) : (
-        <StyledInternalLink to={internalPathname} haveAppName={!!appName}>
+        <StyledInternalLink to={internalPathname} $haveAppName={!!appName}>
           {LogoContent}
         </StyledInternalLink>
       )}
@@ -89,14 +89,14 @@ const CurveLogo = styled(Image)`
   margin-right: var(--spacing-2);
 `
 
-const LinkCss = css<{ haveAppName: boolean }>`
+const LinkCss = css<{ $haveAppName: boolean }>`
   align-items: center;
   color: inherit;
   display: inline-flex;
   margin-right: var(--spacing-1);
 
-  ${({ haveAppName }) => {
-    if (haveAppName) {
+  ${({ $haveAppName }) => {
+    if ($haveAppName) {
       return `
           margin-bottom: 12px;
           
