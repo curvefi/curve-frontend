@@ -40,10 +40,9 @@ type Props = {
   setChartTimeOption: (option: TimeOptions) => void
   flipChart?: () => void
   refetchPricesData: () => void
-  fetchMoreChartData: () => void
-  refetchingHistory: boolean
+  fetchMoreChartData: (lastFetchEndTime: number) => void
+  lastFetchEndTime: number
   refetchingCapped: boolean
-  lastRefetchLength: number
   selectChartList?: LabelList[]
 }
 
@@ -82,9 +81,8 @@ const ChartWrapper = ({
   flipChart,
   refetchPricesData,
   fetchMoreChartData,
-  refetchingHistory,
+  lastFetchEndTime,
   refetchingCapped,
-  lastRefetchLength,
   selectChartList,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
@@ -219,10 +217,9 @@ const ChartWrapper = ({
               chartExpanded={chartExpanded}
               magnet={magnet}
               colors={colors}
-              refetchingHistory={refetchingHistory}
               refetchingCapped={refetchingCapped}
-              lastRefetchLength={lastRefetchLength}
               fetchMoreChartData={fetchMoreChartData}
+              lastFetchEndTime={lastFetchEndTime}
             />
           </ResponsiveContainer>
         )}

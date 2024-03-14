@@ -20,6 +20,7 @@ import { ethers } from 'ethers'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import { slice } from 'lodash'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -33,10 +34,8 @@ type SliceState = {
   chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
-  refetchingHistory: boolean
   refetchingCapped: boolean
   lastFetchEndTime: number
-  lastRefetchLength: number
   activityHidden: boolean
   chartExpanded: boolean
 }
@@ -79,10 +78,8 @@ const DEFAULT_STATE: SliceState = {
   chartFetchStatus: 'LOADING',
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  refetchingHistory: false,
   refetchingCapped: false,
   lastFetchEndTime: 0,
-  lastRefetchLength: 0,
   activityHidden: false,
   chartExpanded: false,
 }
@@ -109,7 +106,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         produce((state: State) => {
           state[sliceKey].chartFetchStatus = 'LOADING'
           state[sliceKey].refetchingCapped = DEFAULT_STATE.refetchingCapped
-          state[sliceKey].refetchingHistory = DEFAULT_STATE.refetchingHistory
         })
       )
       const network = networks[chainId].id.toLowerCase()
@@ -191,33 +187,24 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       start: number,
       end: number
     ) => {
-      if (
-        get()[sliceKey].refetchingHistory ||
-        get()[sliceKey].lastRefetchLength === get()[sliceKey].chartOhlcData.length
-      )
-        return
-
-      set(
-        produce((state: State) => {
-          state[sliceKey].refetchingHistory = true
-          state[sliceKey].lastRefetchLength = get()[sliceKey].chartOhlcData.length
-        })
-      )
-
       const network = networks[chainId].id.toLowerCase()
 
+      console.log('start', start)
+      console.log('end', end)
+      console.log(end - start)
+
       try {
-        const llamaOhlcFetch = await fetch(
+        const llammaOhlcFetch = await fetch(
           `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
         )
-        const llamaOhlcResponse: LlammaOhlcApiResponse = await llamaOhlcFetch.json()
+        const llammaOhlcResponse: LlammaOhlcApiResponse = await llammaOhlcFetch.json()
 
         let volumeArray: VolumeData[] = []
         let baselinePriceArray: LlamaBaselinePriceData[] = []
         let oraclePriceArray: OraclePriceData[] = []
         let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
-        for (const item of llamaOhlcResponse.data) {
+        for (const item of llammaOhlcResponse.data) {
           volumeArray = [
             ...volumeArray,
             {
@@ -261,9 +248,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].volumeData = volumeArray
             state[sliceKey].oraclePriceData = oraclePriceArray
             state[sliceKey].baselinePriceData = baselinePriceArray
-            state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
-            state[sliceKey].refetchingHistory = false
+            state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
+            state[sliceKey].lastFetchEndTime = llammaOhlcResponse.data[0].time
           })
         )
       } catch (error) {

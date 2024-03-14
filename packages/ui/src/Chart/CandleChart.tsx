@@ -12,6 +12,7 @@ import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { debounce } from 'lodash'
 
 type Props = {
   chartType: ChartType
@@ -25,10 +26,9 @@ type Props = {
   chartExpanded?: boolean
   magnet: boolean
   colors: ChartColors
-  refetchingHistory: boolean
   refetchingCapped: boolean
-  lastRefetchLength: number
-  fetchMoreChartData: () => void
+  fetchMoreChartData: (lastFetchEndTime: number) => void
+  lastFetchEndTime: number
 }
 
 const CandleChart = ({
@@ -43,10 +43,9 @@ const CandleChart = ({
   chartExpanded,
   magnet,
   colors,
-  refetchingHistory,
   refetchingCapped,
-  lastRefetchLength,
   fetchMoreChartData,
+  lastFetchEndTime,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
@@ -58,12 +57,33 @@ const CandleChart = ({
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const lastFetchEndTimeRef = useRef(lastFetchEndTime)
 
   const isMounted = useRef(true)
   const totalDecimalPlacesRef = useRef(4)
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
+  const [fetchingMore, setFetchingMore] = useState(false)
+
+  // Update the ref every time the value changes
+  useEffect(() => {
+    lastFetchEndTimeRef.current = lastFetchEndTime
+  }, [lastFetchEndTime])
+
+  const debouncedFetchMoreChartData = useRef(
+    debounce(
+      () => {
+        if (fetchingMore || refetchingCapped) {
+          return
+        }
+        setFetchingMore(true)
+        fetchMoreChartData(lastFetchEndTimeRef.current)
+      },
+      500,
+      { leading: true, trailing: false }
+    )
+  )
 
   useEffect(() => {
     if (!chartContainerRef.current) return
@@ -243,7 +263,33 @@ const CandleChart = ({
       })
     }
 
+    const handleVisibleLogicalRangeChange = () => {
+      if (fetchingMore || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+        return
+      }
+
+      const timeScale = chartRef.current.timeScale()
+      const logicalRange = timeScale.getVisibleLogicalRange()
+
+      if (!logicalRange) {
+        return
+      }
+
+      const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+      if (barsInfo && barsInfo.barsBefore < 50) {
+        debouncedFetchMoreChartData.current()
+
+        setLastTimescale(timeScale.getVisibleRange())
+      }
+    }
+
+    const timeScale = chartRef.current.timeScale()
+
+    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+
     return () => {
+      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+
       candlestickSeriesRef.current = null
 
       if (chartRef.current) {
@@ -268,10 +314,13 @@ const CandleChart = ({
     colors.rangeColor,
     colors.rangeColorA25,
     colors.textColor,
+    fetchingMore,
+    lastTimescale,
     liquidationRange,
     magnet,
     ohlcData,
     oraclePriceData,
+    refetchingCapped,
     timeOption,
     volumeData,
     wrapperRef,
@@ -288,36 +337,17 @@ const CandleChart = ({
   }, [magnet])
 
   useEffect(() => {
-    if (candlestickSeriesRef.current && chartRef.current) {
-      candlestickSeriesRef.current.setData(ohlcData)
+    if (!chartRef.current) return
 
-      const timeScale = chartRef.current.timeScale()
+    const timeScale = chartRef.current.timeScale()
+
+    if (candlestickSeriesRef.current) {
+      candlestickSeriesRef.current.setData(ohlcData)
+      setFetchingMore(false)
 
       if (lastTimescale) {
         timeScale.setVisibleRange(lastTimescale)
       }
-
-      let timer: NodeJS.Timeout | null = null
-      timeScale.subscribeVisibleLogicalRangeChange(() => {
-        if (timer || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
-          return
-        }
-        timer = setTimeout(() => {
-          const logicalRange = timeScale.getVisibleLogicalRange()
-          if (
-            logicalRange &&
-            candlestickSeriesRef.current &&
-            (!refetchingHistory || !refetchingCapped || lastRefetchLength !== ohlcData.length)
-          ) {
-            const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
-            if (barsInfo && barsInfo.barsBefore < 50) {
-              setLastTimescale(timeScale.getVisibleRange())
-              fetchMoreChartData()
-            }
-          }
-          timer = null
-        }, 150)
-      })
     }
 
     if (volumeSeriesRef.current && volumeData !== undefined) {
@@ -362,16 +392,14 @@ const CandleChart = ({
     colors.rangeColorA25Old,
     colors.rangeColorOld,
     fetchMoreChartData,
-    lastRefetchLength,
+    fetchingMore,
     lastTimescale,
     liquidationRange,
     ohlcData,
     oraclePriceData,
     refetchingCapped,
-    refetchingHistory,
     volumeData,
   ])
-
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries) => {
       if (isUnmounting) return // Skip resizing if the component is unmounting

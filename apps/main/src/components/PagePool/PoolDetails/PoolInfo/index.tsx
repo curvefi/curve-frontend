@@ -30,10 +30,8 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
       chartExpanded,
       activityHidden,
       tradesTokens,
-      refetchingHistory,
       refetchingCapped,
       lastFetchEndTime,
-      lastRefetchLength,
     },
     setChartSelectedIndex,
     setChartTimeOption,
@@ -142,33 +140,35 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
     timeUnit,
   ])
 
-  const fetchMoreChartData = useCallback(() => {
-    const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
-    const startTime = getThreeHundredResultsAgo(timeOption, endTime)
+  const fetchMoreChartData = useCallback(
+    (lastFetchEndTime: number) => {
+      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+      const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-    fetchMorePricesApiCharts(
+      fetchMorePricesApiCharts(
+        rChainId,
+        selectedChartIndex,
+        pricesApiPoolData.address,
+        chartInterval,
+        timeUnit,
+        +startTime,
+        endTime,
+        chartCombinations,
+        isFlipped
+      )
+    },
+    [
       rChainId,
-      selectedChartIndex,
-      pricesApiPoolData.address,
-      chartInterval,
-      timeUnit,
-      endTime,
-      +startTime,
       chartCombinations,
-      isFlipped
-    )
-  }, [
-    rChainId,
-    chartCombinations,
-    chartInterval,
-    fetchMorePricesApiCharts,
-    isFlipped,
-    lastFetchEndTime,
-    pricesApiPoolData.address,
-    selectedChartIndex,
-    timeOption,
-    timeUnit,
-  ])
+      chartInterval,
+      fetchMorePricesApiCharts,
+      isFlipped,
+      pricesApiPoolData.address,
+      selectedChartIndex,
+      timeOption,
+      timeUnit,
+    ]
+  )
 
   useEffect(() => {
     const chartsList: LabelList[] =
@@ -224,10 +224,9 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           flipChart={flipChart}
-          refetchingHistory={refetchingHistory}
           refetchingCapped={refetchingCapped}
-          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
+          lastFetchEndTime={lastFetchEndTime}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -292,10 +291,9 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
           setChartTimeOption={setChartTimeOption}
           flipChart={flipChart}
           refetchPricesData={refetchPricesData}
-          refetchingHistory={refetchingHistory}
           refetchingCapped={refetchingCapped}
-          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
+          lastFetchEndTime={lastFetchEndTime}
         />
       )}
     </Wrapper>

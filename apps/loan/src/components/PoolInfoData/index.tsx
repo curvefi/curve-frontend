@@ -43,10 +43,8 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     chartFetchStatus,
     activityFetchStatus,
     timeOption,
-    refetchingHistory,
     refetchingCapped,
     lastFetchEndTime,
-    lastRefetchLength,
     chartOhlcData,
     volumeData,
     oraclePriceData,
@@ -207,12 +205,15 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     llamma,
   ])
 
-  const fetchMoreChartData = useCallback(() => {
-    const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
-    const startTime = getThreeHundredResultsAgo(timeOption, endTime)
+  const fetchMoreChartData = useCallback(
+    (lastFetchEndTime: number) => {
+      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+      const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-    fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, endTime, +startTime)
-  }, [timeOption, lastFetchEndTime, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit])
+      fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, +startTime, endTime)
+    },
+    [timeOption, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit]
+  )
 
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
@@ -231,10 +232,9 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
-          refetchingHistory={refetchingHistory}
           refetchingCapped={refetchingCapped}
-          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
+          lastFetchEndTime={lastFetchEndTime}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -281,10 +281,9 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
-          refetchingHistory={refetchingHistory}
           refetchingCapped={refetchingCapped}
-          lastRefetchLength={lastRefetchLength}
           fetchMoreChartData={fetchMoreChartData}
+          lastFetchEndTime={lastFetchEndTime}
         />
       )}
     </Wrapper>
