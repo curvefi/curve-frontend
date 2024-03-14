@@ -6,23 +6,29 @@ import cloneDeep from 'lodash/cloneDeep'
 import useStore from '@/store/useStore'
 
 import { DEFAULT_BAND_CHART_DATA } from '@/components/DetailsUser/utils'
+import { helpers } from '@/lib/apiLending'
 import ChartBandBalances from '@/components/ChartBandBalances'
 
 const DetailsUserLoanChartBandBalances = ({
   rChainId,
   rOwmId,
+  api,
+  owmData,
   borrowed_token,
   collateral_token,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'borrowed_token' | 'collateral_token'>) => {
+}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'owmData' | 'borrowed_token' | 'collateral_token'>) => {
   const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
+  const userActiveKey = helpers.getUserActiveKey(api, owmData)
+  const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
     endIndex: undefined,
   })
 
-  const { bandsBalances, liquidationBand } = loansStatsBands?.bands ?? {}
+  const { bandsBalances } = userLoanDetails?.details ?? {}
+  const { liquidationBand } = loansStatsBands?.bands ?? {}
   const { oraclePrice, oraclePriceBand } = loansPrices?.prices ?? {}
 
   const chartBandBalancesData = useMemo(() => {
