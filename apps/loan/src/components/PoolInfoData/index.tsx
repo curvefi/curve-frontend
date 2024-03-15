@@ -55,6 +55,12 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     activityHidden,
     chartExpanded,
     setChartExpanded,
+    toggleLiqRangeCurrentVisible,
+    toggleLiqRangeNewVisible,
+    toggleOraclePriceVisible,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    oraclePriceVisible,
   } = useStore((state) => state.ohlcCharts)
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
@@ -235,6 +241,12 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           refetchingCapped={refetchingCapped}
           fetchMoreChartData={fetchMoreChartData}
           lastFetchEndTime={lastFetchEndTime}
+          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
+          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
+          toggleOraclePriceVisible={toggleOraclePriceVisible}
+          liqRangeCurrentVisible={liqRangeCurrentVisible}
+          liqRangeNewVisible={liqRangeNewVisible}
+          oraclePriceVisible={oraclePriceVisible}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -284,6 +296,12 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           refetchingCapped={refetchingCapped}
           fetchMoreChartData={fetchMoreChartData}
           lastFetchEndTime={lastFetchEndTime}
+          toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
+          toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
+          toggleOraclePriceVisible={toggleOraclePriceVisible}
+          liqRangeCurrentVisible={liqRangeCurrentVisible}
+          liqRangeNewVisible={liqRangeNewVisible}
+          oraclePriceVisible={oraclePriceVisible}
         />
       )}
     </Wrapper>

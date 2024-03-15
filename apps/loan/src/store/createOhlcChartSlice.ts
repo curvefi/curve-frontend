@@ -38,6 +38,9 @@ type SliceState = {
   lastFetchEndTime: number
   activityHidden: boolean
   chartExpanded: boolean
+  oraclePriceVisible: boolean
+  liqRangeCurrentVisible: boolean
+  liqRangeNewVisible: boolean
 }
 
 const sliceKey = 'ohlcCharts'
@@ -64,6 +67,9 @@ export type OhlcChartSlice = {
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     setActivityHidden(bool?: boolean): void
     setChartExpanded(bool?: boolean): void
+    toggleOraclePriceVisible: () => void
+    toggleLiqRangeCurrentVisible: () => void
+    toggleLiqRangeNewVisible: () => void
     resetState(chainId: ChainId): void
   }
 }
@@ -82,6 +88,9 @@ const DEFAULT_STATE: SliceState = {
   lastFetchEndTime: 0,
   activityHidden: false,
   chartExpanded: false,
+  oraclePriceVisible: true,
+  liqRangeCurrentVisible: true,
+  liqRangeNewVisible: true,
 }
 
 const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
@@ -340,6 +349,27 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         produce((state: State) => {
           state[sliceKey].chartExpanded = bool !== undefined ? bool : !get()[sliceKey].chartExpanded
           state[sliceKey].activityHidden = false
+        })
+      )
+    },
+    toggleOraclePriceVisible: () => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].oraclePriceVisible = !get()[sliceKey].oraclePriceVisible
+        })
+      )
+    },
+    toggleLiqRangeCurrentVisible: () => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].liqRangeCurrentVisible = !get()[sliceKey].liqRangeCurrentVisible
+        })
+      )
+    },
+    toggleLiqRangeNewVisible: () => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].liqRangeNewVisible = !get()[sliceKey].liqRangeNewVisible
         })
       )
     },

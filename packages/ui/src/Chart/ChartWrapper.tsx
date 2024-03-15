@@ -22,6 +22,7 @@ import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
+import Checkbox from 'ui/src/Checkbox'
 import Box from 'ui/src/Box'
 
 type Props = {
@@ -41,6 +42,12 @@ type Props = {
   flipChart?: () => void
   refetchPricesData: () => void
   fetchMoreChartData: (lastFetchEndTime: number) => void
+  toggleOraclePriceVisible?: () => void
+  toggleLiqRangeCurrentVisible?: () => void
+  toggleLiqRangeNewVisible?: () => void
+  oraclePriceVisible?: boolean
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
   lastFetchEndTime: number
   refetchingCapped: boolean
   selectChartList?: LabelList[]
@@ -84,6 +91,12 @@ const ChartWrapper = ({
   lastFetchEndTime,
   refetchingCapped,
   selectChartList,
+  oraclePriceVisible,
+  liqRangeCurrentVisible,
+  liqRangeNewVisible,
+  toggleOraclePriceVisible,
+  toggleLiqRangeCurrentVisible,
+  toggleLiqRangeNewVisible,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = cloneDeep(ohlcData)
@@ -185,24 +198,41 @@ const ChartWrapper = ({
             setCurrentTimeOption={setChartTimeOption}
           />
         </SectionHeader>
-        {chartType === 'crvusd' && (
-          <TipWrapper>
-            <TipContent>
-              <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-oracle-price-line)" />
-              Oracle Price
-            </TipContent>
-            <TipContent>
-              <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range)" />
-              <TipText>Liquidation Range {liquidationRange?.current && liquidationRange.new && '(New)'}</TipText>
-            </TipContent>
-            {liquidationRange?.current && liquidationRange.new && (
-              <TipContent>
-                <TipIcon name="StopFilledAlt" size={20} fill="var(--chart-liq-range-old)" />
-                <TipText>Liquidation Range (Current)</TipText>
-              </TipContent>
-            )}
-          </TipWrapper>
-        )}
+        {chartType === 'crvusd' &&
+          toggleOraclePriceVisible &&
+          toggleLiqRangeNewVisible &&
+          toggleLiqRangeCurrentVisible && (
+            <TipWrapper>
+              <StyledCheckbox
+                fillColor="var(--chart-oracle-price-line)"
+                blank
+                isSelected={oraclePriceVisible}
+                onChange={() => toggleOraclePriceVisible()}
+              >
+                Oracle Price
+              </StyledCheckbox>
+              {liquidationRange?.new && toggleLiqRangeNewVisible && (
+                <StyledCheckbox
+                  fillColor="var(--chart-liq-range)"
+                  blank
+                  isSelected={liqRangeNewVisible}
+                  onChange={() => toggleLiqRangeNewVisible()}
+                >
+                  <TipText>Liquidation Range (New)</TipText>
+                </StyledCheckbox>
+              )}
+              {liquidationRange?.current && (
+                <StyledCheckbox
+                  fillColor={liquidationRange.new ? 'var(--chart-liq-range-old)' : 'var(--chart-liq-range)'}
+                  blank
+                  isSelected={liqRangeCurrentVisible}
+                  onChange={() => toggleLiqRangeCurrentVisible()}
+                >
+                  <TipText>Liquidation Range (Current)</TipText>
+                </StyledCheckbox>
+              )}
+            </TipWrapper>
+          )}
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
             <CandleChart
@@ -220,6 +250,9 @@ const ChartWrapper = ({
               refetchingCapped={refetchingCapped}
               fetchMoreChartData={fetchMoreChartData}
               lastFetchEndTime={lastFetchEndTime}
+              liqRangeCurrentVisible={liqRangeCurrentVisible}
+              liqRangeNewVisible={liqRangeNewVisible}
+              oraclePriceVisible={oraclePriceVisible}
             />
           </ResponsiveContainer>
         )}
@@ -305,11 +338,6 @@ const ResponsiveContainer = styled.div<{ chartExpanded: boolean; chartHeight: Ch
   padding-bottom: var(--spacing-3);
 `
 
-const StyledDateRangePicker = styled(DateRangePicker)`
-  /* margin-top: 500px; */
-  margin: auto auto 0;
-`
-
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   /* margin: var(--spacing-3) 0 var(--spacing-3); */
 `
@@ -330,12 +358,16 @@ const TipWrapper = styled.div`
   gap: var(--spacing-2);
 `
 
-const TipContent = styled(Box)`
+const StyledCheckbox = styled(Checkbox)`
   align-items: center;
   justify-content: center;
   display: flex;
   font-size: var(--font-size-1);
   font-weight: var(--font-weight);
+  margin-right: 0;
+  svg {
+    margin-right: 0;
+  }
 `
 
 const TipIcon = styled(Icon)`
@@ -345,6 +377,7 @@ const TipIcon = styled(Icon)`
 
 const TipText = styled.p`
   font-size: var(--font-size-1);
+  font-weight: none;
 `
 
 export default ChartWrapper

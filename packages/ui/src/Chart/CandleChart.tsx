@@ -29,6 +29,9 @@ type Props = {
   refetchingCapped: boolean
   fetchMoreChartData: (lastFetchEndTime: number) => void
   lastFetchEndTime: number
+  oraclePriceVisible?: boolean
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
 }
 
 const CandleChart = ({
@@ -46,6 +49,9 @@ const CandleChart = ({
   refetchingCapped,
   fetchMoreChartData,
   lastFetchEndTime,
+  oraclePriceVisible,
+  liqRangeCurrentVisible,
+  liqRangeNewVisible,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
@@ -66,7 +72,6 @@ const CandleChart = ({
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
   const [fetchingMore, setFetchingMore] = useState(false)
 
-  // Update the ref every time the value changes
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
   }, [lastFetchEndTime])
@@ -116,7 +121,7 @@ const CandleChart = ({
         },
       },
       crosshair: {
-        mode: CrosshairMode.Normal,
+        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
           width: 4,
           color: '#C3BCDB44',
@@ -133,7 +138,6 @@ const CandleChart = ({
     isMounted.current = true
 
     // liquidation range series
-
     const addCurrentSeries = () => {
       if (chartRef.current) {
         currentAreaSeriesRef.current = chartRef.current.addAreaSeries({
@@ -146,6 +150,7 @@ const CandleChart = ({
           pointMarkersVisible: false,
           lineVisible: false,
           priceLineStyle: 2,
+          visible: liqRangeCurrentVisible,
         })
         currentAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.backgroundColor,
@@ -157,6 +162,7 @@ const CandleChart = ({
           pointMarkersVisible: false,
           lineVisible: false,
           priceLineStyle: 2,
+          visible: liqRangeCurrentVisible,
         })
       }
     }
@@ -172,6 +178,7 @@ const CandleChart = ({
           pointMarkersVisible: false,
           lineVisible: false,
           priceLineStyle: 2,
+          visible: liqRangeNewVisible,
         })
         newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
           topColor: colors.backgroundColor,
@@ -183,10 +190,11 @@ const CandleChart = ({
           pointMarkersVisible: false,
           lineVisible: false,
           priceLineStyle: 2,
+          visible: liqRangeNewVisible,
         })
       }
     }
-    // new
+    // both ranges
     if (liquidationRange && liquidationRange.current && liquidationRange.new) {
       const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
 
@@ -198,17 +206,16 @@ const CandleChart = ({
         addNewSeries()
       }
     }
-
     // only new
     if (liquidationRange && !liquidationRange.current && liquidationRange.new && !newAreaSeriesRef.current) {
       addNewSeries()
     }
-
     // only current
     if (liquidationRange && liquidationRange.current && !liquidationRange.new && !currentAreaSeriesRef.current) {
       addCurrentSeries()
     }
 
+    // ohlc series
     if (ohlcData && !candlestickSeriesRef.current) {
       candlestickSeriesRef.current = chartRef.current.addCandlestickSeries({
         priceLineStyle: 2,
@@ -247,9 +254,8 @@ const CandleChart = ({
         priceScaleId: '', // set as an overlay by setting a blank priceScaleId
       })
       volumeSeriesRef.current.priceScale().applyOptions({
-        // set the positioning of the volume series
         scaleMargins: {
-          top: 0.7, // highest point of the series will be 70% away from the top
+          top: 0.7,
           bottom: 0,
         },
       })
@@ -260,6 +266,7 @@ const CandleChart = ({
         color: colors.chartOraclePrice,
         lineWidth: 2,
         priceLineStyle: 2,
+        visible: oraclePriceVisible,
       })
     }
 
@@ -316,25 +323,18 @@ const CandleChart = ({
     colors.textColor,
     fetchingMore,
     lastTimescale,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
     liquidationRange,
     magnet,
     ohlcData,
     oraclePriceData,
+    oraclePriceVisible,
     refetchingCapped,
     timeOption,
     volumeData,
     wrapperRef,
   ])
-
-  useEffect(() => {
-    if (chartRef.current) {
-      chartRef.current.applyOptions({
-        crosshair: {
-          mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
-        },
-      })
-    }
-  }, [magnet])
 
   useEffect(() => {
     if (!chartRef.current) return
@@ -402,11 +402,11 @@ const CandleChart = ({
   ])
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries) => {
-      if (isUnmounting) return // Skip resizing if the component is unmounting
+      if (isUnmounting) return
 
       let { width, height } = entries[0].contentRect
       width -= 1
-      if (width <= 0) return // Skip resizing if the width is negative or zero
+      if (width <= 0) return
 
       chartRef.current?.applyOptions({ width, height })
       chartRef.current?.timeScale().getVisibleLogicalRange()
