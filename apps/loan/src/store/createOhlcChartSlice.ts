@@ -189,10 +189,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     ) => {
       const network = networks[chainId].id.toLowerCase()
 
-      console.log('start', start)
-      console.log('end', end)
-      console.log(end - start)
-
       try {
         const llammaOhlcFetch = await fetch(
           `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
@@ -244,10 +240,10 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartOhlcData = ohlcDataArray
-            state[sliceKey].volumeData = volumeArray
-            state[sliceKey].oraclePriceData = oraclePriceArray
-            state[sliceKey].baselinePriceData = baselinePriceArray
+            state[sliceKey].chartOhlcData = [...ohlcDataArray, ...get()[sliceKey].chartOhlcData]
+            state[sliceKey].volumeData = [...volumeArray, ...get()[sliceKey].volumeData]
+            state[sliceKey].oraclePriceData = [...oraclePriceArray, ...get()[sliceKey].oraclePriceData]
+            state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
             state[sliceKey].lastFetchEndTime = llammaOhlcResponse.data[0].time
           })

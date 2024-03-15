@@ -17,7 +17,7 @@ const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: P
       buttonProps={{ isDisabled }}
       placement="bottom"
       offset={0}
-      buttonStyles={{ padding: '0.5rem' }}
+      buttonStyles={{ padding: '0.5rem', border: '1px solid var(--nav_button--border-color)' }}
       label={<h3>{currentTimeOption}</h3>}
       showExpandIcon
       buttonVariant="outlined"
@@ -34,7 +34,6 @@ const StyledPopover2Dialog = styled(Popover2Dialog)`
   flex-direction: column;
   h3 {
     font-size: var(--font-size-2);
-    margin-left: auto;
     margin-right: auto;
   }
 `

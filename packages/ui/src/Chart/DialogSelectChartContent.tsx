@@ -24,7 +24,7 @@ const DialogSelectChart = ({ data, currentData, setCurrentData, ...props }: Prop
       {data.map((item, index) => (
         <StyledSelectButton
           className={index === currentData ? 'active' : ''}
-          variant={'text'}
+          variant={'select'}
           onClick={() => handleClick(index)}
           key={index}
         >
@@ -45,8 +45,10 @@ const Wrapper = styled.div`
 const StyledSelectButton = styled(Button)`
   color: var(--page--text-color);
   margin-right: auto;
-  margin-left: auto;
   margin-top: var(--spacing-2);
+  font-family: var(--font);
+  font-weight: var(--bold);
+  text-transform: none;
   &.active {
     color: var(--button_text--hover--color);
     background-color: var(--button_outlined--hover--background-color);
