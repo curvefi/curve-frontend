@@ -355,6 +355,7 @@ const TipWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
   gap: var(--spacing-2);
 `
 
