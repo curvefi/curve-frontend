@@ -96,12 +96,11 @@ const Wrapper = styled.div`
 const ButtonRow = styled.div`
   display: flex;
   margin-top: var(--spacing-2);
-  justify-content: center;
 `
 
 const StyledSelectButton = styled(Button)`
   color: var(--page--text-color);
-  margin-left: var(--spacing-2);
+  margin-right: var(--spacing-2);
   margin-top: var(--spacing-1);
   &.active {
     color: var(--button_text--hover--color);

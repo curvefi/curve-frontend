@@ -24,6 +24,7 @@ import createLoanLiquidate, { LoanLiquidateSlice } from '@/store/createLoanLiqui
 import createChartBandsSlice, { ChartBandsSlice } from '@/store/createChartBandsStore'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/store/createIntegrationsSlice'
 import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/store/createLoanDeleverageSlice'
+import createOhlcChartSlice, { OhlcChartSlice } from '@/store/createOhlcChartSlice'
 
 export type State = CacheSlice &
   AppSlice &
@@ -44,7 +45,8 @@ export type State = CacheSlice &
   LoanIncreaseSlice &
   LoanSwapSlice &
   LoanLiquidateSlice &
-  IntegrationsSlice
+  IntegrationsSlice &
+  OhlcChartSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
@@ -67,6 +69,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLoanSwap(set, get),
   ...createLoanLiquidate(set, get),
   ...createIntegrationsSlice(set, get),
+  ...createOhlcChartSlice(set, get),
 })
 
 // cache all items in CacheSlice store

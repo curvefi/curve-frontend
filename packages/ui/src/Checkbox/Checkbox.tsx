@@ -11,9 +11,10 @@ interface CheckboxProps extends ToggleProps {
   className?: string
   isDisabled?: boolean
   fillColor?: string
+  blank?: boolean
 }
 
-const Checkbox = ({ className, isDisabled = false, fillColor, ...props }: CheckboxProps) => {
+const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)
   const state = useToggleState(props)
   const { inputProps } = useCheckbox(props, state, ref)
@@ -28,16 +29,16 @@ const Checkbox = ({ className, isDisabled = false, fillColor, ...props }: Checkb
         <Rect
           isSelected={state.isSelected}
           isDisabled={isDisabled}
-          x={state.isSelected ? 4 : 5}
-          y={state.isSelected ? 4 : 5}
-          width={state.isSelected ? 16 : 14}
-          height={state.isSelected ? 16 : 14}
+          x={blank ? 6 : state.isSelected ? 4 : 5}
+          y={blank ? 6 : state.isSelected ? 4 : 5}
+          width={blank ? 12 : state.isSelected ? 16 : 14}
+          height={blank ? 12 : state.isSelected ? 16 : 14}
           strokeWidth={2}
           fillColor={fillColor || ''}
         />
         {state.isSelected && (
           <path
-            fill="white"
+            fill={blank ? fillColor : 'white'}
             transform="translate(7 7)"
             d={`M3.788 9A.999.999 0 0 1 3 8.615l-2.288-3a1 1 0 1 1
             1.576-1.23l1.5 1.991 3.924-4.991a1 1 0 1 1 1.576 1.23l-4.712

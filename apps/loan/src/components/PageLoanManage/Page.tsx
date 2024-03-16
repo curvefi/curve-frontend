@@ -17,12 +17,15 @@ import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
+import PoolInfoData from '@/components/PoolInfoData'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import LoanInfoUser from '@/components/LoanInfoUser'
 import LoanMange from '@/components/PageLoanManage/index'
 import Tabs, { Tab, TabContentWrapper } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
+import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -41,6 +44,7 @@ const Page: NextPage = () => {
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
+  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
@@ -111,6 +115,12 @@ const Page: NextPage = () => {
     isPageVisible
   )
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
   const TitleComp = () => (
     <TitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
@@ -128,9 +138,28 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`${llamma?.collateralSymbol}` ?? t`Manage`} />
-      <Wrapper>
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex>
+            {isMdUp && <TitleComp />}
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
+      <Wrapper chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+          {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
           {isValidRouterParams && (
             <LoanMange
               {...formProps}
@@ -143,7 +172,7 @@ const Page: NextPage = () => {
         </FormWrapper>
 
         <LoanInfoWrapper>
-          {isMdUp && <TitleComp />}
+          {isMdUp && !chartExpanded && <TitleComp />}
           <LoanInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (
@@ -167,7 +196,7 @@ const Page: NextPage = () => {
             </Tabs>
           </LoanInfoTabsWrapper>
           <LoanInfoContentWrapper variant="secondary">
-            {selectedTab === 'user' && isValidRouterParams && <LoanInfoUser {...formProps} />}
+            {selectedTab === 'user' && isValidRouterParams && <LoanInfoUser {...formProps} rChainId={rChainId} />}
             {selectedTab === 'llamma' && isValidRouterParams && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
           </LoanInfoContentWrapper>
         </LoanInfoWrapper>
@@ -176,7 +205,7 @@ const Page: NextPage = () => {
   )
 }
 
-const Wrapper = styled(Box)`
+const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
   margin: 2rem auto 0 auto;
 
   @media (min-width: 425px) {
@@ -192,6 +221,7 @@ const Wrapper = styled(Box)`
     margin-right: 1rem;
     align-items: flex-start;
     display: flex;
+    ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
   }
 `
 
@@ -249,6 +279,30 @@ const LoanInfoTabsWrapper = styled.header`
 const LoanInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
+`
+
+const PriceAndTradesExpandedContainer = styled(Box)`
+  margin: 1.5rem 0 0;
+  display: flex;
+  @media (min-width: ${breakpoints.md}rem) {
+    flex-direction: column;
+  }
+`
+
+const PriceAndTradesExpandedWrapper = styled(Box)`
+  background-color: var(--tab-secondary--content--background-color);
+`
+
+const ExpandButton = styled(Button)`
+  margin: auto var(--spacing-3) auto auto;
+  display: flex;
+  align-content: center;
+  color: inherit;
+  font-size: var(--font-size-2);
+`
+
+const ExpandIcon = styled(Icon)`
+  margin-left: var(--spacing-1);
 `
 
 export default Page

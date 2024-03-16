@@ -1,136 +1,224 @@
-import type { LpPriceOhlcDataFormatted, ChartType, ChartHeight } from './types'
-import type { IChartApi, Time } from 'lightweight-charts'
+import type {
+  LpPriceOhlcDataFormatted,
+  ChartType,
+  ChartHeight,
+  VolumeData,
+  OraclePriceData,
+  LiquidationRanges,
+  ChartColors,
+} from './types'
+import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
 
 import { createChart, ColorType, CrosshairMode, LineStyle } from 'lightweight-charts'
 import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { debounce } from 'lodash'
 
 type Props = {
   chartType: ChartType
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
+  volumeData?: VolumeData[]
+  oraclePriceData?: OraclePriceData[]
+  liquidationRange?: LiquidationRanges
   timeOption: string
   wrapperRef: any
   chartExpanded?: boolean
   magnet: boolean
-  themeType: string
-  refetchingHistory: boolean
+  colors: ChartColors
   refetchingCapped: boolean
-  lastRefetchLength: number
-  fetchMoreChartData: () => void
+  fetchMoreChartData: (lastFetchEndTime: number) => void
+  lastFetchEndTime: number
+  oraclePriceVisible?: boolean
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
 }
 
 const CandleChart = ({
   chartType,
   chartHeight,
   ohlcData,
+  volumeData,
+  oraclePriceData,
+  liquidationRange,
   timeOption,
   wrapperRef,
   chartExpanded,
   magnet,
-  themeType,
-  refetchingHistory,
+  colors,
   refetchingCapped,
-  lastRefetchLength,
   fetchMoreChartData,
+  lastFetchEndTime,
+  oraclePriceVisible,
+  liqRangeCurrentVisible,
+  liqRangeNewVisible,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
 
-  const [chartCreated, setChartCreated] = useState(false)
-  const [lastTheme, setLastTheme] = useState(themeType)
+  const newAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
+  const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+
+  const isMounted = useRef(true)
+  const totalDecimalPlacesRef = useRef(4)
+
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
-
-  const [colors, setColors] = useState({
-    backgroundColor: '#fafafa',
-    lineColor: '#2962FF',
-    textColor: 'black',
-    areaTopColor: '#2962FF',
-    areaBottomColor: 'rgba(41, 98, 255, 0.28)',
-    chartGreenColor: '#2962FF',
-    chartRedColor: '#ef5350',
-    chartLabelColor: '#9B7DFF',
-  })
+  const [fetchingMore, setFetchingMore] = useState(false)
 
   useEffect(() => {
-    const style = getComputedStyle(document.body)
-    const backgroundColor =
-      chartType === 'crvusd'
-        ? style.getPropertyValue('--tab-secondary--content--background-color')
-        : style.getPropertyValue('--box--secondary--background-color')
-    const lineColor = style.getPropertyValue('--line-color')
-    const textColor = style.getPropertyValue('--page--text-color')
-    const areaTopColor = style.getPropertyValue('--area-top-color')
-    const areaBottomColor = style.getPropertyValue('--area-bottom-color')
-    const chartGreenColor = style.getPropertyValue('--chart-green')
-    const chartRedColor = style.getPropertyValue('--chart-red')
-    const chartLabelColor = style.getPropertyValue('--chart-label')
-    const warningColor = style.getPropertyValue('--warning-400')
+    lastFetchEndTimeRef.current = lastFetchEndTime
+  }, [lastFetchEndTime])
 
-    setColors({
-      backgroundColor,
-      lineColor,
-      textColor,
-      areaTopColor,
-      areaBottomColor,
-      chartGreenColor,
-      chartRedColor,
-      chartLabelColor,
+  const debouncedFetchMoreChartData = useRef(
+    debounce(
+      () => {
+        if (fetchingMore || refetchingCapped) {
+          return
+        }
+        setFetchingMore(true)
+        fetchMoreChartData(lastFetchEndTimeRef.current)
+      },
+      500,
+      { leading: true, trailing: false }
+    )
+  )
+
+  useEffect(() => {
+    if (!chartContainerRef.current) return
+
+    chartRef.current = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: colors.backgroundColor },
+        textColor: colors.textColor,
+      },
+      width: wrapperRef.current.clientWidth,
+      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+      timeScale: {
+        timeVisible: timeOption === 'day' ? false : true,
+      },
+      rightPriceScale: {
+        autoScale: true,
+        alignLabels: true,
+        borderVisible: false,
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.1,
+        },
+      },
+      grid: {
+        vertLines: {
+          visible: false,
+        },
+        horzLines: {
+          visible: false,
+        },
+      },
+      crosshair: {
+        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
+        vertLine: {
+          width: 4,
+          color: '#C3BCDB44',
+          style: LineStyle.Solid,
+          labelBackgroundColor: '#9B7DFF',
+        },
+        horzLine: {
+          color: '#9B7DFF',
+          labelBackgroundColor: '#9B7DFF',
+        },
+      },
     })
-    setLastTheme(themeType)
-  }, [chartType, lastTheme, themeType])
+    chartRef.current.timeScale()
+    isMounted.current = true
 
-  useEffect(() => {
-    if (chartCreated && !ohlcData) return
+    // liquidation range series
+    const addCurrentSeries = () => {
+      if (chartRef.current) {
+        currentAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+          visible: liqRangeCurrentVisible,
+        })
+        currentAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+          visible: liqRangeCurrentVisible,
+        })
+      }
+    }
+    const addNewSeries = () => {
+      if (chartRef.current) {
+        newAreaSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.rangeColorA25,
+          bottomColor: colors.rangeColorA25,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+          visible: liqRangeNewVisible,
+        })
+        newAreaBgSeriesRef.current = chartRef.current.addAreaSeries({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColor,
+          lineWidth: 1,
+          lineStyle: 3,
+          crosshairMarkerVisible: false,
+          pointMarkersVisible: false,
+          lineVisible: false,
+          priceLineStyle: 2,
+          visible: liqRangeNewVisible,
+        })
+      }
+    }
+    // both ranges
+    if (liquidationRange && liquidationRange.current && liquidationRange.new) {
+      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
 
-    if (chartContainerRef.current) {
-      chartRef.current = createChart(chartContainerRef.current, {
-        layout: {
-          background: { type: ColorType.Solid, color: colors.backgroundColor },
-          textColor: colors.textColor,
-        },
-        width: wrapperRef.current.clientWidth,
-        height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
-        timeScale: {
-          timeVisible: timeOption === 'day' ? false : true,
-        },
-        rightPriceScale: {
-          autoScale: true,
-          alignLabels: true,
-          borderVisible: false,
-          scaleMargins: {
-            top: 0.1,
-            bottom: 0.1,
-          },
-        },
-        grid: {
-          vertLines: {
-            visible: false,
-          },
-          horzLines: {
-            visible: false,
-          },
-        },
-        crosshair: {
-          mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
-          vertLine: {
-            width: 4,
-            color: '#C3BCDB44',
-            style: LineStyle.Solid,
-            labelBackgroundColor: '#9B7DFF',
-          },
-          horzLine: {
-            color: '#9B7DFF',
-            labelBackgroundColor: '#9B7DFF',
-          },
-        },
-      })
-      chartRef.current.timeScale()
+      if (addNewFirst) {
+        addNewSeries()
+        addCurrentSeries()
+      } else {
+        addCurrentSeries()
+        addNewSeries()
+      }
+    }
+    // only new
+    if (liquidationRange && !liquidationRange.current && liquidationRange.new && !newAreaSeriesRef.current) {
+      addNewSeries()
+    }
+    // only current
+    if (liquidationRange && liquidationRange.current && !liquidationRange.new && !currentAreaSeriesRef.current) {
+      addCurrentSeries()
+    }
 
-      let totalDecimalPlaces = 4
-
-      const candlestickSeries = chartRef.current.addCandlestickSeries({
+    // ohlc series
+    if (ohlcData && !candlestickSeriesRef.current) {
+      candlestickSeriesRef.current = chartRef.current.addCandlestickSeries({
+        priceLineStyle: 2,
         upColor: '#26a69a',
         downColor: '#ef5350',
         borderVisible: false,
@@ -149,78 +237,176 @@ const CandleChart = ({
 
             // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
             // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-            totalDecimalPlaces = price >= 1 ? 4 : nonZeroIndex + 4
+            totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
 
-            return price.toFixed(totalDecimalPlaces)
+            return price.toFixed(totalDecimalPlacesRef.current)
           },
           minMove: 0.0000001,
         },
       })
+    }
 
-      candlestickSeries.setData(ohlcData)
+    if (volumeData && !volumeSeriesRef.current) {
+      volumeSeriesRef.current = chartRef.current.addHistogramSeries({
+        priceFormat: {
+          type: 'volume',
+        },
+        priceScaleId: '', // set as an overlay by setting a blank priceScaleId
+      })
+      volumeSeriesRef.current.priceScale().applyOptions({
+        scaleMargins: {
+          top: 0.7,
+          bottom: 0,
+        },
+      })
+    }
 
-      setChartCreated(true)
+    if (oraclePriceData && !oraclePriceSeriesRef.current) {
+      oraclePriceSeriesRef.current = chartRef.current.addLineSeries({
+        color: colors.chartOraclePrice,
+        lineWidth: 2,
+        priceLineStyle: 2,
+        visible: oraclePriceVisible,
+      })
+    }
+
+    const handleVisibleLogicalRangeChange = () => {
+      if (fetchingMore || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+        return
+      }
 
       const timeScale = chartRef.current.timeScale()
+      const logicalRange = timeScale.getVisibleLogicalRange()
+
+      if (!logicalRange) {
+        return
+      }
+
+      const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+      if (barsInfo && barsInfo.barsBefore < 50) {
+        debouncedFetchMoreChartData.current()
+
+        setLastTimescale(timeScale.getVisibleRange())
+      }
+    }
+
+    const timeScale = chartRef.current.timeScale()
+
+    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+
+    return () => {
+      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+
+      candlestickSeriesRef.current = null
+
+      if (chartRef.current) {
+        chartRef.current.remove()
+        chartRef.current = null
+      }
+
+      newAreaSeriesRef.current = null
+      newAreaBgSeriesRef.current = null
+      currentAreaSeriesRef.current = null
+      currentAreaBgSeriesRef.current = null
+      candlestickSeriesRef.current = null
+      volumeSeriesRef.current = null
+      oraclePriceSeriesRef.current = null
+    }
+  }, [
+    chartExpanded,
+    chartHeight.expanded,
+    chartHeight.standard,
+    colors.backgroundColor,
+    colors.chartOraclePrice,
+    colors.rangeColor,
+    colors.rangeColorA25,
+    colors.textColor,
+    fetchingMore,
+    lastTimescale,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    liquidationRange,
+    magnet,
+    ohlcData,
+    oraclePriceData,
+    oraclePriceVisible,
+    refetchingCapped,
+    timeOption,
+    volumeData,
+    wrapperRef,
+  ])
+
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    const timeScale = chartRef.current.timeScale()
+
+    if (candlestickSeriesRef.current) {
+      candlestickSeriesRef.current.setData(ohlcData)
+      setFetchingMore(false)
 
       if (lastTimescale) {
         timeScale.setVisibleRange(lastTimescale)
       }
+    }
 
-      let timer: NodeJS.Timeout | null = null
-      timeScale.subscribeVisibleLogicalRangeChange(() => {
-        if (timer !== null || refetchingHistory || refetchingCapped || lastRefetchLength === ohlcData.length) {
-          return
-        }
-        timer = setTimeout(() => {
-          const logicalRange = timeScale.getVisibleLogicalRange()
-          if (
-            logicalRange !== null &&
-            (!refetchingHistory || !refetchingCapped || lastRefetchLength !== ohlcData.length)
-          ) {
-            const barsInfo = candlestickSeries.barsInLogicalRange(logicalRange)
-            if (barsInfo !== null && barsInfo.barsBefore < 50) {
-              setLastTimescale(timeScale.getVisibleRange())
-              fetchMoreChartData()
-            }
-          }
-          timer = null
-        }, 150)
-      })
+    if (volumeSeriesRef.current && volumeData !== undefined) {
+      volumeSeriesRef.current.setData(volumeData)
+    }
 
-      return () => {
-        if (timer !== null) {
-          clearTimeout(timer) // Clear any pending timer when the component unmounts or before re-subscribing.
-        }
+    if (oraclePriceSeriesRef.current && oraclePriceData !== undefined) {
+      oraclePriceSeriesRef.current.setData(oraclePriceData)
+    }
 
-        chartRef.current?.remove()
+    if (liquidationRange !== undefined) {
+      if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
+        newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+        newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
+      }
+
+      if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
+        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+        currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
+      }
+      if (
+        currentAreaSeriesRef.current &&
+        currentAreaBgSeriesRef.current &&
+        liquidationRange &&
+        liquidationRange.current &&
+        liquidationRange.new
+      ) {
+        currentAreaSeriesRef.current.applyOptions({
+          topColor: colors.rangeColorA25Old,
+          bottomColor: colors.rangeColorA25Old,
+          lineColor: colors.rangeColorOld,
+        })
+        currentAreaBgSeriesRef.current.applyOptions({
+          topColor: colors.backgroundColor,
+          bottomColor: colors.backgroundColor,
+          lineColor: colors.rangeColorOld,
+        })
       }
     }
   }, [
-    ohlcData,
-    colors,
-    timeOption,
-    chartCreated,
-    wrapperRef,
-    chartExpanded,
-    magnet,
-    chartType,
-    chartHeight.expanded,
-    chartHeight.standard,
+    colors.backgroundColor,
+    colors.rangeColorA25Old,
+    colors.rangeColorOld,
     fetchMoreChartData,
-    refetchingHistory,
-    refetchingCapped,
-    lastRefetchLength,
+    fetchingMore,
     lastTimescale,
+    liquidationRange,
+    ohlcData,
+    oraclePriceData,
+    refetchingCapped,
+    volumeData,
   ])
-
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries) => {
-      if (isUnmounting) return // Skip resizing if the component is unmounting
+      if (isUnmounting) return
 
       let { width, height } = entries[0].contentRect
       width -= 1
-      if (width <= 0) return // Skip resizing if the width is negative or zero
+      if (width <= 0) return
 
       chartRef.current?.applyOptions({ width, height })
       chartRef.current?.timeScale().getVisibleLogicalRange()
@@ -230,6 +416,7 @@ const CandleChart = ({
 
     return () => {
       setIsUnmounting(true)
+
       wrapperRef?.current && wrapperRef.current.disconnect()
     }
   }, [wrapperRef, isUnmounting])

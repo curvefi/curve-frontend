@@ -2,14 +2,18 @@ import type {
   TimeOptions,
   LpPriceOhlcDataFormatted,
   LabelList,
-  LiqPriceRange,
+  LiquidationRanges,
   ChartType,
   FetchingStatus,
   ChartHeight,
+  VolumeData,
+  OraclePriceData,
+  ChartColors,
 } from './types'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
+import { cloneDeep } from 'lodash'
 
 import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
@@ -18,38 +22,65 @@ import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
+import Checkbox from 'ui/src/Checkbox'
 import Box from 'ui/src/Box'
-import { cloneDeep } from 'lodash'
 
 type Props = {
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
-  liqPriceRange?: LiqPriceRange
   chartExpanded: boolean
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
-  selectedChartIndex: number
-  setChartSelectedIndex: (index: number) => void
+  volumeData?: VolumeData[]
+  oraclePriceData?: OraclePriceData[]
+  liquidationRange?: LiquidationRanges
+  selectedChartIndex?: number
+  setChartSelectedIndex?: (index: number) => void
   timeOption: TimeOptions
   setChartTimeOption: (option: TimeOptions) => void
-  flipChart: () => void
+  flipChart?: () => void
   refetchPricesData: () => void
-  fetchMoreChartData: () => void
-  refetchingHistory: boolean
+  fetchMoreChartData: (lastFetchEndTime: number) => void
+  toggleOraclePriceVisible?: () => void
+  toggleLiqRangeCurrentVisible?: () => void
+  toggleLiqRangeNewVisible?: () => void
+  oraclePriceVisible?: boolean
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
+  lastFetchEndTime: number
   refetchingCapped: boolean
-  lastRefetchLength: number
-  selectChartList: LabelList[]
+  selectChartList?: LabelList[]
+}
+
+const DEFAULT_CHART_COLORS: ChartColors = {
+  backgroundColor: '#fafafa',
+  lineColor: '#2962FF',
+  textColor: 'black',
+  areaTopColor: '#2962FF',
+  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+  chartGreenColor: '#2962FF',
+  chartRedColor: '#ef5350',
+  chartLabelColor: '#9B7DFF',
+  chartVolumeRed: '#ef53507e',
+  chartVolumeGreen: '#26a6997e',
+  chartOraclePrice: '#3360c9c0',
+  rangeColor: '#dfb316',
+  rangeColorA25: '#dfb4167f',
+  rangeColorOld: '#ab792f',
+  rangeColorA25Old: '#ab792f25',
 }
 
 const ChartWrapper = ({
   chartType,
   chartStatus,
   chartHeight,
-  liqPriceRange,
   chartExpanded,
   themeType,
   ohlcData,
+  volumeData,
+  oraclePriceData,
+  liquidationRange,
   selectedChartIndex,
   setChartSelectedIndex,
   timeOption,
@@ -57,31 +88,91 @@ const ChartWrapper = ({
   flipChart,
   refetchPricesData,
   fetchMoreChartData,
-  refetchingHistory,
+  lastFetchEndTime,
   refetchingCapped,
-  lastRefetchLength,
   selectChartList,
+  oraclePriceVisible,
+  liqRangeCurrentVisible,
+  liqRangeNewVisible,
+  toggleOraclePriceVisible,
+  toggleLiqRangeCurrentVisible,
+  toggleLiqRangeNewVisible,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = cloneDeep(ohlcData)
 
   const wrapperRef = useRef(null)
 
+  const [lastTheme, setLastTheme] = useState(themeType)
+  const [colors, setColors] = useState<ChartColors>(DEFAULT_CHART_COLORS)
+
+  useEffect(() => {
+    const style = getComputedStyle(document.body)
+    const backgroundColor =
+      chartType === 'crvusd' && !chartExpanded
+        ? style.getPropertyValue('--tab-secondary--content--background-color')
+        : style.getPropertyValue('--box--secondary--background-color')
+    const lineColor = style.getPropertyValue('--line-color')
+    const textColor = style.getPropertyValue('--page--text-color')
+    const areaTopColor = style.getPropertyValue('--area-top-color')
+    const areaBottomColor = style.getPropertyValue('--area-bottom-color')
+    const chartGreenColor = style.getPropertyValue('--chart-green')
+    const chartRedColor = style.getPropertyValue('--chart-red')
+    const chartLabelColor = style.getPropertyValue('--chart-label')
+    const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
+    const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
+    const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
+    const rangeColor = style.getPropertyValue('--chart-liq-range')
+    const rangeColorA25 = style.getPropertyValue('--chart-liq-range-a25')
+    const rangeColorOld = style.getPropertyValue('--chart-liq-range-old')
+    const rangeColorA25Old = style.getPropertyValue('--chart-liq-range-a25-old')
+
+    setColors({
+      backgroundColor,
+      lineColor,
+      textColor,
+      areaTopColor,
+      areaBottomColor,
+      chartGreenColor,
+      chartRedColor,
+      chartLabelColor,
+      chartVolumeRed,
+      chartVolumeGreen,
+      chartOraclePrice,
+      rangeColor,
+      rangeColorA25,
+      rangeColorOld,
+      rangeColorA25Old,
+    })
+    setLastTheme(themeType)
+  }, [chartExpanded, chartType, lastTheme, themeType])
+
   return (
     <Wrapper>
       <ContentWrapper>
         <SectionHeader>
           <ChartSelectGroup>
-            <DialogSelectChart
-              isDisabled={chartStatus !== 'READY'}
-              selectedChartIndex={selectedChartIndex}
-              selectChartList={selectChartList}
-              setChartSelectedIndex={setChartSelectedIndex}
-            />
-            {selectedChartIndex > 1 && (
-              <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
-                <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
-              </StyledFlipButton>
+            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined && flipChart !== undefined ? (
+              <>
+                <DialogSelectChart
+                  isDisabled={chartStatus !== 'READY'}
+                  selectedChartIndex={selectedChartIndex}
+                  selectChartList={selectChartList ?? []}
+                  setChartSelectedIndex={setChartSelectedIndex}
+                />
+                {selectedChartIndex > 1 && (
+                  <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
+                    <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
+                  </StyledFlipButton>
+                )}
+              </>
+            ) : (
+              <DialogSelectChart
+                isDisabled={false}
+                selectedChartIndex={0}
+                selectChartList={selectChartList ?? []}
+                setChartSelectedIndex={() => 0}
+              />
             )}
           </ChartSelectGroup>
           <RefreshButton
@@ -107,32 +198,61 @@ const ChartWrapper = ({
             setCurrentTimeOption={setChartTimeOption}
           />
         </SectionHeader>
+        {chartType === 'crvusd' &&
+          toggleOraclePriceVisible &&
+          toggleLiqRangeNewVisible &&
+          toggleLiqRangeCurrentVisible && (
+            <TipWrapper>
+              <StyledCheckbox
+                fillColor="var(--chart-oracle-price-line)"
+                blank
+                isSelected={oraclePriceVisible}
+                onChange={() => toggleOraclePriceVisible()}
+              >
+                Oracle Price
+              </StyledCheckbox>
+              {liquidationRange?.new && toggleLiqRangeNewVisible && (
+                <StyledCheckbox
+                  fillColor="var(--chart-liq-range)"
+                  blank
+                  isSelected={liqRangeNewVisible}
+                  onChange={() => toggleLiqRangeNewVisible()}
+                >
+                  <TipText>Liquidation Range (New)</TipText>
+                </StyledCheckbox>
+              )}
+              {liquidationRange?.current && (
+                <StyledCheckbox
+                  fillColor={liquidationRange.new ? 'var(--chart-liq-range-old)' : 'var(--chart-liq-range)'}
+                  blank
+                  isSelected={liqRangeCurrentVisible}
+                  onChange={() => toggleLiqRangeCurrentVisible()}
+                >
+                  <TipText>Liquidation Range (Current)</TipText>
+                </StyledCheckbox>
+              )}
+            </TipWrapper>
+          )}
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
-            {chartType === 'crvusd' && (
-              <TipContent>
-                <TipIcon
-                  name="StopFilledAlt"
-                  size={20}
-                  fill="var(--health_mode_soft_liquidation--color)"
-                  stroke={'var(--health_mode_soft_liquidation--color)'}
-                />{' '}
-                <TipText>{'Liquidation range (${liqPriceRange?.price1} - ${liqPriceRange?.price2})'}</TipText>
-              </TipContent>
-            )}
             <CandleChart
               chartType={chartType}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
+              volumeData={volumeData}
+              oraclePriceData={oraclePriceData}
+              liquidationRange={liquidationRange}
               timeOption={timeOption}
               wrapperRef={wrapperRef}
               chartExpanded={chartExpanded}
               magnet={magnet}
-              themeType={themeType}
-              refetchingHistory={refetchingHistory}
+              colors={colors}
               refetchingCapped={refetchingCapped}
-              lastRefetchLength={lastRefetchLength}
               fetchMoreChartData={fetchMoreChartData}
+              lastFetchEndTime={lastFetchEndTime}
+              liqRangeCurrentVisible={liqRangeCurrentVisible}
+              liqRangeNewVisible={liqRangeNewVisible}
+              oraclePriceVisible={oraclePriceVisible}
             />
           </ResponsiveContainer>
         )}
@@ -218,11 +338,6 @@ const ResponsiveContainer = styled.div<{ chartExpanded: boolean; chartHeight: Ch
   padding-bottom: var(--spacing-3);
 `
 
-const StyledDateRangePicker = styled(DateRangePicker)`
-  /* margin-top: 500px; */
-  margin: auto auto 0;
-`
-
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   /* margin: var(--spacing-3) 0 var(--spacing-3); */
 `
@@ -236,10 +351,24 @@ const ContentWrapper = styled.div`
   flex-direction: column;
 `
 
-const TipContent = styled(Box)`
-  align-items: center;
+const TipWrapper = styled.div`
   display: flex;
+  flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+`
+
+const StyledCheckbox = styled(Checkbox)`
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  font-size: var(--font-size-1);
+  font-weight: var(--font-weight);
+  margin-right: 0;
+  svg {
+    margin-right: 0;
+  }
 `
 
 const TipIcon = styled(Icon)`
@@ -249,6 +378,7 @@ const TipIcon = styled(Icon)`
 
 const TipText = styled.p`
   font-size: var(--font-size-1);
+  font-weight: none;
 `
 
 export default ChartWrapper

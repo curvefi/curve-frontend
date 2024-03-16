@@ -4,6 +4,42 @@ export type ChartType = 'swap' | 'crvusd' | 'poolPage'
 export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
+export const DEFAULT_CHART_COLORS: ChartColors = {
+  backgroundColor: '#fafafa',
+  lineColor: '#2962FF',
+  textColor: 'black',
+  areaTopColor: '#2962FF',
+  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
+  chartGreenColor: '#2962FF',
+  chartRedColor: '#ef5350',
+  chartLabelColor: '#9B7DFF',
+  chartVolumeRed: '#ef53507e',
+  chartVolumeGreen: '#26a6997e',
+  chartOraclePrice: '#3360c9c0',
+  rangeColor: '#dfb316',
+  rangeColorA25: '#dfb4167f',
+  rangeColorOld: '#ab792f',
+  rangeColorA25Old: '#ab792f25',
+}
+
+export type ChartColors = {
+  backgroundColor: string
+  lineColor: string
+  textColor: string
+  areaTopColor: string
+  areaBottomColor: string
+  chartGreenColor: string
+  chartRedColor: string
+  chartLabelColor: string
+  chartVolumeRed: string
+  chartVolumeGreen: string
+  chartOraclePrice: string
+  rangeColor: string
+  rangeColorA25: string
+  rangeColorOld: string
+  rangeColorA25Old: string
+}
+
 export type ChartHeight = {
   expanded: number
   standard: number
@@ -45,6 +81,12 @@ export interface LpPriceOhlcData {
   low: number
 }
 
+export interface LlammaPriceOhlcData extends LpPriceOhlcData {
+  base_price: number
+  oracle_price: number
+  volume: number
+}
+
 export interface LpPriceOhlcDataFormatted {
   time: UTCTimestamp
   open: number
@@ -53,10 +95,32 @@ export interface LpPriceOhlcDataFormatted {
   low: number
 }
 
+export interface VolumeData {
+  time: UTCTimestamp
+  value: number
+  color: string
+}
+
+export interface LlamaBaselinePriceData {
+  time: UTCTimestamp
+  base_price: number
+}
+
+export interface OraclePriceData {
+  time: UTCTimestamp
+  value: number
+}
+
 export interface LpPriceApiResponse {
   chain: string
   address: string
   data: LpPriceOhlcData[]
+}
+
+export interface LlammaOhlcApiResponse {
+  chain: string
+  address: string
+  data: LlammaPriceOhlcData[]
 }
 
 export interface LpExchangeRateObject {
@@ -81,6 +145,65 @@ export interface LpTradeToken {
   address: string
   pool_index: number
   event_index: number
+}
+
+export interface LlammaTradeEvent {
+  sold_id: number
+  bought_id: number
+  token_sold: {
+    symbol: string
+    address: string
+  }
+  token_bought: {
+    symbol: string
+    address: string
+  }
+  amount_sold: number
+  amount_bought: number
+  price: number
+  buyer: string
+  fee_x: number
+  fee_y: number
+  block_number: number
+  timestamp: number
+  transaction_hash: string
+}
+
+export interface LlammaControllerEvent {
+  provider: string
+  deposit: {
+    amount: string
+    n1: number
+    n2: number
+  } | null
+  withdrawal: { amount_borrowed: string; amount_collateral: string } | null
+  block_number: number
+  timestamp: number
+  transaction_hash: string
+}
+
+export interface LlammaTradesApiResponse {
+  chain: string
+  address: string
+  data: LlammaTradeEvent[]
+}
+
+export interface LlammaControllerApiResponse {
+  chain: string
+  address: string
+  data: LlammaControllerEvent[]
+}
+
+export type LiquidationRange = { value: number; time: UTCTimestamp }
+
+export type LlammaLiquididationRange = {
+  price1: LiquidationRange[]
+  price2: LiquidationRange[]
+}
+
+export type LiquidationRanges = {
+  new: LlammaLiquididationRange | null
+  current: LlammaLiquididationRange | null
 }
 
 export interface LpTradesData {
@@ -140,21 +263,4 @@ export interface LpLiquidityEventsApiResponse {
   chain: string
   address: string
   data: LpLiquidityEventsData[]
-}
-
-export interface LiqPriceRange {
-  price1: string
-  price2: string
-  band1: number
-  band2: number
-}
-
-export interface LiqRangeData {
-  time: number
-  value: number
-}
-
-export interface LiqRangeObject {
-  upperRange: LiqRangeData[]
-  lowerRange: LiqRangeData[]
 }

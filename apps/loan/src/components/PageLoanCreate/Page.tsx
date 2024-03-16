@@ -14,6 +14,7 @@ import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
+import PoolInfoData from '@/components/PoolInfoData'
 import { TabContentWrapper } from '@/ui/Tab'
 import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/DocumentHead'
@@ -21,6 +22,8 @@ import LoanCreate from '@/components/PageLoanCreate/index'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import TextEllipsis from '@/ui/TextEllipsis'
+import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -43,6 +46,7 @@ const Page: NextPage = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
+  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
   const [loaded, setLoaded] = useState(false)
 
@@ -129,6 +133,12 @@ const Page: NextPage = () => {
     isPageVisible
   )
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
   const TitleComp = () => (
     <TitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
@@ -145,9 +155,28 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`${rCollateralId}` ?? t`Create`} />
-      <Wrapper isAdvanceMode={isAdvanceMode}>
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex>
+            {isMdUp && <TitleComp />}
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
+      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
         <FormWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+          {!isMdUp && !isAdvanceMode && !chartExpanded && <TitleComp />}
           {rChainId && rCollateralId && (
             <LoanCreate
               curve={curve}
@@ -165,9 +194,18 @@ const Page: NextPage = () => {
           )}
         </FormWrapper>
 
+        {!isAdvanceMode && !chartExpanded && (
+          <PoolInfoWrapper>
+            {isMdUp && <TitleComp />}
+            <PoolInfoContainer variant="secondary">
+              <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+            </PoolInfoContainer>
+          </PoolInfoWrapper>
+        )}
+
         {isAdvanceMode && (
           <LoanInfoWrapper>
-            {isMdUp && <TitleComp />}
+            {isMdUp && !chartExpanded && <TitleComp />}
             <LoanInfoContentWrapper variant="secondary">
               <StyledBoxHeader>LLAMMA Details</StyledBoxHeader>
               {isValidRouterParams && rChainId && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
@@ -179,7 +217,7 @@ const Page: NextPage = () => {
   )
 }
 
-const Wrapper = styled(Box)<{ isAdvanceMode: boolean }>`
+const Wrapper = styled(Box)<{ isAdvanceMode: boolean; chartExpanded: boolean }>`
   margin: 2rem auto 0 auto;
 
   @media (min-width: 425px) {
@@ -194,6 +232,7 @@ const Wrapper = styled(Box)<{ isAdvanceMode: boolean }>`
     margin-left: 1rem;
     margin-right: 1rem;
     margin-top: 3rem;
+    ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
     ${({ isAdvanceMode }) => (isAdvanceMode ? `align-items: flex-start;` : `justify-content: center;`)};
     display: flex;
   }
@@ -204,6 +243,7 @@ const TitleWrapper = styled.header`
   display: flex;
   min-height: 46px;
   padding-left: 0.5rem;
+  margin-left: 1rem;
 
   @media (min-width: ${breakpoints.md}rem) {
     padding-left: 0;
@@ -232,6 +272,17 @@ const FormWrapper = styled(Box)<{ navHeight: number }>`
   }
 `
 
+// None advanced pool info
+const PoolInfoWrapper = styled(Box)`
+  width: 100%;
+  margin: 0 0 auto 1.5rem;
+`
+
+const PoolInfoContainer = styled(Box)`
+  padding: 2rem;
+  background-color: var(--tab-secondary--content--background-color);
+`
+
 // Loan Info
 const StyledBoxHeader = styled(BoxHeader)`
   padding-left: 1rem;
@@ -249,6 +300,30 @@ const LoanInfoWrapper = styled.div`
 const LoanInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
+`
+
+const PriceAndTradesExpandedContainer = styled(Box)`
+  margin: 1.5rem 0 0;
+  display: flex;
+  @media (min-width: ${breakpoints.md}rem) {
+    flex-direction: column;
+  }
+`
+
+const PriceAndTradesExpandedWrapper = styled(Box)`
+  background-color: var(--tab-secondary--content--background-color);
+`
+
+const ExpandButton = styled(Button)`
+  margin: auto var(--spacing-3) auto auto;
+  display: flex;
+  align-content: center;
+  color: inherit;
+  font-size: var(--font-size-2);
+`
+
+const ExpandIcon = styled(Icon)`
+  margin-left: var(--spacing-1);
 `
 
 export default Page

@@ -44,12 +44,11 @@ const StyledPopover2Dialog = styled(Popover2Dialog)`
   flex-direction: column;
   h3 {
     font-size: var(--font-size-2);
-    text-align: center;
   }
 `
 
 const ChartsTitle = styled.h3`
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-3);
   margin: auto;
   padding-left: var(--spacing-2);
 `

@@ -16,37 +16,24 @@ export const combinations = <T>(inputArray: T[], size: number): T[][] => {
   return combinationHelper(0, [])
 }
 
-export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => {
-  const seconds = {
-    '5m': 5 * 60,
-    '15m': 15 * 60,
-    '30m': 30 * 60,
-    '1h': 60 * 60,
-    '4h': 4 * 60 * 60,
-    '6h': 6 * 60 * 60,
-    '12h': 12 * 60 * 60,
-    '1d': 24 * 60 * 60,
-    '7d': 7 * 24 * 60 * 60,
-    '14d': 14 * 24 * 60 * 60,
-  }
+const seconds = {
+  '5m': 5 * 60,
+  '15m': 15 * 60,
+  '30m': 30 * 60,
+  '1h': 60 * 60,
+  '4h': 4 * 60 * 60,
+  '6h': 6 * 60 * 60,
+  '12h': 12 * 60 * 60,
+  '1d': 24 * 60 * 60,
+  '7d': 7 * 24 * 60 * 60,
+  '14d': 14 * 24 * 60 * 60,
+}
 
+export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => {
   return timestamp - seconds[timeOption]
 }
 
 export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) => {
-  const seconds = {
-    '5m': 5 * 60,
-    '15m': 15 * 60,
-    '30m': 30 * 60,
-    '1h': 60 * 60,
-    '4h': 4 * 60 * 60,
-    '6h': 6 * 60 * 60,
-    '12h': 12 * 60 * 60,
-    '1d': 24 * 60 * 60,
-    '7d': 7 * 24 * 60 * 60,
-    '14d': 14 * 24 * 60 * 60,
-  }
-
   return Math.floor(timestamp - 299 * seconds[timeOption])
 }
 
@@ -75,17 +62,7 @@ export const getTimeUnit = (timeOption: TimeOptions) => {
 }
 
 export const getMilliseconds = (timeOption: TimeOptions) => {
-  // return timeOption in milliseconds
-  if (timeOption === '15m') return 15 * 60 * 1000
-  if (timeOption === '30m') return 30 * 60 * 1000
-  if (timeOption === '1h') return 60 * 60 * 1000
-  if (timeOption === '4h') return 4 * 60 * 60 * 1000
-  if (timeOption === '6h') return 6 * 60 * 60 * 1000
-  if (timeOption === '12h') return 12 * 60 * 60 * 1000
-  if (timeOption === '1d') return 24 * 60 * 60 * 1000
-  if (timeOption === '7d') return 7 * 24 * 60 * 60 * 1000
-  if (timeOption === '14d') return 14 * 24 * 60 * 60 * 1000
-  return 24 * 60 * 60 * 1000 // 1d
+  return seconds[timeOption] * 1000
 }
 
 export const getLiquidationRange = (

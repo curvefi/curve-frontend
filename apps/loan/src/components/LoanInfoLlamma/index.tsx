@@ -13,6 +13,7 @@ import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
+import PoolInfoData from '@/components/PoolInfoData'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId'> {
   className?: string
@@ -33,6 +34,7 @@ const DEFAULT_BAND_CHART_DATA = {
 
 const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
@@ -75,6 +77,12 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
 
   return (
     <Wrapper>
+      {!chartExpanded && (
+        <div className="wrapper">
+          <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+        </div>
+      )}
+
       <div className="wrapper">
         <ChartBandBalances
           llamma={llamma}
@@ -121,12 +129,10 @@ LoanInfoLlamma.defaultProps = {
 const Wrapper = styled.div`
   .wrapper {
     border-bottom: 1px solid var(--border-600);
-    padding: 2rem 0.75rem 1.5rem 0.75rem;
+    padding: 1.5em 0.75rem 1.5rem 0.75rem;
 
     @media (min-width: ${breakpoints.sm}rem) {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      padding-top: 2.5rem;
+      padding: 2rem;
     }
   }
 `
