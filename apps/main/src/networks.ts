@@ -548,10 +548,9 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FRAXTAL_DEV_RPC_URL! : `https://rpc.frax.com`,
     // TODO: use correct address once there is a pool
     swap: {
-      fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      fromAddress: '0xb102f7efa0d5de071a8d37b3548e1c7cb148caf3',
+      toAddress: '0xfc00000000000000000000000000000000000001',
     },
-    showInSelectNetwork: false,
     hasFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,

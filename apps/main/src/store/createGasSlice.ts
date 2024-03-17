@@ -97,6 +97,34 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               }
             }
           }
+        } else if (chainId === 252 || chainId === 8453) {
+          // TODO: remove this hardcode value once it api is fixed
+          const provider = get().wallet.provider
+
+          if (provider) {
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              curve.setCustomFeeData({
+                maxFeePerGas: 0.1,
+                maxPriorityFeePerGas: 0.001,
+              })
+            }
+          }
+        } else if (chainId === 10) {
+          // TODO: remove this hardcode value once it api is fixed
+          const provider = get().wallet.provider
+
+          if (provider) {
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              curve.setCustomFeeData({
+                maxFeePerGas: 0.2,
+                maxPriorityFeePerGas: 0.001,
+              })
+            }
+          }
         }
 
         if (parsedGasInfo) {
