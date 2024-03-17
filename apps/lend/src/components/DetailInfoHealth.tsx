@@ -113,7 +113,7 @@ const DetailInfoHealth = ({
         healthPercent && currentHealthMode.percent ? (
           <span>
             <HealthPercent colorKey={currentHealthMode.colorKey}>
-              {formatNumber(healthPercent, { style: 'percent', maximumFractionDigits: 2 })}
+              {formatNumber(currentHealthMode.percent, { style: 'percent', maximumFractionDigits: 2 })}
             </HealthPercent>{' '}
             <HealthPercent colorKey={healthMode.colorKey}>
               <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
