@@ -1024,7 +1024,7 @@ const loanCollateralAdd = {
 
 const loanCollateralRemove = {
   maxRemovable: async ({ owm }: OWMData) => {
-    log('loanCollateralRemoveMax', owm.collateral_token.symbol, owm)
+    log('loanCollateralRemoveMax', owm.collateral_token.symbol)
     let resp = { maxRemovable: '', error: '' }
 
     try {
