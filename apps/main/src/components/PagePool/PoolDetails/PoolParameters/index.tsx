@@ -216,13 +216,13 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
               <Box flex>
                 <Numeral>├─</Numeral>
                 <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
-                  <PoolParameterTitle>{t`Ramping ${future_A! > initial_A! ? 'up' : 'down'} A:`}</PoolParameterTitle>
+                  <PoolParameterTitle>{t`Ramping ${rampADetails.isRampUp ? 'up' : 'down'} A:`}</PoolParameterTitle>
                   <PoolParameterValue>
                     <StyledChip
                       isBold
                       size="md"
                       tooltip={t`Slowly changing ${
-                        future_A! > initial_A! ? 'up' : 'down'
+                        rampADetails.isRampUp ? 'up' : 'down'
                       } A so that it doesn't negatively change virtual price growth of shares`}
                       tooltipProps={{
                         placement: 'bottom end',
@@ -239,7 +239,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
                 <Numeral>└─</Numeral>
                 <Box margin={'0 0 0 var(--spacing-2)'} flex flexJustifyContent="space-between" fillWidth>
                   <PoolParameterTitle>{t`Ramp ${
-                    future_A! > initial_A! ? 'up' : 'down'
+                    rampADetails.isRampUp ? 'up' : 'down'
                   } A ends on: `}</PoolParameterTitle>
                   <PoolParameterValue>{rampUpAEndsTime}</PoolParameterValue>
                 </Box>
