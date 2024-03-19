@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 
-import { formatNumber, NumberFormatOptions } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import { SubTitle } from '@/components/DetailsMarket/styles'
@@ -14,14 +14,15 @@ const MarketParameters = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: str
   const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}
 
+  // prettier-ignore
   const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions }[][] =
     [
       [
-        { label: t`Fee`, value: parameters?.fee },
-        { label: t`Admin fee`, value: parameters?.admin_fee },
+        { label: t`Fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 } },
+        { label: t`Admin fee`, value: parameters?.admin_fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 } },
         { label: t`A`, value: parameters?.A, formatOptions: { useGrouping: false } },
-        { label: t`Loan discount`, value: parameters?.loan_discount },
-        { label: t`Liquidation discount`, value: parameters?.liquidation_discount },
+        { label: t`Loan discount`, value: parameters?.loan_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 } },
+        { label: t`Liquidation discount`, value: parameters?.liquidation_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 } },
       ],
       [
         { label: t`Base price`, value: prices?.basePrice, formatOptions: { showAllFractionDigits: true } },
