@@ -31,6 +31,7 @@ const DetailInfoComp = (
   const { owm } = owmData ?? {}
 
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[owm?.addresses?.collateral_token ?? ''])
+  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[owm?.addresses?.borrowed_token ?? ''])
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
@@ -58,11 +59,11 @@ const DetailInfoComp = (
   }
 
   const loanToValueRatio = useMemo(() => {
-    if (+formValues.debt > 0 && +formValues.collateral > 0 && collateralUsdRate) {
-      return +formValues.debt / (+formValues.collateral * +collateralUsdRate)
+    if (+formValues.debt > 0 && +formValues.collateral > 0 && +collateralUsdRate > 0 && +borrowedUsdRate > 0) {
+      return (+formValues.debt * +borrowedUsdRate) / (+formValues.collateral * +collateralUsdRate)
     }
     return ''
-  }, [collateralUsdRate, formValues.collateral, formValues.debt])
+  }, [borrowedUsdRate, collateralUsdRate, formValues.collateral, formValues.debt])
 
   const detailInfoLTV = (
     <DetailInfo
