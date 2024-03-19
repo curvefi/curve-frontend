@@ -1,7 +1,6 @@
 import type { NextPage } from 'next'
 
 import React, { useCallback, useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { REFRESH_INTERVAL } from '@/constants'
@@ -12,7 +11,6 @@ import useStore from '@/store/useStore'
 
 import {
   PageFormContainer,
-  PageFormTitleContent,
   PageFormTitleWrapper,
   PageFormsWrapper,
   PageInfoContentHeader,
@@ -44,7 +42,7 @@ const Page: NextPage = () => {
   const [isLoaded, setLoaded] = useState(false)
 
   const owmDataCachedOrApi = owmData ?? owMDataCached
-  const { displayName } = owmDataCachedOrApi ?? {}
+  const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
 
   const fetchInitial = useCallback(
     async (api: Api, owmData: OWMData) => {
@@ -89,7 +87,6 @@ const Page: NextPage = () => {
         activeKey="borrow"
         owmDataCachedOrApi={owmDataCachedOrApi}
       />
-      <PageFormTitleContent>{displayName}</PageFormTitleContent>
     </PageFormTitleWrapper>
   )
 
@@ -109,7 +106,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={`${displayName}: borrow`} />
+      <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
       <PageFormContainer isAdvanceMode={isAdvanceMode}>
         <PageFormsWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}

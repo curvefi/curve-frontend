@@ -181,7 +181,7 @@ const MarketContentTable = styled(Table)`
 
     tr.row--info td,
     th {
-      height: 1px;
+      height: 45px;
       line-height: 1;
 
       &.center {

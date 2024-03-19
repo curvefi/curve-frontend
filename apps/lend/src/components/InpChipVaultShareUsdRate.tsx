@@ -14,6 +14,7 @@ const ChipVaultSharesUsdRate = ({
   rOwmId,
   amount,
   hideRate,
+  noPadding,
   ...props
 }: ChipProps & {
   className?: string
@@ -21,6 +22,7 @@ const ChipVaultSharesUsdRate = ({
   rOwmId: string
   amount: string | undefined
   hideRate?: boolean
+  noPadding?: boolean
 }) => {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
@@ -69,7 +71,7 @@ const ChipVaultSharesUsdRate = ({
               {formattedAmountUsd}
             </TextCaption>
           ) : (
-            <StyledInpChip className={className} size="xs">
+            <StyledInpChip noPadding={noPadding} className={className} size="xs">
               x {formatNumber(tokenUsdRate)} ≈{formattedAmountUsd}
             </StyledInpChip>
           )}

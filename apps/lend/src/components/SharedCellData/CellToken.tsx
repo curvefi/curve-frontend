@@ -8,12 +8,14 @@ import TokenLabel from '@/components/TokenLabel'
 const CellToken = ({
   hideIcon,
   rChainId,
+  isVisible = true,
   owmDataCachedOrApi,
   type,
   ...props
 }: ChipProps & {
   hideIcon?: boolean
   rChainId: ChainId
+  isVisible?: boolean
   owmDataCachedOrApi: OWMDataCacheOrApi
   type: 'collateral' | 'borrowed'
 }) => {
@@ -24,7 +26,7 @@ const CellToken = ({
   return hideIcon ? (
     <Chip {...props}>{token?.symbol}</Chip>
   ) : (
-    <TokenLabel isDisplayOnly rChainId={rChainId} token={token} />
+    <TokenLabel isDisplayOnly isVisible={isVisible} rChainId={rChainId} token={token} />
   )
 }
 

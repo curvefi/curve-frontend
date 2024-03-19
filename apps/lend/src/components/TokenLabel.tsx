@@ -17,17 +17,24 @@ const TokenLabel = ({
   rChainId,
   token,
   isDisplayOnly,
+  isVisible = true,
   ...boxProps
 }: BoxProps & {
   rChainId: ChainId
   token: OWM['borrowed_token'] | OWM['collateral_token'] | undefined
   isDisplayOnly?: boolean
+  isVisible?: boolean
 }) => {
   const { address = '', symbol = '' } = token ?? {}
 
   const TokenIconComp = (
     <ExternalLinkTokenWrapper>
-      <StyledTokenIcon size="sm" imageBaseUrl={helpers.getImageBaseUrl(rChainId)} token={symbol} address={address} />
+      <StyledTokenIcon
+        size="sm"
+        imageBaseUrl={isVisible ? helpers.getImageBaseUrl(rChainId) : ''}
+        token={symbol}
+        address={address}
+      />
       <ExternalLinkToken>{symbol}</ExternalLinkToken>
     </ExternalLinkTokenWrapper>
   )

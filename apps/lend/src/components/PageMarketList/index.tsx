@@ -37,24 +37,23 @@ const MarketList = (pageProps: PageMarketList) => {
   const FOLD_TABLE_LABELS: FoldTableLabels = {
     borrow: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'name', label: tableLabelsMapper.name.name, className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}` },
-      { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '100px' },
+      { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, className: 'left', width: '140px' },
+      { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, className: 'left', width: '140px' },
+      { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
-      { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, className: 'center', width: '100px' },
-      { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, className: 'center', width: '100px' },
-      { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'center', width: '110px' },
-      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '140px' },
-      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '120px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right paddingRight', width: '140px' },
+      { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
+      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '150px' },
+      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '150px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right', width: '150px' },
+      { sortIdKey: 'utilization', label: tableLabelsMapper.utilization.name, className: 'right', width: '150px' },
     ],
     supply: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'name', label: tableLabelsMapper.name.name, className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}` },
-      { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '210px' },
-      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'center', width: '100px' },
-      { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, className: 'center', width: '110px' },
+      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '280px' },
+      { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '240px' },
+      { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, className: 'right' },
       { sortIdKey: '', label: t`Rewards APR`, buttons: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], className: 'right', width: '240px' },
-      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right paddingRight', width: '110px' },
+      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '210px' },
     ]
   }
 

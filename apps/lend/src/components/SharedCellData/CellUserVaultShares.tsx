@@ -24,7 +24,13 @@ const CellUserVaultShares = ({
         <>
           {formatNumber(balances.vaultShares, { defaultValue: '-' })}
           <br />
-          <ChipVaultSharesUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={balances.vaultShares} />
+          <ChipVaultSharesUsdRate
+            noPadding
+            hideRate
+            rChainId={rChainId}
+            rOwmId={rOwmId}
+            amount={balances.vaultShares}
+          />
         </>
       )}
     </>
