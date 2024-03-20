@@ -7,8 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { getVaultPathname } from '@/utils/utilsRouter'
 import { useSlideTabState } from '@/ui/hooks'
 
-import { FormContent, FormContentWrapper, FormSlideTab } from '@/components/SharedFormStyles/styles'
-import FormHeader from '@/components/SharedFormStyles/FormHeader'
+import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@/ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
 import VaultDepositMint from '@/components/PageVault/VaultDepositMint'
 import VaultWithdrawRedeem from '@/components/PageVault/VaultWithdrawRedeem'
@@ -17,7 +16,7 @@ import VaultUnstake from '@/components/PageVault/VaultUnstake'
 import VaultClaim from '@/components/PageVault/VaultClaim'
 
 const Vault = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType, owmDataCachedOrApi } = pageProps
+  const { rOwmId, rFormType } = pageProps
   const params = useParams()
   const navigate = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
@@ -43,21 +42,21 @@ const Vault = (pageProps: PageContentProps) => {
   const tabs = !rFormType || rFormType === 'deposit' ? DEPOSIT_TABS : WITHDRAW_TABS
 
   return (
-    <FormContent variant="primary" shadowed>
-      <FormHeader
+    <AppFormContent variant="primary" shadowed>
+      <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
         handleClick={(key) => navigate(getVaultPathname(params, rOwmId, key))}
       />
 
-      <FormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper>
         {/* FORMS SELECTOR */}
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
               {tabs.map(({ label, formType }, idx) => {
                 return (
-                  <FormSlideTab
+                  <AppFormSlideTab
                     key={label}
                     disabled={selectedTabIdx === idx}
                     tabLeft={tabPositions[idx]?.left}
@@ -86,8 +85,8 @@ const Vault = (pageProps: PageContentProps) => {
             {selectedTabIdx === 2 && <VaultClaim {...pageProps} rFormType="claim" />}
           </>
         ) : null}
-      </FormContentWrapper>
-    </FormContent>
+      </AppFormContentWrapper>
+    </AppFormContent>
   )
 }
 

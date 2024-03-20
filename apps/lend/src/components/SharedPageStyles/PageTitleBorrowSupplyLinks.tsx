@@ -4,8 +4,8 @@ import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '
 import { helpers } from '@/lib/apiLending'
 import useStore from '@/store/useStore'
 
-import { PageFormTitleLinks } from '@/components/SharedPageStyles/styles'
-import InternalLink from 'ui/src/Link/InternalLink'
+import { AppPageFormTitleLinks } from '@/ui/AppPage'
+import InternalLink from '@/ui/Link/InternalLink'
 import styled from 'styled-components'
 
 const PageTitleBorrowSupplyLinks = ({
@@ -28,7 +28,7 @@ const PageTitleBorrowSupplyLinks = ({
   const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
 
   return (
-    <PageFormTitleLinks>
+    <AppPageFormTitleLinks>
       <StyledLink
         $noStyles
         className={activeKey === 'borrow' ? 'active' : ''}
@@ -44,7 +44,7 @@ const PageTitleBorrowSupplyLinks = ({
       >
         Supply
       </StyledLink>
-    </PageFormTitleLinks>
+    </AppPageFormTitleLinks>
   )
 }
 

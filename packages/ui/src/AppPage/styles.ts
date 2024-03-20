@@ -1,13 +1,14 @@
 import styled from 'styled-components'
-import { breakpoints } from '@/ui/utils'
-import TextEllipsis from '@/ui/TextEllipsis'
-import Box from '@/ui/Box'
-import TabContentWrapper from '@/ui/Tab/TabContentWrapper'
-import BoxHeader from '@/ui/Box/BoxHeader'
 
-// TODO: move to UI Packages
+import { breakpoints } from 'ui/src/utils'
+
+import Box from 'ui/src/Box'
+import BoxHeader from 'ui/src/Box/BoxHeader'
+import TabContentWrapper from 'ui/src/Tab/TabContentWrapper'
+import TextEllipsis from 'ui/src/TextEllipsis'
+
 // PAGE STYLES
-export const PageContainer = styled.div`
+export const AppPageContainer = styled.div`
   background-color: var(--table--background-color);
   border: 1px solid var(--box--secondary--border);
   margin: 0 auto;
@@ -23,7 +24,7 @@ export const PageContainer = styled.div`
 `
 
 // PAGE STYLES WITH FORMS
-export const PageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
+export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   @media (min-width: 425px) {
     margin-top: var(--spacing-normal);
     margin-left: 1rem;
@@ -41,7 +42,7 @@ export const PageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   }
 `
 
-export const PageFormsWrapper = styled(Box)<{ navHeight: number }>`
+export const AppPageFormsWrapper = styled(Box)<{ navHeight: number }>`
   margin-bottom: 2rem;
 
   @media (min-width: ${breakpoints.md}rem) {
@@ -53,13 +54,14 @@ export const PageFormsWrapper = styled(Box)<{ navHeight: number }>`
   }
 `
 
-export const PageFormTitleWrapper = styled.header`
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  min-height: 46px;
-  padding: var(--spacing-narrow);
+export const AppPageFormTitleWrapper = styled.header`
+  align-items: center;
+  color: var(--nav--page--color);
+  display: inline-flex;
   padding-top: var(--spacing-wide);
+  padding-bottom: var(--spacing-2);
+  padding-left: 1rem;
+  min-height: 46px;
 
   @media (min-width: ${breakpoints.sm}rem) {
     padding-top: var(--spacing-normal);
@@ -67,7 +69,7 @@ export const PageFormTitleWrapper = styled.header`
   }
 `
 
-export const PageFormTitleContent = styled(TextEllipsis)`
+export const AppPageFormTitleContent = styled(TextEllipsis)`
   background-color: black;
   color: var(--nav--page--color);
   font-size: var(--font-size-5);
@@ -76,7 +78,7 @@ export const PageFormTitleContent = styled(TextEllipsis)`
   padding: 0 2px;
 `
 
-export const PageFormTitleLinks = styled.div`
+export const AppPageFormTitleLinks = styled.div`
   background-color: black;
   color: var(--nav--page--color);
   font-size: var(--font-size-2);
@@ -91,7 +93,7 @@ export const PageFormTitleLinks = styled.div`
   }
 `
 
-export const PageInfoWrapper = styled.div`
+export const AppPageInfoWrapper = styled.div`
   margin-bottom: 2rem;
   width: 100%;
 
@@ -100,7 +102,7 @@ export const PageInfoWrapper = styled.div`
   }
 `
 
-export const PageInfoTabsWrapper = styled.header`
+export const AppPageInfoTabsWrapper = styled.header`
   display: flex;
   justify-content: space-between;
 
@@ -108,11 +110,11 @@ export const PageInfoTabsWrapper = styled.header`
   border-bottom: var(--box_header--border);
 `
 
-export const PageInfoContentWrapper = styled(TabContentWrapper)`
+export const AppPageInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
 `
 
-export const PageInfoContentHeader = styled(BoxHeader)`
+export const AppPageInfoContentHeader = styled(BoxHeader)`
   padding-left: 1rem;
 `

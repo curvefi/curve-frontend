@@ -13,13 +13,13 @@ import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
 import {
-  PageFormContainer,
-  PageFormTitleWrapper,
-  PageFormsWrapper,
-  PageInfoContentWrapper,
-  PageInfoTabsWrapper,
-  PageInfoWrapper,
-} from '@/components/SharedPageStyles/styles'
+  AppPageFormContainer,
+  AppPageFormTitleWrapper,
+  AppPageFormsWrapper,
+  AppPageInfoContentWrapper,
+  AppPageInfoTabsWrapper,
+  AppPageInfoWrapper,
+} from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
 import DetailsMarket from 'components/DetailsMarket'
 import DetailsUserLoan from '@/components/DetailsUser/components/DetailsUserLoan'
@@ -102,7 +102,7 @@ const Page: NextPage = () => {
   }, [isPageVisible])
 
   const TitleComp = () => (
-    <PageFormTitleWrapper>
+    <AppPageFormTitleWrapper>
       <PageTitleBorrowSupplyLinks
         rChainId={rChainId}
         rOwmId={rOwmId}
@@ -110,7 +110,7 @@ const Page: NextPage = () => {
         activeKey="borrow"
         owmDataCachedOrApi={owmDataCachedOrApi}
       />
-    </PageFormTitleWrapper>
+    </AppPageFormTitleWrapper>
   )
 
   const pageProps: PageContentProps = {
@@ -130,15 +130,15 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
-      <PageFormContainer isAdvanceMode={isAdvanceMode}>
-        <PageFormsWrapper navHeight={navHeight}>
+      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+        <AppPageFormsWrapper navHeight={navHeight}>
           {!isMdUp && <TitleComp />}
           {rChainId && rOwmId && <LoanMange {...pageProps} />}
-        </PageFormsWrapper>
+        </AppPageFormsWrapper>
 
-        <PageInfoWrapper>
+        <AppPageInfoWrapper>
           {isMdUp && <TitleComp />}
-          <PageInfoTabsWrapper>
+          <AppPageInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (
                 <Tab
@@ -152,18 +152,18 @@ const Page: NextPage = () => {
                 </Tab>
               ))}
             </Tabs>
-          </PageInfoTabsWrapper>
+          </AppPageInfoTabsWrapper>
 
-          <PageInfoContentWrapper variant="secondary">
+          <AppPageInfoContentWrapper variant="secondary">
             {rChainId && rOwmId && (
               <>
                 {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
                 {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
               </>
             )}
-          </PageInfoContentWrapper>
-        </PageInfoWrapper>
-      </PageFormContainer>
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
+      </AppPageFormContainer>
     </>
   )
 }

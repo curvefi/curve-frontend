@@ -6,20 +6,18 @@ import { useNavigate } from 'react-router-dom'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
-
 import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 import { hasDeleverage } from '@/components/PageLoanManage/utils'
-import Box from '@/ui/Box'
+import useStore from '@/store/useStore'
+
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import CollateralDecrease from '@/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/components/PageLoanManage/CollateralIncrease'
-import IconButton from '@/ui/IconButton'
 import LoanDecrease from '@/components/PageLoanManage/LoanDecrease'
 import LoanDeleverage from '@/components/PageLoanManage/LoanDeleverage'
 import LoanIncrease from '@/components/PageLoanManage/LoanIncrease'
 import LoanLiquidate from '@/components/PageLoanManage/LoanLiquidate'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@/ui/TabSlide'
-import Tabs, { Tab, TabContentWrapper } from '@/ui/Tab'
 
 interface Props extends PageLoanManageProps {}
 
@@ -33,12 +31,18 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
 
-  const FORM_TYPES: { key: FormType; label: string }[] = [
+  const FORM_TYPES: { key: string; label: string }[] = [
     { label: t`Loan`, key: 'loan' },
     { label: t`Collateral`, key: 'collateral' },
     { label: t`Deleverage`, key: 'deleverage' },
     // { label: t`Swap`, key: MANAGE_LOAN_FORM_TYPE.swap }, // hide swap (aka liquidation) from UI for now
-  ]
+  ].filter((f) => {
+    if (f.key === 'deleverage') {
+      return hasDeleverage(llamma)
+    } else {
+      return true
+    }
+  })
 
   const LOAN_TABS: { label: string; formType: LoanFormType }[] = [
     { label: t`Borrow more`, formType: 'loan-increase' },
@@ -86,28 +90,14 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
-    <FormContent variant="primary" shadowed>
-      <Header>
-        <Tabs>
-          {FORM_TYPES.map(({ key, label }) => {
-            if (key === 'deleverage' && !hasDeleverage(llamma)) return null
+    <AppFormContent variant="primary" shadowed>
+      <AppFormHeader
+        formTypes={FORM_TYPES}
+        activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
+        handleClick={(key: string) => navigate(getLoanManagePathname(params, rCollateralId, key as FormType))}
+      />
 
-            return (
-              <Tab
-                key={key}
-                className={rFormType === key ? 'active' : ''}
-                disabled={isUndefined(loanExists)}
-                onClick={() => shouldContinueAction(() => navigate(getLoanManagePathname(params, rCollateralId, key)))}
-              >
-                {label}
-              </Tab>
-            )
-          })}
-        </Tabs>
-        <IconButton hidden />
-      </Header>
-
-      <FormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper>
         {tabs.length > 0 && (
           <StyledSlideTabsWrapper activeIdx={selectedTabIdx} disabled={typeof loanExists === 'undefined'}>
             <SlideTabs ref={tabsRef}>
@@ -144,33 +134,13 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
             </>
           ) : null}
         </>
-      </FormContentWrapper>
-    </FormContent>
+      </AppFormContentWrapper>
+    </AppFormContent>
   )
 }
 
 const StyledSlideTabsWrapper = styled(SlideTabsWrapper)`
   margin-bottom: var(--spacing-2);
-`
-
-const FormContentWrapper = styled(TabContentWrapper)`
-  padding-top: 1rem;
-  position: relative;
-
-  min-height: 14rem; // 224px;
-`
-
-const FormContent = styled(Box)`
-  position: relative;
-  min-height: 17.125rem;
-`
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
 `
 
 export default LoanManage

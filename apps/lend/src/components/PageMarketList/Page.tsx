@@ -18,10 +18,10 @@ import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
+import { AppPageContainer } from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
 import MarketList from '@/components/PageMarketList/index'
 import Settings from '@/layout/Settings'
-import { PageContainer } from '@/components/SharedPageStyles/styles'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -130,7 +130,7 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Markets`} />
-      <PageContainer>
+      <AppPageContainer>
         {rChainId && parsedSearchParams && (
           <MarketList
             rChainId={rChainId}
@@ -145,7 +145,7 @@ const Page: NextPage = () => {
             updatePath={updatePath}
           />
         )}
-      </PageContainer>
+      </AppPageContainer>
       <Settings showScrollButton />
     </>
   )

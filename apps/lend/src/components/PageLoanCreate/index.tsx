@@ -5,8 +5,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { getLoanCreatePathname } from '@/utils/utilsRouter'
 
-import { FormContent, FormContentWrapper } from '@/components/SharedFormStyles/styles'
-import FormHeader from '@/components/SharedFormStyles/FormHeader'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
 
 const LoanCreate = (pageProps: PageContentProps) => {
@@ -18,18 +17,18 @@ const LoanCreate = (pageProps: PageContentProps) => {
   const FORM_TYPES: { key: FormType; label: string }[] = [{ label: t`Create Loan`, key: 'create' }]
 
   return (
-    <FormContent variant="primary" shadowed>
-      <FormHeader
+    <AppFormContent variant="primary" shadowed>
+      <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'create' : (rFormType as string)}
-        handleClick={(key) => navigate(getLoanCreatePathname(params, rOwmId, key))}
+        handleClick={(key: string) => navigate(getLoanCreatePathname(params, rOwmId, key))}
       />
 
-      <FormContentWrapper grid gridRowGap={3} padding margin="1rem 0 0 0">
+      <AppFormContentWrapper grid gridRowGap={3} padding margin="1rem 0 0 0">
         {/* FORMS */}
         {rFormType === '' || rFormType === 'create' ? <LoanFormCreate {...pageProps} /> : null}
-      </FormContentWrapper>
-    </FormContent>
+      </AppFormContentWrapper>
+    </AppFormContent>
   )
 }
 
