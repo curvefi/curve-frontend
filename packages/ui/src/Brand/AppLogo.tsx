@@ -55,6 +55,7 @@ const Wrapper = styled.div`
 
 const Beta = styled.span`
   background-color: var(--warning-400);
+  color: var(--black);
   font-size: var(--font-size-1);
   font-weight: bold;
   padding: var(--spacing-1) var(--spacing-2);

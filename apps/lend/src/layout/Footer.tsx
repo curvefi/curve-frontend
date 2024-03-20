@@ -17,10 +17,15 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 
 type InnerSectionProps = {
   className?: string
+  columnCount?: number
 }
 
-export const CommunitySection = ({ className, locale }: { locale: Locale['value'] } & InnerSectionProps) => (
-  <CommunityWrapper className={className}>
+export const CommunitySection = ({
+  className,
+  columnCount,
+  locale,
+}: { locale: Locale['value'] } & InnerSectionProps) => (
+  <CommunityWrapper className={className} $columnCount={columnCount}>
     <SectionItem>
       <StyledExternalLink href="https://twitter.com/curvefinance">{t`Twitter`}</StyledExternalLink>
     </SectionItem>
@@ -74,11 +79,11 @@ interface ResourcesSectionProps extends InnerSectionProps {
   chainId: ChainId | null
 }
 
-export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) => {
+export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesSectionProps) => {
   const orgUIPath = networks[chainId ?? '1']?.orgUIPath
 
   return (
-    <ResourcesWrapper className={className}>
+    <ResourcesWrapper className={className} $columnCount={columnCount}>
       {/*<SectionItem>*/}
       {/*  <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin/blob/master/doc/curve-stablecoin.pdf">{t`Whitepaper`}</StyledExternalLink>*/}
       {/*</SectionItem>*/}
@@ -106,7 +111,7 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         <StyledExternalLink href="https://news.curve.fi/">{t`News`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href="https://resources.curve.fi/">{t`Resources`}</StyledExternalLink>
+        <StyledExternalLink href="https://resources.curve.fi/lending/understanding-lending/">{t`Resources`}</StyledExternalLink>
       </SectionItem>
 
       {/* section 3 */}
@@ -184,17 +189,26 @@ const Section = ({ className, title, children }: React.PropsWithChildren<Section
   )
 }
 
-const ResourcesWrapper = styled.ul`
+const ResourcesWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    column-count: 3;
+    column-count: ${({ $columnCount }) => $columnCount || 3};
   }
 `
 
-const CommunityWrapper = styled.ul`
+const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    min-width: 15rem; //240px
-    column-count: 2;
-  }
+    ${({ $columnCount }) => {
+      if ($columnCount) {
+        return `
+          column-count: ${$columnCount};
+        `
+      } else {
+        return `
+          min-width: 15rem; //240px
+          column-count: 2;
+        `
+      }
+    }}
 `
 
 const FooterLogoWrapper = styled.div`

@@ -16,7 +16,7 @@ type SliceState = {
   isSmUp: boolean
   isXSmDown: boolean
   isXXSm: boolean
-  pageWidth: PageWidthClassName | ''
+  pageWidth: PageWidthClassName | null
   scrollY: number
 }
 
@@ -53,7 +53,7 @@ const DEFAULT_STATE: SliceState = {
   isSmUp: false,
   isXSmDown: false,
   isXXSm: false,
-  pageWidth: '',
+  pageWidth: null,
   scrollY: 0,
 }
 

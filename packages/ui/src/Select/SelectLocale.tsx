@@ -1,10 +1,10 @@
 import { Item } from 'react-stately'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import Button from 'ui/src/Button'
 import Icon from 'ui/src/Icon'
-import Select from 'ui/src/Select/index'
+import Select from 'ui/src/Select/Select'
 
 export const SelectLocale = ({
   className,
