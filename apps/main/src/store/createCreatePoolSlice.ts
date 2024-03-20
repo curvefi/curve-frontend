@@ -273,7 +273,14 @@ export const DEFAULT_CREATE_POOL_STATE = {
 }
 
 const calculateInitialPrice = (tokenA: number, tokenB: number) => {
-  return new BigNumber(tokenB).div(new BigNumber(tokenA)).toString()
+  const initialPrice = new BigNumber(tokenB).div(new BigNumber(tokenA)).toNumber()
+
+  // convert to 4 meaningful numbers
+  if (initialPrice >= 1000) return initialPrice.toFixed(0).toString()
+  if (initialPrice >= 100) return initialPrice.toFixed(1).toString()
+  if (initialPrice >= 10) return initialPrice.toFixed(2).toString()
+  if (initialPrice >= 1) return initialPrice.toFixed(3).toString()
+  return initialPrice.toPrecision(4).toString()
 }
 
 const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
