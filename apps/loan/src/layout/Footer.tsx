@@ -6,7 +6,7 @@ import Image from 'next/image'
 import React, { useRef } from 'react'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { sizes } from '@/globalStyle'
+import { sizes } from '@/ui/utils'
 import networks from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'

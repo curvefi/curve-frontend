@@ -1,24 +1,6 @@
 import { createGlobalStyle, css } from 'styled-components'
 import { CURVE_ASSETS_URL } from '@/ui/utils'
 
-export const focusVisible = css`
-  &:focus:not(.focus-visible) {
-    outline: none;
-  }
-
-  &.focus-visible {
-    outline: 2px solid var(--focus);
-    z-index: 1;
-  }
-`
-
-export const sizes = {
-  sm: '0.875rem', //14px
-  md: '1.125rem', // 18px
-  lg: '1.5rem', // 24px
-  xl: '1.75rem', // 28px
-}
-
 const GlobalStyle = createGlobalStyle`
   /* || GENERAL STYLES */
   html,

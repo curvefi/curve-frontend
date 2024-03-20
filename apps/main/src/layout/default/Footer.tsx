@@ -12,7 +12,7 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
-import { sizes } from '@/globalStyle'
+import { sizes } from '@/ui/utils'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import { InternalLink } from '@/ui/Link'
