@@ -237,7 +237,7 @@ export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => {
   }
 }
 
-export const CRYPTOSWAP_MIN_MAX_PARAMETERS = {
+export const TRICRYPTO_MIN_MAX_PARAMETERS = {
   midFee: {
     min: 0.005,
     max: 3,
@@ -252,7 +252,42 @@ export const CRYPTOSWAP_MIN_MAX_PARAMETERS = {
   },
   gamma: {
     min: 10 ** 10 / 1e18,
-    max: new BigNumber(2).multipliedBy(10).pow(16).dividedBy(new BigNumber(1e18)).toNumber(), // (2 * 10 ** 16) / 1e18,
+    max: (2 * 10 ** 16) / 1e18,
+  },
+  allowedExtraProfit: {
+    min: 0,
+    max: 0.01,
+  },
+  feeGamma: {
+    min: 0,
+    max: 1,
+  },
+  adjustmentStep: {
+    min: 0,
+    max: 1,
+  },
+  maHalfTime: {
+    min: 0,
+    max: 7 * 86400,
+  },
+}
+
+export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
+  midFee: {
+    min: 0.005,
+    max: 3,
+  },
+  outFee: {
+    // min: midFee
+    max: 3,
+  },
+  a: {
+    min: (2 ** 2 * 10000) / 10,
+    max: 2 ** 2 * 1000 * 10000,
+  },
+  gamma: {
+    min: 10 ** 10 / 1e18,
+    max: (2 * 10 ** 15) / 1e18,
   },
   allowedExtraProfit: {
     min: 0,
