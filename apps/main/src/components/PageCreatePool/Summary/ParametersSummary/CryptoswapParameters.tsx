@@ -28,19 +28,11 @@ const StableswapParameters = ({ chainId }: Props) => {
     <>
       <ExtraMarginRow>
         <SummaryDataTitle>{t`Mid Fee:`}</SummaryDataTitle>
-        {midFee === '' ? (
-          <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
-        ) : (
-          <SummaryData>{`${midFee.toString()}%`}</SummaryData>
-        )}
+        {midFee === '' ? <SummaryDataPlaceholder>-</SummaryDataPlaceholder> : <SummaryData>{`${midFee}%`}</SummaryData>}
       </ExtraMarginRow>
       <CategoryDataRow>
         <SummaryDataTitle>{t`Out Fee:`}</SummaryDataTitle>
-        {outFee === '' ? (
-          <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
-        ) : (
-          <SummaryData>{`${outFee.toString()}%`}</SummaryData>
-        )}
+        {outFee === '' ? <SummaryDataPlaceholder>-</SummaryDataPlaceholder> : <SummaryData>{`${outFee}%`}</SummaryData>}
       </CategoryDataRow>
       <ExtraMarginRow>
         <SummaryDataTitle>{t`Initial Price${
@@ -84,7 +76,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {cryptoA === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${cryptoA.toString()}`}</SummaryData>
+              <SummaryData>{`${cryptoA}`}</SummaryData>
             )}
           </ExtraMarginRow>
           <CategoryDataRow>
@@ -92,7 +84,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {gamma === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${gamma.toString()}`}</SummaryData>
+              <SummaryData>{`${gamma}`}</SummaryData>
             )}
           </CategoryDataRow>
           <CategoryDataRow>
@@ -100,7 +92,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {allowedExtraProfit === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${allowedExtraProfit.toString()}`}</SummaryData>
+              <SummaryData>{`${allowedExtraProfit}`}</SummaryData>
             )}
           </CategoryDataRow>
           <CategoryDataRow>
@@ -108,7 +100,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {feeGamma === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${feeGamma.toString()}`}</SummaryData>
+              <SummaryData>{`${feeGamma}`}</SummaryData>
             )}
           </CategoryDataRow>
           <CategoryDataRow>
@@ -116,7 +108,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {adjustmentStep === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${adjustmentStep.toString()}`}</SummaryData>
+              <SummaryData>{`${adjustmentStep}`}</SummaryData>
             )}
           </CategoryDataRow>
           <CategoryDataRow>
@@ -124,7 +116,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             {maHalfTime === '' ? (
               <SummaryDataPlaceholder>-</SummaryDataPlaceholder>
             ) : (
-              <SummaryData>{`${maHalfTime.toString()}`}s</SummaryData>
+              <SummaryData>{`${maHalfTime}`}s</SummaryData>
             )}
           </CategoryDataRow>
         </>

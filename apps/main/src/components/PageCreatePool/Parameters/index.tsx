@@ -7,9 +7,11 @@ import useStore from '@/store/useStore'
 
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
-  CRYPTOSWAP_MIN_MAX_PARAMETERS,
+  TWOCRYPTO_MIN_MAX_PARAMETERS,
+  TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
+  CRYPTOSWAP,
 } from '@/components/PageCreatePool/constants'
 
 import SelectPreset from '@/components/PageCreatePool/Parameters/SelectPreset'
@@ -70,6 +72,12 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
   const [outValue, setOutValue] = useState<string>(outFee)
 
   const STABLESWAP_MIN_MAX = STABLESWAP_MIN_MAX_PARAMETERS(+stableSwapFee)
+
+  const CRYPTOSWAP_MIN_MAX = useMemo(() => {
+    if (tokensInPool.tokenA.address !== '' && tokensInPool.tokenB.address !== '' && tokensInPool.tokenC.address !== '')
+      return TRICRYPTO_MIN_MAX_PARAMETERS
+    return TWOCRYPTO_MIN_MAX_PARAMETERS
+  }, [tokensInPool])
 
   const updateStableFeeValue = (value: number) => {
     updateStableSwapFee(new BigNumber(value).toString())
@@ -230,11 +238,11 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
             <>
               <NumberField
                 isDisabled={poolPresetIndex === null}
-                label={t`Mid Fee: (${CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.min}% - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.max}%)`}
+                label={t`Mid Fee: (${CRYPTOSWAP_MIN_MAX.midFee.min}% - ${CRYPTOSWAP_MIN_MAX.midFee.max}%)`}
                 value={+midValue}
                 onChange={updateMidValue}
-                minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.min}
-                maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.midFee.max}
+                minValue={CRYPTOSWAP_MIN_MAX.midFee.min}
+                maxValue={CRYPTOSWAP_MIN_MAX.midFee.max}
                 formatOptions={{
                   maximumFractionDigits: 8,
                 }}
@@ -242,12 +250,12 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               <Description>{t`Mid fee governs fees charged during low volatility.`}</Description>
               <NumberField
                 isDisabled={poolPresetIndex === null}
-                label={t`Out fee: (${midFee}% - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.outFee.max}%)`}
+                label={t`Out fee: (${midFee}% - ${CRYPTOSWAP_MIN_MAX.outFee.max}%)`}
                 defaultValue={+outFee}
                 value={+outValue}
                 onChange={updateOutValue}
                 minValue={+midFee}
-                maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.outFee.max}
+                maxValue={CRYPTOSWAP_MIN_MAX.outFee.max}
                 formatOptions={{
                   maximumFractionDigits: 8,
                 }}
@@ -265,12 +273,6 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                 )}
                 <InitialPrice curve={curve} chainId={chainId} haveSigner={haveSigner} />
               </InitialPriceWrapper>
-              {(initialPrice.tokenA < initialPrice.tokenB ||
-                (tokensInPool.tokenAmount === 3 && initialPrice.tokenA < initialPrice.tokenC)) && (
-                <TokenWarningBox
-                  message={t`Consider choosing the token with the higher unit price as the first token for a more performant AMM`}
-                />
-              )}
               {checkInitialPrice && (
                 <TokenWarningBox
                   message={t`Initial price can't be 0. The price fetch didn't return a price. Please enter the token dollar price manually in the input.`}
@@ -329,10 +331,10 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
               {advanced && swapType !== STABLESWAP && (
                 <>
                   <NumberField
-                    label={t`A (${CRYPTOSWAP_MIN_MAX_PARAMETERS.a.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.a.max})`}
+                    label={t`A (${CRYPTOSWAP_MIN_MAX.a.min} - ${CRYPTOSWAP_MIN_MAX.a.max})`}
                     value={+cryptoA}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.a.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.a.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.a.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.a.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
@@ -340,12 +342,12 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateCryptoA}
                   />
                   <NumberField
-                    label={`Gamma (${new BigNumber(
-                      CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.min
-                    ).toString()} - ${new BigNumber(CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.max).toString()})`}
+                    label={`Gamma (${new BigNumber(CRYPTOSWAP_MIN_MAX.gamma.min).toString()} - ${new BigNumber(
+                      CRYPTOSWAP_MIN_MAX.gamma.max
+                    ).toString()})`}
                     value={+gamma}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.gamma.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.gamma.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.gamma.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
@@ -353,10 +355,10 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateGamma}
                   />
                   <NumberField
-                    label={t`Allowed Extra Profit (${CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.max})`}
+                    label={t`Allowed Extra Profit (${CRYPTOSWAP_MIN_MAX.allowedExtraProfit.min} - ${CRYPTOSWAP_MIN_MAX.allowedExtraProfit.max})`}
                     value={+allowedExtraProfit}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.allowedExtraProfit.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.allowedExtraProfit.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
@@ -364,10 +366,10 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateAllowedExtraProfit}
                   />
                   <NumberField
-                    label={t`Fee Gamma (${CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.max})`}
+                    label={t`Fee Gamma (${CRYPTOSWAP_MIN_MAX.feeGamma.min} - ${CRYPTOSWAP_MIN_MAX.feeGamma.max})`}
                     value={+feeGamma}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.feeGamma.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.feeGamma.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.feeGamma.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
@@ -375,10 +377,10 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateFeeGamma}
                   />
                   <NumberField
-                    label={t`Adjustment Step (${CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.max})`}
+                    label={t`Adjustment Step (${CRYPTOSWAP_MIN_MAX.adjustmentStep.min} - ${CRYPTOSWAP_MIN_MAX.adjustmentStep.max})`}
                     value={+adjustmentStep}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.adjustmentStep.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.adjustmentStep.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
@@ -386,10 +388,10 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     onChange={updateAdjustmentStep}
                   />
                   <NumberField
-                    label={t`Moving Average Time (${CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.min} - ${CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.max}) seconds`}
+                    label={t`Moving Average Time (${CRYPTOSWAP_MIN_MAX.maHalfTime.min} - ${CRYPTOSWAP_MIN_MAX.maHalfTime.max}) seconds`}
                     value={+maHalfTime}
-                    minValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.min}
-                    maxValue={CRYPTOSWAP_MIN_MAX_PARAMETERS.maHalfTime.max}
+                    minValue={CRYPTOSWAP_MIN_MAX.maHalfTime.min}
+                    maxValue={CRYPTOSWAP_MIN_MAX.maHalfTime.max}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,
