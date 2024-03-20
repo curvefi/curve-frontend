@@ -1,6 +1,6 @@
 import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
@@ -40,14 +40,16 @@ const Header = () => {
   const { rChainId, rNetwork, rNetworkIdx } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
+  const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
-  const crvusdTotalSupplyCached = useStore((state) => state.storeCache.crvusdTotalSupply[rChainId])
-  const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply.amount)
+  const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLgUp = useStore((state) => state.layout.isLgUp)
+  const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const themeType = useStore((state) => state.themeType)
+  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
@@ -68,10 +70,16 @@ const Header = () => {
 
   const appsLinks = APPS_LINKS.filter((l) => l.id !== 'loan')
 
+  const tvl = useMemo(
+    () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
+    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
+  )
+
   // prettier-ignore
   const appStats = [
-    { label: t`crvUSD Total Supply`, value: formatNumber(crvusdTotalSupply ?? crvusdTotalSupplyCached, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`crvUSD`, value: formatNumber(crvusdPrice) || '' },
+    { label: 'TVL', value: formatNumber(tvl, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: t`crvUSD Total Supply`, value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
   ]
 
   const SelectNetworkComp = (
@@ -193,6 +201,43 @@ const Header = () => {
       </AppNavBar>
     </>
   )
+}
+
+function _getTvl(
+  collateralDatasMapper: CollateralDatasMapper | undefined,
+  loansDetailsMapper: LoanDetailsMapper | undefined,
+  usdRatesMapper: UsdRate | undefined
+) {
+  let sum = 0
+  if (
+    collateralDatasMapper &&
+    loansDetailsMapper &&
+    usdRatesMapper &&
+    Object.keys(collateralDatasMapper).length > 0 &&
+    Object.keys(loansDetailsMapper).length > 0 &&
+    Object.keys(usdRatesMapper).length > 0
+  ) {
+    Object.keys(collateralDatasMapper).forEach((key) => {
+      const collateralData = collateralDatasMapper[key]
+      if (collateralData) {
+        const { totalCollateral, totalStablecoin } = loansDetailsMapper[key]
+        const usdRate = usdRatesMapper[collateralData.llamma.collateral]
+        if (
+          totalCollateral &&
+          totalStablecoin &&
+          usdRate &&
+          +totalStablecoin > 0 &&
+          +totalCollateral > 0 &&
+          usdRate > 0
+        ) {
+          const totalCollateralUsd = +totalCollateral * +usdRate
+          const total = totalCollateralUsd + +totalStablecoin
+          sum += total
+        }
+      }
+    })
+    return +sum > 0 ? sum : undefined
+  }
 }
 
 export default Header

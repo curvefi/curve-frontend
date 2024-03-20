@@ -7,7 +7,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   collateralDatasMapper: { [chainId: string]: CollateralDataCacheMapper }
-  crvusdTotalSupply: { [chainId: string]: string }
 }
 
 const sliceKey = 'storeCache'
@@ -22,7 +21,6 @@ export type CacheSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  crvusdTotalSupply: {},
   collateralDatasMapper: {},
 }
 
