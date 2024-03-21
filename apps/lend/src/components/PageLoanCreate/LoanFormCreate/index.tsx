@@ -352,7 +352,7 @@ const LoanCreate = (props: PageContentProps) => {
 
       {!isAdvanceMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} />
+          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
         </Accordion>
       )}
     </>

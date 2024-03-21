@@ -10,6 +10,7 @@ import {
   DarkContent,
   Wrapper,
 } from '@/components/DetailsMarket/styles'
+import Box from '@/ui/Box'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import CellRate from '@/components/SharedCellData/CellRate'
@@ -17,6 +18,7 @@ import CellToken from '@/components/SharedCellData/CellToken'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
+import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
@@ -65,13 +67,18 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
       </Content>
 
       <DarkContent>
-        <DetailsContracts
-          rChainId={rChainId}
-          owmDataCachedOrApi={owmDataCachedOrApi}
-          borrowed_token={borrowed_token}
-          collateral_token={collateral_token}
-          type={type}
-        />
+        <Box grid gridGap={3}>
+          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="supply" />
+          <div>
+            <DetailsContracts
+              rChainId={rChainId}
+              owmDataCachedOrApi={owmDataCachedOrApi}
+              borrowed_token={borrowed_token}
+              collateral_token={collateral_token}
+              type={type}
+            />
+          </div>
+        </Box>
       </DarkContent>
     </Wrapper>
   )
