@@ -2,7 +2,7 @@ import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 
 import React, { useEffect, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { CONNECT_STAGE, CURVE_FI_ROUTE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
@@ -17,25 +17,23 @@ import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import {
-  AppLinkText,
+  APP_LINK,
+  APPS_LINKS,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
   AppNavMobile,
-  APPS_LINKS,
   AppSelectNetwork,
 } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import AppLogo from '@/ui/Brand/AppLogo'
-import Box from '@/ui/Box'
+import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import DividerHorizontal from '@/ui/DividerHorizontal'
 import HeaderSecondary from '@/layout/HeaderSecondary'
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const location = useLocation()
   const navigate = useNavigate()
   const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
@@ -45,12 +43,13 @@ const Header = () => {
   const isLgUp = useStore((state) => state.layout.isLgUp)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const locale = useStore((state) => state.locale)
+  const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
   const network = networks[rChainId].id
   const appLogoProps: AppLogoProps = {
@@ -60,13 +59,28 @@ const Header = () => {
     internalPathname: `${rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
   }
 
-  const pages = () => [
+  const p = [
     { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
     { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
     { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
+    { ...APP_LINK.main, isDivider: true },
+    APP_LINK.crvusd,
   ]
 
-  const appsLinks = APPS_LINKS.filter((l) => l.id !== 'lend')
+  const pages = p.map(({ route, ...rest }) => {
+    const parsedRoute = route.startsWith('http') ? route : `#${rLocalePathname}/${rNetwork}${route}`
+    return { route: parsedRoute, isActive: false, ...rest }
+  })
+
+  const desktopPages = pages.map(({ route, ...rest }) => {
+    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
+    const routePathname = route.split('?')[0] ?? ''
+    return {
+      ...rest,
+      route,
+      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
+    }
+  })
 
   const appStats = [] as { label: string; value: string }[]
 
@@ -141,7 +155,7 @@ const Header = () => {
       {isLgUp && (
         <HeaderSecondary
           advancedMode={appNavAdvancedMode}
-          appsLinks={appsLinks}
+          appsLinks={APPS_LINKS}
           appStats={appStats}
           locale={appNavLocale}
           theme={appNavTheme}
@@ -152,26 +166,8 @@ const Header = () => {
           {isLgUp ? (
             <>
               <AppNavMenuSection>
-                <Box grid gridTemplateColumns="auto auto" flexAlignItems="center">
-                  <AppLogo showBeta {...appLogoProps} />
-                </Box>
-                {pages().map(({ route, label }) => {
-                  let isActive = false
-                  const { pathname } = location || {}
-
-                  if (pathname) {
-                    isActive = pathname.endsWith(route)
-
-                    return (
-                      <AppLinkText key={route} className={isActive ? 'active' : ''} href={getPath(route)}>
-                        {label}
-                      </AppLinkText>
-                    )
-                  }
-                  return null
-                })}
-                <DividerHorizontal />
-                <AppLinkText target="_self" href={CURVE_FI_ROUTE.CRVUSD_POOLS}>{t`crvUSD Pools`}</AppLinkText>
+                <AppLogo showBeta {...appLogoProps} />
+                <AppNavPages pages={desktopPages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -191,14 +187,13 @@ const Header = () => {
                 getPath,
                 handleClick: (route: string) => {
                   if (navigate && params) {
-                    let pathname = getPath(route)
-                    pathname = pathname.charAt(0) === '#' ? pathname.substring(1) : pathname
-                    navigate(pathname)
+                    let parsedRoute = route.charAt(0) === '#' ? route.substring(2) : route
+                    navigate(parsedRoute)
                   }
                 },
               }}
               sections={[
-                { id: 'apps', title: t`Apps`, links: appsLinks },
+                { id: 'apps', title: t`Apps`, links: APPS_LINKS },
                 { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
                 { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
               ]}

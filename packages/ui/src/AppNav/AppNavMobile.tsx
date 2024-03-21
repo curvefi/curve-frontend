@@ -7,10 +7,12 @@ import Image from 'next/image'
 import delay from 'lodash/delay'
 import styled from 'styled-components'
 
+import { AppLinkText } from 'ui/src/AppNav/styles'
 import { LlamaImg } from 'ui/src/images'
 import AppNavMobileExternalLinks from 'ui/src/AppNav/AppNavMobileExternalLinks'
 import AppNavMobileShowMore from 'ui/src/AppNav/AppNavMobileShowMore'
 import AppNavMobileStats from 'ui/src/AppNav/AppNavMobileStats'
+import AppNavPagesMobile from 'ui/src/AppNav/AppNavPagesMobile'
 import AppLogo from 'ui/src/Brand'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
@@ -107,59 +109,102 @@ const AppNavMobile = ({
             padding="var(--spacing-normal) var(--spacing-3) 0 var(--spacing-3)"
           >
             <Box grid gridRowGap={3}>
-              {pages.pages().map(({ route, label }) => (
-                <MobileButton
-                  key={route}
-                  onClick={() => {
-                    pages.handleClick(route)
-                    closeMenu([menuWidth, 0])
-                  }}
-                >
-                  {label}
-                </MobileButton>
-              ))}
+              {pages.pages.map(({ route, label, target, isActive, isDivider }) => {
+                return (
+                  <React.Fragment key={label}>
+                    {isDivider && <Box grid margin="var(--spacing-1) 0 0 0"></Box>}
+                    {route.startsWith('http') ? (
+                      <AppLinkText
+                        key={route}
+                        className={isActive ? 'active' : ''}
+                        {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
+                        href={route}
+                      >
+                        {label}
+                      </AppLinkText>
+                    ) : (
+                      <MobileButton
+                        key={route}
+                        onClick={() => {
+                          pages.handleClick(route)
+                          closeMenu([menuWidth, 0])
+                        }}
+                      >
+                        {label}
+                      </MobileButton>
+                    )}
+                  </React.Fragment>
+                )
+              })}
+
+              {/* MORE */}
+              <div>
+                {sections.map(({ id, title, links, comp }, idx) => {
+                  return Array.isArray(links) ? (
+                    <Box key={title} grid gridGap={3} margin="0 0 var(--spacing-3) 0">
+                      {links.map((l) => (
+                        <AppNavPagesMobile
+                          key={l.route}
+                          appPage={l}
+                          handleClick={() => {
+                            pages.handleClick(l.route)
+                            closeMenu([menuWidth, 0])
+                          }}
+                        />
+                      ))}
+                    </Box>
+                  ) : (
+                    <AppNavMobileShowMore
+                      key={title}
+                      buttonLabel={title}
+                      idx={idx}
+                      show={idx === show}
+                      setShow={setShow}
+                    >
+                      <AppNavMobileExternalLinks links={links} comp={comp} />
+                    </AppNavMobileShowMore>
+                  )
+                })}
+              </div>
             </Box>
 
             <Box grid gridRowGap={3}>
-              {/* MORE */}
-              <div>
-                {sections.map(({ title, links, comp }, idx) => (
-                  <AppNavMobileShowMore key={title} buttonLabel={title} idx={idx} show={idx === show} setShow={setShow}>
-                    <AppNavMobileExternalLinks links={links} comp={comp} />
-                  </AppNavMobileShowMore>
-                ))}
-              </div>
+              <Box grid gridRowGap={3}>
+                {/* THEME */}
+                <StyledSelectThemes label="Mode" themeType={theme.themeType} handleThemeChange={theme.handleClick} />
 
-              {/* THEME */}
-              <StyledSelectThemes label="Mode" themeType={theme.themeType} handleThemeChange={theme.handleClick} />
+                {/* LOCALE */}
+                {typeof locale !== 'undefined' && (
+                  <div>
+                    <SelectLocale
+                      locales={locale.locales}
+                      selectedLocale={locale.locale}
+                      mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }}
+                      handleLocaleChange={(selectedLocale: React.Key) => {
+                        locale.handleChange(selectedLocale as string)
+                        closeMenu([menuWidth, 0])
+                      }}
+                    />
+                  </div>
+                )}
 
-              {/* LOCALE */}
-              {typeof locale !== 'undefined' && (
-                <div>
-                  <SelectLocale
-                    locales={locale.locales}
-                    selectedLocale={locale.locale}
-                    mobileHeader={{ showList: showLocaleList, setShowList: setShowLocaleList }}
-                    handleLocaleChange={(selectedLocale: React.Key) => {
-                      locale.handleChange(selectedLocale as string)
-                      closeMenu([menuWidth, 0])
-                    }}
-                  />
-                </div>
-              )}
-
-              {/* ADVANCED MODE */}
-              {typeof advancedMode !== 'undefined' && (
-                <Switch isSelected={advancedMode.isAdvanceMode} onChange={advancedMode.handleClick}>
-                  <strong>Advanced mode {advancedMode.isAdvanceMode ? 'on' : 'off'}</strong>
-                </Switch>
-              )}
+                {/* ADVANCED MODE */}
+                {typeof advancedMode !== 'undefined' && (
+                  <Switch isSelected={advancedMode.isAdvanceMode} onChange={advancedMode.handleClick}>
+                    <strong>Advanced mode {advancedMode.isAdvanceMode ? 'on' : 'off'}</strong>
+                  </Switch>
+                )}
+              </Box>
 
               {/* APP STATS */}
-              <Box margin="var(--spacing-wide) 0 0 0">
-                <AppNavMobileStats stats={stats} />
+              {Array.isArray(stats) && stats.length > 0 ? (
+                <Box margin="var(--spacing-wide) 0 0 0">
+                  <AppNavMobileStats stats={stats} />
+                  <Image src={LlamaImg} alt="Llama" width="32" height="40" />
+                </Box>
+              ) : (
                 <Image src={LlamaImg} alt="Llama" width="32" height="40" />
-              </Box>
+              )}
             </Box>
           </ModalContent>
 

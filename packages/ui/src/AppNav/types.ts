@@ -12,6 +12,7 @@ export type PageWidth =
   | 'page-small-x'
   | 'page-small-xx'
   | null
+
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
 
 export type AppNavAdvancedMode = {
@@ -25,16 +26,22 @@ export type AppNavConnect = {
   handleClick: () => void
 }
 
-export type AppNavLinks = { id: string; href: string; label: string }[]
-
 export type AppNavLocale = {
   locale: Locale
   locales: { name: string; value: Locale; lang: string }[]
   handleChange: (selectedLocale: React.Key) => void
 }
 
+export type AppPage = {
+  route: string
+  label: string
+  isActive?: boolean
+  target?: '_self' | '_blank'
+  isDivider?: boolean
+}
+
 export type AppNavPages = {
-  pages: () => { route: string; label: string }[]
+  pages: AppPage[]
   getPath: (route: string) => string
   handleClick: (route: string) => void
 }
@@ -42,7 +49,7 @@ export type AppNavPages = {
 export type AppNavSections = {
   id: string
   title: string
-  links?: { id: string; href: string; label: string }[]
+  links?: AppPage[]
   comp?: React.ReactNode
 }[]
 
@@ -68,7 +75,7 @@ export type AppNavMobileProps = {
 
 export type AppNavSecondaryProps = {
   advancedMode?: AppNavAdvancedMode
-  appsLinks: AppNavLinks
+  appsLinks: AppPage[]
   appStats: AppNavStats
   locale?: AppNavLocale
   theme: AppNavTheme

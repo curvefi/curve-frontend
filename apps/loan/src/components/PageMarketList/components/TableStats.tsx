@@ -1,11 +1,15 @@
+import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { CURVE_FI_ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import { RCExternal } from '@/images'
 import Box from '@/ui/Box'
 import CellMarketsTotalDebt from '@/components/PageMarketList/components/TableCellMarketsTotalDebt'
+import ExternalLink from '@/ui/Link/ExternalLink'
 
 const TableStats = () => {
   const isXSmDown = useStore((state) => state.layout.isXSmDown)
@@ -19,6 +23,14 @@ const TableStats = () => {
   const stats = [
     { title: t`PegKeepers Debt`, content: <CellMarketsTotalDebt {...cellProps} type="peg-keeper-debt" /> },
     { title: t`Debt Fraction`, content: <CellMarketsTotalDebt {...cellProps} type="debt-fraction" /> },
+    {
+      title: t`crvUSD Pools`,
+      content: (
+        <StyledExternalLink href={CURVE_FI_ROUTE.CRVUSD_POOLS}>
+          {t`View pools`} <RCExternal />
+        </StyledExternalLink>
+      ),
+    },
   ]
 
   return (
@@ -99,6 +111,12 @@ const ContentStatTitle = styled.span`
     margin-bottom: var(--spacing-1);
     text-transform: uppercase;
   }
+`
+
+const StyledExternalLink = styled(ExternalLink)`
+  text-transform: initial;
+  font-size: var(--font-size-2);
+  font-weight: bold;
 `
 
 export default TableStats

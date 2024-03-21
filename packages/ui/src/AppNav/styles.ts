@@ -59,9 +59,9 @@ export const AppNavMenuSection = styled.div<{ gridColumnGap?: string }>`
 const linkCss = css`
   align-items: center;
   color: inherit;
+  cursor: pointer;
   display: flex;
   font-weight: var(--font-weight--bold);
-  min-height: var(--height-medium);
   padding: 0 0.5rem;
   text-decoration: none;
 

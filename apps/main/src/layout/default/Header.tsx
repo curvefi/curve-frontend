@@ -1,4 +1,5 @@
 import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+import type { AppPage } from '@/ui/AppNav/types'
 import type { ThemeType } from '@/ui/Select/SelectThemes'
 
 import React, { useRef } from 'react'
@@ -16,8 +17,8 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import {
+  APP_LINK,
   APPS_LINKS,
-  AppExternalLink,
   AppNavMobile,
   AppNavBarContent,
   AppNavBar,
@@ -26,15 +27,9 @@ import {
 } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
 import AppLogo from '@/ui/Brand'
+import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import DividerHorizontal from '@/ui/DividerHorizontal'
-import HeaderPages from '@/layout/default/HeaderPages'
 import HeaderSecondary from '@/layout/default/HeaderSecondary'
-
-export type Page = {
-  route: string
-  label: string
-}
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
@@ -56,9 +51,10 @@ const Header = () => {
   const themeType = useStore((state) => state.themeType)
   const setThemeType = useStore((state) => state.setThemeType)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
+  const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -69,8 +65,6 @@ const Header = () => {
     internalPathname: `${rLocalePathname}/${network}${hasRouter ? ROUTE.PAGE_SWAP : ROUTE.PAGE_POOLS}`,
   }
 
-  const appsLinks = APPS_LINKS.filter((l) => l.id !== 'main')
-
   // prettier-ignore
   const appStats = [
     { label: t`Total Deposits`, value: formatNumber(tvlTotal ?? tvlTotalCached, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
@@ -78,54 +72,53 @@ const Header = () => {
     { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare ?? volumeCryptoShareCached, FORMAT_OPTIONS.PERCENT) },
   ]
 
-  const PAGES: Page[] = [
+  const p: AppPage[] = [
     { route: ROUTE.PAGE_SWAP, label: t`Swap` },
     { route: ROUTE.PAGE_POOLS, label: t`Pools` },
     { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation` },
     { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard` },
     { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
+    { ...APP_LINK.crvusd, isDivider: true },
+    APP_LINK.lend,
   ]
+
+  const pages = p.map(({ route, ...rest }) => {
+    let parsedRoute
+
+    if (route.startsWith('http')) {
+      parsedRoute = route
+    } else {
+      if (route === ROUTE.PAGE_SWAP && typeof hasRouter !== 'undefined') {
+        const routerDefault = rChainId ? networks[rChainId].swap : {}
+        const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
+        const routerToAddress = routerCached?.toAddress ?? routerDefault?.toAddress ?? ''
+
+        if (routerFromAddress && routerToAddress) {
+          route += `?from=${routerFromAddress}&to=${routerToAddress}`
+        } else if (routerFromAddress) {
+          route += `?from=${routerFromAddress}`
+        } else if (routerToAddress) {
+          route += `?to=${routerToAddress}`
+        }
+      }
+      parsedRoute = `#${rLocalePathname}/${rNetwork}${route}`
+    }
+    return { route: parsedRoute, isActive: false, ...rest }
+  })
+
+  const desktopPages = pages.map(({ route, ...rest }) => {
+    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
+    const routePathname = route.split('?')[0] ?? ''
+    return {
+      ...rest,
+      route,
+      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
+    }
+  })
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
     return `#${rLocalePathname}/${networkName}${route}`
-  }
-
-  const appNavPages = {
-    pages: () => {
-      const routerDefault = rChainId ? networks[rChainId].swap : {}
-      const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
-      const routerToAddress = routerCached?.toAddress ?? routerDefault?.toAddress ?? ''
-
-      let swapRoute = ROUTE.PAGE_SWAP
-      if (routerFromAddress && routerToAddress) {
-        swapRoute += `?from=${routerFromAddress}&to=${routerToAddress}`
-      } else if (routerFromAddress) {
-        swapRoute += `?from=${routerFromAddress}`
-      } else if (routerToAddress) {
-        swapRoute += `?to=${routerToAddress}`
-      }
-
-      PAGES[0].route = swapRoute
-
-      if (rChainId && typeof hasRouter !== 'undefined') {
-        return PAGES.filter((page) => {
-          if (page.route.includes(ROUTE.PAGE_SWAP)) {
-            return hasRouter
-          }
-          return networks[rChainId].excludeRoutes.indexOf(page.route) === -1
-        })
-      }
-      return PAGES
-    },
-    getPath,
-    handleClick: (route: string) => {
-      if (navigate && params) {
-        let pathname = getPath(route)
-        pathname = pathname.charAt(0) === '#' ? pathname.substring(1) : pathname
-        navigate(pathname)
-      }
-    },
   }
 
   const handleNetworkChange = (selectedChainId: React.Key) => {
@@ -176,6 +169,8 @@ const Header = () => {
     handleClick: (selectedThemeType: ThemeType) => setThemeType(selectedThemeType),
   }
 
+  const appsLinks = [APP_LINK.classicMain, ...APPS_LINKS]
+
   return (
     <>
       {isLgUp && (
@@ -187,9 +182,7 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <HeaderPages {...appNavPages} />
-                <DividerHorizontal />
-                <AppExternalLink href="https://classic.curve.fi">{t`Classic UI`}</AppExternalLink>
+                <AppNavPages pages={desktopPages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -203,13 +196,18 @@ const Header = () => {
               connect={appNavConnect}
               locale={appNavLocale}
               pageWidth={pageWidth}
-              pages={appNavPages}
-              sections={[
-                {
-                  id: 'apps',
-                  title: t`Apps`,
-                  links: [...appsLinks, { id: 'classic', href: 'https://classic.curve.fi', label: 'Classic UI' }],
+              pages={{
+                pages,
+                getPath,
+                handleClick: (route: string) => {
+                  if (navigate && params) {
+                    let parsedRoute = route.charAt(0) === '#' ? route.substring(2) : route
+                    navigate(parsedRoute)
+                  }
                 },
+              }}
+              sections={[
+                { id: 'apps', title: t`Apps`, links: appsLinks },
                 { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
                 { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
               ]}

@@ -5,6 +5,7 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils'
 
+import { AppLinkText } from 'ui/src/AppNav/styles'
 import Box from 'ui/src/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import HeaderStats from 'ui/src/HeaderStats'
@@ -26,11 +27,18 @@ const HeaderSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: A
       </Menu>
 
       <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
-        {appsLinks.map(({ id, href, label }, idx) => {
+        {appsLinks.map(({ route, label, target }, idx) => {
           const isLast = appsLinks.length - 1 === idx
           return (
-            <React.Fragment key={id}>
-              <ExternalLinkText href={href}>{label}</ExternalLinkText> {!isLast && <Divider>|</Divider>}
+            <React.Fragment key={route}>
+              <AppLinkText
+                key={route}
+                {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
+                href={route}
+              >
+                {label}
+              </AppLinkText>{' '}
+              {!isLast && <Divider>|</Divider>}
             </React.Fragment>
           )
         })}
