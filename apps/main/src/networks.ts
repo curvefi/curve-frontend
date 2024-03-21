@@ -91,6 +91,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
     },
     customPoolIds: {
+      'weth-llamma': true,
       'sfrxeth-llamma': true,
       pax: true,
       busd: true,
