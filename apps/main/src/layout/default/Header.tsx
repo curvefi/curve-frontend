@@ -144,7 +144,13 @@ const Header = () => {
         >
           {isMdUp ? (
             <>
-              <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">
+              <Menu
+                grid
+                gridAutoFlow="column"
+                gridColumnGap="var(--spacing-2)"
+                flexAlignItems="center"
+                margin="0 var(--spacing-2) 0 0"
+              >
                 <AppLogo {...appLogoProps} />
                 {pages.map(({ route, label }) => {
                   let isActive = false
@@ -164,6 +170,7 @@ const Header = () => {
                 })}
                 <DividerHorizontal />
                 <ExternalLinkText href="https://crvusd.curve.fi">{t`crvUSD`}</ExternalLinkText>
+                <ExternalLinkText href="https://lend.curve.fi">{t`Lend`}</ExternalLinkText>
               </Menu>
 
               <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">

@@ -143,6 +143,7 @@ const HeaderMobile = ({
               })}
 
               <StyledExternalLink href="https://crvusd.curve.fi">{t`crvUSD`}</StyledExternalLink>
+              <StyledExternalLink href="https://lend.curve.fi">{t`Lend`}</StyledExternalLink>
 
               <Box margin={`var(--spacing-3) 0 0 0`}>
                 <StyledSelectThemes label={t`Mode`} />
