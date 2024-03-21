@@ -189,7 +189,7 @@ const TableRowMobile = ({
                 <MobileTableActions>
                   {isBorrow ? (
                     <Button variant="filled" onClick={handleCellClick}>
-                      {loanExists ? t`Manage Loan` : t`Create Loan`}
+                      {loanExists ? t`Manage Loan` : t`Get Loan`}
                     </Button>
                   ) : (
                     <Button variant="filled" onClick={handleCellClick}>
