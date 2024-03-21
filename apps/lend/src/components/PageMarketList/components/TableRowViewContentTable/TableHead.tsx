@@ -5,6 +5,7 @@ import type { Order, PageMarketList } from '@/components/PageMarketList/types'
 import React from 'react'
 import styled from 'styled-components'
 
+import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 
 import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
@@ -52,18 +53,16 @@ const TableHead = ({
     <>
       <colgroup>
         {tableLabels.map(({ sortIdKey, className, width, show }) => {
-          const showCell = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
-
-          return showCell && <col key={sortIdKey} className={className} {...(width ? { style: { width } } : {})} />
+          return (
+            _showContent(show) && <col key={sortIdKey} className={className} {...(width ? { style: { width } } : {})} />
+          )
         })}
       </colgroup>
       <thead>
         <tr>
           {tableLabels.map(({ sortIdKey, label, buttons, className, show, isNotSortable }, idx) => {
-            const showCell = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
-
             return (
-              showCell && (
+              _showContent(show) && (
                 <Th key={`${sortIdKey}-${idx}`} className={className}>
                   {isNotSortable ? (
                     label

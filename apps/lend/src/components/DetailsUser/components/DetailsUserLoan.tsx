@@ -4,6 +4,7 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
@@ -89,9 +90,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
                   return (
                     <ContentStats key={detailSection[0].title}>
                       {detailSection.map(({ className = '', title, value, show }) => {
-                        const showContent = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
                         return (
-                          showContent && (
+                          _showContent(show) && (
                             <ContentStat className={className} key={`detail-${title}`}>
                               <ContentStatTitle>{title}</ContentStatTitle>
                               <ContentStatValue>{value}</ContentStatValue>

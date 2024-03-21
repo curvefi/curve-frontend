@@ -144,3 +144,7 @@ export function shortenTokenName(token: string) {
     return token
   }
 }
+
+export function _showContent(show: boolean | undefined) {
+  return typeof show === 'undefined' || (typeof show !== 'undefined' && show)
+}

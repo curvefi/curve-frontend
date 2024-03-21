@@ -3,6 +3,7 @@ import type { TableRowProps, TableCellProps } from '@/components/PageMarketList/
 import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 
+import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
@@ -85,13 +86,10 @@ const TableRow = ({
   return (
     <Tr ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`} onClick={handleCellClick}>
       {CONTENT[isBorrow ? 'borrow' : 'supply'].map(({ className, content, isInMarket, show }, idx) => {
-        const showCell = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
-        const showCellContent = typeof isInMarket === 'undefined' || (typeof isInMarket !== 'undefined' && isInMarket)
-
         return (
-          showCell && (
+          _showContent(show) && (
             <Td key={idx} className={className}>
-              {showCellContent ? content : null}
+              {_showContent(isInMarket) ? content : null}
             </Td>
           )
         )
