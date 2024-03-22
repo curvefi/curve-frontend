@@ -51,6 +51,7 @@ type Props = {
   lastFetchEndTime: number
   refetchingCapped: boolean
   selectChartList?: LabelList[]
+  latestOraclePrice?: string
 }
 
 const DEFAULT_CHART_COLORS: ChartColors = {
@@ -97,6 +98,7 @@ const ChartWrapper = ({
   toggleOraclePriceVisible,
   toggleLiqRangeCurrentVisible,
   toggleLiqRangeNewVisible,
+  latestOraclePrice,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = cloneDeep(ohlcData)
@@ -182,7 +184,7 @@ const ChartWrapper = ({
               refetchPricesData()
             }}
           >
-            <Icon name={'Renew'} size={16} aria-label={'Toggle magnet mode'} />
+            <Icon name={'Renew'} size={16} aria-label={'Refresh chart'} />
           </RefreshButton>
           <MagnetButton
             size="small"
@@ -253,6 +255,7 @@ const ChartWrapper = ({
               liqRangeCurrentVisible={liqRangeCurrentVisible}
               liqRangeNewVisible={liqRangeNewVisible}
               oraclePriceVisible={oraclePriceVisible}
+              latestOraclePrice={latestOraclePrice}
             />
           </ResponsiveContainer>
         )}
@@ -268,6 +271,15 @@ const ChartWrapper = ({
             minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
           >
             <ErrorMessage>{'There was an error fetching the Chart data.'}</ErrorMessage>
+            <RefreshButton
+              size="small"
+              variant="text"
+              onClick={() => {
+                refetchPricesData()
+              }}
+            >
+              <Icon name={'Renew'} size={16} aria-label={'Refresh chart'} />
+            </RefreshButton>
           </StyledSpinnerWrapper>
         )}
       </ContentWrapper>
@@ -339,7 +351,8 @@ const ResponsiveContainer = styled.div<{ chartExpanded: boolean; chartHeight: Ch
 `
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  /* margin: var(--spacing-3) 0 var(--spacing-3); */
+  flex-direction: column;
+  gap: var(--spacing-2);
 `
 
 const ErrorMessage = styled.p`
