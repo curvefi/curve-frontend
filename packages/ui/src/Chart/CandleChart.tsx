@@ -32,6 +32,7 @@ type Props = {
   oraclePriceVisible?: boolean
   liqRangeCurrentVisible?: boolean
   liqRangeNewVisible?: boolean
+  latestOraclePrice?: string
 }
 
 const CandleChart = ({
@@ -52,6 +53,7 @@ const CandleChart = ({
   oraclePriceVisible,
   liqRangeCurrentVisible,
   liqRangeNewVisible,
+  latestOraclePrice,
 }: Props) => {
   const chartContainerRef = useRef(null)
   const chartRef = useRef<IChartApi | null>(null)
@@ -400,6 +402,17 @@ const CandleChart = ({
     refetchingCapped,
     volumeData,
   ])
+
+  // update the latest data point to ensure the oracle price is current in case there hasn't been recent events in the pool
+  useEffect(() => {
+    if (latestOraclePrice && oraclePriceSeriesRef.current && oraclePriceData) {
+      oraclePriceSeriesRef.current.update({
+        time: oraclePriceData[oraclePriceData.length - 1].time,
+        value: +latestOraclePrice,
+      })
+    }
+  }, [latestOraclePrice, oraclePriceData])
+
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries) => {
       if (isUnmounting) return

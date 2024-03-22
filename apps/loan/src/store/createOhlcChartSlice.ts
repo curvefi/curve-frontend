@@ -20,9 +20,6 @@ import { ethers } from 'ethers'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import { slice } from 'lodash'
-
-type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   chartOhlcData: LpPriceOhlcDataFormatted[]
@@ -50,6 +47,7 @@ export type OhlcChartSlice = {
     setChartTimeOption(timeOption: TimeOptions): void
     fetchOhlcData(
       chainId: ChainId,
+      llammaId: string,
       poolAddress: string,
       interval: number,
       timeUnit: string,
@@ -105,6 +103,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     },
     fetchOhlcData: async (
       chainId: ChainId,
+      llammaId: string,
       poolAddress: string,
       interval: number,
       timeUnit: string,
@@ -166,19 +165,26 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               low: item.low,
             },
           ]
-
-          set(
-            produce((state: State) => {
-              state[sliceKey].chartOhlcData = ohlcDataArray
-              state[sliceKey].volumeData = volumeArray
-              state[sliceKey].oraclePriceData = oraclePriceArray
-              state[sliceKey].baselinePriceData = baselinePriceArray
-              state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-              state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
-              state[sliceKey].chartFetchStatus = 'READY'
-            })
-          )
         }
+        const arrLength = oraclePriceArray.length - 1
+        const loanPriceInfo = get().loans.detailsMapper[llammaId]?.priceInfo
+        const { oraclePrice } = loanPriceInfo ?? {}
+        oraclePriceArray[arrLength] = {
+          ...oraclePriceArray[arrLength],
+          value: oraclePrice ? +oraclePrice : oraclePriceArray[arrLength].value,
+        }
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOhlcData = ohlcDataArray
+            state[sliceKey].volumeData = volumeArray
+            state[sliceKey].oraclePriceData = oraclePriceArray
+            state[sliceKey].baselinePriceData = baselinePriceArray
+            state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
+            state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
+            state[sliceKey].chartFetchStatus = 'READY'
+          })
+        )
       } catch (error) {
         set(
           produce((state: State) => {
