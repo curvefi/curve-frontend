@@ -1,13 +1,11 @@
 import type { Detail } from '@/components/DetailsMarket/types'
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
-import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
-import { getHealthMode } from '@/components/DetailInfoHealth'
 import useStore from '@/store/useStore'
 
 import {
@@ -33,39 +31,16 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, owmDataCachedOrApi, userActiveKey } = pageProps
 
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const loanDetailsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId]?.bands)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
-  const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
-
   // TODO: handle error
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
-  const { activeBand } = loanDetailsBands ?? {}
   const { signerAddress } = api ?? {}
 
   const showConnectWallet = typeof signerAddress !== 'undefined' && !signerAddress
   const foundLoan = typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists
   const isSoftLiquidation = userLoanDetails?.status?.colorKey === 'soft_liquidation'
-
-  useEffect(() => {
-    if (!isUndefined(activeBand) && userLoanDetails) {
-      const fetchedHealthMode = getHealthMode(
-        activeBand,
-        '',
-        userLoanDetails.bands,
-        '',
-        userLoanDetails.healthFull,
-        userLoanDetails.healthNotFull,
-        false,
-        '',
-        ''
-      )
-      setHealthMode(fetchedHealthMode)
-    } else {
-      setHealthMode(DEFAULT_HEALTH_MODE)
-    }
-  }, [activeBand, userLoanDetails])
 
   const cellProps = {
     rChainId,
@@ -79,8 +54,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   // prettier-ignore
   const stats: Detail[][] = [
     [
-      { title: t`Status`, value: <CellHealthStatus {...cellProps} healthPercent={healthMode.percent}  type="status"  /> },
-      { title: t`Health`, value: <CellHealthStatus {...cellProps} healthPercent={healthMode.percent} type="percent"  /> },
+      { title: t`Status`, value: <CellHealthStatus {...cellProps}  type="status"  /> },
+      { title: t`Health`, value: <CellHealthStatus {...cellProps} type="percent"  /> },
       { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" /> }
     ],
     [
@@ -115,9 +90,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
                   return (
                     <ContentStats key={detailSection[0].title}>
                       {detailSection.map(({ className = '', title, value, show }) => {
-                        const showContent = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
                         return (
-                          showContent && (
+                          _showContent(show) && (
                             <ContentStat className={className} key={`detail-${title}`}>
                               <ContentStatTitle>{title}</ContentStatTitle>
                               <ContentStatValue>{value}</ContentStatValue>
@@ -137,7 +111,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
             {isAdvanceMode ? (
               <DetailsUserLoanChartBandBalances {...pageProps} />
             ) : (
-              <DetailsUserLoanChartLiquidationRange {...pageProps} healthMode={healthMode} />
+              <DetailsUserLoanChartLiquidationRange {...pageProps} />
             )}
           </Content>
         </Wrapper>

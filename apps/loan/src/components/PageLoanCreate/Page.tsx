@@ -14,9 +14,16 @@ import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
+import {
+  AppPageFormContainer,
+  AppPageFormTitleWrapper,
+  AppPageFormsWrapper,
+  AppPageInfoContentHeader,
+  AppPageInfoContentWrapper,
+  AppPageInfoWrapper,
+} from '@/ui/AppPage'
 import PoolInfoData from '@/components/PoolInfoData'
-import { TabContentWrapper } from '@/ui/Tab'
-import Box, { BoxHeader } from '@/ui/Box'
+import Box from '@/ui/Box'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -140,9 +147,9 @@ const Page: NextPage = () => {
   }, [chartExpanded, isMdUp, setChartExpanded])
 
   const TitleComp = () => (
-    <TitleWrapper>
+    <AppPageFormTitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
-    </TitleWrapper>
+    </AppPageFormTitleWrapper>
   )
 
   const formProps = {
@@ -175,8 +182,8 @@ const Page: NextPage = () => {
         </PriceAndTradesExpandedContainer>
       )}
       <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
-        <FormWrapper navHeight={navHeight}>
-          {!isMdUp && !isAdvanceMode && !chartExpanded && <TitleComp />}
+        <AppPageFormsWrapper navHeight={navHeight}>
+          {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
           {rChainId && rCollateralId && (
             <LoanCreate
               curve={curve}
@@ -192,24 +199,24 @@ const Page: NextPage = () => {
               fetchInitial={fetchInitial}
             />
           )}
-        </FormWrapper>
+        </AppPageFormsWrapper>
 
         {!isAdvanceMode && !chartExpanded && (
-          <PoolInfoWrapper>
+          <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
-            <PoolInfoContainer variant="secondary">
+            <AppPageInfoContentWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-            </PoolInfoContainer>
-          </PoolInfoWrapper>
+            </AppPageInfoContentWrapper>
+          </AppPageInfoWrapper>
         )}
 
         {isAdvanceMode && (
           <LoanInfoWrapper>
             {isMdUp && !chartExpanded && <TitleComp />}
-            <LoanInfoContentWrapper variant="secondary">
-              <StyledBoxHeader>LLAMMA Details</StyledBoxHeader>
+            <AppPageInfoContentWrapper variant="secondary">
+              <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
               {isValidRouterParams && rChainId && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
-            </LoanInfoContentWrapper>
+            </AppPageInfoContentWrapper>
           </LoanInfoWrapper>
         )}
       </Wrapper>
@@ -217,36 +224,9 @@ const Page: NextPage = () => {
   )
 }
 
-const Wrapper = styled(Box)<{ isAdvanceMode: boolean; chartExpanded: boolean }>`
-  margin: 2rem auto 0 auto;
-
-  @media (min-width: 425px) {
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-left: 3rem;
-    margin-right: 3rem;
-  }
+const Wrapper = styled(AppPageFormContainer)<{ isAdvanceMode: boolean; chartExpanded: boolean }>`
   @media (min-width: ${breakpoints.md}rem) {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    margin-top: 3rem;
     ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
-    ${({ isAdvanceMode }) => (isAdvanceMode ? `align-items: flex-start;` : `justify-content: center;`)};
-    display: flex;
-  }
-`
-
-const TitleWrapper = styled.header`
-  align-items: center;
-  display: flex;
-  min-height: 46px;
-  padding-left: 0.5rem;
-  margin-left: 1rem;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    padding-left: 0;
   }
 `
 
@@ -259,35 +239,6 @@ const Title = styled(TextEllipsis)`
   padding: 0 2px;
 `
 
-// Loan Form
-const FormWrapper = styled(Box)<{ navHeight: number }>`
-  margin-bottom: 2rem;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    align-self: flex-start;
-    min-width: var(--loan-form-min-width);
-    max-width: var(--loan-form-min-width);
-    //position: sticky;
-    top: ${({ navHeight }) => `${navHeight + 40}px;`};
-  }
-`
-
-// None advanced pool info
-const PoolInfoWrapper = styled(Box)`
-  width: 100%;
-  margin: 0 0 auto 1.5rem;
-`
-
-const PoolInfoContainer = styled(Box)`
-  padding: 2rem;
-  background-color: var(--tab-secondary--content--background-color);
-`
-
-// Loan Info
-const StyledBoxHeader = styled(BoxHeader)`
-  padding-left: 1rem;
-`
-
 const LoanInfoWrapper = styled.div`
   margin-bottom: 2rem;
   width: 100%;
@@ -295,11 +246,6 @@ const LoanInfoWrapper = styled.div`
   @media (min-width: ${breakpoints.md}rem) {
     margin-left: 1.5rem;
   }
-`
-
-const LoanInfoContentWrapper = styled(TabContentWrapper)`
-  min-height: 14.6875rem; // 235px
-  position: relative;
 `
 
 const PriceAndTradesExpandedContainer = styled(Box)`

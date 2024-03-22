@@ -3,17 +3,13 @@ import type { FormType, PageLoanCreateProps } from '@/components/PageLoanCreate/
 import { t } from '@lingui/macro'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import isUndefined from 'lodash/isUndefined'
-import styled from 'styled-components'
 
 import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 import { hasLeverage } from '@/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/hooks/useCollateralAlert'
 
-import Box from '@/ui/Box'
-import IconButton from '@/ui/IconButton'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
-import Tabs, { Tab, TabContentWrapper } from '@/ui/Tab'
 
 const LoanCreate = ({
   fetchInitial,
@@ -26,10 +22,16 @@ const LoanCreate = ({
   const navigate = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
 
-  const FORM_TYPES: { key: FormType; label: string }[] = [
+  const FORM_TYPES: { key: string; label: string }[] = [
     { label: t`Create Loan`, key: 'create' },
     { label: t`Leverage`, key: 'leverage' },
-  ]
+  ].filter((f) => {
+    if (f.key === 'leverage') {
+      return hasLeverage(llamma)
+    } else {
+      return true
+    }
+  })
 
   const handleTabClick = useCallback(
     (formType: FormType) => {
@@ -46,50 +48,18 @@ const LoanCreate = ({
   )
 
   return (
-    <FormContent variant="primary" shadowed>
-      <Header>
-        <Tabs>
-          {FORM_TYPES.map(({ key, label }) => {
-            return key === 'create' || (key === 'leverage' && hasLeverage(llamma)) ? (
-              <Tab
-                key={key}
-                className={!rFormType && key === 'create' ? 'active' : rFormType === key ? 'active' : ''}
-                disabled={isUndefined(loanExists)}
-                onClick={() => handleTabClick(key)}
-              >
-                {label}
-              </Tab>
-            ) : null
-          })}
-        </Tabs>
-        <IconButton hidden />
-      </Header>
+    <AppFormContent variant="primary" shadowed>
+      <AppFormHeader
+        formTypes={FORM_TYPES}
+        activeFormKey={!rFormType ? 'create' : (rFormType as string)}
+        handleClick={(key: string) => handleTabClick(key as FormType)}
+      />
 
-      <FormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper>
         <LoanFormCreate {...props} collateralAlert={collateralAlert} />
-      </FormContentWrapper>
-    </FormContent>
+      </AppFormContentWrapper>
+    </AppFormContent>
   )
 }
-
-const FormContentWrapper = styled(TabContentWrapper)`
-  padding-top: 1rem;
-  position: relative;
-
-  min-height: 14rem; // 224px;
-`
-
-const FormContent = styled(Box)`
-  position: relative;
-  min-height: 17.125rem;
-`
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
-`
 
 export default LoanCreate

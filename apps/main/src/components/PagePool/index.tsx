@@ -20,6 +20,15 @@ import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import useStore from '@/store/useStore'
 
+import {
+  AppPageFormContainer,
+  AppPageFormTitleWrapper,
+  AppPageFormsWrapper,
+  AppPageInfoContentWrapper,
+  AppPageInfoTabsWrapper,
+  AppPageInfoWrapper,
+} from '@/ui/AppPage'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import { Chip } from '@/ui/Typography'
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
@@ -28,7 +37,7 @@ import MySharesStats from '@/components/PagePool/UserDetails'
 import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/components/PagePool/Swap'
 import Withdraw from '@/components/PagePool/Withdraw'
-import Tabs, { Tab, TabContentWrapper } from '@/ui/Tab'
+import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
@@ -201,13 +210,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       OTHER: t`OTHER`,
     }
     return (
-      <TitleWrapper>
+      <AppPageFormTitleWrapper>
         <StyledExternalLink href={networks[rChainId].scanAddressPath(pool.address)}>
           <Title as="h1">{pool?.name || ''}</Title>
         </StyledExternalLink>
         {pool?.referenceAsset && <StyledChip>{referenceAsset[pool.referenceAsset] ?? pool.referenceAsset}</StyledChip>}
         {pool?.isFactory && <StyledFactoryChip>{t`FACTORY`}</StyledFactoryChip>}
-      </TitleWrapper>
+      </AppPageFormTitleWrapper>
     )
   }
 
@@ -231,21 +240,18 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <TransferPageWrapper>
-        <TransferWrapper navHeight={navHeight} chartExpanded={chartExpanded} className="grid-transfer">
-          {!isMdUp && <TitleComp />}
-          <Box variant="primary" shadowed>
-            <Header>
-              <Tabs>
-                {FORM_TYPES.map(({ key, label }) => (
-                  <TransferTab key={key} className={rFormType === key ? 'active' : ''} onClick={() => toggleForm(key)}>
-                    {label}
-                  </TransferTab>
-                ))}
-              </Tabs>
-            </Header>
 
-            <TransferFormWrapper grid gridRowGap={3} padding>
+      <Wrapper isAdvanceMode chartExpanded={chartExpanded}>
+        <AppPageFormsWrapper navHeight={navHeight} className="grid-transfer">
+          {!isMdUp && <TitleComp />}
+          <AppFormContent variant="primary" shadowed>
+            <AppFormHeader
+              formTypes={FORM_TYPES}
+              activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
+              handleClick={(key: string) => toggleForm(key as TransferFormType)}
+            />
+
+            <AppFormContentWrapper>
               {rFormType === 'swap' ? (
                 <>
                   {poolAlert?.isDisableSwap ? (
@@ -287,18 +293,18 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   userPoolBalancesLoading={userPoolBalancesLoading}
                 />
               ) : null}
-            </TransferFormWrapper>
-          </Box>
-        </TransferWrapper>
+            </AppFormContentWrapper>
+          </AppFormContent>
+        </AppPageFormsWrapper>
 
-        <PoolInfoWrapper>
+        <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
           {pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
             </PriceAndTradesWrapper>
           )}
-          <DetailTabsWrapper>
+          <AppPageInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (
                 <Tab
@@ -312,8 +318,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 </Tab>
               ))}
             </Tabs>
-          </DetailTabsWrapper>
-          <DetailContentWrapper>
+          </AppPageInfoTabsWrapper>
+
+          <AppPageInfoContentWrapper variant="secondary">
             {selectedTab === 'user' && (
               <MySharesStats
                 curve={curve}
@@ -345,12 +352,18 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
             {selectedTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
               <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
             )}
-          </DetailContentWrapper>
-        </PoolInfoWrapper>
-      </TransferPageWrapper>
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
+      </Wrapper>
     </>
   )
 }
+
+const Wrapper = styled(AppPageFormContainer)<{ chartExpanded: boolean }>`
+  @media (min-width: ${breakpoints.md}rem) {
+    ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
+  }
+`
 
 const StyledChip = styled(Chip)`
   margin-left: var(--spacing-2);
@@ -379,14 +392,6 @@ const Title = styled(TextEllipsis)`
   }
 `
 
-const TitleWrapper = styled.header`
-  align-items: center;
-  display: inline-flex;
-  padding-left: 1rem;
-  min-height: 46px;
-  color: var(--nav--page--color);
-`
-
 const StatsWrapper = styled(Box)`
   align-items: flex-start;
   display: grid;
@@ -398,66 +403,9 @@ const StatsWrapper = styled(Box)`
   } */
 `
 
-const PoolInfoWrapper = styled(Box)`
-  width: 100%;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    padding: 1.5rem;
-  }
-`
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
-`
-
-const TransferFormWrapper = styled(TabContentWrapper)`
-  padding-top: 1rem;
-`
-
-const TransferWrapper = styled(Box)<{ navHeight: number; chartExpanded: boolean }>`
-  padding-top: 1.5rem;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-bottom: var(--spacing-3);
-    ${(props) => (props.chartExpanded ? 'padding-top: 1.5rem' : 'padding-top: 2rem')}
-  }
-
-  @media (min-width: ${breakpoints.md}rem) {
-    max-width: 22.3125rem;
-    min-width: var(--transfer-min-width);
-    padding-right: 0;
-    padding-left: 1.5rem;
-    //position: sticky;
-    top: ${({ navHeight }) => `${navHeight}px;`};
-  }
-`
-
-const TransferPageWrapper = styled(Box)`
-  display: grid;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding: 0 var(--spacing-3);
-  }
-
-  @media (min-width: ${breakpoints.md}rem) {
-    display: flex;
-    align-items: flex-start;
-    padding: 0;
-  }
-`
-
-const TransferTab = styled(Tab)`
-  max-width: 9rem; //144px;
-`
-
 const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
   margin-bottom: var(--spacing-1);
-  margin-top: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
     margin-top: none;
     margin-bottom: var(--spacing-3);
@@ -487,19 +435,6 @@ const ExpandButton = styled(Button)`
 
 const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
-`
-
-const DetailTabsWrapper = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
-`
-
-const DetailContentWrapper = styled(TabContentWrapper)`
-  min-height: 14.6875rem; // 235px
-  position: relative;
 `
 
 export default Transfer

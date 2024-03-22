@@ -5,7 +5,7 @@ import Box from '@/ui/Box'
 
 export const SubTitle = styled.h3`
   font-size: var(--font-size-3);
-  margin-bottom: 0.75rem; // 12px
+  margin-bottom: var(--spacing-1);
 `
 
 export type StatsProps = {

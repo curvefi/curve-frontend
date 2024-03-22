@@ -1,6 +1,6 @@
 import type { ChipProps } from '@/ui/Typography/types'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
@@ -25,54 +25,45 @@ const ChipVaultSharesUsdRate = ({
   noPadding?: boolean
 }) => {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
+  const { address = '' } = owmData?.owm?.borrowed_token ?? {}
+  const usdRate = useStore((state) => state.usdRates.tokens[address])
+  const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
-  const { address } = owmData?.owm?.borrowed_token ?? {}
+  const { pricePerShare, error } = pricePerShareResp ?? {}
 
-  const [tokenUsdRate, setTokenUsdRate] = useState(0)
-  const [usdAmount, setUsdAmount] = useState(0)
+  const isLoading =
+    typeof owmData === 'undefined' || typeof amount === 'undefined' || typeof pricePerShareResp === 'undefined'
+  const isError = !!error || usdRate === 'NaN'
 
-  const haveOwmData = typeof owmData !== 'undefined'
-  const haveAmount = typeof amount !== 'undefined' && +amount > 0
-
-  const fetchRedeemUsdValue = useCallback(
-    async (owmData: OWMData, amount: string) => {
-      try {
-        const borrowedAmount = await owmData.owm.vault.previewRedeem(1)
-        const usdRate = usdRatesMapper[address]
-
-        if (+borrowedAmount > 0 && +usdRate > 0) {
-          setTokenUsdRate(+borrowedAmount * +usdRate)
-          setUsdAmount(+borrowedAmount * +amount * +usdRate)
-        } else if (usdRate === 'NaN') {
-          setUsdAmount(NaN)
-        }
-      } catch (error) {
-        console.error(error)
-        setUsdAmount(NaN)
-      }
-    },
-    [address, usdRatesMapper]
-  )
+  const { formattedCrvusdAmount, formattedUsdAmount } = useMemo(() => {
+    const crvusdAmount = +pricePerShare * +(amount ?? '0')
+    const formattedCrvusdAmount = `${formatNumber(crvusdAmount, { showDecimalIfSmallNumberOnly: true })}crvUSD`
+    const usdAmount = +pricePerShare * +(amount ?? '0') * +usdRate
+    const formattedUsdAmount = formatNumber(usdAmount, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
+    return { formattedCrvusdAmount, formattedUsdAmount }
+  }, [amount, pricePerShare, usdRate])
 
   useEffect(() => {
-    if (haveOwmData && haveAmount) fetchRedeemUsdValue(owmData, amount)
+    if (!!owmData?.owm?.id && +(amount ?? '0') > 0) {
+      fetchVaultPricePerShare(rChainId, owmData)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, owmData])
-
-  const formattedAmountUsd = formatNumber(usdAmount, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
+  }, [amount, owmData?.owm?.id])
 
   return (
     <>
-      {haveOwmData && haveAmount && (
+      {isLoading ? null : isError ? (
+        '?'
+      ) : (
         <>
           {hideRate ? (
             <TextCaption className={className} {...props}>
-              {formattedAmountUsd}
+              ≈{formattedCrvusdAmount} ({formattedUsdAmount})
             </TextCaption>
           ) : (
             <StyledInpChip noPadding={noPadding} className={className} size="xs">
-              x {formatNumber(tokenUsdRate)} ≈{formattedAmountUsd}
+              ≈{formattedCrvusdAmount} ({formattedUsdAmount})
             </StyledInpChip>
           )}
         </>

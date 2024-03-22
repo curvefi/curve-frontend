@@ -1,19 +1,9 @@
-import { useMemo } from 'react'
-
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import { HealthColorText } from '@/components/DetailsUser/styles'
 
-const CellHealthStatus = ({
-  healthPercent,
-  userActiveKey,
-  type,
-}: {
-  healthPercent: string
-  userActiveKey: string
-  type: 'status' | 'percent'
-}) => {
+const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'status' | 'percent' }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const { details, error } = resp ?? {}
@@ -24,7 +14,7 @@ const CellHealthStatus = ({
         '?'
       ) : (
         <HealthColorText as="strong" colorKey={details?.status?.colorKey}>
-          {type === 'status' ? details?.status?.label : formatNumber(healthPercent, FORMAT_OPTIONS.PERCENT)}
+          {type === 'status' ? details?.status?.label : formatNumber(details?.healthFull, FORMAT_OPTIONS.PERCENT)}
         </HealthColorText>
       )}
     </>

@@ -19,7 +19,7 @@ type AppCacheKeys = 'themeType' | 'isAdvanceMode'
 type SliceState = {
   connectState: ConnectState
   curve: Curve | null
-  crvusdTotalSupply: { amount: string | null; error: string }
+  crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
   isAdvanceMode: boolean
   isLoadingApi: false
   isLoadingCurve: true
@@ -49,7 +49,7 @@ export interface AppSlice extends SliceState {
 const DEFAULT_STATE: SliceState = {
   connectState: { status: '' as const, stage: '' },
   curve: null,
-  crvusdTotalSupply: { amount: '', error: '' },
+  crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
   isAdvanceMode: false,
   isLoadingApi: false,
   isLoadingCurve: true,
@@ -69,9 +69,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
     const chainId = api.chainId
     const fetchedTotalSupply = await networks[chainId].api.helpers.getTotalSupply(api)
     get().updateGlobalStoreByKey('crvusdTotalSupply', fetchedTotalSupply)
-    if (!fetchedTotalSupply.error) {
-      get().storeCache.setStateByActiveKey('crvusdTotalSupply', chainId.toString(), fetchedTotalSupply.amount)
-    }
   },
   setAppCache: <T>(key: AppCacheKeys, value: T) => {
     get().updateGlobalStoreByKey(key, value)

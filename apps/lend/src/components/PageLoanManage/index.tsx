@@ -8,8 +8,7 @@ import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRoute
 import { useSlideTabState } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 
-import { FormContent, FormContentWrapper, FormSlideTab } from '@/components/SharedFormStyles/styles'
-import FormHeader from '@/components/SharedFormStyles/FormHeader'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@/ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
 import LoanBorrowMore from '@/components/PageLoanManage/LoanBorrowMore'
 import LoanRepay from '@/components/PageLoanManage/LoanRepay'
@@ -58,21 +57,21 @@ const ManageLoan = (pageProps: PageContentProps) => {
   const tabs = !rFormType || rFormType === 'loan' ? TABS_LOAN : rFormType === 'collateral' ? TABS_COLLATERAL : []
 
   return (
-    <FormContent variant="primary" shadowed>
-      <FormHeader
+    <AppFormContent variant="primary" shadowed>
+      <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
-        handleClick={(key) => navigate(getLoanManagePathname(params, rOwmId, key))}
+        handleClick={(key: string) => navigate(getLoanManagePathname(params, rOwmId, key))}
       />
 
-      <FormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper grid gridRowGap={3} padding>
         {/* FORMS SELECTOR */}
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
               {tabs.map(({ label }, idx) => {
                 return (
-                  <FormSlideTab
+                  <AppFormSlideTab
                     key={label}
                     disabled={selectedTabIdx === idx}
                     tabLeft={tabPositions[idx]?.left}
@@ -101,8 +100,8 @@ const ManageLoan = (pageProps: PageContentProps) => {
             {selectedTabIdx === 1 && <LoanCollateralRemove {...pageProps} />}
           </>
         ) : null}
-      </FormContentWrapper>
-    </FormContent>
+      </AppFormContentWrapper>
+    </AppFormContent>
   )
 }
 

@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import pick from 'lodash/pick'
 
 import { _getMarketList } from '@/components/PageMarketList/utils'
+import { getErrorMessage } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -22,6 +23,7 @@ type SliceState = {
   rewardsMapper: { [chainId: string]: MarketsRewardsMapper }
   totalLiquidityMapper: { [chainId: string]: MarketsTotalLiquidityMapper }
   marketDetailsView: MarketDetailsView
+  vaultPricePerShare: { [chainId: string]: { [owmId: string]: { pricePerShare: string; error: string } } }
   error: string
 }
 
@@ -36,6 +38,7 @@ export type MarketsSlice = {
 
     // individual
     fetchAll(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<void>
+    fetchVaultPricePerShare(chainId: ChainId, owmData: OWMData, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -57,6 +60,7 @@ const DEFAULT_STATE: SliceState = {
   rewardsMapper: {},
   totalLiquidityMapper: {},
   marketDetailsView: '',
+  vaultPricePerShare: {},
   error: '',
 }
 
@@ -100,7 +104,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         get().usdRates.setStateByKey('tokens', cTokens)
 
         // update market list
-        const { marketListMapper, sortedMarketListMapperCache } = _getMarketList(owmDatas, crvusdAddress)
+        const { marketListMapper } = _getMarketList(owmDatas, crvusdAddress)
         get().marketList.setStateByKey('marketListMapper', { [chainId]: marketListMapper })
 
         // add to cache
@@ -156,6 +160,25 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       ] as const
 
       await Promise.all(keys.map((key) => get()[sliceKey].fetchDatas(key, api, [owmData], shouldRefetch)))
+    },
+    fetchVaultPricePerShare: async (chainId, { owm }, shouldRefetch) => {
+      let resp = { pricePerShare: '', error: '' }
+
+      const { pricePerShare: foundPricePerShare } = get()[sliceKey].vaultPricePerShare[chainId]?.[owm.id] ?? {}
+      if (foundPricePerShare && +foundPricePerShare > 0 && !shouldRefetch) {
+        resp.pricePerShare = foundPricePerShare
+      } else {
+        try {
+          resp.pricePerShare = await owm.vault.previewRedeem(1)
+        } catch (error) {
+          console.error(error)
+          resp.error = getErrorMessage(error, 'error-api')
+        }
+
+        const storedVaultPricePerShare = cloneDeep(get()[sliceKey].vaultPricePerShare[chainId] ?? {})
+        storedVaultPricePerShare[owm.id] = resp
+        get()[sliceKey].setStateByActiveKey('vaultPricePerShare', chainId.toString(), storedVaultPricePerShare)
+      }
     },
 
     // slice helpers

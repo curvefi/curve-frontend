@@ -83,10 +83,10 @@ const helpers = {
   },
   getTotalSupply: async (api: Curve) => {
     log('getTotalSupply', api.chainId)
-    let resp = { amount: '', error: '' }
+    let resp = { total: '', minted: '', pegKeepersDebt: '', error: '' }
     try {
-      resp.amount = await api.totalSupply()
-      return resp
+      const fetchedTotalSupply = await api.totalSupply()
+      return { ...fetchedTotalSupply, error: '' }
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-total-supply')

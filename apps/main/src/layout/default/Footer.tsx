@@ -12,19 +12,24 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
-import { sizes } from '@/globalStyle'
+import { sizes } from '@/ui/utils'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import { InternalLink } from '@/ui/Link'
 
 type InnerSectionProps = {
   className?: string
+  columnCount?: number
 }
 
-export const CommunitySection = ({ className, locale }: { locale: Locale['value'] } & InnerSectionProps) => {
+export const CommunitySection = ({
+  className,
+  columnCount,
+  locale,
+}: { locale: Locale['value'] } & InnerSectionProps) => {
   const isChinese = isLocaleInChinese(locale)
   return (
-    <CommunityWrapper className={className}>
+    <CommunityWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
         <StyledExternalLink href="https://twitter.com/curvefinance">Twitter</StyledExternalLink>
       </SectionItem>
@@ -87,11 +92,11 @@ interface ResourcesSectionProps extends InnerSectionProps {
   chainId: ChainId | null
 }
 
-export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) => {
+export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesSectionProps) => {
   const orgUIPath = networks[chainId ?? '1'].orgUIPath
 
   return (
-    <ResourcesWrapper className={className}>
+    <ResourcesWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
         <StyledExternalLink href="https://docs.curve.fi/references/whitepapers/overview/">
           <Trans>Whitepaper</Trans>
@@ -216,17 +221,26 @@ const Section = ({ className, title, children }: React.PropsWithChildren<Section
   )
 }
 
-const ResourcesWrapper = styled.ul`
+const ResourcesWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    column-count: 3;
+    column-count: ${({ $columnCount }) => $columnCount || 3};
   }
 `
 
-const CommunityWrapper = styled.ul`
+const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    min-width: 15rem; //240px
-    column-count: 2;
-  }
+    ${({ $columnCount }) => {
+      if ($columnCount) {
+        return `
+          column-count: ${$columnCount};
+        `
+      } else {
+        return `
+          min-width: 15rem; //240px
+          column-count: 2;
+        `
+      }
+    }}
 `
 
 const FooterLogoWrapper = styled.div`

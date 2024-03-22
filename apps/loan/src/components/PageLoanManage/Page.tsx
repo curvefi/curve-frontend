@@ -16,13 +16,21 @@ import usePageOnMount from '@/hooks/usePageOnMount'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
+import {
+  AppPageFormContainer,
+  AppPageFormTitleWrapper,
+  AppPageFormsWrapper,
+  AppPageInfoContentWrapper,
+  AppPageInfoTabsWrapper,
+  AppPageInfoWrapper,
+} from '@/ui/AppPage'
 import Box from '@/ui/Box'
 import PoolInfoData from '@/components/PoolInfoData'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import LoanInfoUser from '@/components/LoanInfoUser'
 import LoanMange from '@/components/PageLoanManage/index'
-import Tabs, { Tab, TabContentWrapper } from '@/ui/Tab'
+import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
@@ -122,9 +130,9 @@ const Page: NextPage = () => {
   }, [chartExpanded, isMdUp, setChartExpanded])
 
   const TitleComp = () => (
-    <TitleWrapper>
+    <AppPageFormTitleWrapper>
       <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
-    </TitleWrapper>
+    </AppPageFormTitleWrapper>
   )
 
   const formProps = {
@@ -157,8 +165,8 @@ const Page: NextPage = () => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <Wrapper chartExpanded={chartExpanded}>
-        <FormWrapper navHeight={navHeight}>
+      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+        <AppPageFormsWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
           {isValidRouterParams && (
             <LoanMange
@@ -169,11 +177,11 @@ const Page: NextPage = () => {
               rFormType={rFormType as FormType}
             />
           )}
-        </FormWrapper>
+        </AppPageFormsWrapper>
 
-        <LoanInfoWrapper>
+        <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
-          <LoanInfoTabsWrapper>
+          <AppPageInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (
                 <Tab
@@ -194,45 +202,20 @@ const Page: NextPage = () => {
                 </Tab>
               ))}
             </Tabs>
-          </LoanInfoTabsWrapper>
-          <LoanInfoContentWrapper variant="secondary">
+          </AppPageInfoTabsWrapper>
+          <AppPageInfoContentWrapper variant="secondary">
             {selectedTab === 'user' && isValidRouterParams && <LoanInfoUser {...formProps} rChainId={rChainId} />}
             {selectedTab === 'llamma' && isValidRouterParams && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
-          </LoanInfoContentWrapper>
-        </LoanInfoWrapper>
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
       </Wrapper>
     </>
   )
 }
 
-const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
-  margin: 2rem auto 0 auto;
-
-  @media (min-width: 425px) {
-    margin-left: 1rem;
-    margin-right: 1rem;
-  }
-  @media (min-width: ${breakpoints.sm}rem) {
-    margin-left: 3rem;
-    margin-right: 3rem;
-  }
+const Wrapper = styled(AppPageFormContainer)<{ chartExpanded: boolean }>`
   @media (min-width: ${breakpoints.md}rem) {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    align-items: flex-start;
-    display: flex;
     ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
-  }
-`
-
-const TitleWrapper = styled.header`
-  align-items: center;
-  display: flex;
-  min-height: 46px;
-  padding-left: 0.5rem;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    padding-left: 0;
   }
 `
 
@@ -243,42 +226,6 @@ const Title = styled(TextEllipsis)`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
-`
-
-// Loan Form
-const FormWrapper = styled(Box)<{ navHeight: number }>`
-  margin-bottom: 2rem;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    align-self: flex-start;
-    min-width: var(--loan-form-min-width);
-    max-width: var(--loan-form-min-width);
-    //position: sticky;
-    top: ${({ navHeight }) => `${navHeight + 40}px;`};
-  }
-`
-
-// Loan Info
-const LoanInfoWrapper = styled.div`
-  margin-bottom: 2rem;
-  width: 100%;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    margin-left: 1.5rem;
-  }
-`
-
-const LoanInfoTabsWrapper = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
-`
-
-const LoanInfoContentWrapper = styled(TabContentWrapper)`
-  min-height: 14.6875rem; // 235px
-  position: relative;
 `
 
 const PriceAndTradesExpandedContainer = styled(Box)`

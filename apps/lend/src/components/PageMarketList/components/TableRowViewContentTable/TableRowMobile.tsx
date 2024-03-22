@@ -9,16 +9,17 @@ import React, { useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
 import { Tr } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import MarketLabel from '@/components/MarketLabel'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import CellCap from '@/components/SharedCellData/CellCap'
+import CellInPool from '@/components/SharedCellData/CellInPool'
 import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
@@ -44,7 +45,6 @@ const TableRowMobile = ({
   owmDataCachedOrApi,
   isBorrow,
   loanExists,
-  searchParams,
   tableLabelsMapper,
   userActiveKey,
   handleCellClick,
@@ -58,7 +58,6 @@ const TableRowMobile = ({
 
   const { signerAddress } = api ?? {}
   const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
-  const { searchText } = searchParams
 
   const isVisible = !!entry?.isIntersecting
   const isHideDetail = showDetail === owmId
@@ -74,41 +73,38 @@ const TableRowMobile = ({
     size: 'md',
   }
 
+  const userHaveLoan = !!signerAddress && !!loanExists
   const someLoanExists = !!signerAddress && loanExists
 
   // prettier-ignore
   const content: { borrow: Content[][], supply: Content[][] } = {
     borrow: [
       [
+        { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: someLoanExists, showLine: true },
+        { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, showLine: true, show: someLoanExists },
+      ],
+      [
         { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, content: <CellRate {...cellProps} type='borrow' /> },
-        { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, content: <CellToken {...cellProps} type='collateral' hideIcon /> },
-        { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
       ],
       [
         { sortIdKey: 'available', label: tableLabelsMapper.available.name, content: <CellCap {...cellProps} type='available' /> },
-      ],
-      [
         { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, content: <CellLoanTotalDebt {...cellProps} /> },
       ],
       [
         { sortIdKey: 'cap', label: `Total supplied`, content: <CellCap {...cellProps} type='cap' /> },
         { sortIdKey: 'cap', label: `Utilization %`, content: <CellCap {...cellProps} type='utilization' /> },
       ],
-      [
-        { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: someLoanExists, showLine: true },
-        { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: someLoanExists },
-      ]
     ],
     supply: [
+      [
+        { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, content: <CellUserVaultShares {...cellProps} />, show: !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0, showLine: true }
+      ],
       [
         { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
         { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, content: <CellRate {...cellProps} type='supply' />, },
       ],
       [
         { sortIdKey: '', label: t`Rewards APR`, labels: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], content: <CellRewards {...cellProps} type='crv-other' /> }
-      ],
-      [
-        { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, content: <CellUserVaultShares {...cellProps} />, show: !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0, showLine: true }
       ]
     ]
   }
@@ -116,24 +112,26 @@ const TableRowMobile = ({
   return (
     <TableItem ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`}>
       <TCell>
-        <MobileLabelWrapper flex>
+        <MobileLabelWrapper flexAlignItems="center" grid gridTemplateColumns={userHaveLoan ? '20px 1fr' : '1fr'}>
+          {userHaveLoan && <CellInPool {...cellProps} isInMarket />}
           <MobileLabelContent>
-            <MarketLabel
-              rChainId={rChainId}
-              isMobile
-              isVisible={isVisible}
-              owmDataCachedOrApi={owmDataCachedOrApi}
-              tableListProps={{
-                hideTokens: true,
-                searchText,
-                onClick: () => setShowDetail((prevState) => (prevState === owmId ? '' : owmId)),
-              }}
-            />
-            {
-              <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
-                {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
-              </IconButton>
-            }
+            <Box flex gridGap={3}>
+              <Box>
+                <TextCaption isBold isCaps>
+                  Collateral
+                </TextCaption>{' '}
+                <CellToken {...cellProps} type="collateral" />
+              </Box>
+              <Box>
+                <TextCaption isBold isCaps>
+                  Borrow
+                </TextCaption>{' '}
+                <CellToken {...cellProps} type="borrowed" />
+              </Box>
+            </Box>
+            <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
+              {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
+            </IconButton>
           </MobileLabelContent>
         </MobileLabelWrapper>
 
@@ -142,47 +140,48 @@ const TableRowMobile = ({
             {!isHideDetail && (
               <>
                 <DetailsContent>
-                  {content[isBorrow ? 'borrow' : 'supply'].map((details) => {
-                    const show = details.some(
-                      ({ show }) => typeof show === 'undefined' || (typeof show !== 'undefined' && show)
-                    )
+                  {content[isBorrow ? 'borrow' : 'supply'].map((details, idx) => {
+                    const show = details.some(({ show }) => _showContent(show))
+                    const showLine = details.some(({ showLine }) => showLine)
                     return (
                       show && (
-                        <DetailContent key={details[0].label}>
-                          {details.map(({ label, labels, content, show }, idx) => {
-                            const key = `detail-${label}-${idx}`
-                            const showContent = typeof show === 'undefined' || (typeof show !== 'undefined' && show)
-                            return (
-                              showContent && (
-                                <DetailWrapper key={key}>
-                                  {typeof labels !== 'undefined' ? (
-                                    <Box flex flexDirection="column">
+                        <>
+                          <DetailContent key={details[0].label}>
+                            {details.map(({ label, labels, content, show }, idx) => {
+                              const key = `detail-${label}-${idx}`
+                              return (
+                                _showContent(show) && (
+                                  <DetailWrapper key={key}>
+                                    {typeof labels !== 'undefined' ? (
+                                      <Box flex flexDirection="column">
+                                        <TextCaption isBold isCaps>
+                                          {label}
+                                        </TextCaption>
+                                        <TextCaption isBold isCaps>
+                                          {labels.map(({ label }, idx) => {
+                                            const isNotLast = idx !== labels.length - 1
+                                            return (
+                                              <React.Fragment key={`${key}-${label}`}>
+                                                {label}
+                                                {isNotLast && '+'}
+                                              </React.Fragment>
+                                            )
+                                          })}
+                                        </TextCaption>
+                                      </Box>
+                                    ) : (
                                       <TextCaption isBold isCaps>
                                         {label}
                                       </TextCaption>
-                                      <TextCaption isBold isCaps>
-                                        {labels.map(({ label }, idx) => {
-                                          const isNotLast = idx !== labels.length - 1
-                                          return (
-                                            <React.Fragment key={`${key}-${label}`}>
-                                              {label}
-                                              {isNotLast && '+'}
-                                            </React.Fragment>
-                                          )
-                                        })}
-                                      </TextCaption>
-                                    </Box>
-                                  ) : (
-                                    <TextCaption isBold isCaps>
-                                      {label}
-                                    </TextCaption>
-                                  )}
-                                  {content}
-                                </DetailWrapper>
+                                    )}
+                                    {content}
+                                  </DetailWrapper>
+                                )
                               )
-                            )
-                          })}
-                        </DetailContent>
+                            })}
+                          </DetailContent>
+                          {showLine && <hr />}
+                        </>
                       )
                     )
                   })}
@@ -190,7 +189,7 @@ const TableRowMobile = ({
                 <MobileTableActions>
                   {isBorrow ? (
                     <Button variant="filled" onClick={handleCellClick}>
-                      {loanExists ? t`Manage Loan` : t`Create Loan`}
+                      {loanExists ? t`Manage Loan` : t`Get Loan`}
                     </Button>
                   ) : (
                     <Button variant="filled" onClick={handleCellClick}>
@@ -219,6 +218,8 @@ const DetailContent = styled.div`
 `
 
 const DetailsContent = styled.div`
+  margin-top: var(--spacing-3);
+
   > ${DetailContent}:not(:last-child) {
     margin-bottom: var(--spacing-3);
   }

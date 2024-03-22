@@ -4,17 +4,12 @@ import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 
-const DetailsUserLoanChartLiquidationRange = ({
-  rChainId,
-  rOwmId,
-  healthMode,
-  userActiveKey,
-}: PageContentProps & { healthMode: HealthMode }) => {
+const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
   const theme = useStore((state) => state.themeType)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
-  const { prices: currPrices } = userLoanDetails ?? {}
+  const { prices: currPrices, status } = userLoanDetails ?? {}
 
   // default to empty data to show chart
   const liqRangeData = useMemo(() => {
@@ -39,7 +34,7 @@ const DetailsUserLoanChartLiquidationRange = ({
         isManage
         data={liqRangeData}
         height={150}
-        healthColorKey={healthMode.colorKey}
+        healthColorKey={status?.colorKey}
         theme={theme}
       />
     </div>

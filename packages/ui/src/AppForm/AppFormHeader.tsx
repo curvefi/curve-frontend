@@ -1,16 +1,17 @@
 import styled from 'styled-components'
 
-import IconButton from '@/ui/IconButton'
-import Tabs, { Tab } from '@/ui/Tab'
+import { breakpoints } from 'ui/src/utils'
+import IconButton from 'ui/src/IconButton'
+import Tabs, { Tab } from 'ui/src/Tab'
 
-const FormHeader = ({
+const AppFormHeader = ({
   formTypes,
   activeFormKey,
   handleClick,
 }: {
   formTypes: { key: string; label: string }[]
   activeFormKey: string
-  handleClick: (formKey: string) => void
+  handleClick(formKey: string): void
 }) => {
   return (
     <Header>
@@ -24,14 +25,14 @@ const FormHeader = ({
           {formTypes.map(({ key, label }) => {
             const isActiveForm = !activeFormKey && key === activeFormKey
             return (
-              <Tab
+              <StyledTab
                 key={key}
                 className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
                 disabled={isActiveForm || activeFormKey === key}
                 onClick={() => handleClick(key)}
               >
                 {label}
-              </Tab>
+              </StyledTab>
             )
           })}
         </Tabs>
@@ -57,4 +58,15 @@ const HeaderTitle = styled.h3`
   font-weight: var(--button--font-weight);
 `
 
-export default FormHeader
+const StyledTab = styled(Tab)`
+  font-size: var(--button--font-size);
+  padding-left: var(--spacing-2);
+  padding-right: var(--spacing-2);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    padding-left: var(--spacing-3);
+    padding-right: var(--spacing-3);
+  }
+`
+
+export default AppFormHeader

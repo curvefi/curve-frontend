@@ -1,10 +1,11 @@
-import { t } from '@lingui/macro'
-import { useLocation, useNavigate } from 'react-router-dom'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+
 import React, { useEffect, useRef } from 'react'
-import styled, { css } from 'styled-components'
+import { t } from '@lingui/macro'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { CONNECT_STAGE, CURVE_FI_ROUTE, ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
+import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
@@ -15,32 +16,40 @@ import { visibleNetworksList } from '@/networks'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
-import AppLogo, { AppLogoProps } from '@/ui/Brand/AppLogo'
+import {
+  APP_LINK,
+  APPS_LINKS,
+  AppNavBar,
+  AppNavBarContent,
+  AppNavMenuSection,
+  AppNavMobile,
+  AppSelectNetwork,
+} from '@/ui/AppNav'
+import { CommunitySection, ResourcesSection } from '@/layout/Footer'
+import AppLogo from '@/ui/Brand/AppLogo'
+import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import HeaderMobile from '@/layout/HeaderMobile'
 import HeaderSecondary from '@/layout/HeaderSecondary'
-import SelectNetwork from '@/ui/Select/SelectNetwork'
-
-export type Page = {
-  route: string
-  label: string
-}
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const location = useLocation()
   const navigate = useNavigate()
+  const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const isLgUp = useStore((state) => state.layout.isLgUp)
+  const pageWidth = useStore((state) => state.layout.pageWidth)
+  const locale = useStore((state) => state.locale)
+  const routerProps = useStore((state) => state.routerProps)
+  const themeType = useStore((state) => state.themeType)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocale, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
   const network = networks[rChainId].id
   const appLogoProps: AppLogoProps = {
@@ -50,11 +59,30 @@ const Header = () => {
     internalPathname: `${rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
   }
 
-  const pages = [
+  const p = [
     { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
     { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
     { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
+    { ...APP_LINK.main, isDivider: true },
+    APP_LINK.crvusd,
   ]
+
+  const pages = p.map(({ route, ...rest }) => {
+    const parsedRoute = route.startsWith('http') ? route : `#${rLocalePathname}/${rNetwork}${route}`
+    return { route: parsedRoute, isActive: false, ...rest }
+  })
+
+  const desktopPages = pages.map(({ route, ...rest }) => {
+    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
+    const routePathname = route.split('?')[0] ?? ''
+    return {
+      ...rest,
+      route,
+      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
+    }
+  })
+
+  const appStats = [] as { label: string; value: string }[]
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -69,21 +97,13 @@ const Header = () => {
     }
   }
 
-  const handleConnectWallet = (wallet: Wallet | null) => {
-    if (wallet) {
-      updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
-    } else {
-      updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
-    }
-  }
-
   useEffect(() => {
     setLayoutHeight('mainNav', elHeight)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elHeight])
 
   const SelectNetworkComp = (
-    <StyledSelectNetwork
+    <AppSelectNetwork
       connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
@@ -95,138 +115,97 @@ const Header = () => {
     />
   )
 
-  const handleLocaleChange = (selectedLocale: React.Key) => {
-    const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-    const { rNetwork } = getNetworkFromUrl()
-    navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+  const appNavAdvancedMode = {
+    isAdvanceMode,
+    handleClick: () => setAppCache('isAdvanceMode', !isAdvanceMode),
+  }
+
+  const appNavConnect = {
+    connectState,
+    walletSignerAddress: getWalletSignerAddress(wallet),
+    handleClick: () => {
+      if (wallet) {
+        updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
+      } else {
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+      }
+    },
+  }
+
+  const appNavLocale =
+    process.env.NODE_ENV === 'development'
+      ? {
+          locale,
+          locales: DEFAULT_LOCALES,
+          handleChange: (selectedLocale: React.Key) => {
+            const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+            const { rNetwork } = getNetworkFromUrl()
+            navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+          },
+        }
+      : undefined
+
+  const appNavTheme = {
+    themeType,
+    handleClick: (selectedThemeType: Theme) => setAppCache('themeType', selectedThemeType),
   }
 
   return (
     <>
-      {isMdUp && <HeaderSecondary handleLocaleChange={handleLocaleChange} />}
-      <StyledNavBar as="nav" ref={mainNavRef} aria-label="Main menu" flex flexAlignItems="stretch" isMdUp={isMdUp}>
-        <NavBarContent className="nav-content" grid gridAutoFlow="column" flexJustifyContent="space-between">
-          {isMdUp ? (
+      {isLgUp && (
+        <HeaderSecondary
+          advancedMode={appNavAdvancedMode}
+          appsLinks={APPS_LINKS}
+          appStats={appStats}
+          locale={appNavLocale}
+          theme={appNavTheme}
+        />
+      )}
+      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isLgUp}>
+        <AppNavBarContent pageWidth={pageWidth} className="nav-content">
+          {isLgUp ? (
             <>
-              <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
-                <Box grid gridTemplateColumns="auto auto" flexAlignItems="center">
-                  <AppLogo showBeta {...appLogoProps} />
-                </Box>
-                {pages.map(({ route, label }) => {
-                  let isActive = false
-                  const { pathname } = location || {}
+              <AppNavMenuSection>
+                <AppLogo showBeta {...appLogoProps} />
+                <AppNavPages pages={desktopPages} />
+              </AppNavMenuSection>
 
-                  if (pathname) {
-                    isActive = pathname.endsWith(route)
-
-                    return (
-                      <InternalLinkText as="a" key={route} className={isActive ? 'active' : ''} href={getPath(route)}>
-                        {label}
-                      </InternalLinkText>
-                    )
-                  }
-                  return null
-                })}
-                {/*<DividerHorizontal />*/}
-                {/*<ExternalLinkText target="_self" href={CURVE_FI_ROUTE.CRVUSD_POOLS}>{t`crvUSD Pools`}</ExternalLinkText>*/}
-              </Menu>
-
-              <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
+              <AppNavMenuSection>
                 {SelectNetworkComp}
-                <ConnectWallet
-                  connectState={connectState}
-                  walletSignerAddress={getWalletSignerAddress(wallet)}
-                  handleClick={() => handleConnectWallet(wallet)}
-                />
-              </Menu>
+                <ConnectWallet {...appNavConnect} />
+              </AppNavMenuSection>
             </>
           ) : (
-            <HeaderMobile
+            <AppNavMobile
               appLogoProps={appLogoProps}
-              pages={pages}
+              advancedMode={appNavAdvancedMode}
+              connect={appNavConnect}
+              locale={appNavLocale}
+              pageWidth={pageWidth}
+              pages={{
+                pages,
+                getPath,
+                handleClick: (route: string) => {
+                  if (navigate && params) {
+                    let parsedRoute = route.charAt(0) === '#' ? route.substring(2) : route
+                    navigate(parsedRoute)
+                  }
+                },
+              }}
+              sections={[
+                { id: 'apps', title: t`Apps`, links: APPS_LINKS },
+                { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
+                { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
+              ]}
               selectNetwork={SelectNetworkComp}
-              handleConnectWallet={handleConnectWallet}
-              handleLocaleChange={handleLocaleChange}
+              stats={[]}
+              theme={appNavTheme}
             />
           )}
-        </NavBarContent>
-      </StyledNavBar>
+        </AppNavBarContent>
+      </AppNavBar>
     </>
   )
 }
-
-const headerLinkCss = css`
-  align-items: center;
-  display: flex;
-  min-height: var(--height-medium);
-  padding: 0 0.5rem;
-
-  color: inherit;
-  font-weight: var(--font-weight--bold);
-  text-decoration: none;
-
-  :active {
-    transform: none;
-  }
-
-  :hover {
-    color: var(--nav_link--hover--color);
-    background-color: var(--nav_link--hover--background-color);
-  }
-
-  &.active,
-  &.active:hover {
-    color: var(--nav_link--active--hover--color);
-    background-color: var(--nav_link--active--hover--background-color);
-  }
-`
-
-const InternalLinkText = styled(Chip)`
-  ${headerLinkCss};
-`
-
-export const Menu = styled(Box)`
-  @media (min-width: ${breakpoints.md}rem) {
-    grid-column-gap: ${({ gridColumnGap }) => gridColumnGap ?? 'var(--spacing-3)'};
-  }
-`
-
-const NavBarContent = styled(Box)`
-  margin: 0 auto;
-  max-width: var(--width);
-  padding: 0 var(--spacing-narrow) 0 0;
-  width: 100%;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    padding: 0 var(--spacing-normal);
-  }
-`
-
-type NavBarProps = {
-  isMdUp: boolean
-}
-
-const NavBar = styled(Box)<NavBarProps>`
-  height: var(--header-height);
-  //position: sticky;
-  top: ${({ isMdUp }) => (isMdUp ? 'var(--top-nav-bottom)' : '0')};
-
-  font-size: var(--font-size-2);
-  text-transform: uppercase;
-
-  color: var(--nav--color);
-  background-color: var(--page--background-color);
-  z-index: var(--z-index-page-nav);
-`
-
-const StyledNavBar = styled(NavBar)`
-  box-shadow: 0 2px 3px 0 rgb(0 0 0 / 20%);
-`
-
-const StyledSelectNetwork = styled(SelectNetwork)`
-  && {
-    height: var(--height-medium);
-  }
-`
 
 export default Header

@@ -88,7 +88,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
 
         <DarkContent>
           <SubTitle>{t`Parameters`}</SubTitle>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} />
+          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
         </DarkContent>
       </Wrapper>
     </div>

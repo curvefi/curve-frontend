@@ -12,6 +12,7 @@ import usePageOnMount from '@/hooks/usePageOnMount'
 import DocumentHead from '@/layout/DocumentHead'
 import CollateralList from '@/components/PageMarketList/index'
 import Settings from '@/layout/Settings'
+import TableStats from '@/components/PageMarketList/components/TableStats'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -28,7 +29,10 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={t`Markets`} />
       <Container>
-        {rChainId && <CollateralList pageLoaded={pageLoaded} params={params} rChainId={rChainId} curve={curve} />}
+        <Content>
+          {rChainId && <CollateralList pageLoaded={pageLoaded} params={params} rChainId={rChainId} curve={curve} />}
+        </Content>
+        {rChainId && <TableStats />}
       </Container>
       <Settings showScrollButton />
     </>
@@ -40,13 +44,23 @@ const Container = styled.div`
   max-width: var(--width);
   min-height: 50vh;
   padding-top: 0.5rem; // 8px
-  background-color: var(--table--background-color);
-  border: 1px solid var(--box--secondary--border);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    margin-top: 2rem;
+    padding-left: var(--spacing-narrow);
+    padding-right: var(--spacing-narrow);
+  }
 
   @media (min-width: ${breakpoints.lg}rem) {
-    margin: 1.5rem;
     margin-top: 3rem;
   }
+`
+
+const Content = styled.div`
+  background-color: var(--table--background-color);
+  box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+  border: 1px solid var(--box--secondary--border);
+  min-height: 288px;
 `
 
 export default Page

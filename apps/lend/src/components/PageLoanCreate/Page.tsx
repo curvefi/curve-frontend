@@ -10,13 +10,13 @@ import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
 import {
-  PageFormContainer,
-  PageFormTitleWrapper,
-  PageFormsWrapper,
-  PageInfoContentHeader,
-  PageInfoContentWrapper,
-  PageInfoWrapper,
-} from '@/components/SharedPageStyles/styles'
+  AppPageFormContainer,
+  AppPageFormTitleWrapper,
+  AppPageFormsWrapper,
+  AppPageInfoContentHeader,
+  AppPageInfoContentWrapper,
+  AppPageInfoWrapper,
+} from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'
 import DetailsMarket from 'components/DetailsMarket'
@@ -79,7 +79,7 @@ const Page: NextPage = () => {
   }, [isLoadingApi])
 
   const TitleComp = () => (
-    <PageFormTitleWrapper>
+    <AppPageFormTitleWrapper>
       <PageTitleBorrowSupplyLinks
         rChainId={rChainId}
         rOwmId={rOwmId}
@@ -87,7 +87,7 @@ const Page: NextPage = () => {
         activeKey="borrow"
         owmDataCachedOrApi={owmDataCachedOrApi}
       />
-    </PageFormTitleWrapper>
+    </AppPageFormTitleWrapper>
   )
 
   const pageProps: PageContentProps = {
@@ -107,22 +107,22 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
-      <PageFormContainer isAdvanceMode={isAdvanceMode}>
-        <PageFormsWrapper navHeight={navHeight}>
+      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+        <AppPageFormsWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}
           {rChainId && rOwmId && <LoanCreate {...pageProps} />}
-        </PageFormsWrapper>
+        </AppPageFormsWrapper>
 
         {isAdvanceMode && rChainId && rOwmId && (
-          <PageInfoWrapper>
+          <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
-            <PageInfoContentWrapper variant="secondary">
-              <PageInfoContentHeader>Market Details</PageInfoContentHeader>
+            <AppPageInfoContentWrapper variant="secondary">
+              <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
               <DetailsMarket {...pageProps} type="borrow" />
-            </PageInfoContentWrapper>
-          </PageInfoWrapper>
+            </AppPageInfoContentWrapper>
+          </AppPageInfoWrapper>
         )}
-      </PageFormContainer>
+      </AppPageFormContainer>
     </>
   )
 }

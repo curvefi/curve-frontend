@@ -148,7 +148,7 @@ const LoanCreate = (props: PageContentProps) => {
           key: 'CREATE',
           status: helpers.getStepStatus(isComplete, step === 'CREATE', isValid && !!n && isApproved),
           type: 'action',
-          content: isComplete ? t`Loan Created` : t`Create Loan`,
+          content: isComplete ? t`Loan Received` : t`Get Loan`,
           ...(healthMode.message
             ? {
                 modal: {
@@ -352,7 +352,7 @@ const LoanCreate = (props: PageContentProps) => {
 
       {!isAdvanceMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} />
+          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
         </Accordion>
       )}
     </>
