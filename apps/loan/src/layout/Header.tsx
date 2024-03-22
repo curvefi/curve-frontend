@@ -86,14 +86,14 @@ const Header = () => {
     }
   })
 
-  const tvl = useMemo(
+  const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
     [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
   )
 
   // prettier-ignore
   const appStats = [
-    { label: 'TVL', value: formatNumber(tvl, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: 'TVL', value: formattedTvl },
     { label: t`crvUSD Total Supply`, value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
   ]
@@ -209,6 +209,7 @@ function _getTvl(
   loansDetailsMapper: LoanDetailsMapper | undefined,
   usdRatesMapper: UsdRate | undefined
 ) {
+  let formattedTvl = '-'
   let sum = 0
   if (
     collateralDatasMapper &&
@@ -220,25 +221,26 @@ function _getTvl(
   ) {
     Object.keys(collateralDatasMapper).forEach((key) => {
       const collateralData = collateralDatasMapper[key]
+
       if (collateralData) {
         const { totalCollateral, totalStablecoin } = loansDetailsMapper[key]
         const usdRate = usdRatesMapper[collateralData.llamma.collateral]
-        if (
-          totalCollateral &&
-          totalStablecoin &&
-          usdRate &&
-          +totalStablecoin > 0 &&
-          +totalCollateral > 0 &&
-          usdRate > 0
-        ) {
-          const totalCollateralUsd = +totalCollateral * +usdRate
-          const total = totalCollateralUsd + +totalStablecoin
-          sum += total
+
+        if (usdRate === 'NaN') {
+          formattedTvl = '?'
+        } else {
+          const totalCollateralUsd = +(totalCollateral ?? '0') * +(usdRate ?? '0')
+          const totalCollateralValue = totalCollateralUsd + +(totalStablecoin ?? '0')
+          sum += totalCollateralValue
         }
       }
     })
-    return +sum > 0 ? sum : undefined
+
+    if (+sum > 0) {
+      formattedTvl = formatNumber(sum, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+    }
   }
+  return formattedTvl
 }
 
 export default Header
