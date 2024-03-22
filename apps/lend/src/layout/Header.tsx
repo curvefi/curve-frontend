@@ -1,4 +1,5 @@
 import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+import type { AppPage } from '@/ui/AppNav/types'
 
 import React, { useEffect, useRef } from 'react'
 import { t } from '@lingui/macro'
@@ -40,6 +41,7 @@ const Header = () => {
 
   const connectState = useStore((state) => state.connectState)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
   const isLgUp = useStore((state) => state.layout.isLgUp)
   const pageWidth = useStore((state) => state.layout.pageWidth)
   const locale = useStore((state) => state.locale)
@@ -59,13 +61,21 @@ const Header = () => {
     internalPathname: `${rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
   }
 
-  const p = [
-    { route: ROUTE.PAGE_MARKETS, label: t`Markets` },
-    { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
-    { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
-    { ...APP_LINK.main, isDivider: true },
-    APP_LINK.crvusd,
-  ]
+  const p: AppPage[] = isLgUp
+    ? [
+        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Others' },
+        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
+        { ...APP_LINK.main, isDivider: true },
+        APP_LINK.crvusd,
+      ]
+    : [
+        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
+        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
+        { ...APP_LINK.main, isDivider: true },
+        APP_LINK.crvusd,
+      ]
 
   const pages = p.map(({ route, ...rest }) => {
     const parsedRoute = route.startsWith('http') ? route : `#${rLocalePathname}/${rNetwork}${route}`
@@ -152,7 +162,7 @@ const Header = () => {
 
   return (
     <>
-      {isLgUp && (
+      {isMdUp && (
         <HeaderSecondary
           advancedMode={appNavAdvancedMode}
           appsLinks={APPS_LINKS}
@@ -161,13 +171,13 @@ const Header = () => {
           theme={appNavTheme}
         />
       )}
-      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isLgUp}>
+      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isMdUp}>
         <AppNavBarContent pageWidth={pageWidth} className="nav-content">
-          {isLgUp ? (
+          {isMdUp ? (
             <>
               <AppNavMenuSection>
                 <AppLogo showBeta {...appLogoProps} />
-                <AppNavPages pages={desktopPages} />
+                <AppNavPages pages={desktopPages} navigate={navigate} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>

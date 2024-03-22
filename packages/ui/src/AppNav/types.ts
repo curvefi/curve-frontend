@@ -38,6 +38,8 @@ export type AppPage = {
   isActive?: boolean
   target?: '_self' | '_blank'
   isDivider?: boolean
+  groupedTitle?: string
+  minWidth?: string
 }
 
 export type AppNavPages = {

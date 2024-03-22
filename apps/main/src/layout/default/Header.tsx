@@ -39,6 +39,7 @@ const Header = () => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const connectState = useStore((state) => state.connectState)
+  const isMdUp = useStore((state) => state.isMdUp)
   const isLgUp = useStore((state) => state.isLgUp)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
@@ -72,15 +73,25 @@ const Header = () => {
     { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare ?? volumeCryptoShareCached, FORMAT_OPTIONS.PERCENT) },
   ]
 
-  const p: AppPage[] = [
-    { route: ROUTE.PAGE_SWAP, label: t`Swap` },
-    { route: ROUTE.PAGE_POOLS, label: t`Pools` },
-    { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation` },
-    { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard` },
-    { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
-    { ...APP_LINK.crvusd, isDivider: true },
-    APP_LINK.lend,
-  ]
+  const p: AppPage[] = isLgUp
+    ? [
+        { route: ROUTE.PAGE_SWAP, label: t`Swap`, groupedTitle: 'Swap' },
+        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
+        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
+        { ...APP_LINK.crvusd, isDivider: true },
+        APP_LINK.lend,
+      ]
+    : [
+        { route: ROUTE.PAGE_SWAP, label: t`Swap`, groupedTitle: 'swap' },
+        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
+        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
+        { ...APP_LINK.crvusd, isDivider: true },
+        APP_LINK.lend,
+      ]
 
   const pages = p.map(({ route, ...rest }) => {
     let parsedRoute
@@ -173,16 +184,16 @@ const Header = () => {
 
   return (
     <>
-      {isLgUp && (
+      {isMdUp && (
         <HeaderSecondary appsLinks={appsLinks} appStats={appStats} locale={appNavLocale} theme={appNavTheme} />
       )}
-      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isLgUp}>
+      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isMdUp}>
         <AppNavBarContent pageWidth={pageWidth} className="nav-content">
-          {isLgUp ? (
+          {isMdUp ? (
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <AppNavPages pages={desktopPages} />
+                <AppNavPages pages={desktopPages} navigate={navigate} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>

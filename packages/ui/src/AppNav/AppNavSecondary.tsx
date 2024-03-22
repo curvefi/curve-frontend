@@ -7,7 +7,6 @@ import { breakpoints } from 'ui/src/utils'
 
 import { AppLinkText } from 'ui/src/AppNav/styles'
 import Box from 'ui/src/Box'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import HeaderStats from 'ui/src/HeaderStats'
 import SelectLocale from 'ui/src/Select/SelectLocale'
 import SelectThemes from 'ui/src/Select/SelectThemes'
@@ -16,7 +15,7 @@ import Switch from 'ui/src/Switch'
 const HeaderSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: AppNavSecondaryProps) => {
   return (
     <StyledInnerWrapper className="nav-content" grid gridColumnGap={3} flexAlignItems="stretch">
-      <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center" flexJustifyContent="left">
+      <MenuStats>
         {appStats.map(({ label, value }) => {
           return (
             <HeaderStatsContent key={label}>
@@ -24,7 +23,7 @@ const HeaderSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: A
             </HeaderStatsContent>
           )
         })}
-      </Menu>
+      </MenuStats>
 
       <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
         {appsLinks.map(({ route, label, target }, idx) => {
@@ -79,13 +78,6 @@ const StyledSelectThemes = styled(SelectThemes)`
   }
 `
 
-const ExternalLinkText = styled(ExternalLink)`
-  text-decoration: none;
-  text-transform: initial;
-
-  color: inherit;
-`
-
 const StyledInnerWrapper = styled(Box)`
   height: var(--top-nav-height);
   margin: 0 auto;
@@ -103,15 +95,23 @@ const Menu = styled(Box)`
 `
 
 const HeaderStatsContent = styled.span`
-  max-width: 15.625rem; //250px
-  margin: 0 var(--spacing-2);
-  :first-child {
-    margin-left: 0;
+  display: inline-flex;
+  flex-direction: column;
+  margin-right: var(--spacing-4);
+
+  @media (min-width: ${breakpoints.md}rem) {
+    max-width: 15.625rem; //250px
   }
 
   @media (min-width: ${breakpoints.lg}rem) {
     max-width: 18.75rem; //300px
+    flex-direction: row;
   }
+`
+
+const MenuStats = styled.div`
+  align-items: center;
+  display: flex;
 `
 
 export default HeaderSecondary

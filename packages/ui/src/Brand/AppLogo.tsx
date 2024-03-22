@@ -60,7 +60,6 @@ const Beta = styled.span`
   font-weight: bold;
   padding: var(--spacing-1) var(--spacing-2);
   margin-left: var(--spacing-1);
-  margin-right: var(--spacing-narrow);
   margin-top: 2px;
 `
 

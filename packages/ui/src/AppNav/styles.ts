@@ -93,5 +93,7 @@ export const AppLinkText = styled.a`
 `
 
 export const AppSelectNetwork = styled(SelectNetwork)`
-  height: var(--height-medium);
+  && {
+    height: var(--height-medium);
+  }
 `
