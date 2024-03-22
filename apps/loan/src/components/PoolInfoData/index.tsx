@@ -24,6 +24,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   const address = llamma?.address ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
   const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
+  const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
   const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
   const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
   const themeType = useStore((state) => state.themeType)
@@ -32,6 +33,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
   const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
+  const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
   const increaseCollateralPrices = useStore(
     (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null
   )
@@ -41,7 +43,6 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartFetchStatus,
-    activityFetchStatus,
     timeOption,
     refetchingCapped,
     lastFetchEndTime,
@@ -51,7 +52,6 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     setChartTimeOption,
     fetchOhlcData,
     fetchMoreOhlcData,
-    setActivityHidden,
     activityHidden,
     chartExpanded,
     setChartExpanded,
@@ -62,6 +62,8 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     liqRangeNewVisible,
     oraclePriceVisible,
   } = useStore((state) => state.ohlcCharts)
+  const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+  const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   const selectedLiqRange = useMemo(() => {
@@ -102,6 +104,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
       const range = formatRange([currentPrices[1], currentPrices[0]])
       liqRanges.new = range
     }
+
     // current loan prices
     if (userPrices && chartOhlcData) {
       const range = formatRange(userPrices)
@@ -128,6 +131,12 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
       liqRanges.new = range
     }
 
+    // deleverage prices
+    if (deleveragePrices && chartOhlcData) {
+      const range = formatRange(deleveragePrices)
+      liqRanges.new = range
+    }
+
     return liqRanges
   }, [
     formValues.n,
@@ -138,6 +147,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     decreaseLoanPrices,
     increaseCollateralPrices,
     decreaseCollateralPrices,
+    deleveragePrices,
   ])
 
   const coins: LlammaLiquidityCoins = llamma
@@ -192,13 +202,21 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   }, [timeOption])
 
   const refetchPricesData = () => {
-    fetchOhlcData(rChainId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
+    fetchOhlcData(rChainId, llammaId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
   }
 
   // set snapshot data and subscribe to new data
   useEffect(() => {
     if (llamma !== undefined) {
-      fetchOhlcData(rChainId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
+      fetchOhlcData(
+        rChainId,
+        llammaId,
+        address,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end
+      )
     }
   }, [
     rChainId,
@@ -209,6 +227,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     fetchOhlcData,
     address,
     llamma,
+    llammaId,
   ])
 
   const fetchMoreChartData = useCallback(
@@ -247,6 +266,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           liqRangeCurrentVisible={liqRangeCurrentVisible}
           liqRangeNewVisible={liqRangeNewVisible}
           oraclePriceVisible={oraclePriceVisible}
+          latestOraclePrice={oraclePrice}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -302,6 +322,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           liqRangeCurrentVisible={liqRangeCurrentVisible}
           liqRangeNewVisible={liqRangeNewVisible}
           oraclePriceVisible={oraclePriceVisible}
+          latestOraclePrice={oraclePrice}
         />
       )}
     </Wrapper>
