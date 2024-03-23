@@ -14,23 +14,19 @@ const CellUserVaultShares = ({
 }) => {
   const marketsBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 
-  const { error, ...balances } = marketsBalancesResp ?? {}
+  const { error, vaultShares = '0', gauge = '0' } = marketsBalancesResp ?? {}
+
+  const totalVaultShares = +vaultShares + +gauge
 
   return (
     <>
       {typeof marketsBalancesResp === 'undefined' ? null : error ? (
         '?'
-      ) : +balances.vaultShares === 0 ? null : (
+      ) : totalVaultShares === 0 ? null : (
         <>
-          {formatNumber(balances.vaultShares, { defaultValue: '-' })}
+          {formatNumber(totalVaultShares, { defaultValue: '-' })}
           <br />
-          <ChipVaultSharesUsdRate
-            noPadding
-            hideRate
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            amount={balances.vaultShares}
-          />
+          <ChipVaultSharesUsdRate noPadding hideRate rChainId={rChainId} rOwmId={rOwmId} amount={totalVaultShares} />
         </>
       )}
     </>

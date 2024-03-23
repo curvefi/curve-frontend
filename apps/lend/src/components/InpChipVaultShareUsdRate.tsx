@@ -20,7 +20,7 @@ const ChipVaultSharesUsdRate = ({
   className?: string
   rChainId: ChainId
   rOwmId: string
-  amount: string | undefined
+  amount: string | number | undefined
   hideRate?: boolean
   noPadding?: boolean
 }) => {

@@ -31,7 +31,8 @@ const MarketList = (pageProps: PageMarketList) => {
 
   const showSignerCell = !!signerAddress
   const showBorrowSignerCell = showSignerCell && Object.values(loansExistsMapper)?.some((l) => l.loanExists)
-  const showSupplySignerCell = showSignerCell && Object.values(userMarketsBalances)?.some((b) => +b.vaultShares > 0)
+  const showSupplySignerCell =
+    showSignerCell && Object.values(userMarketsBalances)?.some((b) => +b.vaultShares > 0 || +b.gauge > 0)
 
   // prettier-ignore
   const FOLD_TABLE_LABELS: FoldTableLabels = {

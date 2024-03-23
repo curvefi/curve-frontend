@@ -25,12 +25,13 @@ const CellUserMain = ({
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
-  const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
-  const { vaultShares, error: userBalancesError } = userBalancesResp ?? {}
+  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { vaultShares = '0', gauge = '0', error: userBalancesError } = userBalancesResp ?? {}
   const { details, error } = resp ?? {}
+  const totalVaultShares = +vaultShares + +gauge
 
   const label = type === 'borrow' ? t`Debt (${borrowed_token?.symbol})` : t`Vault shares`
-  const value = type === 'borrow' ? formatNumber(details?.state?.debt) : formatNumber(vaultShares)
+  const value = type === 'borrow' ? formatNumber(details?.state?.debt) : formatNumber(totalVaultShares)
 
   return (
     <Wrapper>
@@ -42,7 +43,7 @@ const CellUserMain = ({
       {type === 'borrow' ? (
         <InpChipUsdRate isBold hideRate address={borrowed_token?.address} amount={details?.state?.debt} />
       ) : (
-        <InpChipVaultShareUsdRate noPadding rChainId={rChainId} rOwmId={rOwmId} amount={vaultShares} />
+        <InpChipVaultShareUsdRate noPadding rChainId={rChainId} rOwmId={rOwmId} amount={totalVaultShares} />
       )}
     </Wrapper>
   )
