@@ -43,10 +43,12 @@ const TableRow = ({
   const marketsBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 
   const { signerAddress } = api ?? {}
+  const { gauge, vaultShares } = marketsBalancesResp ?? {}
 
   const isVisible = !!entry?.isIntersecting
   const userHaveLoan = !!signerAddress && !!loanExists
-  const userSupplied = !!signerAddress && +(marketsBalancesResp?.vaultShares ?? '0') > 0
+  const haveVaultShares = +(vaultShares ?? '0') > 0 || +(gauge ?? '0') > 0
+  const userSupplied = !!signerAddress && haveVaultShares
 
   const cellProps: TableCellProps = {
     rChainId,

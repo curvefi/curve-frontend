@@ -20,12 +20,13 @@ export interface SelectProps<T extends object>
   className?: string
   loading?: boolean
   minWidth?: string
+  noLabelChange?: boolean // do not update label to select key
   mobileRightAlign?: boolean // right align dropdown list on small width
   selectedItemLabel?: string | React.ReactNode // selected button label that is different from list
   onSelectionDelete?: () => void
 }
 
-function Select<T extends object>({ buttonStyles = {}, onSelectionDelete, ...props }: SelectProps<T>) {
+function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectionDelete, ...props }: SelectProps<T>) {
   const state = useSelectState(props)
   const buttonRef = React.useRef<HTMLButtonElement>(null)
   const { labelProps, triggerProps, menuProps } = useSelect(props, state, buttonRef)
@@ -45,7 +46,7 @@ function Select<T extends object>({ buttonStyles = {}, onSelectionDelete, ...pro
           loading={props.loading}
           buttonRef={buttonRef}
         >
-          {state.selectedItem ? props.selectedItemLabel || state.selectedItem.rendered : title}
+          {noLabelChange ? title : state.selectedItem ? props.selectedItemLabel || state.selectedItem.rendered : title}
           {!onSelectionDelete && (
             <StyledIcon
               name="CaretDown"

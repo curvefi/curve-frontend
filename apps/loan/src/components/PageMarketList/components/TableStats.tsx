@@ -21,8 +21,7 @@ const TableStats = () => {
   }
 
   const stats = [
-    { title: t`PegKeepers Debt`, content: <CellMarketsTotalDebt {...cellProps} type="peg-keeper-debt" /> },
-    { title: t`Debt Fraction`, content: <CellMarketsTotalDebt {...cellProps} type="debt-fraction" /> },
+    { title: t`PegKeepers Debt`, content: <CellMarketsTotalDebt {...cellProps} /> },
     {
       title: t`crvUSD Pools`,
       content: (

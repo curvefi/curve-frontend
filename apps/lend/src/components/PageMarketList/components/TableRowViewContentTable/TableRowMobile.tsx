@@ -141,11 +141,12 @@ const TableRowMobile = ({
               <>
                 <DetailsContent>
                   {content[isBorrow ? 'borrow' : 'supply'].map((details, idx) => {
+                    const detailsKey = `details-${idx}`
                     const show = details.some(({ show }) => _showContent(show))
                     const showLine = details.some(({ showLine }) => showLine)
                     return (
                       show && (
-                        <>
+                        <React.Fragment key={detailsKey}>
                           <DetailContent key={details[0].label}>
                             {details.map(({ label, labels, content, show }, idx) => {
                               const key = `detail-${label}-${idx}`
@@ -181,7 +182,7 @@ const TableRowMobile = ({
                             })}
                           </DetailContent>
                           {showLine && <hr />}
-                        </>
+                        </React.Fragment>
                       )
                     )
                   })}
