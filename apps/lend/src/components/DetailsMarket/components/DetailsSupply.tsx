@@ -8,7 +8,6 @@ import {
   ContentStatTitle,
   ContentStatValue,
   DarkContent,
-  Wrapper,
 } from '@/components/DetailsMarket/styles'
 import Box from '@/ui/Box'
 import CellCap from '@/components/SharedCellData/CellCap'
@@ -19,6 +18,8 @@ import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTota
 import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
+import styled from 'styled-components'
+import { breakpoints } from '@/ui/utils'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
@@ -83,5 +84,13 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
     </Wrapper>
   )
 }
+
+const Wrapper = styled.div`
+  display: grid;
+
+  @media (min-width: ${breakpoints.lg}rem) {
+    grid-template-columns: 1fr auto;
+  }
+`
 
 export default DetailsSupply
