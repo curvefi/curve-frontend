@@ -114,8 +114,7 @@ export type CreatePoolSlice = {
       tokenE: TokenState,
       tokenF: TokenState,
       tokenG: TokenState,
-      tokenH: TokenState,
-      chainId: ChainId
+      tokenH: TokenState
     ) => void
     updateStandardToggle: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
@@ -316,56 +315,56 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       if (swapType === STABLESWAP) {
         const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = get().createPool.tokensInPool
 
-        if (checkMetaPool(tokenA.address, chainId)) {
+        if (tokenA.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool.tokenAmount = 2
             })
           )
         }
-        if (checkMetaPool(tokenB.address, chainId)) {
+        if (tokenB.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
             })
           )
         }
-        if (checkMetaPool(tokenC.address, chainId)) {
+        if (tokenC.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_C] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_C]
             })
           )
         }
-        if (checkMetaPool(tokenD.address, chainId)) {
+        if (tokenD.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_D] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_D]
             })
           )
         }
-        if (checkMetaPool(tokenE.address, chainId)) {
+        if (tokenE.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_E] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_E]
             })
           )
         }
-        if (checkMetaPool(tokenF.address, chainId)) {
+        if (tokenF.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_F] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_F]
             })
           )
         }
-        if (checkMetaPool(tokenG.address, chainId)) {
+        if (tokenG.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_G] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_G]
             })
           )
         }
-        if (checkMetaPool(tokenH.address, chainId)) {
+        if (tokenH.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_H] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_H]
@@ -407,8 +406,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       tokenE: TokenState,
       tokenF: TokenState,
       tokenG: TokenState,
-      tokenH: TokenState,
-      chainId: ChainId
+      tokenH: TokenState
     ) => {
       let tokensInPoolUpdates = {
         ...get().createPool.tokensInPool,
@@ -423,22 +421,20 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
 
       tokensInPoolUpdates.tokenAmount =
-        (checkMetaPool(tokenA.address, chainId) || checkMetaPool(tokenB.address, chainId)) &&
-        get().createPool.swapType === STABLESWAP
+        (tokenA.basePool || tokenB.basePool) && get().createPool.swapType === STABLESWAP
           ? 2
           : get().createPool.tokensInPool.tokenAmount
 
-      tokensInPoolUpdates.metaPoolToken =
-        checkMetaPool(tokenA.address, chainId) || checkMetaPool(tokenB.address, chainId)
+      tokensInPoolUpdates.metaPoolToken = tokenA.basePool || tokenB.basePool
       tokensInPoolUpdates.tokenA = {
         ...tokenA,
-        basePool: checkMetaPool(tokenA.address, chainId),
-        ngAssetType: checkMetaPool(tokenA.address, chainId) ? 0 : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
+        basePool: tokenA.basePool,
+        ngAssetType: tokenA.basePool ? 0 : get().createPool.tokensInPool[TOKEN_A].ngAssetType,
       }
       tokensInPoolUpdates.tokenB = {
         ...tokenB,
-        basePool: checkMetaPool(tokenB.address, chainId),
-        ngAssetType: checkMetaPool(tokenB.address, chainId) ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
+        basePool: tokenB.basePool,
+        ngAssetType: tokenB.basePool ? 0 : get().createPool.tokensInPool[TOKEN_B].ngAssetType,
       }
 
       let initialPriceUpdates = {
@@ -956,7 +952,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         // convert token address of basepool to pool address of basepool
         const convertTokenAddressToPoolAddress = (val: string) => {
           let newValue = ''
-          networks[chainId].basePools.find((item) => {
+          get().pools.basePools[chainId].find((item) => {
             if (item.token.toLowerCase() === val.toLowerCase()) newValue = item.pool
           })
           return newValue === '' ? val : newValue

@@ -49,13 +49,21 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     updateTokenAmount,
     updateSwapType,
   } = useStore((state) => state.createPool)
+  const basePools = useStore((state) => state.pools.basePools)
+  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
 
   const ETH = NATIVE_TOKENS[chainId].address
-  const BASEPOOL_COINS: string[] = networks[chainId].basePools.reduce((acc: string[], pool) => {
-    return acc.concat(pool.coins)
-  }, [])
+
+  const BASEPOOL_COINS: string[] = useMemo(() => {
+    const coinArray = basePoolsLoading
+      ? []
+      : basePools[chainId].reduce((acc: string[], pool) => {
+          return acc.concat(pool.coins)
+        }, [])
+    return coinArray
+  }, [basePools, basePoolsLoading, chainId])
 
   const DISABLED_TOKENS = [...BASEPOOL_COINS, ETH]
 
@@ -65,7 +73,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       return {
         ...token[1]!,
         userAddedToken: false,
-        basePool: networks[chainId].basePools.some((pool) => pool.token === token[0]),
+        basePool: basePools[chainId].some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
       }
     })
 
@@ -82,7 +90,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, chainId])
+  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools, chainId])
 
   const findSymbol = useCallback(
     (address: string) => {
@@ -101,28 +109,42 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   // update state, handle if the token was already selected
   //
   const handleInpChange = useCallback(
-    (name: keyof SelectTokenFormValues, value: string) => {
-      let updatedFormValues = {
-        [TOKEN_A]: tokensInPool[TOKEN_A],
-        [TOKEN_B]: tokensInPool[TOKEN_B],
-        [TOKEN_C]: tokensInPool[TOKEN_C],
-        [TOKEN_D]: tokensInPool[TOKEN_D],
-        [TOKEN_E]: tokensInPool[TOKEN_E],
-        [TOKEN_F]: tokensInPool[TOKEN_F],
-        [TOKEN_G]: tokensInPool[TOKEN_G],
-        [TOKEN_H]: tokensInPool[TOKEN_H],
+    (name: TokenId, value: string) => {
+      let updatedFormValues = { ...tokensInPool }
+
+      const updateTokenFormValues = (tokenId: TokenId) => {
+        updatedFormValues = {
+          ...updatedFormValues,
+          [tokenId]: {
+            ...updatedFormValues[tokenId],
+            address: value,
+            symbol: findSymbol(value),
+            basePool: checkMetaPool(value, basePools[chainId]),
+          },
+        }
+      }
+
+      const swapTokens = (tokenId1: TokenId, tokenId2: TokenId) => {
+        updatedFormValues = {
+          ...updatedFormValues,
+          [tokenId1]: {
+            ...updatedFormValues[tokenId2],
+            address: value,
+            symbol: findSymbol(value),
+          },
+          [tokenId2]: tokensInPool[tokenId1],
+        }
       }
 
       if (name === TOKEN_A) {
-        // if token b is meta token, clear token b
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId) && tokensInPool.metaPoolToken) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId]) && tokensInPool.tokenB.basePool) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
-              symbol: findSymbol(value),
+              basePool: true,
             },
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
@@ -130,754 +152,264 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             },
           }
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_A],
-          }
+          swapTokens(TOKEN_A, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_A],
-          }
-          // reset token b if it exists in basepools
-        } else if (
-          swapType === STABLESWAP &&
-          networks[chainId].basePools.some(
-            (token) =>
-              token.token === value &&
-              BASEPOOL_COINS.some((token) => token === updatedFormValues[TOKEN_B].address.toLowerCase())
-          )
-        ) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_B],
-              address: '',
-            },
-          }
+          swapTokens(TOKEN_A, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_A)
         }
       }
 
       if (name === TOKEN_B) {
-        // if token a is meta token, clear token a
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId) && tokensInPool.metaPoolToken) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId]) && tokensInPool.tokenA.basePool) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               address: '',
             },
           }
-          // [TOKEN_B] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_B],
-          }
+          swapTokens(TOKEN_B, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_B],
-          }
-          // reset token b if it exists in basepools
-        } else if (
-          swapType === STABLESWAP &&
-          networks[chainId].basePools.some(
-            (token) =>
-              token.token === value &&
-              BASEPOOL_COINS.some((token) => token === updatedFormValues[TOKEN_A].address.toLowerCase())
-          )
-        ) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_A]: {
-              ...updatedFormValues[TOKEN_A],
-              address: '',
-            },
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-          }
+          swapTokens(TOKEN_B, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_B]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_B)
         }
       }
 
       if (name === TOKEN_C) {
-        // token C
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_C]: {
               ...updatedFormValues[TOKEN_C],
               address: '',
             },
           }
-          // [TOKEN_C] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_C],
-          }
+          swapTokens(TOKEN_C, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_C]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_C)
         }
       }
 
       // token D
       if (name === TOKEN_D) {
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_D]: {
               ...updatedFormValues[TOKEN_D],
               address: '',
             },
           }
-          // [TOKEN_D] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_D],
-          }
+          swapTokens(TOKEN_D, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_D]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_D)
         }
       }
 
       // token E
       if (name === TOKEN_E) {
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_E]: {
               ...updatedFormValues[TOKEN_E],
               address: '',
             },
           }
-          // [TOKEN_E] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_E],
-          }
+          swapTokens(TOKEN_E, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_E]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_E)
         }
       }
 
       // token F
       if (name === TOKEN_F) {
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_F]: {
               ...updatedFormValues[TOKEN_F],
               address: '',
             },
           }
-          // [TOKEN_F] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_G)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_F],
-          }
+          swapTokens(TOKEN_F, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_F]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_F)
         }
       }
 
       // token G
       if (name === TOKEN_G) {
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_G]: {
               ...updatedFormValues[TOKEN_G],
               address: '',
             },
           }
-          // [TOKEN_G] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_H].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-            },
-            [TOKEN_H]: tokensInPool[TOKEN_G],
-          }
+          swapTokens(TOKEN_G, TOKEN_H)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_G]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_G)
         }
       }
 
       // token H
       if (name === TOKEN_H) {
-        if (swapType === STABLESWAP && checkMetaPool(value, chainId)) {
+        if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId])) {
           updatedFormValues = {
             ...updatedFormValues,
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              basePool: true,
             },
             [TOKEN_H]: {
               ...updatedFormValues[TOKEN_H],
               address: '',
             },
           }
-          // [TOKEN_H] handle selecting already selected token
         } else if (value === tokensInPool[TOKEN_A].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_A],
-              address: value,
-            },
-            [TOKEN_A]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_A)
         } else if (value === tokensInPool[TOKEN_B].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_B],
-              address: value,
-            },
-            [TOKEN_B]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_B)
         } else if (value === tokensInPool[TOKEN_C].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_C],
-              address: value,
-            },
-            [TOKEN_C]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_C)
         } else if (value === tokensInPool[TOKEN_D].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_D],
-              address: value,
-            },
-            [TOKEN_D]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_D)
         } else if (value === tokensInPool[TOKEN_E].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_E],
-              address: value,
-            },
-            [TOKEN_E]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_E)
         } else if (value === tokensInPool[TOKEN_F].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_F],
-              address: value,
-            },
-            [TOKEN_F]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_F)
         } else if (value === tokensInPool[TOKEN_G].address) {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_G],
-              address: value,
-            },
-            [TOKEN_G]: tokensInPool[TOKEN_H],
-          }
+          swapTokens(TOKEN_H, TOKEN_G)
         } else {
-          updatedFormValues = {
-            ...updatedFormValues,
-            [TOKEN_H]: {
-              ...updatedFormValues[TOKEN_H],
-              address: value,
-              symbol: findSymbol(value),
-            },
-          }
+          updateTokenFormValues(TOKEN_H)
         }
       }
 
@@ -890,11 +422,10 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         updatedFormValues[TOKEN_E],
         updatedFormValues[TOKEN_F],
         updatedFormValues[TOKEN_G],
-        updatedFormValues[TOKEN_H],
-        chainId
+        updatedFormValues[TOKEN_H]
       )
     },
-    [tokensInPool, updateTokensInPool, curve, findSymbol, chainId, swapType, BASEPOOL_COINS]
+    [tokensInPool, updateTokensInPool, curve, findSymbol, chainId, swapType, basePools]
   )
 
   const addToken = () => {
@@ -966,8 +497,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         ngAssetType: tokenId === TOKEN_H ? 0 : tokensInPool[TOKEN_H].ngAssetType,
         oracleAddress: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleAddress,
         oracleFunction: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleFunction,
-      },
-      chainId
+      }
     )
   }
 
@@ -1178,12 +708,12 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           )}
           <Row>
             <ExplainerWrapper flex flexColumn>
-              {networks[chainId].basePools.length !== 0 && (
-                <p>{t`Pools with basepools (${networks[chainId].basePools.map((pool, index) => {
+              {basePools[chainId].length !== 0 && (
+                <p>{t`Pools with basepools (${basePools[chainId].map((pool, index) => {
                   if (index === 0) {
                     return `${pool.name}`
                   }
-                  if (index === networks[chainId].basePools.length - 1) {
+                  if (index === basePools[chainId].length - 1) {
                     return ` ${pool.name}`
                   }
                   return ` ${pool.name}`

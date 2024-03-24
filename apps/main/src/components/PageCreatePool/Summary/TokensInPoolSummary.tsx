@@ -202,9 +202,7 @@ const TokenSummary = ({ imageBaseUrl, token, chainId, swapType }: TokenSummary) 
     <Box flex flexColumn>
       <TokenSymbol className="token-symbol">
         {token.symbol}
-        {networks[chainId].basePools.some((pool) => pool.token === token.address) && swapType === STABLESWAP && (
-          <BasepoolLabel>{t`BASE`}</BasepoolLabel>
-        )}
+        {token.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
       </TokenSymbol>
       {swapType === STABLESWAP && networks[chainId].stableSwapNg && (
         <TokenType>

@@ -38,6 +38,8 @@ type SliceState = {
   pools: { [chainId: string]: PoolData[] }
   poolsMapper: { [chainId: string]: PoolDataMapper }
   poolsLoading: { [chainId: string]: boolean }
+  basePools: { [chainId: string]: BasePool[] }
+  basePoolsLoading: boolean
   currencyReserves: CurrencyReservesMapper
   haveAllPools: { [chainId: string]: boolean }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
@@ -78,6 +80,7 @@ export type PoolsSlice = {
     fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPools( curve: CurveApi, poolIds: string[], failedFetching24hOldVprice: { [poolAddress:string]: boolean } | null): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
+    fetchBasePools(curve: CurveApi): void
     fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
@@ -107,6 +110,8 @@ const DEFAULT_STATE: SliceState = {
   pools: {},
   poolsMapper: {},
   poolsLoading: {},
+  basePools: {},
+  basePoolsLoading: true,
   haveAllPools: {},
   currencyReserves: {},
   rewardsApyMapper: {},
@@ -255,6 +260,32 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       ])
       const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
       return resp?.poolsMapper?.[poolId]
+    },
+    fetchBasePools: (curve: CurveApi) => {
+      const chainId = curve.chainId
+      set(
+        produce((state: State) => {
+          state.pools.basePoolsLoading = true
+        })
+      )
+
+      try {
+        const basePools = curve.getBasePools()
+
+        set(
+          produce((state: State) => {
+            state.pools.basePools[chainId] = basePools
+            state.pools.basePoolsLoading = false
+          })
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state.pools.basePoolsLoading = false
+          })
+        )
+        console.error(error)
+      }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
       const { chainId } = curve

@@ -210,6 +210,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().gas.fetchGasInfo(curveApi)
       get().updateGlobalStoreByKey('isLoadingApi', false)
       get().pools.fetchPricesApiPools(chainId)
+      get().pools.fetchBasePools(curveApi)
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
       get().usdRates.fetchAllStoredUsdRates(curveApi)

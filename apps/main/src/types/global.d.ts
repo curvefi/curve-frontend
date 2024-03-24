@@ -77,12 +77,6 @@ declare global {
       haveSameTokenName: boolean
       symbol: string
     }[]
-    basePools: {
-      name: string
-      token: string
-      pool: string
-      coins: string[]
-    }[]
     stableSwapFactory: boolean
     cryptoSwapFactory: boolean
     twocryptoFactory: boolean
@@ -218,6 +212,14 @@ declare global {
     tokensLowercase: string[]
     curvefiUrl: string
     failedFetching24hOldVprice: boolean
+  }
+
+  type BasePool = {
+    id: string
+    name: string
+    token: string
+    pool: string
+    coins: string[]
   }
 
   type PoolDataMapper = { [poolAddress: string]: PoolData }
