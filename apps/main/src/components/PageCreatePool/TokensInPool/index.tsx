@@ -122,6 +122,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
             },
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
@@ -217,6 +218,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -327,6 +329,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -417,6 +420,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_C]: {
               ...updatedFormValues[TOKEN_C],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -507,6 +511,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_D]: {
               ...updatedFormValues[TOKEN_D],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -597,6 +602,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_E]: {
               ...updatedFormValues[TOKEN_E],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -687,6 +693,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_F]: {
               ...updatedFormValues[TOKEN_F],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -777,6 +784,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_G]: {
               ...updatedFormValues[TOKEN_G],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -867,6 +875,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_H]: {
               ...updatedFormValues[TOKEN_H],
               address: value,
+              symbol: findSymbol(value),
             },
           }
         }
@@ -874,62 +883,14 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
       updateTokensInPool(
         curve,
-        {
-          ...updatedFormValues[TOKEN_A],
-          symbol:
-            tokensInPool[TOKEN_A].symbol !== ''
-              ? tokensInPool[TOKEN_A].symbol
-              : findSymbol(updatedFormValues[TOKEN_A].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_B],
-          symbol:
-            tokensInPool[TOKEN_B].symbol !== ''
-              ? tokensInPool[TOKEN_B].symbol
-              : findSymbol(updatedFormValues[TOKEN_B].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_C],
-          symbol:
-            tokensInPool[TOKEN_C].symbol !== ''
-              ? tokensInPool[TOKEN_C].symbol
-              : findSymbol(updatedFormValues[TOKEN_C].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_D],
-          symbol:
-            tokensInPool[TOKEN_D].symbol !== ''
-              ? tokensInPool[TOKEN_D].symbol
-              : findSymbol(updatedFormValues[TOKEN_D].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_E],
-          symbol:
-            tokensInPool[TOKEN_E].symbol !== ''
-              ? tokensInPool[TOKEN_E].symbol
-              : findSymbol(updatedFormValues[TOKEN_E].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_F],
-          symbol:
-            tokensInPool[TOKEN_F].symbol !== ''
-              ? tokensInPool[TOKEN_F].symbol
-              : findSymbol(updatedFormValues[TOKEN_F].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_G],
-          symbol:
-            tokensInPool[TOKEN_G].symbol !== ''
-              ? tokensInPool[TOKEN_G].symbol
-              : findSymbol(updatedFormValues[TOKEN_G].address),
-        },
-        {
-          ...updatedFormValues[TOKEN_H],
-          symbol:
-            tokensInPool[TOKEN_H].symbol !== ''
-              ? tokensInPool[TOKEN_H].symbol
-              : findSymbol(updatedFormValues[TOKEN_H].address),
-        },
+        updatedFormValues[TOKEN_A],
+        updatedFormValues[TOKEN_B],
+        updatedFormValues[TOKEN_C],
+        updatedFormValues[TOKEN_D],
+        updatedFormValues[TOKEN_E],
+        updatedFormValues[TOKEN_F],
+        updatedFormValues[TOKEN_G],
+        updatedFormValues[TOKEN_H],
         chainId
       )
     },
