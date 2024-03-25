@@ -405,6 +405,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { fromAddress, toAddress } = searchedParams
       const estGasApprovalFn = networks[curve.chainId].api.router.estGasApproval
       const resp = await estGasApprovalFn(activeKey, curve, fromAddress, toAddress, fromAmount)
+      await get().gas.fetchGasInfo(curve)
 
       // set estimate gas state
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })

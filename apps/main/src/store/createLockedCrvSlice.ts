@@ -139,6 +139,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
       const fn = networks[curve.chainId].api.lockCrv.estGasApproval
       const resp = await fn(activeKey, curve, rFormType, formValues.lockedAmt, formValues.days)
+      await get().gas.fetchGasInfo(curve)
 
       cFormEstGas.loading = false
 

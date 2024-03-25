@@ -207,7 +207,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     )
 
     if (!prevCurveApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(curveApi)
       get().updateGlobalStoreByKey('isLoadingApi', false)
       get().pools.fetchPricesApiPools(chainId)
       get().pools.fetchBasePools(curveApi)

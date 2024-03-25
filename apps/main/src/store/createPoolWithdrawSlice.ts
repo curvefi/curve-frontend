@@ -383,6 +383,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
                   formValues.lpToken,
                   formValues.selectedTokenAddress
                 )
+          await get().gas.fetchGasInfo(curve)
         }
       } else if (formType === 'UNSTAKE') {
         const fn = networks[chainId].api.poolWithdraw.unstakeEstGas
