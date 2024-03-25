@@ -117,24 +117,25 @@ export function formatNumber(val: number | string | undefined | null, options?: 
           }
         }
 
-        // handle small number
-        if (Number(val) < 1 && formattedNumberIsZero(val, parsedOptions)) {
-          if (Number(val) < 0.000000001 && parsedOptions.style !== 'percent') {
-            return '<0.000000001'
-          } else {
-            let decimal = getSmallNumber(val, 2)?.split('.')[1]?.length ?? '0'
-            parsedOptions.minimumFractionDigits = decimal
-            parsedOptions.maximumFractionDigits = decimal
+        if (Number(val) < 1) {
+          // reformat formatted number showing 0, but !== 0
+          if (formattedNumberIsZero(val, parsedOptions)) {
+            if (Number(val) < 0.000000001 && parsedOptions.style !== 'percent') {
+              return '<0.000000001'
+            } else {
+              let decimal = getSmallNumber(val, 2)?.split('.')[1]?.length ?? '0'
+              parsedOptions.minimumFractionDigits = decimal
+              parsedOptions.maximumFractionDigits = decimal
 
-            return new Intl.NumberFormat(localeDetected, parsedOptions).format(
-              parsedOptions.style === 'percent' ? Number(val) / 100 : Number(val)
-            )
+              return _formatNumber(val, parsedOptions)
+            }
+          } else if (Number(val) <= 0.0009 && !('showAllFractionDigits' in (options ?? {}))) {
+            // format number to maximumSignificantDigits of 4 if value is <= 0.0009
+            return _formatNumber(val, { maximumSignificantDigits: 4 })
           }
         }
 
-        return new Intl.NumberFormat(localeDetected, { ...parsedOptions, ...numberFormatOptions }).format(
-          parsedOptions.style === 'percent' ? Number(val) / 100 : Number(val)
-        )
+        return _formatNumber(val, { ...parsedOptions, ...numberFormatOptions })
       }
     }
   } catch (error) {
@@ -147,6 +148,12 @@ export function formatNumber(val: number | string | undefined | null, options?: 
       return val.toString()
     }
   }
+}
+
+function _formatNumber(val: string | number, options: NumberFormatOptions) {
+  return new Intl.NumberFormat(localeDetected, options).format(
+    options.style === 'percent' ? Number(val) / 100 : Number(val)
+  )
 }
 
 export function formatNumberUsdRate(usdRate: number | string | undefined, hideCurrencySymbol?: boolean) {

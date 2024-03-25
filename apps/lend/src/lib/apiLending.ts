@@ -1622,7 +1622,7 @@ async function _fetchChartBandBalancesData(
     const { collateral, borrowed } = bandsBalances[n]
     const [p_up, p_down] = await owm.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
-    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toFixed(5)
+    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
     const collateralUsd = new BN(collateral).multipliedBy(sqrt)
 
     return {
