@@ -1,5 +1,4 @@
 import { Params } from 'react-router'
-import React from 'react'
 
 export type FormStatus = {
   error: string
@@ -13,6 +12,7 @@ export type TableLabelsMapper = {
   available: { name: string }
   cap: { name: string }
   utilization: { name: string }
+  capUtilization: { name: string }
   rateBorrow: { name: string }
   rateLend: { name: string }
   myHealth: { name: string }

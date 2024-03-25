@@ -1,12 +1,12 @@
 import type { ChipProps } from '@/ui/Typography/types'
 
-import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import Box from '@/ui/Box'
 import Chip from '@/ui/Typography/Chip'
+import TextCaption from '@/ui/TextCaption'
 
 const CellTotalCollateralValue = ({
   rChainId,
@@ -16,50 +16,59 @@ const CellTotalCollateralValue = ({
   rChainId: ChainId
   rOwmId: string
 }) => {
-  const statsAmmBalances = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId]?.[rOwmId])
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const ammBalance = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId]?.[rOwmId])
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
 
-  const collateralToken = owmData?.owm?.collateral_token?.address ?? ''
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[collateralToken])
+  const [borrowedAddress, collateralAddress] = owmData?.owm?.coinAddresses ?? ['', '']
+  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[borrowedAddress])
+  const collateralUsdRate = useStore((state) => state.usdRates.tokens[collateralAddress])
 
-  if (collateralUsdRate === 'NaN' || +collateralUsdRate === 0) {
-    return (
-      <Chip {...props} tooltip={t`Unable to get USD rate`} tooltipProps={{ placement: 'top end' }}>
-        ?
-      </Chip>
-    )
-  }
+  const isError = borrowedUsdRate === 'NaN' || collateralUsdRate === 'NaN' || (!!ammBalance && !!ammBalance?.error)
 
-  const { total, tooltipContent } = _getTotalCollateralValue(owmData, statsAmmBalances, collateralUsdRate)
+  const { total, tooltipContent } = _getTotalCollateralValue(owmData, ammBalance, borrowedUsdRate, collateralUsdRate)
 
   return (
-    <Chip
-      {...props}
-      tooltipProps={{ placement: 'top end' }}
-      tooltip={
-        tooltipContent.length ? (
-          <Box gridGap={1} padding="0.25rem">
-            {tooltipContent.map(({ label, value }) => (
-              <Box key={label} grid gridTemplateColumns="repeat(2, minmax(100px, 1fr))" gridGap={1}>
-                <strong>{label}</strong>
-                {formatNumber(value, { ...getFractionDigitsOptions(value, 2) })}
-              </Box>
-            ))}
-            <hr />
-            <div>≈ {formatNumber(total, { ...getFractionDigitsOptions(total, 2) })}</div>
-          </Box>
-        ) : null
-      }
-    >
-      {formatNumber(total, { notation: 'compact', currency: 'USD' })}
-    </Chip>
+    <>
+      {typeof ammBalance === 'undefined' ? null : isError ? (
+        '?'
+      ) : (
+        <>
+          <StyledChip {...props}>{formatNumber(total, { notation: 'compact', currency: 'USD' })}</StyledChip>
+          {isAdvanceMode && (
+            <>
+              {+total > 0 && (
+                <TotalSummary>
+                  {' '}
+                  {tooltipContent.map(({ label, value }, idx) => {
+                    const isLast = tooltipContent.length - 1 === idx
+                    return `${idx === 0 ? '' : ''}${formatNumber(value, { notation: 'compact' })} ${label}${
+                      isLast ? '' : ' + '
+                    }`
+                  })}
+                </TotalSummary>
+              )}
+            </>
+          )}
+        </>
+      )}
+    </>
   )
 }
 
+const StyledChip = styled(Chip)`
+  display: block;
+`
+
+const TotalSummary = styled(TextCaption)`
+  white-space: nowrap;
+`
+
 function _getTotalCollateralValue(
   owmData: OWMData | undefined,
-  statsBalances: MarketStatAmmBalances | undefined,
-  collateralUsd: string | number
+  ammBalance: MarketStatAmmBalances | undefined,
+  borrowedUsdRate: string | number,
+  collateralUsdRate: string | number
 ) {
   let resp = {
     total: '0',
@@ -67,20 +76,21 @@ function _getTotalCollateralValue(
   }
 
   const { borrowed_token, collateral_token } = owmData?.owm ?? {}
-  const { error, collateral, borrowed = '' } = statsBalances ?? {}
 
-  if (collateralUsd === 'NaN' || +collateralUsd === 0 || error || typeof statsBalances === 'undefined') return resp
+  if (collateralUsdRate === 'NaN' || borrowedUsdRate === 'NaN' || typeof ammBalance === 'undefined' || ammBalance.error)
+    return resp
 
-  const totalCollateralUsd = Number(collateral) * Number(collateralUsd)
-  const total = totalCollateralUsd + Number(borrowed)
+  const borrowedUsd = +ammBalance.borrowed * +borrowedUsdRate
+  const collateralUsd = +ammBalance.collateral * +collateralUsdRate
+  const totalCollateralValueUsd = +borrowedUsd + +collateralUsd
 
-  resp.total = total.toString()
+  resp.total = totalCollateralValueUsd.toString()
   resp.tooltipContent =
-    total === 0
+    totalCollateralValueUsd === 0
       ? []
       : [
-          { label: borrowed_token?.symbol ?? '', value: borrowed },
-          { label: collateral_token?.symbol ?? '', value: totalCollateralUsd.toString() },
+          { label: collateral_token?.symbol ?? '', value: ammBalance.collateral },
+          { label: borrowed_token?.symbol ?? '', value: ammBalance.borrowed },
         ]
   return resp
 }

@@ -71,7 +71,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>): UsdRat
     },
     fetchAllStoredUsdRates: async (api) => {
       const tokenAddresses = Object.keys(get().usdRates.tokens)
-      get()[sliceKey].fetchUsdRateByTokens(api, tokenAddresses)
+      await get()[sliceKey].fetchUsdRateByTokens(api, tokenAddresses)
     },
 
     // slice helpers

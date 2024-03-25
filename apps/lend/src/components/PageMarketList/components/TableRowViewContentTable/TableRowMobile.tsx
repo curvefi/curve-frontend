@@ -27,6 +27,7 @@ import CellRate from '@/components/SharedCellData/CellRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
+import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import TextCaption from '@/ui/TextCaption'
 
 type Content = {
@@ -91,9 +92,12 @@ const TableRowMobile = ({
         { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, content: <CellLoanTotalDebt {...cellProps} /> },
       ],
       [
-        { sortIdKey: 'cap', label: `Total supplied`, content: <CellCap {...cellProps} type='cap' /> },
-        { sortIdKey: 'cap', label: `Utilization %`, content: <CellCap {...cellProps} type='utilization' /> },
+        { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, content: <CellCap {...cellProps} type='cap' /> },
+        { sortIdKey: 'cap', label: tableLabelsMapper.utilization.name, content: <CellCap {...cellProps} type='utilization' /> },
       ],
+      [
+        { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, content: <CellTotalCollateralValue {...cellProps} /> },
+      ]
     ],
     supply: [
       [

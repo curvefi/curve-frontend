@@ -45,8 +45,8 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
       { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '150px' },
       { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '150px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right', width: '150px' },
-      { sortIdKey: 'utilization', label: tableLabelsMapper.utilization.name, className: 'right', width: '150px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.capUtilization.name, className: 'right', width: '150px' },
+      { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, className: 'right', width: '220px' },
     ],
     supply: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },

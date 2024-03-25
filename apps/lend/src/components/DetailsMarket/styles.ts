@@ -50,7 +50,7 @@ export const Wrapper = styled.div`
 `
 
 export const ContentStat = styled.div<{ isRow?: boolean }>`
-  align-items: flex-end;
+  align-items: center;
   display: flex;
   justify-content: space-between;
   margin-bottom: var(--spacing-narrow);
@@ -63,6 +63,7 @@ export const ContentStat = styled.div<{ isRow?: boolean }>`
   }
 
   @media (min-width: ${breakpoints.sm}rem) {
+    align-items: flex-end;
     display: grid;
     grid-gap: var(--spacing-1);
     margin-right: var(--spacing-wide);
@@ -105,11 +106,20 @@ export const ContentStatTitle = styled.span`
   font-size: var(--font-size-1);
   font-weight: bold;
   text-transform: uppercase;
-  white-space: nowrap;
+  max-width: 100px;
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    white-space: nowrap;
+  }
 `
 
 export const ContentStatValue = styled.span`
   font-weight: bold;
+  text-align: right;
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    text-align: left;
+  }
 `
 
 export const DarkContent = styled(Content)`

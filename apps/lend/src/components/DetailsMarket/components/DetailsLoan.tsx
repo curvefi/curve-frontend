@@ -20,6 +20,7 @@ import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import DetailsLoanChartBalances from '@/components/DetailsMarket/components/DetailsLoanChartBalances'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
+import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
@@ -37,12 +38,13 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
       { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" /> },
       { title: t`Lend APY`, value: <CellRate {...cellProps} type="supply" /> },
       { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
+      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
     ],
     [
-      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
       { title: t`Total Debt`, value: <CellLoanTotalDebt {...cellProps} /> },
       { title: t`Total supplied`, value: <CellCap {...cellProps} type="cap" /> },
       { title: t`Utilization %`, value: <CellCap {...cellProps} type="utilization" /> },
+      { title: t`Total Collateral Value`, value: <CellTotalCollateralValue {...cellProps} /> },
     ],
   ]
 

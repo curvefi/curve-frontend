@@ -103,13 +103,26 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     // update network settings from api
     get().updateGlobalStoreByKey('api', api)
-    await get().markets.fetchMarkets(api)
     get().updateGlobalStoreByKey('isLoadingCurve', false)
+
+    const { owmDatasMapper } = await get().markets.fetchMarkets(api)
+    get().updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
       await get().usdRates.fetchAllStoredUsdRates(api)
+
+      // fetch markets TVL (remove once ready from api)
+      const hash = window.location.hash
+      const isPageMarket = hash.split('?')[0].endsWith('markets')
+      if (!isPageMarket) {
+        get().markets.fetchDatas('statsAmmBalancesMapper', api, Object.values(owmDatasMapper))
+        get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
+      } else if (!hash.endsWith('supply')) {
+        get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
+      }
     }
-    get().updateGlobalStoreByKey('isLoadingApi', false)
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
