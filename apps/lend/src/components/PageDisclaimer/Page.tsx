@@ -41,7 +41,7 @@ const Page: NextPage = () => {
             Curve Risk Disclosures for Liquidity Providers
           </ExternalLink>
           . Users are also advised to review the public{' '}
-          <ExternalLink $noCap href="https://docs.curve.fi/references/audits/audits_pdf/">
+          <ExternalLink $noCap href="https://docs.curve.fi/references/audits/">
             audit reports
           </ExternalLink>{' '}
           to assess the security and reliability of the platform before engaging in any lending or borrowing activities.
