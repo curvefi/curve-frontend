@@ -48,25 +48,25 @@ const SwitchTokensButton = ({ curve, chainId, from, to, disabled, className }: P
   const handleClick = () => {
     // switch between token A and B
     if (from === TOKEN_A) {
-      updateTokensInPool(curve, tokenB, tokenA, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH, chainId)
+      updateTokensInPool(curve, tokenB, tokenA, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH)
     }
     if (from === TOKEN_B && to === TOKEN_C) {
-      updateTokensInPool(curve, tokenA, tokenC, tokenB, tokenD, tokenE, tokenF, tokenG, tokenH, chainId)
+      updateTokensInPool(curve, tokenA, tokenC, tokenB, tokenD, tokenE, tokenF, tokenG, tokenH)
     }
     if (from === TOKEN_C && to === TOKEN_D) {
-      updateTokensInPool(curve, tokenA, tokenB, tokenD, tokenC, tokenE, tokenF, tokenG, tokenH, chainId)
+      updateTokensInPool(curve, tokenA, tokenB, tokenD, tokenC, tokenE, tokenF, tokenG, tokenH)
     }
     if (from === TOKEN_D && to === TOKEN_E) {
-      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenE, tokenD, tokenF, tokenG, tokenH, chainId)
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenE, tokenD, tokenF, tokenG, tokenH)
     }
     if (from === TOKEN_E && to === TOKEN_F) {
-      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenF, tokenE, tokenG, tokenH, chainId)
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenF, tokenE, tokenG, tokenH)
     }
     if (from === TOKEN_F && to === TOKEN_G) {
-      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenG, tokenF, tokenH, chainId)
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenG, tokenF, tokenH)
     }
     if (from === TOKEN_G && to === TOKEN_H) {
-      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenH, tokenG, chainId)
+      updateTokensInPool(curve, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenH, tokenG)
     }
   }
 

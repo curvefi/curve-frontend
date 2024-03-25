@@ -55,6 +55,7 @@ const ComboBoxTokenPicker = ({
   const isMdUp = useStore((state) => state.isMdUp)
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
   const { loading } = useStore((state) => state.tokens)
+  const { basePools, basePoolsLoading } = useStore((state) => state.pools)
   const { swapType } = useStore((state) => state.createPool)
 
   const [filterValue, setFilterValue] = useState('')
@@ -67,7 +68,7 @@ const ComboBoxTokenPicker = ({
   const verifyTokens = async () => {
     try {
       const token = await curve.getCoinsData([filterValue])
-      const isBasePool = networks[chainId].basePools.some(
+      const isBasePool = basePools[chainId].some(
         (basepool) => basepool.token.toLowerCase() === filterValue.toLowerCase()
       )
       updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
@@ -216,7 +217,7 @@ const ComboBoxTokenPicker = ({
                     </ItemWrapper>
                   </Item>
                 )
-              ) : loading ? (
+              ) : loading || basePoolsLoading ? (
                 <Item key={'LOADING'} textValue={'LOADING'}>
                   <StyledSearchSpinnerWrapper vSpacing={1}>
                     <Spinner size={15} />

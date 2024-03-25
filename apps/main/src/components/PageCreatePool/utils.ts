@@ -133,6 +133,6 @@ export const isTricrypto = (
   )
 }
 
-export const checkMetaPool = (address: string, chainId: ChainId) => {
-  return address === '' ? false : networks[chainId].basePools.some((item) => item.token === address)
+export const checkMetaPool = (address: string, basePools: BasePool[]) => {
+  return address === '' ? false : basePools.some((item) => item.token === address)
 }

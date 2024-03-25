@@ -37,7 +37,6 @@ const NETWORK_CONFIG_DEFAULT = {
   showInSelectNetwork: true,
   showHideSmallPoolsCheckbox: false,
   createQuickList: [],
-  basePools: [],
   stableSwapFactory: false,
   cryptoSwapFactory: false,
   twocryptoFactory: false,
@@ -126,73 +125,6 @@ const networks: Record<ChainId, NetworkConfig> = {
         symbol: 'crvUSD',
       },
     ],
-    basePools: [
-      {
-        name: '3pool',
-        token: '0x6c3f90f043a72fa612cbac8115ee7e52bde6e490',
-        pool: '0xbebc44782c7db0a1a60cb6fe97d0b483032ff1c7',
-        coins: [
-          '0x6b175474e89094c44da98b954eedeac495271d0f', // dai
-          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
-          '0xdac17f958d2ee523a2206206994597c13d831ec7', // usdt
-        ],
-      },
-      {
-        name: 'fraxBp',
-        token: '0x3175df0976dfa876431c2e9ee6bc45b65d3473cc',
-        pool: '0xdcef968d416a41cdac0ed8702fac8128a64241a2',
-        coins: [
-          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
-          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
-        ],
-      },
-      {
-        name: 'sbtc2Crv',
-        pool: '0xae34574ac03a15cd58a92dc79de7b1a0800f1ce3',
-        token: '0xfc2838a17d8e8b1d5456e0a351b0708a09211147',
-        coins: [
-          '0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6', // sbtc
-          '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599', // wbtc
-        ],
-      },
-      {
-        name: 'paypool',
-        pool: '0x383e6b4437b59fff47b619cba855ca29342a8559',
-        token: '0x383e6b4437b59fff47b619cba855ca29342a8559',
-        coins: [
-          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
-          '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // usdc
-        ],
-      },
-      {
-        name: 'fraxpyusd',
-        pool: '0xa5588f7cdf560811710a2d82d3c9c99769db1dcb',
-        token: '0xa5588f7cdf560811710a2d82d3c9c99769db1dcb',
-        coins: [
-          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
-          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
-        ],
-      },
-      {
-        name: '3payllama',
-        pool: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
-        token: '0x2e1d500091ef244fdcb6b83c86143e28388e473a',
-        coins: [
-          '0x6c3ea9036406852006290770bedfcaba0e23a0e8', // pyusd
-          '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e', // crvUSD
-          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
-        ],
-      },
-      {
-        name: 'fraxusdp',
-        pool: '0xf253f83aca21aabd2a20553ae0bf7f65c755a07f',
-        token: '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',
-        coins: [
-          '0x853d955acef822db058eb8505911ed77f175b99e', // frax
-          '0x8e870d67f660d95d5be530380d0ec0bd388289e1', // usdp
-        ],
-      },
-    ],
     stableSwapFactory: true,
     cryptoSwapFactory: true,
     twocryptoFactory: true,
@@ -229,24 +161,6 @@ const networks: Record<ChainId, NetworkConfig> = {
         symbol: 'FRAXBP',
       },
     ],
-    basePools: [
-      {
-        name: '3pool',
-        token: '0x1337bedc9d22ecbe766df105c9623922a27963ec',
-        pool: '0x1337bedc9d22ecbe766df105c9623922a27963ec',
-        coins: [
-          '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
-          '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
-          '0x94b008aa00579c1307b0ef2c499ad98a8ce58e58',
-        ],
-      },
-      {
-        name: 'fraxBp',
-        token: '0x29a3d66b30bc4ad674a4fdaf27578b64f6afbfe7',
-        pool: '0x29a3d66b30bc4ad674a4fdaf27578b64f6afbfe7',
-        coins: ['0x2e3d870790dc77a83dd1d18184acc7439a53f475', '0x7f5c764cbc14f9669b88837ca1490cca17c31607'],
-      },
-    ],
     stableSwapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -275,18 +189,6 @@ const networks: Record<ChainId, NetworkConfig> = {
         symbol: 'x3CRV',
       },
     ],
-    basePools: [
-      {
-        name: '3pool',
-        token: '0x1337bedc9d22ecbe766df105c9623922a27963ec',
-        pool: '0x7f90122bf0700f9e7e1f688fe926940e8839f353',
-        coins: [
-          '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
-          '0xddafbb505ad214d7b80b1f830fccc89b60fb7a83',
-          '0x4ecaba5870353805a9f068101a40e0f32ed605c6',
-        ],
-      },
-    ],
     stableSwapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -307,7 +209,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0xfa36fe1da08c89ec72ea1f0143a35bfd5daea108',
     },
     createQuickList: [],
-    basePools: [],
     stableSwapFactory: true,
     hasFactory: true,
   },
@@ -330,7 +231,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
       toAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
     },
-    basePools: [],
     stableSwapFactory: true,
     cryptoSwapFactory: true,
     twocryptoFactory: true,
@@ -353,7 +253,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
     },
     createQuickList: [],
-    basePools: [],
     stableSwapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -379,7 +278,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     },
     createQuickList: [],
-    basePools: [],
     stableSwapFactory: true,
     cryptoSwapFactory: true,
     twocryptoFactory: true,
@@ -417,20 +315,6 @@ const networks: Record<ChainId, NetworkConfig> = {
         symbol: '2CRV',
       },
     ],
-    basePools: [
-      {
-        name: '2pool',
-        pool: '0x7f90122bf0700f9e7e1f688fe926940e8839f353',
-        token: '0x7f90122bf0700f9e7e1f688fe926940e8839f353',
-        coins: ['0xff970a61a04b1ca14834a43f5de4533ebddb5cc8', '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9'],
-      },
-      {
-        name: 'fraxbp',
-        pool: '0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5',
-        token: '0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5',
-        coins: ['0x17fc002b466eec40dae837fc4be5c67993ddbd6f', '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8'],
-      },
-    ],
     stableSwapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -451,7 +335,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
       toAddress: '0xc7198437980c041c805a1edcba50c1ce5db95118',
     },
-    basePools: [],
     stableSwapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,

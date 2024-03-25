@@ -30,6 +30,7 @@ type Props = {
 const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
   const poolAddress = poolData.pool.address
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
+  const basePools = useStore((state) => state.pools.basePools)
   const pricesApiPoolDataMapper = useStore((state) => state.pools.pricesApiPoolDataMapper)
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
@@ -92,7 +93,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
             <PoolParameterValue>
               {returnPoolType(pricesData.pool_type, pricesData.coins.length)}
               {pricesData.metapool && `, ${t`Metapool`}`}
-              {networks[rChainId].basePools.some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
+              {basePools[rChainId].some((pool) => pool.pool === poolAddress) && `, ${t`Basepool`}`}
             </PoolParameterValue>
           </PoolParameter>
           {pricesData.base_pool && (
