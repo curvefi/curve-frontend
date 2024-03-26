@@ -19,12 +19,17 @@ import InternalLink from '@/ui/Link/InternalLink'
 
 type InnerSectionProps = {
   className?: string
+  columnCount?: number
 }
 
-export const CommunitySection = ({ className, locale }: { locale: Locale['value'] } & InnerSectionProps) => {
+export const CommunitySection = ({
+  className,
+  columnCount,
+  locale,
+}: { locale: Locale['value'] } & InnerSectionProps) => {
   const isChinese = isLocaleInChinese(locale)
   return (
-    <CommunityWrapper className={className}>
+    <CommunityWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
         <StyledExternalLink href="https://twitter.com/curvefinance">Twitter</StyledExternalLink>
       </SectionItem>
@@ -228,11 +233,20 @@ const ResourcesWrapper = styled.ul`
   }
 `
 
-const CommunityWrapper = styled.ul`
+const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    min-width: 15rem; //240px
-    column-count: 2;
-  }
+    ${({ $columnCount }) => {
+      if ($columnCount) {
+        return `
+          column-count: ${$columnCount};
+        `
+      } else {
+        return `
+          min-width: 15rem; //240px
+          column-count: 2;
+        `
+      }
+    }}
 `
 
 const FooterLogoWrapper = styled.div`
