@@ -13,7 +13,7 @@ export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-export type Theme = 'dark' | 'default' | 'chad' | 'commodore'
+export type Theme = 'dark' | 'default' | 'chad'
 export type LayoutHeight = {
   globalAlert: number
   mainNav: number
