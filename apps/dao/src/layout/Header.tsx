@@ -1,81 +1,101 @@
-import type { MessageDescriptor } from '@lingui/core'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+import type { AppPage } from '@/ui/AppNav/types'
+import type { ThemeType } from '@/ui/Select/SelectThemes'
 
-import { useCallback, useEffect, useRef } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import { msg, t } from '@lingui/macro'
-import { i18n } from '@lingui/core'
+import React, { useRef } from 'react'
+import { t } from '@lingui/macro'
+import { useNavigate, useParams } from 'react-router-dom'
 
-import { ROUTE } from '@/constants'
-import { CONNECT_STAGE, breakpoints, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { DEFAULT_LOCALES } from '@/lib/i18n'
+import { isLoading } from '@/ui/utils'
+import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { useHeightResizeObserver } from '@/ui/hooks'
+import { useConnectWallet } from '@/onboard'
 import networks, { visibleNetworksList } from '@/networks'
+import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
+import {
+  APP_LINK,
+  APPS_LINKS,
+  AppNavMobile,
+  AppNavBarContent,
+  AppNavBar,
+  AppNavMenuSection,
+  AppSelectNetwork,
+} from '@/ui/AppNav'
+import { CommunitySection, ResourcesSection } from '@/layout/Footer'
+import AppLogo from '@/ui/Brand'
+import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
-import CurveLogoLink from '@/layout/CurveLogoLink'
-import HeaderMobile from '@/layout/HeaderMobile'
 import HeaderSecondary from '@/layout/HeaderSecondary'
-import SelectNetwork from '@/ui/Select/SelectNetwork'
-
-export type Page = {
-  route: string
-  label: MessageDescriptor
-}
-
-const PAGES: Page[] = [
-  { route: ROUTE.PAGE_PROPOSALS, label: msg`Proposals` },
-  { route: ROUTE.PAGE_GAUGEVOTING, label: msg`Gauge Voting` },
-]
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const location = useLocation()
   const navigate = useNavigate()
-  const mainNavHeight = useHeightResizeObserver(mainNavRef)
+  const params = useParams()
+  useLayoutHeight(mainNavRef, 'mainNav')
 
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
+  const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
+  const routerProps = useStore((state) => state.routerProps)
+  const themeType = useStore((state) => state.themeType)
+  const setThemeType = useStore((state) => state.setThemeType)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+
+  const appLogoProps: AppLogoProps = {
+    appName: 'Dao',
+    pathname: ROUTE.PAGE_PROPOSALS,
+    internalPathname: `${rLocalePathname}/${rNetwork}${ROUTE.PAGE_PROPOSALS}`,
+  }
+
+  const p: AppPage[] = [
+    { route: ROUTE.PAGE_PROPOSALS, label: t`Proposals`, groupedTitle: 'proposals' },
+    { route: ROUTE.PAGE_GAUGEVOTING, label: t`Gauge Voting`, groupedTitle: 'gauge-voting' },
+    { ...APP_LINK.main, isDivider: true },
+    APP_LINK.lend,
+  ]
+
+  const pages = p.map(({ route, ...rest }) => {
+    const parsedRoute = route.startsWith('http') ? route : `#${rLocalePathname}/${rNetwork}${route}`
+    return { route: parsedRoute, isActive: false, ...rest }
+  })
+
+  const desktopPages = pages.map(({ route, ...rest }) => {
+    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
+    const routePathname = route.split('?')[0] ?? ''
+    return {
+      ...rest,
+      route,
+      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
+    }
+  })
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
     return `#${rLocalePathname}/${networkName}${route}`
   }
 
-  const handleNetworkChange = (selectedChainId: React.Key) => {
-    if (rChainId !== selectedChainId) {
-      const network = networks[selectedChainId as ChainId].id
-      navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
-      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
-    }
+  const appNavConnect = {
+    connectState,
+    walletSignerAddress: getWalletSignerAddress(wallet),
+    handleClick: () => {
+      if (wallet) {
+        updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
+      } else {
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+      }
+    },
   }
 
-  const handleConnectWallet = useCallback(() => {
-    if (wallet) {
-      updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
-    } else {
-      updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
-    }
-  }, [updateConnectState, wallet])
-
-  useEffect(() => {
-    updateLayoutHeight('mainNav', mainNavHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mainNavHeight])
-
   const SelectNetworkComp = (
-    <StyledSelectNetwork
+    <AppSelectNetwork
       connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
@@ -83,135 +103,74 @@ const Header = () => {
       minWidth="9rem"
       mobileRightAlign
       selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
-      onSelectionChange={handleNetworkChange}
+      onSelectionChange={() => {}}
     />
   )
 
-  const handleLocaleChange = (selectedLocale: string) => {
-    const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-    const { rNetwork } = getNetworkFromUrl()
-    navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+  const appNavLocale = {
+    locale,
+    locales: DEFAULT_LOCALES,
+    handleChange: (selectedLocale: React.Key) => {
+      const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+      const { rNetwork } = getNetworkFromUrl()
+      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+    },
   }
+
+  const appNavTheme = {
+    themeType,
+    handleClick: (selectedThemeType: ThemeType) => setThemeType(selectedThemeType),
+  }
+
+  const appsLinks = [APP_LINK.classicMain, ...APPS_LINKS]
 
   return (
     <>
-      {isMdUp && <HeaderSecondary handleLocaleChange={handleLocaleChange} />}
-      <StyledNavBar as="nav" ref={mainNavRef} aria-label="Main menu" flex flexAlignItems="stretch" isMdUp={isMdUp}>
-        <NavBarContent
-          className="nav-content"
-          grid
-          gridAutoFlow="column"
-          flexJustifyContent="space-between"
-          pageWidth={pageWidth}
-        >
+      {isMdUp && <HeaderSecondary appsLinks={appsLinks} appStats={[]} locale={appNavLocale} theme={appNavTheme} />}
+      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isMdUp}>
+        <AppNavBarContent pageWidth={pageWidth} className="nav-content">
           {isMdUp ? (
             <>
-              <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">
-                <CurveLogoLink />
-                {PAGES.map(({ route, label }) => {
-                  let isActive = false
-                  if (location?.pathname) {
-                    isActive = location.pathname.endsWith(route)
-                  }
+              <AppNavMenuSection>
+                <AppLogo {...appLogoProps} />
+                <AppNavPages pages={desktopPages} navigate={navigate} />
+              </AppNavMenuSection>
 
-                  return (
-                    <InternalLinkText as="a" key={route} className={isActive ? 'active' : ''} href={getPath(route)}>
-                      {i18n._(label)}
-                    </InternalLinkText>
-                  )
-                })}
-                {/*<DividerHorizontal />*/}
-              </Menu>
-
-              <Menu grid gridAutoFlow="column" gridColumnGap="var(--spacing-2)" flexAlignItems="center">
+              <AppNavMenuSection>
                 {SelectNetworkComp}
-                <ConnectWallet
-                  connectState={connectState}
-                  walletSignerAddress={getWalletSignerAddress(wallet)}
-                  handleClick={handleConnectWallet}
-                />
-              </Menu>
+                <ConnectWallet {...appNavConnect} />
+              </AppNavMenuSection>
             </>
           ) : (
-            <HeaderMobile
-              pages={PAGES}
-              rChainId={rChainId}
+            <AppNavMobile
+              appLogoProps={appLogoProps}
+              connect={appNavConnect}
+              locale={appNavLocale}
+              pageWidth={pageWidth}
+              pages={{
+                pages,
+                getPath,
+                handleClick: (route: string) => {
+                  if (navigate && params) {
+                    let parsedRoute = route.charAt(0) === '#' ? route.substring(2) : route
+                    navigate(parsedRoute)
+                  }
+                },
+              }}
+              sections={[
+                { id: 'apps', title: t`Apps`, links: appsLinks },
+                { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
+                { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
+              ]}
               selectNetwork={SelectNetworkComp}
-              handleConnectWallet={handleConnectWallet}
-              handleLocaleChange={handleLocaleChange}
+              stats={[]}
+              theme={appNavTheme}
             />
           )}
-        </NavBarContent>
-      </StyledNavBar>
+        </AppNavBarContent>
+      </AppNavBar>
     </>
   )
 }
-
-const InternalLinkText = styled(Chip)`
-  align-items: center;
-  display: flex;
-  min-height: var(--height-medium);
-  padding: 0 0.5rem;
-  color: inherit;
-  font-weight: var(--font-weight--bold);
-  text-decoration: none;
-  :active {
-    transform: none;
-  }
-  :hover {
-    color: var(--nav_link--hover--color);
-    background-color: var(--nav_link--hover--background-color);
-  }
-  &.active,
-  &.active:hover {
-    color: var(--nav_link--active--hover--color);
-    background-color: var(--nav_link--active--hover--background-color);
-  }
-`
-
-export const Menu = styled(Box)<{ gridColumnGap?: string }>`
-  @media (min-width: ${breakpoints.md}rem) {
-    grid-column-gap: ${({ gridColumnGap }) => gridColumnGap ?? 'var(--spacing-3)'};
-  }
-`
-
-type NavBarContentProps = {
-  pageWidth: PageWidthClassName | null
-}
-
-const NavBarContent = styled(Box)<NavBarContentProps>`
-  margin: 0 auto;
-  max-width: var(--width);
-  padding: 0 var(--spacing-narrow);
-  width: 100%;
-  @media (min-width: ${breakpoints.md}rem) {
-    padding: 0 var(--spacing-normal);
-  }
-`
-
-type NavBarProps = {
-  isMdUp: boolean
-}
-
-const NavBar = styled(Box)<NavBarProps>`
-  height: var(--header-height);
-  //position: sticky;
-  top: ${({ isMdUp }) => (isMdUp ? 'var(--top-nav-bottom)' : '0')};
-  font-size: var(--font-size-2);
-  text-transform: uppercase;
-  color: var(--nav--color);
-  background-color: var(--page--background-color);
-  z-index: var(--z-index-page-nav);
-`
-
-const StyledNavBar = styled(NavBar)`
-  box-shadow: 0 2px 3px 0 rgb(0 0 0 / 20%);
-`
-
-const StyledSelectNetwork = styled(SelectNetwork)`
-  && {
-    height: var(--height-medium);
-  }
-`
 
 export default Header
