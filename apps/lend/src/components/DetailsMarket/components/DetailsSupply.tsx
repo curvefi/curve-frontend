@@ -1,6 +1,8 @@
 import React from 'react'
 import { t } from '@lingui/macro'
 
+import { breakpoints } from '@/ui/utils'
+
 import {
   Content,
   ContentStat,
@@ -19,7 +21,6 @@ import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsS
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 import styled from 'styled-components'
-import { breakpoints } from '@/ui/utils'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
@@ -67,7 +68,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
         <DetailsSupplyRewards rChainId={rChainId} rOwmId={rOwmId} />
       </Content>
 
-      <DarkContent>
+      <StyledDarkContent>
         <Box grid gridGap={3}>
           <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="supply" />
           <div>
@@ -80,7 +81,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
             />
           </div>
         </Box>
-      </DarkContent>
+      </StyledDarkContent>
     </Wrapper>
   )
 }
@@ -91,6 +92,10 @@ const Wrapper = styled.div`
   @media (min-width: ${breakpoints.lg}rem) {
     grid-template-columns: 1fr auto;
   }
+`
+
+const StyledDarkContent = styled(DarkContent)`
+  min-width: 18.75rem; //300px;
 `
 
 export default DetailsSupply
