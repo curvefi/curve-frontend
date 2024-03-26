@@ -53,7 +53,7 @@ export default class CurveDocument extends Document {
           <meta name="title" content="Curve.fi" />
           <meta
             name="description"
-            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+            content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
           />
 
           {/* Open Graph */}
@@ -62,7 +62,7 @@ export default class CurveDocument extends Document {
           <meta property="og:title" content="Curve.fi" />
           <meta
             property="og:description"
-            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+            content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
           />
           <meta property="og:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
 
@@ -72,7 +72,7 @@ export default class CurveDocument extends Document {
           <meta property="twitter:title" content="Curve.fi" />
           <meta
             property="twitter:description"
-            content="Curve-dapp is a user interface application designed to connect to Curve's deployment of smart contracts."
+            content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
           />
           <meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
 

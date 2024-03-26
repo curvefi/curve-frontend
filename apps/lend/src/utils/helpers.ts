@@ -55,7 +55,7 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
-    console.log(`curve-dapp -> ${fnName}:`, ...args)
+    console.log(`curve-frontend -> ${fnName}:`, ...args)
   }
 }
 

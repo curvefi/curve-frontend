@@ -1,5 +1,5 @@
-# curve-dapp
-Curve-dapp is a NextJs user-interface application designed to connect to Curve's deployment of smart contracts. This UI application is designed for both the [crvUSD](https://crvusd-curve.fi) and [Curve](https://curve.fi) dapps, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-stablecoin-api](https://github.com/curvefi/curve-stablecoin-js) to communicate with the blockchain. 
+# curve-frontend
+Curve-frontend is a NextJs user-interface application designed to connect to Curve's deployment of smart contracts. This UI application is designed for both the [crvUSD](https://crvusd-curve.fi) and [Curve](https://curve.fi) dapps, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-stablecoin-api](https://github.com/curvefi/curve-stablecoin-js) to communicate with the blockchain. 
 
 ## Prerequisites
 Before you begin, ensure you have met the following requirements:
@@ -7,10 +7,10 @@ Before you begin, ensure you have met the following requirements:
 - [yarn](https://yarnpkg.com/) version 1.22
 
 ## Installation
-To install curve-dapp, follow these steps:
+To install curve-frontend, follow these steps:
 ```bash
-git clone https://github.com/curvefi/curve-dapp.git
-cd curve-dapp
+git clone https://github.com/curvefi/curve-frontend.git
+cd curve-frontend
 yarn install
 ```
 
@@ -43,10 +43,10 @@ This repository is organized as follows:
 ## Troubleshooting
 If you have any questions, please contact the dev channel on the [Curve Discord](https://discord.gg/sGDwYnb6W9)
 
-You may also submit an issue on our [GitHub Issue Tracker](https://github.com/curvefi/curve-dapp/issues).
+You may also submit an issue on our [GitHub Issue Tracker](https://github.com/curvefi/curve-frontend/issues).
 
 ## Contributing
-To contribute to curve-dapp, follow these steps:
+To contribute to curve-frontend, follow these steps:
 1. Fork this repository.
 2. Create a branch: `git checkout -b <branch_name>`.
 3. Make your changes and commit them: `git commit -m '<commit_message>'`
