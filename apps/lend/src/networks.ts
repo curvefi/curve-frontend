@@ -67,6 +67,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   42161: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['42161'],
+    showInSelectNetwork: true,
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=arbitrum',
