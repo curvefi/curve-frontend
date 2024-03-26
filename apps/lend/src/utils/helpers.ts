@@ -21,7 +21,7 @@ export function isMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
