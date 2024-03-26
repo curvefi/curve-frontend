@@ -52,7 +52,7 @@ const ChartBandBalances = ({
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
   const statsCapAndAvailable = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
 
-  const { cap } = statsCapAndAvailable ?? {}
+  const { cap, available } = statsCapAndAvailable ?? {}
 
   const isNGroupeds = useMemo(() => data.filter((d) => d.isNGrouped), [data])
 
@@ -60,22 +60,15 @@ const ChartBandBalances = ({
   const chartHeight = 290
   let barWidth = 0
 
-  const haveNoCap = typeof cap !== 'undefined' && +cap === 0
-  const isMissingData =
-    haveNoCap ||
-    (data.length === 0 &&
-      typeof borrowed_token !== 'undefined' &&
-      typeof collateral_token !== 'undefined' &&
-      !!oraclePrice &&
-      !!oraclePriceBand)
+  const isChartNotAvailable = typeof cap !== 'undefined' && +cap === +available && data.length === 0
 
   return (
     <>
       <Header>
         <SubTitle>{title}</SubTitle>
-        {!isMissingData && <ChartBandBalancesSettings />}
+        {!isChartNotAvailable && <ChartBandBalancesSettings />}
       </Header>
-      {isMissingData ? (
+      {isChartNotAvailable ? (
         <StyledAlertBox alertType="">
           <TextCaption isCaps isBold>
             Chart not available
