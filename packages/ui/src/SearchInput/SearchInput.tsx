@@ -11,11 +11,12 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string
   id: string
   value: string
+  variant?: 'small'
   handleInputChange: (val: string) => void
   handleSearchClose: () => void
 }
 
-const SearchInput = ({ className, id, value, handleInputChange, handleSearchClose, ...props }: Props) => {
+const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => {
   return (
     <InputProvider
       className={className}
@@ -24,8 +25,9 @@ const SearchInput = ({ className, id, value, handleInputChange, handleSearchClos
       gridColumnGap={2}
       flexAlignItems="center"
       id={id}
+      inputVariant={variant === 'small' ? 'small' : ''}
     >
-      <Icon name="Search" size={24} aria-label="search-icon" />
+      {variant !== 'small' && <Icon name="Search" size={24} aria-label="search-icon" />}
       <InputDebounced
         {...props}
         id={id}
@@ -33,6 +35,7 @@ const SearchInput = ({ className, id, value, handleInputChange, handleSearchClos
         labelProps={false}
         value={value}
         delay={1000}
+        variant="small"
         onChange={handleInputChange}
       />
       <ClearButton className={!!value ? 'show' : ''} onClick={handleSearchClose} padding={2}>
