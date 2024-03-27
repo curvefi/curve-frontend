@@ -29,7 +29,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import { checkMetaPool, isTricrypto } from '@/components/PageCreatePool/utils'
+import { isTricrypto } from '@/components/PageCreatePool/utils'
 
 type SliceState = {
   navigationIndex: number
@@ -874,6 +874,8 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           const coins = [tokenA.address, tokenB.address]
 
           try {
+            const maExpTime = Math.round(+maHalfTime / 0.693)
+
             const deployPoolTx = await curve.twocryptoFactory.deployPool(
               poolName,
               poolSymbol,
@@ -885,9 +887,10 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               allowedExtraProfit,
               feeGamma,
               adjustmentStep,
-              +maHalfTime,
+              maExpTime,
               initialPrice.initialPrice[0]
             )
+
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
