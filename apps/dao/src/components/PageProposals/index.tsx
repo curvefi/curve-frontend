@@ -49,9 +49,10 @@ const Proposals = () => {
     <Wrapper>
       <PageTitle>DAO Proposals</PageTitle>
       <ProposalsContainer variant="primary">
-        <SearchInput
+        <StyledSearchInput
           id="inpSearchProposals"
           placeholder={t`Search`}
+          variant="small"
           handleInputChange={() => {}}
           handleSearchClose={() => {}}
           value={''}
@@ -79,6 +80,7 @@ const Wrapper = styled(Box)`
   margin: var(--spacing-5) auto 0;
   max-width: 60rem;
   flex-grow: 1;
+  min-height: 100%;
 `
 
 const ProposalsContainer = styled(Box)`
@@ -103,6 +105,10 @@ const PageTitle = styled.h2`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
+`
+
+const StyledSearchInput = styled(SearchInput)`
+  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-2);
 `
 
 export default Proposals
