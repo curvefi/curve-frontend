@@ -87,7 +87,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (
           stateKey.startsWith('loan') ||
           stateKey.startsWith('user') ||
-          stateKey === 'useRates' ||
+          stateKey === 'usdRates' ||
           stateKey === 'tokens' ||
           stateKey === 'chartBands'
         ) {
