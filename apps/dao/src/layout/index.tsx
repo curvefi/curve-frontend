@@ -82,6 +82,8 @@ const Main = styled.main<MainProps>`
   max-width: var(--width);
   min-height: ${({ minHeight }) => `calc(100vh - ${minHeight}px)`};
   width: 100%;
+  display: flex;
+  flex-direction: column;
 `
 
 const Container = styled.div<{ globalAlertHeight: number }>`
