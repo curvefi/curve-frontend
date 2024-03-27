@@ -35,7 +35,7 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
         labelProps={false}
         value={value}
         delay={1000}
-        variant="small"
+        variant={variant === 'small' ? 'small' : undefined}
         onChange={handleInputChange}
       />
       <ClearButton className={!!value ? 'show' : ''} onClick={handleSearchClose} padding={2}>
