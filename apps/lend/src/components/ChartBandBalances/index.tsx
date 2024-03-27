@@ -62,8 +62,20 @@ const ChartBandBalances = ({
 
   const isChartNotAvailable = typeof cap !== 'undefined' && +cap === +available && data.length === 0
 
+  const showInAccurateChartAlert = useMemo(() => {
+    if (typeof cap !== 'undefined' && +cap > 0 && data.length > 0) {
+      return data.every((d) => +d.borrowed + +d.collateral === 0)
+    }
+    return false
+  }, [cap, data])
+
   return (
     <>
+      {showInAccurateChartAlert && (
+        <Box margin="0 0 var(--spacing-normal) 0">
+          <AlertBox alertType="info">Unable to display meaningful values for bands due to small loan size.</AlertBox>
+        </Box>
+      )}
       <Header>
         <SubTitle>{title}</SubTitle>
         {!isChartNotAvailable && <ChartBandBalancesSettings />}
