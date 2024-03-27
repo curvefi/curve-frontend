@@ -63,8 +63,7 @@ const ProposalStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
   background-color: var(--table--background-color);
-  outline: 3px solid var(--box--primary--background);
-  margin-top: calc(-24px - var(--spacing-1));
+  margin-top: calc(-1.5rem - var(--spacing-1));
   margin-bottom: var(--spacing-2);
   margin-left: var(--spacing-1);
   margin-right: auto;

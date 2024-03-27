@@ -1,4 +1,4 @@
-import type { ProposalListFilter } from './types'
+import type { ProposalListFilterItem } from './types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
@@ -9,11 +9,22 @@ import useStore from '@/store/useStore'
 import ProposalsFilters from './Proposal/components/ProposalsFilters'
 import Proposal from './Proposal'
 import Box from '@/ui/Box'
+import Button from '@/ui/Button'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
+import Icon from '@/ui/Icon'
 
 const Proposals = () => {
-  const { proposalsLoading, proposals } = useStore((state) => state.daoProposals)
+  const {
+    proposalsLoading,
+    proposals,
+    activeSortBy,
+    activeSortDirection,
+    setActiveSortBy,
+    setActiveSortDirection,
+    setActiveFilter,
+  } = useStore((state) => state.daoProposals)
 
   const tempProposal: ProposalData[] = [
     {
@@ -35,7 +46,7 @@ const Proposals = () => {
     },
   ]
 
-  const FILTERS: ProposalListFilter[] = useMemo(
+  const FILTERS: ProposalListFilterItem[] = useMemo(
     () => [
       { key: 'all', label: 'All' },
       { key: 'active', label: 'Active' },
@@ -45,21 +56,51 @@ const Proposals = () => {
     []
   )
 
+  const SortingMethods = useMemo(
+    () => [
+      { key: 'voteId', label: 'Vote ID' },
+      { key: 'timeRemaining', label: 'Time Remaining' },
+      { key: 'totalVotes', label: 'Total Votes' },
+    ],
+    []
+  )
+
+  const handleSortingMethodChange = (key: React.Key) => {
+    setActiveSortBy(key as SortByFilter)
+  }
+
+  const handleChangeSortingDirection = () => {
+    setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
+  }
+
   return (
     <Wrapper>
       <PageTitle>DAO Proposals</PageTitle>
-      <ProposalsContainer variant="primary">
-        <StyledSearchInput
-          id="inpSearchProposals"
-          placeholder={t`Search`}
-          variant="small"
-          handleInputChange={() => {}}
-          handleSearchClose={() => {}}
-          value={''}
-        />
-        <ListManagerContainer>
-          <ProposalsFilters filters={FILTERS} />
-        </ListManagerContainer>
+      <ProposalsContainer variant="secondary">
+        <ToolBar>
+          <StyledSearchInput
+            id="inpSearchProposals"
+            placeholder={t`Search`}
+            variant="small"
+            handleInputChange={() => {}}
+            handleSearchClose={() => {}}
+            value={''}
+          />
+          <ListManagerContainer>
+            <ProposalsFilters filters={FILTERS} />
+          </ListManagerContainer>
+          <StyledSelectSortingMethod
+            selectedKey={activeSortBy}
+            minWidth="9rem"
+            items={SortingMethods}
+            onSelectionChange={handleSortingMethodChange}
+          />
+          <StyledIcon
+            size={20}
+            name={activeSortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
+            onClick={() => handleChangeSortingDirection()}
+          />
+        </ToolBar>
         <Box>
           {proposalsLoading ? (
             <SpinnerWrapper>
@@ -98,7 +139,7 @@ const ListManagerContainer = styled.div`
 `
 
 const PageTitle = styled.h2`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-2);
+  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-3);
   background-color: black;
   color: var(--nav--page--color);
   font-size: var(--font-size-5);
@@ -107,8 +148,23 @@ const PageTitle = styled.h2`
   padding: 0 2px;
 `
 
+const ToolBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-bottom: var(--spacing-3);
+`
+
+const StyledSelectSortingMethod = styled(SelectSortingMethod)`
+  margin: auto 0 auto auto;
+`
+
+const StyledIcon = styled(Icon)`
+  margin: auto 0 auto var(--spacing-2);
+`
+
 const StyledSearchInput = styled(SearchInput)`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-2);
+  margin: var(--spacing-2) var(--spacing-2) var(--spacing-1) var(--spacing-2);
 `
 
 export default Proposals
