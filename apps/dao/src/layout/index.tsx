@@ -51,7 +51,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       total += height
     })
 
-    return total
+    return total - layoutHeight.footer + 24
   }, [layoutHeight])
 
   return (

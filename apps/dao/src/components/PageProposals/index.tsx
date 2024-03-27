@@ -46,37 +46,46 @@ const Proposals = () => {
   )
 
   return (
-    <ProposalsContainer variant="primary">
+    <Wrapper>
       <PageTitle>DAO Proposals</PageTitle>
-      <SearchInput
-        id="inpSearchProposals"
-        placeholder={t`Search`}
-        handleInputChange={() => {}}
-        handleSearchClose={() => {}}
-        value={''}
-      />
-      <ListManagerContainer>
-        <ProposalsFilters filters={FILTERS} />
-      </ListManagerContainer>
-      <Box>
-        {proposalsLoading ? (
-          <SpinnerWrapper>
-            <Spinner />
-          </SpinnerWrapper>
-        ) : (
-          tempProposal.map((proposal) => <Proposal {...proposal} key={proposal.voteId} />)
-        )}
-      </Box>
-    </ProposalsContainer>
+      <ProposalsContainer variant="primary">
+        <SearchInput
+          id="inpSearchProposals"
+          placeholder={t`Search`}
+          handleInputChange={() => {}}
+          handleSearchClose={() => {}}
+          value={''}
+        />
+        <ListManagerContainer>
+          <ProposalsFilters filters={FILTERS} />
+        </ListManagerContainer>
+        <Box>
+          {proposalsLoading ? (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          ) : (
+            tempProposal.map((proposal) => <Proposal {...proposal} key={proposal.voteId} />)
+          )}
+        </Box>
+      </ProposalsContainer>
+    </Wrapper>
   )
 }
 
+const Wrapper = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-5) auto 0;
+  max-width: 60rem;
+  flex-grow: 1;
+`
+
 const ProposalsContainer = styled(Box)`
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
   padding: var(--spacing-3);
-  max-width: 60rem;
-  margin: var(--spacing-5) auto;
   row-gap: var(--spacing-3);
 `
 
@@ -86,6 +95,14 @@ const ListManagerContainer = styled.div`
   margin: var(--spacing-2);
 `
 
-const PageTitle = styled.h2``
+const PageTitle = styled.h2`
+  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-2);
+  background-color: black;
+  color: var(--nav--page--color);
+  font-size: var(--font-size-5);
+  font-weight: bold;
+  line-height: 1;
+  padding: 0 2px;
+`
 
 export default Proposals
