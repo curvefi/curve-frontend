@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/lending-api": "^1.6.2",
+    "@curvefi/lending-api": "^1.6.3",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",

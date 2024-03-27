@@ -67,8 +67,7 @@ export const helpers = {
   fetchL2GasPrice: async (api: Api) => {
     let resp = { l2GasPriceWei: 0, error: '' }
     try {
-      // resp.l2GasPriceWei = await api.getGasPriceFromL2()
-      resp.l2GasPriceWei = 0
+      resp.l2GasPriceWei = await api.getGasPriceFromL2()
       return resp
     } catch (error) {
       console.error(error)
