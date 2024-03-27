@@ -40,7 +40,7 @@ export type PoolSwapSlice = {
     setFormValues(curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
+    fetchEstGasApproval(activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<FnStepEstGasApprovalResponse | undefined>
     fetchStepApprove(activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
     fetchStepSwap(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
 
@@ -112,7 +112,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
               loading: true,
             })
-            get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
+            get()[sliceKey].fetchEstGasApproval(activeKey, curve, pool, cFormValues, maxSlippage)
           }
         }
 
@@ -258,7 +258,8 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
     },
 
     // steps
-    fetchEstGasApproval: async (activeKey, chainId, pool, formValues, maxSlippage) => {
+    fetchEstGasApproval: async (activeKey, curve, pool, formValues, maxSlippage) => {
+      const { chainId } = curve
       const { fromAddress, toAddress, fromAmount, isWrapped } = formValues
       const estGasApprovalFn = networks[chainId].api.poolSwap.estGasApproval
       const resp = await estGasApprovalFn(
@@ -271,6 +272,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         fromAmount,
         maxSlippage
       )
+      await get().gas.fetchGasInfo(curve)
 
       // set estimate gas state
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, { estimatedGas: resp.estimatedGas, loading: false })
@@ -318,7 +320,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
             get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
             // fetch est gas, approval and exchange
-            get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+            get()[sliceKey].fetchEstGasApproval(activeKey, curve, pool, formValues, maxSlippage)
             await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
           }
 

@@ -48,7 +48,7 @@ export type PoolDepositSlice = {
     setFormValues(formType: FormType, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
     // steps
-    fetchEstGasApproval(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool): Promise<FnStepEstGasApprovalResponse>
+    fetchEstGasApproval(activeKey: string, curve: CurveApi, formType: FormType, pool: Pool): Promise<FnStepEstGasApprovalResponse>
     fetchStepApprove(activeKey: string, curve: CurveApi, formType: FormType, pool: Pool, formValues: FormValues): Promise<FnStepApproveResponse | undefined>
     fetchStepDeposit(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
     fetchStepDepositStake(activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string): Promise<FnStepResponse | undefined>
@@ -279,7 +279,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
                 ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
                 loading: true,
               })
-              get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+              get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool)
             }
           }
         }
@@ -300,14 +300,15 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
               loading: true,
             })
-            get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+            get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool)
           }
         }
       }
     },
 
     // steps
-    fetchEstGasApproval: async (activeKey, chainId, formType, pool) => {
+    fetchEstGasApproval: async (activeKey, curve, formType, pool) => {
+      const { chainId } = curve
       const cFormValues = cloneDeep(get()[sliceKey].formValues)
       const { amounts, isWrapped, lpToken } = cFormValues
       const resp =
@@ -328,6 +329,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
               parseAmountsForAPI(amounts)
             )
           : await networks[chainId].api.poolDeposit.stakeEstGasApproval(activeKey, chainId, pool, lpToken)
+      await get().gas.fetchGasInfo(curve)
 
       // set estimate gas state
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
@@ -382,7 +384,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
             // fetch est gas and approval
-            await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+            await get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool)
           }
 
           return resp
@@ -508,7 +510,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
             // fetch est gas and approval
-            await get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+            await get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool)
           }
 
           return resp
