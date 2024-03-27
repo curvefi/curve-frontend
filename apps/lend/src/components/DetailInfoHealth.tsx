@@ -41,6 +41,7 @@ const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
 }) => {
+  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const loanDetailsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId]?.bands)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
@@ -55,6 +56,7 @@ const DetailInfoHealth = ({
     if (typeof activeBand !== 'undefined' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
+          owmData,
           activeBand,
           amount,
           bands,
@@ -78,6 +80,7 @@ const DetailInfoHealth = ({
     healthFull,
     healthNotFull,
     newHealthModeColorKey,
+    owmData,
     setHealthMode,
   ])
 
@@ -86,10 +89,21 @@ const DetailInfoHealth = ({
     if (typeof activeBand !== 'undefined' && userLoanDetails) {
       const { healthFull, healthNotFull, bands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(activeBand, amount, bands, formType, healthFull, healthNotFull, false, '', newHealthModeColorKey)
+        getHealthMode(
+          owmData,
+          activeBand,
+          amount,
+          bands,
+          formType,
+          healthFull,
+          healthNotFull,
+          false,
+          '',
+          newHealthModeColorKey
+        )
       )
     }
-  }, [activeBand, amount, formType, newHealthModeColorKey, userLoanDetails])
+  }, [activeBand, amount, formType, newHealthModeColorKey, owmData, userLoanDetails])
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
@@ -143,6 +157,7 @@ export default DetailInfoHealth
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
+  owmData: OWMData | undefined,
   activeBand: number | null,
   amount: string,
   bands: [number, number] | number[],
@@ -170,12 +185,13 @@ export function getHealthMode(
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
         const formattedAmount = formatNumber(amount)
+        const borrowedToken = owmData?.owm?.borrowed_token?.symbol
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {
-          message = t`Borrowing ${formattedAmount} will put you close to soft liquidation.`
+          message = t`Borrowing ${formattedAmount} ${borrowedToken} will put you close to soft liquidation.`
         } else {
-          message = t`Increasing your borrowed amount by ${formattedAmount} will put you close to soft liquidation.`
+          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedToken} will put you close to soft liquidation.`
         }
       }
     }
