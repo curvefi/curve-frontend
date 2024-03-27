@@ -1455,7 +1455,7 @@
     ethers "^6.11.0"
     memoizee "^0.4.15"
 
-"@curvefi/lending-api@^1.5.1":
+"@curvefi/lending-api@1.5.1":
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-1.5.1.tgz#8ad73f5950286393386a2be953caadd4f948ca4b"
   integrity sha512-6hQF1iJtsHZxoBSbwJ62w+jWk5ErnGSimlBtD1tHbgdVTDuvX3TbbOaWlYdLFL7VyO3gr4jSi+bt+psAPV3R1Q==

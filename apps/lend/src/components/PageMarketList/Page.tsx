@@ -56,6 +56,7 @@ const Page: NextPage = () => {
     available: { name: t`Available` },
     cap: { name: t`Total supplied` },
     utilization: { name: t`Utilization %` },
+    capUtilization: { name: t`Total supplied Utilization %` },
     rateBorrow: { name: t`Borrow APY` },
     rateLend: { name: t`Lend APY` },
     myDebt: { name: t`My debt` },

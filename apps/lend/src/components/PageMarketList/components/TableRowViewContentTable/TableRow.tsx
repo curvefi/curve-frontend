@@ -17,6 +17,7 @@ import CellRate from '@/components/SharedCellData/CellRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
+import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 
 type Content = {
   className: string
@@ -72,8 +73,8 @@ const TableRow = ({
       { className: 'right', content: <CellRate {...cellProps} type='borrow' /> },
       { className: 'right', content: <CellCap {...cellProps} type='available' /> },
       { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
-      { className: 'right', content: <CellCap {...cellProps} type='cap' /> },
-      { className: 'right', content: <CellCap {...cellProps} type='utilization' /> },
+      { className: 'right', content: <CellCap {...cellProps} type='cap-utilization' /> },
+      { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
     ],
     supply: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },

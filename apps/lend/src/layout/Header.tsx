@@ -1,7 +1,7 @@
 import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -10,7 +10,7 @@ import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { isLoading } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { visibleNetworksList } from '@/networks'
@@ -39,6 +39,13 @@ const Header = () => {
   const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
 
+  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+
+  const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
+  const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId])
+  const marketsTotalSupplyMapper = useStore((state) => state.markets.totalLiquidityMapper[rChainId])
+  const marketsTotalDebtMapper = useStore((state) => state.markets.statsTotalsMapper[rChainId])
+  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const connectState = useStore((state) => state.connectState)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -50,8 +57,6 @@ const Header = () => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
-
-  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
   const network = networks[rChainId].id
   const appLogoProps: AppLogoProps = {
@@ -92,7 +97,17 @@ const Header = () => {
     }
   })
 
-  const appStats = [] as { label: string; value: string }[]
+  const tvl = useMemo(() => {
+    return _getTvl(
+      owmDatasMapper,
+      marketsCollateralMapper,
+      marketsTotalSupplyMapper,
+      marketsTotalDebtMapper,
+      usdRatesMapper
+    )
+  }, [owmDatasMapper, marketsCollateralMapper, marketsTotalSupplyMapper, marketsTotalDebtMapper, usdRatesMapper])
+
+  const appStats = [{ label: 'TVL', value: tvl }] as { label: string; value: string }[]
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -216,6 +231,42 @@ const Header = () => {
       </AppNavBar>
     </>
   )
+}
+
+function _getTvl(
+  owmDatasMapper: OWMDatasMapper | undefined,
+  marketsCollateralMapper: MarketsStatsAMMBalancesMapper | undefined,
+  marketsTotalSupplyMapper: MarketsTotalLiquidityMapper | undefined,
+  marketsTotalDebtMapper: MarketsStatsTotalsMapper | undefined,
+  usdRatesMapper: { [tokenAddress: string]: string | number }
+) {
+  if (
+    owmDatasMapper &&
+    marketsCollateralMapper &&
+    marketsTotalSupplyMapper &&
+    marketsTotalDebtMapper &&
+    Object.keys(usdRatesMapper)
+  ) {
+    let totalCollateral = 0
+    let totalLiquidity = 0
+    let totalDebt = 0
+
+    Object.values(owmDatasMapper).map(({ owm }) => {
+      const { id, collateral_token } = owm
+
+      const ammBalance = marketsCollateralMapper[id]
+      const collateralUsdRate = usdRatesMapper[collateral_token.address]
+      const marketTotalCollateralUsd = +ammBalance.collateral * +collateralUsdRate
+
+      totalCollateral += marketTotalCollateralUsd
+      totalDebt += +marketsTotalDebtMapper[id]?.totalDebt
+      totalLiquidity += +marketsTotalSupplyMapper[id]?.totalLiquidity
+    })
+
+    const tvl = totalCollateral + totalLiquidity - totalDebt
+
+    return tvl > 0 ? formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) : '-'
+  }
 }
 
 export default Header
