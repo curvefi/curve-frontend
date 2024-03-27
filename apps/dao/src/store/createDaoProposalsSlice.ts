@@ -9,6 +9,9 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoading: boolean
   proposals: ProposalData[]
+  activeFilter: ProposalListFilter
+  activeSortBy: SortByFilter
+  activeSortDirection: ActiveSortDirection
 }
 
 const sliceKey = 'daoProposals'
@@ -17,12 +20,18 @@ const sliceKey = 'daoProposals'
 export type DaoProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
+    setActiveFilter: (filter: ProposalListFilter) => void
+    setActiveSortBy: (sortBy: SortByFilter) => void
+    setActiveSortDirection: (direction: ActiveSortDirection) => void
     resetState(): void
   }
 }
 
 const DEFAULT_STATE: SliceState = {
   proposalsLoading: false,
+  activeFilter: 'all',
+  activeSortBy: 'voteId',
+  activeSortDirection: 'asc',
   proposals: [],
 }
 
@@ -35,7 +44,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     getProposals: async (curve: CurveApi) => {
       set(
         produce((state: State) => {
-          state.daoProposals.proposalsLoading = true
+          state[sliceKey].proposalsLoading = true
         })
       )
 
@@ -59,13 +68,34 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
 
         set(
           produce((state: State) => {
-            state.daoProposals.proposals = formattedProposals
-            state.daoProposals.proposalsLoading = false
+            state[sliceKey].proposals = formattedProposals
+            state[sliceKey].proposalsLoading = false
           })
         )
       } catch (error) {
         console.log(error)
       }
+    },
+    setActiveFilter: (filter: ProposalListFilter) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].activeFilter = filter
+        })
+      )
+    },
+    setActiveSortDirection: (direction: ActiveSortDirection) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].activeSortDirection = direction
+        })
+      )
+    },
+    setActiveSortBy: (sortBy: SortByFilter) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].activeSortBy = sortBy
+        })
+      )
     },
     resetState: () => {
       get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))

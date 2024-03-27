@@ -106,4 +106,10 @@ declare global {
   interface ProposalData extends ProposalResponseData {
     status: 'Active' | 'Passed' | 'Denied'
   }
+
+  type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
+
+  type SortByFilter = 'voteId' | 'timeRemaining' | 'totalVotes'
+
+  type ActiveSortDirection = 'asc' | 'desc'
 }
