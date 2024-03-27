@@ -41,9 +41,10 @@ const Page: NextPage = () => {
 }
 
 const Container = styled.div`
-  min-height: 50vh;
+  display: flex;
+  flex-direction: column;
   @media (min-width: ${breakpoints.lg}rem) {
-    margin: 1.5rem;
+    margin: 1.5rem 1.5rem 0 1.5rem;
   }
 `
 
