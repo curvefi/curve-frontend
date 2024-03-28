@@ -265,6 +265,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     customPoolIds: {
       'factory-v2-137': true, // old eywa pool
       'factory-v2-140': true, // old eywa pool
+      'factory-stable-ng-12': true, // CrossCurve crvUSDT
+      'factory-stable-ng-13': true, // CrossCurve
+      'factory-stable-ng-14': true, // CrossCurve
+      'factory-stable-ng-15': true, // CrossCurve
     },
     excludeGetUserBalancesTokens: ['0x618b22e6fddd6870cdfb4146ef2d4bc62efc660a'],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
