@@ -202,7 +202,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     await get().pools.fetchPools(
       curveApi,
-      [...poolIds, ...Object.keys(networks[chainId].customPoolIds)],
+      poolIds.filter((poolId) => !networks[chainId].customPoolIds[poolId]),
       failedFetching24hOldVprice
     )
 
