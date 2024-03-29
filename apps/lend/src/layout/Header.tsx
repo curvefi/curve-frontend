@@ -254,9 +254,9 @@ function _getTvl(
     Object.values(owmDatasMapper).map(({ owm }) => {
       const { id, collateral_token } = owm
 
-      const ammBalance = marketsCollateralMapper[id]
+      const ammBalance = marketsCollateralMapper[id] ?? {}
       const collateralUsdRate = usdRatesMapper[collateral_token.address]
-      const marketTotalCollateralUsd = +ammBalance.collateral * +collateralUsdRate
+      const marketTotalCollateralUsd = +(ammBalance?.collateral ?? '0') * +(collateralUsdRate ?? '0')
 
       totalCollateral += marketTotalCollateralUsd
       totalDebt += +marketsTotalDebtMapper[id]?.totalDebt
