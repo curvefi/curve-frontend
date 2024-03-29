@@ -249,12 +249,12 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       get()[sliceKey].setStateByActiveKey('tokenSearchParams', tableRowTokenAddress, { sortBy, sortByOrder })
 
       // stored
-      const storedMarketList = get()[sliceKey].marketListMapper[rChainId]
+      const storedMarketList = get()[sliceKey].marketListMapper[rChainId] ?? {}
       const storedOwmDatasMapper = get().markets.owmDatasMapper[rChainId]
       const storedTokenResult = get()[sliceKey].tokenResult[tableRowTokenAddress]
 
       // sort token table
-      const marketListByTokenSelectTab = storedMarketList[tableRowTokenAddress][borrowKey]
+      const marketListByTokenSelectTab = storedMarketList?.[tableRowTokenAddress]?.[borrowKey] ?? {}
       let owmDatas = Object.keys(marketListByTokenSelectTab).map((owmId) => storedOwmDatasMapper[owmId])
 
       owmDatas = searchParams.searchText

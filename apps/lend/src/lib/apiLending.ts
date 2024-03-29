@@ -67,8 +67,7 @@ export const helpers = {
   fetchL2GasPrice: async (api: Api) => {
     let resp = { l2GasPriceWei: 0, error: '' }
     try {
-      // resp.l2GasPriceWei = await api.getGasPriceFromL2()
-      resp.l2GasPriceWei = 0
+      resp.l2GasPriceWei = await api.getGasPriceFromL2()
       return resp
     } catch (error) {
       console.error(error)
@@ -170,7 +169,8 @@ const market = {
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,
-          owmData
+          owmData,
+          true
         )
 
         results[owm.id] = {
@@ -469,7 +469,8 @@ const user = {
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,
-          owmData
+          owmData,
+          false
         )
 
         results[userActiveKey] = {
@@ -1607,15 +1608,18 @@ function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collat
 async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
-  { owm }: OWMData
+  { owm }: OWMData,
+  isMarket: boolean
 ) {
   // filter out bands that doesn't have borrowed or collaterals
-  const ns = bandsBalancesArr
-    .filter((b) => {
-      const { borrowed, collateral } = bandsBalances[b.band] ?? {}
-      return +borrowed > 0 || +collateral > 0
-    })
-    .map((b) => b.band)
+  const ns = isMarket
+    ? bandsBalancesArr
+        .filter((b) => {
+          const { borrowed, collateral } = bandsBalances[b.band] ?? {}
+          return +borrowed > 0 || +collateral > 0
+        })
+        .map((b) => b.band)
+    : bandsBalancesArr.map((b) => b.band)
 
   // TODO: handle errors
   const { results } = await PromisePool.for(ns).process(async (n) => {
