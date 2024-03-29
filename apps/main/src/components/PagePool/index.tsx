@@ -172,10 +172,16 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   usePageVisibleInterval(() => fetchData, REFRESH_INTERVAL['5m'], isPageVisible)
 
   useEffect(() => {
-    if (curve && poolAddress && !snapshotsMapper[poolAddress]) {
+    if (
+      curve &&
+      poolAddress &&
+      pricesApi &&
+      pricesApiPoolsMapper[poolAddress] !== undefined &&
+      !snapshotsMapper[poolAddress]
+    ) {
       fetchPricesPoolSnapshots(rChainId, poolAddress)
     }
-  }, [curve, fetchPricesPoolSnapshots, poolAddress, rChainId, snapshotsMapper])
+  }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
 
   // seed crypto pool initial rate
   useEffect(() => {
