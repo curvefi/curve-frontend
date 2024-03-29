@@ -34,10 +34,12 @@ const CellCap = ({
       formattedCap: formatNumber(cap, { notation: 'compact', defaultValue: '-' }),
       formattedLiquidityUtilization:
         liquidityUtilization !== ''
-          ? formatNumber(liquidityUtilization, {
-              ...FORMAT_OPTIONS.PERCENT,
-              defaultValue: '-',
-            })
+          ? liquidityUtilization !== 0 && liquidityUtilization < 0.000001
+            ? '0%'
+            : formatNumber(liquidityUtilization, {
+                ...FORMAT_OPTIONS.PERCENT,
+                defaultValue: '-',
+              })
           : '',
     }
   }, [available, cap, totalDebt])

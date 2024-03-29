@@ -44,9 +44,10 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
-      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '150px' },
-      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '150px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.capUtilization.name, className: 'right', width: '150px' },
+      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '140px' },
+      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '140px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right', width: '140px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.utilization.name, className: 'right', width: '140px' },
       { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, className: 'right', width: '220px' },
     ],
     supply: [

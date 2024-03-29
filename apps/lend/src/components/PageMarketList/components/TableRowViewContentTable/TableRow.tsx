@@ -73,7 +73,8 @@ const TableRow = ({
       { className: 'right', content: <CellRate {...cellProps} type='borrow' /> },
       { className: 'right', content: <CellCap {...cellProps} type='available' /> },
       { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
-      { className: 'right', content: <CellCap {...cellProps} type='cap-utilization' /> },
+      { className: 'right', content: <CellCap {...cellProps} type='cap' /> },
+      { className: 'right', content: <CellCap {...cellProps} type='utilization' /> },
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
     ],
     supply: [
