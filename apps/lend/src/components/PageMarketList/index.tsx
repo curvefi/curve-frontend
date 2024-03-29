@@ -25,6 +25,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
   const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
+  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const setFormValues = useStore((state) => state.marketList.setFormValues)
 
   const { signerAddress } = api ?? {}
@@ -72,6 +73,12 @@ const MarketList = (pageProps: PageMarketList) => {
     if (isLoaded) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, searchParams])
+
+  // usd rates mapper changed
+  useEffect(() => {
+    if (isLoaded && Object.keys(usdRatesMapper).length > 0) updateFormValues(searchParams)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usdRatesMapper])
 
   useEffect(() => {
     if (isPageVisible) updateFormValues(searchParams, true)

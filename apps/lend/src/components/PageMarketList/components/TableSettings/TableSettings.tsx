@@ -1,6 +1,7 @@
 import type { FilterTypeKey, PageMarketList } from '@/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
@@ -8,6 +9,7 @@ import { breakpoints } from '@/ui/utils'
 import networks from '@/networks'
 
 import Box from '@/ui/Box'
+import Checkbox from '@/ui/Checkbox'
 import SearchInput from '@/ui/SearchInput'
 import SelectFilter from '@/components/PageMarketList/components/TableSettings/SelectFilter'
 import TableButtonFilters from '@/ui/TableButtonFilters'
@@ -53,6 +55,12 @@ const TableSettings = ({
             <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
           )}
         </FiltersWrapper>
+        <FilterSmallWrapper grid gridArea="hide">
+          <Checkbox
+            isSelected={searchParams.hideSmallMarkets}
+            onChange={() => updatePath({ hideSmallMarkets: !searchParams.hideSmallMarkets })}
+          >{t`Hide very small markets`}</Checkbox>
+        </FilterSmallWrapper>
       </SettingsWrapper>
     </>
   )
@@ -64,15 +72,13 @@ const SettingsWrapper = styled.div`
   grid-template-areas:
     'grid-search'
     'grid-filters'
-    'grid-long-short';
+    'grid-hide';
   padding-bottom: 0;
 
   @media (min-width: ${breakpoints.sm}rem) {
     grid-gap: var(--spacing-narrow);
     grid-template-columns: auto 1fr;
-    grid-template-areas:
-      'grid-filters grid-search'
-      'grid-long-short grid-long-short';
+    grid-template-areas: 'grid-filters grid-search grid-hide';
     justify-content: flex-start;
     padding: 0 var(--spacing-normal);
     padding-top: var(--spacing-wide);
@@ -96,6 +102,14 @@ const FiltersWrapper = styled(Box)`
     padding: 0;
     grid-gap: var(--spacing-narrow);
     overflow: initial;
+  }
+`
+
+const FilterSmallWrapper = styled(Box)`
+  padding: 0 var(--spacing-narrow);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    padding: 0;
   }
 `
 

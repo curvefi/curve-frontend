@@ -19,6 +19,7 @@ import sortByFn from 'lodash/sortBy'
 import { _searchByTokensAddresses } from '@/components/PageMarketList/utils'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -48,6 +49,7 @@ const sliceKey = 'marketList'
 // prettier-ignore
 export type MarketListSlice = {
   [sliceKey]: SliceState & {
+    filterSmallMarkets(api: Api, owmDatas: OWMData[]): OWMData[]
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
     filterUserList(api: Api, owmDatas: OWMData[]): OWMData[]
     sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
@@ -82,6 +84,19 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
   [sliceKey]: {
     ...DEFAULT_STATE,
 
+    filterSmallMarkets: (api, owmDatas) => {
+      const { chainId } = api
+      const capAndAvailableMapper = get().markets.statsCapAndAvailableMapper[chainId] ?? {}
+      const usdRatesMapper = get().usdRates.tokens
+      const { smallMarketAmount } = networks[chainId]
+      return owmDatas.filter(({ owm }) => {
+        const { cap } = capAndAvailableMapper[owm.id] ?? {}
+        const token = owm.borrowed_token
+        const usdRate = usdRatesMapper[token.address]
+        if (typeof usdRate === 'undefined') return true
+        return +cap * +usdRate > smallMarketAmount
+      })
+    },
     filterBySearchText: (searchText, owmDatas) => {
       let parsedSearchText = searchText.toLowerCase().trim()
 
@@ -148,6 +163,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const storedOwmDatas = get().markets.owmDatas[rChainId]
       const storedOwmDatasMapper = get().markets.owmDatasMapper[rChainId]
       const storedMarketListMapper = get().marketList.marketListMapper[rChainId]
+      const storedUsdRatesMapper = get().usdRates.tokens
 
       // update activeKey, formStatus
       const activeKey = _getActiveKey(rChainId, searchParams)
@@ -156,10 +172,10 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // allow UI to update paint
       await sleep(100)
 
-      if (!api || !storedOwmDatasMapper || !storedMarketListMapper) return
+      if (!api || !storedOwmDatasMapper || !storedMarketListMapper || !storedUsdRatesMapper) return
 
       const { chainId, signerAddress } = api
-      const { filterKey, filterTypeKey, searchText } = searchParams
+      const { filterKey, filterTypeKey, hideSmallMarkets, searchText } = searchParams
 
       // get market list for table
       let cMarketList = cloneDeep(sortByFn(Object.values(storedMarketListMapper), (l) => l.symbol))
@@ -175,6 +191,12 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // searchText
       if (searchText) {
         cOwmDatas = get()[sliceKey].filterBySearchText(searchText, cOwmDatas)
+      }
+
+      // hide small markets
+      if (hideSmallMarkets) {
+        await get().markets.fetchDatas('statsCapAndAvailableMapper', api, cOwmDatas, shouldRefetch)
+        cOwmDatas = get()[sliceKey].filterSmallMarkets(api, cOwmDatas)
       }
 
       // update collapse list
@@ -345,7 +367,7 @@ function _getOwmDatasFromMarketList(marketListMapper: MarketListMapper, owmDatas
       owmDatas[owmId] = owmDatasMapper[owmId]
     })
   })
-  return Object.values(owmDatas)
+  return Object.values(owmDatas) ?? []
 }
 
 function _filterResult(marketList: MarketListItem[], owmDatas: OWMData[]) {
