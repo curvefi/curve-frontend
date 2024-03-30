@@ -10,6 +10,7 @@ const DEFAULT_NETWORK_CONFIG = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
   gasPricesDefault: 1,
+  smallMarketAmount: 10000,
   marketListFilter: ['all', 'user'],
   marketListFilterType: ['borrow', 'lend'],
   orgUIPath: 'https://classic.curve.fi',

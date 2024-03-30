@@ -51,6 +51,7 @@ declare global {
     orgUIPath: string
     rpcUrlConnectWallet: string
     rpcUrl: string
+    smallMarketAmount: number
     scanAddressPath: (hash: string) => string
     scanTxPath: (hash: string) => string
     scanTokenPath: (hash: string) => string

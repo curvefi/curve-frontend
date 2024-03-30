@@ -25,6 +25,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
   const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
+  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const setFormValues = useStore((state) => state.marketList.setFormValues)
 
   const { signerAddress } = api ?? {}
@@ -43,9 +44,10 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
-      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '150px' },
-      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '150px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.capUtilization.name, className: 'right', width: '150px' },
+      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '140px' },
+      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '140px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right', width: '140px' },
+      { sortIdKey: 'cap', label: tableLabelsMapper.utilization.name, className: 'right', width: '140px' },
       { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, className: 'right', width: '220px' },
     ],
     supply: [
@@ -72,6 +74,12 @@ const MarketList = (pageProps: PageMarketList) => {
     if (isLoaded) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, searchParams])
+
+  // usd rates mapper changed
+  useEffect(() => {
+    if (isLoaded && Object.keys(usdRatesMapper).length > 0) updateFormValues(searchParams)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usdRatesMapper])
 
   useEffect(() => {
     if (isPageVisible) updateFormValues(searchParams, true)

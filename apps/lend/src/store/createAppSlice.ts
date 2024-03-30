@@ -114,11 +114,15 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       // fetch markets TVL (remove once ready from api)
       const hash = window.location.hash
       const isPageMarket = hash.split('?')[0].endsWith('markets')
-      if (!isPageMarket) {
+      const isPageMarketSupply = isPageMarket && hash.endsWith('supply')
+
+      if (!isPageMarket || isPageMarketSupply) {
         get().markets.fetchDatas('statsAmmBalancesMapper', api, Object.values(owmDatasMapper))
         get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
         get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
-      } else if (!hash.endsWith('supply')) {
+      }
+
+      if (isPageMarket && !isPageMarketSupply) {
         get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
         get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
       }

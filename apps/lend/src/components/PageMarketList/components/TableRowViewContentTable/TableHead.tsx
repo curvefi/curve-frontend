@@ -52,9 +52,11 @@ const TableHead = ({
   return (
     <>
       <colgroup>
-        {tableLabels.map(({ sortIdKey, className, width, show }) => {
+        {tableLabels.map(({ sortIdKey, className, width, show }, idx) => {
           return (
-            _showContent(show) && <col key={sortIdKey} className={className} {...(width ? { style: { width } } : {})} />
+            _showContent(show) && (
+              <col key={`${sortIdKey}-${idx}`} className={className} {...(width ? { style: { width } } : {})} />
+            )
           )
         })}
       </colgroup>
