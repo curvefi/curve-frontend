@@ -105,6 +105,12 @@ declare global {
 
   interface ProposalData extends ProposalResponseData {
     status: 'Active' | 'Passed' | 'Denied'
+    votesFor: number
+    votesAgainst: number
+    totalVotes: number
+    minAcceptQuorumPercent: number
+    quorumVeCrv: number
+    totalVeCrv: number
   }
 
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'

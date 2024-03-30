@@ -314,6 +314,7 @@ body.theme-default {
   --tooltip--color: var(--white);
   --tooltip--border-color: var(--border-400);
   --tooltip--background-color: var(--black);
+
   /* Charts */
   --chart-green: #26a69a;
   --chart-red: #ef5350;

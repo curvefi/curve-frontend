@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
-
+import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -23,6 +23,7 @@ export type DaoProposalsSlice = {
     setActiveFilter: (filter: ProposalListFilter) => void
     setActiveSortBy: (sortBy: SortByFilter) => void
     setActiveSortDirection: (direction: ActiveSortDirection) => void
+    selectSortedProposals(): ProposalData[]
     resetState(): void
   }
 }
@@ -31,7 +32,7 @@ const DEFAULT_STATE: SliceState = {
   proposalsLoading: false,
   activeFilter: 'all',
   activeSortBy: 'voteId',
-  activeSortDirection: 'asc',
+  activeSortDirection: 'desc',
   proposals: [],
 }
 
@@ -63,6 +64,12 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
           return {
             ...proposal,
             status: status,
+            votesFor,
+            votesAgainst,
+            minAcceptQuorumPercent,
+            quorumVeCrv,
+            totalVeCrv,
+            totalVotes: votesFor + votesAgainst,
           }
         })
 
@@ -75,6 +82,16 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       } catch (error) {
         console.log(error)
       }
+    },
+    selectSortedProposals: () => {
+      const { proposals, activeFilter, activeSortBy, activeSortDirection } = get()[sliceKey]
+
+      let filteredProposals = proposals
+      if (activeFilter !== 'all') {
+        filteredProposals = proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+      }
+
+      return orderBy(filteredProposals, [activeSortBy], [activeSortDirection])
     },
     setActiveFilter: (filter: ProposalListFilter) => {
       set(
