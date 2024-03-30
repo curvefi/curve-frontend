@@ -1,15 +1,13 @@
-import type { ProposalListFilterItem } from './types'
+import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 
-import ProposalsFilters from './Proposal/components/ProposalsFilters'
+import ProposalsFilters from './components/ProposalsFilters'
 import Proposal from './Proposal'
 import Box from '@/ui/Box'
-import Button from '@/ui/Button'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
@@ -18,52 +16,14 @@ import Icon from '@/ui/Icon'
 const Proposals = () => {
   const {
     proposalsLoading,
-    proposals,
     activeSortBy,
     activeSortDirection,
     setActiveSortBy,
     setActiveSortDirection,
     setActiveFilter,
+    activeFilter,
+    selectSortedProposals,
   } = useStore((state) => state.daoProposals)
-
-  const tempProposal: ProposalData[] = [
-    {
-      creator: '0x0fc59c9c998537c940a9dfc7dacde533a9c496fe',
-      executed: false,
-      ipfsMetadata: 'ipfs:QmRuJpbQVYEh5Myjn35tCX1MtmmtVPpYo3Pxv8kok6GSBi',
-      metadata: 'Add a gauge for the following pool: https://gov.curve.fi/t/proposal-to-add-eeth-rsweth-gauge/9924',
-      minAcceptQuorum: '300000000000000000',
-      snapshotBlock: 19125887,
-      startDate: 1706697143,
-      supportRequired: '510000000000000000',
-      totalSupply: '647386881479492571972543950',
-      voteCount: 1,
-      voteId: 596,
-      voteType: 'OWNERSHIP',
-      votesAgainst: '0',
-      votesFor: '273493296797183379082898042',
-      status: 'Active',
-    },
-  ]
-
-  const FILTERS: ProposalListFilterItem[] = useMemo(
-    () => [
-      { key: 'all', label: 'All' },
-      { key: 'active', label: 'Active' },
-      { key: 'passed', label: 'Passed' },
-      { key: 'denied', label: 'Denied' },
-    ],
-    []
-  )
-
-  const SortingMethods = useMemo(
-    () => [
-      { key: 'voteId', label: 'Vote ID' },
-      { key: 'timeRemaining', label: 'Time Remaining' },
-      { key: 'totalVotes', label: 'Total Votes' },
-    ],
-    []
-  )
 
   const handleSortingMethodChange = (key: React.Key) => {
     setActiveSortBy(key as SortByFilter)
@@ -72,6 +32,8 @@ const Proposals = () => {
   const handleChangeSortingDirection = () => {
     setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
   }
+
+  console.log(selectSortedProposals()[10])
 
   return (
     <Wrapper>
@@ -87,29 +49,35 @@ const Proposals = () => {
             value={''}
           />
           <ListManagerContainer>
-            <ProposalsFilters filters={FILTERS} />
+            <ProposalsFilters
+              filters={PROPOSAL_FILTERS}
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+            />
           </ListManagerContainer>
           <StyledSelectSortingMethod
             selectedKey={activeSortBy}
             minWidth="9rem"
-            items={SortingMethods}
+            items={PROPOSAL_SORTING_METHODS}
             onSelectionChange={handleSortingMethodChange}
           />
-          <StyledIcon
+          <ToggleDirectionIcon
             size={20}
             name={activeSortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
             onClick={() => handleChangeSortingDirection()}
           />
         </ToolBar>
-        <Box>
+        <ProposalsWrapper>
           {proposalsLoading ? (
             <SpinnerWrapper>
               <Spinner />
             </SpinnerWrapper>
           ) : (
-            tempProposal.map((proposal) => <Proposal {...proposal} key={proposal.voteId} />)
+            selectSortedProposals().map((proposal, index) => (
+              <Proposal {...proposal} key={`${proposal.voteId}-${index}`} />
+            ))
           )}
-        </Box>
+        </ProposalsWrapper>
       </ProposalsContainer>
     </Wrapper>
   )
@@ -130,6 +98,12 @@ const ProposalsContainer = styled(Box)`
   flex-direction: column;
   padding: var(--spacing-3);
   row-gap: var(--spacing-3);
+`
+
+const ProposalsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  row-gap: var(--spacing-4);
 `
 
 const ListManagerContainer = styled.div`
@@ -159,8 +133,11 @@ const StyledSelectSortingMethod = styled(SelectSortingMethod)`
   margin: auto 0 auto auto;
 `
 
-const StyledIcon = styled(Icon)`
+const ToggleDirectionIcon = styled(Icon)`
   margin: auto 0 auto var(--spacing-2);
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const StyledSearchInput = styled(SearchInput)`
