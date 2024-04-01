@@ -69,6 +69,8 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
+    if (basePoolsLoading) return []
+
     const tokensArray = Object.entries(tokensMapper).map((token) => {
       return {
         ...token[1]!,
@@ -90,7 +92,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
     return uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
-  }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools, chainId])
+  }, [basePoolsLoading, tokensMapper, haveSigner, userBalances, userAddedTokens, basePools, chainId])
 
   const findSymbol = useCallback(
     (address: string) => {

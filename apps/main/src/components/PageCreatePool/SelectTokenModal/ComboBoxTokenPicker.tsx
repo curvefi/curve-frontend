@@ -128,7 +128,7 @@ const ComboBoxTokenPicker = ({
     handleClose()
   }
 
-  return chainId ? (
+  return chainId || basePoolsLoading ? (
     <>
       <ComboBoxButton {...openButtonProps} ref={openButtonRef} variant={'filled'} fillWidth>
         {selectedToken ? (
