@@ -77,6 +77,7 @@ declare global {
       haveSameTokenName: boolean
       symbol: string
     }[]
+    createDisabledTokens: string[]
     stableSwapFactory: boolean
     cryptoSwapFactory: boolean
     twocryptoFactory: boolean
