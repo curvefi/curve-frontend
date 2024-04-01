@@ -21,7 +21,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
+import { NATIVE_TOKENS as nativeTokens } from '@curvefi/api/lib/curve'
 import { checkMetaPool, containsOracle } from '@/components/PageCreatePool/utils'
 
 import Box from '@/ui/Box'
@@ -54,7 +54,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
 
-  const ETH = [NATIVE_TOKENS[chainId].address, ...networks[chainId].createDisabledTokens]
+  const NATIVE_TOKENS = [nativeTokens[chainId].address, ...networks[chainId].createDisabledTokens]
 
   const BASEPOOL_COINS: string[] = useMemo(() => {
     const coinArray = basePoolsLoading
@@ -65,7 +65,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     return coinArray
   }, [basePools, basePoolsLoading, chainId])
 
-  const DISABLED_TOKENS = [...BASEPOOL_COINS, ...ETH]
+  const DISABLED_TOKENS = [...BASEPOOL_COINS, ...NATIVE_TOKENS]
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {
@@ -544,7 +544,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           tokenId={TOKEN_A}
           token={tokensInPool[TOKEN_A]}
           tokenTitle={t`Token A`}
-          disabledTokens={tokensInPool[TOKEN_B].basePool ? DISABLED_TOKENS : ETH}
+          disabledTokens={tokensInPool[TOKEN_B].basePool ? DISABLED_TOKENS : NATIVE_TOKENS}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -563,7 +563,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           tokenId={TOKEN_B}
           token={tokensInPool[TOKEN_B]}
           tokenTitle={t`Token B`}
-          disabledTokens={tokensInPool[TOKEN_A].basePool ? DISABLED_TOKENS : ETH}
+          disabledTokens={tokensInPool[TOKEN_A].basePool ? DISABLED_TOKENS : NATIVE_TOKENS}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -584,7 +584,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_C}
               token={tokensInPool[TOKEN_C]}
               tokenTitle={t`Token C`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -604,7 +604,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_D}
               token={tokensInPool[TOKEN_D]}
               tokenTitle={t`Token D`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -624,7 +624,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_E}
               token={tokensInPool[TOKEN_E]}
               tokenTitle={t`Token E`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -644,7 +644,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_F}
               token={tokensInPool[TOKEN_F]}
               tokenTitle={t`Token F`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -664,7 +664,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_G}
               token={tokensInPool[TOKEN_G]}
               tokenTitle={t`Token G`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -684,7 +684,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_H}
               token={tokensInPool[TOKEN_H]}
               tokenTitle={t`Token H`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : ETH}
+              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -698,7 +698,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           {checkThreshold && networks[chainId].cryptoSwapFactory && (
             <>
               <WarningBox
-                message={t`Tokens appear to be unpegged (>5% deviation from 1:1).
+                message={t`Tokens appear to be unpegged (above 5% deviation from 1:1).
                 Consider using Cryptoswap instead.`}
               >
                 <SwitchModeButton
@@ -730,7 +730,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       ) : (
         <Row>
           <ExplainerWrapper flex flexColumn>
-            <p>{t`Consider choosing the token with the higher unit price as the first token for a more performant AMM`}</p>
             <p>{t`Rebasing tokens are not supported in ${CRYPTOSWAP} pools`}</p>
           </ExplainerWrapper>
         </Row>
