@@ -1,6 +1,6 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
@@ -17,7 +17,6 @@ import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCel
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
 const TableRow = ({
-  className,
   formValues,
   isMdUp,
   isInPool,
@@ -34,7 +33,6 @@ const TableRow = ({
   volume,
   handleCellClick,
 }: {
-  className?: string
   formValues: FormValues
   isMdUp: boolean
   isInPool: boolean
@@ -52,20 +50,24 @@ const TableRow = ({
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: false })
+  const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
+
+  useEffect(() => {
+    refresh()  // refresh visibility check after form search
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formValues, searchParams]);
+
+  if (!isVisible) {
+    // show empty row to keep the table structure, but hide the content to speed up rendering
+    return <Item ref={ref} className="row--info pending" />;
+  }
 
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-
-  if (!entry?.isIntersecting) {
-    // show empty row to keep the table structure, but hide the content to speed up rendering
-    return <Item ref={ref} className={`${className} row--info pending`} />;
-  }
-
   return (
     <Item
       ref={ref}
-      className={`${className} row--info`}
+      className="row--info"
       onClick={({ target }) => handleCellClick(target)}
     >
       {showInPoolColumn && (
@@ -118,10 +120,6 @@ const TableRow = ({
       </td>
     </Item>
   )
-}
-
-TableRow.defaultProps = {
-  className: '',
 }
 
 export const TCellInPool = styled.td`

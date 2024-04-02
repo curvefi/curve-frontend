@@ -2,7 +2,7 @@ import type { FormValues, PoolListTableLabel, SearchParams } from '@/components/
 import type { Theme } from '@/store/createGlobalSlice'
 
 import { t } from '@lingui/macro'
-import React, { useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 
 import { formatNumber } from '@/ui/utils'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
@@ -24,7 +24,6 @@ import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellR
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
 const TableRowMobile = ({
-  className,
   formValues,
   isInPool,
   imageBaseUrl,
@@ -44,7 +43,6 @@ const TableRowMobile = ({
   handleCellClick,
   setShowDetail,
 }: {
-  className?: string
   formValues: FormValues
   isInPool: boolean
   imageBaseUrl: string
@@ -65,7 +63,12 @@ const TableRowMobile = ({
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
 }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: false })
+  const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
+
+  useEffect(() => {
+    refresh()  // refresh visibility check after form search
+    // eslint-disable-next-line
+  }, [formValues, searchParams]);
 
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
@@ -90,13 +93,13 @@ const TableRowMobile = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDetail, sortBy])
 
-  if (!entry?.isIntersecting) {
+  if (!isVisible) {
     // show empty row to keep the table structure, but hide the content to speed up rendering
-    return <Item ref={ref} className={`${className} row--info pending`} />
+    return <Item ref={ref} className="row--info pending" />
   }
 
   return (
-    <Item ref={ref} className={`${className} row--info`}>
+    <Item ref={ref} className="row--info">
       <TCell>
         <MobileLabelWrapper flex>
           <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
@@ -186,10 +189,6 @@ const TableRowMobile = ({
       </TCell>
     </Item>
   )
-}
-
-TableRowMobile.defaultProps = {
-  className: '',
 }
 
 const MobileLabelWrapper = styled(Box)`

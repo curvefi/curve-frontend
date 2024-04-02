@@ -1,11 +1,12 @@
 import type { PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
-import TableRow from '@/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback } from 'react'
+import TableRow, { Item } from '@/components/PagePoolList/components/TableRow'
+import React, { FunctionComponent, useCallback, useEffect, useRef } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
+import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 interface PoolRowProps {
   poolId: string,
@@ -86,14 +87,8 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   }
 
   return isXSmDown ? (
-    <TableRowMobile
-      key={poolId}
-      showDetail={showDetail}
-      themeType={themeType}
-      setShowDetail={setShowDetail}
-      {...tableRowProps}
-    />
+    <TableRowMobile showDetail={showDetail} themeType={themeType} setShowDetail={setShowDetail} {...tableRowProps} />
   ) : (
-    <TableRow key={poolId} isMdUp={isMdUp} {...tableRowProps} />
+    <TableRow isMdUp={isMdUp} {...tableRowProps} />
   )
 }
