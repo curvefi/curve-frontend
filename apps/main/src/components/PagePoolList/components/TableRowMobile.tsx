@@ -65,11 +65,10 @@ const TableRowMobile = ({
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
 }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: false })
 
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const isVisible = !!entry?.isIntersecting
   const isShowDetail = showDetail === poolId
 
   const quickViewValue = useMemo(() => {
@@ -91,8 +90,13 @@ const TableRowMobile = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDetail, sortBy])
 
+  if (!entry?.isIntersecting) {
+    // show empty row to keep the table structure, but hide the content to speed up rendering
+    return <Item ref={ref} className={`${className} row--info pending`} />
+  }
+
   return (
-    <Item ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
+    <Item ref={ref} className={`${className} row--info`}>
       <TCell>
         <MobileLabelWrapper flex>
           <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
@@ -100,7 +104,7 @@ const TableRowMobile = ({
           </TCellInPool>
           <MobileLabelContent>
             <PoolLabel
-              isVisible={isVisible}
+              isVisible
               imageBaseUrl={imageBaseUrl}
               poolData={poolDataCachedOrApi}
               poolListProps={{

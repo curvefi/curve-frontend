@@ -6,7 +6,7 @@ interface Props extends IntersectionObserverInit {
 
 function useIntersectionObserver(elementRef: RefObject<Element>, options: Props) {
   const { threshold = 0, root = null, rootMargin = '0%', freezeOnceVisible = false } = options
-  const [entry, setEntry] = useState<IntersectionObserverEntry | { isIntersecting: boolean }>()
+  const [entry, setEntry] = useState<IntersectionObserverEntry | { isIntersecting: true }>()
 
   const frozen = entry?.isIntersecting && freezeOnceVisible
 

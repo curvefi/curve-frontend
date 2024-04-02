@@ -3,7 +3,7 @@ import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
@@ -60,7 +60,7 @@ const Page: NextPage = () => {
     volume: { name: t`Volume` },
   }
 
-  const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
+  const updatePath = useCallback((updatedSearchParams: Partial<SearchParams>) => {
     const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
       ...parsedSearchParams,
       ...updatedSearchParams,
@@ -73,7 +73,7 @@ const Page: NextPage = () => {
     if (searchText) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
     const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
     navigate(pathname)
-  }
+  }, [navigate, params, parsedSearchParams]);
 
   useEffect(() => {
     if (rChainId) {

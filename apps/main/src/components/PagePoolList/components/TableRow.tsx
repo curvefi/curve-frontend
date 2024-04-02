@@ -52,16 +52,20 @@ const TableRow = ({
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: false })
 
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const isVisible = !!entry?.isIntersecting
+
+  if (!entry?.isIntersecting) {
+    // show empty row to keep the table structure, but hide the content to speed up rendering
+    return <Item ref={ref} className={`${className} row--info pending`} />;
+  }
 
   return (
     <Item
       ref={ref}
-      className={`${className} row--info ${isVisible ? '' : 'pending'}`}
+      className={`${className} row--info`}
       onClick={({ target }) => handleCellClick(target)}
     >
       {showInPoolColumn && (
@@ -71,7 +75,7 @@ const TableRow = ({
       )}
       <td>
         <PoolLabel
-          isVisible={isVisible}
+          isVisible
           imageBaseUrl={imageBaseUrl}
           poolData={poolDataCachedOrApi}
           poolListProps={{
@@ -133,7 +137,7 @@ export const TCellInPool = styled.td`
 
 export const Item = styled.tr`
   &.pending {
-    height: 3.25rem;
+    height: 5.6rem;
   }
 
   :hover {
