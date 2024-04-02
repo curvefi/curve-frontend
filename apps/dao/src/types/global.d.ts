@@ -115,7 +115,7 @@ declare global {
 
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
-  type SortByFilter = 'voteId' | 'timeRemaining' | 'totalVotes'
+  type SortByFilter = 'voteId' | 'endingSoon'
 
   type ActiveSortDirection = 'asc' | 'desc'
 }

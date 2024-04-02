@@ -16,15 +16,15 @@ const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, yesVote }) => {
 
 const ProgressBarContainer = styled.div`
   width: 100%;
-  height: 10px;
-  background-color: #e0e0e0;
-  border-radius: 5px;
+  height: 0.625rem;
+  background-color: var(--gray-500a25);
+  border-radius: 2px;
 `
 
 const ProgressBarFill = styled.div<ProgressBarProps>`
   height: 100%;
   background-color: ${({ yesVote }) => (yesVote ? 'var(--chart-green)' : 'var(--chart-red)')};
-  border-radius: 5px;
+  border-radius: 2px;
   width: ${({ percentage }) => percentage}%;
 `
 

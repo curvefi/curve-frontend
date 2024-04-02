@@ -53,9 +53,9 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
         const proposals = await curve.dao.getProposalList()
 
         const formattedProposals: ProposalData[] = proposals.map((proposal) => {
-          const minAcceptQuorumPercent = converNumber(+proposal.minAcceptQuorum)
+          const minAcceptQuorumPercent = converNumber(+proposal.minAcceptQuorum) * 100
           const totalVeCrv = converNumber(+proposal.totalSupply)
-          const quorumVeCrv = minAcceptQuorumPercent * totalVeCrv
+          const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
           const votesFor = converNumber(+proposal.votesFor)
           const votesAgainst = converNumber(+proposal.votesAgainst)
 
@@ -91,7 +91,37 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
         filteredProposals = proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
       }
 
-      return orderBy(filteredProposals, [activeSortBy], [activeSortDirection])
+      let sortedProposals = filteredProposals
+      let passedProposals = []
+      if (activeSortBy === 'endingSoon') {
+        const currentTimestamp = Math.floor(Date.now() / 1000)
+        sortedProposals = filteredProposals.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
+        passedProposals = orderBy(
+          filteredProposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
+          ['voteId'],
+          ['desc']
+        )
+
+        if (activeSortDirection === 'asc') {
+          sortedProposals = orderBy(
+            sortedProposals,
+            [(proposal) => proposal.startDate + 604800 - currentTimestamp],
+            ['desc']
+          )
+          sortedProposals = [...sortedProposals, ...passedProposals]
+        } else {
+          sortedProposals = orderBy(
+            sortedProposals,
+            [(proposal) => proposal.startDate + 604800 - currentTimestamp],
+            ['asc']
+          )
+          sortedProposals = [...sortedProposals, ...passedProposals]
+        }
+      } else {
+        sortedProposals = orderBy(filteredProposals, [activeSortBy], [activeSortDirection])
+      }
+
+      return sortedProposals
     },
     setActiveFilter: (filter: ProposalListFilter) => {
       set(
@@ -108,6 +138,13 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       )
     },
     setActiveSortBy: (sortBy: SortByFilter) => {
+      if (sortBy === 'endingSoon') {
+        set(
+          produce((state: State) => {
+            state[sliceKey].activeSortBy = sortBy
+          })
+        )
+      }
       set(
         produce((state: State) => {
           state[sliceKey].activeSortBy = sortBy
