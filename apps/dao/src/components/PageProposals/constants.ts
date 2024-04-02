@@ -9,6 +9,5 @@ export const PROPOSAL_FILTERS: ProposalListFilterItem[] = [
 
 export const PROPOSAL_SORTING_METHODS = [
   { key: 'voteId', label: 'Vote ID' },
-  { key: 'timeRemaining', label: 'Time Remaining' },
-  { key: 'totalVotes', label: 'Total Votes' },
+  { key: 'endingSoon', label: 'Ending Soon' },
 ]
