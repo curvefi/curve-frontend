@@ -112,6 +112,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   //
   const handleInpChange = useCallback(
     (name: TokenId, value: string) => {
+      if (!value.startsWith('0x')) return
       let updatedFormValues = { ...tokensInPool }
 
       const updateTokenFormValues = (tokenId: TokenId) => {
