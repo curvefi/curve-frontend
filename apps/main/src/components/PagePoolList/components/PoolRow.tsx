@@ -2,7 +2,7 @@ import type { PoolListTableLabel, SearchParams } from '@/components/PagePoolList
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableRow from '@/components/PagePoolList/components/TableRow'
-import React, { useCallback } from 'react'
+import React, { FunctionComponent, useCallback } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
@@ -20,18 +20,24 @@ interface PoolRowProps {
   curve: CurveApi | null,
 }
 
-export function PoolRow({
-                       poolId,
-                       rChainId,
-                       searchParams,
-                       imageBaseUrl,
-                       showInPoolColumn,
-                       tableLabels,
-                       tokensMapper,
-                       showDetail,
-                       setShowDetail,
-                       curve,
-                     }: PoolRowProps) {
+const ROUTES = {
+  swap: ROUTE.PAGE_SWAP,
+  withdraw: ROUTE.PAGE_POOL_WITHDRAW,
+  deposit: ROUTE.PAGE_POOL_DEPOSIT,
+}
+
+export const PoolRow: FunctionComponent<PoolRowProps> = ({
+  poolId,
+  rChainId,
+  searchParams,
+  imageBaseUrl,
+  showInPoolColumn,
+  tableLabels,
+  tokensMapper,
+  showDetail,
+  setShowDetail,
+  curve,
+}) => {
   const navigate = useNavigate()
   const userActiveKey = getUserActiveKey(curve);
 
@@ -50,14 +56,10 @@ export function PoolRow({
 
   const handleCellClick = useCallback((target: EventTarget, formType?: 'swap' | 'withdraw') => {
     const { nodeName } = target as HTMLElement
-    if (nodeName !== 'A') {
-      // prevent click-through link from tooltip
-      if (formType) {
-        navigate(`${poolId}${formType === 'withdraw' ? ROUTE.PAGE_POOL_WITHDRAW : ROUTE.PAGE_SWAP}`)
-      } else {
-        navigate(`${poolId}${ROUTE.PAGE_POOL_DEPOSIT}`)
-      }
+    if (nodeName === 'A') {
+      return  // prevent click-through link from tooltip
     }
+    navigate(`${poolId}${ROUTES[formType ?? 'deposit']}`)
   }, [navigate, poolId]);
 
   const poolDataCached = poolDataMapperCached?.[poolId]

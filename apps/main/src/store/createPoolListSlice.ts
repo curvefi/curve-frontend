@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { FormStatus, FormValues, SearchParams, SortKey } from '@/components/PagePoolList/types'
-import type { FilterKey, Order } from '@/components/PagePoolList/types'
+import type { FilterKey, FormStatus, FormValues, Order, SearchParams, SortKey } from '@/components/PagePoolList/types'
 
 import Fuse from 'fuse.js'
 import chunk from 'lodash/chunk'
@@ -185,7 +184,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
       return poolDatas
     },
-    setFormValues: async (
+    setFormValues: (
       rChainId: ChainId,
       searchParams: SearchParams,
       poolDatasCachedOrApi: (PoolDataCache | PoolData)[],
@@ -195,14 +194,14 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       userPoolList: UserPoolListMapper | undefined
     ) => {
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
-      const storedFormValues = get()[sliceKey].formValues
-      const storedResults = get()[sliceKey].result[activeKey]
+      const state = get()[sliceKey]
+      const storedResults = state.result[activeKey]
 
       const { hideSmallPools, searchText, filterKey, sortBy, sortByOrder } = searchParams
 
       // update form values
       let clonedFormValues = cloneDeep({
-        ...storedFormValues,
+        ...state.formValues,
         hideSmallPools,
         searchTextByTokensAndAddresses: {},
         searchTextByOther: {},
@@ -214,30 +213,30 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         (sortBy === 'volume' && isUndefined(volumeMapper)) ||
         (sortBy === 'tvl' && isUndefined(tvlMapper))
       ) {
-        get()[sliceKey].setStateByActiveKey('formStatus', activeKey, {
+        state.setStateByActiveKey('formStatus', activeKey, {
           ...DEFAULT_FORM_STATUS,
           isLoading: true,
         })
       } else {
-        get()[sliceKey].setStateByActiveKey('formStatus', activeKey, {
+        state.setStateByActiveKey('formStatus', activeKey, {
           ...DEFAULT_FORM_STATUS,
           isLoading: !storedResults,
         })
-        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(clonedFormValues) })
+        state.setStateByKeys({ activeKey, formValues: clonedFormValues })
 
-        let tablePoolDatas = cloneDeep(poolDatasCachedOrApi)
+        let tablePoolDatas = [...poolDatasCachedOrApi];
 
         if (
           filterKey !== 'user' &&
           hideSmallPools &&
           (networks[rChainId].showHideSmallPoolsCheckbox || poolDatasCachedOrApi.length > 10)
         ) {
-          tablePoolDatas = get()[sliceKey].filterSmallTvl(tablePoolDatas, tvlMapper, rChainId)
+          tablePoolDatas = state.filterSmallTvl(tablePoolDatas, tvlMapper, rChainId)
         }
 
         // searchText
         if (searchText) {
-          tablePoolDatas = get()[sliceKey].filterBySearchText(searchText, tablePoolDatas)
+          tablePoolDatas = state.filterBySearchText(searchText, tablePoolDatas)
         }
 
         // filter by 'all | usd | btc | etch...'
@@ -250,15 +249,15 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
             filterKey === 'stableng' ||
             filterKey === 'user'
           ) {
-            tablePoolDatas = get()[sliceKey].filterByKey(filterKey, tablePoolDatas, userPoolList)
+            tablePoolDatas = state.filterByKey(filterKey, tablePoolDatas, userPoolList)
           } else {
-            tablePoolDatas = get()[sliceKey].filterBySearchText(filterKey, tablePoolDatas)
+            tablePoolDatas = state.filterBySearchText(filterKey, tablePoolDatas)
           }
         }
 
         // sort by table labels 'pool | factory | type | rewards...'
         if (sortBy) {
-          tablePoolDatas = get()[sliceKey].sortFn(
+          tablePoolDatas = state.sortFn(
             sortBy,
             sortByOrder,
             tablePoolDatas,
@@ -285,11 +284,11 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
 
         // set result
-        get()[sliceKey].setStateByActiveKey('result', activeKey, result)
-        get()[sliceKey].setStateByKeys({ resultRewardsOtherCount, resultRewardsCrvCount })
+        state.setStateByActiveKey('result', activeKey, result)
+        state.setStateByKeys({ resultRewardsOtherCount, resultRewardsCrvCount })
 
-        get()[sliceKey].setStateByActiveKey('formStatus', activeKey, {
-          ...get()[sliceKey].formStatus,
+        state.setStateByActiveKey('formStatus', activeKey, {
+          ...state.formStatus,
           noResult: result.length === 0,
           isLoading: false,
         })
