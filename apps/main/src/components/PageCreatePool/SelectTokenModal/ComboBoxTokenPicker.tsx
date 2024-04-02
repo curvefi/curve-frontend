@@ -34,7 +34,7 @@ type Props = {
   onSelectionChange: (selectedAddress: React.Key) => void
 }
 
-type TokenQueryType = '' | 'LOADING' | 'ERROR'
+type TokenQueryType = '' | 'LOADING' | 'ERROR' | 'DISABLED'
 
 const ComboBoxTokenPicker = ({
   curve,
@@ -66,6 +66,13 @@ const ComboBoxTokenPicker = ({
   }
 
   const verifyTokens = async () => {
+    if (disabledKeys?.some((item) => item.toLowerCase() === filterValue.toLowerCase())) {
+      settokenQueryStatus('DISABLED')
+      return
+    }
+
+    settokenQueryStatus('LOADING')
+
     try {
       const token = await curve.getCoinsData([filterValue])
       const isBasePool = basePools[chainId].some(
@@ -100,7 +107,6 @@ const ComboBoxTokenPicker = ({
 
     settokenQueryStatus('')
     if (filterValue.length === 42 && checkedResult.length === 0) {
-      settokenQueryStatus('LOADING')
       verifyTokens()
     }
 
@@ -238,12 +244,29 @@ const ComboBoxTokenPicker = ({
                   <Spinner size={15} />
                 </StyledSearchSpinnerWrapper>
               </Item>
-            ) : (
+            ) : tokenQueryStatus === 'ERROR' ? (
               // no search resuslts
+
               <Item key={'ERROR'} textValue={'ERROR'}>
                 <ItemWrapper>
                   <LabelTextWrapper>
                     <ErrorText>{t`No token found for address ${shortenTokenAddress(filterValue)}`}</ErrorText>
+                  </LabelTextWrapper>
+                </ItemWrapper>
+              </Item>
+            ) : (
+              // disabled token
+
+              <Item key={'disabled-token'} textValue={'Disabled Token'}>
+                <ItemWrapper>
+                  <LabelTextWrapper>
+                    {networks[chainId].createDisabledTokens.some(
+                      (token) => token.toLowerCase() === filterValue.toLowerCase()
+                    ) ? (
+                      <ErrorText>{t`${filterValue} is a disabled token in Pool Creation`}</ErrorText>
+                    ) : (
+                      <ErrorText>{t`${filterValue} is a disabled token in this pool configuration.`}</ErrorText>
+                    )}
                   </LabelTextWrapper>
                 </ItemWrapper>
               </Item>
