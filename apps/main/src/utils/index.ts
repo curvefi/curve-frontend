@@ -103,7 +103,7 @@ export function isBonus(slippage: number) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`curve-frontend -> ${fnName}:`, ...args)
+    console.log(`curve-frontend@${new Date().toISOString()} -> ${fnName}:`, ...args)
   }
 }
 

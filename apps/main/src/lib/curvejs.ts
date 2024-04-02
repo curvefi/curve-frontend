@@ -120,12 +120,10 @@ const network = {
     ])
     return curve.getPoolList()
   },
-  fetchNetworkConfig: (curve: CurveApi) => {
-    return {
-      hasDepositAndStake: curve.hasDepositAndStake(),
-      hasRouter: curve.hasRouter(),
-    }
-  },
+  fetchNetworkConfig: (curve: CurveApi) => ({
+    hasDepositAndStake: curve.hasDepositAndStake(),
+    hasRouter: curve.hasRouter()
+  }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
     let api = curve as CurveApi
@@ -214,13 +212,11 @@ const pool = {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }
 
     try {
-      const customTvl = networks[chainId].poolCustomTVL[p.id]
-      resp.value = customTvl ? customTvl : await p.stats.totalLiquidity()
+      resp.value = networks[chainId].poolCustomTVL[p.id] || await p.stats.totalLiquidity()
       return resp
     } catch (error) {
       console.error(error)
       if (p.inApi) {
-        console.error(error)
         resp.errorMessage = 'Unable to get tvl'
       }
       return resp
