@@ -8,6 +8,7 @@ import networks from '@/networks'
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import ProgressBar from '../components/ProgressBar'
+import VoteCountdown from '../components/VoteCountdown'
 
 type Props = ProposalData
 
@@ -32,7 +33,6 @@ const Proposal = ({
     <ProposalContainer>
       <InformationWrapper>
         <ProposalDetailsRow>
-          <ProposalId>#{voteId}</ProposalId>
           <ProposalStatus
             className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
               status === 'Passed' && 'passed'
@@ -40,6 +40,7 @@ const Proposal = ({
           >
             {status}
           </ProposalStatus>
+          <ProposalId>#{voteId}</ProposalId>
           <ProposalType>{voteType}</ProposalType>
         </ProposalDetailsRow>
         <ProposalMetadata>{metadata}</ProposalMetadata>
@@ -51,10 +52,11 @@ const Proposal = ({
         </Box>
       </InformationWrapper>
       <VoteWrapper>
+        <VoteCountdown startDate={startDate} />
         <VoteFor>
           <Box display="grid" gridTemplateColumns="2.2rem 1fr 0.2fr">
             <p className="vote-label">Yes:</p>
-            {formatNumber(votesFor.toFixed(0))} veCRV
+            <p className="vote-count">{formatNumber(votesFor.toFixed(0))} veCRV</p>
             <PercentageVotes>{((votesFor / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
           </Box>
           <ProgressBar yesVote percentage={(votesFor / totalVeCrv) * 100} />
@@ -62,14 +64,14 @@ const Proposal = ({
         <VoteAgainst>
           <Box display="grid" gridTemplateColumns="2.2rem 1fr 0.2fr">
             <p className="vote-label">No:</p>
-            {formatNumber(votesAgainst.toFixed(0))} veCRV
+            <p className="vote-count">{formatNumber(votesAgainst.toFixed(0))} veCRV</p>
             <PercentageVotes>{((votesAgainst / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
           </Box>
           <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
         </VoteAgainst>
         <Quorum>
           <p>Quorum:</p>
-          <p>{formatNumber(minAcceptQuorumPercent * 100)}%</p>
+          <p>{formatNumber(minAcceptQuorumPercent)}%</p>
         </Quorum>
       </VoteWrapper>
     </ProposalContainer>
@@ -84,6 +86,7 @@ const ProposalContainer = styled.div`
 const InformationWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   padding: var(--spacing-3);
   background-color: var(--summary_content--background-color);
   min-width: 100%;
@@ -97,38 +100,64 @@ const ProposalDetailsRow = styled.div`
 `
 
 const ProposalId = styled.h4`
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-2);
   font-weight: var(--bold);
   padding-right: var(--spacing-2);
+  padding-left: var(--spacing-1);
   border-right: 2px solid var(--gray-500);
 `
 
 const ProposalStatus = styled.h4`
+  border: 1px solid var(--gray-500);
   font-size: var(--font-size-1);
   text-transform: uppercase;
-  border-right: 2px solid var(--gray-500);
-  padding-right: var(--spacing-2);
-  /* &.passed {
-    border-left: 0.4rem solid green;
+  /* border-right: 2px solid var(--gray-500); */
+  padding: 0.2rem 0.4rem;
+  &.passed {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--success-400);
+      border-radius: 50%;
+    }
   }
   &.denied {
-    border-left: 0.4rem solid red;
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--danger-400);
+      border-radius: 50%;
+    }
   }
   &.active {
-    border-left: 0.4rem solid yellow;
-  } */
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--warning-400);
+      border-radius: 50%;
+    }
+  }
 `
 
 const ProposalType = styled.p`
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-2);
   font-weight: var(--bold);
-  padding-right: var(--spacing-2);
 `
 
 const ProposalMetadata = styled.p`
   margin: var(--spacing-4) 0;
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
+  width: 37.5rem;
   line-height: 1.5;
 `
 
@@ -151,9 +180,8 @@ const StyledExternalLink = styled(ExternalLink)`
 const VoteWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: var(--spacing-3);
-  background-color: var(--summary_content--background-color);
+  background-color: var(--summary_header--background-color);
 `
 
 const Vote = styled.div`
@@ -162,14 +190,17 @@ const Vote = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
+  .vote-label {
+    margin-right: var(--spacing-1);
+  }
+  .vote-count {
+    font-weight: var(--semi-bold);
+  }
 `
 
 const VoteFor = styled(Vote)`
   color: var(--green-500);
   min-width: 100%;
-  .vote-label {
-    margin-right: var(--spacing-1);
-  }
 `
 
 const PercentageVotes = styled.p`

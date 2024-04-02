@@ -96,7 +96,7 @@ const ProposalsContainer = styled(Box)`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-7);
   row-gap: var(--spacing-3);
 `
 
