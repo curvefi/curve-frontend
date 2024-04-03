@@ -10,10 +10,11 @@ import Button from '@/ui/Button'
 type Props = {
   filters: ProposalListFilterItem[]
   activeFilter: ProposalListFilterItem['key']
+  listLength: number
   setActiveFilter: (filter: ProposalListFilterItem['key']) => void
 }
 
-const ProposalsFilters = ({ filters, activeFilter, setActiveFilter }: Props) => {
+const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }: Props) => {
   return (
     <Container>
       {filters.map((filter) => (
@@ -21,8 +22,10 @@ const ProposalsFilters = ({ filters, activeFilter, setActiveFilter }: Props) => 
           onClick={() => setActiveFilter(filter.key)}
           className={activeFilter === filter.key ? 'active' : ''}
           variant="select"
+          key={filter.label}
         >
           {filter.label}
+          {activeFilter === filter.key ? ` (${listLength})` : ''}
         </Filter>
       ))}
     </Container>
