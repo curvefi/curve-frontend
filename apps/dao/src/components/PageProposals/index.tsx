@@ -21,9 +21,13 @@ const Proposals = () => {
     setActiveSortBy,
     setActiveSortDirection,
     setActiveFilter,
+    setSearchValue,
+    searchValue,
     activeFilter,
-    selectSortedProposals,
+    selectProposals,
   } = useStore((state) => state.daoProposals)
+
+  const proposals = selectProposals()
 
   const handleSortingMethodChange = (key: React.Key) => {
     setActiveSortBy(key as SortByFilter)
@@ -32,8 +36,6 @@ const Proposals = () => {
   const handleChangeSortingDirection = () => {
     setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
   }
-
-  console.log(selectSortedProposals()[10])
 
   return (
     <Wrapper>
@@ -44,15 +46,16 @@ const Proposals = () => {
             id="inpSearchProposals"
             placeholder={t`Search`}
             variant="small"
-            handleInputChange={() => {}}
-            handleSearchClose={() => {}}
-            value={''}
+            handleInputChange={(val) => setSearchValue(val)}
+            handleSearchClose={() => setSearchValue('')}
+            value={searchValue}
           />
           <ListManagerContainer>
             <ProposalsFilters
               filters={PROPOSAL_FILTERS}
               activeFilter={activeFilter}
               setActiveFilter={setActiveFilter}
+              listLength={proposals.length}
             />
           </ListManagerContainer>
           <StyledSelectSortingMethod
@@ -67,15 +70,18 @@ const Proposals = () => {
             onClick={() => handleChangeSortingDirection()}
           />
         </ToolBar>
+        {searchValue !== '' && (
+          <SearchMessage>
+            Showing results ({proposals.length}) for &quot;<strong>{searchValue}</strong>&quot;:
+          </SearchMessage>
+        )}
         <ProposalsWrapper>
           {proposalsLoading ? (
-            <SpinnerWrapper>
+            <StyledSpinnerWrapper>
               <Spinner />
-            </SpinnerWrapper>
+            </StyledSpinnerWrapper>
           ) : (
-            selectSortedProposals().map((proposal, index) => (
-              <Proposal {...proposal} key={`${proposal.voteId}-${index}`} />
-            ))
+            proposals.map((proposal, index) => <Proposal {...proposal} key={`${proposal.voteId}-${index}`} />)
           )}
         </ProposalsWrapper>
       </ProposalsContainer>
@@ -87,7 +93,7 @@ const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   margin: var(--spacing-5) auto 0;
-  max-width: 60rem;
+  width: 60rem;
   flex-grow: 1;
   min-height: 100%;
 `
@@ -96,6 +102,8 @@ const ProposalsContainer = styled(Box)`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  min-width: 100%;
+  width: 100%;
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-7);
   row-gap: var(--spacing-3);
 `
@@ -109,7 +117,7 @@ const ProposalsWrapper = styled.div`
 const ListManagerContainer = styled.div`
   display: flex;
   flex-direction: row;
-  margin: var(--spacing-2);
+  margin: auto var(--spacing-2);
 `
 
 const PageTitle = styled.h2`
@@ -141,7 +149,17 @@ const ToggleDirectionIcon = styled(Icon)`
 `
 
 const StyledSearchInput = styled(SearchInput)`
+  width: 15rem;
   margin: var(--spacing-2) var(--spacing-2) var(--spacing-1) var(--spacing-2);
+`
+
+const SearchMessage = styled.p`
+  font-size: var(--font-size-2);
+  margin-left: var(--spacing-2);
+`
+
+const StyledSpinnerWrapper = styled(SpinnerWrapper)`
+  width: 100%;
 `
 
 export default Proposals

@@ -1,6 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import cloneDeep from 'lodash/cloneDeep'
+import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 
@@ -9,6 +9,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoading: boolean
   proposals: ProposalData[]
+  searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilter
   activeSortDirection: ActiveSortDirection
@@ -20,16 +21,23 @@ const sliceKey = 'daoProposals'
 export type DaoProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
-    setActiveFilter: (filter: ProposalListFilter) => void
-    setActiveSortBy: (sortBy: SortByFilter) => void
-    setActiveSortDirection: (direction: ActiveSortDirection) => void
+    setSearchValue(searchValue: string): void
+    setActiveFilter(filter: ProposalListFilter): void
+    setActiveSortBy(sortBy: SortByFilter): void
+    setActiveSortDirection(direction: ActiveSortDirection): void
+    selectFilteredProposals(): ProposalData[]
     selectSortedProposals(): ProposalData[]
+    selectSearchFilteredProposals(): ProposalData[]
+    selectProposals(): ProposalData[]
+    setStateByKey<T>(key: StateKey, value: T): void
+    setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
   }
 }
 
 const DEFAULT_STATE: SliceState = {
   proposalsLoading: false,
+  searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
@@ -83,21 +91,30 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
         console.log(error)
       }
     },
-    selectSortedProposals: () => {
-      const { proposals, activeFilter, activeSortBy, activeSortDirection } = get()[sliceKey]
+    selectFilteredProposals: () => {
+      const { proposals, activeFilter } = get()[sliceKey]
 
-      let filteredProposals = proposals
+      if (activeFilter === 'all') return proposals
+
+      return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+    },
+    selectSortedProposals: () => {
+      const { proposals, activeSortBy, activeSortDirection, activeFilter, selectFilteredProposals } = get()[sliceKey]
+
+      let proposalsCopy = [...proposals]
+
       if (activeFilter !== 'all') {
-        filteredProposals = proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+        proposalsCopy = selectFilteredProposals()
       }
 
-      let sortedProposals = filteredProposals
+      let sortedProposals = proposalsCopy
       let passedProposals = []
       if (activeSortBy === 'endingSoon') {
+        // causes timestamp to not be in sync with other proposal countdowns
         const currentTimestamp = Math.floor(Date.now() / 1000)
-        sortedProposals = filteredProposals.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
+        sortedProposals = proposalsCopy.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
         passedProposals = orderBy(
-          filteredProposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
+          proposalsCopy.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
           ['voteId'],
           ['desc']
         )
@@ -118,41 +135,47 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
           sortedProposals = [...sortedProposals, ...passedProposals]
         }
       } else {
-        sortedProposals = orderBy(filteredProposals, [activeSortBy], [activeSortDirection])
+        sortedProposals = orderBy(proposalsCopy, [activeSortBy], [activeSortDirection])
       }
 
       return sortedProposals
     },
+    selectSearchFilteredProposals: () => {
+      const { selectSortedProposals, searchValue } = get()[sliceKey]
+
+      const proposals = selectSortedProposals()
+
+      return searchFn(searchValue, proposals)
+    },
+    selectProposals: () => {
+      const { selectSearchFilteredProposals, searchValue, selectSortedProposals } = get()[sliceKey]
+
+      if (searchValue !== '') {
+        return selectSearchFilteredProposals()
+      }
+
+      return selectSortedProposals()
+    },
+    setSearchValue: (filterValue) => {
+      get()[sliceKey].setStateByKey('searchValue', filterValue)
+    },
     setActiveFilter: (filter: ProposalListFilter) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].activeFilter = filter
-        })
-      )
+      get()[sliceKey].setStateByKey('activeFilter', filter)
     },
     setActiveSortDirection: (direction: ActiveSortDirection) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].activeSortDirection = direction
-        })
-      )
+      get()[sliceKey].setStateByKey('activeSortDirection', direction)
     },
     setActiveSortBy: (sortBy: SortByFilter) => {
-      if (sortBy === 'endingSoon') {
-        set(
-          produce((state: State) => {
-            state[sliceKey].activeSortBy = sortBy
-          })
-        )
-      }
-      set(
-        produce((state: State) => {
-          state[sliceKey].activeSortBy = sortBy
-        })
-      )
+      get()[sliceKey].setStateByKey('activeSortBy', sortBy)
+    },
+    setStateByKey: (key, value) => {
+      get().setAppStateByKey(sliceKey, key, value)
+    },
+    setStateByKeys: (sliceState) => {
+      get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, DEFAULT_STATE)
     },
   },
 })
@@ -168,6 +191,35 @@ const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: num
 
 const converNumber = (number: number) => {
   return number / 10 ** 18
+}
+
+const searchFn = (filterValue: string, proposals: ProposalData[]) => {
+  console.log('searching', filterValue)
+
+  const fuse = new Fuse<ProposalData>(proposals, {
+    ignoreLocation: true,
+    threshold: 0.3,
+    includeScore: true,
+    keys: [
+      'voteId',
+      'creator',
+      'voteType',
+      {
+        name: 'metaData',
+        getFn: (proposal) => {
+          // Preprocess the metaData field
+          const metaData = proposal.metadata || ''
+          return metaData.toLowerCase()
+        },
+      },
+    ],
+  })
+
+  const result = fuse.search(filterValue, { limit: 10 })
+
+  console.log('result', result)
+
+  return result.map((r) => r.item)
 }
 
 export default createDaoProposalsSlice
