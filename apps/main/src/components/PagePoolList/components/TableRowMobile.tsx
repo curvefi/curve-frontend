@@ -66,9 +66,11 @@ const TableRowMobile = ({
   const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
 
   useEffect(() => {
-    refresh()  // refresh visibility check after form search
-    // eslint-disable-next-line
-  }, [formValues, searchParams]);
+    // refresh visibility check after form search. Only do that after the observer has been initialized (isVisible is defined)
+    if (isVisible === false) {
+      refresh()
+    }
+  }, [formValues, searchParams, refresh, isVisible]);
 
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams

@@ -9,7 +9,7 @@ function useIntersectionObserver(elementRef: RefObject<Element>, options: Props 
   const [entry, setEntry] = useState<IntersectionObserverEntry | { isIntersecting: true }>()
   const [observer, setObserver] = useState<IntersectionObserver>()
 
-  const frozen = entry?.isIntersecting && freezeOnceVisible
+  const frozen = freezeOnceVisible && entry?.isIntersecting
   const updateEntry = useCallback(([entry]: IntersectionObserverEntry[]) => setEntry(entry), [])
 
   useEffect(() => {
@@ -34,7 +34,7 @@ function useIntersectionObserver(elementRef: RefObject<Element>, options: Props 
 
   return {
     isIntersecting: entry?.isIntersecting,
-    refresh: () => observer && updateEntry(observer.takeRecords()),
+    refresh: useCallback(() => observer && updateEntry(observer.takeRecords()), [observer, updateEntry]),
   };
 }
 

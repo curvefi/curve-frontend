@@ -53,9 +53,11 @@ const TableRow = ({
   const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
 
   useEffect(() => {
-    refresh()  // refresh visibility check after form search
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [formValues, searchParams]);
+    // refresh visibility check after form search. Only do that after the observer has been initialized (isVisible is defined)
+    if (isVisible === false) {
+      refresh()
+    }
+  }, [formValues, searchParams, refresh, isVisible]);
 
   if (!isVisible) {
     // show empty row to keep the table structure, but hide the content to speed up rendering
