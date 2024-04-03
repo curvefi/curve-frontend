@@ -42,7 +42,7 @@ const InputProvider = ({
         className={`${className || ''} ${isFocusVisible ? 'focus-visible' : ''}`}
         disabled={disabled}
         inputVariant={inputVariant}
-        minHeight={inputVariant === 'small' ? 'small' : 'x-large'}
+        minHeight={inputVariant === 'small' ? 'large' : 'x-large'}
       >
         {children}
       </InputWrapper>
