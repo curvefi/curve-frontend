@@ -4,9 +4,10 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai, weiToGwei } from '@/ui/utils/utilsWeb3'
+import { gweiToWai } from '@/ui/utils/utilsWeb3'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@/utils'
+import api from '@/lib/curvejs'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -80,21 +81,17 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             })
           }
         } else if (chainId === 42161) {
+          // Arbitrum custom fee data
           const provider = get().wallet.provider
 
           if (provider) {
+            const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
             parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo) {
-              const { l2GasPriceWei } = await networks[curve.chainId].api.helpers.fetchL2GasPrice(curve)
-              parsedGasInfo.gasInfo.l2GasPriceWei = l2GasPriceWei
-
-              if (l2GasPriceWei) {
-                curve.setCustomFeeData({
-                  maxFeePerGas: 2 * weiToGwei(l2GasPriceWei),
-                  maxPriorityFeePerGas: weiToGwei(l2GasPriceWei),
-                })
-              }
+            if (parsedGasInfo && customFeeData) {
+              parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
+              parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
+              curve.setCustomFeeData(customFeeData)
             }
           }
         } else if (chainId === 252 || chainId === 8453) {

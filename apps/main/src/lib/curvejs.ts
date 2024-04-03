@@ -42,6 +42,17 @@ const multichainNetworks: { [chainId: string]: boolean } = {
 }
 
 const helpers = {
+  fetchCustomGasFees: async (curve: CurveApi) => {
+    let resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
+    try {
+      resp.customFeeData = await curve.getGasInfoForL2()
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-get-gas')
+      return resp
+    }
+  },
   fetchL2GasPrice: async (curve: CurveApi) => {
     let resp = { l2GasPriceWei: 0, error: '' }
     try {
