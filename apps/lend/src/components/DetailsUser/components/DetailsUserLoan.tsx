@@ -64,7 +64,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { title: t`Range %`, value: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
     ],
     [
-      { title: t`AMM position state`, value: <CellLoanState {...cellProps} />, className: 'isRow' },
+      { title: t`Collateral composition`, value: <CellLoanState {...cellProps} />, className: 'isRow' },
     ]
   ]
 
