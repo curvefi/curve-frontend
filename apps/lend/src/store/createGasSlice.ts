@@ -5,9 +5,9 @@ import type { GasInfo } from '@/store/types'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai, weiToGwei } from '@/ui/utils/utilsWeb3'
-import { helpers } from '@/lib/apiLending'
+import { gweiToWai } from '@/ui/utils/utilsWeb3'
 import { httpFetcher, log } from '@/utils/helpers'
+import lendingApi from '@/lib/apiLending'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -45,10 +45,10 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchGasInfo: async (api) => {
-      if (!api) return
+    fetchGasInfo: async (curve) => {
+      if (!curve) return
 
-      const { chainId } = api
+      const { chainId } = curve
       log('fetchGasInfo', chainId)
 
       try {
@@ -64,7 +64,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             parsedGasInfo = parseEthereumGasInfo(gasInfo, gas)
             const customFeeDataValues = getEthereumCustomFeeDataValues(gasInfo)
             if (customFeeDataValues) {
-              api.setCustomFeeData(customFeeDataValues)
+              curve.setCustomFeeData(customFeeDataValues)
             }
           }
         } else if (chainId === 137) {
@@ -75,29 +75,25 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             parsedGasInfo = parsePolygonGasInfo(fetchedData)
           }
 
-          // set apijs's custom fee data for polygon
+          // set api custom fee data for polygon
           if (fetchedData) {
-            api.setCustomFeeData({
+            curve.setCustomFeeData({
               maxFeePerGas: fetchedData.fast.maxFee,
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
         } else if (chainId === 42161) {
+          // Arbitrum custom fee data
           const provider = get().wallet.provider
 
           if (provider) {
-            parsedGasInfo = await parseGasInfo(api, provider)
+            const { customFeeData } = await lendingApi.helpers.fetchCustomGasFees(curve)
+            parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo) {
-              const { l2GasPriceWei } = await helpers.fetchL2GasPrice(api)
-              parsedGasInfo.gasInfo.l2GasPriceWei = l2GasPriceWei
-
-              if (l2GasPriceWei) {
-                api.setCustomFeeData({
-                  maxFeePerGas: 2 * weiToGwei(l2GasPriceWei),
-                  maxPriorityFeePerGas: weiToGwei(l2GasPriceWei),
-                })
-              }
+            if (parsedGasInfo && customFeeData) {
+              parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
+              parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
+              curve.setCustomFeeData(customFeeData)
             }
           }
         }
@@ -107,7 +103,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         } else {
           const provider = get().wallet.provider
           if (provider && chainId) {
-            const parsedGasInfo = await parseGasInfo(api, provider)
+            const parsedGasInfo = await parseGasInfo(curve, provider)
             if (parsedGasInfo) {
               get()[sliceKey].setStateByKeys(parsedGasInfo)
             }
@@ -221,7 +217,7 @@ async function calcBasePlusPriority(
     result.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
     result.basePlusPriorityL1 = [gasInfo.base * 6000]
 
-    const { l2GasPriceWei, l1GasPriceWei } = await helpers.fetchL1AndL2GasPrice(api)
+    const { l2GasPriceWei, l1GasPriceWei } = await lendingApi.helpers.fetchL1AndL2GasPrice(api)
     result.l1GasPriceWei = l1GasPriceWei
     result.l2GasPriceWei = l2GasPriceWei
   } else if (gasFeeDataWei.gasPrice) {
