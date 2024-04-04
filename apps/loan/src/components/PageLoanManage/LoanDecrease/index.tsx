@@ -261,7 +261,12 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       </Box>
 
       <Checkbox
-        isDisabled={disable || +userWalletBalances?.stablecoin < +userState?.debt}
+        isDisabled={
+          disable ||
+          typeof userWalletBalances === 'undefined' ||
+          typeof userState === 'undefined' ||
+          +userWalletBalances?.stablecoin < +userState?.debt
+        }
         isSelected={formValues.isFullRepay}
         onChange={(isFullRepay) => handleInpChangeFullRepay(isFullRepay)}
       >
