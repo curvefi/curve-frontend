@@ -282,9 +282,10 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
             Object.keys(volumeMapperCached ?? {}).length &&
             Object.keys(tvlMapperCached ?? {}).length ? (
             <>
-              {result.map((poolId: string) => (
+              {result.map((poolId: string, index: number) => (
                 <PoolRow
                   key={poolId}
+                  index={index}
                   poolId={poolId}
                   rChainId={rChainId}
                   searchParams={searchParams}

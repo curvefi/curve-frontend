@@ -7,7 +7,7 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { formatNumber } from '@/ui/utils'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { Item, TCellInPool } from '@/components/PagePoolList/components/TableRow'
+import { LazyItem, TCellInPool } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
@@ -24,6 +24,7 @@ import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellR
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
 const TableRowMobile = ({
+  index,
   formValues,
   isInPool,
   imageBaseUrl,
@@ -43,6 +44,7 @@ const TableRowMobile = ({
   handleCellClick,
   setShowDetail,
 }: {
+  index: number
   formValues: FormValues
   isInPool: boolean
   imageBaseUrl: string
@@ -62,16 +64,6 @@ const TableRowMobile = ({
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
-
-  useEffect(() => {
-    // refresh visibility check after form search. Only do that after the observer has been initialized (isVisible is defined)
-    if (isVisible === false) {
-      refresh()
-    }
-  }, [formValues, searchParams, refresh, isVisible]);
-
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId
@@ -95,13 +87,8 @@ const TableRowMobile = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDetail, sortBy])
 
-  if (!isVisible) {
-    // show empty row to keep the table structure, but hide the content to speed up rendering
-    return <Item ref={ref} className="row--info pending" />
-  }
-
   return (
-    <Item ref={ref} className="row--info">
+    <LazyItem id={`${index}`} className="row--info">
       <TCell>
         <MobileLabelWrapper flex>
           <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
@@ -189,7 +176,7 @@ const TableRowMobile = ({
           </MobileTableContent>
         </MobileTableContentWrapper>
       </TCell>
-    </Item>
+    </LazyItem>
   )
 }
 

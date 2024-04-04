@@ -1,6 +1,6 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 
-import { useEffect, useRef } from 'react'
+import { FunctionComponent, HTMLAttributes, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
@@ -17,6 +17,7 @@ import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCel
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
 const TableRow = ({
+  index,
   formValues,
   isMdUp,
   isInPool,
@@ -33,6 +34,7 @@ const TableRow = ({
   volume,
   handleCellClick,
 }: {
+  index: number
   formValues: FormValues
   isMdUp: boolean
   isInPool: boolean
@@ -49,26 +51,11 @@ const TableRow = ({
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const { refresh, isIntersecting: isVisible } = useIntersectionObserver(ref)
-
-  useEffect(() => {
-    // refresh visibility check after form search. Only do that after the observer has been initialized (isVisible is defined)
-    if (isVisible === false) {
-      refresh()
-    }
-  }, [formValues, searchParams, refresh, isVisible]);
-
-  if (!isVisible) {
-    // show empty row to keep the table structure, but hide the content to speed up rendering
-    return <Item ref={ref} className="row--info pending" />;
-  }
-
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   return (
-    <Item
-      ref={ref}
+    <LazyItem
+      id={`${index}`}
       className="row--info"
       onClick={({ target }) => handleCellClick(target)}
     >
@@ -120,7 +107,7 @@ const TableRow = ({
       <td className="right">
         <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
       </td>
-    </Item>
+    </LazyItem>
   )
 }
 
@@ -135,7 +122,7 @@ export const TCellInPool = styled.td`
   }
 `
 
-export const Item = styled.tr`
+const Item = styled.tr`
   &.pending {
     height: 5.6rem;
   }
@@ -144,5 +131,16 @@ export const Item = styled.tr`
     background-color: var(--table_row--hover--color);
   }
 `
+
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, className = '', ...props }) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const { isIntersecting: isVisible } = useIntersectionObserver(ref, {refreshOnChange: id}) || {};
+
+  return (
+    <Item ref={ref} className={className + (isVisible ? '' : ' pending')} id={id} {...props}>
+      {isVisible && children}
+    </Item>
+  );
+}
 
 export default TableRow
