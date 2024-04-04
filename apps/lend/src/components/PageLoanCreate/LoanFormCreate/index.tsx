@@ -321,15 +321,12 @@ const LoanCreate = (props: PageContentProps) => {
 
       {/* actions */}
       {signerAddress && typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists && !formStatus.isComplete ? (
-        <AlertBox alertType="info">
-          <div>
-            A loan has been found for this market.{' '}
-            <InternalLink $noStyles href={getLoanManagePathname(params, rOwmId, 'loan')}>
-              Click here
-            </InternalLink>{' '}
-            to manage it.
-          </div>
-        </AlertBox>
+        <>
+          <AlertBox alertType="info">{t`A loan has been found for this market.`}</AlertBox>
+          <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, rOwmId, 'loan')}>
+            Manage loan
+          </LinkButton>
+        </>
       ) : (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {formStatus.warning === 'warning-loan-exists' && owm ? (
