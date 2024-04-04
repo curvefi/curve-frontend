@@ -18,6 +18,7 @@ import networks from '@/networks'
 
 import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertFormError from '@/components/AlertFormError'
+import AlertInfoSelfLiquidation from 'ui/src/AlertBox/AlertInfoSelfLiquidation'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import InputReadOnly from '@/ui/InputReadOnly'
@@ -36,6 +37,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const formStatus = useStore((state) => state.loanLiquidate.formStatus)
   const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
   const maxSlippage = useStore((state) => state.maxSlippage)
+  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
@@ -47,6 +49,8 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+
+  const { stablecoin = '', collateral = '' } = getTokenName(llamma) ?? {}
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
@@ -216,6 +220,18 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       {/* actions */}
       <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
+        {+liquidationAmt > 0 && typeof userLoanDetails !== 'undefined' && (
+          <AlertInfoSelfLiquidation
+            liquidationAmt={liquidationAmt}
+            titleSelfLiquidation={t`Self-liquidation amount:`}
+            titleReceive={t`Receive:`}
+            borrowedAmount={userLoanDetails?.userState?.stablecoin ?? '0'}
+            borrowedSymbol={stablecoin}
+            collateralAmount={userLoanDetails?.userState?.collateral ?? '0'}
+            collateralSymbol={collateral}
+            debtAmount={userLoanDetails?.userState?.debt ?? '0'}
+          />
+        )}
         <AlertFormWarning errorKey={formStatus.warning} />
         <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(false, true)} />
         {txInfoBar}

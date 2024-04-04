@@ -18,6 +18,7 @@ import AlertBox from '@/ui/AlertBox'
 import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertFormError from '@/components/AlertFormError'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
+import AlertInfoSelfLiquidation from '@/ui/AlertBox/AlertInfoSelfLiquidation'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import DetailInfoRate from '@/components/DetailInfoRate'
@@ -36,6 +37,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
   const maxSlippage = useStore((state) => state.maxSlippage)
+  const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const userWalletBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
@@ -46,6 +48,8 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
+  const { owm } = owmData ?? {}
+  const { details, error } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
   const reset = useCallback(
@@ -194,6 +198,19 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
+        {+liquidationAmt > 0 && typeof userLoanDetailsResp !== 'undefined' && typeof owm !== 'undefined' && (
+          <AlertInfoSelfLiquidation
+            liquidationAmt={liquidationAmt}
+            errorMessage={error ? t`Unable to get self-liquidation details.` : ''}
+            titleSelfLiquidation={t`Self-liquidation amount:`}
+            titleReceive={t`Receive:`}
+            borrowedAmount={details?.state?.borrowed ?? '0'}
+            borrowedSymbol={owm?.borrowed_token?.symbol ?? ''}
+            collateralAmount={details?.state.collateral ?? '0'}
+            collateralSymbol={owm?.collateral_token?.symbol ?? ''}
+            debtAmount={details?.state?.debt ?? '0'}
+          />
+        )}
         <AlertFormWarning errorKey={formStatus.warning} />
         <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(false, true)} />
         {txInfoBar}
