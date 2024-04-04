@@ -113,11 +113,8 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
         const loadingFormEstGas = storedFormEstGas[activeKey] ??
           storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-        const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
-        clonedFormStatus.warning = isFullRepay ? 'warning-is-payoff-amount' : ''
-
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, loadingFormEstGas)
-        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: clonedFormStatus })
+        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
 
         get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
       } else {
