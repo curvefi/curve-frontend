@@ -1,13 +1,12 @@
-import type { FormValues, PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
+import type { PoolListTableLabel } from '@/components/PagePoolList/types'
 import type { Theme } from '@/store/createGlobalSlice'
 
 import { t } from '@lingui/macro'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 
 import { formatNumber } from '@/ui/utils'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { LazyItem, TCellInPool } from '@/components/PagePoolList/components/TableRow'
+import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
@@ -23,7 +22,14 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
-const TableRowMobile = ({
+type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
+  showDetail: string
+  themeType: Theme
+  setShowDetail: React.Dispatch<React.SetStateAction<string>>
+  tableLabel: PoolListTableLabel
+}
+
+const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   index,
   formValues,
   isInPool,
@@ -43,26 +49,6 @@ const TableRowMobile = ({
   volume,
   handleCellClick,
   setShowDetail,
-}: {
-  index: number
-  formValues: FormValues
-  isInPool: boolean
-  imageBaseUrl: string
-  poolData: PoolData | undefined
-  poolDataCachedOrApi: PoolDataCache | PoolData | undefined
-  poolId: string
-  rewardsApy: RewardsApy | undefined
-  searchParams: SearchParams
-  showDetail: string
-  tableLabel: PoolListTableLabel
-  themeType: Theme
-  tokensMapper: TokensMapper
-  tvlCached: Tvl | undefined
-  tvl: Tvl | undefined
-  volumeCached: Volume | undefined
-  volume: Volume | undefined
-  handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
-  setShowDetail: React.Dispatch<React.SetStateAction<string>>
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams

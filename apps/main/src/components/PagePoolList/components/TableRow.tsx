@@ -1,6 +1,6 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 
-import { FunctionComponent, HTMLAttributes, useEffect, useRef } from 'react'
+import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
@@ -16,25 +16,9 @@ import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellR
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
-const TableRow = ({
-  index,
-  formValues,
-  isMdUp,
-  isInPool,
-  imageBaseUrl,
-  poolData,
-  poolDataCachedOrApi,
-  rewardsApy,
-  searchParams,
-  showInPoolColumn,
-  tokensMapper,
-  tvlCached,
-  tvl,
-  volumeCached,
-  volume,
-  handleCellClick,
-}: {
+export type TableRowProps = {
   index: number
+  poolId: string
   formValues: FormValues
   isMdUp: boolean
   isInPool: boolean
@@ -50,12 +34,32 @@ const TableRow = ({
   volumeCached: Volume | undefined
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
+}
+
+const TableRow: FunctionComponent<TableRowProps> = ({
+  index,
+  poolId,
+  formValues,
+  isMdUp,
+  isInPool,
+  imageBaseUrl,
+  poolData,
+  poolDataCachedOrApi,
+  rewardsApy,
+  searchParams,
+  showInPoolColumn,
+  tokensMapper,
+  tvlCached,
+  tvl,
+  volumeCached,
+  volume,
+  handleCellClick,
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   return (
     <LazyItem
-      id={`${index}`}
+      id={`${poolId}-${index}`}
       className="row--info"
       onClick={({ target }) => handleCellClick(target)}
     >
@@ -132,12 +136,19 @@ const Item = styled.tr`
   }
 `
 
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, className = '', ...props }) => {
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, className = '', style, ...props }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref, {refreshOnChange: id}) || {};
+  const [height, setHeight] = useState<string>();
+
+  useEffect(() => {
+    if (isVisible && ref.current) {
+      setHeight(`${ref.current.clientHeight}px`);
+    }
+  }, [isVisible]);
 
   return (
-    <Item ref={ref} className={className + (isVisible ? '' : ' pending')} id={id} {...props}>
+    <Item ref={ref} className={className + (isVisible ? '' : ' pending')} id={id} style={{...style, ...!isVisible && {height}}} {...props}>
       {isVisible && children}
     </Item>
   );

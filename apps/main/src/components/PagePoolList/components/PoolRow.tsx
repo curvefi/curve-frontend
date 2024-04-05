@@ -1,7 +1,7 @@
 import type { PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
-import TableRow from '@/components/PagePoolList/components/TableRow'
+import TableRow, { TableRowProps } from '@/components/PagePoolList/components/TableRow'
 import React, { FunctionComponent, useCallback } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
@@ -67,8 +67,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const poolDataCached = poolDataMapperCached?.[poolId]
   const poolData = poolDatasMapper?.[poolId]
 
-  const tableRowProps = {
-    rChainId,
+  const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
     formValues,
     searchParams,
@@ -79,7 +78,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     poolDataCachedOrApi: poolData ?? poolDataCached,
     rewardsApy: rewardsApyMapper?.[poolId],
     showInPoolColumn: showInPoolColumn,
-    tableLabel: tableLabels,
     tokensMapper,
     tvlCached: tvlMapperCached?.[poolId],
     tvl: tvlMapper?.[poolId],
@@ -89,7 +87,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   }
 
   return isXSmDown ? (
-    <TableRowMobile showDetail={showDetail} themeType={themeType} setShowDetail={setShowDetail} {...tableRowProps} />
+    <TableRowMobile tableLabel={tableLabels} showDetail={showDetail} themeType={themeType} setShowDetail={setShowDetail} {...tableRowProps} />
   ) : (
     <TableRow isMdUp={isMdUp} {...tableRowProps} />
   )
