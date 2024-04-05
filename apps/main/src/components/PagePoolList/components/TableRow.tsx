@@ -127,20 +127,20 @@ export const TCellInPool = styled.td`
 `
 
 const Item = styled.tr`
-  &.pending {
-    height: 5.6rem;
-  }
-
   :hover {
     background-color: var(--table_row--hover--color);
   }
 `
 
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, className = '', style, ...props }) => {
+/**
+ * Component to lazy load the <Item> table row when it is visible in the viewport.
+ */
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const { isIntersecting: isVisible } = useIntersectionObserver(ref, {refreshOnChange: id}) || {};
-  const [height, setHeight] = useState<string>();
+  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {};
 
+  // when rendered items might get larger. So we have that in the state to avoid stuttering
+  const [height, setHeight] = useState<string>('88px'); // default height on desktop
   useEffect(() => {
     if (isVisible && ref.current) {
       setHeight(`${ref.current.clientHeight}px`);
@@ -148,7 +148,7 @@ export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = 
   }, [isVisible]);
 
   return (
-    <Item ref={ref} className={className + (isVisible ? '' : ' pending')} id={id} style={{...style, ...!isVisible && {height}}} {...props}>
+    <Item ref={ref} id={id} style={{...style, ...!isVisible && {height}}} {...props}>
       {isVisible && children}
     </Item>
   );
