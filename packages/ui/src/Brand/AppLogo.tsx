@@ -1,39 +1,24 @@
 import * as React from 'react'
 import { Link } from 'react-router-dom'
 import Image from 'next/image'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils/responsive'
 import { LogoImg, RCLogoText } from 'ui/src/images'
-import ExternalLink from 'ui/src/Link/ExternalLink'
 
 export type AppLogoProps = {
   className?: string
   appName: string
-  pathname?: string
-  internalPathname: string
   showBeta?: boolean
 }
 
-const AppLogo = ({ className = '', appName, internalPathname, pathname, showBeta }: AppLogoProps) => {
-  const LogoContent = (
-    <>
-      <CurveLogo src={LogoImg} alt="Curve" /> <StyledCurveLogoText />
-      <AppName>{appName}</AppName>
-    </>
-  )
-
+const AppLogo = ({ className = '', appName, showBeta }: AppLogoProps) => {
   return (
     <Wrapper className={className}>
-      {pathname?.startsWith('http') ? (
-        <StyledExternalLink $noStyles $haveAppName={!!appName} href={pathname} target="_self">
-          {LogoContent}
-        </StyledExternalLink>
-      ) : (
-        <StyledInternalLink to={internalPathname} $haveAppName={!!appName}>
-          {LogoContent}
-        </StyledInternalLink>
-      )}
+      <StyledInternalLink to="/" $haveAppName={!!appName}>
+        <CurveLogo src={LogoImg} alt="Curve" /> <StyledCurveLogoText />
+        <AppName>{appName}</AppName>
+      </StyledInternalLink>
       {showBeta && (
         <div>
           <Beta>Beta</Beta>
@@ -89,7 +74,7 @@ const CurveLogo = styled(Image)`
   margin-right: var(--spacing-2);
 `
 
-const LinkCss = css<{ $haveAppName: boolean }>`
+const StyledInternalLink = styled(Link)<{ $haveAppName: boolean }>`
   align-items: center;
   color: inherit;
   display: inline-flex;
@@ -105,14 +90,6 @@ const LinkCss = css<{ $haveAppName: boolean }>`
         `
     }
   }};
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  ${LinkCss}
-`
-
-const StyledInternalLink = styled(Link)`
-  ${LinkCss}
 `
 
 export default AppLogo

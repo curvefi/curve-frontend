@@ -5,13 +5,13 @@ import React, { useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CONNECT_STAGE, CRVUSD_ADDRESS, CURVE_FI_ROUTE, ROUTE } from '@/constants'
+import { CONNECT_STAGE, CRVUSD_ADDRESS, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getLocaleFromUrl, getNetworkFromUrl, getPath, getRestFullPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { formatNumber, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
-import networks, { visibleNetworksList } from '@/networks'
+import { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
@@ -57,11 +57,8 @@ const Header = () => {
 
   const rLocale = getLocaleFromUrl()
 
-  const network = networks[rChainId]?.id
   const appLogoProps: AppLogoProps = {
     appName: 'Crvusd',
-    pathname: CURVE_FI_ROUTE.MAIN,
-    internalPathname: `${rLocale?.rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
   }
 
   const p: AppPage[] = isLgUp

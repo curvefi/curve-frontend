@@ -59,11 +59,8 @@ const Header = () => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const network = networks[rChainId]?.networkId
   const appLogoProps: AppLogoProps = {
     appName: '',
-    pathname: hasRouter ? ROUTE.PAGE_SWAP : ROUTE.PAGE_POOLS,
-    internalPathname: `${rLocalePathname}/${network}${hasRouter ? ROUTE.PAGE_SWAP : ROUTE.PAGE_POOLS}`,
   }
 
   // prettier-ignore

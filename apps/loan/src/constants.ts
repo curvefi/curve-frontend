@@ -25,7 +25,7 @@ export const REFRESH_INTERVAL = {
 const CURVE_FI_MAIN = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://curve.fi'
 
 export const CURVE_FI_ROUTE = {
-  MAIN: CURVE_FI_MAIN,
+  MAIN: process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://crvusd.curve.fi',
   CRVUSD_POOLS: `${CURVE_FI_MAIN}/#/ethereum/pools?filter=crvusd`,
 }
 
