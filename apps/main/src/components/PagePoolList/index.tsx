@@ -113,6 +113,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       { key: 'tricrypto', label: t`Tricrypto` },
       { key: 'crypto', label: t`Crypto` },
       { key: 'stableng', label: t`Stable NG` },
+      { key: 'cross-chain', label: t`Cross-chain` },
       { key: 'user', label: t`My Pools` },
     ],
     []
