@@ -103,7 +103,7 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/audits/audits_pdf/">
+        <StyledExternalLink href="https://docs.curve.fi/references/audits/">
           <Trans>Audits</Trans>
         </StyledExternalLink>
       </SectionItem>
