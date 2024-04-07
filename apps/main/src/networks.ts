@@ -236,6 +236,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableSwapFactory: true,
     cryptoSwapFactory: true,
     twocryptoFactory: true,
+    tricryptoFactory: true,
     stableSwapNg: true,
     hasFactory: true,
     pricesApi: true,
