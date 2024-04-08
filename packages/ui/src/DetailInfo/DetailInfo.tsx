@@ -126,6 +126,7 @@ const Wrapper = styled(Box)<WrapperProps>`
       return `
         margin-top: var(--spacing-1);
         padding-top: var(--spacing-1);
+        border-color: inherit;
         border-top: 1px solid var(--border-400);
       `
     }

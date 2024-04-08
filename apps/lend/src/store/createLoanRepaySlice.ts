@@ -110,11 +110,6 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       const { signerAddress } = api
 
       if (isFullRepay) {
-        // update formStatus
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-        cFormStatus.warning = isFullRepay ? 'warning-is-payoff-amount' : ''
-        get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
-
         // api calls
         get()[sliceKey].fetchEstGasApproval(activeKey, api, owmData)
       } else {

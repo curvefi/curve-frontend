@@ -27,18 +27,18 @@ const CellLoanState = ({
         <Wrapper>
           <Box margin="0 var(--spacing-normal) var(--spacing-narrow) 0">
             <div>
-              <TextCaption isCaps>Collateral</TextCaption>
+              <TextCaption>{collateral_token?.symbol ?? ''}</TextCaption>
               <br />
-              <span>{formatNumber(details?.state?.collateral)}</span> <span>{collateral_token?.symbol ?? ''}</span>
+              <span>{formatNumber(details?.state?.collateral)}</span>
             </div>
             <InpChipUsdRate hideRate address={collateral_token?.address} amount={details?.state?.collateral} />
           </Box>
 
           <div>
             <div>
-              <TextCaption isCaps>Borrowed</TextCaption>
+              <TextCaption>{borrowed_token?.symbol ?? ''}</TextCaption>
               <br />
-              <span>{formatNumber(details?.state?.borrowed)}</span> <span>{borrowed_token?.symbol ?? ''}</span>
+              <span>{formatNumber(details?.state?.borrowed)}</span>
             </div>
             <InpChipUsdRate hideRate address={borrowed_token?.address} amount={details?.state?.borrowed} />
           </div>

@@ -8,3 +8,7 @@
     font-weight: 400;
     font-display: swap;
 }
+
+:root {
+    --loan-form-min-width: 23.3125rem;
+}

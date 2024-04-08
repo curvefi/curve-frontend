@@ -251,7 +251,12 @@ const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, bo
       </Box>
 
       <Checkbox
-        isDisabled={disable || +userBalances?.borrowed < +(state?.debt ?? '0')}
+        isDisabled={
+          disable ||
+          typeof state === 'undefined' ||
+          typeof userBalances === 'undefined' ||
+          +userBalances?.borrowed < +(state?.debt ?? '0')
+        }
         isSelected={formValues.isFullRepay}
         onChange={(isFullRepay) => handleInpChangeFullRepay(isFullRepay)}
       >

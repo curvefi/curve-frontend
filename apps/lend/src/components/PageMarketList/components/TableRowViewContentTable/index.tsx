@@ -96,7 +96,7 @@ const TableRowViewContentTable = ({
             const loanExists = loansExistsMapper[userActiveKey]?.loanExists
 
             const handleCellClick = () => {
-              setMarketsStateByKey('marketDetailsView', 'market')
+              setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
               if (searchParams.filterTypeKey === 'supply') {
                 navigate(getVaultPathname(params, owmId, 'deposit'))
               } else if (loanExists) {
