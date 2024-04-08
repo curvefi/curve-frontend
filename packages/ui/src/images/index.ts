@@ -4,7 +4,6 @@ export * from './network'
 export { default as LogoImg } from './curve-logo.png'
 export { ReactComponent as RCLogoWhite } from './curve-white.svg'
 export { ReactComponent as RCLogoText } from './curve-logo-text.svg'
-export { ReactComponent as RCEywa } from './logo/eywa-green.svg'
 export { ReactComponent as RCCrossCurve } from './logo/crosscurve.svg'
 
 // SOCIAL

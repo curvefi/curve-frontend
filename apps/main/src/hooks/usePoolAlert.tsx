@@ -1,4 +1,3 @@
-import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
@@ -8,7 +7,7 @@ import { getPath } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
 import useStore from '@/store/useStore'
 
-import { RCEywa, RCCrossCurve } from '@/ui/images'
+import { RCCrossCurve } from '@/ui/images'
 import { ExternalLink, InternalLink } from '@/ui/Link'
 import PoolAlertCustomMessage from '@/components/PoolAlertCustomMessage'
 
@@ -79,10 +78,6 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     }
 
     // Fantom networks
-    const eymaAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
-      alertType: '',
-      message: <PoolAlertCustomMessage title="EYWA links" titleIcon={<RCEywa />} externalLinks={externalLinks} />,
-    })
     const crossCurveAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
       alertType: '',
       message: (
@@ -129,13 +124,14 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
     // prettier-ignore
     const alerts: { [poolAddress: string]: PoolAlert } = {
       // fantom
-      '0x939721ce04332ca04b100154e0c8fcbb4ebaf695': eymaAlert([{label: 'Mint e-tokens', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=15&outputToken=0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}]), // eyma EUSD
-      '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c': eymaAlert([{label: 'Mint s-tokens', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=15&outputToken=0x3d947fa82723b78e67730c113188bed865167a31'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x55d398326f99059ff775485246999027b3197955'}]), // eyma eUSDT
-      '0x6bb9a6b7066445da6bef268b91810ae750431587': eymaAlert([{label: 'Mint s-tokens', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2791bca1f2de4661ed88a30c99a7a9449aa84174&outputChainId=15&outputToken=0xff78828a56543476875551d31792137848e626c5'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2791bca1f2de4661ed88a30c99a7a9449aa84174&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}]), // eyma eUSDC
-      '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2': eymaAlert([{label: 'Mint s-tokens', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x8f3cf7ad23cd3cadbd9735aff958023239c6a063&outputChainId=15&outputToken=0xdcd1dd03b2c7ed2ea127c968d4c032130f6baee6'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x8f3cf7ad23cd3cadbd9735aff958023239c6a063&outputChainId=1&outputToken=0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'}]), // eyma eDAI
-      '0x6e0dc5a4ef555277db3435703f0e287040013763': eymaAlert([{label: 'Mint s-tokens', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2e1ad108ff1d8c782fcbbb89aad783ac49586756&outputChainId=15&outputToken=0x1123f3a1394f0efc2f34a1cbec887873361e96f0'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2e1ad108ff1d8c782fcbbb89aad783ac49586756&outputChainId=1&outputToken=0x40af3827f39d0eacbf4a168f8d4ee67c121d11c9'}]), // eyma eTUSD
+      '0x939721ce04332ca04b100154e0c8fcbb4ebaf695': crossCurveAlert([{label: 'Redeem e-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x939721ce04332ca04b100154e0c8fcbb4ebaf695&action=withdraw&type=curve'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}]), // eyma EUSD
+      '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c': crossCurveAlert([{label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c&action=withdraw&type=curve'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=1&outputToken=0x55d398326f99059ff775485246999027b3197955'}]), // eyma eUSDT
+      '0x6bb9a6b7066445da6bef268b91810ae750431587': crossCurveAlert([{label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x6bb9a6b7066445da6bef268b91810ae750431587&action=withdraw&type=curve'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2791bca1f2de4661ed88a30c99a7a9449aa84174&outputChainId=1&outputToken=0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}]), // eyma eUSDC
+      '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2': crossCurveAlert([{label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2&action=withdraw&type=curve'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x8f3cf7ad23cd3cadbd9735aff958023239c6a063&outputChainId=1&outputToken=0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3'}]), // eyma eDAI
+      '0x6e0dc5a4ef555277db3435703f0e287040013763': crossCurveAlert([{label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x6e0dc5a4ef555277db3435703f0e287040013763&action=withdraw&type=curve'}, { label: 'Cross-chain swap', url: 'https://app.eywa.fi/swap?inputChainId=3&inputToken=0x2e1ad108ff1d8c782fcbbb89aad783ac49586756&outputChainId=1&outputToken=0x40af3827f39d0eacbf4a168f8d4ee67c121d11c9'}]), // eyma eTUSD
       '0x353bb1dfbc52bc3b0e7d264216b1455df00f50be': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x353bb1dfbc52bc3b0e7d264216b1455df00f50be&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x353bb1dfbc52bc3b0e7d264216b1455df00f50be&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=137&inputToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&outputChainId=10&outputToken=0xc52d7f23a2e460248db6ee192cb23dd12bddcbf6'}]), // CrossCurve crvUSDC
       '0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=137&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=42161&outputToken=0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f'}]), // CrossCurve 3crypto
+      '0x7d04f016749c215e52138b06bb35ee8491e739fd': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x7d04f016749c215e52138b06bb35ee8491e739fd&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x7d04f016749c215e52138b06bb35ee8491e739fd&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9&outputChainId=3&outputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f'}]), // CrossCurve crvUSDT
       // ethereum
       '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
       '0xfc636d819d1a98433402ec9dec633d864014f28c': zunamiAlert(),

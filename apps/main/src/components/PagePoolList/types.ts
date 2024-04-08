@@ -22,6 +22,7 @@ export type FilterKey =
   | 'crvusd'
   | 'tricrypto'
   | 'stableng'
+  | 'cross-chain'
 
 export type SortKey =
   | 'name'
