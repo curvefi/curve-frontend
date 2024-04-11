@@ -8,26 +8,36 @@ import networks from '@/networks'
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import ProgressBar from '../components/ProgressBar'
-import VoteCountdown from '../components/VoteCountdown'
+import VoteCountdown from '../../VoteCountdown'
+import VoteBox from '@/components/VoteBox'
+import InternalLinkButton from '@/ui/InternalLinkButton'
+import Icon from '@/ui/Icon'
 
-type Props = ProposalData
+type Props = {
+  proposalData: ProposalData
+  handleClick: (rProposalId: string) => void
+}
 
 const Proposal = ({
-  voteId,
-  voteType,
-  creator,
-  startDate,
-  snapshotBlock,
-  ipfsMetadata,
-  metadata,
-  votesFor,
-  votesAgainst,
-  voteCount,
-  supportRequired,
-  minAcceptQuorumPercent,
-  totalVeCrv,
-  executed,
-  status,
+  proposalData: {
+    voteId,
+    voteType,
+    creator,
+    startDate,
+    snapshotBlock,
+    ipfsMetadata,
+    metadata,
+    votesFor,
+    votesAgainst,
+    voteCount,
+    supportRequired,
+    minAcceptQuorumPercent,
+    totalVeCrv,
+    executed,
+    status,
+    totalVotesPercentage,
+  },
+  handleClick,
 }: Props) => {
   return (
     <ProposalContainer>
@@ -52,27 +62,18 @@ const Proposal = ({
         </Box>
       </InformationWrapper>
       <VoteWrapper>
-        <VoteCountdown startDate={startDate} />
-        <VoteFor>
-          <Box display="grid" gridTemplateColumns="2.2rem 1fr 0.2fr">
-            <p className="vote-label">Yes:</p>
-            <p className="vote-count">{formatNumber(votesFor.toFixed(0))} veCRV</p>
-            <PercentageVotes>{((votesFor / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
-          </Box>
-          <ProgressBar yesVote percentage={(votesFor / totalVeCrv) * 100} />
-        </VoteFor>
-        <VoteAgainst>
-          <Box display="grid" gridTemplateColumns="2.2rem 1fr 0.2fr">
-            <p className="vote-label">No:</p>
-            <p className="vote-count">{formatNumber(votesAgainst.toFixed(0))} veCRV</p>
-            <PercentageVotes>{((votesAgainst / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
-          </Box>
-          <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
-        </VoteAgainst>
-        <Quorum>
-          <p>Quorum:</p>
-          <p>{formatNumber(minAcceptQuorumPercent)}%</p>
-        </Quorum>
+        <Box flex flexJustifyContent="space-between">
+          <CountdownTitle>Time Left:</CountdownTitle>
+          <VoteCountdown startDate={startDate} />
+        </Box>
+        <StyledVoteBox
+          votesFor={votesFor}
+          votesAgainst={votesAgainst}
+          totalVeCrv={totalVeCrv}
+          totalVotesPercentage={totalVotesPercentage}
+          minAcceptQuorumPercent={minAcceptQuorumPercent}
+        />
+        <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
       </VoteWrapper>
     </ProposalContainer>
   )
@@ -155,10 +156,12 @@ const ProposalType = styled.p`
 
 const ProposalMetadata = styled.p`
   margin: var(--spacing-4) 0;
+  margin-right: var(--spacing-3);
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
-  width: 37.5rem;
   line-height: 1.5;
+  white-space: pre-line;
+  word-break: break-word;
 `
 
 const ProposalProposer = styled.p`
@@ -184,43 +187,14 @@ const VoteWrapper = styled.div`
   background-color: var(--summary_header--background-color);
 `
 
-const Vote = styled.div`
+const CountdownTitle = styled.p`
   font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-  .vote-label {
-    margin-right: var(--spacing-1);
-  }
-  .vote-count {
-    font-weight: var(--semi-bold);
-  }
+  font-weight: var(--semi-bold);
+  margin-right: var(--spacing-2);
 `
 
-const VoteFor = styled(Vote)`
-  color: var(--green-500);
-  min-width: 100%;
-`
-
-const PercentageVotes = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  margin-left: auto;
-`
-
-const VoteAgainst = styled(Vote)`
-  margin-top: var(--spacing-2);
-  color: var(--red-500);
-`
-
-const Quorum = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin-top: var(--spacing-3);
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
+const StyledVoteBox = styled(VoteBox)`
+  margin: var(--spacing-4) 0;
 `
 
 export default Proposal

@@ -51,7 +51,7 @@ declare global {
     rNetworkIdx: number
     rSubdirectory: string
     rSubdirectoryUseDefault: boolean
-    rPoolId: string
+    rProposalId: string
     rFormType: RFormType
     redirectPathname: string
     restFullPathname: string
@@ -108,9 +108,36 @@ declare global {
     votesFor: number
     votesAgainst: number
     totalVotes: number
+    totalVotesPercentage: number
     minAcceptQuorumPercent: number
     quorumVeCrv: number
     totalVeCrv: number
+  }
+
+  type PricesProposalData = {
+    vote_id: number
+    vote_type: string
+    creator: string
+    start_date: number
+    snapshot_block: number
+    ipfs_metadata: string
+    metadata: string
+    votes_for: string
+    votes_against: string
+    vote_count: number
+    support_required: string
+    min_accept_quorum: string
+    total_supply: string
+    executed: boolean
+    creator_voting_power: string
+    execution_tx: string
+    script: string
+    votes: {
+      voter: string
+      supports: boolean
+      voting_power: string | number
+      transaction_hash: string
+    }[]
   }
 
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'

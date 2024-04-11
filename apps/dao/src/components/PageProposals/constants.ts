@@ -8,6 +8,6 @@ export const PROPOSAL_FILTERS: ProposalListFilterItem[] = [
 ]
 
 export const PROPOSAL_SORTING_METHODS = [
-  { key: 'voteId', label: 'Vote ID' },
+  { key: 'voteId', label: 'Proposal ID' },
   { key: 'endingSoon', label: 'Ending Soon' },
 ]

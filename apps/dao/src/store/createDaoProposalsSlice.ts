@@ -8,7 +8,9 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   proposalsLoading: boolean
-  proposals: ProposalData[]
+  pricesProposalLoading: boolean
+  proposals: { [voteId: string]: ProposalData }
+  currentProposal: PricesProposalData | null
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilter
@@ -21,6 +23,7 @@ const sliceKey = 'daoProposals'
 export type DaoProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
+    getProposal(voteId: number, voteType: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilter): void
@@ -37,11 +40,13 @@ export type DaoProposalsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   proposalsLoading: false,
+  pricesProposalLoading: false,
+  currentProposal: null,
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
-  proposals: [],
+  proposals: {},
 }
 
 // units of gas used * (base fee + priority fee)
@@ -60,16 +65,19 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       try {
         const proposals = await curve.dao.getProposalList()
 
-        const formattedProposals: ProposalData[] = proposals.map((proposal) => {
-          const minAcceptQuorumPercent = converNumber(+proposal.minAcceptQuorum) * 100
-          const totalVeCrv = converNumber(+proposal.totalSupply)
+        let proposalsObject: { [voteId: string]: ProposalData } = {}
+
+        proposals.forEach((proposal) => {
+          const minAcceptQuorumPercent = convertNumber(+proposal.minAcceptQuorum) * 100
+          const totalVeCrv = convertNumber(+proposal.totalSupply)
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-          const votesFor = converNumber(+proposal.votesFor)
-          const votesAgainst = converNumber(+proposal.votesAgainst)
+          const votesFor = convertNumber(+proposal.votesFor)
+          const votesAgainst = convertNumber(+proposal.votesAgainst)
+          const totalVotesPercentage = ((votesFor + votesAgainst) / totalVeCrv) * 100
 
           const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst)
 
-          return {
+          proposalsObject[`${proposal.voteId}-${proposal.voteType}`] = {
             ...proposal,
             status: status,
             votesFor,
@@ -78,13 +86,51 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
             quorumVeCrv,
             totalVeCrv,
             totalVotes: votesFor + votesAgainst,
+            totalVotesPercentage,
           }
         })
 
         set(
           produce((state: State) => {
-            state[sliceKey].proposals = formattedProposals
+            state[sliceKey].proposals = proposalsObject
             state[sliceKey].proposalsLoading = false
+          })
+        )
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    getProposal: async (voteId: number, voteType: string) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].pricesProposalLoading = true
+        })
+      )
+
+      try {
+        const proposalFetch = await fetch(`https://prices.curve.fi/v1/dao/proposals/details/${voteType}/${voteId}`)
+        const proposal = await proposalFetch.json()
+
+        console.log(proposal)
+
+        const formattedVotes = proposal.votes
+          .map((vote: PricesProposalData['votes'][number]) => ({
+            ...vote,
+            voting_power: +vote.voting_power / 10 ** 18,
+          }))
+          .sort()
+        const sortedVotes = formattedVotes.sort(
+          (a: PricesProposalData['votes'][number], b: PricesProposalData['votes'][number]) =>
+            +b.voting_power - +a.voting_power
+        )
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].pricesProposalLoading = false
+            state[sliceKey].currentProposal = {
+              ...proposal,
+              votes: sortedVotes,
+            }
           })
         )
       } catch (error) {
@@ -94,14 +140,14 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     selectFilteredProposals: () => {
       const { proposals, activeFilter } = get()[sliceKey]
 
-      if (activeFilter === 'all') return proposals
+      if (activeFilter === 'all') return Object.values(proposals)
 
-      return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+      return Object.values(proposals).filter((proposal) => proposal.status.toLowerCase() === activeFilter)
     },
     selectSortedProposals: () => {
       const { proposals, activeSortBy, activeSortDirection, activeFilter, selectFilteredProposals } = get()[sliceKey]
 
-      let proposalsCopy = [...proposals]
+      let proposalsCopy = [...Object.values(proposals)]
 
       if (activeFilter !== 'all') {
         proposalsCopy = selectFilteredProposals()
@@ -189,7 +235,7 @@ const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: num
   return 'Denied'
 }
 
-const converNumber = (number: number) => {
+const convertNumber = (number: number) => {
   return number / 10 ** 18
 }
 

@@ -1,0 +1,279 @@
+import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
+import { t } from '@lingui/macro'
+import { useEffect, useMemo } from 'react'
+
+import useStore from '@/store/useStore'
+import networks from '@/networks'
+
+import Button from '@/ui/Button'
+import Box from '@/ui/Box'
+import Icon from '@/ui/Icon'
+import { ExternalLink } from '@/ui/Link'
+import VoteCountdown from '../VoteCountdown'
+import Script from './components/Script'
+import VoteBox from '../VoteBox'
+import Voters from './Voters'
+import UserBox from './UserBox'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Loader from 'ui/src/Loader/Loader'
+
+type Props = {
+  routerParams: {
+    rChainId: ChainId
+    rProposalId: string
+  }
+}
+
+const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
+  const navigate = useNavigate()
+  const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore(
+    (state) => state.daoProposals
+  )
+  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+
+  const proposal = useStore((state) => state.daoProposals.proposals[rProposalId] ?? null)
+
+  const {
+    voteId,
+    voteType,
+    creator,
+    startDate,
+    snapshotBlock,
+    ipfsMetadata,
+    metadata,
+    votesFor,
+    votesAgainst,
+    voteCount,
+    supportRequired,
+    minAcceptQuorumPercent,
+    totalVeCrv,
+    totalVotes,
+    totalVotesPercentage,
+    executed,
+    status,
+  } = proposal ?? {}
+
+  useEffect(() => {
+    if (!isLoadingCurve && rChainId && voteId && voteType && !proposalsLoading) {
+      getProposal(voteId, voteType.toLowerCase())
+    }
+  }, [getProposal, voteId, voteType, proposalsLoading, isLoadingCurve, rChainId])
+
+  return !rChainId || isLoadingCurve || !proposal ? (
+    <SpinnerWrapper>
+      <Spinner />
+    </SpinnerWrapper>
+  ) : (
+    <Wrapper>
+      <BackButtonWrapper variant="secondary">
+        <BackButton variant="text" onClick={() => navigate(`/ethereum/proposals/`)}>
+          <Icon name="ArrowLeft" size={16} />
+          {t`Back to proposals`}
+        </BackButton>
+      </BackButtonWrapper>
+      <Box flex>
+        <ProposalContainer variant="secondary">
+          <ProposalTopBar>
+            <TopBarColumn>
+              <SubTitle>Status</SubTitle>
+              <Status
+                className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+                  status === 'Passed' && 'passed'
+                }`}
+              >
+                {status}
+              </Status>
+            </TopBarColumn>
+            <TopBarColumn>
+              <SubTitle>Proposal ID</SubTitle>
+              <h3>#{voteId}</h3>
+            </TopBarColumn>
+            <TopBarColumn>
+              <SubTitle>Proposal Type</SubTitle>
+              <h3>{voteType}</h3>
+            </TopBarColumn>
+            <TopBarColumn margin="0 0 0 auto">
+              <SubTitle>Time Remaining</SubTitle>
+              <VoteCountdown startDate={startDate} />
+            </TopBarColumn>
+          </ProposalTopBar>
+          <MetaData>
+            <SubTitle>Metadata</SubTitle>
+            <p>{metadata}</p>
+          </MetaData>
+          {currentProposal?.script && <Script script={currentProposal?.script} />}
+          <TimelineBox>
+            <Box flex>
+              <Box>
+                <SubTitle>Created:</SubTitle>
+                <Time>{new Date(startDate * 1000).toLocaleString()}</Time>
+              </Box>
+              <Box margin="0 0 0 var(--spacing-3)">
+                <SubTitle>Ends:</SubTitle>
+                <Time>{new Date((startDate + 604800) * 1000).toLocaleString()}</Time>
+              </Box>
+            </Box>
+            <Box>
+              <SubTitle>Proposer:</SubTitle>
+              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>{creator}</StyledExternalLink>
+            </Box>
+          </TimelineBox>
+        </ProposalContainer>
+        <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
+          <UserBox />
+          <VoteState variant="secondary">
+            <VoteBox
+              votesFor={votesFor}
+              votesAgainst={votesAgainst}
+              totalVeCrv={totalVeCrv}
+              minAcceptQuorumPercent={minAcceptQuorumPercent}
+              totalVotesPercentage={totalVotesPercentage}
+            />
+          </VoteState>
+          <Voters totalVotes={totalVotes} />
+        </Box>
+      </Box>
+    </Wrapper>
+  )
+}
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-5) auto var(--spacing-6);
+  width: 60rem;
+  flex-grow: 1;
+  min-height: 100%;
+`
+
+const ProposalContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  margin-bottom: auto;
+`
+
+const BackButtonWrapper = styled(Box)`
+  margin-right: auto;
+  margin-bottom: var(--spacing-2);
+`
+
+const BackButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  font-size: var(--font-size-2);
+  gap: var(--spacing-2);
+  color: var(--page--text-color);
+`
+
+const SubTitle = styled.h4`
+  font-size: var(--font-size-1);
+  opacity: 0.5;
+`
+
+const ProposalTopBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-3);
+  background-color: var(--gray-500a20);
+  padding: var(--spacing-3);
+`
+
+const Status = styled.h3`
+  font-size: var(--font-size-2);
+  display: flex;
+  &.passed {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--success-400);
+      border-radius: 50%;
+    }
+  }
+  &.denied {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--danger-400);
+      border-radius: 50%;
+    }
+  }
+  &.active {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--warning-400);
+      border-radius: 50%;
+    }
+  }
+`
+
+const TopBarColumn = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-3);
+  font-weight: var(--semi-bold);
+  h3 {
+    font-size: var(--font-size-2);
+  }
+`
+
+const MetaData = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+  padding: 0 var(--spacing-3);
+  p {
+    font-size: var(--font-size-2);
+    line-height: 1.5;
+    max-width: 40rem;
+    font-weight: var(--semi-bold);
+    white-space: pre-wrap;
+  }
+`
+
+const StyledExternalLink = styled(ExternalLink)`
+  color: var(--page--text-color);
+  font-size: var(--font-size-2);
+  font-weight: var(--semi-bold);
+
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+const TimelineBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-3);
+  gap: var(--spacing-2);
+  border-top: 2px solid var(--gray-500a20);
+`
+
+const Time = styled.p`
+  font-size: var(--font-size-2);
+  font-weight: var(--semi-bold);
+  font-variant-numeric: tabular-nums;
+`
+
+const VoteState = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-3);
+  min-width: 20rem;
+  gap: var(--spacing-2);
+`
+
+export default Proposal

@@ -113,3 +113,8 @@ export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
   if (!wallet) return ''
   return wallet.accounts[0]?.address
 }
+
+export function getWalletSignerEns(wallet: Wallet | undefined | null) {
+  if (!wallet) return ''
+  return wallet.accounts[0]?.ens?.name
+}
