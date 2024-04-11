@@ -136,6 +136,7 @@ declare global {
       voter: string
       supports: boolean
       voting_power: string | number
+      relative_power: number
       transaction_hash: string
     }[]
   }

@@ -54,11 +54,14 @@ const Proposal = ({
           <ProposalType>{voteType}</ProposalType>
         </ProposalDetailsRow>
         <ProposalMetadata>{metadata}</ProposalMetadata>
-        <Box flex>
-          <ProposalProposer>{t`Proposer:`}</ProposalProposer>
-          <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
-            {shortenTokenAddress(creator)}
-          </StyledExternalLink>
+        <Box flex flexAlignItems="flex-end" flexJustifyContent="space-between">
+          <Box flex>
+            <ProposalProposer>{t`Proposer:`}</ProposalProposer>
+            <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
+              {shortenTokenAddress(creator)}
+            </StyledExternalLink>
+          </Box>
+          <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
         </Box>
       </InformationWrapper>
       <VoteWrapper>
@@ -73,7 +76,6 @@ const Proposal = ({
           totalVotesPercentage={totalVotesPercentage}
           minAcceptQuorumPercent={minAcceptQuorumPercent}
         />
-        <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
       </VoteWrapper>
     </ProposalContainer>
   )

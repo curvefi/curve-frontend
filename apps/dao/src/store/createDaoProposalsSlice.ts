@@ -109,7 +109,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
 
       try {
         const proposalFetch = await fetch(`https://prices.curve.fi/v1/dao/proposals/details/${voteType}/${voteId}`)
-        const proposal = await proposalFetch.json()
+        const proposal: PricesProposalData = await proposalFetch.json()
 
         console.log(proposal)
 
@@ -117,6 +117,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
           .map((vote: PricesProposalData['votes'][number]) => ({
             ...vote,
             voting_power: +vote.voting_power / 10 ** 18,
+            relative_power: (+vote.voting_power / +proposal.total_supply) * 100,
           }))
           .sort()
         const sortedVotes = formattedVotes.sort(
