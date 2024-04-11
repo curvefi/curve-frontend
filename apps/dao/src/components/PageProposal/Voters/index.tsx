@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import Box from '@/ui/Box'
 import { ExternalLink } from '@/ui/Link'
@@ -47,7 +48,11 @@ const Voters = ({ totalVotes }: Props) => {
                   {shortenTokenAddress(vote.voter)}
                 </StyledExternalLink>
               </Box>
-              <Data>{formatVotingPower(+vote.voting_power)}</Data>
+              <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
+                <Data>
+                  {formatVotingPower(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
+                </Data>
+              </StyledExternalLink>
             </DataRow>
           ))}
       </VotesWrapper>
