@@ -17,6 +17,7 @@ import Voters from './Voters'
 import UserBox from './UserBox'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
+import { shortenTokenAddress } from '@/ui/utils'
 
 type Props = {
   routerParams: {
@@ -94,7 +95,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
               <h3>{voteType}</h3>
             </TopBarColumn>
             <TopBarColumn margin="0 0 0 auto">
-              <SubTitle>Time Remaining</SubTitle>
+              <SubTitle className="align-right">Time Remaining</SubTitle>
               <VoteCountdown startDate={startDate} />
             </TopBarColumn>
           </ProposalTopBar>
@@ -104,19 +105,19 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
           </MetaData>
           {currentProposal?.script && <Script script={currentProposal?.script} />}
           <TimelineBox>
-            <Box flex>
-              <Box>
-                <SubTitle>Created:</SubTitle>
-                <Time>{new Date(startDate * 1000).toLocaleString()}</Time>
-              </Box>
-              <Box margin="0 0 0 var(--spacing-3)">
-                <SubTitle>Ends:</SubTitle>
-                <Time>{new Date((startDate + 604800) * 1000).toLocaleString()}</Time>
-              </Box>
-            </Box>
             <Box>
               <SubTitle>Proposer:</SubTitle>
-              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>{creator}</StyledExternalLink>
+              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
+                {shortenTokenAddress(creator)}
+              </StyledExternalLink>
+            </Box>
+            <Box>
+              <SubTitle>Created:</SubTitle>
+              <Time>{new Date(startDate * 1000).toLocaleString()}</Time>
+            </Box>
+            <Box>
+              <SubTitle>Ends:</SubTitle>
+              <Time>{new Date((startDate + 604800) * 1000).toLocaleString()}</Time>
             </Box>
           </TimelineBox>
         </ProposalContainer>
@@ -170,6 +171,9 @@ const BackButton = styled(Button)`
 const SubTitle = styled.h4`
   font-size: var(--font-size-1);
   opacity: 0.5;
+  &.align-right {
+    margin-left: auto;
+  }
 `
 
 const ProposalTopBar = styled.div`
@@ -247,7 +251,7 @@ const MetaData = styled.div`
 const StyledExternalLink = styled(ExternalLink)`
   color: var(--page--text-color);
   font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
 
   &:hover {
     cursor: pointer;
@@ -256,15 +260,17 @@ const StyledExternalLink = styled(ExternalLink)`
 
 const TimelineBox = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-between;
   padding: var(--spacing-3);
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
   border-top: 2px solid var(--gray-500a20);
+  font-variant-numeric: tabular-nums;
 `
 
 const Time = styled.p`
   font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
   font-variant-numeric: tabular-nums;
 `
 
