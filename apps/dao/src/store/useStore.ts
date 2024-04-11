@@ -9,8 +9,9 @@ import createCacheSlice, { CacheSlice } from '@/store/createCacheSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
 import createDaoProposalsSlice, { DaoProposalsSlice } from './createDaoProposalsSlice'
+import createUserSlice, { UserSlice } from './createUserSlice'
 
-export type State = GlobalSlice & CacheSlice & GasSlice & WalletSlice & DaoProposalsSlice
+export type State = GlobalSlice & CacheSlice & GasSlice & WalletSlice & DaoProposalsSlice & UserSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
@@ -18,6 +19,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createWalletSlice(set, get),
   ...createDaoProposalsSlice(set, get),
+  ...createUserSlice(set, get),
 })
 
 // cache all items in CacheSlice store

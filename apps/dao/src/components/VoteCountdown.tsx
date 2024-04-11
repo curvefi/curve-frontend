@@ -36,7 +36,6 @@ const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate }) => {
 
   return (
     <VoteCountdownContainer>
-      <Title>Time Remaining:</Title>
       <p>{timeRemaining}</p>
     </VoteCountdownContainer>
   )
@@ -48,13 +47,6 @@ const VoteCountdownContainer = styled.div`
   justify-content: space-between;
   font-size: var(--font-size-2);
   font-weight: var(--bold);
-  margin-bottom: var(--spacing-4);
-`
-
-const Title = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  margin-right: var(--spacing-2);
 `
 
 export default VoteCountdown
