@@ -2,6 +2,8 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useNavigate } from 'react-router-dom'
+import { useCallback } from 'react'
 
 import useStore from '@/store/useStore'
 
@@ -12,6 +14,8 @@ import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
+
+type Props = {}
 
 const Proposals = () => {
   const {
@@ -26,16 +30,28 @@ const Proposals = () => {
     activeFilter,
     selectProposals,
   } = useStore((state) => state.daoProposals)
+  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
 
   const proposals = selectProposals()
+  const navigate = useNavigate()
 
-  const handleSortingMethodChange = (key: React.Key) => {
-    setActiveSortBy(key as SortByFilter)
-  }
+  const handleSortingMethodChange = useCallback(
+    (key: React.Key) => {
+      setActiveSortBy(key as SortByFilter)
+    },
+    [setActiveSortBy]
+  )
 
-  const handleChangeSortingDirection = () => {
+  const handleChangeSortingDirection = useCallback(() => {
     setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
-  }
+  }, [activeSortDirection, setActiveSortDirection])
+
+  const handleProposalClick = useCallback(
+    (rProposalId: string) => {
+      navigate(`/ethereum/proposals/${rProposalId}`)
+    },
+    [navigate]
+  )
 
   return (
     <Wrapper>
@@ -76,12 +92,14 @@ const Proposals = () => {
           </SearchMessage>
         )}
         <ProposalsWrapper>
-          {proposalsLoading ? (
+          {proposalsLoading || isLoadingCurve ? (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
           ) : (
-            proposals.map((proposal, index) => <Proposal {...proposal} key={`${proposal.voteId}-${index}`} />)
+            proposals.map((proposal, index) => (
+              <Proposal proposalData={proposal} handleClick={handleProposalClick} key={`${proposal.voteId}-${index}`} />
+            ))
           )}
         </ProposalsWrapper>
       </ProposalsContainer>

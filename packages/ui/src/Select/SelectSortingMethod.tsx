@@ -16,7 +16,7 @@ export function SelectSortingMethod<T extends object>({ ...props }: Omit<SelectP
       {(item) => {
         const { label, key } = item as ItemObj
         return (
-          <StyledItem key={key}>
+          <StyledItem key={key} textValue={label}>
             <strong>{label}</strong>
           </StyledItem>
         )

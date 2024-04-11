@@ -145,6 +145,10 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     if (isUserSwitched || !curveApi.signerAddress) {
     }
 
+    // update network settings from api
+    get().updateGlobalStoreByKey('curve', curveApi)
+    get().updateGlobalStoreByKey('isLoadingCurve', false)
+
     get().daoProposals.getProposals(curveApi)
 
     if (!prevCurveApi || isNetworkSwitched) {
