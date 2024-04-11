@@ -1,6 +1,6 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 
-import { useRef } from 'react'
+import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
@@ -16,25 +16,9 @@ import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellR
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
-const TableRow = ({
-  className,
-  formValues,
-  isMdUp,
-  isInPool,
-  imageBaseUrl,
-  poolData,
-  poolDataCachedOrApi,
-  rewardsApy,
-  searchParams,
-  showInPoolColumn,
-  tokensMapper,
-  tvlCached,
-  tvl,
-  volumeCached,
-  volume,
-  handleCellClick,
-}: {
-  className?: string
+export type TableRowProps = {
+  index: number
+  poolId: string
   formValues: FormValues
   isMdUp: boolean
   isInPool: boolean
@@ -50,18 +34,33 @@ const TableRow = ({
   volumeCached: Volume | undefined
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
-}) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+}
 
+const TableRow: FunctionComponent<TableRowProps> = ({
+  index,
+  poolId,
+  formValues,
+  isMdUp,
+  isInPool,
+  imageBaseUrl,
+  poolData,
+  poolDataCachedOrApi,
+  rewardsApy,
+  searchParams,
+  showInPoolColumn,
+  tokensMapper,
+  tvlCached,
+  tvl,
+  volumeCached,
+  volume,
+  handleCellClick,
+}) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const isVisible = !!entry?.isIntersecting
-
   return (
-    <Item
-      ref={ref}
-      className={`${className} row--info ${isVisible ? '' : 'pending'}`}
+    <LazyItem
+      id={`${poolId}-${index}`}
+      className="row--info"
       onClick={({ target }) => handleCellClick(target)}
     >
       {showInPoolColumn && (
@@ -71,7 +70,7 @@ const TableRow = ({
       )}
       <td>
         <PoolLabel
-          isVisible={isVisible}
+          isVisible
           imageBaseUrl={imageBaseUrl}
           poolData={poolDataCachedOrApi}
           poolListProps={{
@@ -112,12 +111,8 @@ const TableRow = ({
       <td className="right">
         <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
       </td>
-    </Item>
+    </LazyItem>
   )
-}
-
-TableRow.defaultProps = {
-  className: '',
 }
 
 export const TCellInPool = styled.td`
@@ -131,14 +126,32 @@ export const TCellInPool = styled.td`
   }
 `
 
-export const Item = styled.tr`
-  &.pending {
-    height: 3.25rem;
-  }
-
+const Item = styled.tr`
   :hover {
     background-color: var(--table_row--hover--color);
   }
 `
+
+/**
+ * Component to lazy load the <Item> table row when it is visible in the viewport.
+ */
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {};
+
+  // when rendered items might get larger. So we have that in the state to avoid stuttering
+  const [height, setHeight] = useState<string>('88px'); // default height on desktop
+  useEffect(() => {
+    if (isVisible && ref.current) {
+      setHeight(`${ref.current.clientHeight}px`);
+    }
+  }, [isVisible]);
+
+  return (
+    <Item ref={ref} id={id} style={{...style, ...!isVisible && {height}}} {...props}>
+      {isVisible && children}
+    </Item>
+  );
+}
 
 export default TableRow

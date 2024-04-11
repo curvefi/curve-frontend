@@ -1,13 +1,12 @@
-import type { FormValues, PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
+import type { PoolListTableLabel } from '@/components/PagePoolList/types'
 import type { Theme } from '@/store/createGlobalSlice'
 
 import { t } from '@lingui/macro'
-import React, { useMemo, useRef } from 'react'
+import React, { FunctionComponent, useMemo } from 'react'
 
 import { formatNumber } from '@/ui/utils'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { Item, TCellInPool } from '@/components/PagePoolList/components/TableRow'
+import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
@@ -23,8 +22,15 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
-const TableRowMobile = ({
-  className,
+type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
+  showDetail: string
+  themeType: Theme
+  setShowDetail: React.Dispatch<React.SetStateAction<string>>
+  tableLabel: PoolListTableLabel
+}
+
+const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
+  index,
   formValues,
   isInPool,
   imageBaseUrl,
@@ -43,33 +49,9 @@ const TableRowMobile = ({
   volume,
   handleCellClick,
   setShowDetail,
-}: {
-  className?: string
-  formValues: FormValues
-  isInPool: boolean
-  imageBaseUrl: string
-  poolData: PoolData | undefined
-  poolDataCachedOrApi: PoolDataCache | PoolData | undefined
-  poolId: string
-  rewardsApy: RewardsApy | undefined
-  searchParams: SearchParams
-  showDetail: string
-  tableLabel: PoolListTableLabel
-  themeType: Theme
-  tokensMapper: TokensMapper
-  tvlCached: Tvl | undefined
-  tvl: Tvl | undefined
-  volumeCached: Volume | undefined
-  volume: Volume | undefined
-  handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
-  setShowDetail: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
-
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const isVisible = !!entry?.isIntersecting
   const isShowDetail = showDetail === poolId
 
   const quickViewValue = useMemo(() => {
@@ -92,7 +74,7 @@ const TableRowMobile = ({
   }, [showDetail, sortBy])
 
   return (
-    <Item ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
+    <LazyItem id={`${index}`} className="row--info">
       <TCell>
         <MobileLabelWrapper flex>
           <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
@@ -100,7 +82,7 @@ const TableRowMobile = ({
           </TCellInPool>
           <MobileLabelContent>
             <PoolLabel
-              isVisible={isVisible}
+              isVisible
               imageBaseUrl={imageBaseUrl}
               poolData={poolDataCachedOrApi}
               poolListProps={{
@@ -180,12 +162,8 @@ const TableRowMobile = ({
           </MobileTableContent>
         </MobileTableContentWrapper>
       </TCell>
-    </Item>
+    </LazyItem>
   )
-}
-
-TableRowMobile.defaultProps = {
-  className: '',
 }
 
 const MobileLabelWrapper = styled(Box)`

@@ -152,14 +152,14 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
-          return await networks[chainId].api.pool.getTvl(poolData.pool, chainId)
+          const item = await networks[chainId].api.pool.getTvl(poolData.pool, chainId)
+          return [item.poolId, item];
         })
 
-      const tvlMapper = cloneDeep(get()[sliceKey].tvlMapper[chainId] ?? {})
-      for (const idx in results) {
-        const r = results[idx]
-        tvlMapper[r.poolId] = r
-      }
+      const tvlMapper = {
+        ...get()[sliceKey].tvlMapper[chainId],
+        ...Object.fromEntries(results),
+      };
       get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
 
       //  update cache
@@ -171,15 +171,15 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
-          return await networks[chainId].api.pool.getVolume(poolData.pool)
+          const item = await networks[chainId].api.pool.getVolume(poolData.pool)
+          return [item.poolId, item];
         })
 
       // update volumeMapper
-      let volumeMapper: VolumeMapper = cloneDeep(get()[sliceKey].volumeMapper[chainId] ?? {})
-      for (const idx in results) {
-        const r = results[idx]
-        volumeMapper[r.poolId] = r
-      }
+      let volumeMapper: VolumeMapper = {
+        ...get()[sliceKey].volumeMapper[chainId],
+        ...Object.fromEntries(results)
+      };
       get()[sliceKey].setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache

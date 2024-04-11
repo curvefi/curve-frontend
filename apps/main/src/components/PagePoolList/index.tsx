@@ -10,9 +10,9 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_SEARCH_PARAMS,
   getPoolDatasCached,
-  getPoolListActiveKey,
+  getPoolListActiveKey
 } from '@/store/createPoolListSlice'
-import { REFRESH_INTERVAL, ROUTE } from '@/constants'
+import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
@@ -34,13 +34,11 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
 import TableHead from '@/components/PagePoolList/components/TableHead'
 import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobile'
-import TableRow from '@/components/PagePoolList/components/TableRow'
-import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableButtonFilters from '@/ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
+import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
-  const navigate = useNavigate()
   const settingsRef = useRef<HTMLDivElement>(null)
   const { isFocusVisible, focusProps } = useFocusRing()
 
@@ -48,12 +46,10 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
-  const formValues = useStore((state) => state.poolList.formValues)
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const poolDatasMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDatas = useStore((state) => state.pools.pools[rChainId])
   const results = useStore((state) => state.poolList.result)
   const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
@@ -67,7 +63,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
   const userPoolListError = useStore((state) => state.user.poolListError)
-  const themeType = useStore((state) => state.themeType)
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
@@ -139,15 +134,14 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
       userPoolList,
-    ]
-  )
+    ]);
 
   usePageVisibleInterval(
-    () => {
+    useCallback(() => {
       if (curve && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
         fetchPoolsRewardsApy(rChainId, poolDatas)
       }
-    },
+    }, [curve, fetchPoolsRewardsApy, poolDatas, rChainId, rewardsApyMapper]),
     REFRESH_INTERVAL['11m'],
     isPageVisible
   )
@@ -289,54 +283,22 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
             Object.keys(volumeMapperCached ?? {}).length &&
             Object.keys(tvlMapperCached ?? {}).length ? (
             <>
-              {result.map((poolId: string) => {
-                const handleCellClick = (target: EventTarget, formType?: 'swap' | 'withdraw') => {
-                  const { nodeName } = target as HTMLElement
-                  if (nodeName !== 'A') {
-                    // prevent click-through link from tooltip
-                    if (formType) {
-                      navigate(`${poolId}${formType === 'withdraw' ? ROUTE.PAGE_POOL_WITHDRAW : ROUTE.PAGE_SWAP}`)
-                    } else {
-                      navigate(`${poolId}${ROUTE.PAGE_POOL_DEPOSIT}`)
-                    }
-                  }
-                }
-
-                const poolDataCached = poolDataMapperCached?.[poolId]
-                const poolData = poolDatasMapper?.[poolId]
-
-                const tableRowProps = {
-                  rChainId,
-                  formValues,
-                  searchParams,
-                  isInPool: userPoolList?.[poolId],
-                  imageBaseUrl,
-                  poolId,
-                  poolData,
-                  poolDataCachedOrApi: poolData ?? poolDataCached,
-                  rewardsApy: rewardsApyMapper?.[poolId],
-                  showInPoolColumn: showInPoolColumn,
-                  tableLabel: tableLabels,
-                  tokensMapper,
-                  tvlCached: tvlMapperCached?.[poolId],
-                  tvl: tvlMapper?.[poolId],
-                  volumeCached: volumeMapperCached?.[poolId],
-                  volume: volumeMapper?.[poolId],
-                  handleCellClick,
-                }
-
-                return isXSmDown ? (
-                  <TableRowMobile
-                    key={poolId}
-                    showDetail={showDetail}
-                    themeType={themeType}
-                    setShowDetail={setShowDetail}
-                    {...tableRowProps}
-                  />
-                ) : (
-                  <TableRow key={poolId} isMdUp={isMdUp} {...tableRowProps} />
-                )
-              })}
+              {result.map((poolId: string, index: number) => (
+                <PoolRow
+                  key={poolId}
+                  index={index}
+                  poolId={poolId}
+                  rChainId={rChainId}
+                  searchParams={searchParams}
+                  imageBaseUrl={imageBaseUrl}
+                  showInPoolColumn={showInPoolColumn}
+                  tableLabels={tableLabels}
+                  tokensMapper={tokensMapper}
+                  showDetail={showDetail}
+                  setShowDetail={setShowDetail}
+                  curve={curve}
+                />
+              ))}
             </>
           ) : (
             <tr>

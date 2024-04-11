@@ -21,7 +21,7 @@ export function isMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -55,7 +55,7 @@ export function isHighSlippage(slippage: number, maxSlippage: string) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
-    console.log(`curve-dapp -> ${fnName}:`, ...args)
+    console.log(`curve-frontend -> ${fnName}:`, ...args)
   }
 }
 

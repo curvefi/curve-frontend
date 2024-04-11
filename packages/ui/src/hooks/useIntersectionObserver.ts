@@ -1,44 +1,35 @@
-import { RefObject, useEffect, useState } from 'react'
+import { RefObject, useCallback, useEffect, useState } from 'react'
 
 interface Props extends IntersectionObserverInit {
   freezeOnceVisible?: boolean
 }
 
-function useIntersectionObserver(elementRef: RefObject<Element>, options: Props) {
+function useIntersectionObserver(elementRef: RefObject<Element>, options: Props = {}) {
   const { threshold = 0, root = null, rootMargin = '0%', freezeOnceVisible = false } = options
-  const [entry, setEntry] = useState<IntersectionObserverEntry | { isIntersecting: boolean }>()
+  const [entry, setEntry] = useState<IntersectionObserverEntry | { isIntersecting: true }>()
 
-  const frozen = entry?.isIntersecting && freezeOnceVisible
+  const frozen = freezeOnceVisible && entry?.isIntersecting
 
-  const updateEntry = ([entry]: IntersectionObserverEntry[]): void => {
-    setEntry(entry)
-  }
+  // when contents move during render, multiple updates may be received. Always use the last one (i.e. most recent)
+  const updateEntry = useCallback((entries: IntersectionObserverEntry[]) => setEntry(entries[entries.length -  1]), [])
 
   useEffect(() => {
-    const node = elementRef?.current
-    const hasIOSupport = !!window.IntersectionObserver
-
     // show node if IO not supported
-    if (!hasIOSupport) {
+    if (!window.IntersectionObserver) {
       setEntry({ isIntersecting: true })
       return
     }
 
+    const node = elementRef?.current
     if (frozen || !node) return
 
     const observerParams = { threshold, root, rootMargin }
     const observer = new IntersectionObserver(updateEntry, observerParams)
-
     observer.observe(node)
+    return () => observer.disconnect();
+  }, [elementRef, root, rootMargin, frozen, updateEntry, threshold])
 
-    return () => {
-      observer?.disconnect()
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementRef, JSON.stringify(threshold), root, rootMargin, frozen])
-
-  return entry
+  return entry;
 }
 
 export default useIntersectionObserver

@@ -1,7 +1,6 @@
 import type { AlertFormErrorKey } from '@/components/AlertFormError'
 
 import numbro from 'numbro'
-import BigNumber from 'bignumber.js'
 
 export { getStorageValue, setStorageValue } from '@/utils/storage'
 import { shortenAccount } from '@/ui/utils'
@@ -19,7 +18,7 @@ export function isMobile() {
     const mQ = matchMedia?.('(pointer:coarse)')
     if (mQ?.media === '(pointer:coarse)') {
       // @ts-ignore
-      hasTouchScreen = !!mQ.matches
+      hasTouchScreen = mQ.matches
     } else if ('orientation' in window) {
       hasTouchScreen = true // deprecated, but good fallback
     } else {
@@ -79,53 +78,8 @@ export function formatNumber(value: string | number | undefined, formatOptions?:
   }
 }
 
-export function formatNumberByMillion(value: string | number, formatOptions?: numbro.Format) {
-  const { average, ...rest } = formatOptions || {}
-
-  const averageOptions: numbro.Format =
-    average === false
-      ? {
-          mantissa: 3,
-        }
-      : {
-          average: true,
-          forceAverage: 'million',
-          mantissa: 1,
-        }
-
-  return formatNumber(value, {
-    ...averageOptions,
-    thousandSeparated: true,
-    ...(rest || {}),
-  })
-}
-
-export function formatAmount(
-  value: string | number | undefined,
-  showDollarSymbol: boolean,
-  formatOptions?: numbro.Format
-) {
-  if (typeof value !== 'undefined') {
-    if (new BigNumber(value).isGreaterThan(100000)) {
-      const parsed = formatNumberByMillion(value, formatOptions)
-      return showDollarSymbol ? `$${parsed}` : parsed
-    } else {
-      const parsed = formatNumber(value, { thousandSeparated: true, ...formatOptions })
-      return showDollarSymbol ? `$${parsed}` : parsed
-    }
-  } else {
-    return '-'
-  }
-}
-
-export const isDevelopment = process.env.NODE_ENV === 'development'
-
 export function isValidAddress(address: string) {
   return address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
-}
-
-export function isBurnAddress(address: string) {
-  return address.toLowerCase() === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 }
 
 export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
@@ -149,7 +103,7 @@ export function isBonus(slippage: number) {
 
 export function log(fnName: string, ...args: unknown[]) {
   if (process.env.NODE_ENV === 'development') {
-    console.log(`curve-dapp -> ${fnName}:`, ...args)
+    console.log(`curve-frontend@${new Date().toISOString()} -> ${fnName}:`, ...args)
   }
 }
 
