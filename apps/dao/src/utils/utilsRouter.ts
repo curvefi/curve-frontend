@@ -13,6 +13,8 @@ export function getPath({ locale, network, ...rest }: Params, rerouteRoute: stri
 }
 
 export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+  const { proposalId } = params
+
   const paths = window.location.hash.substring(2).split('/')
 
   const locale = getLocaleFromUrl()
@@ -45,6 +47,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     ...network,
     rSubdirectory,
     rSubdirectoryUseDefault,
+    rProposalId: proposalId,
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams

@@ -24,6 +24,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const updateUserData = useStore((state) => state.user.updateUserData)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -229,6 +230,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
+
+  useEffect(() => {
+    if (isSuccess(connectState) && curve && wallet) {
+      updateUserData(curve, wallet)
+    }
+  }, [curve, connectState, updateUserData, wallet])
 
   return {
     pageLoaded: connectState.status === 'success',
