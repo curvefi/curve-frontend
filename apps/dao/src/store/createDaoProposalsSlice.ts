@@ -67,7 +67,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
 
         let proposalsObject: { [voteId: string]: ProposalData } = {}
 
-        proposals.forEach((proposal) => {
+        for (const proposal of proposals) {
           const minAcceptQuorumPercent = convertNumber(+proposal.minAcceptQuorum) * 100
           const totalVeCrv = convertNumber(+proposal.totalSupply)
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
@@ -88,7 +88,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
             totalVotes: votesFor + votesAgainst,
             totalVotesPercentage,
           }
-        })
+        }
 
         set(
           produce((state: State) => {
@@ -110,8 +110,6 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       try {
         const proposalFetch = await fetch(`https://prices.curve.fi/v1/dao/proposals/details/${voteType}/${voteId}`)
         const proposal: PricesProposalData = await proposalFetch.json()
-
-        console.log(proposal)
 
         const formattedVotes = proposal.votes
           .map((vote: PricesProposalData['votes'][number]) => ({

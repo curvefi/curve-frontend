@@ -5,6 +5,7 @@ import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
+import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 
 import Button from '@/ui/Button'
 import Box from '@/ui/Box'
@@ -106,18 +107,18 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
           {currentProposal?.script && <Script script={currentProposal?.script} />}
           <TimelineBox>
             <Box>
-              <SubTitle>Proposer:</SubTitle>
+              <SubTitle>Proposer</SubTitle>
               <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
                 {shortenTokenAddress(creator)}
               </StyledExternalLink>
             </Box>
             <Box>
-              <SubTitle>Created:</SubTitle>
-              <Time>{new Date(startDate * 1000).toLocaleString()}</Time>
+              <SubTitle>Created</SubTitle>
+              <Time>{new Date(convertToLocaleTimestamp(startDate) * 1000).toLocaleString()}</Time>
             </Box>
             <Box>
-              <SubTitle>Ends:</SubTitle>
-              <Time>{new Date((startDate + 604800) * 1000).toLocaleString()}</Time>
+              <SubTitle>Ends</SubTitle>
+              <Time>{new Date(convertToLocaleTimestamp(startDate + 604800) * 1000).toLocaleString()}</Time>
             </Box>
           </TimelineBox>
         </ProposalContainer>
