@@ -13,9 +13,7 @@ type Props = {
 }
 
 const Voters = ({ totalVotes }: Props) => {
-  const { currentProposal, pricesProposalLoading } = useStore((state) => state.daoProposals)
-
-  console.log(currentProposal?.votes)
+  const { currentProposal } = useStore((state) => state.daoProposals)
 
   return (
     <Wrapper variant="secondary">
@@ -33,29 +31,35 @@ const Voters = ({ totalVotes }: Props) => {
           </Box>
         </Box>
       </TotalWrapper>
-      <VotesWrapper>
-        <Box flex flexJustifyContent="space-between">
-          <SubTitle>Voter</SubTitle>
-          <SubTitle>Power</SubTitle>
-        </Box>
-        {currentProposal &&
-          currentProposal.votes &&
-          currentProposal.votes.map((vote) => (
-            <DataRow>
-              <Box flex>
-                {vote.supports ? <ForIcon name="CheckmarkFilled" size={16} /> : <AgainstIcon name="Misuse" size={16} />}
-                <StyledExternalLink href={`https://etherscan.io/address/${vote.voter}`}>
-                  {shortenTokenAddress(vote.voter)}
+      {currentProposal && currentProposal.votes.length !== 0 && (
+        <VotesWrapper>
+          <Box flex flexJustifyContent="space-between">
+            <SubTitle>Voter</SubTitle>
+            <SubTitle>Power</SubTitle>
+          </Box>
+          <VotesContainer>
+            {currentProposal.votes.map((vote) => (
+              <DataRow key={vote.transaction_hash}>
+                <Box flex>
+                  {vote.supports ? (
+                    <ForIcon name="CheckmarkFilled" size={16} />
+                  ) : (
+                    <AgainstIcon name="Misuse" size={16} />
+                  )}
+                  <StyledExternalLink href={`https://etherscan.io/address/${vote.voter}`}>
+                    {shortenTokenAddress(vote.voter)}
+                  </StyledExternalLink>
+                </Box>
+                <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
+                  <Data>
+                    {formatVotingPower(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
+                  </Data>
                 </StyledExternalLink>
-              </Box>
-              <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
-                <Data>
-                  {formatVotingPower(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
-                </Data>
-              </StyledExternalLink>
-            </DataRow>
-          ))}
-      </VotesWrapper>
+              </DataRow>
+            ))}
+          </VotesContainer>
+        </VotesWrapper>
+      )}
     </Wrapper>
   )
 }
@@ -77,13 +81,21 @@ const TotalWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding-bottom: var(--spacing-3);
 `
 
 const VotesWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+  margin-top: var(--spacing-3);
+`
+
+const VotesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  overflow-y: scroll;
+  max-height: 20rem;
 `
 
 const DataRow = styled.div`
