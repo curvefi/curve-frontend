@@ -153,13 +153,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         .withConcurrency(10)
         .process(async (poolData) => {
           const item = await networks[chainId].api.pool.getTvl(poolData.pool, chainId)
-          return [item.poolId, item];
+          return [item.poolId, item]
         })
 
       const tvlMapper = {
         ...get()[sliceKey].tvlMapper[chainId],
         ...Object.fromEntries(results),
-      };
+      }
       get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
 
       //  update cache
@@ -172,14 +172,14 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         .withConcurrency(10)
         .process(async (poolData) => {
           const item = await networks[chainId].api.pool.getVolume(poolData.pool)
-          return [item.poolId, item];
+          return [item.poolId, item]
         })
 
       // update volumeMapper
       let volumeMapper: VolumeMapper = {
         ...get()[sliceKey].volumeMapper[chainId],
-        ...Object.fromEntries(results)
-      };
+        ...Object.fromEntries(results),
+      }
       get()[sliceKey].setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache
@@ -332,7 +332,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         } else if (poolData.pool.isCrypto) {
           cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
         } else {
-          cr.percentShareInPool = new BigNumber(cr.balance).dividedBy(total).multipliedBy(100).toFixed(2)
+          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
         }
         return cr
       })
