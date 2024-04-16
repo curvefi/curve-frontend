@@ -17,6 +17,7 @@ type SliceState = {
   }
   userAddress: string | null
   userEns: string | null
+  userVotesMapper: { [voteId: string]: UserVoteData }
 }
 
 const sliceKey = 'user'
@@ -42,6 +43,7 @@ const DEFAULT_STATE: SliceState = {
   },
   userAddress: null,
   userEns: null,
+  userVotesMapper: {},
 }
 
 const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
@@ -54,6 +56,24 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const veCRV = await curve.dao.userVeCrv(userAddress)
 
         get()[sliceKey].setStateByKey('userVeCrv', veCRV)
+      } catch (error) {
+        console.error(error)
+      }
+
+      try {
+        const userVotes = await curve.dao.userProposalVotes()
+
+        let userProposalsObject: { [voteId: string]: UserVoteData } = {}
+
+        for (const vote of userVotes) {
+          userProposalsObject[`${vote.voteId}-${vote.voteType}`] = {
+            voteId: vote.voteId,
+            voteType: vote.voteType,
+            userVote: vote.userVote,
+          }
+        }
+
+        get()[sliceKey].setStateByKey('userVotesMapper', userProposalsObject)
       } catch (error) {
         console.error(error)
       }

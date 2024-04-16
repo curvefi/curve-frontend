@@ -54,7 +54,11 @@ const VoteBox = ({
             <QuorumFailedIcon name="Misuse" size={16} />
           )}
         </Box>
-        <ProgressBar yesVote={totalVotesPercentage >= minAcceptQuorumPercent} percentage={totalVotesPercentage} />
+        <ProgressBar
+          yesVote={totalVotesPercentage >= minAcceptQuorumPercent}
+          percentage={totalVotesPercentage}
+          quorum
+        />
       </Quorum>
     </Box>
   )
