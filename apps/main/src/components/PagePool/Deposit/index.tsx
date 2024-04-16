@@ -113,7 +113,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}
           {formType === 'DEPOSIT_STAKE' && (
             <>
-              {poolDataCacheOrApi.pool.isGaugeKilled ? (
+              {poolDataCacheOrApi.isGaugeKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
                 <FormDepositStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
@@ -122,7 +122,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           )}
           {formType === 'STAKE' && (
             <>
-              {poolDataCacheOrApi.pool.isGaugeKilled ? (
+              {poolDataCacheOrApi.isGaugeKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
                 <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />

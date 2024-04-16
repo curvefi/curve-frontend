@@ -20,7 +20,7 @@ const PoolRewardsCrv = ({
   rewardsApy: RewardsApy | undefined
   poolData: PoolDataCache | PoolData | undefined
 }) => {
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.pool?.gaugeStatus || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gaugeStatus || {}
 
   const RewardsNudging = () => (
     <StyledRewardsNudge
@@ -79,7 +79,7 @@ const PoolRewardsCrv = ({
     return ''
   }, [areCrvRewardsStuckInBridge, isLoading, poolData, rewardsApy?.crv, rewardsNeedNudging])
 
-  return poolData?.pool?.isGaugeKilled ? (
+  return poolData?.isGaugeKilled ? (
     <ChipInactive>Inactive gauge</ChipInactive>
   ) : (
     <>

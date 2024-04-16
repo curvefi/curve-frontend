@@ -71,7 +71,7 @@ const Withdraw = (transferProps: TransferProps) => {
 
   return (
     <>
-      {(isValidAddress(poolDataCacheOrApi.pool.gauge) || poolDataCacheOrApi.pool.isGaugeKilled) && (
+      {(isValidAddress(poolDataCacheOrApi.pool.gauge) || poolDataCacheOrApi.isGaugeKilled) && (
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ label, formType }, idx) => {
