@@ -141,6 +141,12 @@ declare global {
     }[]
   }
 
+  interface UserVoteData {
+    voteId: number
+    voteType: 'PARAMETER' | 'OWNERSHIP'
+    userVote: 'no' | 'yes' | 'even'
+  }
+
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
   type SortByFilter = 'voteId' | 'endingSoon'

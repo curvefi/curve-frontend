@@ -28,17 +28,17 @@ type Props = {
 }
 
 const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
+  const [voteId, voteType] = rProposalId.split('-')
+
   const navigate = useNavigate()
   const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore(
     (state) => state.daoProposals
   )
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
 
-  const proposal = useStore((state) => state.daoProposals.proposals[rProposalId] ?? null)
+  const proposal = useStore((state) => state.daoProposals.proposalsMapper[rProposalId] ?? null)
 
   const {
-    voteId,
-    voteType,
     creator,
     startDate,
     snapshotBlock,
@@ -57,16 +57,12 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   } = proposal ?? {}
 
   useEffect(() => {
-    if (!isLoadingCurve && rChainId && voteId && voteType && !proposalsLoading) {
-      getProposal(voteId, voteType.toLowerCase())
+    if (rChainId && voteId && voteType) {
+      getProposal(+voteId, voteType.toLowerCase())
     }
-  }, [getProposal, voteId, voteType, proposalsLoading, isLoadingCurve, rChainId])
+  }, [getProposal, voteId, voteType, isLoadingCurve, rChainId])
 
-  return !rChainId || isLoadingCurve || !proposal ? (
-    <SpinnerWrapper>
-      <Spinner />
-    </SpinnerWrapper>
-  ) : (
+  return (
     <Wrapper>
       <BackButtonWrapper variant="secondary">
         <BackButton variant="text" onClick={() => navigate(`/ethereum/proposals/`)}>
@@ -78,62 +74,79 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         <ProposalContainer variant="secondary">
           <ProposalTopBar>
             <TopBarColumn>
-              <SubTitle>Status</SubTitle>
-              <Status
-                className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
-                  status === 'Passed' && 'passed'
-                }`}
-              >
-                {status}
-              </Status>
+              <SubTitle>{t`Status`}</SubTitle>
+              {!proposal ? (
+                <Loader skeleton={[56, 16.5]} />
+              ) : (
+                <Status
+                  className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+                    status === 'Passed' && 'passed'
+                  }`}
+                >
+                  {status}
+                </Status>
+              )}
             </TopBarColumn>
             <TopBarColumn>
-              <SubTitle>Proposal ID</SubTitle>
+              <SubTitle>{t`Proposal ID`}</SubTitle>
               <h3>#{voteId}</h3>
             </TopBarColumn>
             <TopBarColumn>
-              <SubTitle>Proposal Type</SubTitle>
+              <SubTitle>{t`Proposal Type`}</SubTitle>
               <h3>{voteType}</h3>
             </TopBarColumn>
             <TopBarColumn margin="0 0 0 auto">
-              <SubTitle className="align-right">Time Remaining</SubTitle>
-              <VoteCountdown startDate={startDate} />
+              <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
+              {!proposal ? <StyledLoader skeleton={[56, 16.5]} /> : <VoteCountdown startDate={startDate} />}
             </TopBarColumn>
           </ProposalTopBar>
-          <MetaData>
-            <SubTitle>Metadata</SubTitle>
-            <p>{metadata}</p>
-          </MetaData>
-          {currentProposal?.script && <Script script={currentProposal?.script} />}
-          <TimelineBox>
-            <Box>
-              <SubTitle>Proposer</SubTitle>
-              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
-                {shortenTokenAddress(creator)}
-              </StyledExternalLink>
-            </Box>
-            <Box>
-              <SubTitle>Created</SubTitle>
-              <Time>{new Date(convertToLocaleTimestamp(startDate) * 1000).toLocaleString()}</Time>
-            </Box>
-            <Box>
-              <SubTitle>Ends</SubTitle>
-              <Time>{new Date(convertToLocaleTimestamp(startDate + 604800) * 1000).toLocaleString()}</Time>
-            </Box>
-          </TimelineBox>
+          {!currentProposal || !proposal ? (
+            <StyledSpinnerWrapper>
+              <Spinner />
+            </StyledSpinnerWrapper>
+          ) : (
+            <>
+              <MetaData>
+                <SubTitle>{t`Metadata`}</SubTitle>
+                <p>{metadata}</p>
+              </MetaData>
+              {currentProposal && <Script script={currentProposal.script} />}
+              <TimelineBox>
+                <Box>
+                  <SubTitle>{t`Proposer`}</SubTitle>
+                  <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
+                    {shortenTokenAddress(creator)}
+                  </StyledExternalLink>
+                </Box>
+                <Box>
+                  <SubTitle>{t`Created`}</SubTitle>
+                  <Time>{new Date(convertToLocaleTimestamp(startDate) * 1000).toLocaleString()}</Time>
+                </Box>
+                <Box>
+                  <SubTitle>{t`Ends`}</SubTitle>
+                  <Time>{new Date(convertToLocaleTimestamp(startDate + 604800) * 1000).toLocaleString()}</Time>
+                </Box>
+              </TimelineBox>
+            </>
+          )}
         </ProposalContainer>
+
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
           <UserBox />
-          <VoteState variant="secondary">
-            <VoteBox
-              votesFor={votesFor}
-              votesAgainst={votesAgainst}
-              totalVeCrv={totalVeCrv}
-              minAcceptQuorumPercent={minAcceptQuorumPercent}
-              totalVotesPercentage={totalVotesPercentage}
-            />
-          </VoteState>
-          <Voters totalVotes={totalVotes} />
+          {proposal && (
+            <>
+              <VoteState variant="secondary">
+                <VoteBox
+                  votesFor={votesFor}
+                  votesAgainst={votesAgainst}
+                  totalVeCrv={totalVeCrv}
+                  minAcceptQuorumPercent={minAcceptQuorumPercent}
+                  totalVotesPercentage={totalVotesPercentage}
+                />
+              </VoteState>
+              <Voters totalVotes={totalVotes} />
+            </>
+          )}
         </Box>
       </Box>
     </Wrapper>
@@ -281,6 +294,16 @@ const VoteState = styled(Box)`
   padding: var(--spacing-3);
   min-width: 20rem;
   gap: var(--spacing-2);
+`
+
+const StyledLoader = styled(Loader)`
+  margin-left: auto;
+`
+
+const StyledSpinnerWrapper = styled(SpinnerWrapper)`
+  display: flex;
+  width: 39.75rem;
+  max-width: 100%;
 `
 
 export default Proposal

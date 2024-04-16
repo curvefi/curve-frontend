@@ -149,8 +149,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     get().updateGlobalStoreByKey('curve', curveApi)
     get().updateGlobalStoreByKey('isLoadingCurve', false)
 
-    get().daoProposals.getProposals(curveApi)
-
     if (!prevCurveApi || isNetworkSwitched) {
       get().gas.fetchGasInfo(curveApi)
       get().updateGlobalStoreByKey('isLoadingApi', false)

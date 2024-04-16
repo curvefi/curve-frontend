@@ -9,36 +9,47 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
+import Loader from 'ui/src/Loader/Loader'
 
 const UserBox = () => {
   const [{ wallet }] = useConnectWallet()
-  const { userAddress, userEns, userVeCrv } = useStore((state) => state.user)
+  const { userAddress, userEns, userVeCrv, userVotesMapper } = useStore((state) => state.user)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
+
+  console.log(userVotesMapper)
 
   return (
     <Wrapper variant="secondary">
       {wallet ? (
         <>
-          <SubTitle>User information</SubTitle>
-          <StyledExternalLink href={`https://etherscan.io/address/${userAddress}`}>
-            <Box flex>
-              {userEns ? (
-                <UserIdentifier>{userEns}</UserIdentifier>
-              ) : (
-                <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
-              )}
-              <Icon name="Launch" size={16} />
-            </Box>
-            {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
-          </StyledExternalLink>
+          <SubTitle>{t`User information`}</SubTitle>
+          {!userAddress ? (
+            <Loader skeleton={[80, 16.5]} />
+          ) : (
+            <StyledExternalLink href={`https://etherscan.io/address/${userAddress}`}>
+              <Box flex>
+                {userEns ? (
+                  <UserIdentifier>{userEns}</UserIdentifier>
+                ) : (
+                  <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
+                )}
+                <Icon name="Launch" size={16} />
+              </Box>
+              {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
+            </StyledExternalLink>
+          )}
 
           <Column>
-            <SubTitle>Voting power:</SubTitle>
-            <p>{formatNumber(userVeCrv.veCrv)} veCRV</p>
+            <SubTitle>{t`Voting power`}</SubTitle>
+            {!userVeCrv.veCrv || !userAddress ? (
+              <Loader skeleton={[80, 16.5]} />
+            ) : (
+              <p>{formatNumber(userVeCrv.veCrv)} veCRV</p>
+            )}
           </Column>
         </>
       ) : (
-        <StyledButton variant="outlined" onClick={updateConnectWalletStateKeys}>
+        <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
           {t`Connect Wallet`}
         </StyledButton>
       )}
@@ -80,6 +91,8 @@ const SubTitle = styled.h4`
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
+  width: 20rem;
+  max-width: 100%;
   gap: var(--spacing-1);
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
