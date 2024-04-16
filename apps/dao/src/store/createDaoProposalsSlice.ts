@@ -8,8 +8,10 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   proposalsLoading: boolean
+  filteringProposalsLoading: boolean
   pricesProposalLoading: boolean
   proposalsMapper: { [voteId: string]: ProposalData }
+  proposals: ProposalData[]
   currentProposal: PricesProposalData | null
   searchValue: string
   activeFilter: ProposalListFilter
@@ -28,10 +30,8 @@ export type DaoProposalsSlice = {
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilter): void
     setActiveSortDirection(direction: ActiveSortDirection): void
-    selectFilteredProposals(): ProposalData[]
-    selectSortedProposals(): ProposalData[]
-    selectSearchFilteredProposals(): ProposalData[]
-    selectProposals(): ProposalData[]
+    selectFilteredSortedProposals(): ProposalData[]
+    setProposals(activeFilter: ProposalListFilter, searchValue: string): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -40,6 +40,7 @@ export type DaoProposalsSlice = {
 
 const DEFAULT_STATE: SliceState = {
   proposalsLoading: false,
+  filteringProposalsLoading: false,
   pricesProposalLoading: false,
   currentProposal: null,
   searchValue: '',
@@ -47,6 +48,7 @@ const DEFAULT_STATE: SliceState = {
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
   proposalsMapper: {},
+  proposals: [],
 }
 
 // units of gas used * (base fee + priority fee)
@@ -94,11 +96,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       }
     },
     getProposal: async (voteId: number, voteType: string) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].pricesProposalLoading = true
-        })
-      )
+      get()[sliceKey].setStateByKey('pricesProposalLoading', true)
 
       try {
         const proposalFetch = await fetch(`https://prices.curve.fi/v1/dao/proposals/details/${voteType}/${voteId}`)
@@ -129,27 +127,22 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
         console.log(error)
       }
     },
-    selectFilteredProposals: () => {
-      const { proposalsMapper, activeFilter } = get()[sliceKey]
-
-      if (activeFilter === 'all') return Object.values(proposalsMapper)
-
-      return Object.values(proposalsMapper).filter((proposal) => proposal.status.toLowerCase() === activeFilter)
-    },
-    selectSortedProposals: () => {
-      const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter, selectFilteredProposals } =
-        get()[sliceKey]
+    selectFilteredSortedProposals: () => {
+      const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter } = get()[sliceKey]
 
       let proposalsCopy = [...Object.values(proposalsMapper)]
 
+      // filter
       if (activeFilter !== 'all') {
-        proposalsCopy = selectFilteredProposals()
+        proposalsCopy = Object.values(proposalsMapper).filter(
+          (proposal) => proposal.status.toLowerCase() === activeFilter
+        )
       }
 
       let sortedProposals = proposalsCopy
       let passedProposals = []
       if (activeSortBy === 'endingSoon') {
-        // causes timestamp to not be in sync with other proposal countdowns
+        // to-do: fix timestamp not being in sync with other proposal countdowns
         const currentTimestamp = Math.floor(Date.now() / 1000)
         sortedProposals = proposalsCopy.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
         passedProposals = orderBy(
@@ -179,21 +172,27 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
 
       return sortedProposals
     },
-    selectSearchFilteredProposals: () => {
-      const { selectSortedProposals, searchValue } = get()[sliceKey]
+    setProposals: (activeFilter: ProposalListFilter, searchValue: string) => {
+      const { selectFilteredSortedProposals } = get()[sliceKey]
+      get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
 
-      const proposals = selectSortedProposals()
+      setTimeout(() => {
+        const proposals = selectFilteredSortedProposals()
 
-      return searchFn(searchValue, proposals)
-    },
-    selectProposals: () => {
-      const { selectSearchFilteredProposals, searchValue, selectSortedProposals } = get()[sliceKey]
+        if (searchValue !== '') {
+          const searchFilteredProposals = searchFn(searchValue, proposals)
+          get()[sliceKey].setStateByKeys({
+            filteringProposalsLoading: false,
+            proposals: searchFilteredProposals,
+          })
+          return searchFilteredProposals
+        }
 
-      if (searchValue !== '') {
-        return selectSearchFilteredProposals()
-      }
-
-      return selectSortedProposals()
+        get()[sliceKey].setStateByKeys({
+          filteringProposalsLoading: false,
+          proposals: proposals,
+        })
+      }, 1000)
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
@@ -233,8 +232,6 @@ const convertNumber = (number: number) => {
 }
 
 const searchFn = (filterValue: string, proposals: ProposalData[]) => {
-  console.log('searching', filterValue)
-
   const fuse = new Fuse<ProposalData>(proposals, {
     ignoreLocation: true,
     threshold: 0.3,
