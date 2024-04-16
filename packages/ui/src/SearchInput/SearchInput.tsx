@@ -21,13 +21,17 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
     <InputProvider
       className={className}
       grid
-      gridTemplateColumns={variant === 'small' ? '1fr auto' : 'auto 1fr auto'}
+      gridTemplateColumns={'auto 1fr auto'}
       gridColumnGap={2}
       flexAlignItems="center"
       id={id}
       inputVariant={variant}
     >
-      {variant !== 'small' && <Icon name="Search" size={24} aria-label="search-icon" />}
+      {variant === 'small' ? (
+        <Icon name="Search" size={16} aria-label="search-icon" />
+      ) : (
+        <Icon name="Search" size={24} aria-label="search-icon" />
+      )}
       <InputDebounced
         {...props}
         id={id}
@@ -38,7 +42,12 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
         variant={variant}
         onChange={handleInputChange}
       />
-      <ClearButton className={!!value ? 'show' : ''} size={variant} onClick={handleSearchClose} padding={2}>
+      <ClearButton
+        className={!!value ? 'show' : ''}
+        size={variant === 'small' ? 'x-small' : variant}
+        onClick={handleSearchClose}
+        padding={variant === 'small' ? 1 : 2}
+      >
         <RCEditClear className="svg-tooltip" />
       </ClearButton>
     </InputProvider>
@@ -50,7 +59,6 @@ const ClearButton = styled(IconButton)`
   min-width: 1.5625rem; //25px
   opacity: 1;
   padding: 0;
-
   &.show {
     display: inline-block;
   }
