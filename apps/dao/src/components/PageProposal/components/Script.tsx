@@ -1,6 +1,4 @@
 import styled from 'styled-components'
-import { useState } from 'react'
-import Button from '@/ui/Button'
 
 type Props = {
   script: string
