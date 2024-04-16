@@ -110,7 +110,7 @@ const DataRow = styled.div`
 `
 
 const Data = styled.p`
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
   font-size: var(--font-size-2);
   &.align-right {
     text-align: right;
