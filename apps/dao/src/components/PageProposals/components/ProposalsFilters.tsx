@@ -6,6 +6,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import Button from '@/ui/Button'
+import Spinner from '@/ui/Spinner'
 
 type Props = {
   filters: ProposalListFilterItem[]
@@ -15,6 +16,8 @@ type Props = {
 }
 
 const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }: Props) => {
+  const { filteringProposalsLoading } = useStore((state) => state.daoProposals)
+
   return (
     <Container>
       {filters.map((filter) => (
@@ -25,7 +28,13 @@ const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }
           key={filter.label}
         >
           {filter.label}
-          {activeFilter === filter.key ? ` (${listLength})` : ''}
+          {filteringProposalsLoading && activeFilter === filter.key ? (
+            <Spinner size={12} />
+          ) : activeFilter === filter.key ? (
+            ` ${listLength}`
+          ) : (
+            ''
+          )}
         </Filter>
       ))}
     </Container>
@@ -39,7 +48,10 @@ const Container = styled.div`
 `
 
 const Filter = styled(Button)`
+  display: flex;
   font-size: var(--font-size-2);
+  align-items: center;
+  gap: var(--spacing-1);
 `
 
 export default ProposalsFilters

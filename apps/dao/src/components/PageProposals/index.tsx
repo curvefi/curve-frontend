@@ -3,7 +3,7 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 
@@ -20,6 +20,7 @@ type Props = {}
 const Proposals = () => {
   const {
     proposalsLoading,
+    filteringProposalsLoading,
     activeSortBy,
     activeSortDirection,
     setActiveSortBy,
@@ -28,11 +29,10 @@ const Proposals = () => {
     setSearchValue,
     searchValue,
     activeFilter,
-    selectProposals,
+    setProposals,
+    proposals,
   } = useStore((state) => state.daoProposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-
-  const proposals = selectProposals()
   const navigate = useNavigate()
 
   const handleSortingMethodChange = useCallback(
@@ -52,6 +52,10 @@ const Proposals = () => {
     },
     [navigate]
   )
+
+  useEffect(() => {
+    setProposals(activeFilter, searchValue)
+  }, [activeFilter, activeSortBy, activeSortDirection, searchValue, setProposals])
 
   return (
     <Wrapper>
@@ -92,7 +96,7 @@ const Proposals = () => {
           </SearchMessage>
         )}
         <ProposalsWrapper>
-          {proposalsLoading || isLoadingCurve ? (
+          {proposalsLoading || isLoadingCurve || filteringProposalsLoading ? (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
