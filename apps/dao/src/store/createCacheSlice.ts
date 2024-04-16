@@ -5,7 +5,9 @@ import { sleep } from '@/ui/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {}
+type SliceState = {
+  proposalsMapper: { [voteId: string]: ProposalData }
+}
 
 const sliceKey = 'storeCache'
 
@@ -18,7 +20,9 @@ export type CacheSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = {}
+const DEFAULT_STATE: SliceState = {
+  proposalsMapper: {},
+}
 
 const TIMEOUT_MS = 4000
 

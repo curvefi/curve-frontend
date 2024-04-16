@@ -3,9 +3,10 @@ import styled from 'styled-components'
 
 interface VoteCountdownProps {
   startDate: number
+  className?: string
 }
 
-const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate }) => {
+const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate, className }) => {
   const [timeRemaining, setTimeRemaining] = useState('')
 
   useEffect(() => {
@@ -35,7 +36,7 @@ const VoteCountdown: React.FC<VoteCountdownProps> = ({ startDate }) => {
   }, [startDate])
 
   return (
-    <VoteCountdownContainer>
+    <VoteCountdownContainer className={className}>
       <p>{timeRemaining}</p>
     </VoteCountdownContainer>
   )
@@ -47,6 +48,7 @@ const VoteCountdownContainer = styled.div`
   justify-content: space-between;
   font-size: var(--font-size-2);
   font-weight: var(--bold);
+  font-variant-numeric: tabular-nums;
 `
 
 export default VoteCountdown

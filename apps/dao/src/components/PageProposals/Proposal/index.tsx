@@ -52,6 +52,7 @@ const Proposal = ({
           </ProposalStatus>
           <ProposalId>#{voteId}</ProposalId>
           <ProposalType>{voteType}</ProposalType>
+          <StyledVoteCountdown startDate={startDate} />
         </ProposalDetailsRow>
         <ProposalMetadata>{metadata}</ProposalMetadata>
         <Box flex flexAlignItems="flex-end" flexJustifyContent="space-between">
@@ -61,14 +62,9 @@ const Proposal = ({
               {shortenTokenAddress(creator)}
             </StyledExternalLink>
           </Box>
-          <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
         </Box>
       </InformationWrapper>
       <VoteWrapper>
-        <Box flex flexJustifyContent="space-between">
-          <CountdownTitle>Time Left:</CountdownTitle>
-          <VoteCountdown startDate={startDate} />
-        </Box>
         <StyledVoteBox
           votesFor={votesFor}
           votesAgainst={votesAgainst}
@@ -76,6 +72,7 @@ const Proposal = ({
           totalVotesPercentage={totalVotesPercentage}
           minAcceptQuorumPercent={minAcceptQuorumPercent}
         />
+        <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
       </VoteWrapper>
     </ProposalContainer>
   )
@@ -189,14 +186,12 @@ const VoteWrapper = styled.div`
   background-color: var(--summary_header--background-color);
 `
 
-const CountdownTitle = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  margin-right: var(--spacing-2);
+const StyledVoteCountdown = styled(VoteCountdown)`
+  margin-left: auto;
 `
 
 const StyledVoteBox = styled(VoteBox)`
-  margin: var(--spacing-4) 0;
+  margin: var(--spacing-1) 0 var(--spacing-4);
 `
 
 export default Proposal

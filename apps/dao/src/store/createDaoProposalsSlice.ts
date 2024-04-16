@@ -9,7 +9,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoading: boolean
   pricesProposalLoading: boolean
-  proposals: { [voteId: string]: ProposalData }
+  proposalsMapper: { [voteId: string]: ProposalData }
   currentProposal: PricesProposalData | null
   searchValue: string
   activeFilter: ProposalListFilter
@@ -46,7 +46,7 @@ const DEFAULT_STATE: SliceState = {
   activeFilter: 'all',
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
-  proposals: {},
+  proposalsMapper: {},
 }
 
 // units of gas used * (base fee + priority fee)
@@ -56,11 +56,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
   [sliceKey]: {
     ...DEFAULT_STATE,
     getProposals: async (curve: CurveApi) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].proposalsLoading = true
-        })
-      )
+      get()[sliceKey].setStateByKey('proposalsLoading', true)
 
       try {
         const proposals = await curve.dao.getProposalList()
@@ -90,12 +86,9 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
           }
         }
 
-        set(
-          produce((state: State) => {
-            state[sliceKey].proposals = proposalsObject
-            state[sliceKey].proposalsLoading = false
-          })
-        )
+        get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
+        get().storeCache.setStateByKey('proposalsMapper', proposalsObject)
+        get()[sliceKey].setStateByKey('proposalsLoading', false)
       } catch (error) {
         console.log(error)
       }
@@ -137,16 +130,17 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       }
     },
     selectFilteredProposals: () => {
-      const { proposals, activeFilter } = get()[sliceKey]
+      const { proposalsMapper, activeFilter } = get()[sliceKey]
 
-      if (activeFilter === 'all') return Object.values(proposals)
+      if (activeFilter === 'all') return Object.values(proposalsMapper)
 
-      return Object.values(proposals).filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+      return Object.values(proposalsMapper).filter((proposal) => proposal.status.toLowerCase() === activeFilter)
     },
     selectSortedProposals: () => {
-      const { proposals, activeSortBy, activeSortDirection, activeFilter, selectFilteredProposals } = get()[sliceKey]
+      const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter, selectFilteredProposals } =
+        get()[sliceKey]
 
-      let proposalsCopy = [...Object.values(proposals)]
+      let proposalsCopy = [...Object.values(proposalsMapper)]
 
       if (activeFilter !== 'all') {
         proposalsCopy = selectFilteredProposals()
