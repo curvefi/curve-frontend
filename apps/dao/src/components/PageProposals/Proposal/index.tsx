@@ -1,17 +1,16 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useMemo } from 'react'
+import { FunctionComponent, HTMLAttributes, useRef, useState, useEffect } from 'react'
 
-import { shortenTokenAddress, formatNumber } from '@/ui/utils'
+import { shortenTokenAddress } from '@/ui/utils'
 import networks from '@/networks'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
-import ProgressBar from '../components/ProgressBar'
 import VoteCountdown from '../../VoteCountdown'
 import VoteBox from '@/components/VoteBox'
 import InternalLinkButton from '@/ui/InternalLinkButton'
-import Icon from '@/ui/Icon'
 
 type Props = {
   proposalData: ProposalData
@@ -40,41 +39,43 @@ const Proposal = ({
   handleClick,
 }: Props) => {
   return (
-    <ProposalContainer>
-      <InformationWrapper>
-        <ProposalDetailsRow>
-          <ProposalStatus
-            className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
-              status === 'Passed' && 'passed'
-            }`}
-          >
-            {status}
-          </ProposalStatus>
-          <ProposalId>#{voteId}</ProposalId>
-          <ProposalType>{voteType}</ProposalType>
-          <StyledVoteCountdown startDate={startDate} />
-        </ProposalDetailsRow>
-        <ProposalMetadata>{metadata}</ProposalMetadata>
-        <Box flex flexAlignItems="flex-end" flexJustifyContent="space-between">
-          <Box flex>
-            <ProposalProposer>{t`Proposer:`}</ProposalProposer>
-            <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
-              {shortenTokenAddress(creator)}
-            </StyledExternalLink>
+    <LazyItem>
+      <ProposalContainer>
+        <InformationWrapper>
+          <ProposalDetailsRow>
+            <ProposalStatus
+              className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
+                status === 'Passed' && 'passed'
+              }`}
+            >
+              {status}
+            </ProposalStatus>
+            <ProposalId>#{voteId}</ProposalId>
+            <ProposalType>{voteType}</ProposalType>
+            <StyledVoteCountdown startDate={startDate} />
+          </ProposalDetailsRow>
+          <ProposalMetadata>{metadata}</ProposalMetadata>
+          <Box flex flexAlignItems="flex-end" flexJustifyContent="space-between">
+            <Box flex>
+              <ProposalProposer>{t`Proposer:`}</ProposalProposer>
+              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
+                {shortenTokenAddress(creator)}
+              </StyledExternalLink>
+            </Box>
           </Box>
-        </Box>
-      </InformationWrapper>
-      <VoteWrapper>
-        <StyledVoteBox
-          votesFor={votesFor}
-          votesAgainst={votesAgainst}
-          totalVeCrv={totalVeCrv}
-          totalVotesPercentage={totalVotesPercentage}
-          minAcceptQuorumPercent={minAcceptQuorumPercent}
-        />
-        <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
-      </VoteWrapper>
-    </ProposalContainer>
+        </InformationWrapper>
+        <VoteWrapper>
+          <StyledVoteBox
+            votesFor={votesFor}
+            votesAgainst={votesAgainst}
+            totalVeCrv={totalVeCrv}
+            totalVotesPercentage={totalVotesPercentage}
+            minAcceptQuorumPercent={minAcceptQuorumPercent}
+          />
+          <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
+        </VoteWrapper>
+      </ProposalContainer>
+    </LazyItem>
   )
 }
 
@@ -193,5 +194,26 @@ const StyledVoteCountdown = styled(VoteCountdown)`
 const StyledVoteBox = styled(VoteBox)`
   margin: var(--spacing-1) 0 var(--spacing-4);
 `
+
+const Item = styled.div``
+
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
+
+  // when rendered items might get larger. So we have that in the state to avoid stuttering
+  const [height, setHeight] = useState<string>('241px') // default height on desktop
+  useEffect(() => {
+    if (isVisible && ref.current) {
+      setHeight(`${ref.current.clientHeight}px`)
+    }
+  }, [isVisible])
+
+  return (
+    <Item ref={ref} id={id} style={{ ...style, ...(!isVisible && { height }) }} {...props}>
+      {isVisible && children}
+    </Item>
+  )
+}
 
 export default Proposal
