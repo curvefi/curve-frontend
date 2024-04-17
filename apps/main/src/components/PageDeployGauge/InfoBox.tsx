@@ -20,7 +20,7 @@ const InfoBox = () => (
       </InfoText>
       <StyledExternalLink
         $noStyles
-        href="https://resources.curve.fi/reward-gauges/token-reward-for-gauges/#guide-to-set-any-token-reward-on-a-gauge"
+        href="https://resources.curve.fi/reward-gauges/permissionless-rewards/"
       >
         {t`Learn more`}
       </StyledExternalLink>

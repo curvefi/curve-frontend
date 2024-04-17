@@ -31,7 +31,7 @@ const RiskDisclaimer = () => {
           >{t`Curve Whitepapers`}</StyledExternalLink>
           <StyledExternalLink
             $noStyles
-            href="https://docs.curve.fi/references/audits/audits_pdf/"
+            href="https://docs.curve.fi/references/audits/"
           >{t`Smart Contract Audits`}</StyledExternalLink>
         </Box>
       </RiskSection>

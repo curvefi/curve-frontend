@@ -88,7 +88,7 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin/blob/master/doc/curve-stablecoin.pdf">{t`Whitepaper`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/audits/audits_pdf/">{t`Audits`}</StyledExternalLink>
+        <StyledExternalLink href="https://docs.curve.fi/references/audits/">{t`Audits`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
         <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">{t`Contracts`}</StyledExternalLink>
