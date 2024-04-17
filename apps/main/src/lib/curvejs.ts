@@ -133,7 +133,7 @@ const network = {
   },
   fetchNetworkConfig: (curve: CurveApi) => ({
     hasDepositAndStake: curve.hasDepositAndStake(),
-    hasRouter: curve.hasRouter()
+    hasRouter: curve.hasRouter(),
   }),
   getTVL: (curve: CurveApi) => {
     log('getChainTVL', curve.chainId)
@@ -201,11 +201,10 @@ const pool = {
             lpTokenSupply: '',
             virtualPrice: '',
           },
-
+      gaugeStatus: null,
       hasVyperVulnerability: p.hasVyperVulnerability(),
-
-      // transfer
       hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
+      isGaugeKilled: null,
       isWrapped: isWrappedOnly ?? false,
       seedData: [],
       tokenAddressesAll,
@@ -223,7 +222,7 @@ const pool = {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }
 
     try {
-      resp.value = networks[chainId].poolCustomTVL[p.id] || await p.stats.totalLiquidity()
+      resp.value = networks[chainId].poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
       return resp
     } catch (error) {
       console.error(error)

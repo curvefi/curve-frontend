@@ -89,7 +89,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             parsedGasInfo = await parseGasInfo(curve, provider)
 
             if (parsedGasInfo && customFeeData) {
-              parsedGasInfo.gasInfo.max = [gweiToWai(Number(customFeeData.maxFeePerGas.toFixed(2)))]
+              parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
               parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
               curve.setCustomFeeData(customFeeData)
             }

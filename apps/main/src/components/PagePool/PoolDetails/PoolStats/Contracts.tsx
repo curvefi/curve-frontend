@@ -39,7 +39,7 @@ const Contracts = ({
           rChainId={rChainId}
           label={
             <span>
-              {t`Gauge`} {poolDataCacheOrApi.pool.isGaugeKilled ? <ChipInactive>Inactive</ChipInactive> : null}
+              {t`Gauge`} {poolDataCacheOrApi.isGaugeKilled ? <ChipInactive>Inactive</ChipInactive> : null}
             </span>
           }
           showBottomBorder={false}

@@ -198,7 +198,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
         const currentPoolsMapper = get()[sliceKey].poolsMapper[chainId] ?? {}
         const currentPoolsMapperCached = get().storeCache.poolsMapper[chainId] ?? {}
-        const { poolsMapper, poolsMapperCache } = getPools(
+        const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
           currentPoolsMapper,
@@ -868,7 +868,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
   return tokensMapper
 }
 
-function getPools(
+async function getPools(
   curve: CurveApi,
   poolList: string[],
   currentPoolsMapper: PoolDataMapper,
@@ -890,18 +890,23 @@ function getPools(
     poolsMapper[poolId].seedData = getSeedAmounts(poolData)
     poolsMapper[poolId].curvefiUrl = getCurvefiUrl(poolId, networks[chainId].orgUIPath)
 
-    if (pool.gaugeStatus && (pool.gaugeStatus.rewardsNeedNudging || pool.gaugeStatus.areCrvRewardsStuckInBridge)) {
+    const [gaugeStatusResp, isGaugeKilledResp] = await Promise.allSettled([pool.gaugeStatus(), pool.isGaugeKilled()])
+    poolData.gaugeStatus = fulfilledValue(gaugeStatusResp) ?? null
+    poolData.isGaugeKilled = fulfilledValue(isGaugeKilledResp) ?? null
+
+    if (poolData.gaugeStatus?.rewardsNeedNudging || poolData.gaugeStatus?.areCrvRewardsStuckInBridge) {
       log(
         'rewardsNeedNudging, areCrvRewardsStuckInBridge',
         pool.id,
-        pool.gaugeStatus.rewardsNeedNudging,
-        pool.gaugeStatus.areCrvRewardsStuckInBridge
+        poolData.gaugeStatus.rewardsNeedNudging,
+        poolData.gaugeStatus.areCrvRewardsStuckInBridge
       )
     }
 
     // poolDataCached
     const poolDataCache = pick(poolsMapper[poolId], [
       'hasWrapped',
+      'isGaugeKilled',
       'tokens',
       'tokensCountBy',
       'tokensAll',
@@ -917,7 +922,6 @@ function getPools(
       'pool.isCrypto',
       'pool.isFactory',
       'pool.isLending',
-      'pool.isGaugeKilled',
       'pool.referenceAsset',
     ]) as PoolDataCache
 

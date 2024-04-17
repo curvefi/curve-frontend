@@ -128,11 +128,14 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                     />
                   </div>
 
-                  {!poolData?.pool?.isGaugeKilled && (
+                  {!poolData?.isGaugeKilled && (
                     <div>
                       <MobileTableTitle>
                         {t`Rewards tAPR`}{' '}
-                        <IconTooltip placement="top" minWidth="200px">{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
+                        <IconTooltip
+                          placement="top"
+                          minWidth="200px"
+                        >{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
                         {tableLabel.rewardsCrv.name} + {tableLabel.rewardsOther.name}
                       </MobileTableTitle>
                       <TCellRewards

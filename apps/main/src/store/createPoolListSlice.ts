@@ -174,13 +174,14 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       } else if (sortKey.startsWith('rewards')) {
         return orderBy(
           poolDatas,
-          ({ pool }) => {
+          (poolData) => {
+            const { pool, gaugeStatus } = poolData
             const { base, crv = [], other = [] } = rewardsApyMapper[pool.id] ?? {}
             if (sortKey === 'rewardsBase') {
               return Number(base?.day ?? 0)
             } else if (sortKey === 'rewardsCrv') {
               // Replacing areCrvRewardsStuckInBridge or rewardsNeedNudging CRV with 0
-              const showZero = pool?.gaugeStatus?.areCrvRewardsStuckInBridge || pool?.gaugeStatus?.rewardsNeedNudging
+              const showZero = gaugeStatus?.areCrvRewardsStuckInBridge || gaugeStatus?.rewardsNeedNudging
               return showZero ? 0 : Number(crv?.[0] ?? 0)
             } else if (sortKey === 'rewardsOther') {
               return other.length > 0 ? other.reduce((total, { apy }) => total + apy, 0) : 0
@@ -235,7 +236,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
         state.setStateByKeys({ activeKey, formValues: clonedFormValues })
 
-        let tablePoolDatas = [...poolDatasCachedOrApi];
+        let tablePoolDatas = [...poolDatasCachedOrApi]
 
         if (
           filterKey !== 'user' &&
