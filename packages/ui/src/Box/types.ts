@@ -32,5 +32,6 @@ export type BoxProps = {
   flexAlignItems?: ValueOf<Pick<CSSProperties, 'alignItems'>>
   flexJustifyContent?: ValueOf<Pick<CSSProperties, 'justifyContent'>>
   flexCenter?: boolean
+  flexGap?: ValueOf<Pick<CSSProperties, 'gap'>>
   flexWrap?: ValueOf<Pick<CSSProperties, 'justifyContent'>>
 }
