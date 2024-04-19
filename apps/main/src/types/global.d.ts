@@ -78,11 +78,10 @@ declare global {
       symbol: string
     }[]
     createDisabledTokens: string[]
-    stableSwapFactory: boolean
-    cryptoSwapFactory: boolean
+    stableswapFactoryOld: boolean
+    stableswapFactory: boolean
     twocryptoFactory: boolean
     tricryptoFactory: boolean
-    stableSwapNg: boolean
     hasFactory: boolean
     pricesApi: boolean
     scanAddressPath: (hash: string) => string

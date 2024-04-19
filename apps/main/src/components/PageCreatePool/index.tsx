@@ -85,7 +85,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory
+          networks[chainId].twocryptoFactory
         )
       )
     } else {
@@ -101,7 +101,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory
+          networks[chainId].twocryptoFactory
         ) &&
           oraclesReady([
             tokensInPool.tokenA,
@@ -161,7 +161,9 @@ const CreatePool = ({ curve }: Props) => {
 
   useEffect(() => {
     if (!chainId) return
-    updatePoolInfoValidation(checkPoolInfo(networks[chainId].stableSwapNg, swapType, poolSymbol, poolName, assetType))
+    updatePoolInfoValidation(
+      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType)
+    )
   }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation])
 
   return (

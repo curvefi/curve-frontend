@@ -29,9 +29,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Stableswap`}
               description={t`Bonding Curve specialising in pegged assets.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
-              disabled={!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg}
+              disabled={!networks[chainId].stableswapFactory && !networks[chainId].stableswapFactoryOld}
             />
-            {!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg && (
+            {!networks[chainId].stableswapFactory && !networks[chainId].stableswapFactoryOld && (
               <DisabledMessage>{t`Stableswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>
@@ -42,17 +42,11 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Cryptoswap`}
               description={t`Bonding Curve specialising in unpegged assets.`}
               handleClick={() => updateSwapType(CRYPTOSWAP, chainId)}
-              disabled={
-                !networks[chainId].cryptoSwapFactory &&
-                !networks[chainId].tricryptoFactory &&
-                !networks[chainId].twocryptoFactory
-              }
+              disabled={!networks[chainId].tricryptoFactory && !networks[chainId].twocryptoFactory}
             />
-            {!networks[chainId].cryptoSwapFactory &&
-              !networks[chainId].tricryptoFactory &&
-              !networks[chainId].twocryptoFactory && (
-                <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
-              )}
+            {!networks[chainId].tricryptoFactory && !networks[chainId].twocryptoFactory && (
+              <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
+            )}
           </SelectButtonWrapper>
         </OptionsWrapper>
       </Wrapper>

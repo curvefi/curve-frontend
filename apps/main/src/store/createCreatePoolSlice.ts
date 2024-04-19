@@ -302,7 +302,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
       if (swapType === CRYPTOSWAP) {
-        const amount = networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory ? 2 : 3
+        const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
         set(
           produce((state) => {
@@ -967,7 +967,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         const coin = tokenA.basePool ? tokenB : tokenA
         const implementationIdx = implementation === 1 ? 1 : 0
 
-        if (networks[chainId].stableSwapNg) {
+        if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
             const oracleAddress =
@@ -1122,7 +1122,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         // ----- STABLE PLAIN POOL -----
       } else {
         // STABLE NG
-        if (networks[chainId].stableSwapNg) {
+        if (networks[chainId].stableswapFactory) {
           const coins = [tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH].filter(
             (coin) => coin.address !== ''
           )

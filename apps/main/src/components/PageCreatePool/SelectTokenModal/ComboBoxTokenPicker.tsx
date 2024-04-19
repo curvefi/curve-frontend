@@ -14,6 +14,7 @@ import { delayAction, shortenTokenAddress } from '@/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
+import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 
 import ComboBox from '@/components/PageCreatePool/SelectTokenModal/ComboBox'
 import Box from '@/ui/Box'
@@ -60,6 +61,15 @@ const ComboBoxTokenPicker = ({
 
   const [filterValue, setFilterValue] = useState('')
   const [tokenQueryStatus, settokenQueryStatus] = useState<TokenQueryType>('')
+
+  const quickList = [
+    {
+      address: NATIVE_TOKENS[chainId].wrappedAddress,
+      haveSameTokenName: false,
+      symbol: NATIVE_TOKENS[chainId].wrappedSymbol,
+    },
+    ...networks[chainId].createQuickList,
+  ]
 
   if (!overlayTriggerState.isOpen) {
     visibleTokens.current = {}
@@ -179,26 +189,19 @@ const ComboBoxTokenPicker = ({
             onInputChange={setFilterValue}
             placeholder={t`Search by token name or address`}
             quickList={
-              networks[chainId].createQuickList.length !== 0 && (
-                <QuickListWrapper>
-                  {networks[chainId].createQuickList.map(({ address, symbol }: CreateQuickListToken) => (
-                    <QuickListButton
-                      key={address}
-                      disabled={disabledKeys?.some((item) => item.toLowerCase() === address.toLowerCase())}
-                      variant="icon-outlined"
-                      onClick={() => handleOnSelectChange(address)}
-                    >
-                      <StyledQuickListTokenIcon
-                        address={address}
-                        imageBaseUrl={imageBaseUrl}
-                        token={symbol}
-                        size="sm"
-                      />{' '}
-                      {symbol}
-                    </QuickListButton>
-                  ))}
-                </QuickListWrapper>
-              )
+              <QuickListWrapper>
+                {quickList.map(({ address, symbol }: CreateQuickListToken) => (
+                  <QuickListButton
+                    key={address}
+                    disabled={disabledKeys?.some((item) => item.toLowerCase() === address.toLowerCase())}
+                    variant="icon-outlined"
+                    onClick={() => handleOnSelectChange(address)}
+                  >
+                    <StyledQuickListTokenIcon address={address} imageBaseUrl={imageBaseUrl} token={symbol} size="sm" />{' '}
+                    {symbol}
+                  </QuickListButton>
+                ))}
+              </QuickListWrapper>
             }
             onSelectionChange={handleOnSelectChange}
           >
