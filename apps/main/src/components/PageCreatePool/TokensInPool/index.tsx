@@ -21,6 +21,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
+import { DEFAULT_CREATE_POOL_STATE } from '@/store/createCreatePoolSlice'
 import { NATIVE_TOKENS as nativeTokens } from '@curvefi/api/lib/curve'
 import { checkMetaPool, containsOracle } from '@/components/PageCreatePool/utils'
 
@@ -113,6 +114,23 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const handleInpChange = useCallback(
     (name: TokenId, value: string) => {
       if (!value.startsWith('0x')) return
+
+      let basePoolCoins: string[] = []
+      if (checkMetaPool(value, basePools[chainId]) || tokensInPool.tokenA.basePool || tokensInPool.tokenB.basePool) {
+        if (checkMetaPool(value, basePools[chainId])) {
+          basePoolCoins =
+            basePools[chainId].find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+        } else if (tokensInPool.tokenA.basePool) {
+          basePoolCoins =
+            basePools[chainId].find((pool) => pool.token.toLowerCase() === tokensInPool.tokenA.address.toLowerCase())
+              ?.coins || []
+        } else if (tokensInPool.tokenB.basePool) {
+          basePoolCoins =
+            basePools[chainId].find((pool) => pool.token.toLowerCase() === tokensInPool.tokenB.address.toLowerCase())
+              ?.coins || []
+        }
+      }
+
       let updatedFormValues = { ...tokensInPool }
 
       const updateTokenFormValues = (tokenId: TokenId) => {
@@ -135,11 +153,15 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             address: value,
             symbol: findSymbol(value),
           },
-          [tokenId2]: tokensInPool[tokenId1],
+          [tokenId2]:
+            !tokensInPool[tokenId1].basePool && tokenId2 !== TOKEN_A && tokenId2 !== TOKEN_B
+              ? tokensInPool[tokenId1]
+              : DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId1],
         }
       }
 
       if (name === TOKEN_A) {
+        // value = basepool while basepool selected
         if (swapType === STABLESWAP && checkMetaPool(value, basePools[chainId]) && tokensInPool.tokenB.basePool) {
           updatedFormValues = {
             ...updatedFormValues,
@@ -152,6 +174,43 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
               address: '',
+            },
+          }
+          // value = basepool while token in basepool is selected
+        } else if (
+          swapType === STABLESWAP &&
+          checkMetaPool(value, basePools[chainId]) &&
+          basePoolCoins.some((token) => token === tokensInPool.tokenB.address)
+        ) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              ngAssetType: 0,
+              address: value,
+              basePool: true,
+            },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: '',
+            },
+          }
+          // value = token in basepool that is already selected
+        } else if (
+          swapType === STABLESWAP &&
+          tokensInPool.tokenB.basePool &&
+          basePoolCoins.some((token) => token === value)
+        ) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: value,
+            },
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: '',
+              basePool: false,
             },
           }
         } else if (value === tokensInPool[TOKEN_B].address) {
@@ -186,6 +245,43 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               address: '',
+            },
+          }
+          // value = basepool while token in basepool is selected
+        } else if (
+          swapType === STABLESWAP &&
+          checkMetaPool(value, basePools[chainId]) &&
+          basePoolCoins.some((token) => token === tokensInPool.tokenA.address)
+        ) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              ngAssetType: 0,
+              address: value,
+              basePool: true,
+            },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: '',
+            },
+          }
+          // value = token in basepool that is already selected
+        } else if (
+          swapType === STABLESWAP &&
+          tokensInPool.tokenA.basePool &&
+          basePoolCoins.some((token) => token === value)
+        ) {
+          updatedFormValues = {
+            ...updatedFormValues,
+            [TOKEN_B]: {
+              ...updatedFormValues[TOKEN_B],
+              address: value,
+            },
+            [TOKEN_A]: {
+              ...updatedFormValues[TOKEN_A],
+              address: '',
+              basePool: false,
             },
           }
         } else if (value === tokensInPool[TOKEN_A].address) {
@@ -431,78 +527,81 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     [tokensInPool, updateTokensInPool, curve, findSymbol, chainId, swapType, basePools]
   )
 
-  const addToken = () => {
+  const addToken = useCallback(() => {
     // reset preset and params when going to tricrypto
     if (CRYPTOSWAP && tokensInPool.tokenAmount === 2 && poolPresetIndex !== null) {
       resetPoolPresetIndex()
     }
 
     updateTokenAmount(tokensInPool.tokenAmount + 1)
-  }
+  }, [tokensInPool.tokenAmount, updateTokenAmount, poolPresetIndex, resetPoolPresetIndex])
 
-  const removeToken = (tokenId: TokenId) => {
-    // reset preset and params when going from tricrypto to twocrypto
-    if (CRYPTOSWAP && tokensInPool.tokenAmount === 3 && poolPresetIndex !== null) {
-      resetPoolPresetIndex()
-    }
-
-    updateTokenAmount(tokensInPool.tokenAmount - 1)
-    // remove token from form values
-
-    updateTokensInPool(
-      curve,
-      tokensInPool[TOKEN_A],
-      tokensInPool[TOKEN_B],
-      {
-        ...tokensInPool[TOKEN_C],
-        address: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].address,
-        symbol: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].symbol,
-        ngAssetType: tokenId === TOKEN_C ? 0 : tokensInPool[TOKEN_C].ngAssetType,
-        oracleAddress: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleAddress,
-        oracleFunction: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleFunction,
-      },
-      {
-        ...tokensInPool[TOKEN_D],
-        address: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].address,
-        symbol: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].symbol,
-        ngAssetType: tokenId === TOKEN_D ? 0 : tokensInPool[TOKEN_D].ngAssetType,
-        oracleAddress: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleAddress,
-        oracleFunction: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleFunction,
-      },
-      {
-        ...tokensInPool[TOKEN_E],
-        address: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].address,
-        symbol: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].symbol,
-        ngAssetType: tokenId === TOKEN_E ? 0 : tokensInPool[TOKEN_E].ngAssetType,
-        oracleAddress: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleAddress,
-        oracleFunction: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleFunction,
-      },
-      {
-        ...tokensInPool[TOKEN_F],
-        address: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].address,
-        symbol: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].symbol,
-        ngAssetType: tokenId === TOKEN_F ? 0 : tokensInPool[TOKEN_F].ngAssetType,
-        oracleAddress: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleAddress,
-        oracleFunction: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleFunction,
-      },
-      {
-        ...tokensInPool[TOKEN_G],
-        address: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].address,
-        symbol: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].symbol,
-        ngAssetType: tokenId === TOKEN_G ? 0 : tokensInPool[TOKEN_G].ngAssetType,
-        oracleAddress: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleAddress,
-        oracleFunction: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleFunction,
-      },
-      {
-        ...tokensInPool[TOKEN_H],
-        address: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].address,
-        symbol: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].symbol,
-        ngAssetType: tokenId === TOKEN_H ? 0 : tokensInPool[TOKEN_H].ngAssetType,
-        oracleAddress: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleAddress,
-        oracleFunction: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleFunction,
+  const removeToken = useCallback(
+    (tokenId: TokenId) => {
+      // reset preset and params when going from tricrypto to twocrypto
+      if (CRYPTOSWAP && tokensInPool.tokenAmount === 3 && poolPresetIndex !== null) {
+        resetPoolPresetIndex()
       }
-    )
-  }
+
+      updateTokenAmount(tokensInPool.tokenAmount - 1)
+      // remove token from form values
+
+      updateTokensInPool(
+        curve,
+        tokensInPool[TOKEN_A],
+        tokensInPool[TOKEN_B],
+        {
+          ...tokensInPool[TOKEN_C],
+          address: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].address,
+          symbol: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].symbol,
+          ngAssetType: tokenId === TOKEN_C ? 0 : tokensInPool[TOKEN_C].ngAssetType,
+          oracleAddress: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleAddress,
+          oracleFunction: tokenId === TOKEN_C ? '' : tokensInPool[TOKEN_C].oracleFunction,
+        },
+        {
+          ...tokensInPool[TOKEN_D],
+          address: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].address,
+          symbol: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].symbol,
+          ngAssetType: tokenId === TOKEN_D ? 0 : tokensInPool[TOKEN_D].ngAssetType,
+          oracleAddress: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleAddress,
+          oracleFunction: tokenId === TOKEN_D ? '' : tokensInPool[TOKEN_D].oracleFunction,
+        },
+        {
+          ...tokensInPool[TOKEN_E],
+          address: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].address,
+          symbol: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].symbol,
+          ngAssetType: tokenId === TOKEN_E ? 0 : tokensInPool[TOKEN_E].ngAssetType,
+          oracleAddress: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleAddress,
+          oracleFunction: tokenId === TOKEN_E ? '' : tokensInPool[TOKEN_E].oracleFunction,
+        },
+        {
+          ...tokensInPool[TOKEN_F],
+          address: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].address,
+          symbol: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].symbol,
+          ngAssetType: tokenId === TOKEN_F ? 0 : tokensInPool[TOKEN_F].ngAssetType,
+          oracleAddress: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleAddress,
+          oracleFunction: tokenId === TOKEN_F ? '' : tokensInPool[TOKEN_F].oracleFunction,
+        },
+        {
+          ...tokensInPool[TOKEN_G],
+          address: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].address,
+          symbol: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].symbol,
+          ngAssetType: tokenId === TOKEN_G ? 0 : tokensInPool[TOKEN_G].ngAssetType,
+          oracleAddress: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleAddress,
+          oracleFunction: tokenId === TOKEN_G ? '' : tokensInPool[TOKEN_G].oracleFunction,
+        },
+        {
+          ...tokensInPool[TOKEN_H],
+          address: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].address,
+          symbol: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].symbol,
+          ngAssetType: tokenId === TOKEN_H ? 0 : tokensInPool[TOKEN_H].ngAssetType,
+          oracleAddress: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleAddress,
+          oracleFunction: tokenId === TOKEN_H ? '' : tokensInPool[TOKEN_H].oracleFunction,
+        }
+      )
+    },
+    [tokensInPool, poolPresetIndex, updateTokenAmount, updateTokensInPool, curve, resetPoolPresetIndex]
+  )
 
   // check if the tokens are withing 0.95 and 1.05 threshold
   const checkThreshold = useMemo(() => {
@@ -545,7 +644,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           tokenId={TOKEN_A}
           token={tokensInPool[TOKEN_A]}
           tokenTitle={t`Token A`}
-          disabledTokens={tokensInPool[TOKEN_B].basePool ? DISABLED_TOKENS : NATIVE_TOKENS}
+          disabledTokens={NATIVE_TOKENS}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -564,7 +663,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           tokenId={TOKEN_B}
           token={tokensInPool[TOKEN_B]}
           tokenTitle={t`Token B`}
-          disabledTokens={tokensInPool[TOKEN_A].basePool ? DISABLED_TOKENS : NATIVE_TOKENS}
+          disabledTokens={NATIVE_TOKENS}
           selTokens={selTokens}
           handleInpChange={handleInpChange}
         />
@@ -585,7 +684,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_C}
               token={tokensInPool[TOKEN_C]}
               tokenTitle={t`Token C`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -605,7 +704,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_D}
               token={tokensInPool[TOKEN_D]}
               tokenTitle={t`Token D`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -625,7 +724,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_E}
               token={tokensInPool[TOKEN_E]}
               tokenTitle={t`Token E`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -645,7 +744,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_F}
               token={tokensInPool[TOKEN_F]}
               tokenTitle={t`Token F`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -665,7 +764,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_G}
               token={tokensInPool[TOKEN_G]}
               tokenTitle={t`Token G`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -685,7 +784,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               tokenId={TOKEN_H}
               token={tokensInPool[TOKEN_H]}
               tokenTitle={t`Token H`}
-              disabledTokens={tokensInPool.metaPoolToken ? DISABLED_TOKENS : NATIVE_TOKENS}
+              disabledTokens={NATIVE_TOKENS}
               selTokens={selTokens}
               handleInpChange={handleInpChange}
               removeToken={removeToken}
@@ -696,7 +795,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       {!chainId && <WarningBox message={t`Please connect a wallet to select tokens`} />}
       {swapType === STABLESWAP ? (
         <>
-          {checkThreshold && networks[chainId].cryptoSwapFactory && (
+          {checkThreshold && networks[chainId].twocryptoFactory && (
             <>
               <WarningBox
                 message={t`Tokens appear to be unpegged (above 5% deviation from 1:1).
@@ -711,18 +810,9 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           )}
           <Row>
             <ExplainerWrapper flex flexColumn>
-              {basePools[chainId].length !== 0 && (
-                <p>{t`Pools with basepools (${basePools[chainId].map((pool, index) => {
-                  if (index === 0) {
-                    return `${pool.name}`
-                  }
-                  if (index === basePools[chainId].length - 1) {
-                    return ` ${pool.name}`
-                  }
-                  return ` ${pool.name}`
-                })}) allow a maximum of 2 tokens`}</p>
-              )}
-              {!networks[chainId].stableSwapNg && (
+              {networks[chainId].stableswapFactory && <p>{t`Stableswap pools allow up to 8 tokens`}</p>}
+              {basePools[chainId].length !== 0 && <p>{t`Pools with basepools allow a maximum of 2 tokens`}</p>}
+              {!networks[chainId].stableswapFactory && (
                 <p>{t`Rebasing tokens are not supported in this version of Stableswap`}</p>
               )}
             </ExplainerWrapper>
@@ -736,19 +826,16 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         </Row>
       )}
 
-      <RebaseAddRow flex flexJustifyContent={'space-between'}>
+      <RebaseAddRow flex flexColumn flexAlignItems="end" flexJustifyContent="end">
         <AddButton
           onClick={addToken}
           variant="filled"
           disabled={
-            (swapType === STABLESWAP && networks[chainId].stableSwapNg && tokensInPool.tokenAmount === 8) ||
-            (swapType === STABLESWAP && !networks[chainId].stableSwapNg && tokensInPool.tokenAmount === 4) ||
+            (swapType === STABLESWAP && networks[chainId].stableswapFactory && tokensInPool.tokenAmount === 8) ||
+            (swapType === STABLESWAP && !networks[chainId].stableswapFactory && tokensInPool.tokenAmount === 4) ||
             (swapType === STABLESWAP && tokensInPool.metaPoolToken) ||
             (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && tokensInPool.tokenAmount === 3) ||
-            (swapType === CRYPTOSWAP &&
-              networks[chainId].tricryptoFactory &&
-              !networks[chainId].cryptoSwapFactory &&
-              !networks[chainId].twocryptoFactory) ||
+            (swapType === CRYPTOSWAP && networks[chainId].tricryptoFactory && !networks[chainId].twocryptoFactory) ||
             (swapType === CRYPTOSWAP && !networks[chainId].tricryptoFactory)
           }
         >
