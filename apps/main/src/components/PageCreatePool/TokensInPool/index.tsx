@@ -811,7 +811,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           <Row>
             <ExplainerWrapper flex flexColumn>
               {networks[chainId].stableswapFactory && <p>{t`Stableswap pools allow up to 8 tokens`}</p>}
-              {basePools[chainId].length !== 0 && <p>{t`Pools with basepools allow a maximum of 2 tokens`}</p>}
+              {basePools[chainId]?.length !== 0 && <p>{t`Pools with basepools allow a maximum of 2 tokens`}</p>}
               {!networks[chainId].stableswapFactory && (
                 <p>{t`Rebasing tokens are not supported in this version of Stableswap`}</p>
               )}

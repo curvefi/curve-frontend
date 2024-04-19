@@ -23,6 +23,7 @@ import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
+import LazyItem from '@/ui/LazyItem'
 
 type Props = {
   curve: CurveApi
@@ -209,7 +210,7 @@ const ComboBoxTokenPicker = ({
               items.length > 0 ? (
                 (item: CreateToken) => (
                   <Item key={item.address} textValue={item.symbol}>
-                    <ItemWrapper>
+                    <ItemWrapper defaultHeight="50px">
                       <TokenIcon
                         imageBaseUrl={imageBaseUrl}
                         token={item.symbol}
@@ -234,7 +235,7 @@ const ComboBoxTokenPicker = ({
                 </Item>
               ) : (
                 <Item key={'no-results'} textValue={'No Results'}>
-                  <ItemWrapper>
+                  <ItemWrapper defaultHeight="50px">
                     <LabelTextWrapper>
                       <ErrorText>{t`Search generated no results`}</ErrorText>
                     </LabelTextWrapper>
@@ -251,7 +252,7 @@ const ComboBoxTokenPicker = ({
               // no search resuslts
 
               <Item key={'ERROR'} textValue={'ERROR'}>
-                <ItemWrapper>
+                <ItemWrapper defaultHeight="50px">
                   <LabelTextWrapper>
                     <ErrorText>{t`No token found for address ${shortenTokenAddress(filterValue)}`}</ErrorText>
                   </LabelTextWrapper>
@@ -261,7 +262,7 @@ const ComboBoxTokenPicker = ({
               // disabled token
 
               <Item key={'disabled-token'} textValue={'Disabled Token'}>
-                <ItemWrapper>
+                <ItemWrapper defaultHeight="50px">
                   <LabelTextWrapper>
                     {networks[chainId].createDisabledTokens.some(
                       (token) => token.toLowerCase() === filterValue.toLowerCase()
@@ -290,7 +291,7 @@ ComboBoxTokenPicker.defaultProps = {
   tokensMapper: {},
 }
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled(LazyItem)`
   align-items: center;
   display: grid;
   grid-column-gap: var(--spacing-2);
