@@ -176,6 +176,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
+              symbol: findSymbol(value),
               address: value,
               basePool: true,
             },
@@ -195,6 +196,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
               address: value,
+              symbol: findSymbol(value),
             },
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
@@ -229,6 +231,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_B],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_A]: {
@@ -248,6 +251,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_B],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_A]: {

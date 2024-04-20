@@ -150,7 +150,10 @@ const ComboBoxTokenPicker = ({
   }
 
   const handleOnSelectChange = (tokenAddress: React.Key) => {
-    if (tokenAddress) onSelectionChange(tokenAddress)
+    if (tokenAddress) {
+      onSelectionChange(tokenAddress)
+      setFilterBasepools(false)
+    }
     handleClose()
   }
 
