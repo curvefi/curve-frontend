@@ -270,6 +270,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
             [TOKEN_B]: {
               ...updatedFormValues[TOKEN_B],
               address: value,
+              symbol: findSymbol(value),
             },
             [TOKEN_A]: {
               ...updatedFormValues[TOKEN_A],
@@ -304,6 +305,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_C]: {
@@ -339,6 +341,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_D]: {
@@ -374,6 +377,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_E]: {
@@ -409,6 +413,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_F]: {
@@ -444,6 +449,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_G]: {
@@ -479,6 +485,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
               ...updatedFormValues[TOKEN_A],
               ngAssetType: 0,
               address: value,
+              symbol: findSymbol(value),
               basePool: true,
             },
             [TOKEN_H]: {
