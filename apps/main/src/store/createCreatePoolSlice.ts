@@ -116,6 +116,7 @@ export type CreatePoolSlice = {
       tokenG: TokenState,
       tokenH: TokenState
     ) => void
+    clearToken: (tokenId: TokenId) => void
     updateStandardToggle: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
@@ -319,6 +320,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state) => {
               state.createPool.tokensInPool.tokenAmount = 2
+              state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
             })
           )
         }
@@ -326,6 +328,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
+              state.createPool.tokensInPool.metaPoolToken = false
             })
           )
         }
@@ -484,6 +487,13 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         produce((state) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
           state.createPool.initialPrice = initialPriceUpdates
+        })
+      )
+    },
+    clearToken: (tokenId: TokenId) => {
+      set(
+        produce((state) => {
+          state.createPool.tokensInPool[tokenId] = DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId]
         })
       )
     },

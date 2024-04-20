@@ -24,6 +24,7 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import LazyItem from '@/ui/LazyItem'
+import Checkbox from '@/ui/Checkbox'
 
 type Props = {
   curve: CurveApi
@@ -61,6 +62,7 @@ const ComboBoxTokenPicker = ({
   const { swapType } = useStore((state) => state.createPool)
 
   const [filterValue, setFilterValue] = useState('')
+  const [filterBasepools, setFilterBasepools] = useState(false)
   const [tokenQueryStatus, settokenQueryStatus] = useState<TokenQueryType>('')
 
   const quickList = [
@@ -98,9 +100,16 @@ const ComboBoxTokenPicker = ({
 
   // handles search/filtering
   const items = useMemo(() => {
-    const filteredTokens = disabledKeys
-      ? tokens.filter((item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase()))
+    const basePoolsFilteredTokens = filterBasepools
+      ? tokens.filter((item) =>
+          basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase())
+        )
       : tokens
+    const filteredTokens = disabledKeys
+      ? basePoolsFilteredTokens.filter(
+          (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase())
+        )
+      : basePoolsFilteredTokens
     const fuse = new Fuse<CreateToken>(filteredTokens, {
       ignoreLocation: true,
       threshold: 0.01,
@@ -129,7 +138,7 @@ const ComboBoxTokenPicker = ({
       return tokens.filter((item) => endsWith(item.address, filterValue))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValue, tokens, disabledKeys])
+  }, [filterValue, tokens, disabledKeys, filterBasepools])
 
   const selectedToken = useMemo(() => {
     return selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null
@@ -202,6 +211,15 @@ const ComboBoxTokenPicker = ({
                     {symbol}
                   </QuickListButton>
                 ))}
+                <StyledCheckbox
+                  key={'filter-basepools'}
+                  isDisabled={basePools[chainId]?.length === 0}
+                  className={filterBasepools ? 'active' : ''}
+                  isSelected={filterBasepools}
+                  onChange={() => setFilterBasepools(!filterBasepools)}
+                >
+                  View Basepools
+                </StyledCheckbox>
               </QuickListWrapper>
             }
             onSelectionChange={handleOnSelectChange}
@@ -309,8 +327,12 @@ const ButtonTokenIcon = styled(TokenIcon)`
 
 const QuickListButton = styled(Button)`
   margin: 0.25rem;
-  padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
   text-transform: none;
+`
+
+const StyledCheckbox = styled(Checkbox)`
+  margin: auto 1.25rem auto auto;
 `
 
 const QuickListWrapper = styled.div`

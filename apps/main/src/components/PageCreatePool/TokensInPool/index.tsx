@@ -1,4 +1,4 @@
-import { CreateToken, TokenId, SelectTokenFormValues } from '@/components/PageCreatePool/types'
+import { CreateToken, TokenId } from '@/components/PageCreatePool/types'
 
 import { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
@@ -56,17 +56,6 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const { tokensMapper } = useTokensMapper(chainId)
 
   const NATIVE_TOKENS = [nativeTokens[chainId].address, ...networks[chainId].createDisabledTokens]
-
-  const BASEPOOL_COINS: string[] = useMemo(() => {
-    const coinArray = basePoolsLoading
-      ? []
-      : basePools[chainId].reduce((acc: string[], pool) => {
-          return acc.concat(pool.coins)
-        }, [])
-    return coinArray
-  }, [basePools, basePoolsLoading, chainId])
-
-  const DISABLED_TOKENS = [...BASEPOOL_COINS, ...NATIVE_TOKENS]
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {

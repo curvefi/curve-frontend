@@ -50,7 +50,7 @@ const SelectToken = ({
   handleInpChange,
   removeToken,
 }: Props) => {
-  const { updateNgAssetType, swapType } = useStore((state) => state.createPool)
+  const { updateNgAssetType, swapType, clearToken } = useStore((state) => state.createPool)
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`
@@ -63,19 +63,23 @@ const SelectToken = ({
   return (
     <TokenPickerContainer>
       {(tokenId === TOKEN_A || tokenId === TOKEN_B) && (
-        <LabelRow>
-          <p className="extra-margin">{tokenTitle}</p>
+        <LabelRow flex flexJustifyContent={'space-between'}>
+          <p>{tokenTitle}</p>
+          <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
         </LabelRow>
       )}
       {tokenId === TOKEN_C && (
         <LabelRow flex flexJustifyContent={'space-between'}>
           <p>{t`Token C`}</p>
-          {((swapType === CRYPTOSWAP && networks[chainId].twocryptoFactory) || swapType === STABLESWAP) &&
-            removeToken && (
-              <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C)}>
-                <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
-              </RemoveButton>
-            )}
+          <Box flex>
+            <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
+            {((swapType === CRYPTOSWAP && networks[chainId].twocryptoFactory) || swapType === STABLESWAP) &&
+              removeToken && (
+                <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C)}>
+                  <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+                </RemoveButton>
+              )}
+          </Box>
         </LabelRow>
       )}
       {(tokenId === TOKEN_D ||
@@ -86,9 +90,12 @@ const SelectToken = ({
         removeToken && (
           <LabelRow flex flexJustifyContent={'space-between'}>
             <p>{getTokenName(tokenId)}</p>
-            <RemoveButton variant={'text'} onClick={() => removeToken(tokenId)}>
-              <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
-            </RemoveButton>
+            <Box flex>
+              <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
+              <RemoveButton variant={'text'} onClick={() => removeToken(tokenId)}>
+                <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+              </RemoveButton>
+            </Box>
           </LabelRow>
         )}
       <ComboBoxTokenPicker
@@ -140,11 +147,8 @@ const LabelRow = styled(Box)`
   color: var(--box--primary--color);
   p {
     font-size: var(--font-size-2);
-    margin-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-1);
     margin-left: var(--spacing-2);
-  }
-  .extra-margin {
-    margin-bottom: var(--spacing-narrow);
   }
 `
 
@@ -159,9 +163,20 @@ const StyledCheckbox = styled(Checkbox)`
   margin-right: var(--spacing-2);
 `
 
+const ClearButton = styled(Button)`
+  font-size: var(--font-size-2);
+  font-weight: var(--semi-bold);
+  color: var(--page--text-color);
+  opacity: 0.5;
+  margin-bottom: var(--spacing-1);
+  &:hover:not(:disabled) {
+    opacity: 1;
+  }
+`
+
 const RemoveButton = styled(Button)`
   color: var(--button--background-color);
-  margin-bottom: var(--spacing-1);
+  margin-bottom: 0.4375rem;
   display: flex;
   align-items: center;
   &:hover:not(:disabled) {
