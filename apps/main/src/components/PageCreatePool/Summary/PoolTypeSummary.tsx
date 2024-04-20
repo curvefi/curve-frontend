@@ -32,7 +32,7 @@ const PoolTypeSummary = () => {
           <SummaryDataPlaceholder>{t`No pool type selected`}</SummaryDataPlaceholder>
         ) : (
           <SummaryData>
-            {swapType === CRYPTOSWAP ? t`Cryptoswap` : t`Stableswap${metaPoolToken ? t`-Meta` : ''}`}
+            {swapType === CRYPTOSWAP ? t`Cryptoswap` : t`Stableswap${metaPoolToken ? '-Meta' : ''}`}
           </SummaryData>
         )}
       </Box>
