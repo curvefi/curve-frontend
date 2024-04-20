@@ -139,7 +139,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'ETH',
     createQuickList: [
       {
-        address: '0xC52D7F23a2e460248Db6eE192Cb23dD12bDDCbf6',
+        address: '0xc52d7f23a2e460248db6ee192cb23dd12bddcbf6',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
@@ -166,7 +166,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'XDAI',
     createQuickList: [
       {
-        address: '0xaBEf652195F98A91E490f047A5006B71c85f058d',
+        address: '0xabef652195f98a91e490f047a5006b71c85f058d',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
@@ -214,7 +214,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     createDisabledTokens: ['0x0000000000000000000000000000000000001010'],
     createQuickList: [
       {
-        address: '0xc4Ce1D6F5D98D65eE25Cf85e9F2E9DcFEe6Cb5d6',
+        address: '0xc4ce1d6f5d98d65ee25cf85e9f2e9dcfee6cb5d6',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
@@ -291,7 +291,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     },
     createQuickList: [
       {
-        address: '0x498Bf2B1e120FeD3ad3D42EA2165E9b73f99C1e5',
+        address: '0x498bf2b1e120fed3ad3d42ea2165e9b73f99c1e5',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
@@ -411,7 +411,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     },
     createQuickList: [
       {
-        address: '0xe2fb3F127f5450DeE44afe054385d74C392BdeF4',
+        address: '0xe2fb3f127f5450dee44afe054385d74c392bdef4',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
@@ -433,7 +433,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     },
     createQuickList: [
       {
-        address: '0xB102f7Efa0d5dE071A8D37B3548e1C7CB148Caf3',
+        address: '0xb102f7efa0d5de071a8d37b3548e1c7cb148caf3',
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
