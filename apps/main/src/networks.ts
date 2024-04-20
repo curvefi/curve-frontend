@@ -139,14 +139,9 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'ETH',
     createQuickList: [
       {
-        address: '0x1337bedc9d22ecbe766df105c9623922a27963ec',
+        address: '0xC52D7F23a2e460248Db6eE192Cb23dD12bDDCbf6',
         haveSameTokenName: false,
-        symbol: '3Crv',
-      },
-      {
-        address: '0x29a3d66b30bc4ad674a4fdaf27578b64f6afbfe7',
-        haveSameTokenName: false,
-        symbol: 'FRAXBP',
+        symbol: 'crvUSD',
       },
     ],
     stableswapFactory: true,
@@ -171,9 +166,9 @@ const networks: Record<ChainId, NetworkConfig> = {
     symbol: 'XDAI',
     createQuickList: [
       {
-        address: '0x1337BedC9D22ecbe766dF105c9623922A27963EC',
+        address: '0xaBEf652195F98A91E490f047A5006B71c85f058d',
         haveSameTokenName: false,
-        symbol: 'x3CRV',
+        symbol: 'crvUSD',
       },
     ],
     stableswapFactory: true,
@@ -194,7 +189,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0xffffffff1fcacbd218edc0eba20fc2308c778080',
       toAddress: '0xfa36fe1da08c89ec72ea1f0143a35bfd5daea108',
     },
-    createQuickList: [],
     stableswapFactoryOld: true,
     hasFactory: true,
   },
@@ -218,6 +212,13 @@ const networks: Record<ChainId, NetworkConfig> = {
       toAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
     },
     createDisabledTokens: ['0x0000000000000000000000000000000000001010'],
+    createQuickList: [
+      {
+        address: '0xc4Ce1D6F5D98D65eE25Cf85e9F2E9DcFEe6Cb5d6',
+        haveSameTokenName: false,
+        symbol: 'crvUSD',
+      },
+    ],
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -238,7 +239,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x765277eebeca2e31912c9946eae1021199b39c61',
       toAddress: '0xb44a9b6905af7c801311e8f4e76932ee959c663c',
     },
-    createQuickList: [],
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -266,7 +266,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x8d11ec38a3eb5e956b052f67da8bdc9bef8abf3e',
       toAddress: '0x04068da6c83afcfa0e13ba15a6696662335d5b75',
     },
-    createQuickList: [],
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
@@ -292,14 +291,9 @@ const networks: Record<ChainId, NetworkConfig> = {
     },
     createQuickList: [
       {
-        address: '0xc9b8a3fdecb9d5b218d02555a8baf332e5b740d5',
+        address: '0x498Bf2B1e120FeD3ad3D42EA2165E9b73f99C1e5',
         haveSameTokenName: false,
-        symbol: 'FRAXBP',
-      },
-      {
-        address: '0x7f90122bf0700f9e7e1f688fe926940e8839f353',
-        haveSameTokenName: false,
-        symbol: '2CRV',
+        symbol: 'crvUSD',
       },
     ],
     stableswapFactory: true,
@@ -389,6 +383,13 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
       toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
     },
+    createQuickList: [
+      {
+        address: '0x417Ac0e078398C154EdFadD9Ef675d30Be60Af93',
+        haveSameTokenName: false,
+        symbol: 'crvUSD',
+      },
+    ],
     twocryptoFactory: true,
     tricryptoFactory: true,
     stableswapFactory: true,
@@ -408,6 +409,13 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0xe9c803f48dffe50180bd5b01dc04da939e3445fc',
       toAddress: '0xcba2aeec821b0b119857a9ab39e09b034249681a',
     },
+    createQuickList: [
+      {
+        address: '0xe2fb3F127f5450DeE44afe054385d74C392BdeF4',
+        haveSameTokenName: false,
+        symbol: 'crvUSD',
+      },
+    ],
     twocryptoFactory: true,
     tricryptoFactory: true,
     stableswapFactory: true,
@@ -423,10 +431,17 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0xb102f7efa0d5de071a8d37b3548e1c7cb148caf3',
       toAddress: '0xfc00000000000000000000000000000000000001',
     },
-    hasFactory: true,
+    createQuickList: [
+      {
+        address: '0xB102f7Efa0d5dE071A8D37B3548e1C7CB148Caf3',
+        haveSameTokenName: false,
+        symbol: 'crvUSD',
+      },
+    ],
+    stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
-    stableswapFactory: true,
+    hasFactory: true,
   },
 }
 
