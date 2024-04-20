@@ -109,6 +109,11 @@ const networks: Record<ChainId, NetworkConfig> = {
     swapCustomRouteRedirect: {
       'sfrxeth-llamma': 'https://crvusd.curve.fi/',
     },
+    // createDisabledTokens: [
+    //   '0x075b1bb99792c9e1041ba13afef80c91a1e70fb3',
+    //   '0x051d7e5609917bd9b73f04bac0ded8dd46a74301',
+    //   '0xfe18be6b3bd88a2d2a7f928d00292e7a9963cfc6',
+    // ],
     createQuickList: [
       {
         address: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
