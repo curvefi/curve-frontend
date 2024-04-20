@@ -2,7 +2,6 @@ import type { TokenState, TokenId } from '@/components/PageCreatePool/types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useCallback } from 'react'
 import { debounce } from 'lodash'
 
 import useStore from '@/store/useStore'

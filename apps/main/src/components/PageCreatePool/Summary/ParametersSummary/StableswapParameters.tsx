@@ -43,7 +43,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             <SummaryDataTitle>A:</SummaryDataTitle>
             {stableA === '' ? <SummaryDataPlaceholder>-</SummaryDataPlaceholder> : <SummaryData>{stableA}</SummaryData>}
           </ExtraMarginRow>
-          {networks[chainId].stableSwapNg && (
+          {networks[chainId].stableswapFactory && (
             <>
               <CategoryDataRow>
                 <SummaryDataTitle>{t`Offpeg Fee Multiplier:`}</SummaryDataTitle>
@@ -63,7 +63,7 @@ const StableswapParameters = ({ chainId }: Props) => {
               </CategoryDataRow>
             </>
           )}
-          {!networks[chainId].stableSwapNg && advanced && (
+          {!networks[chainId].stableswapFactory && advanced && (
             <CategoryDataRow>
               <SummaryDataTitle>{t`Pool Implementation:`}</SummaryDataTitle>
               <SummaryData>{implementations[implementation].name}</SummaryData>

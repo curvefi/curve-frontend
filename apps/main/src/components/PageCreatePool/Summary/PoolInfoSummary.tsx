@@ -49,7 +49,7 @@ const PoolInfoSummary = ({ chainId }: Props) => {
           <SummaryData>{poolSymbol}</SummaryData>
         )}
       </CategoryDataRow>
-      {swapType === STABLESWAP && !networks[chainId].stableSwapNg && (
+      {swapType === STABLESWAP && !networks[chainId].stableswapFactory && (
         <CategoryDataRow>
           <SummaryDataTitle>{t`Asset Type:`}</SummaryDataTitle>
           {assetType === null ? (
