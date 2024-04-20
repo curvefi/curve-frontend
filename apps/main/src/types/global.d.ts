@@ -80,6 +80,7 @@ declare global {
     createDisabledTokens: string[]
     stableswapFactoryOld: boolean
     stableswapFactory: boolean
+    twocryptoFactoryOld: boolean
     twocryptoFactory: boolean
     tricryptoFactory: boolean
     hasFactory: boolean
