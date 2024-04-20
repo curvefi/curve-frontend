@@ -494,6 +494,9 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId] = DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId]
+          state.createPool.tokensInPool.metaPoolToken = get().createPool.tokensInPool[tokenId].basePool
+            ? false
+            : get().createPool.tokensInPool.metaPoolToken
         })
       )
     },
