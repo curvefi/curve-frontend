@@ -5,13 +5,13 @@ import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
 
 type Props = {
   defaultHeight: string
-} & HTMLAttributes<HTMLTableRowElement>
+} & HTMLAttributes<HTMLDivElement>
 
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
  */
 const LazyItem: FunctionComponent<Props> = ({ children, id, style, ...props }) => {
-  const ref = useRef<HTMLTableRowElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 
   // when rendered items might get larger. So we have that in the state to avoid stuttering
