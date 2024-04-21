@@ -1,4 +1,10 @@
-import { CreateToken, TokenState, TokenId, SelectTokenFormValues } from '@/components/PageCreatePool/types'
+import {
+  CreateToken,
+  TokenState,
+  TokenId,
+  SelectTokenFormValues,
+  TokensInPoolState,
+} from '@/components/PageCreatePool/types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
@@ -34,8 +40,8 @@ type Props = {
   tokenTitle: string
   disabledTokens: string[]
   selTokens: CreateToken[]
-  handleInpChange: (name: keyof SelectTokenFormValues, value: string) => void
-  removeToken?: (tokenId: TokenId) => void
+  handleInpChange: (name: keyof SelectTokenFormValues, value: string, tokensInPoolState: TokensInPoolState) => void
+  removeToken?: (tokenId: TokenId, tokensInPoolState: TokensInPoolState) => void
 }
 
 const SelectToken = ({
@@ -50,7 +56,7 @@ const SelectToken = ({
   handleInpChange,
   removeToken,
 }: Props) => {
-  const { updateNgAssetType, swapType, clearToken } = useStore((state) => state.createPool)
+  const { updateNgAssetType, swapType, clearToken, tokensInPool } = useStore((state) => state.createPool)
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`
@@ -75,7 +81,7 @@ const SelectToken = ({
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
             {((swapType === CRYPTOSWAP && networks[chainId].twocryptoFactory) || swapType === STABLESWAP) &&
               removeToken && (
-                <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C)}>
+                <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C, tokensInPool)}>
                   <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
                 </RemoveButton>
               )}
@@ -92,7 +98,7 @@ const SelectToken = ({
             <p>{getTokenName(tokenId)}</p>
             <Box flex>
               <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-              <RemoveButton variant={'text'} onClick={() => removeToken(tokenId)}>
+              <RemoveButton variant={'text'} onClick={() => removeToken(tokenId, tokensInPool)}>
                 <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
               </RemoveButton>
             </Box>
@@ -106,7 +112,7 @@ const SelectToken = ({
         imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
         tokens={selTokens}
         selectedAddress={token.address}
-        onSelectionChange={(value: React.Key) => handleInpChange(tokenId, value as string)}
+        onSelectionChange={(value: React.Key) => handleInpChange(tokenId, value as string, tokensInPool)}
       />
       {swapType === STABLESWAP &&
         (networks[chainId].stableswapFactory || networks[chainId].stableswapFactoryOld) &&

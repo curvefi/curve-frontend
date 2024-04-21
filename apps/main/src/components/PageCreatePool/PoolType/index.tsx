@@ -17,6 +17,8 @@ const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
 
+  const { stableswapFactory, stableswapFactoryOld, tricryptoFactory, twocryptoFactory } = networks[chainId]
+
   return (
     <>
       <Wrapper flex flexColumn>
@@ -29,9 +31,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Stableswap`}
               description={t`Bonding Curve specialising in pegged assets.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
-              disabled={!networks[chainId].stableswapFactory && !networks[chainId].stableswapFactoryOld}
+              disabled={!stableswapFactory && !stableswapFactoryOld}
             />
-            {!networks[chainId].stableswapFactory && !networks[chainId].stableswapFactoryOld && (
+            {!stableswapFactory && !stableswapFactoryOld && (
               <DisabledMessage>{t`Stableswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>
@@ -42,9 +44,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Cryptoswap`}
               description={t`Bonding Curve specialising in unpegged assets.`}
               handleClick={() => updateSwapType(CRYPTOSWAP, chainId)}
-              disabled={!networks[chainId].tricryptoFactory && !networks[chainId].twocryptoFactory}
+              disabled={!tricryptoFactory && !twocryptoFactory}
             />
-            {!networks[chainId].tricryptoFactory && !networks[chainId].twocryptoFactory && (
+            {!tricryptoFactory && !twocryptoFactory && (
               <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>
