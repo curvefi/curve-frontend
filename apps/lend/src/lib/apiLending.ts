@@ -370,6 +370,7 @@ const market = {
             rewards.other = _filterZeroApy(others)
             rewards.crv = crv
           }
+          // rewards typescript say APY, but it is actually APR
           resp.rewards = rewards
           results[owm.id] = resp
         }

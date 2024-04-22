@@ -11,6 +11,7 @@ import type {
 import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
@@ -58,7 +59,7 @@ const Page: NextPage = () => {
     utilization: { name: t`Utilization %` },
     capUtilization: { name: t`Supplied / Utilization` },
     rateBorrow: { name: t`Borrow APY` },
-    rateLend: { name: t`Lend APY` },
+    rateLend: { name: t`Lend APR` },
     myDebt: { name: t`My debt` },
     myHealth: { name: t`My health` },
     myWalletCollateral: { name: t`Wallet balance` },
@@ -131,7 +132,7 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Markets`} />
-      <AppPageContainer>
+      <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '850px' : ''}>
         {rChainId && parsedSearchParams && (
           <MarketList
             rChainId={rChainId}
@@ -146,11 +147,23 @@ const Page: NextPage = () => {
             updatePath={updatePath}
           />
         )}
-      </AppPageContainer>
+      </StyledAppPageContainer>
       <Settings showScrollButton />
     </>
   )
 }
+
+const StyledAppPageContainer = styled(AppPageContainer)<{ $maxWidth: string }>`
+  ${({ $maxWidth }) => {
+    if ($maxWidth) {
+      return `
+        max-width: ${$maxWidth};
+        margin-left: auto;
+        margin-right: auto;
+      `
+    }
+  }}
+`
 
 function _querySymbol(searchPath: string) {
   return searchPath === '?' ? '' : '&'

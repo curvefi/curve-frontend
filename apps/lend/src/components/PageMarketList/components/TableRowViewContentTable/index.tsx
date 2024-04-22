@@ -95,14 +95,17 @@ const TableRowViewContentTable = ({
             const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
             const loanExists = loansExistsMapper[userActiveKey]?.loanExists
 
-            const handleCellClick = () => {
-              setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
-              if (searchParams.filterTypeKey === 'supply') {
-                navigate(getVaultPathname(params, owmId, 'deposit'))
-              } else if (loanExists) {
-                navigate(getLoanManagePathname(params, owmId, 'loan'))
-              } else {
-                navigate(getLoanCreatePathname(params, owmId, 'create'))
+            const handleCellClick = (target: EventTarget) => {
+              const { nodeName } = target as HTMLElement
+              if (nodeName !== 'BUTTON') {
+                setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
+                if (searchParams.filterTypeKey === 'supply') {
+                  navigate(getVaultPathname(params, owmId, 'deposit'))
+                } else if (loanExists) {
+                  navigate(getLoanManagePathname(params, owmId, 'loan'))
+                } else {
+                  navigate(getLoanCreatePathname(params, owmId, 'create'))
+                }
               }
             }
 

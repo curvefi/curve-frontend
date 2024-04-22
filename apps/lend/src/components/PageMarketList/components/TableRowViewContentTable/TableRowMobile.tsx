@@ -105,10 +105,9 @@ const TableRowMobile = ({
       ],
       [
         { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
-        { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, content: <CellRate {...cellProps} type='supply' />, },
       ],
       [
-        { sortIdKey: '', label: t`Rewards APR`, labels: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], content: <CellRewards {...cellProps} type='crv-other' /> }
+        { sortIdKey: '', label: t`Total APR`, content: <CellRewards {...cellProps} type='crv-other' /> }
       ]
     ]
   }
@@ -140,7 +139,7 @@ const TableRowMobile = ({
         </MobileLabelWrapper>
 
         <MobileTableContentWrapper className={isHideDetail ? '' : 'show'}>
-          <MobileTableContent onClick={handleCellClick}>
+          <MobileTableContent onClick={(evt) => handleCellClick(evt.target)}>
             {!isHideDetail && (
               <>
                 <DetailsContent>
@@ -154,9 +153,11 @@ const TableRowMobile = ({
                           <DetailContent key={details[0].label}>
                             {details.map(({ label, labels, content, show }, idx) => {
                               const key = `detail-${label}-${idx}`
+                              const detailsLength = details.length
+                              const isLast = detailsLength - 1 === idx
                               return (
                                 _showContent(show) && (
-                                  <DetailWrapper key={key}>
+                                  <DetailWrapper key={key} detailsLength={detailsLength} isLast={isLast}>
                                     {typeof labels !== 'undefined' ? (
                                       <Box flex flexDirection="column">
                                         <TextCaption isBold isCaps>
@@ -193,11 +194,11 @@ const TableRowMobile = ({
                 </DetailsContent>
                 <MobileTableActions>
                   {isBorrow ? (
-                    <Button variant="filled" onClick={handleCellClick}>
+                    <Button variant="filled" onClick={(evt) => handleCellClick(evt.target)}>
                       {loanExists ? t`Manage Loan` : t`Get Loan`}
                     </Button>
                   ) : (
-                    <Button variant="filled" onClick={handleCellClick}>
+                    <Button variant="filled" onClick={(evt) => handleCellClick(evt.target)}>
                       {t`Supply ${borrowed_token?.symbol ?? ''}`}
                     </Button>
                   )}
@@ -211,10 +212,11 @@ const TableRowMobile = ({
   )
 }
 
-const DetailWrapper = styled.div`
+const DetailWrapper = styled.div<{ detailsLength: number; isLast: boolean }>`
   display: grid;
   grid-gap: var(--spacing-1);
-  margin-right: var(--spacing-narrow);
+  ${({ detailsLength }) => detailsLength === 1 && 'width: 100%'};
+  ${({ isLast }) => !isLast && `margin-right: var(--spacing-narrow)`};
 `
 
 const DetailContent = styled.div`

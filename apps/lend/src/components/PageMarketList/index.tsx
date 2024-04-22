@@ -52,11 +52,10 @@ const MarketList = (pageProps: PageMarketList) => {
     ],
     supply: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '280px' },
+      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '140px' },
       { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '240px' },
-      { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, className: 'right' },
-      { sortIdKey: '', label: t`Rewards APR`, buttons: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], className: 'right', width: '240px' },
-      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '210px' },
+      { sortIdKey: '', label: t`Total APR`, className: 'right' },
+      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '160px' },
     ]
   }
 
