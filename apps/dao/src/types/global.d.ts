@@ -86,9 +86,11 @@ declare global {
     l2GasPriceWei?: number
   }
 
+  type ProposalType = 'PARAMETER' | 'OWNERSHIP'
+
   type ProposalResponseData = {
     voteId: number
-    voteType: 'PARAMETER' | 'OWNERSHIP'
+    voteType: ProposalType
     creator: string
     startDate: number
     snapshotBlock: number

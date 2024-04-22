@@ -318,11 +318,12 @@ body.theme-default {
   /* Charts */
   --chart-green: #26a69a;
   --chart-red: #ef5350;
+  --chart-orange: #ea920e;
   --chart-label: #9b7dff;
   --chart-volume-green: #26a6997e;
   --chart-volume-red: #ef53507e;
   --chart-oracle-price-line: #3360c9;
-  --chart-liq-range: #ea920e;
+  --chart-liq-range: var(--chart-orange);
   --chart-liq-range-a25: #ea920e25;
   --chart-liq-range-old: #bababa;
   --chart-liq-range-a25-old: #aaaaaa25;

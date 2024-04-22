@@ -54,8 +54,10 @@ const Proposals = () => {
   )
 
   useEffect(() => {
-    setProposals(activeFilter, searchValue)
-  }, [activeFilter, activeSortBy, activeSortDirection, searchValue, setProposals])
+    if (!isLoadingCurve && !proposalsLoading) {
+      setProposals(activeFilter, searchValue)
+    }
+  }, [activeFilter, activeSortBy, activeSortDirection, searchValue, setProposals, isLoadingCurve, proposalsLoading])
 
   return (
     <Wrapper>
