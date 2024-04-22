@@ -1,19 +1,22 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { t } from '@lingui/macro'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import { copyToClipboard } from '@/utils'
 
 import Button from '@/ui/Button'
+import IconButton from '@/ui/IconButton'
+import Tooltip from '@/ui/Tooltip'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
 import VoteCountdown from '../VoteCountdown'
 import Script from './components/Script'
-import VoteBox from '../VoteBox'
+import VotesStatusBox from '../VotesStatusBox'
 import Voters from './Voters'
 import UserBox from './UserBox'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
@@ -56,6 +59,10 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
     status,
   } = proposal ?? {}
 
+  const handleCopyClick = (address: string) => {
+    copyToClipboard(address)
+  }
+
   useEffect(() => {
     if (rChainId && voteId && voteType) {
       getProposal(+voteId, voteType.toLowerCase())
@@ -95,11 +102,18 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
               <SubTitle>{t`Proposal Type`}</SubTitle>
               <h3>{voteType}</h3>
             </TopBarColumn>
+            {status === 'Passed' && (
+              <TopBarColumn>
+                <SubTitle>{t`Executed`}</SubTitle>
+                <h3>{executed ? t`Executed` : t`Executable`}</h3>
+              </TopBarColumn>
+            )}
             <TopBarColumn margin="0 0 0 auto">
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
               {!proposal ? <StyledLoader skeleton={[56, 16.5]} /> : <VoteCountdown startDate={startDate} />}
             </TopBarColumn>
           </ProposalTopBar>
+
           {!currentProposal || !proposal ? (
             <StyledSpinnerWrapper>
               <Spinner />
@@ -107,7 +121,15 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
           ) : (
             <>
               <MetaData>
-                <SubTitle>{t`Metadata`}</SubTitle>
+                <Box flex flexJustifyContent="space-between" flexAlignItems="end">
+                  <SubTitle>{t`Metadata`}</SubTitle>
+                  <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
+                    <StyledCopyButton size="medium" onClick={() => handleCopyClick(ipfsMetadata)}>
+                      {t`Raw Ipfs`}
+                      <Icon name="Copy" size={16} />
+                    </StyledCopyButton>
+                  </Tooltip>
+                </Box>
                 <p>{metadata}</p>
               </MetaData>
               {currentProposal && <Script script={currentProposal.script} />}
@@ -116,6 +138,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                   <SubTitle>{t`Proposer`}</SubTitle>
                   <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
                     {shortenTokenAddress(creator)}
+                    <Icon name="Launch" size={16} />
                   </StyledExternalLink>
                 </Box>
                 <Box>
@@ -135,15 +158,15 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
           <UserBox />
           {proposal && (
             <>
-              <VoteState variant="secondary">
-                <VoteBox
+              <VotesWrapper variant="secondary">
+                <VotesStatusBox
                   votesFor={votesFor}
                   votesAgainst={votesAgainst}
                   totalVeCrv={totalVeCrv}
                   minAcceptQuorumPercent={minAcceptQuorumPercent}
                   totalVotesPercentage={totalVotesPercentage}
                 />
-              </VoteState>
+              </VotesWrapper>
               <Voters totalVotes={totalVotes} />
             </>
           )}
@@ -157,7 +180,8 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: var(--spacing-5) auto var(--spacing-6);
-  width: 60rem;
+  width: 65rem;
+  max-width: 95%;
   flex-grow: 1;
   min-height: 100%;
 `
@@ -170,8 +194,7 @@ const ProposalContainer = styled(Box)`
 `
 
 const BackButtonWrapper = styled(Box)`
-  margin-right: auto;
-  margin-bottom: var(--spacing-2);
+  margin: 0 auto var(--spacing-2) var(--spacing-3);
 `
 
 const BackButton = styled(Button)`
@@ -209,7 +232,7 @@ const Status = styled.h3`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--success-400);
+      background: var(--chart-green);
       border-radius: 50%;
     }
   }
@@ -220,7 +243,7 @@ const Status = styled.h3`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--danger-400);
+      background: var(--chart-red);
       border-radius: 50%;
     }
   }
@@ -231,7 +254,7 @@ const Status = styled.h3`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--warning-400);
+      background: var(--chart-orange);
       border-radius: 50%;
     }
   }
@@ -263,9 +286,14 @@ const MetaData = styled.div`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
+  display: flex;
+  align-items: end;
+  gap: var(--spacing-1);
   color: var(--page--text-color);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
+  text-transform: none;
+  text-decoration: none;
 
   &:hover {
     cursor: pointer;
@@ -288,7 +316,7 @@ const Time = styled.p`
   font-variant-numeric: tabular-nums;
 `
 
-const VoteState = styled(Box)`
+const VotesWrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   padding: var(--spacing-3);
@@ -304,6 +332,25 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   display: flex;
   width: 39.75rem;
   max-width: 100%;
+`
+
+const StyledCopyButton = styled(IconButton)`
+  align-items: end;
+  display: flex;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-1);
+  font-weight: var(--bold);
+  padding: 0 var(--spacing-1);
+  color: inherit;
+  background-color: transparent;
+  border: 1px solid transparent;
+  opacity: 0.5;
+  min-height: var(--height-x-small);
+  min-width: var(--height-x-small);
+
+  :hover {
+    color: var(--button_icon--hover--color);
+  }
 `
 
 export default Proposal

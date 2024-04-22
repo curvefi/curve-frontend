@@ -10,6 +10,7 @@ type SliceState = {
   proposalsLoading: boolean
   filteringProposalsLoading: boolean
   pricesProposalLoading: boolean
+  voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   currentProposal: PricesProposalData | null
@@ -32,6 +33,7 @@ export type DaoProposalsSlice = {
     setActiveSortDirection(direction: ActiveSortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(activeFilter: ProposalListFilter, searchValue: string): void
+    castVote(voteId: number, voteType: ProposalType, support: boolean): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -39,9 +41,10 @@ export type DaoProposalsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  proposalsLoading: false,
-  filteringProposalsLoading: false,
-  pricesProposalLoading: false,
+  proposalsLoading: true,
+  filteringProposalsLoading: true,
+  pricesProposalLoading: true,
+  voteStatus: '',
   currentProposal: null,
   searchValue: '',
   activeFilter: 'all',
@@ -192,7 +195,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
           filteringProposalsLoading: false,
           proposals: proposals,
         })
-      }, 1000)
+      }, 500)
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
@@ -205,6 +208,22 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     },
     setActiveSortBy: (sortBy: SortByFilter) => {
       get()[sliceKey].setStateByKey('activeSortBy', sortBy)
+    },
+    castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
+      const { curve } = get()
+      if (!curve) return
+
+      try {
+        get()[sliceKey].setStateByKey('voteStatus', 'LOADING')
+
+        const voteResponse = await curve.dao.voteForProposal(voteType, voteId, support)
+
+        const vote = await voteResponse
+
+        get()[sliceKey].setStateByKey('voteStatus', 'SUCCESS')
+      } catch (error) {
+        console.log(error)
+      }
     },
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
