@@ -9,7 +9,7 @@ import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import VoteCountdown from '../../VoteCountdown'
-import VoteBox from '@/components/VoteBox'
+import VotesStatusBox from '../../VotesStatusBox'
 import InternalLinkButton from '@/ui/InternalLinkButton'
 
 type Props = {
@@ -65,7 +65,7 @@ const Proposal = ({
           </Box>
         </InformationWrapper>
         <VoteWrapper>
-          <StyledVoteBox
+          <StyledVotesStatusBox
             votesFor={votesFor}
             votesAgainst={votesAgainst}
             totalVeCrv={totalVeCrv}
@@ -82,6 +82,7 @@ const Proposal = ({
 const ProposalContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
+  background-color: var(--summary_content--background-color);
 `
 
 const InformationWrapper = styled.div`
@@ -89,7 +90,6 @@ const InformationWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   padding: var(--spacing-3);
-  background-color: var(--summary_content--background-color);
   min-width: 100%;
 `
 
@@ -121,7 +121,7 @@ const ProposalStatus = styled.h4`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--success-400);
+      background: var(--chart-green);
       border-radius: 50%;
     }
   }
@@ -132,7 +132,7 @@ const ProposalStatus = styled.h4`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--danger-400);
+      background: var(--chart-red);
       border-radius: 50%;
     }
   }
@@ -143,7 +143,7 @@ const ProposalStatus = styled.h4`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--warning-400);
+      background: var(--chart-orange);
       border-radius: 50%;
     }
   }
@@ -184,21 +184,21 @@ const VoteWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: var(--spacing-3);
-  background-color: var(--summary_header--background-color);
+  background-color: var(--blacka05);
 `
 
 const StyledVoteCountdown = styled(VoteCountdown)`
   margin-left: auto;
 `
 
-const StyledVoteBox = styled(VoteBox)`
+const StyledVotesStatusBox = styled(VotesStatusBox)`
   margin: var(--spacing-1) 0 var(--spacing-4);
 `
 
 const Item = styled.div``
 
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
-  const ref = useRef<HTMLTableRowElement>(null)
+export const LazyItem: FunctionComponent<HTMLAttributes<HTMLDivElement>> = ({ children, id, style, ...props }) => {
+  const ref = useRef<HTMLDivElement>(null)
   const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 
   // when rendered items might get larger. So we have that in the state to avoid stuttering
