@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 
-import { checkTokensInPoolUnset, checkTokensInPool, containsOracle } from '@/components/PageCreatePool/utils'
+import { checkTokensInPoolUnset, containsOracle } from '@/components/PageCreatePool/utils'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -204,7 +204,7 @@ const TokenSummary = ({ imageBaseUrl, token, chainId, swapType }: TokenSummary) 
         {token.symbol}
         {token.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
       </TokenSymbol>
-      {swapType === STABLESWAP && networks[chainId].stableSwapNg && (
+      {swapType === STABLESWAP && networks[chainId].stableswapFactory && (
         <TokenType>
           {token.ngAssetType === 0 && t`Standard`}
           {token.ngAssetType === 1 && t`Oracle`}

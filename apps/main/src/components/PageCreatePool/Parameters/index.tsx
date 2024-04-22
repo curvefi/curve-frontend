@@ -304,7 +304,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     maxValue={STABLESWAP_MIN_MAX.a.max}
                     onChange={updateStableA}
                   />
-                  {networks[chainId].stableSwapNg && (
+                  {networks[chainId].stableswapFactory && (
                     <>
                       <NumberField
                         label={t`Offpeg Fee Multiplier (${STABLESWAP_MIN_MAX.offpegFeeMultiplier.min} - ${STABLESWAP_MIN_MAX.offpegFeeMultiplier.max})`}
@@ -325,7 +325,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                     </>
                   )}
                   {/* Select pool implementation when stableswap-ng is not available on the current chain */}
-                  {!networks[chainId].stableSwapNg && <SelectPoolImplementation chainId={chainId} />}
+                  {!networks[chainId].stableswapFactory && <SelectPoolImplementation chainId={chainId} />}
                 </>
               )}
               {advanced && swapType !== STABLESWAP && (

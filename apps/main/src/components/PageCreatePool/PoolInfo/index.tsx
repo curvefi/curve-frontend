@@ -35,7 +35,7 @@ const PoolInfo = ({ chainId }: Props) => {
             label={t`Pool Symbol (e.g. CRVETH)`}
           />
         </Row>
-        {swapType === STABLESWAP && !networks[chainId].stableSwapNg && (
+        {swapType === STABLESWAP && !networks[chainId].stableswapFactory && (
           <>
             <TagButtonsWrapper flex flexColumn>
               <TagsTitle>{t`Set pool asset type tag:`}</TagsTitle>

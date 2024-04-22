@@ -14,6 +14,7 @@ import { delayAction, shortenTokenAddress } from '@/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
+import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 
 import ComboBox from '@/components/PageCreatePool/SelectTokenModal/ComboBox'
 import Box from '@/ui/Box'
@@ -22,6 +23,8 @@ import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
+import LazyItem from '@/ui/LazyItem'
+import Checkbox from '@/ui/Checkbox'
 
 type Props = {
   curve: CurveApi
@@ -59,7 +62,17 @@ const ComboBoxTokenPicker = ({
   const { swapType } = useStore((state) => state.createPool)
 
   const [filterValue, setFilterValue] = useState('')
+  const [filterBasepools, setFilterBasepools] = useState(false)
   const [tokenQueryStatus, settokenQueryStatus] = useState<TokenQueryType>('')
+
+  const quickList = [
+    {
+      address: NATIVE_TOKENS[chainId].wrappedAddress,
+      haveSameTokenName: false,
+      symbol: NATIVE_TOKENS[chainId].wrappedSymbol,
+    },
+    ...networks[chainId].createQuickList,
+  ]
 
   if (!overlayTriggerState.isOpen) {
     visibleTokens.current = {}
@@ -87,9 +100,16 @@ const ComboBoxTokenPicker = ({
 
   // handles search/filtering
   const items = useMemo(() => {
-    const filteredTokens = disabledKeys
-      ? tokens.filter((item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase()))
+    const basePoolsFilteredTokens = filterBasepools
+      ? tokens.filter((item) =>
+          basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase())
+        )
       : tokens
+    const filteredTokens = disabledKeys
+      ? basePoolsFilteredTokens.filter(
+          (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase())
+        )
+      : basePoolsFilteredTokens
     const fuse = new Fuse<CreateToken>(filteredTokens, {
       ignoreLocation: true,
       threshold: 0.01,
@@ -118,7 +138,7 @@ const ComboBoxTokenPicker = ({
       return tokens.filter((item) => endsWith(item.address, filterValue))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterValue, tokens, disabledKeys])
+  }, [filterValue, tokens, disabledKeys, filterBasepools])
 
   const selectedToken = useMemo(() => {
     return selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null
@@ -130,7 +150,10 @@ const ComboBoxTokenPicker = ({
   }
 
   const handleOnSelectChange = (tokenAddress: React.Key) => {
-    if (tokenAddress) onSelectionChange(tokenAddress)
+    if (tokenAddress) {
+      onSelectionChange(tokenAddress)
+      setFilterBasepools(false)
+    }
     handleClose()
   }
 
@@ -179,26 +202,28 @@ const ComboBoxTokenPicker = ({
             onInputChange={setFilterValue}
             placeholder={t`Search by token name or address`}
             quickList={
-              networks[chainId].createQuickList.length !== 0 && (
-                <QuickListWrapper>
-                  {networks[chainId].createQuickList.map(({ address, symbol }: CreateQuickListToken) => (
-                    <QuickListButton
-                      key={address}
-                      disabled={disabledKeys?.some((item) => item.toLowerCase() === address.toLowerCase())}
-                      variant="icon-outlined"
-                      onClick={() => handleOnSelectChange(address)}
-                    >
-                      <StyledQuickListTokenIcon
-                        address={address}
-                        imageBaseUrl={imageBaseUrl}
-                        token={symbol}
-                        size="sm"
-                      />{' '}
-                      {symbol}
-                    </QuickListButton>
-                  ))}
-                </QuickListWrapper>
-              )
+              <QuickListWrapper>
+                {quickList.map(({ address, symbol }: CreateQuickListToken) => (
+                  <QuickListButton
+                    key={address}
+                    disabled={disabledKeys?.some((item) => item.toLowerCase() === address.toLowerCase())}
+                    variant="icon-outlined"
+                    onClick={() => handleOnSelectChange(address)}
+                  >
+                    <StyledQuickListTokenIcon address={address} imageBaseUrl={imageBaseUrl} token={symbol} size="sm" />{' '}
+                    {symbol}
+                  </QuickListButton>
+                ))}
+                <StyledCheckbox
+                  key={'filter-basepools'}
+                  isDisabled={basePools[chainId]?.length === 0}
+                  className={filterBasepools ? 'active' : ''}
+                  isSelected={filterBasepools}
+                  onChange={() => setFilterBasepools(!filterBasepools)}
+                >
+                  View Basepools
+                </StyledCheckbox>
+              </QuickListWrapper>
             }
             onSelectionChange={handleOnSelectChange}
           >
@@ -206,7 +231,7 @@ const ComboBoxTokenPicker = ({
               items.length > 0 ? (
                 (item: CreateToken) => (
                   <Item key={item.address} textValue={item.symbol}>
-                    <ItemWrapper>
+                    <ItemWrapper defaultHeight="50px">
                       <TokenIcon
                         imageBaseUrl={imageBaseUrl}
                         token={item.symbol}
@@ -231,7 +256,7 @@ const ComboBoxTokenPicker = ({
                 </Item>
               ) : (
                 <Item key={'no-results'} textValue={'No Results'}>
-                  <ItemWrapper>
+                  <ItemWrapper defaultHeight="50px">
                     <LabelTextWrapper>
                       <ErrorText>{t`Search generated no results`}</ErrorText>
                     </LabelTextWrapper>
@@ -248,7 +273,7 @@ const ComboBoxTokenPicker = ({
               // no search resuslts
 
               <Item key={'ERROR'} textValue={'ERROR'}>
-                <ItemWrapper>
+                <ItemWrapper defaultHeight="50px">
                   <LabelTextWrapper>
                     <ErrorText>{t`No token found for address ${shortenTokenAddress(filterValue)}`}</ErrorText>
                   </LabelTextWrapper>
@@ -258,7 +283,7 @@ const ComboBoxTokenPicker = ({
               // disabled token
 
               <Item key={'disabled-token'} textValue={'Disabled Token'}>
-                <ItemWrapper>
+                <ItemWrapper defaultHeight="50px">
                   <LabelTextWrapper>
                     {networks[chainId].createDisabledTokens.some(
                       (token) => token.toLowerCase() === filterValue.toLowerCase()
@@ -287,7 +312,7 @@ ComboBoxTokenPicker.defaultProps = {
   tokensMapper: {},
 }
 
-const ItemWrapper = styled.div`
+const ItemWrapper = styled(LazyItem)`
   align-items: center;
   display: grid;
   grid-column-gap: var(--spacing-2);
@@ -305,8 +330,12 @@ const ButtonTokenIcon = styled(TokenIcon)`
 
 const QuickListButton = styled(Button)`
   margin: 0.25rem;
-  padding: 0.5rem 0.9rem 0.5rem 0.75rem;
+  padding: 0.5rem 1rem 0.5rem 1rem;
   text-transform: none;
+`
+
+const StyledCheckbox = styled(Checkbox)`
+  margin: auto 1.25rem auto auto;
 `
 
 const QuickListWrapper = styled.div`

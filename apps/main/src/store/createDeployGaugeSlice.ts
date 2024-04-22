@@ -102,9 +102,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             chainId: +key as ChainId,
             name: chain.name,
             poolTypes: {
-              stableswap: chain.stableSwapNg,
-              stableswapOld: chain.stableSwapFactory,
-              twoCrypto: chain.cryptoSwapFactory,
+              stableswap: chain.stableswapFactory,
+              stableswapOld: chain.stableswapFactoryOld,
+              twoCrypto: chain.twocryptoFactoryOld,
               twoCryptoNg: chain.twocryptoFactory,
               threeCrypto: chain.tricryptoFactory,
             },

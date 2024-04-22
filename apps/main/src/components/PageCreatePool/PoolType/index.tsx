@@ -17,6 +17,8 @@ const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
 
+  const { stableswapFactory, stableswapFactoryOld, tricryptoFactory, twocryptoFactory } = networks[chainId]
+
   return (
     <>
       <Wrapper flex flexColumn>
@@ -29,9 +31,9 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Stableswap`}
               description={t`Bonding Curve specialising in pegged assets.`}
               handleClick={() => updateSwapType(STABLESWAP, chainId)}
-              disabled={!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg}
+              disabled={!stableswapFactory && !stableswapFactoryOld}
             />
-            {!networks[chainId].stableSwapFactory && !networks[chainId].stableSwapNg && (
+            {!stableswapFactory && !stableswapFactoryOld && (
               <DisabledMessage>{t`Stableswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
           </SelectButtonWrapper>
@@ -42,17 +44,11 @@ const PoolType = ({ chainId }: Props) => {
               descriptionName={t`Cryptoswap`}
               description={t`Bonding Curve specialising in unpegged assets.`}
               handleClick={() => updateSwapType(CRYPTOSWAP, chainId)}
-              disabled={
-                !networks[chainId].cryptoSwapFactory &&
-                !networks[chainId].tricryptoFactory &&
-                !networks[chainId].twocryptoFactory
-              }
+              disabled={!tricryptoFactory && !twocryptoFactory}
             />
-            {!networks[chainId].cryptoSwapFactory &&
-              !networks[chainId].tricryptoFactory &&
-              !networks[chainId].twocryptoFactory && (
-                <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
-              )}
+            {!tricryptoFactory && !twocryptoFactory && (
+              <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
+            )}
           </SelectButtonWrapper>
         </OptionsWrapper>
       </Wrapper>

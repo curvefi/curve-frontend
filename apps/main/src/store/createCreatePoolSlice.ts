@@ -116,6 +116,7 @@ export type CreatePoolSlice = {
       tokenG: TokenState,
       tokenH: TokenState
     ) => void
+    clearToken: (tokenId: TokenId) => void
     updateStandardToggle: (tokenId: TokenId) => void
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => void
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => void
@@ -302,7 +303,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
       if (swapType === CRYPTOSWAP) {
-        const amount = networks[chainId].cryptoSwapFactory || networks[chainId].twocryptoFactory ? 2 : 3
+        const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
         set(
           produce((state) => {
@@ -319,6 +320,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state) => {
               state.createPool.tokensInPool.tokenAmount = 2
+              state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
             })
           )
         }
@@ -326,6 +328,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
+              state.createPool.tokensInPool.metaPoolToken = false
             })
           )
         }
@@ -484,6 +487,16 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         produce((state) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
           state.createPool.initialPrice = initialPriceUpdates
+        })
+      )
+    },
+    clearToken: (tokenId: TokenId) => {
+      set(
+        produce((state) => {
+          state.createPool.tokensInPool[tokenId] = DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId]
+          state.createPool.tokensInPool.metaPoolToken = get().createPool.tokensInPool[tokenId].basePool
+            ? false
+            : get().createPool.tokensInPool.metaPoolToken
         })
       )
     },
@@ -967,7 +980,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         const coin = tokenA.basePool ? tokenB : tokenA
         const implementationIdx = implementation === 1 ? 1 : 0
 
-        if (networks[chainId].stableSwapNg) {
+        if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
             const oracleAddress =
@@ -1122,7 +1135,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         // ----- STABLE PLAIN POOL -----
       } else {
         // STABLE NG
-        if (networks[chainId].stableSwapNg) {
+        if (networks[chainId].stableswapFactory) {
           const coins = [tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH].filter(
             (coin) => coin.address !== ''
           )

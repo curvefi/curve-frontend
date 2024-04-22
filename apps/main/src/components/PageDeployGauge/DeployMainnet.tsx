@@ -33,7 +33,7 @@ const DeployMainnet = ({ chainId }: Props) => {
   const poolTypesList: PoolType[] = useMemo(() => {
     const list: PoolType[] = []
 
-    if (networks[mainnet].stableSwapNg) {
+    if (networks[mainnet].stableswapFactory) {
       list.push(STABLESWAP)
     }
     if (networks[mainnet].twocryptoFactory) {
@@ -42,10 +42,10 @@ const DeployMainnet = ({ chainId }: Props) => {
     if (networks[mainnet].tricryptoFactory) {
       list.push(THREECOINCRYPTOSWAP)
     }
-    if (networks[mainnet].hasFactory) {
+    if (networks[mainnet].stableswapFactoryOld) {
       list.push(STABLESWAPOLD)
     }
-    if (networks[mainnet].cryptoSwapFactory) {
+    if (networks[mainnet].twocryptoFactoryOld) {
       list.push(TWOCOINCRYPTOSWAP)
     }
     return list

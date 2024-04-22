@@ -1,6 +1,5 @@
 import type { SwapType, TokenState } from '@/components/PageCreatePool/types'
 
-import networks from '@/networks'
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 
 export const checkSwapType = (swapType: SwapType) => {
@@ -135,4 +134,18 @@ export const isTricrypto = (
 
 export const checkMetaPool = (address: string, basePools: BasePool[]) => {
   return address === '' ? false : basePools.some((item) => item.token === address)
+}
+
+export const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
+  let basePoolCoins: string[] = []
+  if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
+    if (checkMetaPool(value, basePools)) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+    } else if (tokenA.basePool) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+    } else if (tokenB.basePool) {
+      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+    }
+  }
+  return basePoolCoins
 }

@@ -15,7 +15,11 @@ import {
 } from '@/components/PageCreatePool/Summary/styles'
 
 const PoolTypeSummary = () => {
-  const { swapType, validation } = useStore((state) => state.createPool)
+  const {
+    swapType,
+    validation,
+    tokensInPool: { metaPoolToken },
+  } = useStore((state) => state.createPool)
 
   return (
     <StyledCategoryColumn>
@@ -27,7 +31,9 @@ const PoolTypeSummary = () => {
         {swapType === '' ? (
           <SummaryDataPlaceholder>{t`No pool type selected`}</SummaryDataPlaceholder>
         ) : (
-          <SummaryData>{swapType === CRYPTOSWAP ? t`Cryptoswap` : t`Stableswap`}</SummaryData>
+          <SummaryData>
+            {swapType === CRYPTOSWAP ? t`Cryptoswap` : t`Stableswap${metaPoolToken ? '-Meta' : ''}`}
+          </SummaryData>
         )}
       </Box>
     </StyledCategoryColumn>

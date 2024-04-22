@@ -1,3 +1,5 @@
+import type { CreatePoolSlice } from '@/store/createCreatePoolSlice'
+
 import {
   CRYPTOSWAP,
   STABLESWAP,
@@ -52,6 +54,8 @@ export type TokenState = {
   oracleFunction: string
   basePool: boolean
 }
+
+export type TokensInPoolState = CreatePoolSlice['createPool']['tokensInPool']
 
 export type SelectTokenFormValues = {
   [TOKEN_A]: TokenState
