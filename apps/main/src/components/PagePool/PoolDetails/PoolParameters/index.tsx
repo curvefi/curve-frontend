@@ -71,6 +71,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
     if (poolType === 'factory') return t`Stableswap`
     if (poolType === 'stableswapng') return t`Stableswap-NG`
     if (poolType === 'crypto' && coins === 2) return t`Two Coin Cryptoswap`
+    if (poolType === 'factory_crypto') return t`Two Coin Cryptoswap`
     if (poolType === 'crypto' && coins === 3) return t`Tricrypto`
     if (poolType === 'factory_tricrypto') return t`Three Coin Cryptoswap-NG`
     if (poolType === 'crvusd') return 'crvUSD'
