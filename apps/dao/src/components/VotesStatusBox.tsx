@@ -16,7 +16,7 @@ type Props = {
   className?: string
 }
 
-const VoteBox = ({
+const VotesStatusBox = ({
   votesFor,
   votesAgainst,
   totalVeCrv,
@@ -44,15 +44,15 @@ const VoteBox = ({
       </VoteAgainst>
       <Quorum>
         <Box flex>
-          <p>{t`Quorum:`}</p>
-          <p>
-            {totalVotesPercentage.toFixed(0)}% of {formatNumber(minAcceptQuorumPercent)}%
-          </p>
           {totalVotesPercentage >= minAcceptQuorumPercent ? (
             <QuorumPassedIcon name="CheckmarkFilled" size={16} />
           ) : (
             <QuorumFailedIcon name="Misuse" size={16} />
           )}
+          <p>{t`Quorum:`}</p>
+          <p>
+            {totalVotesPercentage.toFixed(0)}% of {formatNumber(minAcceptQuorumPercent)}%
+          </p>
         </Box>
         <ProgressBar
           yesVote={totalVotesPercentage >= minAcceptQuorumPercent}
@@ -102,19 +102,19 @@ const Quorum = styled.div`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   gap: var(--spacing-1);
-  p:first-child {
+  p:nth-child(2) {
     margin-right: auto;
   }
 `
 
 const QuorumPassedIcon = styled(Icon)`
   color: var(--chart-green);
-  margin-left: var(--spacing-1);
+  margin-right: var(--spacing-1);
 `
 
 const QuorumFailedIcon = styled(Icon)`
   color: var(--chart-red);
-  margin-left: var(--spacing-1);
+  margin-right: var(--spacing-1);
 `
 
-export default VoteBox
+export default VotesStatusBox

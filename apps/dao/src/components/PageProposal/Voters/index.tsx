@@ -4,6 +4,8 @@ import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 
+import { formatVotingPower } from '@/utils'
+
 import Box from '@/ui/Box'
 import { ExternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
@@ -129,22 +131,12 @@ const StyledExternalLink = styled(ExternalLink)`
 
 const ForIcon = styled(Icon)`
   color: var(--chart-green);
-  margin-right: var(--spacing-2);
+  margin-right: var(--spacing-1);
 `
 
 const AgainstIcon = styled(Icon)`
   color: var(--chart-red);
-  margin-right: var(--spacing-2);
+  margin-right: var(--spacing-1);
 `
-
-const formatVotingPower = (votingPower: number): string => {
-  if (votingPower >= 1000000) {
-    return `${(votingPower / 1000000).toFixed(2)}M`
-  } else if (votingPower >= 1000) {
-    return `${(votingPower / 1000).toFixed(2)}K`
-  } else {
-    return votingPower.toFixed(0)
-  }
-}
 
 export default Voters
