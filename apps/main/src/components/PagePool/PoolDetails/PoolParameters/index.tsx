@@ -84,8 +84,6 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
     return t`ERC4626`
   }
 
-  console.log(pricesData)
-
   return (
     <GridContainer variant="secondary">
       <PoolParametersWrapper>
