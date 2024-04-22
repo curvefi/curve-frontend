@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 export const RiskWrapper = styled.div`
   display: flex;
@@ -51,4 +51,25 @@ export const RiskParagraph = styled.p`
 
 export const RiskComment = styled(RiskParagraph)`
   font-style: italic;
+`
+
+const cssListStyles = css`
+  margin-left: var(--spacing-normal);
+`
+
+export const RiskUnOrderList = styled.ul`
+  ${cssListStyles};
+`
+
+export const RiskOrderList = styled.ol`
+  ${cssListStyles};
+`
+
+export const RiskListItem = styled.li`
+  list-style: revert;
+  margin-bottom: var(--spacing-narrow);
+
+  > *:first-child {
+    display: inline-block;
+  }
 `
