@@ -29,7 +29,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { routerParams, api } = usePageOnMount(params, location, navigate)
+  const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -99,7 +99,7 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     setLoaded(false)
-    if (!isLoadingApi) {
+    if (pageLoaded && !isLoadingApi) {
       const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
       const paramFilterTypeKey = (searchParams.get('type') || 'borrow').toLowerCase()
       const paramHideSmallPools = searchParams.get('hideSmallMarkets') || 'true'
@@ -127,7 +127,7 @@ const Page: NextPage = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, searchParams])
+  }, [pageLoaded, isLoadingApi, searchParams])
 
   return (
     <>

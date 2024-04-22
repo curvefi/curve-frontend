@@ -70,6 +70,11 @@ const MarketList = (pageProps: PageMarketList) => {
   )
 
   useEffect(() => {
+    if (isLoaded && isPageVisible) updateFormValues(searchParams, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPageVisible])
+
+  useEffect(() => {
     if (isLoaded) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, searchParams])
@@ -79,11 +84,6 @@ const MarketList = (pageProps: PageMarketList) => {
     if (isLoaded && Object.keys(usdRatesMapper).length > 0) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usdRatesMapper])
-
-  useEffect(() => {
-    if (isPageVisible) updateFormValues(searchParams, true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
 
   const tableLabels = FOLD_TABLE_LABELS[searchParams.filterTypeKey]
 
@@ -95,7 +95,7 @@ const MarketList = (pageProps: PageMarketList) => {
       {/* MARKET LIST */}
       <MarketListWrapper>
         {formStatus.noResult && !formStatus.isLoading ? (
-          <MarketListNoResult searchParams={searchParams} updatePath={updatePath} />
+          <MarketListNoResult searchParams={searchParams} signerAddress={signerAddress} updatePath={updatePath} />
         ) : Array.isArray(result) ? (
           result.map((marketListItem) => (
             <MarketListItemContent

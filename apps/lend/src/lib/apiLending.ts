@@ -4,7 +4,7 @@ import type { StepStatus } from '@/ui/Stepper/types'
 import PromisePool from '@supercharge/promise-pool'
 
 import { INVALID_ADDRESS } from '@/constants'
-import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
+import { fulfilledValue, getErrorMessage, log, sleep } from '@/utils/helpers'
 import networks from '@/networks'
 import cloneDeep from 'lodash/cloneDeep'
 import { BN, shortenAccount } from '@/ui/utils'
@@ -319,62 +319,74 @@ const market = {
     log('fetchMarketsVaultsRewards', owmDatas.length)
     let results: { [id: string]: MarketRewards } = {}
 
-    await PromisePool.for(owmDatas)
-      .handleError((errorObj, { owm }) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[owm.id] = { rewards: null, error }
-      })
-      .process(async ({ owm }) => {
-        let resp: MarketRewards = {
-          rewards: {
-            other: [],
-            crv: [0, 0],
-          },
-          error: '',
+    const handleResponse = async (owm: OWM) => {
+      let resp: MarketRewards = {
+        rewards: {
+          other: [],
+          crv: [0, 0],
+        },
+        error: '',
+      }
+
+      // check if gauge is valid
+      if (owm.addresses.gauge === INVALID_ADDRESS) {
+        return resp
+      } else {
+        const isRewardsOnly = owm.vault.rewardsOnly()
+
+        let rewards: { other: RewardOther[]; crv: RewardCrv[] } = {
+          other: [],
+          crv: [0, 0],
         }
 
-        // check if gauge is valid
-        if (owm.addresses.gauge === INVALID_ADDRESS) {
-          return resp
+        // rewards.other = [
+        //   {
+        //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb107434e',
+        //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fae8e9',
+        //     symbol: 'rKP3R',
+        //     apy: 34.591404117158504,
+        //   },
+        //   {
+        //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb1012345',
+        //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fa6484',
+        //     symbol: 'CRV',
+        //     apy: 0.14228653926122917,
+        //   },
+        // ]
+        // rewards.crv = [0.0008219651894421486, 0.0020549129736053716]
+
+        // isRewardsOnly = both CRV and other comes from same endpoint.
+        if (isRewardsOnly) {
+          const rewardsResp = await owm.vault.rewardsApr()
+          rewards.other = _filterZeroApy(rewardsResp)
         } else {
-          const isRewardsOnly = owm.vault.rewardsOnly()
-
-          let rewards: { other: RewardOther[]; crv: RewardCrv[] } = {
-            other: [],
-            crv: [0, 0],
-          }
-
-          // rewards.other = [
-          //   {
-          //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb107434e',
-          //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fae8e9',
-          //     symbol: 'rKP3R',
-          //     apy: 34.591404117158504,
-          //   },
-          //   {
-          //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb1012345',
-          //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fa6484',
-          //     symbol: 'CRV',
-          //     apy: 0.14228653926122917,
-          //   },
-          // ]
-          // rewards.crv = [0.0008219651894421486, 0.0020549129736053716]
-
-          // isRewardsOnly = both CRV and other comes from same endpoint.
-          if (isRewardsOnly) {
-            const rewardsResp = await owm.vault.rewardsApr()
-            rewards.other = _filterZeroApy(rewardsResp)
-          } else {
-            const [others, crv] = await Promise.all([owm.vault.rewardsApr(), owm.vault.crvApr()])
-            rewards.other = _filterZeroApy(others)
-            rewards.crv = crv
-          }
-          // rewards typescript say APY, but it is actually APR
-          resp.rewards = rewards
-          results[owm.id] = resp
+          const [others, crv] = await Promise.all([owm.vault.rewardsApr(), owm.vault.crvApr()])
+          rewards.other = _filterZeroApy(others)
+          rewards.crv = crv
         }
-      })
+        // rewards typescript say APY, but it is actually APR
+        resp.rewards = rewards
+        results[owm.id] = resp
+      }
+    }
+
+    const { errors } = await PromisePool.for(owmDatas).process(async ({ owm }) => {
+      return await handleResponse(owm)
+    })
+
+    // retries errors
+    if (errors.length) {
+      await sleep(1000)
+      await PromisePool.for(owmDatas)
+        .handleError((errorObj, { owm }) => {
+          console.error('retry error', errorObj)
+          const error = getErrorMessage(errorObj, 'error-api')
+          results[owm.id] = { rewards: null, error }
+        })
+        .process(async ({ owm }) => {
+          return await handleResponse(owm)
+        })
+    }
 
     return results
   },

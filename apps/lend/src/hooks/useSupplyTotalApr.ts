@@ -58,22 +58,11 @@ function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crv
 }
 
 function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: MarketRates) {
-  let resp: {
-    totalApr: { min: string; max: string; minMax: string }
-    tooltipValues: {
-      lendApr: string
-      lendApy: string
-      crv: string
-      crvBoosted: string
-      incentives: string[]
-      incentivesObj: RewardOther[]
-    } | null
-  } = {
-    totalApr: { min: '', max: '', minMax: '' },
-    tooltipValues: null,
-  }
-
-  if (typeof marketRewardsResp === 'undefined' || typeof marketRatesResp === 'undefined') return resp
+  if (typeof marketRewardsResp === 'undefined' || typeof marketRatesResp === 'undefined')
+    return {
+      totalApr: { min: '', max: '', minMax: '' },
+      tooltipValues: null,
+    }
 
   const { other, crv } = marketRewardsResp.rewards ?? {}
   const { rates } = marketRatesResp ?? {}
@@ -83,9 +72,10 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const [crvBase = 0, crvBoost = 0] = crv ?? []
   const others = other ?? []
 
-  resp.totalApr = _getTotalApr(lendApr, crvBase, crvBoost, others)
-  resp.tooltipValues = _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others)
-  return resp
+  return {
+    totalApr: _getTotalApr(lendApr, crvBase, crvBoost, others),
+    tooltipValues: _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others),
+  }
 }
 
 export default useSupplyTotalApr

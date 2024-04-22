@@ -49,9 +49,12 @@ const TableRowViewContentTable = ({
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
+  const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
   const owmDatasCachedMapper = useStore((state) => state.storeCache.owmDatasMapper[rChainId])
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
   const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
+
+  const { filterTypeKey } = searchParams
 
   const result = useMemo(() => {
     if (long || short) {
@@ -98,8 +101,16 @@ const TableRowViewContentTable = ({
             const handleCellClick = (target: EventTarget) => {
               const { nodeName } = target as HTMLElement
               if (nodeName !== 'BUTTON') {
-                setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
-                if (searchParams.filterTypeKey === 'supply') {
+                // update view
+                if (filterTypeKey === 'borrow') {
+                  setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
+                } else if (filterTypeKey === 'supply') {
+                  const { gauge = '0', vaultShares = '0' } = marketsBalancesMapper[userActiveKey] ?? {}
+                  const haveSupply = +gauge + +vaultShares > 0
+                  setMarketsStateByKey('marketDetailsView', haveSupply ? 'user' : 'market')
+                }
+
+                if (filterTypeKey === 'supply') {
                   navigate(getVaultPathname(params, owmId, 'deposit'))
                 } else if (loanExists) {
                   navigate(getLoanManagePathname(params, owmId, 'loan'))
