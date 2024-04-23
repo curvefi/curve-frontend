@@ -1,5 +1,6 @@
 import React from 'react'
 import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
 
@@ -14,13 +15,11 @@ import {
 import Box from '@/ui/Box'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellRate from '@/components/SharedCellData/CellRate'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
-import styled from 'styled-components'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
@@ -35,11 +34,10 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
   const details = [
     [
       { title: t`Supply token`, value: <CellToken {...cellProps} type="borrowed" /> },
-      { title: t`Lend APY`, value: <CellRate {...cellProps} type="supply" /> },
       { title: 'TVL', value: <CellSupplyTotalLiquidity {...cellProps} /> },
+      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
     ],
     [
-      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
       { title: t`Total Debt`, value: <CellLoanTotalDebt {...cellProps} /> },
       { title: t`Total supplied`, value: <CellCap {...cellProps} type="cap" /> },
       { title: t`Utilization %`, value: <CellCap {...cellProps} type="utilization" /> },

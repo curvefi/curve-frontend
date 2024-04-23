@@ -1,6 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type {
+  FilterTypeKey,
   FormStatus,
   MarketListItem,
   MarketListMapper,
@@ -51,7 +52,7 @@ export type MarketListSlice = {
   [sliceKey]: SliceState & {
     filterSmallMarkets(api: Api, owmDatas: OWMData[]): OWMData[]
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
-    filterUserList(api: Api, owmDatas: OWMData[]): OWMData[]
+    filterUserList(api: Api, owmDatas: OWMData[], filterTypeKey: FilterTypeKey): OWMData[]
     sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
     setFormValues(rChainId: ChainId, api: Api | null, searchParams: SearchParams, shouldRefetch?: boolean): Promise<void>
     sortTableRow(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tableRowTokenAddress: string): Promise<void>
@@ -151,12 +152,18 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       return owmDatas
     },
-    filterUserList: (api, owmDatas) => {
-      const loansExistsMapper = get().user.loansExistsMapper
+    filterUserList: (api, owmDatas, filterTypeKey) => {
+      const { loansExistsMapper, marketsBalancesMapper } = get().user
 
       return owmDatas.filter((owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
-        return loansExistsMapper[userActiveKey].loanExists
+        if (filterTypeKey === 'borrow') {
+          return loansExistsMapper[userActiveKey].loanExists
+        } else {
+          const { vaultShares = '0', gauge = '0' } = marketsBalancesMapper[userActiveKey] ?? {}
+          const totalVaultShares = +vaultShares + +gauge
+          return totalVaultShares > 0
+        }
       })
     },
     setFormValues: async (rChainId, api, searchParams, shouldRefetch) => {
@@ -181,11 +188,19 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       let cMarketList = cloneDeep(sortByFn(Object.values(storedMarketListMapper), (l) => l.symbol))
       let cOwmDatas = _getOwmDatasFromMarketList(storedMarketListMapper, storedOwmDatasMapper)
 
-      if (signerAddress) await get().user.fetchUsersLoansExists(api, cOwmDatas, shouldRefetch)
+      if (signerAddress) {
+        if (filterTypeKey === 'borrow') {
+          await get().user.fetchUsersLoansExists(api, cOwmDatas, shouldRefetch)
+        }
 
-      // update cOwmDatas if filter === 'user'
-      if (filterKey === 'user' && !!signerAddress) {
-        cOwmDatas = get()[sliceKey].filterUserList(api, cOwmDatas)
+        if (filterTypeKey === 'supply') {
+          await get().user.fetchDatas('marketsBalancesMapper', api, cOwmDatas, shouldRefetch)
+        }
+
+        // update cOwmDatas if filter === 'user'
+        if (filterKey === 'user') {
+          cOwmDatas = get()[sliceKey].filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
+        }
       }
 
       // searchText

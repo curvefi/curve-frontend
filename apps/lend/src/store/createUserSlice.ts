@@ -119,7 +119,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       // fetch data
       if (typeof fnMapper[k] !== 'function') log('missing function2', k)
       const resp = await fnMapper[k](api, parsedOwmDatas)
-      const cMapper = cloneDeep(storedMapper)
+      const cMapper = { ...storedMapper }
 
       Object.keys(resp).forEach((userActiveKey) => {
         cMapper[userActiveKey] = resp[userActiveKey]

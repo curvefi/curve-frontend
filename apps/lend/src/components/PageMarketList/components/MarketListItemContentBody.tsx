@@ -49,7 +49,7 @@ const MarketListItemContentBody = ({
   }, [isOpen])
 
   return (
-    <FoldContentWrapper isOpen={isOpen ?? true}>
+    <FoldContentWrapper>
       <TableRowViewContentTable
         {...pageProps}
         params={params}
@@ -65,25 +65,14 @@ const MarketListItemContentBody = ({
   )
 }
 
-const FoldContentWrapper = styled.div<{ isOpen: boolean }>`
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.2s ease-in-out; /* Add transition for max-height */
+const FoldContentWrapper = styled.div`
+  border: 1px solid var(--box_header--primary--background-color);
+  box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+  margin: 0 var(--spacing-narrow);
 
-  ${({ isOpen }) => {
-    if (isOpen) {
-      return `
-        max-height: 1000px; /* Set a large value for max-height to accommodate content */
-        border: 1px solid var(--box_header--primary--background-color);
-        box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
-        margin: 0 var(--spacing-narrow);
-  
-        @media (min-width: ${breakpoints.sm}rem) {
-          margin: 0 var(--spacing-normal);
-        }
-      `
-    }
-  }}
+  @media (min-width: ${breakpoints.sm}rem) {
+    margin: 0 var(--spacing-normal);
+  }
 `
 
 function _getSomeLoansExists(loanExistsMapper: UsersLoansExistsMapper) {

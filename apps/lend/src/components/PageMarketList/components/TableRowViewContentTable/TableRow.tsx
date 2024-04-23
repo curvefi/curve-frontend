@@ -81,14 +81,13 @@ const TableRow = ({
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
       { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} isVisible={isVisible} type='borrowed' /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
-      { className: 'right', content: <CellRate {...cellProps} type='supply' /> },
       { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },
       { className: 'right', content: <CellSupplyTotalLiquidity {...cellProps} /> },
     ]
   }
 
   return (
-    <Tr ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`} onClick={handleCellClick}>
+    <Tr ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`} onClick={(evt) => handleCellClick(evt.target)}>
       {CONTENT[isBorrow ? 'borrow' : 'supply'].map(({ className, content, isInMarket, show }, idx) => {
         return (
           _showContent(show) && (

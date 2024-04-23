@@ -11,6 +11,7 @@ import type {
 import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
@@ -28,7 +29,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { routerParams, api } = usePageOnMount(params, location, navigate)
+  const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -58,7 +59,7 @@ const Page: NextPage = () => {
     utilization: { name: t`Utilization %` },
     capUtilization: { name: t`Supplied / Utilization` },
     rateBorrow: { name: t`Borrow APY` },
-    rateLend: { name: t`Lend APY` },
+    rateLend: { name: t`Lend APR` },
     myDebt: { name: t`My debt` },
     myHealth: { name: t`My health` },
     myWalletCollateral: { name: t`Wallet balance` },
@@ -98,7 +99,7 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     setLoaded(false)
-    if (!isLoadingApi) {
+    if (pageLoaded && !isLoadingApi) {
       const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
       const paramFilterTypeKey = (searchParams.get('type') || 'borrow').toLowerCase()
       const paramHideSmallPools = searchParams.get('hideSmallMarkets') || 'true'
@@ -126,12 +127,12 @@ const Page: NextPage = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, searchParams])
+  }, [pageLoaded, isLoadingApi, searchParams])
 
   return (
     <>
       <DocumentHead title={t`Markets`} />
-      <AppPageContainer>
+      <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '850px' : ''}>
         {rChainId && parsedSearchParams && (
           <MarketList
             rChainId={rChainId}
@@ -146,11 +147,23 @@ const Page: NextPage = () => {
             updatePath={updatePath}
           />
         )}
-      </AppPageContainer>
+      </StyledAppPageContainer>
       <Settings showScrollButton />
     </>
   )
 }
+
+const StyledAppPageContainer = styled(AppPageContainer)<{ $maxWidth: string }>`
+  ${({ $maxWidth }) => {
+    if ($maxWidth) {
+      return `
+        max-width: ${$maxWidth};
+        margin-left: auto;
+        margin-right: auto;
+      `
+    }
+  }}
+`
 
 function _querySymbol(searchPath: string) {
   return searchPath === '?' ? '' : '&'

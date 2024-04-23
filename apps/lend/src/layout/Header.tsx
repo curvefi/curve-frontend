@@ -117,7 +117,15 @@ const Header = () => {
   const handleNetworkChange = (selectedChainId: React.Key) => {
     if (rChainId !== selectedChainId) {
       const network = networks[selectedChainId as ChainId].id
-      navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+      const [currPath] = window.location.hash.split('?')
+
+      if (currPath.endsWith('markets')) {
+        // include search params when in market list page
+        navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
+      } else {
+        navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+      }
+
       updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
     }
   }

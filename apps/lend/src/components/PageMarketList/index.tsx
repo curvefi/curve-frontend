@@ -52,11 +52,10 @@ const MarketList = (pageProps: PageMarketList) => {
     ],
     supply: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '280px' },
+      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '140px' },
       { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '240px' },
-      { sortIdKey: 'rateLend', label: tableLabelsMapper.rateLend.name, className: 'right' },
-      { sortIdKey: '', label: t`Rewards APR`, buttons: [{ sortIdKey: 'rewardsCRV', label: tableLabelsMapper.rewardsCRV.name }, { sortIdKey: 'rewardsOthers', label: tableLabelsMapper.rewardsOthers.name }], className: 'right', width: '240px' },
-      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '210px' },
+      { sortIdKey: '', label: t`Total APR`, className: 'right' },
+      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '160px' },
     ]
   }
 
@@ -71,6 +70,11 @@ const MarketList = (pageProps: PageMarketList) => {
   )
 
   useEffect(() => {
+    if (isLoaded && isPageVisible) updateFormValues(searchParams, true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPageVisible])
+
+  useEffect(() => {
     if (isLoaded) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, searchParams])
@@ -80,11 +84,6 @@ const MarketList = (pageProps: PageMarketList) => {
     if (isLoaded && Object.keys(usdRatesMapper).length > 0) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usdRatesMapper])
-
-  useEffect(() => {
-    if (isPageVisible) updateFormValues(searchParams, true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
 
   const tableLabels = FOLD_TABLE_LABELS[searchParams.filterTypeKey]
 
@@ -96,7 +95,7 @@ const MarketList = (pageProps: PageMarketList) => {
       {/* MARKET LIST */}
       <MarketListWrapper>
         {formStatus.noResult && !formStatus.isLoading ? (
-          <MarketListNoResult searchParams={searchParams} updatePath={updatePath} />
+          <MarketListNoResult searchParams={searchParams} signerAddress={signerAddress} updatePath={updatePath} />
         ) : Array.isArray(result) ? (
           result.map((marketListItem) => (
             <MarketListItemContent

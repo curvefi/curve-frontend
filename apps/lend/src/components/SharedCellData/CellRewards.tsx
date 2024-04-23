@@ -1,78 +1,88 @@
 import type { ChipProps } from '@/ui/Typography/types'
 
-import React from 'react'
+import React, { useState } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { INVALID_ADDRESS } from '@/constants'
-import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { buttonOutlinedStyles } from '@/ui/Button/styles'
 import useStore from '@/store/useStore'
+import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
 
+import Button from '@/ui/Button'
 import Chip from '@/ui/Typography/Chip'
 import ChipInactive from '@/components/ChipInactive'
+import CellRewardsTooltip from '@/components/SharedCellData/CellRewardsTooltip'
+import Icon from '@/ui/Icon'
 
 const CellRewards = ({
+  className = '',
   rChainId,
   rOwmId,
   type,
   ...props
 }: ChipProps & {
+  className?: string
   rChainId: ChainId
   rOwmId: string
   type: 'crv-other'
 }) => {
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
-  const resp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
+  const { isReady, isError, invalidGaugeAddress, totalApr, tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
 
-  const { gauge } = owmData?.owm?.addresses ?? {}
-  const { rewards, error } = resp ?? {}
-  const { crv, other } = rewards ?? {}
-  const [crvBase, crvBoosted] = crv ?? []
-
-  const invalidGaugeAddress = typeof gauge !== 'undefined' && gauge === INVALID_ADDRESS
-  const haveCrvBase = typeof crvBase !== 'undefined' && +crvBase > 0
-  const haveCrvBoosted = typeof crvBoosted !== 'undefined' && +crvBoosted > 0
-  const haveRewards = typeof other !== 'undefined' && other.length > 0
+  const [showDetails, setShowDetails] = useState(false)
 
   return (
     <span>
-      {typeof owmData === 'undefined' ? null : error ? (
+      {!isReady ? null : isError ? (
         '?'
       ) : invalidGaugeAddress ? (
         <ChipInactive>No gauge</ChipInactive>
       ) : type === 'crv-other' ? (
-        haveCrvBase || haveCrvBoosted || haveRewards ? (
-          <CrvRewardsWrapper>
-            {(haveCrvBase || haveCrvBoosted) && (
-              <Chip {...props}>
-                {formatNumber(crvBase, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}{' '}
-                {haveCrvBoosted && ` → ${formatNumber(crvBoosted, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}`}{' '}
-                CRV
-              </Chip>
-            )}
-            {rewards?.other.map(({ symbol, apy }) => {
-              return (
-                <Chip key={symbol} {...props}>
-                  {formatNumber(apy, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })} {symbol}
-                </Chip>
-              )
-            })}
-          </CrvRewardsWrapper>
-        ) : (
-          '0%'
-        )
+        <Chip {...props}>
+          {totalApr.minMax}{' '}
+          {!isMdUp && tooltipValues ? (
+            <>
+              <DetailsBtn onClick={() => setShowDetails(!showDetails)}>{t`Details`}</DetailsBtn>{' '}
+              {showDetails && (
+                <CellRewardsTooltip className={className} isMobile totalApr={totalApr} tooltipValues={tooltipValues} />
+              )}
+            </>
+          ) : (
+            <StyledChip
+              {...props}
+              {...(isMdUp && tooltipValues
+                ? {
+                    tooltipProps: {
+                      minWidth: '300px',
+                      placement: 'top',
+                    },
+                    tooltip: (
+                      <CellRewardsTooltip className={className} totalApr={totalApr} tooltipValues={tooltipValues} />
+                    ),
+                  }
+                : {})}
+            >
+              <Icon className="svg-tooltip" size={16} name="InformationSquare" />
+            </StyledChip>
+          )}
+        </Chip>
       ) : null}
     </span>
   )
 }
 
-const CrvRewardsWrapper = styled.div`
-  display: grid;
-  text-align: left;
+const StyledChip = styled(Chip)`
+  cursor: default;
+`
 
-  @media (min-width: ${breakpoints.sm}rem) {
-    grid-gap: var(--spacing-2);
-    text-align: right;
-  }
+const DetailsBtn = styled(Button)`
+  ${buttonOutlinedStyles};
+
+  display: inline-flex;
+  align-items: center;
+  font-family: inherit;
+  font-weight: bold;
+  font-size: var(--font-size-2);
 `
 
 export default CellRewards
