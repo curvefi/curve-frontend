@@ -80,7 +80,7 @@ export type PoolsSlice = {
     fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPools( curve: CurveApi, poolIds: string[], failedFetching24hOldVprice: { [poolAddress:string]: boolean } | null): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
-    fetchBasePools(curve: CurveApi): void
+    fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
@@ -261,7 +261,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
       return resp?.poolsMapper?.[poolId]
     },
-    fetchBasePools: (curve: CurveApi) => {
+    fetchBasePools: async (curve: CurveApi) => {
       const chainId = curve.chainId
       set(
         produce((state: State) => {
@@ -270,7 +270,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       )
 
       try {
-        const basePools = curve.getBasePools()
+        const basePools = await curve.getBasePools()
 
         set(
           produce((state: State) => {
