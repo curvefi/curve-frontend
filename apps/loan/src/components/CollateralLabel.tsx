@@ -43,7 +43,7 @@ const CollateralLabel = ({ className, chainId, isVisible, collateralData, tableL
       <div>
         <Box flex flexAlignItems="center">
           {collateralAlert?.isDeprecated && (
-            <AlertTooltipIcon placement="start" {...collateralAlert}>
+            <AlertTooltipIcon minWidth="300px" placement="start" {...collateralAlert}>
               {collateralAlert.message}
             </AlertTooltipIcon>
           )}

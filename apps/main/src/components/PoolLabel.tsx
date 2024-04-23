@@ -86,7 +86,7 @@ const PoolLabel = ({
             {!isMobile && (
               <>
                 {poolAlert?.isInformationOnly && (
-                  <AlertTooltipIcon placement="start" {...poolAlert}>
+                  <AlertTooltipIcon minWidth="300px" placement="start" {...poolAlert}>
                     {poolAlert.message}
                   </AlertTooltipIcon>
                 )}
