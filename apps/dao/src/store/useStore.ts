@@ -8,10 +8,11 @@ import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
 import createCacheSlice, { CacheSlice } from '@/store/createCacheSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
-import createDaoProposalsSlice, { DaoProposalsSlice } from './createDaoProposalsSlice'
-import createUserSlice, { UserSlice } from './createUserSlice'
+import createDaoProposalsSlice, { DaoProposalsSlice } from '@/store/createDaoProposalsSlice'
+import createUserSlice, { UserSlice } from '@/store/createUserSlice'
+import createGaugesSlice, { GaugesSlice } from '@/store/createGaugesSlice'
 
-export type State = GlobalSlice & CacheSlice & GasSlice & WalletSlice & DaoProposalsSlice & UserSlice
+export type State = GlobalSlice & CacheSlice & GasSlice & WalletSlice & DaoProposalsSlice & UserSlice & GaugesSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
@@ -19,6 +20,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createWalletSlice(set, get),
   ...createDaoProposalsSlice(set, get),
+  ...createGaugesSlice(set, get),
   ...createUserSlice(set, get),
 })
 
