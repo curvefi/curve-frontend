@@ -9,6 +9,7 @@ import useStore from '@/store/useStore'
 
 import { RCCrossCurve } from '@/ui/images'
 import { ExternalLink, InternalLink } from '@/ui/Link'
+import Box from '@/ui/Box'
 import PoolAlertCustomMessage from '@/components/PoolAlertCustomMessage'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
@@ -76,6 +77,36 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
         ),
       }
     }
+    const synthetixAlert = (): PoolAlert => ({
+      alertType: 'warning',
+      isInformationOnly: true,
+      isCloseOnTooltipOnly: true,
+      minWidth: '350px',
+      message: (
+        <MessageWrapper>
+          <Box grid gridGap={2}>
+            <p>
+              Please note that exchanges on synthetix synths are expected to be disabled and users can either withdraw
+              liquidity from the underlying token, or redeem their synths to sUSD on{' '}
+              <ExternalLink $noStyles href="https://staking.synthetix.io/wallet/balances/">
+                https://staking.synthetix.io/wallet/balances/
+              </ExternalLink>
+            </p>
+            <p>
+              Users are encouraged to exit the pools in order to avoid getting their holdings&lsquo; value diluted with
+              the discountRate For more information please refer to{' '}
+              <ExternalLink
+                $noStyles
+                href="https://gov.curve.fi/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2"
+              >
+                https://gov.curve.fi/t/kill-gauges-on-all-non-susd-curve-pools-on-ethereum/10033/2
+              </ExternalLink>
+            </p>
+            <p>Please note that sUSD is not involved, so these would be on the other pools sETH, sBTC, sForex ...</p>
+          </Box>
+        </MessageWrapper>
+      ),
+    })
 
     // Fantom networks
     const crossCurveAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
@@ -138,6 +169,15 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x68934f60758243eafaf4d2cfed27bf8010bede3a': zunamiAlert(),
       '0x0fa949783947bf6c1b171db13aeacbb488845b3f': geistFinanceAlert(),
       '0xc2d54ffb8a61e146110d2fbdd03b12467fe155ac': yPrismaAlert(),
+      '0xf253f83aca21aabd2a20553ae0bf7f65c755a07f': synthetixAlert(),
+      '0x7fc77b5c7614e1533320ea6ddc2eb61fa00a9714': synthetixAlert(),
+      '0xc5424b857f758e906013f3555dad202e4bdb4567': synthetixAlert(),
+      '0x0ce6a5ff5217e38315f87032cf90686c96627caa': synthetixAlert(),
+      '0x9c2c8910f113181783c249d8f6aa41b51cde0f0c': synthetixAlert(),
+      '0x8461a004b50d321cb22b7d034969ce6803911899': synthetixAlert(),
+      '0x19b080fe1ffa0553469d20ca36219f17fcf03859': synthetixAlert(),
+      '0x8818a9bb44fbf33502be7c15c500d0c783b73067': synthetixAlert(),
+      '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
     }

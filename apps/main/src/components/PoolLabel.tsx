@@ -7,6 +7,7 @@ import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokenAlert from '@/hooks/useTokenAlert'
 
 import { Chip } from '@/ui/Typography'
+import AlertBox from '@/ui/AlertBox'
 import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
 import Box from '@/ui/Box'
 import ChipPool from '@/components/ChipPool'
@@ -72,7 +73,7 @@ const PoolLabel = ({
             />
           )}
         </IconsWrapper>
-        <div>
+        <Box fillWidth>
           <PoolTypeWrapper>
             <TableCellReferenceAsset
               isCrypto={poolData?.pool?.isCrypto}
@@ -82,15 +83,20 @@ const PoolLabel = ({
           </PoolTypeWrapper>
 
           <Box flex flexAlignItems="center">
-            {poolAlert && poolAlert.isInformationOnly ? (
-              <AlertTooltipIcon placement="start" {...poolAlert}>
-                {poolAlert.message}
-              </AlertTooltipIcon>
-            ) : tokenAlert ? (
-              <AlertTooltipIcon minWidth="300px" placement="start" {...tokenAlert}>
-                {tokenAlert.message}
-              </AlertTooltipIcon>
-            ) : null}
+            {!isMobile && (
+              <>
+                {poolAlert?.isInformationOnly && (
+                  <AlertTooltipIcon placement="start" {...poolAlert}>
+                    {poolAlert.message}
+                  </AlertTooltipIcon>
+                )}
+                {tokenAlert && (
+                  <AlertTooltipIcon minWidth="300px" placement="start" {...tokenAlert}>
+                    {tokenAlert.message}
+                  </AlertTooltipIcon>
+                )}
+              </>
+            )}
             {pool && (
               <ChipPool
                 isHighlightPoolName={isHighlightPoolName}
@@ -134,9 +140,19 @@ const PoolLabel = ({
             )}
           </PoolLabelTokensWrapper>
           {quickViewValue && <Chip>{quickViewValue}</Chip>}
-        </div>
+        </Box>
       </Wrapper>
-      {poolAlert && !poolAlert.isInformationOnly && <Box padding="0.5rem 0 0 0">{poolAlert.message}</Box>}
+
+      {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
+      {poolAlert && (
+        <>
+          {!poolAlert.isInformationOnly ? (
+            <Box padding="0.5rem 0 0 0">{poolAlert.message}</Box>
+          ) : isMobile ? (
+            <StyledAlertBox alertType={poolAlert.alertType}>{poolAlert.message}</StyledAlertBox>
+          ) : null}
+        </>
+      )}
     </div>
   )
 }
@@ -168,6 +184,13 @@ const PoolLabelTokensWrapper = styled.div`
 
 const TokenLabel = styled.span`
   font-size: var(--font-size-2);
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  font-size: var(--font-size-2);
+  margin: var(--spacing-2) 0;
+  max-height: 100px;
+  overflow: scroll;
 `
 
 export default PoolLabel
