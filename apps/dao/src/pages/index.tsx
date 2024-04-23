@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
 const PageDao = dynamic(() => import('@/components/PageProposals/Page'), { ssr: false })
 const PageProposal = dynamic(() => import('@/components/PageProposal/Page'), { ssr: false })
+const PageGauges = dynamic(() => import('@/components/PageGauges/Page'), { ssr: false })
 
 const App: NextPage = (pageProps) => {
   const SubRoutes = (
@@ -14,6 +15,7 @@ const App: NextPage = (pageProps) => {
       <Route path=":network/" element={<PageDao />} />
       <Route path=":network/proposals" element={<PageDao />} />
       <Route path=":network/proposals/:proposalId" element={<PageProposal />} />
+      <Route path=":network/gauges" element={<PageGauges />} />
     </>
   )
 
@@ -23,6 +25,7 @@ const App: NextPage = (pageProps) => {
       <Route path=":locale">{SubRoutes}</Route>
       <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
       <Route path="/proposals/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_PROPOSALS}`} replace />} />
+      <Route path="/gauges/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_GAUGES}`} replace />} />
       <Route path="404" element={<Page404 />} />
       <Route path="*" element={<Page404 />} />
     </Routes>
