@@ -1,6 +1,6 @@
 export const MAIN_ROUTE = {
   PAGE_PROPOSALS: '/proposals',
-  PAGE_GAUGEVOTING: '/gauge-voting',
+  PAGE_GAUGES: '/gauges',
 }
 
 export const ROUTE = {
