@@ -5,7 +5,7 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CONNECT_STAGE, CURVE_FI_ROUTE, ROUTE } from '@/constants'
+import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
@@ -58,12 +58,9 @@ const Header = () => {
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const network = networks[rChainId].id
   const appLogoProps: AppLogoProps = {
     showBeta: true,
     appName: 'LlamaLend',
-    pathname: CURVE_FI_ROUTE.MAIN,
-    internalPathname: `${rLocalePathname}/${network}${ROUTE.PAGE_MARKETS}`,
   }
 
   const p: AppPage[] = isLgUp
