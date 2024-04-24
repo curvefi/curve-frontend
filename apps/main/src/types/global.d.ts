@@ -59,6 +59,7 @@ declare global {
       listUrl: string
       tagsUrl: string
     }
+    isActiveNetwork: boolean // show UI for this network default true
     missingPools: { name: string; url: string }[]
     orgUIPath: string
     poolListFormValuesDefault: Partial<PoolListSearchParams>

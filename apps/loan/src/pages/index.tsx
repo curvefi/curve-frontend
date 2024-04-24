@@ -4,7 +4,6 @@ import { Navigate, Route, Routes } from 'react-router'
 import dynamic from 'next/dynamic'
 
 import { ROUTE } from '@/constants'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
 
 const PageLlammasList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
 const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
@@ -16,10 +15,7 @@ const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Pag
 const App: NextPage = () => {
   const SubRoutes = (
     <>
-      <Route
-        path=":network"
-        element={<Navigate to={`/${getNetworkFromUrl().rNetwork}${ROUTE.PAGE_MARKETS}`} replace />}
-      />
+      <Route path=":network" element={<PageLlammasList />} />
       <Route path=":network/risk-disclaimer" element={<PageRiskDisclaimer />} />
       <Route path=":network/integrations" element={<PageIntegrations />} />
       <Route path=":network/markets" element={<PageLlammasList />} />

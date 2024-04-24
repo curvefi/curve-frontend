@@ -1,18 +1,19 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@/ui/utils'
+import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale } from '@/onboard'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
 import { initCurveJs } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
-import networks from '@/networks'
+import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
@@ -99,8 +100,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
-              const foundNetwork = networks[walletChainId as ChainId]?.id
-              if (foundNetwork) {
+              const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
+              if (foundNetwork && isActiveNetwork) {
                 navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
                 updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
               } else {
@@ -160,25 +161,28 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     [navigate, parsedParams, setChain, updateConnectState, wallet]
   )
 
-  useEffect(() => {
-    if (parsedParams.redirectPathname) {
-      navigate(parsedParams.redirectPathname)
-    }
-  }, [navigate, parsedParams.redirectPathname])
-
   // onMount
   useEffect(() => {
     if (connectState.status === '' && connectState.stage === '') {
-      updateGlobalStoreByKey('routerProps', { params, location, navigate })
-      const walletName = getStorageValue('APP_CACHE')?.walletName ?? ''
-      if (walletName) {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
+      const routerNetwork = params.network?.toLowerCase()
+      const routerNetworkId = routerNetwork ? networksIdMapper[routerNetwork as INetworkName] : null
+      const isActiveNetwork = routerNetworkId ? networks[routerNetworkId]?.isActiveNetwork ?? false : false
+
+      if (!isActiveNetwork) {
+        // network in router is not good, redirect to default network
+        navigate(`${parsedParams.rLocalePathname}/ethereum${ROUTE.PAGE_MARKETS}`)
       } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [getNetworkFromUrl().rChainId, false])
+        updateGlobalStoreByKey('routerProps', { params, location, navigate })
+        const walletName = getStorageValue('APP_CACHE')?.walletName ?? ''
+        if (walletName) {
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
+        } else {
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [getNetworkFromUrl().rChainId, false])
+        }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     if (connectState.status || connectState.stage) {
@@ -232,6 +236,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
+
+  useEffect(() => {
+    if (parsedParams.redirectPathname) {
+      navigate(parsedParams.redirectPathname)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parsedParams.redirectPathname])
 
   return {
     pageLoaded: connectState.status === 'success',

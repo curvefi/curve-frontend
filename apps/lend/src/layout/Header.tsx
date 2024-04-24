@@ -10,7 +10,7 @@ import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
+import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { visibleNetworksList } from '@/networks'
@@ -39,7 +39,7 @@ const Header = () => {
   const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
 
-  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
   const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId])
@@ -58,41 +58,34 @@ const Header = () => {
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
+  const { params: routerParams, location } = routerProps ?? {}
+  const routerPathname = location?.pathname ?? ''
+  const routerNetwork = routerParams?.network
+
   const appLogoProps: AppLogoProps = {
     showBeta: true,
     appName: 'LlamaLend',
   }
 
-  const p: AppPage[] = isLgUp
-    ? [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Others' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
-        { ...APP_LINK.main, isDivider: true },
-        APP_LINK.crvusd,
-      ]
-    : [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
-        { ...APP_LINK.main, isDivider: true },
-        APP_LINK.crvusd,
-      ]
+  const pages: AppPage[] = useMemo(() => {
+    const links = isLgUp
+      ? [
+          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Others' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
+          { ...APP_LINK.main, isDivider: true },
+          APP_LINK.crvusd,
+        ]
+      : [
+          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
+          { ...APP_LINK.main, isDivider: true },
+          APP_LINK.crvusd,
+        ]
 
-  const pages = p.map(({ route, ...rest }) => {
-    const parsedRoute = route.startsWith('http') ? route : `#${rLocalePathname}/${rNetwork}${route}`
-    return { route: parsedRoute, isActive: false, ...rest }
-  })
-
-  const desktopPages = pages.map(({ route, ...rest }) => {
-    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
-    const routePathname = route.split('?')[0] ?? ''
-    return {
-      ...rest,
-      route,
-      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
-    }
-  })
+    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
+  }, [isLgUp, rLocalePathname, routerNetwork, routerPathname])
 
   const tvl = useMemo(() => {
     return _getTvl(
@@ -197,7 +190,7 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo showBeta {...appLogoProps} />
-                <AppNavPages pages={desktopPages} navigate={navigate} />
+                <AppNavPages pages={pages} navigate={navigate} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>

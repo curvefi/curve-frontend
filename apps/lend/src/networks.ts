@@ -37,16 +37,19 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=optimism',
+    isActiveNetwork: false,
   },
   100: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['100'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_GNOSIS_DEV_RPC_URL! : 'https://rpc.gnosischain.com',
+    isActiveNetwork: false,
   },
   1284: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['1284'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_MOONBEAM_DEV_RPC_URL! : 'https://moonbeam.public.blastapi.io',
+    isActiveNetwork: false,
   },
   137: {
     ...DEFAULT_NETWORK_CONFIG,
@@ -54,16 +57,19 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=polygon',
+    isActiveNetwork: false,
   },
   2222: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['2222'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_KAVA_DEV_RPC_URL! : 'https://evm.kava.io',
+    isActiveNetwork: false,
   },
   250: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['250'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FANTOM_DEV_RPC_URL! : 'https://rpc.ftm.tools/',
+    isActiveNetwork: false,
   },
   42161: {
     ...DEFAULT_NETWORK_CONFIG,
@@ -77,31 +83,37 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['43114'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_AVALANCHE_DEV_RPC_URL! : 'https://api.avax.network/ext/bc/C/rpc',
+    isActiveNetwork: false,
   },
   42220: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['42220'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_CELO_DEV_RPC_URL! : 'https://forno.celo.org',
+    isActiveNetwork: false,
   },
   1313161554: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['1313161554'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_AURORA_DEV_RPC_URL! : 'https://mainnet.aurora.dev',
+    isActiveNetwork: false,
   },
   324: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['324'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ZKSYNC_DEV_RPC_URL! : 'https://mainnet.era.zksync.io',
+    isActiveNetwork: false,
   },
   8453: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['8453'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=base',
+    isActiveNetwork: false,
   },
   56: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['56'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=bsc',
+    isActiveNetwork: false,
   },
 }
 
