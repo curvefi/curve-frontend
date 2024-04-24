@@ -143,6 +143,37 @@ declare global {
     }[]
   }
 
+  type PricesGaugeOverviewData = {
+    address: string
+    gauge_type: string
+    name: string | null
+    version: string | null
+    lp_token: string
+    pool: {
+      address: string
+      name: string
+      chain: string
+      tvl_usd: number
+      trading_volume_24h: number
+    }
+    is_killed: boolean | null
+    emissions: number
+    gauge_weight: string
+    gauge_weight_7d_delta: number | null
+    gauge_weight_60d_delta: number | null
+    gauge_relative_weight: number
+    gauge_relative_weight_7d_delta: number | null
+    gauge_relative_weight_60d_delta: number | null
+    creation_tx: string
+    creation_date: string
+    last_vote_date: string
+    last_vote_tx: string
+  }
+
+  type PricesGaugeOverviewResponse = {
+    gauges: PricesGaugeOverviewData[]
+  }
+
   interface UserVoteData {
     voteId: number
     voteType: 'PARAMETER' | 'OWNERSHIP'

@@ -6,7 +6,11 @@ import produce from 'immer'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {}
+type SliceState = {
+  gaugesLoading: boolean
+  gaugeMapper: PricesGaugeOverviewData[]
+  pieData: PricesGaugeOverviewData[]
+}
 
 const sliceKey = 'gauges'
 
@@ -20,7 +24,11 @@ export type GaugesSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = {}
+const DEFAULT_STATE: SliceState = {
+  gaugesLoading: true,
+  gaugeMapper: [],
+  pieData: [],
+}
 
 // units of gas used * (base fee + priority fee)
 // estimatedGas * (base fee * maxPriorityFeePerGas)
@@ -30,9 +38,26 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     ...DEFAULT_STATE,
     getGauges: async (curve: CurveApi) => {
       try {
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', true)
+
         const gauges = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
-        const formattedGauges = await gauges.json()
-        console.log(formattedGauges)
+        const formattedGauges: PricesGaugeOverviewResponse = await gauges.json()
+
+        console.log('formattedGauges', formattedGauges.gauges)
+
+        const pieData = formattedGauges.gauges
+          .filter((gauge) => gauge.gauge_relative_weight > 0)
+          .map((gauge) => ({
+            name: gauge.name,
+            address: gauge.address,
+            value: gauge.gauge_relative_weight,
+          }))
+
+        console.log('pieData', pieData)
+
+        get().setAppStateByKey(sliceKey, 'GaugeMapper', formattedGauges.gauges)
+        get().setAppStateByKey(sliceKey, 'PieData', pieData)
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', false)
       } catch (error) {
         console.log(error)
       }
