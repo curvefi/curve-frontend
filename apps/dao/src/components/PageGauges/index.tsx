@@ -1,8 +1,13 @@
-import useStore from '@/store/useStore'
+import styled from 'styled-components'
 import { useEffect } from 'react'
 
+import useStore from '@/store/useStore'
+
+import Box from '@/ui/Box'
+import PieChartComponent from './components/PieChartComponent'
+
 const Gauges = () => {
-  const getGauges = useStore((state) => state.gauges.getGauges)
+  const { getGauges, gaugeMapper, gaugesLoading, pieData } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
 
   useEffect(() => {
@@ -10,7 +15,32 @@ const Gauges = () => {
       getGauges(curve)
     }
   }, [curve, getGauges])
-  return <div>Gauges</div>
+  return (
+    <Wrapper>
+      <ProposalsContainer variant="secondary">
+        {gaugesLoading ? '' : <PieChartComponent data={pieData} />}
+      </ProposalsContainer>
+    </Wrapper>
+  )
 }
+
+const Wrapper = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-5) auto 0;
+  width: 60rem;
+  flex-grow: 1;
+  min-height: 100%;
+`
+
+const ProposalsContainer = styled(Box)`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-7);
+  row-gap: var(--spacing-3);
+`
 
 export default Gauges
