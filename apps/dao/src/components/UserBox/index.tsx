@@ -6,19 +6,23 @@ import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import VoteDialog from './VoteDialog'
 import UserInformation from './UserInformation'
 
-const UserBox = () => {
+type Props = {
+  children?: React.ReactNode
+  className?: string
+}
+
+const UserBox = ({ className, children }: Props) => {
   const [{ wallet }] = useConnectWallet()
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper variant="secondary" className={className}>
       {wallet ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <UserInformation />
-          <VoteDialog />
+          {children}
         </Box>
       ) : (
         <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
