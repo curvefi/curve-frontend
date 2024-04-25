@@ -98,25 +98,24 @@ const TableRowViewContentTable = ({
             const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
             const loanExists = loansExistsMapper[userActiveKey]?.loanExists
 
-            const handleCellClick = (target: EventTarget) => {
-              const { nodeName } = target as HTMLElement
-              if (nodeName !== 'BUTTON') {
-                // update view
-                if (filterTypeKey === 'borrow') {
-                  setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
-                } else if (filterTypeKey === 'supply') {
-                  const { gauge = '0', vaultShares = '0' } = marketsBalancesMapper[userActiveKey] ?? {}
-                  const haveSupply = +gauge + +vaultShares > 0
-                  setMarketsStateByKey('marketDetailsView', haveSupply ? 'user' : 'market')
-                }
+            const handleCellClick = (target?: EventTarget) => {
+              if (target && (target as HTMLElement).nodeName === 'BUTTON') return
 
-                if (filterTypeKey === 'supply') {
-                  navigate(getVaultPathname(params, owmId, 'deposit'))
-                } else if (loanExists) {
-                  navigate(getLoanManagePathname(params, owmId, 'loan'))
-                } else {
-                  navigate(getLoanCreatePathname(params, owmId, 'create'))
-                }
+              // update view
+              if (filterTypeKey === 'borrow') {
+                setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
+              } else if (filterTypeKey === 'supply') {
+                const { gauge = '0', vaultShares = '0' } = marketsBalancesMapper[userActiveKey] ?? {}
+                const haveSupply = +gauge + +vaultShares > 0
+                setMarketsStateByKey('marketDetailsView', haveSupply ? 'user' : 'market')
+              }
+
+              if (filterTypeKey === 'supply') {
+                navigate(getVaultPathname(params, owmId, 'deposit'))
+              } else if (loanExists) {
+                navigate(getLoanManagePathname(params, owmId, 'loan'))
+              } else {
+                navigate(getLoanCreatePathname(params, owmId, 'create'))
               }
             }
 

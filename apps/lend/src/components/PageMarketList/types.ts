@@ -101,7 +101,7 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchPar
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   userActiveKey: string
-  handleCellClick(evt: EventTarget): void
+  handleCellClick(target?: EventTarget): void // only pass evt.target if there is a child button node
 }
 
 export type TableCellProps = {

@@ -118,7 +118,7 @@ const TableRowMobile = ({
         <MobileLabelWrapper flexAlignItems="center" grid gridTemplateColumns={userHaveLoan ? '20px 1fr' : '1fr'}>
           {userHaveLoan && <CellInPool {...cellProps} isInMarket />}
           <MobileLabelContent>
-            <Box flex gridGap={3}>
+            <Box flex gridGap={3} onClick={(evt) => handleCellClick()}>
               <Box>
                 <TextCaption isBold isCaps>
                   Collateral
@@ -139,10 +139,10 @@ const TableRowMobile = ({
         </MobileLabelWrapper>
 
         <MobileTableContentWrapper className={isHideDetail ? '' : 'show'}>
-          <MobileTableContent onClick={(evt) => handleCellClick(evt.target)}>
+          <MobileTableContent>
             {!isHideDetail && (
               <>
-                <DetailsContent>
+                <DetailsContent onClick={(evt) => handleCellClick(evt.target)}>
                   {content[isBorrow ? 'borrow' : 'supply'].map((details, idx) => {
                     const detailsKey = `details-${idx}`
                     const show = details.some(({ show }) => _showContent(show))
@@ -194,11 +194,11 @@ const TableRowMobile = ({
                 </DetailsContent>
                 <MobileTableActions>
                   {isBorrow ? (
-                    <Button variant="filled" onClick={(evt) => handleCellClick(evt.target)}>
+                    <Button variant="filled" onClick={(evt) => handleCellClick()}>
                       {loanExists ? t`Manage Loan` : t`Get Loan`}
                     </Button>
                   ) : (
-                    <Button variant="filled" onClick={(evt) => handleCellClick(evt.target)}>
+                    <Button variant="filled" onClick={(evt) => handleCellClick()}>
                       {t`Supply ${borrowed_token?.symbol ?? ''}`}
                     </Button>
                   )}
