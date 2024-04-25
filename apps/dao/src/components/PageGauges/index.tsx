@@ -5,6 +5,7 @@ import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import PieChartComponent from './components/PieChartComponent'
+import UserBox from '../UserBox'
 
 const Gauges = () => {
   const { getGauges, gaugeMapper, gaugesLoading, pieData } = useStore((state) => state.gauges)
@@ -18,7 +19,10 @@ const Gauges = () => {
   return (
     <Wrapper>
       <ProposalsContainer variant="secondary">
-        {gaugesLoading ? '' : <PieChartComponent data={pieData} />}
+        <Box flex>
+          {gaugesLoading ? '' : <PieChartComponent data={pieData} />}
+          <UserBox />
+        </Box>
       </ProposalsContainer>
     </Wrapper>
   )
