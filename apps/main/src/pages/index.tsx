@@ -4,7 +4,6 @@ import { Navigate, Route, Routes } from 'react-router'
 import dynamic from 'next/dynamic'
 
 import { ROUTE } from '@/constants'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
 
 const PageDashboard = dynamic(() => import('@/components/PageDashboard/Page'), { ssr: false })
 const PageLockedCrv = dynamic(() => import('@/components/PageCrvLocker/Page'), { ssr: false })
@@ -21,7 +20,7 @@ const PageRiskDisclaimer = dynamic(() => import('@/components/PageRiskDisclaimer
 const App: NextPage = () => {
   const SubRoutes = (
     <>
-      <Route path=":network" element={<Navigate to={`/${getNetworkFromUrl().rNetwork}${ROUTE.PAGE_SWAP}`} replace />} />
+      <Route path=":network" element={<PageSwap />} />
       <Route path=":network/dashboard" element={<PageDashboard />} />
       <Route path=":network/locker" element={<PageLockedCrv />} />
       <Route path=":network/locker/:lockedCrvFormType" element={<PageLockedCrv />} />

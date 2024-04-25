@@ -29,6 +29,7 @@ const NETWORK_CONFIG_DEFAULT = {
     listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
     tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
   },
+  isActiveNetwork: true,
 }
 
 export const baseNetworksConfig = {

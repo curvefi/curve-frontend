@@ -46,6 +46,7 @@ declare global {
       listUrl: string
       tagsUrl: string
     }
+    isActiveNetwork: boolean // show UI for this network default true
     name: string
     networkId: ChainId
     orgUIPath: string

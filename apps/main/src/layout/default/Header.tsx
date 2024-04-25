@@ -2,13 +2,13 @@ import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 import type { ThemeType } from '@/ui/Select/SelectThemes'
 
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
+import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/onboard'
@@ -59,6 +59,10 @@ const Header = () => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
+  const { params: routerParams, location } = routerProps ?? {}
+  const routerPathname = location?.pathname ?? ''
+  const routerNetwork = routerParams?.network
+
   const appLogoProps: AppLogoProps = {
     appName: '',
   }
@@ -70,59 +74,30 @@ const Header = () => {
     { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare ?? volumeCryptoShareCached, FORMAT_OPTIONS.PERCENT) },
   ]
 
-  const p: AppPage[] = isLgUp
-    ? [
-        { route: ROUTE.PAGE_SWAP, label: t`Swap`, groupedTitle: 'Swap' },
-        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
-        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
-        { ...APP_LINK.crvusd, isDivider: true },
-        APP_LINK.lend,
-      ]
-    : [
-        { route: ROUTE.PAGE_SWAP, label: t`Swap`, groupedTitle: 'swap' },
-        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
-        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
-        { ...APP_LINK.crvusd, isDivider: true },
-        APP_LINK.lend,
-      ]
+  const pages: AppPage[] = useMemo(() => {
+    const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
+    const links = isLgUp
+      ? [
+          { route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' },
+          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
+          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
+          { ...APP_LINK.crvusd, isDivider: true },
+          APP_LINK.lend,
+        ]
+      : [
+          { route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'swap' },
+          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
+          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
+          { ...APP_LINK.crvusd, isDivider: true },
+          APP_LINK.lend,
+        ]
 
-  const pages = p.map(({ route, ...rest }) => {
-    let parsedRoute
-
-    if (route.startsWith('http')) {
-      parsedRoute = route
-    } else {
-      if (route === ROUTE.PAGE_SWAP && typeof hasRouter !== 'undefined') {
-        const routerDefault = rChainId ? networks[rChainId].swap : {}
-        const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
-        const routerToAddress = routerCached?.toAddress ?? routerDefault?.toAddress ?? ''
-
-        if (routerFromAddress && routerToAddress) {
-          route += `?from=${routerFromAddress}&to=${routerToAddress}`
-        } else if (routerFromAddress) {
-          route += `?from=${routerFromAddress}`
-        } else if (routerToAddress) {
-          route += `?to=${routerToAddress}`
-        }
-      }
-      parsedRoute = `#${rLocalePathname}/${rNetwork}${route}`
-    }
-    return { route: parsedRoute, isActive: false, ...rest }
-  })
-
-  const desktopPages = pages.map(({ route, ...rest }) => {
-    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
-    const routePathname = route.split('?')[0] ?? ''
-    return {
-      ...rest,
-      route,
-      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
-    }
-  })
+    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
+  }, [isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -190,7 +165,7 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <AppNavPages pages={desktopPages} navigate={navigate} />
+                <AppNavPages pages={pages} navigate={navigate} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -228,6 +203,25 @@ const Header = () => {
       </AppNavBar>
     </>
   )
+}
+
+function _parseSwapRoute(
+  rChainId: ChainId,
+  route: string,
+  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined
+) {
+  const routerDefault = rChainId ? networks[rChainId].swap : {}
+  const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
+  const routerToAddress = routerCached?.toAddress ?? routerDefault?.toAddress ?? ''
+
+  if (routerFromAddress && routerToAddress) {
+    route += `?from=${routerFromAddress}&to=${routerToAddress}`
+  } else if (routerFromAddress) {
+    route += `?from=${routerFromAddress}`
+  } else if (routerToAddress) {
+    route += `?to=${routerToAddress}`
+  }
+  return route
 }
 
 export default Header

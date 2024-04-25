@@ -9,7 +9,7 @@ import { CONNECT_STAGE, CRVUSD_ADDRESS, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getLocaleFromUrl, getNetworkFromUrl, getPath, getRestFullPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { formatNumber, isLoading } from '@/ui/utils'
+import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
 import { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -56,41 +56,34 @@ const Header = () => {
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const rLocale = getLocaleFromUrl()
+  const { params: routerParams, location } = routerProps ?? {}
+
+  const routerNetwork = routerParams?.network ?? 'ethereum'
+  const routerPathname = location?.pathname ?? ''
 
   const appLogoProps: AppLogoProps = {
     appName: 'Crvusd',
   }
 
-  const p: AppPage[] = isLgUp
-    ? [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
-        { ...APP_LINK.main, isDivider: true },
-        APP_LINK.lend,
-      ]
-    : [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
-        { ...APP_LINK.main, isDivider: true },
-        APP_LINK.lend,
-      ]
+  const pages: AppPage[] = useMemo(() => {
+    const links = isLgUp
+      ? [
+          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
+          { ...APP_LINK.main, isDivider: true },
+          APP_LINK.lend,
+        ]
+      : [
+          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
+          { ...APP_LINK.main, isDivider: true },
+          APP_LINK.lend,
+        ]
 
-  const pages = p.map(({ route, ...rest }) => {
-    const parsedRoute = route.startsWith('http') ? route : `#${rLocale.rLocalePathname}/${rNetwork}${route}`
-    return { route: parsedRoute, isActive: false, ...rest }
-  })
-
-  const desktopPages = pages.map(({ route, ...rest }) => {
-    const routerPathname = routerProps?.location?.pathname.split('?')[0] ?? ''
-    const routePathname = route.split('?')[0] ?? ''
-    return {
-      ...rest,
-      route,
-      isActive: routerPathname && routePathname ? routePathname.endsWith(routerPathname) : false,
-    }
-  })
+    return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, routerNetwork)
+  }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
@@ -169,7 +162,7 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <AppNavPages pages={desktopPages} navigate={navigate} />
+                <AppNavPages pages={pages} navigate={navigate} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
