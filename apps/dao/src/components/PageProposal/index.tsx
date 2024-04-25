@@ -18,7 +18,8 @@ import VoteCountdown from '../VoteCountdown'
 import Script from './components/Script'
 import VotesStatusBox from '../VotesStatusBox'
 import Voters from './Voters'
-import UserBox from './UserBox'
+import UserBox from '../UserBox'
+import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
 import { shortenTokenAddress } from '@/ui/utils'
@@ -155,7 +156,9 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         </ProposalContainer>
 
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
-          <UserBox />
+          <UserBox>
+            <VoteDialog />
+          </UserBox>
           {proposal && (
             <>
               <VotesWrapper variant="secondary">
