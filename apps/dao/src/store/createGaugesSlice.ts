@@ -4,12 +4,14 @@ import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 
+import { shortenTokenAddress } from '@/ui/utils'
+
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   gaugesLoading: boolean
   gaugeMapper: PricesGaugeOverviewData[]
-  pieData: PricesGaugeOverviewData[]
+  pieData: PieData[]
 }
 
 const sliceKey = 'gauges'
@@ -50,13 +52,21 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           .map((gauge) => ({
             name: gauge.name,
             address: gauge.address,
-            value: gauge.gauge_relative_weight,
+            title: gauge.pool?.name
+              ? gauge.pool.name.split(': ')[1] || gauge.pool.name
+              : shortenTokenAddress(gauge.address),
+            gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
+            gauge_weight_7d_delta:
+              gauge.gauge_weight_7d_delta != null ? +(gauge.gauge_weight_7d_delta * 100).toFixed(4) : null,
+            gauge_weight_60d_delta:
+              gauge.gauge_weight_60d_delta != null ? +(gauge.gauge_weight_60d_delta * 100).toFixed(4) : null,
           }))
+        // .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
 
         console.log('pieData', pieData)
 
-        get().setAppStateByKey(sliceKey, 'GaugeMapper', formattedGauges.gauges)
-        get().setAppStateByKey(sliceKey, 'PieData', pieData)
+        get().setAppStateByKey(sliceKey, 'gaugeMapper', formattedGauges.gauges)
+        get().setAppStateByKey(sliceKey, 'pieData', pieData)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', false)
       } catch (error) {
         console.log(error)

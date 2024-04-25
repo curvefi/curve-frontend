@@ -174,6 +174,16 @@ declare global {
     gauges: PricesGaugeOverviewData[]
   }
 
+  type PieData = {
+    title: string
+    name: string
+    address: string
+    gauge_weight: string
+    gauge_relative_weight: number
+    gauge_weight_7d_delta: number
+    gauge_weight_60d_delta: number
+  }
+
   interface UserVoteData {
     voteId: number
     voteType: 'PARAMETER' | 'OWNERSHIP'
