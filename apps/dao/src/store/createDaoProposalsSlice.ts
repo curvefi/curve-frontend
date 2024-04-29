@@ -16,7 +16,7 @@ type SliceState = {
   currentProposal: PricesProposalData | null
   searchValue: string
   activeFilter: ProposalListFilter
-  activeSortBy: SortByFilter
+  activeSortBy: SortByFilterProposals
   activeSortDirection: ActiveSortDirection
 }
 
@@ -29,7 +29,7 @@ export type DaoProposalsSlice = {
     getProposal(voteId: number, voteType: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
-    setActiveSortBy(sortBy: SortByFilter): void
+    setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: ActiveSortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(activeFilter: ProposalListFilter, searchValue: string): void
@@ -145,7 +145,6 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       let sortedProposals = proposalsCopy
       let passedProposals = []
       if (activeSortBy === 'endingSoon') {
-        // to-do: fix timestamp not being in sync with other proposal countdowns
         const currentTimestamp = Math.floor(Date.now() / 1000)
         sortedProposals = proposalsCopy.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
         passedProposals = orderBy(
@@ -206,7 +205,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     setActiveSortDirection: (direction: ActiveSortDirection) => {
       get()[sliceKey].setStateByKey('activeSortDirection', direction)
     },
-    setActiveSortBy: (sortBy: SortByFilter) => {
+    setActiveSortBy: (sortBy: SortByFilterProposals) => {
       get()[sliceKey].setStateByKey('activeSortBy', sortBy)
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
@@ -271,8 +270,6 @@ const searchFn = (filterValue: string, proposals: ProposalData[]) => {
   })
 
   const result = fuse.search(filterValue, { limit: 10 })
-
-  console.log('result', result)
 
   return result.map((r) => r.item)
 }

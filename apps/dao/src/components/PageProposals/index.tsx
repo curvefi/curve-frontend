@@ -37,7 +37,7 @@ const Proposals = () => {
 
   const handleSortingMethodChange = useCallback(
     (key: React.Key) => {
-      setActiveSortBy(key as SortByFilter)
+      setActiveSortBy(key as SortByFilterProposals)
     },
     [setActiveSortBy]
   )
@@ -92,22 +92,28 @@ const Proposals = () => {
             onClick={() => handleChangeSortingDirection()}
           />
         </ToolBar>
-        {searchValue !== '' && (
-          <SearchMessage>
-            Showing results ({proposals.length}) for &quot;<strong>{searchValue}</strong>&quot;:
-          </SearchMessage>
-        )}
-        <ProposalsWrapper>
-          {proposalsLoading || isLoadingCurve || filteringProposalsLoading ? (
-            <StyledSpinnerWrapper>
-              <Spinner />
-            </StyledSpinnerWrapper>
-          ) : (
-            proposals.map((proposal, index) => (
-              <Proposal proposalData={proposal} handleClick={handleProposalClick} key={`${proposal.voteId}-${index}`} />
-            ))
+        <Box flex flexColumn padding={'var(--spacing-3) var(--spacing-3) var(--spacing-7)'}>
+          {searchValue !== '' && (
+            <SearchMessage>
+              Showing results ({proposals.length}) for &quot;<strong>{searchValue}</strong>&quot;:
+            </SearchMessage>
           )}
-        </ProposalsWrapper>
+          <ProposalsWrapper>
+            {proposalsLoading || isLoadingCurve || filteringProposalsLoading ? (
+              <StyledSpinnerWrapper>
+                <Spinner />
+              </StyledSpinnerWrapper>
+            ) : (
+              proposals.map((proposal, index) => (
+                <Proposal
+                  proposalData={proposal}
+                  handleClick={handleProposalClick}
+                  key={`${proposal.voteId}-${index}`}
+                />
+              ))
+            )}
+          </ProposalsWrapper>
+        </Box>
       </ProposalsContainer>
     </Wrapper>
   )
@@ -128,7 +134,6 @@ const ProposalsContainer = styled(Box)`
   flex-direction: column;
   min-width: 100%;
   width: 100%;
-  padding: var(--spacing-3) var(--spacing-3) var(--spacing-7);
   row-gap: var(--spacing-3);
 `
 
@@ -158,7 +163,8 @@ const ToolBar = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-3);
+  background-color: var(--gray-500a20);
 `
 
 const StyledSelectSortingMethod = styled(SelectSortingMethod)`
@@ -180,6 +186,7 @@ const StyledSearchInput = styled(SearchInput)`
 const SearchMessage = styled.p`
   font-size: var(--font-size-2);
   margin-left: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
 `
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
