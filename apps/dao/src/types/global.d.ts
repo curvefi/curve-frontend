@@ -174,10 +174,13 @@ declare global {
     gauges: PricesGaugeOverviewData[]
   }
 
-  type PieData = {
+  type GaugeFormattedData = {
     title: string
     name: string
     address: string
+    network: string
+    platform: string
+    emissions: number
     gauge_weight: string
     gauge_relative_weight: number
     gauge_weight_7d_delta: number
@@ -192,7 +195,9 @@ declare global {
 
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
-  type SortByFilter = 'voteId' | 'endingSoon'
+  type SortByFilterProposals = 'voteId' | 'endingSoon'
+
+  type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
 
   type ActiveSortDirection = 'asc' | 'desc'
 }
