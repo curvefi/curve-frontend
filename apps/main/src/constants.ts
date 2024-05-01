@@ -2,7 +2,7 @@ export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const WS_ADDRESS = 'wss://prices.curve.fi/v1/stream/ws'
-export const LARGE_APY = 5000000
+export const LARGE_APY = 5000
 
 export const MAIN_ROUTE = {
   PAGE_SWAP: '/swap',

@@ -13,6 +13,7 @@ import { Chip } from '@/ui/Typography'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
+import ChipVolatileBaseApy from '@/components/PagePoolList/components/ChipVolatileBaseApy'
 import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Tooltip from '@/ui/Tooltip'
@@ -58,13 +59,6 @@ const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
 
           <BaseApyItems as="ul">
             {baseAPYS.map(({ label, value }) => {
-              let apyFormatted
-              if (+value > LARGE_APY) {
-                apyFormatted = `${formatNumber(LARGE_APY)}+%`
-              } else {
-                apyFormatted = formatNumber(value, FORMAT_OPTIONS.PERCENT)
-              }
-
               return (
                 <BaseApyItem
                   as="li"
@@ -78,8 +72,12 @@ const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
                     <span>
                       -<IconTooltip>Not available currently</IconTooltip>
                     </span>
+                  ) : value === '' ? (
+                    ''
+                  ) : +value > LARGE_APY ? (
+                    <ChipVolatileBaseApy isBold showIcon />
                   ) : (
-                    <strong title={value}>{apyFormatted}</strong>
+                    <strong title={value}>{formatNumber(value, FORMAT_OPTIONS.PERCENT)}</strong>
                   )}
                 </BaseApyItem>
               )
