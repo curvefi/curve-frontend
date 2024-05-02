@@ -387,13 +387,14 @@ const QuickSwap = ({
             <TokenComboBox
               title=""
               disabled={isDisable}
-              disabledKeys={[]}
-              haveSigner={haveSigner}
               imageBaseUrl={imageBaseUrl}
               listBoxHeight="500px"
               selectedToken={tokensMapper[searchedParams.fromAddress]}
+              showCheckboxHideSmallPools
+              showSearch
+              showBalances={haveSigner}
               testId="from-token"
-              tokens={selectFromTokensList}
+              tokens={selectFromTokensList as Token[]}
               onSelectionChange={(value) => {
                 const fromAddress = value as string
                 const toAddress =
@@ -437,12 +438,13 @@ const QuickSwap = ({
             <TokenComboBox
               title=""
               disabled={isDisable}
-              disabledKeys={[]}
               imageBaseUrl={imageBaseUrl}
               listBoxHeight="500px"
               selectedToken={tokensMapper[searchedParams.toAddress]}
+              showCheckboxHideSmallPools
+              showSearch
               testId="to-token"
-              tokens={selectToTokensList}
+              tokens={selectToTokensList as Token[]}
               onSelectionChange={(value) => {
                 const toAddress = value as string
                 const fromAddress =

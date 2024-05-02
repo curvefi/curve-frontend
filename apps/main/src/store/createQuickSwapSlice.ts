@@ -50,6 +50,7 @@ export type QuickSwapSlice = {
     fetchMaxAmount(activeKey: string, curve: CurveApi, searchedParams: SearchedParams, fromWalletBalance: string): Promise<string>
     fetchUserBalance(curve: CurveApi, tokenAddress: string): Promise<string>
     fetchRoutesAndOutput( activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, formStatus: FormStatus, maxSlippage: string, tokensNameMapper: TokensNameMapper): Promise<void>
+    setPoolListFormValues(hideSmallPools: boolean): void
     setFormValues(updatedFormValues: Partial<FormValues>, searchedParams: SearchedParams, pageLoaded: boolean, curve: CurveApi | null, isGetMaxFrom: boolean, maxSlippage: string, isFullReset: boolean, tokensNameMapper: TokensNameMapper): Promise<void>
     setSelectToList(pageLoaded: boolean, curve: CurveApi, tokensMapper: TokensMapper, volumesMapper: VolumeMapper): void
     setSelectFromList(pageLoaded: boolean, curve: CurveApi, selectToList: string[], firstBasePlusPriority: number | undefined, usdRatesMapper: UsdRatesMapper, userBalancesMapper: UserBalancesMapper): Promise<void>
@@ -255,6 +256,11 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       get()[sliceKey].setStateByActiveKey('selectToList', chainId.toString(), cloneDeep(selectToList))
       get().storeCache.setStateByActiveKey('routerSelectToList', chainId.toString(), cloneDeep(selectToList))
+    },
+    setPoolListFormValues: (hideSmallPools) => {
+      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
+      storedPoolListFormValues.hideSmallPools = hideSmallPools
+      get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
     setFormValues: async (
       updatedFormValues,
