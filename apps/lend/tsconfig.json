@@ -1,6 +1,8 @@
 {
   "extends": "tsconfig/nextjs.json",
   "compilerOptions": {
+    "declaration": true,
+    "declarationMap": true,
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
@@ -9,7 +11,7 @@
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
       "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"]
-    },
+    }
   },
   "exclude": ["node_modules"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
