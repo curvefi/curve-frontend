@@ -185,6 +185,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
+    pricesApi: true,
   },
   1284: {
     ...NETWORK_CONFIG_DEFAULT,
