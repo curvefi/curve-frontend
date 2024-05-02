@@ -16,7 +16,7 @@ const StepModal = ({ modal, overlayTriggerState }: React.PropsWithChildren<StepM
   const closeButtonRef = React.useRef<HTMLButtonElement>(null)
   const { buttonProps: closeButtonProps } = useButton({}, closeButtonRef)
 
-  const { title, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal
+  const { title, testId, content, cancelBtnProps, primaryBtnProps, primaryBtnLabel } = modal
   const { onClick: onClickCancel } = cancelBtnProps ?? {}
   const { onClick } = primaryBtnProps
 
@@ -33,6 +33,7 @@ const StepModal = ({ modal, overlayTriggerState }: React.PropsWithChildren<StepM
   return (
     <ModalDialog
       title={title}
+      testId={testId}
       state={{ ...overlayTriggerState, ...modal, close: handleCancel }}
       footerContent={
         <Box grid gridTemplateColumns="repeat(2, 1fr)" gridColumnGap="3">

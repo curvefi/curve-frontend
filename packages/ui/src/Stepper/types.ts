@@ -32,6 +32,7 @@ export type StepActionModal = {
     }
     primaryBtnProps: React.ButtonHTMLAttributes<HTMLButtonElement>
     primaryBtnLabel: string
+    testId?: string
   }
 }
 
