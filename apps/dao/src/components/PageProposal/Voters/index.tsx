@@ -4,7 +4,7 @@ import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 
-import { formatVotingPower } from '@/utils'
+import { formatNumberWithSuffix } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import { ExternalLink } from '@/ui/Link'
@@ -54,7 +54,7 @@ const Voters = ({ totalVotes }: Props) => {
                 </Box>
                 <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
                   <Data>
-                    {formatVotingPower(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
+                    {formatNumberWithSuffix(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
                   </Data>
                 </StyledExternalLink>
               </DataRow>

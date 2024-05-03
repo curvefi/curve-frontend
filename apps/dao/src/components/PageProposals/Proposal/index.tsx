@@ -40,7 +40,7 @@ const Proposal = ({
 }: Props) => {
   return (
     <LazyItem>
-      <ProposalContainer>
+      <ProposalContainer onClick={() => handleClick(`${voteId}-${voteType}`)}>
         <InformationWrapper>
           <ProposalDetailsRow>
             <ProposalStatus
@@ -55,14 +55,6 @@ const Proposal = ({
             <StyledVoteCountdown startDate={startDate} />
           </ProposalDetailsRow>
           <ProposalMetadata>{metadata}</ProposalMetadata>
-          <Box flex flexAlignItems="flex-end" flexJustifyContent="space-between">
-            <Box flex>
-              <ProposalProposer>{t`Proposer:`}</ProposalProposer>
-              <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
-                {shortenTokenAddress(creator)}
-              </StyledExternalLink>
-            </Box>
-          </Box>
         </InformationWrapper>
         <VoteWrapper>
           <StyledVotesStatusBox
@@ -72,7 +64,6 @@ const Proposal = ({
             totalVotesPercentage={totalVotesPercentage}
             minAcceptQuorumPercent={minAcceptQuorumPercent}
           />
-          <InternalLinkButton onClick={() => handleClick(`${voteId}-${voteType}`)} title={t`Go to proposal`} />
         </VoteWrapper>
       </ProposalContainer>
     </LazyItem>
@@ -83,12 +74,14 @@ const ProposalContainer = styled.div`
   display: grid;
   grid-template-columns: 2fr 1fr;
   background-color: var(--summary_content--background-color);
+  &:hover {
+    cursor: pointer;
+  }
 `
 
 const InformationWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   padding: var(--spacing-3);
   min-width: 100%;
 `
@@ -155,7 +148,8 @@ const ProposalType = styled.p`
 `
 
 const ProposalMetadata = styled.p`
-  margin: var(--spacing-4) 0;
+  margin: auto 0;
+  padding: var(--spacing-4) 0;
   margin-right: var(--spacing-3);
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
@@ -192,7 +186,7 @@ const StyledVoteCountdown = styled(VoteCountdown)`
 `
 
 const StyledVotesStatusBox = styled(VotesStatusBox)`
-  margin: var(--spacing-1) 0 var(--spacing-4);
+  margin: var(--spacing-1) 0;
 `
 
 const Item = styled.div``
