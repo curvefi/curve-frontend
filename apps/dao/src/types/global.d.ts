@@ -174,17 +174,10 @@ declare global {
     gauges: PricesGaugeOverviewData[]
   }
 
-  type GaugeFormattedData = {
+  interface GaugeFormattedData extends PricesGaugeOverviewData {
     title: string
-    name: string
-    address: string
-    network: string
     platform: string
-    emissions: number
-    gauge_weight: string
-    gauge_relative_weight: number
-    gauge_weight_7d_delta: number
-    gauge_weight_60d_delta: number
+    gauge_weight: number
   }
 
   interface UserVoteData {
