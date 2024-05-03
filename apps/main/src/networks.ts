@@ -162,7 +162,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   100: {
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig['100'],
-    poolFilters: ['all', 'usd', 'crypto', 'stableng', 'others', 'user'],
+    poolFilters: ['all', 'usd', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
