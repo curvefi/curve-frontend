@@ -26,6 +26,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateUserData = useStore((state) => state.user.updateUserData)
   const getProposals = useStore((state) => state.daoProposals.getProposals)
+  const getGauges = useStore((state) => state.gauges.getGauges)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -236,8 +237,9 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (curve) {
       getProposals(curve)
+      getGauges(curve)
     }
-  }, [curve, getProposals])
+  }, [curve, getGauges, getProposals])
 
   useEffect(() => {
     if (isSuccess(connectState) && curve && wallet) {
