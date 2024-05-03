@@ -8,18 +8,14 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/components/PageRouterSwap/types'
-import type { FormStatusWarning } from '@/components/PageRouterSwap/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
-import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
 
 import {
-  DEFAULT_EST_GAS,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
-  DEFAULT_ROUTES_AND_OUTPUT,
   getUserTokensMapper,
   sortTokensByGasFees,
 } from '@/components/PageRouterSwap/utils'
@@ -27,7 +23,7 @@ import { NETWORK_TOKEN } from '@/constants'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
 import { getChainSignerActiveKey, sleep } from '@/utils'
-import networks from '@/networks'
+import curvejsApi from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -47,15 +43,20 @@ const sliceKey = 'quickSwap'
 // prettier-ignore
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxAmount(activeKey: string, curve: CurveApi, searchedParams: SearchedParams, fromWalletBalance: string): Promise<string>
-    fetchUserBalance(curve: CurveApi, tokenAddress: string): Promise<string>
-    fetchRoutesAndOutput( activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, formStatus: FormStatus, maxSlippage: string, tokensNameMapper: TokensNameMapper): Promise<void>
+    fetchUserBalances(curve: CurveApi, fromAddress: string, toAddress: string): Promise<{ fromAmount: string; toAmount: string }>
+    fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
+    fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
+    fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
+    fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
+    setFormValues(curve: CurveApi | null, updatedFormValues: Partial<FormValues>, searchedParams: SearchedParams, isGetMaxFrom: boolean, maxSlippage: string, isFullReset: boolean, isRefetch?: boolean): Promise<void>
+
+    // select token list
     setPoolListFormValues(hideSmallPools: boolean): void
-    setFormValues(updatedFormValues: Partial<FormValues>, searchedParams: SearchedParams, pageLoaded: boolean, curve: CurveApi | null, isGetMaxFrom: boolean, maxSlippage: string, isFullReset: boolean, tokensNameMapper: TokensNameMapper): Promise<void>
     setSelectToList(pageLoaded: boolean, curve: CurveApi, tokensMapper: TokensMapper, volumesMapper: VolumeMapper): void
     setSelectFromList(pageLoaded: boolean, curve: CurveApi, selectToList: string[], firstBasePlusPriority: number | undefined, usdRatesMapper: UsdRatesMapper, userBalancesMapper: UserBalancesMapper): Promise<void>
-    fetchEstGasApproval(activeKey: string, curve: CurveApi, formValues: FormValues, formStatus: FormStatus, searchedParams: SearchedParams): Promise<FnStepEstGasApprovalResponse>
-    fetchStepApprove(activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams,  globalMaxSlippage: string, tokensNameMapper: TokensNameMapper): Promise<FnStepApproveResponse | undefined>
+
+    // steps
+    fetchStepApprove(activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
     fetchStepSwap(activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, maxSlippage: string): Promise<FnStepResponse & { swappedAmount: string; } | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -80,65 +81,129 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchUserBalance: async (curve, tokenAddress) => {
+    fetchUserBalances: async (curve, fromAddress, toAddress) => {
       const { userBalancesMapper, fetchUserBalancesByTokens } = get().userBalances
-      return (
-        userBalancesMapper[tokenAddress] ?? (await fetchUserBalancesByTokens(curve, [tokenAddress]))[tokenAddress] ?? ''
-      )
+
+      let fetchTokensList = []
+      if (fromAddress && typeof userBalancesMapper[fromAddress] === 'undefined') fetchTokensList.push(fromAddress)
+      if (toAddress && typeof userBalancesMapper[toAddress] === 'undefined') fetchTokensList.push(toAddress)
+
+      if (fetchTokensList.length > 0) await fetchUserBalancesByTokens(curve, fetchTokensList)
+
+      return {
+        fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
+        toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
+      }
     },
-    fetchRoutesAndOutput: async (
-      activeKey,
-      curve,
-      formValues,
-      searchedParams,
-      formStatus,
-      maxSlippage,
-      tokensNameMapper
-    ) => {
+    fetchUsdRates: async (curve, { fromAddress, toAddress }) => {
+      const usdRateMapper = get().usdRates.usdRatesMapper
+
+      if (typeof usdRateMapper[toAddress] === 'undefined' || typeof usdRateMapper[fromAddress] === 'undefined') {
+        await get().usdRates.fetchUsdRateByTokens(curve, [fromAddress, toAddress])
+      }
+    },
+    fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      let activeKey = sliceState.activeKey
+      const { chainId, signerAddress } = curve
+      const { fromAddress, toAddress } = searchedParams
+
+      const cFormValues = cloneDeep(sliceState.formValues)
+
+      if (signerAddress) {
+        const userBalance = state.userBalances.userBalancesMapper[fromAddress] ?? '0'
+
+        cFormValues.fromAmount = userBalance
+        activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
+
+        // get max amount for native token
+        if (fromAddress.toLowerCase() === NETWORK_TOKEN) {
+          await state.gas.fetchGasInfo(curve)
+          const { basePlusPriority } = get().gas.gasInfo ?? {}
+          const firstBasePlusPriority = basePlusPriority?.[0]
+
+          if (typeof firstBasePlusPriority !== 'undefined' && +userBalance > 0) {
+            sliceState.setStateByKey('isMaxLoading', true)
+            // must call routesAndOutput first before estGas
+            const poolsMapper = state.pools.poolsMapper[chainId]
+            await curvejsApi.router.routesAndOutput(
+              activeKey,
+              curve,
+              poolsMapper,
+              cFormValues,
+              searchedParams,
+              maxSlippage
+            )
+
+            const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance)
+
+            if (resp.estimatedGas) {
+              cFormValues.fromAmount = getMaxAmountMinusGas(resp.estimatedGas, firstBasePlusPriority, userBalance)
+            }
+          }
+        }
+      } else {
+        cFormValues.fromAmount = ''
+      }
+
+      sliceState.setStateByKeys({
+        activeKey: getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage),
+        formValues: cFormValues,
+        isMaxLoading: false,
+      })
+    },
+    fetchRoutesAndOutput: async (curve, searchedParams, maxSlippage) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      const activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
 
+      const cFormValues = cloneDeep(sliceState.formValues)
+      const cFormStatus = cloneDeep(sliceState.formStatus)
+      const tokensNameMapper = state.tokens.tokensNameMapper[chainId]
+
+      if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
+        return
+
+      // loading state
+      if (cFormValues.isFrom) {
+        cFormValues.toAmount = ''
+      } else {
+        cFormValues.fromAmount = ''
+      }
+      sliceState.setStateByKey('formValues', cloneDeep(cFormValues))
+
+      const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
       await sleep(100)
-      const poolsMapper = get().pools.poolsMapper[chainId]
-      const routesAndOutputFn = networks[chainId].api.router.routesAndOutput
-      const { exchangeRates, ...resp } = await routesAndOutputFn(
+      const { exchangeRates, ...resp } = await curvejsApi.router.routesAndOutput(
         activeKey,
         curve,
         poolsMapper,
-        formValues,
+        cFormValues,
         searchedParams,
         maxSlippage
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(formStatus)
         if (resp.error) {
           cFormStatus.error = resp.error
-          get()[sliceKey].setStateByActiveKey('routesAndOutput', activeKey, cloneDeep(DEFAULT_ROUTES_AND_OUTPUT))
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
         } else {
           // update to/from form values
-          let cActiveKey
-          let cFormValues = cloneDeep(formValues)
-
-          if (formValues.isFrom) {
+          if (cFormValues.isFrom) {
             cFormValues.toAmount = resp.toAmount
           } else {
             cFormValues.fromAmount = resp.fromAmount
           }
-          cActiveKey = getRouterActiveKey(cFormValues, searchedParams, maxSlippage)
 
-          let warning: FormStatusWarning = ''
-          if (resp.isExchangeRateLow && resp.isExpectedToAmount) {
-            warning = 'warning-exchange-rate-low-is-expected-to-amount'
-          } else if (resp.isExchangeRateLow) {
-            warning = 'warning-is-expected-to-amount'
-          }
-
+          const cActiveKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
           cFormStatus.error = resp.routes.length === 0 ? 'error-swap-not-available' : cFormStatus.error
-          cFormStatus.warning = warning
 
-          get()[sliceKey].setStateByKeys({
+          sliceState.setStateByKeys({
             activeKey: cActiveKey,
             formValues: cloneDeep(cFormValues),
             formStatus: cFormStatus,
@@ -157,51 +222,105 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
             },
           })
 
-          if (signerAddress) {
-            // validate fromAmount
-            const walletFromBalance = await get()[sliceKey].fetchUserBalance(curve, searchedParams.fromAddress)
-            cFormValues.fromError = +cFormValues.fromAmount > +walletFromBalance ? 'too-much' : ''
-            get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+          if (!signerAddress) return
 
-            // get est. gas
-            if (!cFormValues.fromError) {
-              const cFormEstGas = cloneDeep(get()[sliceKey].formEstGas[activeKey] ?? DEFAULT_EST_GAS)
-              cFormEstGas.loading = true
-              get()[sliceKey].setStateByKey('formEstGas', { [cActiveKey]: cloneDeep(cFormEstGas) })
-              get()[sliceKey].fetchEstGasApproval(cActiveKey, curve, cFormValues, cFormStatus, searchedParams)
-            }
-          }
+          // validation
+          const { fromAmount } = await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, '')
+          cFormValues.fromError = +cFormValues.fromAmount > +fromAmount ? 'too-much' : ''
+          get()[sliceKey].setStateByKey('formValues', cFormValues)
         }
       }
     },
-    fetchMaxAmount: async (activeKey, curve, searchedParams, formWalletBalance) => {
+    fetchEstGasApproval: async (curve, searchedParams) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      const activeKey = sliceState.activeKey
+      const { signerAddress } = curve
+      const { fromAmount, isFrom, toAmount } = sliceState.formValues
+      const { fromAddress, toAddress } = searchedParams
+
+      if ((isFrom && +fromAmount <= 0) || (!isFrom && +toAmount <= 0) || !signerAddress) return
+
+      // api call
+      const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, fromAmount)
+
+      // set estimate gas state
+      sliceState.setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
+
+      // update form status
+      const storedFormStatus = get()[sliceKey].formStatus
+
+      if (storedFormStatus.formProcessing) return
+
+      sliceState.setStateByKey('formStatus', {
+        ...storedFormStatus,
+        isApproved: resp.isApproved,
+        error: storedFormStatus.error || resp.error,
+      })
+    },
+    setFormValues: async (
+      curve,
+      updatedFormValues,
+      searchedParams,
+      isGetMaxFrom,
+      maxSlippage,
+      isFullReset,
+      isRefetch // x
+    ) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
       // stored values
-      const { basePlusPriority } = get().gas.gasInfo ?? {}
-      let fromAmount = formWalletBalance ?? '0'
+      const storedFormStatus = sliceState.formStatus
+      const storedFormValues = sliceState.formValues
+      const storedUserBalancesMapper = state.userBalances.userBalancesMapper
 
-      // get max amount for native token
-      if (
-        searchedParams.fromAddress.toLowerCase() === NETWORK_TOKEN &&
-        typeof basePlusPriority?.[0] !== 'undefined' &&
-        +fromAmount > 0
-      ) {
-        get()[sliceKey].setStateByKey('isMaxLoading', true)
-        const estGasApprovalFn = networks[curve.chainId].api.router.estGasApproval
-        const resp = await estGasApprovalFn(
-          activeKey,
-          curve,
-          searchedParams.fromAddress,
-          searchedParams.toAddress,
-          fromAmount
-        )
+      // update formStatus, form values, reset errors
+      let cFormValues = cloneDeep(
+        isRefetch
+          ? storedFormValues
+          : isFullReset
+          ? { ...storedFormValues, isFrom: true, fromAmount: '', fromError: '' as const, toAmount: '' }
+          : {
+              ...storedFormValues,
+              ...updatedFormValues,
+              fromError: '' as const,
+            }
+      )
 
-        if (resp.estimatedGas) {
-          fromAmount = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], formWalletBalance)
-        }
-        get()[sliceKey].setStateByKey('isMaxLoading', false)
-      }
+      let activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
+      let cFormStatus = cloneDeep(isRefetch ? storedFormStatus : DEFAULT_FORM_STATUS)
 
-      return fromAmount
+      get()[sliceKey].setStateByKeys({
+        activeKey,
+        formValues: cloneDeep(cFormValues),
+        formStatus: cloneDeep(cFormStatus),
+      })
+
+      if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
+
+      const { signerAddress } = curve
+
+      // get wallet balances
+      if (signerAddress) await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress)
+
+      // get max if MAX button is clicked
+      if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
+
+      // get usdRates
+      await sliceState.fetchUsdRates(curve, searchedParams)
+
+      // api calls
+      await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
+      sliceState.fetchEstGasApproval(curve, searchedParams)
+    },
+
+    // select token list
+    setPoolListFormValues: (hideSmallPools) => {
+      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
+      storedPoolListFormValues.hideSmallPools = hideSmallPools
+      get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
     setSelectFromList: async (
       pageLoaded,
@@ -257,275 +376,111 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       get()[sliceKey].setStateByActiveKey('selectToList', chainId.toString(), cloneDeep(selectToList))
       get().storeCache.setStateByActiveKey('routerSelectToList', chainId.toString(), cloneDeep(selectToList))
     },
-    setPoolListFormValues: (hideSmallPools) => {
-      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
-      storedPoolListFormValues.hideSmallPools = hideSmallPools
-      get().poolList.setStateByKey('formValues', storedPoolListFormValues)
-    },
-    setFormValues: async (
-      updatedFormValues,
-      searchedParams,
-      pageLoaded,
-      curve,
-      isGetMaxFrom,
-      maxSlippage,
-      isFullReset,
-      tokensNameMapper
-    ) => {
-      // stored values
-      const storedActiveKey = get()[sliceKey].activeKey
-      const storedRoutesAndOutput = get()[sliceKey].routesAndOutput[storedActiveKey] ?? DEFAULT_ROUTES_AND_OUTPUT
-      const storedFormStatus = get()[sliceKey].formStatus
-      const storedFormValues = get()[sliceKey].formValues
-      const storedUserBalancesMapper = get().userBalances.userBalancesMapper
-      const storedUsdRatesMapper = get().usdRates.usdRatesMapper
-
-      // update formStatus, form values, reset errors
-      let cFormValues = cloneDeep({
-        ...storedFormValues,
-        ...(isFullReset ? { isFrom: true, fromAmount: '', toAmount: '' } : updatedFormValues),
-        fromError: '',
-      })
-      if (cFormValues.isFrom) cFormValues.toAmount = ''
-      if (!cFormValues.isFrom) cFormValues.fromAmount = ''
-
-      let activeKey = getRouterActiveKey(cFormValues, searchedParams, maxSlippage)
-
-      let cFormStatus = cloneDeep(isFullReset ? DEFAULT_FORM_STATUS : storedFormStatus)
-      cFormStatus.error = ''
-      cFormStatus.warning = ''
-      cFormStatus.formTypeCompleted = ''
-      let cRoutesAndOutputs = isFullReset ? DEFAULT_ROUTES_AND_OUTPUT : storedRoutesAndOutput
-
-      get()[sliceKey].setStateByKeys({
-        activeKey,
-        formValues: cloneDeep(cFormValues),
-        formStatus: cloneDeep(cFormStatus),
-        formEstGas: { [activeKey]: cloneDeep(DEFAULT_EST_GAS) },
-        routesAndOutput: {
-          [activeKey]: cloneDeep({
-            ...cRoutesAndOutputs,
-            loading:
-              !!searchedParams.fromAddress &&
-              !!searchedParams.toAddress &&
-              (+cFormValues.fromAmount > 0 || +cFormValues.toAmount > 0),
-          }),
-        },
-      })
-
-      if (
-        !pageLoaded ||
-        !curve ||
-        !storedUserBalancesMapper ||
-        !searchedParams.fromAddress ||
-        !searchedParams.toAddress
-      )
-        return
-
-      const { chainId, signerAddress } = curve
-      let fromWalletBalance = storedUserBalancesMapper[searchedParams.fromAddress] ?? ''
-
-      // get wallet balances
-      if (!!signerAddress) {
-        if (
-          isUndefined(storedUserBalancesMapper[searchedParams.fromAddress]) ||
-          isUndefined(storedUserBalancesMapper[searchedParams.toAddress])
-        ) {
-          const resp = await get().userBalances.fetchUserBalancesByTokens(curve, [
-            searchedParams.fromAddress,
-            searchedParams.toAddress,
-          ])
-          fromWalletBalance = resp[searchedParams.fromAddress] ?? ''
-        }
-
-        // check spending approval
-        if (+fromWalletBalance > 0) {
-          const fn = networks[chainId].api.router.estGasApproval
-          const resp = await fn(
-            activeKey,
-            curve,
-            searchedParams.fromAddress,
-            searchedParams.toAddress,
-            fromWalletBalance,
-            true
-          )
-
-          cFormStatus.isApproved = resp.isApproved
-          get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
-        }
-      }
-
-      // get max if MAX button is clicked
-      if (isGetMaxFrom) {
-        if (!!signerAddress) {
-          cFormValues.fromAmount = await get()[sliceKey].fetchMaxAmount(
-            activeKey,
-            curve,
-            searchedParams,
-            fromWalletBalance
-          )
-        } else {
-          cFormValues.fromAmount = '0'
-        }
-        activeKey = getRouterActiveKey(cFormValues, searchedParams, maxSlippage)
-        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
-      }
-
-      // validate from amount
-      cFormValues.fromError = !!signerAddress
-        ? +cFormValues.fromAmount > +fromWalletBalance
-          ? 'too-much'
-          : cFormValues.fromError
-        : ''
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
-
-      // get usdRates
-      if (
-        isUndefined(storedUsdRatesMapper[searchedParams.toAddress]) ||
-        isUndefined(storedUsdRatesMapper[searchedParams.fromAddress])
-      ) {
-        get().usdRates.fetchUsdRateByTokens(curve, [searchedParams.fromAddress, searchedParams.toAddress])
-      }
-
-      // get routes and outputs
-      if ((cFormValues.isFrom && +cFormValues.fromAmount > 0) || (!cFormValues.isFrom && +cFormValues.toAmount > 0)) {
-        get()[sliceKey].fetchRoutesAndOutput(
-          activeKey,
-          curve,
-          cFormValues,
-          searchedParams,
-          cFormStatus,
-          maxSlippage,
-          tokensNameMapper
-        )
-      } else {
-        get()[sliceKey].setStateByKey('routesAndOutput', {
-          [activeKey]: cloneDeep({ ...cRoutesAndOutputs, loading: false }),
-        })
-      }
-    },
 
     // steps
-    fetchEstGasApproval: async (activeKey, curve, formValues, formStatus, searchedParams) => {
+    fetchStepApprove: async (activeKey, curve, formValues, searchedParams, globalMaxSlippage) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      const provider = state.wallet.getProvider(sliceKey)
+
+      if (!provider) return
+
+      sliceState.setStateByKey('formStatus', {
+        ...sliceState.formStatus,
+        formProcessing: true,
+        step: 'APPROVAL',
+      })
+
       const { fromAmount } = formValues
-      const { fromAddress, toAddress } = searchedParams
-      const estGasApprovalFn = networks[curve.chainId].api.router.estGasApproval
-      const resp = await estGasApprovalFn(activeKey, curve, fromAddress, toAddress, fromAmount)
+      const { fromAddress } = searchedParams
 
-      // set estimate gas state
-      get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
+      await state.gas.fetchGasInfo(curve)
+      const resp = await curvejsApi.router.swapApprove(activeKey, curve, provider, fromAddress, fromAmount)
 
-      // update form status
-      const storedFormStatus = get()[sliceKey].formStatus
-      if (!storedFormStatus.formProcessing) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...storedFormStatus,
-          isApproved: resp.isApproved,
-          error: storedFormStatus.error || resp.error,
-        })
-      }
-      return resp
-    },
-    fetchStepApprove: async (activeKey, curve, formValues, searchedParams, globalMaxSlippage, tokensNameMapper) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(sliceState.formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'APPROVAL',
-        })
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          sliceState.setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'APPROVE'
+          cFormStatus.isApproved = true
+          sliceState.setStateByKey('formStatus', cFormStatus)
 
-        await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
-        const { fromAmount } = formValues
-        const { fromAddress } = searchedParams
-        const swapApproveFn = networks[chainId].api.router.swapApprove
-        const resp = await swapApproveFn(activeKey, curve, provider, fromAddress, fromAmount)
-
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'APPROVE'
-            cFormStatus.isApproved = true
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-
-            // re-fetch est gas, approval, routes and output
-            await Promise.all([
-              get()[sliceKey].fetchEstGasApproval(activeKey, curve, formValues, cFormStatus, searchedParams),
-              get()[sliceKey].fetchRoutesAndOutput(
-                activeKey,
-                curve,
-                formValues,
-                searchedParams,
-                cFormStatus,
-                globalMaxSlippage,
-                tokensNameMapper
-              ),
-            ])
-          }
-          return resp
+          // re-fetch est gas, approval, routes and output
+          await sliceState.fetchRoutesAndOutput(curve, searchedParams, globalMaxSlippage)
+          sliceState.fetchEstGasApproval(curve, searchedParams)
         }
+
+        return resp
       }
     },
     fetchStepSwap: async (activeKey, curve, formValues, searchedParams, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+      const state = get()
+      const sliceState = state[sliceKey]
 
-      if (provider) {
-        get()[sliceKey].setStateByKey('formStatus', {
-          ...get()[sliceKey].formStatus,
-          formProcessing: true,
-          step: 'SWAP',
-        })
+      const provider = state.wallet.getProvider(sliceKey)
 
-        await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
-        const { fromAmount } = formValues
-        const { fromAddress, toAddress } = searchedParams
-        const swapFn = networks[chainId].api.router.swap
-        const resp = await swapFn(activeKey, curve, provider, fromAddress, fromAmount, toAddress, maxSlippage)
+      if (!provider) return
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-          cFormStatus.formProcessing = false
-          cFormStatus.step = ''
-          cFormStatus.error = ''
-          cFormStatus.warning = ''
+      get()[sliceKey].setStateByKey('formStatus', {
+        ...get()[sliceKey].formStatus,
+        formProcessing: true,
+        step: 'SWAP',
+      })
 
-          if (resp.error) {
-            cFormStatus.error = resp.error
-            get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-          } else {
-            cFormStatus.formTypeCompleted = 'SWAP'
+      const { chainId } = curve
+      const { fromAmount } = formValues
+      const { fromAddress, toAddress } = searchedParams
 
-            const cFormValues = cloneDeep(formValues)
-            cFormValues.fromAmount = ''
-            cFormValues.toAmount = ''
+      await state.gas.fetchGasInfo(curve)
+      const resp = await curvejsApi.router.swap(
+        activeKey,
+        curve,
+        provider,
+        fromAddress,
+        fromAmount,
+        toAddress,
+        maxSlippage
+      )
 
-            get()[sliceKey].setStateByKeys({
-              activeKey: getRouterActiveKey(cFormValues, searchedParams, maxSlippage),
-              formEstGas: {},
-              formValues: cloneDeep(cFormValues),
-              formStatus: cFormStatus,
-              routesAndOutput: {},
-            })
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const cFormStatus = cloneDeep(sliceState.formStatus)
+        cFormStatus.formProcessing = false
+        cFormStatus.step = ''
+        cFormStatus.error = ''
 
-            // cache swapped tokens
-            get().storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
+        if (resp.error) {
+          cFormStatus.error = resp.error
+          sliceState.setStateByKey('formStatus', cFormStatus)
+        } else {
+          cFormStatus.formTypeCompleted = 'SWAP'
 
-            // fetch data
-            get().userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
-          }
+          const cFormValues = cloneDeep(formValues)
+          cFormValues.fromAmount = ''
+          cFormValues.toAmount = ''
 
-          return resp
+          get()[sliceKey].setStateByKeys({
+            activeKey: getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage),
+            formEstGas: {},
+            formValues: cloneDeep(cFormValues),
+            formStatus: cFormStatus,
+            routesAndOutput: {},
+          })
+
+          // cache swapped tokens
+          state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
+
+          // fetch data
+          state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
         }
+
+        return resp
       }
     },
 
@@ -555,11 +510,20 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
   },
 })
 
-function getRouterActiveKey({ fromAmount }: FormValues, searchedParams: SearchedParams, maxSlippage: string) {
+function getRouterActiveKey(
+  curve: CurveApi | null,
+  { fromAmount }: FormValues,
+  searchedParams: SearchedParams,
+  maxSlippage: string
+) {
+  const { chainId = '', signerAddress = '' } = curve ?? {}
   const { fromAddress, toAddress } = searchedParams
+
+  const parsedSignerAddress = signerAddress.slice(0, 10)
   const parsedFromAddress = fromAddress ? fromAddress.slice(fromAddress.length - 4) : ''
   const parsedToAddress = toAddress ? toAddress.slice(toAddress.length - 4) : ''
-  return `${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
+
+  return `${chainId}-${parsedSignerAddress}-${parsedFromAddress}-${parsedToAddress}-${fromAmount}-${maxSlippage}`
 }
 
 export function getRouterSwapsExchangeRates(
@@ -624,13 +588,6 @@ function getRouterWarningModal(
 export function getTokensListStr(tokensList: string[] | undefined) {
   return (tokensList ?? []).reduce((str, address) => {
     str += address.charAt(5)
-    return str
-  }, '')
-}
-
-export function getTokensObjListStr(tokensList: (Token | undefined)[] | undefined) {
-  return (tokensList ?? []).reduce((str, tokenObj) => {
-    str += tokenObj?.address ? tokenObj.address.charAt(5) : ''
     return str
   }, '')
 }

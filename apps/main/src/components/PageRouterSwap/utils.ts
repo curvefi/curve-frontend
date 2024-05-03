@@ -1,6 +1,6 @@
 import type { FormValues, Route } from '@/components/PageRouterSwap/types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { FormEstGas, FormStatus, RoutesAndOutput } from '@/components/PageRouterSwap/types'
+import type { FormStatus } from '@/components/PageRouterSwap/types'
 
 import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
@@ -9,33 +9,12 @@ import uniq from 'lodash/uniq'
 import { log } from '@/utils'
 import { weiToEther } from '@/ui/utils/utilsWeb3'
 
-export const DEFAULT_EST_GAS: FormEstGas = {
-  estimatedGas: 0,
-  loading: false,
-}
-
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,
   formProcessing: false,
   formTypeCompleted: '',
   step: '',
   error: '',
-  warning: '',
-}
-
-export const DEFAULT_ROUTES_AND_OUTPUT: RoutesAndOutput = {
-  loading: false,
-  exchangeRates: [],
-  isExchangeRateLow: false,
-  isHighImpact: false,
-  isHighSlippage: false,
-  maxSlippage: '0.1',
-  priceImpact: null,
-  routes: [],
-  toAmount: '',
-  toAmountOutput: '',
-  fromAmount: '',
-  modal: null,
 }
 
 export const DEFAULT_FORM_VALUES: FormValues = {

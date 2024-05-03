@@ -4,11 +4,8 @@ import type { Params } from 'react-router'
 import type { Step } from '@/ui/Stepper/types'
 
 import { t } from '@lingui/macro'
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
 import React, { useEffect, useCallback, useState, useRef, useMemo } from 'react'
 
-import { DEFAULT_EST_GAS, DEFAULT_ROUTES_AND_OUTPUT } from '@/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/constants'
 import { REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
@@ -25,10 +22,8 @@ import useStore from '@/store/useStore'
 import useTokensNameMapper from '@/hooks/useTokensNameMapper'
 
 import AlertBox from '@/ui/AlertBox'
-import AlertFormError from '@/components/AlertFormError'
-import AlertFormWarning from '@/components/AlertFormWarning'
-import AlertSlippage from '@/components/AlertSlippage'
 import Box from '@/ui/Box'
+import ChipInpHelper from '@/components/ChipInpHelper'
 import IconButton from '@/ui/IconButton'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import DetailInfoExchangeRate from '@/components/PageRouterSwap/components/DetailInfoExchangeRate'
@@ -39,6 +34,7 @@ import FieldHelperUsdRate from '@/components/FieldHelperUsdRate'
 import Icon from '@/ui/Icon'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import FormConnectWallet from '@/components/FormConnectWallet'
+import RouterSwapAlerts from '@/components/PageRouterSwap/components/RouterSwapAlerts'
 import Stepper from '@/ui/Stepper'
 import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -70,14 +66,14 @@ const QuickSwap = ({
   const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
   const firstBasePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[0])
-  const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
+  const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
   const globalMaxSlippage = useStore((state) => state.maxSlippage)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
-  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey] ?? DEFAULT_ROUTES_AND_OUTPUT)
+  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const selectFromList = useStore((state) => state.quickSwap.selectFromList[chainSignerActiveKey])
@@ -95,6 +91,17 @@ const QuickSwap = ({
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+
+  const { fromAddress, toAddress } = searchedParams
+
+  const isReady = pageLoaded && !isLoadingApi && isPageVisible
+  const haveSigner = !!signerAddress
+  const userFromBalance = userBalancesMapper[fromAddress]
+  const userToBalance = userBalancesMapper[toAddress]
+  const fromUsdRate = usdRatesMapper[fromAddress]
+  const toUsdRate = usdRatesMapper[toAddress]
+  const fromToken = tokensNameMapper[fromAddress] ?? ''
+  const toToken = tokensNameMapper[toAddress] ?? ''
 
   const selectFromListStr = useMemo(() => getTokensListStr(selectFromList), [selectFromList])
   const userBalancesStr = useMemo(() => getUserBalancesStr(userBalancesMapper), [userBalancesMapper])
@@ -116,29 +123,28 @@ const QuickSwap = ({
     [selectToListStr, tokensMapperStr]
   )
 
-  const haveSigner = !!signerAddress
-  const userFromBalance = userBalancesMapper[searchedParams.fromAddress]
-  const userToBalance = userBalancesMapper[searchedParams.toAddress]
-  const fromUsdRate = usdRatesMapper[searchedParams.fromAddress]
-  const toUsdRate = usdRatesMapper[searchedParams.toAddress]
-
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean, maxSlippage: string, isFullReset: boolean) => {
+    (
+      updatedFormValues: Partial<FormValues>,
+      isGetMaxFrom: boolean,
+      maxSlippage: string,
+      isFullReset: boolean,
+      isRefetch?: boolean
+    ) => {
       setTxInfoBar(null)
       setConfirmedLoss(false)
 
       setFormValues(
+        pageLoaded && !isLoadingApi ? curve : null,
         updatedFormValues,
         searchedParams,
-        pageLoaded,
-        rChainId === curve?.chainId ? curve : null,
         isGetMaxFrom,
         maxSlippage || globalMaxSlippage,
         isFullReset,
-        tokensNameMapper
+        isRefetch
       )
     },
-    [curve, globalMaxSlippage, pageLoaded, rChainId, searchedParams, setFormValues, tokensNameMapper]
+    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues]
   )
 
   const handleBtnClickSwap = useCallback(
@@ -147,29 +153,32 @@ const QuickSwap = ({
       curve: CurveApi,
       formValues: FormValues,
       maxSlippage: string,
-      searchedParams: SearchedParams
+      searchedParams: SearchedParams,
+      toToken: string,
+      fromToken: string
     ) => {
-      const { fromAmount } = formValues
-      const { fromAddress, toAddress } = searchedParams
-      const fromToken = tokensNameMapper[fromAddress] ?? ''
-      const toToken = tokensNameMapper[toAddress] ?? ''
-      const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
+      const { fromAmount, toAmount } = formValues
+
+      const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${toAmount} ${toToken} at max slippage ${maxSlippage}%.`
+      const { dismiss } = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
+
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && chainId && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+        const txMessage = t`Transaction complete.`
         setTxInfoBar(
           <TxInfoBar
-            description={t`Swapped ${fromAmount} ${fromToken} for ${resp.swappedAmount} ${toToken}`}
+            description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => updateFormValues({}, false, '', true)}
           />
         )
       }
-
-      typeof dismiss === 'function' && dismiss()
+      if (resp?.error) setTxInfoBar(null)
+      if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, chainId, fetchStepSwap, notifyNotification, tokensNameMapper, updateFormValues]
+    [activeKey, chainId, fetchStepSwap, notifyNotification, updateFormValues]
   )
 
   const getSteps = useCallback(
@@ -180,20 +189,15 @@ const QuickSwap = ({
       formStatus: FormStatus,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      userBalancesLoading: boolean
+      toToken: string,
+      fromToken: string
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
-      const { fromAddress } = searchedParams
-      const haveFromAmount = +fromAmount > 0
-      const maxSlippage = routesAndOutput.maxSlippage
-      const isValidFromAmount =
-        !userBalancesLoading &&
-        haveFromAmount &&
-        !formValues.fromError &&
-        !!userFromBalance &&
-        +userFromBalance >= +fromAmount
-      const isValid = !routesAndOutput.loading && !formStatus.error && isValidFromAmount
+
+      const maxSlippage = routesAndOutput?.maxSlippage
+      const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
+      const isValid = !routesAndOutput?.loading && !formStatus.error && isValidFromAmount
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
@@ -204,9 +208,9 @@ const QuickSwap = ({
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const notifyMessage = t`Please approve spending your ${tokensNameMapper[fromAddress] ?? ''}.`
+            const notifyMessage = t`Please approve spending your ${fromToken}.`
             const { dismiss } = notifyNotification(notifyMessage, 'pending')
-            await fetchStepApprove(activeKey, curve, formValues, searchedParams, globalMaxSlippage, tokensNameMapper)
+            await fetchStepApprove(activeKey, curve, formValues, searchedParams, globalMaxSlippage)
             if (typeof dismiss === 'function') dismiss()
           },
         },
@@ -215,7 +219,7 @@ const QuickSwap = ({
           status: getStepStatus(isComplete, step === 'SWAP', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Swap Complete` : t`Swap`,
-          ...(routesAndOutput.modal
+          ...(routesAndOutput?.modal
             ? {
                 modal: {
                   isDismissable: false,
@@ -234,13 +238,17 @@ const QuickSwap = ({
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams),
+                    onClick: () =>
+                      handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams, toToken, fromToken),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
-            : { onClick: () => handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams) }),
+            : {
+                onClick: () =>
+                  handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams, toToken, fromToken),
+              }),
         },
       }
 
@@ -254,23 +262,14 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [
-      confirmedLoss,
-      fetchStepApprove,
-      globalMaxSlippage,
-      handleBtnClickSwap,
-      notifyNotification,
-      steps,
-      tokensNameMapper,
-      userFromBalance,
-    ]
+    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps]
   )
 
   const fetchData = useCallback(() => {
-    if (!formStatus.formProcessing && !formStatus.formTypeCompleted) {
-      updateFormValues({}, false, '', false)
+    if (isReady && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
+      updateFormValues({}, false, '', false, true)
     }
-  }, [formStatus, updateFormValues])
+  }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
 
   // onMount
   useEffect(() => {
@@ -283,11 +282,23 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // maxSlippage
+  useEffect(() => {
+    if (isReady) updateFormValues({}, false, globalMaxSlippage, false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [globalMaxSlippage])
+
+  // pageVisible re-fetch data
+  useEffect(() => {
+    if (isReady) fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPageVisible])
+
   // full reset
   useEffect(() => {
-    updateFormValues({}, false, '', true)
+    if (isReady) updateFormValues({}, false, '', true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, signerAddress, isLoadingApi])
+  }, [pageLoaded, isLoadingApi])
 
   // updateForm
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -305,24 +316,12 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, firstBasePlusPriority, pageLoaded, signerAddress, selectToListStr, usdRatesStr, userBalancesStr])
 
-  // maxSlippage
-  useEffect(() => {
-    if (globalMaxSlippage) {
-      updateFormValues({}, false, globalMaxSlippage, false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [globalMaxSlippage])
-
-  // pageVisible re-fetch data
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [isPageVisible])
-
   // re-fetch data
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'], isPageVisible)
 
   // steps
   useEffect(() => {
-    if (pageLoaded) {
+    if (isReady) {
       const updatedSteps = getSteps(
         activeKey,
         curve,
@@ -330,87 +329,87 @@ const QuickSwap = ({
         formStatus,
         formValues,
         searchedParams,
-        userBalancesLoading
+        toToken,
+        fromToken
       )
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    pageLoaded,
-    confirmedLoss,
-    routesAndOutput?.modal,
-    routesAndOutput.toAmount,
-    formEstGas,
-    formStatus,
-    formValues,
-    searchedParams,
-    userBalancesLoading,
-  ])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const imageBaseUrl = networks[rChainId].imageBaseUrl
-  const isDisable = !pageLoaded || formStatus.formProcessing
+  const isDisable = formStatus.formProcessing
+  const routesAndOutputLoading = _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
 
   return (
     <>
       {/* inputs */}
-      <Box grid gridRowGap="narrow">
+      <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          <InputProvider
-            id="fromAmount"
-            grid
-            gridTemplateColumns="1fr auto 38%"
-            inputVariant={formValues.fromError ? 'error' : undefined}
-            disabled={isDisable}
-          >
-            <InputDebounced
-              id="inpFromAmount"
-              type="number"
-              labelProps={
-                haveSigner && {
-                  label: t`Avail.`,
-                  descriptionLoading: userBalancesLoading,
-                  description: formatNumber(userFromBalance),
+          <Box grid gridGap={1}>
+            <InputProvider
+              id="fromAmount"
+              grid
+              gridTemplateColumns="1fr auto 38%"
+              inputVariant={formValues.fromError ? 'error' : undefined}
+              disabled={isDisable}
+            >
+              <InputDebounced
+                id="inpFromAmount"
+                type="number"
+                labelProps={
+                  haveSigner && {
+                    label: t`Avail.`,
+                    descriptionLoading: userBalancesLoading,
+                    description: formatNumber(userFromBalance),
+                  }
                 }
-              }
-              testId="from-amount"
-              value={formValues.fromAmount}
-              onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, false, '', false)}
-            />
-            <InputMaxBtn
-              loading={isMaxLoading}
-              disabled={isDisable}
-              isNetworkToken={searchedParams.fromAddress === NETWORK_TOKEN}
-              testId="max"
-              onClick={() => updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, '', false)}
-            />
-            <TokenComboBox
-              title=""
-              disabled={isDisable}
-              imageBaseUrl={imageBaseUrl}
-              listBoxHeight="500px"
-              selectedToken={tokensMapper[searchedParams.fromAddress]}
-              showCheckboxHideSmallPools
-              showSearch
-              showBalances={haveSigner}
-              testId="from-token"
-              tokens={selectFromTokensList as Token[]}
-              onSelectionChange={(value) => {
-                const fromAddress = value as string
-                const toAddress =
-                  fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-                redirect(toAddress, fromAddress)
-              }}
-            />
-          </InputProvider>
-          <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+                testId="from-amount"
+                value={isMaxLoading ? '' : formValues.fromAmount}
+                onChange={(fromAmount) =>
+                  updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, false, '', false)
+                }
+              />
+              <InputMaxBtn
+                loading={isMaxLoading}
+                disabled={isDisable}
+                isNetworkToken={searchedParams.fromAddress === NETWORK_TOKEN}
+                testId="max"
+                onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true, '', false)}
+              />
+              <TokenComboBox
+                title=""
+                disabled={isDisable}
+                imageBaseUrl={imageBaseUrl}
+                listBoxHeight="500px"
+                selectedToken={tokensMapper[searchedParams.fromAddress]}
+                showCheckboxHideSmallPools
+                showSearch
+                showBalances={haveSigner}
+                testId="from-token"
+                tokens={selectFromTokensList as Token[]}
+                onSelectionChange={(value) => {
+                  const fromAddress = value as string
+                  const toAddress =
+                    fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                  redirect(toAddress, fromAddress)
+                }}
+              />
+            </InputProvider>
+            <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+            {formValues.fromError && (
+              <ChipInpHelper size="xs" isDarkBg isError>
+                {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+              </ChipInpHelper>
+            )}
+          </Box>
+
+          {/* SWAP ICON */}
           <Box flex flexJustifyContent="center">
             <IconButton
               disabled={isDisable}
-              onClick={() => {
-                updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, false, '', false)
-                redirect(searchedParams.fromAddress, searchedParams.toAddress)
-              }}
+              onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
               size="medium"
               testId="swap-tokens"
             >
@@ -420,6 +419,7 @@ const QuickSwap = ({
         </div>
 
         <div>
+          {/* SWAP TO */}
           <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
             <InputDebounced
               id="inpTo"
@@ -459,64 +459,45 @@ const QuickSwap = ({
 
       {/* detail info */}
       <div>
-        <DetailInfoExchangeRate loading={routesAndOutput.loading} exchangeRates={routesAndOutput.exchangeRates} />
+        <DetailInfoExchangeRate loading={routesAndOutputLoading} exchangeRates={routesAndOutput?.exchangeRates} />
         <DetailInfoPriceImpact
-          loading={routesAndOutput.loading}
-          priceImpact={routesAndOutput.priceImpact}
-          isHighImpact={routesAndOutput.isHighImpact}
+          loading={routesAndOutputLoading}
+          priceImpact={routesAndOutput?.priceImpact}
+          isHighImpact={routesAndOutput?.isHighImpact}
         />
         <DetailInfoTradeRoute
           params={params}
-          loading={routesAndOutput.loading}
-          routes={routesAndOutput.routes}
+          loading={routesAndOutputLoading}
+          routes={routesAndOutput?.routes}
           tokensNameMapper={tokensNameMapper}
         />
 
-        {haveSigner && chainId && (
+        {haveSigner && (
           <DetailInfoEstGas
             curve={curve}
-            chainId={chainId}
+            chainId={rChainId}
             {...formEstGas}
+            loading={typeof formEstGas === 'undefined' && routesAndOutputLoading}
             isDivider
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
         <DetailInfoSlippageTolerance
-          maxSlippage={globalMaxSlippage || routesAndOutput.maxSlippage}
+          maxSlippage={globalMaxSlippage || routesAndOutput?.maxSlippage}
           testId="slippage-tolerance"
         />
       </div>
 
-      {/* actions*/}
-      <AlertSlippage
-        maxSlippage={routesAndOutput.maxSlippage}
-        usdAmount={
-          !isUndefined(toUsdRate) && !isNaN(toUsdRate)
-            ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
-            : ''
-        }
+      {/* alerts */}
+      <RouterSwapAlerts
+        formStatus={formStatus}
+        formValues={formValues}
+        searchedParams={searchedParams}
+        routesAndOutput={routesAndOutput}
+        updateFormValues={updateFormValues}
       />
 
-      {formStatus.warning === 'warning-exchange-rate-low-is-expected-to-amount' ? (
-        <AlertBox
-          alertType={'error'}
-        >{t`Warning! The exchange rate is too low, and due to slippage, the expected amount you would like to receive (${formValues.toAmount}) will actually be ${routesAndOutput.toAmountOutput}.`}</AlertBox>
-      ) : formStatus.warning === 'warning-is-expected-to-amount' ? (
-        <AlertBox
-          alertType={'warning'}
-        >{t`Warning! Due to slippage, the expected amount you would like to receive (${formValues.toAmount}) will actually be ${routesAndOutput.toAmountOutput}`}</AlertBox>
-      ) : (
-        <AlertFormWarning errorKey={formStatus.warning} />
-      )}
-
-      <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false, '', false)} />
-
-      {formValues.fromError ? (
-        <AlertBox alertType="error">{t`Not enough balance for ${
-          tokensNameMapper[searchedParams.fromAddress]
-        }`}</AlertBox>
-      ) : null}
-
+      {/* actions */}
       <FormConnectWallet loading={!steps.length} curve={curve}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
@@ -525,8 +506,12 @@ const QuickSwap = ({
   )
 }
 
-QuickSwap.defaultProps = {
-  className: '',
+function _isRoutesAndOutputLoading(
+  routesAndOutput: RoutesAndOutput | undefined,
+  { isFrom, fromAmount, toAmount }: FormValues,
+  { error }: FormStatus
+) {
+  return typeof routesAndOutput === 'undefined' && !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }
 
 export default QuickSwap
