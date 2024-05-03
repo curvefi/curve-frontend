@@ -9,6 +9,7 @@ import Box from '@/ui/Box'
 import PieChartComponent from './components/PieChartComponent'
 import BarChartComponent from './components/BarChartComponent'
 import GaugeListItem from './components/GaugeListItem'
+import { LazyItem } from '../PageProposals/Proposal'
 import SearchInput from '@/ui/SearchInput'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
@@ -17,7 +18,7 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
 const Gauges = () => {
   const {
-    getGauges,
+    setGauges,
     gaugeMapper,
     gaugesLoading,
     gaugeFormattedData,
@@ -30,7 +31,6 @@ const Gauges = () => {
     filteredGauges,
   } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
-
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
 
   const handleSortingMethodChange = useCallback(
@@ -45,28 +45,31 @@ const Gauges = () => {
   }, [activeSortDirection, setActiveSortDirection])
 
   useEffect(() => {
-    if (curve) {
-      getGauges(curve)
+    if (!gaugesLoading && !isLoadingCurve) {
+      setGauges(searchValue)
     }
-  }, [curve, getGauges])
+  }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
 
   return (
     <Wrapper>
       <PageTitle>Curve Gauges</PageTitle>
       <Box flex flexGap={'var(--spacing-1)'} fillWidth>
-        {/* <Container variant="secondary">
-            <Header></Header>
-            <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-3)'}>
-              {gaugesLoading ? (
-                <StyledSpinnerWrapper vSpacing={5}>
-                  <Spinner size={24} />
-                </StyledSpinnerWrapper>
-              ) : (
-                <BarChartComponent data={gaugeFormattedData} />
-              )}
-            </Box>
-          </Container> */}
         <Container variant="secondary">
+          {/* <Header></Header> */}
+          <Box flex flexColumn padding={'0 var(--spacing-3)'}>
+            {gaugesLoading ? (
+              <StyledSpinnerWrapper vSpacing={5}>
+                <Spinner size={24} />
+              </StyledSpinnerWrapper>
+            ) : (
+              <Box flex flexColumn padding="var(--spacing-3) 0">
+                <ChartToolBar>
+                  <ChartTitle>Gauge Weight Distribution</ChartTitle>
+                </ChartToolBar>
+                <BarChartComponent data={gaugeFormattedData} />
+              </Box>
+            )}
+          </Box>
           <Header>
             <StyledSearchInput
               id="inpSearchProposals"
@@ -91,31 +94,21 @@ const Gauges = () => {
             </Box>
           </Header>
           <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-3)'}>
+            {searchValue !== '' && (
+              <SearchMessage>
+                Showing results ({filteredGauges.length}) for &quot;<strong>{searchValue}</strong>&quot;:
+              </SearchMessage>
+            )}
             {gaugesLoading ? (
               <StyledSpinnerWrapper vSpacing={5}>
                 <Spinner size={24} />
               </StyledSpinnerWrapper>
             ) : (
-              // <TableGrid>
-              //   <TableTitleRow key="titles">
-              //     <TableTitles>Gauge</TableTitles>
-              //     <TableTitles>Weight</TableTitles>
-              //     <TableTitles>7d Delta</TableTitles>
-              //     <TableTitles>60d Delta</TableTitles>
-              //   </TableTitleRow>
-              //   {gaugeFormattedData.map((gauge, index) => (
-              //     <TableRow key={`gauge-row-${index}`}>
-              //       <TableCell>{gauge.title}</TableCell>
-              //       <TableCell>{gauge.gauge_relative_weight}</TableCell>
-              //       <TableCell>{gauge.gauge_weight_7d_delta}</TableCell>
-              //       <TableCell>{gauge.gauge_weight_60d_delta}</TableCell>
-              //     </TableRow>
-              //   ))}
-              // </TableGrid>
-              //   {gaugeFormattedData.map((gauge, index) => (
               <Box flex flexColumn flexGap={'var(--spacing-2)'}>
-                {gaugeFormattedData.map((gauge, index) => (
-                  <GaugeListItem key={`gauge-${index}`} gaugeData={gauge} />
+                {filteredGauges.map((gauge, index) => (
+                  <LazyItem key={`gauge-${index}`}>
+                    <GaugeListItem gaugeData={gauge} />
+                  </LazyItem>
                 ))}
               </Box>
             )}
@@ -196,33 +189,19 @@ const StyledUserBox = styled(UserBox)`
   margin-bottom: auto;
 `
 
-const TableGrid = styled.div`
-  display: grid;
-  grid-template-columns: auto auto auto auto;
-  gap: var(--spacing-1);
-  width: 100%;
-  min-width: 100%;
+const ChartToolBar = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid var(--summary_content--background-color);
+  padding-bottom: var(--spacing-3);
+  margin: 0 var(--spacing-3);
 `
 
-const TableRow = styled.div`
-  display: contents;
-`
-
-const TableCell = styled.div`
-  padding: var(--spacing-1);
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-`
-
-const TableTitleRow = styled.div`
-  display: contents;
-`
-
-const TableTitles = styled.div`
-  margin: var(--spacing-1);
-  font-size: var(--font-size-1);
+const ChartTitle = styled.h4`
+  font-size: var(--font-size-3);
   font-weight: var(--bold);
-  opacity: 0.5;
+  margin: auto 0;
 `
 
 export default Gauges

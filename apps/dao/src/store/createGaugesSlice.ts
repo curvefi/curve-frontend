@@ -17,7 +17,7 @@ type SliceState = {
   searchValue: string
   gaugeMapper: PricesGaugeOverviewData[]
   gaugeFormattedData: GaugeFormattedData[]
-  filteredGauges: PricesGaugeOverviewData[]
+  filteredGauges: GaugeFormattedData[]
 }
 
 const sliceKey = 'gauges'
@@ -29,7 +29,7 @@ export type GaugesSlice = {
     setSearchValue(searchValue: string): void
     setActiveSortBy(sortBy: SortByFilterGauges): void
     setActiveSortDirection(direction: ActiveSortDirection): void
-    selectFilteredSortedGauges(): PricesGaugeOverviewData[]
+    selectFilteredSortedGauges(): GaugeFormattedData[]
     setGauges(searchValue: string): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
@@ -61,26 +61,24 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const gauges = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
         const formattedGauges: PricesGaugeOverviewResponse = await gauges.json()
 
-        console.log('formattedGauges', formattedGauges.gauges)
-
         const gaugeFormattedData = formattedGauges.gauges
-          .filter((gauge) => gauge.gauge_relative_weight > 0)
           .map((gauge) => ({
-            name: gauge.name,
-            address: gauge.address,
+            ...gauge,
             // make dynamic
-            network: 'ethereum',
-            platform: 'AMM',
-            emissions: gauge.emissions,
+            platform: gauge.name?.includes('cvcrvUSD') ? 'Lend' : 'AMM',
             title: gauge.pool?.name
               ? // remove extras like "Factory Pool" etc
                 (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
               : shortenTokenAddress(gauge.address),
             gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
-            gauge_weight_7d_delta:
-              gauge.gauge_weight_7d_delta != null ? +(gauge.gauge_weight_7d_delta * 100).toFixed(4) : null,
-            gauge_weight_60d_delta:
-              gauge.gauge_weight_60d_delta != null ? +(gauge.gauge_weight_60d_delta * 100).toFixed(4) : null,
+            gauge_relative_weight_7d_delta:
+              gauge.gauge_relative_weight_7d_delta != null
+                ? +(gauge.gauge_relative_weight_7d_delta * 100).toFixed(4)
+                : null,
+            gauge_relative_weight_60d_delta:
+              gauge.gauge_relative_weight_60d_delta != null
+                ? +(gauge.gauge_relative_weight_60d_delta * 100).toFixed(4)
+                : null,
           }))
           .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
 
@@ -94,15 +92,27 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
     },
     selectFilteredSortedGauges: () => {
-      const { gaugeMapper, activeSortBy, activeSortDirection } = get()[sliceKey]
+      const { gaugeFormattedData, activeSortBy, activeSortDirection } = get()[sliceKey]
 
-      let gaugesCopy = [...gaugeMapper]
+      let gaugesCopy = [...gaugeFormattedData]
 
       if (activeSortBy === 'relativeWeight') {
         if (activeSortDirection === 'asc') {
           gaugesCopy = gaugesCopy.sort((a, b) => a.gauge_relative_weight - b.gauge_relative_weight)
         } else {
           gaugesCopy = gaugesCopy.sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
+        }
+      } else if (activeSortBy === '7dayWeight') {
+        if (activeSortDirection === 'asc') {
+          gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_7d_delta ?? 0) - (b.gauge_weight_7d_delta ?? 0))
+        } else {
+          gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_7d_delta ?? 0) - (a.gauge_weight_7d_delta ?? 0))
+        }
+      } else if (activeSortBy === '60dayWeight') {
+        if (activeSortDirection === 'asc') {
+          gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_60d_delta ?? 0) - (b.gauge_weight_60d_delta ?? 0))
+        } else {
+          gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_60d_delta ?? 0) - (a.gauge_weight_60d_delta ?? 0))
         }
       } else {
         gaugesCopy = orderBy(gaugesCopy, [activeSortBy], [activeSortDirection])
@@ -157,8 +167,8 @@ const convertNumber = (number: number) => {
   return number / 10 ** 18
 }
 
-const searchFn = (filterValue: string, gauges: PricesGaugeOverviewData[]) => {
-  const fuse = new Fuse<PricesGaugeOverviewData>(gauges, {
+const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
+  const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
     threshold: 0.3,
     includeScore: true,
@@ -166,6 +176,7 @@ const searchFn = (filterValue: string, gauges: PricesGaugeOverviewData[]) => {
       'address',
       'lp_token',
       'name',
+      'platform',
       // {
       //   name: 'metaData',
       //   getFn: (proposal) => {
