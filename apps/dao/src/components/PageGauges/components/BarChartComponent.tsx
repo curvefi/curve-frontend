@@ -5,7 +5,7 @@ import { useState } from 'react'
 import CustomTooltip from './CustomTooltip'
 
 type Props = {
-  data: GaugeChartData[]
+  data: GaugeFormattedData[]
 }
 
 const COLORS = [
@@ -39,10 +39,10 @@ const BarChartComponent = ({ data }: Props) => {
           height={height}
           data={reducedData}
           margin={{
-            top: 24,
-            right: 32,
-            left: 24,
-            bottom: 8,
+            top: 16,
+            right: 16,
+            left: 16,
+            bottom: 16,
           }}
         >
           <CartesianGrid strokeDasharray="3" horizontal={false} />
@@ -50,8 +50,8 @@ const BarChartComponent = ({ data }: Props) => {
             type="number"
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={(value) => `${value}%`}
-            tickLine={{ opacity: 0.8, strokeWidth: 0.5 }}
-            axisLine={{ opacity: 0.5, strokeWidth: 0.5 }}
+            tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+            axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
           <YAxis
             type="category"
@@ -59,8 +59,8 @@ const BarChartComponent = ({ data }: Props) => {
             width={labelWidth}
             interval={1}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickLine={{ opacity: 0.8, strokeWidth: 0.5 }}
-            axisLine={{ opacity: 0.5, strokeWidth: 0.5 }}
+            tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+            axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey="gauge_relative_weight" label={false} isAnimationActive={false}>
