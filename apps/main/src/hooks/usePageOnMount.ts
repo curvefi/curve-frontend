@@ -25,7 +25,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
-  const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
   const walletChainId = getWalletChainId(wallet)
@@ -37,7 +36,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await updateProvider(wallet)
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -51,7 +49,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateProvider, wallet]
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet]
   )
 
   const handleConnectWallet = useCallback(
