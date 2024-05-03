@@ -172,3 +172,15 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
 
   return parsedUsdRate
 }
+
+export const formatNumberWithSuffix = (votingPower: number): string => {
+  if (votingPower >= 1e9) {
+    return `${(votingPower / 1e9).toFixed(2)} B`
+  } else if (votingPower >= 1e6) {
+    return `${(votingPower / 1e6).toFixed(2)} M`
+  } else if (votingPower >= 1000) {
+    return `${(votingPower / 1000).toFixed(2)} K`
+  } else {
+    return votingPower.toFixed(0)
+  }
+}
