@@ -9,7 +9,7 @@ import Box from '@/ui/Box'
 import PieChartComponent from './components/PieChartComponent'
 import BarChartComponent from './components/BarChartComponent'
 import GaugeListItem from './components/GaugeListItem'
-import { LazyItem } from '../PageProposals/Proposal'
+import LazyItem from '@/ui/LazyItem'
 import SearchInput from '@/ui/SearchInput'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
@@ -50,26 +50,15 @@ const Gauges = () => {
     }
   }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
 
+  console.log('filteredGauges', filteredGauges)
+
   return (
     <Wrapper>
       <PageTitle>Curve Gauges</PageTitle>
-      <Box flex flexGap={'var(--spacing-1)'} fillWidth>
+      <Box flex fillWidth flexGap={'var(--spacing-1)'}>
         <Container variant="secondary">
           {/* <Header></Header> */}
-          <Box flex flexColumn padding={'0 var(--spacing-3)'}>
-            {gaugesLoading ? (
-              <StyledSpinnerWrapper vSpacing={5}>
-                <Spinner size={24} />
-              </StyledSpinnerWrapper>
-            ) : (
-              <Box flex flexColumn padding="var(--spacing-3) 0">
-                <ChartToolBar>
-                  <ChartTitle>Gauge Weight Distribution</ChartTitle>
-                </ChartToolBar>
-                <BarChartComponent data={gaugeFormattedData} />
-              </Box>
-            )}
-          </Box>
+
           <Header>
             <StyledSearchInput
               id="inpSearchProposals"
@@ -93,7 +82,7 @@ const Gauges = () => {
               />
             </Box>
           </Header>
-          <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-3)'}>
+          <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-5)'}>
             {searchValue !== '' && (
               <SearchMessage>
                 Showing results ({filteredGauges.length}) for &quot;<strong>{searchValue}</strong>&quot;:
@@ -106,7 +95,7 @@ const Gauges = () => {
             ) : (
               <Box flex flexColumn flexGap={'var(--spacing-2)'}>
                 {filteredGauges.map((gauge, index) => (
-                  <LazyItem key={`gauge-${index}`}>
+                  <LazyItem key={`gauge-${index}`} defaultHeight={'67'}>
                     <GaugeListItem gaugeData={gauge} />
                   </LazyItem>
                 ))}
@@ -114,7 +103,20 @@ const Gauges = () => {
             )}
           </Box>
         </Container>
-        <StyledUserBox />
+        <Box flex flexColumn>
+          <StyledUserBox />
+          <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
+            {!gaugesLoading && (
+              <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
+                <ChartToolBar>
+                  <ChartTitle>Gauges Relative Weight Distribution</ChartTitle>
+                  <ChartDescription>Showing gauges with {'>'}0.5% relative gauge weight</ChartDescription>
+                </ChartToolBar>
+                <BarChartComponent data={gaugeFormattedData} />
+              </Box>
+            )}
+          </Box>
+        </Box>
       </Box>
     </Wrapper>
   )
@@ -123,7 +125,7 @@ const Gauges = () => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  margin: var(--spacing-5) auto 0;
+  margin: var(--spacing-5) auto var(--spacing-7);
   width: 60rem;
   flex-grow: 1;
   min-height: 100%;
@@ -153,8 +155,8 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: var(--gray-500a20);
-  padding: var(--spacing-3);
+  /* background-color: var(--gray-500a20); */
+  padding: var(--spacing-3) var(--spacing-3) 0;
   width: 100%;
 `
 
@@ -185,23 +187,22 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   min-width: 100%;
 `
 
-const StyledUserBox = styled(UserBox)`
-  margin-bottom: auto;
-`
+const StyledUserBox = styled(UserBox)``
 
 const ChartToolBar = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  border-bottom: 1px solid var(--summary_content--background-color);
-  padding-bottom: var(--spacing-3);
-  margin: 0 var(--spacing-3);
+  flex-direction: column;
+  gap: var(--spacing-1);
+  margin: 0 0 var(--spacing-2);
 `
 
 const ChartTitle = styled.h4`
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   font-weight: var(--bold);
-  margin: auto 0;
+`
+
+const ChartDescription = styled.p`
+  font-size: var(--font-size-1);
 `
 
 export default Gauges
