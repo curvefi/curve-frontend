@@ -155,7 +155,11 @@ declare global {
       chain: string
       tvl_usd: number
       trading_volume_24h: number
-    }
+    } | null
+    market: {
+      name: string
+      chain: string
+    } | null
     is_killed: boolean | null
     emissions: number
     gauge_weight: string
