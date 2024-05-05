@@ -79,15 +79,17 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               </StyledExternalLink>
             </GaugeData>
           </Box>
-          <Box flex flexColumn>
-            <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
-            <GaugeData className="open">
-              <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
-                {shortenTokenAddress(gaugeData.pool.address)}
-                <Icon name="Launch" size={16} />
-              </StyledExternalLink>
-            </GaugeData>
-          </Box>
+          {gaugeData.pool?.address && (
+            <Box flex flexColumn>
+              <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
+              <GaugeData className="open">
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
+                  {shortenTokenAddress(gaugeData.pool.address)}
+                  <Icon name="Launch" size={16} />
+                </StyledExternalLink>
+              </GaugeData>
+            </Box>
+          )}
           <Box flex flexColumn margin={'0 0 0 auto'}>
             <DataTitle className="open">{t`Created`}</DataTitle>
             <GaugeData className="open">

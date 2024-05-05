@@ -65,10 +65,12 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           .map((gauge) => ({
             ...gauge,
             // make dynamic
-            platform: gauge.name?.includes('cvcrvUSD') ? 'Lend' : 'AMM',
+            platform: gauge.market !== null ? 'Lend' : 'AMM',
             title: gauge.pool?.name
               ? // remove extras like "Factory Pool" etc
                 (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
+              : gauge.market?.name
+              ? gauge.market.name
               : shortenTokenAddress(gauge.address),
             gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
             gauge_relative_weight_7d_delta:
@@ -81,8 +83,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
                 : null,
           }))
           .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-
-        console.log('GaugeFormattedData', gaugeFormattedData)
 
         get().setAppStateByKey(sliceKey, 'gaugeMapper', formattedGauges.gauges)
         get().setAppStateByKey(sliceKey, 'gaugeFormattedData', gaugeFormattedData)
@@ -189,8 +189,6 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   })
 
   const result = fuse.search(filterValue, { limit: 10 })
-
-  console.log('result', result)
 
   return result.map((r) => r.item)
 }
