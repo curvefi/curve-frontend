@@ -190,6 +190,11 @@ declare global {
     userVote: 'no' | 'yes' | 'even'
   }
 
+  type SnapshotVotingPower = {
+    loading: boolean
+    value: number
+  }
+
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
   type SortByFilterProposals = 'voteId' | 'endingSoon'
