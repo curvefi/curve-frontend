@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
@@ -33,15 +33,14 @@ type Props = {
 
 const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
-
+  const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
   const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore(
     (state) => state.daoProposals
   )
+  const { snapshotVeCrvMapper, setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-
   const proposal = useStore((state) => state.daoProposals.proposalsMapper[rProposalId] ?? null)
-
   const {
     creator,
     startDate,
@@ -63,6 +62,17 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
   }
+
+  useEffect(() => {
+    if (!snapshotVeCrvMapper[rProposalId] && provider && userAddress && snapshotBlock) {
+      const getVeCrv = async () => {
+        const signer = await provider.getSigner()
+        setSnapshotVeCrv(signer, userAddress, snapshotBlock, rProposalId)
+      }
+
+      getVeCrv()
+    }
+  }, [provider, rProposalId, setSnapshotVeCrv, snapshotBlock, snapshotVeCrvMapper, userAddress])
 
   useEffect(() => {
     if (rChainId && voteId && voteType) {
@@ -143,6 +153,10 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                   </StyledExternalLink>
                 </Box>
                 <Box>
+                  <SubTitle>{t`Snapshot Block`}</SubTitle>
+                  <Time>{currentProposal.snapshot_block}</Time>
+                </Box>
+                <Box>
                   <SubTitle>{t`Created`}</SubTitle>
                   <Time>{new Date(convertToLocaleTimestamp(startDate) * 1000).toLocaleString()}</Time>
                 </Box>
@@ -156,8 +170,8 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         </ProposalContainer>
 
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
-          <UserBox>
-            <VoteDialog />
+          <UserBox votingPower={snapshotVeCrvMapper[rProposalId]}>
+            <VoteDialog active={proposal?.status === 'Active'} />
           </UserBox>
           {proposal && (
             <>

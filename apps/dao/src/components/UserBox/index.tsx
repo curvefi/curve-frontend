@@ -11,9 +11,10 @@ import UserInformation from './UserInformation'
 type Props = {
   children?: React.ReactNode
   className?: string
+  votingPower: SnapshotVotingPower
 }
 
-const UserBox = ({ className, children }: Props) => {
+const UserBox = ({ className, children, votingPower }: Props) => {
   const [{ wallet }] = useConnectWallet()
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
@@ -21,13 +22,16 @@ const UserBox = ({ className, children }: Props) => {
     <Wrapper variant="secondary" className={className}>
       {wallet ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
-          <UserInformation />
+          <UserInformation votingPower={votingPower} />
           {children}
         </Box>
       ) : (
-        <StyledButton variant="filled" onClick={updateConnectWalletStateKeys}>
-          {t`Connect Wallet`}
-        </StyledButton>
+        <ConnectMessage>
+          <p>{t`Please connect a wallet to see more user information.`}</p>
+          <StyledButton variant="outlined" onClick={updateConnectWalletStateKeys}>
+            {t`Connect Wallet`}
+          </StyledButton>
+        </ConnectMessage>
       )}
     </Wrapper>
   )
@@ -45,10 +49,14 @@ const Wrapper = styled(Box)`
   margin-bottom: var(--spacing-1);
 `
 
+const ConnectMessage = styled.div`
+  p {
+  }
+`
+
 const StyledButton = styled(Button)`
-  padding: var(--spacing-2) var(--spacing-5);
   display: flex;
-  margin: 0 auto 0;
+  margin: var(--spacing-2) auto 0 0;
   justify-content: center;
   &.success {
     color: var(--success-400);

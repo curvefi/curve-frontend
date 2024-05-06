@@ -5,7 +5,6 @@ import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 
 import { shortenTokenAddress } from '@/ui/utils'
-import { platform } from 'os'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

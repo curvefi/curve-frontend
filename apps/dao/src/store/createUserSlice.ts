@@ -2,6 +2,9 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
 
+import { Contract, formatEther } from 'ethers'
+import produce from 'immer'
+
 import { useConnectWallet } from '@/onboard'
 
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
@@ -15,6 +18,9 @@ type SliceState = {
     lockedCrv: string
     unlockTime: number
   }
+  snapshotVeCrvMapper: {
+    [proposalId: string]: SnapshotVotingPower
+  }
   userAddress: string | null
   userEns: string | null
   userVotesMapper: { [voteId: string]: UserVoteData }
@@ -22,10 +28,26 @@ type SliceState = {
 
 const sliceKey = 'user'
 
+const abiBalanceOfAt = [
+  {
+    name: 'balanceOfAt',
+    outputs: [{ type: 'uint256', name: '' }],
+    inputs: [
+      { type: 'address', name: 'addr' },
+      { type: 'uint256', name: '_block' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
+const contractVeCRV = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2'
+
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: WalletState): void
+    setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -41,6 +63,7 @@ const DEFAULT_STATE: SliceState = {
     lockedCrv: '0',
     unlockTime: 0,
   },
+  snapshotVeCrvMapper: {},
   userAddress: null,
   userEns: null,
   userVotesMapper: {},
@@ -83,7 +106,28 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         userEns: getWalletSignerEns(wallet),
       })
     },
+    setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
+      set(
+        produce((state) => {
+          state[sliceKey].snapshotVeCrvMapper[proposalId] = {
+            loading: true,
+            value: null,
+          }
+        })
+      )
 
+      const contract = new Contract(contractVeCRV, abiBalanceOfAt, signer)
+      const snapshotValue = await contract.balanceOfAt(userAddress, snapshot)
+
+      set(
+        produce((state) => {
+          state[sliceKey].snapshotVeCrvMapper[proposalId] = {
+            loading: false,
+            value: Number(formatEther(snapshotValue)),
+          }
+        })
+      )
+    },
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
       get().setAppStateByActiveKey(sliceKey, key, activeKey, value)

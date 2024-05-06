@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
@@ -11,15 +12,16 @@ import Box from '@/ui/Box'
 
 type Props = {
   noLink?: boolean
+  votingPower?: SnapshotVotingPower
 }
 
-const UserInformation = ({ noLink }: Props) => {
+const UserInformation = ({ noLink, votingPower }: Props) => {
   const { userAddress, userEns, userVeCrv, userVotesMapper } = useStore((state) => state.user)
 
   return (
     <Box flex flexColumn flexGap="var(--spacing-2)">
       <Box flex flexColumn>
-        <SubTitle>{t`User information`}</SubTitle>
+        <SubTitle>{t`User`}</SubTitle>
         {!userAddress ? (
           <Loader skeleton={[80, 16.5]} />
         ) : noLink ? (
@@ -47,11 +49,17 @@ const UserInformation = ({ noLink }: Props) => {
       </Box>
 
       <Box flex flexDirection="column">
-        <SubTitle>{t`Voting power`}</SubTitle>
-        {!userVeCrv.veCrv || !userAddress ? (
+        <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
+        {votingPower === undefined ? (
+          userVeCrv || !userAddress ? (
+            <Loader skeleton={[80, 16.5]} />
+          ) : (
+            <h4>{formatNumber(userVeCrv)} veCRV</h4>
+          )
+        ) : votingPower.loading ? (
           <Loader skeleton={[80, 16.5]} />
         ) : (
-          <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
+          <h4>{formatNumber(votingPower.value)} veCRV</h4>
         )}
       </Box>
     </Box>
