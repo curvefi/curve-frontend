@@ -1,7 +1,7 @@
 import type { EndsWith } from '@/components/ComboBoxSelectToken/types'
 
 import Fuse from 'fuse.js'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
@@ -26,6 +26,7 @@ const ComboBoxTokens = ({
   testId,
   title,
   tokens = [],
+  onOpen,
   onSelectionChange,
 }: {
   disabled?: boolean
@@ -38,6 +39,7 @@ const ComboBoxTokens = ({
   testId?: string
   title: string
   tokens: Token[] | undefined
+  onOpen?: () => void
   onSelectionChange: (selectedAddress: React.Key) => void
 }) => {
   const { endsWith } = useFilter({ sensitivity: 'base' })
@@ -64,6 +66,8 @@ const ComboBoxTokens = ({
   }
 
   const handleOpen = () => {
+    if (typeof onOpen === 'function') onOpen()
+
     setResult(tokens)
     setStateByKey('filterValue', '')
     overlayTriggerState.open()

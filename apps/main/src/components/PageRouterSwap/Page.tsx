@@ -125,8 +125,8 @@ const Page: NextPage = () => {
               pageLoaded={loaded}
               params={params}
               searchedParams={{
-                fromAddress: loaded ? paramsFromAddress : '',
-                toAddress: loaded ? paramsToAddress : '',
+                fromAddress: paramsFromAddress,
+                toAddress: paramsToAddress,
               }}
               rChainId={rChainId}
               tokensMapper={tokensMapper}

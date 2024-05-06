@@ -18,7 +18,6 @@ type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataCacheMapper }
   rewardsApyMapper: { [chainId: string]: RewardsApyMapper }
   routerFormValues: { [chainId: string]: SwapFormValuesCache }
-  routerSelectToList: { [chainId: string]: string[] }
   tokensMapper: { [chainId: string]: TokensMapper }
   tokensNameMapper: { [chainId: string]: { [tokenAddress: string]: string } }
   tvlMapper: { [chainId: string]: TvlMapper }
@@ -45,7 +44,6 @@ const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
   rewardsApyMapper: {},
   routerFormValues: {},
-  routerSelectToList: {},
   tokensMapper: {},
   tokensNameMapper: {},
   tvlMapper: {},

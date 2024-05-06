@@ -4,6 +4,7 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 import filter from 'lodash/filter'
 
+import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -39,8 +40,12 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
     ...DEFAULT_STATE,
 
     fetchUserBalancesByTokens: async (curve, tokensAddresses) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      const storedUserBalancesMapper = sliceState.userBalancesMapper
+
       const { chainId } = curve
-      get()[sliceKey].setStateByKey('loading', true)
 
       // remove bad tokens
       const { excludeGetUserBalancesTokens } = networks[chainId]
@@ -49,12 +54,14 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
         filteredBadTokens = filter(tokensAddresses, (t) => excludeGetUserBalancesTokens.indexOf(t) === -1)
       }
 
-      const results = await networks[chainId].api.wallet.fetchUserBalances(curve, filteredBadTokens)
-      get()[sliceKey].setStateByKeys({
-        userBalancesMapper: cloneDeep(mapUserBalances(results, get()[sliceKey].userBalancesMapper)),
+      sliceState.setStateByKey('loading', true)
+      const userBalancesMapper = await curvejsApi.wallet.fetchUserBalances(curve, filteredBadTokens)
+      sliceState.setStateByKeys({
+        userBalancesMapper: { ...storedUserBalancesMapper, ...userBalancesMapper },
         loading: false,
       })
-      return results
+
+      return get()[sliceKey].userBalancesMapper
     },
     fetchAllStoredBalances: async (curve) => {
       const tokenAddresses = Object.keys(get().userBalances.userBalancesMapper)
@@ -96,16 +103,6 @@ function mapUserBalances(updatedUserBalancesMapper: UserBalancesMapper, storedUs
     cUserBalancesMapper[tokenAddress] = updatedUserBalancesMapper[tokenAddress]
   }
   return cUserBalancesMapper
-}
-
-export function getUserBalancesStr(userBalancesMapper: UserBalancesMapper) {
-  return Object.keys(userBalancesMapper)
-    .filter((address) => +(userBalancesMapper[address] ?? '0') > 0)
-    .reduce((str, address) => {
-      const balance = userBalancesMapper[address] ?? ''
-      str += balance.split('.')[0] ?? ''
-      return str
-    }, '')
 }
 
 export default createUserBalancesSlice

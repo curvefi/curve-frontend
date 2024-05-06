@@ -11,9 +11,7 @@ import { REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/store/createTokensSlice'
-import { getTokensListStr, getTokensObjList } from '@/store/createQuickSwapSlice'
-import { getUsdRatesStr } from '@/store/createUsdRatesSlice'
-import { getUserBalancesStr } from '@/store/createUserBalancesSlice'
+import { getTokensObjList } from '@/store/createQuickSwapSlice'
 import { getChainSignerActiveKey } from '@/utils'
 import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -65,7 +63,6 @@ const QuickSwap = ({
   const { selectToList, selectToListStr } = useSelectToList(rChainId)
   const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const firstBasePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[0])
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
@@ -84,6 +81,7 @@ const QuickSwap = ({
   const volumesMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
+  const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
@@ -103,18 +101,15 @@ const QuickSwap = ({
   const fromToken = tokensNameMapper[fromAddress] ?? ''
   const toToken = tokensNameMapper[toAddress] ?? ''
 
-  const selectFromListStr = useMemo(() => getTokensListStr(selectFromList), [selectFromList])
-  const userBalancesStr = useMemo(() => getUserBalancesStr(userBalancesMapper), [userBalancesMapper])
-  const usdRatesStr = useMemo(() => getUsdRatesStr(usdRatesMapper), [usdRatesMapper])
   const tokensMapperNonSmallTvlStr = useMemo(
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
     [tokensMapperNonSmallTvl]
   )
 
   const selectFromTokensList = useMemo(
-    () => (pageLoaded ? getTokensObjList(selectFromList ?? selectToList, tokensMapper) : []),
+    () => getTokensObjList(selectFromList ?? selectToList, tokensMapper),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [pageLoaded, selectFromListStr, selectToListStr, tokensMapperStr]
+    [selectFromList, selectToListStr, tokensMapperStr]
   )
 
   const selectToTokensList = useMemo(
@@ -126,9 +121,9 @@ const QuickSwap = ({
   const updateFormValues = useCallback(
     (
       updatedFormValues: Partial<FormValues>,
-      isGetMaxFrom: boolean,
-      maxSlippage: string,
-      isFullReset: boolean,
+      isGetMaxFrom?: boolean,
+      maxSlippage?: string,
+      isFullReset?: boolean,
       isRefetch?: boolean
     ) => {
       setTxInfoBar(null)
@@ -153,20 +148,24 @@ const QuickSwap = ({
       curve: CurveApi,
       formValues: FormValues,
       maxSlippage: string,
+      routesAndOutput: RoutesAndOutput,
       searchedParams: SearchedParams,
       toToken: string,
       fromToken: string
     ) => {
       const { fromAmount, toAmount } = formValues
+      const { isExpectedToAmount, toAmountOutput } = routesAndOutput
 
-      const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${toAmount} ${toToken} at max slippage ${maxSlippage}%.`
+      const notifyMessage = t`swap ${fromAmount} ${fromToken} for ${
+        isExpectedToAmount ? toAmountOutput : toAmount
+      } ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
-        const txMessage = t`Transaction complete.`
+        const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toToken}.`
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
@@ -185,7 +184,7 @@ const QuickSwap = ({
     (
       activeKey: string,
       curve: CurveApi,
-      routesAndOutput: RoutesAndOutput,
+      routesAndOutput: RoutesAndOutput | undefined,
       formStatus: FormStatus,
       formValues: FormValues,
       searchedParams: SearchedParams,
@@ -197,7 +196,8 @@ const QuickSwap = ({
 
       const maxSlippage = routesAndOutput?.maxSlippage
       const isValidFromAmount = +fromAmount > 0 && !formValues.fromError
-      const isValid = !routesAndOutput?.loading && !formStatus.error && isValidFromAmount
+      const isValid =
+        typeof routesAndOutput !== 'undefined' && !routesAndOutput.loading && !formStatus.error && isValidFromAmount
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
       const isComplete = formStatus.formTypeCompleted === 'SWAP'
 
@@ -238,16 +238,40 @@ const QuickSwap = ({
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
-                    onClick: () =>
-                      handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams, toToken, fromToken),
+                    onClick: () => {
+                      if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
+                        handleBtnClickSwap(
+                          activeKey,
+                          curve,
+                          formValues,
+                          maxSlippage,
+                          routesAndOutput,
+                          searchedParams,
+                          toToken,
+                          fromToken
+                        )
+                      }
+                    },
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
             : {
-                onClick: () =>
-                  handleBtnClickSwap(activeKey, curve, formValues, maxSlippage, searchedParams, toToken, fromToken),
+                onClick: () => {
+                  if (typeof maxSlippage !== 'undefined' && typeof routesAndOutput !== 'undefined') {
+                    handleBtnClickSwap(
+                      activeKey,
+                      curve,
+                      formValues,
+                      maxSlippage,
+                      routesAndOutput,
+                      searchedParams,
+                      toToken,
+                      fromToken
+                    )
+                  }
+                },
               }),
         },
       }
@@ -266,7 +290,7 @@ const QuickSwap = ({
   )
 
   const fetchData = useCallback(() => {
-    if (isReady && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
+    if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
       updateFormValues({}, false, '', false, true)
     }
   }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
@@ -284,7 +308,7 @@ const QuickSwap = ({
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, globalMaxSlippage, false)
+    if (isReady) updateFormValues({}, false, globalMaxSlippage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [globalMaxSlippage])
 
@@ -294,9 +318,15 @@ const QuickSwap = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
+  // network switched
+  useEffect(() => {
+    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [curve?.chainId])
+
   // full reset
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, '', true)
+    if (isReady) updateFormValues({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageLoaded, isLoadingApi])
 
@@ -304,43 +334,41 @@ const QuickSwap = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
-  // token list
-  useEffect(() => {
-    setSelectToList(pageLoaded, curve, isHideSmallPools ? tokensMapperNonSmallTvl : tokensMapper, volumesMapper)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, isHideSmallPools, pageLoaded, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
-
   // fromToken list
   useEffect(() => {
-    setSelectFromList(pageLoaded, curve, selectToList, firstBasePlusPriority, usdRatesMapper, userBalancesMapper)
+    setSelectFromList(isReady ? curve : null, selectToList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, firstBasePlusPriority, pageLoaded, signerAddress, selectToListStr, usdRatesStr, userBalancesStr])
+  }, [curve?.signerAddress])
+
+  // toToken list
+  useEffect(() => {
+    setSelectToList(isReady ? curve : null, isHideSmallPools ? tokensMapperNonSmallTvl : tokensMapper)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHideSmallPools, isReady, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
 
   // re-fetch data
-  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'], isPageVisible)
+  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['15s'], isPageVisible)
 
   // steps
   useEffect(() => {
-    if (isReady) {
-      const updatedSteps = getSteps(
-        activeKey,
-        curve,
-        routesAndOutput,
-        formStatus,
-        formValues,
-        searchedParams,
-        toToken,
-        fromToken
-      )
-      setSteps(updatedSteps)
-    }
+    const updatedSteps = getSteps(
+      activeKey,
+      curve,
+      routesAndOutput,
+      isReady ? formStatus : { ...formStatus, formProcessing: true },
+      formValues,
+      searchedParams,
+      toToken,
+      fromToken
+    )
+    setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const imageBaseUrl = networks[rChainId].imageBaseUrl
   const isDisable = formStatus.formProcessing
-  const routesAndOutputLoading = _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
+  const routesAndOutputLoading = !pageLoaded || _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
 
   return (
     <>
@@ -367,16 +395,14 @@ const QuickSwap = ({
                 }
                 testId="from-amount"
                 value={isMaxLoading ? '' : formValues.fromAmount}
-                onChange={(fromAmount) =>
-                  updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, false, '', false)
-                }
+                onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
               />
               <InputMaxBtn
                 loading={isMaxLoading}
                 disabled={isDisable}
                 isNetworkToken={searchedParams.fromAddress === NETWORK_TOKEN}
                 testId="max"
-                onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true, '', false)}
+                onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
               />
               <TokenComboBox
                 title=""
@@ -389,10 +415,12 @@ const QuickSwap = ({
                 showBalances={haveSigner}
                 testId="from-token"
                 tokens={selectFromTokensList as Token[]}
+                onOpen={() => setSelectFromList(curve, selectToList)}
                 onSelectionChange={(value) => {
                   const fromAddress = value as string
                   const toAddress =
                     fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                  resetFormErrors()
                   redirect(toAddress, fromAddress)
                 }}
               />
@@ -433,7 +461,7 @@ const QuickSwap = ({
               }
               testId="to-amount"
               value={formValues.toAmount}
-              onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, false, '', false)}
+              onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
             />
             <TokenComboBox
               title=""
@@ -449,6 +477,7 @@ const QuickSwap = ({
                 const toAddress = value as string
                 const fromAddress =
                   toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+                resetFormErrors()
                 redirect(toAddress, fromAddress)
               }}
             />
@@ -511,7 +540,10 @@ function _isRoutesAndOutputLoading(
   { isFrom, fromAmount, toAmount }: FormValues,
   { error }: FormStatus
 ) {
-  return typeof routesAndOutput === 'undefined' && !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
+  if (typeof routesAndOutput !== 'undefined') {
+    return routesAndOutput.loading
+  }
+  return !error && ((isFrom && +fromAmount > 0) || (!isFrom && +toAmount > 0))
 }
 
 export default QuickSwap

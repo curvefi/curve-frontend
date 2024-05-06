@@ -92,7 +92,7 @@ export function _parseRoutesAndOutput(
   priceImpact: number,
   output: string,
   poolsMapper: { [poolId: string]: PoolData },
-  maxSlippage: string,
+  maxSlippage: string | undefined,
   toAmount: string,
   toAddress: string,
   fromAmount: string,

@@ -23,14 +23,14 @@ const RouterSwapAlerts = ({
   searchedParams: SearchedParams
   updateFormValues: (
     updatedFormValues: Partial<FormValues>,
-    isGetMaxFrom: boolean,
-    maxSlippage: string,
-    isFullReset: boolean
+    isGetMaxFrom?: boolean,
+    maxSlippage?: string,
+    isFullReset?: boolean
   ) => void
 }) => {
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
 
-  const { error } = formStatus
+  const { error, swapError } = formStatus
   const { toAddress } = searchedParams
   const { isExchangeRateLow, isExpectedToAmount, isHighImpact, toAmountOutput } = routesAndOutput ?? {}
 
@@ -52,7 +52,7 @@ const RouterSwapAlerts = ({
 
       <AlertSlippage maxSlippage={routesAndOutput?.maxSlippage} usdAmount={usdToAmount} />
 
-      <AlertFormError errorKey={error} handleBtnClose={() => updateFormValues({}, false, '', false)} />
+      <AlertFormError errorKey={swapError || error} handleBtnClose={() => updateFormValues({})} />
     </>
   )
 }

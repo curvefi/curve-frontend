@@ -222,8 +222,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         )
 
         // update cache
-        get().storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), cloneDeep(poolsMapperCache))
-        get().storeCache.setStateByActiveKey('tokensNameMapper', chainId.toString(), cloneDeep(tokensNameMapper))
+        get().storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
+        get().storeCache.setStateByActiveKey('tokensNameMapper', chainId.toString(), tokensNameMapper)
 
         const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
 
@@ -293,7 +293,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const [balancesResp, usdRatesMapper] = await Promise.all([
         networks[chainId].api.pool.poolBalances(pool, isWrapped),
-        get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses),
+        get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
       ])
 
       const { balances } = balancesResp

@@ -63,6 +63,7 @@ export type FormStatus = {
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
   step: StepKey | ''
   error: AlertFormErrorKey | string
+  swapError: string
 }
 
 export type FormValues = {

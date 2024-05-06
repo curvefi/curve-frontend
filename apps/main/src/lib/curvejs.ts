@@ -370,7 +370,7 @@ const router = {
     poolsMapper: { [poolId: string]: PoolData },
     formValues: FormValues,
     searchedParams: SearchedParams,
-    maxSlippage: string
+    maxSlippage: string | undefined
   ) => {
     const { isFrom, fromAmount, toAmount } = formValues
     const { fromAddress, toAddress } = searchedParams
@@ -515,14 +515,13 @@ const router = {
     slippageTolerance: string
   ) => {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
-    const api = curve as CurveApi
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
       // @ts-ignore
-      const contractTransaction = await api.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
+      const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
-        resp.swappedAmount = await api.router.getSwappedAmount(contractTransaction, toAddress)
+        resp.swappedAmount = await curve.router.getSwappedAmount(contractTransaction, toAddress)
         resp.hash = contractTransaction.hash
       }
       return resp
