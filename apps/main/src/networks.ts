@@ -465,6 +465,16 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
+  196: {
+    // TODO: Need to fix temporary code to bypass type error
+    ...NETWORK_CONFIG_DEFAULT,
+    ...baseNetworksConfig['196'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
+    rpcUrl: isDevelopment
+      ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
+      : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    showInSelectNetwork: false,
+  },
 }
 
 export const networksIdMapper = Object.keys(networks).reduce((prev, curr: unknown) => {
