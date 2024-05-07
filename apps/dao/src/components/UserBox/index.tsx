@@ -12,9 +12,10 @@ type Props = {
   children?: React.ReactNode
   className?: string
   votingPower: SnapshotVotingPower
+  snapshotVotingPower: boolean
 }
 
-const UserBox = ({ className, children, votingPower }: Props) => {
+const UserBox = ({ className, children, votingPower, snapshotVotingPower }: Props) => {
   const [{ wallet }] = useConnectWallet()
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
@@ -22,7 +23,7 @@ const UserBox = ({ className, children, votingPower }: Props) => {
     <Wrapper variant="secondary" className={className}>
       {wallet ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
-          <UserInformation votingPower={votingPower} />
+          <UserInformation votingPower={votingPower} snapshotVotingPower={snapshotVotingPower} />
           {children}
         </Box>
       ) : (
