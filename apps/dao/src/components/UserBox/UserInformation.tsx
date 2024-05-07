@@ -12,10 +12,11 @@ import Box from '@/ui/Box'
 
 type Props = {
   noLink?: boolean
+  snapshotVotingPower: boolean
   votingPower?: SnapshotVotingPower
 }
 
-const UserInformation = ({ noLink, votingPower }: Props) => {
+const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) => {
   const { userAddress, userEns, userVeCrv, userVotesMapper } = useStore((state) => state.user)
 
   return (
@@ -49,17 +50,21 @@ const UserInformation = ({ noLink, votingPower }: Props) => {
       </Box>
 
       <Box flex flexDirection="column">
-        <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
-        {votingPower === undefined ? (
-          userVeCrv || !userAddress ? (
-            <Loader skeleton={[80, 16.5]} />
-          ) : (
-            <h4>{formatNumber(userVeCrv)} veCRV</h4>
-          )
-        ) : votingPower.loading ? (
-          <Loader skeleton={[80, 16.5]} />
-        ) : (
-          <h4>{formatNumber(votingPower.value)} veCRV</h4>
+        {snapshotVotingPower && votingPower !== undefined && (
+          <>
+            <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
+            {votingPower.loading ? <Loader skeleton={[80, 16.5]} /> : <h4>{formatNumber(votingPower.value)} veCRV</h4>}
+          </>
+        )}
+        {!snapshotVotingPower && (
+          <>
+            <SubTitle>{t`Voting Power`}</SubTitle>
+            {!userVeCrv || !userAddress ? (
+              <Loader skeleton={[80, 16.5]} />
+            ) : (
+              <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
+            )}
+          </>
         )}
       </Box>
     </Box>
