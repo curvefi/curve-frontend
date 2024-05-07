@@ -170,8 +170,16 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         </ProposalContainer>
 
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
-          <UserBox votingPower={snapshotVeCrvMapper[rProposalId]}>
-            <VoteDialog active={proposal?.status === 'Active'} />
+          <UserBox votingPower={snapshotVeCrvMapper[rProposalId]} snapshotVotingPower>
+            {proposal &&
+              snapshotVeCrvMapper[rProposalId] !== undefined &&
+              !snapshotVeCrvMapper[rProposalId].loading! && (
+                <VoteDialog
+                  snapshotVotingPower
+                  active={proposal?.status === 'Active'}
+                  votingPower={snapshotVeCrvMapper[rProposalId]}
+                />
+              )}
           </UserBox>
           {proposal && (
             <>
