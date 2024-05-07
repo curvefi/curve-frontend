@@ -1444,14 +1444,14 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@curvefi/api@^2.57.2":
-  version "2.57.2"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.57.2.tgz#2d161302a3264717ca8f598c6bb82fc52fdf091b"
-  integrity sha512-nzuTPAna48QCgJ/N7xc+YsvUzCjn7XCvbXomrXdRaJPtlpqwuxx6OiX+hTggn3ZGMy2wMkddTgFaaJdBvJOHmQ==
+"@curvefi/api@^2.58.2":
+  version "2.58.2"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.58.2.tgz#3e29c249292e86ac8e5195da1b539edd4330595e"
+  integrity sha512-nhhXG61piwMHEToyFtJ8VXUiNnfjYbIn4NCtzXWtoWug+Ot0UTgirNYAI3Q+IpHmwXjdOs0L6I1yhlW0dM1tKA==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"
-    ethcall "^6.0.2"
+    ethcall "6.0.5"
     ethers "^6.11.0"
     memoizee "^0.4.15"
 
@@ -8840,6 +8840,14 @@ eth-sig-util@^1.4.2:
   dependencies:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
+
+ethcall@6.0.5:
+  version "6.0.5"
+  resolved "https://registry.yarnpkg.com/ethcall/-/ethcall-6.0.5.tgz#16d579f7aed02b8cd5d706cb64844b34f55a205e"
+  integrity sha512-FeuHOApb5PoagZX4wIEVj2+MRzUVojUVJHYlSeRjCFxZfTS2SmAuVI6Cezy5CRoM8YsOZGZmpVW5//NiP8/S8w==
+  dependencies:
+    "@types/node" "^20.2.5"
+    abi-coder "^5.0.0"
 
 ethcall@^4.2.5:
   version "4.8.13"

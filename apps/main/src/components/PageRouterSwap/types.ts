@@ -1,6 +1,5 @@
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { AlertFormErrorKey } from '@/components/AlertFormError'
-import { AlertFormWarningKey } from '@/components/AlertFormWarning'
 
 export type StepKey = 'APPROVAL' | 'SWAP'
 
@@ -40,6 +39,7 @@ export type RoutesAndOutputModal = {
 export type RoutesAndOutput = {
   loading: boolean
   exchangeRates: ExchangeRate[]
+  isExpectedToAmount?: boolean
   isExchangeRateLow: boolean
   isHighImpact: boolean
   isHighSlippage: boolean
@@ -57,25 +57,19 @@ export type FormEstGas = {
   loading: boolean
 }
 
-export type FormStatusWarning =
-  | AlertFormWarningKey
-  | 'warning-exchange-rate-low-is-expected-to-amount'
-  | 'warning-is-expected-to-amount'
-  | ''
-
 export type FormStatus = {
   isApproved: boolean
   formProcessing: boolean
   formTypeCompleted: 'APPROVE' | 'SWAP' | ''
   step: StepKey | ''
   error: AlertFormErrorKey | string
-  warning: FormStatusWarning
+  swapError: string
 }
 
 export type FormValues = {
   isFrom: boolean | null
   fromAmount: string
-  fromError: 'too-much' | string
+  fromError: 'too-much' | ''
   toAmount: string
 }
 

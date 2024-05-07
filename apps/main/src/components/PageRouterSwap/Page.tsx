@@ -25,7 +25,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { pageLoaded, routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
@@ -66,7 +66,7 @@ const Page: NextPage = () => {
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
-    if (rChainId && typeof hasRouter !== 'undefined') {
+    if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
         navigate(getPath(params, `${ROUTE.PAGE_POOLS}`))
       } else {
@@ -97,6 +97,8 @@ const Page: NextPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    pageLoaded,
+    isLoadingCurve,
     hasRouter,
     paramsFromAddress,
     paramsToAddress,
@@ -120,17 +122,11 @@ const Page: NextPage = () => {
         <Box grid gridRowGap={3} padding>
           {rChainId && (
             <QuickSwap
-              pageLoaded={
-                pageLoaded &&
-                loaded &&
-                typeof hasRouter !== 'undefined' &&
-                !isLoadingCurve &&
-                curve?.chainId === rChainId
-              }
+              pageLoaded={loaded}
               params={params}
               searchedParams={{
-                fromAddress: loaded ? paramsFromAddress : '',
-                toAddress: loaded ? paramsToAddress : '',
+                fromAddress: paramsFromAddress,
+                toAddress: paramsToAddress,
               }}
               rChainId={rChainId}
               tokensMapper={tokensMapper}

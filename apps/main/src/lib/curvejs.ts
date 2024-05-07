@@ -24,12 +24,11 @@ import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
 import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
-import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
 import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
-  getIsLowExchangeRate,
   getSwapIsLowExchangeRate,
+  _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
@@ -371,7 +370,7 @@ const router = {
     poolsMapper: { [poolId: string]: PoolData },
     formValues: FormValues,
     searchedParams: SearchedParams,
-    maxSlippage: string
+    maxSlippage: string | undefined
   ) => {
     const { isFrom, fromAmount, toAmount } = formValues
     const { fromAddress, toAddress } = searchedParams
@@ -395,55 +394,64 @@ const router = {
     try {
       // get routes and to amount
       if (isFrom) {
-        const [{ route: routes, output }, fetchedToAmount, priceImpact] = await Promise.all([
-          curve.router.getBestRouteAndOutput(fromAddress, toAddress, fromAmount),
+        // MUST CALL getBestRouteAndOutput first
+        const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromAddress, toAddress, fromAmount)
+
+        if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
+
+        const [fetchedToAmount, priceImpact] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fromAmount),
         ])
 
-        const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
-        const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
-        const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
-
-        resp.exchangeRates = getExchangeRates(fetchedToAmount, fromAmount)
-        resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
-          ? false
-          : getIsLowExchangeRate(haveCryptoRoutes, fetchedToAmount, fromAmount)
-        resp.isHighImpact = priceImpact > +parsedMaxSlippage
-        resp.isHighSlippage = haveCryptoRoutes ? false : Number(resp.exchangeRates[0]) > 0.98
-        resp.maxSlippage = parsedMaxSlippage
-        resp.priceImpact = priceImpact
-        resp.routes = parsedRouterRoutes.routes
-        resp.toAmount = fetchedToAmount
-        resp.toAmountOutput = output
-        resp.fromAmount = fromAmount
+        resp = {
+          ...resp,
+          ..._parseRoutesAndOutput(
+            curve,
+            routes,
+            priceImpact,
+            output,
+            poolsMapper,
+            maxSlippage,
+            fetchedToAmount,
+            toAddress,
+            fromAmount,
+            fromAddress
+          ),
+        }
       } else {
         const fetchedFromAmount = await curve.router.required(fromAddress, toAddress, toAmount)
-        const [{ route: routes, output }, fetchedToAmount, priceImpact] = await Promise.all([
-          curve.router.getBestRouteAndOutput(fromAddress, toAddress, fetchedFromAmount),
+
+        // MUST CALL getBestRouteAndOutput first
+        const { route: routes, output } = await curve.router.getBestRouteAndOutput(
+          fromAddress,
+          toAddress,
+          fetchedFromAmount
+        )
+
+        if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
+
+        const [fetchedToAmount, priceImpact] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fetchedFromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fetchedFromAmount),
         ])
 
-        const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
-        const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
-        const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
-
-        resp.exchangeRates = getExchangeRates(toAmount, fetchedFromAmount)
-        resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
-          ? false
-          : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount)
-        resp.isHighImpact = priceImpact > +parsedMaxSlippage
-        resp.isHighSlippage = haveCryptoRoutes ? false : Number(resp.exchangeRates[0]) > 0.98
-        resp.maxSlippage = parsedMaxSlippage
-        resp.priceImpact = priceImpact
-        resp.routes = parsedRouterRoutes.routes
-        resp.toAmount = toAmount
-        resp.toAmountOutput = output
-        resp.fromAmount = fetchedFromAmount
-
-        // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
-        resp.isExpectedToAmount = +toAmount - +fetchedToAmount > +parsedMaxSlippage
+        resp = {
+          ...resp,
+          ..._parseRoutesAndOutput(
+            curve,
+            routes,
+            priceImpact,
+            output,
+            poolsMapper,
+            maxSlippage,
+            toAmount,
+            toAddress,
+            fetchedFromAmount,
+            fromAddress,
+            fetchedToAmount
+          ),
+        }
       }
       return resp
     } catch (error) {
@@ -507,14 +515,13 @@ const router = {
     slippageTolerance: string
   ) => {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
-    const api = curve as CurveApi
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
       // @ts-ignore
-      const contractTransaction = await api.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
+      const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
-        resp.swappedAmount = await api.router.getSwappedAmount(contractTransaction, toAddress)
+        resp.swappedAmount = await curve.router.getSwappedAmount(contractTransaction, toAddress)
         resp.hash = contractTransaction.hash
       }
       return resp

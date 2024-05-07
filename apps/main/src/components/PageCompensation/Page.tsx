@@ -27,9 +27,10 @@ const Page: NextPage = () => {
   const { routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
-  const provider = useStore((state) => state.wallet.provider)
+  const getProvider = useStore((state) => state.wallet.getProvider)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
+  const [provider, setProvider] = useState()
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {
@@ -51,8 +52,12 @@ const Page: NextPage = () => {
 
   // get initial data
   useEffect(() => {
-    if (provider) fetchData(provider)
-  }, [fetchData, provider])
+    const provider = getProvider('')
+    if (provider) {
+      setProvider(provider)
+      fetchData(provider)
+    }
+  }, [fetchData, getProvider])
 
   return (
     <>

@@ -287,4 +287,21 @@ export const baseNetworksConfig = {
     scanTxPath: (hash: string) => `https://fraxscan.com/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://fraxscan.com/token/${hash}`,
   },
+  196: {
+    // TODO: this is temporary code to fix type error
+    ...NETWORK_CONFIG_DEFAULT,
+    name: 'X Layer',
+    id: 'x-layer' as const,
+    gasPricesDefault: 1,
+    hex: '0xc4',
+    icon: RCEthereumLogo,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
+    networkId: 196 as const,
+    orgUIPath: 'https://classic.curve.fi',
+    rpcUrlConnectWallet: `https://eth.drpc.org`,
+    symbol: 'OKB',
+    scanAddressPath: (hash: string) => `https://etherscan.io/address/${hash}`,
+    scanTxPath: (hash: string) => `https://etherscan.com/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://etherscan.io/token/${hash}`,
+  },
 }

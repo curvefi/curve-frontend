@@ -1,7 +1,10 @@
 import type { Route } from '@/components/PageRouterSwap/types'
+import type { IRoute } from '@curvefi/api/lib/interfaces'
 
 import { t } from '@lingui/macro'
 import BigNumber from 'bignumber.js'
+
+import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
 
 const LOW_EXCHANGE_RATE = 0.98
 
@@ -11,6 +14,10 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
   if (Array.isArray(routes) && routes.some((r) => r.routeUrlId === '')) {
     return true
   }
+
+  // exclude sDAI check
+  const sDAI = '0x83f20f44975d03b1b09e64809b757c47f942beea'
+  if (toAddress === sDAI || fromAddress === sDAI) return true
 
   const pair1 = `${fromAddress}-${toAddress}`
   const pair2 = `${toAddress}-${fromAddress}`
@@ -77,4 +84,41 @@ export function getExchangeRates(expected: string, fromAmount: string) {
     parsedExpectedReversed = new BigNumber(1).dividedBy(parsedExpected).toString()
   }
   return [parsedExpected, parsedExpectedReversed]
+}
+
+export function _parseRoutesAndOutput(
+  curve: CurveApi,
+  routes: IRoute,
+  priceImpact: number,
+  output: string,
+  poolsMapper: { [poolId: string]: PoolData },
+  maxSlippage: string | undefined,
+  toAmount: string,
+  toAddress: string,
+  fromAmount: string,
+  fromAddress: string,
+  fetchedToAmount?: string
+) {
+  const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
+  const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
+  const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
+
+  const exchangeRates = getExchangeRates(toAmount, fromAmount)
+
+  return {
+    exchangeRates: exchangeRates,
+    isExchangeRateLow: excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
+      ? false
+      : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount),
+    isHighImpact: priceImpact > +parsedMaxSlippage,
+    isHighSlippage: haveCryptoRoutes ? false : Number(exchangeRates[0]) > 0.98,
+    maxSlippage: parsedMaxSlippage,
+    priceImpact: priceImpact,
+    routes: parsedRouterRoutes.routes,
+    toAmount: toAmount,
+    toAmountOutput: output,
+    fromAmount: fromAmount,
+    // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
+    ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +fetchedToAmount > +parsedMaxSlippage } : {}),
+  }
 }
