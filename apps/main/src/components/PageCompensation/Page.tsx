@@ -24,7 +24,7 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
   const getProvider = useStore((state) => state.wallet.getProvider)
@@ -52,12 +52,15 @@ const Page: NextPage = () => {
 
   // get initial data
   useEffect(() => {
+    if (!pageLoaded) return
+
     const provider = getProvider('')
+
     if (provider) {
       setProvider(provider)
       fetchData(provider)
     }
-  }, [fetchData, getProvider])
+  }, [fetchData, getProvider, pageLoaded])
 
   return (
     <>
@@ -77,7 +80,13 @@ const Page: NextPage = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+              <Button
+                fillWidth
+                loading={!pageLoaded}
+                size="large"
+                variant="filled"
+                onClick={updateConnectWalletStateKeys}
+              >
                 {t`Connect Wallet`}
               </Button>
             </>
