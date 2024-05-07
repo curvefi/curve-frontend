@@ -801,7 +801,13 @@ const poolDeposit = {
 }
 
 const poolSwap = {
-  exchangeOutput: async (activeKey: string, p: Pool, formValues: PoolSwapFormValues, maxSlippage: string) => {
+  exchangeOutput: async (
+    activeKey: string,
+    p: Pool,
+    formValues: PoolSwapFormValues,
+    maxSlippage: string,
+    ignoreExchangeRateCheck: boolean
+  ) => {
     log('exchangeOutput', activeKey, p.name, formValues, maxSlippage)
     let resp = {
       activeKey,
@@ -867,9 +873,10 @@ const poolSwap = {
           label: `${toToken}/${fromToken}`,
         },
       ]
-      resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, [])
-        ? false
-        : getSwapIsLowExchangeRate(p.isCrypto, exchangeRates[0])
+      resp.isExchangeRateLow =
+        ignoreExchangeRateCheck || excludeLowExchangeRateCheck(fromAddress, toAddress, [])
+          ? false
+          : getSwapIsLowExchangeRate(p.isCrypto, exchangeRates[0])
       resp.isHighImpact = priceImpact > +maxSlippage
       resp.priceImpact = priceImpact || 0
       resp.fromAmount = isFrom ? fromAmount : swapRequired
