@@ -43,6 +43,8 @@ This repository is organized as follows:
 - `/packages/onboard-helpers`: Shared wallet connection using [Blocknative's Onboard](https://onboard.blocknative.com/).
 
 ## Testing
+E2e tests. Can be run against both actual and forked mainnet. All required settings can be set in .env.test.local.
+
 1. Copy `env.sample.test.local` and update environment variables
 ```bash
 cp apps/lend/cypress/.env.sample.test.local apps/lend/cypress/.env.test.local
