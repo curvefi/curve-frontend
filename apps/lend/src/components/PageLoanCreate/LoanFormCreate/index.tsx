@@ -338,7 +338,7 @@ const LoanCreate = (props: PageContentProps) => {
           ) : null}
 
           {txInfoBar}
-          {steps && <Stepper steps={steps} />}
+          {steps && <Stepper steps={steps} testId='loan-form'/>}
           {formStatus.isComplete && owm && (
             <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, owm.id, 'loan')}>
               Manage loan

@@ -44,7 +44,7 @@ const AlertBox = ({
   }, [children, limitHeight])
 
   return (
-    <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle}>
+    <Wrapper className={className} alertType={alertType} enabledHeightToggle={enabledHeightToggle} data-testId='alert-box'>
       {title ? (
         <>
           <Header>
@@ -66,7 +66,7 @@ const AlertBox = ({
             {showFullHeight ? children : cutAlert}
           </Content>
           {handleBtnClose !== undefined && (
-            <IconButton size="small" onClick={handleBtnClose}>
+            <IconButton size="small" onClick={handleBtnClose} testId='btn-close-alert-box'>
               <Icon name="Close" size={24} />
             </IconButton>
           )}

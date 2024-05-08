@@ -15,10 +15,11 @@ yarn install
 ```
 
 ## Usage
-1. Copy `.env.sample` from `/apps/(loan|main)` and update environment variables:
+1. Copy `.env.sample` from `/apps/(loan|main|lend)` and update environment variables:
 ```bash
 cp apps/loan/.env.sample apps/loan/.env.development.local
 cp apps/main/.env.sample apps/main/.env.development.local
+cp apps/lend/.env.sample apps/lend/.env.development.local
 ```
 
 2. Start development:
@@ -37,8 +38,20 @@ To develop against a forked mainnet, connect your wallet to the RPC URL: `http:/
 This repository is organized as follows:
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
 - `/apps/loan`: crvUSD [React](https://react.dev/) application.
+- `/apps/lend`: crvUSD [React](https://react.dev/) application.
 - `/packages/ui`: Shared CSS styled components using [styled-components](https://styled-components.com/).
 - `/packages/onboard-helpers`: Shared wallet connection using [Blocknative's Onboard](https://onboard.blocknative.com/).
+
+## Testing
+1. Copy `env.sample.test.local` and update environment variables
+```bash
+cp apps/lend/cypress/.env.sample.test.local apps/lend/cypress/.env.test.local
+```
+2. Start testing
+```bash
+cd apps/lend
+yarn test
+```
 
 ## Troubleshooting
 If you have any questions, please contact the dev channel on the [Curve Discord](https://discord.gg/sGDwYnb6W9)

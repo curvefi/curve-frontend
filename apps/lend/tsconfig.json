@@ -2,6 +2,8 @@
   "extends": "tsconfig/nextjs.json",
   "compilerOptions": {
     "baseUrl": "./src",
+    "declaration": true,
+    "declarationMap": true,
     "paths": {
       "@/*": ["*"],
       "@/ui": ["../../../packages/ui/src/index.ts"],

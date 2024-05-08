@@ -15,7 +15,8 @@
     "postpublish": "pinst --enable",
     "i18n:extract": "lingui extract",
     "i18n:compile": "lingui compile",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "test": "export $(cat cypress/.env.test.local | xargs) && synpress run --configFile cypress/synpress.config.js"
   },
   "dependencies": {
     "@curvefi/lending-api": "^1.6.9",
@@ -57,6 +58,7 @@
     "@lingui/swc-plugin": "^4.0.4",
     "@next/bundle-analyzer": "^13.5.6",
     "@svgr/webpack": "^8.1.0",
+    "@synthetixio/synpress": "^3.5.1",
     "@types/lodash": "^4.14.182",
     "@types/node": "17.0.24",
     "@types/react": "^18.2.0",
