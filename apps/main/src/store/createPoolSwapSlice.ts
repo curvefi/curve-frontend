@@ -5,6 +5,7 @@ import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
 
 import cloneDeep from 'lodash/cloneDeep'
+import { Contract, Interface, JsonRpcProvider } from 'ethers'
 
 import {
   DEFAULT_EST_GAS,
@@ -15,6 +16,7 @@ import {
 import { NETWORK_TOKEN } from '@/constants'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
+import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -24,6 +26,7 @@ type SliceState = {
   exchangeOutput: { [activeKey: string]: ExchangeOutput }
   routerSwapOutput: { [activeKey: string]: RouterSwapOutput }
   isMaxLoading: boolean
+  ignoreExchangeRateCheck: { [poolId: string]: boolean }
   formEstGas: { [activeKey: string]: FormEstGas }
   formStatus: FormStatus
   formValues: FormValues
@@ -34,6 +37,7 @@ const sliceKey = 'poolSwap'
 // prettier-ignore
 export type PoolSwapSlice = {
   [sliceKey]: SliceState & {
+    fetchIgnoreExchangeRateCheck(curve: CurveApi, pool: Pool): Promise<boolean>
     fetchExchangeOutput(activeKey: string, storedActiveKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
     fetchTokenWalletBalance(curve: CurveApi, poolId: string, tokenAddress: string): Promise<Balances>
     fetchMaxAmount(activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<string>
@@ -56,6 +60,7 @@ const DEFAULT_STATE: SliceState = {
   exchangeOutput: {},
   routerSwapOutput: {},
   isMaxLoading: false,
+  ignoreExchangeRateCheck: {},
   formEstGas: {},
   formStatus: DEFAULT_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
@@ -65,11 +70,57 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchExchangeOutput: async (activeKey, storedActiveKey: string, curve, pool, formValues, maxSlippage) => {
-      const fn = networks[curve.chainId].api.poolSwap.exchangeOutput
-      const resp = await fn(activeKey, pool, formValues, maxSlippage)
+    fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
+      const state = get()
+      const sliceState = state[sliceKey]
 
-      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const { chainId } = curve
+
+      const storedIgnoreExchangeRateCheck = sliceState.ignoreExchangeRateCheck[pool.id]
+
+      if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
+        return storedIgnoreExchangeRateCheck
+      } else {
+        const provider = state.wallet.getProvider('') || new JsonRpcProvider(networks[chainId].rpcUrl)
+
+        if (!provider) return false
+
+        try {
+          const json = await import('@/components/PagePool/abis/stored_rates.json').then((module) => module.default)
+          const iface = new Interface(json)
+          const contract = new Contract(pool.address, iface.format(), provider)
+          const storedRates = await contract.stored_rates()
+
+          const ignoreExchangeRateCheck = Object.values(storedRates).some((rate) => {
+            // if rate is > 1, then number cannot be checked for exchange rate
+            const parsedRate = BigInt(rate as bigint)
+              .toString()
+              .replace(/0+$/, '')
+            return Number(parsedRate) > 1
+          })
+          sliceState.setStateByActiveKey('ignoreExchangeRateCheck', pool.id, ignoreExchangeRateCheck)
+          return ignoreExchangeRateCheck
+        } catch (error) {
+          // ignore error, only stablswap ng pools have stored_rates
+          sliceState.setStateByActiveKey('ignoreExchangeRateCheck', pool.id, false)
+          return false
+        }
+      }
+    },
+    fetchExchangeOutput: async (activeKey, storedActiveKey: string, curve, pool, formValues, maxSlippage) => {
+      const state = get()
+      const sliceState = state[sliceKey]
+
+      const ignoreExchangeRateCheck = await sliceState.fetchIgnoreExchangeRateCheck(curve, pool)
+      const resp = await curvejsApi.poolSwap.exchangeOutput(
+        activeKey,
+        pool,
+        formValues,
+        maxSlippage,
+        ignoreExchangeRateCheck
+      )
+
+      const cFormStatus = cloneDeep(sliceState.formStatus)
       cFormStatus.error = ''
       cFormStatus.warning = ''
 
@@ -81,7 +132,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         cFormValues.fromAmount = resp.fromAmount
         let activeKey = getActiveKey(cFormValues, maxSlippage)
 
-        get()[sliceKey].setStateByKeys({
+        sliceState.setStateByKeys({
           activeKey,
           formValues: cloneDeep(cFormValues),
           formStatus: {
