@@ -14,12 +14,15 @@ import {
   RCBaseLogo,
   RCBSCLogo,
   RCFraxtalLogo,
+  RCXLayerLogo,
+  RCXLayerWhiteLogo,
 } from 'ui/src/images'
 
 const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
 
 const NETWORK_CONFIG_DEFAULT = {
   blocknativeSupport: true,
+  useApi: true, // default to true when calling fetchPools
   gasL2: false,
   gasPricesUnit: 'GWEI',
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
@@ -288,20 +291,21 @@ export const baseNetworksConfig = {
     scanTokenPath: (hash: string) => `https://fraxscan.com/token/${hash}`,
   },
   196: {
-    // TODO: this is temporary code to fix type error
     ...NETWORK_CONFIG_DEFAULT,
     name: 'X Layer',
     id: 'x-layer' as const,
-    gasPricesDefault: 1,
+    gasPricesUrl: '',
+    gasPricesDefault: 0,
     hex: '0xc4',
-    icon: RCEthereumLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
+    icon: RCXLayerLogo,
+    iconDarkTheme: RCXLayerWhiteLogo,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-x-layer/`,
     networkId: 196 as const,
-    orgUIPath: 'https://classic.curve.fi',
-    rpcUrlConnectWallet: `https://eth.drpc.org`,
+    orgUIPath: '',
+    rpcUrlConnectWallet: `https://rpc.xlayer.tech`,
     symbol: 'OKB',
-    scanAddressPath: (hash: string) => `https://etherscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://etherscan.com/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://etherscan.io/token/${hash}`,
+    scanAddressPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/address/${hash}`,
+    scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/token/${hash}`,
   },
 }

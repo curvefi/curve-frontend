@@ -35,6 +35,7 @@ const NETWORK_CONFIG_DEFAULT = {
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   showInSelectNetwork: true,
+  showRouterSwap: true,
   showHideSmallPoolsCheckbox: false,
   createQuickList: [],
   createDisabledTokens: [],
@@ -466,14 +467,18 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
   },
   196: {
-    // TODO: Need to fix temporary code to bypass type error
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig['196'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
-      : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_XLAYER_DEV_RPC_URL! : `https://rpc.xlayer.tech`,
     showInSelectNetwork: false,
+    showRouterSwap: false, // remove once there is a pool
+    useApi: false, // remove once API is ready
+    swap: {
+      // TODO: Update default to available liquidity in pool.
+      fromAddress: '0x382bb369d343125bfb2117af9c149795c6c65c50',
+      toAddress: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
+    },
   },
 }
 
@@ -487,8 +492,8 @@ export const visibleNetworksList = sortBy(
   Object.keys(networks)
     .filter((chainId) => networks[+chainId as ChainId].showInSelectNetwork)
     .map((chainId: unknown) => {
-      const networkConfig = networks[chainId as ChainId]
-      return { icon: networkConfig.icon, label: networkConfig.name, chainId: networkConfig.networkId }
+      const { icon, iconDarkTheme, name, networkId } = networks[chainId as ChainId]
+      return { icon, iconDarkTheme, label: name, chainId: networkId }
     }),
   (n) => n.label
 )

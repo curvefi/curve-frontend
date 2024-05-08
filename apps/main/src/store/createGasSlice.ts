@@ -80,7 +80,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
-        } else if (chainId === 42161) {
+        } else if (chainId === 42161 || chainId === 196) {
           // Arbitrum custom fee data
           const provider = get().wallet.getProvider('')
 
