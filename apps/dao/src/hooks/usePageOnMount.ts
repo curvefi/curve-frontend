@@ -25,8 +25,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateUserData = useStore((state) => state.user.updateUserData)
-  const getProposals = useStore((state) => state.daoProposals.getProposals)
-  const getGauges = useStore((state) => state.gauges.getGauges)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -232,14 +230,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
-
-  // initiate proposals list
-  useEffect(() => {
-    if (curve) {
-      getProposals(curve)
-      getGauges(curve)
-    }
-  }, [curve, getGauges, getProposals])
 
   useEffect(() => {
     if (isSuccess(connectState) && curve && wallet) {

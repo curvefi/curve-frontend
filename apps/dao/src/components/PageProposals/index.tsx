@@ -31,7 +31,7 @@ const Proposals = () => {
     activeFilter,
     setProposals,
     proposals,
-  } = useStore((state) => state.daoProposals)
+  } = useStore((state) => state.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const navigate = useNavigate()
 
@@ -61,7 +61,7 @@ const Proposals = () => {
 
   return (
     <Wrapper>
-      <PageTitle>DAO Proposals</PageTitle>
+      <PageTitle>Proposals</PageTitle>
       <ProposalsContainer variant="secondary">
         <ToolBar>
           <StyledSearchInput

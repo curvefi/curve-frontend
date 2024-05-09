@@ -16,7 +16,7 @@ type Props = {
 }
 
 const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }: Props) => {
-  const { filteringProposalsLoading } = useStore((state) => state.daoProposals)
+  const { filteringProposalsLoading } = useStore((state) => state.proposals)
 
   return (
     <Container>
