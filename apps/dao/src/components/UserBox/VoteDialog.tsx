@@ -25,7 +25,7 @@ const VoteDialog = ({ active, testId, className, votingPower, snapshotVotingPowe
   const [vote, setVote] = useState<boolean | null>(null)
 
   const isMobile = useStore((state) => state.isMobile)
-  const { castVote } = useStore((state) => state.daoProposals)
+  const { castVote } = useStore((state) => state.proposals)
 
   const handleClose = () => {
     if (isMobile) {

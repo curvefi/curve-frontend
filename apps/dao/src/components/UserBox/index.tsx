@@ -11,7 +11,7 @@ import UserInformation from './UserInformation'
 type Props = {
   children?: React.ReactNode
   className?: string
-  votingPower: SnapshotVotingPower
+  votingPower?: SnapshotVotingPower
   snapshotVotingPower: boolean
 }
 
