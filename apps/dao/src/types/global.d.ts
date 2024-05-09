@@ -110,10 +110,11 @@ declare global {
     votesFor: number
     votesAgainst: number
     totalVotes: number
-    totalVotesPercentage: number
+    minSupport: number
     minAcceptQuorumPercent: number
     quorumVeCrv: number
     totalVeCrv: number
+    currentQuorumPercentage: number
   }
 
   type PricesProposalData = {
