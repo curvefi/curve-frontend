@@ -14,3 +14,10 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export const REFRESH_INTERVAL = {
+  '3s': 3000,
+  '1m': 60000,
+  '5m': 300000,
+  '11m': 660000,
+}

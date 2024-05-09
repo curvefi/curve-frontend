@@ -15,7 +15,7 @@ type Props = {
 }
 
 const Voters = ({ totalVotes }: Props) => {
-  const { currentProposal } = useStore((state) => state.daoProposals)
+  const { currentProposal } = useStore((state) => state.proposals)
 
   return (
     <Wrapper variant="secondary">

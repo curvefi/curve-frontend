@@ -20,10 +20,10 @@ type SliceState = {
   activeSortDirection: ActiveSortDirection
 }
 
-const sliceKey = 'daoProposals'
+const sliceKey = 'proposals'
 
 // prettier-ignore
-export type DaoProposalsSlice = {
+export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
     getProposal(voteId: number, voteType: string): void
@@ -57,7 +57,7 @@ const DEFAULT_STATE: SliceState = {
 // units of gas used * (base fee + priority fee)
 // estimatedGas * (base fee * maxPriorityFeePerGas)
 
-const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): DaoProposalsSlice => ({
+const createProposalsSlice = (set: SetState<State>, get: GetState<State>): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getProposals: async (curve: CurveApi) => {
@@ -92,7 +92,7 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
         }
 
         get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
-        get().storeCache.setStateByKey('proposalsMapper', proposalsObject)
+        get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
         get()[sliceKey].setStateByKey('proposalsLoading', false)
       } catch (error) {
         console.log(error)
@@ -132,8 +132,11 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
     },
     selectFilteredSortedProposals: () => {
       const { proposalsMapper, activeSortBy, activeSortDirection, activeFilter } = get()[sliceKey]
+      const cacheProposalsMapper = get().storeCache.cacheProposalsMapper
 
-      let proposalsCopy = [...Object.values(proposalsMapper)]
+      const proposalsData = proposalsMapper ?? cacheProposalsMapper
+
+      let proposalsCopy = [...Object.values(proposalsData)]
 
       // filter
       if (activeFilter !== 'all') {
@@ -178,23 +181,23 @@ const createDaoProposalsSlice = (set: SetState<State>, get: GetState<State>): Da
       const { selectFilteredSortedProposals } = get()[sliceKey]
       get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
 
-      setTimeout(() => {
-        const proposals = selectFilteredSortedProposals()
+      // setTimeout(() => {
+      const proposals = selectFilteredSortedProposals()
 
-        if (searchValue !== '') {
-          const searchFilteredProposals = searchFn(searchValue, proposals)
-          get()[sliceKey].setStateByKeys({
-            filteringProposalsLoading: false,
-            proposals: searchFilteredProposals,
-          })
-          return searchFilteredProposals
-        }
-
+      if (searchValue !== '') {
+        const searchFilteredProposals = searchFn(searchValue, proposals)
         get()[sliceKey].setStateByKeys({
           filteringProposalsLoading: false,
-          proposals: proposals,
+          proposals: searchFilteredProposals,
         })
-      }, 500)
+        return searchFilteredProposals
+      }
+
+      get()[sliceKey].setStateByKeys({
+        filteringProposalsLoading: false,
+        proposals: proposals,
+      })
+      // }, 500)
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
@@ -274,4 +277,4 @@ const searchFn = (filterValue: string, proposals: ProposalData[]) => {
   return result.map((r) => r.item)
 }
 
-export default createDaoProposalsSlice
+export default createProposalsSlice
