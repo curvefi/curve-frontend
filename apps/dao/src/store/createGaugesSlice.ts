@@ -84,6 +84,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
 
         get().setAppStateByKey(sliceKey, 'gaugeMapper', formattedGauges.gauges)
+        get().storeCache.setStateByKey('cacheGaugeMapper', gaugeFormattedData)
         get().setAppStateByKey(sliceKey, 'gaugeFormattedData', gaugeFormattedData)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', false)
       } catch (error) {
@@ -92,8 +93,11 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
     selectFilteredSortedGauges: () => {
       const { gaugeFormattedData, activeSortBy, activeSortDirection } = get()[sliceKey]
+      const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
 
-      let gaugesCopy = [...gaugeFormattedData]
+      const gaugeData = gaugeFormattedData ?? cacheGaugeMapper
+
+      let gaugesCopy = [...gaugeData]
 
       if (activeSortBy === 'relativeWeight') {
         if (activeSortDirection === 'asc') {
