@@ -20,6 +20,8 @@ import networks from '@/networks'
 import useStore from '@/store/useStore'
 import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
+import { REFRESH_INTERVAL } from '@/constants'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 
 import Page from '@/layout'
 import GlobalStyle from '@/globalStyle'
@@ -35,6 +37,10 @@ function CurveApp({ Component }: AppProps) {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
+  const getProposals = useStore((state) => state.proposals.getProposals)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const curve = useStore((state) => state.curve)
+  const isPageVisible = useStore((state) => state.isPageVisible)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -101,6 +107,25 @@ function CurveApp({ Component }: AppProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // initiate proposals list
+  useEffect(() => {
+    if (curve) {
+      getProposals(curve)
+      getGauges(curve)
+    }
+  }, [curve, getGauges, getProposals])
+
+  usePageVisibleInterval(
+    () => {
+      if (curve) {
+        getProposals(curve)
+        getGauges(curve)
+      }
+    },
+    REFRESH_INTERVAL['5m'],
+    isPageVisible
+  )
 
   return (
     <div suppressHydrationWarning>

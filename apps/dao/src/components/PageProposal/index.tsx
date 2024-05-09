@@ -35,12 +35,10 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
-  const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore(
-    (state) => state.daoProposals
-  )
+  const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore((state) => state.proposals)
   const { snapshotVeCrvMapper, setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const proposal = useStore((state) => state.daoProposals.proposalsMapper[rProposalId] ?? null)
+  const proposal = useStore((state) => state.proposals.proposalsMapper[rProposalId] ?? null)
   const {
     creator,
     startDate,
