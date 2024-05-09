@@ -49,10 +49,12 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
     votesAgainst,
     voteCount,
     supportRequired,
+    minSupport,
+    quorumVeCrv,
     minAcceptQuorumPercent,
     totalVeCrv,
     totalVotes,
-    totalVotesPercentage,
+    currentQuorumPercentage,
     executed,
     status,
   } = proposal ?? {}
@@ -186,8 +188,9 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                   votesFor={votesFor}
                   votesAgainst={votesAgainst}
                   totalVeCrv={totalVeCrv}
+                  quorumVeCrv={quorumVeCrv}
                   minAcceptQuorumPercent={minAcceptQuorumPercent}
-                  totalVotesPercentage={totalVotesPercentage}
+                  currentQuorumPercentage={currentQuorumPercentage}
                 />
               </VotesWrapper>
               <Voters totalVotes={totalVotes} />

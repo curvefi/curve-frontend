@@ -17,8 +17,8 @@ type Props = {
   handleClick: (rProposalId: string) => void
 }
 
-const Proposal = ({
-  proposalData: {
+const Proposal = ({ proposalData, handleClick }: Props) => {
+  const {
     voteId,
     voteType,
     creator,
@@ -29,15 +29,16 @@ const Proposal = ({
     votesFor,
     votesAgainst,
     voteCount,
+    minSupport,
+    quorumVeCrv,
     supportRequired,
     minAcceptQuorumPercent,
     totalVeCrv,
     executed,
     status,
-    totalVotesPercentage,
-  },
-  handleClick,
-}: Props) => {
+    currentQuorumPercentage,
+  } = proposalData
+
   return (
     <LazyItem>
       <ProposalContainer onClick={() => handleClick(`${voteId}-${voteType}`)}>
@@ -61,7 +62,8 @@ const Proposal = ({
             votesFor={votesFor}
             votesAgainst={votesAgainst}
             totalVeCrv={totalVeCrv}
-            totalVotesPercentage={totalVotesPercentage}
+            currentQuorumPercentage={currentQuorumPercentage}
+            quorumVeCrv={quorumVeCrv}
             minAcceptQuorumPercent={minAcceptQuorumPercent}
           />
         </VoteWrapper>
@@ -178,7 +180,7 @@ const VoteWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: var(--spacing-3);
-  background-color: var(--blacka05);
+  /* background-color: var(--blacka05); */
 `
 
 const StyledVoteCountdown = styled(VoteCountdown)`

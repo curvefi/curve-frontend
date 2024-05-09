@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber, formatNumberWithSuffix } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
@@ -11,8 +11,9 @@ type Props = {
   votesFor: number
   votesAgainst: number
   totalVeCrv: number
+  quorumVeCrv: number
   minAcceptQuorumPercent: number
-  totalVotesPercentage: number
+  currentQuorumPercentage: number
   className?: string
 }
 
@@ -20,7 +21,8 @@ const VotesStatusBox = ({
   votesFor,
   votesAgainst,
   totalVeCrv,
-  totalVotesPercentage,
+  quorumVeCrv,
+  currentQuorumPercentage,
   minAcceptQuorumPercent,
   className,
 }: Props) => {
@@ -29,7 +31,7 @@ const VotesStatusBox = ({
       <VoteFor>
         <Box flex>
           <p className="vote-label">{t`For:`}</p>
-          <p className="vote-count">{formatNumber(votesFor.toFixed(0))} veCRV</p>
+          <p className="vote-count">{formatNumberWithSuffix(votesFor)} veCRV</p>
           <PercentageVotes>{((votesFor / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
         </Box>
         <ProgressBar yesVote percentage={(votesFor / totalVeCrv) * 100} />
@@ -37,26 +39,26 @@ const VotesStatusBox = ({
       <VoteAgainst>
         <Box flex>
           <p className="vote-label">{t`Against:`}</p>
-          <p className="vote-count">{formatNumber(votesAgainst.toFixed(0))} veCRV</p>
+          <p className="vote-count">{formatNumberWithSuffix(votesAgainst)} veCRV</p>
           <PercentageVotes>{((votesAgainst / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
         </Box>
         <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
       </VoteAgainst>
       <Quorum>
         <Box flex>
-          {totalVotesPercentage >= minAcceptQuorumPercent ? (
+          {votesFor >= quorumVeCrv ? (
             <QuorumPassedIcon name="CheckmarkFilled" size={16} />
           ) : (
             <QuorumFailedIcon name="Misuse" size={16} />
           )}
           <p>{t`Quorum:`}</p>
           <p>
-            {totalVotesPercentage.toFixed(0)}% of {formatNumber(minAcceptQuorumPercent)}%
+            {formatNumberWithSuffix(votesFor)} of {formatNumberWithSuffix(quorumVeCrv)}
           </p>
         </Box>
         <ProgressBar
-          yesVote={totalVotesPercentage >= minAcceptQuorumPercent}
-          percentage={totalVotesPercentage}
+          yesVote={currentQuorumPercentage >= minAcceptQuorumPercent}
+          percentage={currentQuorumPercentage}
           quorum
         />
       </Quorum>
