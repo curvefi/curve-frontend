@@ -74,7 +74,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
           const votesFor = convertNumber(+proposal.votesFor)
           const votesAgainst = convertNumber(+proposal.votesAgainst)
-          const totalVotesPercentage = ((votesFor + votesAgainst) / totalVeCrv) * 100
+          const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
 
           const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst)
 
@@ -83,11 +83,12 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             status: status,
             votesFor,
             votesAgainst,
+            minSupport: convertNumberTen(+proposal.supportRequired),
             minAcceptQuorumPercent,
             quorumVeCrv,
             totalVeCrv,
             totalVotes: votesFor + votesAgainst,
-            totalVotesPercentage,
+            currentQuorumPercentage,
           }
         }
 
@@ -250,6 +251,10 @@ const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: num
 
 const convertNumber = (number: number) => {
   return number / 10 ** 18
+}
+
+const convertNumberTen = (number: number) => {
+  return number / 10 ** 10
 }
 
 const searchFn = (filterValue: string, proposals: ProposalData[]) => {
