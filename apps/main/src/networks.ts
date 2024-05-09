@@ -479,6 +479,10 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '0x382bb369d343125bfb2117af9c149795c6c65c50',
       toAddress: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
     },
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
   },
 }
 
