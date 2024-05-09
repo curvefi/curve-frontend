@@ -19,7 +19,6 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 const Gauges = () => {
   const {
     setGauges,
-    gaugeMapper,
     gaugesLoading,
     gaugeFormattedData,
     activeSortBy,
@@ -49,8 +48,6 @@ const Gauges = () => {
       setGauges(searchValue)
     }
   }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
-
-  console.log('filteredGauges', filteredGauges)
 
   return (
     <Wrapper>
@@ -104,7 +101,7 @@ const Gauges = () => {
           </Box>
         </Container>
         <Box flex flexColumn>
-          <StyledUserBox />
+          <StyledUserBox snapshotVotingPower={false} />
           <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
             {!gaugesLoading && (
               <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>

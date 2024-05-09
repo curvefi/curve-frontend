@@ -104,6 +104,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       get()[sliceKey].setStateByKeys({
         userAddress,
         userEns: getWalletSignerEns(wallet),
+        snapshotVeCrvMapper: {},
       })
     },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
