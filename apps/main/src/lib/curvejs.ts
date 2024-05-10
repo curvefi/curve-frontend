@@ -53,9 +53,9 @@ const helpers = {
     }
   },
   fetchL2GasPrice: async (curve: CurveApi) => {
-    let resp = { l2GasPriceWei: 0, error: '' }
+    let resp = { l2GasPrice: 0, error: '' }
     try {
-      resp.l2GasPriceWei = await curve.getGasPriceFromL2()
+      resp.l2GasPrice = await curve.getGasPriceFromL2()
       return resp
     } catch (error) {
       console.error(error)

@@ -80,7 +80,27 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
-        } else if (chainId === 42161 || chainId === 196) {
+        } else if (chainId === 196) {
+          // X-Layer
+          const provider = get().wallet.getProvider('')
+
+          if (provider) {
+            const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              parsedGasInfo.gasInfo.gasPrice = l2GasPrice
+            }
+
+            if (l2GasPrice) {
+              curve.setCustomFeeData({
+                gasPrice: l2GasPrice, // in gwei
+                maxFeePerGas: undefined,
+                maxPriorityFeePerGas: undefined,
+              })
+            }
+          }
+        } else if (chainId === 42161) {
           // Arbitrum custom fee data
           const provider = get().wallet.getProvider('')
 
