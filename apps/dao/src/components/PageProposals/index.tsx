@@ -122,7 +122,7 @@ const Proposals = () => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  margin: var(--spacing-5) auto 0;
+  margin: var(--spacing-4) auto 0;
   width: 60rem;
   flex-grow: 1;
   min-height: 100%;

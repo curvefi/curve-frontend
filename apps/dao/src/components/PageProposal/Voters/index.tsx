@@ -12,10 +12,11 @@ import Icon from '@/ui/Icon'
 
 type Props = {
   totalVotes: number
+  rProposalId: string
 }
 
-const Voters = ({ totalVotes }: Props) => {
-  const { currentProposal } = useStore((state) => state.proposals)
+const Voters = ({ totalVotes, rProposalId }: Props) => {
+  const currentProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId])
 
   return (
     <Wrapper variant="secondary">

@@ -35,9 +35,11 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
-  const { proposalsLoading, getProposal, currentProposal, pricesProposalLoading } = useStore((state) => state.proposals)
-  const { snapshotVeCrvMapper, setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
+  const { proposalsLoading, getProposal, pricesProposalLoading } = useStore((state) => state.proposals)
+  const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
+  const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const pricesProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId] ?? null)
   const proposal = useStore((state) => state.proposals.proposalsMapper[rProposalId] ?? null)
   const {
     creator,
@@ -64,7 +66,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   }
 
   useEffect(() => {
-    if (!snapshotVeCrvMapper[rProposalId] && provider && userAddress && snapshotBlock) {
+    if (snapshotVeCrv === undefined && provider && userAddress && snapshotBlock) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
         setSnapshotVeCrv(signer, userAddress, snapshotBlock, rProposalId)
@@ -72,11 +74,11 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
 
       getVeCrv()
     }
-  }, [provider, rProposalId, setSnapshotVeCrv, snapshotBlock, snapshotVeCrvMapper, userAddress])
+  }, [provider, rProposalId, setSnapshotVeCrv, snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
     if (rChainId && voteId && voteType) {
-      getProposal(+voteId, voteType.toLowerCase())
+      getProposal(+voteId, voteType)
     }
   }, [getProposal, voteId, voteType, isLoadingCurve, rChainId])
 
@@ -125,7 +127,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
             </TopBarColumn>
           </ProposalTopBar>
 
-          {!currentProposal || !proposal ? (
+          {!pricesProposal || !proposal ? (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
@@ -143,7 +145,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 </Box>
                 <p>{metadata}</p>
               </MetaData>
-              {currentProposal && <Script script={currentProposal.script} />}
+              {pricesProposal && <Script script={pricesProposal.script} />}
               <TimelineBox>
                 <Box>
                   <SubTitle>{t`Proposer`}</SubTitle>
@@ -154,7 +156,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <Time>{currentProposal.snapshot_block}</Time>
+                  <Time>{pricesProposal.snapshot_block}</Time>
                 </Box>
                 <Box>
                   <SubTitle>{t`Created`}</SubTitle>
@@ -170,16 +172,10 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         </ProposalContainer>
 
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
-          <UserBox votingPower={snapshotVeCrvMapper[rProposalId]} snapshotVotingPower>
-            {proposal &&
-              snapshotVeCrvMapper[rProposalId] !== undefined &&
-              !snapshotVeCrvMapper[rProposalId].loading! && (
-                <VoteDialog
-                  snapshotVotingPower
-                  active={proposal?.status === 'Active'}
-                  votingPower={snapshotVeCrvMapper[rProposalId]}
-                />
-              )}
+          <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
+            {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+              <VoteDialog snapshotVotingPower active={proposal?.status === 'Active'} votingPower={snapshotVeCrv} />
+            )}
           </UserBox>
           {proposal && (
             <>
@@ -193,7 +189,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                   currentQuorumPercentage={currentQuorumPercentage}
                 />
               </VotesWrapper>
-              <Voters totalVotes={totalVotes} />
+              <Voters rProposalId={rProposalId} totalVotes={totalVotes} />
             </>
           )}
         </Box>
@@ -205,7 +201,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: var(--spacing-5) auto var(--spacing-6);
+  margin: var(--spacing-4) auto var(--spacing-6);
   width: 65rem;
   max-width: 95%;
   flex-grow: 1;
@@ -215,7 +211,7 @@ const Wrapper = styled.div`
 const ProposalContainer = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
   margin-bottom: auto;
 `
 
