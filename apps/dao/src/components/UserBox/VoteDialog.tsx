@@ -100,7 +100,7 @@ const VotingMessage = styled.p`
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-2);
-  padding: var(--spacing-1) var(--spacing-2);
+  padding: var(--spacing-2);
   color: var(--button_outlined--color);
   font-weight: var(--semi-bold);
   font-size: var(--font-size-1);

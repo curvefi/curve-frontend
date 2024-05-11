@@ -122,7 +122,7 @@ const Gauges = () => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  margin: var(--spacing-5) auto var(--spacing-7);
+  margin: var(--spacing-4) auto var(--spacing-7);
   width: 60rem;
   flex-grow: 1;
   min-height: 100%;
