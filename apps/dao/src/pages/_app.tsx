@@ -13,7 +13,7 @@ import '@/globals.css'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { getLocaleFromUrl, getStorageValue } from '@/utils'
-import { getIsMobile, getPageWidthClassName } from '@/ui/utils'
+import { getIsMobile, getPageWidthClassName, isSuccess } from '@/ui/utils'
 import { initOnboard } from '@/onboard'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
@@ -22,6 +22,7 @@ import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { REFRESH_INTERVAL } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { useConnectWallet } from '@/onboard'
 
 import Page from '@/layout'
 import GlobalStyle from '@/globalStyle'
@@ -30,6 +31,7 @@ i18n.load({ en: messagesEn })
 i18n.activate('en')
 
 function CurveApp({ Component }: AppProps) {
+  const connectState = useStore((state) => state.connectState)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
   const themeType = useStore((state) => state.themeType)
@@ -37,9 +39,11 @@ function CurveApp({ Component }: AppProps) {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
+  const updateUserData = useStore((state) => state.user.updateUserData)
   const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const curve = useStore((state) => state.curve)
+  const onboard = useStore((state) => state.wallet.onboard)
   const isPageVisible = useStore((state) => state.isPageVisible)
 
   const [appLoaded, setAppLoaded] = useState(false)
@@ -107,6 +111,19 @@ function CurveApp({ Component }: AppProps) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (isSuccess(connectState) && curve && onboard) {
+      const updateUserDataIfReady = async () => {
+        const wallets = await onboard.connectWallet()
+        if (wallets.length > 0) {
+          updateUserData(curve, wallets[0])
+        }
+      }
+
+      updateUserDataIfReady()
+    }
+  }, [curve, connectState, updateUserData, onboard])
 
   // initiate proposals list
   useEffect(() => {
