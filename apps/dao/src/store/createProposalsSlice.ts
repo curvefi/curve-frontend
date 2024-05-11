@@ -13,7 +13,7 @@ type SliceState = {
   voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
-  currentProposal: PricesProposalData | null
+  pricesProposalMapper: { [proposalId: string]: PricesProposalData }
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
@@ -45,11 +45,11 @@ const DEFAULT_STATE: SliceState = {
   filteringProposalsLoading: true,
   pricesProposalLoading: true,
   voteStatus: '',
-  currentProposal: null,
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
+  pricesProposalMapper: {},
   proposalsMapper: {},
   proposals: [],
 }
@@ -103,7 +103,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       get()[sliceKey].setStateByKey('pricesProposalLoading', true)
 
       try {
-        const proposalFetch = await fetch(`https://prices.curve.fi/v1/dao/proposals/details/${voteType}/${voteId}`)
+        const proposalFetch = await fetch(
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`
+        )
         const proposal: PricesProposalData = await proposalFetch.json()
 
         const formattedVotes = proposal.votes
@@ -121,7 +123,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         set(
           produce((state: State) => {
             state[sliceKey].pricesProposalLoading = false
-            state[sliceKey].currentProposal = {
+            state[sliceKey].pricesProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
