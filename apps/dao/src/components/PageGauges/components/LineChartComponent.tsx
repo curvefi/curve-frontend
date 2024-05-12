@@ -1,5 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
+import { formatDateFromTimestamp } from '@/ui/utils/utilsFormat'
+
 import LineChartCustomTooltip from './LineChartCustomTooltip'
 
 type Props = {
@@ -31,8 +33,11 @@ const LineChartComponent = ({ data }: Props) => {
           tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+          minTickGap={20}
           tickMargin={4}
-          hide={true}
+          tickFormatter={(unixTime) => {
+            return formatDateFromTimestamp(unixTime)
+          }}
         />
         <YAxis
           tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}

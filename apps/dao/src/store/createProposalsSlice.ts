@@ -69,11 +69,11 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         let proposalsObject: { [voteId: string]: ProposalData } = {}
 
         for (const proposal of proposals) {
-          const minAcceptQuorumPercent = convertNumber(+proposal.minAcceptQuorum) * 100
-          const totalVeCrv = convertNumber(+proposal.totalSupply)
+          const minAcceptQuorumPercent = convertNumberEighteen(+proposal.minAcceptQuorum) * 100
+          const totalVeCrv = convertNumberEighteen(+proposal.totalSupply)
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-          const votesFor = convertNumber(+proposal.votesFor)
-          const votesAgainst = convertNumber(+proposal.votesAgainst)
+          const votesFor = convertNumberEighteen(+proposal.votesFor)
+          const votesAgainst = convertNumberEighteen(+proposal.votesAgainst)
           const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
 
           const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst)
@@ -124,6 +124,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           produce((state: State) => {
             state[sliceKey].pricesProposalLoading = false
             state[sliceKey].pricesProposalMapper[`${voteId}-${voteType}`] = {
+              ...proposal,
+              votes: sortedVotes,
+            }
+            state.storeCache.cachePricesProposalsMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
@@ -251,7 +255,7 @@ const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: num
   return 'Denied'
 }
 
-const convertNumber = (number: number) => {
+const convertNumberEighteen = (number: number) => {
   return number / 10 ** 18
 }
 
