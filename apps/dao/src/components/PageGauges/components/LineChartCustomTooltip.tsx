@@ -4,23 +4,25 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import { formatDateFromTimestamp, formatNumber } from '@/ui/utils/utilsFormat'
+
 import Box from '@/ui/Box'
 
 const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
-    const { gauge_weight, gauge_relative_weight, epoch, title } = payload[0].payload
+    const { gauge_weight, gauge_relative_weight, epoch, emissions } = payload[0].payload
 
     return (
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Epoch`}</TooltipDataTitle>
-            <TooltipData>{epoch}</TooltipData>
+            <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
+            <TooltipData>{formatDateFromTimestamp(epoch)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge Weight`}</TooltipDataTitle>
             {gauge_weight ? (
-              <TooltipData>{gauge_weight}</TooltipData>
+              <TooltipData>{formatNumber(gauge_weight)}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -29,6 +31,14 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
             <TooltipDataTitle>{t`Relative Gauge Weight`}</TooltipDataTitle>
             {gauge_relative_weight ? (
               <TooltipData>{gauge_relative_weight}%</TooltipData>
+            ) : (
+              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
+            )}
+          </TooltipColumn>
+          <TooltipColumn>
+            <TooltipDataTitle>{t`Emissions`}</TooltipDataTitle>
+            {emissions ? (
+              <TooltipData>{formatNumber(emissions)}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
