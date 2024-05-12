@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { useState } from 'react'
 
-import CustomTooltip from './CustomTooltip'
+import CustomTooltip from './BarChartCustomTooltip'
 
 type Props = {
   data: GaugeFormattedData[]

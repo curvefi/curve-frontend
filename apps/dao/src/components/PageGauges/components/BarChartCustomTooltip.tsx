@@ -6,7 +6,7 @@ import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
 
-const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   if (active && payload && payload.length) {
     const sevenDayDelta = payload[0].payload.gauge_relative_weight_7d_delta
     const sixtyDayDelta = payload[0].payload.gauge_relative_weight_60d_delta
@@ -88,4 +88,4 @@ const TooltipDataNotAvailable = styled.p`
   font-style: italic;
 `
 
-export default CustomTooltip
+export default BarChartCustomTooltip

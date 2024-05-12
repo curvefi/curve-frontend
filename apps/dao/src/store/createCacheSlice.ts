@@ -7,6 +7,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   cacheProposalsMapper: { [voteId: string]: ProposalData }
+  cacheGaugeWeightHistoryMapper: { [gaugeAddress: string]: GaugeWeightHistoryData }
   cacheGaugeMapper: GaugeFormattedData[]
 }
 
@@ -23,6 +24,7 @@ export type CacheSlice = {
 
 const DEFAULT_STATE: SliceState = {
   cacheProposalsMapper: {},
+  cacheGaugeWeightHistoryMapper: {},
   cacheGaugeMapper: [],
 }
 
