@@ -123,7 +123,8 @@ const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   margin: var(--spacing-4) auto 0;
-  width: 60rem;
+  width: 65rem;
+  max-width: 95%;
   flex-grow: 1;
   min-height: 100%;
 `
