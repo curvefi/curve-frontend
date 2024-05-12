@@ -15,6 +15,7 @@ type SliceState = {
   activeSortDirection: ActiveSortDirection
   searchValue: string
   gaugeMapper: PricesGaugeOverviewData[]
+  gaugeWeightHistoryMapper: { [address: string]: GaugeWeightHistoryData[] }
   gaugeFormattedData: GaugeFormattedData[]
   filteredGauges: GaugeFormattedData[]
 }
@@ -25,6 +26,7 @@ const sliceKey = 'gauges'
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
     getGauges(curve: CurveApi): Promise<void>
+    getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
     setSearchValue(searchValue: string): void
     setActiveSortBy(sortBy: SortByFilterGauges): void
     setActiveSortDirection(direction: ActiveSortDirection): void
@@ -43,12 +45,10 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
   searchValue: '',
   gaugeMapper: [],
+  gaugeWeightHistoryMapper: {},
   gaugeFormattedData: [],
   filteredGauges: [],
 }
-
-// units of gas used * (base fee + priority fee)
-// estimatedGas * (base fee * maxPriorityFeePerGas)
 
 const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSlice => ({
   [sliceKey]: {
@@ -87,6 +87,28 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         get().storeCache.setStateByKey('cacheGaugeMapper', gaugeFormattedData)
         get().setAppStateByKey(sliceKey, 'gaugeFormattedData', gaugeFormattedData)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', false)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    getHistoricGaugeWeights: async (gaugeAddress: string) => {
+      try {
+        const weights = await fetch(`https://prices.curve.fi/v1/dao/gauges/${gaugeAddress}/weight_history`)
+        const weightsData = await weights.json()
+
+        const formattedWeightsData = weightsData.data.map((weight: GaugeWeightHistoryData) => ({
+          ...weight,
+          gauge_weight: +weight.gauge_weight / 1e18,
+          gauge_relative_weight: ((+weight.gauge_relative_weight / 1e18) * 100).toFixed(2),
+          emissions: +weight.emissions,
+        }))
+
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
+          })
+        )
+        // get().storeCache.setStateByKey('cacheGaugeWeightHistoryMapper', gaugeWeightHistoryCopy)
       } catch (error) {
         console.log(error)
       }

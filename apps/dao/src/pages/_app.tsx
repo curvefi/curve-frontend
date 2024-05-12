@@ -22,7 +22,6 @@ import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { REFRESH_INTERVAL } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import { useConnectWallet } from '@/onboard'
 
 import Page from '@/layout'
 import GlobalStyle from '@/globalStyle'

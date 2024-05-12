@@ -1,29 +1,40 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import { formatNumber, shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
+import LineChartComponent from './LineChartComponent'
 
 type Props = {
   gaugeData: GaugeFormattedData
 }
 
 const GaugeListItem = ({ gaugeData }: Props) => {
+  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
+      getHistoricGaugeWeights(gaugeData.address)
+    }
+  }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
   return (
     <GaugeBox onClick={() => setOpen(!open)}>
       <Box grid gridTemplateColumns="2fr 0.7fr 0.7fr 0.7fr 0.3fr">
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+        <Box flex flexColumn flexGap={'var(--spacing-2)'}>
           <Box flex flexGap={'var(--spacing-1)'}>
             <BoxedData>{gaugeData.platform}</BoxedData>
+            {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
+            {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
             <BoxedData>{gaugeData.gauge_type}</BoxedData>
           </Box>
           <Title>{gaugeData.title}</Title>
@@ -70,32 +81,37 @@ const GaugeListItem = ({ gaugeData }: Props) => {
       </Box>
       {open && (
         <OpenContainer>
-          <Box flex flexColumn>
-            <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
-            <GaugeData className="open">
-              <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
-                {shortenTokenAddress(gaugeData.address)}
-                <Icon name="Launch" size={16} />
-              </StyledExternalLink>
-            </GaugeData>
-          </Box>
-          {gaugeData.pool?.address && (
+          {gaugeWeightHistoryMapper[gaugeData.address] && (
+            <LineChartComponent data={gaugeWeightHistoryMapper[gaugeData.address]} />
+          )}
+          <OpenDataRow>
             <Box flex flexColumn>
-              <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
+              <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
               <GaugeData className="open">
-                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
-                  {shortenTokenAddress(gaugeData.pool.address)}
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+                  {shortenTokenAddress(gaugeData.address)}
                   <Icon name="Launch" size={16} />
                 </StyledExternalLink>
               </GaugeData>
             </Box>
-          )}
-          <Box flex flexColumn margin={'0 0 0 auto'}>
-            <DataTitle className="open">{t`Created`}</DataTitle>
-            <GaugeData className="open">
-              {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
-            </GaugeData>
-          </Box>
+            {gaugeData.pool?.address && (
+              <Box flex flexColumn>
+                <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
+                <GaugeData className="open">
+                  <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
+                    {shortenTokenAddress(gaugeData.pool.address)}
+                    <Icon name="Launch" size={16} />
+                  </StyledExternalLink>
+                </GaugeData>
+              </Box>
+            )}
+            <Box flex flexColumn margin={'0 0 0 auto'}>
+              <DataTitle className="open">{t`Created`}</DataTitle>
+              <GaugeData className="open">
+                {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
+              </GaugeData>
+            </Box>
+          </OpenDataRow>
         </OpenContainer>
       )}
     </GaugeBox>
@@ -115,8 +131,7 @@ const GaugeBox = styled.div`
 const Title = styled.h3`
   font-size: var(--font-size-3);
   font-weight: var(--bold);
-  margin-left: 0.25rem;
-  margin-top: 0.25rem;
+  margin: auto 0 0 0.25rem;
 `
 
 const BoxColumn = styled.div`
@@ -147,7 +162,7 @@ const DataTitle = styled.h4`
 `
 
 const GaugeData = styled.p`
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   font-weight: var(--bold);
   text-align: right;
   &.green {
@@ -168,11 +183,15 @@ const StyledIconButton = styled(IconButton)`
 
 const OpenContainer = styled.div`
   display: flex;
+  flex-direction: column;
+  padding: var(--spacing-3) var(--spacing-1) var(--spacing-3);
+`
+
+const OpenDataRow = styled.div`
+  margin-top: var(--spacing-3);
+  display: flex;
   flex-direction: row;
   gap: var(--spacing-5);
-  margin-top: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-1) 0;
-  border-top: 1px solid var(--gray-500a20);
 `
 
 const StyledExternalLink = styled(ExternalLink)`
