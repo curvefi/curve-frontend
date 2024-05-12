@@ -185,6 +185,14 @@ declare global {
     gauge_weight: number
   }
 
+  type GaugeWeightHistoryData = {
+    is_killed: boolean
+    gauge_weight: number
+    gauge_relative_weight: number
+    emissions: number
+    epoch: number
+  }
+
   interface UserVoteData {
     voteId: number
     voteType: 'PARAMETER' | 'OWNERSHIP'
