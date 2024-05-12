@@ -32,10 +32,9 @@ const GaugeListItem = ({ gaugeData }: Props) => {
       <Box grid gridTemplateColumns="2fr 0.7fr 0.7fr 0.7fr 0.3fr">
         <Box flex flexColumn flexGap={'var(--spacing-2)'}>
           <Box flex flexGap={'var(--spacing-1)'}>
-            <BoxedData>{gaugeData.platform}</BoxedData>
+            {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
             {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
             {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
-            <BoxedData>{gaugeData.gauge_type}</BoxedData>
           </Box>
           <Title>{gaugeData.title}</Title>
         </Box>
@@ -105,7 +104,13 @@ const GaugeListItem = ({ gaugeData }: Props) => {
                 </GaugeData>
               </Box>
             )}
-            <Box flex flexColumn margin={'0 0 0 auto'}>
+            {gaugeData.emissions && (
+              <Box flex flexColumn>
+                <DataTitle className="open left-aligned">{t`Emissions (CRV)`}</DataTitle>
+                <GaugeData className="open">{formatNumber(gaugeData.emissions)}</GaugeData>
+              </Box>
+            )}
+            <Box flex flexColumn>
               <DataTitle className="open">{t`Created`}</DataTitle>
               <GaugeData className="open">
                 {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
@@ -184,14 +189,16 @@ const StyledIconButton = styled(IconButton)`
 const OpenContainer = styled.div`
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-3) var(--spacing-1) var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-1) 0;
 `
 
 const OpenDataRow = styled.div`
-  margin-top: var(--spacing-3);
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-5);
+  gap: var(--spacing-4);
+  justify-content: space-between;
+  border-top: 1px solid var(--gray-500);
+  padding-top: var(--spacing-2);
 `
 
 const StyledExternalLink = styled(ExternalLink)`

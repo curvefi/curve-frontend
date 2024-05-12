@@ -246,7 +246,6 @@ const ProposalTopBar = styled.div`
 
 const Status = styled.h3`
   font-size: var(--font-size-2);
-  display: flex;
   &.passed {
     :before {
       display: inline-block;
