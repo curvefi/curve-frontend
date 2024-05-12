@@ -63,8 +63,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const gaugeFormattedData = formattedGauges.gauges
           .map((gauge) => ({
             ...gauge,
-            // make dynamic
-            platform: gauge.market !== null ? 'Lend' : 'AMM',
+            platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : null,
             title: gauge.pool?.name
               ? // remove extras like "Factory Pool" etc
                 (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
@@ -106,9 +105,9 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         set(
           produce(get(), (state) => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
+            state.storeCache.cacheGaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
           })
         )
-        // get().storeCache.setStateByKey('cacheGaugeWeightHistoryMapper', gaugeWeightHistoryCopy)
       } catch (error) {
         console.log(error)
       }
