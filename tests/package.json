@@ -1,0 +1,14 @@
+{
+  "name": "tests",
+  "version": "0.1.0",
+  "description": "Curve DApp tests",
+  "main": "index.js",
+  "scripts": {
+    "cy:open:e2e:lend": "CYPRESS_BASE_URL=http://localhost:3003/# cypress open --browser chrome --e2e",
+    "cy:run": "cypress run --browser chrome --e2e"
+  },
+  "devDependencies": {
+    "cypress": "^13.9.0",
+    "ethers": "^6.12.1"
+  }
+}

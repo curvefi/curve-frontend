@@ -7,11 +7,13 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tests"
   ],
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --parallel",
+    "test": "yarn workspace tests cy:open:e2e:lend",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "is-ci || husky install"
@@ -33,6 +35,10 @@
   "packageManager": "yarn@1.22.19",
   "lint-staged": {
     "apps/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "tests/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ],

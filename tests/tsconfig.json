@@ -3,9 +3,9 @@
     "target": "es5",
     "lib": ["es5", "dom"],
     "types": ["cypress", "node"],
-    "baseUrl": "./",
+    "baseUrl": "./cypress",
     "paths": {
-      "@/cy/*": ["*"]
+      "@/*": ["*"]
     },
     "resolveJsonModule": true,
     "esModuleInterop": true

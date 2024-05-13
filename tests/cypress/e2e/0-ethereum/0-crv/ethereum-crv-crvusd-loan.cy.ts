@@ -1,6 +1,6 @@
-import createLoanSettings from '@/cy/fixtures/create-loan-settings.json'
-import markets from '@/cy/fixtures/markets.json'
-import tokens from '@/cy/fixtures/tokens.json'
+import createLoanSettings from '@/fixtures/create-loan-settings.json'
+import markets from '@/fixtures/markets.json'
+import tokens from '@/fixtures/tokens.json'
 import { ethers } from 'ethers'
 
 const CHAIN = 'Ethereum'

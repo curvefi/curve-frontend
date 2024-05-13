@@ -40,6 +40,7 @@ This repository is organized as follows:
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
 - `/apps/loan`: crvUSD [React](https://react.dev/) application.
 - `/apps/lend`: Lend [React](https://react.dev/) application.
+- `/tests`: DApp tests
 - `/packages/ui`: Shared CSS styled components using [styled-components](https://styled-components.com/).
 - `/packages/onboard-helpers`: Shared wallet connection using [Blocknative's Onboard](https://onboard.blocknative.com/).
 
@@ -50,17 +51,13 @@ For testing the Lend application, follow these steps:
 1. Copy the Cypress configuration sample file and update the environment variables:
 
 ```bash
-cp apps/lend/cypress.env.json.sample apps/lend/cypress.env.json
+cp tests/cypress.env.json.sample test/cypress.env.json
 ```
 
-2. To run the tests, navigate to the `apps/lend/` directory and execute one of the following commands:
+1. To run the tests execute the following command:
 
 ```bash
-# To open Cypress in interactive mode:
-yarn cy:open
-
-# To run Cypress tests in the command line:
-yarn cy:run
+yarn test
 ```
 
 ## Troubleshooting
