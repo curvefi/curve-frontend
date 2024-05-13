@@ -108,7 +108,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
             parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo && customFeeData) {
+            if (parsedGasInfo && customFeeData?.maxFeePerGas && customFeeData?.maxPriorityFeePerGas) {
               parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
               parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
               curve.setCustomFeeData(customFeeData)
