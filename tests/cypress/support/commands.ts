@@ -1,4 +1,4 @@
-import { connectFaucetWallet, createJsonRpcProvider, createRandomWallet } from '@/support/providers'
+import { connectFaucetWallet, createJsonRpcProvider, createRandomWallet } from './providers'
 import { balanceOfErc20 } from './contracts'
 import { allocateERC20Tokens, allocateEth } from './faucets'
 import { connectMetamask, prepareMetamaskWallet } from './providers'

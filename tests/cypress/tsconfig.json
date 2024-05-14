@@ -3,13 +3,12 @@
     "target": "es5",
     "lib": ["es5", "dom"],
     "types": ["cypress", "node"],
-    "baseUrl": "./cypress",
+    "baseUrl": ".",
     "paths": {
       "@/*": ["*"]
     },
     "resolveJsonModule": true,
     "esModuleInterop": true
   },
-  "exclude": ["node_modules"],
-  "include": ["./**/*.ts", "types/**/*.d.ts", "cy.config.*.ts"]
+  "include": ["./**/*.ts", "types/**/*.d.ts", "../cy.config.*.ts"]
 }
