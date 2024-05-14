@@ -54,9 +54,13 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
   [sliceKey]: {
     ...DEFAULT_STATE,
     getGauges: async (curve: CurveApi) => {
-      try {
-        get().setAppStateByKey(sliceKey, 'gaugesLoading', true)
+      const { gaugeMapper } = get()[sliceKey]
 
+      if (gaugeMapper.length === 0) {
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', true)
+      }
+
+      try {
         const gauges = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
         const formattedGauges: PricesGaugeOverviewResponse = await gauges.json()
 
@@ -115,34 +119,9 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     selectFilteredSortedGauges: () => {
       const { gaugeFormattedData, activeSortBy, activeSortDirection } = get()[sliceKey]
       const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
-
       const gaugeData = gaugeFormattedData ?? cacheGaugeMapper
-
-      let gaugesCopy = [...gaugeData]
-
-      if (activeSortBy === 'relativeWeight') {
-        if (activeSortDirection === 'asc') {
-          gaugesCopy = gaugesCopy.sort((a, b) => a.gauge_relative_weight - b.gauge_relative_weight)
-        } else {
-          gaugesCopy = gaugesCopy.sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-        }
-      } else if (activeSortBy === '7dayWeight') {
-        if (activeSortDirection === 'asc') {
-          gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_7d_delta ?? 0) - (b.gauge_weight_7d_delta ?? 0))
-        } else {
-          gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_7d_delta ?? 0) - (a.gauge_weight_7d_delta ?? 0))
-        }
-      } else if (activeSortBy === '60dayWeight') {
-        if (activeSortDirection === 'asc') {
-          gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_60d_delta ?? 0) - (b.gauge_weight_60d_delta ?? 0))
-        } else {
-          gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_60d_delta ?? 0) - (a.gauge_weight_60d_delta ?? 0))
-        }
-      } else {
-        gaugesCopy = orderBy(gaugesCopy, [activeSortBy], [activeSortDirection])
-      }
-
-      return gaugesCopy
+      const sortedGauges = sortGauges(gaugeData, activeSortBy, activeSortDirection)
+      return sortedGauges
     },
     setGauges: (searchValue: string) => {
       const { selectFilteredSortedGauges } = get()[sliceKey]
@@ -152,12 +131,12 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const gauges = selectFilteredSortedGauges()
 
         if (searchValue !== '') {
-          const searchFilteredProposals = searchFn(searchValue, gauges)
+          const searchFilteredGauges = searchFn(searchValue, gauges)
           get()[sliceKey].setStateByKeys({
             filteringGaugesLoading: false,
-            filteredGauges: searchFilteredProposals,
+            filteredGauges: searchFilteredGauges,
           })
-          return searchFilteredProposals
+          return searchFilteredGauges
         }
 
         get()[sliceKey].setStateByKeys({
@@ -201,6 +180,8 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
       'lp_token',
       'name',
       'platform',
+      'pool.chain',
+      'market.chain',
       // {
       //   name: 'metaData',
       //   getFn: (proposal) => {
@@ -215,6 +196,34 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   const result = fuse.search(filterValue, { limit: 10 })
 
   return result.map((r) => r.item)
+}
+
+const sortGauges = (gauges: GaugeFormattedData[], sortBy: SortByFilterGauges, sortDirection: ActiveSortDirection) => {
+  let gaugesCopy = [...gauges]
+
+  if (sortBy === 'relativeWeight') {
+    if (sortDirection === 'asc') {
+      gaugesCopy = gaugesCopy.sort((a, b) => a.gauge_relative_weight - b.gauge_relative_weight)
+    } else {
+      gaugesCopy = gaugesCopy.sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
+    }
+  } else if (sortBy === '7dayWeight') {
+    if (sortDirection === 'asc') {
+      gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_7d_delta ?? 0) - (b.gauge_weight_7d_delta ?? 0))
+    } else {
+      gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_7d_delta ?? 0) - (a.gauge_weight_7d_delta ?? 0))
+    }
+  } else if (sortBy === '60dayWeight') {
+    if (sortDirection === 'asc') {
+      gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_60d_delta ?? 0) - (b.gauge_weight_60d_delta ?? 0))
+    } else {
+      gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_60d_delta ?? 0) - (a.gauge_weight_60d_delta ?? 0))
+    }
+  } else {
+    gaugesCopy = orderBy(gaugesCopy, [sortBy], [sortDirection])
+  }
+
+  return gaugesCopy
 }
 
 export default createGaugesSlice

@@ -7,7 +7,7 @@ export type Props = {
 const DocumentHead = ({ title }: Props) => {
   return (
     <Head>
-      <title>{title ? `${title} - DAO` : 'Curve DAO'}</title>
+      <title>{title ? `${title} - Curve DAO` : 'Curve DAO'}</title>
       <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
     </Head>
   )

@@ -48,6 +48,7 @@ export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: WalletState): void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
+    setUserProposalVotes(curve: CurveApi): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -73,6 +74,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: WalletState) => {
+      const setUserProposalVotes = get()[sliceKey].setUserProposalVotes
       const userAddress = getWalletSignerAddress(wallet)
 
       try {
@@ -83,23 +85,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         console.error(error)
       }
 
-      try {
-        const userVotes = await curve.dao.userProposalVotes()
-
-        let userProposalsObject: { [voteId: string]: UserVoteData } = {}
-
-        for (const vote of userVotes) {
-          userProposalsObject[`${vote.voteId}-${vote.voteType}`] = {
-            voteId: vote.voteId,
-            voteType: vote.voteType,
-            userVote: vote.userVote,
-          }
-        }
-
-        get()[sliceKey].setStateByKey('userVotesMapper', userProposalsObject)
-      } catch (error) {
-        console.error(error)
-      }
+      setUserProposalVotes(curve)
 
       get()[sliceKey].setStateByKeys({
         userAddress,
@@ -128,6 +114,25 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }
         })
       )
+    },
+    setUserProposalVotes: async (curve: CurveApi) => {
+      try {
+        const userVotes = await curve.dao.userProposalVotes()
+
+        let userProposalsObject: { [voteId: string]: UserVoteData } = {}
+
+        for (const vote of userVotes) {
+          userProposalsObject[`${vote.voteId}-${vote.voteType}`] = {
+            voteId: vote.voteId,
+            voteType: vote.voteType,
+            userVote: vote.userVote,
+          }
+        }
+
+        get()[sliceKey].setStateByKey('userVotesMapper', userProposalsObject)
+      } catch (error) {
+        console.error(error)
+      }
     },
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
