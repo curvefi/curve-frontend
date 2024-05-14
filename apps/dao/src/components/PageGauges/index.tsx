@@ -6,7 +6,6 @@ import useStore from '@/store/useStore'
 import { GAUGES_SORTING_METHODS } from './constants'
 
 import Box from '@/ui/Box'
-import PieChartComponent from './components/PieChartComponent'
 import BarChartComponent from './components/BarChartComponent'
 import GaugeListItem from './components/GaugeListItem'
 import LazyItem from '@/ui/LazyItem'
@@ -54,8 +53,6 @@ const Gauges = () => {
       <PageTitle>Curve Gauges</PageTitle>
       <Box flex fillWidth flexGap={'var(--spacing-1)'}>
         <Container variant="secondary">
-          {/* <Header></Header> */}
-
           <Header>
             <StyledSearchInput
               id="inpSearchProposals"
@@ -102,8 +99,8 @@ const Gauges = () => {
         </Container>
         <Box flex flexColumn>
           <StyledUserBox snapshotVotingPower={false} />
-          <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
-            {!gaugesLoading && (
+          {!gaugesLoading && (
+            <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
               <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
                 <ChartToolBar>
                   <ChartTitle>Gauges Relative Weight Distribution</ChartTitle>
@@ -111,8 +108,8 @@ const Gauges = () => {
                 </ChartToolBar>
                 <BarChartComponent data={gaugeFormattedData} />
               </Box>
-            )}
-          </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     </Wrapper>
@@ -153,7 +150,6 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  /* background-color: var(--gray-500a20); */
   padding: var(--spacing-3) var(--spacing-3) 0;
   width: 100%;
 `

@@ -111,7 +111,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               </Box>
             )}
             <Box flex flexColumn>
-              <DataTitle className="open">{t`Created`}</DataTitle>
+              <DataTitle className="open left-aligned">{t`Created`}</DataTitle>
               <GaugeData className="open">
                 {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
               </GaugeData>
@@ -152,7 +152,6 @@ const BoxedData = styled.p`
   padding: var(--spacing-1);
   font-size: var(--font-size-1);
   font-weight: var(--bold);
-  /* opacity: 0.8; */
   text-transform: capitalize;
 `
 
@@ -197,8 +196,9 @@ const OpenDataRow = styled.div`
   flex-direction: row;
   gap: var(--spacing-4);
   justify-content: space-between;
-  border-top: 1px solid var(--gray-500);
-  padding-top: var(--spacing-2);
+  border-top: 1px solid var(--gray-500a20);
+  padding-top: var(--spacing-3);
+  padding-bottom: var(--spacing-2);
 `
 
 const StyledExternalLink = styled(ExternalLink)`

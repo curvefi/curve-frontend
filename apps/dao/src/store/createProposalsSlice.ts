@@ -7,9 +7,9 @@ import produce from 'immer'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  proposalsLoading: boolean
+  proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
-  pricesProposalLoading: boolean
+  pricesProposalLoading: FetchingState
   voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
@@ -41,9 +41,9 @@ export type ProposalsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  proposalsLoading: true,
+  proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
-  pricesProposalLoading: true,
+  pricesProposalLoading: 'LOADING',
   voteStatus: '',
   searchValue: '',
   activeFilter: 'all',
@@ -61,7 +61,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
   [sliceKey]: {
     ...DEFAULT_STATE,
     getProposals: async (curve: CurveApi) => {
-      get()[sliceKey].setStateByKey('proposalsLoading', true)
+      get()[sliceKey].setStateByKey('proposalsLoadingState', 'LOADING')
 
       try {
         const proposals = await curve.dao.getProposalList()
@@ -94,13 +94,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         get()[sliceKey].setStateByKey('proposalsMapper', proposalsObject)
         get().storeCache.setStateByKey('cacheProposalsMapper', proposalsObject)
-        get()[sliceKey].setStateByKey('proposalsLoading', false)
+        get()[sliceKey].setStateByKey('proposalsLoadingState', 'SUCCESS')
       } catch (error) {
         console.log(error)
+        get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
     getProposal: async (voteId: number, voteType: string) => {
-      get()[sliceKey].setStateByKey('pricesProposalLoading', true)
+      get()[sliceKey].setStateByKey('pricesProposalLoading', 'LOADING')
 
       try {
         const proposalFetch = await fetch(
@@ -122,7 +123,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         set(
           produce((state: State) => {
-            state[sliceKey].pricesProposalLoading = false
+            state[sliceKey].pricesProposalLoading = 'SUCCESS'
             state[sliceKey].pricesProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
@@ -135,6 +136,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
       } catch (error) {
         console.log(error)
+        get()[sliceKey].setStateByKey('pricesProposalLoading', 'ERROR')
       }
     },
     selectFilteredSortedProposals: () => {
@@ -142,45 +144,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const cacheProposalsMapper = get().storeCache.cacheProposalsMapper
 
       const proposalsData = proposalsMapper ?? cacheProposalsMapper
+      const proposals = Object.values(proposalsData)
 
-      let proposalsCopy = [...Object.values(proposalsData)]
-
-      // filter
-      if (activeFilter !== 'all') {
-        proposalsCopy = Object.values(proposalsMapper).filter(
-          (proposal) => proposal.status.toLowerCase() === activeFilter
-        )
-      }
-
-      let sortedProposals = proposalsCopy
-      let passedProposals = []
-      if (activeSortBy === 'endingSoon') {
-        const currentTimestamp = Math.floor(Date.now() / 1000)
-        sortedProposals = proposalsCopy.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
-        passedProposals = orderBy(
-          proposalsCopy.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
-          ['voteId'],
-          ['desc']
-        )
-
-        if (activeSortDirection === 'asc') {
-          sortedProposals = orderBy(
-            sortedProposals,
-            [(proposal) => proposal.startDate + 604800 - currentTimestamp],
-            ['desc']
-          )
-          sortedProposals = [...sortedProposals, ...passedProposals]
-        } else {
-          sortedProposals = orderBy(
-            sortedProposals,
-            [(proposal) => proposal.startDate + 604800 - currentTimestamp],
-            ['asc']
-          )
-          sortedProposals = [...sortedProposals, ...passedProposals]
-        }
-      } else {
-        sortedProposals = orderBy(proposalsCopy, [activeSortBy], [activeSortDirection])
-      }
+      const filteredProposals = filterProposals(proposals, activeFilter)
+      const sortedProposals = sortProposals(filteredProposals, activeSortBy, activeSortDirection)
 
       return sortedProposals
     },
@@ -286,6 +253,43 @@ const searchFn = (filterValue: string, proposals: ProposalData[]) => {
   const result = fuse.search(filterValue, { limit: 10 })
 
   return result.map((r) => r.item)
+}
+
+const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFilter) => {
+  if (activeFilter === 'all') {
+    return proposals
+  }
+  return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+}
+
+const sortProposals = (
+  proposals: ProposalData[],
+  activeSortBy: SortByFilterProposals,
+  activeSortDirection: ActiveSortDirection
+) => {
+  if (activeSortBy === 'endingSoon') {
+    const currentTimestamp = Math.floor(Date.now() / 1000)
+    const activeProposals = proposals.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
+    const passedProposals = orderBy(
+      proposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
+      ['voteId'],
+      ['desc']
+    )
+
+    if (activeSortDirection === 'asc') {
+      return [
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + 604800 - currentTimestamp], ['desc']),
+        ...passedProposals,
+      ]
+    } else {
+      return [
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + 604800 - currentTimestamp], ['asc']),
+        ...passedProposals,
+      ]
+    }
+  } else {
+    return orderBy(proposals, [activeSortBy], [activeSortDirection])
+  }
 }
 
 export default createProposalsSlice
