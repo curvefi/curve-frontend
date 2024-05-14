@@ -472,12 +472,9 @@ const networks: Record<ChainId, NetworkConfig> = {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_XLAYER_DEV_RPC_URL! : `https://rpc.xlayer.tech`,
     showInSelectNetwork: false,
-    showRouterSwap: false, // remove once there is a pool
-    useApi: false, // remove once API is ready
     swap: {
-      // TODO: Update default to available liquidity in pool.
-      fromAddress: '0x382bb369d343125bfb2117af9c149795c6c65c50',
-      toAddress: '0xc946daf81b08146b1c7a8da2a851ddf2b3eaaf85',
+      fromAddress: '0x1e4a5963abfd975d8c9021ce480b42188849d41d',
+      toAddress: '0x74b7f16337b8972027f6196a17a631ac6de26d22',
     },
     stableswapFactory: true,
     twocryptoFactory: true,

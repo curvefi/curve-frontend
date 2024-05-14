@@ -89,7 +89,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             parsedGasInfo = await parseGasInfo(curve, provider)
 
             if (parsedGasInfo) {
-              parsedGasInfo.gasInfo.gasPrice = l2GasPrice
+              parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
             }
 
             if (l2GasPrice) {

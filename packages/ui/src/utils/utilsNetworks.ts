@@ -304,8 +304,8 @@ export const baseNetworksConfig = {
     orgUIPath: '',
     rpcUrlConnectWallet: `https://rpc.xlayer.tech`,
     symbol: 'OKB',
-    scanAddressPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/address/${hash}`,
-    scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/oktc/token/${hash}`,
+    scanAddressPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/address/${hash}`,
+    scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/token/${hash}`,
   },
 }
