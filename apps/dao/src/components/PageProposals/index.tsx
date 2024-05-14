@@ -19,7 +19,7 @@ type Props = {}
 
 const Proposals = () => {
   const {
-    proposalsLoading,
+    proposalsLoadingState,
     filteringProposalsLoading,
     activeSortBy,
     activeSortDirection,
@@ -54,10 +54,18 @@ const Proposals = () => {
   )
 
   useEffect(() => {
-    if (!isLoadingCurve && !proposalsLoading) {
+    if (!isLoadingCurve && proposalsLoadingState === 'SUCCESS') {
       setProposals(activeFilter, searchValue)
     }
-  }, [activeFilter, activeSortBy, activeSortDirection, searchValue, setProposals, isLoadingCurve, proposalsLoading])
+  }, [
+    activeFilter,
+    activeSortBy,
+    activeSortDirection,
+    searchValue,
+    setProposals,
+    isLoadingCurve,
+    proposalsLoadingState,
+  ])
 
   return (
     <Wrapper>
@@ -99,7 +107,7 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {proposalsLoading || isLoadingCurve || filteringProposalsLoading ? (
+            {proposalsLoadingState === 'LOADING' || isLoadingCurve || filteringProposalsLoading ? (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>

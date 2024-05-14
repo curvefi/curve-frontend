@@ -204,6 +204,8 @@ declare global {
     value: number
   }
 
+  type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
+
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
   type SortByFilterProposals = 'voteId' | 'endingSoon'

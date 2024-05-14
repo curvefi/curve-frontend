@@ -16,8 +16,11 @@ type Props = {
 }
 
 const UserBox = ({ className, children, votingPower, snapshotVotingPower }: Props) => {
-  const [{ wallet }] = useConnectWallet()
-  const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
+  const [{ wallet }, connect] = useConnectWallet()
+
+  const handleConnectWallet = async () => {
+    await connect()
+  }
 
   return (
     <Wrapper variant="secondary" className={className}>
@@ -29,7 +32,7 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower }: Prop
       ) : (
         <ConnectMessage>
           <p>{t`Please connect a wallet to see more user information.`}</p>
-          <StyledButton variant="outlined" onClick={updateConnectWalletStateKeys}>
+          <StyledButton variant="outlined" onClick={handleConnectWallet}>
             {t`Connect Wallet`}
           </StyledButton>
         </ConnectMessage>

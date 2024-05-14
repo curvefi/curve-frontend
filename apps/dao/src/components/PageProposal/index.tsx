@@ -7,6 +7,7 @@ import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import { copyToClipboard } from '@/utils'
+import { shortenTokenAddress } from '@/ui/utils'
 
 import Button from '@/ui/Button'
 import IconButton from '@/ui/IconButton'
@@ -22,7 +23,7 @@ import UserBox from '../UserBox'
 import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
-import { shortenTokenAddress } from '@/ui/utils'
+import ErrorMessage from '@/components/ErrorMessage'
 
 type Props = {
   routerParams: {
@@ -35,7 +36,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
-  const { proposalsLoading, getProposal, pricesProposalLoading } = useStore((state) => state.proposals)
+  const { proposalsLoadingState, getProposal, pricesProposalLoading } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
@@ -96,7 +97,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
             <TopBarColumn>
               <SubTitle>{t`Status`}</SubTitle>
               {!proposal ? (
-                <Loader skeleton={[56, 16.5]} />
+                <Loader isLightBg skeleton={[56, 16.5]} />
               ) : (
                 <Status
                   className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
@@ -123,15 +124,20 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
             )}
             <TopBarColumn margin="0 0 0 auto">
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
-              {!proposal ? <StyledLoader skeleton={[56, 16.5]} /> : <VoteCountdown startDate={startDate} />}
+              {!proposal ? <StyledLoader isLightBg skeleton={[56, 16.5]} /> : <VoteCountdown startDate={startDate} />}
             </TopBarColumn>
           </ProposalTopBar>
-
-          {!pricesProposal || !proposal ? (
+          {pricesProposalLoading === 'ERROR' && (
+            <ErrorWrapper>
+              <ErrorMessage message={t`Error loading proposal data`} onClick={() => getProposal(+voteId, voteType)} />
+            </ErrorWrapper>
+          )}
+          {pricesProposalLoading === 'LOADING' && (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
-          ) : (
+          )}
+          {pricesProposalLoading === 'SUCCESS' && (
             <>
               <MetaData>
                 <Box flex flexJustifyContent="space-between" flexAlignItems="end">
@@ -233,6 +239,16 @@ const SubTitle = styled.h4`
   &.align-right {
     margin-left: auto;
   }
+`
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 39.75rem;
+  max-width: 100%;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-4);
 `
 
 const ProposalTopBar = styled.div`

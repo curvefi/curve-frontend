@@ -24,7 +24,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) =>
       <Box flex flexColumn>
         <SubTitle>{t`User`}</SubTitle>
         {!userAddress ? (
-          <Loader skeleton={[80, 16.5]} />
+          <Loader isLightBg skeleton={[80, 16.5]} />
         ) : noLink ? (
           <Box flex flexColumn>
             {userEns ? (
@@ -53,14 +53,18 @@ const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) =>
         {snapshotVotingPower && votingPower !== undefined && (
           <>
             <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
-            {votingPower.loading ? <Loader skeleton={[80, 16.5]} /> : <h4>{formatNumber(votingPower.value)} veCRV</h4>}
+            {votingPower.loading ? (
+              <Loader isLightBg skeleton={[80, 16.5]} />
+            ) : (
+              <h4>{formatNumber(votingPower.value)} veCRV</h4>
+            )}
           </>
         )}
         {!snapshotVotingPower && (
           <>
             <SubTitle>{t`Voting Power`}</SubTitle>
             {!userVeCrv || !userAddress ? (
-              <Loader skeleton={[80, 16.5]} />
+              <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
               <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
             )}
