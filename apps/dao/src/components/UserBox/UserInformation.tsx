@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
@@ -17,7 +16,7 @@ type Props = {
 }
 
 const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) => {
-  const { userAddress, userEns, userVeCrv, userVotesMapper } = useStore((state) => state.user)
+  const { userAddress, userEns, userVeCrv } = useStore((state) => state.user)
 
   return (
     <Box flex flexColumn flexGap="var(--spacing-2)">
