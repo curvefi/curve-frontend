@@ -15,8 +15,6 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
 
-type Props = {}
-
 const Proposals = () => {
   const {
     proposalsLoadingState,
@@ -55,7 +53,7 @@ const Proposals = () => {
 
   useEffect(() => {
     if (!isLoadingCurve && proposalsLoadingState === 'SUCCESS') {
-      setProposals(activeFilter, searchValue)
+      setProposals(searchValue)
     }
   }, [
     activeFilter,
@@ -100,7 +98,7 @@ const Proposals = () => {
             onClick={() => handleChangeSortingDirection()}
           />
         </ToolBar>
-        <Box flex flexColumn padding={'var(--spacing-3) var(--spacing-3) var(--spacing-7)'}>
+        <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-7)'}>
           {searchValue !== '' && (
             <SearchMessage>
               Showing results ({proposals.length}) for &quot;<strong>{searchValue}</strong>&quot;:
@@ -149,7 +147,7 @@ const ProposalsContainer = styled(Box)`
 const ProposalsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  row-gap: var(--spacing-4);
+  row-gap: var(--spacing-3);
 `
 
 const ListManagerContainer = styled.div`
@@ -172,8 +170,7 @@ const ToolBar = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  padding: var(--spacing-3);
-  background-color: var(--gray-500a20);
+  padding: var(--spacing-3) var(--spacing-3) 0;
 `
 
 const StyledSelectSortingMethod = styled(SelectSortingMethod)`
@@ -189,7 +186,7 @@ const ToggleDirectionIcon = styled(Icon)`
 
 const StyledSearchInput = styled(SearchInput)`
   width: 15rem;
-  margin: var(--spacing-2) var(--spacing-2) var(--spacing-1) var(--spacing-2);
+  margin: var(--spacing-2);
 `
 
 const SearchMessage = styled.p`

@@ -2,8 +2,6 @@ import styled from 'styled-components'
 import { useConnectWallet } from '@/onboard'
 import { t } from '@lingui/macro'
 
-import useStore from '@/store/useStore'
-
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import UserInformation from './UserInformation'
