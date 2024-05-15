@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
@@ -16,29 +17,30 @@ type Props = {
 }
 
 const Voters = ({ totalVotes, rProposalId }: Props) => {
+  const pricesProposalLoading = useStore((state) => state.proposals.pricesProposalLoading)
   const currentProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId])
 
   return (
     <Wrapper variant="secondary">
       <TotalWrapper>
         <Box>
-          <SubTitle>Total Votes</SubTitle>
+          <SubTitle>{t`Total Votes`}</SubTitle>
           <Box>
             <Data>{formatNumber(totalVotes)} veCRV</Data>
           </Box>
         </Box>
         <Box>
-          <SubTitle>Voters</SubTitle>
+          <SubTitle>{t`Voters`}</SubTitle>
           <Box>
             <Data className="align-right">{formatNumber(currentProposal?.vote_count)}</Data>
           </Box>
         </Box>
       </TotalWrapper>
-      {currentProposal && currentProposal.votes.length !== 0 && (
+      {currentProposal && pricesProposalLoading === 'SUCCESS' && currentProposal.votes.length !== 0 && (
         <VotesWrapper>
           <Box flex flexJustifyContent="space-between">
-            <SubTitle>Voter</SubTitle>
-            <SubTitle>Power</SubTitle>
+            <SubTitle>{t`Voter`}</SubTitle>
+            <SubTitle>{t`Power`}</SubTitle>
           </Box>
           <VotesContainer>
             {currentProposal.votes.map((vote) => (

@@ -9,7 +9,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
-  pricesProposalLoading: FetchingState
+  pricesProposalLoadingState: FetchingState
   voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
@@ -32,7 +32,7 @@ export type ProposalsSlice = {
     setActiveSortBy(sortBy: SortByFilterProposals): void
     setActiveSortDirection(direction: ActiveSortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
-    setProposals(activeFilter: ProposalListFilter, searchValue: string): void
+    setProposals(searchValue: string): void
     castVote(voteId: number, voteType: ProposalType, support: boolean): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
@@ -43,7 +43,7 @@ export type ProposalsSlice = {
 const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
-  pricesProposalLoading: 'LOADING',
+  pricesProposalLoadingState: 'LOADING',
   voteStatus: '',
   searchValue: '',
   activeFilter: 'all',
@@ -101,7 +101,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     getProposal: async (voteId: number, voteType: string) => {
-      get()[sliceKey].setStateByKey('pricesProposalLoading', 'LOADING')
+      get()[sliceKey].setStateByKey('pricesProposalLoadingState', 'LOADING')
 
       try {
         const proposalFetch = await fetch(
@@ -123,12 +123,12 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         set(
           produce((state: State) => {
-            state[sliceKey].pricesProposalLoading = 'SUCCESS'
+            state[sliceKey].pricesProposalLoadingState = 'SUCCESS'
             state[sliceKey].pricesProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
-            state.storeCache.cachePricesProposalsMapper[`${voteId}-${voteType}`] = {
+            state.storeCache.cachePricesProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
@@ -136,7 +136,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
       } catch (error) {
         console.log(error)
-        get()[sliceKey].setStateByKey('pricesProposalLoading', 'ERROR')
+        get()[sliceKey].setStateByKey('pricesProposalLoadingState', 'ERROR')
       }
     },
     selectFilteredSortedProposals: () => {
@@ -151,11 +151,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       return sortedProposals
     },
-    setProposals: (activeFilter: ProposalListFilter, searchValue: string) => {
+    setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals } = get()[sliceKey]
       get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
 
-      // setTimeout(() => {
       const proposals = selectFilteredSortedProposals()
 
       if (searchValue !== '') {
@@ -171,7 +170,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         filteringProposalsLoading: false,
         proposals: proposals,
       })
-      // }, 500)
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)

@@ -12,6 +12,8 @@ import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
 import LineChartComponent from './LineChartComponent'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import ErrorMessage from '@/components/ErrorMessage'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -80,9 +82,29 @@ const GaugeListItem = ({ gaugeData }: Props) => {
       </Box>
       {open && (
         <OpenContainer>
-          {gaugeWeightHistoryMapper[gaugeData.address] && (
-            <LineChartComponent data={gaugeWeightHistoryMapper[gaugeData.address]} />
+          {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
+            <ErrorWrapper onClick={(e) => e.stopPropagation()}>
+              <ErrorMessage
+                message={t`Error fetching historical gauge weights data`}
+                onClick={(e?: React.MouseEvent) => {
+                  e?.stopPropagation()
+                  getHistoricGaugeWeights(gaugeData.address)
+                }}
+              />
+            </ErrorWrapper>
           )}
+          {(gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'LOADING' ||
+            !gaugeWeightHistoryMapper[gaugeData.address] ||
+            (gaugeWeightHistoryMapper[gaugeData.address]?.data.length === 0 &&
+              gaugeWeightHistoryMapper[gaugeData.address]?.loadingState !== 'ERROR')) && (
+            <StyledSpinnerWrapper>
+              <Spinner size={16} />
+            </StyledSpinnerWrapper>
+          )}
+          {gaugeWeightHistoryMapper[gaugeData.address]?.data.length !== 0 &&
+            gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'SUCCESS' && (
+              <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
+            )}
           <OpenDataRow>
             <Box flex flexColumn>
               <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
@@ -214,6 +236,18 @@ const StyledExternalLink = styled(ExternalLink)`
   &:hover {
     cursor: pointer;
   }
+`
+
+const ErrorWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+`
+
+const StyledSpinnerWrapper = styled(SpinnerWrapper)`
+  height: 400px;
 `
 
 export default GaugeListItem

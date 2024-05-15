@@ -114,9 +114,9 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     if (isSuccess(connectState) && curve && onboard) {
       const updateUserDataIfReady = async () => {
-        const wallets = await onboard.connectWallet()
-        if (wallets.length > 0) {
-          updateUserData(curve, wallets[0])
+        const connectedWallets = onboard.state.get().wallets
+        if (connectedWallets.length > 0) {
+          updateUserData(curve, connectedWallets[0])
         }
       }
 
