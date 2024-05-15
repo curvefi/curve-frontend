@@ -95,8 +95,10 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
             if (l2GasPrice) {
               curve.setCustomFeeData({
                 gasPrice: l2GasPrice, // in gwei
-                maxFeePerGas: undefined,
-                maxPriorityFeePerGas: undefined,
+                // @ts-ignore
+                maxFeePerGas: null,
+                // @ts-ignore
+                maxPriorityFeePerGas: null,
               })
             }
           }
