@@ -229,17 +229,22 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         dynamicActivate(rLocale)
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
+      } else if (
+        walletChainId &&
+        curve &&
+        curve.chainId === walletChainId &&
+        parsedParams.rChainId !== walletChainId &&
+        location.pathname !== ROUTE.PAGE_INTEGRATIONS
+      ) {
+        // switch network if url network is not same as wallet
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
+      } else if (curve && curve.chainId !== parsedParams.rChainId) {
+        // switch network if url network is not same as api
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
-
-  useEffect(() => {
-    if (parsedParams.redirectPathname) {
-      navigate(parsedParams.redirectPathname)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedParams.redirectPathname])
 
   return {
     pageLoaded: connectState.status === 'success',

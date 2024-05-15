@@ -42,7 +42,10 @@ const multichainNetworks: { [chainId: string]: boolean } = {
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
-    let resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
+    let resp: { customFeeData: Record<string, number | null> | null; error: string } = {
+      customFeeData: null,
+      error: '',
+    }
     try {
       resp.customFeeData = await curve.getGasInfoForL2()
       return resp
@@ -53,9 +56,9 @@ const helpers = {
     }
   },
   fetchL2GasPrice: async (curve: CurveApi) => {
-    let resp = { l2GasPriceWei: 0, error: '' }
+    let resp = { l2GasPrice: 0, error: '' }
     try {
-      resp.l2GasPriceWei = await curve.getGasPriceFromL2()
+      resp.l2GasPrice = await curve.getGasPriceFromL2()
       return resp
     } catch (error) {
       console.error(error)
@@ -111,15 +114,17 @@ const helpers = {
 // curve
 const network = {
   fetchAllPoolsList: async (curve: CurveApi) => {
+    const { chainId } = curve
     log('fetchAllPoolsList', curve.chainId)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
+    const useApi = networks[chainId].useApi
     await Promise.allSettled([
-      curve.factory.fetchPools(true),
-      curve.cryptoFactory.fetchPools(true),
-      curve.twocryptoFactory.fetchPools(true),
-      curve.crvUSDFactory.fetchPools(true),
-      curve.tricryptoFactory.fetchPools(true),
-      curve.stableNgFactory.fetchPools(true),
+      curve.factory.fetchPools(useApi),
+      curve.cryptoFactory.fetchPools(useApi),
+      curve.twocryptoFactory.fetchPools(useApi),
+      curve.crvUSDFactory.fetchPools(useApi),
+      curve.tricryptoFactory.fetchPools(useApi),
+      curve.stableNgFactory.fetchPools(useApi),
     ])
     await Promise.allSettled([
       curve.factory.fetchNewPools(),

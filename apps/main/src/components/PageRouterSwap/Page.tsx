@@ -67,7 +67,7 @@ const Page: NextPage = () => {
   useEffect(() => {
     setLoaded(false)
     if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
-      if (!hasRouter) {
+      if (!hasRouter || !networks[rChainId].showRouterSwap) {
         navigate(getPath(params, `${ROUTE.PAGE_POOLS}`))
       } else {
         if (paramsMaxSlippage) {

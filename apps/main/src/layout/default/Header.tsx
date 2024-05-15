@@ -55,7 +55,7 @@ const Header = () => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -75,10 +75,8 @@ const Header = () => {
   ]
 
   const pages: AppPage[] = useMemo(() => {
-    const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
     const links = isLgUp
       ? [
-          { route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' },
           { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
           { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
           { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
@@ -87,7 +85,6 @@ const Header = () => {
           APP_LINK.lend,
         ]
       : [
-          { route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'swap' },
           { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
           { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
           { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
@@ -96,8 +93,13 @@ const Header = () => {
           APP_LINK.lend,
         ]
 
+    if (hasRouter && networks[rChainId].showRouterSwap) {
+      const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
+      links.unshift({ route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' })
+    }
+
     return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
+  }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -133,6 +135,7 @@ const Header = () => {
       minWidth="9rem"
       mobileRightAlign
       selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
+      isDarkTheme={themeType === 'dark'}
       onSelectionChange={handleNetworkChange}
     />
   )

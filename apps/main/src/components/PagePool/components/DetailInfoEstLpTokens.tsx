@@ -41,7 +41,7 @@ const DetailInfoEstLpTokens = ({
       tooltip={
         showTooltip ? (
           <IconTooltip placement="top end" noWrap>
-            {formatNumber(1)} Curve {poolDataCacheOrApi.pool.id} LP token = {parsedVirtualPrice}
+            {formatNumber(1)} LP token = {parsedVirtualPrice}
           </IconTooltip>
         ) : (
           ''

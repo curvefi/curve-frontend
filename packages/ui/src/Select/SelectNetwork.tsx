@@ -9,6 +9,7 @@ import Select from 'ui/src/Select'
 
 type ItemObj = {
   icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
+  iconDarkTheme?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
   chainId: number
   label: string
 }
@@ -16,10 +17,17 @@ type ItemObj = {
 export function SelectNetwork<T extends object>({
   connectState,
   hideIcon,
+  isDarkTheme,
+  items,
   ...props
-}: Omit<SelectProps<T>, 'children'> & { connectState: ConnectState; hideIcon?: boolean }) {
+}: Omit<SelectProps<T>, 'children'> & { connectState: ConnectState; hideIcon?: boolean; isDarkTheme?: boolean }) {
+  const parsedItems = Object.entries(items ?? []).map(([_, item]) => {
+    const { icon, iconDarkTheme, ...rest } = item as ItemObj
+    return { ...rest, icon: isDarkTheme && typeof iconDarkTheme !== 'undefined' ? iconDarkTheme : icon }
+  })
+
   return (
-    <Select {...props} aria-label="Select network" label="">
+    <Select {...props} items={parsedItems} aria-label="Select network" label="">
       {(item) => {
         const { icon: Icon, chainId, label } = item as ItemObj
         return (
