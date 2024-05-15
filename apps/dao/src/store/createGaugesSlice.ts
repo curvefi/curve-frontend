@@ -15,7 +15,7 @@ type SliceState = {
   activeSortDirection: ActiveSortDirection
   searchValue: string
   gaugeMapper: PricesGaugeOverviewData[]
-  gaugeWeightHistoryMapper: { [address: string]: GaugeWeightHistoryData[] }
+  gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
   gaugeFormattedData: GaugeFormattedData[]
   filteredGauges: GaugeFormattedData[]
 }
@@ -95,6 +95,15 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
     },
     getHistoricGaugeWeights: async (gaugeAddress: string) => {
+      set(
+        produce(get(), (state) => {
+          state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
+            loadingState: 'LOADING',
+            data: [],
+          }
+        })
+      )
+
       try {
         const weights = await fetch(`https://prices.curve.fi/v1/dao/gauges/${gaugeAddress}/weight_history`)
         const weightsData = await weights.json()
@@ -108,11 +117,19 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         set(
           produce(get(), (state) => {
-            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
+            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
+              loadingState: 'SUCCESS',
+              data: formattedWeightsData,
+            }
             state.storeCache.cacheGaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
           })
         )
       } catch (error) {
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
+          })
+        )
         console.log(error)
       }
     },

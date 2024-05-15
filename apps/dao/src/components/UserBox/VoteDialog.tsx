@@ -13,19 +13,21 @@ import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 
 type Props = {
-  active: boolean
+  activeProposal: boolean
   testId?: string
+  proposalId?: string
   votingPower: SnapshotVotingPower
   snapshotVotingPower: boolean
   className?: string
 }
 
-const VoteDialog = ({ active, testId, className, votingPower, snapshotVotingPower }: Props) => {
+const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVotingPower, proposalId }: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const [vote, setVote] = useState<boolean | null>(null)
 
   const isMobile = useStore((state) => state.isMobile)
   const { castVote } = useStore((state) => state.proposals)
+  const { userVotesMapper } = useStore((state) => state.user)
 
   const handleClose = () => {
     if (isMobile) {
@@ -37,12 +39,24 @@ const VoteDialog = ({ active, testId, className, votingPower, snapshotVotingPowe
 
   return (
     <Wrapper className={className}>
-      {active ? (
+      {activeProposal ? (
         votingPower.value === 0 ? (
           <VotingMessage>
             <Icon name="WarningSquareFilled" size={20} />
             {t`Voting power too low to participate in this proposal.`}
           </VotingMessage>
+        ) : proposalId && userVotesMapper[proposalId] ? (
+          <VotedMessageWrapper>
+            <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
+            <VotedMessage>
+              {t`${userVotesMapper[proposalId].userVote ? 'For' : 'Against'}`}
+              {userVotesMapper[proposalId].userVote ? (
+                <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} />
+              ) : (
+                <Icon color="var(--chart-red)" name="Misuse" size={16} />
+              )}
+            </VotedMessage>
+          </VotedMessageWrapper>
         ) : (
           <>
             <VoteDialogButton variant="filled" onClick={overlayTriggerState.open}>
@@ -106,11 +120,31 @@ const VotingMessage = styled.p`
   font-size: var(--font-size-1);
   line-height: 1.2;
   margin-right: auto;
-  /* border: 1px solid var(--gray-500a25); */
   background-color: var(--gray-500a25);
   svg {
     color: var(--warning-400);
   }
+`
+
+const VotedMessageWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--gray-500a25);
+  padding: var(--spacing-2);
+`
+
+const VotedMessage = styled.p`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-1);
+  color: var(--button_outlined--color);
+  font-weight: var(--bold);
+  font-size: var(--font-size-1);
+  line-height: 1.5;
 `
 
 const VoteDialogButton = styled(Button)`

@@ -6,10 +6,10 @@ import LineChartCustomTooltip from './LineChartCustomTooltip'
 
 type Props = {
   data: GaugeWeightHistoryData[]
+  height?: number
 }
 
-const LineChartComponent = ({ data }: Props) => {
-  const height = 400
+const LineChartComponent = ({ data, height = 400 }: Props) => {
   const yAxisWidth = 24
 
   const maxValue = Math.max(...data.map((item) => item.gauge_relative_weight))

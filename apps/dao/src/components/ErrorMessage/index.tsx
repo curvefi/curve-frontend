@@ -5,7 +5,7 @@ import Icon from '@/ui/Icon'
 
 type Props = {
   message: string
-  onClick: () => void
+  onClick: (e?: React.MouseEvent) => void
 }
 
 const ErrorMessage = ({ message, onClick }: Props) => {

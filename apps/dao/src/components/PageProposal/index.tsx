@@ -1,13 +1,16 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { t } from '@lingui/macro'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import { copyToClipboard } from '@/utils'
 import { shortenTokenAddress } from '@/ui/utils'
+
+import useProposalsMapper from '@/hooks/useProposalsMapper'
+import usePricesProposalMapper from '@/hooks/usePricesProposalMapper'
 
 import Button from '@/ui/Button'
 import IconButton from '@/ui/IconButton'
@@ -36,52 +39,33 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
-  const { proposalsLoadingState, getProposal, pricesProposalLoading } = useStore((state) => state.proposals)
+  const { proposalsLoadingState, getProposal, pricesProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const pricesProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId] ?? null)
-  const proposal = useStore((state) => state.proposals.proposalsMapper[rProposalId] ?? null)
-  const {
-    creator,
-    startDate,
-    snapshotBlock,
-    ipfsMetadata,
-    metadata,
-    votesFor,
-    votesAgainst,
-    voteCount,
-    supportRequired,
-    minSupport,
-    quorumVeCrv,
-    minAcceptQuorumPercent,
-    totalVeCrv,
-    totalVotes,
-    currentQuorumPercentage,
-    executed,
-    status,
-  } = proposal ?? {}
+  const { pricesProposalMapper } = usePricesProposalMapper()
+  const { proposalsMapper } = useProposalsMapper()
+  const pricesProposal = pricesProposalMapper[rProposalId] ?? null
+  const proposal = proposalsMapper[rProposalId] ?? null
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
   }
 
   useEffect(() => {
-    if (snapshotVeCrv === undefined && provider && userAddress && snapshotBlock) {
+    if (snapshotVeCrv === undefined && provider && userAddress && proposal?.snapshotBlock) {
       const getVeCrv = async () => {
         const signer = await provider.getSigner()
-        setSnapshotVeCrv(signer, userAddress, snapshotBlock, rProposalId)
+        setSnapshotVeCrv(signer, userAddress, proposal.snapshotBlock, rProposalId)
       }
 
       getVeCrv()
     }
-  }, [provider, rProposalId, setSnapshotVeCrv, snapshotBlock, snapshotVeCrv, userAddress])
+  }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
-    if (rChainId && voteId && voteType) {
-      getProposal(+voteId, voteType)
-    }
-  }, [getProposal, voteId, voteType, isLoadingCurve, rChainId])
+    if (pricesProposal) return
+    getProposal(+voteId, voteType)
+  }, [getProposal, pricesProposal, voteId, voteType])
 
   return (
     <Wrapper>
@@ -100,11 +84,11 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 <Loader isLightBg skeleton={[56, 16.5]} />
               ) : (
                 <Status
-                  className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
-                    status === 'Passed' && 'passed'
-                  }`}
+                  className={`${proposal?.status === 'Active' && 'active'} ${
+                    proposal?.status === 'Denied' && 'denied'
+                  } ${proposal?.status === 'Passed' && 'passed'}`}
                 >
-                  {status}
+                  {proposal?.status}
                 </Status>
               )}
             </TopBarColumn>
@@ -116,61 +100,69 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
               <SubTitle>{t`Proposal Type`}</SubTitle>
               <h3>{voteType}</h3>
             </TopBarColumn>
-            {status === 'Passed' && (
+            {proposal?.status === 'Passed' && (
               <TopBarColumn>
                 <SubTitle>{t`Executed`}</SubTitle>
-                <h3>{executed ? t`Executed` : t`Executable`}</h3>
+                <h3>{proposal?.executed ? t`Executed` : t`Executable`}</h3>
               </TopBarColumn>
             )}
             <TopBarColumn margin="0 0 0 auto">
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
-              {!proposal ? <StyledLoader isLightBg skeleton={[56, 16.5]} /> : <VoteCountdown startDate={startDate} />}
+              {!proposal ? (
+                <StyledLoader isLightBg skeleton={[56, 16.5]} />
+              ) : (
+                <VoteCountdown startDate={proposal?.startDate} />
+              )}
             </TopBarColumn>
           </ProposalTopBar>
-          {pricesProposalLoading === 'ERROR' && (
+          {pricesProposalLoadingState === 'ERROR' && (
             <ErrorWrapper>
               <ErrorMessage message={t`Error loading proposal data`} onClick={() => getProposal(+voteId, voteType)} />
             </ErrorWrapper>
           )}
-          {pricesProposalLoading === 'LOADING' && (
+          {(pricesProposalLoadingState === 'LOADING' ||
+            proposalsLoadingState === 'LOADING' ||
+            (!pricesProposal && proposalsLoadingState !== 'ERROR')) && (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
           )}
-          {pricesProposalLoading === 'SUCCESS' && (
+          {pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal && (
             <>
               <MetaData>
                 <Box flex flexJustifyContent="space-between" flexAlignItems="end">
                   <SubTitle>{t`Metadata`}</SubTitle>
                   <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                    <StyledCopyButton size="medium" onClick={() => handleCopyClick(ipfsMetadata)}>
+                    <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
                       {t`Raw Ipfs`}
                       <Icon name="Copy" size={16} />
                     </StyledCopyButton>
                   </Tooltip>
                 </Box>
-                <p>{metadata}</p>
+                <p>{proposal?.metadata}</p>
               </MetaData>
-              {pricesProposal && <Script script={pricesProposal.script} />}
+              {pricesProposal && <Script script={pricesProposal?.script} />}
               <TimelineBox>
                 <Box>
                   <SubTitle>{t`Proposer`}</SubTitle>
-                  <StyledExternalLink href={networks[1].scanAddressPath(creator)}>
-                    {shortenTokenAddress(creator)}
+                  <StyledExternalLink href={networks[1].scanAddressPath(proposal?.creator)}>
+                    {shortenTokenAddress(proposal?.creator)}
                     <Icon name="Launch" size={16} />
                   </StyledExternalLink>
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <Time>{pricesProposal.snapshot_block}</Time>
+                  <Time>{pricesProposal?.snapshot_block}</Time>
                 </Box>
                 <Box>
                   <SubTitle>{t`Created`}</SubTitle>
-                  <Time>{new Date(convertToLocaleTimestamp(startDate) * 1000).toLocaleString()}</Time>
+                  <Time>{new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString()}</Time>
                 </Box>
                 <Box>
                   <SubTitle>{t`Ends`}</SubTitle>
-                  <Time>{new Date(convertToLocaleTimestamp(startDate + 604800) * 1000).toLocaleString()}</Time>
+                  <Time>
+                    {new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString()}
+                  </Time>
                 </Box>
               </TimelineBox>
             </>
@@ -180,22 +172,27 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
         <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
           <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
             {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
-              <VoteDialog snapshotVotingPower active={proposal?.status === 'Active'} votingPower={snapshotVeCrv} />
+              <VoteDialog
+                snapshotVotingPower
+                activeProposal={proposal?.status === 'Active'}
+                votingPower={snapshotVeCrv}
+                proposalId={rProposalId}
+              />
             )}
           </UserBox>
           {proposal && (
             <>
               <VotesWrapper variant="secondary">
                 <VotesStatusBox
-                  votesFor={votesFor}
-                  votesAgainst={votesAgainst}
-                  totalVeCrv={totalVeCrv}
-                  quorumVeCrv={quorumVeCrv}
-                  minAcceptQuorumPercent={minAcceptQuorumPercent}
-                  currentQuorumPercentage={currentQuorumPercentage}
+                  votesFor={proposal?.votesFor}
+                  votesAgainst={proposal?.votesAgainst}
+                  totalVeCrv={proposal?.totalVeCrv}
+                  quorumVeCrv={proposal?.quorumVeCrv}
+                  minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
+                  currentQuorumPercentage={proposal?.currentQuorumPercentage}
                 />
               </VotesWrapper>
-              <Voters rProposalId={rProposalId} totalVotes={totalVotes} />
+              <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
             </>
           )}
         </Box>
