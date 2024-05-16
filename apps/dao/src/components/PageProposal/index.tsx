@@ -37,6 +37,7 @@ type Props = {
 const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
+  const curve = useStore((state) => state.curve)
   const navigate = useNavigate()
   const { proposalsLoadingState, getProposal, pricesProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
@@ -69,9 +70,9 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
-    if (pricesProposal) return
-    getProposal(+voteId, voteType)
-  }, [getProposal, pricesProposal, voteId, voteType])
+    if (pricesProposal || !curve) return
+    getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')
+  }, [curve, getProposal, pricesProposal, voteId, voteType])
 
   return (
     <Wrapper>
@@ -121,9 +122,12 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               )}
             </TopBarColumn>
           </ProposalHeader>
-          {isError && (
+          {isError && !isLoading && (
             <ErrorWrapper>
-              <ErrorMessage message={t`Error loading proposal data`} onClick={() => getProposal(+voteId, voteType)} />
+              <ErrorMessage
+                message={t`Error loading proposal data`}
+                onClick={() => curve && getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')}
+              />
             </ErrorWrapper>
           )}
           {isLoading && (
@@ -156,7 +160,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <VoteInformationData>{pricesProposal?.snapshot_block}</VoteInformationData>
+                  <VoteInformationData>{pricesProposal?.snapshotBlock}</VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Created`}</SubTitle>
