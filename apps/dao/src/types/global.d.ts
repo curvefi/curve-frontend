@@ -117,6 +117,34 @@ declare global {
     currentQuorumPercentage: number
   }
 
+  type CurveJsProposalData = {
+    voteId: number
+    voteType: 'PARAMETER' | 'OWNERSHIP'
+    creator: string
+    startDate: number
+    snapshotBlock: number
+    ipfsMetadata: string
+    metadata: string
+    votesFor: string
+    votesAgainst: string
+    voteCount: number
+    supportRequired: string
+    minAcceptQuorum: string
+    totalSupply: string
+    executed: boolean
+    tx: string
+    creatorVotingPower: number
+    script: string
+    votes: {
+      tx: string
+      voteId: number
+      voter: string
+      supports: boolean
+      stake: number
+      relativePower: number
+    }[]
+  }
+
   type PricesProposalData = {
     vote_id: number
     vote_type: string

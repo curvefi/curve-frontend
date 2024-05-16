@@ -13,7 +13,7 @@ type SliceState = {
   voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
-  pricesProposalMapper: { [proposalId: string]: PricesProposalData }
+  pricesProposalMapper: { [proposalId: string]: CurveJsProposalData }
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
@@ -26,7 +26,7 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
-    getProposal(voteId: number, voteType: string): void
+    getProposal(curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP'): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
@@ -100,26 +100,20 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (voteId: number, voteType: string) => {
+    getProposal: async (curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP') => {
       get()[sliceKey].setStateByKey('pricesProposalLoadingState', 'LOADING')
 
       try {
-        const proposalFetch = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`
-        )
-        const proposal: PricesProposalData = await proposalFetch.json()
+        const proposal = await curve.dao.getProposal(voteType, voteId)
 
         const formattedVotes = proposal.votes
-          .map((vote: PricesProposalData['votes'][number]) => ({
+          .map((vote) => ({
             ...vote,
-            voting_power: +vote.voting_power / 10 ** 18,
-            relative_power: (+vote.voting_power / +proposal.total_supply) * 100,
+            stake: vote.stake / 10 ** 18,
+            relativePower: (vote.stake / +proposal.totalSupply) * 100,
           }))
           .sort()
-        const sortedVotes = formattedVotes.sort(
-          (a: PricesProposalData['votes'][number], b: PricesProposalData['votes'][number]) =>
-            +b.voting_power - +a.voting_power
-        )
+        const sortedVotes = formattedVotes.sort((a, b) => b.stake - a.stake)
 
         set(
           produce((state: State) => {
