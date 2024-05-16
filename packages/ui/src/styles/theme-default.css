@@ -98,6 +98,7 @@ body.theme-default {
   --box_header--primary--background-color: var(--whitel85);
   --box_header--font-size: var(--font-size-4);
   --box_header--font-weight: var(--bold);
+  --box_header--secondary--background-color: var(--gray-500a20);
   --box--secondary--background-color: var(--layout--home--background-color);
   --box--secondary--border: 1px solid var(--border-600);
   --box--secondary--content--background-color: var(--border-600);

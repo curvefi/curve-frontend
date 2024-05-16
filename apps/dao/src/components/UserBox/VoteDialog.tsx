@@ -37,6 +37,8 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
     }
   }
 
+  console.log(userVotesMapper)
+
   return (
     <Wrapper className={className}>
       {activeProposal ? (
@@ -92,6 +94,18 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
             )}{' '}
           </>
         )
+      ) : proposalId && userVotesMapper[proposalId] ? (
+        <VotedMessageWrapper>
+          <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
+          <VotedMessage>
+            {t`${userVotesMapper[proposalId].userVote ? 'For' : 'Against'}`}
+            {userVotesMapper[proposalId].userVote ? (
+              <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} />
+            ) : (
+              <Icon color="var(--chart-red)" name="Misuse" size={16} />
+            )}
+          </VotedMessage>
+        </VotedMessageWrapper>
       ) : (
         <VotingMessage>{t`Voting has ended`}</VotingMessage>
       )}
@@ -106,7 +120,7 @@ const Wrapper = styled.div`
 
 const VoteButtonsWrapper = styled(Box)`
   padding: var(--spacing-3);
-  background-color: var(--blacka05);
+  background-color: var(--box_header--secondary--background-color);
 `
 
 const VotingMessage = styled.p`
@@ -120,7 +134,7 @@ const VotingMessage = styled.p`
   font-size: var(--font-size-1);
   line-height: 1.2;
   margin-right: auto;
-  background-color: var(--gray-500a25);
+  background-color: var(--box_header--secondary--background-color);
   svg {
     color: var(--warning-400);
   }
@@ -132,7 +146,7 @@ const VotedMessageWrapper = styled.div`
   gap: var(--spacing-2);
   align-items: center;
   justify-content: space-between;
-  background-color: var(--gray-500a25);
+  background-color: var(--box_header--secondary--background-color);
   padding: var(--spacing-2);
 `
 

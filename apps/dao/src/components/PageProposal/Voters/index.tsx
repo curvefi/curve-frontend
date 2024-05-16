@@ -17,7 +17,7 @@ type Props = {
 }
 
 const Voters = ({ totalVotes, rProposalId }: Props) => {
-  const pricesProposalLoading = useStore((state) => state.proposals.pricesProposalLoading)
+  const pricesProposalLoadingState = useStore((state) => state.proposals.pricesProposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId])
 
   return (
@@ -36,7 +36,7 @@ const Voters = ({ totalVotes, rProposalId }: Props) => {
           </Box>
         </Box>
       </TotalWrapper>
-      {currentProposal && pricesProposalLoading === 'SUCCESS' && currentProposal.votes.length !== 0 && (
+      {currentProposal && pricesProposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
         <VotesWrapper>
           <Box flex flexJustifyContent="space-between">
             <SubTitle>{t`Voter`}</SubTitle>

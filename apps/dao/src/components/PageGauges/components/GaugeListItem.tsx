@@ -105,16 +105,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
             gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'SUCCESS' && (
               <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
             )}
-          <OpenDataRow>
-            <Box flex flexColumn>
-              <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
-              <GaugeData className="open">
-                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
-                  {shortenTokenAddress(gaugeData.address)}
-                  <Icon name="Launch" size={16} />
-                </StyledExternalLink>
-              </GaugeData>
-            </Box>
+          <GaugeDetailsContainer>
             {gaugeData.pool?.address && (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
@@ -126,19 +117,42 @@ const GaugeListItem = ({ gaugeData }: Props) => {
                 </GaugeData>
               </Box>
             )}
+            {gaugeData.pool?.tvl_usd && (
+              <Box flex flexColumn>
+                <DataTitle className="open left-aligned">{t`Pool TVL`}</DataTitle>
+                <GaugeInformation className="open">{t`$${formatNumber(gaugeData.pool.tvl_usd)}`}</GaugeInformation>
+              </Box>
+            )}
+            {gaugeData.pool?.trading_volume_24h && (
+              <Box flex flexColumn>
+                <DataTitle className="open left-aligned">{t`Pool Volume 24h`}</DataTitle>
+                <GaugeInformation className="open">
+                  {t`$${formatNumber(gaugeData.pool.trading_volume_24h)}`}
+                </GaugeInformation>
+              </Box>
+            )}
+            <Box flex flexColumn>
+              <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
+              <GaugeData className="open">
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+                  {shortenTokenAddress(gaugeData.address)}
+                  <Icon name="Launch" size={16} />
+                </StyledExternalLink>
+              </GaugeData>
+            </Box>
             {gaugeData.emissions && (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Emissions (CRV)`}</DataTitle>
-                <GaugeData className="open">{formatNumber(gaugeData.emissions)}</GaugeData>
+                <GaugeInformation className="open">{formatNumber(gaugeData.emissions)}</GaugeInformation>
               </Box>
             )}
             <Box flex flexColumn>
               <DataTitle className="open left-aligned">{t`Created`}</DataTitle>
-              <GaugeData className="open">
+              <GaugeInformation className="open">
                 {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
-              </GaugeData>
+              </GaugeInformation>
             </Box>
-          </OpenDataRow>
+          </GaugeDetailsContainer>
         </OpenContainer>
       )}
     </GaugeBox>
@@ -202,6 +216,11 @@ const GaugeData = styled.p`
   }
 `
 
+const GaugeInformation = styled.p`
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
+`
+
 const StyledIconButton = styled(IconButton)`
   margin-left: auto;
   margin-right: 0;
@@ -213,11 +232,10 @@ const OpenContainer = styled.div`
   padding: var(--spacing-3) var(--spacing-1) 0;
 `
 
-const OpenDataRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-4);
-  justify-content: space-between;
+const GaugeDetailsContainer = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--spacing-3);
   border-top: 1px solid var(--gray-500a20);
   padding-top: var(--spacing-3);
   padding-bottom: var(--spacing-2);

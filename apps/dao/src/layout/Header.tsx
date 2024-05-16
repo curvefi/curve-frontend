@@ -51,8 +51,6 @@ const Header = () => {
 
   const appLogoProps: AppLogoProps = {
     appName: 'Dao',
-    pathname: ROUTE.PAGE_PROPOSALS,
-    internalPathname: `${rLocalePathname}/${rNetwork}${ROUTE.PAGE_PROPOSALS}`,
   }
 
   const p: AppPage[] = [
