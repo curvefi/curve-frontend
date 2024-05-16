@@ -1,0 +1,40 @@
+import { defineConfig } from 'cypress'
+
+const commonConfig = defineConfig({
+  viewportWidth: 1000,
+  viewportHeight: 800,
+  chromeWebSecurity: false,
+  defaultCommandTimeout: 20000,
+  pageLoadTimeout: 120000,
+  requestTimeout: 30000,
+  retries: { runMode: 2, openMode: 0 },
+  scrollBehavior: 'center',
+  e2e: {
+    setupNodeEvents(on, config) {},
+  },
+})
+
+const envConfig = {
+  main: {
+    baseUrl: 'http://localhost:3000/#',
+    specPattern: 'cypress/e2e/main/**/*',
+  },
+  lend: {
+    baseUrl: 'http://localhost:3003/#',
+    specPattern: 'cypress/e2e/lend/**/*',
+  },
+  loan: {
+    baseUrl: 'http://localhost:3004/#',
+    specPattern: 'cypress/e2e/loan/**/*',
+  },
+}
+
+const selectedConfig = envConfig[process.env.CYPRESS_CONFIG] || envConfig.main
+
+export default defineConfig({
+  ...commonConfig,
+  e2e: {
+    ...commonConfig.e2e,
+    ...selectedConfig,
+  },
+})
