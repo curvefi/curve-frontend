@@ -32,7 +32,7 @@ const Voters = ({ totalVotes, rProposalId }: Props) => {
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(currentProposal?.vote_count)}</Data>
+            <Data className="align-right">{formatNumber(currentProposal?.voteCount)}</Data>
           </Box>
         </Box>
       </TotalWrapper>
@@ -44,7 +44,7 @@ const Voters = ({ totalVotes, rProposalId }: Props) => {
           </Box>
           <VotesContainer>
             {currentProposal.votes.map((vote) => (
-              <DataRow key={vote.transaction_hash}>
+              <DataRow key={`${vote.tx}-${vote.supports}`}>
                 <Box flex>
                   {vote.supports ? (
                     <ForIcon name="CheckmarkFilled" size={16} />
@@ -55,9 +55,9 @@ const Voters = ({ totalVotes, rProposalId }: Props) => {
                     {shortenTokenAddress(vote.voter)}
                   </StyledExternalLink>
                 </Box>
-                <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
+                <StyledExternalLink href={networks[1].scanTxPath(vote.tx)}>
                   <Data>
-                    {formatNumberWithSuffix(+vote.voting_power)} ({vote.relative_power.toFixed(2)}%)
+                    {formatNumberWithSuffix(+vote.stake)} ({vote.relativePower.toFixed(2)}%)
                   </Data>
                 </StyledExternalLink>
               </DataRow>
