@@ -60,6 +60,7 @@ body.theme-dark {
   --box--primary--content--background-color: var(--black-400);
   --box--primary--content--shadow-color: hsl(0, 0%, 12%);
   --box_header--primary--background-color: var(--black-200);
+  --box_header--secondary--background-color: var(--black-100);
   --box--secondary--background-color: var(--black-200);
   --box--secondary--border: 1px solid transparent;
   --box--secondary--content--background-color: hsl(240, 6%, 10%);

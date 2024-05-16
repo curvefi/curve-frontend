@@ -28,21 +28,6 @@ type SliceState = {
 
 const sliceKey = 'user'
 
-const abiBalanceOfAt = [
-  {
-    name: 'balanceOfAt',
-    outputs: [{ type: 'uint256', name: '' }],
-    inputs: [
-      { type: 'address', name: 'addr' },
-      { type: 'uint256', name: '_block' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
-
-const contractVeCRV = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2'
-
 // prettier-ignore
 export type UserSlice = {
   [sliceKey]: SliceState & {
@@ -149,5 +134,20 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
+
+const abiBalanceOfAt = [
+  {
+    name: 'balanceOfAt',
+    outputs: [{ type: 'uint256', name: '' }],
+    inputs: [
+      { type: 'address', name: 'addr' },
+      { type: 'uint256', name: '_block' },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+]
+
+const contractVeCRV = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2'
 
 export default createUserSlice

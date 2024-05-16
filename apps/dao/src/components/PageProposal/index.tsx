@@ -30,12 +30,11 @@ import ErrorMessage from '@/components/ErrorMessage'
 
 type Props = {
   routerParams: {
-    rChainId: ChainId
     rProposalId: string
   }
 }
 
-const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
+const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const navigate = useNavigate()
@@ -46,6 +45,13 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
   const { proposalsMapper } = useProposalsMapper()
   const pricesProposal = pricesProposalMapper[rProposalId] ?? null
   const proposal = proposalsMapper[rProposalId] ?? null
+
+  const isLoading =
+    pricesProposalLoadingState === 'LOADING' ||
+    proposalsLoadingState === 'LOADING' ||
+    (!pricesProposal && proposalsLoadingState !== 'ERROR')
+  const isError = pricesProposalLoadingState === 'ERROR'
+  const isSuccess = pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
@@ -77,7 +83,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
       </BackButtonWrapper>
       <Box flex>
         <ProposalContainer variant="secondary">
-          <ProposalTopBar>
+          <ProposalHeader>
             <TopBarColumn>
               <SubTitle>{t`Status`}</SubTitle>
               {!proposal ? (
@@ -114,20 +120,18 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 <VoteCountdown startDate={proposal?.startDate} />
               )}
             </TopBarColumn>
-          </ProposalTopBar>
-          {pricesProposalLoadingState === 'ERROR' && (
+          </ProposalHeader>
+          {isError && (
             <ErrorWrapper>
               <ErrorMessage message={t`Error loading proposal data`} onClick={() => getProposal(+voteId, voteType)} />
             </ErrorWrapper>
           )}
-          {(pricesProposalLoadingState === 'LOADING' ||
-            proposalsLoadingState === 'LOADING' ||
-            (!pricesProposal && proposalsLoadingState !== 'ERROR')) && (
+          {isLoading && (
             <StyledSpinnerWrapper>
               <Spinner />
             </StyledSpinnerWrapper>
           )}
-          {pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal && (
+          {isSuccess && (
             <>
               <MetaData>
                 <Box flex flexJustifyContent="space-between" flexAlignItems="end">
@@ -142,7 +146,7 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 <p>{proposal?.metadata}</p>
               </MetaData>
               {pricesProposal && <Script script={pricesProposal?.script} />}
-              <TimelineBox>
+              <VoteInformationBox>
                 <Box>
                   <SubTitle>{t`Proposer`}</SubTitle>
                   <StyledExternalLink href={networks[1].scanAddressPath(proposal?.creator)}>
@@ -152,19 +156,21 @@ const Proposal = ({ routerParams: { rChainId, rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <Time>{pricesProposal?.snapshot_block}</Time>
+                  <VoteInformationData>{pricesProposal?.snapshot_block}</VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Created`}</SubTitle>
-                  <Time>{new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString()}</Time>
+                  <VoteInformationData>
+                    {new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString()}
+                  </VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Ends`}</SubTitle>
-                  <Time>
+                  <VoteInformationData>
                     {new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString()}
-                  </Time>
+                  </VoteInformationData>
                 </Box>
-              </TimelineBox>
+              </VoteInformationBox>
             </>
           )}
         </ProposalContainer>
@@ -248,12 +254,12 @@ const ErrorWrapper = styled.div`
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-4);
 `
 
-const ProposalTopBar = styled.div`
+const ProposalHeader = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-3);
-  background-color: var(--gray-500a20);
+  background-color: var(--box_header--secondary--background-color);
   padding: var(--spacing-3);
 `
 
@@ -334,7 +340,7 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 `
 
-const TimelineBox = styled.div`
+const VoteInformationBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -344,7 +350,7 @@ const TimelineBox = styled.div`
   font-variant-numeric: tabular-nums;
 `
 
-const Time = styled.p`
+const VoteInformationData = styled.p`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   font-variant-numeric: tabular-nums;
