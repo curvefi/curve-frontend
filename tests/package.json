@@ -4,12 +4,14 @@
   "description": "Curve DApp tests",
   "main": "index.js",
   "scripts": {
-    "cy:open:e2e:main": "cypress open --config-file cy.config.main.ts --browser chrome --e2e",
-    "cy:open:e2e:lend": "cypress open --config-file cy.config.lend.ts --browser chrome --e2e",
-    "cy:open:e2e:loan": "cypress open --config-file cy.config.loan.ts --browser chrome --e2e",
-    "cy:run:e2e:main": "cypress run --config-file cy.config.main.ts --browser chrome --e2e",
-    "cy:run:e2e:lend": "cypress run --config-file cy.config.lend.ts --browser chrome --e2e",
-    "cy:run:e2e:loan": "cypress run --config-file cy.config.loan.ts --browser chrome --e2e"
+    "run:nodes": "node runHardhatNodes.js",
+    "kill:nodes": "node killHardhatNodes.js",
+    "cy:open:e2e:main": "yarn run:nodes && CYPRESS_CONFIG=main cypress open --browser chrome --e2e && yarn kill:nodes",
+    "cy:open:e2e:lend": "yarn run:nodes && CYPRESS_CONFIG=lend cypress open --browser chrome --e2e && yarn kill:nodes",
+    "cy:open:e2e:loan": "yarn run:nodes && CYPRESS_CONFIG=loan cypress open --browser chrome --e2e && yarn kill:nodes",
+    "cy:run:e2e:main": "yarn run:nodes && CYPRESS_CONFIG=main cypress run --browser chrome --e2e && yarn kill:nodes",
+    "cy:run:e2e:lend": "yarn run:nodes && CYPRESS_CONFIG=lend cypress run --browser chrome --e2e && yarn kill:nodes",
+    "cy:run:e2e:loan": "yarn run:nodes && CYPRESS_CONFIG=loan cypress run --browser chrome --e2e && yarn kill:nodes"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.6",
