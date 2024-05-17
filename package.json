@@ -13,7 +13,6 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev --parallel",
-    "test": "yarn workspace tests cy:open:e2e:lend",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "is-ci || husky install"

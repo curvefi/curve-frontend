@@ -33,6 +33,6 @@
     "NODE_ENV",
     "INFURA_KEY",
     "HARDHAT_CHAIN_ID",
-    "CYPRESS_CONFIG"
+    "CYPRESS_DAPP"
   ]
 }

@@ -24,17 +24,17 @@ const envConfig = {
     specPattern: 'cypress/e2e/lend/**/*',
   },
   loan: {
-    baseUrl: 'http://localhost:3004/#',
+    baseUrl: 'http://localhost:3001/#',
     specPattern: 'cypress/e2e/loan/**/*',
   },
 }
 
-const selectedConfig = envConfig[process.env.CYPRESS_CONFIG] || envConfig.main
+const selectedDapp = envConfig[process.env.CYPRESS_DAPP] || envConfig.main
 
 export default defineConfig({
   ...commonConfig,
   e2e: {
     ...commonConfig.e2e,
-    ...selectedConfig,
+    ...selectedDapp,
   },
 })
