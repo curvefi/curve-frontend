@@ -5,13 +5,9 @@ require('dotenv-flow').config()
 const { exec, spawn } = require('child_process')
 const waitOn = require('wait-on')
 
-// TODO: move this to a constants file
-const ChainId = {
-  MAINNET: 1,
-  POLYGON: 137,
-}
-
+const Chains = require('./cypress/fixtures/chains.json')
 const BASIC_PORT = 8545
+const HOST_NAME = '127.0.0.1'
 
 const checkPort = (port) => {
   return new Promise((resolve, reject) => {
@@ -32,12 +28,12 @@ const startNode = (chainId) => {
 
     const isPortInUse = await checkPort(port)
     if (isPortInUse) {
-      console.log(`Chain ID '${chainId}' node is already running at http://127.0.0.1:${port}`)
+      console.log(`Chain ID '${chainId}' node is already running at http://${HOST_NAME}:${port}`)
       resolve()
       return
     }
 
-    const command = `npx hardhat node --config ./hardhat.config.js --port ${port}`
+    const command = `npx hardhat node --config ./hardhat.config.js --port ${port} --hostname ${HOST_NAME}`
 
     const nodeProcess = spawn('sh', ['-c', command], { env })
     nodeProcess.on('close', (code) => {
@@ -48,7 +44,7 @@ const startNode = (chainId) => {
 
     waitOn(
       {
-        resources: [`http-get://127.0.0.1:${port}`, `tcp:127.0.0.1:${port}`],
+        resources: [`http-get://${HOST_NAME}:${port}`, `tcp:${HOST_NAME}:${port}`],
         delay: 500,
         interval: 500,
         timeout: 30000,
@@ -56,9 +52,9 @@ const startNode = (chainId) => {
       (err) => {
         if (err) {
           nodeProcess.kill()
-          reject(`Chain ID '${chainId}' node not responding at http://127.0.0.1:${port}. Error: ${err}`)
+          reject(`Chain ID '${chainId}' node not responding at http://${HOST_NAME}:${port}. Error: ${err}`)
         } else {
-          console.log(`Chain ID '${chainId}' node started at http://127.0.0.1:${port}`)
+          console.log(`Chain ID '${chainId}' node started at http://${HOST_NAME}:${port}`)
           resolve(nodeProcess)
         }
       }
@@ -67,7 +63,7 @@ const startNode = (chainId) => {
 }
 
 const main = async () => {
-  const chainIds = Object.values(ChainId)
+  const chainIds = Object.values(Chains).map(({ id }) => id)
   const args = process.argv.slice(2)
   const inputChainIds = args.length > 0 ? args[0].split(',').map(Number) : chainIds
 
@@ -87,7 +83,6 @@ const main = async () => {
   try {
     await Promise.all(validChainIds.map(startNode))
     console.log('Selected nodes started successfully.')
-    process.exit(0)
   } catch (error) {
     console.error(error)
     process.exit(1)

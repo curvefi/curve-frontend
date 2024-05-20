@@ -1,10 +1,6 @@
 const { exec } = require('child_process')
 
-const ChainId = {
-  MAINNET: 1,
-  POLYGON: 137,
-}
-
+const Chains = require('./cypress/fixtures/chains.json')
 const BASIC_PORT = 8545
 
 const killNode = (chainId) => {
@@ -25,7 +21,7 @@ const killNode = (chainId) => {
 
 const main = async () => {
   const args = process.argv.slice(2)
-  const networks = args.length > 0 ? args[0].split(',').map(Number) : Object.values(ChainId)
+  const networks = args.length > 0 ? args[0].split(',').map(Number) : Object.values(Chains).map(({ id }) => id)
 
   try {
     await Promise.all(networks.map(killNode))
