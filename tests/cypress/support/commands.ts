@@ -1,11 +1,15 @@
-import { connectFaucetWallet, createJsonRpcProvider, createRandomWallet } from './providers'
-import { balanceOfErc20 } from './contracts'
-import { allocateERC20Tokens, allocateEth } from './faucets'
-import { connectMetamask, prepareMetamaskWallet } from './providers'
-import { dataTestId } from './helpers'
+import { approveSpending } from './approval'
 import { inputMaxCollateral } from './collateral'
 import { inputMaxBorrow } from './debt'
-import { approveSpending } from './approval'
+import {
+  allocateEth,
+  connectMetamask,
+  createJsonRpcProvider,
+  createRandomWallet,
+  dataTestId,
+  prepareMetamaskWallet,
+  tokenBalance,
+} from './helpers'
 import { createSofLiquidationLoan } from './lend'
 
 // helpers
@@ -13,15 +17,13 @@ Cypress.Commands.add('dataTestId', dataTestId)
 
 // providers
 Cypress.Commands.add('createJsonRpcProvider', createJsonRpcProvider)
-Cypress.Commands.add('connectFaucetWallet', { prevSubject: true }, connectFaucetWallet)
 Cypress.Commands.add('createRandomWallet', { prevSubject: true }, createRandomWallet)
 Cypress.Commands.add('prepareMetamaskWallet', { prevSubject: true }, prepareMetamaskWallet)
 Cypress.Commands.add('connectMetamask', { prevSubject: true }, connectMetamask)
 
 // chain interactions
-Cypress.Commands.add('allocateERC20Tokens', { prevSubject: true }, allocateERC20Tokens)
 Cypress.Commands.add('allocateEth', { prevSubject: true }, allocateEth)
-Cypress.Commands.add('balanceOfErc20', { prevSubject: true }, balanceOfErc20)
+Cypress.Commands.add('tokenBalance', { prevSubject: true }, tokenBalance)
 
 // tests
 Cypress.Commands.add('inputMaxCollateral', inputMaxCollateral)
