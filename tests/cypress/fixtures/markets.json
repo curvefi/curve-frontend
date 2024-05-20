@@ -1,5 +1,5 @@
 {
-  "Ethereum": {
+  "mainnet": {
     "CRV-crvUSD": {
       "id": "CRV-crvUSD",
       "collateral": "CRV",

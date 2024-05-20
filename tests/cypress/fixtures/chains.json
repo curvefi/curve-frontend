@@ -1,0 +1,12 @@
+{
+  "1": {
+    "id": 1,
+    "alias": "mainnet",
+    "name": "Ethereum"
+  },
+  "137": {
+    "id": 137,
+    "alias": "polygon",
+    "name": "Polygon"
+  }
+}

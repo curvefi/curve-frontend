@@ -1,0 +1,18 @@
+{
+  "mainnet": {
+    "CRV": [
+      "0x5f3b5dfeb7b28cdbd7faba78963ee202a494e2a2",
+      "0xf977814e90da44bfa03b6295a0616a897441acec",
+      "0xafca625321df8d6a068bdd8f1585d489d2acf11b",
+      "0x96efdf95cc47fe90e8f63d2f5ef9fb8b180daeb9",
+      "0x6cc5f688a315f3dc28a7781717a9a798a59fda7b"
+    ],
+    "crvUSD": [
+      "0xa920de414ea4ab66b97da1bfe9e6eca7d4219635",
+      "0x4e59541306910ad6dc1dac0ac9dfb29bd9f15c67",
+      "0x100daa78fc509db39ef7d04de0c1abd299f4c6ce",
+      "0x1c91da0223c763d2e0173243eadaa0a2ea47e704",
+      "0xec0820efafc41d8943ee8de495fc9ba8495b15cf"
+    ]
+  }
+}

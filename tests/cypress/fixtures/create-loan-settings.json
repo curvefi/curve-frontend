@@ -1,5 +1,5 @@
 {
-  "Ethereum": {
+  "mainnet": {
     "CRV-crvUSD": {
       "ethersToAllocate": "1",
       "collateralTokenToAllocate": "1"
