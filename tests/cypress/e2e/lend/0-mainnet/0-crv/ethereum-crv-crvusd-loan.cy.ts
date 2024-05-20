@@ -3,7 +3,7 @@ import markets from '@/fixtures/markets.json'
 import tokens from '@/fixtures/tokens.json'
 import { ethers } from 'ethers'
 
-const CHAIN = 'Ethereum'
+const CHAIN = 'mainnet'
 const MARKET_ID = 'CRV-crvUSD'
 describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const market = markets[CHAIN][MARKET_ID]
@@ -17,14 +17,9 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
     // prepare wallet
     cy.createJsonRpcProvider()
       .as('jsonRpcProvider', { type: 'static' })
-      .connectFaucetWallet()
-      .as('faucetWallet', { type: 'static' })
-    cy.get('@jsonRpcProvider')
-      .createRandomWallet()
+      .createRandomWallet('1', [{ symbol: collateralToken.symbol, amount: settings.collateralTokenToAllocate }])
       .as('wallet', { type: 'static' })
       .prepareMetamaskWallet()
-      .allocateEth(settings.ethersToAllocate)
-      .allocateERC20Tokens(collateralToken.address, settings.collateralTokenToAllocate)
 
     // prepare page
     cy.intercept('GET', 'https://api.curve.fi/api/**').as('getAPI')
@@ -48,12 +43,12 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
     cy.createSofLiquidationLoan()
 
     cy.get<ethers.HDNodeWallet>('@wallet')
-      .balanceOfErc20(borrowToken.address)
+      .tokenBalance(borrowToken.address)
       .then(($tokenBalance) => {
         cy.get<string>('@debtAmount').then(($debtAmount) =>
           expect($tokenBalance).to.be.equal(ethers.parseUnits($debtAmount, borrowToken.decimals))
         )
       })
-    cy.get<ethers.HDNodeWallet>('@wallet').balanceOfErc20(collateralToken.address).should('eq', BigInt(0))
+    cy.get<ethers.HDNodeWallet>('@wallet').tokenBalance(collateralToken.address).should('eq', BigInt(0))
   })
 })
