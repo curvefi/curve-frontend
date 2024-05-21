@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/PoolInfo/utils'
+import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'

@@ -22,7 +22,7 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import PoolInfoData from '@/components/PoolInfoData'
+import PoolInfoData from '@/components/ChartOhlcWrapper'
 import Box from '@/ui/Box'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'

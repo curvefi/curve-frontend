@@ -6,11 +6,11 @@ import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 
-import { combinations } from '@/components/PagePool/PoolDetails/PoolInfo/utils'
+import { combinations } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Button from '@/ui/Button'
 import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
-import PoolActivity from '@/components/PagePool/PoolDetails/PoolInfo/PoolActivity'
+import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 

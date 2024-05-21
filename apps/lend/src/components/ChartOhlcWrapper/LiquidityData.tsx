@@ -9,7 +9,7 @@ import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PoolInfoData/utils'
+import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'

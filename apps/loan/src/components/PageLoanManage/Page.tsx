@@ -25,7 +25,7 @@ import {
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
 import Box from '@/ui/Box'
-import PoolInfoData from '@/components/PoolInfoData'
+import PoolInfoData from '@/components/ChartOhlcWrapper'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import LoanInfoUser from '@/components/LoanInfoUser'

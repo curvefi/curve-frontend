@@ -12,7 +12,7 @@ import Button from '@/ui/Button'
 import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
-import PoolActivity from '@/components/PoolInfoData/PoolActivity'
+import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 
 type Props = {
   rChainId: ChainId

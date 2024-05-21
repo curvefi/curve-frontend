@@ -13,7 +13,7 @@ import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
-import PoolInfoData from '@/components/PoolInfoData'
+import PoolInfoData from '@/components/ChartOhlcWrapper'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId'> {
   className?: string
