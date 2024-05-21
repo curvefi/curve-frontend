@@ -306,7 +306,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
 
-        console.log(controllerEventsData)
         const formattedLiquidityEventsData = controllerEventsData.data.map((data) => {
           return {
             ...data,
