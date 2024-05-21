@@ -31,7 +31,7 @@ export function createRandomWallet(
         tokens.map(async ({ symbol, amount }) => {
           const token = TokensList[network.name][symbol]
           const whales = WhalesList[network.name][symbol]
-          allocateToken(
+          await allocateToken(
             wallet.address,
             token.address,
             typeof amount === 'string' ? ethers.parseEther(amount) : amount,
