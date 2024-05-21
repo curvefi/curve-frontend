@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
+    "types": ["hardhat"],
     "baseUrl": "./cypress",
     "paths": {
-      "@/*": ["*"]
-    },
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+      "@/*": ["*"],
+      "@/ui": ["../packages/ui/src/index.ts"],
+      "@/ui/*": ["../packages/ui/src/*"]
+    }
   },
   "exclude": ["node_modules"],
-  "include": ["./**/*.ts", "types/**/*.d.ts", "cy.config.*.ts"]
+  "include": ["./**/*.ts", "types/**/*.d.ts", "cypress.config.ts", "hardhat.config.js", "runHardhatNodes.js"]
 }
