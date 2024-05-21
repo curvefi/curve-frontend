@@ -1,19 +1,22 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@/components/PageLoanManage/LoanRepay/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanManage/LoanRepay/types'
 
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
+import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
+import { DEFAULT_FORM_VALUES, DEFAULT_FORM_STATUS, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
+import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   activeKey: string
+  repayIsAvailable: { [userActiveKey: string]: boolean | null }
   detailInfo: { [activeKey: string]: FormDetailInfo }
+  detailInfoLeverage: { [activeKey: string]: FormDetailInfoLeverage }
   formEstGas: { [activeKey: string]: FormEstGas }
   formStatus: FormStatus
   formValues: FormValues
@@ -24,13 +27,13 @@ const sliceKey = 'loanRepay'
 // prettier-ignore
 export type LoanRepaySlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
+    setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
 
     // step
-    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepDecrease(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepRepay(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -40,165 +43,265 @@ export type LoanRepaySlice = {
   }
 }
 
-export const DEFAULT_FORM_STATUS: FormStatus = {
-  ...FORM_STATUS,
-  warning: '',
-  step: '',
-}
-
-export const DEFAULT_FORM_VALUES: FormValues = {
-  debt: '',
-  debtError: '',
-  isFullRepay: false,
-}
-
 const DEFAULT_STATE: SliceState = {
   activeKey: '',
+  repayIsAvailable: {},
   detailInfo: {},
+  detailInfoLeverage: {},
   formEstGas: {},
   formStatus: DEFAULT_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
 }
 
+const { getUserActiveKey, isTooMuch } = helpers
+const { loanRepay } = apiLending
+
 const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanRepaySlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetailInfo: async (activeKey, api, owmData) => {
+    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage) => {
+      const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
-      const { debt } = get()[sliceKey].formValues
+      const { isFullRepay, userBorrowed, userCollateral, stateCollateral } = formValues
+      const { swapRequired, haveValues } = _parseValues(formValues)
+      const storedDetailInfo = swapRequired ? detailInfoLeverage[activeKey] : detailInfo[activeKey]
 
-      if (!signerAddress || +debt <= 0) return
+      if (!signerAddress || !haveValues) return
 
-      const resp = await apiLending.loanRepay.detailInfo(activeKey, api, owmData, debt)
-      get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, resp.resp)
+      // loading
+      sliceState.setStateByActiveKey(swapRequired ? 'detailInfoLeverage' : 'detailInfo', activeKey, {
+        ...(storedDetailInfo ?? {}),
+        loading: true,
+      })
+
+      let respError
+
+      if (swapRequired) {
+        const resp = await loanRepay.detailInfoLeverage(
+          activeKey,
+          api,
+          owmData,
+          stateCollateral,
+          userCollateral,
+          userBorrowed,
+          maxSlippage
+        )
+        sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
+        respError = resp.error
+      } else {
+        const resp = await loanRepay.detailInfo(activeKey, api, owmData, userBorrowed, isFullRepay)
+        sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
+        respError = resp.error
+      }
+
+      // set error to status
+      if (respError.includes('Negative debt') || respError.includes('Reserves too small')) {
+        sliceState.setStateByKey('formStatus', { ...formStatus, error: respError })
+      }
     },
-    fetchEstGasApproval: async (activeKey, api, owmData) => {
+    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage) => {
+      const { gas } = get()
+      const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
-      const { debt, debtError, isFullRepay } = get()[sliceKey].formValues
+      const { stateCollateral, userCollateral, userBorrowed, isFullRepay } = formValues
+      const { swapRequired, haveValues, haveFormErrors } = _parseValues(formValues)
 
-      if (!signerAddress || (!isFullRepay && +debt <= 0) || debtError) return
+      if (!signerAddress || !haveValues || haveFormErrors) return
 
-      get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
-      const resp = await apiLending.loanRepay.estGasApproval(activeKey, owmData, debt, isFullRepay)
-      get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
+      sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
+
+      await gas.fetchGasInfo(api)
+      const resp = await loanRepay.estGasApproval(
+        activeKey,
+        owmData,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        isFullRepay,
+        maxSlippage,
+        swapRequired
+      )
+      sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus
-      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-      cFormStatus.isApproved = resp.isApproved
-      cFormStatus.error = cFormStatus.error || resp.error
-      get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+      sliceState.setStateByKey('formStatus', {
+        ...formStatus,
+        isApproved: resp.isApproved,
+        error: formStatus.error || resp.error,
+      })
     },
-    setFormValues: async (api, owmData, partialFormValues) => {
-      const storedFormStatus = get()[sliceKey].formStatus
-      const storedFormValues = get()[sliceKey].formValues
+    setFormValues: async (api, owmData, partialFormValues, maxSlippage, shouldRefetch) => {
+      const { user } = get()
+      const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
       // update activeKey, formStatus, formValues
-      const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, debtError: '' })
-      const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
-      const { debt, isFullRepay } = cFormValues
-      const activeKey = _getActiveKey(api, owmData, debt, isFullRepay)
-      get()[sliceKey].setStateByKeys({
+      const cFormValues: FormValues = {
+        ...formValues,
+        ...partialFormValues,
+        stateCollateralError: '',
+        userBorrowedError: '',
+        userCollateralError: '',
+      }
+      const cFormStatus: FormStatus = {
+        ...DEFAULT_FORM_STATUS,
+        isApproved: formStatus.isApproved,
+        isApprovedCompleted: formStatus.isApprovedCompleted,
+      }
+      const activeKey = _getActiveKey(api, owmData, cFormValues, maxSlippage)
+      sliceState.setStateByKeys({
         activeKey,
         formValues: cloneDeep(cFormValues),
-        formStatus: cFormStatus,
+        formStatus: cloneDeep(cFormStatus),
       })
 
       if (!api || !owmData) return
 
       const { signerAddress } = api
 
-      if (isFullRepay) {
-        // api calls
-        get()[sliceKey].fetchEstGasApproval(activeKey, api, owmData)
-      } else {
-        if (signerAddress) {
-          // check if formDebt is same as stateDebt, if true, update form to isFullRepay
-          const userLoanState = await get().user.fetchUserLoanState(api, owmData, true)
-          if (+userLoanState?.debt === +cFormValues.debt) {
-            const updatedFormValues: Partial<FormValues> = { debt: '', debtError: '', isFullRepay: true }
-            get()[sliceKey].setFormValues(api, owmData, updatedFormValues)
-          } else {
-            // validate debt
-            const [userLoanState, userBalances] = await Promise.all([
-              get().user.fetchUserLoanState(api, owmData, true),
-              get().user.fetchUserMarketBalances(api, owmData, true),
-            ])
+      if (!signerAddress) return
 
-            cFormValues.debtError = helpers.isTooMuch(cFormValues.debt, userLoanState?.debt) ? 'too-much-state' : ''
-            if (!cFormValues.debtError) {
-              cFormValues.debtError = helpers.isTooMuch(cFormValues.debt, userBalances?.borrowed)
-                ? 'too-much-wallet'
-                : ''
-            }
-            get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
-          }
+      const { stateCollateral, userBorrowed, userCollateral } = cFormValues
+      const { swapRequired } = _parseValues(cFormValues)
+      const userActiveKey = getUserActiveKey(api, owmData)
 
-          // api calls
-          get()[sliceKey].fetchDetailInfo(activeKey, api, owmData)
-          get()[sliceKey].fetchEstGasApproval(activeKey, api, owmData)
+      // userState
+      const userState = await user.fetchUserLoanState(api, owmData, shouldRefetch)
+
+      if (typeof userState === 'undefined') return
+
+      // validation
+      const userBalancesResp = await user.fetchUserMarketBalances(api, owmData, true)
+      cFormValues.stateCollateralError = isTooMuch(stateCollateral, userState.collateral) ? 'too-much-collateral' : ''
+      cFormValues.userCollateralError = isTooMuch(userCollateral, userBalancesResp.collateral) ? 'too-much' : ''
+      cFormValues.userBorrowedError = isTooMuch(userBorrowed, userBalancesResp.borrowed)
+        ? 'too-much'
+        : isTooMuch(userBorrowed, userState.debt)
+        ? 'too-much-debt'
+        : ''
+      sliceState.setStateByKey('formValues', { ...cFormValues })
+
+      if (swapRequired) {
+        // check if repay is allow
+        const { repayIsAvailable, error: repayIsAvailableError } = await loanRepay.repayIsAvailableLeverage(
+          owmData,
+          stateCollateral,
+          userCollateral,
+          userBorrowed
+        )
+        if (repayIsAvailableError) {
+          sliceState.setStateByKey('formStatus', { ...cFormStatus, error: repayIsAvailableError })
+        } else {
+          sliceState.setStateByKey('repayIsAvailable', { [userActiveKey]: repayIsAvailable })
         }
+
+        if (repayIsAvailableError || !repayIsAvailable) return
       }
+
+      // api calls
+      await sliceState.fetchDetailInfo(activeKey, api, owmData, maxSlippage)
+      sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage)
     },
 
     // steps
-    fetchStepApprove: async (activeKey, api, owmData, formValues) => {
-      const provider = get().wallet.getProvider(sliceKey)
+    fetchStepApprove: async (activeKey, api, owmData, formValues, maxSlippage) => {
+      const { gas, wallet } = get()
+      const sliceState = get()[sliceKey]
+      const provider = wallet.getProvider(sliceKey)
 
       if (!provider) return
 
       // update formStatus
-      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
-      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
-      // api calls
-      await get().gas.fetchGasInfo(api)
-      const { debt, isFullRepay } = formValues
-      const resp = await apiLending.loanRepay.approve(activeKey, provider, owmData, debt, isFullRepay)
+      await gas.fetchGasInfo(api)
+      const { stateCollateral, userCollateral, userBorrowed, isFullRepay } = formValues
+      const { swapRequired } = _parseValues(formValues)
+
+      const { error, ...resp } = await loanRepay.approve(
+        activeKey,
+        provider,
+        owmData,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        isFullRepay,
+        swapRequired
+      )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
-        const partialFormStatus: Partial<FormStatus> = {
-          error: resp.error,
-          isApproved: !resp.error,
-          isInProgress: true,
-        }
-        get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, api, owmData)
-        return resp
+        sliceState.setStateByKey('formStatus', {
+          ...DEFAULT_FORM_STATUS,
+          isApproved: !error,
+          isApprovedCompleted: !error,
+          stepError: error,
+        })
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage)
+        return { ...resp, error }
       }
     },
-    fetchStepDecrease: async (activeKey, api, owmData) => {
-      const provider = get().wallet.getProvider(sliceKey)
+    fetchStepRepay: async (activeKey, api, owmData, formValues, maxSlippage) => {
+      const { gas, markets, user, wallet } = get()
+      const { formStatus, ...sliceState } = get()[sliceKey]
+      const provider = wallet.getProvider(sliceKey)
 
       if (!provider) return
 
       // update formStatus
-      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'REPAY' }
-      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      sliceState.setStateByKey('formStatus', {
+        ...DEFAULT_FORM_STATUS,
+        isApproved: true,
+        isApprovedCompleted: formStatus.isApprovedCompleted,
+        isInProgress: true,
+        step: 'REPAY',
+      })
 
-      await get().gas.fetchGasInfo(api)
-      const { debt, isFullRepay } = get()[sliceKey].formValues
-      const resp = await apiLending.loanRepay.repay(activeKey, provider, owmData, debt, isFullRepay)
+      await gas.fetchGasInfo(api)
+      const { userBorrowed, userCollateral, stateCollateral, isFullRepay } = formValues
+      const { swapRequired } = _parseValues(formValues)
 
-      if (activeKey === get()[sliceKey].activeKey) {
-        // api calls
-        const loanExists = (await get().user.fetchUserLoanExists(api, owmData, true))?.loanExists
-        if (loanExists) {
-          get().user.fetchAll(api, owmData, true)
+      const { error, ...resp } = await loanRepay.repay(
+        activeKey,
+        provider,
+        owmData,
+        stateCollateral,
+        userCollateral,
+        userBorrowed,
+        isFullRepay,
+        maxSlippage,
+        swapRequired
+      )
+
+      if (resp.activeKey === get()[sliceKey].activeKey) {
+        const loanExists = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
+
+        if (error) {
+          sliceState.setStateByKey('formStatus', {
+            ...formStatus,
+            isInProgress: false,
+            step: '',
+            stepError: error,
+          })
+          return { ...resp, error, loanExists }
         } else {
-          get().user.fetchUserMarketBalances(api, owmData, true)
-          const userActiveKey = helpers.getUserActiveKey(api, owmData)
-          get().user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
+          if (loanExists) {
+            user.fetchAll(api, owmData, true)
+          } else {
+            user.fetchUserMarketBalances(api, owmData, true)
+            const userActiveKey = getUserActiveKey(api, owmData)
+            user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
+          }
+          markets.fetchAll(api, owmData, true)
+
+          // update formStatus
+          sliceState.setStateByKeys({
+            ...DEFAULT_STATE,
+            formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
+          })
+
+          return { ...resp, error, loanExists }
         }
-        get().markets.fetchAll(api, owmData, true)
-
-        // update formStatus
-        const partialFormStatus: Partial<FormStatus> = { error: resp.error, isApproved: true, isComplete: !resp.error }
-        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
-
-        return { ...resp, loanExists }
       }
     },
 
@@ -218,8 +321,15 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
   },
 })
 
-export function _getActiveKey(api: Api | null, owmData: OWMData | undefined, debt: string, isFullRepay: boolean) {
-  return `${api?.chainId ?? ''}-${owmData?.owm?.id}-${debt}-${isFullRepay}`
-}
-
 export default createLoanRepaySlice
+
+function _getActiveKey(api: Api | null, owmData: OWMData | undefined, formValues: FormValues, maxSlippage: string) {
+  const { userBorrowed, userCollateral, stateCollateral, isFullRepay } = formValues
+  const pIsFullRepay = isFullRepay ? 'full' : ''
+  const { swapRequired } = _parseValues(formValues)
+  const activeKey = _parseActiveKey(api, owmData)
+
+  return swapRequired
+    ? `${activeKey}leverage-${stateCollateral}-${userCollateral}-${userBorrowed}-${maxSlippage}`
+    : `${activeKey}-${userBorrowed}-${pIsFullRepay}`
+}

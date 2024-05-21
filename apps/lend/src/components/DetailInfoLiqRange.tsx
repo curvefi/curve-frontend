@@ -1,7 +1,7 @@
 import type { LiqRangeSliderIdx } from '@/store/types'
 
-import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
@@ -9,16 +9,18 @@ import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Button from '@/ui/Button'
-import DetailInfo from '@/ui/DetailInfo'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
+import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 
 const DetailInfoLiqRange = ({
   rChainId,
   rOwmId,
   bands: newBands,
+  detailInfoLeverage,
   healthMode,
   isEditLiqRange = false,
+  isFullRepay,
   isManage = false,
   isValidFormValues = true,
   loading,
@@ -29,9 +31,11 @@ const DetailInfoLiqRange = ({
 }: {
   rChainId: ChainId
   rOwmId: string
+  detailInfoLeverage?: React.ReactNode
   bands: [number, number]
   healthMode: HealthMode | null
   isEditLiqRange?: boolean
+  isFullRepay?: boolean
   isManage?: boolean
   isValidFormValues?: boolean
   loading: boolean
@@ -44,16 +48,23 @@ const DetailInfoLiqRange = ({
   const userDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
-  const { prices: loanPrices, error: loanPricesError } = loanPricesResp ?? {}
+  const { prices: loanPrices } = loanPricesResp ?? {}
   const { prices: currPrices, bands: currBands } = userDetailsResp?.details ?? {}
+
+  const { parsedNewBands, parsedNewPrices } = useMemo(() => {
+    return isFullRepay
+      ? { parsedNewBands: [0, 0], parsedNewPrices: [0, 0] }
+      : {
+          parsedNewBands: newBands,
+          parsedNewPrices: [
+            +(selectedLiqRange?.prices?.[0] ?? newPrices?.[0] ?? '0'),
+            +(selectedLiqRange?.prices?.[1] ?? newPrices?.[1] ?? '0'),
+          ],
+        }
+  }, [isFullRepay, newBands, newPrices, selectedLiqRange?.prices])
 
   // default to empty data to show chart
   const liqRangeData = useMemo(() => {
-    const parsedNewPrices = [
-      +(selectedLiqRange?.prices?.[0] ?? newPrices?.[0] ?? '0'),
-      +(selectedLiqRange?.prices?.[1] ?? newPrices?.[1] ?? '0'),
-    ]
-
     return [
       {
         name: '',
@@ -65,7 +76,7 @@ const DetailInfoLiqRange = ({
         oraclePriceBand: loanPrices?.oraclePriceBand ?? 0,
       },
     ]
-  }, [currPrices, newPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand, selectedLiqRange?.prices])
+  }, [currPrices, parsedNewPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand])
 
   const currBandsLabel = useMemo(() => {
     const [currBand0, currBand1] = currBands ?? []
@@ -80,14 +91,14 @@ const DetailInfoLiqRange = ({
 
     if (selectedLiqRange?.bands && +selectedLiqRange.bands > 0) {
       ;[newBand0, newBand1] = selectedLiqRange.bands
-    } else if (newBands) {
-      ;[newBand0, newBand1] = newBands
+    } else if (parsedNewBands) {
+      ;[newBand0, newBand1] = parsedNewBands
     }
 
     return typeof newBand0 !== 'undefined' && typeof newBand1 !== 'undefined' && !(newBand0 === 0 && newBand1 === 0)
       ? `${formatNumber(newBand0)} to ${formatNumber(newBand1)}`
       : ''
-  }, [selectedLiqRange?.bands, newBands])
+  }, [selectedLiqRange?.bands, parsedNewBands])
 
   return (
     <>
@@ -119,18 +130,36 @@ const DetailInfoLiqRange = ({
         />
       </Wrapper>
 
-      {/* Detail info band range */}
-      <DetailInfo loading={loading} loadingSkeleton={[200, 23]} label={t`Band range:`}>
-        {isValidFormValues && currBandsLabel && newBandsLabel ? (
-          <span>
-            {currBandsLabel} <Icon name="ArrowRight" size={16} className="svg-arrow" /> <strong>{newBandsLabel}</strong>
-          </span>
-        ) : isValidFormValues && newBandsLabel ? (
-          <span>
-            <strong>{newBandsLabel}</strong>
-          </span>
-        ) : null}
-      </DetailInfo>
+      {/* Detail info leverage */}
+      {detailInfoLeverage && detailInfoLeverage}
+
+      {!isFullRepay && (
+        <>
+          {/* Detail info band range */}
+          <DetailInfo loading={loading} loadingSkeleton={[200, 23]} label={t`Band range:`}>
+            {isValidFormValues && currBandsLabel && newBandsLabel ? (
+              <span>
+                {currBandsLabel} <Icon name="ArrowRight" size={16} className="svg-arrow" />{' '}
+                <strong>{newBandsLabel}</strong>
+              </span>
+            ) : isValidFormValues && newBandsLabel ? (
+              <span>
+                <strong>{newBandsLabel}</strong>
+              </span>
+            ) : null}
+          </DetailInfo>
+
+          {/* Detail info price range */}
+          <DetailInfo loading={loading} loadingSkeleton={[200, 23]} label={t`Price range:`}>
+            {newPrices?.[0] && newPrices?.[1] ? (
+              <strong>
+                {formatNumber(newPrices[0], { maximumSignificantDigits: 5 })} to{' '}
+                {formatNumber(newPrices[1], { maximumSignificantDigits: 5 })}
+              </strong>
+            ) : null}
+          </DetailInfo>
+        </>
+      )}
     </>
   )
 }

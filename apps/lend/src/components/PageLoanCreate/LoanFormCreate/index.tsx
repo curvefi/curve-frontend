@@ -1,27 +1,31 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanCreate/LoanFormCreate/types'
+import type { FormValues, FormStatus, StepKey, FormEstGas } from '@/components/PageLoanCreate/types'
 import type { Step } from '@/ui/Stepper/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
-import { helpers } from '@/lib/apiLending'
 import { getLoanManagePathname } from '@/utils/utilsRouter'
-import { useParams } from 'react-router-dom'
+import { helpers } from '@/lib/apiLending'
+import { _parseValue, DEFAULT_FORM_VALUES } from '@/components/PageLoanCreate/utils'
+import { useNavigate, useParams } from 'react-router-dom'
 import networks from '@/networks'
 import useMarketAlert from '@/hooks/useMarketAlert'
+import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
-import { StyledInpChip } from '@/components/PageLoanManage/styles'
+import { FieldsWrapper } from '@/components/SharedFormStyles/FieldsWrapper'
 import Accordion from '@/ui/Accordion'
 import AlertBox from '@/ui/AlertBox'
+import AlertLoanSummary from '@/components/AlertLoanSummary'
 import AlertFormError from '@/components/AlertFormError'
-import Box from '@/ui/Box'
+import Button from '@/ui/Button'
 import DetailInfo from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
-import DialogHealthWarning from '@/components/DialogHealthWarning'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import DialogFormWarning from '@/components/DialogFormWarning'
+import InpToken from '@/components/InpToken'
+import InpTokenBorrow from '@/components/InpTokenBorrow'
 import LinkButton from '@/ui/LinkButton'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
@@ -29,70 +33,70 @@ import Stepper from '@/ui/Stepper'
 import TextCaption from '@/ui/TextCaption'
 import TxInfoBar from '@/ui/TxInfoBar'
 
-const LoanCreate = (props: PageContentProps) => {
-  const { rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, borrowed_token, collateral_token } = props
+const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
+  const { rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, borrowed_token, collateral_token } = pageProps
   const isSubscribed = useRef(false)
   const params = useParams()
+  const navigate = useNavigate()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
+  const activeKeyMax = useStore((state) => state.loanCreate.activeKeyMax)
+  const detailInfoLeverage = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const isPageVisible = useStore((state) => state.isPageVisible)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKey])
+  const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const maxSlippage = useStore((state) => state.maxSlippage)
+  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
+  const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
-  const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
+  const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
   const { signerAddress } = api ?? {}
   const { owm } = owmData ?? {}
+  const { expectedCollateral } = detailInfoLeverage ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, isLoaded ? api : null, owmData, updatedFormValues, maxSlippage, isAdvanceMode)
+    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
+      setConfirmWarning(DEFAULT_CONFIRM_WARNING)
+      setFormValues(
+        isLoaded ? api : null,
+        owmData,
+        isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
+        maxSlippage,
+        isLeverage,
+        shouldRefetch
+      )
+
+      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [setFormValues, rChainId, isLoaded, api, owmData, maxSlippage, isAdvanceMode]
+    [setFormValues, isLoaded, api, owmData, maxSlippage, isLeverage]
   )
-
-  const reset = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset: boolean) => {
-      setConfirmHealthWarning(false)
-      setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
-
-      if (isFullReset) {
-        setHealthMode(DEFAULT_HEALTH_MODE)
-      }
-    },
-    [updateFormValues]
-  )
-
-  const handleInpChange = (name: 'collateral' | 'debt', value: string) => {
-    const updatedFormValues: Partial<FormValues> = { [name]: value }
-    reset(updatedFormValues, formStatus.isComplete)
-  }
 
   const handleClickCreate = useCallback(
-    async (payloadActiveKey: string, api: Api, formValues: FormValues, owmData: OWMData, maxSlippage: string) => {
-      const { owm } = owmData
-
-      const notifyMessage = t`deposit ${formValues.collateral} ${owm.collateral_token.symbol}, borrowing ${formValues.debt} ${owm.borrowed_token.symbol}`
-      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
-      setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
-
-      const resp = await fetchStepCreate(payloadActiveKey, api, owmData, formValues, maxSlippage)
+    async (
+      payloadActiveKey: string,
+      api: Api,
+      formValues: FormValues,
+      owmData: OWMData,
+      maxSlippage: string,
+      isLeverage: boolean
+    ) => {
+      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const resp = await fetchStepCreate(payloadActiveKey, api, owmData, maxSlippage, formValues, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
@@ -110,65 +114,97 @@ const LoanCreate = (props: PageContentProps) => {
       api: Api,
       owmData: OWMData,
       healthMode: HealthMode,
-      confirmedHealthWarning: boolean,
+      confirmedWarning: boolean,
+      formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
       maxSlippage: string,
-      steps: Step[]
+      steps: Step[],
+      isLeverage: boolean,
+      priceImpact: string
     ) => {
       const { signerAddress } = api
-      const { owm } = owmData
-      const { collateral, collateralError, debt, debtError, n } = formValues
-      const { isApproved, isComplete, isInProgress, error, step } = formStatus
+      const { collateral_token, borrowed_token } = owmData.owm
+      const { n, debt, userCollateral } = formValues
+      const { isApproved, isApprovedCompleted, isComplete, isInProgress, error, step } = formStatus
+      const { swapRequired, haveValues, haveDebt, haveFormErrors, getStepTokensStr } = _parseValue(formValues)
+
+      if (haveDebt) {
+        const debtStr = `${debt} ${borrowed_token.symbol}`
+        const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolAndAmountList
+        const notifyMessage = swapRequired
+          ? t`Deposit ${tokensMessage}, borrowing ${debtStr} at max slippage ${maxSlippage}%.`
+          : t`Deposit ${tokensMessage}, borrowing ${debtStr}.`
+
+        setTxInfoBar(
+          <AlertBox alertType="info">
+            <AlertLoanSummary
+              pendingMessage={notifyMessage}
+              borrowed_token={borrowed_token}
+              collateral_token={collateral_token}
+              receive={expectedCollateral?.totalCollateral ?? userCollateral}
+              formValueStateDebt={debt}
+              userState={userDetails?.state}
+              userWallet={userBalances}
+              type="create"
+            />
+          </AlertBox>
+        )
+      } else if (!isComplete) {
+        setTxInfoBar(null)
+      }
 
       const isValid =
-        !!signerAddress &&
-        +collateral > 0 &&
-        !collateralError &&
-        +debt > 0 &&
-        !debtError &&
-        !error &&
-        +maxRecv > 0 &&
-        !!healthMode.percent
+        !!signerAddress && n !== null && !haveFormErrors && !formEstGas?.loading && !error && !!healthMode.percent
 
       const stepsObj: { [key: string]: Step } = {
         APPROVAL: {
           key: 'APPROVAL',
-          status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid),
+          status: helpers.getStepStatus(isApproved, step === 'APPROVAL', isValid && haveValues),
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const notifyMessage = t`Please approve spending your ${owm.collateral_token.symbol}.`
+            const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolList
+            const notifyMessage = t`Please approve spending your ${tokensMessage}.`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, api, owmData, formValues, maxSlippage)
+            await fetchStepApprove(payloadActiveKey, api, owmData, maxSlippage, formValues, isLeverage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
         CREATE: {
           key: 'CREATE',
-          status: helpers.getStepStatus(isComplete, step === 'CREATE', isValid && !!n && isApproved),
+          status: helpers.getStepStatus(isComplete, step === 'CREATE', isValid && haveDebt && isApproved),
           type: 'action',
           content: isComplete ? t`Loan Received` : t`Get Loan`,
-          ...(healthMode.message
+          ...(healthMode.message || priceImpact
             ? {
                 modal: {
                   title: t`Warning!`,
+                  initFn: () => setConfirmWarning({ isConfirming: true, confirmedWarning: false }),
                   content: (
-                    <DialogHealthWarning
-                      {...healthMode}
-                      confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                    <DialogFormWarning
+                      health={healthMode.message ? healthMode : null}
+                      priceImpact={
+                        priceImpact
+                          ? { priceImpact, swapFrom: borrowed_token.symbol, swapTo: collateral_token.symbol }
+                          : null
+                      }
+                      confirmed={confirmedWarning}
+                      setConfirmed={(val) =>
+                        setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
+                      }
                     />
                   ),
                   isDismissable: false,
                   cancelBtnProps: {
                     label: t`Cancel`,
-                    onClick: () => setConfirmHealthWarning(false),
+                    onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage),
-                    disabled: !confirmedHealthWarning,
+                    onClick: () =>
+                      handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
+                    disabled: !confirmedWarning,
                     testId: 'createAnyway',
                   },
                   primaryBtnLabel: 'Create anyway',
@@ -176,7 +212,8 @@ const LoanCreate = (props: PageContentProps) => {
                 },
               }
             : {
-                onClick: async () => handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage),
+                onClick: async () =>
+                  handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
               }),
         },
       }
@@ -186,12 +223,19 @@ const LoanCreate = (props: PageContentProps) => {
       if (isInProgress || isComplete) {
         stepsKey = steps.map((s) => s.key as StepKey)
       } else {
-        stepsKey = isApproved ? ['CREATE'] : ['APPROVAL', 'CREATE']
+        stepsKey = isApproved && !isApprovedCompleted ? ['CREATE'] : ['APPROVAL', 'CREATE']
       }
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleClickCreate, maxRecv, notifyNotification]
+    [
+      expectedCollateral?.totalCollateral,
+      fetchStepApprove,
+      handleClickCreate,
+      notifyNotification,
+      userBalances,
+      userDetails?.state,
+    ]
   )
 
   // onMount
@@ -204,6 +248,24 @@ const LoanCreate = (props: PageContentProps) => {
     }
   }, [resetState])
 
+  usePageVisibleInterval(
+    () => {
+      if (
+        isLoaded &&
+        isPageVisible &&
+        isLeverage &&
+        !formStatus.isComplete &&
+        !formStatus.step &&
+        !formStatus.error &&
+        !isConfirming
+      ) {
+        updateFormValues({})
+      }
+    },
+    REFRESH_INTERVAL['10s'],
+    isPageVisible
+  )
+
   // steps
   useEffect(() => {
     if (isLoaded && api && owmData) {
@@ -212,26 +274,34 @@ const LoanCreate = (props: PageContentProps) => {
         api,
         owmData,
         healthMode,
-        confirmedHealthWarning,
+        confirmedWarning,
+        formEstGas,
         formStatus,
         formValues,
         maxSlippage,
-        steps
+        steps,
+        isLeverage,
+        detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : ''
       )
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isLoaded,
-    confirmedHealthWarning,
-    healthMode?.percent,
-    owmData?.owm?.id,
-    signerAddress,
+    confirmedWarning,
+    detailInfoLeverage?.isHighPriceImpact,
+    expectedCollateral?.totalCollateral,
     formEstGas?.loading,
     formStatus,
     formValues,
+    healthMode?.percent,
+    isLeverage,
     maxRecv,
     maxSlippage,
+    owmData?.owm?.id,
+    signerAddress,
+    userBalances,
+    userDetails?.state,
   ])
 
   // signerAddress, maxSlippage state change
@@ -240,88 +310,66 @@ const LoanCreate = (props: PageContentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, maxSlippage, isAdvanceMode])
 
-  const disabled = formStatus.isInProgress
+  const disabled = !!formStatus.step
 
   return (
     <>
-      {/* field collateral */}
-      <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.collateralError ? 'error' : undefined}
-          disabled={disabled}
-          id="collateral"
-        >
-          <InputDebounced
-            id="inpCollateralAmt"
-            testId="collateralAmt"
-            type="number"
-            labelProps={{
-              label: t`${collateral_token?.symbol} Avail.`,
-              descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-              description: formatNumber(userBalances?.collateral, { defaultValue: '-' }),
-            }}
-            value={formValues.collateral}
-            onChange={(val) => handleInpChange('collateral', val)}
-          />
-          <InputMaxBtn
-            testId="collateralMax"
-            onClick={() => handleInpChange('collateral', userBalances?.collateral ?? '')}
-          />
-        </InputProvider>
-        <InpChipUsdRate address={collateral_token?.address} amount={formValues.collateral} />
+      <FieldsWrapper $showBorder={isLeverage}>
+        <InpToken
+          id="userCollateral"
+          testId="userCollateralAmt"
+          {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
+          inpError={formValues.userCollateralError}
+          inpDisabled={disabled}
+          inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
+          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+          inpValue={formValues.userCollateral}
+          tokenAddress={collateral_token?.address}
+          tokenSymbol={collateral_token?.symbol}
+          tokenBalance={userBalances?.collateral}
+          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+          maxTestId="userCollateralMax"
+          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+        />
 
-        <StyledInpChip size="xs" isDarkBg isError>
-          {formValues.collateralError === 'too-much-wallet' &&
-            t`Amount > wallet balance ${formatNumber(userBalances?.collateral)}`}
-        </StyledInpChip>
-      </Box>
-
-      {/* field debt */}
-      <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.debtError ? 'error' : undefined}
-          disabled={disabled}
-          id="debt"
-        >
-          <InputDebounced
-            id="inpDebt"
-            testId="debtAmt"
-            type="number"
-            labelProps={{
-              label: t`${borrowed_token?.symbol} borrow amount`,
-            }}
-            value={formValues.debt}
-            onChange={(val) => handleInpChange('debt', val)}
+        {isLeverage && (
+          <InpToken
+            id="userBorrowed"
+            inpError={formValues.userBorrowedError}
+            inpDisabled={disabled}
+            inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
+            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
+            inpValue={formValues.userBorrowed}
+            tokenAddress={borrowed_token?.address}
+            tokenSymbol={borrowed_token?.symbol}
+            tokenBalance={userBalances?.borrowed}
+            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
+            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
-          <InputMaxBtn testId="debtMax" onClick={() => handleInpChange('debt', maxRecv ?? '')} />
-        </InputProvider>
-        <InpChipUsdRate address={borrowed_token?.address} amount={formValues.debt} />
-        {formValues.debtError === 'too-much-debt' ? (
-          <StyledInpChip size="xs" isDarkBg isError>
-            {t`Amount > max borrow amount`} {formatNumber(maxRecv, { defaultValue: '-' })}
-          </StyledInpChip>
-        ) : (
-          <StyledInpChip size="xs">
-            {t`Max borrow amount`} {formatNumber(maxRecv, { defaultValue: '-' })}
-          </StyledInpChip>
         )}
-      </Box>
+      </FieldsWrapper>
+
+      <InpTokenBorrow
+        id="debt"
+        testId="debtAmt"
+        {...(isLeverage ? { inpTopLabel: t`Borrow amount:` } : {})}
+        inpError={formValues.debtError}
+        inpDisabled={disabled}
+        inpValue={formValues.debt}
+        tokenAddress={borrowed_token?.address}
+        tokenSymbol={borrowed_token?.symbol}
+        maxRecv={maxRecv}
+        handleInpChange={(debt) => updateFormValues({ debt })}
+        testId="debtMax"
+        handleMaxClick={() => updateFormValues({ debt: maxRecv ?? '' })}
+      />
 
       {/* detail info */}
       <DetailInfo
-        {...props}
-        activeKey={activeKey}
-        activeKeyLiqRange={activeKeyLiqRange}
-        formEstGas={formEstGas}
-        formValues={formValues}
+        {...pageProps}
         healthMode={healthMode}
-        isAdvanceMode={isAdvanceMode}
+        isLeverage={isLeverage}
+        owm={owmData?.owm ?? null}
         steps={steps}
         setHealthMode={setHealthMode}
         updateFormValues={updateFormValues}
@@ -333,20 +381,27 @@ const LoanCreate = (props: PageContentProps) => {
       {signerAddress && typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists && !formStatus.isComplete ? (
         <>
           <AlertBox alertType="info">{t`A loan has been found for this market.`}</AlertBox>
-          <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, rOwmId, 'loan')}>
+          <Button
+            variant="filled"
+            size="large"
+            onClick={() => {
+              setStateByKeyMarkets('marketDetailsView', 'user')
+              navigate(getLoanManagePathname(params, rOwmId, 'loan'))
+            }}
+          >
             Manage loan
-          </LinkButton>
+          </Button>
         </>
       ) : (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-          {formStatus.warning === 'warning-loan-exists' && owm ? (
-            <AlertBox alertType="info">{t`Transaction complete`}</AlertBox>
-          ) : healthMode.message ? (
-            <AlertBox alertType="warning">{healthMode.message}</AlertBox>
-          ) : formStatus.error ? (
-            <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({}, false)} />
-          ) : null}
-
+          {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
+          {(formStatus.error || formStatus.stepError) && (
+            <AlertFormError
+              limitHeight
+              errorKey={formStatus.error || formStatus.stepError}
+              handleBtnClose={() => updateFormValues({}, true)}
+            />
+          )}
           {txInfoBar}
           {steps && <Stepper steps={steps} />}
           {formStatus.isComplete && owm && (

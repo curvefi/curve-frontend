@@ -28,10 +28,11 @@ const DetailInfoLiqRangeEdit = ({
   const [sliderValue, setSliderValue] = useState<number>(selectedLiqRange?.n ?? minBands ?? 5)
 
   useEffect(() => {
-    if (selectedLiqRange?.n) {
+    if (showEditLiqRange && selectedLiqRange?.n) {
       setSliderValue(selectedLiqRange.n)
     }
-  }, [selectedLiqRange?.n])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showEditLiqRange])
 
   const haveLiqRanges = !loading || (Array.isArray(liqRanges) && liqRanges.length > 0)
   const minValue = liqRanges?.[0]?.n ?? minBands ?? 5
