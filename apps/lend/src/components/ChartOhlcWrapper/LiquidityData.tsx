@@ -1,14 +1,11 @@
-import type { LlammaControllerEvent, PricesApiCoin } from '@/ui/Chart/types'
-import { LlammaLiquidityCoins } from './types'
+import type { LlammaControllerEvent } from '@/ui/Chart/types'
+import { LendingMarketTokens } from './types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { ethers } from 'ethers'
 
-import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 
 import Box from '@/ui/Box'
@@ -17,16 +14,18 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
 type Props = {
-  llammaControllerData: LlammaControllerEvent[]
+  lendControllerData: LlammaControllerEvent[]
   chainId: ChainId
-  coins: LlammaLiquidityCoins
+  coins: LendingMarketTokens
 }
 
-const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
+const LiquidityData = ({ lendControllerData, chainId, coins }: Props) => {
+  const imageBaseUrl = networks[chainId].imageBaseUrl
+
   return (
     <>
       {coins &&
-        llammaControllerData.map((transaction, index) => {
+        lendControllerData.map((transaction, index) => {
           return (
             <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
               <LiquidityEvent
@@ -48,12 +47,12 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
                           ...getFractionDigitsOptions(transaction.deposit.amount, 2),
                         })}
                       </Chip>
-                      <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                      <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
                       <StyledTokenIcon
                         size="sm"
-                        imageBaseUrl={getImageBaseUrl(chainId)}
-                        token={coins.collateral.address}
-                        address={coins.collateral.address}
+                        imageBaseUrl={imageBaseUrl}
+                        token={coins.collateralToken.address}
+                        address={coins.collateralToken.address}
                       />
                     </LiquidityEventRow>
                   </>
@@ -69,12 +68,12 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
                               ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
                             })}
                           </Chip>
-                          <LiquiditySymbol>{coins.collateral.symbol}</LiquiditySymbol>
+                          <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
                           <StyledTokenIcon
                             size="sm"
-                            imageBaseUrl={getImageBaseUrl(chainId)}
-                            token={coins.collateral.address}
-                            address={coins.collateral.address}
+                            imageBaseUrl={imageBaseUrl}
+                            token={coins.collateralToken.address}
+                            address={coins.collateralToken.address}
                           />
                         </LiquidityEventRow>
                       )}
@@ -85,12 +84,12 @@ const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
                               ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
                             })}
                           </Chip>
-                          <LiquiditySymbol>{coins.crvusd.symbol}</LiquiditySymbol>
+                          <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
                           <StyledTokenIcon
                             size="sm"
-                            imageBaseUrl={getImageBaseUrl(chainId)}
-                            token={coins.crvusd.address}
-                            address={coins.crvusd.address}
+                            imageBaseUrl={imageBaseUrl}
+                            token={coins.borrowedToken.address}
+                            address={coins.borrowedToken.address}
                           />
                         </LiquidityEventRow>
                       )}

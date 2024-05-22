@@ -3,6 +3,9 @@ import type { Detail } from '@/components/DetailsMarket/types'
 import { t } from '@lingui/macro'
 import React from 'react'
 
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+
 import {
   Content,
   ContentStat,
@@ -21,9 +24,12 @@ import DetailsLoanChartBalances from '@/components/DetailsMarket/components/Deta
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
+import Box from '@/ui/Box'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
-  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
+  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, userActiveKey } = pageProps
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const cellProps = {
     rChainId,
@@ -69,6 +75,11 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
       </Content>
 
       <Content isBorderBottom>
+        {networks[rChainId]?.pricesData && !chartExpanded && (
+          <Box padding="0 0 var(--spacing-normal)">
+            <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
+          </Box>
+        )}
         <DetailsLoanChartBalances
           rChainId={rChainId}
           rOwmId={rOwmId}

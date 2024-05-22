@@ -62,6 +62,7 @@ declare global {
     // market list page properties
     marketListFilter: string[]
     marketListFilterType: string[]
+    pricesData: boolean
     marketListShowOnlyInSmallMarkets: { [marketId: string]: boolean }
   }
 

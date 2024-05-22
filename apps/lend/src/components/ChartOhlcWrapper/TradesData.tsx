@@ -4,7 +4,6 @@ import styled from 'styled-components'
 
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 
 import Box from '@/ui/Box'
@@ -13,21 +12,23 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
 type Props = {
-  llammaTradesData: LlammaTradeEvent[]
+  lendTradesData: LlammaTradeEvent[]
   chainId: ChainId
 }
 
-const TradesData = ({ llammaTradesData, chainId }: Props) => {
+const TradesData = ({ lendTradesData, chainId }: Props) => {
+  const imageBaseUrl = networks[chainId].imageBaseUrl
+
   return (
     <>
-      {llammaTradesData.map((transaction, index) => {
+      {lendTradesData.map((transaction, index) => {
         return (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
             <Event href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
               <TradeFrom>
                 <StyledTokenIcon
                   size="sm"
-                  imageBaseUrl={getImageBaseUrl(chainId)}
+                  imageBaseUrl={imageBaseUrl}
                   token={transaction.token_sold.address}
                   address={transaction.token_sold.address}
                 />
@@ -57,7 +58,7 @@ const TradesData = ({ llammaTradesData, chainId }: Props) => {
                 <StyledTokenIcon
                   className="bought"
                   size="sm"
-                  imageBaseUrl={getImageBaseUrl(chainId)}
+                  imageBaseUrl={imageBaseUrl}
                   token={transaction.token_bought.address}
                   address={transaction.token_bought.address}
                 />

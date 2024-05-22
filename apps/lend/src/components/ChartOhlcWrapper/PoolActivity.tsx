@@ -1,4 +1,4 @@
-import { LlammaLiquidityCoins } from './types'
+import { LendingMarketTokens } from './types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -15,14 +15,14 @@ import LiquidityData from '@/components/ChartOhlcWrapper/LiquidityData'
 interface Props {
   poolAddress: string
   chainId: ChainId
-  coins: LlammaLiquidityCoins
+  coins: LendingMarketTokens
 }
 
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const {
     activityFetchStatus,
-    llammaTradesData,
-    llammaControllerData,
+    lendTradesData,
+    lendControllerData,
     setActivityHidden,
     fetchPoolActivity,
     chartExpanded,
@@ -73,9 +73,9 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
           </TitlesRow>
           <ElementsContainer>
             {eventOption === 'TRADE' ? (
-              <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
+              <TradesData lendTradesData={lendTradesData} chainId={chainId} />
             ) : (
-              <LiquidityData llammaControllerData={llammaControllerData} chainId={chainId} coins={coins} />
+              <LiquidityData lendControllerData={lendControllerData} chainId={chainId} coins={coins} />
             )}
           </ElementsContainer>
         </GridContainer>

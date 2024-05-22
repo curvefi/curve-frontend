@@ -1,9 +1,9 @@
-export type LlammaLiquidityCoins = {
-  crvusd: {
+export type LendingMarketTokens = {
+  borrowedToken: {
     symbol: string
     address: string
   }
-  collateral: {
+  collateralToken: {
     symbol: string
     address: string
   }

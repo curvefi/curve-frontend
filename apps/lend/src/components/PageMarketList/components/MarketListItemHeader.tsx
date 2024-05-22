@@ -32,7 +32,6 @@ const Wrapper = styled.div`
     padding-left: var(--spacing-normal);
     padding-right: var(--spacing-normal);
   }
-}
 `
 
 export default MarketListItemHeader

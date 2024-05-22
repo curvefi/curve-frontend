@@ -1,5 +1,5 @@
 import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
-import { LlammaLiquidityCoins } from './types'
+import { LendingMarketTokens } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
@@ -16,30 +16,29 @@ import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 
 type Props = {
   rChainId: ChainId
-  llamma: Llamma | null
-  llammaId: string
+  userActiveKey: string
+  rOwmId: string
 }
 
-const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
-  const address = llamma?.address ?? ''
+const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
-  const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
-  const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
-  const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
-  const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
   const themeType = useStore((state) => state.themeType)
+  const owm = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId]?.owm)
+  const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
+  const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
+  const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
+  const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
   const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
-  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices ?? null)
+  const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
-  const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
-  const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
-  const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
-  const increaseCollateralPrices = useStore(
-    (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null
+  const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
+  const repayLoanPrices = useStore((state) => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
+  // const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
+  const addCollateralPrices = useStore(
+    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null
   )
-  const decreaseCollateralPrices = useStore(
-    (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null
+  const removeCollateralPrices = useStore(
+    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null
   )
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
@@ -63,7 +62,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     liqRangeNewVisible,
     oraclePriceVisible,
   } = useStore((state) => state.ohlcCharts)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+  const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
@@ -112,31 +111,31 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
       liqRanges.current = range
     }
     // increase loan prices
-    if (increaseLoanPrices && increaseLoanPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(increaseLoanPrices)
+    if (borrowMorePrices && borrowMorePrices.length !== 0 && chartOhlcData) {
+      const range = formatRange(borrowMorePrices)
       liqRanges.new = range
     }
     // decrease loan prices
-    if (decreaseLoanPrices && decreaseLoanPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(decreaseLoanPrices)
+    if (repayLoanPrices && repayLoanPrices.length !== 0 && chartOhlcData) {
+      const range = formatRange(repayLoanPrices)
       liqRanges.new = range
     }
     // increase collateral prices
-    if (increaseCollateralPrices && increaseCollateralPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(increaseCollateralPrices)
+    if (addCollateralPrices && addCollateralPrices.length !== 0 && chartOhlcData) {
+      const range = formatRange(addCollateralPrices)
       liqRanges.new = range
     }
     // decrease collateral prices
-    if (decreaseCollateralPrices && decreaseCollateralPrices.length !== 0 && chartOhlcData) {
-      const range = formatRange(decreaseCollateralPrices)
+    if (removeCollateralPrices && removeCollateralPrices.length !== 0 && chartOhlcData) {
+      const range = formatRange(removeCollateralPrices)
       liqRanges.new = range
     }
 
-    // deleverage prices
-    if (deleveragePrices && chartOhlcData) {
-      const range = formatRange(deleveragePrices)
-      liqRanges.new = range
-    }
+    // // deleverage prices
+    // if (deleveragePrices && chartOhlcData) {
+    //   const range = formatRange(deleveragePrices)
+    //   liqRanges.new = range
+    // }
 
     return liqRanges
   }, [
@@ -144,22 +143,22 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
     liqRangesMapper,
     chartOhlcData,
     userPrices,
-    increaseLoanPrices,
-    decreaseLoanPrices,
-    increaseCollateralPrices,
-    decreaseCollateralPrices,
-    deleveragePrices,
+    borrowMorePrices,
+    repayLoanPrices,
+    addCollateralPrices,
+    removeCollateralPrices,
+    // deleveragePrices,
   ])
 
-  const coins: LlammaLiquidityCoins = llamma
+  const coins: LendingMarketTokens = owm
     ? {
-        crvusd: {
-          symbol: llamma?.coins[0],
-          address: llamma?.coinAddresses[0],
+        borrowedToken: {
+          symbol: owm?.borrowed_token.symbol,
+          address: owm?.borrowed_token.address,
         },
-        collateral: {
-          symbol: llamma?.coins[1],
-          address: llamma?.coinAddresses[1],
+        collateralToken: {
+          symbol: owm?.collateral_token.symbol,
+          address: owm?.collateral_token.address,
         },
       }
     : null
@@ -203,42 +202,40 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
   }, [timeOption])
 
   const refetchPricesData = () => {
-    fetchOhlcData(rChainId, llammaId, address, chartInterval, timeUnit, chartTimeSettings.start, chartTimeSettings.end)
+    fetchOhlcData(
+      rChainId,
+      rOwmId,
+      owm?.addresses.amm,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.start,
+      chartTimeSettings.end
+    )
   }
 
   // set snapshot data and subscribe to new data
   useEffect(() => {
-    if (llamma !== undefined) {
+    if (owm !== undefined) {
       fetchOhlcData(
         rChainId,
-        llammaId,
-        address,
+        rOwmId,
+        owm?.addresses.amm,
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
         chartTimeSettings.end
       )
     }
-  }, [
-    rChainId,
-    chartInterval,
-    chartTimeSettings.end,
-    chartTimeSettings.start,
-    timeUnit,
-    fetchOhlcData,
-    address,
-    llamma,
-    llammaId,
-  ])
+  }, [rChainId, chartInterval, chartTimeSettings.end, chartTimeSettings.start, timeUnit, fetchOhlcData, owm, rOwmId])
 
   const fetchMoreChartData = useCallback(
     (lastFetchEndTime: number) => {
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, +startTime, endTime)
+      fetchMoreOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit]
+    [timeOption, fetchMoreOhlcData, rChainId, owm?.addresses.amm, chartInterval, timeUnit]
   )
 
   return chartExpanded ? (
@@ -246,7 +243,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
         <ChartWrapper
           chartType="crvusd"
-          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
+          chartStatus={chartFetchStatus}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
           themeType={themeType}
@@ -255,7 +252,9 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
-          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
+          selectChartList={[
+            { label: owm ? `${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol}` : t`Chart` },
+          ]}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           refetchingCapped={refetchingCapped}
@@ -271,7 +270,7 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
-        <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />
+        <PoolActivity poolAddress={owm?.addresses.amm} chainId={rChainId} coins={coins} />
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
@@ -298,11 +297,13 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           </ExpandButton>
         )}
       </SelectorRow>
-      {poolInfo === 'poolActivity' && <PoolActivity poolAddress={address} chainId={rChainId} coins={coins} />}
+      {poolInfo === 'poolActivity' && (
+        <PoolActivity poolAddress={owm?.addresses.amm} chainId={rChainId} coins={coins} />
+      )}
       {poolInfo === 'chart' && (
         <ChartWrapper
           chartType="crvusd"
-          chartStatus={llamma ? chartFetchStatus : 'LOADING'}
+          chartStatus={chartFetchStatus}
           chartHeight={chartHeight}
           chartExpanded={false}
           themeType={themeType}
@@ -311,7 +312,9 @@ const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
-          selectChartList={[{ label: llamma ? `${llamma.collateralSymbol} / crvUSD` : t`Chart` }]}
+          selectChartList={[
+            { label: owm ? `${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol}` : t`Chart` },
+          ]}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           refetchingCapped={refetchingCapped}
@@ -384,4 +387,4 @@ const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
 `
 
-export default PoolInfoData
+export default ChartOhlcWrapper
