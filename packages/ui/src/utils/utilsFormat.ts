@@ -56,17 +56,9 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
   return formatOptions
 }
 
-export function getSmallNumber(val: number | string, base?: number) {
-  const regex = new RegExp(`^-?\\d*\\.?0*\\d{0,${base ?? 2}}`)
-  return new BN(val).toString().match(regex)?.[0] ?? ''
-}
-
 function formattedNumberIsZero(val: number | string, formatOptions: NumberFormatOptions) {
-  const noStyleFormatOptions = cloneDeep(formatOptions)
-  noStyleFormatOptions.useGrouping = false
-  delete noStyleFormatOptions.style
-  delete noStyleFormatOptions.notation
-  return Number(new Intl.NumberFormat(localeDetected, noStyleFormatOptions).format(Number(val))) === 0
+  const { useGrouping, style, notation, ...rest } = formatOptions
+  return Number(new Intl.NumberFormat('en-US', rest).format(Number(val))) === 0
 }
 
 export function formatNumber(val: number | string | undefined | null, options?: NumberFormatOptions | undefined) {
@@ -123,11 +115,12 @@ export function formatNumber(val: number | string | undefined | null, options?: 
             if (Number(val) < 0.000000001 && parsedOptions.style !== 'percent') {
               return '<0.000000001'
             } else {
-              let decimal = getSmallNumber(val, 2)?.split('.')[1]?.length ?? '0'
-              parsedOptions.minimumFractionDigits = decimal
-              parsedOptions.maximumFractionDigits = decimal
-
-              return _formatNumber(val, parsedOptions)
+              return _formatNumber(val, {
+                minimumSignificantDigits: 2,
+                maximumSignificantDigits: 2,
+                useGrouping: true,
+                ...(parsedOptions.style ? { style: parsedOptions.style } : {}),
+              })
             }
           } else if (Number(val) <= 0.0009 && !('showAllFractionDigits' in (options ?? {}))) {
             // format number to maximumSignificantDigits of 4 if value is <= 0.0009
