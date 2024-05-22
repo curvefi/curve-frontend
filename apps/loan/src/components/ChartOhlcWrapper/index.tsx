@@ -20,7 +20,7 @@ type Props = {
   llammaId: string
 }
 
-const PoolInfoData = ({ rChainId, llamma, llammaId }: Props) => {
+const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: Props) => {
   const address = llamma?.address ?? ''
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
@@ -384,4 +384,4 @@ const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
 `
 
-export default PoolInfoData
+export default ChartOhlcWrapper

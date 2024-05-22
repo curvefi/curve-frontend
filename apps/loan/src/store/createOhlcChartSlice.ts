@@ -16,7 +16,6 @@ import type {
 import type { UTCTimestamp } from 'lightweight-charts'
 
 import produce from 'immer'
-import { ethers } from 'ethers'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
