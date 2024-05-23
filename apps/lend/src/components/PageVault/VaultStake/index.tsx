@@ -14,6 +14,7 @@ import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanMan
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
+import DetailInfoCrvIncentives from '@/components/DetailInfoCrvIncentives'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import LoanFormConnect from '@/components/LoanFormConnect'
@@ -159,6 +160,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
+  const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
 
   return (
     <>
@@ -198,15 +200,20 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
       </div>
 
       {/* detail info */}
-      <StyledDetailInfoWrapper>
-        {signerAddress && (
-          <DetailInfoEstimateGas
-            chainId={rChainId}
-            {...formEstGas}
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
-          />
-        )}
-      </StyledDetailInfoWrapper>
+      {(detailInfoCrvIncentivesComp || signerAddress) && (
+        <StyledDetailInfoWrapper>
+          {detailInfoCrvIncentivesComp}
+
+          {signerAddress && (
+            <DetailInfoEstimateGas
+              isDivider={detailInfoCrvIncentivesComp !== null}
+              chainId={rChainId}
+              {...formEstGas}
+              stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
+            />
+          )}
+        </StyledDetailInfoWrapper>
+      )}
 
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
