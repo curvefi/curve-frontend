@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 type Size = 'sm'
 
-interface Prop extends ImgHTMLAttributes<HTMLImageElement> {
+interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
   imageBaseUrl: string | null
   token: string
@@ -17,7 +17,7 @@ interface Prop extends ImgHTMLAttributes<HTMLImageElement> {
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
-const TokenIcon = ({ className, imageBaseUrl, token, size, address }: Prop) => {
+function TokenIcon({ className, imageBaseUrl, token, size, address }: TokenIconProps) {
   const storedSrc = useStore((state) => state.tokens.tokensImage[address ?? ''])
   const setTokenImage = useStore((state) => state.tokens.setTokenImage)
 

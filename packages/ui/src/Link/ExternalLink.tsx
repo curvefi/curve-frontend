@@ -6,11 +6,11 @@ import React from 'react'
 
 import { linkStyles } from 'ui/src/Link/styles'
 
-interface Props extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
+interface ExternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {
   isNumber?: boolean
 }
 
-const ExternalLink = ({ className, children, ...props }: React.PropsWithChildren<Props>) => {
+function ExternalLink({ className, children, ...props }: React.PropsWithChildren<ExternalLinkProps>) {
   return (
     <StyledLink target="_blank" {...props} className={className} rel="noreferrer noopener">
       {children}
