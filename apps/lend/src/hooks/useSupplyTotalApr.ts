@@ -50,6 +50,7 @@ function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crv
   return {
     lendApr: formatNumber(lendApr, FORMAT_OPTIONS.PERCENT),
     lendApy: `${formatNumber(lendApy, FORMAT_OPTIONS.PERCENT)} APY`,
+    crvBase,
     crv: crvBase > 0 ? formatNumber(crvBase, FORMAT_OPTIONS.PERCENT) : '',
     crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, FORMAT_OPTIONS.PERCENT) : '',
     incentives: others.map((o) => `${formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} ${o.symbol}`),
