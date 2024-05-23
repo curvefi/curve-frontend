@@ -22,6 +22,7 @@
     "dotenv-flow": "^4.1.0",
     "ethers": "^6.12.1",
     "hardhat": "^2.22.4",
-    "wait-on": "^7.2.0"
+    "wait-on": "^7.2.0",
+    "tsconfig": "*"
   }
 }

@@ -1,16 +1,10 @@
 {
+  "extends": "tsconfig/cypress.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "lib": ["es5", "dom"],
-    "types": ["cypress", "node"],
     "baseUrl": "./",
     "paths": {
       "@/*": ["*"]
-    },
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    }
   },
   "include": ["./**/*.ts", "types/**/*.d.ts", "../cypress.config.ts"]
 }
