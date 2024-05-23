@@ -8,7 +8,7 @@ import AlertBox from '@/ui/AlertBox'
 const ALERT_FORM_ERROR_KEYS = {
   'error-est-gas-approval': 'error-est-gas-approval',
   'error-invalid-provider': 'error-invalid-provider',
-  'error-liquidate': 'error-step-liquidate',
+  'error-liquidate': 'error-liquidate',
   'error-liquidate-not-in-liquidation-mode': 'error-liquidate-not-in-liquidation-mode',
   'error-step-liquidate': 'error-step-liquidate',
   'error-max-amount': 'error-max-amount',
