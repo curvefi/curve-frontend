@@ -1,16 +1,10 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
-import { FunctionComponent, HTMLAttributes, useRef, useState, useEffect } from 'react'
+import { FunctionComponent, HTMLAttributes, useRef, useState, useEffect, useCallback } from 'react'
 
-import { shortenTokenAddress } from '@/ui/utils'
-import networks from '@/networks'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { ExternalLink } from '@/ui/Link'
-import Box from '@/ui/Box'
 import VoteCountdown from '../../VoteCountdown'
 import VotesStatusBox from '../../VotesStatusBox'
-import InternalLinkButton from '@/ui/InternalLinkButton'
 
 type Props = {
   proposalData: ProposalData
@@ -21,23 +15,26 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
   const {
     voteId,
     voteType,
-    creator,
     startDate,
-    snapshotBlock,
-    ipfsMetadata,
     metadata,
     votesFor,
     votesAgainst,
-    voteCount,
-    minSupport,
     quorumVeCrv,
-    supportRequired,
     minAcceptQuorumPercent,
     totalVeCrv,
-    executed,
     status,
     currentQuorumPercentage,
   } = proposalData
+
+  const truncateMetadata = useCallback((metadata: string | null, maxLength: number) => {
+    if (!metadata) {
+      return ''
+    }
+    if (metadata.length <= maxLength) {
+      return metadata
+    }
+    return metadata.slice(0, maxLength) + '...'
+  }, [])
 
   return (
     <LazyItem>
@@ -55,7 +52,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
             <ProposalType>{voteType}</ProposalType>
             <StyledVoteCountdown startDate={startDate} />
           </ProposalDetailsRow>
-          <ProposalMetadata>{metadata}</ProposalMetadata>
+          <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
         </InformationWrapper>
         <VoteWrapper>
           <StyledVotesStatusBox
@@ -74,8 +71,12 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
 
 const ProposalContainer = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
   background-color: var(--summary_content--background-color);
+  @media (min-width: 46.875rem) {
+    grid-template-columns: auto 19.375rem;
+  }
   &:hover {
     cursor: pointer;
   }
@@ -84,8 +85,11 @@ const ProposalContainer = styled.div`
 const InformationWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  padding: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-1);
   min-width: 100%;
+  @media (min-width: 46.875rem) {
+    padding: var(--spacing-3);
+  }
 `
 
 const ProposalDetailsRow = styled.div`
@@ -147,44 +151,36 @@ const ProposalStatus = styled.h4`
 const ProposalType = styled.p`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
+  border-right: 2px solid var(--gray-500);
+  padding-right: var(--spacing-2);
+  @media (max-width: 28.125rem) {
+    display: none;
+  }
 `
 
 const ProposalMetadata = styled.p`
-  margin: auto 0;
-  padding: var(--spacing-4) 0;
-  margin-right: var(--spacing-3);
+  padding-top: var(--spacing-3);
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
+  max-width: 34.375rem;
   line-height: 1.5;
   white-space: pre-line;
   word-break: break-word;
-`
-
-const ProposalProposer = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  opacity: 0.7;
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  margin-left: var(--spacing-1);
-  color: var(--page--text-color);
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  &:hover {
-    cursor: pointer;
+  @media (min-width: 46.875rem) {
+    padding: var(--spacing-4) 0;
+    margin: auto var(--spacing-3) auto 0;
   }
 `
 
 const VoteWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin: auto 0;
   padding: var(--spacing-3);
-  /* background-color: var(--blacka05); */
 `
 
 const StyledVoteCountdown = styled(VoteCountdown)`
-  margin-left: auto;
+  /* margin-left: auto; */
 `
 
 const StyledVotesStatusBox = styled(VotesStatusBox)`
