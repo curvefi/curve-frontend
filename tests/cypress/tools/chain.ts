@@ -12,12 +12,12 @@ export async function setEthBalance(account: string, amount: BigInt | string, pr
 export async function allocateToken(
   account: string,
   token: string,
-  amount: bigint,
+  amount: BigInt,
   whales: string[],
-  provider: ethers.JsonRpcProvider
+  provider: ethers.JsonRpcProvider,
 ) {
   // find donor whale
-  let donorWhale: string
+  let donorWhale: string | undefined
   for (const whale of whales) {
     const whaleBalance = await getTokenBalance(token, whale, provider)
     if (whaleBalance >= amount) {
@@ -26,6 +26,9 @@ export async function allocateToken(
     }
   }
   expect(donorWhale, 'donor whale').to.exist
+  if (!donorWhale) {
+    throw new Error('no donor whale')
+  }
 
   // transfer from whale
   await setEthBalance(donorWhale, '100', provider)
@@ -38,7 +41,7 @@ export async function allocateToken(
   expect(balance, 'wallet token balance').to.equal(amount)
 }
 
-export const getTokenBalance = async (token: string, account: string, provider: ethers.Provider): Promise<bigint> => {
+export const getTokenBalance = async (token: string, account: string, provider: ethers.Provider): Promise<BigInt> => {
   const iERC20 = ['function balanceOf(address account) external view returns (uint256)']
   const erc20 = new ethers.Contract(token, iERC20, provider)
   return erc20.balanceOf(account)
@@ -53,7 +56,7 @@ export async function transferToken(token: string, account: string, amount: BigI
 
 export async function getImpersonatedSigner(
   address: string,
-  provider: ethers.JsonRpcProvider
+  provider: ethers.JsonRpcProvider,
 ): Promise<ethers.JsonRpcSigner> {
   await provider.send('hardhat_impersonateAccount', [address])
   return new ethers.JsonRpcSigner(provider, address)

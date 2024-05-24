@@ -14,7 +14,14 @@ const commonConfig = defineConfig({
   },
 })
 
-const envConfig = {
+interface EnvConfig {
+  [key: string]: {
+    baseUrl: string
+    specPattern: string
+  }
+}
+
+const envConfig: EnvConfig = {
   main: {
     baseUrl: 'http://localhost:3000/#',
     specPattern: 'cypress/e2e/main/**/*',
@@ -29,7 +36,7 @@ const envConfig = {
   },
 }
 
-const selectedDapp = envConfig[process.env.CYPRESS_DAPP] || envConfig.main
+const selectedDapp = envConfig[process.env.CYPRESS_DAPP ?? 'main']
 
 export default defineConfig({
   ...commonConfig,

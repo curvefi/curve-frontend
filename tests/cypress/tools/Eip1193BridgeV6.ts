@@ -34,9 +34,11 @@ export class Eip1193BridgeV6 extends EventEmitter {
       return ethers.makeError<ethers.ErrorCode, ethers.UnsupportedOperationError>(
         message,
         'UNSUPPORTED_OPERATION',
-        errorInfo
+        errorInfo,
       )
     }
+
+    if (!this.provider) return null
 
     let coerce = (value: any) => value
 
