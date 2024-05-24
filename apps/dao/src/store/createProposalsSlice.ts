@@ -1,5 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
+
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
@@ -61,7 +62,12 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
   [sliceKey]: {
     ...DEFAULT_STATE,
     getProposals: async (curve: CurveApi) => {
-      get()[sliceKey].setStateByKey('proposalsLoadingState', 'LOADING')
+      const { proposalsMapper } = get()[sliceKey]
+      const { cacheProposalsMapper } = get().storeCache
+
+      if (Object.keys(proposalsMapper).length === 0 && Object.keys(cacheProposalsMapper).length === 0) {
+        get()[sliceKey].setStateByKey('proposalsLoadingState', 'LOADING')
+      }
 
       try {
         const proposals = await curve.dao.getProposalList()
@@ -109,7 +115,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const formattedVotes = proposal.votes
           .map((vote) => ({
             ...vote,
-            stake: vote.stake / 10 ** 18,
+            stake: convertNumberEighteen(vote.stake),
             relativePower: (vote.stake / +proposal.totalSupply) * 100,
           }))
           .sort()
@@ -147,7 +153,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals } = get()[sliceKey]
-      get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
+      // get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
 
       const proposals = selectFilteredSortedProposals()
 

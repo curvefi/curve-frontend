@@ -6,6 +6,7 @@ import { formatNumber, formatNumberWithSuffix } from '@/ui/utils'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 import ProgressBar from './PageProposals/components/ProgressBar'
+import { TooltipIcon } from '@/ui/Tooltip'
 
 type Props = {
   votesFor: number
@@ -45,7 +46,7 @@ const VotesStatusBox = ({
         <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
       </VoteAgainst>
       <Quorum>
-        <Box flex>
+        <Box flex flexAlignItems="center">
           {votesFor >= quorumVeCrv ? (
             <QuorumPassedIcon name="CheckmarkFilled" size={16} />
           ) : (
@@ -55,6 +56,9 @@ const VotesStatusBox = ({
           <p>
             {formatNumberWithSuffix(votesFor)} of {formatNumberWithSuffix(quorumVeCrv)}
           </p>
+          <TooltipIcon minWidth="200px">
+            <p>{t`A minimum of ${minAcceptQuorumPercent}% of veCRV tokens must vote 'For' in order for a proposal to meet quorum.`}</p>
+          </TooltipIcon>
         </Box>
         <ProgressBar
           yesVote={currentQuorumPercentage >= minAcceptQuorumPercent}
@@ -111,12 +115,12 @@ const Quorum = styled.div`
 
 const QuorumPassedIcon = styled(Icon)`
   color: var(--chart-green);
-  margin-right: var(--spacing-1);
+  margin: auto var(--spacing-1) auto 0;
 `
 
 const QuorumFailedIcon = styled(Icon)`
   color: var(--chart-red);
-  margin-right: var(--spacing-1);
+  margin: auto var(--spacing-1) auto 0;
 `
 
 export default VotesStatusBox
