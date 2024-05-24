@@ -1,4 +1,4 @@
-import type { ProposalListFilterItem } from '../types'
+import type { ProposalListFilterItems } from '../types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
@@ -9,10 +9,10 @@ import Button from '@/ui/Button'
 import Spinner from '@/ui/Spinner'
 
 type Props = {
-  filters: ProposalListFilterItem[]
-  activeFilter: ProposalListFilterItem['key']
+  filters: ProposalListFilterItems
+  activeFilter: ProposalListFilterItems[string]['id']
   listLength: number
-  setActiveFilter: (filter: ProposalListFilterItem['key']) => void
+  setActiveFilter: (filter: ProposalListFilterItems[string]['id']) => void
 }
 
 const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }: Props) => {
@@ -20,17 +20,17 @@ const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }
 
   return (
     <Container>
-      {filters.map((filter) => (
+      {Object.values(filters).map((filter) => (
         <Filter
-          onClick={() => setActiveFilter(filter.key)}
-          className={activeFilter === filter.key ? 'active' : ''}
+          onClick={() => setActiveFilter(filter.id)}
+          className={activeFilter === filter.id ? 'active' : ''}
           variant="select"
-          key={filter.label}
+          key={filter.displayName}
         >
-          {filter.label}
-          {filteringProposalsLoading && activeFilter === filter.key ? (
+          {filter.displayName}
+          {filteringProposalsLoading && activeFilter === filter.id ? (
             <Spinner size={12} />
-          ) : activeFilter === filter.key ? (
+          ) : activeFilter === filter.id ? (
             ` ${listLength}`
           ) : (
             ''

@@ -1,4 +1,3 @@
-export type ProposalListFilterItem = {
-  key: ProposalListFilter
-  label: string
+export type ProposalListFilterItems = {
+  [id: string]: { id: ProposalListFilter; displayName: string }
 }
