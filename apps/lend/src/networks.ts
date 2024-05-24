@@ -13,6 +13,7 @@ const DEFAULT_NETWORK_CONFIG = {
   smallMarketAmount: 10000,
   marketListFilter: ['all', 'user'],
   marketListFilterType: ['borrow', 'lend'],
+  marketListShowOnlyInSmallMarkets: {},
   orgUIPath: 'https://classic.curve.fi',
   integrations: {
     imageBaseurl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
@@ -75,6 +76,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['42161'],
     showInSelectNetwork: true,
+    marketListShowOnlyInSmallMarkets: { 'one-way-market-7': true },
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=arbitrum',
