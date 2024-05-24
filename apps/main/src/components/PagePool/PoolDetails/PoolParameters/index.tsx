@@ -325,7 +325,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
           </StatsSection>
         )}
 
-        {(snapshotData.xcp_profit || snapshotData.xcp_profit_a || snapshotData.offpeg_fee_multiplier) && pricesApi && (
+        {(snapshotData.xcp_profit || snapshotData.xcp_profit_a) && pricesApi && (
           <StatsSection>
             {snapshotData.xcp_profit !== null && (
               <StatsContainer>
