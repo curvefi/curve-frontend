@@ -9,6 +9,7 @@ import { formatNumber } from '@/ui/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { helpers } from '@/lib/apiLending'
 import networks from '@/networks'
+import useMarketAlert from '@/hooks/useMarketAlert'
 import useStore from '@/store/useStore'
 
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanManage/styles'
@@ -35,6 +36,7 @@ const VaultDepositMint = ({
   borrowed_token,
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
+  const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.vaultDepositMint.activeKey)
   const formEstGas = useStore((state) => state.vaultDepositMint.formEstGas[activeKey])
@@ -254,12 +256,16 @@ const VaultDepositMint = ({
         )}
       </StyledDetailInfoWrapper>
 
+      {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
+
       {/* actions */}
-      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-        {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({})} /> : null}
-        {txInfoBar}
-        {steps && <Stepper steps={steps} />}
-      </LoanFormConnect>
+      {!marketAlert?.isDisableDeposit && (
+        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+          {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({})} /> : null}
+          {txInfoBar}
+          {steps && <Stepper steps={steps} />}
+        </LoanFormConnect>
+      )}
     </>
   )
 }
