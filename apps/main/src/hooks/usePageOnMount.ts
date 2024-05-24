@@ -25,7 +25,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
-  const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
   const walletChainId = getWalletChainId(wallet)
@@ -37,7 +36,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       if (options) {
         try {
           const [chainId, useWallet] = options
-          await updateProvider(wallet)
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
@@ -51,7 +49,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateProvider, wallet]
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet]
   )
 
   const handleConnectWallet = useCallback(
@@ -231,17 +229,22 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         dynamicActivate(rLocale)
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
+      } else if (
+        walletChainId &&
+        curve &&
+        curve.chainId === walletChainId &&
+        parsedParams.rChainId !== walletChainId &&
+        location.pathname !== ROUTE.PAGE_INTEGRATIONS
+      ) {
+        // switch network if url network is not same as wallet
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
+      } else if (curve && curve.chainId !== parsedParams.rChainId) {
+        // switch network if url network is not same as api
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location])
-
-  useEffect(() => {
-    if (parsedParams.redirectPathname) {
-      navigate(parsedParams.redirectPathname)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [parsedParams.redirectPathname])
 
   return {
     pageLoaded: connectState.status === 'success',

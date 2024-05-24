@@ -80,15 +80,37 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
+        } else if (chainId === 196) {
+          // X-Layer
+          const provider = get().wallet.getProvider('')
+
+          if (provider) {
+            const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
+            }
+
+            if (l2GasPrice) {
+              curve.setCustomFeeData({
+                gasPrice: l2GasPrice, // in gwei
+                // @ts-ignore
+                maxFeePerGas: null,
+                // @ts-ignore
+                maxPriorityFeePerGas: null,
+              })
+            }
+          }
         } else if (chainId === 42161) {
           // Arbitrum custom fee data
-          const provider = get().wallet.provider
+          const provider = get().wallet.getProvider('')
 
           if (provider) {
             const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
             parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo && customFeeData) {
+            if (parsedGasInfo && customFeeData?.maxFeePerGas && customFeeData?.maxPriorityFeePerGas) {
               parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
               parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
               curve.setCustomFeeData(customFeeData)
@@ -96,7 +118,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 252 || chainId === 8453) {
           // TODO: remove this hardcode value once it api is fixed
-          const provider = get().wallet.provider
+          const provider = get().wallet.getProvider('')
 
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider)
@@ -110,7 +132,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           }
         } else if (chainId === 10) {
           // TODO: remove this hardcode value once it api is fixed
-          const provider = get().wallet.provider
+          const provider = get().wallet.getProvider('')
 
           if (provider) {
             parsedGasInfo = await parseGasInfo(curve, provider)
@@ -127,7 +149,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         if (parsedGasInfo) {
           get()[sliceKey].setStateByKeys(parsedGasInfo)
         } else {
-          const provider = get().wallet.provider
+          const provider = get().wallet.getProvider('')
           if (provider && chainId) {
             const parsedGasInfo = await parseGasInfo(curve, provider)
             if (parsedGasInfo) {

@@ -24,12 +24,11 @@ import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
 import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
-import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
 import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
-  getIsLowExchangeRate,
   getSwapIsLowExchangeRate,
+  _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
@@ -43,7 +42,10 @@ const multichainNetworks: { [chainId: string]: boolean } = {
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
-    let resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
+    let resp: { customFeeData: Record<string, number | null> | null; error: string } = {
+      customFeeData: null,
+      error: '',
+    }
     try {
       resp.customFeeData = await curve.getGasInfoForL2()
       return resp
@@ -54,9 +56,9 @@ const helpers = {
     }
   },
   fetchL2GasPrice: async (curve: CurveApi) => {
-    let resp = { l2GasPriceWei: 0, error: '' }
+    let resp = { l2GasPrice: 0, error: '' }
     try {
-      resp.l2GasPriceWei = await curve.getGasPriceFromL2()
+      resp.l2GasPrice = await curve.getGasPriceFromL2()
       return resp
     } catch (error) {
       console.error(error)
@@ -112,15 +114,17 @@ const helpers = {
 // curve
 const network = {
   fetchAllPoolsList: async (curve: CurveApi) => {
+    const { chainId } = curve
     log('fetchAllPoolsList', curve.chainId)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
+    const useApi = networks[chainId].useApi
     await Promise.allSettled([
-      curve.factory.fetchPools(true),
-      curve.cryptoFactory.fetchPools(true),
-      curve.twocryptoFactory.fetchPools(true),
-      curve.crvUSDFactory.fetchPools(true),
-      curve.tricryptoFactory.fetchPools(true),
-      curve.stableNgFactory.fetchPools(true),
+      curve.factory.fetchPools(useApi),
+      curve.cryptoFactory.fetchPools(useApi),
+      curve.twocryptoFactory.fetchPools(useApi),
+      curve.crvUSDFactory.fetchPools(useApi),
+      curve.tricryptoFactory.fetchPools(useApi),
+      curve.stableNgFactory.fetchPools(useApi),
     ])
     await Promise.allSettled([
       curve.factory.fetchNewPools(),
@@ -371,7 +375,7 @@ const router = {
     poolsMapper: { [poolId: string]: PoolData },
     formValues: FormValues,
     searchedParams: SearchedParams,
-    maxSlippage: string
+    maxSlippage: string | undefined
   ) => {
     const { isFrom, fromAmount, toAmount } = formValues
     const { fromAddress, toAddress } = searchedParams
@@ -395,55 +399,64 @@ const router = {
     try {
       // get routes and to amount
       if (isFrom) {
-        const [{ route: routes, output }, fetchedToAmount, priceImpact] = await Promise.all([
-          curve.router.getBestRouteAndOutput(fromAddress, toAddress, fromAmount),
+        // MUST CALL getBestRouteAndOutput first
+        const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromAddress, toAddress, fromAmount)
+
+        if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
+
+        const [fetchedToAmount, priceImpact] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fromAmount),
         ])
 
-        const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
-        const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
-        const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
-
-        resp.exchangeRates = getExchangeRates(fetchedToAmount, fromAmount)
-        resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
-          ? false
-          : getIsLowExchangeRate(haveCryptoRoutes, fetchedToAmount, fromAmount)
-        resp.isHighImpact = priceImpact > +parsedMaxSlippage
-        resp.isHighSlippage = haveCryptoRoutes ? false : Number(resp.exchangeRates[0]) > 0.98
-        resp.maxSlippage = parsedMaxSlippage
-        resp.priceImpact = priceImpact
-        resp.routes = parsedRouterRoutes.routes
-        resp.toAmount = fetchedToAmount
-        resp.toAmountOutput = output
-        resp.fromAmount = fromAmount
+        resp = {
+          ...resp,
+          ..._parseRoutesAndOutput(
+            curve,
+            routes,
+            priceImpact,
+            output,
+            poolsMapper,
+            maxSlippage,
+            fetchedToAmount,
+            toAddress,
+            fromAmount,
+            fromAddress
+          ),
+        }
       } else {
         const fetchedFromAmount = await curve.router.required(fromAddress, toAddress, toAmount)
-        const [{ route: routes, output }, fetchedToAmount, priceImpact] = await Promise.all([
-          curve.router.getBestRouteAndOutput(fromAddress, toAddress, fetchedFromAmount),
+
+        // MUST CALL getBestRouteAndOutput first
+        const { route: routes, output } = await curve.router.getBestRouteAndOutput(
+          fromAddress,
+          toAddress,
+          fetchedFromAmount
+        )
+
+        if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
+
+        const [fetchedToAmount, priceImpact] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fetchedFromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fetchedFromAmount),
         ])
 
-        const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
-        const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
-        const parsedMaxSlippage = maxSlippage ? maxSlippage : haveCryptoRoutes ? '0.1' : '0.03'
-
-        resp.exchangeRates = getExchangeRates(toAmount, fetchedFromAmount)
-        resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, parsedRouterRoutes.routes)
-          ? false
-          : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount)
-        resp.isHighImpact = priceImpact > +parsedMaxSlippage
-        resp.isHighSlippage = haveCryptoRoutes ? false : Number(resp.exchangeRates[0]) > 0.98
-        resp.maxSlippage = parsedMaxSlippage
-        resp.priceImpact = priceImpact
-        resp.routes = parsedRouterRoutes.routes
-        resp.toAmount = toAmount
-        resp.toAmountOutput = output
-        resp.fromAmount = fetchedFromAmount
-
-        // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
-        resp.isExpectedToAmount = +toAmount - +fetchedToAmount > +parsedMaxSlippage
+        resp = {
+          ...resp,
+          ..._parseRoutesAndOutput(
+            curve,
+            routes,
+            priceImpact,
+            output,
+            poolsMapper,
+            maxSlippage,
+            toAmount,
+            toAddress,
+            fetchedFromAmount,
+            fromAddress,
+            fetchedToAmount
+          ),
+        }
       }
       return resp
     } catch (error) {
@@ -507,14 +520,13 @@ const router = {
     slippageTolerance: string
   ) => {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
-    const api = curve as CurveApi
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
     try {
       // @ts-ignore
-      const contractTransaction = await api.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
+      const contractTransaction = await curve.router.swap(fromAddress, toAddress, fromAmount, +slippageTolerance)
       if (contractTransaction) {
         await helpers.waitForTransaction(contractTransaction.hash, provider)
-        resp.swappedAmount = await api.router.getSwappedAmount(contractTransaction, toAddress)
+        resp.swappedAmount = await curve.router.getSwappedAmount(contractTransaction, toAddress)
         resp.hash = contractTransaction.hash
       }
       return resp
@@ -794,7 +806,13 @@ const poolDeposit = {
 }
 
 const poolSwap = {
-  exchangeOutput: async (activeKey: string, p: Pool, formValues: PoolSwapFormValues, maxSlippage: string) => {
+  exchangeOutput: async (
+    activeKey: string,
+    p: Pool,
+    formValues: PoolSwapFormValues,
+    maxSlippage: string,
+    ignoreExchangeRateCheck: boolean
+  ) => {
     log('exchangeOutput', activeKey, p.name, formValues, maxSlippage)
     let resp = {
       activeKey,
@@ -860,9 +878,10 @@ const poolSwap = {
           label: `${toToken}/${fromToken}`,
         },
       ]
-      resp.isExchangeRateLow = excludeLowExchangeRateCheck(fromAddress, toAddress, [])
-        ? false
-        : getSwapIsLowExchangeRate(p.isCrypto, exchangeRates[0])
+      resp.isExchangeRateLow =
+        ignoreExchangeRateCheck || excludeLowExchangeRateCheck(fromAddress, toAddress, [])
+          ? false
+          : getSwapIsLowExchangeRate(p.isCrypto, exchangeRates[0])
       resp.isHighImpact = priceImpact > +maxSlippage
       resp.priceImpact = priceImpact || 0
       resp.fromAmount = isFrom ? fromAmount : swapRequired

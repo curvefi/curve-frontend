@@ -29,7 +29,6 @@ const Page: NextPage = () => {
   const { chainId } = curve ?? {}
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
-  const isLoadingPools = useStore((state) => state.pools.poolsLoading[rChainId])
   const poolDatas = useStore((state) => state.pools.pools[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
@@ -45,11 +44,11 @@ const Page: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (pageLoaded && !!chainId && !isLoadingApi && !isLoadingPools) {
+    if (pageLoaded && !isLoadingApi && chainId) {
       fetchMissingPoolsRewardsApy(chainId, poolDatas)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, isLoadingPools, isLoadingApi, pageLoaded])
+  }, [isLoadingApi, pageLoaded])
 
   const TABLE_LABEL: PoolListTableLabel = {
     name: { name: t`Pool` },
@@ -60,20 +59,23 @@ const Page: NextPage = () => {
     volume: { name: t`Volume` },
   }
 
-  const updatePath = useCallback((updatedSearchParams: Partial<SearchParams>) => {
-    const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
-      ...parsedSearchParams,
-      ...updatedSearchParams,
-    }
-    let searchPath = '?'
-    if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
-    if (hideSmallPools === false) searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
-    if (sortBy && sortBy !== 'volume') searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
-    if (sortByOrder && sortByOrder !== 'desc') searchPath += `${searchPath === '?' ? '' : '&'}order=${sortByOrder}`
-    if (searchText) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
-    const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
-    navigate(pathname)
-  }, [navigate, params, parsedSearchParams]);
+  const updatePath = useCallback(
+    (updatedSearchParams: Partial<SearchParams>) => {
+      const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = {
+        ...parsedSearchParams,
+        ...updatedSearchParams,
+      }
+      let searchPath = '?'
+      if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
+      if (hideSmallPools === false) searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
+      if (sortBy && sortBy !== 'volume') searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
+      if (sortByOrder && sortByOrder !== 'desc') searchPath += `${searchPath === '?' ? '' : '&'}order=${sortByOrder}`
+      if (searchText) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
+      navigate(pathname)
+    },
+    [navigate, params, parsedSearchParams]
+  )
 
   useEffect(() => {
     if (rChainId) {

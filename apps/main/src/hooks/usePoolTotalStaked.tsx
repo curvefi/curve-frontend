@@ -10,7 +10,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
 
   const curve = useStore((state) => state.curve)
-  const walletProvider = useStore((state) => state.wallet.provider)
+  const getProvider = useStore((state) => state.wallet.getProvider)
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
 
@@ -60,7 +60,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     if (address && curve && shouldCallApi) {
       ;(async () => {
         const rpcUrl = networks[curve.chainId].rpcUrl
-        const provider = walletProvider || new JsonRpcProvider(rpcUrl)
+        const provider = getProvider('') || new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge) ? await getContract('gaugeTotalSupply', gauge, provider) : null
 
         if (gaugeContract) {

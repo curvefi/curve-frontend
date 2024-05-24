@@ -14,12 +14,15 @@ import {
   RCBaseLogo,
   RCBSCLogo,
   RCFraxtalLogo,
+  RCXLayerLogo,
+  RCXLayerWhiteLogo,
 } from 'ui/src/images'
 
 const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
 
 const NETWORK_CONFIG_DEFAULT = {
   blocknativeSupport: true,
+  useApi: true, // default to true when calling fetchPools
   gasL2: false,
   gasPricesUnit: 'GWEI',
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
@@ -286,5 +289,23 @@ export const baseNetworksConfig = {
     scanAddressPath: (hash: string) => `https://fraxscan.com/address/${hash}`,
     scanTxPath: (hash: string) => `https://fraxscan.com/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://fraxscan.com/token/${hash}`,
+  },
+  196: {
+    ...NETWORK_CONFIG_DEFAULT,
+    name: 'X Layer',
+    id: 'x-layer' as const,
+    gasPricesUrl: '',
+    gasPricesDefault: 0,
+    hex: '0xc4',
+    icon: RCXLayerLogo,
+    iconDarkTheme: RCXLayerWhiteLogo,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-x-layer/`,
+    networkId: 196 as const,
+    orgUIPath: '',
+    rpcUrlConnectWallet: `https://rpc.xlayer.tech`,
+    symbol: 'OKB',
+    scanAddressPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/address/${hash}`,
+    scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/token/${hash}`,
   },
 }

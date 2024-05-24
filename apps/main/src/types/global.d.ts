@@ -36,6 +36,7 @@ declare global {
     id: NetworkEnum
     networkId: ChainId
     api: typeof curvejsApi
+    useApi: boolean
     blocknativeSupport: boolean
     compensations: { [poolId: string]: boolean }
     ethTokenAddress: { [key: string]: string }
@@ -53,6 +54,7 @@ declare global {
     hidePoolRewards: { [poolId: string]: boolean }
     hideSmallPoolsTvl: number
     icon: FunctionComponent<SVGProps<SVGSVGElement>>
+    iconDarkTheme?: FunctionComponent<SVGProps<SVGSVGElement>> // optional icon for dark theme
     imageBaseUrl: string
     integrations: {
       imageBaseurl: string
@@ -69,6 +71,7 @@ declare global {
     customPoolIds: { [key: string]: boolean }
     showHideSmallPoolsCheckbox: boolean
     showInSelectNetwork: boolean
+    showRouterSwap: boolean
     swapCustomRouteRedirect: {
       [key: string]: string
     }

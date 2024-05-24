@@ -305,6 +305,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
         )
         const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
+
         const formattedLiquidityEventsData = controllerEventsData.data.map((data) => {
           return {
             ...data,
@@ -313,15 +314,15 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
                 ? null
                 : {
                     ...data.deposit,
-                    amount: formatContractValue(data.deposit.amount, poolAddress),
+                    amount: data.deposit.amount,
                   },
             withdrawal:
               data.withdrawal === null
                 ? null
                 : {
                     ...data.withdrawal,
-                    amount_borrowed: formatContractValue(data.withdrawal.amount_borrowed, poolAddress),
-                    amount_collateral: formatContractValue(data.withdrawal.amount_collateral, poolAddress),
+                    amount_borrowed: data.withdrawal.amount_borrowed,
+                    amount_collateral: data.withdrawal.amount_collateral,
                   },
           }
         })
@@ -384,14 +385,5 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     },
   },
 })
-
-const eightDecimalPools = '0xe0438eb3703bf871e31ce639bd351109c88666ea' // wbtc
-
-const formatContractValue = (value: string, poolAddress: string) => {
-  if (poolAddress === eightDecimalPools) {
-    return ethers.utils.formatUnits(value, 8)
-  }
-  return ethers.utils.formatEther(value)
-}
 
 export default createOhlcChart

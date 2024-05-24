@@ -24,6 +24,7 @@ import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertSlippage from '@/components/AlertSlippage'
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
+import ChipInpHelper from '@/components/ChipInpHelper'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import DetailInfoPriceImpact from '@/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import DetailInfoExchangeRate from '@/components/PageRouterSwap/components/DetailInfoExchangeRate'
@@ -332,66 +333,73 @@ const Swap = ({
       {/* input fields */}
       <FieldsWrapper>
         <div>
-          <StyledInputProvider
-            id="fromAmount"
-            grid
-            gridTemplateColumns="1fr auto 38%"
-            inputVariant={formValues.fromError ? 'error' : undefined}
-            disabled={isDisabled}
-          >
-            <InputDebounced
-              id="inpFromAmount"
-              type="number"
-              labelProps={
-                haveSigner && {
-                  label: t`Avail.`,
-                  descriptionLoading: userPoolBalancesLoading,
-                  description: formatNumber(userFromBalance),
+          <Box grid gridGap={1}>
+            <StyledInputProvider
+              id="fromAmount"
+              grid
+              gridTemplateColumns="1fr auto 38%"
+              inputVariant={formValues.fromError ? 'error' : undefined}
+              disabled={isDisabled}
+            >
+              <InputDebounced
+                id="inpFromAmount"
+                type="number"
+                labelProps={
+                  haveSigner && {
+                    label: t`Avail.`,
+                    descriptionLoading: userPoolBalancesLoading,
+                    description: formatNumber(userFromBalance),
+                  }
                 }
-              }
-              value={formValues.fromAmount}
-              onChange={(fromAmount) => {
-                updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
-              }}
-            />
-            <InputMaxBtn
-              disabled={isDisabled || isMaxLoading}
-              loading={isMaxLoading}
-              isNetworkToken={formValues.fromAddress.toLowerCase() === NETWORK_TOKEN}
-              onClick={() => {
-                updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
-              }}
-            />
-            <TokenComboBox
-              title={t`Select a Token`}
-              disabled={isDisabled || selectList.length === 0}
-              haveSigner={haveSigner}
-              imageBaseUrl={imageBaseUrl}
-              selectedToken={swapTokensMapper[formValues.fromAddress]}
-              showSearch={false}
-              tokens={selectList}
-              onSelectionChange={(value) => {
-                const val = value as string
-                const cFormValues = cloneDeep(formValues)
-                if (val === formValues.toAddress) {
-                  cFormValues.toAddress = formValues.fromAddress
-                  cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
-                }
+                value={formValues.fromAmount}
+                onChange={(fromAmount) => {
+                  updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
+                }}
+              />
+              <InputMaxBtn
+                disabled={isDisabled || isMaxLoading}
+                loading={isMaxLoading}
+                isNetworkToken={formValues.fromAddress.toLowerCase() === NETWORK_TOKEN}
+                onClick={() => {
+                  updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
+                }}
+              />
+              <TokenComboBox
+                title={t`Select a Token`}
+                disabled={isDisabled || selectList.length === 0}
+                imageBaseUrl={imageBaseUrl}
+                listBoxHeight="400px"
+                selectedToken={swapTokensMapper[formValues.fromAddress]}
+                showSearch={false}
+                tokens={selectList}
+                onSelectionChange={(value) => {
+                  const val = value as string
+                  const cFormValues = cloneDeep(formValues)
+                  if (val === formValues.toAddress) {
+                    cFormValues.toAddress = formValues.fromAddress
+                    cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
+                  }
 
-                cFormValues.fromAddress = val
-                cFormValues.fromToken = swapTokensMapper[val].symbol
+                  cFormValues.fromAddress = val
+                  cFormValues.fromToken = swapTokensMapper[val].symbol
 
-                if (formValues.isFrom || formValues.isFrom === null) {
-                  cFormValues.toAmount = ''
-                } else {
-                  cFormValues.fromAmount = ''
-                }
+                  if (formValues.isFrom || formValues.isFrom === null) {
+                    cFormValues.toAmount = ''
+                  } else {
+                    cFormValues.fromAmount = ''
+                  }
 
-                updateFormValues(cFormValues, null, '')
-              }}
-            />
-          </StyledInputProvider>
-          <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+                  updateFormValues(cFormValues, null, '')
+                }}
+              />
+            </StyledInputProvider>
+            <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+            {formValues.fromError && (
+              <ChipInpHelper size="xs" isDarkBg isError>
+                {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+              </ChipInpHelper>
+            )}
+          </Box>
 
           <Box flex flexJustifyContent="center">
             <IconButton
@@ -442,8 +450,8 @@ const Swap = ({
             <TokenComboBox
               title={t`Select a Token`}
               disabled={isDisabled || selectList.length === 0}
-              haveSigner={haveSigner}
               imageBaseUrl={imageBaseUrl}
+              listBoxHeight="400px"
               selectedToken={swapTokensMapper[formValues.toAddress]}
               showSearch={false}
               tokens={selectList}
@@ -540,9 +548,7 @@ const Swap = ({
         }}
       />
 
-      {formValues.fromError ? (
-        <AlertBox alertType="error">{t`Not enough balance for ${formValues.fromToken}`}</AlertBox>
-      ) : formValues.toError ? (
+      {formValues.toError ? (
         <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
       ) : null}
 

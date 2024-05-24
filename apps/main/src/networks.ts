@@ -35,6 +35,7 @@ const NETWORK_CONFIG_DEFAULT = {
   swap: { fromAddress: '', toAddress: '' },
   swapCustomRouteRedirect: {},
   showInSelectNetwork: true,
+  showRouterSwap: true,
   showHideSmallPoolsCheckbox: false,
   createQuickList: [],
   createDisabledTokens: [],
@@ -162,7 +163,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   100: {
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig['100'],
-    poolFilters: ['all', 'usd', 'crypto', 'stableng', 'others', 'user'],
+    poolFilters: ['all', 'usd', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
@@ -185,6 +186,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
+    pricesApi: true,
   },
   1284: {
     ...NETWORK_CONFIG_DEFAULT,
@@ -464,6 +466,21 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
+  196: {
+    ...NETWORK_CONFIG_DEFAULT,
+    ...baseNetworksConfig['196'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_XLAYER_DEV_RPC_URL! : `https://rpc.xlayer.tech`,
+    showInSelectNetwork: false,
+    swap: {
+      fromAddress: '0x1e4a5963abfd975d8c9021ce480b42188849d41d',
+      toAddress: '0x74b7f16337b8972027f6196a17a631ac6de26d22',
+    },
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
+  },
 }
 
 export const networksIdMapper = Object.keys(networks).reduce((prev, curr: unknown) => {
@@ -476,8 +493,8 @@ export const visibleNetworksList = sortBy(
   Object.keys(networks)
     .filter((chainId) => networks[+chainId as ChainId].showInSelectNetwork)
     .map((chainId: unknown) => {
-      const networkConfig = networks[chainId as ChainId]
-      return { icon: networkConfig.icon, label: networkConfig.name, chainId: networkConfig.networkId }
+      const { icon, iconDarkTheme, name, networkId } = networks[chainId as ChainId]
+      return { icon, iconDarkTheme, label: name, chainId: networkId }
     }),
   (n) => n.label
 )

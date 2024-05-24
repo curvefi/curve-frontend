@@ -24,12 +24,13 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
-  const provider = useStore((state) => state.wallet.provider)
+  const getProvider = useStore((state) => state.wallet.getProvider)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
+  const [provider, setProvider] = useState()
   const [contracts, setContracts] = useState<EtherContract[]>([])
 
   const fetchData = useCallback(async (provider: Provider) => {
@@ -51,8 +52,15 @@ const Page: NextPage = () => {
 
   // get initial data
   useEffect(() => {
-    if (provider) fetchData(provider)
-  }, [fetchData, provider])
+    if (!pageLoaded) return
+
+    const provider = getProvider('')
+
+    if (provider) {
+      setProvider(provider)
+      fetchData(provider)
+    }
+  }, [fetchData, getProvider, pageLoaded])
 
   return (
     <>
@@ -72,7 +80,13 @@ const Page: NextPage = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
+              <Button
+                fillWidth
+                loading={!pageLoaded}
+                size="large"
+                variant="filled"
+                onClick={updateConnectWalletStateKeys}
+              >
                 {t`Connect Wallet`}
               </Button>
             </>
