@@ -89,12 +89,13 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { chainId } = api
       const capAndAvailableMapper = get().markets.statsCapAndAvailableMapper[chainId] ?? {}
       const usdRatesMapper = get().usdRates.tokens
-      const { smallMarketAmount } = networks[chainId]
+      const { smallMarketAmount, marketListShowOnlyInSmallMarkets } = networks[chainId]
       return owmDatas.filter(({ owm }) => {
         const { cap } = capAndAvailableMapper[owm.id] ?? {}
         const token = owm.borrowed_token
         const usdRate = usdRatesMapper[token.address]
         if (typeof usdRate === 'undefined') return true
+        if (marketListShowOnlyInSmallMarkets[owm.id]) return false
         return +cap * +usdRate > smallMarketAmount
       })
     },

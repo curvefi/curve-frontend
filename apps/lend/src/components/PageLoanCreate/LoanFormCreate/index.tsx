@@ -10,6 +10,7 @@ import { helpers } from '@/lib/apiLending'
 import { getLoanManagePathname } from '@/utils/utilsRouter'
 import { useParams } from 'react-router-dom'
 import networks from '@/networks'
+import useMarketAlert from '@/hooks/useMarketAlert'
 import useStore from '@/store/useStore'
 
 import { StyledInpChip } from '@/components/PageLoanManage/styles'
@@ -21,7 +22,6 @@ import DetailInfo from '@/components/PageLoanCreate/LoanFormCreate/components/De
 import DialogHealthWarning from '@/components/DialogHealthWarning'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
-import InternalLink from '@/ui/Link/InternalLink'
 import LinkButton from '@/ui/LinkButton'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
@@ -33,6 +33,7 @@ const LoanCreate = (props: PageContentProps) => {
   const { rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, borrowed_token, collateral_token } = props
   const isSubscribed = useRef(false)
   const params = useParams()
+  const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
@@ -318,6 +319,8 @@ const LoanCreate = (props: PageContentProps) => {
         setHealthMode={setHealthMode}
         updateFormValues={updateFormValues}
       />
+
+      {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
       {signerAddress && typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists && !formStatus.isComplete ? (
