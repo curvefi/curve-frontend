@@ -105,7 +105,7 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {proposalsLoadingState === 'LOADING' || isLoadingCurve || filteringProposalsLoading ? (
+            {proposalsLoadingState === 'LOADING' || filteringProposalsLoading ? (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>
