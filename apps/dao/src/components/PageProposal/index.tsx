@@ -52,7 +52,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
     proposalsLoadingState === 'LOADING' ||
     (!pricesProposal && proposalsLoadingState !== 'ERROR')
   const isError = pricesProposalLoadingState === 'ERROR'
-  const isSuccess = pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
+  const isFetched = pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
@@ -113,14 +113,14 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 <h3>{proposal?.executed ? t`Executed` : t`Executable`}</h3>
               </TopBarColumn>
             )}
-            <TopBarColumn margin="0 0 0 auto">
+            <TimeRemainingBox>
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
               {!proposal ? (
                 <StyledLoader isLightBg skeleton={[56, 16.5]} />
               ) : (
                 <VoteCountdown startDate={proposal?.startDate} />
               )}
-            </TopBarColumn>
+            </TimeRemainingBox>
           </ProposalHeader>
           {isError && !isLoading && (
             <ErrorWrapper>
@@ -135,7 +135,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <Spinner />
             </StyledSpinnerWrapper>
           )}
-          {isSuccess && (
+          {isFetched && (
             <>
               <MetaData>
                 <Box flex flexJustifyContent="space-between" flexAlignItems="end">
@@ -150,6 +150,38 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 <p>{proposal?.metadata}</p>
               </MetaData>
               {pricesProposal && <Script script={pricesProposal?.script} />}
+
+              {/* Votes and User Box inline on small screens */}
+              <VotesAndUserBox>
+                {proposal && (
+                  <Box padding="0 var(--spacing-3)">
+                    <VotesStatusBox
+                      votesFor={proposal?.votesFor}
+                      votesAgainst={proposal?.votesAgainst}
+                      totalVeCrv={proposal?.totalVeCrv}
+                      quorumVeCrv={proposal?.quorumVeCrv}
+                      minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
+                      currentQuorumPercentage={proposal?.currentQuorumPercentage}
+                    />
+                  </Box>
+                )}
+                <UserAndVotersBox>
+                  {proposal && <StyledVoters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />}
+                  <UserBoxWrapper variant="secondary">
+                    <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
+                      {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+                        <VoteDialog
+                          snapshotVotingPower
+                          activeProposal={proposal?.status === 'Active'}
+                          votingPower={snapshotVeCrv}
+                          proposalId={rProposalId}
+                        />
+                      )}
+                    </UserBox>
+                  </UserBoxWrapper>
+                </UserAndVotersBox>
+              </VotesAndUserBox>
+
               <VoteInformationBox>
                 <Box>
                   <SubTitle>{t`Proposer`}</SubTitle>
@@ -159,14 +191,14 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                   </StyledExternalLink>
                 </Box>
                 <Box>
-                  <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <VoteInformationData>{pricesProposal?.snapshotBlock}</VoteInformationData>
-                </Box>
-                <Box>
                   <SubTitle>{t`Created`}</SubTitle>
                   <VoteInformationData>
                     {new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString()}
                   </VoteInformationData>
+                </Box>
+                <Box>
+                  <SubTitle>{t`Snapshot Block`}</SubTitle>
+                  <VoteInformationData>{pricesProposal?.snapshotBlock}</VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Ends`}</SubTitle>
@@ -179,17 +211,19 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
           )}
         </ProposalContainer>
 
-        <Box display="flex" flexColumn margin="0 0 auto var(--spacing-1)">
-          <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
-            {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
-              <VoteDialog
-                snapshotVotingPower
-                activeProposal={proposal?.status === 'Active'}
-                votingPower={snapshotVeCrv}
-                proposalId={rProposalId}
-              />
-            )}
-          </UserBox>
+        <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
+          <Box variant="secondary">
+            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
+              {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+                <VoteDialog
+                  snapshotVotingPower
+                  activeProposal={proposal?.status === 'Active'}
+                  votingPower={snapshotVeCrv}
+                  proposalId={rProposalId}
+                />
+              )}
+            </UserBox>
+          </Box>
           {proposal && (
             <>
               <VotesWrapper variant="secondary">
@@ -202,10 +236,12 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                   currentQuorumPercentage={proposal?.currentQuorumPercentage}
                 />
               </VotesWrapper>
-              <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
+              <Box variant="secondary">
+                <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
+              </Box>
             </>
           )}
-        </Box>
+        </SecondColumnBox>
       </Box>
     </Wrapper>
   )
@@ -216,9 +252,12 @@ const Wrapper = styled.div`
   flex-direction: column;
   margin: var(--spacing-4) auto var(--spacing-6);
   width: 65rem;
-  max-width: 95%;
+  max-width: 100%;
   flex-grow: 1;
   min-height: 100%;
+  @media (min-width: 34.375rem) {
+    max-width: 95%;
+  }
 `
 
 const ProposalContainer = styled(Box)`
@@ -226,6 +265,43 @@ const ProposalContainer = styled(Box)`
   flex-direction: column;
   gap: var(--spacing-4);
   margin-bottom: auto;
+`
+
+const SecondColumnBox = styled(Box)`
+  @media (max-width: 55.625rem) {
+    display: none;
+  }
+`
+
+const VotesAndUserBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+  @media (min-width: 55.625rem) {
+    display: none;
+  }
+`
+
+const UserAndVotersBox = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto auto;
+  gap: var(--spacing-4);
+  @media (min-width: 41.875rem) {
+    gap: 0;
+    grid-template-columns: auto 20rem;
+  }
+`
+
+const UserBoxWrapper = styled(Box)`
+  margin: 0 var(--spacing-3);
+  @media (min-width: 41.875rem) {
+    margin: var(--spacing-3) var(--spacing-3) auto 0;
+  }
+`
+
+const StyledVoters = styled(Voters)`
+  width: 100%;
 `
 
 const BackButtonWrapper = styled(Box)`
@@ -244,7 +320,9 @@ const SubTitle = styled.h4`
   font-size: var(--font-size-1);
   opacity: 0.5;
   &.align-right {
-    margin-left: auto;
+    @media (min-width: 32.5rem) {
+      text-align: right;
+    }
   }
 `
 
@@ -261,6 +339,7 @@ const ErrorWrapper = styled.div`
 const ProposalHeader = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
@@ -315,6 +394,12 @@ const TopBarColumn = styled(Box)`
   }
 `
 
+const TimeRemainingBox = styled(TopBarColumn)`
+  @media (min-width: 32.5rem) {
+    margin: 0 0 0 auto;
+  }
+`
+
 const MetaData = styled.div`
   display: flex;
   flex-direction: column;
@@ -348,6 +433,7 @@ const VoteInformationBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: var(--spacing-3);
   gap: var(--spacing-3);
   border-top: 2px solid var(--gray-500a20);

@@ -21,7 +21,7 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower }: Prop
   }
 
   return (
-    <Wrapper variant="secondary" className={className}>
+    <Wrapper className={className}>
       {wallet ? (
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <UserInformation votingPower={votingPower} snapshotVotingPower={snapshotVotingPower} />
@@ -48,7 +48,6 @@ const Wrapper = styled(Box)`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   padding: var(--spacing-3);
-  margin-bottom: var(--spacing-1);
 `
 
 const ConnectMessage = styled.div`
