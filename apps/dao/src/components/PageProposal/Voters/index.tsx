@@ -14,14 +14,15 @@ import Icon from '@/ui/Icon'
 type Props = {
   totalVotes: number
   rProposalId: string
+  className?: string
 }
 
-const Voters = ({ totalVotes, rProposalId }: Props) => {
+const Voters = ({ totalVotes, rProposalId, className }: Props) => {
   const pricesProposalLoadingState = useStore((state) => state.proposals.pricesProposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId])
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper className={className}>
       <TotalWrapper>
         <Box>
           <SubTitle>{t`Total Votes`}</SubTitle>
@@ -74,7 +75,6 @@ const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-  margin-top: var(--spacing-1);
 `
 
 const SubTitle = styled.h4`
