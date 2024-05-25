@@ -37,8 +37,6 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
     }
   }
 
-  console.log(userVotesMapper)
-
   return (
     <Wrapper className={className}>
       {activeProposal ? (
