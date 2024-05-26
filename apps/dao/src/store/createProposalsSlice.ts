@@ -4,6 +4,7 @@ import type { State } from '@/store/useStore'
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
+import { t } from '@lingui/macro'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -11,7 +12,8 @@ type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
   pricesProposalLoadingState: FetchingState
-  voteStatus: '' | 'LOADING' | 'SUCCESS' | 'ERROR'
+  voteStatus: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
+  voteTxHash: string | null
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   pricesProposalMapper: { [proposalId: string]: CurveJsProposalData }
@@ -23,7 +25,6 @@ type SliceState = {
 
 const sliceKey = 'proposals'
 
-// prettier-ignore
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(curve: CurveApi): void
@@ -46,6 +47,7 @@ const DEFAULT_STATE: SliceState = {
   filteringProposalsLoading: true,
   pricesProposalLoadingState: 'LOADING',
   voteStatus: '',
+  voteTxHash: null,
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
@@ -54,9 +56,6 @@ const DEFAULT_STATE: SliceState = {
   proposalsMapper: {},
   proposals: [],
 }
-
-// units of gas used * (base fee + priority fee)
-// estimatedGas * (base fee * maxPriorityFeePerGas)
 
 const createProposalsSlice = (set: SetState<State>, get: GetState<State>): ProposalsSlice => ({
   [sliceKey]: {
@@ -185,17 +184,54 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const { curve } = get()
-      if (!curve) return
+      const provider = get().wallet.provider
+      const notifyNotification = get().wallet.notifyNotification
+      const fetchGasInfo = get().gas.fetchGasInfo
+
+      let dismissNotificationHandler
+
+      if (!curve || !provider) return
+
+      const notifyPendingMessage = t`Please confirm to cast vote.`
+      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      get()[sliceKey].setStateByKey('voteStatus', 'CONFIRMING')
+
+      dismissNotificationHandler = dismissConfirm
 
       try {
-        get()[sliceKey].setStateByKey('voteStatus', 'LOADING')
-
-        const voteResponse = await curve.dao.voteForProposal(voteType, voteId, support)
-
-        const vote = await voteResponse
-
-        get()[sliceKey].setStateByKey('voteStatus', 'SUCCESS')
+        await fetchGasInfo(curve)
       } catch (error) {
+        console.log(error)
+      }
+
+      try {
+        const voteResponseHash = await curve.dao.voteForProposal(voteType, voteId, support)
+
+        if (voteResponseHash) {
+          get()[sliceKey].setStateByKey('voteStatus', 'LOADING')
+
+          dismissConfirm()
+          const deployingNotificationMessage = t`Casting vote...`
+          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          get()[sliceKey].setStateByKey('voteTxHash', voteResponseHash)
+          const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
+          if (receipt.status === 1) {
+            get()[sliceKey].setStateByKey('voteStatus', 'SUCCESS')
+
+            dismissDeploying()
+            const successNotificationMessage = t`Vote casted successfully.`
+            notifyNotification(successNotificationMessage, 'success', 15000)
+          }
+        }
+      } catch (error) {
+        if (typeof dismissNotificationHandler === 'function') {
+          dismissNotificationHandler()
+        }
+
+        get()[sliceKey].setStateByKey('voteStatus', 'ERROR')
+
         console.log(error)
       }
     },
