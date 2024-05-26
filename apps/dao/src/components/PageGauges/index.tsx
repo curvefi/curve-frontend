@@ -79,7 +79,7 @@ const Gauges = () => {
           <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-5)'}>
             {searchValue !== '' && (
               <SearchMessage>
-                Showing results ({filteredGauges.length}) for &quot;<strong>{searchValue}</strong>&quot;:
+                {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
               </SearchMessage>
             )}
             {gaugesLoading ? (
@@ -97,14 +97,16 @@ const Gauges = () => {
             )}
           </Box>
         </Container>
-        <Box flex flexColumn>
-          <StyledUserBox snapshotVotingPower={false} />
+        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+          <Box variant="secondary">
+            <StyledUserBox snapshotVotingPower={false} />
+          </Box>
           {!gaugesLoading && (
             <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
               <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
                 <ChartToolBar>
-                  <ChartTitle>Gauges Relative Weight Distribution</ChartTitle>
-                  <ChartDescription>Showing gauges with {'>'}0.5% relative gauge weight</ChartDescription>
+                  <ChartTitle>{t`Gauges Relative Weight Distribution`}</ChartTitle>
+                  <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
                 </ChartToolBar>
                 <BarChartComponent data={gaugeFormattedData} />
               </Box>
