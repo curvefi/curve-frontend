@@ -10,7 +10,7 @@ import { copyToClipboard } from '@/utils'
 import { shortenTokenAddress } from '@/ui/utils'
 
 import useProposalsMapper from '@/hooks/useProposalsMapper'
-import usePricesProposalMapper from '@/hooks/usePricesProposalMapper'
+import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'
 
 import Button from '@/ui/Button'
 import IconButton from '@/ui/IconButton'
@@ -39,20 +39,20 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   const provider = useStore((state) => state.wallet.provider)
   const curve = useStore((state) => state.curve)
   const navigate = useNavigate()
-  const { proposalsLoadingState, getProposal, pricesProposalLoadingState } = useStore((state) => state.proposals)
+  const { proposalsLoadingState, getProposal, curveJsProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
-  const { pricesProposalMapper } = usePricesProposalMapper()
+  const { curveJsProposalMapper } = useCurveJsProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
-  const pricesProposal = pricesProposalMapper[rProposalId] ?? null
+  const curveJsProposal = curveJsProposalMapper[rProposalId] ?? null
   const proposal = proposalsMapper[rProposalId] ?? null
 
   const isLoading =
-    pricesProposalLoadingState === 'LOADING' ||
+    curveJsProposalLoadingState === 'LOADING' ||
     proposalsLoadingState === 'LOADING' ||
-    (!pricesProposal && proposalsLoadingState !== 'ERROR')
-  const isError = pricesProposalLoadingState === 'ERROR'
-  const isFetched = pricesProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
+    (!curveJsProposal && proposalsLoadingState !== 'ERROR')
+  const isError = curveJsProposalLoadingState === 'ERROR'
+  const isFetched = curveJsProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && curveJsProposal
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
@@ -70,9 +70,9 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
-    if (pricesProposal || !curve) return
+    if (curveJsProposal || !curve) return
     getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')
-  }, [curve, getProposal, pricesProposal, voteId, voteType])
+  }, [curve, getProposal, curveJsProposal, voteId, voteType])
 
   return (
     <Wrapper>
@@ -149,7 +149,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Box>
                 <p>{proposal?.metadata}</p>
               </MetaData>
-              {pricesProposal && <Script script={pricesProposal?.script} />}
+              {curveJsProposal && <Script script={curveJsProposal?.script} />}
 
               {/* Votes and User Box inline on small screens */}
               <VotesAndUserBox>
@@ -198,7 +198,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
-                  <VoteInformationData>{pricesProposal?.snapshotBlock}</VoteInformationData>
+                  <VoteInformationData>{curveJsProposal?.snapshotBlock}</VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Ends`}</SubTitle>
