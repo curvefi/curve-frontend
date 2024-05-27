@@ -471,7 +471,6 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...baseNetworksConfig['196'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_XLAYER_DEV_RPC_URL! : `https://rpc.xlayer.tech`,
-    showInSelectNetwork: false,
     swap: {
       fromAddress: '0x1e4a5963abfd975d8c9021ce480b42188849d41d',
       toAddress: '0x74b7f16337b8972027f6196a17a631ac6de26d22',
