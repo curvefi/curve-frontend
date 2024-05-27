@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
@@ -53,6 +53,15 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
     (!curveJsProposal && proposalsLoadingState !== 'ERROR')
   const isError = curveJsProposalLoadingState === 'ERROR'
   const isFetched = curveJsProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && curveJsProposal
+
+  const createdDate = useMemo(
+    () => new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString(),
+    [proposal?.startDate]
+  )
+  const endDate = useMemo(
+    () => new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString(),
+    [proposal?.startDate]
+  )
 
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
@@ -192,9 +201,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Created`}</SubTitle>
-                  <VoteInformationData>
-                    {new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString()}
-                  </VoteInformationData>
+                  <VoteInformationData>{createdDate}</VoteInformationData>
                 </Box>
                 <Box>
                   <SubTitle>{t`Snapshot Block`}</SubTitle>
@@ -202,9 +209,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Box>
                 <Box>
                   <SubTitle>{t`Ends`}</SubTitle>
-                  <VoteInformationData>
-                    {new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString()}
-                  </VoteInformationData>
+                  <VoteInformationData>{endDate}</VoteInformationData>
                 </Box>
               </VoteInformationBox>
             </>
@@ -213,7 +218,15 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
 
         <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
           <Box variant="secondary">
-            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
+            <UserBox
+              votingPower={snapshotVeCrv}
+              snapshotVotingPower
+              activeProposal={
+                proposal?.status === 'Active'
+                  ? { active: true, startTimestamp: proposal?.startDate, endTimestamp: proposal?.startDate + 604800 }
+                  : undefined
+              }
+            >
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
                   snapshotVotingPower
