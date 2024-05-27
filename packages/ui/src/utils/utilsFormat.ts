@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import cloneDeep from 'lodash/cloneDeep'
 import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
 
@@ -115,12 +114,8 @@ export function formatNumber(val: number | string | undefined | null, options?: 
             if (Number(val) < 0.000000001 && parsedOptions.style !== 'percent') {
               return '<0.000000001'
             } else {
-              return _formatNumber(val, {
-                minimumSignificantDigits: 2,
-                maximumSignificantDigits: 2,
-                useGrouping: true,
-                ...(parsedOptions.style ? { style: parsedOptions.style } : {}),
-              })
+              const { minimumFractionDigits, maximumFractionDigits, ...rest } = parsedOptions
+              return _formatNumber(val, { ...rest, minimumSignificantDigits: 2, maximumSignificantDigits: 2 })
             }
           } else if (Number(val) <= 0.0009 && !('showAllFractionDigits' in (options ?? {}))) {
             // format number to maximumSignificantDigits of 4 if value is <= 0.0009
