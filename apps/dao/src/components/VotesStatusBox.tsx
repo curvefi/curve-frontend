@@ -46,7 +46,7 @@ const VotesStatusBox = ({
         <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
       </VoteAgainst>
       <Quorum>
-        <Box flex flexAlignItems="center">
+        <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
           {votesFor >= quorumVeCrv ? (
             <QuorumPassedIcon name="CheckmarkFilled" size={16} />
           ) : (
@@ -115,12 +115,12 @@ const Quorum = styled.div`
 
 const QuorumPassedIcon = styled(Icon)`
   color: var(--chart-green);
-  margin: auto var(--spacing-1) auto 0;
+  margin: auto 0;
 `
 
 const QuorumFailedIcon = styled(Icon)`
   color: var(--chart-red);
-  margin: auto var(--spacing-1) auto 0;
+  margin: auto 0;
 `
 
 export default VotesStatusBox
