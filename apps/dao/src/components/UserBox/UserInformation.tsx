@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 
 import Icon from '@/ui/Icon'
+import { TooltipIcon } from '@/ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Box from '@/ui/Box'
@@ -12,11 +14,30 @@ import Box from '@/ui/Box'
 type Props = {
   noLink?: boolean
   snapshotVotingPower: boolean
+  activeProposal?: ActiveProposal
   votingPower?: SnapshotVotingPower
 }
 
-const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) => {
+const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
   const { userAddress, userEns, userVeCrv } = useStore((state) => state.user)
+
+  const decayedVeCrv = useMemo(() => {
+    if (activeProposal?.active && votingPower) {
+      const { startTimestamp, endTimestamp } = activeProposal;
+      const currentDate = Date.now() / 1000;
+      const halfwayDate = (startTimestamp + endTimestamp) / 2;
+
+      if (currentDate >= halfwayDate && currentDate <= endTimestamp) {
+        const totalDuration = endTimestamp - startTimestamp;
+        const elapsedDuration = currentDate - halfwayDate
+        const decayFactor = elapsedDuration / (totalDuration / 2);
+        const decayedValue = votingPower.value * (1 - decayFactor);
+        return { decaying: true, value: decayedValue };
+      }
+    }
+  
+    return { decaying: false, value: votingPower?.value ?? 0 };
+  }, [activeProposal, votingPower]);
 
   return (
     <Box flex flexColumn flexGap="var(--spacing-2)">
@@ -48,27 +69,35 @@ const UserInformation = ({ noLink, snapshotVotingPower, votingPower }: Props) =>
         )}
       </Box>
 
-      <Box flex flexDirection="column">
-        {snapshotVotingPower && votingPower !== undefined && (
-          <>
-            <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
-            {votingPower.loading ? (
-              <Loader isLightBg skeleton={[80, 16.5]} />
-            ) : (
-              <h4>{formatNumber(votingPower.value)} veCRV</h4>
-            )}
-          </>
-        )}
-        {!snapshotVotingPower && (
-          <>
+      <Box flex flexDirection="column" flexGap="var(--spacing-2)">
+          {!snapshotVotingPower && <Box flex flexDirection="column">
             <SubTitle>{t`Voting Power`}</SubTitle>
             {!userVeCrv || !userAddress ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
               <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
             )}
-          </>
+          </Box>}
+        {snapshotVotingPower && votingPower !== undefined && votingPower.value !== 0 && (
+          <Box flex flexDirection="column">
+            <Box flex flexAlignItems='center' flexGap='var(--spacing-1)'>
+              <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
+                <TooltipIcon minWidth="200px">
+                <p>{t`Voting power at snapshot block ${votingPower.blockNumber}`}</p>
+              </TooltipIcon>
+            </Box>
+            {votingPower.loading ? (
+              <Loader isLightBg skeleton={[80, 16.5]} />
+            ) : (
+              <h4>{formatNumber(votingPower.value)} veCRV</h4>
+            )}
+          </Box>
         )}
+        {activeProposal?.active && <DecayDescription>{t`Halfway into the vote (3.5 days after creation), voting power begins decaying linearly towards 0 at the end of the vote.`}</DecayDescription>}
+        {decayedVeCrv.decaying && <Box flex flexDirection="column">
+          <SubTitle>{t`Voting Power (Decaying)`}</SubTitle>
+          <h4>{formatNumber(decayedVeCrv.value)} veCRV</h4>
+        </Box>}
       </Box>
     </Box>
   )
@@ -96,6 +125,12 @@ const SmallAddress = styled.p`
 const SubTitle = styled.h4`
   font-size: var(--font-size-1);
   opacity: 0.5;
+`
+
+const DecayDescription = styled.p`
+  margin-top: var(--spacing-1);
+  line-height: 1.5;
+  font-size: var(--font-size-1);
 `
 
 export default UserInformation

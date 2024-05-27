@@ -84,6 +84,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: true,
             value: null,
+            blockNumber: null,
           }
         })
       )
@@ -96,6 +97,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: false,
             value: Number(formatEther(snapshotValue)),
+            blockNumber: snapshot,
           }
         })
       )
