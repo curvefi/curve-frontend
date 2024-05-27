@@ -198,6 +198,15 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       dismissNotificationHandler = dismissConfirm
 
+      // refresh user votes list
+      const onboard = get().wallet.onboard
+      if (onboard) {
+        const connectedWallets = onboard.state.get().wallets
+        if (connectedWallets.length > 0) {
+          get().user.updateUserData(curve, connectedWallets[0])
+        }
+      }
+
       try {
         await fetchGasInfo(curve)
       } catch (error) {
