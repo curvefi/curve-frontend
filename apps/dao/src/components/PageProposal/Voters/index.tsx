@@ -18,8 +18,8 @@ type Props = {
 }
 
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
-  const pricesProposalLoadingState = useStore((state) => state.proposals.pricesProposalLoadingState)
-  const currentProposal = useStore((state) => state.proposals.pricesProposalMapper[rProposalId])
+  const curveJsProposalLoadingState = useStore((state) => state.proposals.curveJsProposalLoadingState)
+  const currentProposal = useStore((state) => state.proposals.curveJsProposalMapper[rProposalId])
 
   return (
     <Wrapper className={className}>
@@ -37,7 +37,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
           </Box>
         </Box>
       </TotalWrapper>
-      {currentProposal && pricesProposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
+      {currentProposal && curveJsProposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
         <VotesWrapper>
           <Box flex flexJustifyContent="space-between">
             <SubTitle>{t`Voter`}</SubTitle>
