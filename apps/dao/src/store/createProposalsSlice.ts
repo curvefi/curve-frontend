@@ -11,12 +11,12 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
-  pricesProposalLoadingState: FetchingState
+  curveJsProposalLoadingState: FetchingState
   voteStatus: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
   voteTxHash: string | null
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
-  pricesProposalMapper: { [proposalId: string]: CurveJsProposalData }
+  curveJsProposalMapper: { [proposalId: string]: CurveJsProposalData }
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
@@ -45,14 +45,14 @@ export type ProposalsSlice = {
 const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
-  pricesProposalLoadingState: 'LOADING',
+  curveJsProposalLoadingState: 'LOADING',
   voteStatus: '',
   voteTxHash: null,
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
   activeSortDirection: 'desc',
-  pricesProposalMapper: {},
+  curveJsProposalMapper: {},
   proposalsMapper: {},
   proposals: [],
 }
@@ -106,7 +106,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     getProposal: async (curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP') => {
-      get()[sliceKey].setStateByKey('pricesProposalLoadingState', 'LOADING')
+      get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'LOADING')
 
       try {
         const proposal = await curve.dao.getProposal(voteType, voteId)
@@ -122,12 +122,12 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         set(
           produce((state: State) => {
-            state[sliceKey].pricesProposalLoadingState = 'SUCCESS'
-            state[sliceKey].pricesProposalMapper[`${voteId}-${voteType}`] = {
+            state[sliceKey].curveJsProposalLoadingState = 'SUCCESS'
+            state[sliceKey].curveJsProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
-            state.storeCache.cachePricesProposalMapper[`${voteId}-${voteType}`] = {
+            state.storeCache.cacheCurveJsProposalMapper[`${voteId}-${voteType}`] = {
               ...proposal,
               votes: sortedVotes,
             }
@@ -135,7 +135,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
       } catch (error) {
         console.log(error)
-        get()[sliceKey].setStateByKey('pricesProposalLoadingState', 'ERROR')
+        get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'ERROR')
       }
     },
     selectFilteredSortedProposals: () => {
