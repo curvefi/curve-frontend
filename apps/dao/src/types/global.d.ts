@@ -230,6 +230,13 @@ declare global {
   type SnapshotVotingPower = {
     loading: boolean
     value: number
+    blockNumber: number
+  }
+
+  type ActiveProposal = {
+    active: boolean
+    startTimestamp: number
+    endTimestamp: number
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
