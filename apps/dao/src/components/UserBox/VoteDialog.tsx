@@ -27,8 +27,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
 
   const isMobile = useStore((state) => state.isMobile)
   const { castVote } = useStore((state) => state.proposals)
-  const { userVotesMapper, userAddress } = useStore((state) => state.user)
-  const curveJsProposalMapper = useStore((state) => state.proposals.curveJsProposalMapper)
+  const { userVotesMapper } = useStore((state) => state.user)
 
   const handleClose = () => {
     if (isMobile) {
@@ -36,15 +35,6 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
     } else {
       overlayTriggerState.close()
     }
-  }
-
-  if (proposalId && userVotesMapper[proposalId]) {
-    console.log(userVotesMapper[proposalId])
-    console.log(
-      curveJsProposalMapper[proposalId].votes
-        .filter((vote) => vote.voter === userAddress)
-        .sort((a, b) => b.relativePower - a.relativePower)
-    )
   }
 
   return (
