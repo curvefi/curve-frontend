@@ -12,7 +12,7 @@ const getForkConfig = (networkId) => {
   }
 
   const infuraKey = process.env.INFURA_PROJECT_ID
-  const alchemyEnvName = `${networkId.toUpperCase()}_ALCHEMY_API_KEY`
+  const alchemyEnvName = `${network.alias.toUpperCase()}_ALCHEMY_API_KEY`
   const alchemyKey = process.env[alchemyEnvName] ?? ''
 
   if (!infuraKey && !alchemyKey) {
