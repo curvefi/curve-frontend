@@ -9,6 +9,8 @@ node_modules/
 # testing
 coverage
 cypress.env.json
+cypress/screenshots
+cypress/videos
 
 # next.js
 .next/

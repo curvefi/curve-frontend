@@ -1,30 +1,38 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development'
-
 require('dotenv-flow').config()
 
-// TODO: move this to a constants file
-const ChainId = {
-  MAINNET: 1,
-  POLYGON: 137,
-}
+const networks = require('./cypress/fixtures/networks.json')
+
 const BASIC_PORT = 8545
 
-const forks = {
-  [ChainId.MAINNET]: {
-    url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-    blockNumber: 19748200,
-    port: BASIC_PORT + ChainId.MAINNET,
-    chainId: ChainId.MAINNET,
-  },
-  [ChainId.POLYGON]: {
-    url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY}`,
-    blockNumber: 56968100,
-    port: BASIC_PORT + ChainId.POLYGON,
-    chainId: ChainId.POLYGON,
-  },
+const getForkConfig = (networkId) => {
+  const network = networks[networkId]
+  if (!network) {
+    throw new Error(`Network with id ${networkId} not found`)
+  }
+
+  const infuraKey = process.env.INFURA_PROJECT_ID
+  const alchemyEnvName = `${networkId.toUpperCase()}_ALCHEMY_API_KEY`
+  const alchemyKey = process.env[alchemyEnvName] ?? ''
+
+  if (!infuraKey && !alchemyKey) {
+    throw new Error(`Either INFURA_PROJECT_ID or ${alchemyEnvName} must be provided`)
+  }
+
+  const url = infuraKey
+    ? network.infura_rpc.replace('INFURA_PROJECT_ID', infuraKey)
+    : network.alchemy_rpc.replace(alchemyEnvName, alchemyKey)
+
+  return {
+    url,
+    blockNumber: network.fork_block,
+    port: BASIC_PORT + network.id,
+    chainId: network.id,
+  }
 }
-const network = parseInt(process.env.HARDHAT_CHAIN_ID) || ChainId.MAINNET
-const networkConfig = forks[network]
+
+const networkId = process.env.HARDHAT_CHAIN_ID ?? '1'
+const networkConfig = getForkConfig(networkId)
 
 module.exports = {
   defaultNetwork: 'hardhat',
@@ -45,8 +53,8 @@ module.exports = {
         },
       },
       accounts: {
+        ...(process.env.HARDHAT_MNEMONIC ? { mnemonic: process.env.HARDHAT_MNEMONIC } : {}),
         count: 5,
-        // mnemonic: MNEMONIC,
       },
       mining: {
         auto: true,
