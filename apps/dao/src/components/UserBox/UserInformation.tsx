@@ -23,21 +23,21 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {
-      const { startTimestamp, endTimestamp } = activeProposal;
-      const currentDate = Date.now() / 1000;
-      const halfwayDate = (startTimestamp + endTimestamp) / 2;
+      const { startTimestamp, endTimestamp } = activeProposal
+      const currentDate = Date.now() / 1000
+      const halfwayDate = (startTimestamp + endTimestamp) / 2
 
       if (currentDate >= halfwayDate && currentDate <= endTimestamp) {
-        const totalDuration = endTimestamp - startTimestamp;
+        const totalDuration = endTimestamp - startTimestamp
         const elapsedDuration = currentDate - halfwayDate
-        const decayFactor = elapsedDuration / (totalDuration / 2);
-        const decayedValue = votingPower.value * (1 - decayFactor);
-        return { decaying: true, value: decayedValue };
+        const decayFactor = elapsedDuration / (totalDuration / 2)
+        const decayedValue = votingPower.value * (1 - decayFactor)
+        return { decaying: true, value: decayedValue }
       }
     }
-  
-    return { decaying: false, value: votingPower?.value ?? 0 };
-  }, [activeProposal, votingPower]);
+
+    return { decaying: false, value: votingPower?.value ?? 0 }
+  }, [activeProposal, votingPower])
 
   return (
     <Box flex flexColumn flexGap="var(--spacing-2)">
@@ -70,19 +70,21 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
       </Box>
 
       <Box flex flexDirection="column" flexGap="var(--spacing-2)">
-          {!snapshotVotingPower && <Box flex flexDirection="column">
+        {!snapshotVotingPower && (
+          <Box flex flexDirection="column">
             <SubTitle>{t`Voting Power`}</SubTitle>
             {!userVeCrv || !userAddress ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
               <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
             )}
-          </Box>}
+          </Box>
+        )}
         {snapshotVotingPower && votingPower !== undefined && votingPower.value !== 0 && (
           <Box flex flexDirection="column">
-            <Box flex flexAlignItems='center' flexGap='var(--spacing-1)'>
-              <SubTitle>{t`Snapshot Voting Power`}</SubTitle>
-                <TooltipIcon minWidth="200px">
+            <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+              <SubTitle>{t`Voting Power at Snapshot`}</SubTitle>
+              <TooltipIcon minWidth="200px">
                 <p>{t`Voting power at snapshot block ${votingPower.blockNumber}`}</p>
               </TooltipIcon>
             </Box>
@@ -93,11 +95,17 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             )}
           </Box>
         )}
-        {activeProposal?.active && <DecayDescription>{t`Halfway into the vote (3.5 days after creation), voting power begins decaying linearly towards 0 at the end of the vote.`}</DecayDescription>}
-        {decayedVeCrv.decaying && <Box flex flexDirection="column">
-          <SubTitle>{t`Voting Power (Decaying)`}</SubTitle>
-          <h4>{formatNumber(decayedVeCrv.value)} veCRV</h4>
-        </Box>}
+        {decayedVeCrv.decaying && (
+          <Box flex flexDirection="column">
+            <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+              <SubTitle>{t`Current Voting Power (Decaying)`}</SubTitle>
+              <TooltipIcon minWidth="200px">
+                <p>{t`Halfway into a proposal vote (3.5 days after creation), voting power begins decaying linearly towards 0 at the end of the proposal vote.`}</p>
+              </TooltipIcon>
+            </Box>
+            <h4>{formatNumber(decayedVeCrv.value)} veCRV</h4>
+          </Box>
+        )}
       </Box>
     </Box>
   )
@@ -129,8 +137,9 @@ const SubTitle = styled.h4`
 
 const DecayDescription = styled.p`
   margin-top: var(--spacing-1);
+  margin-bottom: var(--spacing-1);
   line-height: 1.5;
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-2);
 `
 
 export default UserInformation

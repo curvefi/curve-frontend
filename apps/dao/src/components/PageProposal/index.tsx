@@ -177,7 +177,19 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 <UserAndVotersBox>
                   {proposal && <StyledVoters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />}
                   <UserBoxWrapper variant="secondary">
-                    <UserBox votingPower={snapshotVeCrv} snapshotVotingPower>
+                    <UserBox
+                      votingPower={snapshotVeCrv}
+                      snapshotVotingPower
+                      activeProposal={
+                        proposal?.status === 'Active'
+                          ? {
+                              active: true,
+                              startTimestamp: proposal?.startDate,
+                              endTimestamp: proposal?.startDate + 604800,
+                            }
+                          : undefined
+                      }
+                    >
                       {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                         <VoteDialog
                           snapshotVotingPower

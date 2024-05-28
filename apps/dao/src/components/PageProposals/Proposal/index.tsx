@@ -1,10 +1,9 @@
 import styled from 'styled-components'
-import { FunctionComponent, HTMLAttributes, useRef, useState, useEffect, useCallback } from 'react'
-
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import { useCallback } from 'react'
 
 import VoteCountdown from '../../VoteCountdown'
 import VotesStatusBox from '../../VotesStatusBox'
+import LazyItem from '@/ui/LazyItem'
 
 type Props = {
   proposalData: ProposalData
@@ -37,7 +36,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
   }, [])
 
   return (
-    <LazyItem>
+    <LazyItem defaultHeight="241px">
       <ProposalContainer onClick={() => handleClick(`${voteId}-${voteType}`)}>
         <InformationWrapper>
           <ProposalDetailsRow>
@@ -186,26 +185,5 @@ const StyledVoteCountdown = styled(VoteCountdown)`
 const StyledVotesStatusBox = styled(VotesStatusBox)`
   margin: var(--spacing-1) 0;
 `
-
-const Item = styled.div``
-
-export const LazyItem: FunctionComponent<HTMLAttributes<HTMLDivElement>> = ({ children, id, style, ...props }) => {
-  const ref = useRef<HTMLDivElement>(null)
-  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
-
-  // when rendered items might get larger. So we have that in the state to avoid stuttering
-  const [height, setHeight] = useState<string>('241px') // default height on desktop
-  useEffect(() => {
-    if (isVisible && ref.current) {
-      setHeight(`${ref.current.clientHeight}px`)
-    }
-  }, [isVisible])
-
-  return (
-    <Item ref={ref} id={id} style={{ ...style, ...(!isVisible && { height }) }} {...props}>
-      {isVisible && children}
-    </Item>
-  )
-}
 
 export default Proposal
