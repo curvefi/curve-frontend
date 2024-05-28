@@ -16,7 +16,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { routerParams } = usePageOnMount(params, location, navigate)
-  const { rChainId, rProposalId } = routerParams
+  const { rProposalId } = routerParams
 
   useEffect(() => {
     scrollToTop()
@@ -26,7 +26,7 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title="" />
       <Container>
-        <Proposal routerParams={{ rChainId, rProposalId }} />
+        <Proposal routerParams={{ rProposalId }} />
       </Container>
       <Settings showScrollButton />
     </>

@@ -26,7 +26,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
   const [vote, setVote] = useState<boolean | null>(null)
 
   const isMobile = useStore((state) => state.isMobile)
-  const { castVote } = useStore((state) => state.proposals)
+  const { castVote, voteTx } = useStore((state) => state.proposals)
   const { userVotesMapper } = useStore((state) => state.user)
 
   const handleClose = () => {
@@ -40,12 +40,14 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
   return (
     <Wrapper className={className}>
       {activeProposal ? (
+        // Voting power too low
         votingPower.value === 0 ? (
           <VotingMessage>
             <Icon name="WarningSquareFilled" size={20} />
             {t`Voting power too low to participate in this proposal.`}
           </VotingMessage>
-        ) : proposalId && userVotesMapper[proposalId] ? (
+        ) : // Already voted
+        proposalId && userVotesMapper[proposalId] ? (
           <VotedMessageWrapper>
             <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
             <VotedMessage>
@@ -58,6 +60,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
             </VotedMessage>
           </VotedMessageWrapper>
         ) : (
+          // Vote
           <>
             <VoteDialogButton variant="filled" onClick={overlayTriggerState.open}>
               {t`Vote on Proposal`}
@@ -85,6 +88,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
                   variant="icon-filled"
                   disabled={vote === null}
                   onClick={() => castVote(1, 'PARAMETER', vote!)}
+                  loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
                 >
                   {t`Cast Vote`}
                 </StyledButton>
@@ -92,7 +96,8 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
             )}{' '}
           </>
         )
-      ) : proposalId && userVotesMapper[proposalId] ? (
+      ) : // Voted successfully
+      proposalId && userVotesMapper[proposalId] ? (
         <VotedMessageWrapper>
           <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
           <VotedMessage>
@@ -105,6 +110,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
           </VotedMessage>
         </VotedMessageWrapper>
       ) : (
+        // Voting ended
         <VotingMessage>{t`Voting has ended`}</VotingMessage>
       )}
     </Wrapper>
