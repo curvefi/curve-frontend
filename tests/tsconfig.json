@@ -3,11 +3,19 @@
   "compilerOptions": {
     "types": ["hardhat"],
     "baseUrl": "./cypress",
+    "resolveJsonModule": true,
     "paths": {
       "@/*": ["*"],
       "@/ui": ["../packages/ui/src/index.ts"],
       "@/ui/*": ["../packages/ui/src/*"]
     }
   },
-  "include": ["./**/*.ts", "types/**/*.d.ts", "cypress.config.ts", "hardhat.config.js", "runHardhatNodes.js"]
+  "include": [
+    "./**/*.ts",
+    "cypress/types/**/*.d.ts",
+    "cypress.config.ts",
+    "hardhat.config.js",
+    "runHardhatNodes.js",
+    "killHardhatNodes.js"
+  ]
 }

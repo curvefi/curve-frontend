@@ -4,8 +4,8 @@ export async function setEthBalance(account: string, amount: BigInt | string, pr
   amount = typeof amount === 'string' ? ethers.parseEther(amount) : amount
   const amountHex = `0x${amount.toString(16)}`
   await provider.send('hardhat_setBalance', [account, amountHex])
+
   const balance = await provider.getBalance(account)
-  console.log(balance, amount)
   expect(balance, 'ETH balance').to.equal(amount)
 }
 

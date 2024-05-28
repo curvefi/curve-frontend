@@ -16,6 +16,8 @@ This repository contains tests for the Curve DApp. The setup includes running Ha
    cp .env.sample .env.development.local
    ```
 
+   Edit the `.env.development.local` file to fill in only the necessary environment variables required for your setup.
+
 ### Running Hardhat Nodes
 
 To start the Hardhat nodes:

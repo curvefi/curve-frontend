@@ -61,17 +61,20 @@ declare module '@/fixtures/tokens.json' {
   export default value
 }
 
-declare module '@/fixtures/chains.json' {
-  export interface Chain {
+declare module '@/fixtures/networks.json' {
+  export interface Network {
     id: number
     alias: string
     name: string
+    infura_rpc: string
+    alchemy_rpc: string
+    fork_block: number
   }
 
-  export interface Chains {
-    [key: number]: Chain
+  export interface Networks {
+    [key: string]: Network
   }
 
-  const value: Chains
+  const value: Networks
   export default value
 }

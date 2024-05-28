@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
 import TokensList from '@/fixtures/tokens.json'
 import WhalesList from '@/fixtures/whales.json'
-import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/chain'
+import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/network'
 
 /**
  * Creates a random wallet with the given Ethereum JSON RPC provider.
@@ -14,7 +14,7 @@ import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/chain'
 export function createRandomWallet(
   jsonRpcProvider: ethers.JsonRpcProvider,
   eth?: bigint | string,
-  tokens?: [{ symbol: string; amount: bigint | string }]
+  tokens?: [{ symbol: string; amount: bigint | string }],
 ): Cypress.Chainable<ethers.HDNodeWallet> {
   eth = typeof eth === 'string' ? ethers.parseEther(eth) : eth
 
@@ -36,9 +36,9 @@ export function createRandomWallet(
             token.address,
             typeof amount === 'string' ? ethers.parseEther(amount) : amount,
             whales,
-            jsonRpcProvider
+            jsonRpcProvider,
           )
-        })
+        }),
       )
     }
     return wallet
