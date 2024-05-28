@@ -1,13 +1,13 @@
 import type { SelectState } from 'react-stately'
 
+import * as React from 'react'
 import styled from 'styled-components'
 
 import { delayAction } from 'ui/src/utils'
 
-import { Key } from '@react-types/shared'
+import { Radio, RadioGroup } from 'ui/src/Radio'
 import DelayRender from 'ui/src/DelayRender'
 import ModalDialog from 'ui/src/Dialog'
-import { Radio, RadioGroup } from 'ui/src/Radio'
 
 function SelectModalFull<T>({
   title,
@@ -16,7 +16,7 @@ function SelectModalFull<T>({
 }: {
   title: string
   state: SelectState<T>
-  onSelectionChange?: (key: Key) => void
+  onSelectionChange: ((key: React.Key) => any) | undefined
 }) {
   const handleRadioGroupChange = (updatedKey: string) => {
     if (typeof onSelectionChange === 'function') onSelectionChange(updatedKey)

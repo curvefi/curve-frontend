@@ -13,7 +13,9 @@ import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 import SelectModal from 'ui/src/Select/SelectModal'
 import SelectModalFull from 'ui/src/Select/SelectModalFull'
 
-export interface SelectProps<T extends object> extends ReactStatelySelectProps<T>, AriaSelectOptions<T> {
+export interface SelectProps<T extends object>
+  extends Omit<ReactStatelySelectProps<T>, 'children'>,
+    AriaSelectOptions<T> {
   buttonStyles?: React.CSSProperties
   className?: string
   loading?: boolean
@@ -89,10 +91,8 @@ const Wrapper = styled.div`
   height: 100%;
   min-height: var(--height-medium);
   position: relative;
-  transition:
-    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `
 
