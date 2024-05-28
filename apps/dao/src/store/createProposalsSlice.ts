@@ -12,8 +12,11 @@ type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
   curveJsProposalLoadingState: FetchingState
-  voteStatus: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
-  voteTxHash: string | null
+  voteTx: {
+    hash: string | null
+    error: string | null
+    status: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
+  }
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   curveJsProposalMapper: { [proposalId: string]: CurveJsProposalData }
@@ -46,8 +49,11 @@ const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
   curveJsProposalLoadingState: 'LOADING',
-  voteStatus: '',
-  voteTxHash: null,
+  voteTx: {
+    hash: null,
+    error: null,
+    status: '',
+  },
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'voteId',
@@ -131,7 +137,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
               ...proposal,
               votes: sortedVotes,
             }
-          })
+          }),
         )
       } catch (error) {
         console.log(error)
@@ -194,7 +200,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       const notifyPendingMessage = t`Please confirm to cast vote.`
       const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-      get()[sliceKey].setStateByKey('voteStatus', 'CONFIRMING')
+      get()[sliceKey].setStateByKey('voteTx', {
+        ...get()[sliceKey].voteTx,
+        status: 'CONFIRMING',
+      })
 
       dismissNotificationHandler = dismissConfirm
 
@@ -217,17 +226,26 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const voteResponseHash = await curve.dao.voteForProposal(voteType, voteId, support)
 
         if (voteResponseHash) {
-          get()[sliceKey].setStateByKey('voteStatus', 'LOADING')
+          get()[sliceKey].setStateByKey('voteTx', {
+            ...get()[sliceKey].voteTx,
+            status: 'LOADING',
+          })
 
           dismissConfirm()
           const deployingNotificationMessage = t`Casting vote...`
           const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
-          get()[sliceKey].setStateByKey('voteTxHash', voteResponseHash)
+          get()[sliceKey].setStateByKey('voteTx', {
+            ...get()[sliceKey].voteTx,
+            hash: voteResponseHash,
+          })
           const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
           if (receipt.status === 1) {
-            get()[sliceKey].setStateByKey('voteStatus', 'SUCCESS')
+            get()[sliceKey].setStateByKey('voteTx', {
+              ...get()[sliceKey].voteTx,
+              status: 'SUCCESS',
+            })
 
             dismissDeploying()
             const successNotificationMessage = t`Vote casted successfully.`
@@ -239,7 +257,11 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           dismissNotificationHandler()
         }
 
-        get()[sliceKey].setStateByKey('voteStatus', 'ERROR')
+        get()[sliceKey].setStateByKey('voteTx', {
+          ...get()[sliceKey].voteTx,
+          status: 'ERROR',
+          error: error.message,
+        })
 
         console.log(error)
       }
@@ -308,7 +330,7 @@ const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFi
 const sortProposals = (
   proposals: ProposalData[],
   activeSortBy: SortByFilterProposals,
-  activeSortDirection: ActiveSortDirection
+  activeSortDirection: ActiveSortDirection,
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
@@ -316,7 +338,7 @@ const sortProposals = (
     const passedProposals = orderBy(
       proposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
       ['voteId'],
-      ['desc']
+      ['desc'],
     )
 
     if (activeSortDirection === 'asc') {
