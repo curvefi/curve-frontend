@@ -54,6 +54,18 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   const isError = curveJsProposalLoadingState === 'ERROR'
   const isFetched = curveJsProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && curveJsProposal
 
+  const activeProposal = useMemo(
+    () =>
+      proposal?.status === 'Active'
+        ? {
+            active: true,
+            startTimestamp: proposal?.startDate,
+            endTimestamp: proposal?.startDate + 604800,
+          }
+        : undefined,
+    [proposal?.status, proposal?.startDate]
+  )
+
   const createdDate = useMemo(
     () => new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString(),
     [proposal?.startDate]
@@ -110,16 +122,16 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
             </TopBarColumn>
             <TopBarColumn>
               <SubTitle>{t`Proposal ID`}</SubTitle>
-              <h3>#{voteId}</h3>
+              <TopBarTitle>#{voteId}</TopBarTitle>
             </TopBarColumn>
             <TopBarColumn>
               <SubTitle>{t`Proposal Type`}</SubTitle>
-              <h3>{voteType}</h3>
+              <TopBarTitle>{voteType}</TopBarTitle>
             </TopBarColumn>
             {proposal?.status === 'Passed' && (
               <TopBarColumn>
                 <SubTitle>{t`Executed`}</SubTitle>
-                <h3>{proposal?.executed ? t`Executed` : t`Executable`}</h3>
+                <TopBarTitle>{proposal?.executed ? t`Executed` : t`Executable`}</TopBarTitle>
               </TopBarColumn>
             )}
             <TimeRemainingBox>
@@ -156,7 +168,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                     </StyledCopyButton>
                   </Tooltip>
                 </Box>
-                <p>{proposal?.metadata}</p>
+                <MetaDataParaphraph>{proposal?.metadata}</MetaDataParaphraph>
               </MetaData>
               {curveJsProposal && <Script script={curveJsProposal?.script} />}
 
@@ -177,23 +189,11 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 <UserAndVotersBox>
                   {proposal && <StyledVoters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />}
                   <UserBoxWrapper variant="secondary">
-                    <UserBox
-                      votingPower={snapshotVeCrv}
-                      snapshotVotingPower
-                      activeProposal={
-                        proposal?.status === 'Active'
-                          ? {
-                              active: true,
-                              startTimestamp: proposal?.startDate,
-                              endTimestamp: proposal?.startDate + 604800,
-                            }
-                          : undefined
-                      }
-                    >
+                    <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
                       {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                         <VoteDialog
                           snapshotVotingPower
-                          activeProposal={proposal?.status === 'Active'}
+                          activeProposal={activeProposal}
                           votingPower={snapshotVeCrv}
                           proposalId={rProposalId}
                         />
@@ -242,7 +242,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
                   snapshotVotingPower
-                  activeProposal={proposal?.status === 'Active'}
+                  activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}
                   proposalId={rProposalId}
                 />
@@ -288,6 +288,7 @@ const Wrapper = styled.div`
 const ProposalContainer = styled(Box)`
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
   gap: var(--spacing-4);
   margin-bottom: auto;
 `
@@ -414,9 +415,10 @@ const TopBarColumn = styled(Box)`
   gap: var(--spacing-1);
   font-size: var(--font-size-3);
   font-weight: var(--semi-bold);
-  h3 {
-    font-size: var(--font-size-2);
-  }
+`
+
+const TopBarTitle = styled.h3`
+  font-size: var(--font-size-2);
 `
 
 const TimeRemainingBox = styled(TopBarColumn)`
@@ -430,13 +432,14 @@ const MetaData = styled.div`
   flex-direction: column;
   gap: var(--spacing-1);
   padding: 0 var(--spacing-3);
-  p {
-    font-size: var(--font-size-2);
-    line-height: 1.5;
-    max-width: 40rem;
-    font-weight: var(--semi-bold);
-    white-space: pre-wrap;
-  }
+`
+
+const MetaDataParaphraph = styled.p`
+  font-size: var(--font-size-2);
+  line-height: 1.5;
+  max-width: 40rem;
+  font-weight: var(--semi-bold);
+  white-space: pre-wrap;
 `
 
 const StyledExternalLink = styled(ExternalLink)`
@@ -461,7 +464,7 @@ const VoteInformationBox = styled.div`
   flex-wrap: wrap;
   padding: var(--spacing-3);
   gap: var(--spacing-3);
-  border-top: 2px solid var(--gray-500a20);
+  border-top: 1px solid var(--gray-500a20);
   font-variant-numeric: tabular-nums;
 `
 
@@ -485,8 +488,8 @@ const StyledLoader = styled(Loader)`
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   display: flex;
-  width: 39.75rem;
-  max-width: 100%;
+  width: 100%;
+  margin-bottom: var(--spacing-4);
 `
 
 const StyledCopyButton = styled(IconButton)`
