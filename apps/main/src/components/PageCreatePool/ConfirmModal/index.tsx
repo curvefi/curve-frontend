@@ -346,29 +346,6 @@ const BlurWrapper = styled.div`
   position: relative;
 `
 
-const PendingContainer = styled.div`
-  position: absolute;
-  z-index: 102;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(3px);
-  display: flex;
-`
-
-const PendingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  margin: auto;
-  background: var(--box--secondary--background-color);
-  padding: var(--spacing-4) var(--spacing-5);
-`
-
-const PendingMessage = styled.h4`
-  margin: 0 auto;
-`
-
 const FetchPoolWrapper = styled.div`
   display: flex;
   flex-direction: row;
