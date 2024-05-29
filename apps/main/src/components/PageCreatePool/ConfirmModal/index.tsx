@@ -17,9 +17,9 @@ import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import InternalLinkButton from '@/ui/InternalLinkButton'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import { shortenTokenAddress } from '@/utils'
 import { ROUTE } from '@/constants'
 import Spinner from 'ui/src/Spinner/Spinner'
+import ModalPendingTx from 'ui/src/ModalPendingTx'
 
 import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import CreatePoolButton from '@/components/PageCreatePool/ConfirmModal/CreatePoolButton'
@@ -178,7 +178,7 @@ const ConfirmModal = ({
                     {fetchPoolStatus === 'LOADING' && (
                       <FetchPoolWrapper>
                         <StyledFetchingSpinner isDisabled size={14} />
-                        <FetchingPoolMessage>Fetching new pool...</FetchingPoolMessage>
+                        <FetchingPoolMessage>{t`Fetching new pool...`}</FetchingPoolMessage>
                       </FetchPoolWrapper>
                     )}
                   </SuccessBox>
@@ -196,17 +196,11 @@ const ConfirmModal = ({
             )}
             <BlurWrapper>
               {txStatus === 'LOADING' && (
-                <PendingContainer>
-                  <PendingWrapper>
-                    <PendingMessage>{t`Deploying Pool ${poolName}...`}</PendingMessage>
-                    <StyledPendingSpinner isDisabled size={24} />
-                    <Transaction variant={'contained'} href={txLink}>
-                      <p>{t`Transaction:`}</p>
-                      {shortenTokenAddress(transaction!.hash)}
-                      <StyledIcon name={'Launch'} size={16} />
-                    </Transaction>
-                  </PendingWrapper>
-                </PendingContainer>
+                <ModalPendingTx
+                  transactionHash={transaction!.hash}
+                  txLink={txLink}
+                  pendingMessage={t`Deploying Pool ${poolName}...`}
+                />
               )}
               {txStatus !== 'SUCCESS' && (
                 <SummaryContent>
