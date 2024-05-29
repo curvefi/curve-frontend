@@ -346,29 +346,6 @@ const BlurWrapper = styled.div`
   position: relative;
 `
 
-const PendingContainer = styled.div`
-  position: absolute;
-  z-index: 102;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(3px);
-  display: flex;
-`
-
-const PendingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  margin: auto;
-  background: var(--box--secondary--background-color);
-  padding: var(--spacing-4) var(--spacing-5);
-`
-
-const PendingMessage = styled.h4`
-  margin: 0 auto;
-`
-
 const FetchPoolWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -397,34 +374,6 @@ const StyledButtonSpinner = styled(Spinner)`
   > div {
     border-color: var(--button--color) transparent transparent transparent;
   }
-`
-
-const StyledPendingSpinner = styled(Spinner)`
-  margin: var(--spacing-4) auto;
-  > div {
-    border-color: var(--page--text-color) transparent transparent transparent;
-  }
-`
-
-const Transaction = styled(ExternalLink)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  text-transform: none;
-  text-decoration: none;
-  background-color: var(--page--background-color);
-  padding: var(--spacing-2);
-  p {
-    margin-right: auto;
-    font-weight: var(--bold);
-  }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
-  color: var(--page--text-color);
 `
 
 const ButtonWrapper = styled.div`
