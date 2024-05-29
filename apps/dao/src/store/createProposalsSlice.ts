@@ -1,6 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
+import networks from '@/networks'
+
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
@@ -14,6 +16,7 @@ type SliceState = {
   curveJsProposalLoadingState: FetchingState
   voteTx: {
     hash: string | null
+    txLink: string | null
     error: string | null
     status: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
   }
@@ -51,6 +54,7 @@ const DEFAULT_STATE: SliceState = {
   curveJsProposalLoadingState: 'LOADING',
   voteTx: {
     hash: null,
+    txLink: null,
     error: null,
     status: '',
   },
@@ -137,7 +141,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
               ...proposal,
               votes: sortedVotes,
             }
-          }),
+          })
         )
       } catch (error) {
         console.log(error)
@@ -239,6 +243,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           get()[sliceKey].setStateByKey('voteTx', {
             ...get()[sliceKey].voteTx,
             hash: voteResponseHash,
+            txLink: networks[1].scanTxPath(voteResponseHash),
           })
           const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
           if (receipt.status === 1) {
@@ -330,7 +335,7 @@ const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFi
 const sortProposals = (
   proposals: ProposalData[],
   activeSortBy: SortByFilterProposals,
-  activeSortDirection: ActiveSortDirection,
+  activeSortDirection: ActiveSortDirection
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
@@ -338,7 +343,7 @@ const sortProposals = (
     const passedProposals = orderBy(
       proposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
       ['voteId'],
-      ['desc'],
+      ['desc']
     )
 
     if (activeSortDirection === 'asc') {

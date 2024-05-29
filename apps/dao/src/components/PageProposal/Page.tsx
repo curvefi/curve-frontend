@@ -28,7 +28,6 @@ const Page: NextPage = () => {
       <Container>
         <Proposal routerParams={{ rProposalId }} />
       </Container>
-      <Settings showScrollButton />
     </>
   )
 }
