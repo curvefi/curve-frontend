@@ -11,9 +11,11 @@ import Button from '@/ui/Button'
 import UserInformation from './UserInformation'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
+import AlertBox from '@/ui/AlertBox'
+import ModalPendingTx from '@/ui/ModalPendingTx'
 
 type Props = {
-  activeProposal: boolean
+  activeProposal?: ActiveProposal
   testId?: string
   proposalId?: string
   votingPower: SnapshotVotingPower
@@ -39,7 +41,7 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
 
   return (
     <Wrapper className={className}>
-      {activeProposal ? (
+      {activeProposal?.active ? (
         // Voting power too low
         votingPower.value === 0 ? (
           <VotingMessage>
@@ -66,32 +68,86 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
               {t`Vote on Proposal`}
             </VoteDialogButton>
             {overlayTriggerState.isOpen && (
-              <ModalDialog testId={testId} title={''} state={{ ...overlayTriggerState, close: handleClose }}>
-                <Box flex>
-                  <UserInformation snapshotVotingPower={snapshotVotingPower} votingPower={votingPower} noLink />
-                </Box>
-                <VoteButtonsWrapper
-                  flex
-                  flexGap="var(--spacing-2)"
-                  margin="var(--spacing-4) 0 var(--spacing-3)"
-                  flexJustifyContent="center"
-                >
-                  <Button variant="select" className={vote === true ? 'active' : ''} onClick={() => setVote(true)}>
-                    {t`For`}
-                  </Button>
-                  <Button variant="select" className={vote === false ? 'active' : ''} onClick={() => setVote(false)}>
-                    {t`Against`}
-                  </Button>
-                </VoteButtonsWrapper>
-                <StyledButton
-                  fillWidth
-                  variant="icon-filled"
-                  disabled={vote === null}
-                  onClick={() => castVote(1, 'PARAMETER', vote!)}
-                  loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
-                >
-                  {t`Cast Vote`}
-                </StyledButton>
+              <ModalDialog
+                noContentPadding
+                testId={testId}
+                title={''}
+                state={{ ...overlayTriggerState, close: handleClose }}
+              >
+                <ModalContainer>
+                  <ModalHeader
+                    flex
+                    flexJustifyContent="space-between"
+                    flexAlignItems="center"
+                    padding="var(--spacing-3)"
+                  >
+                    <ModalTitle>{t`Vote for proposal`}</ModalTitle>
+                    <CloseButton variant="text" onClick={handleClose}>
+                      <Icon name="Close" size={32} />
+                    </CloseButton>
+                  </ModalHeader>
+                  <BlurWrapper>
+                    {voteTx.status === 'LOADING' && (
+                      <ModalPendingTx
+                        transactionHash={voteTx.hash!}
+                        txLink={voteTx.txLink!}
+                        pendingMessage={t`Casting vote...`}
+                      />
+                    )}
+                    <UserInformationContainer flex padding="var(--spacing-3)" flexJustifyContent="center">
+                      <UserInformation
+                        snapshotVotingPower={snapshotVotingPower}
+                        votingPower={votingPower}
+                        activeProposal={activeProposal}
+                        noLink
+                      />
+                    </UserInformationContainer>
+                    <VoteButtonsWrapper flex flexColumn flexGap="var(--spacing-3)" flexJustifyContent="center">
+                      {voteTx.status !== 'SUCCESS' && (
+                        <Box
+                          flex
+                          flexGap="var(--spacing-2)"
+                          margin="var(--spacing-2) 0"
+                          flexDirection="row"
+                          flexJustifyContent="center"
+                        >
+                          <Button
+                            variant="select"
+                            className={vote === true ? 'active' : ''}
+                            onClick={() => setVote(true)}
+                          >
+                            {t`For`}
+                          </Button>
+                          <Button
+                            variant="select"
+                            className={vote === false ? 'active' : ''}
+                            onClick={() => setVote(false)}
+                          >
+                            {t`Against`}
+                          </Button>
+                        </Box>
+                      )}
+                      {voteTx.status === 'ERROR' && (
+                        <StyledAlertBox alertType="error" limitHeight>
+                          {voteTx.error}
+                        </StyledAlertBox>
+                      )}
+                      {voteTx.status === 'SUCCESS' && (
+                        <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>
+                      )}
+                      {voteTx.status !== 'SUCCESS' && (
+                        <VoteButton
+                          variant="icon-filled"
+                          disabled={vote === null}
+                          onClick={() => castVote(1, 'PARAMETER', vote!)}
+                          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+                        >
+                          {t`Cast Vote`}
+                        </VoteButton>
+                      )}
+                    </VoteButtonsWrapper>
+                  </BlurWrapper>
+                </ModalContainer>
               </ModalDialog>
             )}{' '}
           </>
@@ -122,7 +178,49 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
+const ModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  position: relative;
+  z-index: 99 !important;
+  @media (max-width: 26.5625rem) {
+    height: 100vh;
+    max-height: 100vh;
+  }
+`
+
+const ModalHeader = styled(Box)``
+
+const ModalTitle = styled.h3``
+
+const BlurWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+`
+
+const CloseButton = styled(Button)`
+  padding: 0;
+  display: flex;
+  align-self: center;
+  justify-content: center;
+  svg {
+    color: var(--page--text-color);
+    width: 32px;
+    height: 32px;
+  }
+`
+
+const UserInformationContainer = styled(Box)`
+  @media (max-width: 26.5625rem) {
+    margin: auto 0;
+  }
+`
+
 const VoteButtonsWrapper = styled(Box)`
+  margin-top: var(--spacing-3);
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
 `
@@ -169,8 +267,27 @@ const VoteDialogButton = styled(Button)`
   margin-right: auto;
 `
 
-const StyledButton = styled(Button)`
-  margin-top: var(--spacing-1);
+const VoteButton = styled(Button)`
+  margin: 0 auto var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-5);
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  width: 100%;
+`
+
+const SuccessWrapper = styled.div`
+  padding: var(--spacing-2) var(--spacing-5);
+  display: flex;
+  margin: 0 auto;
+  font-family: var(--button--font);
+
+  text-transform: var(--input_button--text-transform);
+
+  font-weight: var(--button--font-weight);
+  color: var(--success-400);
+  border: 2px solid var(--success-400);
+  background-color: var(--success-600);
 `
 
 export default VoteDialog

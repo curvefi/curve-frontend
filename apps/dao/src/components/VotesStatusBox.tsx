@@ -57,7 +57,7 @@ const VotesStatusBox = ({
             {formatNumberWithSuffix(votesFor)} of {formatNumberWithSuffix(quorumVeCrv)}
           </p>
           <TooltipIcon minWidth="200px">
-            <p>{t`A minimum of ${minAcceptQuorumPercent}% of veCRV tokens must vote 'For' in order for a proposal to meet quorum.`}</p>
+            <TooltipText>{t`A minimum of ${minAcceptQuorumPercent}% of veCRV tokens must vote 'For' in order for a proposal to meet quorum.`}</TooltipText>
           </TooltipIcon>
         </Box>
         <ProgressBar
@@ -121,6 +121,11 @@ const QuorumPassedIcon = styled(Icon)`
 const QuorumFailedIcon = styled(Icon)`
   color: var(--chart-red);
   margin: auto 0;
+`
+
+const TooltipText = styled.p`
+  font-weight: var(--semi-bold);
+  font-size: var(--font-size-2);
 `
 
 export default VotesStatusBox
