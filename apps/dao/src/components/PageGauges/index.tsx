@@ -30,6 +30,7 @@ const Gauges = () => {
   } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const { isMdUp } = useStore((state) => state)
 
   const handleSortingMethodChange = useCallback(
     (key: React.Key) => {
@@ -53,6 +54,17 @@ const Gauges = () => {
       <PageTitle>Curve Gauges</PageTitle>
       <Box flex fillWidth flexGap={'var(--spacing-1)'}>
         <Container variant="secondary">
+          {!isMdUp && !gaugesLoading && (
+            <Box flex flexColumn padding={'0 var(--spacing-3)'}>
+              <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
+                <ChartToolBar>
+                  <ChartTitle>{t`Gauges Relative Weight Distribution`}</ChartTitle>
+                  <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
+                </ChartToolBar>
+                <BarChartComponent data={gaugeFormattedData} />
+              </Box>
+            </Box>
+          )}
           <Header>
             <StyledSearchInput
               id="inpSearchProposals"
@@ -144,7 +156,6 @@ const Container = styled(Box)`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  row-gap: var(--spacing-3);
 `
 
 const Header = styled.div`
@@ -152,7 +163,7 @@ const Header = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-3) var(--spacing-3) 0;
+  padding: var(--spacing-3);
   width: 100%;
 `
 
