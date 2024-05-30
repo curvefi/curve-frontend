@@ -243,6 +243,8 @@ declare global {
 
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
 
+  type ProposalListFilterItem = { key: ProposalListFilter; label: string }
+
   type SortByFilterProposals = 'voteId' | 'endingSoon'
 
   type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
