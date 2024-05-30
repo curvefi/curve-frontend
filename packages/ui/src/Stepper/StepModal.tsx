@@ -30,6 +30,11 @@ const StepModal = ({ modal, overlayTriggerState }: React.PropsWithChildren<StepM
     overlayTriggerState.close()
   }
 
+  React.useEffect(() => {
+    if (typeof modal.initFn === 'function') modal.initFn()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <ModalDialog
       title={title}
