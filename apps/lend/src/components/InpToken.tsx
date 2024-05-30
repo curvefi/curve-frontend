@@ -13,6 +13,8 @@ import InpChipUsdRate from '@/components/InpChipUsdRate'
 
 const InpToken = ({
   id,
+  testId,
+  maxTestId,
   inpStyles,
   inpTopLabel,
   inpError,
@@ -28,6 +30,8 @@ const InpToken = ({
   handleMaxClick,
 }: {
   id: string
+  testId?: string
+  maxTestId?: string
   inpStyles?: BoxProps
   inpTopLabel?: string
   inpError: string
@@ -54,7 +58,8 @@ const InpToken = ({
         id={id}
       >
         <InputDebounced
-          id={`inp${id}`}
+          id={`${id}Amt`}
+          testId={testId ?? `${id}Amt`}
           type="number"
           labelProps={{
             label: t`${tokenSymbol} Avail.`,
@@ -64,7 +69,7 @@ const InpToken = ({
           value={inpValue}
           onChange={handleInpChange}
         />
-        <InputMaxBtn onClick={handleMaxClick} />
+        <InputMaxBtn testId={maxTestId ?? `${id}Max`} onClick={handleMaxClick} />
       </InputProvider>
       {+inpValue > 0 && <InpChipUsdRate address={tokenAddress} amount={inpValue} />}
       {inpError === 'too-much' ? (

@@ -317,7 +317,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
           id="userCollateral"
-          testId="userCollateralAmt"
           {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
@@ -328,7 +327,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           tokenSymbol={collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
           handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
-          maxTestId="userCollateralMax"
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
@@ -351,7 +349,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
 
       <InpTokenBorrow
         id="debt"
-        testId="debtAmt"
         {...(isLeverage ? { inpTopLabel: t`Borrow amount:` } : {})}
         inpError={formValues.debtError}
         inpDisabled={disabled}
@@ -360,7 +357,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
         handleInpChange={(debt) => updateFormValues({ debt })}
-        testId="debtMax"
         handleMaxClick={() => updateFormValues({ debt: maxRecv ?? '' })}
       />
 
@@ -394,6 +390,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         </>
       ) : (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+          {txInfoBar}
           {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
           {(formStatus.error || formStatus.stepError) && (
             <AlertFormError
@@ -402,7 +399,6 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
               handleBtnClose={() => updateFormValues({}, true)}
             />
           )}
-          {txInfoBar}
           {steps && <Stepper steps={steps} />}
           {formStatus.isComplete && owm && (
             <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, owm.id, 'loan')}>
