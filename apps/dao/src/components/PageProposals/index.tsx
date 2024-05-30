@@ -83,10 +83,11 @@ const Proposals = () => {
           />
           <ListManagerContainer>
             {!isSmUp ? (
-              <TableButtonFiltersMobile
-                filters={PROPOSAL_FILTERS}
-                filterKey={activeFilter}
-                updateRouteFilterKey={setActiveFilter}
+              <StyledSelectFilter
+                items={PROPOSAL_FILTERS}
+                selectedKey={activeFilter}
+                minWidth="9rem"
+                onSelectionChange={(key) => setActiveFilter(key as ProposalListFilter)}
               />
             ) : (
               <ProposalsFilters
@@ -230,6 +231,12 @@ const PageTitle = styled.h2`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
+`
+
+const StyledSelectFilter = styled(SelectSortingMethod)`
+  margin: auto 0;
+  grid-column: 1/2;
+  grid-row: 2/3;
 `
 
 const StyledSelectSortingMethod = styled(SelectSortingMethod)`
