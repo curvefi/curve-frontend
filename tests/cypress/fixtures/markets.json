@@ -1,0 +1,10 @@
+{
+  "mainnet": {
+    "CRV-crvUSD": {
+      "id": "CRV-crvUSD",
+      "collateral": "CRV",
+      "borrow": "crvUSD",
+      "url": "/ethereum/markets/one-way-market-3/create"
+    }
+  }
+}

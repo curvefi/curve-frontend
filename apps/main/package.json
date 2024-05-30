@@ -15,10 +15,7 @@
     "postpublish": "pinst --enable",
     "i18n:extract": "lingui extract",
     "i18n:compile": "lingui compile",
-    "analyze": "ANALYZE=true next build",
-    "server-start": "yarn dev",
-    "cypress:open": "cypress open --browser chrome --e2e",
-    "test": "start-server-and-test server-start http://localhost:3000 cypress:open"
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@curvefi/api": "^2.58.11",
@@ -64,11 +61,8 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/styled-components": "5.1.14",
-    "cypress": "^12.17.1",
-    "cypress-wait-until": "^1.7.2",
     "eslint-config-custom": "*",
     "pinst": "^2.1.4",
-    "start-server-and-test": "2.0.0",
     "tsconfig": "*",
     "webpack": "^5.83.1"
   },

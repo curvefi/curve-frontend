@@ -7,7 +7,8 @@
   },
   "workspaces": [
     "apps/*",
-    "packages/*"
+    "packages/*",
+    "tests"
   ],
   "scripts": {
     "build": "turbo build",
@@ -33,6 +34,10 @@
   "packageManager": "yarn@1.22.19",
   "lint-staged": {
     "apps/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "tests/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ],

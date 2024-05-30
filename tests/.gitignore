@@ -2,13 +2,15 @@ gitignore
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-node_modules
+node_modules/
 .pnp
 .pnp.js
 
 # testing
 coverage
 cypress.env.json
+cypress/screenshots
+cypress/videos
 
 # next.js
 .next/
@@ -53,3 +55,6 @@ report.*.json
 
 # turbo
 .turbo
+
+# hardhat
+cache/

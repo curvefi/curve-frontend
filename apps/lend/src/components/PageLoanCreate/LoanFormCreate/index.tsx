@@ -169,8 +169,10 @@ const LoanCreate = (props: PageContentProps) => {
                   primaryBtnProps: {
                     onClick: () => handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage),
                     disabled: !confirmedHealthWarning,
+                    testId: 'createAnyway',
                   },
                   primaryBtnLabel: 'Create anyway',
+                  testId: 'warning',
                 },
               }
             : {
@@ -254,6 +256,7 @@ const LoanCreate = (props: PageContentProps) => {
         >
           <InputDebounced
             id="inpCollateralAmt"
+            testId="collateralAmt"
             type="number"
             labelProps={{
               label: t`${collateral_token?.symbol} Avail.`,
@@ -263,7 +266,10 @@ const LoanCreate = (props: PageContentProps) => {
             value={formValues.collateral}
             onChange={(val) => handleInpChange('collateral', val)}
           />
-          <InputMaxBtn onClick={() => handleInpChange('collateral', userBalances?.collateral ?? '')} />
+          <InputMaxBtn
+            testId="collateralMax"
+            onClick={() => handleInpChange('collateral', userBalances?.collateral ?? '')}
+          />
         </InputProvider>
         <InpChipUsdRate address={collateral_token?.address} amount={formValues.collateral} />
 
@@ -285,6 +291,7 @@ const LoanCreate = (props: PageContentProps) => {
         >
           <InputDebounced
             id="inpDebt"
+            testId="debtAmt"
             type="number"
             labelProps={{
               label: t`${borrowed_token?.symbol} borrow amount`,
@@ -292,7 +299,7 @@ const LoanCreate = (props: PageContentProps) => {
             value={formValues.debt}
             onChange={(val) => handleInpChange('debt', val)}
           />
-          <InputMaxBtn onClick={() => handleInpChange('debt', maxRecv ?? '')} />
+          <InputMaxBtn testId="debtMax" onClick={() => handleInpChange('debt', maxRecv ?? '')} />
         </InputProvider>
         <InpChipUsdRate address={borrowed_token?.address} amount={formValues.debt} />
         {formValues.debtError === 'too-much-debt' ? (

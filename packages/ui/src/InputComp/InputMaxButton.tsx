@@ -29,7 +29,7 @@ const InputMaxBtn = ({
       <StyledButton
         {...props}
         onClick={onClick}
-        data-testid={testId}
+        testId={testId}
         className={className}
         variant="filled"
         {...(globalDisabled || disabled ? { disabled: true } : {})}
