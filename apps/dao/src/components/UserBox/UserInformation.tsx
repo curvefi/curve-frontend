@@ -80,7 +80,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             )}
           </Box>
         )}
-        {snapshotVotingPower && votingPower !== undefined && votingPower.value !== 0 && (
+        {snapshotVotingPower && votingPower !== undefined && (
           <Box flex flexDirection="column">
             <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
               <SubTitle>{t`Voting Power at Snapshot`}</SubTitle>
@@ -95,7 +95,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             )}
           </Box>
         )}
-        {decayedVeCrv.decaying && (
+        {decayedVeCrv.decaying && votingPower?.value !== 0 && (
           <Box flex flexDirection="column">
             <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
               <SubTitle>{t`Current Voting Power (Decaying)`}</SubTitle>
