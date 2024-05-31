@@ -439,7 +439,8 @@ const MetaDataParaphraph = styled.p`
   line-height: 1.5;
   max-width: 40rem;
   font-weight: var(--semi-bold);
-  white-space: pre-wrap;
+  white-space: pre-line;
+  word-break: break-word;
 `
 
 const StyledExternalLink = styled(ExternalLink)`
