@@ -240,14 +240,10 @@ declare global {
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
-
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
-
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
-
   type SortByFilterProposals = 'voteId' | 'endingSoon'
-
   type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
-
   type ActiveSortDirection = 'asc' | 'desc'
+  type GaugeListNavSelection = 'Gauge List' | 'Gauge Weight Distribution' | 'Gauge Voting'
 }
