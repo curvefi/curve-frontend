@@ -5,11 +5,13 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale } from '@/onboard'
 
-import { CONNECT_STAGE, MS, isFailure, isLoading, isSuccess } from '@/ui/utils'
+import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
-import { getStorageValue, getNetworkFromUrl, parseParams, setStorageValue } from '@/utils'
+import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
+import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
 import { helpers } from '@/lib/curvejs'
+import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -64,7 +66,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const walletStates = await Promise.race([
                 connect({ autoSelect: { label: walletName, disableModals: true } }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), MS['3s'])
+                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s'])
                 ),
               ])
               resolve(walletStates)
@@ -157,12 +159,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     [navigate, parsedParams, setChain, updateConnectState, wallet]
   )
 
-  useEffect(() => {
-    if (parsedParams.redirectPathname) {
-      navigate(parsedParams.redirectPathname)
-    }
-  }, [navigate, parsedParams.redirectPathname])
-
   // onMount
   useEffect(() => {
     if (connectState.status === '' && connectState.stage === '') {
@@ -175,7 +171,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [navigate])
 
   useEffect(() => {
     if (connectState.status || connectState.stage) {
@@ -225,6 +221,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         dynamicActivate(rLocale)
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
+      } else if (walletChainId && curve && curve.chainId === walletChainId && parsedParams.rChainId !== walletChainId) {
+        // switch network if url network is not same as wallet
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [walletChainId, parsedParams.rChainId])
+      } else if (curve && curve.chainId !== parsedParams.rChainId) {
+        // switch network if url network is not same as api
+        updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [curve.chainId, parsedParams.rChainId])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
