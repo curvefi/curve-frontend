@@ -1,6 +1,5 @@
 export * from './utilsStorage'
 export * from './utilsRouter'
-export * from './utilsVotes'
 
 export function copyToClipboard(text: string) {
   if (window.clipboardData && window.clipboardData.setData) {
