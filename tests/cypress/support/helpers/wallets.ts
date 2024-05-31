@@ -7,14 +7,14 @@ import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/network'
  * Creates a random wallet with the given Ethereum JSON RPC provider.
  *
  * @param {ethers.JsonRpcProvider} jsonRpcProvider - The Ethereum JSON RPC provider.
- * @param {bigint | string} [eth] - The amount of Ether to allocate to the wallet.
- * @param {Array<{ symbol: string; amount: bigint | string }>} [tokens] - An array of tokens to allocate to the wallet.
+ * @param {BigInt | string} [eth] - The amount of Ether to allocate to the wallet.
+ * @param {Array<{ symbol: string; amount: BigInt | string }>} [tokens] - An array of tokens to allocate to the wallet.
  * @return {Cypress.Chainable<ethers.HDNodeWallet>} - A Cypress chainable object representing the created wallet.
  */
 export function createRandomWallet(
   jsonRpcProvider: ethers.JsonRpcProvider,
-  eth?: bigint | string,
-  tokens?: { symbol: string; amount: bigint | string }[]
+  eth?: BigInt | string,
+  tokens?: { symbol: string; amount: BigInt | string }[]
 ): Cypress.Chainable<ethers.HDNodeWallet> {
   eth = typeof eth === 'string' ? ethers.parseEther(eth) : eth
 
