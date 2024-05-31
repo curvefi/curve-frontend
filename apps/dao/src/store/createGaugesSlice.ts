@@ -108,12 +108,14 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const weights = await fetch(`https://prices.curve.fi/v1/dao/gauges/${gaugeAddress}/weight_history`)
         const weightsData = await weights.json()
 
-        const formattedWeightsData = weightsData.data.map((weight: GaugeWeightHistoryData) => ({
-          ...weight,
-          gauge_weight: +weight.gauge_weight / 1e18,
-          gauge_relative_weight: ((+weight.gauge_relative_weight / 1e18) * 100).toFixed(2),
-          emissions: +weight.emissions,
-        }))
+        const formattedWeightsData = weightsData.data
+          .map((weight: GaugeWeightHistoryData) => ({
+            ...weight,
+            gauge_weight: +weight.gauge_weight / 1e18,
+            gauge_relative_weight: ((+weight.gauge_relative_weight / 1e18) * 100).toFixed(2),
+            emissions: +weight.emissions,
+          }))
+          .sort((a: GaugeWeightHistoryData, b: GaugeWeightHistoryData) => a.epoch - b.epoch)
 
         set(
           produce(get(), (state) => {

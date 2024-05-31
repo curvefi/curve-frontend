@@ -112,14 +112,14 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
                           flexJustifyContent="center"
                         >
                           <Button
-                            variant="select"
+                            variant="select-flat"
                             className={vote === true ? 'active' : ''}
                             onClick={() => setVote(true)}
                           >
                             {t`For`}
                           </Button>
                           <Button
-                            variant="select"
+                            variant="select-flat"
                             className={vote === false ? 'active' : ''}
                             onClick={() => setVote(false)}
                           >

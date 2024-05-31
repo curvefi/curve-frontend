@@ -11,7 +11,7 @@ import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
-import LineChartComponent from './LineChartComponent'
+import LineChartComponent from '../components/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 
@@ -31,55 +31,57 @@ const GaugeListItem = ({ gaugeData }: Props) => {
 
   return (
     <GaugeBox onClick={() => setOpen(!open)}>
-      <Box grid gridTemplateColumns="2fr 0.7fr 0.7fr 0.7fr 0.3fr">
-        <Box flex flexColumn flexGap={'var(--spacing-2)'}>
-          <Box flex flexGap={'var(--spacing-1)'}>
+      <MainRow>
+        <TitleComp>
+          <BoxedDataComp>
             {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
             {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
             {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
-          </Box>
+          </BoxedDataComp>
           <Title>{gaugeData.title}</Title>
-        </Box>
-        <BoxColumn>
-          <DataTitle>{t`Weight`}</DataTitle>
-          <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
-        </BoxColumn>
-        <BoxColumn>
-          <DataTitle>{t`7d Delta`}</DataTitle>
-          <GaugeData
-            className={`${
-              gaugeData.gauge_relative_weight_7d_delta
-                ? gaugeData.gauge_relative_weight_7d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData.gauge_relative_weight_7d_delta
-              ? `${gaugeData.gauge_relative_weight_7d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </GaugeData>
-        </BoxColumn>
-        <BoxColumn>
-          <DataTitle>{t`60d Delta`}</DataTitle>
-          <GaugeData
-            className={`${
-              gaugeData.gauge_relative_weight_60d_delta
-                ? gaugeData.gauge_relative_weight_60d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData.gauge_relative_weight_60d_delta
-              ? `${gaugeData.gauge_relative_weight_60d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </GaugeData>
-        </BoxColumn>
-        <StyledIconButton size="small">
-          {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
-        </StyledIconButton>
-      </Box>
+        </TitleComp>
+        <DataComp>
+          <BoxColumn>
+            <DataTitle>{t`Weight`}</DataTitle>
+            <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
+          </BoxColumn>
+          <BoxColumn>
+            <DataTitle>{t`7d Delta`}</DataTitle>
+            <GaugeData
+              className={`${
+                gaugeData.gauge_relative_weight_7d_delta
+                  ? gaugeData.gauge_relative_weight_7d_delta > 0
+                    ? 'green'
+                    : 'red'
+                  : ''
+              }`}
+            >
+              {gaugeData.gauge_relative_weight_7d_delta
+                ? `${gaugeData.gauge_relative_weight_7d_delta.toFixed(2)}%`
+                : 'N/A'}
+            </GaugeData>
+          </BoxColumn>
+          <BoxColumn>
+            <DataTitle>{t`60d Delta`}</DataTitle>
+            <GaugeData
+              className={`${
+                gaugeData.gauge_relative_weight_60d_delta
+                  ? gaugeData.gauge_relative_weight_60d_delta > 0
+                    ? 'green'
+                    : 'red'
+                  : ''
+              }`}
+            >
+              {gaugeData.gauge_relative_weight_60d_delta
+                ? `${gaugeData.gauge_relative_weight_60d_delta.toFixed(2)}%`
+                : 'N/A'}
+            </GaugeData>
+          </BoxColumn>
+          <StyledIconButton size="small">
+            {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+          </StyledIconButton>
+        </DataComp>
+      </MainRow>
       {open && (
         <OpenContainer>
           {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
@@ -106,7 +108,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
             )}
           <GaugeDetailsContainer>
-            {gaugeData.pool?.address && (
+            {gaugeData.pool?.address ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Pool`}</DataTitle>
                 <GaugeData className="open">
@@ -116,20 +118,26 @@ const GaugeListItem = ({ gaugeData }: Props) => {
                   </StyledExternalLink>
                 </GaugeData>
               </Box>
+            ) : (
+              ''
             )}
-            {gaugeData.pool?.tvl_usd && (
+            {gaugeData.pool?.tvl_usd ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Pool TVL`}</DataTitle>
                 <GaugeInformation className="open">{t`$${formatNumber(gaugeData.pool.tvl_usd)}`}</GaugeInformation>
               </Box>
+            ) : (
+              ''
             )}
-            {gaugeData.pool?.trading_volume_24h && (
+            {gaugeData.pool?.trading_volume_24h ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Pool Volume 24h`}</DataTitle>
                 <GaugeInformation className="open">
                   {t`$${formatNumber(gaugeData.pool.trading_volume_24h)}`}
                 </GaugeInformation>
               </Box>
+            ) : (
+              ''
             )}
             <Box flex flexColumn>
               <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
@@ -140,10 +148,15 @@ const GaugeListItem = ({ gaugeData }: Props) => {
                 </StyledExternalLink>
               </GaugeData>
             </Box>
-            {gaugeData.emissions && (
+            {gaugeData.emissions ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Emissions (CRV)`}</DataTitle>
                 <GaugeInformation className="open">{formatNumber(gaugeData.emissions)}</GaugeInformation>
+              </Box>
+            ) : (
+              <Box flex flexColumn>
+                <DataTitle className="open left-aligned">{t`Emissions (CRV)`}</DataTitle>
+                <GaugeInformation className="open">{t`N/A`}</GaugeInformation>
               </Box>
             )}
             <Box flex flexColumn>
@@ -169,10 +182,72 @@ const GaugeBox = styled.div`
   }
 `
 
+const MainRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto;
+  grid-row-gap: var(--spacing-2);
+  padding: 0 var(--spacing-1);
+  @media (min-width: 33.125rem) {
+    grid-template-columns: 0.5fr 1fr;
+    grid-template-rows: 1fr;
+  }
+`
+
+const TitleComp = styled.div`
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr;
+  justify-content: space-between;
+  grid-row: 1 / 2;
+  gap: var(--spacing-2);
+  border-bottom: 1px solid var(--gray-500a20);
+  padding-bottom: var(--spacing-2);
+  @media (min-width: 33.125rem) {
+    display: flex;
+    flex-direction: column;
+    border-bottom: none;
+  }
+`
+
+const BoxedDataComp = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-1);
+  grid-row: 1 / 2;
+  margin-left: auto;
+  margin-right: var(--spacing-2);
+  @media (min-width: 33.125rem) {
+    display: flex;
+    flex-direction: row;
+    margin-left: 0;
+  }
+`
+
 const Title = styled.h3`
   font-size: var(--font-size-3);
   font-weight: var(--bold);
-  margin: auto 0 0 0.25rem;
+  margin: auto 0 0;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
+  margin-left: var(--spacing-2);
+  @media (min-width: 33.125rem) {
+    margin: auto 0 0 0.25rem;
+  }
+`
+
+const DataComp = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  grid-column: 1 / 3;
+  grid-row: 2 / 3;
+  gap: var(--spacing-2);
+  justify-content: space-between;
+  @media (min-width: 33.125rem) {
+    grid-template-columns: 0.7fr 1fr 1fr 0.3fr;
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
 `
 
 const BoxColumn = styled.div`
@@ -180,7 +255,16 @@ const BoxColumn = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: var(--spacing-1);
-  margin: auto 0 auto auto;
+  margin-right: auto;
+  &:first-child {
+    margin-left: var(--spacing-2);
+  }
+  &:last-child {
+    margin-right: var(--spacing-2);
+  }
+  @media (min-width: 33.125rem) {
+    margin: auto 0 auto auto;
+  }
 `
 
 const BoxedData = styled.p`
@@ -189,15 +273,22 @@ const BoxedData = styled.p`
   font-size: var(--font-size-1);
   font-weight: var(--bold);
   text-transform: capitalize;
+  margin: auto 0 0;
+  @media (min-width: 33.125rem) {
+    margin: 0;
+  }
 `
 
 const DataTitle = styled.h4`
   font-size: var(--font-size-1);
   font-weight: var(--bold);
   opacity: 0.5;
-  text-align: right;
+  text-align: left;
   &.left-aligned {
     text-align: left;
+  }
+  @media (min-width: 33.125rem) {
+    text-align: right;
   }
 `
 
@@ -234,11 +325,13 @@ const OpenContainer = styled.div`
 
 const GaugeDetailsContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
   gap: var(--spacing-3);
   border-top: 1px solid var(--gray-500a20);
   padding-top: var(--spacing-3);
   padding-bottom: var(--spacing-2);
+  @media (min-width: 28.125rem) {
+  }
 `
 
 const StyledExternalLink = styled(ExternalLink)`
