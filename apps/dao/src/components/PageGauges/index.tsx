@@ -1,129 +1,82 @@
 import styled from 'styled-components'
-import { useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { GAUGES_SORTING_METHODS } from './constants'
 
 import Box from '@/ui/Box'
-import BarChartComponent from './components/BarChartComponent'
-import GaugeListItem from './components/GaugeListItem'
-import LazyItem from '@/ui/LazyItem'
-import SearchInput from '@/ui/SearchInput'
-import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
-import Icon from '@/ui/Icon'
+import Button from '@/ui/Button'
+
+import GaugesList from './GaugeList'
+import GaugeWeightDistribution from './GaugeWeightDistribution'
 import UserBox from '../UserBox'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
 const Gauges = () => {
-  const {
-    setGauges,
-    gaugesLoading,
-    gaugeFormattedData,
-    activeSortBy,
-    activeSortDirection,
-    setActiveSortBy,
-    setActiveSortDirection,
-    setSearchValue,
-    searchValue,
-    filteredGauges,
-  } = useStore((state) => state.gauges)
-  const curve = useStore((state) => state.curve)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const { isMdUp } = useStore((state) => state)
 
-  const handleSortingMethodChange = useCallback(
-    (key: React.Key) => {
-      setActiveSortBy(key as SortByFilterGauges)
-    },
-    [setActiveSortBy]
-  )
-
-  const handleChangeSortingDirection = useCallback(() => {
-    setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
-  }, [activeSortDirection, setActiveSortDirection])
+  const [navSelection, setNavSelection] = useState<GaugeListNavSelection>('Gauge List')
 
   useEffect(() => {
-    if (!gaugesLoading && !isLoadingCurve) {
-      setGauges(searchValue)
+    if (isMdUp && navSelection === 'Gauge Weight Distribution') {
+      setNavSelection('Gauge List')
     }
-  }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
+  }, [isMdUp, navSelection])
 
   return (
     <Wrapper>
-      <PageTitle>Curve Gauges</PageTitle>
-      <Box flex fillWidth flexGap={'var(--spacing-1)'}>
+      <PageTitle>{t`Curve Gauges`}</PageTitle>
+      <Box
+        grid
+        gridTemplateColumns={isMdUp ? (navSelection === 'Gauge List' ? 'auto 25rem' : 'auto 20rem') : 'auto'}
+        fillWidth
+        flexGap={'var(--spacing-1)'}
+      >
         <Container variant="secondary">
-          {!isMdUp && !gaugesLoading && (
-            <Box flex flexColumn padding={'0 var(--spacing-3)'}>
-              <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
-                <ChartToolBar>
-                  <ChartTitle>{t`Gauges Relative Weight Distribution`}</ChartTitle>
-                  <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
-                </ChartToolBar>
-                <BarChartComponent data={gaugeFormattedData} />
-              </Box>
+          <GaugesNavigation>
+            <Box>
+              <GaugesNavButton
+                onClick={() => setNavSelection('Gauge List')}
+                variant="outlined"
+                className={navSelection === 'Gauge List' ? 'active' : ''}
+              >
+                {t`Gauge List`}
+              </GaugesNavButton>
+              {navSelection === 'Gauge List' && <ActiveIndicator />}
             </Box>
-          )}
-          <Header>
-            <StyledSearchInput
-              id="inpSearchProposals"
-              placeholder={t`Search`}
-              variant="small"
-              handleInputChange={(val) => setSearchValue(val)}
-              handleSearchClose={() => setSearchValue('')}
-              value={searchValue}
-            />
-            <Box flex margin={'0 0 0 auto'}>
-              <StyledSelectSortingMethod
-                selectedKey={activeSortBy}
-                minWidth="9rem"
-                items={GAUGES_SORTING_METHODS}
-                onSelectionChange={handleSortingMethodChange}
-              />
-              <ToggleDirectionIcon
-                size={20}
-                name={activeSortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
-                onClick={() => handleChangeSortingDirection()}
-              />
-            </Box>
-          </Header>
-          <Box flex flexColumn padding={'0 var(--spacing-3) var(--spacing-5)'}>
-            {searchValue !== '' && (
-              <SearchMessage>
-                {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
-              </SearchMessage>
-            )}
-            {gaugesLoading ? (
-              <StyledSpinnerWrapper vSpacing={5}>
-                <Spinner size={24} />
-              </StyledSpinnerWrapper>
-            ) : (
-              <Box flex flexColumn flexGap={'var(--spacing-2)'}>
-                {filteredGauges.map((gauge, index) => (
-                  <LazyItem key={`gauge-${index}`} defaultHeight={'67'}>
-                    <GaugeListItem gaugeData={gauge} />
-                  </LazyItem>
-                ))}
+            {!isMdUp && (
+              <Box>
+                <GaugesNavButton
+                  onClick={() => setNavSelection('Gauge Weight Distribution')}
+                  variant="outlined"
+                  className={navSelection === 'Gauge Weight Distribution' ? 'active' : ''}
+                >
+                  {t`Weight Distribution`}
+                </GaugesNavButton>
+                {navSelection === 'Gauge Weight Distribution' && <ActiveIndicator />}
               </Box>
             )}
-          </Box>
+            <Box>
+              <GaugesNavButton
+                onClick={() => setNavSelection('Gauge Voting')}
+                variant="outlined"
+                className={navSelection === 'Gauge Voting' ? 'active' : ''}
+              >
+                {t`Gauge Voting`}
+              </GaugesNavButton>
+              {navSelection === 'Gauge Voting' && <ActiveIndicator />}
+            </Box>
+          </GaugesNavigation>
+          {navSelection === 'Gauge List' && <GaugesList />}
+          {navSelection === 'Gauge Weight Distribution' && <GaugeWeightDistribution />}
+          {/* {navSelection === 'Gauge Voting' && <GaugeVoting />} */}
         </Container>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
-          <Box variant="secondary">
-            <StyledUserBox snapshotVotingPower={false} />
-          </Box>
-          {!gaugesLoading && (
-            <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
-              <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
-                <ChartToolBar>
-                  <ChartTitle>{t`Gauges Relative Weight Distribution`}</ChartTitle>
-                  <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
-                </ChartToolBar>
-                <BarChartComponent data={gaugeFormattedData} />
-              </Box>
+          {navSelection === 'Gauge Voting' && (
+            <Box variant="secondary">
+              <UserBox snapshotVotingPower={false} />
             </Box>
           )}
+          {navSelection === 'Gauge List' && isMdUp && <GaugeWeightDistribution />}
         </Box>
       </Box>
     </Wrapper>
@@ -135,9 +88,12 @@ const Wrapper = styled(Box)`
   flex-direction: column;
   margin: var(--spacing-4) auto var(--spacing-7);
   width: 65rem;
-  max-width: 95%;
+  max-width: 100%;
   flex-grow: 1;
   min-height: 100%;
+  @media (min-width: 36.875rem) {
+    max-width: 95%;
+  }
 `
 
 const PageTitle = styled.h2`
@@ -158,58 +114,32 @@ const Container = styled(Box)`
   height: 100%;
 `
 
-const Header = styled.div`
+const GaugesNavigation = styled(Box)`
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-3);
-  width: 100%;
+  gap: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
+  border-bottom: 1px solid var(--gray-500a20);
+  background-color: var(--box_header--secondary--background-color);
 `
 
-const StyledSearchInput = styled(SearchInput)`
-  width: 15rem;
-  margin: var(--spacing-2);
-`
-
-const StyledSelectSortingMethod = styled(SelectSortingMethod)`
-  margin: auto 0 auto auto;
-`
-
-const ToggleDirectionIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-2);
+const GaugesNavButton = styled(Button)`
+  border: none;
+  font-size: var(--font-size-2);
+  font-family: var(--font);
+  text-transform: none;
+  font-weight: var(--bold);
+  line-break: break-spaces;
   &:hover {
-    cursor: pointer;
+    background-color: var(--box--secondary--background-color);
   }
 `
 
-const SearchMessage = styled.p`
-  font-size: var(--font-size-2);
-  margin-left: var(--spacing-2);
-  margin-bottom: var(--spacing-2);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  width: 100%;
-  min-width: 100%;
-`
-
-const StyledUserBox = styled(UserBox)``
-
-const ChartToolBar = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-  margin: 0 0 var(--spacing-2);
-`
-
-const ChartTitle = styled.h4`
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-`
-
-const ChartDescription = styled.p`
-  font-size: var(--font-size-1);
+const ActiveIndicator = styled.div`
+  background-color: var(--primary-400);
+  width: calc(100%);
+  height: 2px;
+  transform: translateY(calc(var(--spacing-2) + 1px));
 `
 
 export default Gauges
