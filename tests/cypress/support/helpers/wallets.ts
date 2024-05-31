@@ -14,7 +14,7 @@ import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/network'
 export function createRandomWallet(
   jsonRpcProvider: ethers.JsonRpcProvider,
   eth?: bigint | string,
-  tokens?: [{ symbol: string; amount: bigint | string }],
+  tokens?: { symbol: string; amount: bigint | string }[]
 ): Cypress.Chainable<ethers.HDNodeWallet> {
   eth = typeof eth === 'string' ? ethers.parseEther(eth) : eth
 
@@ -34,11 +34,11 @@ export function createRandomWallet(
           await allocateToken(
             wallet.address,
             token.address,
-            typeof amount === 'string' ? ethers.parseEther(amount) : amount,
+            typeof amount === 'string' ? ethers.parseUnits(amount, token.decimals) : amount,
             whales,
-            jsonRpcProvider,
+            jsonRpcProvider
           )
-        }),
+        })
       )
     }
     return wallet

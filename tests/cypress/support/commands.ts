@@ -1,6 +1,6 @@
-import { approveSpending } from './approval'
+import { approveSpending, approveLeverageSpending } from './approval'
 import { inputMaxCollateral } from './collateral'
-import { inputMaxBorrow } from './debt'
+import { inputMaxBorrow, inputBorrow } from './debt'
 import {
   allocateEth,
   connectMetamask,
@@ -10,7 +10,7 @@ import {
   prepareMetamaskWallet,
   tokenBalance,
 } from './helpers'
-import { createSofLiquidationLoan } from './lend'
+import { createSofLiquidationLoan, createLeverageLoan } from './lend'
 
 // helpers
 Cypress.Commands.add('dataTestId', dataTestId)
@@ -27,6 +27,9 @@ Cypress.Commands.add('tokenBalance', { prevSubject: true }, tokenBalance)
 
 // tests
 Cypress.Commands.add('inputMaxCollateral', inputMaxCollateral)
+Cypress.Commands.add('inputBorrow', inputBorrow)
 Cypress.Commands.add('inputMaxBorrow', inputMaxBorrow)
 Cypress.Commands.add('approveSpending', approveSpending)
+Cypress.Commands.add('approveLeverageSpending', approveLeverageSpending)
 Cypress.Commands.add('createSofLiquidationLoan', createSofLiquidationLoan)
+Cypress.Commands.add('createLeverageLoan', createLeverageLoan)

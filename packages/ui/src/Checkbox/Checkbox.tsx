@@ -12,9 +12,10 @@ interface CheckboxProps extends ToggleProps {
   isDisabled?: boolean
   fillColor?: string
   blank?: boolean
+  testId?: string
 }
 
-const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }: CheckboxProps) => {
+const Checkbox = ({ className, isDisabled = false, fillColor, blank, testId = '', ...props }: CheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null)
   const state = useToggleState(props)
   const { inputProps } = useCheckbox(props, state, ref)
@@ -23,7 +24,7 @@ const Checkbox = ({ className, isDisabled = false, fillColor, blank, ...props }:
   return (
     <Label isDisabled={isDisabled} className={className}>
       <VisuallyHidden>
-        <Input {...inputProps} {...focusProps} disabled={isDisabled} ref={ref} />
+        <Input {...inputProps} {...focusProps} data-testid={`checkbox-${testId}`} disabled={isDisabled} ref={ref} />
       </VisuallyHidden>
       <Svg width={24} height={24} aria-hidden="true">
         <Rect

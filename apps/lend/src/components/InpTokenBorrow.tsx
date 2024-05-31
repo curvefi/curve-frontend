@@ -67,7 +67,9 @@ const InpTokenBorrow = ({
           {t`Amount > max borrow ${formatNumber(maxRecv || '0')}`}
         </StyledInpChip>
       ) : (
-        <StyledInpChip size="xs">{t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`}</StyledInpChip>
+        <StyledInpChip testId={`maxBorrowAmt`} size="xs">{t`Max borrow amount ${formatNumber(maxRecv, {
+          defaultValue: '-',
+        })}`}</StyledInpChip>
       )}
     </Box>
   )

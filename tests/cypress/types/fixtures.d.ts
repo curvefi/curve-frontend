@@ -14,6 +14,9 @@ declare module '@/fixtures/markets.json' {
     id: string
     collateral: string
     borrow: string
+    userCollateral: string
+    userBorrowed: string
+    debt: string
     url: string
   }
 
@@ -31,6 +34,8 @@ declare module '@/fixtures/create-loan-settings.json' {
   export interface LoanSetting {
     ethersToAllocate: string
     collateralTokenToAllocate: string
+    userCollateralTokenToAllocate: string
+    userBorrowedTokenToAllocate: string
   }
 
   export interface LoanSettings {

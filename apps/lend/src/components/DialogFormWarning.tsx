@@ -65,7 +65,7 @@ function DialogFormWarning({
         </Box>
       </AlertBox>
 
-      <StyledCheckbox isSelected={confirmed} onChange={setConfirmed}>
+      <StyledCheckbox testId="confirmProceed" isSelected={confirmed} onChange={setConfirmed}>
         {t`Confirm warning to proceed.`}
       </StyledCheckbox>
     </>

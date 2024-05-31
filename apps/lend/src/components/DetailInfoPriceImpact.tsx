@@ -16,6 +16,7 @@ const DetailInfoPriceImpact = ({
 }) => {
   return (
     <DetailInfo
+      testId="priceImpact"
       isBold={isHighImpact}
       variant={isHighImpact ? 'error' : undefined}
       loading={loading}

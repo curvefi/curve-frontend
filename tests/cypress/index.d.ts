@@ -1,7 +1,7 @@
 import { inputMaxCollateral } from './support/collateral'
-import { inputMaxBorrow } from './support/debt'
-import { approveSpending } from './support/approval'
-import { createSofLiquidationLoan } from './support/lend'
+import { inputMaxBorrow, inputBorrow } from './support/debt'
+import { approveSpending, approveLeverageSpending } from './support/approval'
+import { createSofLiquidationLoan, createLeverageLoan } from './support/lend'
 import {
   dataTestId,
   createJsonRpcProvider,
@@ -30,8 +30,11 @@ declare global {
       allocateEth: ChainableFn<typeof allocateEth>
       tokenBalance: ChainableFn<typeof tokenBalance>
       inputMaxCollateral: typeof inputMaxCollateral
+      inputBorrow: typeof inputBorrow
       inputMaxBorrow: typeof inputMaxBorrow
       approveSpending: typeof approveSpending
+      approveLeverageSpending: typeof approveLeverageSpending
+      createLeverageLoan: typeof createLeverageLoan
       createSofLiquidationLoan: typeof createSofLiquidationLoan
     }
   }

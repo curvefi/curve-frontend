@@ -27,6 +27,7 @@ const AppFormHeader = ({
             return (
               <StyledTab
                 key={key}
+                data-testid={`tab-${key}`}
                 className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
                 disabled={isActiveForm || activeFormKey === key}
                 onClick={() => handleClick(key)}

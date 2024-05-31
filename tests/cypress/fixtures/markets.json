@@ -5,6 +5,13 @@
       "collateral": "CRV",
       "borrow": "crvUSD",
       "url": "/ethereum/markets/one-way-market-3/create"
+    },
+    "WBTC-crvUSD": {
+      "id": "WBTC-crvUSD",
+      "userCollateral": "WBTC",
+      "userBorrowed": "crvUSD",
+      "debt": "crvUSD",
+      "url": "/ethereum/markets/one-way-market-9/create/leverage"
     }
   }
 }

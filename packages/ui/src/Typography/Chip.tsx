@@ -6,12 +6,12 @@ import styled from 'styled-components'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
 const Chip = (props: React.PropsWithChildren<ChipProps>) => {
-  const { children, className, tooltip, tooltipProps, ...rest } = props
+  const { children, className, testId = '', tooltip, tooltipProps, ...rest } = props
   const ref = React.useRef<HTMLDivElement>(null)
 
   const LabelComp = () => {
     return (
-      <Label {...rest} className={className} ref={ref}>
+      <Label {...rest} className={className} data-testid={`label-${testId}`} ref={ref}>
         {children}
       </Label>
     )
