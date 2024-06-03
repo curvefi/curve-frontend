@@ -41,6 +41,7 @@ export type LoanCreateSlice = {
   [sliceKey]: SliceState & {
     fetchMaxLeverage(owmData: OWMData): Promise<void>
     fetchMaxRecv(activeKey: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(owmData: OWMData | undefined, isLeverage: boolean): Promise<string>
     fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
     fetchLiqRanges(activeKeyLiqRange: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
@@ -112,6 +113,17 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         const debtError = isTooMuch(formValues.debt, updatedMaxRecv) ? 'too-much' : formValues.debtError
         sliceState.setStateByKey('formValues', { ...formValues, debtError })
       }
+    },
+    refetchMaxRecv: async (owmData, isLeverage) => {
+      const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed, n } = formValues
+
+      if (n === null || typeof owmData === 'undefined') return ''
+
+      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
+      const { maxRecv } = await loanCreate.maxRecv(activeKeyMax, owmData, userCollateral, userBorrowed, n, isLeverage)
+      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, maxRecv)
+      return maxRecv
     },
     fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]

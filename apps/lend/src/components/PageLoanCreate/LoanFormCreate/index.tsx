@@ -54,6 +54,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
+  const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
@@ -357,7 +358,10 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
         handleInpChange={(debt) => updateFormValues({ debt })}
-        handleMaxClick={() => updateFormValues({ debt: maxRecv ?? '' })}
+        handleMaxClick={async () => {
+          const debt = await refetchMaxRecv(owmData, isLeverage)
+          updateFormValues({ debt })
+        }}
       />
 
       {/* detail info */}

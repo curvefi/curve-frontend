@@ -58,6 +58,7 @@ const LoanBorrowMore = ({
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
+  const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
@@ -398,7 +399,10 @@ const LoanBorrowMore = ({
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
         handleInpChange={(debt) => updateFormValues({ debt })}
-        handleMaxClick={() => updateFormValues({ debt: maxRecv ?? '' })}
+        handleMaxClick={async () => {
+          const debt = await refetchMaxRecv(owmData, isLeverage)
+          updateFormValues({ debt })
+        }}
       />
 
       {/* detail info */}

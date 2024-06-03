@@ -33,6 +33,7 @@ const sliceKey = 'loanBorrowMore'
 export type LoanBorrowMoreSlice = {
   [sliceKey]: SliceState & {
     fetchMaxRecv(activeKeyMax: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(owmData: OWMData | undefined, isLeverage: boolean): Promise<string>
     fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
     setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
@@ -91,6 +92,31 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       // validation
       const debtError = isTooMuch(formValues.debt, updatedMaxRecv) ? 'too-much' : formValues.debtError
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
+    },
+    refetchMaxRecv: async (owmData, isLeverage) => {
+      const { api } = get()
+      const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed } = formValues
+
+      if (!owmData || !api) return ''
+
+      const { signerAddress } = api
+
+      if (!signerAddress) return ''
+
+      // loading
+      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
+
+      if (isLeverage) {
+        const resp = await loanBorrowMore.maxRecvLeverage(owmData, activeKeyMax, userCollateral, userBorrowed)
+        const maxDebt = resp.maxRecv?.maxDebt ?? ''
+        sliceState.setStateByActiveKey('maxRecv', resp.activeKey, maxDebt)
+        return maxDebt
+      } else {
+        const resp = await loanBorrowMore.maxRecv(owmData, activeKeyMax, userCollateral)
+        sliceState.setStateByActiveKey('maxRecv', resp.activeKey, resp.maxRecv)
+        return resp.maxRecv
+      }
     },
     fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formValues, ...sliceState } = get()[sliceKey]
