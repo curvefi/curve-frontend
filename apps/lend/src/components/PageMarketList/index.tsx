@@ -44,6 +44,7 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
       { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, className: 'left', width: '140px' },
       { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, className: 'left', width: '140px' },
+      { sortIdKey: 'leverage', label: tableLabelsMapper.leverage.name, className: 'left', width: '120px' },
       { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },

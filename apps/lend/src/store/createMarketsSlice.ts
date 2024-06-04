@@ -18,6 +18,7 @@ type SliceState = {
   statsTotalsMapper: { [chainId: string]: MarketsStatsTotalsMapper }
   statsAmmBalancesMapper: { [chainId: string]: MarketsStatsAMMBalancesMapper }
   statsCapAndAvailableMapper: { [chainId: string]: MarketsStatsCapAndAvailableMapper }
+  maxLeverageMapper: { [chainId: string]: MarketsMaxLeverageMapper }
   pricesMapper: { [chainId: string]: MarketsPricesMapper }
   ratesMapper: { [chainId: string]: MarketsRatesMapper }
   rewardsMapper: { [chainId: string]: MarketsRewardsMapper }
@@ -55,6 +56,7 @@ const DEFAULT_STATE: SliceState = {
   statsTotalsMapper: {},
   statsAmmBalancesMapper: {},
   statsCapAndAvailableMapper: {},
+  maxLeverageMapper: {},
   pricesMapper: {},
   ratesMapper: {},
   rewardsMapper: {},
@@ -127,6 +129,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         ratesMapper: apiLending.market.fetchMarketsRates,
         rewardsMapper: apiLending.market.fetchMarketsVaultsRewards,
         totalLiquidityMapper: apiLending.market.fetchMarketsVaultsTotalLiquidity,
+        maxLeverageMapper: apiLending.market.fetchMarketsMaxLeverage,
       }
 
       // stored

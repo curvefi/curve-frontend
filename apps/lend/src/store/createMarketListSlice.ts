@@ -54,6 +54,7 @@ export type MarketListSlice = {
     filterSmallMarkets(api: Api, owmDatas: OWMData[]): OWMData[]
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
     filterUserList(api: Api, owmDatas: OWMData[], filterTypeKey: FilterTypeKey): OWMData[]
+    filterLeverageMarkets(owmDatas: OWMData[]): OWMData[]
     sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
     setFormValues(rChainId: ChainId, api: Api | null, shouldRefetch?: boolean): Promise<void>
     sortTableRow(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tableRowTokenAddress: string): Promise<void>
@@ -177,6 +178,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         }
       })
     },
+    filterLeverageMarkets: (owmDatas) => {
+      return owmDatas.filter(({ hasLeverage }) => hasLeverage)
+    },
     setFormValues: async (rChainId, api, shouldRefetch) => {
       const { markets, storeCache, usdRates, user } = get()
       const { marketListMapper, searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
@@ -209,10 +213,13 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         if (filterTypeKey === 'supply') {
           await user.fetchDatas('marketsBalancesMapper', api, cOwmDatas, shouldRefetch)
         }
+      }
 
-        // update cOwmDatas if filter === 'user'
-        if (filterKey === 'user') {
-          cOwmDatas = get()[sliceKey].filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
+      if (filterKey) {
+        if (filterKey === 'user' && !!signerAddress) {
+          cOwmDatas = sliceState.filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
+        } else if (filterKey === 'leverage') {
+          cOwmDatas = sliceState.filterLeverageMarkets(cOwmDatas)
         }
       }
 
@@ -268,6 +275,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         { key: 'ratesMapper', fn: markets.fetchDatas },
         { key: 'rewardsMapper', fn: markets.fetchDatas },
         { key: 'totalLiquidityMapper', fn: markets.fetchDatas },
+        { key: 'maxLeverageMapper', fn: markets.fetchDatas },
       ]
 
       if (signerAddress) {

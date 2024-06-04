@@ -18,12 +18,14 @@ const TokenLabel = ({
   token,
   isDisplayOnly,
   isVisible = true,
+  showLeverageIcon,
   ...boxProps
 }: BoxProps & {
   rChainId: ChainId
   token: OWM['borrowed_token'] | OWM['collateral_token'] | undefined
   isDisplayOnly?: boolean
   isVisible?: boolean
+  showLeverageIcon?: boolean
 }) => {
   const { address = '', symbol = '' } = token ?? {}
 
@@ -42,7 +44,7 @@ const TokenLabel = ({
   return (
     <Box flex {...boxProps}>
       {isDisplayOnly ? (
-        <>{TokenIconComp}</>
+        TokenIconComp
       ) : (
         <>
           <StyledExternalLink href={networks[rChainId].scanTokenPath(address)}>{TokenIconComp}</StyledExternalLink>

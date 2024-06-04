@@ -41,10 +41,16 @@ const Page: NextPage = () => {
 
   const { signerAddress } = api ?? {}
 
-  const FILTER_MAPPER: FilterMapper = {
-    all: { id: 'all', displayName: t`All` },
-    user: { id: 'user', displayName: t`My markets` },
-  }
+  const FILTER_MAPPER: FilterMapper = signerAddress
+    ? {
+        all: { id: 'all', displayName: t`All` },
+        leverage: { id: 'leverage', displayName: t`Leverage` },
+        user: { id: 'user', displayName: t`My markets` },
+      }
+    : {
+        all: { id: 'all', displayName: t`All` },
+        leverage: { id: 'leverage', displayName: t`Leverage` },
+      }
 
   const FILTER_TYPE_MAPPER: FilterMapper = {
     borrow: { id: 'borrow', displayName: t`Borrow` },
@@ -74,6 +80,7 @@ const Page: NextPage = () => {
     totalLiquidity: { name: t`TVL` },
     rewardsCRV: { name: 'CRV' },
     rewardsOthers: { name: t`Incentives` },
+    leverage: { name: t`Leverage` }
   }
 
   useEffect(() => {

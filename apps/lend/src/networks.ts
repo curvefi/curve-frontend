@@ -11,7 +11,7 @@ const DEFAULT_NETWORK_CONFIG = {
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
   gasPricesDefault: 1,
   smallMarketAmount: 10000,
-  marketListFilter: ['all', 'user'],
+  marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
   marketListShowOnlyInSmallMarkets: {},
   orgUIPath: 'https://classic.curve.fi',

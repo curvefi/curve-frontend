@@ -389,6 +389,24 @@ const market = {
 
     return results
   },
+  fetchMarketsMaxLeverage: async (owmDatas: OWMData[]) => {
+    log('fetchMarketsMaxLeverage', owmDatas.length)
+    let results: { [id: string]: MarketMaxLeverage } = {}
+
+    await PromisePool.for(owmDatas)
+      .handleError((errorObj, { owm }) => {
+        console.error(errorObj)
+        const error = getErrorMessage(errorObj, 'error-api')
+        results[owm.id] = { maxLeverage: '', error }
+      })
+      .process(async (owmData) => {
+        const { hasLeverage, owm } = owmData
+        const maxLeverage = hasLeverage ? await owm.leverage.maxLeverage(owm?.minBands) : ''
+        results[owm.id] = { maxLeverage, error: '' }
+      })
+
+    return results
+  },
 }
 
 const user = {
