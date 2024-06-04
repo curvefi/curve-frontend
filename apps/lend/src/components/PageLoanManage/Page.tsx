@@ -53,6 +53,7 @@ const Page: NextPage = () => {
   const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
+  const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Market Details`, key: 'market' }]
@@ -75,6 +76,7 @@ const Page: NextPage = () => {
         if (signerAddress && loanExists) {
           fetchAllUserMarketDetails(api, owmData, true)
         }
+        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists]
@@ -92,12 +94,10 @@ const Page: NextPage = () => {
       fetchInitial(api, owmData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi])
+  }, [pageLoaded, isLoadingApi])
 
   useEffect(() => {
-    if (isLoaded && isPageVisible) {
-      // TODO
-    }
+    if (api && owmData && isPageVisible && initialLoaded) fetchInitial(api, owmData)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 

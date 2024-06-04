@@ -34,6 +34,7 @@ const Page: NextPage = () => {
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const updateTableRowsSettings = useStore((state) => state.marketList.updateTableRowsSettings)
+  const setStateByKey = useStore((state) => state.marketList.setStateByKey)
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
@@ -122,6 +123,7 @@ const Page: NextPage = () => {
         parsedSearchParams.filterKey = 'all'
         updatePath(parsedSearchParams)
       } else {
+        setStateByKey('searchParams', parsedSearchParams)
         setParsedSearchParams(parsedSearchParams)
         setLoaded(true)
       }

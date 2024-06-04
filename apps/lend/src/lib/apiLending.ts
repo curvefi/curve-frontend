@@ -208,7 +208,7 @@ const market = {
         results[owm.id] = { borrowed: '', collateral: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.ammBalances()
+        const resp = await owm.stats.ammBalances(false)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -225,7 +225,7 @@ const market = {
         results[owm.id] = { cap: '', available: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.capAndAvailable()
+        const resp = await owm.stats.capAndAvailable(false)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -242,7 +242,7 @@ const market = {
         results[owm.id] = { totalDebt: '', error }
       })
       .process(async ({ owm }) => {
-        const totalDebt = await owm.stats.totalDebt()
+        const totalDebt = await owm.stats.totalDebt(false)
         results[owm.id] = { totalDebt, error: '' }
       })
 
@@ -291,7 +291,7 @@ const market = {
       })
       .withConcurrency(5)
       .process(async ({ owm }) => {
-        const rates = await owm.stats.rates()
+        const rates = await owm.stats.rates(false)
         results[owm.id] = { rates, error: '' }
       })
 
