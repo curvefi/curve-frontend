@@ -41,16 +41,18 @@ const Page: NextPage = () => {
 
   const { signerAddress } = api ?? {}
 
-  const FILTER_MAPPER: FilterMapper = signerAddress
-    ? {
-        all: { id: 'all', displayName: t`All` },
-        leverage: { id: 'leverage', displayName: t`Leverage` },
-        user: { id: 'user', displayName: t`My markets` },
-      }
-    : {
-        all: { id: 'all', displayName: t`All` },
-        leverage: { id: 'leverage', displayName: t`Leverage` },
-      }
+  const SIGNER_FILTER_MAPPER = {
+    all: { id: 'all', displayName: t`All` },
+    leverage: { id: 'leverage', displayName: t`Leverage` },
+    user: { id: 'user', displayName: t`My markets` },
+  } as const
+
+  const DEFAULT_FILTER_MAPPER = {
+    all: { id: 'all', displayName: t`All` },
+    leverage: { id: 'leverage', displayName: t`Leverage` },
+  } as const
+
+  const FILTER_MAPPER = signerAddress ? SIGNER_FILTER_MAPPER : DEFAULT_FILTER_MAPPER
 
   const FILTER_TYPE_MAPPER: FilterMapper = {
     borrow: { id: 'borrow', displayName: t`Borrow` },
