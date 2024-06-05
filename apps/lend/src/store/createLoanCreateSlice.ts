@@ -85,8 +85,9 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
     fetchMaxLeverage: async (owmData) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { n } = formValues
+      const { haveValues } = _parseValue(formValues)
 
-      if (n === null) return
+      if (n === null || !haveValues) return
 
       const resp = await loanCreate.maxLeverage(owmData, n)
       sliceState.setStateByActiveKey('maxLeverage', n.toString(), resp.maxLeverage)

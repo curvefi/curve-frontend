@@ -5,7 +5,6 @@ import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
-import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
@@ -37,7 +36,6 @@ export interface AppSlice extends SliceState {
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
-  getTvl(api: Api): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -109,18 +107,26 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    await state.markets.fetchMarkets(api)
-    await state.usdRates.fetchAllStoredUsdRates(api)
+    const { owmDatasMapper } = await state.markets.fetchMarkets(api)
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
+      await state.usdRates.fetchAllStoredUsdRates(api)
+
       // fetch markets TVL (remove once ready from api)
       const hash = window.location.hash
       const isPageMarket = hash.split('?')[0].endsWith('markets')
       const isPageMarketSupply = isPageMarket && hash.endsWith('supply')
 
-      if (!isPageMarket || !isPageMarketSupply) {
-        setTimeout(() => state.getTvl(api), REFRESH_INTERVAL['4s'])
+      if (!isPageMarket || isPageMarketSupply) {
+        state.markets.fetchDatas('statsAmmBalancesMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
+      }
+
+      if (isPageMarket && !isPageMarketSupply) {
+        state.markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
       }
     }
   },
@@ -130,9 +136,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         state[key] = value
       })
     )
-  },
-  getTvl: (api: Api) => {
-    get().marketList.setFormValues(api.chainId, api)
   },
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {

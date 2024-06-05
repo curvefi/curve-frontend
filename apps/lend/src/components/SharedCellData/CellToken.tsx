@@ -10,7 +10,6 @@ const CellToken = ({
   rChainId,
   isVisible = true,
   owmDataCachedOrApi,
-  showLeverageIcon,
   type,
   ...props
 }: ChipProps & {
@@ -18,7 +17,6 @@ const CellToken = ({
   rChainId: ChainId
   isVisible?: boolean
   owmDataCachedOrApi: OWMDataCacheOrApi
-  showLeverageIcon?: boolean
   type: 'collateral' | 'borrowed'
 }) => {
   const { collateral_token, borrowed_token } = owmDataCachedOrApi?.owm ?? {}
@@ -28,13 +26,7 @@ const CellToken = ({
   return hideIcon ? (
     <Chip {...props}>{token?.symbol}</Chip>
   ) : (
-    <TokenLabel
-      isDisplayOnly
-      showLeverageIcon={showLeverageIcon}
-      isVisible={isVisible}
-      rChainId={rChainId}
-      token={token}
-    />
+    <TokenLabel isDisplayOnly isVisible={isVisible} rChainId={rChainId} token={token} />
   )
 }
 

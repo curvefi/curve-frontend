@@ -208,7 +208,7 @@ const market = {
         results[owm.id] = { borrowed: '', collateral: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.ammBalances(false)
+        const resp = await owm.stats.ammBalances()
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -225,7 +225,7 @@ const market = {
         results[owm.id] = { cap: '', available: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.capAndAvailable(false)
+        const resp = await owm.stats.capAndAvailable()
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -242,7 +242,7 @@ const market = {
         results[owm.id] = { totalDebt: '', error }
       })
       .process(async ({ owm }) => {
-        const totalDebt = await owm.stats.totalDebt(false)
+        const totalDebt = await owm.stats.totalDebt()
         results[owm.id] = { totalDebt, error: '' }
       })
 
@@ -291,7 +291,7 @@ const market = {
       })
       .withConcurrency(5)
       .process(async ({ owm }) => {
-        const rates = await owm.stats.rates(false)
+        const rates = await owm.stats.rates()
         results[owm.id] = { rates, error: '' }
       })
 
@@ -386,24 +386,6 @@ const market = {
           return await handleResponse(owm)
         })
     }
-
-    return results
-  },
-  fetchMarketsMaxLeverage: async (owmDatas: OWMData[]) => {
-    log('fetchMarketsMaxLeverage', owmDatas.length)
-    let results: { [id: string]: MarketMaxLeverage } = {}
-
-    await PromisePool.for(owmDatas)
-      .handleError((errorObj, { owm }) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[owm.id] = { maxLeverage: '', error }
-      })
-      .process(async (owmData) => {
-        const { hasLeverage, owm } = owmData
-        const maxLeverage = hasLeverage ? await owm.leverage.maxLeverage(owm?.minBands) : ''
-        results[owm.id] = { maxLeverage, error: '' }
-      })
 
     return results
   },
