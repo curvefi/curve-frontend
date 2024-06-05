@@ -33,6 +33,7 @@ const Page: NextPage = () => {
   const owMDataCached = useStore((state) => state.storeCache.owmDatasMapper[rChainId]?.[rOwmId])
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const navHeight = useStore((state) => state.layout.navHeight)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
@@ -40,6 +41,7 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
 
   const [isLoaded, setLoaded] = useState(false)
+  const [initialLoaded, setInitialLoaded] = useState(false)
 
   const owmDataCachedOrApi = owmData ?? owMDataCached
   const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
@@ -60,6 +62,7 @@ const Page: NextPage = () => {
         if (signerAddress) {
           fetchUserMarketBalances(api, owmData, true)
         }
+        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances]
@@ -77,6 +80,11 @@ const Page: NextPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageLoaded, isLoadingApi])
+
+  useEffect(() => {
+    if (api && owmData && isPageVisible && initialLoaded) fetchInitial(api, owmData)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isPageVisible])
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>

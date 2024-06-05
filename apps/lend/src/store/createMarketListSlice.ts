@@ -36,6 +36,7 @@ type SliceState = {
   marketListMapper: { [chainId: string]: MarketListMapper }
   tableRowsSettings: { [tokenAddress: string]: TableRowSettings }
   formStatus: FormStatus
+  searchParams: SearchParams
   searchTextByTokensAndAddresses: { [activeKey: string]: { [address: string]: boolean } }
   searchTextByOther: { [activeKey: string]: { [address: string]: boolean } }
   result: { [activeKey: string]: MarketListItem[] }
@@ -53,8 +54,9 @@ export type MarketListSlice = {
     filterSmallMarkets(api: Api, owmDatas: OWMData[]): OWMData[]
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
     filterUserList(api: Api, owmDatas: OWMData[], filterTypeKey: FilterTypeKey): OWMData[]
+    filterLeverageMarkets(owmDatas: OWMData[]): OWMData[]
     sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
-    setFormValues(rChainId: ChainId, api: Api | null, searchParams: SearchParams, shouldRefetch?: boolean): Promise<void>
+    setFormValues(rChainId: ChainId, api: Api | null, shouldRefetch?: boolean): Promise<void>
     sortTableRow(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tableRowTokenAddress: string): Promise<void>
     updateTableRowSettings(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tokenAddress: string, updatedSettings: Partial<TableRowSettings>): void
     updateTableRowsSettings(searchParams: Partial<SearchParams>): void
@@ -72,6 +74,15 @@ const DEFAULT_STATE: SliceState = {
   marketListMapper: {},
   tableRowsSettings: {},
   formStatus: DEFAULT_FORM_STATUS,
+  searchParams: {
+    filterKey: 'all',
+    filterTypeKey: 'borrow',
+    hideSmallMarkets: true,
+    sortBy: 'available',
+    sortByOrder: 'desc',
+    searchText: '',
+    borrowKey: 'long',
+  },
   searchTextByTokensAndAddresses: {},
   searchTextByOther: {},
   result: {},
@@ -167,15 +178,20 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         }
       })
     },
-    setFormValues: async (rChainId, api, searchParams, shouldRefetch) => {
-      const storedOwmDatas = get().markets.owmDatas[rChainId]
-      const storedOwmDatasMapper = get().markets.owmDatasMapper[rChainId]
-      const storedMarketListMapper = get().marketList.marketListMapper[rChainId]
-      const storedUsdRatesMapper = get().usdRates.tokens
+    filterLeverageMarkets: (owmDatas) => {
+      return owmDatas.filter(({ hasLeverage }) => hasLeverage)
+    },
+    setFormValues: async (rChainId, api, shouldRefetch) => {
+      const { markets, storeCache, usdRates, user } = get()
+      const { marketListMapper, searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+      const storedOwmDatas = markets.owmDatas[rChainId]
+      const storedOwmDatasMapper = markets.owmDatasMapper[rChainId]
+      const storedMarketListMapper = marketListMapper[rChainId]
+      const storedUsdRatesMapper = usdRates.tokens
 
       // update activeKey, formStatus
       const activeKey = _getActiveKey(rChainId, searchParams)
-      get()[sliceKey].setStateByKeys({ activeKey, formStatus: { error: '', noResult: false, isLoading: true } })
+      sliceState.setStateByKeys({ activeKey, formStatus: { error: '', noResult: false, isLoading: true } })
 
       // allow UI to update paint
       await sleep(100)
@@ -186,37 +202,40 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { filterKey, filterTypeKey, hideSmallMarkets, searchText } = searchParams
 
       // get market list for table
-      let cMarketList = cloneDeep(sortByFn(Object.values(storedMarketListMapper), (l) => l.symbol))
+      let cMarketList = sortByFn(Object.values(storedMarketListMapper), (l) => l.symbol)
       let cOwmDatas = _getOwmDatasFromMarketList(storedMarketListMapper, storedOwmDatasMapper)
 
       if (signerAddress) {
         if (filterTypeKey === 'borrow') {
-          await get().user.fetchUsersLoansExists(api, cOwmDatas, shouldRefetch)
+          await user.fetchUsersLoansExists(api, cOwmDatas, shouldRefetch)
         }
 
         if (filterTypeKey === 'supply') {
-          await get().user.fetchDatas('marketsBalancesMapper', api, cOwmDatas, shouldRefetch)
+          await user.fetchDatas('marketsBalancesMapper', api, cOwmDatas, shouldRefetch)
         }
+      }
 
-        // update cOwmDatas if filter === 'user'
-        if (filterKey === 'user') {
-          cOwmDatas = get()[sliceKey].filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
+      if (filterKey) {
+        if (filterKey === 'user' && !!signerAddress) {
+          cOwmDatas = sliceState.filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
+        } else if (filterKey === 'leverage') {
+          cOwmDatas = sliceState.filterLeverageMarkets(cOwmDatas)
         }
       }
 
       // searchText
       if (searchText) {
-        cOwmDatas = get()[sliceKey].filterBySearchText(searchText, cOwmDatas)
+        cOwmDatas = sliceState.filterBySearchText(searchText, cOwmDatas)
       }
 
       // hide small markets
       if (hideSmallMarkets) {
-        await get().markets.fetchDatas('statsCapAndAvailableMapper', api, cOwmDatas, shouldRefetch)
-        cOwmDatas = get()[sliceKey].filterSmallMarkets(api, cOwmDatas)
+        await markets.fetchDatas('statsCapAndAvailableMapper', api, cOwmDatas, shouldRefetch)
+        cOwmDatas = sliceState.filterSmallMarkets(api, cOwmDatas)
       }
 
       // update collapse list
-      const cTableRowsSettings = cloneDeep(get()[sliceKey].tableRowsSettings)
+      const cTableRowsSettings: { [address: string]: TableRowSettings } = {}
       const isOpen = cOwmDatas.length <= 30 || filterKey === 'user'
       cMarketList.forEach(({ address }) => {
         if (isOpen) get()[sliceKey].sortTableRow(rChainId, api, searchParams, address)
@@ -230,9 +249,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       // set result
       cMarketList = _filterResult(cMarketList, cOwmDatas)
-      get()[sliceKey].setStateByActiveKey('result', activeKey, cMarketList)
-      get()[sliceKey].setStateByKeys({
-        tableRowsSettings: cTableRowsSettings,
+      sliceState.setStateByActiveKey('result', activeKey, cMarketList)
+      sliceState.setStateByKeys({
+        tableRowsSettings: { ...tableRowsSettings, ...cTableRowsSettings },
         formStatus: {
           error: '',
           noResult: cMarketList.length === 0,
@@ -242,31 +261,28 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       // save to cache
       if (activeKey === `${chainId}-all-`) {
-        get().storeCache.setStateByActiveKey('marketListResult', activeKey, cMarketList)
+        storeCache.setStateByActiveKey('marketListResult', activeKey, cMarketList)
       }
 
       // api calls
-      let fns =
-        filterTypeKey === 'borrow'
-          ? [
-              { key: 'statsAmmBalancesMapper', fn: get().markets.fetchDatas },
-              { key: 'statsCapAndAvailableMapper', fn: get().markets.fetchDatas },
-              { key: 'statsParametersMapper', fn: get().markets.fetchDatas },
-              { key: 'statsTotalsMapper', fn: get().markets.fetchDatas },
-              { key: 'ratesMapper', fn: get().markets.fetchDatas },
-            ]
-          : [
-              { key: 'statsTotalsMapper', fn: get().markets.fetchDatas },
-              { key: 'ratesMapper', fn: get().markets.fetchDatas },
-              { key: 'rewardsMapper', fn: get().markets.fetchDatas },
-              { key: 'totalLiquidityMapper', fn: get().markets.fetchDatas },
-            ]
+      let fns = [
+        { key: 'statsAmmBalancesMapper', fn: markets.fetchDatas },
+        { key: 'statsCapAndAvailableMapper', fn: markets.fetchDatas },
+        { key: 'statsParametersMapper', fn: markets.fetchDatas },
+        { key: 'statsTotalsMapper', fn: markets.fetchDatas },
+        { key: 'ratesMapper', fn: markets.fetchDatas },
+        { key: 'statsTotalsMapper', fn: markets.fetchDatas },
+        { key: 'ratesMapper', fn: markets.fetchDatas },
+        { key: 'rewardsMapper', fn: markets.fetchDatas },
+        { key: 'totalLiquidityMapper', fn: markets.fetchDatas },
+        { key: 'maxLeverageMapper', fn: markets.fetchDatas },
+      ]
 
       if (signerAddress) {
         fns = fns.concat([
-          { key: 'marketsBalancesMapper', fn: get().user.fetchDatas },
-          { key: 'loansHealthsMapper', fn: get().user.fetchLoanDatas },
-          { key: 'loansStatesMapper', fn: get().user.fetchLoanDatas },
+          { key: 'marketsBalancesMapper', fn: user.fetchDatas },
+          { key: 'loansHealthsMapper', fn: user.fetchLoanDatas },
+          { key: 'loansStatesMapper', fn: user.fetchLoanDatas },
         ])
       }
 
