@@ -2,7 +2,7 @@ import { defineConfig } from 'cypress'
 
 const commonConfig = defineConfig({
   viewportWidth: 1000,
-  viewportHeight: 800,
+  viewportHeight: 1000,
   chromeWebSecurity: false,
   defaultCommandTimeout: 20000,
   pageLoadTimeout: 120000,
