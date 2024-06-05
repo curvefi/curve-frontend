@@ -5,7 +5,6 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   isInProgress: false,
   error: '',
   step: '',
-  stepError: '',
 }
 
 export const DEFAULT_FORM_VALUES: FormValues = {

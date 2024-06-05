@@ -1,13 +1,10 @@
-import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanManage/types'
-import type { InpError } from '@/components/PageLoanCreate/types'
+import type { FormDetailInfo as Di, FormStatus as Fs } from '@/components/PageLoanManage/types'
 
 export type FormValues = {
-  userCollateral: string
-  userCollateralError: InpError
-  userBorrowed: string
-  userBorrowedError: InpError
+  collateral: string
+  collateralError: 'too-much-wallet' | ''
   debt: string
-  debtError: InpError
+  debtError: 'too-much-max' | ''
 }
 
 export type StepKey = 'APPROVAL' | 'BORROW_MORE' | ''
@@ -16,9 +13,4 @@ export interface FormStatus extends Fs {
   step: StepKey
 }
 
-export type FormDetailInfoLeverage = FormDetailInfo & {
-  expectedCollateral: ExpectedCollateral | null
-  routes: Routes | null
-  priceImpact: string
-  isHighPriceImpact: boolean
-}
+export interface FormDetailInfo extends Di, LiqRange {}

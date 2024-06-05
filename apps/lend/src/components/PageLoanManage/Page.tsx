@@ -31,7 +31,7 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { pageLoaded, api, routerParams } = usePageOnMount(params, location, navigate)
+  const { api, routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
   const owmDataCache = useStore((state) => state.storeCache.owmDatasMapper[rChainId]?.[rOwmId])
@@ -88,7 +88,7 @@ const Page: NextPage = () => {
   // onMount
   useEffect(() => {
     setLoaded(false)
-    if (pageLoaded && !isLoadingApi && api && owmData) {
+    if (!isLoadingApi && api && owmData) {
       fetchInitial(api, owmData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +114,6 @@ const Page: NextPage = () => {
   )
 
   const pageProps: PageContentProps = {
-    params,
     rChainId,
     rOwmId,
     rFormType,

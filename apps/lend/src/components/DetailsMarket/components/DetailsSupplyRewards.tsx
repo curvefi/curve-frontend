@@ -9,7 +9,7 @@ import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
 
 import Box from '@/ui/Box'
 import Chip from '@/ui/Typography/Chip'
-import ChipInactive from '@/components/ChipInactive'
+import ChipInactive from 'main/src/components/ChipInactive'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'

@@ -1,57 +1,74 @@
 import type { AlertType } from '@/ui/AlertBox/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { getLoanCreatePathname } from '@/utils/utilsRouter'
 import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
+import InternalLink from '@/ui/Link/InternalLink'
+import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
+import Spinner from '@/ui/Spinner'
+import TextCaption from '@/ui/TextCaption'
 
-const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
+const AlertNoLoanFound = ({
+  alertType,
+  owmId,
+  hideLink,
+  userActiveKey,
+}: {
+  alertType?: AlertType
+  owmId: string
+  hideLink?: boolean
+  userActiveKey: string
+}) => {
   const params = useParams()
-  const navigate = useNavigate()
 
-  const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
+  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
 
-  const hasAlertType = typeof alertType !== 'undefined'
-
-  return (
+  const Content = (
     <>
-      <StyledAlertBox alertType={alertType ?? 'info'}>{t`No loan found for this market.`}</StyledAlertBox>
-      {!hasAlertType && (
-        <Button
-          variant="filled"
-          size="large"
-          onClick={() => {
-            setStateByKeyMarkets('marketDetailsView', 'market')
-            navigate(getLoanCreatePathname(params, owmId, 'create'))
-          }}
-        >
-          Create loan
-        </Button>
+      No loan found for this market
+      {!hideLink && (
+        <>
+          ,{' '}
+          <InternalLink $noStyles href={getLoanCreatePathname(params, owmId, 'create')}>
+            click here
+          </InternalLink>{' '}
+          to create a new loan
+        </>
       )}
+      .
     </>
   )
+
+  return typeof loanExistsResp === 'undefined' || !owmId ? (
+    <SpinnerWrapper>
+      <Spinner />
+    </SpinnerWrapper>
+  ) : !loanExistsResp.loanExists ? (
+    <StyledAlertBox alertType={alertType ?? ''}>
+      {!alertType ? (
+        <TextCaption isCaps isBold>
+          {Content}
+        </TextCaption>
+      ) : (
+        <div>{Content}</div>
+      )}
+    </StyledAlertBox>
+  ) : null
 }
 
 const StyledAlertBox = styled(AlertBox)<{ alertType: AlertType }>`
   ${({ alertType }) => {
-    if (alertType === '') {
+    if (!alertType) {
       return `
         align-items: center;
         display: flex;
-        padding: var(--spacing-2);
+        padding: var(--spacing-normal);
         justify-content: center;
-        
-        > div {
-          font-size: var(--font-size-1);
-          font-weight: bold;
-          text-transform: uppercase;
-        }
       `
     }
   }}

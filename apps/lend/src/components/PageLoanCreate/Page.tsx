@@ -26,7 +26,7 @@ const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+  const { routerParams, api } = usePageOnMount(params, location, navigate)
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
@@ -72,11 +72,11 @@ const Page: NextPage = () => {
   useEffect(() => {
     setLoaded(false)
 
-    if (pageLoaded && !isLoadingApi && api && owmData) {
+    if (!isLoadingApi && api && owmData) {
       fetchInitial(api, owmData)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded, isLoadingApi])
+  }, [isLoadingApi])
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
@@ -91,7 +91,6 @@ const Page: NextPage = () => {
   )
 
   const pageProps: PageContentProps = {
-    params,
     rChainId,
     rOwmId,
     rFormType,
@@ -101,8 +100,8 @@ const Page: NextPage = () => {
     owmData,
     owmDataCachedOrApi,
     userActiveKey: helpers.getUserActiveKey(api, owmData),
-    borrowed_token,
-    collateral_token,
+    borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
+    collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
   }
 
   return (

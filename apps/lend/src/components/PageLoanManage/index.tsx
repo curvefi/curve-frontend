@@ -1,6 +1,6 @@
-import type { CollateralFormType, FormType, LeverageFormType, LoanFormType } from '@/components/PageLoanManage/types'
+import type { CollateralFormType, FormType, LoanFormType } from '@/components/PageLoanManage/types'
 
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -17,7 +17,7 @@ import LoanCollateralAdd from '@/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/components/PageLoanManage/LoanCollateralRemove'
 
 const ManageLoan = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType, userActiveKey, owmDataCachedOrApi } = pageProps
+  const { rOwmId, rFormType, userActiveKey } = pageProps
   const params = useParams()
   const navigate = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
@@ -25,18 +25,10 @@ const ManageLoan = (pageProps: PageContentProps) => {
 
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
 
-  const FORM_TYPES = useMemo(() => {
-    const forms: { key: FormType; label: string }[] = [
-      { label: t`Loan`, key: 'loan' },
-      { label: t`Collateral`, key: 'collateral' },
-    ]
-
-    if (owmDataCachedOrApi?.hasLeverage) {
-      forms.push({ label: t`Leverage`, key: 'leverage' })
-    }
-
-    return forms
-  }, [owmDataCachedOrApi?.hasLeverage])
+  const FORM_TYPES: { key: FormType; label: string }[] = [
+    { label: t`Manage Loan`, key: 'loan' },
+    { label: t`Collateral`, key: 'collateral' },
+  ]
 
   const TABS_LOAN: { label: string; formType: LoanFormType }[] = [
     { label: t`Borrow more`, formType: 'loan-increase' },
@@ -51,10 +43,6 @@ const ManageLoan = (pageProps: PageContentProps) => {
     { label: t`Remove collateral`, formType: 'collateral-decrease' },
   ]
 
-  const TABS_LEVERAGE: { label: string; formType: LeverageFormType }[] = [
-    { label: t`Borrow more`, formType: 'leverage-borrow-more' },
-  ]
-
   const handleTabClick = useCallback(
     (cb: () => void) => {
       if (typeof loanExistsResp !== 'undefined' && !loanExistsResp.loanExists) {
@@ -66,14 +54,7 @@ const ManageLoan = (pageProps: PageContentProps) => {
     [loanExistsResp, navigate, params, rOwmId]
   )
 
-  const tabs =
-    !rFormType || rFormType === 'loan'
-      ? TABS_LOAN
-      : rFormType === 'collateral'
-      ? TABS_COLLATERAL
-      : rFormType === 'leverage'
-      ? TABS_LEVERAGE
-      : []
+  const tabs = !rFormType || rFormType === 'loan' ? TABS_LOAN : rFormType === 'collateral' ? TABS_COLLATERAL : []
 
   return (
     <AppFormContent variant="primary" shadowed>
@@ -118,8 +99,6 @@ const ManageLoan = (pageProps: PageContentProps) => {
             {selectedTabIdx === 0 && <LoanCollateralAdd {...pageProps} />}
             {selectedTabIdx === 1 && <LoanCollateralRemove {...pageProps} />}
           </>
-        ) : rFormType === 'leverage' ? (
-          <>{selectedTabIdx === 0 && <LoanBorrowMore isLeverage {...pageProps} />}</>
         ) : null}
       </AppFormContentWrapper>
     </AppFormContent>

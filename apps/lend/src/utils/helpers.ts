@@ -148,22 +148,3 @@ export function shortenTokenName(token: string) {
 export function _showContent(show: boolean | undefined) {
   return typeof show === 'undefined' || (typeof show !== 'undefined' && show)
 }
-
-export function _parseStepTokensList(list: { value: string | number; symbol: string }[]) {
-  return {
-    symbolAndAmountList: list.map(({ value, symbol }) => `${value} ${symbol}`).join(', '),
-    symbolList: list.map(({ symbol }) => symbol).join(', '),
-  }
-}
-
-export function _parseActiveKey(api: Api | null, owmData: OWMData | undefined) {
-  const { chainId = '', signerAddress = '' } = api ?? {}
-  const parsedSignerAddress = signerAddress.slice(0, 10)
-  const { id } = owmData?.owm ?? {}
-
-  return `${chainId}-${parsedSignerAddress}${id}`
-}
-
-export function _showNoLoanFound(signerAddress: string | undefined, isComplete: boolean, loanExists?: boolean) {
-  if (!!signerAddress && !isComplete && typeof loanExists !== 'undefined' && !loanExists) return true
-}

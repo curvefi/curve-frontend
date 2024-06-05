@@ -4,6 +4,7 @@ import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
 
 import cloneDeep from 'lodash/cloneDeep'
+import merge from 'lodash/merge'
 
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import apiLending from '@/lib/apiLending'
@@ -50,122 +51,107 @@ const DEFAULT_STATE: SliceState = {
   liquidationAmt: '',
 }
 
-const { loanSelfLiquidation } = apiLending
-
 const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<State>): LoanSelfLiquidationSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
     fetchDetails: async (api, owmData, maxSlippage) => {
-      const { user } = get()
-      const { formStatus, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
 
       if (!signerAddress || !api || !owmData || !maxSlippage) return
 
-      const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
+      const resp = await apiLending.loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
 
-      sliceState.setStateByKeys({
+      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      cFormStatus.warning = resp.warning || cFormStatus.warning
+      get()[sliceKey].setStateByKeys({
         liquidationAmt: resp.tokensToLiquidate,
         futureRates: resp.futureRates,
+        formStatus: cloneDeep(cFormStatus),
       })
 
       // validation
+      const userBalancesResp = await get().user.fetchUserMarketBalances(api, owmData, true)
+      const canSelfLiquidate = _haveEnoughCrvusdForLiquidation(userBalancesResp.borrowed, resp.tokensToLiquidate)
+      cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      cFormStatus.error = resp.error || cFormStatus.error
+      cFormStatus.warning = !canSelfLiquidate ? 'warning-not-enough-crvusd' : cFormStatus.warning
+      get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
-      const userBalances = await user.fetchUserMarketBalances(api, owmData, true)
-      let warning = formStatus.warning
-      if (!_canSelfLiquidate(userBalances.borrowed, resp.tokensToLiquidate)) warning = 'warning-not-enough-crvusd'
-      sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error || formStatus.error, warning })
-
-      // api call
-      sliceState.fetchEstGasApproval(api, owmData, maxSlippage)
+      // api calls
+      if (!resp.error || !resp.warning) get()[sliceKey].fetchEstGasApproval(api, owmData, maxSlippage)
     },
     fetchEstGasApproval: async (api, owmData, maxSlippage) => {
-      const { gas } = get()
-      const { formStatus, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
+      const { warning } = get()[sliceKey].formStatus
 
-      if (!signerAddress) return
+      if (!signerAddress || warning) return
 
-      sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, loading: true })
-
-      await gas.fetchGasInfo(api)
-      const resp = await loanSelfLiquidation.estGasApproval(owmData, maxSlippage)
-      sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, estimatedGas: resp.estimatedGas })
+      get()[sliceKey].setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, loading: true })
+      await get().gas.fetchGasInfo(api)
+      const resp = await apiLending.loanSelfLiquidation.estGasApproval(owmData, maxSlippage)
+      get()[sliceKey].setStateByKey('formEstGas', { estimatedGas: resp.estimatedGas })
 
       // update formStatus
-      sliceState.setStateByKey('formStatus', {
-        ...formStatus,
-        isApproved: resp.isApproved,
-        error: formStatus.error || resp.error,
-      })
+      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      cFormStatus.isApproved = resp.isApproved
+      cFormStatus.error = resp.error || cFormStatus.error
+      get()[sliceKey].setStateByKey('formStatus', cFormStatus)
     },
 
     // step
     fetchStepApprove: async (api, owmData, maxSlippage) => {
-      const { gas, wallet } = get()
-      const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
 
       // update formStatus
-      sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
+      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanSelfLiquidation.approve(provider, owmData)
+      await get().gas.fetchGasInfo(api)
+      const resp = await apiLending.loanSelfLiquidation.approve(provider, owmData)
 
       if (resp) {
         // update formStatus
-        sliceState.setStateByKey('formStatus', {
-          ...DEFAULT_FORM_STATUS,
-          isApproved: !error,
-          isInProgress: !error,
-          stepError: error,
-        })
-        if (!error) sliceState.fetchEstGasApproval(api, owmData, maxSlippage)
-        return { ...resp, error }
+        const partialFormStatus: Partial<FormStatus> = {
+          error: resp.error,
+          isApproved: !resp.error,
+          isInProgress: true,
+        }
+        get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
+        if (!resp.error) get()[sliceKey].fetchEstGasApproval(api, owmData, maxSlippage)
+        return resp
       }
     },
     fetchStepLiquidate: async (api, owmData, liquidationAmt, maxSlippage) => {
-      const { gas, markets, wallet, user } = get()
-      const { formStatus, ...sliceState } = get()[sliceKey]
-      const provider = wallet.getProvider(sliceKey)
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
 
       // update formStatus
-      sliceState.setStateByKey('formStatus', {
-        ...DEFAULT_FORM_STATUS,
-        isApproved: true,
-        isInProgress: true,
-        step: 'SELF_LIQUIDATE',
-      })
+      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'SELF_LIQUIDATE' }
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, owmData, maxSlippage)
+      await get().gas.fetchGasInfo(api)
+      const resp = await apiLending.loanSelfLiquidation.selfLiquidate(provider, owmData, maxSlippage)
 
       if (resp) {
-        const loanExists = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
+        // api calls
+        const loanExists = (await get().user.fetchUserLoanExists(api, owmData, true))?.loanExists
+        if (loanExists) get().user.fetchAll(api, owmData, true)
+        get().markets.fetchAll(api, owmData, true)
 
-        if (error) {
-          sliceState.setStateByKey('formStatus', {
-            ...DEFAULT_FORM_STATUS,
-            isApproved: true,
-            stepError: error,
-          })
-          return { ...resp, error, loanExists }
-        } else {
-          // api calls
-          if (loanExists) user.fetchAll(api, owmData, true)
-          markets.fetchAll(api, owmData, true)
-
-          // update state
-          sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true })
-          return { ...resp, error, loanExists }
+        // update state
+        const partialFormStatus: Partial<FormStatus> = {
+          error: resp.error,
+          isApproved: true,
+          isComplete: !resp.error,
         }
+        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
+        return { ...resp, loanExists }
       }
     },
 
@@ -187,6 +173,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
 export default createLoanSelfLiquidationSlice
 
-export function _canSelfLiquidate(walletStablecoin: string, tokensToLiquidate: string) {
+export function _haveEnoughCrvusdForLiquidation(walletStablecoin: string, tokensToLiquidate: string) {
   return +(walletStablecoin ?? '0') >= +tokensToLiquidate * 1.0001
 }

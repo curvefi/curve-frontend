@@ -181,7 +181,7 @@ const VaultWithdrawRedeem = ({
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
-  const disabled = !!formStatus.step
+  const disabled = formStatus.isInProgress
 
   return (
     <>
