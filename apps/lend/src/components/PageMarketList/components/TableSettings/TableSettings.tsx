@@ -16,12 +16,15 @@ import TableButtonFilters from '@/ui/TableButtonFilters'
 
 const TableSettings = ({
   rChainId,
+  api,
   filterMapper,
   filterTypeMapper,
   searchParams,
   updatePath,
 }: Pick<PageMarketList, 'rChainId' | 'api' | 'searchParams' | 'filterMapper' | 'filterTypeMapper' | 'updatePath'>) => {
   const { isFocusVisible, focusProps } = useFocusRing()
+
+  const { signerAddress } = api ?? {}
 
   const filterList = useMemo(() => {
     return networks[rChainId].marketListFilter.map((key) => filterMapper[key])
@@ -48,7 +51,9 @@ const TableSettings = ({
             updateRouteFilterKey={(filterTypeKey: FilterTypeKey) => updatePath({ filterTypeKey })}
           />
           {/* TODO: add sort by */}
-          <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
+          {signerAddress && (
+            <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
+          )}
         </FiltersWrapper>
         <FilterSmallWrapper grid gridArea="hide">
           <Checkbox

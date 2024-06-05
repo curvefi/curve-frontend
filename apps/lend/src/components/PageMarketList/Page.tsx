@@ -34,25 +34,16 @@ const Page: NextPage = () => {
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const updateTableRowsSettings = useStore((state) => state.marketList.updateTableRowsSettings)
-  const setStateByKey = useStore((state) => state.marketList.setStateByKey)
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
   const { signerAddress } = api ?? {}
 
-  const SIGNER_FILTER_MAPPER = {
+  const FILTER_MAPPER: FilterMapper = {
     all: { id: 'all', displayName: t`All` },
-    leverage: { id: 'leverage', displayName: t`Leverage` },
     user: { id: 'user', displayName: t`My markets` },
-  } as const
-
-  const DEFAULT_FILTER_MAPPER = {
-    all: { id: 'all', displayName: t`All` },
-    leverage: { id: 'leverage', displayName: t`Leverage` },
-  } as const
-
-  const FILTER_MAPPER = signerAddress ? SIGNER_FILTER_MAPPER : DEFAULT_FILTER_MAPPER
+  }
 
   const FILTER_TYPE_MAPPER: FilterMapper = {
     borrow: { id: 'borrow', displayName: t`Borrow` },
@@ -82,7 +73,6 @@ const Page: NextPage = () => {
     totalLiquidity: { name: t`TVL` },
     rewardsCRV: { name: 'CRV' },
     rewardsOthers: { name: t`Incentives` },
-    leverage: { name: t`Leverage` }
   }
 
   useEffect(() => {
@@ -132,7 +122,6 @@ const Page: NextPage = () => {
         parsedSearchParams.filterKey = 'all'
         updatePath(parsedSearchParams)
       } else {
-        setStateByKey('searchParams', parsedSearchParams)
         setParsedSearchParams(parsedSearchParams)
         setLoaded(true)
       }

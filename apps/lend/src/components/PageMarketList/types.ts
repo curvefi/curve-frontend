@@ -28,7 +28,6 @@ export type TableLabelsMapper = {
   totalLiquidity: { name: string }
   rewardsCRV: { name: string }
   rewardsOthers: { name: string }
-  leverage: { name: string }
 }
 
 export type FilterMapper = {
@@ -39,7 +38,7 @@ export type FilterMapper = {
 }
 
 export type Order = 'desc' | 'asc'
-export type FilterKey = 'all' | 'leverage' | 'user'
+export type FilterKey = 'all' | 'user'
 export type FilterTypeKey = 'borrow' | 'supply'
 export type SortKey = keyof TableLabelsMapper
 export type BorrowKey = 'long' | 'short'

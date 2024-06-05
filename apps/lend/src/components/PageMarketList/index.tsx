@@ -1,6 +1,6 @@
 import type { FoldTableLabels, PageMarketList, SearchParams } from '@/components/PageMarketList/types'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -8,12 +8,10 @@ import styled from 'styled-components'
 import { _getActiveKey } from '@/store/createMarketListSlice'
 import useStore from '@/store/useStore'
 
-import { REFRESH_INTERVAL } from '@/constants'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import MarketListNoResult from '@/components/PageMarketList/components/MarketListNoResult'
 import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
 import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
-import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, tableLabelsMapper, updatePath } = pageProps
@@ -27,9 +25,8 @@ const MarketList = (pageProps: PageMarketList) => {
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
   const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
+  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const setFormValues = useStore((state) => state.marketList.setFormValues)
-
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   const { signerAddress } = api ?? {}
 
@@ -44,7 +41,6 @@ const MarketList = (pageProps: PageMarketList) => {
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
       { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, className: 'left', width: '140px' },
       { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, className: 'left', width: '140px' },
-      { sortIdKey: 'leverage', label: tableLabelsMapper.leverage.name, className: 'left', width: '120px' },
       { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
       { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
@@ -67,26 +63,27 @@ const MarketList = (pageProps: PageMarketList) => {
   const result = results[activeKey] ?? resultCached ?? results[prevKey] ?? undefined
 
   const updateFormValues = useCallback(
-    (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, isLoaded ? api : null, shouldRefetch)
+    (searchParams: SearchParams, shouldRefetch?: boolean) => {
+      setFormValues(rChainId, isLoaded ? api : null, searchParams, shouldRefetch)
     },
     [isLoaded, rChainId, api, setFormValues]
   )
 
   useEffect(() => {
-    if (isLoaded && isPageVisible && initialLoaded) updateFormValues(true)
+    if (isLoaded && isPageVisible) updateFormValues(searchParams, true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
   useEffect(() => {
-    if (isLoaded) {
-      updateFormValues()
-      setInitialLoaded(true)
-    }
+    if (isLoaded) updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, searchParams])
 
-  usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['11m'], isPageVisible && isLoaded)
+  // usd rates mapper changed
+  useEffect(() => {
+    if (isLoaded && Object.keys(usdRatesMapper).length > 0) updateFormValues(searchParams)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [usdRatesMapper])
 
   const tableLabels = FOLD_TABLE_LABELS[searchParams.filterTypeKey]
 

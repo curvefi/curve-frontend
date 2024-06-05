@@ -17,7 +17,6 @@ export const ROUTE = {
 
 export const REFRESH_INTERVAL = {
   '3s': 3000,
-  '4s': 4000,
   '10s': 10000,
   '1m': 60000,
   '5m': 300000,

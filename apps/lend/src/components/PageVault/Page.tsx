@@ -39,7 +39,6 @@ const Page: NextPage = () => {
   const owmDataCachedOrApi = owmData ?? owMDataCached
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
-  const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
   const navHeight = useStore((state) => state.layout.navHeight)
@@ -53,7 +52,6 @@ const Page: NextPage = () => {
   const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Supply Details`, key: 'market' }]
@@ -80,7 +78,6 @@ const Page: NextPage = () => {
             fetchUserMarketBalances(api, owmData, true)
           }
         }
-        setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances]
@@ -98,11 +95,6 @@ const Page: NextPage = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingApi])
-
-  useEffect(() => {
-    if (api && owmData && isPageVisible && initialLoaded) fetchInitial(api, owmData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>

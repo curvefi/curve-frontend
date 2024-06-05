@@ -71,20 +71,13 @@ function _getTotalCollateralValue(
   collateralUsdRate: string | number
 ) {
   let resp = {
-    total: '',
+    total: '0',
     tooltipContent: [] as { label: string; value: string }[],
   }
 
   const { borrowed_token, collateral_token } = owmData?.owm ?? {}
 
-  if (
-    collateralUsdRate === 'NaN' ||
-    borrowedUsdRate === 'NaN' ||
-    typeof ammBalance === 'undefined' ||
-    ammBalance.error ||
-    typeof borrowedUsdRate === 'undefined' ||
-    typeof collateralUsdRate === 'undefined'
-  )
+  if (collateralUsdRate === 'NaN' || borrowedUsdRate === 'NaN' || typeof ammBalance === 'undefined' || ammBalance.error)
     return resp
 
   const borrowedUsd = +ammBalance.borrowed * +borrowedUsdRate

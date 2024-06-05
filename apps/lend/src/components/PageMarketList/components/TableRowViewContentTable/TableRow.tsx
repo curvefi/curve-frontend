@@ -4,7 +4,6 @@ import React, { useRef } from 'react'
 import styled, { css } from 'styled-components'
 
 import { _showContent } from '@/utils/helpers'
-import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
@@ -19,7 +18,6 @@ import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
-import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
 
 type Content = {
   className: string
@@ -70,7 +68,6 @@ const TableRow = ({
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showBorrowSignerCell },
       { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral' isVisible={isVisible} /> },
       { className: 'left', content: <CellToken {...cellProps} type='borrowed' isVisible={isVisible} /> },
-      { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
       { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
       { className: 'right', content: <CellRate {...cellProps} type='borrow' /> },
@@ -118,13 +115,8 @@ export const Tr = styled.tr`
 export const cellCss = css`
   padding-bottom: var(--spacing-1);
   padding-top: var(--spacing-2);
-  padding-left: var(--spacing-1);
-  padding-right: var(--spacing-1);
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    padding-left: var(--spacing-2);
-    padding-right: var(--spacing-2);
-  }
+  padding-left: var(--spacing-2);
+  padding-right: var(--spacing-2);
 
   &.noPadding {
     padding: 0;
