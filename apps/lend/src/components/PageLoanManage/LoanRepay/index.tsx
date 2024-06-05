@@ -39,6 +39,7 @@ const LoanRepay = ({
   isLoaded,
   api,
   owmData,
+  owmDataCachedOrApi,
   userActiveKey,
   borrowed_token,
   collateral_token,
@@ -321,6 +322,7 @@ const LoanRepay = ({
     userBalances,
   ])
 
+  const hasLeverage = owmDataCachedOrApi?.hasLeverage
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disable = formStatus.isInProgress
   const isFullRepay = formValues.isFullRepay || (detailInfoLeverage?.repayIsFull ?? false)
@@ -331,37 +333,41 @@ const LoanRepay = ({
   return (
     <>
       <Box grid gridGap={1}>
-        <FieldsWrapper $showBorder>
-          <InpToken
-            id="stateCollateral"
-            inpTopLabel={t`Repay from collateral:`}
-            inpError={formValues.stateCollateralError}
-            inpDisabled={disable}
-            inpLabelLoading={loanExists && !!signerAddress && typeof state?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(state?.collateral, { defaultValue: '-' })}
-            inpValue={formValues.stateCollateral}
-            tokenAddress={collateral_token?.address}
-            tokenSymbol={collateral_token?.symbol}
-            tokenBalance={formatNumber(state?.collateral, { defaultValue: '-' })}
-            handleInpChange={(stateCollateral) => updateFormValues({ stateCollateral })}
-            handleMaxClick={() => updateFormValues({ stateCollateral: state?.collateral ?? '' })}
-          />
+        <FieldsWrapper $showBorder={hasLeverage}>
+          {hasLeverage && (
+            <>
+              <InpToken
+                id="stateCollateral"
+                inpTopLabel={t`Repay from collateral:`}
+                inpError={formValues.stateCollateralError}
+                inpDisabled={disable}
+                inpLabelLoading={loanExists && !!signerAddress && typeof state?.collateral === 'undefined'}
+                inpLabelDescription={formatNumber(state?.collateral, { defaultValue: '-' })}
+                inpValue={formValues.stateCollateral}
+                tokenAddress={collateral_token?.address}
+                tokenSymbol={collateral_token?.symbol}
+                tokenBalance={formatNumber(state?.collateral, { defaultValue: '-' })}
+                handleInpChange={(stateCollateral) => updateFormValues({ stateCollateral })}
+                handleMaxClick={() => updateFormValues({ stateCollateral: state?.collateral ?? '' })}
+              />
 
-          <InpToken
-            id="userCollateral"
-            inpStyles={{ padding: 'var(--spacing-2) 0 0 0' }}
-            inpTopLabel={t`Repay from wallet:`}
-            inpError={formValues.userCollateralError}
-            inpDisabled={disable}
-            inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-            inpValue={formValues.userCollateral}
-            tokenAddress={collateral_token?.address}
-            tokenSymbol={collateral_token?.symbol}
-            tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-            handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
-          />
+              <InpToken
+                id="userCollateral"
+                inpStyles={{ padding: 'var(--spacing-2) 0 0 0' }}
+                inpTopLabel={t`Repay from wallet:`}
+                inpError={formValues.userCollateralError}
+                inpDisabled={disable}
+                inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
+                inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+                inpValue={formValues.userCollateral}
+                tokenAddress={collateral_token?.address}
+                tokenSymbol={collateral_token?.symbol}
+                tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+                handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+                handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+              />
+            </>
+          )}
 
           <InpToken
             id="userBorrowed"
