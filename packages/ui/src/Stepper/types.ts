@@ -25,6 +25,7 @@ export type StepActionModal = {
   modal: {
     title: string
     content: React.ReactNode
+    initFn?: () => void
     isDismissable: boolean
     cancelBtnProps?: {
       label?: string | undefined

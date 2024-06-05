@@ -1,14 +1,19 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormStatus, FormValues } from '@/components/PageLoanCreate/LoanFormCreate/types'
 import type { LiqRange, LiqRangesMapper } from '@/store/types'
+import type {
+  FormEstGas,
+  FormStatus,
+  FormValues,
+  DetailInfo,
+  DetailInfoLeverage,
+} from '@/components/PageLoanCreate/types'
 
 import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
 
-import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageLoanCreate/LoanFormCreate/utils'
+import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/components/PageLoanCreate/utils'
+import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -17,13 +22,16 @@ const sliceKey = 'loanCreate'
 
 type SliceState = {
   activeKey: string
+  activeKeyMax: string
   activeKeyLiqRange: string
-  detailInfo: { [activeKey: string]: FormDetailInfo }
+  detailInfo: { [activeKey: string]: DetailInfo }
+  detailInfoLeverage: { [activeKey: string]: DetailInfoLeverage }
   formEstGas: { [activeKey: string]: FormEstGas }
   formStatus: FormStatus
   formValues: FormValues
   liqRanges: { [activeKey: string]: LiqRange[] }
   liqRangesMapper: { [activeKey: string]: LiqRangesMapper }
+  maxLeverage: { [n: string]: string }
   maxRecv: { [activeKey: string]: string }
   isEditLiqRange: boolean
 }
@@ -31,106 +39,193 @@ type SliceState = {
 // prettier-ignore
 export type LoanCreateSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRecv(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    fetchLiqRanges(activeKeyLiqRange: string, api: Api, owmData: OWMData, isAdvancedMode: boolean): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
-    setFormValues(rChainId: ChainId, api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isAdvancedMode: boolean): Promise<void>
+    fetchMaxLeverage(owmData: OWMData): Promise<void>
+    fetchMaxRecv(activeKey: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(owmData: OWMData | undefined, isLeverage: boolean): Promise<string>
+    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
+    fetchLiqRanges(activeKeyLiqRange: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
+    setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues, maxSlippage: string): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepCreate(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepCreate(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
-    resetState(isLeverage?: boolean): void
+    resetState(params?: { rChainId: ChainId, rOwmId: string, key: string }): void
   }
 }
 
 const DEFAULT_STATE: SliceState = {
   activeKey: '',
+  activeKeyMax: '',
   activeKeyLiqRange: '',
   detailInfo: {},
+  detailInfoLeverage: {},
   formEstGas: {},
   formStatus: DEFAULT_FORM_STATUS,
   formValues: DEFAULT_FORM_VALUES,
   liqRanges: {},
   liqRangesMapper: {},
+  maxLeverage: {},
   maxRecv: {},
   isEditLiqRange: false,
 }
+
+const { loanCreate } = apiLending
+const { isTooMuch } = helpers
 
 const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreateSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxRecv: async (activeKey, api, owmData) => {
-      const { signerAddress } = api
-      const { collateral, n } = get()[sliceKey].formValues
+    fetchMaxLeverage: async (owmData) => {
+      const { formValues, ...sliceState } = get()[sliceKey]
+      const { n } = formValues
+      const { haveValues } = _parseValue(formValues)
 
-      if (n === null) return
-      const resp = await apiLending.loanCreate.maxRecv(activeKey, owmData, collateral, n)
-      get()[sliceKey].setStateByActiveKey('maxRecv', resp.activeKey, resp.maxRecv)
+      if (n === null || !haveValues) return
+
+      const resp = await loanCreate.maxLeverage(owmData, n)
+      sliceState.setStateByActiveKey('maxLeverage', n.toString(), resp.maxLeverage)
+    },
+    fetchMaxRecv: async (activeKey, api, owmData, isLeverage) => {
+      const { maxRecv, formValues, ...sliceState } = get()[sliceKey]
+      const { signerAddress } = api
+      const { userCollateral, userBorrowed, n } = formValues
+      const { haveValues } = _parseValue(formValues)
+
+      let updatedMaxRecv = maxRecv[activeKey]
+
+      if (n === null || !haveValues) return
+
+      if (typeof updatedMaxRecv === 'undefined') {
+        const resp = await loanCreate.maxRecv(activeKey, owmData, userCollateral, userBorrowed, n, isLeverage)
+        updatedMaxRecv = resp.maxRecv
+        sliceState.setStateByActiveKey('maxRecv', resp.activeKey, resp.maxRecv)
+      }
 
       // validation
       if (signerAddress) {
-        const cFormValues = cloneDeep(get()[sliceKey].formValues)
-        cFormValues.debtError = helpers.isTooMuch(cFormValues.debt, resp.maxRecv)
-          ? 'too-much-debt'
-          : cFormValues.debtError
-        get()[sliceKey].setStateByKey('formValues', cFormValues)
+        const debtError = isTooMuch(formValues.debt, updatedMaxRecv) ? 'too-much' : formValues.debtError
+        sliceState.setStateByKey('formValues', { ...formValues, debtError })
       }
     },
-    fetchDetailInfo: async (activeKey, api, owmData) => {
-      const { collateral, debt, n, debtError } = get()[sliceKey].formValues
+    refetchMaxRecv: async (owmData, isLeverage) => {
+      const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed, n } = formValues
 
-      if (+collateral <= 0 || +debt <= 0 || n === null || debtError) return
+      if (n === null || typeof owmData === 'undefined') return ''
 
-      const resp = await apiLending.loanCreate.detailInfo(activeKey, api, owmData, collateral, debt, n)
-      get()[sliceKey].setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, loading: false })
+      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
+      const { maxRecv } = await loanCreate.maxRecv(activeKeyMax, owmData, userCollateral, userBorrowed, n, isLeverage)
+      sliceState.setStateByActiveKey('maxRecv', activeKeyMax, maxRecv)
+      return maxRecv
     },
-    fetchLiqRanges: async (activeKeyLiqRange, api, owmData, isAdvancedMode) => {
-      const { collateral, debt, debtError } = get()[sliceKey].formValues
+    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+      const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed, debt, n } = formValues
+      const { haveValues, haveDebt } = _parseValue(formValues)
+      const storedDetailInfo = isLeverage ? detailInfoLeverage[activeKey] : detailInfo[activeKey]
 
-      if (+collateral <= 0 || +debt <= 0 || !isAdvancedMode || debtError) return
+      if (!haveValues || !haveDebt || n === null) return
 
-      const resp = await apiLending.loanCreate.liqRanges(activeKeyLiqRange, owmData, collateral, debt)
-      get()[sliceKey].setStateByKey('liqRanges', { [activeKeyLiqRange]: resp.liqRanges })
-      get()[sliceKey].setStateByKey('liqRangesMapper', { [activeKeyLiqRange]: resp.liqRangesMapper })
+      // loading
+      sliceState.setStateByActiveKey(isLeverage ? 'detailInfoLeverage' : 'detailInfo', activeKey, {
+        ...(storedDetailInfo ?? {}),
+        loading: true,
+      })
+
+      if (isLeverage) {
+        const resp = await loanCreate.detailInfoLeverage(
+          activeKey,
+          owmData,
+          userCollateral,
+          userBorrowed,
+          debt,
+          n,
+          maxSlippage
+        )
+        sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
+        if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
+      } else {
+        const resp = await loanCreate.detailInfo(activeKey, owmData, userCollateral, debt, n)
+        sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
+        if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
+      }
     },
-    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage) => {
+    fetchLiqRanges: async (activeKeyLiqRange, api, owmData, isLeverage) => {
+      const { detailInfoLeverage, formValues, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed, debt } = formValues
+      const { totalCollateral } = detailInfoLeverage[activeKeyLiqRange]?.expectedCollateral ?? {}
+      const { haveValues, haveDebt } = _parseValue(formValues)
+
+      if (!haveValues || !haveDebt) return
+
+      const resp = await loanCreate.liqRanges(
+        activeKeyLiqRange,
+        owmData,
+        totalCollateral,
+        userCollateral,
+        userBorrowed,
+        debt,
+        isLeverage
+      )
+      sliceState.setStateByKey('liqRanges', { [activeKeyLiqRange]: resp.liqRanges })
+      sliceState.setStateByKey('liqRangesMapper', { [activeKeyLiqRange]: resp.liqRangesMapper })
+    },
+    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+      const { gas } = get()
+      const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
-      const { collateral, debt, n, collateralError, debtError } = get()[sliceKey].formValues
+      const { userCollateral, userBorrowed, debt, n } = formValues
+      const { haveDebt } = _parseValue(formValues)
 
-      if (!signerAddress || +collateral <= 0 || +debt <= 0 || n === null || collateralError || debtError) return
+      if (!signerAddress || !haveDebt || n === null) return
 
-      get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
-      const resp = await apiLending.loanCreate.estGasApproval(activeKey, owmData, collateral, debt, n, maxSlippage)
-      get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
+      sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
+      await gas.fetchGasInfo(api)
+      const resp = await loanCreate.estGasApproval(
+        activeKey,
+        owmData,
+        userCollateral,
+        userBorrowed,
+        debt,
+        n,
+        maxSlippage,
+        isLeverage
+      )
+      sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus
-      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
-      cFormStatus.isApproved = resp.isApproved
-      cFormStatus.error = resp.error || cFormStatus.error
-      get()[sliceKey].setStateByKey('formStatus', cFormStatus)
+      sliceState.setStateByKey('formStatus', {
+        ...formStatus,
+        isApproved: resp.isApproved,
+        error: formStatus.error || resp.error,
+      })
     },
-    setFormValues: async (rChainId, api, owmData, partialFormValues, maxSlippage, isAdvancedMode) => {
-      const storedFormStatus = get()[sliceKey].formStatus
-      const storedFormValues = get()[sliceKey].formValues
+    setFormValues: async (api, owmData, partialFormValues, maxSlippage, isLeverage, shouldRefetch) => {
+      const { user } = get()
+      const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
       // update activeKey, formValues
-      const cFormValues: FormValues = cloneDeep({
-        ...storedFormValues,
+      const cFormValues: FormValues = {
+        ...formValues,
         ...partialFormValues,
-        collateralError: '',
+        userCollateralError: '',
+        userBorrowedError: '',
         debtError: '',
-      })
-      const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
-      let activeKeys = _getActiveKey(rChainId, owmData, cFormValues, maxSlippage)
-      get()[sliceKey].setStateByKeys({ ...activeKeys, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
+      }
+      const cFormStatus: FormStatus = {
+        ...DEFAULT_FORM_STATUS,
+        isApproved: formStatus.isApproved,
+        isApprovedCompleted: formStatus.isApprovedCompleted,
+      }
+      let activeKeys = _getActiveKey(api, owmData, cFormValues, maxSlippage)
+      sliceState.setStateByKeys({ ...activeKeys, formValues: { ...cFormValues }, formStatus: cFormStatus })
 
       if (!api || !owmData) return
 
@@ -139,74 +234,113 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 
       // set default N
       cFormValues.n = cFormValues.n || owm.defaultBands
-      activeKeys = _getActiveKey(rChainId, owmData, cFormValues, maxSlippage)
-      get()[sliceKey].setStateByKeys({ ...activeKeys, formValues: cloneDeep(cFormValues) })
+      activeKeys = _getActiveKey(api, owmData, cFormValues, maxSlippage)
+      sliceState.setStateByKeys({ ...activeKeys, formValues: { ...cFormValues } })
 
       if (signerAddress) {
         // validation
-        const userBalancesResp = await get().user.fetchUserMarketBalances(api, owmData, true)
-        cFormValues.collateralError = helpers.isTooMuch(cFormValues.collateral, userBalancesResp?.collateral)
-          ? 'too-much-wallet'
-          : ''
-        get()[sliceKey].setStateByKeys({ ...activeKeys, formValues: cloneDeep(cFormValues) })
+        const userBalances = await user.fetchUserMarketBalances(api, owmData, shouldRefetch)
+        const userCollateralError = isTooMuch(cFormValues.userCollateral, userBalances?.collateral) ? 'too-much' : ''
+        const userBorrowedError = isTooMuch(cFormValues.userBorrowed, userBalances?.borrowed) ? 'too-much' : ''
+        sliceState.setStateByKeys({
+          ...activeKeys,
+          formValues: { ...cFormValues, userCollateralError, userBorrowedError },
+        })
       }
 
       // api calls
-      await get()[sliceKey].fetchMaxRecv(activeKeys.activeKey, api, owmData)
-      get()[sliceKey].fetchEstGasApproval(activeKeys.activeKey, api, owmData, maxSlippage)
-      get()[sliceKey].fetchDetailInfo(activeKeys.activeKey, api, owmData)
-      get()[sliceKey].fetchLiqRanges(activeKeys.activeKeyLiqRange, api, owmData, isAdvancedMode)
+      if (isLeverage) sliceState.fetchMaxLeverage(owmData)
+      await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, owmData, isLeverage)
+      await sliceState.fetchDetailInfo(activeKeys.activeKey, api, owmData, maxSlippage, isLeverage)
+      sliceState.fetchEstGasApproval(activeKeys.activeKey, api, owmData, maxSlippage, isLeverage)
+      sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, owmData, isLeverage)
     },
 
     // steps
-    fetchStepApprove: async (activeKey, api, owmData, formValues, maxSlippage) => {
-      const provider = get().wallet.getProvider(sliceKey)
+    fetchStepApprove: async (activeKey, api, owmData, maxSlippage, formValues, isLeverage) => {
+      const { gas, wallet } = get()
+      const { formStatus, ...sliceState } = get()[sliceKey]
+      const provider = wallet.getProvider(sliceKey)
 
       if (!provider) return
 
       // update formStatus
-      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
-      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await get().gas.fetchGasInfo(api)
-      const { collateral } = formValues
-      const resp = await apiLending.loanCreate.approve(activeKey, provider, owmData, collateral)
+      await gas.fetchGasInfo(api)
+      const { userCollateral, userBorrowed } = formValues
+      const { error, ...resp } = await loanCreate.approve(
+        activeKey,
+        provider,
+        owmData,
+        userCollateral,
+        userBorrowed,
+        isLeverage
+      )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
-        const partialFormStatus: Partial<FormStatus> = {
-          error: resp.error,
-          isApproved: !resp.error,
-          isInProgress: true,
-        }
-        get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, api, owmData, maxSlippage)
-        return resp
+        sliceState.setStateByKey('formStatus', {
+          ...DEFAULT_FORM_STATUS,
+          isApproved: !error,
+          isApprovedCompleted: !error,
+          stepError: error,
+        })
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage, isLeverage)
+        return { ...resp, error }
       }
     },
-    fetchStepCreate: async (activeKey, api, owmData, formValues, maxSlippage) => {
-      const { collateral, debt, n } = formValues
-      const provider = get().wallet.getProvider(sliceKey)
+    fetchStepCreate: async (activeKey, api, owmData, maxSlippage, formValues, isLeverage) => {
+      const { gas, markets, wallet, user } = get()
+      const { formStatus, ...sliceState } = get()[sliceKey]
+      const { userCollateral, userBorrowed, debt, n } = formValues
+      const provider = wallet.getProvider(sliceKey)
 
       if (!provider || n === null) return
 
       // update formStatus
-      const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'CREATE' }
-      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      sliceState.setStateByKey('formStatus', {
+        ...DEFAULT_FORM_STATUS,
+        isApproved: true,
+        isApprovedCompleted: formStatus.isApprovedCompleted,
+        isInProgress: true,
+        step: 'CREATE',
+      })
 
-      await get().gas.fetchGasInfo(api)
-      const resp = await apiLending.loanCreate.create(activeKey, provider, owmData, collateral, debt, n, maxSlippage)
+      await gas.fetchGasInfo(api)
+      const { error, ...resp } = await loanCreate.create(
+        activeKey,
+        provider,
+        owmData,
+        userCollateral,
+        userBorrowed,
+        debt,
+        n,
+        maxSlippage,
+        isLeverage
+      )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        // api calls
-        const userLoanDetails = await get().user.fetchAll(api, owmData, true)
-        get().markets.fetchAll(api, owmData, true)
+        if (error) {
+          sliceState.setStateByKey('formStatus', { ...formStatus, isInProgress: false, step: '', stepError: error })
+          return { ...resp, error }
+        } else {
+          const loanExits = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
+          if (loanExits) {
+            // api calls
+            await user.fetchAll(api, owmData, true)
+            markets.fetchAll(api, owmData, true)
+            markets.setStateByKey('marketDetailsView', 'user')
 
-        // update formStatus
-        const partialFormStatus: Partial<FormStatus> = { error: resp.error, isApproved: true, isComplete: !resp.error }
-        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
-        return { ...resp, userLoanDetails }
+            // update formStatus
+            sliceState.setStateByKeys({
+              ...DEFAULT_STATE,
+              formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
+            })
+          }
+          return { ...resp, error }
+        }
       }
     },
 
@@ -231,17 +365,17 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 })
 
 export function _getActiveKey(
-  rChainId: ChainId,
+  api: Api | null,
   owmData: OWMData | undefined,
-  { collateral, debt, n }: FormValues,
+  { userCollateral, userBorrowed, debt, n }: FormValues,
   maxSlippage: string
 ) {
-  let resp = { activeKey: '', activeKeyLiqRange: '' }
-  if (!owmData) return resp
-
-  resp.activeKeyLiqRange = `${rChainId}-${owmData?.owm?.id ?? ''}-${collateral}-${debt}`
-  resp.activeKey = `${resp.activeKeyLiqRange}-${n}-${maxSlippage}`
-  return resp
+  let activeKey = `${_parseActiveKey(api, owmData)}${n}`
+  return {
+    activeKey: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}-${maxSlippage}`,
+    activeKeyMax: `${activeKey}-${userCollateral}-${userBorrowed}`,
+    activeKeyLiqRange: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}`,
+  }
 }
 
 export default createLoanCreate

@@ -17,7 +17,6 @@ const ALERT_FORM_ERROR_KEYS = {
   'error-step-remove-collateral': 'error-step-remove-collateral',
   'error-step-add-collateral': 'error-step-add-collateral',
   'error-step-approve': 'error-step-approve',
-  'error-step-swap': 'error-step-swap',
   'error-step-repay': 'error-step-repay',
 } as const
 
@@ -38,7 +37,6 @@ const LoanFormAlertError = ({ errorKey, ...props }: React.PropsWithChildren<Prop
       [ALERT_FORM_ERROR_KEYS['error-step-borrow-more']]: t`Unable to borrow more.`,
       [ALERT_FORM_ERROR_KEYS['error-step-remove-collateral']]: t`Unable to remove collateral`,
       [ALERT_FORM_ERROR_KEYS['error-step-add-collateral']]: t`Unable to add collateral`,
-      [ALERT_FORM_ERROR_KEYS['error-step-swap']]: t`Unable to swap`,
       [ALERT_FORM_ERROR_KEYS['error-step-repay']]: t`Unable to repay loan`,
 
       // liquidation
