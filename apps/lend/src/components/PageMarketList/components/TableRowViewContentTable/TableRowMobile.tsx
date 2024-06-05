@@ -28,6 +28,7 @@ import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
+import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
 import TextCaption from '@/ui/TextCaption'
 
 type Content = {
@@ -118,19 +119,22 @@ const TableRowMobile = ({
         <MobileLabelWrapper flexAlignItems="center" grid gridTemplateColumns={userHaveLoan ? '20px 1fr' : '1fr'}>
           {userHaveLoan && <CellInPool {...cellProps} isInMarket />}
           <MobileLabelContent>
-            <Box flex gridGap={3} onClick={(evt) => handleCellClick()}>
-              <Box>
-                <TextCaption isBold isCaps>
-                  Collateral
-                </TextCaption>{' '}
-                <CellToken {...cellProps} type="collateral" />
-              </Box>
-              <Box>
-                <TextCaption isBold isCaps>
-                  Borrow
-                </TextCaption>{' '}
-                <CellToken {...cellProps} type="borrowed" />
-              </Box>
+            <Box onClick={() => handleCellClick()}>
+              <TokensWrapper>
+                <Box>
+                  <TextCaption isBold isCaps>
+                    Collateral
+                  </TextCaption>{' '}
+                  <CellToken {...cellProps} type="collateral" />
+                </Box>
+                <Box>
+                  <TextCaption isBold isCaps>
+                    Borrow
+                  </TextCaption>{' '}
+                  <CellToken {...cellProps} type="borrowed" />
+                </Box>
+              </TokensWrapper>
+              {isBorrow && <CellMaxLeverage {...cellProps} showTitle size="sm" />}
             </Box>
             <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
               {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
@@ -150,7 +154,7 @@ const TableRowMobile = ({
                     return (
                       show && (
                         <React.Fragment key={detailsKey}>
-                          <DetailContent key={details[0].label}>
+                          <DetailContent key={details[0].label} $detailsLength={details.length}>
                             {details.map(({ label, labels, content, show }, idx) => {
                               const key = `detail-${label}-${idx}`
                               const detailsLength = details.length
@@ -194,11 +198,11 @@ const TableRowMobile = ({
                 </DetailsContent>
                 <MobileTableActions>
                   {isBorrow ? (
-                    <Button variant="filled" onClick={(evt) => handleCellClick()}>
+                    <Button variant="filled" onClick={() => handleCellClick()}>
                       {loanExists ? t`Manage Loan` : t`Get Loan`}
                     </Button>
                   ) : (
-                    <Button variant="filled" onClick={(evt) => handleCellClick()}>
+                    <Button variant="filled" onClick={() => handleCellClick()}>
                       {t`Supply ${borrowed_token?.symbol ?? ''}`}
                     </Button>
                   )}
@@ -219,8 +223,10 @@ const DetailWrapper = styled.div<{ detailsLength: number; isLast: boolean }>`
   ${({ isLast }) => !isLast && `margin-right: var(--spacing-narrow)`};
 `
 
-const DetailContent = styled.div`
-  display: flex;
+const DetailContent = styled.div<{ $detailsLength: number }>`
+  display: grid;
+  grid-template-columns: ${({ $detailsLength }) => `repeat(${$detailsLength}, 1fr)`};
+  grid-gap: var(--spacing-1);
   margin-top: var(--spacing-2);
 `
 
@@ -275,6 +281,12 @@ const MobileTableContentWrapper = styled.div`
 
 const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
+`
+
+const TokensWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: var(--spacing-1);
 `
 
 export default TableRowMobile
