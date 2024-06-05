@@ -1,29 +1,26 @@
 import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanCollateralAdd/types'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 
 import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
-import { DEFAULT_FORM_VALUES } from '@/store/createLoanCollateralAddSlice'
-import { NOFITY_MESSAGE } from '@/constants'
-import { _showNoLoanFound } from '@/utils/helpers'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { helpers } from '@/lib/apiLending'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import { StyledDetailInfoWrapper } from '@/components/PageLoanManage/styles'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanManage/styles'
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
-import AlertSummary from '@/components/AlertLoanSummary'
+import Box from '@/ui/Box'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
-import InpToken from '@/components/InpToken'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -45,9 +42,7 @@ const LoanCollateralAdd = ({
   const formStatus = useStore((state) => state.loanCollateralAdd.formStatus)
   const formValues = useStore((state) => state.loanCollateralAdd.formValues)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
@@ -61,28 +56,44 @@ const LoanCollateralAdd = ({
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
-      setFormValues(isLoaded ? api : null, owmData, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
+    (updatedFormValues: Partial<FormValues>) => {
+      setFormValues(isLoaded ? api : null, owmData, updatedFormValues)
     },
     [api, isLoaded, owmData, setFormValues]
   )
 
+  const reset = useCallback(
+    (updatedFormValues: Partial<FormValues>) => {
+      setTxInfoBar(null)
+      updateFormValues(updatedFormValues)
+    },
+    [updateFormValues]
+  )
+
+  const handleInpChangeCollateral = (collateral: string) => {
+    reset({ collateral })
+  }
+
   const handleBtnClickAdd = useCallback(
     async (payloadActiveKey: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+      const { owm } = owmData
       const { chainId } = api
 
-      const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+      const notifyMessage = t`add ${formValues.collateral} ${owm.collateral_token.symbol} collateral`
+      const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+      setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
+
       const resp = await fetchStepIncrease(payloadActiveKey, api, owmData, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = networks[chainId].scanTxPath(resp.hash)
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => updateFormValues({}, true)} />)
+        setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues]
+    [activeKey, fetchStepIncrease, notifyNotification, reset]
   )
 
   const getSteps = useCallback(
@@ -90,7 +101,6 @@ const LoanCollateralAdd = ({
       payloadActiveKey: string,
       api: Api,
       owmData: OWMData,
-      formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[]
@@ -100,26 +110,7 @@ const LoanCollateralAdd = ({
       const { collateral, collateralError } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
 
-      const isValid = !!signerAddress && !formEstGas?.loading && +collateral > 0 && !collateralError && !error
-
-      if (+collateral > 0) {
-        const notifyMessage = t`deposit ${formValues.collateral} ${owm.collateral_token.symbol}.`
-        setTxInfoBar(
-          <AlertBox alertType="info">
-            <AlertSummary
-              pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
-              receive={formValues.collateral}
-              userState={userDetails?.state}
-              userWallet={userBalances}
-              type="change"
-            />
-          </AlertBox>
-        )
-      } else if (!isComplete) {
-        setTxInfoBar(null)
-      }
+      const isValid = !!signerAddress && +collateral > 0 && !collateralError && !error
 
       const stepsObj: { [key: string]: Step } = {
         APPROVAL: {
@@ -154,7 +145,7 @@ const LoanCollateralAdd = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, notifyNotification, userBalances, userDetails?.state]
+    [fetchStepApprove, handleBtnClickAdd, notifyNotification]
   )
 
   // onMount
@@ -175,31 +166,48 @@ const LoanCollateralAdd = ({
   // steps
   useEffect(() => {
     if (isLoaded && api && owmData) {
-      const updatedSteps = getSteps(activeKey, api, owmData, formEstGas, formStatus, formValues, steps)
+      const updatedSteps = getSteps(activeKey, api, owmData, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, activeKey, formEstGas?.loading, formStatus, formValues, userBalances, userDetails?.state])
+  }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
-  const disabled = !!formStatus.step
+  const disabled = formStatus.isInProgress
 
   return (
     <>
       <div>
-        <InpToken
-          id="collateral"
-          inpError={formValues.collateralError}
-          inpDisabled={disabled}
-          inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-          inpValue={formValues.collateral}
-          tokenAddress={collateral_token?.address}
-          tokenSymbol={collateral_token?.symbol}
-          tokenBalance={userBalances?.collateral}
-          handleInpChange={(collateral) => updateFormValues({ collateral })}
-          handleMaxClick={() => updateFormValues({ collateral: userBalances?.collateral ?? '' })}
-        />
+        {/* input collateral */}
+        <Box grid gridRowGap={1}>
+          <InputProvider
+            grid
+            gridTemplateColumns="1fr auto"
+            padding="4px 8px"
+            inputVariant={formValues.collateralError ? 'error' : undefined}
+            disabled={disabled}
+            id="collateral"
+          >
+            <InputDebounced
+              id="inpCollateral"
+              type="number"
+              labelProps={{
+                label: t`${collateral_token?.symbol} Avail.`,
+                descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
+                description: formatNumber(userBalances?.collateral, { defaultValue: '-' }),
+              }}
+              value={formValues.collateral}
+              onChange={handleInpChangeCollateral}
+            />
+            <InputMaxBtn onClick={() => handleInpChangeCollateral(userBalances?.collateral ?? '')} />
+          </InputProvider>
+          {formValues.collateralError === 'too-much' && (
+            <StyledInpChip size="xs" isDarkBg isError>
+              {t`Amount > collateral balance ${formatNumber(userBalances?.collateral)}`}
+            </StyledInpChip>
+          )}
+          <InpChipUsdRate address={collateral_token?.address} amount={formValues.collateral} />
+        </Box>
       </div>
 
       {/* detail info */}
@@ -236,22 +244,16 @@ const LoanCollateralAdd = ({
         )}
       </StyledDetailInfoWrapper>
 
-      {/* actions */}
-      {_showNoLoanFound(signerAddress, formStatus.isComplete, loanExists) ? (
-        <AlertNoLoanFound owmId={rOwmId} />
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-          {txInfoBar}
-          {(formStatus.error || formStatus.stepError) && (
-            <AlertFormError
-              limitHeight
-              errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({}, true)}
-            />
-          )}
-          {steps && <Stepper steps={steps} />}
-        </LoanFormConnect>
+      {signerAddress && !formStatus.isComplete && (
+        <AlertNoLoanFound alertType="info" owmId={rOwmId} userActiveKey={userActiveKey} />
       )}
+
+      {/* actions */}
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
+        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset({})} />}
+        {txInfoBar}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
     </>
   )
 }

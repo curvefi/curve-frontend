@@ -16,7 +16,6 @@ export const DEFAULT_DETAIL_INFO: FormDetailInfo = {
   bands: [0, 0],
   prices: [],
   loading: false,
-  error: '',
 }
 
 export const DEFAULT_FORM_EST_GAS: FormEstGas = {
@@ -26,16 +25,9 @@ export const DEFAULT_FORM_EST_GAS: FormEstGas = {
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,
-  isApprovedCompleted: false,
   isComplete: false,
   isInProgress: false,
   error: '',
-  stepError: '',
-}
-
-export const DEFAULT_CONFIRM_WARNING = {
-  isConfirming: false,
-  confirmedWarning: false,
 }
 
 export function _getSelectedTab(

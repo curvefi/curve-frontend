@@ -15,6 +15,10 @@ const ALERT_FORM_ERROR_KEYS = {
   'error-invalid-provider': 'error-invalid-provider',
   'error-wallet-balances': 'error-wallet-balances',
   'error-step-approve': 'error-step-approve',
+  'error-step-deposit': 'error-step-deposit',
+  'error-step-swap': 'error-step-swap',
+  'error-swap-exchange-and-output': 'error-swap-exchange-and-output',
+  'error-swap-not-available': 'error-swap-not-available',
   'error-liquidation-mode': 'error-liquidation-mode',
   'error-total-supply': 'error-total-supply',
 } as const
@@ -39,6 +43,7 @@ const AlertFormError = ({ errorKey, ...props }: React.PropsWithChildren<Props>) 
       [ALERT_FORM_ERROR_KEYS['error-est-gas-approval']]: t`Unable to get approval or estimated gas`,
       [ALERT_FORM_ERROR_KEYS['error-invalid-provider']]: t`Unable to find provider`,
       [ALERT_FORM_ERROR_KEYS['error-step-approve']]: t`Unable to approve spending`,
+      [ALERT_FORM_ERROR_KEYS['error-step-deposit']]: t`Unable to deposit`,
       [ALERT_FORM_ERROR_KEYS[
         'error-liquidation-mode'
       ]]: t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,

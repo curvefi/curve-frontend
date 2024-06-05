@@ -200,7 +200,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 function getOWMData(owm: OWM) {
   const owmData: OWMData = {
     owm,
-    hasLeverage: owm.leverage.hasLeverage(),
     displayName: owm.name,
   }
 
@@ -210,7 +209,6 @@ function getOWMData(owm: OWM) {
     'owm.borrowed_token',
     'owm.collateral_token',
     'displayName',
-    'hasLeverage',
   ]) as OWMDataCache
 
   return { owmData, owmDataCache }

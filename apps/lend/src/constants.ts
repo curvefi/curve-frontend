@@ -17,7 +17,6 @@ export const ROUTE = {
 
 export const REFRESH_INTERVAL = {
   '3s': 3000,
-  '10s': 10000,
   '1m': 60000,
   '5m': 300000,
   '11m': 660000,
@@ -29,8 +28,3 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
-
-// TODO: translation
-export const NOFITY_MESSAGE = {
-  pendingConfirm: 'Pending wallet confirmation.',
-}

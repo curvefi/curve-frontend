@@ -1,5 +1,4 @@
 import type { FormStatus, StepKey } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -7,8 +6,7 @@ import { t, Trans } from '@lingui/macro'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { NOFITY_MESSAGE } from '@/constants'
-import { _showNoLoanFound } from '@/utils/helpers'
+import { _haveEnoughCrvusdForLiquidation } from '@/store/createLoanSelfLiquidationSlice'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getCollateralListPathname } from '@/utils/utilsRouter'
 import { formatNumber } from '@/ui/utils'
@@ -20,7 +18,7 @@ import AlertBox from '@/ui/AlertBox'
 import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertFormError from '@/components/AlertFormError'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
-import AlertSummary from 'components/AlertLoanSummary'
+import AlertInfoSelfLiquidation from '@/ui/AlertBox/AlertInfoSelfLiquidation'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import DetailInfoRate from '@/components/DetailInfoRate'
@@ -38,10 +36,9 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const maxSlippage = useStore((state) => state.maxSlippage)
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
+  const userWalletBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
@@ -51,51 +48,40 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
+  const { owm } = owmData ?? {}
+  const { details, error } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
-  const reset = useCallback(() => {
-    setTxInfoBar(null)
+  const reset = useCallback(
+    (isErrorReset: boolean, isFullReset: boolean) => {
+      setTxInfoBar(null)
 
-    if (isLoaded && api && owmData) {
-      fetchDetails(api, owmData, maxSlippage)
-    }
-  }, [isLoaded, api, owmData, fetchDetails, maxSlippage])
+      if (api && owmData && (isErrorReset || isFullReset)) {
+        fetchDetails(api, owmData, maxSlippage)
+      }
+    },
+    [api, owmData, fetchDetails, maxSlippage]
+  )
 
   const getSteps = useCallback(
     (
       api: Api,
       owmData: OWMData,
-      formEstGas: FormEstGas,
       formStatus: FormStatus,
       liquidationAmt: string,
       maxSlippage: string,
+      userWalletBalances: UserMarketBalances,
       steps: Step[]
     ) => {
       const { chainId, signerAddress } = api
       const { owm } = owmData
       const { error, warning, isApproved, isComplete, isInProgress, step } = formStatus
-
-      const isValid = !!signerAddress && !formEstGas?.loading && +liquidationAmt > 0 && !error && !warning
-
-      if (isValid) {
-        const notifyMessage = t`Self-liquidate ${owm.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
-        setTxInfoBar(
-          <AlertBox alertType="info">
-            <AlertSummary
-              pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
-              receive=""
-              formValueStateCollateral=""
-              userState={userDetails?.state}
-              userWallet={userBalances}
-              type="self"
-            />
-          </AlertBox>
-        )
-      } else if (!isComplete) {
-        setTxInfoBar(null)
-      }
+      const isValid =
+        !!signerAddress &&
+        +liquidationAmt > 0 &&
+        !error &&
+        _haveEnoughCrvusdForLiquidation(userWalletBalances?.borrowed, liquidationAmt) &&
+        warning !== 'warning-not-in-liquidation-mode'
 
       const stepsObj: { [key: string]: Step } = {
         APPROVAL: {
@@ -117,23 +103,28 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
           type: 'action',
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
           onClick: async () => {
-            const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
+            const notifyMessage = t`Self-liquidate ${owm.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
+            const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
+            setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
+
             const resp = await fetchStepLiquidate(api, owmData, liquidationAmt, maxSlippage)
 
             if (isSubscribed.current && resp && resp.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
-                <Trans>
-                  Transaction completed. This loan will no longer exist. Click{' '}
-                  <StyledInternalLink href={getCollateralListPathname(params)}>here</StyledInternalLink> to go back to
-                  collateral list.
-                </Trans>
+                <>
+                  <Trans>
+                    Transaction completed. This loan will no longer exist. Click{' '}
+                    <StyledInternalLink href={getCollateralListPathname(params)}>here</StyledInternalLink> to go back to
+                    collateral list.
+                  </Trans>
+                </>
               )
 
               setTxInfoBar(
                 <TxInfoBar
                   description={TxDescription}
                   txHash={networks[chainId].scanTxPath(resp.hash)}
-                  onClose={reset}
+                  onClose={() => reset(false, true)}
                 />
               )
             }
@@ -153,7 +144,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [userDetails?.state, fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances]
+    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset]
   )
 
   // onMount
@@ -175,18 +166,18 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   // steps
   useEffect(() => {
     if (isLoaded && api && owmData) {
-      const updatedSteps = getSteps(api, owmData, formEstGas, formStatus, liquidationAmt, maxSlippage, steps)
+      const updatedSteps = getSteps(api, owmData, formStatus, liquidationAmt, maxSlippage, userWalletBalances, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances])
+  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userWalletBalances?.collateral])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
 
   return (
     <>
       <InputReadOnly title={t`Self-liquidation amount`}>
-        {formatNumber(liquidationAmt, { showAllFractionDigits: true, defaultValue: '-' })}
+        {formatNumber(liquidationAmt, { maximumFractionDigits: 2, defaultValue: '-' })}
       </InputReadOnly>
 
       {/* detail info */}
@@ -201,19 +192,30 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
         <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
       </div>
 
-      {/* actions */}
-      {_showNoLoanFound(signerAddress, formStatus.isComplete, loanExists) ? (
-        <AlertNoLoanFound owmId={rOwmId} />
-      ) : (
-        <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
-          {txInfoBar}
-          {!!formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />}
-          {(formStatus.error || formStatus.stepError) && (
-            <AlertFormError limitHeight errorKey={formStatus.error || formStatus.stepError} handleBtnClose={reset} />
-          )}
-          {steps && <Stepper steps={steps} />}
-        </LoanFormConnect>
+      {signerAddress && !formStatus.isComplete && (
+        <AlertNoLoanFound alertType="info" owmId={rOwmId} userActiveKey={userActiveKey} />
       )}
+
+      {/* actions */}
+      <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
+        {+liquidationAmt > 0 && typeof userLoanDetailsResp !== 'undefined' && typeof owm !== 'undefined' && (
+          <AlertInfoSelfLiquidation
+            liquidationAmt={liquidationAmt}
+            errorMessage={error ? t`Unable to get self-liquidation details.` : ''}
+            titleSelfLiquidation={t`Self-liquidation amount:`}
+            titleReceive={t`Receive:`}
+            borrowedAmount={details?.state?.borrowed ?? '0'}
+            borrowedSymbol={owm?.borrowed_token?.symbol ?? ''}
+            collateralAmount={details?.state.collateral ?? '0'}
+            collateralSymbol={owm?.collateral_token?.symbol ?? ''}
+            debtAmount={details?.state?.debt ?? '0'}
+          />
+        )}
+        <AlertFormWarning errorKey={formStatus.warning} />
+        <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(false, true)} />
+        {txInfoBar}
+        {steps && <Stepper steps={steps} />}
+      </LoanFormConnect>
     </>
   )
 }

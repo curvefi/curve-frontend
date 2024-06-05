@@ -8,6 +8,6 @@ export type FormValues = {
 
 export type StepKey = 'APPROVAL' | 'WITHDRAW_REDEEM' | ''
 
-export interface FormStatus extends Omit<Fs, 'isApproved' | 'isApprovedCompleted'> {
+export interface FormStatus extends Omit<Fs, 'isApproved'> {
   step: StepKey
 }
