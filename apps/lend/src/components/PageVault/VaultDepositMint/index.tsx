@@ -180,7 +180,7 @@ const VaultDepositMint = ({
   }, [isLoaded, formEstGas?.loading, formStatus, formValues])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
-  const disabled = formStatus.isInProgress
+  const disabled = !!formStatus.step
 
   return (
     <>

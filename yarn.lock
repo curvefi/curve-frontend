@@ -1428,10 +1428,10 @@
     ethers "^6.11.0"
     memoizee "^0.4.15"
 
-"@curvefi/lending-api@^1.6.9":
-  version "1.6.9"
-  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-1.6.9.tgz#aff6ce77919843e4366af82d03b1d11bda0198fc"
-  integrity sha512-LljMBh+Kp74fjcuGKR0Xlmj8+18pYdXyhLqBPX2p7Yp6b9LzklZLysZRP7Kp2xyI0DS3miq0ZkId1FGIwfoeAA==
+"@curvefi/lending-api@2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-2.0.4.tgz#70771bbc9c4e756b289f56353b4cd0b79f05ad84"
+  integrity sha512-bMwv4J33dm7a9pexfkrCAuqNrG5SjpkhRH1um/wJxGT5jVGZS1NLYJKD34CNzakHdts+YmVJIqRUc23ldDKv7g==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"
@@ -9854,7 +9854,7 @@ ethers@^6.11.0:
     tslib "2.4.0"
     ws "8.5.0"
 
-ethers@^6.9:
+ethers@^6.12.1:
   version "6.12.1"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-6.12.1.tgz#517ff6d66d4fd5433e38e903051da3e57c87ff37"
   integrity sha512-j6wcVoZf06nqEcBbDWkKg8Fp895SS96dSnTCjiXT+8vt2o02raTn4Lo9ERUuIVU5bAjoPYeA+7ytQFexFmLuVw==
