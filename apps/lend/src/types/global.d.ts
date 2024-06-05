@@ -242,6 +242,9 @@ declare global {
   type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
   type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
 
+  type MarketMaxLeverage = { maxLeverage: string; error: string }
+  type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
+
   type MarketPrices = {
     prices: {
       oraclePrice: string
