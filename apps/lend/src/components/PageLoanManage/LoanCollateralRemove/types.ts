@@ -1,8 +1,9 @@
-import type { FormDetailInfo as Di, FormStatus as Fs } from '@/components/PageLoanManage/types'
+import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
+import type { InpError } from '@/components/PageLoanCreate/types'
 
 export type FormValues = {
   collateral: string
-  collateralError: 'too-much-max' | ''
+  collateralError: InpError
 }
 
 export type StepKey = 'REMOVE' | ''
@@ -10,5 +11,3 @@ export type StepKey = 'REMOVE' | ''
 export interface FormStatus extends Fs {
   step: StepKey
 }
-
-export interface FormDetailInfo extends Di, LiqRange {}

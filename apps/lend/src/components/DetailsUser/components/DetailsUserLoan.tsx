@@ -117,11 +117,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
         </Wrapper>
       ) : (
         <Content paddingTop>
-          <AlertNoLoanFound
-            hideLink={window?.location?.hash?.includes('manage')}
-            owmId={rOwmId}
-            userActiveKey={userActiveKey}
-          />
+          <AlertNoLoanFound alertType="" owmId={rOwmId} />
         </Content>
       )}
     </div>

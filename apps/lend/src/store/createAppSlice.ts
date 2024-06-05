@@ -75,6 +75,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   updateApi: async (api, prevApi, wallet) => {
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
     const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
+    const state = get()
+
     log('updateApi', api?.chainId, {
       wallet: wallet?.chains[0]?.id ?? '',
       isNetworkSwitched,
@@ -98,18 +100,18 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     }
 
     if (isUserSwitched || !api.signerAddress) {
-      get().user.resetState()
+      state.user.resetState()
     }
 
     // update network settings from api
-    get().updateGlobalStoreByKey('api', api)
-    get().updateGlobalStoreByKey('isLoadingCurve', false)
+    state.updateGlobalStoreByKey('api', api)
+    state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    const { owmDatasMapper } = await get().markets.fetchMarkets(api)
-    get().updateGlobalStoreByKey('isLoadingApi', false)
+    const { owmDatasMapper } = await state.markets.fetchMarkets(api)
+    state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
-      await get().usdRates.fetchAllStoredUsdRates(api)
+      await state.usdRates.fetchAllStoredUsdRates(api)
 
       // fetch markets TVL (remove once ready from api)
       const hash = window.location.hash
@@ -117,14 +119,14 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       const isPageMarketSupply = isPageMarket && hash.endsWith('supply')
 
       if (!isPageMarket || isPageMarketSupply) {
-        get().markets.fetchDatas('statsAmmBalancesMapper', api, Object.values(owmDatasMapper))
-        get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
-        get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('statsAmmBalancesMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
       }
 
       if (isPageMarket && !isPageMarketSupply) {
-        get().markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
-        get().markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('totalLiquidityMapper', api, Object.values(owmDatasMapper))
+        state.markets.fetchDatas('statsTotalsMapper', api, Object.values(owmDatasMapper))
       }
     }
   },

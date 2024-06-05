@@ -109,6 +109,7 @@ const Page: NextPage = () => {
   )
 
   const pageProps: PageContentProps = {
+    params,
     rChainId,
     rOwmId,
     rFormType,

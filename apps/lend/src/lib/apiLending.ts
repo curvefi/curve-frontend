@@ -2,13 +2,13 @@ import type { LiqRange } from '@/store/types'
 import type { StepStatus } from '@/ui/Stepper/types'
 
 import PromisePool from '@supercharge/promise-pool'
+import cloneDeep from 'lodash/cloneDeep'
+import sortBy from 'lodash/sortBy'
 
 import { INVALID_ADDRESS } from '@/constants'
 import { fulfilledValue, getErrorMessage, log, sleep } from '@/utils/helpers'
-import networks from '@/networks'
-import cloneDeep from 'lodash/cloneDeep'
 import { BN, shortenAccount } from '@/ui/utils'
-import sortBy from 'lodash/sortBy'
+import networks from '@/networks'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -43,13 +43,9 @@ export const helpers = {
     return false
   },
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {
-    const isNotUndefined = typeof val1 !== 'undefined' && typeof val2 !== 'undefined'
-    const isNotEmpty = val1 !== '' && val2 !== ''
-    if (isNotUndefined && isNotEmpty && Number(val1) >= 0 && Number(val2) >= 0) {
-      return Number(val1) > Number(val2)
-    } else {
-      return false
-    }
+    val1 = val1 || '0'
+    val2 = val2 || '0'
+    return BN(val1).isGreaterThan(val2)
   },
   fetchMarkets: async (api: Api) => {
     const resp = { marketList: [] as string[], error: '' }
@@ -138,13 +134,15 @@ export const helpers = {
 }
 
 const market = {
+  hasLeverage: async ({ owm }: OWMData) => {
+    return owm.leverage.hasLeverage()
+  },
   fetchStatsParameters: async (owmDatas: OWMData[]) => {
     log('fetchStatsParameters', owmDatas.length)
     let results: { [id: string]: MarketStatParameters } = {}
 
     await PromisePool.for(owmDatas)
       .handleError((errorObj, { owm }) => {
-        console.error(errorObj)
         const error = getErrorMessage(errorObj, 'error-api')
         results[owm.id] = { parameters: null, error }
       })
@@ -291,6 +289,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[owm.id] = { rates: null, error }
       })
+      .withConcurrency(5)
       .process(async ({ owm }) => {
         const rates = await owm.stats.rates()
         results[owm.id] = { rates, error: '' }
@@ -549,13 +548,39 @@ const user = {
 }
 
 const loanCreate = {
-  maxRecv: async (activeKey: string, { owm }: OWMData, collateral: string, n: number) => {
-    const parsedCollateral = !collateral ? '0' : collateral
-    log('loanCreateMaxRecv', owm.collateral_token.symbol, parsedCollateral, n)
+  maxLeverage: async ({ owm }: OWMData, n: number) => {
+    log('maxLeverage', n)
+    let resp = { n, maxLeverage: '', error: '' }
+
+    try {
+      resp.maxLeverage = await owm.leverage.maxLeverage(n)
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-api')
+      return resp
+    }
+  },
+  maxRecv: async (
+    activeKey: string,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    n: number,
+    isLeverage: boolean
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(isLeverage ? 'maxRecvLeverage' : 'maxRecv', userBorrowed, userCollateral, n)
     let resp = { activeKey, maxRecv: '', error: '' }
 
     try {
-      resp.maxRecv = await owm.createLoanMaxRecv(parsedCollateral, n)
+      if (isLeverage) {
+        const maxRecvLeverageResp = await owm.leverage.createLoanMaxRecv(userCollateral, userBorrowed, n)
+        resp.maxRecv = maxRecvLeverageResp.maxDebt
+      } else {
+        resp.maxRecv = await owm.createLoanMaxRecv(userCollateral, n)
+      }
       return resp
     } catch (error) {
       console.error(error)
@@ -563,32 +588,30 @@ const loanCreate = {
       return resp
     }
   },
-  detailInfo: async (
-    activeKey: string,
-    { signerAddress }: Api,
-    { owm }: OWMData,
-    collateral: string,
-    debt: string,
-    n: number
-  ) => {
-    log('loanCreateDetailInfo', owm.collateral_token.symbol, collateral, debt, n)
-    let resp: DetailInfoResp = { activeKey, resp: null, error: '' }
+  detailInfo: async (activeKey: string, { owm }: OWMData, userCollateral: string, debt: string, n: number) => {
+    userCollateral = userCollateral || '0'
+    debt = debt || '0'
+    log('detailInfo', userCollateral, debt, n, 'futureRates', [0, debt])
+    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
-      const [healthFull, healthNotFull, futureRates, bands, prices] = await Promise.all([
-        signerAddress ? owm.createLoanHealth(collateral, debt, n, undefined) : '',
-        signerAddress ? owm.createLoanHealth(collateral, debt, n, false) : '',
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
+        owm.createLoanHealth(userCollateral, debt, n, undefined),
+        owm.createLoanHealth(userCollateral, debt, n, false),
         owm.stats.futureRates(0, debt),
-        owm.createLoanBands(collateral, debt, n),
-        owm.createLoanPrices(collateral, debt, n),
+        owm.createLoanBands(userCollateral, debt, n),
+        owm.createLoanPrices(userCollateral, debt, n),
       ])
 
+      const bands = fulfilledValue(bandsResp) ?? [0, 0]
+
       resp.resp = {
-        healthFull,
-        healthNotFull,
-        futureRates,
-        prices,
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp) ?? null,
+        prices: fulfilledValue(pricesResp) ?? [],
         bands: _reverseBands(bands),
       }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
       console.error(error)
@@ -596,8 +619,76 @@ const loanCreate = {
       return resp
     }
   },
-  liqRanges: async (activeKey: string, { owm }: OWMData, collateral: string, debt: string) => {
-    log('loanCreateLiqRanges', owm.id, collateral, debt)
+  detailInfoLeverage: async (
+    activeKey: string,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    n: number,
+    maxSlippage: string
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log('detailInfoLeverage', userCollateral, userBorrowed, debt, n, maxSlippage, 'futureRates', [0, debt])
+    let resp: {
+      activeKey: string
+      resp: (DetailInfoLeverageResp & { expectedCollateral: ExpectedCollateral | null; routes: Routes | null }) | null
+      error: string
+    } = { activeKey, resp: null, error: '' }
+
+    try {
+      const [expectedCollateralResp] = await Promise.allSettled([
+        owm.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +maxSlippage),
+      ])
+
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
+        await Promise.allSettled([
+          owm.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n),
+          owm.leverage.createLoanHealth(userCollateral, userBorrowed, debt, n, false),
+          owm.stats.futureRates(0, debt),
+          owm.leverage.createLoanBands(userCollateral, userBorrowed, debt, n),
+          owm.leverage.createLoanPrices(userCollateral, userBorrowed, debt, n),
+          owm.leverage.createLoanRoute(userBorrowed, debt),
+          owm.leverage.createLoanPriceImpact(userCollateral, userBorrowed, debt),
+        ])
+
+      const bands = fulfilledValue(bandsResp) ?? [0, 0]
+
+      resp.resp = {
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp) ?? null,
+        bands: _reverseBands(bands),
+        prices: fulfilledValue(pricesResp) ?? [],
+        routes: fulfilledValue(routesResp) ?? null,
+        expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
+        ..._getPriceImpactResp(priceImpactResp, maxSlippage),
+      }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-details')
+      return resp
+    }
+  },
+  liqRanges: async (
+    activeKey: string,
+    { owm }: OWMData,
+    totalCollateral: string | undefined,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    isLeverage: boolean
+  ) => {
+    totalCollateral = totalCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log(isLeverage ? 'LiqRangesLeverage' : 'liqRanges', totalCollateral, userCollateral, userBorrowed, debt)
 
     const { minBands, maxBands } = owm
     const bands = Array.from({ length: +maxBands - +minBands + 1 }, (_, i) => i + minBands)
@@ -605,33 +696,64 @@ const loanCreate = {
     let liqRangesListMapper: { [n: string]: LiqRange & { sliderIdx: number } } = {}
     let sliderIdx = 0
 
-    const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
-      owm.createLoanMaxRecvAllRanges(collateral),
-      owm.createLoanBandsAllRanges(collateral, debt),
-      owm.createLoanPricesAllRanges(collateral, debt),
-    ])
+    if (isLeverage) {
+      const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
+        owm.leverage.createLoanMaxRecvAllRanges(userCollateral, userBorrowed),
+        owm.leverage.createLoanBandsAllRanges(userCollateral, userBorrowed, debt),
+        owm.leverage.createLoanPricesAllRanges(userCollateral, userBorrowed, debt),
+      ])
 
-    const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
-    const loanPrices = fulfilledValue(loanPricesResults) ?? null
-    const loanBands = fulfilledValue(loanBandsResults) ?? null
+      const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
+      const loanPrices = fulfilledValue(loanPricesResults) ?? null
+      const loanBands = fulfilledValue(loanBandsResults) ?? null
 
-    for (const n of bands) {
-      const bands = loanBands?.[n]
-      const maxRecv = maxRecvs?.[n]
-      const nLoanPrices = loanPrices?.[n]
+      for (const n of bands) {
+        const bands = loanBands?.[n]
+        const maxRecv = maxRecvs?.[n]?.maxDebt
+        const nLoanPrices = loanPrices?.[n]
 
-      const detail: LiqRange = {
-        n: Number(n),
-        collateral,
-        debt,
-        maxRecv: maxRecv || '',
-        maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
-        prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
-        bands: bands ? _reverseBands(bands) : [0, 0],
+        const detail: LiqRange = {
+          n: Number(n),
+          collateral: isLeverage ? totalCollateral : userBorrowed,
+          debt,
+          maxRecv: maxRecv || '',
+          maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
+          prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
+          bands: bands ? _reverseBands(bands) : [0, 0],
+        }
+        liqRangesList.push(detail)
+        liqRangesListMapper[n] = { ...detail, sliderIdx }
+        sliderIdx++
       }
-      liqRangesList.push(detail)
-      liqRangesListMapper[n] = { ...detail, sliderIdx }
-      sliderIdx++
+    } else {
+      const [maxRecvsResults, loanBandsResults, loanPricesResults] = await Promise.allSettled([
+        owm.createLoanMaxRecvAllRanges(userCollateral),
+        owm.createLoanBandsAllRanges(userCollateral, debt),
+        owm.createLoanPricesAllRanges(userCollateral, debt),
+      ])
+
+      const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
+      const loanPrices = fulfilledValue(loanPricesResults) ?? null
+      const loanBands = fulfilledValue(loanBandsResults) ?? null
+
+      for (const n of bands) {
+        const bands = loanBands?.[n]
+        const maxRecv = maxRecvs?.[n]
+        const nLoanPrices = loanPrices?.[n]
+
+        const detail: LiqRangeResp = {
+          n: Number(n),
+          collateral: userCollateral,
+          debt,
+          maxRecv: maxRecv || '',
+          maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
+          prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
+          bands: bands ? _reverseBands(bands) : [0, 0],
+        }
+        liqRangesList.push(detail)
+        liqRangesListMapper[n] = { ...detail, sliderIdx }
+        sliderIdx++
+      }
     }
 
     return {
@@ -643,19 +765,30 @@ const loanCreate = {
   estGasApproval: async (
     activeKey: string,
     { owm }: OWMData,
-    collateral: string,
+    userCollateral: string,
+    userBorrowed: string,
     debt: string,
     n: number,
-    maxSlippage: string
+    maxSlippage: string,
+    isLeverage: boolean
   ) => {
-    log('loanCreateEstGasApproval', owm.collateral_token.symbol, collateral, debt, n, maxSlippage)
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log(isLeverage ? 'estGasApprovalLeverage' : 'estGasApproval', userCollateral, userBorrowed, debt, n, maxSlippage)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.isApproved = await owm.createLoanIsApproved(collateral)
+      resp.isApproved = isLeverage
+        ? await owm.leverage.createLoanIsApproved(userCollateral, userBorrowed)
+        : await owm.createLoanIsApproved(userCollateral)
       resp.estimatedGas = resp.isApproved
-        ? await owm.estimateGas.createLoan(collateral, debt, n)
-        : await owm.estimateGas.createLoanApprove(collateral)
+        ? isLeverage
+          ? await owm.leverage.estimateGas.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
+          : await owm.estimateGas.createLoan(userCollateral, debt, n)
+        : isLeverage
+        ? await owm.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+        : await owm.estimateGas.createLoanApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -663,50 +796,54 @@ const loanCreate = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string) => {
-    log('loanCreateApprove', owm.collateral_token.symbol, collateral)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
-    try {
-      resp.hashes = await owm.createLoanApprove(collateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
+  approve: async (
+    activeKey: string,
+    provider: Provider,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    isLeverage: boolean
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(isLeverage ? 'approveLeverage' : 'approve', userCollateral, userBorrowed)
+    const fn = async () =>
+      isLeverage
+        ? await owm.leverage.createLoanApprove(userCollateral, userBorrowed)
+        : await owm.createLoanApprove(userCollateral)
+    return await approve(activeKey, fn, provider)
   },
   create: async (
     activeKey: string,
     provider: Provider,
     owmData: OWMData,
-    collateral: string,
+    userCollateral: string,
+    userBorrowed: string,
     debt: string,
     n: number,
-    maxSlippage: string
+    maxSlippage: string,
+    isLeverage: boolean
   ) => {
-    log('loanCreate', owmData.displayName, collateral, debt, n, maxSlippage)
-    const resp = { activeKey, hash: '', error: '' }
-    try {
-      resp.hash = await owmData.owm.createLoan(collateral, debt, n)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-create')
-      return resp
-    }
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log(isLeverage ? 'createLeverage' : 'create', userCollateral, userBorrowed, debt, n, maxSlippage)
+    const fn = async () =>
+      isLeverage
+        ? await owmData.owm.leverage.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
+        : await owmData.owm.createLoan(userCollateral, debt, n)
+    return await submit(activeKey, fn, provider)
   },
 }
 
 const loanBorrowMore = {
-  maxRecv: async ({ owm }: OWMData, collateral: string) => {
-    const parsedCollateral = !collateral ? '0' : collateral
-    log('loanBorrowMoreMaxRecv', owm.collateral_token.symbol, parsedCollateral)
-    let resp = { maxRecv: '', error: '' }
+  maxRecv: async ({ owm }: OWMData, activeKey: string, userCollateral: string) => {
+    userCollateral = userCollateral || '0'
+    log('maxRecv', userCollateral)
+    let resp = { activeKey, maxRecv: '', error: '' }
 
     try {
-      const maxRecv = await owm.borrowMoreMaxRecv(parsedCollateral)
+      const maxRecv = await owm.borrowMoreMaxRecv(userCollateral)
       resp.maxRecv = +maxRecv < 0 ? '0' : maxRecv
       return resp
     } catch (error) {
@@ -715,27 +852,57 @@ const loanBorrowMore = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, { signerAddress }: Api, { owm }: OWMData, collateral: string, debt: string) => {
-    const parsedCollateral = !collateral ? '0' : collateral
-    log('loanBorrowMoreHealthsBandsPrices', parsedCollateral, debt, 'futureRates', [0, debt])
-    let resp: DetailInfoResp = { activeKey, resp: null, error: '' }
+  maxRecvLeverage: async ({ owm }: OWMData, activeKey: string, userCollateral: string, userBorrowed: string) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log('maxRecvLeverage', userCollateral, userBorrowed)
+
+    let resp: { activeKey: string; maxRecv: MaxRecvLeverageResp | null; error: string } = {
+      activeKey,
+      maxRecv: null,
+      error: '',
+    }
 
     try {
-      const [healthFull, healthNotFull, futureRates, bands, prices] = await Promise.all([
-        signerAddress ? owm.borrowMoreHealth(parsedCollateral, debt, true) : '',
-        signerAddress ? owm.borrowMoreHealth(parsedCollateral, debt, false) : '',
+      resp.maxRecv = await owm.leverage.borrowMoreMaxRecv(userCollateral, userBorrowed)
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-max-amount')
+      return resp
+    }
+  },
+  detailInfo: async (
+    activeKey: string,
+    { signerAddress }: Api,
+    { owm }: OWMData,
+    userCollateral: string,
+    debt: string
+  ) => {
+    userCollateral = userCollateral || '0'
+    debt = debt || '0'
+    log('loanBorrowMoreHealthsBandsPrices', userCollateral, debt, 'futureRates', [0, debt])
+    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+
+    try {
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
+        signerAddress ? owm.borrowMoreHealth(userCollateral, debt, true) : '',
+        signerAddress ? owm.borrowMoreHealth(userCollateral, debt, false) : '',
         owm.stats.futureRates(0, debt),
-        owm.borrowMoreBands(parsedCollateral, debt),
-        owm.borrowMorePrices(parsedCollateral, debt),
+        owm.borrowMoreBands(userCollateral, debt),
+        owm.borrowMorePrices(userCollateral, debt),
       ])
 
+      const bands = fulfilledValue(bandsResp) ?? [0, 0]
+
       resp.resp = {
-        healthFull,
-        healthNotFull,
-        futureRates,
-        prices,
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp) ?? null,
+        prices: fulfilledValue(pricesResp) ?? [],
         bands: _reverseBands(bands),
       }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
       console.error(error)
@@ -743,17 +910,93 @@ const loanBorrowMore = {
       return resp
     }
   },
-  estGasApproval: async (activeKey: string, { owm }: OWMData, collateral: string, debt: string) => {
-    const parsedCollateral = collateral || '0'
-    const parsedDebt = debt || '0'
-    log('loanBorrowMoreEstGasApproval', activeKey, owm.collateral_token.symbol, parsedCollateral, parsedDebt)
+  detailInfoLeverage: async (
+    activeKey: string,
+    { signerAddress }: Api,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    slippage: string
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log('detailInfoLeverage', userCollateral, userBorrowed, debt, 'futureRates', [0, debt], slippage)
+    let resp: {
+      activeKey: string
+      resp:
+        | (DetailInfoLeverageResp & {
+            expectedCollateral: Omit<ExpectedCollateral, 'leverage'> | null
+            routes: Routes | null
+          })
+        | null
+      error: string
+    } = { activeKey, resp: null, error: '' }
+
+    try {
+      // expected need to be called before the other functions
+      const [expectedCollateralResp] = await Promise.allSettled([
+        owm.leverage.borrowMoreExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),
+      ])
+
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
+        await Promise.allSettled([
+          signerAddress ? owm.leverage.borrowMoreHealth(userCollateral, userBorrowed, debt, true) : '',
+          signerAddress ? owm.leverage.borrowMoreHealth(userCollateral, userBorrowed, debt, false) : '',
+          owm.stats.futureRates(0, debt),
+          owm.leverage.borrowMoreBands(userCollateral, userBorrowed, debt),
+          owm.leverage.borrowMorePrices(userCollateral, userBorrowed, debt),
+          owm.leverage.borrowMoreRoute(userBorrowed, debt),
+          owm.leverage.borrowMorePriceImpact(userCollateral, userBorrowed, debt),
+        ])
+
+      const bands = fulfilledValue(bandsResp) ?? []
+
+      resp.resp = {
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp) ?? null,
+        prices: fulfilledValue(pricesResp) ?? [],
+        bands: _reverseBands(bands),
+        expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
+        routes: fulfilledValue(routesResp) ?? null,
+        ..._getPriceImpactResp(priceImpactResp, slippage),
+      }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-details')
+      return resp
+    }
+  },
+  estGasApproval: async (
+    activeKey: string,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    maxSlippage: string,
+    isLeverage: boolean
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log(isLeverage ? 'estGasApprovalLeverage' : 'estGasApproval', userCollateral, userBorrowed, debt, maxSlippage)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.isApproved = await owm.borrowMoreIsApproved(parsedCollateral)
+      resp.isApproved = isLeverage
+        ? await owm.leverage.borrowMoreIsApproved(userCollateral, userBorrowed)
+        : await owm.borrowMoreIsApproved(userCollateral)
       resp.estimatedGas = resp.isApproved
-        ? await owm.estimateGas.borrowMore(parsedCollateral, parsedDebt)
-        : await owm.estimateGas.borrowMoreApprove(parsedCollateral)
+        ? isLeverage
+          ? await owm.leverage.estimateGas.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
+          : await owm.estimateGas.borrowMore(userCollateral, debt)
+        : isLeverage
+        ? await owm.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
+        : await owm.estimateGas.borrowMoreApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -765,60 +1008,96 @@ const loanBorrowMore = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string) => {
-    const parsedCollateral = collateral || '0'
-    log('loanBorrowMoreApprove', owm.collateral_token.symbol, parsedCollateral)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
-
-    try {
-      resp.hashes = await owm.borrowMoreApprove(parsedCollateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
+  approve: async (
+    activeKey: string,
+    provider: Provider,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    isLeverage: boolean
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(isLeverage ? 'approveLeverage' : 'approve', userCollateral, userBorrowed)
+    const fn = async () =>
+      isLeverage
+        ? await owm.leverage.borrowMoreApprove(userCollateral, userBorrowed)
+        : await owm.borrowMoreApprove(userCollateral)
+    return await approve(activeKey, fn, provider)
   },
-  borrowMore: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string, debt: string) => {
-    const parsedCollateral = collateral || '0'
-    const parsedDebt = debt || '0'
-    log('loanBorrowMore', owm.collateral_token.symbol, parsedCollateral, parsedDebt)
-    let resp = { activeKey, hash: '', error: '' }
-
-    try {
-      resp.hash = await owm.borrowMore(parsedCollateral, parsedDebt)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-borrow-more')
-      return resp
-    }
+  borrowMore: async (
+    activeKey: string,
+    provider: Provider,
+    { owm }: OWMData,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    maxSlippage: string,
+    isLeverage: boolean
+  ) => {
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    debt = debt || '0'
+    log(isLeverage ? 'borrowMoreLeverage' : 'borrowMore', userCollateral, userBorrowed, debt, maxSlippage)
+    const fn = async () =>
+      isLeverage
+        ? await owm.leverage.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
+        : await owm.borrowMore(userCollateral, debt)
+    return await submit(activeKey, fn, provider)
   },
 }
 
 const loanRepay = {
-  detailInfo: async (activeKey: string, { signerAddress }: Api, { owm }: OWMData, debt: string) => {
-    log('loanRepayHealthsBandsPrices', owm.collateral_token.symbol, debt)
-    let resp: DetailInfoResp = { activeKey, resp: null, error: '' }
+  repayIsAvailableLeverage: async (
+    { owm }: OWMData,
+    stateCollateral: string,
+    userCollateral: string,
+    userBorrowed: string
+  ) => {
+    stateCollateral = stateCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log('repayIsAvailableLeverage', stateCollateral, userCollateral, userBorrowed)
+    let resp: { repayIsAvailable: boolean | null; error: string } = { repayIsAvailable: null, error: '' }
 
     try {
-      const [healthFull, healthNotFull, futureRates, bands, prices] = await Promise.all([
-        signerAddress ? owm.repayHealth(debt, true) : '',
-        signerAddress ? owm.repayHealth(debt, false) : '',
-        owm.stats.futureRates(0, `-${debt}`),
-        owm.repayBands(debt),
-        owm.repayPrices(debt),
+      resp.repayIsAvailable = await owm.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed)
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-api')
+      return resp
+    }
+  },
+  detailInfo: async (
+    activeKey: string,
+    { signerAddress }: Api,
+    { owm }: OWMData,
+    userBorrowed: string,
+    isFullRepay: boolean
+  ) => {
+    log('detailInfo', userBorrowed)
+    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
+
+    try {
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
+        signerAddress ? owm.repayHealth(userBorrowed, true) : '',
+        signerAddress ? owm.repayHealth(userBorrowed, false) : '',
+        owm.stats.futureRates(0, `-${userBorrowed}`),
+        isFullRepay ? ([0, 0] as [number, number]) : owm.repayBands(userBorrowed),
+        isFullRepay ? ['', ''] : owm.repayPrices(userBorrowed),
       ])
 
+      const bands = fulfilledValue(bandsResp) ?? [0, 0]
+
       resp.resp = {
-        healthFull,
-        healthNotFull,
-        futureRates,
-        prices,
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp) ?? null,
+        prices: fulfilledValue(pricesResp) ?? [],
         bands: _reverseBands(bands),
       }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
     } catch (error) {
       console.error(error)
@@ -826,19 +1105,122 @@ const loanRepay = {
       return resp
     }
   },
-  estGasApproval: async (activeKey: string, { owm }: OWMData, debt: string, isFullRepay: boolean) => {
-    log('loanRepayEstGasApproval', owm.collateral_token.symbol, isFullRepay, debt)
+  detailInfoLeverage: async (
+    activeKey: string,
+    { signerAddress }: Api,
+    { owm }: OWMData,
+    stateCollateral: string,
+    userCollateral: string,
+    userBorrowed: string,
+    maxSlippage: string
+  ) => {
+    stateCollateral = stateCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log('detailInfoLeverage', stateCollateral, userCollateral, userBorrowed, maxSlippage)
+
+    let resp: {
+      activeKey: string
+      resp:
+        | (DetailInfoLeverageResp & {
+            repayIsFull: boolean
+            expectedBorrowed: ExpectedBorrowed | null
+            routes: Routes | null
+          })
+        | null
+      error: string
+    } = { activeKey, resp: null, error: '' }
+
+    try {
+      const [expectedBorrowedResp] = await Promise.allSettled([
+        owm.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed, +maxSlippage),
+      ])
+
+      const expectedBorrowed = fulfilledValue(expectedBorrowedResp) ?? null
+
+      const [repayIsFullResp] = await Promise.allSettled([
+        owm.leverage.repayIsFull(stateCollateral, userCollateral, userBorrowed),
+      ])
+
+      const repayIsFull = fulfilledValue(repayIsFullResp) ?? false
+
+      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
+        await Promise.allSettled([
+          signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, true) : '',
+          signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, false) : '',
+          owm.stats.futureRates(0, `-${expectedBorrowed?.totalBorrowed}`),
+          repayIsFull
+            ? ([0, 0] as [number, number])
+            : owm.leverage.repayBands(stateCollateral, userCollateral, userBorrowed),
+          repayIsFull ? ['', ''] : owm.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed),
+          owm.leverage.repayRoute(stateCollateral, userCollateral),
+          owm.leverage.repayPriceImpact(stateCollateral, userCollateral, userBorrowed),
+        ])
+
+      const bands = fulfilledValue(bandsResp) ?? []
+
+      resp.resp = {
+        healthFull: fulfilledValue(healthFullResp) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
+        futureRates: fulfilledValue(futureRatesResp),
+        prices: fulfilledValue(pricesResp) ?? [],
+        bands: _reverseBands(bands),
+        repayIsFull,
+        expectedBorrowed,
+        routes: fulfilledValue(routesResp) ?? null,
+        ..._getPriceImpactResp(priceImpactResp, maxSlippage),
+      }
+      resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-details')
+      return resp
+    }
+  },
+  estGasApproval: async (
+    activeKey: string,
+    { owm }: OWMData,
+    stateCollateral: string,
+    userCollateral: string,
+    userBorrowed: string,
+    isFullRepay: boolean,
+    maxSlippage: string,
+    isLeverage: boolean
+  ) => {
+    stateCollateral = stateCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(
+      isLeverage ? 'estGasApprovalLeverage' : 'estGasApproval',
+      stateCollateral,
+      userCollateral,
+      userBorrowed,
+      isFullRepay,
+      maxSlippage
+    )
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.isApproved = isFullRepay ? await owm.fullRepayIsApproved() : await owm.repayIsApproved(debt)
       resp.estimatedGas = resp.isApproved
+        ? await owm.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
+        : await owm.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
+      resp.isApproved = isLeverage
+        ? await owm.leverage.repayIsApproved(userCollateral, userBorrowed)
+        : isFullRepay
+        ? await owm.fullRepayIsApproved()
+        : await owm.repayIsApproved(userBorrowed)
+      resp.estimatedGas = isLeverage
+        ? resp.isApproved
+          ? await owm.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
+          : await owm.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
+        : resp.isApproved
         ? isFullRepay
           ? await owm.estimateGas.fullRepay()
-          : await owm.estimateGas.repay(debt)
+          : await owm.estimateGas.repay(userBorrowed)
         : isFullRepay
         ? await owm.estimateGas.fullRepayApprove()
-        : await owm.estimateGas.repayApprove(debt)
+        : await owm.estimateGas.repayApprove(userBorrowed)
       return resp
     } catch (error) {
       console.error(error)
@@ -846,62 +1228,71 @@ const loanRepay = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, { owm }: OWMData, debt: string, isFullRepay: boolean) => {
-    log('loanRepayApprove', owm.collateral_token.symbol, isFullRepay, debt)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
-
-    try {
-      resp.hashes = isFullRepay ? await owm.fullRepayApprove() : await owm.repayApprove(debt)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
+  approve: async (
+    activeKey: string,
+    provider: Provider,
+    { owm }: OWMData,
+    stateCollateral: string,
+    userCollateral: string,
+    userBorrowed: string,
+    isFullRepay: boolean,
+    isLeverage: boolean
+  ) => {
+    stateCollateral = stateCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(isLeverage ? 'approveLeverage' : 'approve', stateCollateral, userCollateral, userBorrowed, isFullRepay)
+    const fn = async () =>
+      isLeverage
+        ? await owm.leverage.repayApprove(userCollateral, userBorrowed)
+        : isFullRepay
+        ? await owm.fullRepayApprove()
+        : await owm.repayApprove(userBorrowed)
+    return await approve(activeKey, fn, provider)
   },
-  repay: async (activeKey: string, provider: Provider, { owm }: OWMData, debt: string, isFullRepay: boolean) => {
-    log('loanRepay', owm.collateral_token.symbol, isFullRepay, debt)
-    let resp = { activeKey, hash: '', error: '' }
-
-    try {
-      resp.hash = isFullRepay ? await owm.fullRepay() : await owm.repay(debt)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-repay')
-      return resp
-    }
+  repay: async (
+    activeKey: string,
+    provider: Provider,
+    { owm }: OWMData,
+    stateCollateral: string,
+    userCollateral: string,
+    userBorrowed: string,
+    isFullRepay: boolean,
+    maxSlippage: string,
+    isLeverage: boolean
+  ) => {
+    stateCollateral = stateCollateral || '0'
+    userCollateral = userCollateral || '0'
+    userBorrowed = userBorrowed || '0'
+    log(isLeverage ? 'repayLeverage' : 'repay', stateCollateral, userCollateral, userBorrowed, isFullRepay, maxSlippage)
+    const fn = async () =>
+      isLeverage
+        ? await owm.leverage.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
+        : isFullRepay
+        ? await owm.fullRepay()
+        : await owm.repay(userBorrowed)
+    return await submit(activeKey, fn, provider)
   },
 }
 
 const loanSelfLiquidation = {
   detailInfo: async (api: Api, owmData: OWMData, slippage: string) => {
     const { owm } = owmData
-    log('loanSelfLiquidationTokensToLiquidate', owm.id)
-    const resp: {
-      tokensToLiquidate: string
-      warning: 'warning-not-in-liquidation-mode' | ''
-      futureRates: FutureRates | null
-      error: string
-    } = {
+    log('detailInfo', slippage)
+    const resp: { tokensToLiquidate: string; futureRates: FutureRates | null; error: string } = {
       tokensToLiquidate: '',
       futureRates: null,
-      warning: '',
       error: '',
     }
 
     try {
       resp.tokensToLiquidate = await owm.tokensToLiquidate()
-      await owm.estimateGas.selfLiquidate(+slippage)
     } catch (error) {
-      if (error?.message && error.message.includes('not in liquidation mode')) {
-        resp.warning = 'warning-not-in-liquidation-mode'
-      }
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-api')
     }
 
-    if (!resp.warning && +resp.tokensToLiquidate > 0) {
+    if (!resp.error && +resp.tokensToLiquidate > 0) {
       try {
         resp.futureRates = await owm.stats.futureRates(0, `-${resp.tokensToLiquidate}`)
       } catch (error) {
@@ -923,41 +1314,19 @@ const loanSelfLiquidation = {
       return resp
     } catch (err) {
       console.error(err)
-      const haveErrorMessage = err?.message
-      if (haveErrorMessage && err.message.includes('not in liquidation mode')) {
-        resp.warning = 'warning-not-in-liquidation-mode'
-      } else {
-        resp.error = getErrorMessage(err, 'error-est-gas-approval')
-      }
+      resp.error = getErrorMessage(err, 'error-est-gas-approval')
       return resp
     }
   },
-  approve: async (provider: Provider, owmData: OWMData) => {
-    const { owm } = owmData
-    log('loanSelfLiquidationApprove', owm.collateral_token.symbol)
-    let resp = { hashes: [] as string[], error: '' }
-    try {
-      resp.hashes = await owm.selfLiquidateApprove()
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
+  approve: async (provider: Provider, { owm }: OWMData) => {
+    log('approve')
+    const fn = async () => await owm.selfLiquidateApprove()
+    return await approve('', fn, provider)
   },
   selfLiquidate: async (provider: Provider, { owm }: OWMData, slippage: string) => {
-    log('loanSelfLiquidation', owm.collateral_token.symbol, slippage)
-    let resp = { hash: '', error: '' }
-    try {
-      resp.hash = await owm.selfLiquidate(+slippage)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-liquidate')
-      return resp
-    }
+    log('selfLiquidate', slippage)
+    const fn = async () => await owm.selfLiquidate(+slippage)
+    return await submit('', fn, provider)
   },
 }
 
@@ -969,8 +1338,8 @@ const loanCollateralAdd = {
     collateral: string,
     address?: string
   ) => {
-    log('loanCollateralAddHealthPricesBands', owm.collateral_token.symbol, collateral)
-    let resp: DetailInfoResp = { activeKey, resp: null, error: '' }
+    log('detailInfo', collateral)
+    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? owm.addCollateralHealth(collateral, true, address) : '',
@@ -994,7 +1363,7 @@ const loanCollateralAdd = {
     }
   },
   estGasApproval: async (activeKey: string, { owm }: OWMData, collateral: string) => {
-    log('loanCollateralAddEstGasApproval', owm.collateral_token.symbol, collateral)
+    log('estGasApproval', collateral)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
@@ -1013,37 +1382,15 @@ const loanCollateralAdd = {
       return resp
     }
   },
-  approve: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string) => {
-    log('loanCollateralAddApprove', owm.collateral_token.symbol, collateral)
-    let resp = { activeKey, hashes: [] as string[], error: '' }
-
-    try {
-      resp.hashes = await owm.addCollateralApprove(collateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
+  approve: async (activeKey: string, provider: Provider, { owm }: OWMData, userCollateral: string) => {
+    log('approve', userCollateral)
+    const fn = async () => await owm.addCollateralApprove(userCollateral)
+    return await approve(activeKey, fn, provider)
   },
-  addCollateral: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string) => {
-    log('loanCollateralAdd', owm.collateral_token.symbol, collateral)
-    let resp = { activeKey, hash: '', error: '' }
-
-    try {
-      resp.hash = await owm.addCollateral(collateral)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
-        resp.error = 'error-liquidation-mode'
-      } else {
-        resp.error = getErrorMessage(error, 'error-step-add-collateral')
-      }
-      return resp
-    }
+  addCollateral: async (activeKey: string, provider: Provider, { owm }: OWMData, userCollateral: string) => {
+    log('addCollateral', userCollateral)
+    const fn = async () => await owm.addCollateral(userCollateral)
+    return await submit(activeKey, fn, provider)
   },
 }
 
@@ -1070,7 +1417,7 @@ const loanCollateralRemove = {
     address?: string
   ) => {
     log('loanCollateralRemoveHealthPricesBands', owm.collateral_token.symbol, collateral)
-    let resp: DetailInfoResp = { activeKey, resp: null, error: '' }
+    let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
     try {
       const [healthFull, healthNotFull, bands, prices] = await Promise.all([
         signerAddress ? owm.removeCollateralHealth(collateral, true, address) : '',
@@ -1110,23 +1457,10 @@ const loanCollateralRemove = {
       return resp
     }
   },
-  removeCollateral: async (activeKey: string, provider: Provider, { owm }: OWMData, collateral: string) => {
-    log('loanCollateralRemove', owm.collateral_token.symbol, collateral)
-    let resp = { activeKey, hash: '', error: '' }
-
-    try {
-      resp.hash = await owm.removeCollateral(collateral)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (error?.message && error.message.includes('liquidation mode')) {
-        resp.error = 'error-liquidation-mode'
-      } else {
-        resp.error = getErrorMessage(error, 'error-step-remove-collateral')
-      }
-      return resp
-    }
+  removeCollateral: async (activeKey: string, provider: Provider, { owm }: OWMData, userCollateral: string) => {
+    log('removeCollateral', userCollateral)
+    const fn = async () => await owm.removeCollateral(userCollateral)
+    return await submit(activeKey, fn, provider)
   },
 }
 
@@ -1688,4 +2022,54 @@ function _parseUserLoss(userLoss: UserLoss) {
 // TODO: refactor shared between pool and lend
 function _filterZeroApy(others: RewardOther[]) {
   return Array.isArray(others) ? others.filter(({ apy }) => +apy > 0) : ([] as RewardOther[])
+}
+
+async function approve(activeKey: string, approveFn: () => Promise<string[]>, provider: Provider) {
+  let resp = { activeKey, hashes: [] as string[], error: '' }
+  try {
+    resp.hashes = await approveFn()
+    await helpers.waitForTransactions(resp.hashes, provider)
+    return resp
+  } catch (error) {
+    console.error(error)
+    resp.error = getErrorMessage(error, 'error-step-approve')
+    return resp
+  }
+}
+
+async function submit(activeKey: string, submitFn: () => Promise<string>, provider: Provider) {
+  let resp = { activeKey, hash: '', error: '' }
+  try {
+    resp.hash = await submitFn()
+    await helpers.waitForTransaction(resp.hash, provider)
+    return resp
+  } catch (error) {
+    console.error(error)
+    resp.error = getErrorMessage(error, 'error-api')
+    return resp
+  }
+}
+
+function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string>, slippage: string) {
+  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? '', isHighPriceImpact: false }
+
+  if (+resp.priceImpact > 0 && +slippage > 0) {
+    resp.isHighPriceImpact = +resp.priceImpact > +slippage
+  }
+  return resp
+}
+
+function _detailInfoRespErrorMessage(
+  futureRatesResp: PromiseSettledResult<{ borrowApr: string; lendApr: string; borrowApy: string; lendApy: string }>,
+  bandsResp: PromiseSettledResult<[number, number]>
+) {
+  let errorMessage = ''
+
+  if (futureRatesResp.status === 'rejected') {
+    errorMessage = futureRatesResp.reason.message
+  } else if (bandsResp.status === 'rejected') {
+    errorMessage = bandsResp.reason.message
+  }
+
+  return errorMessage
 }

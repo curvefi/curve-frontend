@@ -1,4 +1,4 @@
-import type { IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
+import type { I1inchRoute, IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { Locale } from '@/lib/i18n'
 import type { NavigateFunction, Location, Params } from 'react-router'
@@ -65,6 +65,58 @@ declare global {
     marketListShowOnlyInSmallMarkets: { [marketId: string]: boolean }
   }
 
+  // API RESPONSE
+  type MaxRecvLeverageResp = {
+    maxDebt: string
+    maxTotalCollateral: string
+    userCollateral: string
+    collateralFromUserBorrowed: string
+    collateralFromMaxDebt: string
+    avgPrice: string
+  }
+
+  type LiqRangeResp = {
+    n: number
+    collateral: string
+    debt: string
+    maxRecv: string | null
+    maxRecvError: string
+    prices: string[]
+    bands: [number, number]
+  }
+
+  type DetailInfoResp = {
+    healthFull: string
+    healthNotFull: string
+    futureRates: FutureRates | null
+    prices: string[]
+    bands: [number, number]
+  }
+
+  type DetailInfoLeverageResp = DetailInfoResp & {
+    priceImpact: string
+    isHighPriceImpact: boolean
+  }
+
+  type ExpectedCollateral = {
+    totalCollateral: string
+    userCollateral: string
+    collateralFromUserBorrowed: string
+    collateralFromDebt: string
+    leverage: string
+    avgPrice: string
+  }
+
+  type ExpectedBorrowed = {
+    totalBorrowed: string
+    borrowedFromStateCollateral: string
+    borrowedFromUserCollateral: string
+    userBorrowed: string
+    avgPrice: string
+  }
+
+  type Routes = I1inchRoute[]
+
   // PAGE PROPERTIES
   type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
   type RouterParams = {
@@ -90,6 +142,7 @@ declare global {
   type PageWidthClassName = 'page-wide' | 'page-large' | 'page-medium' | 'page-small' | 'page-small-x' | 'page-small-xx'
 
   type PageContentProps = {
+    params: Params
     rChainId: ChainId
     rOwmId: string
     rFormType: string | null
@@ -108,12 +161,14 @@ declare global {
 
   interface OWMData {
     owm: OWM
+    hasLeverage: boolean
     displayName: string
   }
   type OWMDatasMapper = { [owmId: string]: OWMData }
 
   type OWMDataCache = {
     owm: Pick<OWM, 'id' | 'addresses' | 'borrowed_token' | 'collateral_token'>
+    hasLeverage: boolean
     displayName: string
   }
   type OWMDatasCacheMapper = { [owmId: string]: OWMDataCache }
@@ -297,19 +352,6 @@ declare global {
     lendApr: string
     borrowApy: string
     lendApy: string
-  }
-
-  // API RESPONSE PROPERTIES
-  type DetailInfoResp = {
-    activeKey: string
-    resp: {
-      healthFull: string
-      healthNotFull: string
-      futureRates: FutureRates | null
-      prices: string[]
-      bands: [number, number]
-    } | null
-    error: string
   }
 
   // MISC

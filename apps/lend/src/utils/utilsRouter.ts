@@ -63,7 +63,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   let rFormType = ''
   if (formType) {
     const parsedFormType = formType.toLowerCase()
-    const keys = ['vault', 'loan', 'collateral', 'deposit', 'withdraw']
+    const keys = ['vault', 'loan', 'collateral', 'deposit', 'withdraw', 'leverage']
     if (keys.some((key) => parsedFormType === key)) {
       rFormType = parsedFormType
     }
