@@ -39,7 +39,7 @@ const SummaryPartial = ({
             $minWidth={minWidth}
             $isDivider
             label={t`Debt balance:`}
-            value={`${formatNumber(+stateDebt - +receive)} ${borrowedSymbol}`}
+            value={`${format(+stateDebt - +receive)} ${borrowedSymbol}`}
           />
         </>
       ) : (
@@ -54,7 +54,7 @@ const SummaryPartial = ({
             $minWidth={minWidth}
             $isDivider
             label={t`Debt balance:`}
-            value={`${formatNumber(balance)} ${borrowedSymbol}`}
+            value={`${format(balance)} ${borrowedSymbol}`}
           />
         </>
       )}
