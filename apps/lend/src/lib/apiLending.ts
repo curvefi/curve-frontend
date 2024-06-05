@@ -1220,9 +1220,6 @@ const loanRepay = {
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
     try {
-      resp.estimatedGas = resp.isApproved
-        ? await owm.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
-        : await owm.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
       resp.isApproved = isLeverage
         ? await owm.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay
