@@ -17,7 +17,11 @@ declare module '@/fixtures/markets.json' {
     userCollateral: string
     userBorrowed: string
     debt: string
-    url: string
+    createUrl: string
+    createLeverageUrl: string
+    manageLoanUrl: string
+    manageCollateralUrl: string
+    manageLeverageUrl: string
   }
 
   export interface Markets {

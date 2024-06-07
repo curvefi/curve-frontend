@@ -1,0 +1,1482 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2024-06-13 13:23-0700\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: pseudo\n"
+
+#: src/components/ChartBandBalances/index.tsx:184
+msgid "(Soft liquidation)"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:202
+msgid "{0} Avail."
+msgstr ""
+
+#: src/components/InpToken.tsx:65
+#: src/components/InpTokenRemove.tsx:61
+msgid "{tokenSymbol} Avail."
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:39
+msgid "A"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:95
+msgid "a full withdraw of {vaultShares} vault shares"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:390
+msgid "A loan has been found for this market."
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:50
+msgid "Add collateral"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:142
+msgid "Add Collateral"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:328
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:364
+msgid "Add from wallet:"
+msgstr ""
+
+#: src/components/DetailInfoLiqRangeEdit.tsx:45
+msgid "Adjust N:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:38
+msgid "Admin fee"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:134
+msgid "Advanced Settings"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:45
+#: src/components/PageMarketList/Page.tsx:51
+msgid "All"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:117
+msgid "Alternatively, market deployers may designate a custom oracle, which can introduce additional trust assumptions or technical risks, and these custom oracles may need to be thoroughly vetted due to permissionless market deployment. Users should fully understand the oracle mechanism before interacting with a Curve Lending market."
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:37
+msgid "AMM swap fee"
+msgstr ""
+
+#: src/components/InpToken.tsx:85
+msgid "Amount > collateral {0}"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:231
+msgid "Amount > max"
+msgstr ""
+
+#: src/components/InpTokenBorrow.tsx:67
+msgid "Amount > max borrow {0}"
+msgstr ""
+
+#: src/components/InpToken.tsx:81
+msgid "Amount > max debt {0}"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:224
+msgid "Amount > max deposit amount"
+msgstr ""
+
+#: src/components/InpTokenRemove.tsx:77
+msgid "Amount > max removable {0}"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:220
+#: src/components/PageVault/VaultStake/index.tsx:193
+#: src/components/PageVault/VaultUnstake/index.tsx:179
+msgid "Amount > wallet balance"
+msgstr ""
+
+#: src/components/InpToken.tsx:77
+#: src/components/InpTokenRemove.tsx:73
+msgid "Amount > wallet balance {0}"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:166
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:184
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:129
+#: src/components/PageLoanManage/LoanRepay/index.tsx:182
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:107
+#: src/components/PageVault/VaultDepositMint/index.tsx:127
+#: src/components/PageVault/VaultStake/index.tsx:105
+msgid "Approve Spending"
+msgstr ""
+
+#: src/components/DetailInfoPriceImpact.tsx:27
+msgid "Approximate price impact, calculated based on the difference between Oracle price and average swap price."
+msgstr ""
+
+#: src/layout/Header.tsx:219
+msgid "Apps"
+msgstr ""
+
+#: src/layout/Footer.tsx:91
+msgid "Audits"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:41
+#: src/components/DetailsMarket/components/DetailsSupply.tsx:38
+#: src/components/PageMarketList/Page.tsx:66
+msgid "Available"
+msgstr ""
+
+#: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:37
+msgid "band"
+msgstr ""
+
+#: src/components/ChartBandBalances/index.tsx:169
+#: src/components/ChartBandBalances/index.tsx:202
+msgid "Band {n}"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:63
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:77
+msgid "Band range"
+msgstr ""
+
+#: src/components/DetailInfoLiqRange.tsx:139
+msgid "Band range:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoanChartBalances.tsx:69
+#: src/components/DetailsUser/components/DetailsUserLoanChartBandBalances.tsx:77
+msgid "Bands"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:45
+msgid "Base price"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:38
+#: src/components/PageMarketList/Page.tsx:58
+#: src/components/PageMarketList/Page.tsx:78
+msgid "Borrow"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:156
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:159
+msgid "Borrow additional {debtStr}"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:155
+msgid "Borrow additional {debtStr}, deposit {tokensMessage} at max slippage {maxSlippage}%."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:158
+msgid "Borrow additional {debtStr}, deposit {tokensMessage}."
+msgstr ""
+
+#: src/components/InpTokenBorrow.tsx:58
+msgid "Borrow amount"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:360
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:396
+msgid "Borrow amount:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:40
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:59
+#: src/components/PageMarketList/Page.tsx:70
+msgid "Borrow APY"
+msgstr ""
+
+#: src/components/DetailInfoRate.tsx:30
+msgid "Borrow APY:"
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:42
+#: src/components/PageLoanManage/index.tsx:55
+msgid "Borrow more"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:198
+msgid "Borrow More"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:232
+msgid "Borrow more anyway"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:58
+msgid "Borrow rate"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:32
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:42
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:198
+#: src/components/PageMarketList/Page.tsx:81
+msgid "Borrowed"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:161
+msgid "Borrowers can choose from various lending markets to borrow crvUSD against another asset or provide crvUSD as collateral. Markets are designated as one-way or two-way. In one-way markets, collateral cannot be lent out to other users. These assets serve solely as collateral to secure the loan and maintain the borrowing capacity within the protocol. Two-way markets allow collateral to be lent out, creating an opportunity for borrowers to earn interest."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:213
+msgid "Borrowers should be aware that, while in soft liquidation, they essentially pay a fee to arbitrageurs in the form of favorable pricing. This will gradually erode the health of the position, especially during times of high volatility and, importantly, even when the market price of their collateral is increasing. This activity can decrease the position's health and cause it to undergo “hard” liquidation, whereby the collateral is sold off and the Borrower's position is closed. Borrowers are advised to monitor market conditions and actively manage their collateral to mitigate the liquidation risk. Borrowers should also be aware that if the loan's health falls below a certain threshold, hard liquidation could occur, leading to collateral loss."
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:192
+msgid "Borrowing {formattedAmount} {borrowedToken} will put you close to soft liquidation."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:159
+msgid "Borrowing Risks"
+msgstr ""
+
+#: src/components/DetailInfoLeverageAdvancedExpected/index.tsx:51
+msgid "breakdown"
+msgstr ""
+
+#: src/layout/Footer.tsx:97
+msgid "Bug Bounty"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:202
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:224
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:159
+#: src/components/PageLoanManage/LoanRepay/index.tsx:217
+msgid "Cancel"
+msgstr ""
+
+#: src/components/PageVault/VaultClaim/index.tsx:94
+msgid "Claim CRV"
+msgstr ""
+
+#: src/components/PageVault/index.tsx:39
+#: src/components/PageVault/VaultClaim/index.tsx:101
+msgid "Claim Rewards"
+msgstr ""
+
+#: src/components/PageVault/VaultClaim/index.tsx:59
+msgid "claim rewards {amount}"
+msgstr ""
+
+#: src/components/PageVault/VaultClaim/index.tsx:94
+#: src/components/PageVault/VaultClaim/index.tsx:101
+msgid "Claimed"
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:204
+msgid "Close to liquidation range!"
+msgstr ""
+
+#: src/layout/Footer.tsx:37
+#: src/layout/Footer.tsx:55
+msgid "CN"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:31
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:37
+#: src/components/PageLoanManage/index.tsx:31
+#: src/components/PageMarketList/Page.tsx:77
+msgid "Collateral"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:142
+msgid "Collateral Added"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:67
+msgid "Collateral composition"
+msgstr ""
+
+#: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:44
+msgid "collateral median price"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:142
+msgid "Collateral Removed"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:80
+msgid "Collateral value"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryChange.tsx:48
+#: src/components/AlertLoanSummary/components/SummaryCreate.tsx:25
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:61
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:70
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:33
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:46
+#: src/components/AlertLoanSummary/components/SummarySelfLiquidate.tsx:62
+#: src/components/PageLoanManage/LoanRepay/components/DetailInfo.tsx:71
+msgid "Collateral:"
+msgstr ""
+
+#: src/layout/Header.tsx:220
+msgid "Community"
+msgstr ""
+
+#: src/components/DialogFormWarning.tsx:69
+#: src/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning.tsx:36
+msgid "Confirm warning to proceed."
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsConnectWallet.tsx:20
+#: src/components/LoanFormConnect.tsx:30
+msgid "Connect Wallet"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsConnectWallet.tsx:20
+msgid "Connecting..."
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:53
+#: src/layout/Footer.tsx:94
+msgid "Contracts"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:36
+msgid "Controller"
+msgstr ""
+
+#: src/components/PageLoanCreate/index.tsx:22
+msgid "Create Loan"
+msgstr ""
+
+#: src/components/AlertLoanSummary/index.tsx:20
+msgid "Create Loan Details:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:49
+msgid "CRV APR (max boosted x2.50)"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:43
+msgid "CRV APR (unboosted)"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewardsCrv.tsx:41
+msgid "CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:310
+msgid "crvUSD is exclusively issued by smart contracts, without an intermediary. However, the parameters that ensure the proper operation of the crvUSD infrastructure are subject to updates approved by Curve DAO. Users must stay informed about any parameter changes in the stablecoin infrastructure."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:317
+msgid "crvUSD is not recognized as legal tender by any authority and is not guaranteed to be accepted for payments, subject to changing regulatory landscapes which may affect its legality and utility."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:291
+msgid "crvUSD Risks"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:47
+msgid "Curve Lending enables users to permissionlessly create and interact with isolated lending pairs composed of crvUSD, a decentralized stablecoin native to the Curve ecosystem, and various paired tokens. The notifications provided herein address risks associated with Curve Lending activities. The following list is not exhaustive."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:277
+msgid "Curve Lending is designed to minimize the risk of bad debt through over-collateralization and the LLAMMA liquidation algorithm. While over-collateralization and the LLAMMA algorithm act as risk mitigation tools, they do not fully insulate Lenders from the inherent risks associated with Curve Lending and assets in its markets, including smart contract vulnerabilities, market volatility, failures in economic models, and regulatory challenges that threaten product viability. Lenders are advised to understand their exposure to risks associated with the collateral asset in Vaults they choose to interact with and appreciate the possibility of experiencing partial or total loss."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:74
+msgid "Curve Lending markets are permissionless, allowing anyone to create and customize markets with unique token pairs, a price oracle, and parameters that influence the LLAMMA liquidation algorithm and interest rate model. Given the protocol's permissionless nature, users should verify that the market has been instantiated with sensible parameters. Curve provides a <0>LLAMMA-simulator</0> that can be referenced for finding optimal parameters."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:108
+msgid "Curve Lending markets by default use a Curve pool as the oracle, as long as the pool pair contains both tokens in the market and the pool is a Curve tricrypto-ng, twocrypto-ng or stableswap-ng pool, which has manipulation-resistant oracles. However, this creates a dependency on the selected pool oracle, which may become unreliable due to market circumstances (e.g., liquidity migration) or technical bugs."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:95
+msgid "Curve Lending pairs consist of crvUSD and one other token, which may not undergo rigorous vetting due to the permissionless lending factory and lack of strict onboarding criteria. As a result, some tokens in Curve pools could be unvetted, introducing potential risks such as exchange rate volatility, smart contract vulnerabilities, and liquidity risks. Users should exercise caution and conduct their due diligence before interacting with any token on the platform."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:173
+msgid "Curve Lending uses a “soft” liquidation process powered by the LLAMMA algorithm. LLAMMA is a market-making contract that manages the liquidation and de-liquidation of collateral via arbitrageurs. This mechanism facilitates arbitrage between the collateral and borrowed asset in line with changes in market price, allowing a smoother liquidation process that strives to minimize user losses. Additional information can be found in the LLAMMA Overview docs."
+msgstr ""
+
+#: src/layout/Footer.tsx:69
+msgid "Curve Monitor"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:189
+msgid "Custom"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/components/DetailInfoLeverage.tsx:70
+msgid "Debt"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:37
+#: src/components/SharedCellData/CellUserMain.tsx:33
+msgid "Debt ({0})"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:453
+msgid "Debt balance"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:39
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:56
+msgid "Debt balance:"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryChange.tsx:35
+#: src/components/AlertLoanSummary/components/SummaryCreate.tsx:24
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:56
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:28
+#: src/components/AlertLoanSummary/components/SummarySelfLiquidate.tsx:60
+#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:79
+msgid "Debt:"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:228
+msgid "deposit"
+msgstr ""
+
+#: src/components/PageVault/index.tsx:27
+#: src/components/PageVault/index.tsx:32
+#: src/components/PageVault/VaultDepositMint/index.tsx:140
+msgid "Deposit"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:106
+msgid "deposit {0} {1}."
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:84
+msgid "deposit {amount} {0}"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:137
+msgid "Deposit {tokensMessage}, borrowing {debtStr} at max slippage {maxSlippage}%."
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:138
+msgid "Deposit {tokensMessage}, borrowing {debtStr}."
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:140
+msgid "Deposited"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:330
+msgid "Despite efforts to maintain price stability, crvUSD faces the risk of depegging due to market volatility, regulatory changes, or technological issues, potentially affecting its value."
+msgstr ""
+
+#: src/components/SharedCellData/CellRewards.tsx:45
+msgid "Details"
+msgstr ""
+
+#: src/layout/Footer.tsx:108
+msgid "Developer Docs"
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:45
+msgid "Didn't find what you're looking for?"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:139
+msgid "Discard"
+msgstr ""
+
+#: src/layout/Footer.tsx:47
+msgid "Discord"
+msgstr ""
+
+#: src/layout/Footer.tsx:43
+msgid "Dodo"
+msgstr ""
+
+#: src/hooks/useMarketAlert.tsx:23
+msgid "Due to small liquidity, borrowing or supplying in this market is not advisable."
+msgstr ""
+
+#: src/layout/Footer.tsx:66
+msgid "Dune Analytics"
+msgstr ""
+
+#: src/components/Page404/Page.tsx:11
+msgid "Error 404"
+msgstr ""
+
+#: src/components/DetailInfoEstimateGas.tsx:62
+msgid "Estimated TX cost"
+msgstr ""
+
+#: src/components/DetailInfoEstimateGas.tsx:66
+msgid "Estimated TX cost:"
+msgstr ""
+
+#: src/components/DetailInfoLeverageAdvancedExpected/index.tsx:32
+#: src/components/DetailInfoLeverageExpected.tsx:18
+msgid "Expected"
+msgstr ""
+
+#: src/components/DetailInfoLeverageAvgPrice.tsx:10
+msgid "Expected avg. price:"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:243
+msgid "Expected vault shares:"
+msgstr ""
+
+#: src/layout/Footer.tsx:100
+msgid "FAQ"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:368
+msgid "Financial Loss"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:384
+msgid "Financial terms used in the context of Curve Lending, such as “debt,” “lend,” “borrow,” and similar, are meant for analogy purposes only. They draw comparisons between the operations of decentralized finance smart contracts and traditional finance activities, emphasizing the automated and deterministic nature of DeFi systems. These terms should not be interpreted in their traditional financial context, as DeFi transactions involve distinct mechanisms and risks. Users are encouraged to understand the specific meanings within the DeFi framework."
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:46
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:67
+msgid "Gauge"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:352
+msgid "General Financial Risks"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:180
+#: src/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile.tsx:202
+msgid "Get Loan"
+msgstr ""
+
+#: src/layout/Footer.tsx:119
+msgid "Github"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:143
+msgid "Governance"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:58
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:51
+msgid "Health"
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:119
+msgid "Health:"
+msgstr ""
+
+#: src/components/PageMarketList/components/TableSettings/TableSettings.tsx:57
+msgid "Hide very small markets"
+msgstr ""
+
+#: src/components/DetailInfoPriceImpact.tsx:24
+msgid "High price impact:"
+msgstr ""
+
+#: src/components/DialogFormWarning.tsx:27
+msgid "High price impact!"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:206
+msgid "If the health of your loan drops to zero or below, your position will get hard-liquidated with no option of de-liquidation."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:193
+msgid "If the price of your collateral drops sharply over a short time interval, it can result in higher losses that may reduce your loan's health."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:199
+msgid "If you are in soft-liquidation mode and the price of the collateral appreciates sharply, this can also result in de-liquidation losses. If your loan's health is low, collateral price appreciation can further reduce the loan's health, potentially triggering a hard liquidation."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:187
+msgid "If your collateral enters soft-liquidation mode, you can't withdraw it or add more collateral to your position."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:268
+msgid "In extreme scenarios, Lenders may experience a shortfall through the accumulation of bad debt. This may occur if collateral prices fall sharply, especially in combination with network congestion that inhibits timely liquidation of positions. In such cases, Borrowers may need a financial motive to repay their debt, and Lenders may race to withdraw any available liquidity, saddling the Lenders remaining in the Vault with the shortfall."
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:84
+msgid "Incentives"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:57
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:63
+#: src/components/SharedCellData/CellRewardsTooltip.tsx:58
+msgid "Incentives APR"
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:194
+msgid "Increasing your borrowed amount by {formattedAmount} {borrowedToken} will put you close to soft liquidation."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:323
+msgid "Information provided by crvUSD front-end is solely for educational purposes and does not constitute any form of professional advice, leaving users solely responsible for ensuring actions meet their financial goals."
+msgstr ""
+
+#: src/components/PageIntegrations/Page.tsx:37
+#: src/layout/Footer.tsx:104
+#: src/layout/Header.tsx:74
+#: src/layout/Header.tsx:81
+msgid "Integrations"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:227
+msgid "Interest Rates"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:297
+msgid "Investing in crvUSD carries inherent risks that could lead to partial or complete loss of your investment due to its experimental nature. You are responsible for understanding the risks of buying, selling, and using crvUSD and its infrastructure."
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:47
+msgid "Join the Telegram"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:93
+msgid "Learn more about Boosting your CRV rewards"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:39
+#: src/components/DetailsUser/components/DetailsUserSupply.tsx:48
+#: src/components/PageMarketList/Page.tsx:71
+#: src/components/SharedCellData/CellRewardsTooltip.tsx:33
+msgid "Lend APR"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupplyRewards.tsx:34
+msgid "LEND APR"
+msgstr ""
+
+#: src/components/DetailInfoRate.tsx:30
+msgid "Lend APR:"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:240
+msgid "Lending Risks"
+msgstr ""
+
+#: src/components/PageLoanCreate/index.tsx:25
+#: src/components/PageLoanManage/index.tsx:35
+#: src/components/PageMarketList/Page.tsx:46
+#: src/components/PageMarketList/Page.tsx:52
+#: src/components/PageMarketList/Page.tsx:85
+msgid "Leverage"
+msgstr ""
+
+#: src/components/DetailInfoLeverageX.tsx:20
+#: src/components/SharedCellData/CellMaxLeverage.tsx:37
+msgid "Leverage:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:41
+msgid "Liquidation discount"
+msgstr ""
+
+#: src/components/ChartLiquidationRange/index.tsx:103
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:62
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:72
+msgid "Liquidation range"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange.tsx:31
+msgid "Liquidation Range"
+msgstr ""
+
+#: src/components/DetailInfoLiqRange.tsx:115
+msgid "Liquidation range:"
+msgstr ""
+
+#: src/components/ChartLiquidationRange/index.tsx:112
+msgid "Liquidation range{0}"
+msgstr ""
+
+#: src/components/LoanFormConnect.tsx:34
+msgid "Loading"
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:30
+msgid "Loan"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:63
+msgid "Loan balances"
+msgstr ""
+
+#: src/components/AlertLoanSummary/index.tsx:19
+msgid "Loan Change Details:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:40
+msgid "Loan discount"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:180
+msgid "Loan Received"
+msgstr ""
+
+#: src/components/DetailInfoLTV.tsx:47
+msgid "Loan to value ratio:"
+msgstr ""
+
+#: src/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile.tsx:202
+msgid "Manage Loan"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:429
+msgid "Market details"
+msgstr ""
+
+#: src/components/PageLoanManage/Page.tsx:59
+msgid "Market Details"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:65
+#: src/components/PageMarketList/Page.tsx:145
+#: src/layout/Header.tsx:73
+#: src/layout/Header.tsx:80
+msgid "Markets"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:228
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:236
+msgid "Max"
+msgstr ""
+
+#: src/components/InpTokenBorrow.tsx:70
+msgid "Max borrow amount {0}"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:42
+msgid "Max LTV"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:42
+msgid "Max possible loan at N=4"
+msgstr ""
+
+#: src/components/InpTokenRemove.tsx:81
+msgid "Max removable {0}"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:159
+msgid "Max Slippage"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:161
+msgid "Maximum difference between expected price of the trade, versus the price when the trade is executed."
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:116
+msgid "Min. slippage is 0.01%"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:228
+msgid "mint"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:37
+msgid "Monetary policy"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:72
+msgid "My debt"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:73
+msgid "My health"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:47
+msgid "My markets"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:76
+msgid "My vault shares"
+msgstr ""
+
+#: src/components/DetailInfoN.tsx:13
+msgid "N:"
+msgstr ""
+
+#: src/layout/Footer.tsx:111
+msgid "News"
+msgstr ""
+
+#: src/components/PageVault/VaultClaim/index.tsx:165
+msgid "No claimable rewards"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:46
+msgid "No gauge"
+msgstr ""
+
+#: src/components/PageIntegrations/index.tsx:115
+msgid "No integration apps found with for {0} {1}{2}"
+msgstr ""
+
+#: src/components/AlertNoLoanFound.tsx:24
+msgid "No loan found for this market."
+msgstr ""
+
+#: src/components/PageMarketList/components/TableRowViewContentTable/index.tsx:146
+msgid "No market found"
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:37
+msgid "No market found for \"{0}\"."
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:30
+msgid "No market found for \"{0}\". Feel free to search other tabs, or"
+msgstr ""
+
+#: src/components/AlertNoVaultSharesFound.tsx:29
+msgid "No supply details found for this market"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:43
+msgid "Not eligible for liquidation"
+msgstr ""
+
+#: src/components/AlertFormWarning.tsx:25
+msgid "Only full repayment is allowed when in soft-liquidation mode."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:498
+msgid ""
+"Only partial repayment from wallet's {0} or full repayment from collateral or wallet's {1} is\n"
+"allowed during liquidation mode."
+msgstr ""
+
+#: src/components/ChartBandBalances/index.tsx:334
+#: src/components/ChartLiquidationRange/index.tsx:226
+msgid "Oracle"
+msgstr ""
+
+#: src/components/ChartBandBalances/index.tsx:166
+#: src/components/ChartLiquidationRange/index.tsx:121
+#: src/components/DetailsMarket/components/MarketParameters.tsx:46
+msgid "Oracle price"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:127
+msgid "Parameter Configuration"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:92
+msgid "Parameters"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:72
+msgid "Permissionless Markets Risks"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:131
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:109
+msgid "Please approve spending of {0}"
+msgstr ""
+
+#: src/components/PageVault/VaultDepositMint/index.tsx:129
+msgid "Please approve spending of {symbol}"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:187
+msgid "Please approve spending of {tokensMessage}"
+msgstr ""
+
+#: src/components/PageVault/VaultStake/index.tsx:107
+msgid "Please approve spending of vault shares"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:185
+msgid "Please approve spending your {tokensMessage}"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:169
+msgid "Please approve spending your {tokensMessage}."
+msgstr ""
+
+#: src/components/DialogFormWarning.tsx:38
+msgid "Please confirm the warnings below:"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:182
+msgid "Please consider the following risks when using the Curve Stablecoin infrastructure:"
+msgstr ""
+
+#: src/components/DetailInfoPriceImpact.tsx:24
+msgid "Price impact:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:50
+msgid "Price per share"
+msgstr ""
+
+#: src/components/DetailInfoLiqRange.tsx:153
+msgid "Price range:"
+msgstr ""
+
+#: src/components/DetailsMarket/components/MarketParameters.tsx:45
+msgid "Prices"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:64
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:80
+msgid "Range %"
+msgstr ""
+
+#: src/components/DetailInfoLeverageAdvancedExpected/index.tsx:32
+msgid "Receive"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:63
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:35
+msgid "Receive:"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:236
+msgid "redeem"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:141
+msgid "Redeem"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:231
+msgid "redeem amount"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:141
+msgid "Redeemed"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:119
+msgid "Removal of {collateral} {0}."
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:51
+msgid "Remove collateral"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:142
+msgid "Remove Collateral"
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:190
+msgid "Removing {formattedAmount} collateral, will put you close to soft liquidation."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:196
+msgid "Repaid"
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:43
+#: src/components/PageLoanManage/LoanRepay/index.tsx:196
+msgid "Repay"
+msgstr ""
+
+#: src/components/AlertLoanSummary/index.tsx:18
+msgid "Repay and Close Loan Details:"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:224
+msgid "Repay anyway"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:359
+msgid "Repay from collateral:"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:377
+msgid "Repay from wallet:"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:468
+msgid "Repay in full and close loan"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:155
+msgid "Repay in full."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:153
+msgid "Repay with {tokensMessage} at max slippage {maxSlippage}%."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanRepay/index.tsx:156
+msgid "Repay with {tokensMessage}."
+msgstr ""
+
+#: src/layout/Footer.tsx:114
+#: src/layout/Header.tsx:221
+msgid "Resources"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:89
+#: src/components/AlertLoanSummary/components/SummarySelfLiquidate.tsx:76
+msgid "Return to wallet ≈"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:41
+#: src/components/PageDisclaimer/Page.tsx:44
+#: src/layout/Header.tsx:75
+#: src/layout/Header.tsx:82
+msgid "Risk Disclaimer"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:266
+msgid "Risk of Bad Debt"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:251
+msgid "Risk of Illiquidity"
+msgstr ""
+
+#: src/components/DetailInfoLeverageAdvancedExpected/index.tsx:65
+msgid "Route Details"
+msgstr ""
+
+#: src/components/AdvancedSettings.tsx:151
+msgid "Save"
+msgstr ""
+
+#: src/components/PageMarketList/components/TableSettings/SelectFilter.tsx:22
+#: src/components/PageMarketList/components/TableSettings/SelectFilterType.tsx:24
+msgid "Select type"
+msgstr ""
+
+#: src/components/PageLoanManage/index.tsx:44
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:120
+msgid "Self-liquidate"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:83
+msgid "Self-liquidate {0} at {maxSlippage}% max slippage."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:120
+msgid "Self-liquidated"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:198
+msgid "Self-liquidation amount"
+msgstr ""
+
+#: src/components/DetailInfoSlippageTolerance.tsx:16
+msgid "Slippage tolerance:"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:171
+msgid "Soft and Hard Liquidation"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:166
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:184
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:129
+#: src/components/PageLoanManage/LoanRepay/index.tsx:182
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:107
+#: src/components/PageVault/VaultDepositMint/index.tsx:127
+#: src/components/PageVault/VaultStake/index.tsx:105
+msgid "Spending Approved"
+msgstr ""
+
+#: src/components/PageVault/index.tsx:33
+#: src/components/PageVault/VaultStake/index.tsx:118
+msgid "Stake"
+msgstr ""
+
+#: src/components/PageVault/VaultStake/index.tsx:67
+msgid "stake {amount} vault shares"
+msgstr ""
+
+#: src/components/PageVault/VaultStake/index.tsx:118
+msgid "Staked"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoan.tsx:57
+#: src/components/DetailsUser/components/DetailsUserLoanStatsMobile.tsx:44
+msgid "Status"
+msgstr ""
+
+#: src/components/DetailInfoEstimateGas.tsx:63
+msgid "Step {0} of {1}"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:67
+msgid "Supplied"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:69
+msgid "Supplied / Utilization"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:59
+#: src/components/PageMarketList/Page.tsx:79
+msgid "Supply"
+msgstr ""
+
+#: src/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile.tsx:206
+msgid "Supply {0}"
+msgstr ""
+
+#: src/components/PageVault/Page.tsx:59
+msgid "Supply Details"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsSupply.tsx:36
+msgid "Supply token"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserSupply.tsx:47
+msgid "Supply Token"
+msgstr ""
+
+#: src/layout/Footer.tsx:33
+msgid "Telegram"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:229
+msgid "The borrowing rate is algorithmically determined based on the utilization rate of the lending markets. It is calculated using a function that accounts for the spectrum of borrowing activity, ranging from conditions where no assets are borrowed (where the rate is set to a minimum) to conditions where all available assets are borrowed (where the rate is set to a maximum). The rates within the described monetary policy are subject to changes only by Curve DAO. More information on the interest rate model can be found in the Semi-log Monetary Policy docs."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:343
+msgid "The continued development and functionality of the crvUSD protocol rely on developer contributions, with no guarantee of sustained involvement, posing a risk to its maintenance and scalability."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:145
+msgid "The Curve Lending admin is the Curve DAO, a decentralized organization made up of veCRV tokenholders. Votes are required to make any change to the Curve Lending system, including individual markets. Votes undergo a 1-week vote period, requiring a 51% approval and a sufficient voter quorum to execute any on-chain actions. The DAO controls critical system functions in Curve Lending, including setting system contract implementations and configuring parameters such as min/max borrow rates, borrow discounts and AMM fees."
+msgstr ""
+
+#: src/components/PageIntegrations/Page.tsx:42
+msgid "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:122
+msgid "The loan metric indicates the current health of your position."
+msgstr ""
+
+#: src/components/DetailInfoLiqRange.tsx:109
+msgid "The range of prices where collateral is managed by the market-maker.  Collateral begins to be sold off when its price enters your liquidation range (\"soft liquidation\").  If the market-maker cannot keep the position sufficiently collateralized, an externally triggered \"hard\" liquidation may take place."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:304
+msgid "The value of crvUSD can fluctuate due to stablecoin market volatility or rapid changes in the liquidity of the stablecoin."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:86
+msgid "There are several factors users should consider regarding attributes of the permissionless markets:"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:129
+msgid "There are several parameters configurable by market deployers, including “A” (number of bands within the LLAMMA algorithm), fee on LLAMMA swaps, loan discount (Loan-To-Value), liquidation discount (RiskListItemquidation Threshold), and min/max borrow rate. Misconfigured AMM parameters may result in greater losses than necessary during liquidation and generally negatively impact user experience involving liquidation. Misconfigured borrow rates may prevent the market from adequately reflecting rates in the broader market, potentially leading to insufficient withdrawal liquidity for lenders. Users should be aware of market parameter configurations and ensure they are suitable for the underlying assets and anticipated market conditions."
+msgstr ""
+
+#: src/components/DialogFormWarning.tsx:28
+msgid "There is a price impact of {0} when swapping from {swapFrom} to {swapTo}."
+msgstr ""
+
+#: src/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile.tsx:111
+#: src/components/PageMarketList/index.tsx:61
+msgid "Total APR"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:47
+msgid "Total Collateral Value"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:44
+#: src/components/DetailsMarket/components/DetailsSupply.tsx:41
+msgid "Total Debt"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:45
+#: src/components/DetailsMarket/components/DetailsSupply.tsx:42
+msgid "Total supplied"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:103
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:103
+msgid "Transaction complete."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:111
+#: src/components/PageLoanManage/LoanCollateralAdd/index.tsx:78
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:83
+#: src/components/PageLoanManage/LoanRepay/index.tsx:100
+#: src/components/PageVault/VaultClaim/index.tsx:66
+#: src/components/PageVault/VaultDepositMint/index.tsx:91
+#: src/components/PageVault/VaultStake/index.tsx:74
+#: src/components/PageVault/VaultUnstake/index.tsx:73
+msgid "Transaction completed."
+msgstr ""
+
+#: src/components/PageLoanManage/LoanSelfLiquidation/index.tsx:127
+msgid "Transaction completed. This loan will no longer exist. Click <0>here</0> to go back to collateral list."
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:82
+msgid "TVL"
+msgstr ""
+
+#: src/layout/Footer.tsx:30
+msgid "Twitter"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:39
+msgid "Unable to add collateral"
+msgstr ""
+
+#: src/components/AlertFormError.tsx:42
+#: src/components/LoanFormAlertError.tsx:35
+msgid "Unable to approve spending"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:37
+msgid "Unable to borrow more."
+msgstr ""
+
+#: src/components/AlertFormError.tsx:38
+msgid "Unable to check if loan existed"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:36
+msgid "Unable to create loan."
+msgstr ""
+
+#: src/components/AlertFormError.tsx:41
+#: src/components/LoanFormAlertError.tsx:49
+msgid "Unable to find provider"
+msgstr ""
+
+#: src/components/AlertFormError.tsx:40
+#: src/components/LoanFormAlertError.tsx:48
+msgid "Unable to get approval or estimated gas"
+msgstr ""
+
+#: src/components/AlertFormError.tsx:35
+msgid "Unable to get data from api"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:50
+msgid "Unable to get max amount"
+msgstr ""
+
+#: src/components/AlertFormError.tsx:44
+msgid "Unable to get total supply"
+msgstr ""
+
+#: src/components/DetailInfoEstimateGas.tsx:79
+msgid "Unable to get USD rate"
+msgstr ""
+
+#: src/components/AlertFormError.tsx:39
+msgid "Unable to get wallet balances"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:38
+msgid "Unable to remove collateral"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:40
+msgid "Unable to repay loan"
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:26
+msgid "Unable to retrieve markets"
+msgstr ""
+
+#: src/components/LoanFormAlertError.tsx:44
+#: src/components/LoanFormAlertError.tsx:45
+msgid "Unable to self liquidate"
+msgstr ""
+
+#: src/components/PageVault/index.tsx:38
+#: src/components/PageVault/VaultUnstake/index.tsx:104
+msgid "Unstake"
+msgstr ""
+
+#: src/components/PageVault/VaultUnstake/index.tsx:66
+msgid "unstake {amount} vault shares"
+msgstr ""
+
+#: src/components/PageVault/VaultUnstake/index.tsx:104
+msgid "Unstaked"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:93
+msgid "Unvetted Tokens"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:382
+msgid "Use of Financial Terms"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:336
+msgid "Users of crvUSD are exposed to various technological risks, including irreversible transactions, anonymity and security concerns, software dependency, cybersecurity threats, and operational and settlement risks, which can lead to potential asset loss."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:356
+msgid "Users should be aware that the prices of cryptocurrencies and tokens are highly volatile and subject to dramatic fluctuations due to their speculative nature and variable acceptance as a payment method. The market value of blockchain-based assets can significantly decline, potentially resulting in losses. Transactions within blockchain systems, including Ethereum Mainnet and others, may experience variable costs and speeds, affecting asset access and usability. Users are encouraged to develop their strategies for managing volatility."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:293
+msgid "Users should be mindful of risks associated with exposure to the crvUSD stablecoin:"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:370
+msgid "Users should know that cryptocurrencies and tokens are highly experimental and carry significant risks. Engaging in lending and borrowing activities involves irreversible, final, and non-refundable transactions. Users must participate in these activities at their own risk, understanding that the potential for financial loss is substantial. Users are advised to carefully evaluate their lending and borrowing strategies, considering their personal circumstances and financial resources to determine the most suitable situation."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:55
+msgid "Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the <0>Curve Risk Disclosures for Liquidity Providers</0>. Users are also advised to review the public <1>audit reports</1> to assess the security and reliability of the platform before engaging in any lending or borrowing activities."
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsLoan.tsx:46
+#: src/components/DetailsMarket/components/DetailsSupply.tsx:43
+#: src/components/PageMarketList/Page.tsx:68
+msgid "Utilization %"
+msgstr ""
+
+#: src/components/DetailsMarket/components/DetailsContracts.tsx:45
+msgid "Vault"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:203
+msgid "Vault balance Avail."
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserSupply.tsx:52
+#: src/components/SharedCellData/CellUserMain.tsx:33
+msgid "Vault shares"
+msgstr ""
+
+#: src/components/PageVault/VaultStake/index.tsx:180
+#: src/components/PageVault/VaultUnstake/index.tsx:166
+msgid "Vault shares Avail."
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:258
+msgid "Vault shares required:"
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:40
+msgid "view all markets"
+msgstr ""
+
+#: src/components/PageMarketList/components/MarketListNoResult.tsx:32
+msgid "view all markets."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:354
+msgid "Volatility"
+msgstr ""
+
+#: src/components/PageLoanManage/LoanBorrowMore/components/DetailInfoLeverage.tsx:71
+msgid "Wallet"
+msgstr ""
+
+#: src/components/PageMarketList/Page.tsx:74
+#: src/components/PageMarketList/Page.tsx:75
+msgid "Wallet balance"
+msgstr ""
+
+#: src/components/AlertLoanSummary/components/SummaryFull.tsx:74
+#: src/components/AlertLoanSummary/components/SummaryPartial.tsx:50
+#: src/components/AlertLoanSummary/components/SummarySelfLiquidate.tsx:66
+#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:80
+#: src/components/PageLoanManage/LoanRepay/components/DetailInfo.tsx:72
+msgid "Wallet:"
+msgstr ""
+
+#: src/components/PageLoanCreate/LoanFormCreate/index.tsx:184
+#: src/components/PageLoanManage/LoanBorrowMore/index.tsx:204
+#: src/components/PageLoanManage/LoanCollateralRemove/index.tsx:147
+#: src/components/PageLoanManage/LoanRepay/index.tsx:202
+msgid "Warning!"
+msgstr ""
+
+#: src/components/LoanFormAlertWarning.tsx:22
+msgid "Warning! Exchange rate is too low!"
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:242
+msgid "When participating in lending activities on Curve Lending, Users may deposit crvUSD (or other assets designated for borrowing) into non-custodial Vaults that accrue interest from borrowers. There may also be the opportunity for additional CRV incentives by staking Vault tokens in a Gauge contract, pending DAO approval."
+msgstr ""
+
+#: src/components/PageDisclaimer/Page.tsx:253
+msgid "While these Vaults enable Users to supply liquidity and potentially earn returns, Users maintain the right to withdraw their assets at any time, so long as liquidity is available. There may be temporary or permanent states of illiquidity that prevent Lenders from fully or partially withdrawing their funds. This may result from diverse circumstances, including excessive borrow demand, a poorly configured interest rate model, a failure associated with the collateral asset, or a drastic reduction in incentives to a market. Similarly, there may be high volatility in the behavior of either lenders, borrowers, or both, which causes sharp swings in interest rates."
+msgstr ""
+
+#: src/layout/Footer.tsx:62
+msgid "Wiki CN"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:236
+msgid "withdraw"
+msgstr ""
+
+#: src/components/PageVault/index.tsx:28
+#: src/components/PageVault/index.tsx:37
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:141
+msgid "Withdraw"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:89
+msgid "withdraw {0} {1}"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:231
+msgid "withdraw amount"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:247
+msgid "Withdraw in full"
+msgstr ""
+
+#: src/components/PageVault/VaultWithdrawRedeem/index.tsx:141
+msgid "Withdrawn"
+msgstr ""
+
+#: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:29
+msgid "x-axis display"
+msgstr ""
+
+#: src/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation.tsx:35
+msgid "You are in soft-liquidation mode. The amount currently at risk is {softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate)."
+msgstr ""
+
+#: src/components/AlertFormWarning.tsx:31
+msgid "You are not in liquidation mode."
+msgstr ""
+
+#: src/components/DetailInfoHealth.tsx:185
+msgid "You are still close to soft liquidation."
+msgstr ""
+
+#: src/components/AlertFormError.tsx:43
+msgid "You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation."
+msgstr ""
+
+#: src/components/AlertFormWarning.tsx:34
+msgid "You do not have enough crvUSD for self-liquidation."
+msgstr ""
+
+#: src/components/AlertFormWarning.tsx:28
+msgid "You will no longer be able to manage this loan once it is paid off."
+msgstr ""
+
+#: src/components/PageLoanManage/Page.tsx:61
+#: src/components/PageVault/Page.tsx:61
+msgid "Your Details"
+msgstr ""
+
+#: src/layout/Footer.tsx:50
+msgid "YouTube"
+msgstr ""

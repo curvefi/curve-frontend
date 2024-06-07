@@ -11,7 +11,6 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const collateralToken = tokens[CHAIN][market.collateral]
 
   const borrowToken = tokens[CHAIN][market.borrow]
-  const borrowTokenAmount = 1
 
   beforeEach(() => {
     // prepare wallet
@@ -23,7 +22,7 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
 
     // prepare page
     cy.intercept('GET', 'https://api.curve.fi/api/**').as('getAPI')
-    cy.visit(market.url)
+    cy.visit(market.createUrl)
     cy.wait('@getAPI').its('response.statusCode').should('equal', 200)
 
     // connect metamask

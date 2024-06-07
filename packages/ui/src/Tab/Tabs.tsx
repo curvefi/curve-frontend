@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { Tab } from './Tab'
+import Tab from 'ui/src/Tab/Tab'
 
 const Tabs = styled.div`
   display: flex;

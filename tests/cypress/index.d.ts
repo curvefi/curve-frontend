@@ -1,7 +1,7 @@
 import { inputMaxCollateral } from './support/collateral'
 import { inputMaxBorrow, inputBorrow } from './support/debt'
 import { approveSpending, approveLeverageSpending } from './support/approval'
-import { createSofLiquidationLoan, createLeverageLoan } from './support/lend'
+import { createSofLiquidationLoan, createLeverageLoan, createLeverageLoanFlow, repayLoan } from './support/lend'
 import {
   dataTestId,
   createJsonRpcProvider,
@@ -36,6 +36,8 @@ declare global {
       approveLeverageSpending: typeof approveLeverageSpending
       createLeverageLoan: typeof createLeverageLoan
       createSofLiquidationLoan: typeof createSofLiquidationLoan
+      createLeverageLoanFlow: typeof createLeverageLoanFlow
+      repayLoan: typeof repayLoan
     }
   }
 }

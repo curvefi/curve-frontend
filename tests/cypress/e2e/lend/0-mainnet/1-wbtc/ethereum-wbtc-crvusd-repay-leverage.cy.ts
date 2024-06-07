@@ -21,23 +21,28 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
 
     // prepare page
     cy.intercept('GET', 'https://api.curve.fi/api/**').as('getAPI')
-    cy.intercept('GET', 'https://prices.curve.fi/1inch/swap/**').as('getPricesAPI')
     cy.visit(market.createLeverageUrl)
     cy.wait('@getAPI').its('response.statusCode').should('equal', 200)
 
     // connect metamask
     cy.get('@wallet').connectMetamask()
+
+    // create loan
+    cy.createLeverageLoanFlow(settings, '1000')
+
+    cy.visit(market.manageLoanUrl)
   })
 
   // if test fail due to estimate gas error, try restarting node first.
-  it('Create leverage loan', () => {
-    cy.dataTestId(testIds.btnApproval).as('btnApproval').should('be.disabled')
-    cy.dataTestId(testIds.btnCreate).as('btnCreate').should('be.disabled')
+  it('Repay leverage loan', () => {
+    cy.intercept('GET', 'https://prices.curve.fi/1inch/swap/**').as('getPricesAPI2')
+    // navigate to repay form
+    cy.dataTestId(testIds.radioInpLoanDecrease).as('radioInpRepay').click({ force: true })
 
-    cy.inputMaxCollateral(settings.userCollateralTokenToAllocate)
-    cy.inputBorrow('1')
+    cy.dataTestId(testIds.btnApproval).should('be.disabled')
+    cy.dataTestId(testIds.btnRepay).should('be.disabled')
 
-    cy.approveLeverageSpending()
-    cy.createLeverageLoan()
+    cy.dataTestId(testIds.inpStateCollateralAmt).type('0.005')
+    cy.repayLoan()
   })
 })

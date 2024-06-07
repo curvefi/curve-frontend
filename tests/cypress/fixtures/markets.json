@@ -4,14 +4,17 @@
       "id": "CRV-crvUSD",
       "collateral": "CRV",
       "borrow": "crvUSD",
-      "url": "/ethereum/markets/one-way-market-3/create"
+      "createUrl": "/ethereum/markets/one-way-market-3/create"
     },
     "WBTC-crvUSD": {
       "id": "WBTC-crvUSD",
       "userCollateral": "WBTC",
       "userBorrowed": "crvUSD",
       "debt": "crvUSD",
-      "url": "/ethereum/markets/one-way-market-9/create/leverage"
+      "createLeverageUrl": "/ethereum/markets/one-way-market-9/create/leverage",
+      "manageLoanUrl": "/ethereum/markets/one-way-market-9/manage/loan",
+      "manageCollateralUrl": "/ethereum/markets/one-way-market-9/manage/collateral",
+      "manageLeverageUrl": "/ethereum/markets/one-way-market-9/manage/leverage"
     }
   }
 }

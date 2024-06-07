@@ -10,7 +10,7 @@ import {
   prepareMetamaskWallet,
   tokenBalance,
 } from './helpers'
-import { createSofLiquidationLoan, createLeverageLoan } from './lend'
+import { createSofLiquidationLoan, createLeverageLoan, createLeverageLoanFlow, repayLoan } from './lend'
 
 // helpers
 Cypress.Commands.add('dataTestId', dataTestId)
@@ -33,3 +33,5 @@ Cypress.Commands.add('approveSpending', approveSpending)
 Cypress.Commands.add('approveLeverageSpending', approveLeverageSpending)
 Cypress.Commands.add('createSofLiquidationLoan', createSofLiquidationLoan)
 Cypress.Commands.add('createLeverageLoan', createLeverageLoan)
+Cypress.Commands.add('createLeverageLoanFlow', createLeverageLoanFlow)
+Cypress.Commands.add('repayLoan', repayLoan)
