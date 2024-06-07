@@ -9,6 +9,7 @@ const networks = require('./cypress/fixtures/networks.json')
 
 const BASIC_PORT = 8545
 const HOST_NAME = '127.0.0.1'
+const BLOCKS_PER_DAY = 7000
 
 const checkPort = (port) => {
   return new Promise((resolve, reject) => {
@@ -20,6 +21,36 @@ const checkPort = (port) => {
       }
     })
   })
+}
+
+const getBlockNumber = async (network) => {
+  const infuraKey = process.env.INFURA_PROJECT_ID
+  const alchemyEnvName = `${network.alias.toUpperCase()}_ALCHEMY_API_KEY`
+  const alchemyKey = process.env[alchemyEnvName] ?? ''
+
+  const url = infuraKey
+    ? network.infura_rpc.replace('INFURA_PROJECT_ID', infuraKey)
+    : network.alchemy_rpc.replace(alchemyEnvName, alchemyKey)
+
+  const resp = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      jsonrpc: '2.0',
+      method: 'eth_blockNumber',
+      params: [],
+      id: 1,
+    }),
+  })
+
+  if (!resp.ok) {
+    throw new Error(`HTTP error! Status: ${resp.status}`)
+  }
+
+  const hexBlockNumber = (await resp.json()).result
+  const blockNumber = parseInt(hexBlockNumber, 16)
+  // user BLOCKS_PER_DAY to prevent maxing forked network quota
+  return Math.floor(blockNumber / BLOCKS_PER_DAY) * BLOCKS_PER_DAY
 }
 
 const startNode = (network) => {
@@ -34,8 +65,12 @@ const startNode = (network) => {
       return
     }
 
-    console.log(`Starting network '${network.alias}' node at http://${HOST_NAME}:${port}`)
-    const command = `npx hardhat node --config ./hardhat.config.js --port ${port} --hostname ${HOST_NAME}`
+    const blockNumber = await getBlockNumber(network)
+
+    console.log(
+      `Starting network '${network.alias}' node at http://${HOST_NAME}:${port} with blockNumber: ${blockNumber}`
+    )
+    const command = `npx hardhat node --config ./hardhat.config.js --port ${port} --hostname ${HOST_NAME} --fork-block-number ${blockNumber}`
     const nodeProcess = spawn('sh', ['-c', command], { env })
     nodeProcess.on('close', (code) => {
       if (code !== 0) {
@@ -58,7 +93,7 @@ const startNode = (network) => {
           console.log(`Network '${network.alias}' node started at http://${HOST_NAME}:${port}`)
           resolve(nodeProcess)
         }
-      },
+      }
     )
   })
 }
