@@ -1417,10 +1417,10 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@curvefi/api@^2.58.11":
-  version "2.58.11"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.58.11.tgz#2e133812264cfcdd3739db098930ff711422859f"
-  integrity sha512-WhBWg6mUOCXWqnQc9inGUqTXw3PCr5cVUgXzamGlLzZezkGobtsuoxIrGJPhWNscctl7r4HsqmFbA/PJgR1Tpw==
+"@curvefi/api@^2.59.1":
+  version "2.59.1"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.59.1.tgz#2fa765feddd70477d3ae2beb23808bd4f354c63a"
+  integrity sha512-kyCyvejIL9WsNn45EIOozfcmODFcCQ9VBXuD3ne+yvi/yQntK452qDslONwmBPzN/8xBd8e7dOGR5m+KPzXDIg==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"
