@@ -78,6 +78,7 @@ declare module '@/fixtures/networks.json' {
     infura_rpc: string
     alchemy_rpc: string
     fork_block: number
+    blocks_per_day: number
   }
 
   export interface Networks {

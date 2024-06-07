@@ -9,7 +9,6 @@ const networks = require('./cypress/fixtures/networks.json')
 
 const BASIC_PORT = 8545
 const HOST_NAME = '127.0.0.1'
-const BLOCKS_PER_DAY = 7000
 
 const checkPort = (port) => {
   return new Promise((resolve, reject) => {
@@ -49,8 +48,8 @@ const getBlockNumber = async (network) => {
 
   const hexBlockNumber = (await resp.json()).result
   const blockNumber = parseInt(hexBlockNumber, 16)
-  // user BLOCKS_PER_DAY to prevent maxing forked network quota
-  return Math.floor(blockNumber / BLOCKS_PER_DAY) * BLOCKS_PER_DAY
+  // use blocks_per_day to prevent maxing forked network quota
+  return Math.floor(blockNumber / network.blocks_per_day) * network.blocks_per_day
 }
 
 const startNode = (network) => {
