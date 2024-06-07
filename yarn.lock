@@ -5778,7 +5778,7 @@
     "@walletconnect/utils" "2.9.1"
     events "^3.3.0"
 
-"@walletconnect/ethereum-provider@^2.12.2":
+"@walletconnect/ethereum-provider@^2.13.0":
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/@walletconnect/ethereum-provider/-/ethereum-provider-2.13.1.tgz#a9bdb8f9da303088b7b724fa98f4b5ca0d46a36d"
   integrity sha512-bHJVqb++GrrMGlapsbSvvIyBlwulMGZEx6N5xwAl6ImPVzbDN0g0XmibNkjzJXVsi/+/d0R/HmKS1WyJQSNx3w==
@@ -6238,15 +6238,6 @@
     "@coinbase/wallet-sdk" "4.0.3"
     "@web3-onboard/common" "^2.4.1"
 
-"@web3-onboard/common@^2.3.3":
-  version "2.3.3"
-  resolved "https://registry.npmjs.org/@web3-onboard/common/-/common-2.3.3.tgz#02096e967dbed272c0637cda955902b96a0fce06"
-  integrity sha512-Ytppszqe77VY8WglRdr/Lfx+HmcZ2hXQEkBA23JaVYmzKvP/mC6j+sjGUD8CgXDpRRxyKoiRj6nz95GRABie6Q==
-  dependencies:
-    bignumber.js "^9.1.0"
-    ethers "5.5.4"
-    joi "17.9.1"
-
 "@web3-onboard/common@^2.4.1":
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/@web3-onboard/common/-/common-2.4.2.tgz#ffa7b1a7cb6410d9cc4d7b38d50b97a857b334cb"
@@ -6382,13 +6373,13 @@
   dependencies:
     "@web3-onboard/common" "^2.4.1"
 
-"@web3-onboard/walletconnect@2.5.5":
-  version "2.5.5"
-  resolved "https://registry.yarnpkg.com/@web3-onboard/walletconnect/-/walletconnect-2.5.5.tgz#a0a136f2622156b1004a58d77e21c379cb16391c"
-  integrity sha512-+ShSG20r783R+a1bPsbA6ofPTtVz2BFR8Z2/dQKsM+alQKAzBVprWjYW+PE+Mg/IC8QspiLWz/GXXLzLxYxeKw==
+"@web3-onboard/walletconnect@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@web3-onboard/walletconnect/-/walletconnect-2.6.1.tgz#30c04ff2f912afafadd28024152044133ba26643"
+  integrity sha512-GNpsOwnZ+fN62JqZq+KIRR7lR1/ZsPXPjaF4r2lcw8sfbYpalR+Vi25DHQSklwzGqNFHrP5oNkroTS7ICoI1cw==
   dependencies:
-    "@walletconnect/ethereum-provider" "^2.12.2"
-    "@web3-onboard/common" "^2.3.3"
+    "@walletconnect/ethereum-provider" "^2.13.0"
+    "@web3-onboard/common" "^2.4.1"
     joi "17.9.1"
     rxjs "^7.5.2"
 
