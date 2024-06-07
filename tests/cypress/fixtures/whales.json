@@ -21,5 +21,21 @@
       "0xAB13B8eecf5AA2460841d75da5d5D861fD5B8A39",
       "0xC76C7253592E27f090019f9949585366f799d6f7"
     ]
+  },
+  "arbitrum": {
+    "CRV": [
+      "0xfce04b4ab96de9e35bd395c98bbc6883f367e37e",
+      "0x9755e99bdb99495d3d31d953785d993c6df8552e",
+      "0xaf0fdd39e5d92499b0ed9f68693da99c0ec1e92e",
+      "0xd4a10deb4ee63461f216857033f9727a7fc8b645",
+      "0x5b47b64b852354de153ff36c372ec8ec6550f8d7"
+    ],
+    "crvUSD": [
+      "0x281ca4617298308e333ffebaa15023c975874b21",
+      "0x3154d06063015aed5fea746b58c6d32b7c1990ae",
+      "0x756dab6280de64f2c58a2c693a1528fcaf23ec5a",
+      "0x3b81f0ec69b62667e68744313ace6a9a361ccc32",
+      "0x9f1920d0cbb63ed03376a1e09fd2851d601234c8"
+    ]
   }
 }

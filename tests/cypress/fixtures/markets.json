@@ -16,5 +16,13 @@
       "manageCollateralUrl": "/ethereum/markets/one-way-market-9/manage/collateral",
       "manageLeverageUrl": "/ethereum/markets/one-way-market-9/manage/leverage"
     }
+  },
+  "arbitrum": {
+    "CRV-crvUSD": {
+      "id": "CRV-crvUSD",
+      "collateral": "CRV",
+      "borrow": "crvUSD",
+      "createUrl": "/arbitrum/markets/one-way-market-4/create"
+    }
   }
 }

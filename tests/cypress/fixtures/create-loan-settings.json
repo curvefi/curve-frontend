@@ -8,5 +8,11 @@
       "ethersToAllocate": "1",
       "userCollateralTokenToAllocate": "1"
     }
+  },
+  "arbitrum": {
+    "CRV-crvUSD": {
+      "ethersToAllocate": "1",
+      "collateralTokenToAllocate": "1"
+    }
   }
 }
