@@ -1,7 +1,7 @@
-import { TEST_IDS } from '@/support/helpers/constants'
+import testIds from '@/fixtures/testIds.json'
 
 export function approveSpending() {
-  cy.dataTestId(TEST_IDS.detailInfoEstGasValue).should('not.contain', '-')
+  cy.dataTestId(testIds.detailInfoEstGasValue).should('not.contain', '-')
   cy.get('@btnApproval').should('be.enabled').click()
   cy.contains('Spending Approved').should('be.visible')
   cy.get('@inpCollateralAmt').invoke('val').should('not.be.empty')
@@ -10,7 +10,7 @@ export function approveSpending() {
 
 export function approveLeverageSpending() {
   cy.wait('@getPricesAPI').its('response.statusCode').should('equal', 200)
-  cy.dataTestId(TEST_IDS.detailInfoEstGasValue).should('not.contain', '-')
+  cy.dataTestId(testIds.detailInfoEstGasValue).should('not.contain', '-')
 
   cy.get('@btnApproval').should('be.enabled').click()
   cy.contains('Spending Approved').should('be.visible')

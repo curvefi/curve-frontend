@@ -1,4 +1,4 @@
-import { TEST_IDS } from '@/support/helpers/constants'
+import testIds from '@/fixtures/testIds.json'
 
 export function inputMaxBorrow() {
   cy.contains('span', 'Max borrow amount')
@@ -12,8 +12,8 @@ export function inputMaxBorrow() {
 
 export function inputBorrow(amount: string) {
   const regex = /Max borrow amount [\d,.]+$/
-  cy.dataTestId(TEST_IDS.labelMaxBorrowAmt).contains(regex)
-  cy.dataTestId(TEST_IDS.inpDebtAmt).as('inpDebtAmt').should('be.empty')
+  cy.dataTestId(testIds.labelMaxBorrowAmt).contains(regex)
+  cy.dataTestId(testIds.inpDebtAmt).as('inpDebtAmt').should('be.empty')
   cy.get('@inpDebtAmt').type(amount)
   cy.get('@inpDebtAmt').invoke('val').should('not.be.empty')
 }

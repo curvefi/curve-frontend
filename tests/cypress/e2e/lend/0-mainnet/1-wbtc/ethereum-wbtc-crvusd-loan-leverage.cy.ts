@@ -1,7 +1,7 @@
 import createLoanSettings from '@/fixtures/create-loan-settings.json'
 import markets from '@/fixtures/markets.json'
 import tokens from '@/fixtures/tokens.json'
-import { TEST_IDS } from '@/support/helpers/constants'
+import testIds from '@/fixtures/testIds.json'
 
 const CHAIN = 'mainnet'
 const MARKET_ID = 'WBTC-crvUSD'
@@ -31,8 +31,8 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
 
   // if test fail due to estimate gas error, try restarting node first.
   it('Create leverage loan', () => {
-    cy.dataTestId(TEST_IDS.btnApproval).as('btnApproval').should('be.disabled')
-    cy.dataTestId(TEST_IDS.btnCreate).as('btnCreate').should('be.disabled')
+    cy.dataTestId(testIds.btnApproval).as('btnApproval').should('be.disabled')
+    cy.dataTestId(testIds.btnCreate).as('btnCreate').should('be.disabled')
 
     cy.inputMaxCollateral(settings.userCollateralTokenToAllocate)
     cy.inputBorrow('1')

@@ -1,0 +1,10 @@
+{
+  "btnApproval": "btn-approval",
+  "btnCreate": "btn-create",
+  "btnRepay": "btn-repay",
+  "detailInfoEstGasValue": "detailInfoValue-estGas",
+  "inpDebtAmt": "inp-debtAmt",
+  "inpStateCollateralAmt": "inp-stateCollateralAmt",
+  "labelMaxBorrowAmt": "label-maxBorrowAmt",
+  "radioInpLoanDecrease": "radioInp-loan-decrease"
+}
