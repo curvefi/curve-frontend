@@ -168,8 +168,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         const arrLength = oraclePriceArray.length - 1
         const marketPrices = get().markets.pricesMapper[llammaId]
         const { prices: oraclePrice } = marketPrices ?? {}
-        console.log(lendOhlcResponse)
-        console.log(oraclePrice, oraclePriceArray[arrLength])
         oraclePriceArray[arrLength] = {
           ...oraclePriceArray[arrLength],
           value: oraclePrice ? +oraclePrice : oraclePriceArray[arrLength].value,
