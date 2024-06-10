@@ -30,7 +30,6 @@ export const fortmatic = fortmaticModule({ apiKey: 'pk_live_190B10CE18F47DCD' })
 
 // see https://onboard.blocknative.com/docs/wallets/walletconnect for additional options
 export const walletConnect = walletConnectModule({
-  version: 2,
   projectId: WALLET_CONNECT_PROJECT_ID,
   dappUrl: 'https://curve.fi',
 })
