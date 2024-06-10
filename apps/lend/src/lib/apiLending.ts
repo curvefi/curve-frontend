@@ -1092,16 +1092,17 @@ const loanRepay = {
     { signerAddress }: Api,
     { owm }: OWMData,
     userBorrowed: string,
-    isFullRepay: boolean
+    isFullRepay: boolean,
+    userStateDebt: string
   ) => {
     log('detailInfo', userBorrowed)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
 
     try {
       const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp] = await Promise.allSettled([
-        signerAddress ? owm.repayHealth(userBorrowed, true) : '',
-        signerAddress ? owm.repayHealth(userBorrowed, false) : '',
-        owm.stats.futureRates(0, `-${userBorrowed}`),
+        signerAddress && !isFullRepay ? owm.repayHealth(userBorrowed, true) : '',
+        signerAddress && !isFullRepay ? owm.repayHealth(userBorrowed, false) : '',
+        owm.stats.futureRates(0, `-${isFullRepay ? userStateDebt : userBorrowed}`),
         isFullRepay ? ([0, 0] as [number, number]) : owm.repayBands(userBorrowed),
         isFullRepay ? ['', ''] : owm.repayPrices(userBorrowed),
       ])
@@ -1130,7 +1131,8 @@ const loanRepay = {
     stateCollateral: string,
     userCollateral: string,
     userBorrowed: string,
-    maxSlippage: string
+    maxSlippage: string,
+    userStateDebt: string
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1141,6 +1143,7 @@ const loanRepay = {
       activeKey: string
       resp:
         | (DetailInfoLeverageResp & {
+            repayIsAvailable: boolean
             repayIsFull: boolean
             expectedBorrowed: ExpectedBorrowed | null
             routes: Routes | null
@@ -1162,18 +1165,27 @@ const loanRepay = {
 
       const repayIsFull = fulfilledValue(repayIsFullResp) ?? false
 
-      const [healthFullResp, healthNotFullResp, futureRatesResp, bandsResp, pricesResp, routesResp, priceImpactResp] =
-        await Promise.allSettled([
-          signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, true) : '',
-          signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, false) : '',
-          owm.stats.futureRates(0, `-${expectedBorrowed?.totalBorrowed}`),
-          repayIsFull
-            ? ([0, 0] as [number, number])
-            : owm.leverage.repayBands(stateCollateral, userCollateral, userBorrowed),
-          repayIsFull ? ['', ''] : owm.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed),
-          owm.leverage.repayRoute(stateCollateral, userCollateral),
-          owm.leverage.repayPriceImpact(stateCollateral, userCollateral, userBorrowed),
-        ])
+      const [
+        healthFullResp,
+        healthNotFullResp,
+        futureRatesResp,
+        bandsResp,
+        pricesResp,
+        routesResp,
+        priceImpactResp,
+        repayIsAvailableResp,
+      ] = await Promise.allSettled([
+        signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, true) : '',
+        signerAddress ? owm.leverage.repayHealth(stateCollateral, userCollateral, userBorrowed, false) : '',
+        owm.stats.futureRates(0, `-${repayIsFull ? userStateDebt : expectedBorrowed?.totalBorrowed}`),
+        repayIsFull
+          ? ([0, 0] as [number, number])
+          : owm.leverage.repayBands(stateCollateral, userCollateral, userBorrowed),
+        repayIsFull ? ['', ''] : owm.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed),
+        owm.leverage.repayRoute(stateCollateral, userCollateral),
+        owm.leverage.repayPriceImpact(stateCollateral, userCollateral, userBorrowed),
+        owm.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed),
+      ])
 
       const bands = fulfilledValue(bandsResp) ?? []
 
@@ -1183,6 +1195,7 @@ const loanRepay = {
         futureRates: fulfilledValue(futureRatesResp),
         prices: fulfilledValue(pricesResp) ?? [],
         bands: _reverseBands(bands),
+        repayIsAvailable: fulfilledValue(repayIsAvailableResp) ?? false,
         repayIsFull,
         expectedBorrowed,
         routes: fulfilledValue(routesResp) ?? null,

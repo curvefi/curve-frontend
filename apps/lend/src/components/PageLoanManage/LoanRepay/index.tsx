@@ -60,6 +60,7 @@ const LoanRepay = ({
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
+  const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanRepay.setFormValues)
   const resetState = useStore((state) => state.loanRepay.resetState)
@@ -163,7 +164,7 @@ const LoanRepay = ({
               userWallet={userBalances}
               borrowed_token={owm.borrowed_token}
               collateral_token={owm.collateral_token}
-              type={(swapRequired && detailInfoLeverage?.repayIsFull) || isFullRepay ? 'full' : 'partial'}
+              type={detailInfoLeverage?.repayIsFull || isFullRepay ? 'full' : 'partial'}
             />
           </AlertBox>
         )
@@ -255,9 +256,8 @@ const LoanRepay = ({
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   usePageVisibleInterval(
     () => {
@@ -279,7 +279,10 @@ const LoanRepay = ({
   )
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) {
+      resetState()
+      updateFormValues({})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
@@ -326,9 +329,11 @@ const LoanRepay = ({
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disable = formStatus.isInProgress
   const isFullRepay = formValues.isFullRepay || (detailInfoLeverage?.repayIsFull ?? false)
-  const { swapRequired } = _parseValues(formValues)
+  const isPayableWithStateBorrowed = state ? BN(state.borrowed).isGreaterThanOrEqualTo(state.debt) : false
+  const isPayableWithWalletBorrowed =
+    state && userBalances ? BN(userBalances.borrowed).isGreaterThanOrEqualTo(state.debt) : false
   const disableCheckbox =
-    !signerAddress || disable || swapRequired || (state && userBalances && +state.debt > +userBalances.borrowed)
+    !signerAddress || disable || !!expectedBorrowed || (!isPayableWithWalletBorrowed && !isPayableWithStateBorrowed)
 
   return (
     <>
@@ -347,8 +352,10 @@ const LoanRepay = ({
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(state?.collateral, { defaultValue: '-' })}
-                handleInpChange={(stateCollateral) => updateFormValues({ stateCollateral })}
-                handleMaxClick={() => updateFormValues({ stateCollateral: state?.collateral ?? '' })}
+                handleInpChange={(stateCollateral) => updateFormValues({ stateCollateral, isFullRepay: false })}
+                handleMaxClick={() =>
+                  updateFormValues({ stateCollateral: state?.collateral ?? '', isFullRepay: false })
+                }
               />
 
               <InpToken
@@ -363,8 +370,10 @@ const LoanRepay = ({
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-                handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
-                handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+                handleInpChange={(userCollateral) => updateFormValues({ userCollateral, isFullRepay: false })}
+                handleMaxClick={() =>
+                  updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
+                }
               />
             </>
           )}
@@ -372,7 +381,7 @@ const LoanRepay = ({
           <InpToken
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
-            inpDisabled={disable}
+            inpDisabled={disable || (!hasLeverage && !state)}
             inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
             inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
@@ -381,17 +390,40 @@ const LoanRepay = ({
             tokenBalance={userBalances?.borrowed}
             debt={state?.debt ?? '0'}
             handleInpChange={(userBorrowed) => {
-              const isFullRepay = BN(userBorrowed).isEqualTo(state?.debt ?? '0')
-              updateFormValues({ userBorrowed, isFullRepay })
-            }}
-            handleMaxClick={() => {
-              if (userBalances && state) {
-                let isFullRepay = BN(userBalances.borrowed).isGreaterThanOrEqualTo(state?.debt ?? '0')
-                const max = isFullRepay ? state.debt : userBalances.borrowed
-                updateFormValues({ userBorrowed: max, isFullRepay })
+              if (expectedBorrowed) {
+                updateFormValues({ userBorrowed, isFullRepay: false })
               } else {
-                updateFormValues({ userBorrowed: '', isFullRepay: false })
+                let isFullRepay = false
+                if (state) {
+                  const { borrowed: stateBorrowed, debt: stateDebt } = state
+                  isFullRepay = BN(BN(stateBorrowed).plus(userBorrowed)).isGreaterThanOrEqualTo(stateDebt)
+                }
+                updateFormValues({ userBorrowed, isFullRepay })
               }
+            }}
+            handleMaxClick={async () => {
+              let userBorrowed = ''
+              let isFullRepay = false
+
+              if (+userBalances.borrowed === 0) {
+                userBorrowed = ''
+              } else if (expectedBorrowed) {
+                userBorrowed = userBalances.borrowed
+              } else if (api && owmData && userBalances && state?.debt) {
+                const { userLoanDetailsResp } = await fetchAllUserDetails(api, owmData, true)
+                const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
+                  userLoanDetailsResp?.details?.state ?? {}
+
+                const amountNeeded = BN(stateDebt).minus(stateBorrowed)
+                const amountNeededWithInterestRate = amountNeeded.plus(amountNeeded.multipliedBy(0.01))
+                if (amountNeededWithInterestRate.isGreaterThan(userBalances.borrowed)) {
+                  userBorrowed = userBalances.borrowed
+                } else {
+                  userBorrowed = ''
+                  isFullRepay = true
+                }
+              }
+              updateFormValues({ userBorrowed, isFullRepay })
             }}
           />
         </FieldsWrapper>
@@ -407,7 +439,7 @@ const LoanRepay = ({
           if (isFullRepay) {
             updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay })
           } else {
-            updateFormValues({ isFullRepay })
+            updateFormValues({ ...DEFAULT_FORM_VALUES })
           }
         }}
       >
@@ -439,13 +471,18 @@ const LoanRepay = ({
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {txInfoBar}
           {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-          {(formStatus.error || formStatus.stepError) && (
+          {formStatus.error === 'error-full-repayment-required' ? (
+            <AlertBox alertType="error">
+              {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is
+              allowed during liquidation mode.`}
+            </AlertBox>
+          ) : formStatus.error || formStatus.stepError ? (
             <AlertFormError
               limitHeight
               errorKey={formStatus.error || formStatus.stepError}
               handleBtnClose={() => updateFormValues({})}
             />
-          )}
+          ) : null}
           {steps && <Stepper steps={steps} />}
         </LoanFormConnect>
       )}

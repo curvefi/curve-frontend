@@ -80,7 +80,7 @@ const MarketList = (pageProps: PageMarketList) => {
 
   useEffect(() => {
     if (isLoaded) {
-      updateFormValues()
+      updateFormValues(true)
       setInitialLoaded(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

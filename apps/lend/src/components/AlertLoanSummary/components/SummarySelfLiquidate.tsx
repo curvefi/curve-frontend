@@ -21,7 +21,7 @@ const SummarySelfLiquidate = ({
   const amountNeededFromWallet = +stateDebt - +stateBorrowed
   const walletAmount = amountNeededFromWallet - +walletBorrowed <= 0 ? amountNeededFromWallet : +walletBorrowed
   const remainingBalance = +stateDebt - +stateBorrowed - +walletAmount
-  const minWidth = '180px'
+  const minWidth = '170px'
 
   return (
     <>
@@ -30,7 +30,9 @@ const SummarySelfLiquidate = ({
       {title}
 
       <Item $minWidth={minWidth} label={t`Debt:`} value={`${format(stateDebt)} ${borrowedSymbol}`} />
-      <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+      {+stateBorrowed > 0 && (
+        <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+      )}
       <Item $minWidth={minWidth} label={t`Wallet:`} value={`-${format(walletAmount)} ${borrowedSymbol}`} />
       <Item
         $isDivider
@@ -43,7 +45,7 @@ const SummarySelfLiquidate = ({
         <Item
           $marginTop="var(--spacing-3)"
           $minWidth={minWidth}
-          label={t`Return to wallet:`}
+          label={t`Return to wallet ≈`}
           value={`${format(stateCollateral)} ${collateralSymbol}`}
         />
       )}

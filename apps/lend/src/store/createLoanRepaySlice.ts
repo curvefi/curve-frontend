@@ -27,7 +27,7 @@ const sliceKey = 'loanRepay'
 // prettier-ignore
 export type LoanRepaySlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, userState: UserLoanState): Promise<void>
     fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
     setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, shouldRefetch?: boolean): Promise<void>
 
@@ -60,7 +60,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage) => {
+    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, userState) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { isFullRepay, userBorrowed, userCollateral, stateCollateral } = formValues
@@ -85,18 +85,24 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           stateCollateral,
           userCollateral,
           userBorrowed,
-          maxSlippage
+          maxSlippage,
+          userState.debt
         )
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
-        respError = resp.error
+
+        if (resp.resp && !resp.resp.repayIsAvailable && !resp.resp.repayIsFull) {
+          sliceState.setStateByKey('formStatus', { ...formStatus, error: 'error-full-repayment-required' })
+        } else {
+          respError = resp.error
+        }
       } else {
-        const resp = await loanRepay.detailInfo(activeKey, api, owmData, userBorrowed, isFullRepay)
+        const resp = await loanRepay.detailInfo(activeKey, api, owmData, userBorrowed, isFullRepay, userState.debt)
         sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
         respError = resp.error
       }
 
       // set error to status
-      if (respError.includes('Negative debt') || respError.includes('Reserves too small')) {
+      if (respError) {
         sliceState.setStateByKey('formStatus', { ...formStatus, error: respError })
       }
     },
@@ -143,6 +149,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         userBorrowedError: '',
         userCollateralError: '',
       }
+
       const cFormStatus: FormStatus = {
         ...DEFAULT_FORM_STATUS,
         isApproved: formStatus.isApproved,
@@ -162,8 +169,6 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       if (!signerAddress) return
 
       const { stateCollateral, userBorrowed, userCollateral } = cFormValues
-      const { swapRequired } = _parseValues(cFormValues)
-      const userActiveKey = getUserActiveKey(api, owmData)
 
       // userState
       const userState = await user.fetchUserLoanState(api, owmData, shouldRefetch)
@@ -174,32 +179,11 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       const userBalancesResp = await user.fetchUserMarketBalances(api, owmData, true)
       cFormValues.stateCollateralError = isTooMuch(stateCollateral, userState.collateral) ? 'too-much-collateral' : ''
       cFormValues.userCollateralError = isTooMuch(userCollateral, userBalancesResp.collateral) ? 'too-much' : ''
-      cFormValues.userBorrowedError = isTooMuch(userBorrowed, userBalancesResp.borrowed)
-        ? 'too-much'
-        : isTooMuch(userBorrowed, userState.debt)
-        ? 'too-much-debt'
-        : ''
+      cFormValues.userBorrowedError = isTooMuch(userBorrowed, userBalancesResp.borrowed) ? 'too-much' : ''
       sliceState.setStateByKey('formValues', { ...cFormValues })
 
-      if (swapRequired) {
-        // check if repay is allow
-        const { repayIsAvailable, error: repayIsAvailableError } = await loanRepay.repayIsAvailableLeverage(
-          owmData,
-          stateCollateral,
-          userCollateral,
-          userBorrowed
-        )
-        if (repayIsAvailableError) {
-          sliceState.setStateByKey('formStatus', { ...cFormStatus, error: repayIsAvailableError })
-        } else {
-          sliceState.setStateByKey('repayIsAvailable', { [userActiveKey]: repayIsAvailable })
-        }
-
-        if (repayIsAvailableError || !repayIsAvailable) return
-      }
-
       // api calls
-      await sliceState.fetchDetailInfo(activeKey, api, owmData, maxSlippage)
+      await sliceState.fetchDetailInfo(activeKey, api, owmData, maxSlippage, userState)
       sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage)
     },
 

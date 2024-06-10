@@ -3,7 +3,6 @@ import type { SummaryProps } from '@/components/AlertLoanSummary/types'
 import React from 'react'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils'
 import { format } from '@/components/AlertLoanSummary/utils'
 
 import Item from '@/components/AlertLoanSummary/components/Item'
@@ -16,9 +15,8 @@ const SummaryPartial = ({
   userState,
   borrowedSymbol,
 }: SummaryProps) => {
-  const { debt: stateDebt = '0' } = userState ?? {}
+  const { debt: stateDebt = '0', borrowed: stateBorrowed = '0' } = userState ?? {}
 
-  const balance = +stateDebt - +formValueUserBorrowed
   const minWidth = '190px'
 
   return (
@@ -27,24 +25,26 @@ const SummaryPartial = ({
 
       {title}
 
+      <Item $minWidth={minWidth} label={t`Debt:`} value={`${format(stateDebt)} ${borrowedSymbol}`} />
+
       {+receive > 0 ? (
         <>
-          <Item $minWidth={minWidth} label={t`Debt:`} value={`${format(stateDebt)} ${borrowedSymbol}`} />
-          <Item
-            $minWidth={minWidth}
-            label={t`Receive:`}
-            value={`${+receive > 0 ? '-' : ''}${format(receive)} ${borrowedSymbol}`}
-          />
+          {+stateBorrowed > 0 && (
+            <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+          )}
+          <Item $minWidth={minWidth} label={t`Receive:`} value={`-${format(receive)} ${borrowedSymbol}`} />
           <Item
             $minWidth={minWidth}
             $isDivider
             label={t`Debt balance:`}
-            value={`${format(+stateDebt - +receive)} ${borrowedSymbol}`}
+            value={`${format(+stateDebt - (+receive + +stateBorrowed))} ${borrowedSymbol}`}
           />
         </>
       ) : (
         <>
-          <Item $minWidth={minWidth} label={t`Debt:`} value={`${format(stateDebt)} ${borrowedSymbol}`} />
+          {+stateBorrowed > 0 && (
+            <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+          )}
           <Item
             $minWidth={minWidth}
             label={t`Wallet:`}
@@ -54,7 +54,7 @@ const SummaryPartial = ({
             $minWidth={minWidth}
             $isDivider
             label={t`Debt balance:`}
-            value={`${format(balance)} ${borrowedSymbol}`}
+            value={`${format(+stateDebt - (+stateBorrowed + +formValueUserBorrowed))} ${borrowedSymbol}`}
           />
         </>
       )}
