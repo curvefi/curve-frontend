@@ -267,7 +267,7 @@ export const TRICRYPTO_MIN_MAX_PARAMETERS = {
     max: 1,
   },
   maHalfTime: {
-    min: 0,
+    min: 60,
     max: 7 * 86400,
   },
 }
@@ -302,7 +302,7 @@ export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
     max: 1,
   },
   maHalfTime: {
-    min: 0,
+    min: 60,
     max: 7 * 86400,
   },
 }
