@@ -461,6 +461,7 @@ const networks: Record<ChainId, NetworkConfig> = {
         symbol: 'crvUSD',
       },
     ],
+    pricesApi: true,
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
