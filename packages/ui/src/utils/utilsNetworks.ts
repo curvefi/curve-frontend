@@ -308,4 +308,20 @@ export const baseNetworksConfig = {
     scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/token/${hash}`,
   },
+  5000: {
+    // TODO: fix this before going live
+    ...NETWORK_CONFIG_DEFAULT,
+    name: 'Mantle',
+    id: 'mantle' as const,
+    hex: '0x1388',
+    icon: RCEthereumLogo,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
+    networkId: 5000 as const,
+    orgUIPath: '',
+    rpcUrlConnectWallet: `https://rpc.mantle.xyz`,
+    symbol: 'MNT',
+    scanAddressPath: (hash: string) => `https://mantlescan.xyz/address/${hash}`,
+    scanTxPath: (hash: string) => `https://mantlescan.xyz/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://mantlescan.xyz/token/${hash}`,
+  },
 }

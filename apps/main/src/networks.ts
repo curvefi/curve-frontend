@@ -481,6 +481,18 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
+  5000: {
+    // TODO: fix this before going live
+    ...NETWORK_CONFIG_DEFAULT,
+    ...baseNetworksConfig['5000'],
+    poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_MANTLE_DEV_RPC_URL! : `https://rpc.mantle.xyz`,
+    swap: {
+      fromAddress: '',
+      toAddress: '',
+    },
+    showInSelectNetwork: false,
+  },
 }
 
 export const networksIdMapper = Object.keys(networks).reduce((prev, curr: unknown) => {
