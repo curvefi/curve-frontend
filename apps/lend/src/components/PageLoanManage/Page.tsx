@@ -153,6 +153,7 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
+
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex padding="0 0 var(--spacing-2)">
@@ -171,6 +172,7 @@ const Page: NextPage = () => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
+
       <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
         <AppPageFormsWrapper navHeight={navHeight}>
           {!isMdUp && <TitleComp />}
