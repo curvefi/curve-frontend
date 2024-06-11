@@ -164,9 +164,8 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   // max slippage
   useEffect(() => {

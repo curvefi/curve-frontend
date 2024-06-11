@@ -163,12 +163,14 @@ const LoanCollateralAdd = ({
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) {
+      resetState()
+      updateFormValues({})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
