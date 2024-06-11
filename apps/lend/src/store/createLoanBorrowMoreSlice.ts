@@ -203,6 +203,19 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
 
       const { signerAddress } = api
 
+      // validation - if in soft-liquidation mode, user cannot add more collateral
+      if (signerAddress && +cFormValues.userCollateral > 0) {
+        const userActiveKey = helpers.getUserActiveKey(api, owmData)
+        const state = await user.loansDetailsMapper[userActiveKey]?.details?.state
+
+        if (!state) return
+
+        const isInSoftLiquidationMode = +state.borrowed > 0
+        if (isInSoftLiquidationMode) {
+          sliceState.setStateByKey('formStatus', { ...cFormStatus, error: 'error-liquidation-mode' })
+        }
+      }
+
       // validation
       if (signerAddress) {
         const userBalances = await user.fetchUserMarketBalances(api, owmData, shouldRefetch)

@@ -21,8 +21,8 @@ export function _getStepTokensStr(
   { collateral_token, borrowed_token }: OWM
 ) {
   let list = []
-  const haveUserCollateral = +userCollateral > 0 && !userCollateralError
-  const haveUserBorrowed = +userBorrowed > 0 && !userBorrowedError
+  const haveUserCollateral = +userCollateral > 0
+  const haveUserBorrowed = +userBorrowed > 0
 
   if (haveUserBorrowed) list.push({ value: userBorrowed, symbol: borrowed_token.symbol })
   if (haveUserCollateral) list.push({ value: userCollateral, symbol: collateral_token.symbol })
