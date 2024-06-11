@@ -320,7 +320,7 @@ const searchFn = (filterValue: string, proposals: ProposalData[]) => {
     ],
   })
 
-  const result = fuse.search(filterValue, { limit: 10 })
+  const result = fuse.search(filterValue)
 
   return result.map((r) => r.item)
 }
