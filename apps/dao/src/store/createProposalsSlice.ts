@@ -60,7 +60,7 @@ const DEFAULT_STATE: SliceState = {
   },
   searchValue: '',
   activeFilter: 'all',
-  activeSortBy: 'voteId',
+  activeSortBy: 'endingSoon',
   activeSortDirection: 'desc',
   curveJsProposalMapper: {},
   proposalsMapper: {},
