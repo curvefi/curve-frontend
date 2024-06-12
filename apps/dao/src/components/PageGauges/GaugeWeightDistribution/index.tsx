@@ -23,12 +23,12 @@ const GaugeWeightDistribution = () => {
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && (
+        {gaugesLoading === 'ERROR' && (
           <ErrorMessageWrapper>
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
           </ErrorMessageWrapper>
         )}
-        {gaugesLoading === 'ERROR' && <BarChartComponent data={gaugeFormattedData} />}
+        {gaugesLoading === 'SUCCESS' && <BarChartComponent data={gaugeFormattedData} />}
       </Box>
     </Box>
   )
