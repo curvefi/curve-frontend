@@ -12,7 +12,7 @@ const ErrorMessage = ({ message, onClick }: Props) => {
   return (
     <>
       <Message>{message}</Message>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="small">
         <Icon name="Renew" size={16} />
       </IconButton>
     </>
@@ -22,6 +22,7 @@ const ErrorMessage = ({ message, onClick }: Props) => {
 const Message = styled.p`
   font-weight: var(--semi-bold);
   font-size: var(--font-size-2);
+  margin-bottom: var(--spacing-1);
 `
 
 export default ErrorMessage

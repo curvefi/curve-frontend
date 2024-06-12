@@ -9,7 +9,7 @@ import { shortenTokenAddress } from '@/ui/utils'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  gaugesLoading: boolean
+  gaugesLoading: FetchingState
   filteringGaugesLoading: boolean
   activeSortBy: SortByFilterGauges
   activeSortDirection: ActiveSortDirection
@@ -25,7 +25,7 @@ const sliceKey = 'gauges'
 // prettier-ignore
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
-    getGauges(curve: CurveApi): Promise<void>
+    getGauges(forceReload?: boolean): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
     setSearchValue(searchValue: string): void
     setActiveSortBy(sortBy: SortByFilterGauges): void
@@ -39,7 +39,7 @@ export type GaugesSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  gaugesLoading: true,
+  gaugesLoading: 'LOADING',
   filteringGaugesLoading: true,
   activeSortBy: 'relativeWeight',
   activeSortDirection: 'desc',
@@ -53,11 +53,11 @@ const DEFAULT_STATE: SliceState = {
 const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    getGauges: async (curve: CurveApi) => {
+    getGauges: async (forceReload: boolean = false) => {
       const { gaugeMapper } = get()[sliceKey]
 
-      if (gaugeMapper.length === 0) {
-        get().setAppStateByKey(sliceKey, 'gaugesLoading', true)
+      if (gaugeMapper.length === 0 || forceReload) {
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', 'LOADING')
       }
 
       try {
@@ -89,9 +89,10 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         get().setAppStateByKey(sliceKey, 'gaugeMapper', formattedGauges.gauges)
         get().storeCache.setStateByKey('cacheGaugeMapper', gaugeFormattedData)
         get().setAppStateByKey(sliceKey, 'gaugeFormattedData', gaugeFormattedData)
-        get().setAppStateByKey(sliceKey, 'gaugesLoading', false)
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', 'SUCCESS')
       } catch (error) {
         console.log(error)
+        get().setAppStateByKey(sliceKey, 'gaugesLoading', 'ERROR')
       }
     },
     getHistoricGaugeWeights: async (gaugeAddress: string) => {
