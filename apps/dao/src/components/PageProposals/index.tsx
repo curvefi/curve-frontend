@@ -15,9 +15,12 @@ import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
+import ErrorMessage from '@/components/ErrorMessage'
+import curve from '@curvefi/api'
 
 const Proposals = () => {
   const {
+    getProposals,
     proposalsLoadingState,
     filteringProposalsLoading,
     activeSortBy,
@@ -34,6 +37,11 @@ const Proposals = () => {
   const isSmUp = useStore((state) => state.isSmUp)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const navigate = useNavigate()
+  const curve = useStore((state) => state.curve)
+
+  const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
+  const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
+  const isError = proposalsLoadingState === 'ERROR'
 
   const handleSortingMethodChange = useCallback(
     (key: React.Key) => {
@@ -118,19 +126,24 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {proposalsLoadingState === 'LOADING' || filteringProposalsLoading ? (
+            {isLoading && (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>
-            ) : (
+            )}
+            {isError && (
+              <ErrorMessageWrapper>
+                <ErrorMessage message={t`Error fetching proposals`} onClick={() => getProposals(curve!)} />
+              </ErrorMessageWrapper>
+            )}
+            {isSuccess &&
               proposals.map((proposal, index) => (
                 <Proposal
                   proposalData={proposal}
                   handleClick={handleProposalClick}
                   key={`${proposal.voteId}-${index}`}
                 />
-              ))
-            )}
+              ))}
           </ProposalsWrapper>
         </Box>
       </ProposalsContainer>
@@ -264,6 +277,19 @@ const SearchMessage = styled.p`
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   width: 100%;
+`
+
+const ErrorMessageWrapper = styled.div`
+  width: 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5) 0;
+  @media (min-width: 25rem) {
+    padding: var(--spacing-5) var(--spacing-3);
+  }
 `
 
 export default Proposals
