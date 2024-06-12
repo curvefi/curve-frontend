@@ -2,7 +2,7 @@ import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanRepay/types'
 import type { Step } from '@/ui/Stepper/types'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -10,7 +10,8 @@ import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/components/PageL
 import { DEFAULT_FORM_VALUES, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/constants'
 import { _showNoLoanFound } from '@/utils/helpers'
-import { BN, formatNumber } from '@/ui/utils'
+import { _biCalculatePercentage, _biIsGreaterThan, _biIsGreaterThanOrEqualTo, _biSum } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getCollateralListPathname } from '@/utils/utilsRouter'
 import { helpers } from '@/lib/apiLending'
@@ -21,7 +22,7 @@ import useStore from '@/store/useStore'
 import { FieldsWrapper } from '@/components/SharedFormStyles/FieldsWrapper'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanManage/styles'
 import AlertBox from '@/ui/AlertBox'
-import AlertFormError from '@/components/AlertFormError'
+import AlertFormError, { FormError } from '@/components/AlertFormError'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
 import AlertSummary from '@/components/AlertLoanSummary'
 import Box from '@/ui/Box'
@@ -72,6 +73,7 @@ const LoanRepay = ({
 
   const { signerAddress } = api ?? {}
   const { state } = userLoanDetails || {}
+  const { decimals: borrowedTokenDecimals } = borrowed_token ?? {}
   const { expectedBorrowed } = detailInfoLeverage ?? {}
 
   const updateFormValues = useCallback(
@@ -329,11 +331,22 @@ const LoanRepay = ({
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disable = formStatus.isInProgress
   const isFullRepay = formValues.isFullRepay || (detailInfoLeverage?.repayIsFull ?? false)
-  const isPayableWithStateBorrowed = state ? BN(state.borrowed).isGreaterThanOrEqualTo(state.debt) : false
-  const isPayableWithWalletBorrowed =
-    state && userBalances ? BN(userBalances.borrowed).isGreaterThanOrEqualTo(state.debt) : false
-  const disableCheckbox =
-    !signerAddress || disable || !!expectedBorrowed || (!isPayableWithWalletBorrowed && !isPayableWithStateBorrowed)
+
+  const disableCheckbox = useMemo(() => {
+    if (state && userBalances && borrowedTokenDecimals) {
+      const { borrowed: stateBorrowed, debt: stateDebt } = state
+      const { borrowed: userBorrowed } = userBalances
+
+      const isPayableWithStateBorrowed = _biIsGreaterThanOrEqualTo(stateBorrowed, stateDebt, borrowedTokenDecimals)
+      const isPayableWithWalletBorrowed = _biIsGreaterThanOrEqualTo(userBorrowed, stateDebt, borrowedTokenDecimals)
+
+      return (
+        !signerAddress || disable || !!expectedBorrowed || !(isPayableWithWalletBorrowed || isPayableWithStateBorrowed)
+      )
+    }
+
+    return true
+  }, [borrowedTokenDecimals, disable, expectedBorrowed, signerAddress, state, userBalances])
 
   return (
     <>
@@ -392,38 +405,47 @@ const LoanRepay = ({
             handleInpChange={(userBorrowed) => {
               if (expectedBorrowed) {
                 updateFormValues({ userBorrowed, isFullRepay: false })
-              } else {
-                let isFullRepay = false
-                if (state) {
-                  const { borrowed: stateBorrowed, debt: stateDebt } = state
-                  isFullRepay = BN(BN(stateBorrowed).plus(userBorrowed)).isGreaterThanOrEqualTo(stateDebt)
-                }
-                updateFormValues({ userBorrowed, isFullRepay })
+                return
               }
+
+              if (!expectedBorrowed && state && borrowedTokenDecimals) {
+                const { borrowed: stateBorrowed, debt: stateDebt } = state
+                const totalRepay = _biSum([stateBorrowed, userBorrowed], borrowedTokenDecimals)
+                const isFullRepay = _biIsGreaterThanOrEqualTo(totalRepay, stateDebt, borrowedTokenDecimals)
+                updateFormValues({ userBorrowed, isFullRepay })
+                return
+              }
+
+              updateFormValues({ userBorrowed, isFullRepay: false })
             }}
             handleMaxClick={async () => {
-              let userBorrowed = ''
-              let isFullRepay = false
-
               if (+userBalances.borrowed === 0) {
-                userBorrowed = ''
-              } else if (expectedBorrowed) {
-                userBorrowed = userBalances.borrowed
-              } else if (api && owmData && userBalances && state?.debt) {
+                updateFormValues({ userBorrowed: '', isFullRepay: false })
+                return
+              }
+
+              if (expectedBorrowed) {
+                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                return
+              }
+
+              if (api && owmData && userBalances && state?.debt && borrowedTokenDecimals) {
                 const { userLoanDetailsResp } = await fetchAllUserDetails(api, owmData, true)
                 const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
                   userLoanDetailsResp?.details?.state ?? {}
 
-                const amountNeeded = BN(stateDebt).minus(stateBorrowed)
-                const amountNeededWithInterestRate = amountNeeded.plus(amountNeeded.multipliedBy(0.01))
-                if (amountNeededWithInterestRate.isGreaterThan(userBalances.borrowed)) {
-                  userBorrowed = userBalances.borrowed
-                } else {
-                  userBorrowed = ''
-                  isFullRepay = true
+                const amountNeeded = _biSum([stateDebt, stateBorrowed], borrowedTokenDecimals)
+                const amountNeededWithInterestRate = amountNeeded + _biCalculatePercentage(amountNeeded, 1n)
+
+                if (_biIsGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
+                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                  return
                 }
+
+                updateFormValues({ userBorrowed: '', isFullRepay: true })
+                return
               }
-              updateFormValues({ userBorrowed, isFullRepay })
+              updateFormValues({ userBorrowed: '', isFullRepay: false })
             }}
           />
         </FieldsWrapper>
@@ -471,7 +493,7 @@ const LoanRepay = ({
         <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
           {txInfoBar}
           {!!healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>}
-          {formStatus.error === 'error-full-repayment-required' ? (
+          {formStatus.error === FormError.FullRepaymentRequired ? (
             <AlertBox alertType="error">
               {t`Only partial repayment from wallet's ${borrowed_token?.symbol} or full repayment from collateral or wallet's ${collateral_token?.symbol} is
               allowed during liquidation mode.`}

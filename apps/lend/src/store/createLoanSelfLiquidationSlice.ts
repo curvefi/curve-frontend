@@ -3,10 +3,11 @@ import type { State } from '@/store/useStore'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
 
+import { _biIsGreaterThanOrEqualTo } from '@/ui/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { FormWarning } from '@/components/AlertFormWarning'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
-import { BN } from '@/ui/utils'
 import apiLending from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -70,22 +71,30 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       const { userLoanDetailsResp, userLoanBalancesResp } = await user.fetchAll(api, owmData, true)
 
+      const borrowedTokenDecimals = owmData.owm.borrowed_token.decimals
+
       if (userLoanDetailsResp && userLoanBalancesResp) {
-        const { borrowed: walletBorrowed } = userLoanBalancesResp
+        const walletBorrowed = userLoanBalancesResp.borrowed
         const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
 
         const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp
-        const liquidationAmt = BN(stateBorrowed).isGreaterThanOrEqualTo(tokensToLiquidate) ? '0' : tokensToLiquidate
+        const liquidationAmt = _biIsGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
+          ? '0'
+          : tokensToLiquidate
 
         sliceState.setStateByKeys({ liquidationAmt, futureRates })
 
         // validation
-        const canSelfLiquidateWithStateBorrowed = BN(stateBorrowed).isGreaterThanOrEqualTo(stateDebt)
+        const canSelfLiquidateWithStateBorrowed = _biIsGreaterThanOrEqualTo(
+          stateBorrowed,
+          stateDebt,
+          borrowedTokenDecimals
+        )
         const canSelfLiquidateWithWalletBorrowed = _canSelfLiquidate(walletBorrowed, tokensToLiquidate)
         const warning =
           !canSelfLiquidateWithStateBorrowed && !canSelfLiquidateWithWalletBorrowed
-            ? 'warning-not-enough-crvusd'
+            ? FormWarning.NotEnoughCrvusd
             : formStatus.warning
         sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error || formStatus.error, warning })
       }

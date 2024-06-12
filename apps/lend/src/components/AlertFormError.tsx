@@ -5,44 +5,43 @@ import React, { useMemo } from 'react'
 
 import AlertBox from '@/ui/AlertBox'
 
-const ALERT_FORM_ERROR_KEYS = {
+export enum FormError {
   // vault
 
-  // all
-  'error-api': 'error-api',
-  'error-existing-loan': 'error-existing-loan',
-  'error-est-gas-approval': 'error-est-gas-approval',
-  'error-invalid-provider': 'error-invalid-provider',
-  'error-wallet-balances': 'error-wallet-balances',
-  'error-step-approve': 'error-step-approve',
-  'error-liquidation-mode': 'error-liquidation-mode',
-  'error-total-supply': 'error-total-supply',
-} as const
+  // repay
+  FullRepaymentRequired = 'error-full-repayment-required',
 
-export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
+  // all
+  API = 'error-api',
+  ExistingLoan = 'error-existing-loan',
+  EstGasApproval = 'error-est-gas-approval',
+  InvalidProvider = 'error-invalid-provider',
+  WalletBalances = 'error-wallet-balances',
+  StepApprove = 'error-step-approve',
+  LiquidationMode = 'error-liquidation-mode',
+  TotalSupply = 'error-total-supply',
+}
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
-  errorKey: AlertFormErrorKey | string
+  errorKey: FormError | string
 }
 
 // generate message that only display if it cannot get error message from api.
 const AlertFormError = ({ errorKey, ...props }: React.PropsWithChildren<Props>) => {
   const errorMessage = useMemo(() => {
     // locale will update inside component
-    const messages: { [key: AlertFormErrorKey | string]: string } = {
+    const messages: { [key: FormError | string]: string } = {
       // vault
-      [ALERT_FORM_ERROR_KEYS['error-api']]: t`Unable to get data from api`,
+      [FormError.API]: t`Unable to get data from api`,
 
       // all
-      [ALERT_FORM_ERROR_KEYS['error-existing-loan']]: t`Unable to check if loan existed`,
-      [ALERT_FORM_ERROR_KEYS['error-wallet-balances']]: t`Unable to get wallet balances`,
-      [ALERT_FORM_ERROR_KEYS['error-est-gas-approval']]: t`Unable to get approval or estimated gas`,
-      [ALERT_FORM_ERROR_KEYS['error-invalid-provider']]: t`Unable to find provider`,
-      [ALERT_FORM_ERROR_KEYS['error-step-approve']]: t`Unable to approve spending`,
-      [ALERT_FORM_ERROR_KEYS[
-        'error-liquidation-mode'
-      ]]: t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,
-      [ALERT_FORM_ERROR_KEYS['error-total-supply']]: t`Unable to get total supply`,
+      [FormError.ExistingLoan]: t`Unable to check if loan existed`,
+      [FormError.WalletBalances]: t`Unable to get wallet balances`,
+      [FormError.EstGasApproval]: t`Unable to get approval or estimated gas`,
+      [FormError.InvalidProvider]: t`Unable to find provider`,
+      [FormError.StepApprove]: t`Unable to approve spending`,
+      [FormError.LiquidationMode]: t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,
+      [FormError.TotalSupply]: t`Unable to get total supply`,
     }
 
     if (errorKey) {

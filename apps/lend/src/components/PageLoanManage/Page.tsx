@@ -126,7 +126,7 @@ const Page: NextPage = () => {
     owmDataCachedOrApi,
     userActiveKey,
     borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
-    collateral_token: owmDataCachedOrApi?.owm.collateral_token,
+    collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
   }
 
   return (

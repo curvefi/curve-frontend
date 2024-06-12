@@ -7,6 +7,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import { DEFAULT_FORM_VALUES, DEFAULT_FORM_STATUS, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
+import { FormError } from '@/components/AlertFormError'
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 
@@ -91,7 +92,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
 
         if (resp.resp && !resp.resp.repayIsAvailable && !resp.resp.repayIsFull) {
-          sliceState.setStateByKey('formStatus', { ...formStatus, error: 'error-full-repayment-required' })
+          sliceState.setStateByKey('formStatus', { ...formStatus, error: FormError.FullRepaymentRequired })
         } else {
           respError = resp.error
         }

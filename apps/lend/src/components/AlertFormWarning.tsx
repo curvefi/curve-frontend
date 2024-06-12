@@ -5,34 +5,32 @@ import React, { useMemo } from 'react'
 
 import AlertBox from '@/ui/AlertBox'
 
-const ALERT_FORM_WARNING_KEYS = {
+export enum FormWarning {
   // loan deleverage
-  'warning-full-repayment-only': 'warning-full-repayment-only',
+  FullRepaymentOnly = 'warning-full-repayment-only',
 
-  'warning-is-payoff-amount': 'warning-is-payoff-amount',
-  'warning-not-in-liquidation-mode': 'warning-not-in-liquidation-mode',
-  'warning-not-enough-crvusd': 'warning-not-enough-crvusd',
-} as const
-
-export type AlertFormWarningKey = keyof typeof ALERT_FORM_WARNING_KEYS
+  IsPayoffAmount = 'warning-is-payoff-amount',
+  NotInLiquidationMode = 'warning-not-in-liquidation-mode',
+  NotEnoughCrvusd = 'warning-not-enough-crvusd',
+}
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
-  errorKey: AlertFormWarningKey | string
+  errorKey: FormWarning | string
 }
 
 const AlertFormWarning = ({ errorKey, ...props }: React.PropsWithChildren<Props>) => {
   const errorMessage = useMemo(() => {
-    const messages: { [key: AlertFormWarningKey | string]: { message: string; alertType?: AlertType } } = {
-      [ALERT_FORM_WARNING_KEYS['warning-full-repayment-only']]: {
+    const messages: { [key: FormWarning | string]: { message: string; alertType?: AlertType } } = {
+      [FormWarning.FullRepaymentOnly]: {
         message: t`Only full repayment is allowed when in soft-liquidation mode.`,
       },
-      [ALERT_FORM_WARNING_KEYS['warning-is-payoff-amount']]: {
+      [FormWarning.IsPayoffAmount]: {
         message: t`You will no longer be able to manage this loan once it is paid off.`,
       },
-      [ALERT_FORM_WARNING_KEYS['warning-not-in-liquidation-mode']]: {
+      [FormWarning.NotInLiquidationMode]: {
         message: t`You are not in liquidation mode.`,
       },
-      [ALERT_FORM_WARNING_KEYS['warning-not-enough-crvusd']]: {
+      [FormWarning.NotEnoughCrvusd]: {
         message: t`You do not have enough crvUSD for self-liquidation.`,
       },
     }
