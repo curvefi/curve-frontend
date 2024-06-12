@@ -12,9 +12,11 @@ import SearchInput from '@/ui/SearchInput'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import ErrorMessage from '@/components/ErrorMessage'
 
 const GaugesList = () => {
   const {
+    getGauges,
     setGauges,
     gaugesLoading,
     activeSortBy,
@@ -40,7 +42,7 @@ const GaugesList = () => {
   }, [activeSortDirection, setActiveSortDirection])
 
   useEffect(() => {
-    if (!gaugesLoading && !isLoadingCurve) {
+    if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
       setGauges(searchValue)
     }
   }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
@@ -76,11 +78,17 @@ const GaugesList = () => {
             {t`Showing results (${filteredGauges.length}) for`} &quot;<strong>{searchValue}</strong>&quot;:
           </SearchMessage>
         )}
-        {gaugesLoading ? (
+        {gaugesLoading === 'LOADING' && (
           <StyledSpinnerWrapper vSpacing={5}>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
-        ) : (
+        )}
+        {gaugesLoading === 'SUCCESS' && (
+          <StyledErrorWrapper>
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+          </StyledErrorWrapper>
+        )}
+        {gaugesLoading === 'ERROR' && (
           <Box flex flexColumn flexGap={'var(--spacing-2)'}>
             {filteredGauges.map((gauge, index) => (
               <LazyItem key={`gauge-${index}`} defaultHeight={'67'}>
@@ -152,6 +160,19 @@ const SearchMessage = styled.p`
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   width: 100%;
   min-width: 100%;
+`
+
+const StyledErrorWrapper = styled.div`
+  width: 100%;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-5) 0;
+  @media (min-width: 25rem) {
+    padding: var(--spacing-5) var(--spacing-3);
+  }
 `
 
 export default GaugesList

@@ -14,7 +14,6 @@ import Box from '@/ui/Box'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
-import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import Icon from '@/ui/Icon'
 
 const Proposals = () => {
