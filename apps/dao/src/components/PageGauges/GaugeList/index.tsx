@@ -83,12 +83,12 @@ const GaugesList = () => {
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && (
-          <StyledErrorWrapper>
-            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
-          </StyledErrorWrapper>
-        )}
         {gaugesLoading === 'ERROR' && (
+          <ErrorMessageWrapper>
+            <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
+          </ErrorMessageWrapper>
+        )}
+        {gaugesLoading === 'SUCCESS' && (
           <Box flex flexColumn flexGap={'var(--spacing-2)'}>
             {filteredGauges.map((gauge, index) => (
               <LazyItem key={`gauge-${index}`} defaultHeight={'67'}>
@@ -162,7 +162,7 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   min-width: 100%;
 `
 
-const StyledErrorWrapper = styled.div`
+const ErrorMessageWrapper = styled.div`
   width: 100%;
   min-width: 100%;
   display: flex;
