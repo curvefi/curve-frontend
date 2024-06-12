@@ -128,7 +128,7 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     if (curve) {
       getProposals(curve)
-      getGauges(curve)
+      getGauges()
     }
   }, [curve, getGauges, getProposals])
 
@@ -136,7 +136,7 @@ function CurveApp({ Component }: AppProps) {
     () => {
       if (curve) {
         getProposals(curve)
-        getGauges(curve)
+        getGauges()
       }
     },
     REFRESH_INTERVAL['5m'],
