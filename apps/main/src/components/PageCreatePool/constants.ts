@@ -287,7 +287,7 @@ export const TWOCRYPTO_MIN_MAX_PARAMETERS = {
   },
   gamma: {
     min: 10 ** 10 / 1e18,
-    max: (2 * 10 ** 15) / 1e18,
+    max: (199 * 10 ** 15) / 1e18,
   },
   allowedExtraProfit: {
     min: 0,
