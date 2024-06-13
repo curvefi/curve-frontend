@@ -120,6 +120,14 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 </Status>
               )}
             </TopBarColumn>
+            {proposal?.status === 'Passed' && (
+              <TopBarColumn>
+                <SubTitle>{t`Executed`}</SubTitle>
+                <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
+                  {proposal?.executed ? t`Executed` : t`Executable`}
+                </ExecutedStatus>
+              </TopBarColumn>
+            )}
             <TopBarColumn>
               <SubTitle>{t`Proposal ID`}</SubTitle>
               <TopBarTitle>#{voteId}</TopBarTitle>
@@ -128,12 +136,6 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <SubTitle>{t`Proposal Type`}</SubTitle>
               <TopBarTitle>{voteType}</TopBarTitle>
             </TopBarColumn>
-            {proposal?.status === 'Passed' && (
-              <TopBarColumn>
-                <SubTitle>{t`Executed`}</SubTitle>
-                <TopBarTitle>{proposal?.executed ? t`Executed` : t`Executable`}</TopBarTitle>
-              </TopBarColumn>
-            )}
             <TimeRemainingBox>
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
               {!proposal ? (
@@ -163,7 +165,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                   <SubTitle>{t`Metadata`}</SubTitle>
                   <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
                     <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
-                      {t`Raw Ipfs`}
+                      {t`Raw IPFS`}
                       <Icon name="Copy" size={16} />
                     </StyledCopyButton>
                   </Tooltip>
@@ -397,6 +399,32 @@ const Status = styled.h3`
     }
   }
   &.active {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-orange);
+      border-radius: 50%;
+    }
+  }
+`
+
+const ExecutedStatus = styled.h3`
+  font-size: var(--font-size-2);
+  &.executed {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-green);
+      border-radius: 50%;
+    }
+  }
+  &.executable {
     :before {
       display: inline-block;
       content: '';
