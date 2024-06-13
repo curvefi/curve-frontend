@@ -92,6 +92,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
+  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
@@ -355,9 +356,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 />
               </StatsWrapper>
             )}
-            {selectedTab === 'advanced' && poolData && snapshotsMapper[poolData.pool.address] !== undefined && (
-              <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
-            )}
+            {selectedTab === 'advanced' &&
+              poolData &&
+              snapshotsMapper[poolData.pool.address] !== undefined &&
+              !basePoolsLoading && (
+                <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
+              )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>
