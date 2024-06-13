@@ -67,6 +67,7 @@ const Page: NextPage = () => {
       const { signerAddress } = api
       // check for an existing loan
       const loanExists = signerAddress ? (await fetchUserLoanExists(api, owmData, true))?.loanExists : false
+      if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
       setLoaded(true)
 
       // delay fetch rest after form details are fetch first
@@ -79,7 +80,7 @@ const Page: NextPage = () => {
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists]
+    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey]
   )
 
   // onMount
@@ -125,7 +126,7 @@ const Page: NextPage = () => {
     owmDataCachedOrApi,
     userActiveKey,
     borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
-    collateral_token: owmDataCachedOrApi?.owm.collateral_token,
+    collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
   }
 
   return (

@@ -3,8 +3,10 @@ import type { State } from '@/store/useStore'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
 
+import { _biIsGreaterThanOrEqualTo } from '@/ui/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { FormWarning } from '@/components/AlertFormWarning'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import apiLending from '@/lib/apiLending'
 
@@ -39,6 +41,7 @@ export type LoanSelfLiquidationSlice = {
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
+  loading: true,
   step: '',
   warning: '',
 }
@@ -63,19 +66,40 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       if (!signerAddress || !api || !owmData || !maxSlippage) return
 
-      const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
+      // loading
+      sliceState.setStateByKey('formStatus', { ...formStatus, loading: true })
 
-      sliceState.setStateByKeys({
-        liquidationAmt: resp.tokensToLiquidate,
-        futureRates: resp.futureRates,
-      })
+      const { userLoanDetailsResp, userLoanBalancesResp } = await user.fetchAll(api, owmData, true)
 
-      // validation
+      const borrowedTokenDecimals = owmData.owm.borrowed_token.decimals
 
-      const userBalances = await user.fetchUserMarketBalances(api, owmData, true)
-      let warning = formStatus.warning
-      if (!_canSelfLiquidate(userBalances.borrowed, resp.tokensToLiquidate)) warning = 'warning-not-enough-crvusd'
-      sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error || formStatus.error, warning })
+      if (userLoanDetailsResp && userLoanBalancesResp) {
+        const walletBorrowed = userLoanBalancesResp.borrowed
+        const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
+
+        const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
+        const { tokensToLiquidate, futureRates } = resp
+        const liquidationAmt = _biIsGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
+          ? '0'
+          : tokensToLiquidate
+
+        sliceState.setStateByKeys({ liquidationAmt, futureRates })
+
+        // validation
+        const canSelfLiquidateWithStateBorrowed = _biIsGreaterThanOrEqualTo(
+          stateBorrowed,
+          stateDebt,
+          borrowedTokenDecimals
+        )
+        const canSelfLiquidateWithWalletBorrowed = _canSelfLiquidate(walletBorrowed, tokensToLiquidate)
+        const warning =
+          !canSelfLiquidateWithStateBorrowed && !canSelfLiquidateWithWalletBorrowed
+            ? FormWarning.NotEnoughCrvusd
+            : formStatus.warning
+        sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error || formStatus.error, warning })
+      }
+
+      sliceState.setStateByKey('formStatus', { ...get()[sliceKey].formStatus, loading: false })
 
       // api call
       sliceState.fetchEstGasApproval(api, owmData, maxSlippage)

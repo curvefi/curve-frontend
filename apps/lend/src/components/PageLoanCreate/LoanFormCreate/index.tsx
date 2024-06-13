@@ -245,9 +245,8 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   usePageVisibleInterval(
     () => {
@@ -309,7 +308,15 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   useEffect(() => {
     if (isLoaded) updateFormValues({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, maxSlippage, isAdvanceMode])
+  }, [maxSlippage, isAdvanceMode])
+
+  useEffect(() => {
+    if (isLoaded) {
+      resetState()
+      updateFormValues({})
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded])
 
   const disabled = !!formStatus.step
 

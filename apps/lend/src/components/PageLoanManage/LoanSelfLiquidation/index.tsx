@@ -52,6 +52,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
   const { signerAddress } = api ?? {}
+  const { state } = userDetails ?? {}
 
   const reset = useCallback(() => {
     setTxInfoBar(null)
@@ -69,13 +70,14 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
       formStatus: FormStatus,
       liquidationAmt: string,
       maxSlippage: string,
-      steps: Step[]
+      steps: Step[],
+      state: Omit<UserLoanState, 'error'>
     ) => {
       const { chainId, signerAddress } = api
       const { owm } = owmData
-      const { error, warning, isApproved, isComplete, isInProgress, step } = formStatus
+      const { error, loading, warning, isApproved, isComplete, isInProgress, step } = formStatus
 
-      const isValid = !!signerAddress && !formEstGas?.loading && +liquidationAmt > 0 && !error && !warning
+      const isValid = !!signerAddress && !formEstGas?.loading && !loading && !error && !warning
 
       if (isValid) {
         const notifyMessage = t`Self-liquidate ${owm.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
@@ -87,7 +89,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
               collateral_token={owm.collateral_token}
               receive=""
               formValueStateCollateral=""
-              userState={userDetails?.state}
+              userState={state}
               userWallet={userBalances}
               type="self"
             />
@@ -153,7 +155,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [userDetails?.state, fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances]
+    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances]
   )
 
   // onMount
@@ -162,24 +164,32 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
-  // init
+  // max slippage
   useEffect(() => {
     if (isLoaded && api && owmData && maxSlippage) fetchDetails(api, owmData, maxSlippage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, maxSlippage])
+  }, [maxSlippage])
+
+  // init
+  useEffect(() => {
+    if (isLoaded && api && owmData && maxSlippage) {
+      resetState()
+      fetchDetails(api, owmData, maxSlippage)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoaded])
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData) {
-      const updatedSteps = getSteps(api, owmData, formEstGas, formStatus, liquidationAmt, maxSlippage, steps)
+    if (isLoaded && api && owmData && state) {
+      const updatedSteps = getSteps(api, owmData, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, state)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances])
+  }, [isLoaded, formEstGas?.loading, liquidationAmt, formStatus, maxSlippage, userBalances, state])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
 
@@ -207,7 +217,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
       ) : (
         <LoanFormConnect haveSigner={!!signerAddress} loading={!isLoaded}>
           {txInfoBar}
-          {!!formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />}
+          {!formStatus.loading && !!formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />}
           {(formStatus.error || formStatus.stepError) && (
             <AlertFormError limitHeight errorKey={formStatus.error || formStatus.stepError} handleBtnClose={reset} />
           )}

@@ -183,13 +183,15 @@ const LoanCollateralRemove = ({
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   // init
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) {
+      resetState()
+      updateFormValues({})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 

@@ -12,33 +12,39 @@ const SummaryFull = ({
   pendingMessage,
   receive = '',
   formValueStateCollateral = '',
-  formValueUserBorrowed = '',
   userState,
   collateralSymbol,
   borrowedSymbol,
 }: SummaryProps) => {
-  const { debt: stateDebt = '', collateral: stateCollateral = '' } = userState ?? {}
+  const { debt: stateDebt = '', collateral: stateCollateral = '', borrowed: stateBorrowed = '' } = userState ?? {}
 
-  const returnToWallet = useMemo(() => {
-    return [
-      {
-        ...(+receive > 0
-          ? { value: +receive - +stateDebt, symbol: borrowedSymbol }
-          : { value: +formValueUserBorrowed - +stateDebt, symbol: borrowedSymbol }),
-      },
-      { value: +stateCollateral - +formValueStateCollateral, symbol: collateralSymbol },
-    ].filter(({ value }) => +value > 0)
-  }, [
-    borrowedSymbol,
-    collateralSymbol,
-    formValueStateCollateral,
-    formValueUserBorrowed,
-    receive,
-    stateCollateral,
-    stateDebt,
-  ])
+  const [balance, returnToWallet] = useMemo(() => {
+    let balance = 0
+    let returnToWallet: { value: number | string; symbol: string }[] = []
 
-  const balance = +stateDebt - +receive - +formValueUserBorrowed
+    if (+receive > 0) {
+      const repayTotal = +receive + +stateBorrowed
+      balance = +stateDebt - repayTotal
+
+      const returnToWalletCollateral = +stateCollateral - +formValueStateCollateral
+      if (returnToWalletCollateral) {
+        returnToWallet.push({ value: returnToWalletCollateral, symbol: collateralSymbol })
+      }
+
+      const returnToWalletBorrowed = Math.abs(balance) >= 1 ? Math.abs(balance) : 0
+      if (returnToWalletBorrowed) {
+        returnToWallet.push({ value: returnToWalletBorrowed, symbol: borrowedSymbol })
+      }
+    } else {
+      returnToWallet.push({ value: stateCollateral, symbol: collateralSymbol })
+      if (+stateBorrowed - +stateDebt > 0) {
+        returnToWallet.push({ value: +stateBorrowed - +stateDebt, symbol: borrowedSymbol })
+      }
+    }
+
+    return [balance, returnToWallet]
+  }, [borrowedSymbol, collateralSymbol, formValueStateCollateral, receive, stateBorrowed, stateCollateral, stateDebt])
+
   const minWidth = '170px;'
 
   return (
@@ -48,16 +54,30 @@ const SummaryFull = ({
       {title}
 
       <Item $minWidth={minWidth} label={t`Debt:`} value={`${format(stateDebt)} ${borrowedSymbol}`} />
-      {+receive > 0 ? (
-        <Item $minWidth={minWidth} label={t`Receive:`} value={`-${format(receive || '0')} ${borrowedSymbol}`} />
-      ) : (
-        <Item
-          $minWidth={minWidth}
-          label={t`Wallet:`}
-          value={`${formValueUserBorrowed ? '-' : ''}${format(formValueUserBorrowed)} ${borrowedSymbol}`}
-        />
+
+      {+receive > 0 && (
+        <>
+          {+stateBorrowed > 0 && (
+            <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+          )}
+          <Item $minWidth={minWidth} label={t`Receive:`} value={`-${format(receive || '0')} ${borrowedSymbol}`} />
+          <Item $isDivider $minWidth={minWidth} label="" value={`${format(balance)} ${borrowedSymbol}`} />
+        </>
       )}
-      <Item $isDivider $minWidth={minWidth} label="" value={`${format(balance)} ${borrowedSymbol}`} />
+
+      {+receive <= 0 && +stateBorrowed > 0 && (
+        <>
+          <Item $minWidth={minWidth} label={t`Collateral:`} value={`-${format(stateBorrowed)} ${borrowedSymbol}`} />
+          {+stateDebt - +stateBorrowed > 0 && (
+            <Item
+              $minWidth={minWidth}
+              label={t`Wallet:`}
+              value={`-${format(+stateDebt - +stateBorrowed)} ${borrowedSymbol}`}
+            />
+          )}
+          <Item $isDivider $minWidth={minWidth} label="" value={`0 ${borrowedSymbol}`} />
+        </>
+      )}
 
       {returnToWallet.map(({ value, symbol }, idx) => {
         const isFirst = idx === 0
@@ -66,7 +86,7 @@ const SummaryFull = ({
             key={symbol}
             {...(isFirst ? { $marginTop: 'var(--spacing-3)' } : {})}
             $minWidth={minWidth}
-            label={isFirst ? t`Return to wallet:` : ''}
+            label={isFirst ? t`Return to wallet ≈` : ''}
             value={`${format(value)} ${symbol}`}
           />
         )

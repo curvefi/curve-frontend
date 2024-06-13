@@ -264,9 +264,8 @@ const LoanBorrowMore = ({
 
     return () => {
       isSubscribed.current = false
-      resetState()
     }
-  }, [resetState])
+  }, [])
 
   usePageVisibleInterval(
     () => {
@@ -287,7 +286,10 @@ const LoanBorrowMore = ({
   )
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) {
+      resetState()
+      updateFormValues({})
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 

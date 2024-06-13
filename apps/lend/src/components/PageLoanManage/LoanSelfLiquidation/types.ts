@@ -1,8 +1,10 @@
 import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
+import { FormWarning } from '@/components/AlertFormWarning'
 
 export type StepKey = 'APPROVAL' | 'SELF_LIQUIDATE' | ''
 
 export interface FormStatus extends Fs {
-  warning: 'warning-not-in-liquidation-mode' | 'warning-not-enough-crvusd' | ''
+  loading: boolean
+  warning: FormWarning | ''
   step: StepKey
 }
