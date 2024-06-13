@@ -22,6 +22,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
     minAcceptQuorumPercent,
     totalVeCrv,
     status,
+    executed,
     currentQuorumPercentage,
   } = proposalData
 
@@ -47,6 +48,11 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
             >
               {status}
             </ProposalStatus>
+            {status === 'Passed' && (
+              <ProposalExecuted className={executed ? 'executed' : 'executable'}>
+                {executed ? 'Executed' : 'Executable'}
+              </ProposalExecuted>
+            )}
             <ProposalId>#{voteId}</ProposalId>
             <ProposalType>{voteType}</ProposalType>
             <StyledVoteCountdown startDate={startDate} />
@@ -73,7 +79,7 @@ const ProposalContainer = styled.div`
   grid-template-columns: auto;
   grid-template-rows: auto auto;
   background-color: var(--summary_content--background-color);
-  @media (min-width: 46.875rem) {
+  @media (min-width: 56.25rem) {
     grid-template-columns: auto 19.375rem;
   }
   &:hover {
@@ -110,7 +116,6 @@ const ProposalStatus = styled.h4`
   border: 1px solid var(--gray-500);
   font-size: var(--font-size-1);
   text-transform: uppercase;
-  /* border-right: 2px solid var(--gray-500); */
   padding: 0.2rem 0.4rem;
   &.passed {
     :before {
@@ -180,6 +185,35 @@ const VoteWrapper = styled.div`
 
 const StyledVoteCountdown = styled(VoteCountdown)`
   /* margin-left: auto; */
+`
+
+const ProposalExecuted = styled.h4`
+  border: 1px solid var(--gray-500);
+  font-size: var(--font-size-1);
+  text-transform: uppercase;
+  padding: 0.2rem 0.4rem;
+  &.executed {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-green);
+      border-radius: 50%;
+    }
+  }
+  &.executable {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-orange);
+      border-radius: 50%;
+    }
+  }
 `
 
 const StyledVotesStatusBox = styled(VotesStatusBox)`
