@@ -56,6 +56,7 @@ const Header = () => {
   const p: AppPage[] = [
     { route: ROUTE.PAGE_PROPOSALS, label: t`Proposals`, groupedTitle: 'proposals' },
     { route: ROUTE.PAGE_GAUGES, label: t`Gauges`, groupedTitle: 'gauges' },
+    { route: ROUTE.PAGE_VECRV, label: t`veCRV`, groupedTitle: 'veCRV' },
     { ...APP_LINK.main, isDivider: true },
     APP_LINK.lend,
   ]

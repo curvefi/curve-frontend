@@ -192,3 +192,9 @@ export const formatDateFromTimestamp = (unixTime: number) => {
   const year = String(date.getFullYear()).slice(-2)
   return `${day}/${month}/${year}`
 }
+
+export const convertToLocaleTimestamp = (unixTime: number) => {
+  const offsetInSeconds = new Date().getTimezoneOffset() * 60
+  const localTimestamp = unixTime - offsetInSeconds
+  return localTimestamp
+}
