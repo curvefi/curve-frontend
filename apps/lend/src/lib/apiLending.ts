@@ -6,7 +6,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
 import { INVALID_ADDRESS } from '@/constants'
-import { fulfilledValue, getErrorMessage, log, sleep } from '@/utils/helpers'
+import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
 import { BN, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
 
@@ -200,6 +200,7 @@ const market = {
   fetchStatsAmmBalances: async (owmDatas: OWMData[]) => {
     log('fetchStatsAmmBalances', owmDatas.length)
     let results: { [id: string]: MarketStatAmmBalances } = {}
+    const useMultiCall = owmDatas.length > 1
 
     await PromisePool.for(owmDatas)
       .handleError((errorObj, { owm }) => {
@@ -208,7 +209,7 @@ const market = {
         results[owm.id] = { borrowed: '', collateral: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.ammBalances(false)
+        const resp = await owm.stats.ammBalances(useMultiCall)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -217,6 +218,7 @@ const market = {
   fetchStatsCapAndAvailable: async (owmDatas: OWMData[]) => {
     log('fetchStatsCapAndAvailable', owmDatas.length)
     let results: { [id: string]: MarketStatCapAndAvailable } = {}
+    const useMultiCall = owmDatas.length > 1
 
     await PromisePool.for(owmDatas)
       .handleError((errorObj, { owm }) => {
@@ -225,7 +227,7 @@ const market = {
         results[owm.id] = { cap: '', available: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.capAndAvailable(false)
+        const resp = await owm.stats.capAndAvailable(useMultiCall)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -234,6 +236,7 @@ const market = {
   fetchStatsTotals: async (owmDatas: OWMData[]) => {
     log('fetchStatsTotals', owmDatas.length)
     let results: { [id: string]: MarketStatTotals } = {}
+    const useMultiCall = owmDatas.length > 1
 
     await PromisePool.for(owmDatas)
       .handleError((errorObj, { owm }) => {
@@ -242,7 +245,7 @@ const market = {
         results[owm.id] = { totalDebt: '', error }
       })
       .process(async ({ owm }) => {
-        const totalDebt = await owm.stats.totalDebt(false)
+        const totalDebt = await owm.stats.totalDebt(useMultiCall)
         results[owm.id] = { totalDebt, error: '' }
       })
 
@@ -281,6 +284,7 @@ const market = {
   },
   fetchMarketsRates: async (owmDatas: OWMData[]) => {
     log('fetchMarketsRates', owmDatas.length)
+    const useMultiCall = owmDatas.length > 1
     let results: { [id: string]: MarketRates } = {}
 
     await PromisePool.for(owmDatas)
@@ -289,9 +293,8 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[owm.id] = { rates: null, error }
       })
-      .withConcurrency(5)
       .process(async ({ owm }) => {
-        const rates = await owm.stats.rates(false)
+        const rates = await owm.stats.rates(useMultiCall)
         results[owm.id] = { rates, error: '' }
       })
 
@@ -315,10 +318,11 @@ const market = {
     return results
   },
   fetchMarketsVaultsRewards: async (owmDatas: OWMData[]) => {
+    const useMultiCall = owmDatas.length > 1
     log('fetchMarketsVaultsRewards', owmDatas.length)
     let results: { [id: string]: MarketRewards } = {}
 
-    const handleResponse = async (owm: OWM) => {
+    await PromisePool.for(owmDatas).process(async ({ owm }) => {
       let resp: MarketRewards = {
         rewards: {
           other: [],
@@ -338,28 +342,12 @@ const market = {
           crv: [0, 0],
         }
 
-        // rewards.other = [
-        //   {
-        //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb107434e',
-        //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fae8e9',
-        //     symbol: 'rKP3R',
-        //     apy: 34.591404117158504,
-        //   },
-        //   {
-        //     gaugeAddress: '0xdb190e4d9c9a95fdf066b258892b8d6bb1012345',
-        //     tokenAddress: '0xedb67ee1b171c4ec66e6c10ec43edbba20fa6484',
-        //     symbol: 'CRV',
-        //     apy: 0.14228653926122917,
-        //   },
-        // ]
-        // rewards.crv = [0.0008219651894421486, 0.0020549129736053716]
-
         // isRewardsOnly = both CRV and other comes from same endpoint.
         if (isRewardsOnly) {
-          const rewardsResp = await owm.vault.rewardsApr()
+          const rewardsResp = await owm.vault.rewardsApr(useMultiCall)
           rewards.other = _filterZeroApy(rewardsResp)
         } else {
-          const [others, crv] = await Promise.all([owm.vault.rewardsApr(), owm.vault.crvApr()])
+          const [others, crv] = await Promise.all([owm.vault.rewardsApr(useMultiCall), owm.vault.crvApr(useMultiCall)])
           rewards.other = _filterZeroApy(others)
           rewards.crv = crv
         }
@@ -367,25 +355,7 @@ const market = {
         resp.rewards = rewards
         results[owm.id] = resp
       }
-    }
-
-    const { errors } = await PromisePool.for(owmDatas).process(async ({ owm }) => {
-      return await handleResponse(owm)
     })
-
-    // retries errors
-    if (errors.length) {
-      await sleep(1000)
-      await PromisePool.for(owmDatas)
-        .handleError((errorObj, { owm }) => {
-          console.error('retry error', errorObj)
-          const error = getErrorMessage(errorObj, 'error-api')
-          results[owm.id] = { rewards: null, error }
-        })
-        .process(async ({ owm }) => {
-          return await handleResponse(owm)
-        })
-    }
 
     return results
   },

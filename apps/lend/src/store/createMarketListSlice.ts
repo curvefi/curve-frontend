@@ -32,6 +32,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 
 // isTableRowOpen
 type SliceState = {
+  initialLoaded: boolean
   activeKey: string
   marketListMapper: { [chainId: string]: MarketListMapper }
   tableRowsSettings: { [tokenAddress: string]: TableRowSettings }
@@ -70,6 +71,7 @@ export type MarketListSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
+  initialLoaded: false,
   activeKey: '',
   marketListMapper: {},
   tableRowsSettings: {},
@@ -183,7 +185,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     },
     setFormValues: async (rChainId, api, shouldRefetch) => {
       const { markets, storeCache, usdRates, user } = get()
-      const { marketListMapper, searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+      const { initialLoaded, marketListMapper, searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
       const storedOwmDatas = markets.owmDatas[rChainId]
       const storedOwmDatasMapper = markets.owmDatasMapper[rChainId]
       const storedMarketListMapper = marketListMapper[rChainId]
@@ -265,18 +267,21 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       }
 
       // api calls
+      // isTvl: set to true if needed to calculate total tvl for header
       let fns = [
-        { key: 'statsAmmBalancesMapper', fn: markets.fetchDatas },
+        { key: 'statsAmmBalancesMapper', fn: markets.fetchDatas, isTvl: true },
         { key: 'statsCapAndAvailableMapper', fn: markets.fetchDatas },
         { key: 'statsParametersMapper', fn: markets.fetchDatas },
-        { key: 'statsTotalsMapper', fn: markets.fetchDatas },
+        { key: 'statsTotalsMapper', fn: markets.fetchDatas, isTvl: true },
         { key: 'ratesMapper', fn: markets.fetchDatas },
-        { key: 'statsTotalsMapper', fn: markets.fetchDatas },
-        { key: 'ratesMapper', fn: markets.fetchDatas },
-        { key: 'rewardsMapper', fn: markets.fetchDatas },
-        { key: 'totalLiquidityMapper', fn: markets.fetchDatas },
+        { key: 'totalLiquidityMapper', fn: markets.fetchDatas, isTvl: true },
         { key: 'maxLeverageMapper', fn: markets.fetchDatas },
       ]
+
+      // TODO: rewards call Public RPC frequently returns 429. Only call this when on Supply view.
+      if (filterTypeKey === 'supply') {
+        fns = fns.concat([{ key: 'rewardsMapper', fn: markets.fetchDatas }])
+      }
 
       if (signerAddress) {
         fns = fns.concat([
@@ -286,7 +291,13 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         ])
       }
 
-      Promise.all(fns.map(({ fn, key }) => fn(key, api, storedOwmDatas, shouldRefetch)))
+      await Promise.all(
+        fns.map(({ fn, key, isTvl }) => {
+          const datas = isTvl ? storedOwmDatas : cOwmDatas
+          return fn(key, api, datas, shouldRefetch)
+        })
+      )
+      if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
     },
     sortTableRow: async (rChainId, api, searchParams, tableRowTokenAddress) => {
       if (!api) return
