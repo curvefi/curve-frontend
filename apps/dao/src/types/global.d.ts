@@ -239,6 +239,17 @@ declare global {
     endTimestamp: number
   }
 
+  interface VeCrvFeesRes {
+    distributions: VeCrvFee[]
+    page: number
+    count: number
+  }
+
+  type VeCrvFee = {
+    fees_usd: number
+    timestamp: string
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
