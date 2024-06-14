@@ -76,6 +76,9 @@ export function initOnboard(i18n, locale, themeType, networks) {
         enabled: false,
       },
     },
+    connect: {
+      autoConnectLastWallet: true,
+    },
   })
 
   if (walletState && locale) {
