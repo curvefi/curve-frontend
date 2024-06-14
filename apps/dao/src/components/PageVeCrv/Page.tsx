@@ -7,25 +7,19 @@ import styled from 'styled-components'
 import { breakpoints, scrollToTop } from '@/ui/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 
-import Proposal from '@/components/PageProposal/index'
+import VeCrv from '@/components/PageVeCrv/index'
 import DocumentHead from '@/layout/DocumentHead'
 
 const Page: NextPage = () => {
-  const params = useParams()
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
-  const { rProposalId } = routerParams
-
   useEffect(() => {
     scrollToTop()
   }, [])
 
   return (
     <>
-      <DocumentHead title={rProposalId} />
+      <DocumentHead title={'veCRV'} />
       <Container>
-        <Proposal routerParams={{ rProposalId }} />
+        <VeCrv />
       </Container>
     </>
   )

@@ -1,6 +1,7 @@
 export const MAIN_ROUTE = {
   PAGE_PROPOSALS: '/proposals',
   PAGE_GAUGES: '/gauges',
+  PAGE_VECRV: '/vecrv',
 }
 
 export const ROUTE = {
