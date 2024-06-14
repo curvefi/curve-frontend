@@ -87,6 +87,8 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     scrollToTop()
+    setStateByKey('initialLoaded', false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updatePath = (updatedSearchParams: Partial<SearchParams>) => {

@@ -1,6 +1,6 @@
-import type { FoldTableLabels, PageMarketList, SearchParams } from '@/components/PageMarketList/types'
+import type { FoldTableLabels, PageMarketList } from '@/components/PageMarketList/types'
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -20,6 +20,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const navigate = useNavigate()
 
   const activeKey = _getActiveKey(rChainId, searchParams)
+  const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const formStatus = useStore((state) => state.marketList.formStatus)
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -28,8 +29,6 @@ const MarketList = (pageProps: PageMarketList) => {
   const results = useStore((state) => state.marketList.result)
   const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
   const setFormValues = useStore((state) => state.marketList.setFormValues)
-
-  const [initialLoaded, setInitialLoaded] = useState(false)
 
   const { signerAddress } = api ?? {}
 
@@ -74,19 +73,18 @@ const MarketList = (pageProps: PageMarketList) => {
   )
 
   useEffect(() => {
-    if (isLoaded && isPageVisible && initialLoaded) updateFormValues(true)
+    if (isLoaded && isPageVisible && initialLoaded) updateFormValues()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPageVisible])
+  }, [searchParams])
 
   useEffect(() => {
-    if (isLoaded) {
+    if (isLoaded && isPageVisible && !initialLoaded) {
       updateFormValues(true)
-      setInitialLoaded(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, searchParams])
+  }, [isLoaded, isPageVisible])
 
-  usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['11m'], isPageVisible && isLoaded)
+  usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['5m'], isPageVisible && isLoaded)
 
   const tableLabels = FOLD_TABLE_LABELS[searchParams.filterTypeKey]
 
