@@ -56,8 +56,9 @@ const MarketList = (pageProps: PageMarketList) => {
     supply: [
       { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
       { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '140px' },
+      { sortIdKey: 'leverage', label: tableLabelsMapper.leverage.name, className: 'left', width: '120px' },
       { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '240px' },
-      { sortIdKey: '', label: t`Total APR`, className: 'right' },
+      { sortIdKey: '', label: t`Total APR`, className: 'right', ...(showSupplySignerCell ? { } : { width: '160px'  }) },
       { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '160px' },
     ]
   }
