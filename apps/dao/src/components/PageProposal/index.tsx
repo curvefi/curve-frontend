@@ -534,9 +534,12 @@ const StyledCopyButton = styled(IconButton)`
   opacity: 0.5;
   min-height: var(--height-x-small);
   min-width: var(--height-x-small);
-
-  :hover {
+  &:hover {
     color: var(--button_icon--hover--color);
+  }
+  &:active {
+    color: white;
+    background-color: var(--primary-400);
   }
 `
 
