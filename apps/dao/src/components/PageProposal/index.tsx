@@ -130,11 +130,11 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
             )}
             <TopBarColumn>
               <SubTitle>{t`Proposal ID`}</SubTitle>
-              <TopBarTitle>#{voteId}</TopBarTitle>
+              <TopBarData>#{voteId}</TopBarData>
             </TopBarColumn>
             <TopBarColumn>
               <SubTitle>{t`Proposal Type`}</SubTitle>
-              <TopBarTitle>{voteType}</TopBarTitle>
+              <TopBarData>{voteType}</TopBarData>
             </TopBarColumn>
             <TimeRemainingBox>
               <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
@@ -445,7 +445,7 @@ const TopBarColumn = styled(Box)`
   font-weight: var(--semi-bold);
 `
 
-const TopBarTitle = styled.h3`
+const TopBarData = styled.h3`
   font-size: var(--font-size-2);
 `
 
