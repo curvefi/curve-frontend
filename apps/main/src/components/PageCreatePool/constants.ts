@@ -252,7 +252,7 @@ export const TRICRYPTO_MIN_MAX_PARAMETERS = {
   },
   gamma: {
     min: 10 ** 10 / 1e18,
-    max: (2 * 10 ** 16) / 1e18,
+    max: (5 * 10 ** 16) / 1e18,
   },
   allowedExtraProfit: {
     min: 0,
