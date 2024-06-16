@@ -5,9 +5,9 @@ import type { WalletState } from '@web3-onboard/core'
 import { Contract, formatEther } from 'ethers'
 import produce from 'immer'
 
-import { useConnectWallet } from '@/onboard'
-
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
+import { contractVeCRV } from '@/store/contracts'
+import { abiVeCrv } from '@/store/abis'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -89,7 +89,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         })
       )
 
-      const contract = new Contract(contractVeCRV, abiBalanceOfAt, signer)
+      const contract = new Contract(contractVeCRV, abiVeCrv, signer)
       const snapshotValue = await contract.balanceOfAt(userAddress, snapshot)
 
       set(
@@ -136,20 +136,5 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
-
-const abiBalanceOfAt = [
-  {
-    name: 'balanceOfAt',
-    outputs: [{ type: 'uint256', name: '' }],
-    inputs: [
-      { type: 'address', name: 'addr' },
-      { type: 'uint256', name: '_block' },
-    ],
-    stateMutability: 'view',
-    type: 'function',
-  },
-]
-
-const contractVeCRV = '0x5f3b5DfEb7B28CDbD7FAba78963EE202a494e2A2'
 
 export default createUserSlice

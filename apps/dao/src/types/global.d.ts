@@ -239,15 +239,24 @@ declare global {
     endTimestamp: number
   }
 
+  type VeCrvFee = {
+    fees_usd: number
+    timestamp: string
+  }
+
   interface VeCrvFeesRes {
     distributions: VeCrvFee[]
     page: number
     count: number
   }
 
-  type VeCrvFee = {
-    fees_usd: number
-    timestamp: string
+  type VeCrvDailyLock = {
+    day: string
+    amount: string
+  }
+
+  interface VeCrvDailyLockRes {
+    locks: { day: number; amount: string }[]
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'

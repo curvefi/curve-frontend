@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { useState } from 'react'
 
 import CustomTooltip from './BarChartCustomTooltip'
 
@@ -22,7 +21,6 @@ const COLORS = [
 ]
 
 const BarChartComponent = ({ data }: Props) => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const height = 500
   const labelWidth = 100
 
@@ -63,13 +61,9 @@ const BarChartComponent = ({ data }: Props) => {
             axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey="gauge_relative_weight" label={false} isAnimationActive={false}>
+          <Bar dataKey="gauge_relative_weight" label={false}>
             {reducedData.map((entry, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-                opacity={activeIndex === index ? 0.8 : 1}
-              />
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>
         </BarChart>
