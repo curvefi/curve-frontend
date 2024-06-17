@@ -42,16 +42,18 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   )
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
-    chartFetchStatus,
+    chartLlammaOhlc,
+    chartOracleOhlc,
     timeOption,
-    refetchingCapped,
-    lastFetchEndTime,
-    chartOhlcData,
     volumeData,
     oraclePriceData,
     setChartTimeOption,
-    fetchOhlcData,
-    fetchMoreOhlcData,
+    fetchLlammaOhlcData,
+    fetchMoreLlammaOhlcData,
+    fetchOracleOhlcData,
+    fetchMoreOracleOhlcData,
+    setChartSelectedIndex,
+    selectedChartIndex,
     activityHidden,
     chartExpanded,
     setChartExpanded,
@@ -66,6 +68,10 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
+  const currentChart = useMemo(() => {
+    return selectedChartIndex === 0 ? chartOracleOhlc : chartLlammaOhlc
+  }, [chartLlammaOhlc, chartOracleOhlc, selectedChartIndex])
+
   const selectedLiqRange = useMemo(() => {
     let liqRanges: LiquidationRanges = {
       current: null,
@@ -78,7 +84,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
         price2: [],
       }
 
-      for (const data of chartOhlcData) {
+      for (const data of currentChart.data) {
         range.price1 = [
           ...range.price1,
           {
@@ -98,7 +104,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     }
 
     // create loan prices
-    if (formValues.n && liqRangesMapper && chartOhlcData) {
+    if (formValues.n && liqRangesMapper && currentChart.data) {
       const currentPrices = liqRangesMapper[formValues.n].prices
       // flip order to match other data
       const range = formatRange([currentPrices[1], currentPrices[0]])
@@ -106,33 +112,33 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     }
 
     // current loan prices
-    if (userPrices && chartOhlcData) {
+    if (userPrices && currentChart.data) {
       const range = formatRange(userPrices)
       liqRanges.current = range
     }
     // increase loan prices
-    if (borrowMorePrices && borrowMorePrices.length !== 0 && chartOhlcData) {
+    if (borrowMorePrices && borrowMorePrices.length !== 0 && currentChart.data) {
       const range = formatRange(borrowMorePrices)
       liqRanges.new = range
     }
     // decrease loan prices
-    if (repayLoanPrices && repayLoanPrices.length !== 0 && chartOhlcData) {
+    if (repayLoanPrices && repayLoanPrices.length !== 0 && currentChart.data) {
       const range = formatRange(repayLoanPrices)
       liqRanges.new = range
     }
     // increase collateral prices
-    if (addCollateralPrices && addCollateralPrices.length !== 0 && chartOhlcData) {
+    if (addCollateralPrices && addCollateralPrices.length !== 0 && currentChart.data) {
       const range = formatRange(addCollateralPrices)
       liqRanges.new = range
     }
     // decrease collateral prices
-    if (removeCollateralPrices && removeCollateralPrices.length !== 0 && chartOhlcData) {
+    if (removeCollateralPrices && removeCollateralPrices.length !== 0 && currentChart.data) {
       const range = formatRange(removeCollateralPrices)
       liqRanges.new = range
     }
 
     // // deleverage prices
-    // if (deleveragePrices && chartOhlcData) {
+    // if (deleveragePrices && currentChart.data) {
     //   const range = formatRange(deleveragePrices)
     //   liqRanges.new = range
     // }
@@ -141,13 +147,12 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   }, [
     formValues.n,
     liqRangesMapper,
-    chartOhlcData,
+    currentChart.data,
     userPrices,
     borrowMorePrices,
     repayLoanPrices,
     addCollateralPrices,
     removeCollateralPrices,
-    // deleveragePrices,
   ])
 
   const coins: LendingMarketTokens = owm
@@ -162,6 +167,17 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
         },
       }
     : null
+
+  const selectChartList = owm
+    ? [
+        {
+          label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (Oracle)`,
+        },
+        {
+          label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
+        },
+      ]
+    : [{ label: t`Chart` }]
 
   const chartHeight = {
     expanded: 500,
@@ -202,10 +218,18 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   }, [timeOption])
 
   const refetchPricesData = () => {
-    fetchOhlcData(
+    fetchLlammaOhlcData(
       rChainId,
       rOwmId,
       owm?.addresses.amm,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.start,
+      chartTimeSettings.end
+    )
+    fetchOracleOhlcData(
+      rChainId,
+      owm?.addresses.controller,
       chartInterval,
       timeUnit,
       chartTimeSettings.start,
@@ -216,7 +240,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   // set snapshot data and subscribe to new data
   useEffect(() => {
     if (owm !== undefined) {
-      fetchOhlcData(
+      fetchLlammaOhlcData(
         rChainId,
         rOwmId,
         owm?.addresses.amm,
@@ -225,17 +249,35 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
         chartTimeSettings.start,
         chartTimeSettings.end
       )
+      fetchOracleOhlcData(
+        rChainId,
+        owm?.addresses.controller,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end
+      )
     }
-  }, [rChainId, chartInterval, chartTimeSettings.end, chartTimeSettings.start, timeUnit, fetchOhlcData, owm, rOwmId])
+  }, [
+    rChainId,
+    chartInterval,
+    chartTimeSettings.end,
+    chartTimeSettings.start,
+    timeUnit,
+    fetchLlammaOhlcData,
+    owm,
+    rOwmId,
+    fetchOracleOhlcData,
+  ])
 
   const fetchMoreChartData = useCallback(
     (lastFetchEndTime: number) => {
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      fetchMoreOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
+      fetchMoreLlammaOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreOhlcData, rChainId, owm?.addresses.amm, chartInterval, timeUnit]
+    [timeOption, fetchMoreLlammaOhlcData, rChainId, owm?.addresses.amm, chartInterval, timeUnit]
   )
 
   return chartExpanded ? (
@@ -243,23 +285,21 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
         <ChartWrapper
           chartType="crvusd"
-          chartStatus={chartFetchStatus}
+          chartStatus={currentChart.fetchStatus}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
           themeType={themeType}
-          ohlcData={chartOhlcData}
+          ohlcData={currentChart.data}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
-          selectChartList={[
-            { label: owm ? `${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol}` : t`Chart` },
-          ]}
+          selectChartList={selectChartList}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
-          refetchingCapped={refetchingCapped}
+          refetchingCapped={currentChart.refetchingCapped}
           fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={lastFetchEndTime}
+          lastFetchEndTime={currentChart.lastFetchEndTime}
           toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
           toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
           toggleOraclePriceVisible={toggleOraclePriceVisible}
@@ -267,6 +307,8 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
           liqRangeNewVisible={liqRangeNewVisible}
           oraclePriceVisible={oraclePriceVisible}
           latestOraclePrice={oraclePrice}
+          selectedChartIndex={selectedChartIndex}
+          setChartSelectedIndex={setChartSelectedIndex}
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
@@ -303,23 +345,23 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       {poolInfo === 'chart' && (
         <ChartWrapper
           chartType="crvusd"
-          chartStatus={chartFetchStatus}
+          chartStatus={currentChart.fetchStatus}
           chartHeight={chartHeight}
           chartExpanded={false}
           themeType={themeType}
-          ohlcData={chartOhlcData}
+          ohlcData={currentChart.data}
           volumeData={volumeData}
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
-          selectChartList={[
-            { label: owm ? `${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol}` : t`Chart` },
-          ]}
+          selectedChartIndex={selectedChartIndex}
+          setChartSelectedIndex={setChartSelectedIndex}
+          selectChartList={selectChartList}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
-          refetchingCapped={refetchingCapped}
+          refetchingCapped={currentChart.refetchingCapped}
           fetchMoreChartData={fetchMoreChartData}
-          lastFetchEndTime={lastFetchEndTime}
+          lastFetchEndTime={currentChart.lastFetchEndTime}
           toggleLiqRangeCurrentVisible={toggleLiqRangeCurrentVisible}
           toggleLiqRangeNewVisible={toggleLiqRangeNewVisible}
           toggleOraclePriceVisible={toggleOraclePriceVisible}

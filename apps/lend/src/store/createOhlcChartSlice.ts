@@ -1,5 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
+import { getAddress } from 'ethers'
 import type {
   TimeOptions,
   FetchingStatus,
@@ -21,17 +22,26 @@ import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 
 type SliceState = {
-  chartOhlcData: LpPriceOhlcDataFormatted[]
+  chartLlammaOhlc: {
+    data: LpPriceOhlcDataFormatted[]
+    refetchingCapped: boolean
+    lastFetchEndTime: number
+    fetchStatus: FetchingStatus
+  }
+  chartOracleOhlc: {
+    data: LpPriceOhlcDataFormatted[]
+    refetchingCapped: boolean
+    lastFetchEndTime: number
+    fetchStatus: FetchingStatus
+  }
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
   baselinePriceData: LlamaBaselinePriceData[]
   lendTradesData: LlammaTradeEvent[]
   lendControllerData: LlammaControllerEvent[]
-  chartFetchStatus: FetchingStatus
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
-  refetchingCapped: boolean
-  lastFetchEndTime: number
+  selectedChartIndex: number
   activityHidden: boolean
   chartExpanded: boolean
   oraclePriceVisible: boolean
@@ -44,7 +54,7 @@ const sliceKey = 'ohlcCharts'
 export type OhlcChartSlice = {
   [sliceKey]: SliceState & {
     setChartTimeOption(timeOption: TimeOptions): void
-    fetchOhlcData(
+    fetchLlammaOhlcData(
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -53,7 +63,7 @@ export type OhlcChartSlice = {
       start: number,
       end: number
     ): void
-    fetchMoreOhlcData(
+    fetchMoreLlammaOhlcData(
       chainId: ChainId,
       poolAddress: string,
       interval: number,
@@ -61,6 +71,16 @@ export type OhlcChartSlice = {
       start: number,
       end: number
     ): void
+    fetchOracleOhlcData(
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number
+    ): void
+    setChartSelectedIndex(index: number): void
+    fetchMoreOracleOhlcData(): void
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     setActivityHidden(bool?: boolean): void
     setChartExpanded(bool?: boolean): void
@@ -72,17 +92,26 @@ export type OhlcChartSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  chartOhlcData: [],
+  chartLlammaOhlc: {
+    data: [],
+    refetchingCapped: false,
+    lastFetchEndTime: 0,
+    fetchStatus: 'LOADING',
+  },
+  chartOracleOhlc: {
+    data: [],
+    refetchingCapped: false,
+    lastFetchEndTime: 0,
+    fetchStatus: 'LOADING',
+  },
   volumeData: [],
   oraclePriceData: [],
   baselinePriceData: [],
   lendTradesData: [],
   lendControllerData: [],
-  chartFetchStatus: 'LOADING',
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  refetchingCapped: false,
-  lastFetchEndTime: 0,
+  selectedChartIndex: 0,
   activityHidden: false,
   chartExpanded: false,
   oraclePriceVisible: true,
@@ -100,7 +129,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         })
       )
     },
-    fetchOhlcData: async (
+    fetchLlammaOhlcData: async (
       chainId: ChainId,
       llammaId: string,
       poolAddress: string,
@@ -111,8 +140,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
     ) => {
       set(
         produce((state: State) => {
-          state[sliceKey].chartFetchStatus = 'LOADING'
-          state[sliceKey].refetchingCapped = DEFAULT_STATE.refetchingCapped
+          state[sliceKey].chartLlammaOhlc.fetchStatus = 'LOADING'
+          state[sliceKey].chartLlammaOhlc.refetchingCapped = DEFAULT_STATE.chartLlammaOhlc.refetchingCapped
         })
       )
       const network = networks[chainId].id.toLowerCase()
@@ -175,19 +204,19 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartOhlcData = ohlcDataArray
+            state[sliceKey].chartLlammaOhlc.data = ohlcDataArray
+            state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
+            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = lendOhlcResponse.data[0].time
+            state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
             state[sliceKey].volumeData = volumeArray
             state[sliceKey].oraclePriceData = oraclePriceArray
             state[sliceKey].baselinePriceData = baselinePriceArray
-            state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
-            state[sliceKey].lastFetchEndTime = lendOhlcResponse.data[0].time
-            state[sliceKey].chartFetchStatus = 'READY'
           })
         )
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].chartFetchStatus = 'ERROR'
+            state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
           })
         )
         console.log(error)
@@ -254,23 +283,66 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartOhlcData = [...ohlcDataArray, ...get()[sliceKey].chartOhlcData]
+            state[sliceKey].chartLlammaOhlc.data = [...ohlcDataArray, ...get()[sliceKey].chartLlammaOhlc.data]
+            state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 299
+            state[sliceKey].chartLlammaOhlc.lastFetchEndTime = llammaOhlcResponse.data[0].time
             state[sliceKey].volumeData = [...volumeArray, ...get()[sliceKey].volumeData]
             state[sliceKey].oraclePriceData = [...oraclePriceArray, ...get()[sliceKey].oraclePriceData]
             state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
-            state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
-            state[sliceKey].lastFetchEndTime = llammaOhlcResponse.data[0].time
           })
         )
       } catch (error) {
         set(
           produce((state: State) => {
-            state[sliceKey].chartFetchStatus = 'ERROR'
+            state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
           })
         )
         console.log(error)
       }
     },
+    fetchOracleOhlcData: async (
+      chainId: ChainId,
+      controller: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number
+    ) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].chartOracleOhlc.fetchStatus = 'LOADING'
+          state[sliceKey].chartOracleOhlc.refetchingCapped = DEFAULT_STATE.chartOracleOhlc.refetchingCapped
+        })
+      )
+
+      const network = networks[chainId].id.toLowerCase()
+      const checkSummedController = getAddress(controller)
+
+      try {
+        const oracleOhlcDataFetch = await fetch(
+          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+        )
+        const oracleOhlcResponse = await oracleOhlcDataFetch.json()
+        const oracleOhlcFormatted = oracleOhlcResponse.data.map((data: any) => {
+          return {
+            ...data,
+            time: convertToLocaleTimestamp(data.time) as UTCTimestamp,
+          }
+        })
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOracleOhlc.data = oracleOhlcFormatted
+            state[sliceKey].chartOracleOhlc.refetchingCapped = oracleOhlcFormatted.length < 299
+            state[sliceKey].chartOracleOhlc.lastFetchEndTime = oracleOhlcResponse.data[0].time
+            state[sliceKey].chartOracleOhlc.fetchStatus = 'READY'
+          })
+        )
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    fetchMoreOracleOhlcData: async () => {},
     fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {
       set(
         produce((state: State) => {
@@ -342,6 +414,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         console.log(error)
       }
+    },
+    setChartSelectedIndex: (index: number) => {
+      set(
+        produce((state: State) => {
+          state[sliceKey].selectedChartIndex = index
+        })
+      )
     },
     setActivityHidden: (bool?: boolean) => {
       set(

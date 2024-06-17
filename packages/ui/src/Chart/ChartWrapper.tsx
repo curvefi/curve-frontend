@@ -154,7 +154,7 @@ const ChartWrapper = ({
       <ContentWrapper>
         <SectionHeader>
           <ChartSelectGroup>
-            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined && flipChart !== undefined ? (
+            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined ? (
               <>
                 <DialogSelectChart
                   isDisabled={chartStatus !== 'READY'}
@@ -162,7 +162,7 @@ const ChartWrapper = ({
                   selectChartList={selectChartList ?? []}
                   setChartSelectedIndex={setChartSelectedIndex}
                 />
-                {selectedChartIndex > 1 && (
+                {selectedChartIndex > 1 && flipChart !== undefined && (
                   <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
                     <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
                   </StyledFlipButton>
