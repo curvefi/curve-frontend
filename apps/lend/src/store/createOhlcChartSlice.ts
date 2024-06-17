@@ -88,7 +88,6 @@ export type OhlcChartSlice = {
       end: number
     ): void
     setChartSelectedIndex(index: number): void
-    fetchMoreOracleOhlcData(): void
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     setActivityHidden(bool?: boolean): void
     setChartExpanded(bool?: boolean): void
@@ -230,7 +229,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         console.log(error)
       }
     },
-    fetchMoreOhlcData: async (
+    fetchMoreLlammaOhlcData: async (
       chainId: ChainId,
       poolAddress: string,
       interval: number,

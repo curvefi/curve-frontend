@@ -9,6 +9,7 @@ import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import {
   AppPageFormContainer,
@@ -140,7 +141,7 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
 
-      {chartExpanded && (
+      {chartExpanded && networks[rChainId].pricesData && (
         <PriceAndTradesExpandedContainer>
           <Box flex padding="0 0 var(--spacing-2)">
             <ExpandButton
