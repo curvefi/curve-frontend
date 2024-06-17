@@ -491,6 +491,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '',
       toAddress: '',
     },
+    showRouterSwap: false,
     showInSelectNetwork: false,
   },
 }
