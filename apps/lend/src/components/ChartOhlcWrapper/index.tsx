@@ -265,9 +265,9 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     chartTimeSettings.start,
     timeUnit,
     fetchLlammaOhlcData,
+    fetchOracleOhlcData,
     owm,
     rOwmId,
-    fetchOracleOhlcData,
   ])
 
   const fetchMoreChartData = useCallback(
@@ -276,8 +276,18 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       fetchMoreLlammaOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
+      fetchMoreOracleOhlcData(rChainId, owm?.addresses.controller, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreLlammaOhlcData, rChainId, owm?.addresses.amm, chartInterval, timeUnit]
+    [
+      timeOption,
+      fetchMoreLlammaOhlcData,
+      rChainId,
+      owm?.addresses.amm,
+      chartInterval,
+      timeUnit,
+      fetchMoreOracleOhlcData,
+      owm?.addresses.controller,
+    ]
   )
 
   return chartExpanded ? (
