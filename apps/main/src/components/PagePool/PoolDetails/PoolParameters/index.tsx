@@ -20,14 +20,14 @@ import Icon from '@/ui/Icon'
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import { ExternalLinkToken } from '@/components/PagePool/PoolDetails/CurrencyReserves/styles'
 
-type Props = {
+type PoolParametersProps = {
   pricesApi: boolean
   poolData: PoolData
   rChainId: ChainId
   rPoolId: string
 }
 
-const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
+const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rChainId, rPoolId }) => {
   const poolAddress = poolData.pool.address
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const basePools = useStore((state) => state.pools.basePools)

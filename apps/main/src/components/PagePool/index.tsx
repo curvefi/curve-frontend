@@ -67,7 +67,7 @@ const DEFAULT_SEED: Seed = {
   error: '',
 }
 
-const Transfer = (pageTransferProps: PageTransferProps) => {
+const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { chainId, signerAddress } = curve ?? {}

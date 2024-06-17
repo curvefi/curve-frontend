@@ -20,13 +20,13 @@ import Tooltip from '@/ui/Tooltip'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
 
-type Props = {
+type RewardsProps = {
   chainId: ChainId
   poolData: PoolData
   rewardsApy: RewardsApy | undefined
 }
 
-const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
+const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
 

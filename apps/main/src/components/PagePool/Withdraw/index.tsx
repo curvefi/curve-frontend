@@ -13,7 +13,7 @@ import FormClaim from '@/components/PagePool/Withdraw/components/FormClaim'
 import FormWithdraw from '@/components/PagePool/Withdraw/components/FormWithdraw'
 import FormUnstake from '@/components/PagePool/Withdraw/components/FormUnstake'
 
-const Withdraw = (transferProps: TransferProps) => {
+const Withdraw: React.FC<TransferProps> = (transferProps) => {
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { curve, poolData, poolDataCacheOrApi } = transferProps

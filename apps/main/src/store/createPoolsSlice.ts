@@ -139,7 +139,7 @@ const DEFAULT_STATE: SliceState = {
     activityStatus: 'LOADING',
   },
   error: '',
-}
+} as const
 
 const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlice => ({
   [sliceKey]: {
@@ -363,18 +363,18 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       log('fetchPoolsRewardsApy', chainId, poolDatas.length)
 
       let chunks = [poolDatas]
-      let currenChunk = 0
+      let currentChunk = 0
 
       if (poolDatas.length > 200) {
         chunks = chunk(poolDatas, 200)
       }
 
-      while (currenChunk < chunks.length) {
-        const chunkResult = await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currenChunk])
-        currenChunk++
+      while (currentChunk < chunks.length) {
+        const chunkResult = await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currentChunk])
+        currentChunk++
 
         // set result to cache once complete
-        if (typeof chunks[currenChunk] === 'undefined') {
+        if (typeof chunks[currentChunk] === 'undefined') {
           get().storeCache.setStateByActiveKey('rewardsApyMapper', chainId.toString(), chunkResult)
         }
       }

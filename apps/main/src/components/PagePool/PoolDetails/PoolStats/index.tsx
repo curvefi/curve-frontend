@@ -17,18 +17,19 @@ import PoolParameters from '@/components/PagePool/PoolDetails/PoolStats/PoolPara
 import RewardsComp from '@/components/PagePool/PoolDetails/PoolStats/Rewards'
 import { InternalLink } from '@/ui/Link'
 
-const PoolStats = ({
+type PoolStatsProps = {
+  poolAlert: PoolAlert | null
+  tokensMapper: TokensMapper
+} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
+
+const PoolStats: React.FC<PoolStatsProps> = ({
   curve,
   routerParams,
   poolAlert,
   poolData,
   poolDataCacheOrApi,
   tokensMapper,
-}: {
-  className?: string
-  poolAlert: PoolAlert | null
-  tokensMapper: TokensMapper
-} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
+}) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
 
   const { rChainId, rPoolId } = routerParams
@@ -94,11 +95,6 @@ const PoolStats = ({
       </OtherStatsWrapper>
     </GridContainer>
   )
-}
-
-PoolStats.defaultProps = {
-  className: '',
-  showUserBalances: false,
 }
 
 const GridContainer = styled.div`
