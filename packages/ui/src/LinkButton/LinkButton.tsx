@@ -7,10 +7,16 @@ import styled from 'styled-components'
 
 import { buttonBaseStyles } from 'ui/src/Button/styles'
 
-interface Props extends ButtonProps, LinkProps {}
+interface Props extends ButtonProps, LinkProps {
+  testId?: string
+}
 
-const LinkButton = ({ children, ...rest }: React.PropsWithChildren<Props>) => {
-  return <StyledLink {...rest}>{children}</StyledLink>
+const LinkButton = ({ children, testId = '', ...rest }: React.PropsWithChildren<Props>) => {
+  return (
+    <StyledLink {...rest} data-testid={`link-${testId}`}>
+      {children}
+    </StyledLink>
+  )
 }
 
 const StyledLink = styled(Link)<ButtonProps>`

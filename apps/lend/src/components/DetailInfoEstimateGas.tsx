@@ -55,6 +55,7 @@ const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, step
       isDivider={isDivider}
       loading={loading}
       loadingSkeleton={[50, 20]}
+      testId="estGas"
       label={
         stepProgress ? (
           <>

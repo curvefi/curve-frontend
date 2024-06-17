@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
-export const Tab = styled.button<{ variant?: 'secondary' }>`
+type TabProps = {
+  testId?: string
+  variant?: 'secondary'
+}
+
+const Tab = styled.button.attrs((props: TabProps) => ({ 'data-testid': `tab-${props.testId}` }))<TabProps>`
   background-color: transparent;
   box-shadow: none;
   color: ${({ variant }) => (variant === 'secondary' ? `var(--tab_secondary--color);` : `var(--tab--color);`)}

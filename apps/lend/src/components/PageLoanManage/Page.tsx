@@ -145,6 +145,7 @@ const Page: NextPage = () => {
               {DETAIL_INFO_TYPES.map(({ key, label }) => (
                 <Tab
                   key={key}
+                  testId={key}
                   className={selectedTab === key ? 'active' : ''}
                   variant="secondary"
                   disabled={selectedTab === key}
