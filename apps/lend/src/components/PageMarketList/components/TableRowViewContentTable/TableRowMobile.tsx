@@ -134,7 +134,7 @@ const TableRowMobile = ({
                   <CellToken {...cellProps} type="borrowed" />
                 </Box>
               </TokensWrapper>
-              {isBorrow && <CellMaxLeverage {...cellProps} showTitle size="sm" />}
+              <CellMaxLeverage {...cellProps} showTitle size="sm" />
             </Box>
             <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
               {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}

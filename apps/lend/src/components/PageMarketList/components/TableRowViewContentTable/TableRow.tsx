@@ -83,6 +83,7 @@ const TableRow = ({
     supply: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
       { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} isVisible={isVisible} type='borrowed' /> },
+      { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
       { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },
       { className: 'right', content: <CellSupplyTotalLiquidity {...cellProps} /> },
