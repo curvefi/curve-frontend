@@ -118,7 +118,7 @@ const DEFAULT_STATE: SliceState = {
   lendControllerData: [],
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  selectedChartIndex: 0,
+  selectedChartIndex: 1,
   activityHidden: false,
   chartExpanded: false,
   oraclePriceVisible: true,
@@ -356,7 +356,38 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       timeUnit: string,
       start: number,
       end: number
-    ) => {},
+    ) => {
+      const network = networks[chainId].id.toLowerCase()
+      const checkSummedController = getAddress(controller)
+
+      try {
+        const oracleOhlcDataFetch = await fetch(
+          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+        )
+        const oracleOhlcResponse = await oracleOhlcDataFetch.json()
+        const oracleOhlcFormatted = oracleOhlcResponse.data.map((data: any) => {
+          return {
+            ...data,
+            time: convertToLocaleTimestamp(data.time) as UTCTimestamp,
+          }
+        })
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOracleOhlc.data = [...oracleOhlcFormatted, ...get()[sliceKey].chartOracleOhlc.data]
+            state[sliceKey].chartOracleOhlc.refetchingCapped = oracleOhlcFormatted.length < 299
+            state[sliceKey].chartOracleOhlc.lastFetchEndTime = oracleOhlcResponse.data[0].time
+          })
+        )
+      } catch (error) {
+        set(
+          produce((state: State) => {
+            state[sliceKey].chartOracleOhlc.fetchStatus = 'ERROR'
+          })
+        )
+        console.log(error)
+      }
+    },
     fetchPoolActivity: async (chainId: ChainId, poolAddress: string) => {
       set(
         produce((state: State) => {

@@ -217,7 +217,15 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     return 'day' // 14d
   }, [timeOption])
 
-  const refetchPricesData = () => {
+  const refetchPricesData = useCallback(() => {
+    fetchOracleOhlcData(
+      rChainId,
+      owm?.addresses.controller,
+      chartInterval,
+      timeUnit,
+      chartTimeSettings.start,
+      chartTimeSettings.end
+    )
     fetchLlammaOhlcData(
       rChainId,
       rOwmId,
@@ -227,17 +235,20 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       chartTimeSettings.start,
       chartTimeSettings.end
     )
-    fetchOracleOhlcData(
-      rChainId,
-      owm?.addresses.controller,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.start,
-      chartTimeSettings.end
-    )
-  }
+  }, [
+    chartInterval,
+    chartTimeSettings.end,
+    chartTimeSettings.start,
+    fetchLlammaOhlcData,
+    fetchOracleOhlcData,
+    owm?.addresses.amm,
+    owm?.addresses.controller,
+    rChainId,
+    rOwmId,
+    timeUnit,
+  ])
 
-  // set snapshot data and subscribe to new data
+  // initial fetch
   useEffect(() => {
     if (owm !== undefined) {
       fetchLlammaOhlcData(
@@ -259,6 +270,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       )
     }
   }, [
+    selectedChartIndex,
     rChainId,
     chartInterval,
     chartTimeSettings.end,
@@ -275,20 +287,31 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      fetchMoreLlammaOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
-      fetchMoreOracleOhlcData(rChainId, owm?.addresses.controller, chartInterval, timeUnit, +startTime, endTime)
+      if (!chartOracleOhlc.refetchingCapped) {
+        fetchMoreOracleOhlcData(rChainId, owm?.addresses.controller, chartInterval, timeUnit, +startTime, endTime)
+      }
+      if (!chartLlammaOhlc.refetchingCapped) {
+        fetchMoreLlammaOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
+      }
     },
     [
       timeOption,
-      fetchMoreLlammaOhlcData,
+      chartOracleOhlc.refetchingCapped,
+      chartLlammaOhlc.refetchingCapped,
+      fetchMoreOracleOhlcData,
       rChainId,
+      owm?.addresses.controller,
       owm?.addresses.amm,
       chartInterval,
       timeUnit,
-      fetchMoreOracleOhlcData,
-      owm?.addresses.controller,
+      fetchMoreLlammaOhlcData,
     ]
   )
+
+  console.log(' ')
+  console.log('chartOracleOhlc', chartOracleOhlc)
+  console.log('chartLlammaOhlc', chartLlammaOhlc)
+  console.log('oracleData', oraclePriceData)
 
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
