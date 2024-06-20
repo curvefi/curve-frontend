@@ -5,6 +5,7 @@ export interface CurrencyReservesProps {
   rChainId: ChainId
   token: string
   tokenAddress: string
+  tokenLink: string | undefined
   tokensMapper: TokensMapper
   handleCopyClick(address: string): void
 }
