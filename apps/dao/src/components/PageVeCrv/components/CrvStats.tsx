@@ -57,6 +57,7 @@ const StatsRow = styled(Box)`
   flex-direction: row;
   gap: var(--spacing-4);
   padding: var(--spacing-3);
+  background-color: var(--box_header--secondary--background-color);
 `
 
 const Column = styled(Box)`
