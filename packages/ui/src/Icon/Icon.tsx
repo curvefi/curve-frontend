@@ -41,6 +41,7 @@ import {
   StopFilledAlt,
   UpToTop,
   WarningSquareFilled,
+  StoragePool,
 } from '@carbon/icons-react'
 import { useMemo } from 'react'
 
@@ -85,6 +86,7 @@ const icon = {
   StopFilledAlt,
   UpToTop,
   WarningSquareFilled,
+  StoragePool,
 } as const
 
 export interface IconProps extends CarbonIconProps {
