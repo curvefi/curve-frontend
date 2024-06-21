@@ -1406,16 +1406,24 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@curvefi/api@^2.60.1":
-  version "2.60.1"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.60.1.tgz#5266c3657aa8ee15d5ee63dded9ff772b2f36b5c"
-  integrity sha512-e5xRji3y5K3bo4BPoclIhog1MiAeZXtVFM0lk4trdzc6mQsqetHxF8w5MkXKWc9yDCtbhjns+rLYLLS4zKUOKA==
+"@curvefi/api@^2.60.2":
+  version "2.60.2"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.60.2.tgz#2238e54e08bb55305886d97844de72646414799d"
+  integrity sha512-Y/Z9qpB1FA2GrUtMgLEpEOiM9EFp9/Fru/D78qTf7osjRh1i6LisUxxFxN7eGyoQGyNaRGefE0jSlhrj+0hHWg==
   dependencies:
+    "@curvefi/ethcall" "6.0.7"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
-    ethcall "6.0.6"
     ethers "^6.11.0"
     memoizee "^0.4.15"
+
+"@curvefi/ethcall@6.0.7":
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/@curvefi/ethcall/-/ethcall-6.0.7.tgz#2f12919c65d76febb32a5440f63cc81ec0de01ea"
+  integrity sha512-YIwGVWqtSrOrLooLFqZzftJWbf5Nx9zJlcN7yWW0ICaaTARJ1Ks57FMJYj15WftsyCsp5KWYYe8G513l2EsBFg==
+  dependencies:
+    "@types/node" "^20.2.5"
+    abi-coder "^5.0.0"
 
 "@curvefi/lending-api@^2.1.0":
   version "2.1.0"
@@ -9400,14 +9408,6 @@ eth-sig-util@^1.4.2:
   dependencies:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
-
-ethcall@6.0.6:
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/ethcall/-/ethcall-6.0.6.tgz#42189442a97a49ff13c8fdf826c45f03c6a73df3"
-  integrity sha512-RV96nKXNRMImCfi1cNuh2LCP+wiEnAwui3MjC4+eKnzohGHY0T5c+T6+E2io7a0zgp/DfczZeZP4DdN0SLM5cQ==
-  dependencies:
-    "@types/node" "^20.2.5"
-    abi-coder "^5.0.0"
 
 ethcall@^4.2.5:
   version "4.8.13"
