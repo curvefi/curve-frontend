@@ -493,6 +493,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     },
     showRouterSwap: false,
     showInSelectNetwork: false,
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
   },
 }
 
