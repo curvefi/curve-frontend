@@ -15,7 +15,6 @@ import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { cloneDeep } from 'lodash'
 
-import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
 import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
@@ -23,7 +22,6 @@ import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
 import Checkbox from 'ui/src/Checkbox'
-import Box from 'ui/src/Box'
 
 type Props = {
   chartType: ChartType

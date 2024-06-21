@@ -43,15 +43,14 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartLlammaOhlc,
-    chartOracleOhlc,
+    chartOraclePoolOhlc,
     timeOption,
     volumeData,
     oraclePriceData,
     setChartTimeOption,
     fetchLlammaOhlcData,
-    fetchMoreLlammaOhlcData,
-    fetchOracleOhlcData,
-    fetchMoreOracleOhlcData,
+    fetchOraclePoolOhlcData,
+    fetchMoreData,
     setChartSelectedIndex,
     selectedChartIndex,
     activityHidden,
@@ -69,8 +68,8 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
 
   const currentChart = useMemo(() => {
-    return selectedChartIndex === 0 ? chartOracleOhlc : chartLlammaOhlc
-  }, [chartLlammaOhlc, chartOracleOhlc, selectedChartIndex])
+    return selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
+  }, [chartLlammaOhlc, chartOraclePoolOhlc, selectedChartIndex])
 
   const selectedLiqRange = useMemo(() => {
     let liqRanges: LiquidationRanges = {
@@ -218,7 +217,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   }, [timeOption])
 
   const refetchPricesData = useCallback(() => {
-    fetchOracleOhlcData(
+    fetchOraclePoolOhlcData(
       rChainId,
       owm?.addresses.controller,
       chartInterval,
@@ -240,7 +239,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     chartTimeSettings.end,
     chartTimeSettings.start,
     fetchLlammaOhlcData,
-    fetchOracleOhlcData,
+    fetchOraclePoolOhlcData,
     owm?.addresses.amm,
     owm?.addresses.controller,
     rChainId,
@@ -260,7 +259,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
         chartTimeSettings.start,
         chartTimeSettings.end
       )
-      fetchOracleOhlcData(
+      fetchOraclePoolOhlcData(
         rChainId,
         owm?.addresses.controller,
         chartInterval,
@@ -277,7 +276,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     chartTimeSettings.start,
     timeUnit,
     fetchLlammaOhlcData,
-    fetchOracleOhlcData,
+    fetchOraclePoolOhlcData,
     owm,
     rOwmId,
   ])
@@ -287,31 +286,18 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      if (!chartOracleOhlc.refetchingCapped) {
-        fetchMoreOracleOhlcData(rChainId, owm?.addresses.controller, chartInterval, timeUnit, +startTime, endTime)
-      }
-      if (!chartLlammaOhlc.refetchingCapped) {
-        fetchMoreLlammaOhlcData(rChainId, owm?.addresses.amm, chartInterval, timeUnit, +startTime, endTime)
-      }
+      fetchMoreData(
+        rChainId,
+        owm?.addresses.controller,
+        owm?.addresses.amm,
+        chartInterval,
+        timeUnit,
+        startTime,
+        endTime
+      )
     },
-    [
-      timeOption,
-      chartOracleOhlc.refetchingCapped,
-      chartLlammaOhlc.refetchingCapped,
-      fetchMoreOracleOhlcData,
-      rChainId,
-      owm?.addresses.controller,
-      owm?.addresses.amm,
-      chartInterval,
-      timeUnit,
-      fetchMoreLlammaOhlcData,
-    ]
+    [timeOption, fetchMoreData, rChainId, owm?.addresses.amm, owm?.addresses.controller, chartInterval, timeUnit]
   )
-
-  console.log(' ')
-  console.log('chartOracleOhlc', chartOracleOhlc)
-  console.log('chartLlammaOhlc', chartLlammaOhlc)
-  console.log('oracleData', oraclePriceData)
 
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
