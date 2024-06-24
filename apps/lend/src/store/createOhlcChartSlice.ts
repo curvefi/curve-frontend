@@ -296,6 +296,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           })
         )
         console.log(error)
+        return {
+          ohlcData: [],
+          volumeData: [],
+          oracleData: [],
+          baselineData: [],
+          refetchingCapped: false,
+          lastFetchEndTime: 0,
+        }
       }
     },
     fetchOraclePoolOhlcData: async (
@@ -375,6 +383,11 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           })
         )
         console.log(error)
+        return {
+          data: [],
+          refetchingCapped: false,
+          lastFetchEndTime: 0,
+        }
       }
     },
     fetchMoreData: async (

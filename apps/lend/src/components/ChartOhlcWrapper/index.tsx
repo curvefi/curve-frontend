@@ -28,18 +28,20 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const { formValues, activeKeyLiqRange, activeKey } = useStore((state) => state.loanCreate)
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
+  const repayActiveKey = useStore((state) => state.loanRepay.activeKey)
+  const repayLeveragePrices = useStore((state) => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
   const repayLoanPrices = useStore((state) => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
-  // const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
   const addCollateralPrices = useStore(
     (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null
   )
   const removeCollateralPrices = useStore(
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null
   )
+
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
     chartLlammaOhlc,
@@ -135,12 +137,11 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
       const range = formatRange(removeCollateralPrices)
       liqRanges.new = range
     }
-
     // // deleverage prices
-    // if (deleveragePrices && currentChart.data) {
-    //   const range = formatRange(deleveragePrices)
-    //   liqRanges.new = range
-    // }
+    if (repayLeveragePrices && currentChart.data) {
+      const range = formatRange(repayLeveragePrices)
+      liqRanges.new = range
+    }
 
     return liqRanges
   }, [
@@ -152,6 +153,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
     repayLoanPrices,
     addCollateralPrices,
     removeCollateralPrices,
+    repayLeveragePrices,
   ])
 
   const coins: LendingMarketTokens = owm
