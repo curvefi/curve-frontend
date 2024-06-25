@@ -16,6 +16,7 @@ import {
   RCFraxtalLogo,
   RCXLayerLogo,
   RCXLayerWhiteLogo,
+  RCMantleLogo,
 } from 'ui/src/images'
 
 const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
@@ -314,7 +315,7 @@ export const baseNetworksConfig = {
     name: 'Mantle',
     id: 'mantle' as const,
     hex: '0x1388',
-    icon: RCEthereumLogo,
+    icon: RCMantleLogo,
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
     networkId: 5000 as const,
     orgUIPath: '',
