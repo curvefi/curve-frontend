@@ -2,7 +2,7 @@ import type { TooltipProps } from 'ui/src/Tooltip/types'
 import type { TooltipTriggerProps } from 'react-stately'
 
 import React, { useCallback, useState } from 'react'
-import { getIsMobile } from 'ui/src/utils'
+import { breakpoints, getIsMobile } from 'ui/src/utils'
 import { useTooltipTriggerState } from 'react-stately'
 import { useTooltipTrigger } from 'react-aria'
 import styled from 'styled-components'
@@ -11,16 +11,20 @@ import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/Tooltip'
 
 function TooltipButton({
+  className = '',
   children,
   showIcon,
   customIcon,
+  onClick,
   ...props
 }: React.PropsWithChildren<
   TooltipTriggerProps &
     TooltipProps & {
+      className?: string
       tooltip: React.ReactNode | string
       showIcon?: boolean
       customIcon?: React.ReactNode
+      onClick?: () => void
     }
 >) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
@@ -39,6 +43,7 @@ function TooltipButton({
   const handleBtnClick = useCallback(
     (evt: React.MouseEvent<HTMLButtonElement>) => {
       if (typeof triggerProps.onClick === 'function') triggerProps.onClick(evt)
+      if (typeof onClick === 'function') onClick()
 
       // handle mobile click tooltip
       if (getIsMobile()) {
@@ -47,12 +52,12 @@ function TooltipButton({
         window.addEventListener('scroll', handleScroll)
       }
     },
-    [handleScroll, state, triggerProps]
+    [handleScroll, onClick, state, triggerProps]
   )
 
   return (
     <StyledTooltipButton>
-      <Button ref={ref} {...triggerProps} onClick={handleBtnClick}>
+      <Button ref={ref} {...triggerProps} className={className} onClick={handleBtnClick}>
         {showIcon || customIcon
           ? customIcon ?? <Icon className="svg-tooltip" name="InformationSquare" size={16} />
           : children}
@@ -71,14 +76,23 @@ const StyledTooltipButton = styled.span`
 `
 
 const Button = styled.span`
+  align-items: center;
   background-color: transparent;
   color: inherit;
+  cursor: pointer;
+  display: inline-flex;
   font-size: inherit;
+  justify-content: center;
+  min-height: var(--height-small);
+  min-width: var(--height-small);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    min-height: 16px;
+    min-width: 16px;
+  }
 
   > svg {
-    position: relative;
-    top: 2px;
-    opacity: 0.4;
+    opacity: 0.6;
 
     :hover {
       opacity: 1;

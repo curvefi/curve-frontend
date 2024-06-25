@@ -18,7 +18,7 @@ import { ExternalLink } from '@/ui/Link'
 import TokenIcon from '@/components/TokenIcon'
 import Icon from '@/ui/Icon'
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import { ExternalLinkToken } from '@/components/PagePool/PoolDetails/CurrencyReserves/styles'
+import TextEllipsis from '@/ui/TextEllipsis'
 
 type Props = {
   pricesApi: boolean
@@ -527,6 +527,11 @@ const StatsData = styled.p`
   margin-left: auto;
   font-weight: var(--bold);
   font-size: var(--font-size-2);
+`
+
+export const ExternalLinkToken = styled(TextEllipsis)`
+  font-weight: bold;
+  text-transform: initial;
 `
 
 export default PoolParameters

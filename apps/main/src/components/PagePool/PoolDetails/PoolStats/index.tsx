@@ -120,7 +120,11 @@ const MainStatsContainer = styled(Box)`
 const MainStatsWrapper = styled(Box)`
   align-items: flex-start;
   display: grid;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem var(--spacing-narrow);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    padding: 1.5rem var(--spacing-normal);
+  }
 
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem;
