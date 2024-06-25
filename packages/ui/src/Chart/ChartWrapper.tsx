@@ -270,7 +270,7 @@ const ChartWrapper = ({
           <StyledSpinnerWrapper
             minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
           >
-            <ErrorMessage>{`There was an error fetching ${
+            <ErrorMessage>{`Unable to fetch ${
               selectedChartIndex !== undefined ? selectChartList?.[selectedChartIndex].label : selectChartList[0].label
             } data.`}</ErrorMessage>
             <RefreshButton

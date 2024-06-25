@@ -183,7 +183,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         const lendOhlcResponse: LlammaOhlcApiResponse = await lendOhlcFetch.json()
 
         if (lendOhlcResponse.data.length === 0) {
-          throw new Error('Unable to fetch LLAMMA OHLC data')
+          throw new Error('No LLAMMA OHLC data found.')
         }
 
         let volumeArray: VolumeData[] = []
@@ -354,7 +354,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         const oracleOhlcResponse = await oracleOhlcDataFetch.json()
 
         if (oracleOhlcResponse.data.length === 0) {
-          throw new Error('Unable to fetch oracle OHLC data')
+          throw new Error('No oracle OHLC data found')
         }
 
         const oracleOhlcFormatted = oracleOhlcResponse.data.map((data: any) => {
