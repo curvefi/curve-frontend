@@ -372,7 +372,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
           themeType={themeType}
           ohlcData={currentChart.data}
           volumeData={volumeData}
-          oraclePriceData={oraclePriceData}
+          oraclePriceData={oraclePriceData.length > 0 ? oraclePriceData : undefined}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
           selectedChartIndex={selectedChartIndex}
