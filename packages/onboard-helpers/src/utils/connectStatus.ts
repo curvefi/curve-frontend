@@ -1,7 +1,23 @@
+import { WalletState } from '@web3-onboard/core'
+
+export enum CONNECT_STAGE {
+  'CONNECT_API' = 'connect-api',
+  'CONNECT_WALLET' = 'connect-wallet',
+  'SWITCH_NETWORK' = 'switch-network',
+  'DISCONNECT_WALLET' = 'disconnect-wallet',
+}
+
+export interface ConnectOptions {
+  [CONNECT_STAGE.CONNECT_API]: [number, boolean]
+  [CONNECT_STAGE.CONNECT_WALLET]: string | undefined
+  [CONNECT_STAGE.SWITCH_NETWORK]: [number, number]
+  [CONNECT_STAGE.DISCONNECT_WALLET]: WalletState
+}
+
 export type ConnectState = {
   status: 'loading' | 'success' | 'failure' | ''
-  stage: 'api' | 'connect-wallet' | 'switch-network' | 'disconnect-wallet' | ''
-  options?: any[] | undefined
+  stage: CONNECT_STAGE | ''
+  options?: ConnectOptions[CONNECT_STAGE]
 }
 
 export function isSuccess(connectState: ConnectState) {
@@ -16,7 +32,7 @@ export function isFailure(connectState: ConnectState, stage?: string) {
   }
 }
 
-export function isLoading(connectState: ConnectState, stage?: string | string[]) {
+export function isLoading(connectState: ConnectState, stage?: CONNECT_STAGE | CONNECT_STAGE[]) {
   if (connectState.status !== 'loading') {
     return false
   } else {

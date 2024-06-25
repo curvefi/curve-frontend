@@ -5,12 +5,12 @@ import React, { useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CONNECT_STAGE, CRVUSD_ADDRESS, ROUTE } from '@/constants'
+import { CONNECT_STAGE, isLoading, useConnectWallet } from '@/onboard'
+import { CRVUSD_ADDRESS, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getLocaleFromUrl, getNetworkFromUrl, getPath, getRestFullPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
+import { _parseRouteAndIsActive, formatNumber } from '@/ui/utils'
 import { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
@@ -37,7 +37,7 @@ const Header = () => {
   const params = useParams()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetwork, rNetworkIdx } = getNetworkFromUrl()
+  const { rChainId, rNetworkIdx, rNetwork } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -56,9 +56,8 @@ const Header = () => {
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const rLocale = getLocaleFromUrl()
-  const { params: routerParams, location } = routerProps ?? {}
+  const { location } = routerProps ?? {}
 
-  const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
 
   const appLogoProps: AppLogoProps = {
@@ -82,8 +81,8 @@ const Header = () => {
           APP_LINK.lend,
         ]
 
-    return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, routerNetwork)
-  }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])
+    return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, rNetwork ?? 'ethereum')
+  }, [isLgUp, rLocale.rLocalePathname, rNetwork, routerPathname])
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
@@ -99,7 +98,6 @@ const Header = () => {
 
   const SelectNetworkComp = (
     <AppSelectNetwork
-      connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
       loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
@@ -122,7 +120,7 @@ const Header = () => {
       if (wallet) {
         updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
       } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')
       }
     },
   }

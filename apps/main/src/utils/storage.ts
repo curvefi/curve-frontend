@@ -1,7 +1,6 @@
 import type { Theme } from '@/store/createGlobalSlice'
 
 import merge from 'lodash/merge'
-import dayjs from '@/lib/dayjs'
 
 export const APP_STORAGE = {
   APP_CACHE: 'curve-app-cache',
@@ -25,8 +24,6 @@ export function getStorageValue(key: Key) {
   if (key === 'APP_CACHE') {
     return {
       themeType: getTheme(parsedStoredValue.themeType),
-      timestamp: parsedStoredValue.timestamp ?? '',
-      walletName: getWalletName(parsedStoredValue.walletName, parsedStoredValue.timestamp),
     }
   } else if (key === 'APP_DASHBOARD') {
     return {
@@ -42,11 +39,6 @@ function getTheme(svThemeType: string | undefined) {
     const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as Theme
     return (foundThemeType || 'default') as Theme
   }
-}
-
-function getWalletName(walletName: string | undefined, timestamp: string | undefined) {
-  const isStaled = walletName && timestamp && dayjs().diff(+timestamp, 'days') > 5
-  return isStaled || !walletName ? '' : walletName
 }
 
 export function setStorageValue<T>(key: Key, updatedValue: T) {

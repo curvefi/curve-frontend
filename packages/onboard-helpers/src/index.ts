@@ -16,6 +16,8 @@ import {
 } from './utils/walletModules'
 
 export * from '@web3-onboard/react'
+export * from './utils'
+export * from './hooks'
 
 // @ts-ignore
 export function initOnboard(i18n, locale, themeType, networks) {

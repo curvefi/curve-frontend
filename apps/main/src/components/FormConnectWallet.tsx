@@ -1,7 +1,7 @@
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { isLoading } from '@/ui/utils'
+import { isLoading } from '@/onboard'
 import useStore from '@/store/useStore'
 
 import Button from '@/ui/Button'

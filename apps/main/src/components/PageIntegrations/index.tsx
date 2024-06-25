@@ -111,7 +111,6 @@ const IntegrationsComp = ({
             updatePath={updatePath}
           />
           <SelectNetwork
-            connectState={connectState}
             hideIcon
             items={visibleNetworksList}
             minWidth="8.5em"

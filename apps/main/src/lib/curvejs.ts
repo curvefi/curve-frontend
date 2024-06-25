@@ -1533,7 +1533,6 @@ const wallet = {
     if (fattenErrors.length) {
       await PromisePool.for(fattenErrors)
         .handleError((error, tokenAddress) => {
-          console.error(`Unable to get user balance for ${tokenAddress}`, error)
           results[tokenAddress] = 'NaN'
         })
         .process(async (tokenAddress) => {

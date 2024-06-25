@@ -24,13 +24,6 @@ export const REFRESH_INTERVAL = {
   '11m': 660000,
 }
 
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
-} as const
-
 // TODO: translation
 export const NOFITY_MESSAGE = {
   pendingConfirm: 'Pending wallet confirmation.',

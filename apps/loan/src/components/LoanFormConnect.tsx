@@ -1,10 +1,8 @@
 import { t } from '@lingui/macro'
 import React from 'react'
-
-import { CONNECT_STAGE } from '@/constants'
-import { isLoading } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import { CONNECT_STAGE, isLoading } from '@/onboard'
 import Button from '@/ui/Button'
 import Spinner from '@/ui/Spinner'
 
@@ -20,7 +18,7 @@ const LoanFormConnect = ({
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const handleConnectClick = () => {
-    updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+    updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')
   }
 
   return (

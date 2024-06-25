@@ -1,10 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectOptions, ConnectState } from '@/onboard'
 import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
+import { CONNECT_STAGE } from '@/onboard'
 import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/utilsStorage'
@@ -34,7 +35,7 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   setAppCache<T>(key: AppCacheKeys, value: T): void
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState<S extends CONNECT_STAGE>(status: ConnectState['status'], stage: S | '', options?: ConnectOptions[S]): void
   updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
   getTvl(api: Api): void
@@ -46,7 +47,7 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  connectState: { status: '' as const, stage: '' },
+  connectState: { status: '', stage: '' },
   api: null,
   isAdvanceMode: false,
   isLoadingApi: true,

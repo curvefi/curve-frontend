@@ -1,11 +1,12 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { Locale } from '@/lib/i18n'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectState, ConnectOptions } from '@/onboard'
 
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
+import { CONNECT_STAGE } from '@/onboard'
 import { log, setStorageValue } from '@/utils'
 import networks from '@/networks'
 
@@ -52,7 +53,7 @@ export interface GlobalSlice extends GlobalState {
   setNetworkConfigFromApi(curve: CurveApi): void
   setPageWidth: (pageWidthClassName: PageWidthClassName) => void
   setThemeType: (themeType: Theme) => void
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState<S extends CONNECT_STAGE>(status: ConnectState['status'], stage: S | '', options?: ConnectOptions[S]): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateShowScrollButton(scrollY: number): void
@@ -65,7 +66,7 @@ export interface GlobalSlice extends GlobalState {
 }
 
 const DEFAULT_STATE = {
-  connectState: { status: '' as const, stage: '' },
+  connectState: { status: '', stage: '' },
   curve: null,
   hasDepositAndStake: {},
   hasRouter: {},
