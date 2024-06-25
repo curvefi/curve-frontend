@@ -48,7 +48,7 @@ type Props = {
   liqRangeNewVisible?: boolean
   lastFetchEndTime: number
   refetchingCapped: boolean
-  selectChartList?: LabelList[]
+  selectChartList: LabelList[]
   latestOraclePrice?: string
 }
 
@@ -99,7 +99,7 @@ const ChartWrapper = ({
   latestOraclePrice,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
-  const clonedOhlcData = cloneDeep(ohlcData)
+  const clonedOhlcData = [...ohlcData]
 
   const wrapperRef = useRef(null)
 
@@ -155,7 +155,7 @@ const ChartWrapper = ({
             {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined ? (
               <>
                 <DialogSelectChart
-                  isDisabled={chartStatus !== 'READY'}
+                  isDisabled={false}
                   selectedChartIndex={selectedChartIndex}
                   selectChartList={selectChartList ?? []}
                   setChartSelectedIndex={setChartSelectedIndex}
@@ -203,14 +203,16 @@ const ChartWrapper = ({
           toggleLiqRangeNewVisible &&
           toggleLiqRangeCurrentVisible && (
             <TipWrapper>
-              <StyledCheckbox
-                fillColor="var(--chart-oracle-price-line)"
-                blank
-                isSelected={oraclePriceVisible}
-                onChange={() => toggleOraclePriceVisible()}
-              >
-                Oracle Price
-              </StyledCheckbox>
+              {oraclePriceData && oraclePriceData?.length > 0 && (
+                <StyledCheckbox
+                  fillColor="var(--chart-oracle-price-line)"
+                  blank
+                  isSelected={oraclePriceVisible}
+                  onChange={() => toggleOraclePriceVisible()}
+                >
+                  Oracle Price
+                </StyledCheckbox>
+              )}
               {liquidationRange?.new && toggleLiqRangeNewVisible && (
                 <StyledCheckbox
                   fillColor="var(--chart-liq-range)"
@@ -268,7 +270,9 @@ const ChartWrapper = ({
           <StyledSpinnerWrapper
             minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
           >
-            <ErrorMessage>{'There was an error fetching the Chart data.'}</ErrorMessage>
+            <ErrorMessage>{`There was an error fetching ${
+              selectedChartIndex !== undefined ? selectChartList?.[selectedChartIndex].label : selectChartList[0].label
+            } data.`}</ErrorMessage>
             <RefreshButton
               size="small"
               variant="text"
