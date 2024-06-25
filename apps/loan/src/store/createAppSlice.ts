@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { ConnectState } from '@/ui/utils'
+import type { ConnectOptions, ConnectState } from '@/onboard'
 import type { Locale } from '@/lib/i18n'
 
+import { CONNECT_STAGE } from '@/onboard'
 import produce from 'immer'
-
 import { log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
 import isEqual from 'lodash/isEqual'
@@ -36,7 +36,7 @@ type SliceState = {
 export interface AppSlice extends SliceState {
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   setAppCache<T>(key: AppCacheKeys, value: T): void
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState<S extends CONNECT_STAGE>(status: ConnectState['status'], stage: S | '', options?: ConnectOptions[S]): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 

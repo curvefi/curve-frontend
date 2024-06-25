@@ -6,7 +6,7 @@ import type { State } from '@/store/useStore'
 import { BrowserProvider, ethers } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { CONNECT_STAGE } from '@/constants'
+import { CONNECT_STAGE } from '@/onboard'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -57,7 +57,7 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
       }
     },
     updateConnectWalletStateKeys: () => {
-      get().updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+      get().updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')
     },
     getProvider: (sliceKey) => {
       let provider = null
