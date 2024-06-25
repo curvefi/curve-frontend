@@ -80,9 +80,19 @@ const PoolActivity = ({
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer>
+          <ElementsContainer minHeight={chartExpanded ? 548 : 330}>
             {eventOption === 'TRADE' ? (
-              <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
+              tradeEventsData.length === 0 ? (
+                <SpinnerWrapper>
+                  <ErrorMessage>{t`No trades data found.`}</ErrorMessage>
+                </SpinnerWrapper>
+              ) : (
+                <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
+              )
+            ) : liquidityEventsData.length === 0 ? (
+              <SpinnerWrapper>
+                <ErrorMessage>{t`No controller data found.`}</ErrorMessage>
+              </SpinnerWrapper>
             ) : (
               <LiquidityData lpEventsData={liquidityEventsData} chainId={chainId} coins={coins} />
             )}
@@ -154,13 +164,14 @@ const GridContainer = styled.div`
   scrollbar-width: none;
 `
 
-const ElementsContainer = styled.div`
+const ElementsContainer = styled.div<{ minHeight: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   overflow-y: auto;
   border-bottom: 0.5px solid var(--border-600);
   padding: var(--spacing-1);
+  min-height: ${(props) => props.minHeight}px;
 `
 
 const TitlesRow = styled.div`
