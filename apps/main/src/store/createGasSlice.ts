@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai } from '@/ui/utils/utilsWeb3'
+import { gweiToWai } from '@/shared/curve-lib'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@/utils'
 import api from '@/lib/curvejs'
