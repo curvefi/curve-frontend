@@ -25,9 +25,7 @@ const PoolActivity: React.FC<PoolActivityProps> = ({ chainId, poolAddress, coins
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
-  const minHeight = useMemo(() => {
-    return chartExpanded ? 548 : 330
-  }, [chartExpanded])
+  const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
     fetchPoolActivity(chainId, poolAddress)

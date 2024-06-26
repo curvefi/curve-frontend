@@ -1,6 +1,6 @@
 import { LlammaLiquidityCoins } from './types'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -31,9 +31,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
-  const minHeight = useMemo(() => {
-    return chartExpanded ? 548 : 330
-  }, [chartExpanded])
+  const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
     fetchPoolActivity(chainId, poolAddress)
