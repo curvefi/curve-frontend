@@ -8,7 +8,8 @@
       "@/ui/*": ["../../../packages/ui/src/*"],
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
-      "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"]
+      "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"],
+      "@/shared/curve-lib": ["../../../packages/curve-lib/src/index.ts"]
     },
   },
   "exclude": ["node_modules", "cypress"],
