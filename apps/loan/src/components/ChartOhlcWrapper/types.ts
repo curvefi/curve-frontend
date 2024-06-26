@@ -1,15 +1,15 @@
 import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
 
-export interface LlammaLiquidityCoins {
-  crvusd?: {
+export type LlammaLiquidityCoins = {
+  crvusd: {
     symbol: string
     address: string
   }
-  collateral?: {
+  collateral: {
     symbol: string
     address: string
   }
-}
+} | null
 
 export interface ChartOhlcWrapperProps {
   rChainId: ChainId

@@ -1,15 +1,15 @@
 import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
 
-export interface LendingMarketTokens {
-  borrowedToken?: {
+export type LendingMarketTokens = {
+  borrowedToken: {
     symbol: string
     address: string
   }
-  collateralToken?: {
+  collateralToken: {
     symbol: string
     address: string
   }
-}
+} | null
 
 export interface PoolActivityProps {
   poolAddress: string
