@@ -2,6 +2,7 @@ import type { LiqRange } from '@/store/types'
 import type { StepStatus } from '@/ui/Stepper/types'
 
 import PromisePool from '@supercharge/promise-pool'
+import api from '@curvefi/lending-api/lib/index'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
@@ -13,7 +14,6 @@ import networks from '@/networks'
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet | null) => {
     const { networkId, rpcUrl } = networks[chainId]
-    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
 
     if (wallet) {
       await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
