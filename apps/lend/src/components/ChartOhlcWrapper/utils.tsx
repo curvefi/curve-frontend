@@ -7,14 +7,14 @@ export function combinations<T>(inputArray: T[], size: number): T[][] {
       return
     }
 
-    for (let i = start; i < inputArray.length; i++) {
+    inputArray.forEach((element, i) => {
       // Choose one element
-      chosen.push(inputArray[i])
+      chosen.push(element)
       // Generate combinations of smaller size
       combinationHelper(i + 1, chosen)
       // Un-choose the chosen element
       chosen.pop()
-    }
+    })
   }
 
   combinationHelper(0, [])
@@ -73,9 +73,9 @@ export const convertTimeAgo = (input: string | number) => {
 
   if (diffInDays > 0) {
     return `${diffInDays}d`
-  } else if (diffInHours > 0) {
-    return `${diffInHours}h`
-  } else {
-    return `${diffInMinutes}m`
   }
+  if (diffInHours > 0) {
+    return `${diffInHours}h`
+  }
+  return `${diffInMinutes}m`
 }

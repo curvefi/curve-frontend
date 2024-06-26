@@ -1,3 +1,5 @@
+import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
+
 export type LendingMarketTokens = {
   borrowedToken: {
     symbol: string
@@ -8,3 +10,26 @@ export type LendingMarketTokens = {
     address: string
   }
 } | null
+
+export type PoolActivityProps = {
+  poolAddress: string
+  chainId: ChainId
+  coins: LendingMarketTokens
+}
+
+export type LiquidityDataProps = {
+  lendControllerData: LlammaControllerEvent[]
+  chainId: ChainId
+  coins: LendingMarketTokens
+}
+
+export type TradesDataProps = {
+  lendTradesData: LlammaTradeEvent[]
+  chainId: ChainId
+}
+
+export type ChartOhlcWrapperProps = {
+  rChainId: ChainId
+  userActiveKey: string
+  rOwmId: string
+}

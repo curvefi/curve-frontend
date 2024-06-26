@@ -1,5 +1,5 @@
 import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
-import { LendingMarketTokens } from './types'
+import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
@@ -14,13 +14,7 @@ import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 
-type Props = {
-  rChainId: ChainId
-  userActiveKey: string
-  rOwmId: string
-}
-
-const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
+const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const themeType = useStore((state) => state.themeType)
   const owm = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId]?.owm)
@@ -28,7 +22,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: Props) => {
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const { formValues, activeKeyLiqRange, activeKey } = useStore((state) => state.loanCreate)
+  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)

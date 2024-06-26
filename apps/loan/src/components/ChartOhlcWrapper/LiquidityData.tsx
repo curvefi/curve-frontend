@@ -1,11 +1,8 @@
-import type { LlammaControllerEvent, PricesApiCoin } from '@/ui/Chart/types'
-import { LlammaLiquidityCoins } from './types'
+import { LiqudityDataProps } from './types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { ethers } from 'ethers'
 
-import useStore from '@/store/useStore'
 import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
@@ -16,13 +13,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-type Props = {
-  llammaControllerData: LlammaControllerEvent[]
-  chainId: ChainId
-  coins: LlammaLiquidityCoins
-}
-
-const LiquidityData = ({ llammaControllerData, chainId, coins }: Props) => {
+const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chainId, coins }) => {
   return (
     <>
       {coins &&
@@ -150,11 +141,6 @@ const LiquidityEventTitle = styled.span`
   &.remove {
     color: var(--chart-red);
   }
-`
-
-const LpTokensContainer = styled.div`
-  display: flex;
-  flex-direction: column;
 `
 
 const Nrange = styled.p`

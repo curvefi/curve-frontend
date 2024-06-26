@@ -1,5 +1,5 @@
 import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
-import { LlammaLiquidityCoins } from './types'
+import { LlammaLiquidityCoins, ChartOhlcWrapperProps } from './types'
 
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
@@ -14,13 +14,7 @@ import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 
-type Props = {
-  rChainId: ChainId
-  llamma: Llamma | null
-  llammaId: string
-}
-
-const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: Props) => {
+const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, llammaId }) => {
   const address = llamma?.address ?? ''
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)

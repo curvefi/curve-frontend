@@ -1,6 +1,6 @@
 import { LlammaLiquidityCoins } from './types'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -31,12 +31,16 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
+  const minHeight = useMemo(() => {
+    return chartExpanded ? 548 : 330
+  }, [chartExpanded])
+
   useEffect(() => {
     fetchPoolActivity(chainId, poolAddress)
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper chartExpanded={chartExpanded}>
+    <Wrapper maxHeight={`${minHeight}px`}>
       <SectionHeader>
         {chartExpanded && (
           <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden()}>
@@ -71,7 +75,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer minHeight={chartExpanded ? 548 : 330}>
+          <ElementsContainer minHeight={minHeight}>
             {eventOption === 'TRADE' ? (
               llammaTradesData.length === 0 ? (
                 <SpinnerWrapper>
@@ -91,12 +95,12 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
         </GridContainer>
       )}
       {!activityHidden && activityFetchStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
+        <SpinnerWrapper minHeight={`${minHeight}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
       {!activityHidden && activityFetchStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
+        <SpinnerWrapper minHeight={`${minHeight}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}
@@ -104,10 +108,10 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   )
 }
 
-const Wrapper = styled.div<{ chartExpanded: boolean }>`
+const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
-  max-height: ${(props) => (props.chartExpanded ? '548px' : '350px')};
+  max-height: ${(props) => props.maxHeight};
   margin: 1px; // align hide activity button
 `
 

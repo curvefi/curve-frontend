@@ -1,4 +1,4 @@
-import type { LlammaTradeEvent } from '@/ui/Chart/types'
+import { TradesDataProps } from './types'
 
 import styled from 'styled-components'
 
@@ -12,12 +12,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-type Props = {
-  llammaTradesData: LlammaTradeEvent[]
-  chainId: ChainId
-}
-
-const TradesData = ({ llammaTradesData, chainId }: Props) => {
+const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) => {
   return (
     <>
       {llammaTradesData.map((transaction, index) => {

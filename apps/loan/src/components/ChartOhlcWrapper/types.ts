@@ -1,3 +1,5 @@
+import type { LlammaControllerEvent, LlammaTradeEvent } from '@/ui/Chart/types'
+
 export type LlammaLiquidityCoins = {
   crvusd: {
     symbol: string
@@ -8,3 +10,20 @@ export type LlammaLiquidityCoins = {
     address: string
   }
 } | null
+
+export type ChartOhlcWrapperProps = {
+  rChainId: ChainId
+  llamma: Llamma | null
+  llammaId: string
+}
+
+export type LiqudityDataProps = {
+  llammaControllerData: LlammaControllerEvent[]
+  chainId: ChainId
+  coins: LlammaLiquidityCoins
+}
+
+export type TradesDataProps = {
+  llammaTradesData: LlammaTradeEvent[]
+  chainId: ChainId
+}

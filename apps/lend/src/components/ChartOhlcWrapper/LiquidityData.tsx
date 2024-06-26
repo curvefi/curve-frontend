@@ -1,5 +1,4 @@
-import type { LlammaControllerEvent } from '@/ui/Chart/types'
-import { LendingMarketTokens } from './types'
+import { LiquidityDataProps } from './types'
 
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
@@ -13,13 +12,7 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-type Props = {
-  lendControllerData: LlammaControllerEvent[]
-  chainId: ChainId
-  coins: LendingMarketTokens
-}
-
-const LiquidityData = ({ lendControllerData, chainId, coins }: Props) => {
+const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chainId, coins }) => {
   const imageBaseUrl = networks[chainId].imageBaseUrl
 
   return (
