@@ -22,7 +22,7 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import PoolInfoData from '@/components/PoolInfoData'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import Box from '@/ui/Box'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'
@@ -177,7 +177,7 @@ const Page: NextPage = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -205,7 +205,7 @@ const Page: NextPage = () => {
           <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
             <AppPageInfoContentWrapper variant="secondary">
-              <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+              <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
             </AppPageInfoContentWrapper>
           </AppPageInfoWrapper>
         )}

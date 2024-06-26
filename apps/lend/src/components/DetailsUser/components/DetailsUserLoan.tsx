@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import {
   Content,
@@ -26,6 +27,7 @@ import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsCon
 import DetailsUserLoanAlertSoftLiquidation from '@/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation'
 import DetailsUserLoanChartBandBalances from '@/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, owmDataCachedOrApi, userActiveKey } = pageProps
@@ -33,6 +35,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   // TODO: handle error
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
@@ -108,6 +111,11 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
 
           {/* CHARTS */}
           <Content>
+            {networks[rChainId]?.pricesData && !chartExpanded && (
+              <Box padding="0 0 var(--spacing-normal)">
+                <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
+              </Box>
+            )}
             {isAdvanceMode ? (
               <DetailsUserLoanChartBandBalances {...pageProps} />
             ) : (

@@ -1,4 +1,4 @@
-import { LlammaLiquidityCoins } from './types'
+import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -9,83 +9,102 @@ import useStore from '@/store/useStore'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
-import TradesData from '@/components/PoolInfoData/TradesData'
-import LiquidityData from '@/components/PoolInfoData/LiquidityData'
+import TradesData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
+import LiquidityData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 
 interface Props {
   poolAddress: string
   chainId: ChainId
-  coins: LlammaLiquidityCoins
+  chartExpanded: boolean
+  coins: PricesApiCoin[]
+  tradesTokens: LpTradeToken[]
+  chartCombinations: PricesApiCoin[][]
+  refetchPricesData: () => void
 }
 
-const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
+const PoolActivity = ({
+  chainId,
+  poolAddress,
+  chartExpanded,
+  coins,
+  tradesTokens,
+  chartCombinations,
+  refetchPricesData,
+}: Props) => {
+  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {
-    activityFetchStatus,
-    llammaTradesData,
-    llammaControllerData,
+    pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },
     setActivityHidden,
-    fetchPoolActivity,
-    chartExpanded,
-    activityHidden,
-  } = useStore((state) => state.ohlcCharts)
+    fetchPricesApiActivity,
+  } = useStore((state) => state.pools)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
   useEffect(() => {
-    fetchPoolActivity(chainId, poolAddress)
-  }, [chainId, fetchPoolActivity, poolAddress])
+    fetchPricesApiActivity(chainId, poolAddress, chartCombinations)
+  }, [chainId, chartCombinations, fetchPricesApiActivity, poolAddress])
 
   return (
     <Wrapper chartExpanded={chartExpanded}>
       <SectionHeader>
         {chartExpanded && (
-          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden()}>
+          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden(!activityHidden)}>
             <Icon name={activityHidden ? 'SidePanelClose' : 'SidePanelOpen'} size={16} />
           </HidePoolActivityButton>
         )}
         {!activityHidden && (
           <>
-            <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
+            <SectionTitle>{eventOption === 'TRADE' ? t`Swaps` : t`Liquidity`}</SectionTitle>
             <ButtonGroup>
               <Button
                 className={eventOption === 'TRADE' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('TRADE')}
               >
-                {t`AMM`}
+                {t`Swaps`}
               </Button>
               <Button
                 className={eventOption === 'LP' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('LP')}
               >
-                {t`Controller`}
+                {t`Liquidity`}
               </Button>
             </ButtonGroup>
           </>
         )}
       </SectionHeader>
-      {!activityHidden && activityFetchStatus === 'READY' && (
+      {!activityHidden && activityStatus === 'READY' && (
         <GridContainer>
           <TitlesRow key={'titles'}>
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer>
+          <ElementsContainer minHeight={chartExpanded ? 548 : 330}>
             {eventOption === 'TRADE' ? (
-              <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
+              tradeEventsData.length === 0 ? (
+                <SpinnerWrapper>
+                  <ErrorMessage>{t`No trades data found.`}</ErrorMessage>
+                </SpinnerWrapper>
+              ) : (
+                <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
+              )
+            ) : liquidityEventsData.length === 0 ? (
+              <SpinnerWrapper>
+                <ErrorMessage>{t`No controller data found.`}</ErrorMessage>
+              </SpinnerWrapper>
             ) : (
-              <LiquidityData llammaControllerData={llammaControllerData} chainId={chainId} coins={coins} />
+              <LiquidityData lpEventsData={liquidityEventsData} chainId={chainId} coins={coins} />
             )}
           </ElementsContainer>
         </GridContainer>
       )}
-      {!activityHidden && activityFetchStatus === 'LOADING' && (
+      {!activityHidden && activityStatus === 'LOADING' && (
         <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
-      {!activityHidden && activityFetchStatus === 'ERROR' && (
+      {!activityHidden && activityStatus === 'ERROR' && (
         <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
@@ -145,13 +164,14 @@ const GridContainer = styled.div`
   scrollbar-width: none;
 `
 
-const ElementsContainer = styled.div`
+const ElementsContainer = styled.div<{ minHeight: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   overflow-y: auto;
   border-bottom: 0.5px solid var(--border-600);
   padding: var(--spacing-1);
+  min-height: ${(props) => props.minHeight}px;
 `
 
 const TitlesRow = styled.div`

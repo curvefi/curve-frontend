@@ -1,4 +1,4 @@
-import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
+import { LlammaLiquidityCoins } from './types'
 
 import { useEffect, useState } from 'react'
 import { t } from '@lingui/macro'
@@ -9,93 +9,96 @@ import useStore from '@/store/useStore'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
-import TradesData from '@/components/PagePool/PoolDetails/PoolInfo/TradesData'
-import LiquidityData from '@/components/PagePool/PoolDetails/PoolInfo/LiquidityData'
+import TradesData from '@/components/ChartOhlcWrapper/TradesData'
+import LiquidityData from '@/components/ChartOhlcWrapper/LiquidityData'
 
 interface Props {
   poolAddress: string
   chainId: ChainId
-  chartExpanded: boolean
-  coins: PricesApiCoin[]
-  tradesTokens: LpTradeToken[]
-  chartCombinations: PricesApiCoin[][]
-  refetchPricesData: () => void
+  coins: LlammaLiquidityCoins
 }
 
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  chartExpanded,
-  coins,
-  tradesTokens,
-  chartCombinations,
-  refetchPricesData,
-}: Props) => {
-  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
+const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
   const {
-    pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },
+    activityFetchStatus,
+    llammaTradesData,
+    llammaControllerData,
     setActivityHidden,
-    fetchPricesApiActivity,
-  } = useStore((state) => state.pools)
+    fetchPoolActivity,
+    chartExpanded,
+    activityHidden,
+  } = useStore((state) => state.ohlcCharts)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
+  const minHeight = chartExpanded ? 548 : 330
+
   useEffect(() => {
-    fetchPricesApiActivity(chainId, poolAddress, chartCombinations)
-  }, [chainId, chartCombinations, fetchPricesApiActivity, poolAddress])
+    fetchPoolActivity(chainId, poolAddress)
+  }, [chainId, fetchPoolActivity, poolAddress])
 
   return (
-    <Wrapper chartExpanded={chartExpanded}>
+    <Wrapper maxHeight={`${minHeight}px`}>
       <SectionHeader>
         {chartExpanded && (
-          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden(!activityHidden)}>
+          <HidePoolActivityButton variant={'select'} onClick={() => setActivityHidden()}>
             <Icon name={activityHidden ? 'SidePanelClose' : 'SidePanelOpen'} size={16} />
           </HidePoolActivityButton>
         )}
         {!activityHidden && (
           <>
-            <SectionTitle>{eventOption === 'TRADE' ? t`Swaps` : t`Liquidity`}</SectionTitle>
+            <SectionTitle>{eventOption === 'TRADE' ? t`AMM` : t`Controller`}</SectionTitle>
             <ButtonGroup>
               <Button
                 className={eventOption === 'TRADE' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('TRADE')}
               >
-                {t`Swaps`}
+                {t`AMM`}
               </Button>
               <Button
                 className={eventOption === 'LP' ? 'active' : ''}
                 variant={'select'}
                 onClick={() => setEventOption('LP')}
               >
-                {t`Liquidity`}
+                {t`Controller`}
               </Button>
             </ButtonGroup>
           </>
         )}
       </SectionHeader>
-      {!activityHidden && activityStatus === 'READY' && (
+      {!activityHidden && activityFetchStatus === 'READY' && (
         <GridContainer>
           <TitlesRow key={'titles'}>
             <EventTitle>{eventOption === 'TRADE' ? t`Swap` : t`Action`}</EventTitle>
             <TimestampColumnTitle>{t`Time`}</TimestampColumnTitle>
           </TitlesRow>
-          <ElementsContainer>
+          <ElementsContainer minHeight={minHeight}>
             {eventOption === 'TRADE' ? (
-              <TradesData lpTradesData={tradeEventsData} chainId={chainId} tradesTokens={tradesTokens} />
+              llammaTradesData.length === 0 ? (
+                <SpinnerWrapper>
+                  <ErrorMessage>{t`No trades data found.`}</ErrorMessage>
+                </SpinnerWrapper>
+              ) : (
+                <TradesData llammaTradesData={llammaTradesData} chainId={chainId} />
+              )
+            ) : llammaControllerData.length === 0 ? (
+              <SpinnerWrapper>
+                <ErrorMessage>{t`No controller data found.`}</ErrorMessage>
+              </SpinnerWrapper>
             ) : (
-              <LiquidityData lpEventsData={liquidityEventsData} chainId={chainId} coins={coins} />
+              <LiquidityData llammaControllerData={llammaControllerData} chainId={chainId} coins={coins} />
             )}
           </ElementsContainer>
         </GridContainer>
       )}
-      {!activityHidden && activityStatus === 'LOADING' && (
-        <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
+      {!activityHidden && activityFetchStatus === 'LOADING' && (
+        <SpinnerWrapper minHeight={`${minHeight}px`}>
           <Spinner size={18} />
         </SpinnerWrapper>
       )}
-      {!activityHidden && activityStatus === 'ERROR' && (
-        <SpinnerWrapper minHeight={chartExpanded ? '548px' : '330px'}>
+      {!activityHidden && activityFetchStatus === 'ERROR' && (
+        <SpinnerWrapper minHeight={`${minHeight}px`}>
           <ErrorMessage>{t`There was an error fetching the pool activity data.`}</ErrorMessage>
         </SpinnerWrapper>
       )}
@@ -103,10 +106,10 @@ const PoolActivity = ({
   )
 }
 
-const Wrapper = styled.div<{ chartExpanded: boolean }>`
+const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
-  max-height: ${(props) => (props.chartExpanded ? '548px' : '350px')};
+  max-height: ${(props) => props.maxHeight};
   margin: 1px; // align hide activity button
 `
 
@@ -154,13 +157,14 @@ const GridContainer = styled.div`
   scrollbar-width: none;
 `
 
-const ElementsContainer = styled.div`
+const ElementsContainer = styled.div<{ minHeight: number }>`
   display: flex;
   flex-direction: column;
   width: 100%;
   overflow-y: auto;
   border-bottom: 0.5px solid var(--border-600);
   padding: var(--spacing-1);
+  min-height: ${(props) => props.minHeight}px;
 `
 
 const TitlesRow = styled.div`

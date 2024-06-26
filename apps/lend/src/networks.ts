@@ -21,6 +21,7 @@ const DEFAULT_NETWORK_CONFIG = {
     tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
   },
   showInSelectNetwork: false,
+  pricesData: false,
 }
 
 const networks: Record<ChainId, NetworkConfig> = {
@@ -31,6 +32,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
       : `https://curve.drpc.org/ogrpc?network=ethereum`,
     showInSelectNetwork: true,
+    pricesData: true,
   },
   10: {
     ...DEFAULT_NETWORK_CONFIG,
@@ -80,6 +82,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
       : 'https://curve.drpc.org/ogrpc?network=arbitrum',
+    pricesData: true,
   },
   43114: {
     ...DEFAULT_NETWORK_CONFIG,

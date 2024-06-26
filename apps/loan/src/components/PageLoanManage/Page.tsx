@@ -25,7 +25,7 @@ import {
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
 import Box from '@/ui/Box'
-import PoolInfoData from '@/components/PoolInfoData'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import LoanInfoUser from '@/components/LoanInfoUser'
@@ -161,7 +161,7 @@ const Page: NextPage = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}

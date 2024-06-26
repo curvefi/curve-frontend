@@ -43,7 +43,7 @@ import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
 
-import PoolInfoData from '@/components/PagePool/PoolDetails/PoolInfo'
+import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {

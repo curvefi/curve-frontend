@@ -11,6 +11,7 @@ import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import {
   AppPageFormContainer,
@@ -26,6 +27,14 @@ import DetailsUserLoan from '@/components/DetailsUser/components/DetailsUserLoan
 import LoanMange from '@/components/PageLoanManage/index'
 import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import Tabs, { Tab } from '@/ui/Tab'
+import Box from '@/ui/Box'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import {
+  PriceAndTradesExpandedContainer,
+  PriceAndTradesExpandedWrapper,
+  ExpandButton,
+  ExpandIcon,
+} from '@/ui/Chart/styles'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -48,6 +57,7 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
@@ -102,6 +112,18 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
+  useEffect(() => {
+    if (chartExpanded) {
+      scrollToTop()
+    }
+  }, [chartExpanded])
+
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
       <PageTitleBorrowSupplyLinks
@@ -132,6 +154,26 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
+
+      {chartExpanded && networks[rChainId].pricesData && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 var(--spacing-2)">
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
+
       <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
         <AppPageFormsWrapper navHeight={navHeight}>
           {!isMdUp && <TitleComp />}
