@@ -150,21 +150,27 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     repayLeveragePrices,
   ])
 
-  const coins: LendingMarketTokens = owm
-    ? {
-        borrowedToken: {
-          symbol: owm?.borrowed_token.symbol,
-          address: owm?.borrowed_token.address,
-        },
-        collateralToken: {
-          symbol: owm?.collateral_token.symbol,
-          address: owm?.collateral_token.address,
-        },
-      }
-    : null
+  const coins: LendingMarketTokens = useMemo(() => {
+    return owm
+      ? {
+          borrowedToken: {
+            symbol: owm?.borrowed_token.symbol,
+            address: owm?.borrowed_token.address,
+          },
+          collateralToken: {
+            symbol: owm?.collateral_token.symbol,
+            address: owm?.collateral_token.address,
+          },
+        }
+      : null
+  }, [owm])
 
-  const selectChartList = owm
-    ? [
+  const selectChartList = useCallback(() => {
+    if (owm) {
+      if (chartOraclePoolOhlc.dataDisabled) {
+        return [{ label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)` }]
+      }
+      return [
         {
           label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (Oracle)`,
         },
@@ -172,7 +178,17 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
         },
       ]
-    : [{ label: t`Chart` }]
+    } else {
+      return []
+    }
+  }, [chartOraclePoolOhlc.dataDisabled, coins, owm])
+
+  // set chart selected index to llamma if oracle pool is disabled due to no oracle pools being found for market on the api
+  useEffect(() => {
+    if (chartOraclePoolOhlc.dataDisabled) {
+      setChartSelectedIndex(1)
+    }
+  }, [chartOraclePoolOhlc.dataDisabled, setChartSelectedIndex])
 
   const chartHeight = {
     expanded: 500,
@@ -309,7 +325,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
-          selectChartList={selectChartList}
+          selectChartList={selectChartList()}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           refetchingCapped={currentChart.refetchingCapped}
@@ -371,7 +387,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           timeOption={timeOption}
           selectedChartIndex={selectedChartIndex}
           setChartSelectedIndex={setChartSelectedIndex}
-          selectChartList={selectChartList}
+          selectChartList={selectChartList()}
           setChartTimeOption={setChartTimeOption}
           refetchPricesData={refetchPricesData}
           refetchingCapped={currentChart.refetchingCapped}

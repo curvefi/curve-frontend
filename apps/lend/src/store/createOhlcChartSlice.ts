@@ -33,6 +33,8 @@ type SliceState = {
     refetchingCapped: boolean
     lastFetchEndTime: number
     fetchStatus: FetchingStatus
+    // flag for disabling oracle pool data if no oracle pools are found for the market on the api
+    dataDisabled: boolean
   }
   volumeData: VolumeData[]
   oraclePriceData: OraclePriceData[]
@@ -126,6 +128,7 @@ const DEFAULT_STATE: SliceState = {
     refetchingCapped: false,
     lastFetchEndTime: 0,
     fetchStatus: 'LOADING',
+    dataDisabled: false,
   },
   volumeData: [],
   oraclePriceData: [],
@@ -340,6 +343,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             data: DEFAULT_STATE.chartOraclePoolOhlc.data,
             refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
             lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
+            dataDisabled: DEFAULT_STATE.chartOraclePoolOhlc.dataDisabled,
           }
         })
       )
@@ -353,7 +357,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         const oracleOhlcResponse = await oracleOhlcDataFetch.json()
 
-        if (oracleOhlcResponse.data.length === 0) {
+        // detail appears when no curve oracle pools can be found in the api
+        if (oracleOhlcResponse.detail) {
+          throw new Error(oracleOhlcResponse.detail)
+        }
+
+        if (oracleOhlcResponse.data?.length === 0) {
           throw new Error('No oracle OHLC data found. Data may be unavailable for this pool.')
         }
 
@@ -380,6 +389,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               data: DEFAULT_STATE.chartOraclePoolOhlc.data,
               refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
               lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
+              dataDisabled: true,
             }
           })
         )
@@ -457,6 +467,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               data: [...oracleData.data, ...state[sliceKey].chartOraclePoolOhlc.data],
               refetchingCapped: oracleData.refetchingCapped,
               lastFetchEndTime: oracleData.lastFetchEndTime,
+              dataDisabled: false,
             }
 
             state[sliceKey].chartLlammaOhlc = {
@@ -484,6 +495,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               data: [...oracleData.data, ...state[sliceKey].chartOraclePoolOhlc.data],
               refetchingCapped: oracleData.refetchingCapped,
               lastFetchEndTime: oracleData.lastFetchEndTime,
+              dataDisabled: false,
             }
           })
         )
