@@ -53,7 +53,7 @@ const FormVecrv = ({
 
   const parsedFormStatus = formStatus.formType === 'VECRV' ? formStatus : DEFAULT_FORM_STATUS
   const { veCrv, veCrvPct } = dashboardVecrvInfo ?? {}
-  const { lockedAmount, unlockTime } = dashboardVecrvInfo?.lockedAmountAndUnlockTime ?? {}
+  const { lockedAmount = '', unlockTime = 0 } = dashboardVecrvInfo?.lockedAmountAndUnlockTime ?? {}
   const lookupAddressIsSameAsSignerAddress =
     walletAddress && walletAddress.toLowerCase() === curve?.signerAddress.toLowerCase()
   const isLockExpired =

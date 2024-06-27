@@ -22,6 +22,7 @@ import {
 
 import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
+import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
 import {
@@ -1384,9 +1385,12 @@ const wallet = {
   },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
-    let resp = { activeKey, amount: '', error: '' }
+    const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
     try {
-      resp.amount = await curve.boosting.claimableFees(walletAddress)
+      ;[resp['3CRV'], resp.crvUSD] = await Promise.all([
+        curve.boosting.claimableFees(walletAddress),
+        curve.boosting.claimableFeesCrvUSD(walletAddress),
+      ])
       return resp
     } catch (error) {
       console.error(error)
@@ -1691,12 +1695,13 @@ const lockCrv = {
       return resp
     }
   },
-  claimFees: async (activeKey: string, curve: CurveApi, provider: Provider) => {
-    log('claimFees', curve.chainId)
+  claimFees: async (activeKey: string, curve: CurveApi, provider: Provider, key: claimButtonsKey) => {
+    log('claimFees', curve.chainId, key)
     let resp = { activeKey, hash: '', error: '' }
 
     try {
-      resp.hash = await curve.boosting.claimFees()
+      const isClaim3Crv = key === claimButtonsKey['3CRV']
+      resp.hash = isClaim3Crv ? await curve.boosting.claimFees() : await curve.boosting.claimFeesCrvUSD()
       await helpers.waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {

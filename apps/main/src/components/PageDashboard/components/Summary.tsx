@@ -109,12 +109,7 @@ const Summary = ({
         {networkHaveLockedCrv && (
           <div style={{ gridArea: 'grid-summary-vecrv' }}>
             <FormVecrv activeKey={activeKey} params={params} curve={curve} walletAddress={formValues.walletAddress} />
-            <FormClaimFees
-              activeKey={activeKey}
-              curve={curve}
-              loading={dashboardLoading}
-              walletAddress={formValues.walletAddress}
-            />
+            <FormClaimFees activeKey={activeKey} loading={dashboardLoading} walletAddress={formValues.walletAddress} />
           </div>
         )}
 

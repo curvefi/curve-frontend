@@ -19,8 +19,10 @@ import {
   DEFAULT_FORM_VALUES,
   DEFAULT_WALLET_DASHBOARD_DATA,
 } from '@/components/PageDashboard/utils'
+import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue } from '@/utils'
 import { shortenAccount } from '@/ui/utils'
+import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -30,13 +32,13 @@ type SliceState = {
   isValidWalletAddress: { [activeKey: string]: boolean }
   loading: boolean
   error: string
-  claimableFees: { [activeKey: string]: string }
+  claimableFees: { [activeKey: string]: { ['3CRV']: string; crvUSD: string } | null }
   formValues: FormValues
   formStatus: FormStatus
   resultRewardsCrvCount: number
   resultRewardsOtherCount: number
   searchedWalletAddresses: string[]
-  vecrvInfo: { [activeKey: string]: VecrvInfo }
+  vecrvInfo: { [activeKey: string]: VecrvInfo | null }
   walletDashboardData: { [activeKey: string]: WalletDashboardData }
   walletPoolDatas: { [activeKey: string]: WalletPoolData[] }
 }
@@ -46,15 +48,14 @@ const sliceKey = 'dashboard'
 // prettier-ignore
 export type DashboardSlice = {
   [sliceKey]: SliceState & {
-    fetchVecrvInfo: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<VecrvInfo>
-    fetchClaimableFees: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
+    fetchVeCrvAndClaimables: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<void>
     fetchDashboardData: (activeKey: string, curve: CurveApi, walletAddress: string, poolDataMapper: PoolDataMapper) => Promise<WalletPoolData[]>
     sortFn: (sortBy: SortId, sortByOrder: Order, walletPoolDatas: WalletPoolData[]) => WalletPoolData[]
     setFormValues: (curve: CurveApi | null, isLoadingApi: boolean, rChainId: ChainId, poolDataMapper: PoolDataMapper | undefined, formValues: Partial<FormValues>) => void
     setFormStatusClaimFees: (formStatusClaimFees: Partial<FormStatus>) => void
     setFormStatusVecrv: (formStatusVecrv: Partial<FormStatus>) => void
 
-    fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<FnStepResponse | undefined>
+    fetchStepClaimFees: (activeKey: string, curve: CurveApi, walletAddress: string, key: claimButtonsKey) => Promise<FnStepResponse | undefined>
     fetchStepWithdrawVecrv: (activeKey: string, curve: CurveApi, walletAddress: string) => Promise<{ walletAddress: string, hash: string, error: string } | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -84,37 +85,28 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
   dashboard: {
     ...DEFAULT_STATE,
 
-    fetchVecrvInfo: async (activeKey, curve, walletAddress) => {
-      let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+    fetchVeCrvAndClaimables: async (activeKey, curve, walletAddress) => {
+      const { ...sliceState } = get()[sliceKey]
 
-      const fn = networks[curve.chainId].api.lockCrv.vecrvInfo
-      const fetchedResp = await fn(activeKey, curve, walletAddress)
+      // loading state
+      const formStatus: FormStatus = { ...DEFAULT_FORM_STATUS, loading: true }
+      sliceState.setStateByKey('formStatus', formStatus)
 
-      if (fetchedResp.error) {
-        cFormStatus.error = fetchedResp.error
-      }
+      const [veCrvResp, claimablesResp] = await Promise.all([
+        curvejsApi.lockCrv.vecrvInfo(activeKey, curve, walletAddress),
+        curvejsApi.wallet.userClaimableFees(curve, activeKey, walletAddress),
+      ])
 
-      get()[sliceKey].setStateByActiveKey('vecrvInfo', fetchedResp.activeKey, fetchedResp.resp)
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
-      return fetchedResp.resp
-    },
-    fetchClaimableFees: async (activeKey, curve, walletAddress) => {
-      // set loading
-      let cFormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, formType: 'CLAIMABLE_FEES' })
-      cFormStatus.loading = true
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
-      get()[sliceKey].setStateByActiveKey('claimableFees', activeKey, '')
+      if (veCrvResp.activeKey !== get()[sliceKey].activeKey) return
 
-      const resp = await networks[curve.chainId].api.wallet.userClaimableFees(curve, activeKey, walletAddress)
+      const formType: FormStatus['formType'] = veCrvResp.error ? 'VECRV' : claimablesResp.error ? 'CLAIMABLE_FEES' : ''
+      const error = veCrvResp.error || claimablesResp.error || ''
 
-      // set response
-      cFormStatus.loading = false
-
-      if (resp.error) {
-        cFormStatus.error = resp.error
-      }
-      get()[sliceKey].setStateByActiveKey('claimableFees', resp.activeKey, resp.amount)
-      get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+      sliceState.setStateByKeys({
+        vecrvInfo: { [veCrvResp.activeKey]: veCrvResp.error ? null : veCrvResp.resp },
+        claimableFees: { [claimablesResp.activeKey]: claimablesResp.error ? null : claimablesResp },
+        formStatus: { ...formStatus, loading: false, formType, error },
+      })
     },
     fetchDashboardData: async (activeKey, curve, walletAddress, poolDataMapper) => {
       const { chainId } = curve
@@ -327,8 +319,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         const storedVecrvInfo = get()[sliceKey].vecrvInfo[activeKey]
 
         if (!storedClaimFees || !storedVecrvInfo) {
-          get()[sliceKey].fetchClaimableFees(activeKey, curve, cFormValues.walletAddress)
-          get()[sliceKey].fetchVecrvInfo(activeKey, curve, cFormValues.walletAddress)
+          get()[sliceKey].fetchVeCrvAndClaimables(activeKey, curve, cFormValues.walletAddress)
 
           if (curve.signerAddress && curve.signerAddress.toLowerCase() !== cFormValues.walletAddress) {
             get().lockedCrv.fetchVecrvInfo(curve)
@@ -371,35 +362,47 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     },
 
     // steps
-    fetchStepClaimFees: async (activeKey, curve, walletAddress) => {
-      const provider = get().wallet.getProvider(sliceKey)
+    fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
+      const { pools, gas, wallet } = get()
+      const { claimableFees, ...sliceState } = get()[sliceKey]
+      const provider = wallet.getProvider(sliceKey)
 
-      if (provider) {
-        let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
-        cFormStatus.formType = 'CLAIMABLE_FEES'
-        cFormStatus.formProcessing = true
-        cFormStatus.step = 'CLAIM'
-        get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
+      if (!provider) return
 
-        await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
-        let resp = await networks[chainId].api.lockCrv.claimFees(activeKey, curve, provider)
+      const { chainId } = curve
 
-        cFormStatus.formProcessing = false
-        cFormStatus.step = ''
+      // loading state
+      const formStatus: FormStatus = {
+        ...DEFAULT_FORM_STATUS,
+        formType: 'CLAIMABLE_FEES',
+        formProcessing: true,
+        step: 'CLAIM',
+      }
+      sliceState.setStateByKey('formStatus', formStatus)
 
-        if (resp.error) {
-          cFormStatus.error = resp.error
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-        } else if (resp.activeKey === get()[sliceKey].activeKey) {
-          cFormStatus.formTypeCompleted = 'CLAIM'
-          get()[sliceKey].setStateByActiveKey('claimableFees', activeKey, '')
-          get()[sliceKey].setStateByKey('formStatus', cFormStatus)
-        }
-        const storedPoolDataMapper = get().pools.poolsMapper[chainId]
-        get()[sliceKey].fetchDashboardData(activeKey, curve, walletAddress, storedPoolDataMapper)
+      await gas.fetchGasInfo(curve)
+      const resp = await curvejsApi.lockCrv.claimFees(activeKey, curve, provider, key)
+
+      if (resp.activeKey !== get()[sliceKey].activeKey) return
+
+      if (resp.error) {
+        sliceState.setStateByKey('formStatus', { ...formStatus, formProcessing: false, step: '', error: resp.error })
         return resp
       }
+
+      // refetch claimable fees, update state
+      const fetchedClaimables = await curvejsApi.wallet.userClaimableFees(curve, activeKey, walletAddress)
+      sliceState.setStateByKeys({
+        claimableFees: { [fetchedClaimables.activeKey]: fetchedClaimables },
+        formStatus: { ...formStatus, formType: '', formProcessing: false, step: '', formTypeCompleted: 'CLAIM' },
+      })
+
+      if (key === claimButtonsKey['3CRV']) {
+        const storedPoolDataMapper = pools.poolsMapper[chainId]
+        sliceState.fetchDashboardData(activeKey, curve, walletAddress, storedPoolDataMapper)
+      }
+
+      return resp
     },
     fetchStepWithdrawVecrv: async (activeKey, curve, walletAddress) => {
       const provider = get().wallet.getProvider(sliceKey)
