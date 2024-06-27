@@ -11,21 +11,27 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string
   id: string
   value: string
+  variant?: 'small'
   handleInputChange: (val: string) => void
   handleSearchClose: () => void
 }
 
-const SearchInput = ({ className, id, value, handleInputChange, handleSearchClose, ...props }: Props) => {
+const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => {
   return (
     <InputProvider
       className={className}
       grid
-      gridTemplateColumns="auto 1fr auto"
+      gridTemplateColumns={'auto 1fr auto'}
       gridColumnGap={2}
       flexAlignItems="center"
       id={id}
+      inputVariant={variant}
     >
-      <Icon name="Search" size={24} aria-label="search-icon" />
+      {variant === 'small' ? (
+        <Icon name="Search" size={16} aria-label="search-icon" />
+      ) : (
+        <Icon name="Search" size={24} aria-label="search-icon" />
+      )}
       <InputDebounced
         {...props}
         id={id}
@@ -33,9 +39,15 @@ const SearchInput = ({ className, id, value, handleInputChange, handleSearchClos
         labelProps={false}
         value={value}
         delay={1000}
+        variant={variant}
         onChange={handleInputChange}
       />
-      <ClearButton className={!!value ? 'show' : ''} onClick={handleSearchClose} padding={2}>
+      <ClearButton
+        className={!!value ? 'show' : ''}
+        size={variant === 'small' ? 'x-small' : variant}
+        onClick={handleSearchClose}
+        padding={variant === 'small' ? 1 : 2}
+      >
         <RCEditClear className="svg-tooltip" />
       </ClearButton>
     </InputProvider>
@@ -47,7 +59,6 @@ const ClearButton = styled(IconButton)`
   min-width: 1.5625rem; //25px
   opacity: 1;
   padding: 0;
-
   &.show {
     display: inline-block;
   }

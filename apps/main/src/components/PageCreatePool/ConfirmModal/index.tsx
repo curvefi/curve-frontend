@@ -17,9 +17,9 @@ import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import InternalLinkButton from '@/ui/InternalLinkButton'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import { shortenTokenAddress } from '@/utils'
 import { ROUTE } from '@/constants'
 import Spinner from 'ui/src/Spinner/Spinner'
+import ModalPendingTx from 'ui/src/ModalPendingTx'
 
 import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import CreatePoolButton from '@/components/PageCreatePool/ConfirmModal/CreatePoolButton'
@@ -178,7 +178,7 @@ const ConfirmModal = ({
                     {fetchPoolStatus === 'LOADING' && (
                       <FetchPoolWrapper>
                         <StyledFetchingSpinner isDisabled size={14} />
-                        <FetchingPoolMessage>Fetching new pool...</FetchingPoolMessage>
+                        <FetchingPoolMessage>{t`Fetching new pool...`}</FetchingPoolMessage>
                       </FetchPoolWrapper>
                     )}
                   </SuccessBox>
@@ -196,17 +196,11 @@ const ConfirmModal = ({
             )}
             <BlurWrapper>
               {txStatus === 'LOADING' && (
-                <PendingContainer>
-                  <PendingWrapper>
-                    <PendingMessage>{t`Deploying Pool ${poolName}...`}</PendingMessage>
-                    <StyledPendingSpinner isDisabled size={24} />
-                    <Transaction variant={'contained'} href={txLink}>
-                      <p>{t`Transaction:`}</p>
-                      {shortenTokenAddress(transaction!.hash)}
-                      <StyledIcon name={'Launch'} size={16} />
-                    </Transaction>
-                  </PendingWrapper>
-                </PendingContainer>
+                <ModalPendingTx
+                  transactionHash={transaction!.hash}
+                  txLink={txLink}
+                  pendingMessage={t`Deploying Pool ${poolName}...`}
+                />
               )}
               {txStatus !== 'SUCCESS' && (
                 <SummaryContent>
@@ -352,29 +346,6 @@ const BlurWrapper = styled.div`
   position: relative;
 `
 
-const PendingContainer = styled.div`
-  position: absolute;
-  z-index: 102;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(3px);
-  display: flex;
-`
-
-const PendingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  margin: auto;
-  background: var(--box--secondary--background-color);
-  padding: var(--spacing-4) var(--spacing-5);
-`
-
-const PendingMessage = styled.h4`
-  margin: 0 auto;
-`
-
 const FetchPoolWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -403,34 +374,6 @@ const StyledButtonSpinner = styled(Spinner)`
   > div {
     border-color: var(--button--color) transparent transparent transparent;
   }
-`
-
-const StyledPendingSpinner = styled(Spinner)`
-  margin: var(--spacing-4) auto;
-  > div {
-    border-color: var(--page--text-color) transparent transparent transparent;
-  }
-`
-
-const Transaction = styled(ExternalLink)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  font-weight: var(--semi-bold);
-  color: var(--page--text-color);
-  text-transform: none;
-  text-decoration: none;
-  background-color: var(--page--background-color);
-  padding: var(--spacing-2);
-  p {
-    margin-right: auto;
-    font-weight: var(--bold);
-  }
-`
-
-const StyledIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-1);
-  color: var(--page--text-color);
 `
 
 const ButtonWrapper = styled.div`

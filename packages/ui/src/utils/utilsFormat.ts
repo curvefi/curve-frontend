@@ -171,3 +171,29 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
 
   return parsedUsdRate
 }
+
+export const formatNumberWithSuffix = (votingPower: number): string => {
+  if (votingPower >= 1e9) {
+    return `${(votingPower / 1e9).toFixed(2)}B`
+  } else if (votingPower >= 1e6) {
+    return `${(votingPower / 1e6).toFixed(2)}M`
+  } else if (votingPower >= 1000) {
+    return `${(votingPower / 1000).toFixed(2)}K`
+  } else {
+    return votingPower.toFixed(0)
+  }
+}
+
+export const formatDateFromTimestamp = (unixTime: number) => {
+  const date = new Date(unixTime * 1000)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = String(date.getFullYear()).slice(-2)
+  return `${day}/${month}/${year}`
+}
+
+export const convertToLocaleTimestamp = (unixTime: number) => {
+  const offsetInSeconds = new Date().getTimezoneOffset() * 60
+  const localTimestamp = unixTime - offsetInSeconds
+  return localTimestamp
+}
