@@ -3,7 +3,7 @@ import type { SummaryProps } from '@/components/AlertLoanSummary/types'
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
-import { _biIsGreaterThan, _biMinus, _getTokenDecimal } from '@/ui/utils'
+import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@/shared/curve-lib'
 import { format } from '@/components/AlertLoanSummary/utils'
 
 import Item from '@/components/AlertLoanSummary/components/Item'
@@ -22,14 +22,14 @@ const SummarySelfLiquidate = ({
   const walletAmount = useMemo(() => {
     if (typeof walletBorrowed === 'undefined') return '0'
 
-    const borrowedTokenDecimal = _getTokenDecimal(walletBorrowed)
-    const amountNeeded = _biMinus(stateDebt, stateBorrowed, borrowedTokenDecimal)
+    const borrowedTokenDecimal = getDecimalLength(walletBorrowed)
+    const amountNeeded = minus(stateDebt, stateBorrowed, borrowedTokenDecimal)
     const amountNeededFromWallet = amountNeeded > 0n ? amountNeeded : 0n
 
     return amountNeededFromWallet > 0n
-      ? _biIsGreaterThan(amountNeededFromWallet, walletBorrowed, _getTokenDecimal(walletBorrowed))
+      ? isGreaterThan(amountNeededFromWallet, walletBorrowed, getDecimalLength(walletBorrowed))
         ? walletBorrowed
-        : amountNeededFromWallet.toString()
+        : formatUnits(amountNeededFromWallet, borrowedTokenDecimal)
       : '0'
   }, [stateBorrowed, stateDebt, walletBorrowed])
 

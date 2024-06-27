@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { gweiToEther, weiToGwei } from '@/ui/utils/utilsWeb3'
+import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 

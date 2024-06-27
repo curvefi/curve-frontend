@@ -1,4 +1,4 @@
-import { weiToGwei } from './utilsWeb3'
+import { weiToGwei } from 'curve-lib'
 
 export function getEthereumCustomFeeDataValues(gasInfo: { max: number[]; prio: number[] } | undefined) {
   if (gasInfo) {

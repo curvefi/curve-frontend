@@ -5,7 +5,8 @@ import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { FORMAT_OPTIONS, formatNumber, gweiToEther, weiToGwei } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 

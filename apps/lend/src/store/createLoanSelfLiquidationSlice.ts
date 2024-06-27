@@ -3,7 +3,7 @@ import type { State } from '@/store/useStore'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
 
-import { _biIsGreaterThanOrEqualTo } from '@/ui/utils'
+import { isGreaterThanOrEqualTo } from '@/shared/curve-lib'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { FormWarning } from '@/components/AlertFormWarning'
@@ -79,14 +79,14 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
         const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp
-        const liquidationAmt = _biIsGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
+        const liquidationAmt = isGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
           ? '0'
           : tokensToLiquidate
 
         sliceState.setStateByKeys({ liquidationAmt, futureRates })
 
         // validation
-        const canSelfLiquidateWithStateBorrowed = _biIsGreaterThanOrEqualTo(
+        const canSelfLiquidateWithStateBorrowed = isGreaterThanOrEqualTo(
           stateBorrowed,
           stateDebt,
           borrowedTokenDecimals
