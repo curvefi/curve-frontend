@@ -1,0 +1,286 @@
+import { BigDecimalTypes } from './BigDecimal.d'
+
+class BigDecimal {
+  private _integerPart: bigint
+  private _fractionalPart: bigint
+  private _scale: number
+  private _isNegative: boolean
+
+  /**
+   * Creates a new BigDecimal instance.
+   * @param value The value to create the BigDecimal from. If a string, it should be in the format "integer.fraction", "integer" or BigDecimal.
+   * @param scale The scale (number of decimal places) to use. Defaults to 0 or the number of decimal places in the input string, whichever is larger.
+   */
+  constructor(value: BigDecimalTypes.Value, scale: number = 0) {
+    if (scale < 0) {
+      throw new Error('Scale must be non-negative')
+    }
+
+    if (value instanceof BigDecimal) {
+      this._integerPart = value._integerPart
+      this._fractionalPart = value._fractionalPart
+      this._scale = Math.max(value._scale, scale)
+      this._isNegative = value._isNegative
+      return
+    }
+
+    if (typeof value === 'string') {
+      const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(value)
+      if (!match) {
+        throw new Error('Invalid string format. Expected "integer.fraction" or "integer"')
+      }
+
+      const [, sign, intPart, fracPart = ''] = match
+      this._integerPart = BigInt(intPart)
+      this._fractionalPart = BigInt(fracPart.padEnd(scale, '0'))
+      this._scale = Math.max(fracPart.length, scale)
+      this._isNegative = sign === '-'
+      return
+    }
+
+    this._scale = scale
+    if (typeof value === 'number') {
+      const [intPart, fracPart = ''] = Math.abs(value).toFixed(scale).split('.')
+      this._integerPart = BigInt(intPart)
+      this._fractionalPart = BigInt(fracPart)
+      this._isNegative = value < 0
+      return
+    }
+
+    if (typeof value === 'bigint') {
+      this._integerPart = value < 0n ? -value : value
+      this._fractionalPart = 0n
+      this._isNegative = value < 0n
+      return
+    }
+
+    throw new Error('Invalid value type')
+  }
+
+  static from(value: BigDecimalTypes.Value, scale: number = 0): BigDecimal {
+    return new BigDecimal(value, scale)
+  }
+
+  static fr = BigDecimal.from
+
+  /**
+   * Changes the sign of the BigDecimal.
+   * @returns A new BigDecimal with the opposite sign.
+   */
+  negate(): BigDecimal {
+    const result = new BigDecimal(this, this._scale)
+    result._isNegative = !this._isNegative
+    return result
+  }
+
+  abs(): BigDecimal {
+    return this.isNegative() ? this.negate() : this
+  }
+
+  plus(other: BigDecimal): BigDecimal {
+    const maxScale = Math.max(this._scale, other._scale)
+    const thisScaled = this.scaleUp(maxScale)
+    const otherScaled = other.scaleUp(maxScale)
+
+    const thisValue = thisScaled._integerPart * 10n ** BigInt(maxScale) + thisScaled._fractionalPart
+    const otherValue = otherScaled._integerPart * 10n ** BigInt(maxScale) + otherScaled._fractionalPart
+
+    if (this._isNegative === other._isNegative) {
+      const sum = thisValue + otherValue
+      const result = new BigDecimal(0, maxScale)
+      result._integerPart = sum / 10n ** BigInt(maxScale)
+      result._fractionalPart = sum % 10n ** BigInt(maxScale)
+      result._isNegative = this._isNegative
+      return result
+    } else {
+      const isThisGreater = thisValue > otherValue
+      const greater = isThisGreater ? thisValue : otherValue
+      const lesser = isThisGreater ? otherValue : thisValue
+      const diff = greater - lesser
+      const result = new BigDecimal(0, maxScale)
+      result._integerPart = diff / 10n ** BigInt(maxScale)
+      result._fractionalPart = diff % 10n ** BigInt(maxScale)
+      result._isNegative = isThisGreater ? this._isNegative : other._isNegative
+      return result
+    }
+  }
+
+  minus(other: BigDecimal): BigDecimal {
+    const negatedOther = other.negate()
+    return this.plus(negatedOther)
+  }
+
+  times(other: BigDecimal): BigDecimal {
+    const newScale = this._scale + other._scale
+    const thisValue = this._integerPart * 10n ** BigInt(this._scale) + this._fractionalPart
+    const otherValue = other._integerPart * 10n ** BigInt(other._scale) + other._fractionalPart
+    const product = thisValue * otherValue
+    const result = new BigDecimal(0, newScale)
+    result._integerPart = product / 10n ** BigInt(newScale)
+    result._fractionalPart = product % 10n ** BigInt(newScale)
+    result._isNegative = this._isNegative !== other._isNegative
+    return result
+  }
+
+  div(other: BigDecimal, scale: number = this._scale): BigDecimal {
+    if (other.isZero()) {
+      throw new Error('Division by zero')
+    }
+    const scaledThis = this.scaleUp(scale + other._scale + 1)
+    const scaledOther = other.scaleUp(0)
+    const thisValue = scaledThis._integerPart * 10n ** BigInt(scaledThis._scale) + scaledThis._fractionalPart
+    const otherValue = scaledOther._integerPart * 10n ** BigInt(scaledOther._scale) + scaledOther._fractionalPart
+    const quotient = thisValue / otherValue
+    const result = new BigDecimal(quotient, scale)
+    result._isNegative = this._isNegative !== other._isNegative
+    return result
+  }
+
+  protected create(value: BigDecimalTypes.Value, scale: number = 0): this {
+    return new (this.constructor as new (value: BigDecimalTypes.Value, scale?: number) => this)(value, scale)
+  }
+
+  pow(n: number): this {
+    if (!Number.isInteger(n)) {
+      throw new Error('Exponent must be an integer')
+    }
+    let result = this.create(1)
+    let base = this
+    let exp = Math.abs(n)
+    while (exp > 0) {
+      if (exp % 2 === 1) {
+        result = result.times(base) as this
+      }
+      base = base.times(base) as this
+      exp = Math.floor(exp / 2)
+    }
+    return n < 0 ? (this.create(1).div(result) as this) : result
+  }
+
+  sqrt(scale: number = this._scale): BigDecimal {
+    if (this.isNegative()) {
+      throw new Error('Square root of negative numbers is not supported')
+    }
+    if (this.isZero()) return new BigDecimal(0)
+
+    const epsilon = new BigDecimal(1, scale + 1)
+    let x = this.scaleUp(scale + 1)
+    let y = new BigDecimal(x._integerPart, 0).div(new BigDecimal(2), scale + 1)
+
+    while (x.minus(y).abs().gt(epsilon)) {
+      x = y
+      y = this.div(x, scale + 1)
+        .plus(x)
+        .div(new BigDecimal(2), scale + 1)
+    }
+
+    return y
+  }
+
+  private scaleUp(newScale: number): BigDecimal {
+    if (newScale <= this._scale) return this
+    const scaleDiff = newScale - this._scale
+    const newFractionalPart = this._fractionalPart * 10n ** BigInt(scaleDiff)
+    return new BigDecimal(this._integerPart * 10n ** BigInt(newScale) + newFractionalPart, newScale)
+  }
+
+  private scaleDown(newScale: number): BigDecimal {
+    if (newScale >= this._scale) return this
+    const scaleDiff = this._scale - newScale
+    const divisor = 10n ** BigInt(scaleDiff)
+    const newFractionalPart = this._fractionalPart / divisor
+    return new BigDecimal(this._integerPart * 10n ** BigInt(newScale) + newFractionalPart, newScale)
+  }
+
+  /**
+   * Implements the toPrimitive symbol to allow BigDecimal to be used in comparisons.
+   */
+  [Symbol.toPrimitive](hint: string): number | string {
+    if (hint === 'number') {
+      return this.valueOf()
+    }
+    return this.toString()
+  }
+
+  /**
+   * Converts the BigDecimal to a primitive value for comparisons.
+   * @returns A number representation of the BigDecimal.
+   */
+  valueOf(): number {
+    const value = Number(this._integerPart) + Number(this._fractionalPart) / 10 ** this._scale
+    return this._isNegative ? -value : value
+  }
+
+  /**
+   * Compares this BigDecimal to another BigDecimal.
+   * @param other The BigDecimal to compare to.
+   * @returns -1 if this < other, 0 if this === other, 1 if this > other
+   */
+  compareTo(other: BigDecimal): number {
+    const maxScale = Math.max(this._scale, other._scale)
+    const thisScaled = this.scaleUp(maxScale)
+    const otherScaled = other.scaleUp(maxScale)
+
+    if (thisScaled._integerPart !== otherScaled._integerPart) {
+      return thisScaled._integerPart > otherScaled._integerPart ? 1 : -1
+    }
+    if (thisScaled._fractionalPart !== otherScaled._fractionalPart) {
+      return thisScaled._fractionalPart > otherScaled._fractionalPart ? 1 : -1
+    }
+    return 0
+  }
+
+  gt(other: BigDecimal): boolean {
+    return this.compareTo(other) > 0
+  }
+
+  eq(other: BigDecimal): boolean {
+    return this.compareTo(other) === 0
+  }
+
+  gte(other: BigDecimal): boolean {
+    return this.gt(other) || this.eq(other)
+  }
+
+  lt(other: BigDecimal): boolean {
+    return !this.gte(other)
+  }
+
+  lte(other: BigDecimal): boolean {
+    return this.lt(other) || this.eq(other)
+  }
+
+  isZero(): boolean {
+    return this._integerPart === 0n && this._fractionalPart === 0n
+  }
+
+  isPositive(): boolean {
+    return !this._isNegative
+  }
+
+  isNegative(): boolean {
+    return this._isNegative
+  }
+
+  toString(): string {
+    const intStr = this._integerPart.toString()
+    if (this._scale === 0) return this._isNegative ? `-${intStr}` : intStr
+    const fracStr = this._fractionalPart.toString().padStart(this._scale, '0')
+    return `${this._isNegative ? '-' : ''}${intStr}.${fracStr}`
+  }
+
+  toFixed(dp: number): string {
+    if (dp < 0) throw new Error('Decimal places must be non-negative')
+    const str = this.toString()
+    if (dp === 0) return str
+    return str + '.' + '0'.repeat(dp)
+  }
+
+  round(dp: number): BigDecimal {
+    const scaled = this.scaleUp(dp)
+    // Use BigInt constructor explicitly
+    return new BigDecimal(scaled._integerPart * 10n ** BigInt(dp) + scaled._fractionalPart, dp)
+  }
+}
+
+export default BigDecimal
