@@ -77,19 +77,27 @@ class BigDecimal {
     return this.isNegative() ? this.negate() : this
   }
 
+  private scaleFactor(scale: number): bigint {
+    return 10n ** BigInt(scale)
+  }
+
+  private toScaledBigInt(): bigint {
+    return this._integerPart * this.scaleFactor(this._scale) + this._fractionalPart
+  }
+
   plus(other: BigDecimal): BigDecimal {
     const maxScale = Math.max(this._scale, other._scale)
     const thisScaled = this.scaleUp(maxScale)
     const otherScaled = other.scaleUp(maxScale)
 
-    const thisValue = thisScaled._integerPart * 10n ** BigInt(maxScale) + thisScaled._fractionalPart
-    const otherValue = otherScaled._integerPart * 10n ** BigInt(maxScale) + otherScaled._fractionalPart
+    const thisValue = thisScaled.toScaledBigInt()
+    const otherValue = otherScaled.toScaledBigInt()
 
     if (this._isNegative === other._isNegative) {
       const sum = thisValue + otherValue
       const result = new BigDecimal(0, maxScale)
-      result._integerPart = sum / 10n ** BigInt(maxScale)
-      result._fractionalPart = sum % 10n ** BigInt(maxScale)
+      result._integerPart = sum / this.scaleFactor(maxScale)
+      result._fractionalPart = sum % this.scaleFactor(maxScale)
       result._isNegative = this._isNegative
       return result
     } else {
@@ -98,8 +106,8 @@ class BigDecimal {
       const lesser = isThisGreater ? otherValue : thisValue
       const diff = greater - lesser
       const result = new BigDecimal(0, maxScale)
-      result._integerPart = diff / 10n ** BigInt(maxScale)
-      result._fractionalPart = diff % 10n ** BigInt(maxScale)
+      result._integerPart = diff / this.scaleFactor(maxScale)
+      result._fractionalPart = diff % this.scaleFactor(maxScale)
       result._isNegative = isThisGreater ? this._isNegative : other._isNegative
       return result
     }
@@ -112,12 +120,12 @@ class BigDecimal {
 
   times(other: BigDecimal): BigDecimal {
     const newScale = this._scale + other._scale
-    const thisValue = this._integerPart * 10n ** BigInt(this._scale) + this._fractionalPart
-    const otherValue = other._integerPart * 10n ** BigInt(other._scale) + other._fractionalPart
+    const thisValue = this.toScaledBigInt()
+    const otherValue = other.toScaledBigInt()
     const product = thisValue * otherValue
     const result = new BigDecimal(0, newScale)
-    result._integerPart = product / 10n ** BigInt(newScale)
-    result._fractionalPart = product % 10n ** BigInt(newScale)
+    result._integerPart = product / this.scaleFactor(newScale)
+    result._fractionalPart = product % this.scaleFactor(newScale)
     result._isNegative = this._isNegative !== other._isNegative
     return result
   }
@@ -128,8 +136,8 @@ class BigDecimal {
     }
     const scaledThis = this.scaleUp(scale + other._scale + 1)
     const scaledOther = other.scaleUp(0)
-    const thisValue = scaledThis._integerPart * 10n ** BigInt(scaledThis._scale) + scaledThis._fractionalPart
-    const otherValue = scaledOther._integerPart * 10n ** BigInt(scaledOther._scale) + scaledOther._fractionalPart
+    const thisValue = scaledThis.toScaledBigInt()
+    const otherValue = scaledOther.toScaledBigInt()
     const quotient = thisValue / otherValue
     const result = new BigDecimal(quotient, scale)
     result._isNegative = this._isNegative !== other._isNegative
@@ -180,16 +188,16 @@ class BigDecimal {
   private scaleUp(newScale: number): BigDecimal {
     if (newScale <= this._scale) return this
     const scaleDiff = newScale - this._scale
-    const newFractionalPart = this._fractionalPart * 10n ** BigInt(scaleDiff)
-    return new BigDecimal(this._integerPart * 10n ** BigInt(newScale) + newFractionalPart, newScale)
+    const newFractionalPart = this._fractionalPart * this.scaleFactor(scaleDiff)
+    return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
   }
 
   private scaleDown(newScale: number): BigDecimal {
     if (newScale >= this._scale) return this
     const scaleDiff = this._scale - newScale
-    const divisor = 10n ** BigInt(scaleDiff)
+    const divisor = this.scaleFactor(scaleDiff)
     const newFractionalPart = this._fractionalPart / divisor
-    return new BigDecimal(this._integerPart * 10n ** BigInt(newScale) + newFractionalPart, newScale)
+    return new BigDecimal(this._integerPart * this.scaleFactor(newScale) + newFractionalPart, newScale)
   }
 
   /**
