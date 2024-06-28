@@ -1,0 +1,180 @@
+{
+  "dex_pools": {
+    "ethereum": [
+      {
+        "project": "Ethena",
+        "name": "FDUSD/USDe",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-166/deposit",
+        "poolId": "factory-stable-ng-166",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe/USDC",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-12/deposit",
+        "poolId": "factory-stable-ng-12",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe/DAI",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-100/deposit",
+        "poolId": "factory-stable-ng-100",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe/crvUSD",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-11/deposit",
+        "poolId": "factory-stable-ng-11",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe/FRAX",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-35/deposit",
+        "poolId": "factory-stable-ng-35",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe/GHO",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-105/deposit",
+        "poolId": "factory-stable-ng-105",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Puffer Finance",
+        "name": "weeTH/rswETH",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-80/deposit",
+        "poolId": "factory-stable-ng-80",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "2x",
+        "tags": ["points"],
+        "description": "Puffer points boost. https://quest.puffer.fi/defi",
+        "token": "Puffer token address"
+      },
+      {
+        "project": "Puffer Finance",
+        "name": "wETH/pufETH",
+        "poolLink": "https://curve.fi/#/ethereum/pools/factory-stable-ng-142/deposit",
+        "poolId": "factory-stable-ng-142",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "2x",
+        "tags": ["points"],
+        "description": "Puffer points boost. https://quest.puffer.fi/defi",
+        "token": "Puffer token address"
+      },
+      {
+        "project": "Puffer Finance",
+        "name": "pufETH/wstETH",
+        "poolLink": "http://localhost:3000/#/ethereum/pools/factory-stable-ng-113/deposit",
+        "poolId": "factory-stable-ng-113",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "2x",
+        "tags": ["points"],
+        "description": "Puffer points boost. https://quest.puffer.fi/defi",
+        "token": "Puffer token address"
+      },
+      {
+        "project": "Ether.fi",
+        "name": "pufETH/wstETH",
+        "poolLink": "http://localhost:3000/#/ethereum/pools/factory-stable-ng-113/deposit",
+        "poolId": "factory-stable-ng-113",
+        "network": "ethereum",
+        "action": "Deposit",
+        "multiplier": "2x",
+        "tags": ["points"],
+        "description": "Ether.fi boosted pool. https://app.ether.fi/defi",
+        "token": "Ether.fi token address"
+      }
+    ],
+    "arbitrum:": [
+      {
+        "project": "Ethena",
+        "name": "USDE/USDC",
+        "poolLink": "https://curve.fi/#/arbitrum/pools/factory-stable-ng-52/deposit",
+        "poolId": "factory-stable-ng-52",
+        "network": "arbitrum",
+        "action": "Deposit",
+        "multiplier": "30x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      }
+    ]
+  },
+  "lend_markets": {
+    "ethereum": [
+      {
+        "project": "Puffer Finance",
+        "name": "pufETH",
+        "poolLink": "https://lend.curve.fi/#/ethereum/markets/one-way-market-10/create",
+        "poolId": "one-way-market-10",
+        "network": "ethereum",
+        "action": "Supply",
+        "multiplier": "2x",
+        "tags": ["points"],
+        "description": "Puffer points boost. https://quest.puffer.fi/defi",
+        "token": "Puffer token address"
+      },
+      {
+        "project": "Ethena",
+        "name": "USDe",
+        "poolLink": "https://lend.curve.fi/#/ethereum/markets/one-way-market-14/create",
+        "poolId": "one-way-market-14",
+        "network": "ethereum",
+        "action": "Supply",
+        "multiplier": "20x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      },
+      {
+        "project": "Ethena",
+        "name": "sUSDe",
+        "poolLink": "https://lend.curve.fi/#/ethereum/markets/one-way-market-11/create",
+        "poolId": "one-way-market-11",
+        "network": "ethereum",
+        "action": "Supply",
+        "multiplier": "5x",
+        "tags": ["points"],
+        "description": "Ethena SATS boost. https://app.ethena.fi/liquidity",
+        "token": "0x57e114b691db790c35207b2e685d4a43181e6061"
+      }
+    ]
+  }
+}

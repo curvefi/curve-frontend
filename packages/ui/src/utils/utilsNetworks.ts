@@ -33,6 +33,12 @@ const NETWORK_CONFIG_DEFAULT = {
     listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
     tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
   },
+  rewards: {
+    baseUrl: 'https://cdn.jsdelivr.net',
+    imageBaseUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
+    campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward/campaigns/',
+    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward/reward-tags.json',
+  },
   isActiveNetwork: true,
 }
 
