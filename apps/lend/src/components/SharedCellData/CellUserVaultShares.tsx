@@ -1,4 +1,3 @@
-import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import ChipVaultSharesUsdRate from '@/components/InpChipVaultShareUsdRate'
@@ -23,11 +22,7 @@ const CellUserVaultShares = ({
       {typeof marketsBalancesResp === 'undefined' ? null : error ? (
         '?'
       ) : totalVaultShares === 0 ? null : (
-        <>
-          {formatNumber(totalVaultShares, { defaultValue: '-' })}
-          <br />
-          <ChipVaultSharesUsdRate noPadding hideRate rChainId={rChainId} rOwmId={rOwmId} amount={totalVaultShares} />
-        </>
+        <ChipVaultSharesUsdRate noPadding rChainId={rChainId} rOwmId={rOwmId} amount={totalVaultShares} />
       )}
     </>
   )
