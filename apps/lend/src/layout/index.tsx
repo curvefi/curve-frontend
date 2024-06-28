@@ -1,12 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import styled from 'styled-components'
 
-import { CONNECT_STAGE } from '@/constants'
+import { CONNECT_STAGE, getWallet, isFailure, useConnectWallet } from '@/onboard'
 import { layoutHeightKeys } from '@/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
-import { getWalletChainId } from '@/store/createWalletSlice'
-import { isFailure, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
+import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
@@ -25,17 +23,14 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const [networkSwitch, setNetworkSwitch] = useState('')
-
   const { rChainId, rNetwork } = getNetworkFromUrl()
+  const { walletChainId } = getWallet(wallet)
 
   const showSwitchNetworkMessage =
-    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))
+    isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!walletChainId && !(walletChainId in networks))
 
-  const handleNetworkChange = () => {
-    const connectStage = `${CONNECT_STAGE.SWITCH_NETWORK}${getWalletChainId(wallet)}-${rChainId}`
-    setNetworkSwitch(connectStage)
-    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
+  const handleNetworkChange = (walletChainId: string) => {
+    updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [+walletChainId, rChainId])
   }
 
   const minHeight = useMemo(() => {
@@ -62,7 +57,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
         showSwitchNetworkMessage={showSwitchNetworkMessage}
         maintenanceMessage=""
-        handleNetworkChange={handleNetworkChange}
+        handleNetworkChange={() => walletChainId && handleNetworkChange(walletChainId)}
       />
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
         <Header />

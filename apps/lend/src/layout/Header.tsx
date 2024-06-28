@@ -5,16 +5,14 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { CONNECT_STAGE, isLoading, useConnectWallet } from '@/onboard'
+import { ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
-import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
+import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
+import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { useHeightResizeObserver } from '@/ui/hooks'
-import { visibleNetworksList } from '@/networks'
-import networks from '@/networks'
+import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 
 import {
@@ -39,7 +37,7 @@ const Header = () => {
   const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rNetwork, rLocalePathname } = getParamsFromUrl()
 
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
   const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId])
@@ -58,9 +56,8 @@ const Header = () => {
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { params: routerParams, location } = routerProps ?? {}
+  const { location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
-  const routerNetwork = routerParams?.network
 
   const appLogoProps: AppLogoProps = {
     showBeta: true,
@@ -84,8 +81,8 @@ const Header = () => {
           APP_LINK.crvusd,
         ]
 
-    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [isLgUp, rLocalePathname, routerNetwork, routerPathname])
+    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, rNetwork)
+  }, [isLgUp, rLocalePathname, rNetwork, routerPathname])
 
   const tvl = useMemo(() => {
     return _getTvl(
@@ -116,7 +113,7 @@ const Header = () => {
         navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
       }
 
-      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, Number(selectedChainId)])
     }
   }
 
@@ -127,7 +124,6 @@ const Header = () => {
 
   const SelectNetworkComp = (
     <AppSelectNetwork
-      connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
       loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
@@ -150,7 +146,7 @@ const Header = () => {
       if (wallet) {
         updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
       } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')
       }
     },
   }

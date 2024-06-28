@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
-import { CONNECT_STAGE } from '@/constants'
+import { CONNECT_STAGE } from '@/onboard'
 import useStore from '@/store/useStore'
 import { curveProps } from '@/lib/utils'
 import networks from '@/networks'

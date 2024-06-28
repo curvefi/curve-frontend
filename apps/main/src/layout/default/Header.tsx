@@ -6,12 +6,12 @@ import React, { useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
-import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { CONNECT_STAGE, isLoading, useConnectWallet } from '@/onboard'
+import { ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
+import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { useConnectWallet } from '@/onboard'
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
@@ -38,6 +38,8 @@ const Header = () => {
   const params = useParams()
   useLayoutHeight(mainNavRef, 'mainNav')
 
+  const { rChainId, rNetworkIdx, rNetwork, rLocalePathname } = getParamsFromUrl()
+
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const isLgUp = useStore((state) => state.isLgUp)
@@ -55,13 +57,11 @@ const Header = () => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const { params: routerParams, location } = routerProps ?? {}
+  const { location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
-  const routerNetwork = routerParams?.network
 
   const appLogoProps: AppLogoProps = {
     appName: '',
@@ -98,8 +98,8 @@ const Header = () => {
       links.unshift({ route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' })
     }
 
-    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
+    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, rNetwork)
+  }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, rNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -110,7 +110,7 @@ const Header = () => {
     if (rChainId !== selectedChainId) {
       const network = networks[selectedChainId as ChainId].id
       navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
-      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+      updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, Number(selectedChainId)])
     }
   }
 
@@ -121,14 +121,13 @@ const Header = () => {
       if (wallet) {
         updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
       } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
+        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')
       }
     },
   }
 
   const SelectNetworkComp = (
     <AppSelectNetwork
-      connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
       items={visibleNetworksList}
       loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}

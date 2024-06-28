@@ -1,4 +1,3 @@
-import type { ConnectState } from 'ui/src/utils'
 import type { SelectProps } from 'ui/src/Select/Select'
 
 import * as React from 'react'
@@ -15,12 +14,11 @@ type ItemObj = {
 }
 
 export function SelectNetwork<T extends object>({
-  connectState,
   hideIcon,
   isDarkTheme,
   items,
   ...props
-}: Omit<SelectProps<T>, 'children'> & { connectState: ConnectState; hideIcon?: boolean; isDarkTheme?: boolean }) {
+}: Omit<SelectProps<T>, 'children'> & { hideIcon?: boolean; isDarkTheme?: boolean }) {
   const parsedItems = Object.entries(items ?? []).map(([_, item]) => {
     const { icon, iconDarkTheme, ...rest } = item as ItemObj
     return { ...rest, icon: isDarkTheme && typeof iconDarkTheme !== 'undefined' ? iconDarkTheme : icon }
