@@ -5,7 +5,9 @@ import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-type SliceState = {}
+type SliceState = {
+  rewardsMapper: RewardsPoolMapper
+}
 
 const sliceKey = 'rewards'
 
@@ -21,7 +23,56 @@ export type TokensSlice = {
   }
 }
 
-const DEFAULT_STATE: SliceState = {}
+const DEFAULT_STATE: SliceState = {
+  rewardsMapper: {
+    ['0xeeda34a377dd0ca676b9511ee1324974fa8d980d']: [
+      {
+        platform: 'Puffer Finance',
+        description: 'Puffer boosted pool.',
+        imageId: 'puffer-finance.png',
+        tags: ['points'],
+        poolId: 'factory-stable-ng-113',
+        campaignStart: '0',
+        campaignEnd: '1770000000',
+        poolAddress: '0xeeda34a377dd0ca676b9511ee1324974fa8d980d',
+        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
+        network: 'ethereum',
+        dashboardLink: 'https://quest.puffer.fi/defi',
+        multiplier: '2',
+      },
+    ],
+    ['0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5']: [
+      {
+        platform: 'Ether.fi',
+        description: 'Ether.fi boosted pool.',
+        imageId: 'etherfi.png',
+        tags: ['points'],
+        poolId: 'factory-stable-ng-157',
+        campaignStart: '0',
+        campaignEnd: '1770000000',
+        poolAddress: '0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5',
+        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
+        network: 'ethereum',
+        dashboardLink: 'https://app.ether.fi/defi',
+        multiplier: '3',
+      },
+      {
+        platform: 'Eigenlayer',
+        description: 'Eigenlayer boosted pool.',
+        imageId: 'eigenlayer.png',
+        tags: ['points'],
+        poolId: 'factory-stable-ng-157',
+        campaignStart: '0',
+        campaignEnd: '1770000000',
+        poolAddress: '0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5',
+        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
+        network: 'ethereum',
+        dashboardLink: 'https://app.eigenlayer.xyz/restake',
+        multiplier: '1',
+      },
+    ],
+  },
+}
 
 const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
   [sliceKey]: {

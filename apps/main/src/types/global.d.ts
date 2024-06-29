@@ -395,4 +395,21 @@ declare global {
     hash: string
     error: string
   }
+
+  type RewardsPoolMapper = { [poolAddress: string]: RewardsPool[] }
+
+  interface RewardsPool {
+    platform: string
+    description: string
+    imageId: string
+    tags: string[]
+    poolId: string
+    campaignStart: string
+    campaignEnd: string
+    poolAddress: string
+    gaugeAddress: string
+    network: string
+    dashboardLink: string
+    multiplier: string
+  }
 }

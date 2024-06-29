@@ -3,8 +3,10 @@ import type { Theme } from '@/store/createGlobalSlice'
 
 import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
+import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
+import networks from '@/networks'
 
 import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
@@ -12,7 +14,6 @@ import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
 import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
-import styled from 'styled-components'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
@@ -21,15 +22,19 @@ import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import TableCellPointsRewards from '@/components/PagePoolList/components/TableCellPointsRewards'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
   themeType: Theme
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
   tableLabel: PoolListTableLabel
+  rChainId: ChainId
+  rewardsMapper: RewardsPoolMapper
 }
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
+  rChainId,
   index,
   formValues,
   isInPool,
@@ -49,6 +54,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   volume,
   handleCellClick,
   setShowDetail,
+  rewardsMapper,
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
@@ -146,6 +152,14 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                         rewardsApy={rewardsApy}
                         searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                       />
+                      {poolData && rewardsMapper[poolData.pool.address] && (
+                        <TableCellPointsRewards
+                          rChainId={rChainId}
+                          poolAddress={poolData.pool.address}
+                          rewardsMapper={rewardsMapper}
+                          mobile
+                        />
+                      )}
                     </div>
                   )}
                 </div>

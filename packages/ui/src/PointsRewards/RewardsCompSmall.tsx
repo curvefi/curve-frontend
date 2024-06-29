@@ -4,31 +4,32 @@ import Image from 'next/image'
 import Tooltip from 'ui/src/Tooltip'
 
 type Props = {
+  platform: string
   description: string
   multiplier: string
-  tokenAddress: string
   imgSrc: string
 }
 
-const RewardsCompSmall: React.FC<Props> = ({ description, multiplier, tokenAddress, imgSrc }) => {
+const RewardsCompSmall: React.FC<Props> = ({ platform, description, multiplier, imgSrc }) => {
   return (
-    <Tooltip tooltip={<p>{description}</p>}>
-      <Wrapper>
-        <TokenIcon src={imgSrc} alt={tokenAddress} width={20} height={20} />
+    <Tooltip tooltip={<TooltipParagraph>{description}</TooltipParagraph>} minWidth={'170px'}>
+      <Container>
+        <TokenIcon src={imgSrc} alt={platform} width={16} height={16} />
         <Multiplier>{`${multiplier}x`}</Multiplier>
-      </Wrapper>
+      </Container>
     </Tooltip>
   )
 }
 
 export default RewardsCompSmall
 
-const Wrapper = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-1);
   padding: var(--spacing-1);
+  border: 1px solid var(--gray-500a25);
 `
 
 const TokenIcon = styled(Image)`
@@ -39,5 +40,8 @@ const TokenIcon = styled(Image)`
 const Multiplier = styled.p`
   text-transform: uppercase;
   font-size: var(--font-size-3);
-  font-weight: var(--semi-bold);
+`
+
+const TooltipParagraph = styled.p`
+  text-align: left;
 `

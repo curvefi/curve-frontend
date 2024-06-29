@@ -10,7 +10,7 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_SEARCH_PARAMS,
   getPoolDatasCached,
-  getPoolListActiveKey
+  getPoolListActiveKey,
 } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
@@ -68,6 +68,12 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
+
+  const init = useStore((state) => state.rewards.init)
+
+  useEffect(() => {
+    init(rChainId)
+  }, [init, rChainId])
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -134,7 +140,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
       userPoolList,
-    ]);
+    ]
+  )
 
   usePageVisibleInterval(
     useCallback(() => {
