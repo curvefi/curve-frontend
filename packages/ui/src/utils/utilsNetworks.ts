@@ -36,8 +36,8 @@ const NETWORK_CONFIG_DEFAULT = {
   rewards: {
     baseUrl: 'https://cdn.jsdelivr.net',
     imageBaseUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
-    campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward/campaigns/',
-    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward/reward-tags.json',
+    campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaign-list.json',
+    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/reward-tags.json',
   },
   isActiveNetwork: true,
 }

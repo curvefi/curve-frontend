@@ -1,4 +1,5 @@
 import type { GetState, SetState } from 'zustand'
+import produce from 'immer'
 
 import type { State } from '@/store/useStore'
 import networks from '@/networks'
@@ -24,54 +25,7 @@ export type TokensSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  rewardsMapper: {
-    ['0xeeda34a377dd0ca676b9511ee1324974fa8d980d']: [
-      {
-        platform: 'Puffer Finance',
-        description: 'Puffer boosted pool.',
-        imageId: 'puffer-finance.png',
-        tags: ['points'],
-        poolId: 'factory-stable-ng-113',
-        campaignStart: '0',
-        campaignEnd: '1770000000',
-        poolAddress: '0xeeda34a377dd0ca676b9511ee1324974fa8d980d',
-        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
-        network: 'ethereum',
-        dashboardLink: 'https://quest.puffer.fi/defi',
-        multiplier: '2',
-      },
-    ],
-    ['0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5']: [
-      {
-        platform: 'Ether.fi',
-        description: 'Ether.fi boosted pool.',
-        imageId: 'etherfi.png',
-        tags: ['points'],
-        poolId: 'factory-stable-ng-157',
-        campaignStart: '0',
-        campaignEnd: '1770000000',
-        poolAddress: '0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5',
-        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
-        network: 'ethereum',
-        dashboardLink: 'https://app.ether.fi/defi',
-        multiplier: '3',
-      },
-      {
-        platform: 'Eigenlayer',
-        description: 'Eigenlayer boosted pool.',
-        imageId: 'eigenlayer.png',
-        tags: ['points'],
-        poolId: 'factory-stable-ng-157',
-        campaignStart: '0',
-        campaignEnd: '1770000000',
-        poolAddress: '0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5',
-        gaugeAddress: '0xf4fa0c7833e778fb9fb392ec36217e17c9133976',
-        network: 'ethereum',
-        dashboardLink: 'https://app.eigenlayer.xyz/restake',
-        multiplier: '1',
-      },
-    ],
-  },
+  rewardsMapper: {},
 }
 
 const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
@@ -82,7 +36,31 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
         networks[chainId].rewards.campaignsUrl,
         networks[chainId].rewards.baseUrl
       )
-      console.log('campaigns', campaigns)
+
+      let rewardsMapper: RewardsPoolMapper = {}
+
+      campaigns.forEach((campaign: RewardsCampaign) => {
+        campaign.pools.forEach((pool: RewardsCampaignPool) => {
+          if (!rewardsMapper[pool.poolAddress.toLowerCase()]) {
+            rewardsMapper[pool.poolAddress.toLowerCase()] = []
+          }
+          rewardsMapper[pool.poolAddress.toLowerCase()].push({
+            campaignName: campaign.campaignName,
+            platform: campaign.platform,
+            description: campaign.description,
+            platformImageId: campaign.platformImageId,
+            dashboardLink: campaign.dashboardLink,
+            ...pool,
+            poolAddress: pool.poolAddress.toLowerCase(),
+          })
+        })
+      })
+
+      set(
+        produce((state: State) => {
+          state[sliceKey].rewardsMapper = rewardsMapper
+        })
+      )
     },
 
     // slice helpers
@@ -105,42 +83,23 @@ async function fetchAndCompileJsonFiles(directoryUrl: string, baseUrl: string): 
   try {
     // Fetch the directory listing
     const response = await fetch(directoryUrl)
-    const html = await response.text()
+    const jsonFileNames = await response.json()
 
     // Extract the JSON file names from the directory listing
-    const jsonFileNames = extractJsonFileNames(html)
-
-    console.log(jsonFileNames)
 
     // Fetch each JSON file and compile the data
-    const jsonFetches = jsonFileNames.map((fileName) => {
-      const fileUrl = `${baseUrl}${fileName}`
-      const fileFetch = fetch(fileUrl)
-      return fileFetch
+    const jsonFetches = jsonFileNames.map(async (fileName: { campaign: string }) => {
+      const fileUrl = `https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaigns/${fileName.campaign}`
+      const fileResponse = await fetch(fileUrl)
+      return await fileResponse.json()
     })
 
     const jsonResponses = await Promise.all(jsonFetches)
-    console.log('jsonResponses', jsonResponses)
-    const jsonResponsesFormatted = jsonResponses.map((res) => res.json())
-    console.log('jsonResponsesFormatted', jsonResponsesFormatted)
-
-    return jsonResponsesFormatted
+    return jsonResponses
   } catch (error) {
     console.error('Error fetching and compiling JSON files:', error)
     throw error
   }
-}
-
-function extractJsonFileNames(html: string): string[] {
-  const regex = /href="([^"]+\.json)"/g
-  const matches = html.matchAll(regex)
-  const fileNames: string[] = []
-
-  for (const match of matches) {
-    fileNames.push(match[1])
-  }
-
-  return fileNames
 }
 
 export default createRewardsSlice

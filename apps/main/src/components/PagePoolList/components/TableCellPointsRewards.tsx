@@ -13,12 +13,13 @@ interface Props {
 const TableCellPointsRewards: React.FC<Props> = ({ rChainId, poolAddress, rewardsMapper, mobile = false }) => {
   return (
     <Container mobile={mobile}>
-      {rewardsMapper[poolAddress].map((rewardItem: RewardsPool) => (
+      {rewardsMapper[poolAddress].map((rewardItem: RewardsPool, index: number) => (
         <RewardsCompSmall
+          key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
           platform={rewardItem.platform}
           description={rewardItem.description}
           multiplier={rewardItem.multiplier}
-          imgSrc={`${networks[rChainId].rewards.imageBaseUrl}/${rewardItem.imageId}`}
+          imgSrc={`${networks[rChainId].rewards.imageBaseUrl}/${rewardItem.platformImageId}`}
         />
       ))}
     </Container>

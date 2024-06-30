@@ -396,20 +396,43 @@ declare global {
     error: string
   }
 
-  type RewardsPoolMapper = { [poolAddress: string]: RewardsPool[] }
-
-  interface RewardsPool {
+  interface RewardsCampaign {
+    campaignName: string
     platform: string
     description: string
-    imageId: string
-    tags: string[]
+    platformImageId: string
+    dashboardLink: string
+    pools: RewardsCampaignPool[]
+  }
+
+  interface RewardsCampaignPool {
+    id: string
     poolId: string
     campaignStart: string
     campaignEnd: string
     poolAddress: string
     gaugeAddress: string
     network: string
-    dashboardLink: string
     multiplier: string
+    tags: string[]
+  }
+
+  type RewardsPoolMapper = { [poolAddress: string]: RewardsPool[] }
+
+  interface RewardsPool {
+    campaignName: string
+    platform: string
+    description: string
+    platformImageId: string
+    dashboardLink: string
+    id: string
+    poolId: string
+    campaignStart: string
+    campaignEnd: string
+    poolAddress: string
+    gaugeAddress: string
+    network: string
+    multiplier: string
+    tags: string[]
   }
 }
