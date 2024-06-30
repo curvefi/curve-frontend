@@ -1,12 +1,11 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
+import type { RewardsPoolMapper } from '@/ui/PointsRewards/types'
 
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import PoolLabel from '@/components/PoolLabel'
@@ -18,7 +17,7 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellPointsRewards from '@/components/PagePoolList/components/TableCellPointsRewards'
+import PointsRewardsRow from '@/components/PointsRewardsRow'
 
 export type TableRowProps = {
   rChainId: ChainId
@@ -104,11 +103,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               {rewardsApy && <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />}
               <TableCellRewardsGauge gauge={poolData?.pool?.gauge} searchText={searchText} />
               {poolData && rewardsMapper[poolData.pool.address] && (
-                <TableCellPointsRewards
-                  rChainId={rChainId}
-                  poolAddress={poolData.pool.address}
-                  rewardsMapper={rewardsMapper}
-                />
+                <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} />
               )}
             </Box>
           </td>
@@ -125,11 +120,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
             />
             {poolData && rewardsMapper[poolData.pool.address] && (
-              <TableCellPointsRewards
-                rChainId={rChainId}
-                poolAddress={poolData.pool.address}
-                rewardsMapper={rewardsMapper}
-              />
+              <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} />
             )}
           </Box>
         </td>

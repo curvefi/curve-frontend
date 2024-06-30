@@ -7,6 +7,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { haveRewardsApy } from '@/utils/utilsCurvejs'
 import { shortenTokenName } from '@/utils'
 import networks from '@/networks'
+import useStore from '@/store/useStore'
 
 import { LARGE_APY } from '@/constants'
 import { Chip } from '@/ui/Typography'
@@ -19,6 +20,7 @@ import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Tooltip from '@/ui/Tooltip'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
+import PointsRewardsRow from '@/components/PointsRewardsRow'
 
 type Props = {
   chainId: ChainId
@@ -29,6 +31,7 @@ type Props = {
 const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
+  const rewardPool = useStore((state) => state.rewards.rewardsMapper[poolData.pool.address])
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
@@ -135,6 +138,12 @@ const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
             </ExternalLink>
           </BoostingLink>
         </RewardsContainer>
+      )}
+      {rewardPool && (
+        <Box flex flexJustifyContent="space-between" flexAlignItems="center">
+          <h4>{t`Additional rewards`}</h4>
+          <PointsRewardsRow rewardItems={rewardPool} />
+        </Box>
       )}
     </RewardsWrapper>
   )

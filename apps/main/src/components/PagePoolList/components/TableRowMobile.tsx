@@ -1,12 +1,12 @@
 import type { PoolListTableLabel } from '@/components/PagePoolList/types'
 import type { Theme } from '@/store/createGlobalSlice'
+import type { RewardsPoolMapper } from '@/ui/PointsRewards/types'
 
 import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 
 import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
@@ -22,7 +22,7 @@ import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellPointsRewards from '@/components/PagePoolList/components/TableCellPointsRewards'
+import PointsRewardsRow from '@/components/PointsRewardsRow'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
@@ -153,12 +153,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                         searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                       />
                       {poolData && rewardsMapper[poolData.pool.address] && (
-                        <TableCellPointsRewards
-                          rChainId={rChainId}
-                          poolAddress={poolData.pool.address}
-                          rewardsMapper={rewardsMapper}
-                          mobile
-                        />
+                        <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} mobile />
                       )}
                     </div>
                   )}

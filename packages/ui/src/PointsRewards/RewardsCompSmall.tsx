@@ -1,35 +1,56 @@
+import type { RewardsCompSmallProps } from 'ui/src/PointsRewards/types'
+
 import styled from 'styled-components'
 import Image from 'next/image'
 
 import Tooltip from 'ui/src/Tooltip'
+import { ExternalLink } from 'ui/src/Link'
 
-type Props = {
-  platform: string
-  description: string
-  multiplier: string
-  imgSrc: string
-}
+const RewardsCompSmall: React.FC<RewardsCompSmallProps> = ({ rewardsPool, highContrast }) => {
+  const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
 
-const RewardsCompSmall: React.FC<Props> = ({ platform, description, multiplier, imgSrc }) => {
   return (
-    <Tooltip tooltip={<TooltipParagraph>{description}</TooltipParagraph>} minWidth={'170px'}>
-      <Container>
-        <TokenIcon src={imgSrc} alt={platform} width={16} height={16} />
-        <Multiplier>{`${multiplier}x`}</Multiplier>
+    <Tooltip
+      tooltip={<TooltipMessage platform={platform} description={description} dashboardLink={dashboardLink} />}
+      minWidth={'170px'}
+    >
+      <Container highContrast={highContrast}>
+        <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
+        <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>
       </Container>
     </Tooltip>
   )
 }
 
+const TooltipMessage = ({
+  platform,
+  description,
+  dashboardLink,
+}: {
+  platform: string
+  description: string
+  dashboardLink: string
+}) => {
+  return (
+    <TooltipWrapper>
+      <TooltipTitle>{platform}</TooltipTitle>
+      <TooltipParagraph>{description}</TooltipParagraph>
+      <ExternalLink $noStyles href={dashboardLink}>
+        Learn more
+      </ExternalLink>
+    </TooltipWrapper>
+  )
+}
+
 export default RewardsCompSmall
 
-const Container = styled.div`
+const Container = styled.div<{ highContrast?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: var(--spacing-1);
   padding: var(--spacing-1);
-  border: 1px solid var(--gray-500a25);
+  border: ${({ highContrast }) => (highContrast ? '1px solid var(--white)' : '1px solid var(--gray-500a25)')};
 `
 
 const TokenIcon = styled(Image)`
@@ -37,9 +58,21 @@ const TokenIcon = styled(Image)`
   border-radius: 50%;
 `
 
-const Multiplier = styled.p`
+const Multiplier = styled.p<{ highContrast?: boolean }>`
   text-transform: uppercase;
   font-size: var(--font-size-3);
+  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : '--page--text-color')};
+`
+
+const TooltipWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+`
+
+const TooltipTitle = styled.h3`
+  font-size: var(--font-size-3);
+  font-weight: var(--semi-bold);
 `
 
 const TooltipParagraph = styled.p`

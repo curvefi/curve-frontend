@@ -68,12 +68,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
-
-  const init = useStore((state) => state.rewards.init)
-
-  useEffect(() => {
-    init(rChainId)
-  }, [init, rChainId])
+  const { init, initiated } = useStore((state) => state.rewards)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -158,6 +153,13 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tvlMapperCachedOrApi, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
+
+  // init rewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      init(rChainId)
+    }
+  }, [init, rChainId, initiated])
 
   const showInPoolColumn = !!curve?.signerAddress
   let colSpan = isMdUp ? 7 : 4

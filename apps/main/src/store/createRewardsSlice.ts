@@ -1,12 +1,14 @@
+import type { State } from '@/store/useStore'
 import type { GetState, SetState } from 'zustand'
+import { RewardsCampaign, RewardsCampaignPool, RewardsPoolMapper } from '@/ui/PointsRewards/types'
 import produce from 'immer'
 
-import type { State } from '@/store/useStore'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
+  initiated: boolean
   rewardsMapper: RewardsPoolMapper
 }
 
@@ -25,6 +27,7 @@ export type TokensSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
+  initiated: false,
   rewardsMapper: {},
 }
 
@@ -39,6 +42,7 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
 
       let rewardsMapper: RewardsPoolMapper = {}
 
+      // compile a list of pool/markets using pool/vault address as key
       campaigns.forEach((campaign: RewardsCampaign) => {
         campaign.pools.forEach((pool: RewardsCampaignPool) => {
           if (!rewardsMapper[pool.poolAddress.toLowerCase()]) {
@@ -48,7 +52,7 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
             campaignName: campaign.campaignName,
             platform: campaign.platform,
             description: campaign.description,
-            platformImageId: campaign.platformImageId,
+            platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
             dashboardLink: campaign.dashboardLink,
             ...pool,
             poolAddress: pool.poolAddress.toLowerCase(),
@@ -58,6 +62,7 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
 
       set(
         produce((state: State) => {
+          state[sliceKey].initiated = true
           state[sliceKey].rewardsMapper = rewardsMapper
         })
       )
@@ -81,11 +86,9 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
 
 async function fetchAndCompileJsonFiles(directoryUrl: string, baseUrl: string): Promise<Record<string, any>> {
   try {
-    // Fetch the directory listing
+    // Fetch list of campaigns
     const response = await fetch(directoryUrl)
     const jsonFileNames = await response.json()
-
-    // Extract the JSON file names from the directory listing
 
     // Fetch each JSON file and compile the data
     const jsonFetches = jsonFileNames.map(async (fileName: { campaign: string }) => {
