@@ -3,7 +3,6 @@ import type { FilterKey, PagePoolList, PoolListFilter, SearchParams } from '@/co
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFocusRing } from '@react-aria/focus'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import {
@@ -68,7 +67,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
-  const { init, initiated } = useStore((state) => state.rewards)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -154,12 +153,12 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tvlMapperCachedOrApi, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
 
-  // init rewardsMapper
+  // init campaignRewardsMapper
   useEffect(() => {
     if (!initiated) {
-      init(rChainId)
+      initCampaignRewards(rChainId)
     }
-  }, [init, rChainId, initiated])
+  }, [initCampaignRewards, rChainId, initiated])
 
   const showInPoolColumn = !!curve?.signerAddress
   let colSpan = isMdUp ? 7 : 4

@@ -55,7 +55,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const themeType = useStore((state) => state.themeType)
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
-  const rewardsMapper = useStore((state) => state.rewards.rewardsMapper)
+  const campaignRewardsMapper = useStore((state) => state.campaigns.campaignRewardsMapper)
 
   const handleCellClick = useCallback(
     (target: EventTarget, formType?: 'swap' | 'withdraw') => {
@@ -72,7 +72,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const poolData = poolDatasMapper?.[poolId]
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
-    rChainId,
     index,
     formValues,
     searchParams,
@@ -89,7 +88,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     volumeCached: volumeMapperCached?.[poolId],
     volume: volumeMapper?.[poolId],
     handleCellClick,
-    rewardsMapper,
+    campaignRewardsMapper,
   }
 
   return isXSmDown ? (

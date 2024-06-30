@@ -1,4 +1,4 @@
-import type { RewardsCompSmallProps } from 'ui/src/PointsRewards/types'
+import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 
 import styled from 'styled-components'
 import Image from 'next/image'
@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Tooltip from 'ui/src/Tooltip'
 import { ExternalLink } from 'ui/src/Link'
 
-const RewardsCompSmall: React.FC<RewardsCompSmallProps> = ({ rewardsPool, highContrast }) => {
+const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast }) => {
   const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
 
   return (
@@ -68,11 +68,13 @@ const TooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+  text-align: left;
 `
 
 const TooltipTitle = styled.h3`
   font-size: var(--font-size-3);
   font-weight: var(--semi-bold);
+  text-align: left;
 `
 
 const TooltipParagraph = styled.p`

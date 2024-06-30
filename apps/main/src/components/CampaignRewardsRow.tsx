@@ -1,19 +1,22 @@
-import type { RewardsPool } from '@/ui/PointsRewards/types'
+import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 
 import styled from 'styled-components'
 
-import RewardsCompSmall from '@/ui/PointsRewards/RewardsCompSmall'
+import CampaignRewardsComp from 'ui/src/CampaignRewards/CampaignRewardsComp'
 
 interface Props {
   rewardItems: RewardsPool[]
   mobile?: boolean
 }
 
-const PointsRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => {
+const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => {
   return (
     <Container mobile={mobile}>
       {rewardItems.map((rewardItem: RewardsPool, index: number) => (
-        <RewardsCompSmall key={`${rewardItem.platform}-${rewardItem.description}-${index}`} rewardsPool={rewardItem} />
+        <CampaignRewardsComp
+          key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
+          rewardsPool={rewardItem}
+        />
       ))}
     </Container>
   )
@@ -28,4 +31,4 @@ const Container = styled.div<{ mobile: boolean }>`
   justify-content: ${({ mobile }) => (mobile ? 'start' : 'end')};
 `
 
-export default PointsRewardsRow
+export default CampaignRewardsRow

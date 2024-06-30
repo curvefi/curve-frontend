@@ -25,7 +25,7 @@ import createSelectTokenSlice, { SelectTokenSlice } from '@/store/createSelectTo
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/store/createDeployGaugeSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/store/createPoolDepositSlice'
 import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/store/createPoolWithdrawSlice'
-import createRewardsSlice, { RewardsSlice } from '@/store/createRewardsSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
 
 export type State = GlobalSlice &
   GasSlice &
@@ -47,7 +47,7 @@ export type State = GlobalSlice &
   IntegrationsSlice &
   SelectTokenSlice &
   DeployGaugeSlice &
-  RewardsSlice
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
@@ -70,7 +70,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createIntegrationsSlice(set, get),
   ...createSelectTokenSlice(set, get),
   ...createDeployGaugeSlice(set, get),
-  ...createRewardsSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 // cache all items in CacheSlice store

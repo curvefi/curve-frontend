@@ -33,6 +33,7 @@ export type SortKey =
   | 'rewardsOther'
   | 'tvl'
   | 'volume'
+  | 'points'
 
 export type FormValues = {
   searchTextByTokensAndAddresses: { [address: string]: boolean }

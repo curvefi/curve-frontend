@@ -1,6 +1,6 @@
 import type { PoolListTableLabel } from '@/components/PagePoolList/types'
 import type { Theme } from '@/store/createGlobalSlice'
-import type { RewardsPoolMapper } from '@/ui/PointsRewards/types'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
@@ -22,19 +22,17 @@ import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import PointsRewardsRow from '@/components/PointsRewardsRow'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
   themeType: Theme
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
   tableLabel: PoolListTableLabel
-  rChainId: ChainId
-  rewardsMapper: RewardsPoolMapper
+  campaignRewardsMapper: CampaignRewardsMapper
 }
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
-  rChainId,
   index,
   formValues,
   isInPool,
@@ -54,7 +52,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   volume,
   handleCellClick,
   setShowDetail,
-  rewardsMapper,
+  campaignRewardsMapper,
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
@@ -152,8 +150,8 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                         rewardsApy={rewardsApy}
                         searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                       />
-                      {poolData && rewardsMapper[poolData.pool.address] && (
-                        <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} mobile />
+                      {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                        <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
                       )}
                     </div>
                   )}

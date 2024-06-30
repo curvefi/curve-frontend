@@ -1,16 +1,16 @@
-import type { RewardsBannerCompProps } from './types'
+import type { CampaignRewardsBannerCompProps } from './types'
 
 import styled from 'styled-components'
 
 import { RCPointsIcon } from 'ui/src/images'
-import RewardsCompSmall from './RewardsCompSmall'
+import RewardsCompSmall from './CampaignRewardsComp'
 
-const RewardsBannerComp: React.FC<RewardsBannerCompProps> = ({ rewardsPool }) => {
+const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool }) => {
   return (
     <Wrapper>
       <StyledPointsIcon />
       <RewardsMessage>Liquiditity providers in this pool also earn points!</RewardsMessage>
-      {rewardsPool.map((rewardItem, index) => (
+      {campaignRewardsPool.map((rewardItem, index) => (
         <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast />
       ))}
     </Wrapper>

@@ -1,6 +1,6 @@
 import type { State } from '@/store/useStore'
 import type { GetState, SetState } from 'zustand'
-import { RewardsCampaign, RewardsCampaignPool, RewardsPoolMapper } from '@/ui/PointsRewards/types'
+import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
 import networks from '@/networks'
@@ -9,15 +9,15 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   initiated: boolean
-  rewardsMapper: RewardsPoolMapper
+  campaignRewardsMapper: CampaignRewardsMapper
 }
 
-const sliceKey = 'rewards'
+const sliceKey = 'campaigns'
 
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    init(chainId: ChainId): void
+    initCampaignRewards(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -28,27 +28,27 @@ export type TokensSlice = {
 
 const DEFAULT_STATE: SliceState = {
   initiated: false,
-  rewardsMapper: {},
+  campaignRewardsMapper: {},
 }
 
-const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
+const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    init: async (chainId: ChainId) => {
+    initCampaignRewards: async (chainId: ChainId) => {
       const campaigns = await fetchAndCompileJsonFiles(
         networks[chainId].rewards.campaignsUrl,
         networks[chainId].rewards.baseUrl
       )
 
-      let rewardsMapper: RewardsPoolMapper = {}
+      let campaignRewardsMapper: CampaignRewardsMapper = {}
 
       // compile a list of pool/markets using pool/vault address as key
-      campaigns.forEach((campaign: RewardsCampaign) => {
-        campaign.pools.forEach((pool: RewardsCampaignPool) => {
-          if (!rewardsMapper[pool.poolAddress.toLowerCase()]) {
-            rewardsMapper[pool.poolAddress.toLowerCase()] = []
+      campaigns.forEach((campaign: CampaignRewardsItem) => {
+        campaign.pools.forEach((pool: CampaignRewardsPool) => {
+          if (!campaignRewardsMapper[pool.poolAddress.toLowerCase()]) {
+            campaignRewardsMapper[pool.poolAddress.toLowerCase()] = []
           }
-          rewardsMapper[pool.poolAddress.toLowerCase()].push({
+          campaignRewardsMapper[pool.poolAddress.toLowerCase()].push({
             campaignName: campaign.campaignName,
             platform: campaign.platform,
             description: campaign.description,
@@ -63,7 +63,7 @@ const createRewardsSlice = (set: SetState<State>, get: GetState<State>): TokensS
       set(
         produce((state: State) => {
           state[sliceKey].initiated = true
-          state[sliceKey].rewardsMapper = rewardsMapper
+          state[sliceKey].campaignRewardsMapper = campaignRewardsMapper
         })
       )
     },
@@ -105,4 +105,4 @@ async function fetchAndCompileJsonFiles(directoryUrl: string, baseUrl: string): 
   }
 }
 
-export default createRewardsSlice
+export default createCampaignsSlice

@@ -1,13 +1,13 @@
-export interface RewardsCampaign {
+export interface CampaignRewardsItem {
   campaignName: string
   platform: string
   description: string
   platformImageId: string
   dashboardLink: string
-  pools: RewardsCampaignPool[]
+  pools: CampaignRewardsPool[]
 }
 
-export interface RewardsCampaignPool {
+export interface CampaignRewardsPool {
   id: string
   poolId: string
   campaignStart: string
@@ -36,13 +36,13 @@ export interface RewardsPool {
   tags: string[]
 }
 
-export type RewardsPoolMapper = { [poolAddress: string]: RewardsPool[] }
+export type CampaignRewardsMapper = { [poolAddress: string]: RewardsPool[] }
 
-export interface RewardsCompSmallProps {
+export interface CampaignRewardsCompProps {
   rewardsPool: RewardsPool
   highContrast?: boolean
 }
 
-export interface RewardsBannerCompProps {
-  rewardsPool: RewardsPool[]
+export interface CampaignRewardsBannerCompProps {
+  campaignRewardsPool: RewardsPool[]
 }

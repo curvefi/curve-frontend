@@ -1,5 +1,5 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
-import type { RewardsPoolMapper } from '@/ui/PointsRewards/types'
+import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -17,10 +17,9 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import PointsRewardsRow from '@/components/PointsRewardsRow'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 export type TableRowProps = {
-  rChainId: ChainId
   index: number
   poolId: string
   formValues: FormValues
@@ -33,7 +32,7 @@ export type TableRowProps = {
   searchParams: SearchParams
   showInPoolColumn: boolean
   tokensMapper: TokensMapper
-  rewardsMapper: RewardsPoolMapper
+  campaignRewardsMapper: CampaignRewardsMapper
   tvlCached: Tvl | undefined
   tvl: Tvl | undefined
   volumeCached: Volume | undefined
@@ -42,7 +41,6 @@ export type TableRowProps = {
 }
 
 const TableRow: FunctionComponent<TableRowProps> = ({
-  rChainId,
   index,
   poolId,
   formValues,
@@ -55,7 +53,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   searchParams,
   showInPoolColumn,
   tokensMapper,
-  rewardsMapper,
+  campaignRewardsMapper,
   tvlCached,
   tvl,
   volumeCached,
@@ -102,8 +100,8 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               )}
               {rewardsApy && <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />}
               <TableCellRewardsGauge gauge={poolData?.pool?.gauge} searchText={searchText} />
-              {poolData && rewardsMapper[poolData.pool.address] && (
-                <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} />
+              {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
               )}
             </Box>
           </td>
@@ -119,8 +117,8 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               rewardsApy={rewardsApy}
               searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
             />
-            {poolData && rewardsMapper[poolData.pool.address] && (
-              <PointsRewardsRow rewardItems={rewardsMapper[poolData.pool.address]} />
+            {poolData && campaignRewardsMapper[poolData.pool.address] && (
+              <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
             )}
           </Box>
         </td>
