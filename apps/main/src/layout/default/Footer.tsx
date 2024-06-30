@@ -241,6 +241,7 @@ const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
         `
       }
     }}
+  }
 `
 
 const FooterLogoWrapper = styled.div`
