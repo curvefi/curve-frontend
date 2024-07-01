@@ -27,8 +27,10 @@ const Container = styled.div<{ mobile: boolean }>`
   flex-wrap: wrap;
   max-width: 12rem;
   gap: var(--spacing-1);
-  margin: ${({ mobile }) => (mobile ? '0' : '0 0 0 auto')};
-  justify-content: ${({ mobile }) => (mobile ? 'start' : 'end')};
+  @media (min-width: 37.5rem) {
+    margin: ${({ mobile }) => (mobile ? '0' : '0 0 0 auto')};
+    justify-content: ${({ mobile }) => (mobile ? 'start' : 'end')};
+  }
 `
 
 export default CampaignRewardsRow

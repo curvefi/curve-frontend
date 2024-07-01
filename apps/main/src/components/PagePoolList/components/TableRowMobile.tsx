@@ -151,7 +151,10 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                         searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                       />
                       {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                        <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
+                        <CampaignRewardsWrapper>
+                          <MobileTableTitle>{t`Additional external rewards`}</MobileTableTitle>
+                          <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
+                        </CampaignRewardsWrapper>
                       )}
                     </div>
                   )}
@@ -228,6 +231,13 @@ const MobileTableContentWrapper = styled.div`
 
 const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
+`
+
+const CampaignRewardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
 `
 
 export default TableRowMobile

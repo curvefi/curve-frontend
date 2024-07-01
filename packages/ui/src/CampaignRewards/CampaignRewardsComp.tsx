@@ -13,6 +13,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     <Tooltip
       tooltip={<TooltipMessage platform={platform} description={description} dashboardLink={dashboardLink} />}
       minWidth={'170px'}
+      placement="top"
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />

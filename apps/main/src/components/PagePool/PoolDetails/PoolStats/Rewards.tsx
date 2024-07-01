@@ -142,10 +142,10 @@ const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
         </RewardsContainer>
       )}
       {campaignRewardsPool && (
-        <Box flex flexJustifyContent="space-between" flexAlignItems="center">
-          <h4>{t`Additional rewards`}</h4>
+        <CampaignRewardsWrapper>
+          <h4>{t`Additional external rewards`}</h4>
           <CampaignRewardsRow rewardItems={campaignRewardsPool} />
-        </Box>
+        </CampaignRewardsWrapper>
       )}
     </RewardsWrapper>
   )
@@ -213,6 +213,19 @@ const BaseApyItems = styled(Box)`
   margin-top: var(--spacing-2);
   display: flex;
   flex-direction: column;
+`
+
+const CampaignRewardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  @media (min-width: 37.5rem) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 `
 
 export default Rewards
