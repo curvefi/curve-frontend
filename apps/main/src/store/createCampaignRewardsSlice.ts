@@ -60,6 +60,11 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Token
         })
       })
 
+      // sort pools by multiplier to prepare for pool list sorting
+      Object.keys(campaignRewardsMapper).forEach((poolAddress: string) => {
+        campaignRewardsMapper[poolAddress].sort((a, b) => +a.multiplier - +b.multiplier)
+      })
+
       set(
         produce((state: State) => {
           state[sliceKey].initiated = true

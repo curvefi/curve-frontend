@@ -67,7 +67,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const { initCampaignRewards, initiated, campaignRewardsMapper } = useStore((state) => state.campaigns)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -123,7 +123,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
         rewardsApyMapperCachedOrApi,
         volumeMapperCachedOrApi,
         tvlMapperCachedOrApi,
-        userPoolList
+        userPoolList,
+        campaignRewardsMapper
       )
     },
     [
@@ -134,6 +135,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
       userPoolList,
+      campaignRewardsMapper,
     ]
   )
 

@@ -1,6 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { FilterKey, FormStatus, FormValues, Order, SearchParams, SortKey } from '@/components/PagePoolList/types'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import Fuse from 'fuse.js'
 import chunk from 'lodash/chunk'
@@ -161,7 +162,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       poolDatas: (PoolDataCache | PoolData)[],
       rewardsApyMapper: RewardsApyMapper,
       tvlMapper: TvlMapper,
-      volumeMapper: VolumeMapper
+      volumeMapper: VolumeMapper,
+      campaignRewardsMapper: CampaignRewardsMapper
     ) => {
       if (poolDatas.length === 0) {
         return poolDatas
@@ -193,6 +195,21 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         return orderBy(poolDatas, ({ pool }) => Number(tvlMapper[pool.id]?.value ?? 0), [order])
       } else if (sortKey === 'volume') {
         return orderBy(poolDatas, ({ pool }) => Number(volumeMapper[pool.id]?.value ?? 0), [order])
+      } else if (sortKey === 'points') {
+        return orderBy(
+          poolDatas,
+          ({ pool }) => {
+            const campaignRewards = campaignRewardsMapper[pool.address.toLowerCase()]
+            if (campaignRewards && campaignRewards.length > 0) {
+              // Pools with campaign rewards get a high priority value
+              return Number(campaignRewards[0].multiplier)
+            } else {
+              // Pools without campaign rewards maintain their original order
+              return 0
+            }
+          },
+          [order]
+        )
       }
       return poolDatas
     },
@@ -203,7 +220,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       rewardsApyMapper: RewardsApyMapper,
       volumeMapper: VolumeMapper,
       tvlMapper: TvlMapper,
-      userPoolList: UserPoolListMapper | undefined
+      userPoolList: UserPoolListMapper | undefined,
+      campaignRewardsMapper: CampaignRewardsMapper
     ) => {
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
       const state = get()[sliceKey]
@@ -223,7 +241,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         (filterKey === 'user' && isUndefined(userPoolList)) ||
         (sortBy.startsWith('rewards') && isUndefined(rewardsApyMapper)) ||
         (sortBy === 'volume' && isUndefined(volumeMapper)) ||
-        (sortBy === 'tvl' && isUndefined(tvlMapper))
+        (sortBy === 'tvl' && isUndefined(tvlMapper)) ||
+        (sortBy === 'points' && isUndefined(campaignRewardsMapper))
       ) {
         state.setStateByActiveKey('formStatus', activeKey, {
           ...DEFAULT_FORM_STATUS,
@@ -276,7 +295,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
             tablePoolDatas,
             rewardsApyMapper,
             tvlMapper,
-            volumeMapper ?? {}
+            volumeMapper ?? {},
+            campaignRewardsMapper
           )
         }
 
