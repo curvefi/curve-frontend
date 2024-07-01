@@ -21,6 +21,7 @@ import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/
 import { getUserActiveKey } from '@/store/createUserSlice'
 import networks from '@/networks'
 import useTokensMapper from '@/hooks/useTokensMapper'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
@@ -42,6 +43,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const { tokensMapper } = useTokensMapper(rChainId)
+  const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
@@ -67,7 +69,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
-  const { initCampaignRewards, initiated, campaignRewardsMapper } = useStore((state) => state.campaigns)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const [showDetail, setShowDetail] = useState('')
 

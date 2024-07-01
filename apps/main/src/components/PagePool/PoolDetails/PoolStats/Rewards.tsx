@@ -8,6 +8,7 @@ import { haveRewardsApy } from '@/utils/utilsCurvejs'
 import { shortenTokenName } from '@/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { LARGE_APY } from '@/constants'
 import { Chip } from '@/ui/Typography'
@@ -31,7 +32,8 @@ type Props = {
 const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
-  const campaignRewardsPool = useStore((state) => state.campaigns.campaignRewardsMapper[poolData.pool.address])
+  const campaignRewardsMapper = useCampaignRewardsMapper()
+  const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
