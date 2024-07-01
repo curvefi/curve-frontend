@@ -73,12 +73,15 @@ type SliceState = {
 
 const sliceKey = 'pools'
 
-// prettier-ignore
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
     fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
     fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
-    fetchPools( curve: CurveApi, poolIds: string[], failedFetching24hOldVprice: { [poolAddress:string]: boolean } | null): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    fetchPools(
+      curve: CurveApi,
+      poolIds: string[],
+      failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null
+    ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
@@ -87,12 +90,32 @@ export type PoolsSlice = {
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
     fetchPoolCurrenciesReserves(curve: CurveApi, poolData: PoolData): Promise<void>
     fetchTotalVolumeAndTvl(curve: CurveApi): Promise<void>
-    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): ({ tokens: string[], tokenAddresses: string[]})
+    setPoolIsWrapped(poolData: PoolData, isWrapped: boolean): { tokens: string[]; tokenAddresses: string[] }
     updatePool: (chainId: ChainId, poolId: string, updatedPoolData: Partial<PoolData>) => void
     fetchPricesApiPools: (chainId: ChainId) => Promise<void>
     fetchPricesPoolSnapshots: (chainId: ChainId, poolAddress: string) => Promise<void>
-    fetchPricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
-    fetchMorePricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
+    fetchPricesApiCharts: (
+      chainId: ChainId,
+      selectedChartIndex: number,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+      chartCombinations: PricesApiCoin[][],
+      isFlipped: boolean[]
+    ) => void
+    fetchMorePricesApiCharts: (
+      chainId: ChainId,
+      selectedChartIndex: number,
+      poolAddress: string,
+      interval: number,
+      timeUnit: string,
+      start: number,
+      end: number,
+      chartCombinations: PricesApiCoin[][],
+      isFlipped: boolean[]
+    ) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
     setChartSelectedIndex: (index: number) => void
@@ -891,22 +914,22 @@ async function getPools(
     poolsMapper[poolId].curvefiUrl = getCurvefiUrl(poolId, networks[chainId].orgUIPath)
 
     const [gaugeStatusResp, isGaugeKilledResp] = await Promise.allSettled([pool.gaugeStatus(), pool.isGaugeKilled()])
-    poolData.gaugeStatus = fulfilledValue(gaugeStatusResp) ?? null
-    poolData.isGaugeKilled = fulfilledValue(isGaugeKilledResp) ?? null
+    poolData.gauge.status = fulfilledValue(gaugeStatusResp) ?? null
+    poolData.gauge.isKilled = fulfilledValue(isGaugeKilledResp) ?? null
 
-    if (poolData.gaugeStatus?.rewardsNeedNudging || poolData.gaugeStatus?.areCrvRewardsStuckInBridge) {
+    if (poolData.gauge.status?.rewardsNeedNudging || poolData.gauge.status?.areCrvRewardsStuckInBridge) {
       log(
         'rewardsNeedNudging, areCrvRewardsStuckInBridge',
         pool.id,
-        poolData.gaugeStatus.rewardsNeedNudging,
-        poolData.gaugeStatus.areCrvRewardsStuckInBridge
+        poolData.gauge.status.rewardsNeedNudging,
+        poolData.gauge.status.areCrvRewardsStuckInBridge
       )
     }
 
     // poolDataCached
     const poolDataCache = pick(poolsMapper[poolId], [
       'hasWrapped',
-      'isGaugeKilled',
+      'gauge',
       'tokens',
       'tokensCountBy',
       'tokensAll',

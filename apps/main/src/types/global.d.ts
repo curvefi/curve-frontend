@@ -207,15 +207,19 @@ declare global {
 
   type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
+  interface Gauge {
+    status: GaugeStatus | null
+    isKilled: boolean | null
+  }
+
   interface PoolData {
     idx?: number
     chainId: ChainId
     pool: Pool
 
-    gaugeStatus: GaugeStatus | null
+    gauge: Gauge
     hasWrapped: boolean
     hasVyperVulnerability: boolean
-    isGaugeKilled: boolean | null
     isWrapped: boolean
     currenciesReserves: CurrencyReserves | null
     parameters: PoolParameters
@@ -241,10 +245,9 @@ declare global {
   type PoolDataMapper = { [poolAddress: string]: PoolData }
 
   type PoolDataCache = {
-    gaugeStatus: GaugeStatus | null
+    gauge: Gauge
     hasWrapped: boolean
     hasVyperVulnerability: boolean
-    isGaugeKilled: boolean | null
     tokenAddresses: string[]
     tokenAddressesAll: string[]
     tokens: string[]

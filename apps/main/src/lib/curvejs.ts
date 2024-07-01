@@ -206,10 +206,8 @@ const pool = {
             lpTokenSupply: '',
             virtualPrice: '',
           },
-      gaugeStatus: null,
       hasVyperVulnerability: p.hasVyperVulnerability(),
       hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
-      isGaugeKilled: null,
       isWrapped: isWrappedOnly ?? false,
       seedData: [],
       tokenAddressesAll,
@@ -219,6 +217,10 @@ const pool = {
       tokensAll,
       tokensLowercase,
       failedFetching24hOldVprice: false,
+      gauge: {
+        status: null,
+        isKilled: null,
+      },
     }
 
     return poolData
