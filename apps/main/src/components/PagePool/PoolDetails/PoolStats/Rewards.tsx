@@ -7,6 +7,8 @@ import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { haveRewardsApy } from '@/utils/utilsCurvejs'
 import { shortenTokenName } from '@/utils'
 import networks from '@/networks'
+import useStore from '@/store/useStore'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { LARGE_APY } from '@/constants'
 import { Chip } from '@/ui/Typography'
@@ -19,6 +21,7 @@ import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Tooltip from '@/ui/Tooltip'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 type Props = {
   chainId: ChainId
@@ -29,6 +32,8 @@ type Props = {
 const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
+  const campaignRewardsMapper = useCampaignRewardsMapper()
+  const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
@@ -136,6 +141,12 @@ const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
           </BoostingLink>
         </RewardsContainer>
       )}
+      {campaignRewardsPool && (
+        <CampaignRewardsWrapper>
+          <h4>{t`Additional external rewards`}</h4>
+          <CampaignRewardsRow rewardItems={campaignRewardsPool} />
+        </CampaignRewardsWrapper>
+      )}
     </RewardsWrapper>
   )
 }
@@ -202,6 +213,19 @@ const BaseApyItems = styled(Box)`
   margin-top: var(--spacing-2);
   display: flex;
   flex-direction: column;
+`
+
+const CampaignRewardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  @media (min-width: 37.5rem) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 `
 
 export default Rewards

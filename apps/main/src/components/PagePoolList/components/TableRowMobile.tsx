@@ -1,8 +1,10 @@
 import type { PoolListTableLabel } from '@/components/PagePoolList/types'
 import type { Theme } from '@/store/createGlobalSlice'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
+import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
 
@@ -12,7 +14,6 @@ import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
 import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
-import styled from 'styled-components'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
@@ -21,12 +22,14 @@ import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
   themeType: Theme
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
   tableLabel: PoolListTableLabel
+  campaignRewardsMapper: CampaignRewardsMapper
 }
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
@@ -49,6 +52,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   volume,
   handleCellClick,
   setShowDetail,
+  campaignRewardsMapper,
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
@@ -146,6 +150,12 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                         rewardsApy={rewardsApy}
                         searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                       />
+                      {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                        <CampaignRewardsWrapper>
+                          <MobileTableTitle>{t`Additional external rewards`}</MobileTableTitle>
+                          <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
+                        </CampaignRewardsWrapper>
+                      )}
                     </div>
                   )}
                 </div>
@@ -221,6 +231,13 @@ const MobileTableContentWrapper = styled.div`
 
 const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
+`
+
+const CampaignRewardsWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  margin-top: var(--spacing-2);
 `
 
 export default TableRowMobile

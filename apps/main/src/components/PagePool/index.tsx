@@ -45,6 +45,7 @@ import { ExternalLink } from '@/ui/Link'
 
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
+import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -93,6 +94,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
@@ -227,6 +229,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     )
   }
 
+  // init rewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
+
   useEffect(() => {
     if (!isMdUp && chartExpanded) setChartExpanded(false)
   }, [chartExpanded, isMdUp, setChartExpanded])
@@ -306,6 +315,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
         <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
+          {poolAddress && (
+            <Box margin="0 0 var(--spacing-2) 0">
+              <CampaignRewardsBanner poolAddress={poolAddress} />
+            </Box>
+          )}
           {pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
