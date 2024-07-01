@@ -40,7 +40,7 @@ const MySharesStats = ({
 
   const haveBoosting = networks[rChainId].forms.indexOf('BOOSTING') !== -1
   const haveCrvRewards = rewardsApy?.crv?.[0] !== 0
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gaugeStatus || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 
   const userShareLabel = useMemo(() => {
     if (userShare?.lpShare && Number(userShare.lpShare) !== 0) {
