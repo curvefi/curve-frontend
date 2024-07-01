@@ -41,6 +41,7 @@ export type CampaignRewardsMapper = { [poolAddress: string]: RewardsPool[] }
 export interface CampaignRewardsCompProps {
   rewardsPool: RewardsPool
   highContrast?: boolean
+  mobile?: boolean
 }
 
 export interface CampaignRewardsBannerCompProps {

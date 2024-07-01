@@ -16,6 +16,7 @@ const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) =>
         <CampaignRewardsComp
           key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
           rewardsPool={rewardItem}
+          mobile={mobile}
         />
       ))}
     </Container>

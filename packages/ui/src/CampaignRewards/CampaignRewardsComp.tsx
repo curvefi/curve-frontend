@@ -6,14 +6,14 @@ import Image from 'next/image'
 import Tooltip from 'ui/src/Tooltip'
 import { ExternalLink } from 'ui/src/Link'
 
-const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast }) => {
+const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile }) => {
   const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
 
   return (
     <Tooltip
       tooltip={<TooltipMessage platform={platform} description={description} dashboardLink={dashboardLink} />}
       minWidth={'170px'}
-      placement="top"
+      placement={mobile ? 'top' : 'auto'}
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
