@@ -15,7 +15,7 @@ type SliceState = {
 const sliceKey = 'campaigns'
 
 // prettier-ignore
-export type TokensSlice = {
+export type CampaignRewardsSlice = {
   [sliceKey]: SliceState & {
     initCampaignRewards(chainId: ChainId): void
 
@@ -31,7 +31,7 @@ const DEFAULT_STATE: SliceState = {
   campaignRewardsMapper: {},
 }
 
-const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
+const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): CampaignRewardsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: async (chainId: ChainId) => {
