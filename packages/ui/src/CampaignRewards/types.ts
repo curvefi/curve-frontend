@@ -16,7 +16,7 @@ export interface CampaignRewardsPool {
   gaugeAddress: string
   network: string
   multiplier: string
-  tags: string[]
+  tags: RewardsTags[]
 }
 
 export interface RewardsPool {
@@ -33,7 +33,7 @@ export interface RewardsPool {
   gaugeAddress: string
   network: string
   multiplier: string
-  tags: string[]
+  tags: RewardsTags[]
 }
 
 export type CampaignRewardsMapper = { [poolAddress: string]: RewardsPool[] }
@@ -47,3 +47,5 @@ export interface CampaignRewardsCompProps {
 export interface CampaignRewardsBannerCompProps {
   campaignRewardsPool: RewardsPool[]
 }
+
+export type RewardsTags = 'points' | 'merkle' | 'tokens'

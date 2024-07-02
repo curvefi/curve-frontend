@@ -8,29 +8,17 @@ import RewardsCompSmall from './CampaignRewardsComp'
 
 const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool }) => {
   const isPoints = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
-  const isMerkle = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('merkle'))
-  const isTokens = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('tokens'))
 
   const bannerMessage = () => {
     if (isPoints) return <RewardsMessage>Liquiditity providers in this pool also earn points!</RewardsMessage>
-    if (isTokens)
-      return (
-        <RewardsMessage>
-          Liquiditity providers in this pool also earn additional tokens!
-          <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
-            Learn more
-          </ExternalLink>
-        </RewardsMessage>
-      )
-    if (isMerkle)
-      return (
-        <RewardsMessage>
-          Liquiditity providers in this pool also earn additional tokens!
-          <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
-            Learn more
-          </ExternalLink>
-        </RewardsMessage>
-      )
+    return (
+      <RewardsMessage>
+        Liquiditity providers in this pool also earn additional tokens!
+        <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
+          Learn more
+        </ExternalLink>
+      </RewardsMessage>
+    )
   }
 
   return (
