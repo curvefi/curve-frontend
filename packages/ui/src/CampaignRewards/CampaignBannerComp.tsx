@@ -2,14 +2,41 @@ import type { CampaignRewardsBannerCompProps } from './types'
 
 import styled from 'styled-components'
 
+import { ExternalLink } from 'ui/src/Link'
 import { RCPointsIcon } from 'ui/src/images'
 import RewardsCompSmall from './CampaignRewardsComp'
 
 const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool }) => {
+  const isPoints = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
+  const isMerkle = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('merkle'))
+  const isTokens = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('tokens'))
+
+  const bannerMessage = () => {
+    if (isPoints) return <RewardsMessage>Liquiditity providers in this pool also earn points!</RewardsMessage>
+    if (isTokens)
+      return (
+        <RewardsMessage>
+          Liquiditity providers in this pool also earn additional tokens!
+          <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
+            Learn more
+          </ExternalLink>
+        </RewardsMessage>
+      )
+    if (isMerkle)
+      return (
+        <RewardsMessage>
+          Liquiditity providers in this pool also earn additional tokens!
+          <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
+            Learn more
+          </ExternalLink>
+        </RewardsMessage>
+      )
+  }
+
   return (
     <Wrapper>
       <StyledPointsIcon />
-      <RewardsMessage>Liquiditity providers in this pool also earn points!</RewardsMessage>
+      {bannerMessage()}
       {campaignRewardsPool.map((rewardItem, index) => (
         <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast />
       ))}
@@ -30,6 +57,8 @@ const RewardsMessage = styled.p`
   margin: auto auto auto var(--spacing-2);
   font-weight: var(--semi-bold);
   padding-right: var(--spacing-2);
+  display: flex;
+  gap: var(--spacing-2);
 `
 
 const StyledPointsIcon = styled(RCPointsIcon)`

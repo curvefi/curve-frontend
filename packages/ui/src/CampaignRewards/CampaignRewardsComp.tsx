@@ -9,6 +9,8 @@ import { ExternalLink } from 'ui/src/Link'
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile }) => {
   const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
 
+  const isPoints = rewardsPool.tags.includes('points')
+
   return (
     <Tooltip
       tooltip={<TooltipMessage platform={platform} description={description} dashboardLink={dashboardLink} />}
@@ -17,7 +19,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>
+        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
       </Container>
     </Tooltip>
   )
