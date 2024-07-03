@@ -24,7 +24,6 @@ import UserInfoStats from '@/components/LoanInfoUser/components/UserInfoStats'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import TextCaption from '@/ui/TextCaption'
-import Button from '@/ui/Button/Button'
 import Box from '@/ui/Box'
 
 interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId'> {
@@ -202,10 +201,10 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId }: Props) => {
         {isAdvanceMode && (
           <StatsContentWrapper rowGridTemplate="auto auto auto 1fr auto">
             <UserInfoStats title={t`Liquidation range`}>
-              {liqPriceRange && <strong>{`${liqPriceRange.price1} - ${liqPriceRange.price2}`}</strong>}
+              {liqPriceRange && <strong>{`${liqPriceRange.price1} to ${liqPriceRange.price2}`}</strong>}
             </UserInfoStats>
             <UserInfoStats title={t`Band range`}>
-              {liqPriceRange && <strong>{`${liqPriceRange.band1} - ${liqPriceRange.band2}`}</strong>}
+              {liqPriceRange && <strong>{`${liqPriceRange.band1} to ${liqPriceRange.band2}`}</strong>}
             </UserInfoStats>
             <UserInfoStats title={t`Range %`}>
               {userBandsPct && <strong>{formatNumber(userBandsPct, FORMAT_OPTIONS.PERCENT)}</strong>}
@@ -221,7 +220,10 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId }: Props) => {
           <SubTitle>Collateral</SubTitle>
 
           <StatsContentWrapper rowGridTemplate="auto  auto auto 1fr">
-            <UserInfoStats title={t`Current balance (est.) / Deposited`}>
+            <UserInfoStats
+              title={t`Current balance (est.) / Deposited`}
+              tooltip={t`Current balance (est.) is current balance minus losses.`}
+            >
               {userLoss?.current_collateral_estimation && userLoss?.deposited_collateral && (
                 <strong>
                   <strong>
@@ -388,6 +390,7 @@ const StatsWrapper = styled.div`
 
 const StatsContentWrapper = styled.div<{ rowGridTemplate: string }>`
   > div {
+    display: grid;
     margin-bottom: 8px;
 
     // label
@@ -407,7 +410,6 @@ const StatsContentWrapper = styled.div<{ rowGridTemplate: string }>`
     }};
 
     > div {
-      display: inline-block;
       margin-bottom: 0;
 
       > strong {
@@ -434,26 +436,6 @@ const HealthColorText = styled.span<{ colorKey?: HeathColorKey }>`
 
 const CollateralStatsWrapper = styled.div`
   margin-top: 1rem;
-`
-
-const SelectorRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-bottom: var(--spacing-2);
-`
-
-const SelectorButton = styled(Button)`
-  color: inherit;
-  font: var(--font);
-  font-size: var(--font-size-2);
-  font-weight: bold;
-  text-transform: none;
-  opacity: 0.7;
-  margin-right: var(--spacing-1);
-  &.active {
-    opacity: 1;
-    border-bottom: 2px solid var(--page--text-color);
-  }
 `
 
 const PoolInfoWrapper = styled(Box)`
