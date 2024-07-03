@@ -7,13 +7,18 @@ import Tooltip from 'ui/src/Tooltip'
 import { ExternalLink } from 'ui/src/Link'
 import Box from 'ui/src/Box'
 
-const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile }) => {
-  const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
+const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
+  const { platform, multiplier, platformImageSrc } = rewardsPool
 
   const isPoints = rewardsPool.tags.includes('points')
 
   return (
-    <Tooltip tooltip={<TooltipMessage rewardsPool={rewardsPool} />} minWidth={'200px'}>
+    <Tooltip
+      tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
+      minWidth={'200px'}
+      placement={mobile ? 'top' : 'auto'}
+      increaseZIndex={banner}
+    >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
         {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
@@ -34,21 +39,24 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
   const start = new Date(+campaignStart * 1000).toLocaleDateString(undefined, options)
   const end = new Date(+campaignEnd * 1000).toLocaleDateString(undefined, options)
 
-  const title =
-    campaignName && platform ? (
-      <Box flex flexColumn>
-        <TooltipTitle>{campaignName}</TooltipTitle>
-        <TooltipParagraph>by {platform}</TooltipParagraph>
-      </Box>
-    ) : campaignName ? (
-      <TooltipTitle>{campaignName}</TooltipTitle>
-    ) : (
-      <TooltipTitle>{platform}</TooltipTitle>
-    )
+  const title = () => {
+    if (campaignName && platform) {
+      return (
+        <Box flex flexColumn>
+          <TooltipTitle>{campaignName}</TooltipTitle>
+          <TooltipParagraph>by {platform}</TooltipParagraph>
+        </Box>
+      )
+    }
+    if (campaignName) {
+      return <TooltipTitle>{campaignName}</TooltipTitle>
+    }
+    return <TooltipTitle>{platform}</TooltipTitle>
+  }
 
   return (
     <TooltipWrapper>
-      {title}
+      {title()}
       {campaignStart && campaignStart !== '0' && campaignEnd && campaignEnd !== '0' && (
         <Box flex flexColumn>
           <TooltipParagraph>{`from: ${start}`}</TooltipParagraph>
@@ -69,7 +77,7 @@ const Container = styled.div<{ highContrast?: boolean }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--spacing-2);
+  gap: var(--spacing-1);
   padding: var(--spacing-1);
   border: ${({ highContrast }) => (highContrast ? '1px solid var(--white)' : '1px solid var(--gray-500a25)')};
 `
@@ -90,7 +98,7 @@ const TooltipWrapper = styled.div`
   flex-direction: column;
   gap: var(--spacing-2);
   text-align: left;
-  z-index: 999999;
+  z-index: 2;
 `
 
 const TooltipTitle = styled.h3`

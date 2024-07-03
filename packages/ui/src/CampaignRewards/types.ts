@@ -42,6 +42,7 @@ export interface CampaignRewardsCompProps {
   rewardsPool: RewardsPool
   highContrast?: boolean
   mobile?: boolean
+  banner?: boolean
 }
 
 export interface CampaignRewardsBannerCompProps {
