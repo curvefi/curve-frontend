@@ -29,6 +29,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const results = useStore((state) => state.marketList.result)
   const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
   const setFormValues = useStore((state) => state.marketList.setFormValues)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const { signerAddress } = api ?? {}
 
@@ -84,6 +85,13 @@ const MarketList = (pageProps: PageMarketList) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded, isPageVisible])
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['5m'], isPageVisible && isLoaded)
 
