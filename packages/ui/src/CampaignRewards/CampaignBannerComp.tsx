@@ -6,25 +6,16 @@ import { ExternalLink } from 'ui/src/Link'
 import { RCPointsIcon } from 'ui/src/images'
 import RewardsCompSmall from './CampaignRewardsComp'
 
-const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool }) => {
-  const isPoints = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
-
-  const bannerMessage = () => {
-    if (isPoints) return <RewardsMessage>Liquiditity providers in this pool also earn points!</RewardsMessage>
-    return (
+const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool, message }) => {
+  return (
+    <Wrapper>
+      <StyledPointsIcon />
       <RewardsMessage>
-        Liquiditity providers in this pool also earn additional tokens!
+        {message}
         <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
           Learn more
         </ExternalLink>
       </RewardsMessage>
-    )
-  }
-
-  return (
-    <Wrapper>
-      <StyledPointsIcon />
-      {bannerMessage()}
       {campaignRewardsPool.map((rewardItem, index) => (
         <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast banner />
       ))}
