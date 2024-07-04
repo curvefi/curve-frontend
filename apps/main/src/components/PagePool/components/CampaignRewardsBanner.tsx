@@ -7,7 +7,7 @@ import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress }) => {
   const campaignRewardsPool = useCampaignRewardsMapper()[poolAddress]
 
-  const isPoints = campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
+  const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
 
   const bannerMessage = () => {
     if (isPoints) return t`Liquiditity providers in this pool also earn points!`
