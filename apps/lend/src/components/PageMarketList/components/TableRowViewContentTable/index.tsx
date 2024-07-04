@@ -5,6 +5,7 @@ import type {
   TableRowProps,
   TableRowSettings,
 } from '@/components/PageMarketList/types'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 import type { Params, NavigateFunction } from 'react-router-dom'
 
 import React, { useMemo } from 'react'
