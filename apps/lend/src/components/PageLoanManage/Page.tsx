@@ -35,6 +35,7 @@ import {
   ExpandButton,
   ExpandIcon,
 } from '@/ui/Chart/styles'
+import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -182,6 +183,9 @@ const Page: NextPage = () => {
 
         <AppPageInfoWrapper>
           {isMdUp && <TitleComp />}
+          <Box margin="0 0 var(--spacing-2)">
+            <CampaignRewardsBanner poolAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''} />
+          </Box>
           <AppPageInfoTabsWrapper>
             <Tabs>
               {DETAIL_INFO_TYPES.map(({ key, label }) => (

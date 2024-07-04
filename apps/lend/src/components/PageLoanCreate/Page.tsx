@@ -31,6 +31,7 @@ import {
   ExpandIcon,
 } from '@/ui/Chart/styles'
 import Box from '@/ui/Box'
+import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -169,6 +170,9 @@ const Page: NextPage = () => {
         {isAdvanceMode && rChainId && rOwmId && (
           <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
+            <Box margin="0 0 var(--spacing-2)">
+              <CampaignRewardsBanner poolAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''} />
+            </Box>
             <AppPageInfoContentWrapper variant="secondary">
               <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
               <DetailsMarket {...pageProps} type="borrow" />

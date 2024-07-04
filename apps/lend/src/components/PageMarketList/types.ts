@@ -1,5 +1,3 @@
-import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
-
 import { Params } from 'react-router'
 
 export type FormStatus = {
@@ -104,7 +102,6 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchPar
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   userActiveKey: string
-  campaignRewardsMapper: CampaignRewardsMapper
   handleCellClick(target?: EventTarget): void // only pass evt.target if there is a child button node
 }
 

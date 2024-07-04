@@ -5,10 +5,10 @@ import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getLoanCreatePathname } from '@/utils/utilsRouter'
+import useStore from '@/store/useStore'
 
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
-import useStore from '@/store/useStore'
 
 const LoanCreate = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, rFormType, api, owmData, owmDataCachedOrApi } = pageProps

@@ -47,6 +47,7 @@ export interface CampaignRewardsCompProps {
 
 export interface CampaignRewardsBannerCompProps {
   campaignRewardsPool: RewardsPool[]
+  message: string
 }
 
 export type RewardsTags = 'points' | 'merkle' | 'tokens'
