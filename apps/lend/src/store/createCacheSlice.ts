@@ -1,6 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { MarketListItem, MarketListMapper } from '@/components/PageMarketList/types'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { sleep } from '@/utils/helpers'
 import cloneDeep from 'lodash/cloneDeep'
@@ -11,6 +12,7 @@ type SliceState = {
   owmDatasMapper: { [chainId: string]: OWMDatasCacheMapper }
   marketListMapper: { [chainId: string]: MarketListMapper }
   marketListResult: { [chainId: string]: MarketListItem[] }
+  campaignRewardsMapper: { [chainId: string]: CampaignRewardsMapper }
 }
 
 const sliceKey = 'storeCache'
@@ -28,6 +30,7 @@ const DEFAULT_STATE: SliceState = {
   owmDatasMapper: {},
   marketListMapper: {},
   marketListResult: {},
+  campaignRewardsMapper: {},
 }
 
 const TIMEOUT_MS = 4000

@@ -6,6 +6,7 @@ import React, { FunctionComponent, useCallback } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 interface PoolRowProps {
   poolId: string
@@ -55,7 +56,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const themeType = useStore((state) => state.themeType)
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
-  const campaignRewardsMapper = useStore((state) => state.campaigns.campaignRewardsMapper)
+  const campaignRewardsMapper = useCampaignRewardsMapper()
 
   const handleCellClick = useCallback(
     (target: EventTarget, formType?: 'swap' | 'withdraw') => {

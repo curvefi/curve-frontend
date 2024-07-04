@@ -9,12 +9,14 @@ import styled from 'styled-components'
 const Tooltip = ({
   buttonNode,
   state,
+  increaseZIndex = false,
   ...props
 }: React.PropsWithChildren<
   AriaTooltipProps &
     TooltipProps & {
       buttonNode: HTMLButtonElement | null
       state: TooltipTriggerState
+      increaseZIndex?: boolean
     }
 >) => {
   const { tooltipProps, ...rest } = useTooltip(props, state)
@@ -42,6 +44,7 @@ const Tooltip = ({
       {...mergeProps(props, tooltipProps)}
       isClosePlacement={getClosePlacement(buttonNode)}
       charCount={charCount}
+      increaseZIndex={increaseZIndex}
     >
       {props.children}
     </StyledTooltip>
@@ -50,7 +53,9 @@ const Tooltip = ({
 
 Tooltip.displayName = 'Tooltip'
 
-const StyledTooltip = styled.span<TooltipProps & { charCount: number | null; isClosePlacement: IsClosePlacement }>`
+const StyledTooltip = styled.span<
+  TooltipProps & { charCount: number | null; isClosePlacement: IsClosePlacement; increaseZIndex: boolean }
+>`
   background: var(--tooltip--background-color);
   border: 1px solid gray;
   border-radius: 2px;
@@ -66,7 +71,7 @@ const StyledTooltip = styled.span<TooltipProps & { charCount: number | null; isC
   ${({ textAlign }) => textAlign && `text-align: ${textAlign};`};
   top: 100%;
   ${({ noWrap }) => noWrap && `white-space: nowrap;`}
-  z-index: var(--z-index-tooltip);
+  z-index: ${({ increaseZIndex }) => (increaseZIndex ? '2' : 'var(--z-index-tooltip)')};
 
   ${({ minWidth, charCount }) => {
     if (minWidth) {

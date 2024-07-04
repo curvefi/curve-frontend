@@ -42,10 +42,12 @@ export interface CampaignRewardsCompProps {
   rewardsPool: RewardsPool
   highContrast?: boolean
   mobile?: boolean
+  banner?: boolean
 }
 
 export interface CampaignRewardsBannerCompProps {
   campaignRewardsPool: RewardsPool[]
+  message: string
 }
 
 export type RewardsTags = 'points' | 'merkle' | 'tokens'

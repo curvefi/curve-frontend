@@ -4,18 +4,19 @@ import styled from 'styled-components'
 import Image from 'next/image'
 
 import Tooltip from 'ui/src/Tooltip'
-import { ExternalLink } from 'ui/src/Link'
+import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 
-const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile }) => {
-  const { platform, multiplier, description, platformImageSrc, dashboardLink } = rewardsPool
+const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
+  const { platform, multiplier, platformImageSrc } = rewardsPool
 
   const isPoints = rewardsPool.tags.includes('points')
 
   return (
     <Tooltip
-      tooltip={<TooltipMessage platform={platform} description={description} dashboardLink={dashboardLink} />}
-      minWidth={'170px'}
+      tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
+      minWidth={'200px'}
       placement={mobile ? 'top' : 'auto'}
+      increaseZIndex={banner}
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
@@ -24,28 +25,6 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     </Tooltip>
   )
 }
-
-const TooltipMessage = ({
-  platform,
-  description,
-  dashboardLink,
-}: {
-  platform: string
-  description: string
-  dashboardLink: string
-}) => {
-  return (
-    <TooltipWrapper>
-      <TooltipTitle>{platform}</TooltipTitle>
-      <TooltipParagraph>{description}</TooltipParagraph>
-      <ExternalLink $noStyles href={dashboardLink}>
-        Learn more
-      </ExternalLink>
-    </TooltipWrapper>
-  )
-}
-
-export default RewardsCompSmall
 
 const Container = styled.div<{ highContrast?: boolean }>`
   display: flex;
@@ -67,19 +46,4 @@ const Multiplier = styled.p<{ highContrast?: boolean }>`
   color: ${({ highContrast }) => (highContrast ? 'var(--white)' : '--page--text-color')};
 `
 
-const TooltipWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  text-align: left;
-`
-
-const TooltipTitle = styled.h3`
-  font-size: var(--font-size-3);
-  font-weight: var(--semi-bold);
-  text-align: left;
-`
-
-const TooltipParagraph = styled.p`
-  text-align: left;
-`
+export default RewardsCompSmall

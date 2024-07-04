@@ -16,6 +16,7 @@ function TooltipButton({
   showIcon,
   customIcon,
   onClick,
+  increaseZIndex,
   ...props
 }: React.PropsWithChildren<
   TooltipTriggerProps &
@@ -24,6 +25,7 @@ function TooltipButton({
       tooltip: React.ReactNode | string
       showIcon?: boolean
       customIcon?: React.ReactNode
+      increaseZIndex?: boolean
       onClick?: () => void
     }
 >) {
@@ -63,7 +65,7 @@ function TooltipButton({
           : children}
       </Button>
       {state.isOpen && (
-        <Tooltip state={state} buttonNode={ref?.current} {...props} {...tooltipProps}>
+        <Tooltip state={state} buttonNode={ref?.current} {...props} {...tooltipProps} increaseZIndex={increaseZIndex}>
           {props.tooltip}
         </Tooltip>
       )}

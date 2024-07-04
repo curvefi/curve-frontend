@@ -28,6 +28,7 @@ import createVaultClaimSlice, { VaultClaimSlice } from '@/store/createVaultClaim
 import createChartBandsSlice, { ChartBandsSlice } from '@/store/createChartBandsStore'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/store/createIntegrationsSlice'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/store/createOhlcChartSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
 
 export type State = CacheSlice &
   AppSlice &
@@ -52,7 +53,8 @@ export type State = CacheSlice &
   VaultWithdrawRedeemSlice &
   VaultUnstakeSlice &
   VaultClaimSlice &
-  OhlcChartSlice
+  OhlcChartSlice &
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
@@ -79,6 +81,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createIntegrationsSlice(set, get),
   ...createVaultClaimSlice(set, get),
   ...createOhlcChartSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 // cache all items in CacheSlice store
