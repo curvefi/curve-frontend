@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "^2.60.4",
+    "@curvefi/api": "^2.60.5",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.0.1",
