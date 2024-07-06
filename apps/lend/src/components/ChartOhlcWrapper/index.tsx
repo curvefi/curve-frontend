@@ -13,6 +13,8 @@ import ChartWrapper from '@/ui/Chart'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
+import TextCaption from '@/ui/TextCaption'
+import AlertBox from '@/ui/AlertBox'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
@@ -62,6 +64,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+
+  const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
 
   const currentChart = useMemo(() => {
     return selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
@@ -311,6 +315,18 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     [timeOption, fetchMoreData, rChainId, owm?.addresses.amm, owm?.addresses.controller, chartInterval, timeUnit]
   )
 
+  if (ohlcDataUnavailable) {
+    setChartExpanded(false)
+
+    return (
+      <StyledAlertBox alertType="">
+        <TextCaption isCaps isBold>
+          {t`Ohlc chart data and pool activity is not yet available for this market.`}
+        </TextCaption>
+      </StyledAlertBox>
+    )
+  }
+
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
@@ -458,6 +474,13 @@ const ExpandButton = styled(SelectorButton)`
 
 const ExpandIcon = styled(Icon)`
   margin-left: var(--spacing-1);
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: var(--spacing-narrow) 0;
 `
 
 export default ChartOhlcWrapper
