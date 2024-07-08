@@ -43,6 +43,7 @@ const Swap = ({
   curve,
   imageBaseUrl,
   maxSlippage,
+  poolAlert,
   poolData,
   poolDataCacheOrApi,
   routerParams,
@@ -531,6 +532,10 @@ const Swap = ({
         )}
         <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
       </Box>
+
+      {poolAlert && typeof poolAlert?.isInformationOnlyAndShowInForm && (
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+      )}
 
       <AlertSlippage
         maxSlippage={maxSlippage}

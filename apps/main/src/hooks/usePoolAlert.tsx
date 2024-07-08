@@ -116,6 +116,23 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       ),
     })
 
+    // Avalanche
+    const atricryptoAlert = (): PoolAlert => ({
+      alertType: 'info',
+      isCloseOnTooltipOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      message: (
+        <MessageWrapper>
+          <div>
+            Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
+            <ExternalLink $noStyles href="https://app.aave.com/governance/v3/proposal/?proposalId=2">
+              More details
+            </ExternalLink>
+          </div>
+        </MessageWrapper>
+      ),
+    })
+
     // all networks
     const vyperExploitedAlert = (): PoolAlert => ({
       alertType: 'danger',
@@ -181,6 +198,8 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      // avalanche
+      '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
     }
 
     if (poolAddress) {
