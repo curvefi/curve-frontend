@@ -257,7 +257,7 @@ declare global {
       gauge: string
       lpToken: string
       isCrypto: boolean
-      isStableNg: boolean
+      isNg: boolean
       isFactory: boolean
       isLending: boolean
       implementation: string

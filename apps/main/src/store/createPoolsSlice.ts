@@ -923,6 +923,7 @@ async function getPools(
       'pool.isFactory',
       'pool.isLending',
       'pool.referenceAsset',
+      'pool.isNg',
     ]) as PoolDataCache
 
     if (poolDataCache) {
