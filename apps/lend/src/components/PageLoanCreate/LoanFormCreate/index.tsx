@@ -21,6 +21,7 @@ import Accordion from '@/ui/Accordion'
 import AlertBox from '@/ui/AlertBox'
 import AlertLoanSummary from '@/components/AlertLoanSummary'
 import AlertFormError from '@/components/AlertFormError'
+import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import DetailInfo from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
 import DialogFormWarning from '@/components/DialogFormWarning'
@@ -381,6 +382,15 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         setHealthMode={setHealthMode}
         updateFormValues={updateFormValues}
       />
+
+      {isLeverage && (
+        <AlertBox alertType="info">
+          <Box grid gridRowGap={2}>
+            <p>{t`You can leverage your collateral up to 9x. This has the effect of repeat trading ${borrowed_token?.symbol} to collateral and depositing to maximize your collateral position. Essentially, all borrowed ${borrowed_token?.symbol} is utilized to purchase more collateral.`}</p>
+            <p>{t`Be careful, if the collateral price dips, you would need to repay the entire amount to reclaim your initial position.`}</p>
+          </Box>
+        </AlertBox>
+      )}
 
       {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
