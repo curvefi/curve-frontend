@@ -1,8 +1,9 @@
 import React from 'react'
 import { t } from '@lingui/macro'
+
+import { CONNECT_STAGE } from '@/onboard'
 import useStore from '@/store/useStore'
 
-import { CONNECT_STAGE } from '@/constants'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 
@@ -15,7 +16,7 @@ const DetailsConnectWallet = () => {
       <Button
         variant="filled"
         loading={connectState.status === 'loading'}
-        onClick={() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])}
+        onClick={() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, '')}
       >
         {connectState.status === 'loading' ? t`Connecting...` : t`Connect Wallet`}
       </Button>

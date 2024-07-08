@@ -28,10 +28,3 @@ export const CURVE_FI_ROUTE = {
   MAIN: process.env.NODE_ENV === 'development' ? 'http://localhost:3001' : 'https://crvusd.curve.fi',
   CRVUSD_POOLS: `${CURVE_FI_MAIN}/#/ethereum/pools?filter=crvusd`,
 }
-
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
-} as const

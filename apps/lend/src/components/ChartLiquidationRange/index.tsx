@@ -60,7 +60,8 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
                 const min = Math.floor(dataMin - dataMin * 0.1)
                 let max
                 if (dataMax > +oraclePrice) {
-                  max = Math.round(dataMax + dataMax * 0.1)
+                  const newMax = dataMax + dataMax * 0.1
+                  max = Math.round(newMax) === 0 ? newMax : Math.round(newMax)
                 } else if (+oraclePrice < 10) {
                   max = +oraclePrice * 1.5
                 } else if (+oraclePrice > dataMax) {

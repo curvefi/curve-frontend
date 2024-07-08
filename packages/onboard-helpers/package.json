@@ -21,7 +21,8 @@
     "@web3-onboard/torus": "^2.3.1",
     "@web3-onboard/trezor": "^2.4.6",
     "@web3-onboard/trust": "^2.1.1",
-    "@web3-onboard/walletconnect": "^2.6.1"
+    "@web3-onboard/walletconnect": "^2.6.1",
+    "ethers": "^6.10.0"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
@@ -29,6 +30,7 @@
   },
   "peerDependencies": {
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-router-dom": "^6.3.0"
   }
 }
