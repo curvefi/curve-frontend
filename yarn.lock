@@ -1406,10 +1406,10 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@curvefi/api@^2.60.5":
-  version "2.60.5"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.60.5.tgz#fbccb98df026311d8a0cd4669285dfa437ef597c"
-  integrity sha512-YlX+gY4dCY33cQbGTL2VX0b4iE2tsH5aW8XBIKwxNOj4qpcNPcGfdv+UiTRS2FQqd74Pn8BcHM+i5e93H+O0eg==
+"@curvefi/api@^2.61.1":
+  version "2.61.1"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.61.1.tgz#9878255134b6edf32e2a4733c24bca07b6c4e33b"
+  integrity sha512-yDW7FC9KAII9i7owW8MFEQ6SgQjwgve25g76fqqP2wlVNLxta3OWRUYHycG8SGTxcnS/j7uzfrUWgqOicVUO1g==
   dependencies:
     "@curvefi/ethcall" "6.0.7"
     axios "^0.21.1"
