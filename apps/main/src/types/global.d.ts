@@ -358,6 +358,7 @@ declare global {
     isDisableDeposit?: boolean // display alert in Page action and disable Deposit
     isDisableSwap?: boolean
     isInformationOnly?: boolean // display alert in pool detail information section
+    isInformationOnlyAndShowInForm?: boolean // display alert in pool's form above action
     isCloseOnTooltipOnly?: boolean // should only close if hover over Tooltip
     address?: string
     message: string | React.ReactNode

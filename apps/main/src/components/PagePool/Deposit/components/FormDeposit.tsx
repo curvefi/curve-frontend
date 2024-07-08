@@ -12,6 +12,7 @@ import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
+import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import AlertSlippage from '@/components/AlertSlippage'
 import FieldsDeposit from '@/components/PagePool/Deposit/components/FieldsDeposit'
@@ -28,6 +29,7 @@ const FormDeposit = ({
   curve,
   imageBaseUrl,
   maxSlippage,
+  poolAlert,
   poolData,
   poolDataCacheOrApi,
   routerParams,
@@ -287,6 +289,10 @@ const FormDeposit = ({
         )}
         <DetailInfoSlippageTolerance customLabel={t`Additional slippage tolerance:`} maxSlippage={maxSlippage} />
       </div>
+
+      {poolAlert && typeof poolAlert?.isInformationOnlyAndShowInForm && (
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+      )}
 
       <TransferActions
         curve={curve}
