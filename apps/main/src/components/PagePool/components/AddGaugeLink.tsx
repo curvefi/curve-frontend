@@ -44,7 +44,7 @@ const AddGaugeLink = ({
       setCurrentPoolType(TWOCOINCRYPTOSWAP)
     } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
       setCurrentPoolType(THREECOINCRYPTOSWAP)
-    } else if (poolDataCacheOrApi.pool.isStableNg) {
+    } else if (poolDataCacheOrApi.pool.isNg) {
       setCurrentPoolType(STABLESWAP)
     } else {
       setCurrentPoolType(STABLESWAPOLD)
