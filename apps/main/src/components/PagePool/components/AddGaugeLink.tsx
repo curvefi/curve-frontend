@@ -38,15 +38,19 @@ const AddGaugeLink = ({
       setLpTokenAddress(lpToken)
     }
 
-    if (poolDataCacheOrApi.pool.id.includes('factory-twocrypto')) {
+    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.pool.isNg && poolDataCacheOrApi.tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAPNG)
-    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
+    }
+    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAP)
-    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
+    }
+    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
       setCurrentPoolType(THREECOINCRYPTOSWAP)
-    } else if (poolDataCacheOrApi.pool.isNg) {
+    }
+    if (poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
       setCurrentPoolType(STABLESWAP)
-    } else {
+    }
+    if (!poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
       setCurrentPoolType(STABLESWAPOLD)
     }
 
