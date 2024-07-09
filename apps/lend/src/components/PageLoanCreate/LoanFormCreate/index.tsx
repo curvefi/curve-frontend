@@ -44,6 +44,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const activeKey = useStore((state) => state.loanCreate.activeKey)
   const activeKeyMax = useStore((state) => state.loanCreate.activeKeyMax)
   const detailInfoLeverage = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
+  const maxLeverage = useStore((state) => state.markets.maxLeverageMapper[rChainId]?.[rOwmId]?.maxLeverage)
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
@@ -386,7 +387,14 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       {isLeverage && (
         <AlertBox alertType="info">
           <Box grid gridRowGap={2}>
-            <p>{t`You can leverage your collateral up to 9x. This has the effect of repeat trading ${borrowed_token?.symbol} to collateral and depositing to maximize your collateral position. Essentially, all borrowed ${borrowed_token?.symbol} is utilized to purchase more collateral.`}</p>
+            <p>{t`You can leverage your collateral up to x${formatNumber(maxLeverage, {
+              maximumSignificantDigits: 2,
+              defaultValue: '-',
+            })}. This has the effect of repeat trading ${
+              borrowed_token?.symbol
+            } to collateral and depositing to maximize your collateral position. Essentially, all borrowed ${
+              borrowed_token?.symbol
+            } is utilized to purchase more collateral.`}</p>
             <p>{t`Be careful, if the collateral price dips, you would need to repay the entire amount to reclaim your initial position.`}</p>
           </Box>
         </AlertBox>
