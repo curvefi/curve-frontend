@@ -11,6 +11,7 @@ import styled, { css } from 'styled-components'
 
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { amountsDescription } from '@/components/PagePool/utils'
+import { handleSubmitResp } from '@/utils/utilsForm'
 import { mediaQueries } from '@/ui/utils/responsive'
 import { resetFormAmounts } from '@/components/PagePool/Withdraw/utils'
 import { formatNumber } from '@/ui/utils'
@@ -101,16 +102,14 @@ const FormWithdraw = ({
 
   const handleWithdrawClick = useCallback(
     async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues, maxSlippage: string) => {
-      const tokenText = amountsDescription(formValues.amounts)
       const notifyMessage = t`Please confirm withdrawal of ${formValues.lpToken} LP Tokens at max ${maxSlippage}% slippage.`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
+      const txHash = handleSubmitResp(activeKey, isSubscribed, curve, dismiss, resp, setTxInfoBar)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
+      if (!txHash) return
+
+      setTxInfoBar(<TxInfoBar description={t`Transaction completed.`} txHash={txHash} />)
     },
     [fetchStepWithdraw, notifyNotification]
   )

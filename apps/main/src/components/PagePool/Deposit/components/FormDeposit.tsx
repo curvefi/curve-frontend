@@ -9,7 +9,7 @@ import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/components/PagePool/Deposit/utils'
 import { amountsDescription, tokensDescription } from '@/components/PagePool/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
+import { handleSubmitResp } from '@/utils/utilsForm'
 import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
@@ -100,12 +100,11 @@ const FormDeposit = ({
       const notifyMessage = t`Please confirm deposit of ${tokenText} at max ${maxSlippage}% slippage.`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
+      const txHash = handleSubmitResp(activeKey, isSubscribed, curve, dismiss, resp, setTxInfoBar)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const txDescription = t`Deposited ${tokenText}.`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
+      if (!txHash) return
+
+      setTxInfoBar(<TxInfoBar description={t`Transaction completed.`} txHash={txHash} />)
     },
     [fetchStepDeposit, notifyNotification]
   )

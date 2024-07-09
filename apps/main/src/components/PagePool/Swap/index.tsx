@@ -12,6 +12,7 @@ import { DEFAULT_EXCHANGE_OUTPUT, DEFAULT_EST_GAS, getSwapTokens } from '@/compo
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
+import { handleSubmitResp } from '@/utils/utilsForm'
 import cloneDeep from 'lodash/cloneDeep'
 import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -128,21 +129,13 @@ const Swap = ({
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
+      const txHash = handleSubmitResp(activeKey, isSubscribed, curve, dismiss, resp, setTxInfoBar)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        setTxInfoBar(
-          <TxInfoBar
-            description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={networks[curve.chainId].scanTxPath(resp.hash)}
-            onClose={() => {
-              updateFormValues({}, null, null)
-            }}
-          />
-        )
-      }
-      if (typeof dismiss === 'function') dismiss()
+      if (!txHash) return
+
+      setTxInfoBar(<TxInfoBar description={t`Transaction completed.`} txHash={txHash} />)
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues]
+    [activeKey, fetchStepSwap, notifyNotification]
   )
 
   const getSteps = useCallback(
