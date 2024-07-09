@@ -118,7 +118,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
           </PoolParameter>
         </SectionWrapper>
         {/* Coins with Asset types */}
-        {poolData.pool.isStableNg && pricesData.asset_types && (
+        {poolData.pool.isNg && pricesData.asset_types && (
           <SectionWrapper>
             <SectionTitle>{t`Coins:`}</SectionTitle>
             {poolData.tokens.map((token, idx) => (
@@ -140,7 +140,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>
-                  {poolData.pool.isStableNg && pricesData.asset_types && (
+                  {poolData.pool.isNg && pricesData.asset_types && (
                     <AssetType>{returnAssetType(pricesData.asset_types[idx])}</AssetType>
                   )}
                 </Box>
