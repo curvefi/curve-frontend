@@ -3,6 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
+import { campaignList, campaignsJsons } from '@/shared/external-rewards'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -35,10 +36,14 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: async (chainId: ChainId) => {
-      const campaigns = await fetchAndCompileJsonFiles(
-        networks[chainId].rewards.campaignsUrl,
-        networks[chainId].rewards.baseUrl
-      )
+      const parsedCampaignsJsons: { [key: string]: any } = campaignsJsons
+      const campaigns = campaignList
+        .map(({ campaign }) => {
+          const campaignName = campaign.split('.')?.[0]
+          if (!campaignName || !(campaignName in parsedCampaignsJsons)) return null
+          return parsedCampaignsJsons[campaignName]
+        })
+        .filter((campaign) => campaign !== null)
 
       let campaignRewardsMapper: CampaignRewardsMapper = {}
 
@@ -88,26 +93,5 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
     },
   },
 })
-
-async function fetchAndCompileJsonFiles(directoryUrl: string, baseUrl: string): Promise<Record<string, any>> {
-  try {
-    // Fetch list of campaigns
-    const response = await fetch(directoryUrl)
-    const jsonFileNames = await response.json()
-
-    // Fetch each JSON file and compile the data
-    const jsonFetches = jsonFileNames.map(async (fileName: { campaign: string }) => {
-      const fileUrl = `https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaigns/${fileName.campaign}`
-      const fileResponse = await fetch(fileUrl)
-      return await fileResponse.json()
-    })
-
-    const jsonResponses = await Promise.all(jsonFetches)
-    return jsonResponses
-  } catch (error) {
-    console.error('Error fetching and compiling JSON files:', error)
-    throw error
-  }
-}
 
 export default createCampaignsSlice
