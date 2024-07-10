@@ -93,7 +93,7 @@ const ComboBoxTokenPicker = ({
       )
       updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
     } catch (error) {
-      console.log('error')
+      console.log(error)
       settokenQueryStatus('ERROR')
     }
   }
