@@ -80,8 +80,8 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
-        } else if (chainId === 196) {
-          // X-Layer
+        } else if (chainId === 196 || chainId === 5000) {
+          // X-Layer & Mantle
           const provider = get().wallet.getProvider('')
 
           if (provider) {
