@@ -30,7 +30,7 @@ const Page: NextPage = () => {
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const maxSlippage = useStore((state) => state.maxSlippage)
+  const maxSlippage = useStore((state) => state.maxSlippage['router'])
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
@@ -116,7 +116,7 @@ const Page: NextPage = () => {
         <BoxHeader className="title-text">
           <IconButton testId="hidden" hidden />
           {t`Swap`}
-          <AdvancedSettings testId="advance-settings" maxSlippage={maxSlippage} />
+          <AdvancedSettings stateKey="router" testId="advance-settings" maxSlippage={maxSlippage} />
         </BoxHeader>
 
         <Box grid gridRowGap={3} padding>

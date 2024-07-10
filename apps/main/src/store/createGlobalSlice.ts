@@ -40,7 +40,7 @@ type GlobalState = {
   loaded: boolean
   locale: Locale['value']
   pageWidth: PageWidthClassName | null
-  maxSlippage: string
+  maxSlippage: { [key: string]: string }
   routerProps: RouterProps | null
   showScrollButton: boolean
   themeType: Theme
@@ -55,6 +55,7 @@ export interface GlobalSlice extends GlobalState {
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
+  updateMaxSlippage(key: string, value: string | null): void
   updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
@@ -88,7 +89,7 @@ const DEFAULT_STATE = {
     secondaryNav: 0,
     footer: 0,
   },
-  maxSlippage: '',
+  maxSlippage: {},
   routerProps: null,
   showScrollButton: false,
   themeType: 'default',
@@ -227,6 +228,18 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     set(
       produce((state: State) => {
         state.layoutHeight[key] = value
+      })
+    )
+  },
+  updateMaxSlippage: (key: string, value: string | null) => {
+    set(
+      produce((state: State) => {
+        if (value === null) {
+          delete state.maxSlippage[key]
+          return
+        }
+
+        state.maxSlippage[key] = value
       })
     )
   },

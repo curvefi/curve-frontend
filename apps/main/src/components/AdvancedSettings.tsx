@@ -24,6 +24,14 @@ type FormValues = {
   errorVariant: InputVariant | ''
 }
 
+export type AdvancedSettingsProps = {
+  className?: string
+  buttonIcon?: React.ReactNode
+  maxSlippage: string
+  stateKey: string
+  testId?: string
+}
+
 const DEFAULT_FORM_VALUES: FormValues = {
   selected: '',
   customValue: '',
@@ -53,26 +61,23 @@ export const AdvancedSettings = ({
   className,
   buttonIcon,
   maxSlippage,
+  stateKey, // object key for state
   testId,
-}: React.PropsWithChildren<{
-  className?: string
-  buttonIcon?: React.ReactNode
-  maxSlippage: string
-  testId?: string
-}>) => {
+}: React.PropsWithChildren<AdvancedSettingsProps>) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const updateMaxSlippage = useStore((state) => state.updateMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 
   const handleSave = () => {
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
-    updateGlobalStoreByKey('maxSlippage', updatedCustomSlippage)
+    updateMaxSlippage(stateKey, updatedCustomSlippage)
     overlayTriggerState.close()
   }
 
   const handleDiscard = () => {
     setFormValues(getDefaultFormValuesState(DEFAULT_FORM_VALUES, maxSlippage))
+    updateMaxSlippage(stateKey, null)
     overlayTriggerState.close()
   }
 
