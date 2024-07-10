@@ -77,10 +77,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { tokensMapper } = useTokensMapper(rChainId)
   const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
+  const chainIdPoolId = getChainPoolIdActiveKey(rChainId, rPoolId)
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
-  const globalMaxSlippage = useStore((state) => state.maxSlippage)
+  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
+  const globalMaxSlippage = useStore((state) => state.maxSlippage[chainIdPoolId])
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -129,7 +130,10 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   }, [haveSigner, poolData?.pool.address, pricesApi, pricesApiPoolData, snapshotsMapper])
 
   const maxSlippage = useMemo(() => {
-    return pool ? (globalMaxSlippage ? globalMaxSlippage : pool?.isCrypto ? '0.1' : '0.03') : ''
+    if (globalMaxSlippage) return globalMaxSlippage
+    if (!pool) return ''
+
+    return pool.isCrypto ? '0.1' : '0.03'
   }, [globalMaxSlippage, pool])
 
   const navHeight = useMemo(() => {
@@ -275,6 +279,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   ) : (
                     <Swap
                       {...pageTransferProps}
+                      chainIdPoolId={chainIdPoolId}
                       imageBaseUrl={imageBaseUrl}
                       poolAlert={poolAlert}
                       maxSlippage={maxSlippage}
@@ -288,6 +293,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               ) : rFormType === 'deposit' ? (
                 <Deposit
                   {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
                   hasDepositAndStake={hasDepositAndStake}
                   imageBaseUrl={imageBaseUrl}
                   poolAlert={poolAlert}
@@ -300,6 +306,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               ) : rFormType === 'withdraw' ? (
                 <Withdraw
                   {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
                   imageBaseUrl={imageBaseUrl}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}

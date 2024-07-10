@@ -26,6 +26,7 @@ import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormDeposit = ({
+  chainIdPoolId,
   curve,
   imageBaseUrl,
   maxSlippage,
@@ -287,7 +288,11 @@ const FormDeposit = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance customLabel={t`Additional slippage tolerance:`} maxSlippage={maxSlippage} />
+        <DetailInfoSlippageTolerance
+          customLabel={t`Additional slippage tolerance:`}
+          maxSlippage={maxSlippage}
+          stateKey={chainIdPoolId}
+        />
       </div>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

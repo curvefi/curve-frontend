@@ -37,6 +37,7 @@ import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
 
 const FormWithdraw = ({
+  chainIdPoolId,
   curve,
   imageBaseUrl,
   maxSlippage,
@@ -472,7 +473,11 @@ const FormWithdraw = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance customLabel={t`Additional slippage tolerance:`} maxSlippage={maxSlippage} />
+        <DetailInfoSlippageTolerance
+          customLabel={t`Additional slippage tolerance:`}
+          maxSlippage={maxSlippage}
+          stateKey={chainIdPoolId}
+        />
       </div>
 
       {formStatus.error && (

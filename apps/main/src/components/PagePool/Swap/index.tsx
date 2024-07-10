@@ -40,6 +40,7 @@ import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
 
 const Swap = ({
+  chainIdPoolId,
   curve,
   imageBaseUrl,
   maxSlippage,
@@ -52,6 +53,7 @@ const Swap = ({
   userPoolBalances,
   userPoolBalancesLoading,
 }: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
+  chainIdPoolId: string
   imageBaseUrl: string
   poolAlert: PoolAlert | null
   maxSlippage: string
@@ -530,7 +532,7 @@ const Swap = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
+        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
       </Box>
 
       {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (

@@ -1,3 +1,5 @@
+import type { AdvancedSettingsProps } from '@/components/AdvancedSettings'
+
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -7,23 +9,14 @@ import DetailInfo from '@/ui/DetailInfo'
 import AdvancedSettings from '@/components/AdvancedSettings'
 import Icon from '@/ui/Icon'
 
-const DetailInfoSlippageTolerance = ({
-  customLabel,
-  maxSlippage,
-  testId,
-}: {
-  customLabel?: string
-  maxSlippage: string
-  testId?: string
-}) => {
+const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => {
   return (
     <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
       <StyledAdvancedSettings
-        testId={testId}
-        maxSlippage={maxSlippage}
+        {...props}
         buttonIcon={
           <>
-            {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
+            {formatNumber(props.maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
             <Icon name="Settings" size={16} />
           </>
         }
