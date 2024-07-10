@@ -290,7 +290,7 @@ const FormDeposit = ({
         <DetailInfoSlippageTolerance customLabel={t`Additional slippage tolerance:`} maxSlippage={maxSlippage} />
       </div>
 
-      {poolAlert && typeof poolAlert?.isInformationOnlyAndShowInForm && (
+      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 

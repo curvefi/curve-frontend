@@ -533,7 +533,7 @@ const Swap = ({
         <DetailInfoSlippageTolerance maxSlippage={maxSlippage} />
       </Box>
 
-      {poolAlert && typeof poolAlert?.isInformationOnlyAndShowInForm && (
+      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
         <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       )}
 
