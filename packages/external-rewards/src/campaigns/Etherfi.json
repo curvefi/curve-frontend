@@ -1,0 +1,42 @@
+{
+  "campaignName": "",
+  "platform": "Ether.fi",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "etherfi.png",
+  "dashboardLink": "https://app.ether.fi/defi",
+  "pools": [
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-80",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x278cfb6f06b1efc09d34fc7127d6060c61d629db",
+      "gaugeAddress": "0x0bfb387b87e8bf173a10a7dcf786b0b7875f6771",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-157",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5",
+      "gaugeAddress": "0x053df3e4d0ced9a3bf0494f97e83ce1f13bdc0e2",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-177",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
+      "gaugeAddress": "0x0",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    }
+  ]
+}

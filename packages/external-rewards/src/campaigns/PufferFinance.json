@@ -1,0 +1,53 @@
+{
+  "campaignName": "",
+  "platform": "Puffer Finance",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "puffer-finance.png",
+  "dashboardLink": "https://quest.puffer.fi/defi",
+  "pools": [
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-83",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0xb3c8ce1ee157b0dcaa96897c9170aee6281706c9",
+      "gaugeAddress": "0xb6ec26a3433d6cd11084c2094f12c4e571806d06",
+      "network": "ethereum",
+      "multiplier": "1",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-142",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x39f5b252de249790faed0c2f05abead56d2088e1",
+      "gaugeAddress": "0x0",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-113",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0xeeda34a377dd0ca676b9511ee1324974fa8d980d",
+      "gaugeAddress": "0xf4fa0c7833e778fb9fb392ec36217e17c9133976",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "one-way-market-10",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x4f87158350c296955966059c50263f711ce0817c",
+      "gaugeAddress": "0x294280254e1c8bcf56f8618623ec9235e8415633",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    }
+  ]
+}

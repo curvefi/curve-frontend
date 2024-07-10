@@ -1,0 +1,10 @@
+[
+  {
+    "id": "points",
+    "displayName": "Points"
+  }, 
+  {
+    "id": "tokens",
+    "displayName": "Tokens"
+  }
+]

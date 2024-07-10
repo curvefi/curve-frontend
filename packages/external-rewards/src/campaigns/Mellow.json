@@ -1,0 +1,20 @@
+ {
+  "campaignName": "",
+  "platform": "Mellow Protocol",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "mellow.png",
+  "dashboardLink": "https://app.mellow.finance/restake",
+  "pools": [
+    {
+      "id": "null",
+      "poolId": "factory-twocrypto-46",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
+      "gaugeAddress": "0xa4cd3c7f8e71115c856dad1dbe042b17722f7807",
+      "network": "ethereum",
+      "multiplier": "1-1.5",
+      "tags": ["points"]
+    }
+  ]
+}
