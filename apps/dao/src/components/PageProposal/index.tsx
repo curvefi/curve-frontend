@@ -27,6 +27,7 @@ import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
+import TitleColumnDataComp, { SubTitle, SubTitleColumnData } from '@/components/SubTitleColumn'
 
 type Props = {
   routerParams: {
@@ -106,11 +107,10 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
       <Box flex>
         <ProposalContainer variant="secondary">
           <ProposalHeader>
-            <TopBarColumn>
-              <SubTitle>{t`Status`}</SubTitle>
-              {!proposal ? (
-                <Loader isLightBg skeleton={[56, 16.5]} />
-              ) : (
+            <TitleColumnDataComp
+              loading={proposal === null}
+              title={t`Status`}
+              data={
                 <Status
                   className={`${proposal?.status === 'Active' && 'active'} ${
                     proposal?.status === 'Denied' && 'denied'
@@ -118,32 +118,34 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 >
                   {proposal?.status}
                 </Status>
-              )}
-            </TopBarColumn>
+              }
+            />
             {proposal?.status === 'Passed' && (
-              <TopBarColumn>
-                <SubTitle>{t`Executed`}</SubTitle>
-                <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
-                  {proposal?.executed ? t`Executed` : t`Executable`}
-                </ExecutedStatus>
-              </TopBarColumn>
+              <TitleColumnDataComp
+                loading={proposal === null}
+                title={t`Executed`}
+                data={
+                  <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
+                    {proposal?.executed ? t`Executed` : t`Executable`}
+                  </ExecutedStatus>
+                }
+              />
             )}
-            <TopBarColumn>
-              <SubTitle>{t`Proposal ID`}</SubTitle>
-              <TopBarData>#{voteId}</TopBarData>
-            </TopBarColumn>
-            <TopBarColumn>
-              <SubTitle>{t`Proposal Type`}</SubTitle>
-              <TopBarData>{voteType}</TopBarData>
-            </TopBarColumn>
-            <TimeRemainingBox>
-              <SubTitle className="align-right">{t`Time Remaining`}</SubTitle>
-              {!proposal ? (
-                <StyledLoader isLightBg skeleton={[56, 16.5]} />
-              ) : (
-                <VoteCountdown startDate={proposal?.startDate} />
-              )}
-            </TimeRemainingBox>
+            <TitleColumnDataComp
+              loading={false}
+              title={t`Proposal ID`}
+              data={<SubTitleColumnData>#{voteId}</SubTitleColumnData>}
+            />
+            <TitleColumnDataComp
+              loading={false}
+              title={t`Proposal Type`}
+              data={<SubTitleColumnData>{voteType}</SubTitleColumnData>}
+            />
+            <TimeRemainingBox
+              loading={!proposal}
+              title={t`Time Remaining`}
+              data={<VoteCountdown startDate={proposal?.startDate} />}
+            />
           </ProposalHeader>
           {isError && !isLoading && (
             <ErrorWrapper>
@@ -344,16 +346,6 @@ const BackButton = styled(Button)`
   color: var(--page--text-color);
 `
 
-const SubTitle = styled.h4`
-  font-size: var(--font-size-1);
-  opacity: 0.5;
-  &.align-right {
-    @media (min-width: 32.5rem) {
-      text-align: right;
-    }
-  }
-`
-
 const ErrorWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -445,13 +437,10 @@ const TopBarColumn = styled(Box)`
   font-weight: var(--semi-bold);
 `
 
-const TopBarData = styled.h3`
-  font-size: var(--font-size-2);
-`
-
-const TimeRemainingBox = styled(TopBarColumn)`
+const TimeRemainingBox = styled(TitleColumnDataComp)`
   @media (min-width: 32.5rem) {
     margin: 0 0 0 auto;
+    text-align: right;
   }
 `
 
