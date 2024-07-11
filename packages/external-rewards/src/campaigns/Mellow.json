@@ -1,4 +1,4 @@
- {
+{
   "campaignName": "",
   "platform": "Mellow Protocol",
   "description": "Points for providing liquidity.",
@@ -13,7 +13,7 @@
       "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
       "gaugeAddress": "0xa4cd3c7f8e71115c856dad1dbe042b17722f7807",
       "network": "ethereum",
-      "multiplier": "1-1.5",
+      "multiplier": "3",
       "tags": ["points"]
     }
   ]
