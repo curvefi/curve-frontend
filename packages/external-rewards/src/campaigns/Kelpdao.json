@@ -1,4 +1,4 @@
- {
+{
   "campaignName": "",
   "platform": "Kelp DAO",
   "description": "Points for providing liquidity",
@@ -12,6 +12,17 @@
       "campaignEnd": "1770000000",
       "poolAddress": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
       "gaugeAddress": "0x0",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-67",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x3772ba91b46f456ae487cb0974040c861c045810",
+      "gaugeAddress": "0x8f8e854ef0dc76d88d2e217d3c2653672d13b252",
       "network": "ethereum",
       "multiplier": "2",
       "tags": ["points"]
