@@ -1,6 +1,6 @@
 # Curve External Rewards
 
-This repository's configuration files contain all metadata for projects to give external rewards for users of curve.
+This section of the curve-frontend repo contains metadata configuration files for projects to show external rewards for users of curve.
 
 ## Reward metadata structure
 
@@ -41,7 +41,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
   - `gaugeAddress`: Address of the gauge, or `null`
   - `network`: Network of the pool/market
   - `multiplier`: Multiplier, or `null`
-  - `tags`: Array of pool/market specific tags (any of the tags ids listed here: [`rewards-tags.json`](https://github.com/curvefi/curve-external-rewards/blob/main/rewards-tags.json))
+  - `tags`: Array of pool/market specific tags (any of the tags ids listed here: [`rewards-tags.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/reward-tags.json))
 
 ### Example:
 
@@ -77,4 +77,4 @@ Conditions the project must meet in order to be added to the list of rewards:
 Easy two-step process for your reward to appear on Curve's websites:
 
 1. You'll need to upload the app/tool's logo to the [`curve-assets` repo](https://github.com/curvefi/curve-assets/tree/main/platforms) (submit a PR there, we'll be notified and will review and merge it). It must be a PNG image of at least 200x200 and at most 500x500 px.
-2. Submit a PR in this very repository, adding the app/tool's metadata as described above in the [`campaign-list.json`](https://github.com/curvefi/curve-external-rewards/blob/main/campaign-list.json) file and create a new file in the `campaigns` folder for your campaign. You don't have to wait for (1) to be merged to do this. We'll also be notified and will review and merge your PR. _Please provide a very short explanation of how the submitted project fits, if it isn't immediately obvious from the project's metadata in your PR._
+2. Submit a PR in this very repository, adding the app/tool's metadata as described above in the [`campaign-list.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/campaign-list.json) file and create a new file in the `campaigns` folder for your campaign. You don't have to wait for (1) to be merged to do this. We'll also be notified and will review and merge your PR. _Please provide a very short explanation of how the submitted project fits, if it isn't immediately obvious from the project's metadata in your PR._
