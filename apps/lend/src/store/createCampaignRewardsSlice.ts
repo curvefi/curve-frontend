@@ -3,7 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import produce from 'immer'
 
-import { campaignList, campaignsJsons } from '@/shared/external-rewards'
+import campaigns from '@/shared/external-rewards'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -36,15 +36,6 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
   [sliceKey]: {
     ...DEFAULT_STATE,
     initCampaignRewards: async (chainId: ChainId) => {
-      const parsedCampaignsJsons: { [key: string]: any } = campaignsJsons
-      const campaigns = campaignList
-        .map(({ campaign }) => {
-          const campaignName = campaign.split('.')?.[0]
-          if (!campaignName || !(campaignName in parsedCampaignsJsons)) return null
-          return parsedCampaignsJsons[campaignName]
-        })
-        .filter((campaign) => campaign !== null)
-
       let campaignRewardsMapper: CampaignRewardsMapper = {}
 
       // compile a list of pool/markets using pool/vault address as key
