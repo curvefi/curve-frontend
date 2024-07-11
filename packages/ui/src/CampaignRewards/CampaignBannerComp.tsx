@@ -16,9 +16,11 @@ const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignR
           Learn more
         </ExternalLink>
       </RewardsMessage>
-      {campaignRewardsPool.map((rewardItem, index) => (
-        <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast banner />
-      ))}
+      <RewardsIconsWrapper>
+        {campaignRewardsPool.map((rewardItem, index) => (
+          <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast banner />
+        ))}
+      </RewardsIconsWrapper>
     </Wrapper>
   )
 }
@@ -38,12 +40,23 @@ const RewardsMessage = styled.p`
   padding-right: var(--spacing-2);
   display: flex;
   gap: var(--spacing-2);
+  flex-wrap: wrap;
 `
 
 const StyledPointsIcon = styled(RCPointsIcon)`
-  width: 24px;
-  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+  max-width: 24px;
+  min-width: 24px;
   color: var(--white);
+`
+
+const RewardsIconsWrapper = styled.div`
+  display: flex;
+  gap: var(--spacing-1);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex-shrink: 1;
 `
 
 export default RewardsBannerComp

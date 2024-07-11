@@ -27,12 +27,12 @@ const PoolInfo = ({ chainId }: Props) => {
     <>
       <Wrapper flex flexColumn>
         <Row flexJustifyContent={'space-between'}>
-          <TextInput value={poolName} onChange={updatePoolName} maxLength={32} label={t`Pool Name (e.g. CRV/ETH)`} />
+          <TextInput value={poolName} onChange={updatePoolName} maxLength={32} label={t`Pool Name (e.g. stETH/ETH)`} />
           <TextInput
             value={poolSymbol}
             onChange={updatePoolSymbol}
             maxLength={10}
-            label={t`Pool Symbol (e.g. CRVETH)`}
+            label={t`Pool Symbol (e.g. stETHETH)`}
           />
         </Row>
         {swapType === STABLESWAP && !networks[chainId].stableswapFactory && (
