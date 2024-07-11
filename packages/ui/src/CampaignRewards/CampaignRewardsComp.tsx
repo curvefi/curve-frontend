@@ -44,6 +44,7 @@ const Multiplier = styled.p<{ highContrast?: boolean }>`
   text-transform: uppercase;
   font-size: var(--font-size-3);
   color: ${({ highContrast }) => (highContrast ? 'var(--white)' : '--page--text-color')};
+  white-space: nowrap;
 `
 
 export default RewardsCompSmall
