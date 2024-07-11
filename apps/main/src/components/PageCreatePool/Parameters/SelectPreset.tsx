@@ -159,10 +159,6 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
-              </>
-            )}
-            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
-              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 5}
@@ -178,6 +174,10 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
+              </>
+            )}
+            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
+              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 6}
@@ -188,6 +188,21 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                       updatePoolPresetIndex(6)
                       setMidValue(i18n._(POOL_PRESETS[6].defaultParams.midFee))
                       setOutValue(i18n._(POOL_PRESETS[6].defaultParams.outFee))
+                      overlayTriggerState.close()
+                    }}
+                    paddingSize={'small'}
+                  />
+                </SelectButtonWrapper>
+                <SelectButtonWrapper>
+                  <SelectButton
+                    selected={poolPresetIndex === 7}
+                    name={POOL_PRESETS[7].name}
+                    descriptionName={i18n._(POOL_PRESETS[7].descriptionName)}
+                    description={i18n._(POOL_PRESETS[7].description)}
+                    handleClick={() => {
+                      updatePoolPresetIndex(7)
+                      setMidValue(i18n._(POOL_PRESETS[7].defaultParams.midFee))
+                      setOutValue(i18n._(POOL_PRESETS[7].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}

@@ -134,8 +134,24 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-  // tricrypto
   5: {
+    name: 'Liquid Restaking Tokens',
+    descriptionName: t`Liquid Restaking Tokens`,
+    description: t`Suitable for LRTs`,
+    defaultParams: {
+      ...fillerParams,
+      midFee: '0.05',
+      outFee: '0.8',
+      cryptoA: '20000000',
+      gamma: '0.02',
+      allowedExtraProfit: '0.00000001',
+      feeGamma: '0.03',
+      adjustmentStep: '0.0000055',
+      maHalfTime: '600',
+    },
+  },
+  // tricrypto
+  6: {
     name: 'Tricrypto',
     descriptionName: t`Tricrypto`,
     description: t`Suitable for USD stablecoin <> BTC stablecoin <> ETH.`,
@@ -148,10 +164,10 @@ export const POOL_PRESETS: PRESETS = {
       allowedExtraProfit: '0.0000000001',
       feeGamma: '0.0004',
       adjustmentStep: '0.0000001',
-      maHalfTime: '601',
+      maHalfTime: '600',
     },
   },
-  6: {
+  7: {
     name: 'Three Coin Volatile',
     descriptionName: t`Three Coin Volatile`,
     description: t`Suitable for volatile tokens paired against ETH and USD stablecoins`,
