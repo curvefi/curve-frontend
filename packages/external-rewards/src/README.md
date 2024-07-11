@@ -1,6 +1,6 @@
 # Curve External Rewards
 
-This section of the curve-frontend contains metadata configuration files for projects to show external rewards for users of curve.
+This section of the curve-frontend repo contains metadata configuration files for projects to show external rewards for users of curve.
 
 ## Reward metadata structure
 
