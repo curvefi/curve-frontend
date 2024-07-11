@@ -140,8 +140,8 @@ export const POOL_PRESETS: PRESETS = {
     description: t`Suitable for LRTs`,
     defaultParams: {
       ...fillerParams,
-      midFee: '0.05',
-      outFee: '0.8',
+      midFee: '0.005',
+      outFee: '0.08',
       cryptoA: '20000000',
       gamma: '0.02',
       allowedExtraProfit: '0.00000001',
