@@ -1,9 +1,9 @@
+import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils'
 
 import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 const DetailInfoPriceImpact = ({
   loading,
@@ -14,6 +14,12 @@ const DetailInfoPriceImpact = ({
   priceImpact: string | undefined
   isHighImpact: boolean | undefined
 }) => {
+  const formattedPriceImpact = useMemo(() => {
+    if (priceImpact === 'N/A') return 'N/A'
+    if (+priceImpact > 0) return `≈${formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}`
+    return ''
+  }, [priceImpact])
+
   return (
     <DetailInfo
       isBold={isHighImpact}
@@ -21,14 +27,8 @@ const DetailInfoPriceImpact = ({
       loading={loading}
       loadingSkeleton={[80, 23]}
       label={isHighImpact ? t`High price impact:` : t`Price impact:`}
-      tooltip={
-        <IconTooltip placement="top end" minWidth="250px">
-          {t`Approximate price impact, calculated based on the difference between Oracle price and average swap price.`}
-        </IconTooltip>
-      }
     >
-      {+priceImpact > 0 ? '≈' : ''}
-      {formatNumber(priceImpact, { style: 'percent', maximumSignificantDigits: 4 })}
+      {formattedPriceImpact}
     </DetailInfo>
   )
 }

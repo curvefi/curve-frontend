@@ -2050,8 +2050,10 @@ async function submit(activeKey: string, submitFn: () => Promise<string>, provid
   }
 }
 
-function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string>, slippage: string) {
-  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? '', isHighPriceImpact: false }
+function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | undefined>, slippage: string) {
+  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? 'N/A', isHighPriceImpact: false }
+
+  if (resp.priceImpact === 'N/A') return resp
 
   if (+resp.priceImpact > 0 && +slippage > 0) {
     resp.isHighPriceImpact = +resp.priceImpact > +slippage
