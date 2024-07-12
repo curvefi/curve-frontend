@@ -81,7 +81,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
-        } else if (chainId === Chain.XLayer || chainId === Chain.Mantle) {
+        } else if (chainId === Chain.XLayer) {
           if (!provider) return
 
           const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
@@ -100,20 +100,17 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: null,
             })
           }
-        } else if (chainId === 42161) {
-          // Arbitrum custom fee data
-          const provider = get().wallet.getProvider('')
+        } else if (chainId === Chain.Arbitrum || chainId === Chain.Mantle) {
+          if (!provider) return
 
-          if (provider) {
-            const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
-            parsedGasInfo = await parseGasInfo(curve, provider)
+          const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
+          parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo && customFeeData?.maxFeePerGas && customFeeData?.maxPriorityFeePerGas) {
-              parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
-              parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
-              curve.setCustomFeeData(customFeeData)
-            }
-          }
+          if (!parsedGasInfo || !customFeeData?.maxFeePerGas || !customFeeData?.maxPriorityFeePerGas) return
+
+          parsedGasInfo.gasInfo.max = [gweiToWai(customFeeData.maxFeePerGas)]
+          parsedGasInfo.gasInfo.priority = [gweiToWai(customFeeData.maxPriorityFeePerGas)]
+          curve.setCustomFeeData(customFeeData)
         } else if (chainId === 252 || chainId === 8453) {
           // TODO: remove this hardcode value once it api is fixed
           const provider = get().wallet.getProvider('')
