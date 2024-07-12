@@ -10,8 +10,8 @@ const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress 
   const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
 
   const bannerMessage = () => {
-    if (isPoints) return t`Liquiditity providers in this pool also earn points!`
-    return t`Liquiditity providers in this pool also earn additional tokens!`
+    if (isPoints) return t`Liquidity providers in this pool also earn points!`
+    return t`Liquidity providers in this pool also earn additional tokens!`
   }
 
   return campaignRewardsPool ? (

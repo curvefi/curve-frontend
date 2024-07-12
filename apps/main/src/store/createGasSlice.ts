@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai } from '@/shared/curve-lib'
+import { Chain, gweiToWai } from '@/shared/curve-lib'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@/utils'
 import api from '@/lib/curvejs'
@@ -47,6 +47,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       if (!curve) return
 
       const { chainId } = curve
+      const provider = get().wallet.getProvider('')
       log('fetchGasInfo', chainId)
 
       try {
@@ -80,27 +81,24 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               maxPriorityFeePerGas: fetchedData.fast.maxPriorityFee,
             })
           }
-        } else if (chainId === 196 || chainId === 5000) {
-          // X-Layer & Mantle
-          const provider = get().wallet.getProvider('')
+        } else if (chainId === Chain.XLayer || chainId === Chain.Mantle) {
+          if (!provider) return
 
-          if (provider) {
-            const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
-            parsedGasInfo = await parseGasInfo(curve, provider)
+          const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
+          parsedGasInfo = await parseGasInfo(curve, provider)
 
-            if (parsedGasInfo) {
-              parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
-            }
+          if (parsedGasInfo) {
+            parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
+          }
 
-            if (l2GasPrice) {
-              curve.setCustomFeeData({
-                gasPrice: l2GasPrice, // in gwei
-                // @ts-ignore
-                maxFeePerGas: null,
-                // @ts-ignore
-                maxPriorityFeePerGas: null,
-              })
-            }
+          if (l2GasPrice) {
+            curve.setCustomFeeData({
+              gasPrice: l2GasPrice, // in gwei
+              // @ts-ignore
+              maxFeePerGas: null,
+              // @ts-ignore
+              maxPriorityFeePerGas: null,
+            })
           }
         } else if (chainId === 42161) {
           // Arbitrum custom fee data
