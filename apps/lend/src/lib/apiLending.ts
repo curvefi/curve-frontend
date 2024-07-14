@@ -35,9 +35,9 @@ export const helpers = {
     userLiquidationBand: number | null,
     oraclePriceBand: number | null | undefined
   ) => {
-    if (typeof userLiquidationBand !== null && !oraclePriceBand) {
+    if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
       return false
-    } else if (oraclePriceBand) {
+    } else if (typeof oraclePriceBand === 'number') {
       return userFirstBand <= oraclePriceBand + 2
     }
     return false

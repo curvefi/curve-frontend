@@ -51,7 +51,7 @@ const DetailInfoHealth = ({
 
   // new health mode
   useEffect(() => {
-    if (oraclePriceBand && healthFull) {
+    if (typeof oraclePriceBand === 'number' && healthFull) {
       setHealthMode(
         getHealthMode(
           owmData,
@@ -81,7 +81,7 @@ const DetailInfoHealth = ({
 
   // current health mode
   useEffect(() => {
-    if (typeof oraclePriceBand !== 'undefined' && userLoanDetails) {
+    if (typeof oraclePriceBand === 'number' && userLoanDetails) {
       const { healthFull, bands } = userLoanDetails
       setCurrentHealthMode(
         getHealthMode(owmData, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey)
