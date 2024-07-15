@@ -298,7 +298,7 @@ const pool = {
       resp.base.week = new BN(resp.base.week).toFixed(8)
     }
 
-    if (isValidAddress(p.gauge)) {
+    if (isValidAddress(p.gauge.address)) {
       const isRewardsOnly = p.rewardsOnly()
 
       // both crv and incentives (others) are in one call
@@ -1280,7 +1280,7 @@ const poolWithdraw = {
   claimableTokens: async (activeKey: string, p: Pool, chainId: ChainId) => {
     let resp = { activeKey, claimableRewards: [] as ClaimableReward[], claimableCrv: '', error: '' }
 
-    if (!isValidAddress(p.gauge)) return resp
+    if (!isValidAddress(p.gauge.address)) return resp
 
     try {
       const isRewardsOnly = p.rewardsOnly()
@@ -1444,7 +1444,7 @@ const wallet = {
   userPoolRewardCrvApy: async (p: Pool, walletAddress: string) => {
     let userCrvApy = 0
 
-    if (isValidAddress(p.gauge) && !p.rewardsOnly()) {
+    if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
       const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
       // @ts-ignore
       if (fetchedCurrentCrvApy !== 'NaN') {
@@ -1475,7 +1475,7 @@ const wallet = {
 
     profit.baseProfit = parseBaseProfit(await p.baseProfit(signerAddress))
 
-    if (isValidAddress(p.gauge)) {
+    if (isValidAddress(p.gauge.address)) {
       const isRewardsOnly = p.rewardsOnly()
       if (isRewardsOnly) {
         const rewards = await p.rewardsProfit(signerAddress)

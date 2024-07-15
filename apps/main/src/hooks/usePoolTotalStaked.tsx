@@ -61,7 +61,9 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
       ;(async () => {
         const rpcUrl = networks[curve.chainId].rpcUrl
         const provider = getProvider('') || new JsonRpcProvider(rpcUrl)
-        const gaugeContract = isValidAddress(gauge) ? await getContract('gaugeTotalSupply', gauge, provider) : null
+        const gaugeContract = isValidAddress(gauge.address)
+          ? await getContract('gaugeTotalSupply', gauge.address, provider)
+          : null
 
         if (gaugeContract) {
           const poolContract =
