@@ -68,14 +68,16 @@ const PoolParameters = ({ pricesApi, poolData, rChainId, rPoolId }: Props) => {
   }
 
   const returnPoolType = (poolType: string, coins: number) => {
-    if (poolType === 'main') return t`Stableswap`
-    if (poolType === 'factory') return t`Stableswap`
-    if (poolType === 'stableswapng') return t`Stableswap-NG`
-    if (poolType === 'crypto' && coins === 2) return t`Two Coin Cryptoswap`
-    if (poolType === 'factory_crypto') return t`Two Coin Cryptoswap`
-    if (poolType === 'crypto' && coins === 3) return t`Tricrypto`
-    if (poolType === 'factory_tricrypto') return t`Three Coin Cryptoswap-NG`
-    if (poolType === 'crvusd') return 'crvUSD'
+    const isCrypto = poolData.pool.isCrypto
+    const isNg = poolData.pool.isNg
+
+    if (poolData.pool.isLlamma) return 'Llamma'
+    if (!isCrypto && !isNg) return t`Stableswap`
+    if (!isCrypto && isNg) return t`Stableswap-NG`
+    if (isCrypto && !isNg && coins === 2) return t`Two Coin Cryptoswap`
+    if (isCrypto && !isNg && coins === 3) return t`Tricrypto`
+    if (isCrypto && isNg && coins === 2) return t`Two Coin Cryptoswap-NG`
+    if (isCrypto && isNg && coins === 3) return t`Three Coin Cryptoswap-NG`
   }
 
   const returnAssetType = (id: number) => {
@@ -483,7 +485,7 @@ const PoolParameterValue = styled.p`
 `
 
 const PoolParameterLink = styled(ExternalLink)`
-  margin: var(--spacing-1) 0 0 auto;
+  margin: auto 0 0 auto;
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   color: inherit;
