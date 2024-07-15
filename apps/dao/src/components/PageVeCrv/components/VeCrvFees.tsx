@@ -39,10 +39,14 @@ const VeCrcFees = () => {
         <>
           <FeesContainer>
             {veCrvFees.fees.map((item) => {
+              const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
+              const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
+
               return (
                 <FeeRow key={item.timestamp}>
                   <FeeDate>
-                    {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000))}
+                    {formatDateFromTimestamp(timestamp)}
+                    {timestamp > currentTime && <> {t` (in progress)`}</>}
                   </FeeDate>
                   <FeeData>
                     $
@@ -55,7 +59,7 @@ const VeCrcFees = () => {
             })}
           </FeesContainer>
           <TotalFees>
-            <FeeDate>Total Fees:</FeeDate>
+            <FeeDate>{t`Total Fees:`}</FeeDate>
             <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
           </TotalFees>
         </>

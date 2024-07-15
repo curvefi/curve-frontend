@@ -256,7 +256,7 @@ declare global {
   }
 
   interface VeCrvDailyLockRes {
-    locks: { day: number; amount: string }[]
+    locks: { day: string; amount: string }[]
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
