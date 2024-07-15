@@ -20,6 +20,7 @@ type SliceState = {
   }
   veCrvData: {
     totalVeCrv: number
+    totalLockedCrv: number
     totalCrv: number
     lockedPercentage: number
     fetchStatus: FetchingState
@@ -54,6 +55,7 @@ const DEFAULT_STATE: SliceState = {
   },
   veCrvData: {
     totalVeCrv: 0,
+    totalLockedCrv: 0,
     totalCrv: 0,
     lockedPercentage: 0,
     fetchStatus: 'LOADING',
@@ -132,6 +134,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
     getVeCrvData: async (provider: any) => {
       get()[sliceKey].setStateByKey('veCrvData', {
         totalVeCrv: 0,
+        totalLockedCrv: 0,
         totalCrv: 0,
         lockedPercentage: 0,
         fetchStatus: 'LOADING',
@@ -141,14 +144,20 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         const veCrvContract = new Contract(contractVeCRV, abiVeCrv, provider)
         const crvContract = new Contract(contractCrv, abiVeCrv, provider)
 
-        const [lockedVeCrv, totalCrv] = await Promise.all([veCrvContract.supply(), crvContract.totalSupply()])
+        const [totalLockedCrv, totalCrv, totalVeCrv] = await Promise.all([
+          veCrvContract.supply(),
+          crvContract.totalSupply(),
+          veCrvContract.totalSupply(),
+        ])
 
-        const formattedLockedVeCrv = formatEther(lockedVeCrv)
+        const formattedTotalLockedCrv = formatEther(totalLockedCrv)
         const formattedTotalCrv = formatEther(totalCrv)
-        const lockedPercentage = (+formattedLockedVeCrv / +formattedTotalCrv) * 100
+        const formattedTotalVeCrv = formatEther(totalVeCrv)
+        const lockedPercentage = (+formattedTotalLockedCrv / +formattedTotalCrv) * 100
 
         get()[sliceKey].setStateByKey('veCrvData', {
-          totalVeCrv: formattedLockedVeCrv,
+          totalVeCrv: formattedTotalVeCrv,
+          totalLockedCrv: formattedTotalLockedCrv,
           totalCrv: formattedTotalCrv,
           lockedPercentage: lockedPercentage,
           fetchStatus: 'SUCCESS',
@@ -157,6 +166,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         console.log(error)
         get()[sliceKey].setStateByKey('veCrvData', {
           totalVeCrv: 0,
+          totalLockedCrv: 0,
           totalCrv: 0,
           lockedPercentage: 0,
           fetchStatus: 'ERROR',
