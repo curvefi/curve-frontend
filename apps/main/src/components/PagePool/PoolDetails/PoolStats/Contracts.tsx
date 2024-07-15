@@ -14,9 +14,9 @@ const Contracts = ({
   rChainId,
   poolDataCacheOrApi,
 }: { rChainId: ChainId } & Pick<PageTransferProps, 'poolDataCacheOrApi'>) => {
-  const { address = '', lpToken = '', gauge = '' } = poolDataCacheOrApi.pool
+  const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
-  const gaugeAddress = isValidAddress(gauge) ? gauge : ''
+  const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''
 
   return (
     <Article>

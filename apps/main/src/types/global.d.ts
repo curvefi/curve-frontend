@@ -10,6 +10,7 @@ import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
 import React from 'react'
 import curvejsApi from '@/lib/curvejs'
+import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {
   interface Window {
@@ -254,7 +255,7 @@ declare global {
       id: string
       name: string
       address: string
-      gauge: string
+      gauge: IGaugePool
       lpToken: string
       isCrypto: boolean
       isNg: boolean

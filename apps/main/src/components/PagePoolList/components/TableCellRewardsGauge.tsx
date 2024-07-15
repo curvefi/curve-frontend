@@ -3,12 +3,12 @@ import { isValidAddress, shortenTokenAddress } from '@/utils'
 import { Chip } from '@/ui/Typography'
 
 type Props = {
-  gauge: string | undefined
+  address: string | undefined
   searchText: string
 }
 
-const TableCellRewardsGauge = ({ gauge, searchText }: Props) => {
-  const gaugeAddress = gauge ? (isValidAddress(gauge) ? gauge : '') : ''
+const TableCellRewardsGauge = ({ address, searchText }: Props) => {
+  const gaugeAddress = address ? (isValidAddress(address) ? address : '') : ''
 
   if (!gaugeAddress || !searchText || (searchText && searchText !== gaugeAddress)) return null
 

@@ -99,7 +99,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
                 />
               )}
               {rewardsApy && <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />}
-              <TableCellRewardsGauge gauge={poolData?.pool?.gauge} searchText={searchText} />
+              <TableCellRewardsGauge address={poolData?.pool?.gauge.address} searchText={searchText} />
               {poolData && campaignRewardsMapper[poolData.pool.address] && (
                 <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
               )}

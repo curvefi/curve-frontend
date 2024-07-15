@@ -129,7 +129,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               networks[chainId].api.wallet.userPoolLiquidityUsd(pool, curve.signerAddress),
               networks[chainId].api.wallet.userPoolShare(pool),
               networks[chainId].api.wallet.userPoolRewardCrvApy(pool, curve.signerAddress),
-              networks[chainId].forms.indexOf('BOOSTING') !== -1 && isValidAddress(pool.gauge)
+              networks[chainId].forms.indexOf('BOOSTING') !== -1 && isValidAddress(pool.gauge.address)
                 ? networks[chainId].api.wallet.userPoolBoost(pool, curve.signerAddress)
                 : Promise.resolve(''),
             ])
