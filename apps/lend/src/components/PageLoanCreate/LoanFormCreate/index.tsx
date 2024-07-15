@@ -409,6 +409,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           <Button
             variant="filled"
             size="large"
+            testId="manageLoan"
             onClick={() => {
               setStateByKeyMarkets('marketDetailsView', 'user')
               navigate(getLoanManagePathname(params, rOwmId, 'loan'))
@@ -430,7 +431,12 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           )}
           {steps && <Stepper steps={steps} />}
           {formStatus.isComplete && owm && (
-            <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, owm.id, 'loan')}>
+            <LinkButton
+              testId="manageLoan"
+              variant="filled"
+              size="large"
+              to={getLoanManagePathname(params, owm.id, 'loan')}
+            >
               Manage loan
             </LinkButton>
           )}

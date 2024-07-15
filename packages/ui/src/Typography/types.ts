@@ -20,6 +20,7 @@ export type ChipProps = {
   noWrap?: boolean
   opacity?: number
   size?: ChipSize
+  testId?: string
   tooltip?: string | React.ReactNode
   tooltipProps?: TooltipProps
 }

@@ -14,7 +14,14 @@ declare module '@/fixtures/markets.json' {
     id: string
     collateral: string
     borrow: string
-    url: string
+    userCollateral: string
+    userBorrowed: string
+    debt: string
+    createUrl: string
+    createLeverageUrl: string
+    manageLoanUrl: string
+    manageCollateralUrl: string
+    manageLeverageUrl: string
   }
 
   export interface Markets {
@@ -31,6 +38,8 @@ declare module '@/fixtures/create-loan-settings.json' {
   export interface LoanSetting {
     ethersToAllocate: string
     collateralTokenToAllocate: string
+    userCollateralTokenToAllocate: string
+    userBorrowedTokenToAllocate: string
   }
 
   export interface LoanSettings {
@@ -69,6 +78,7 @@ declare module '@/fixtures/networks.json' {
     infura_rpc: string
     alchemy_rpc: string
     fork_block: number
+    blocks_per_day: number
   }
 
   export interface Networks {

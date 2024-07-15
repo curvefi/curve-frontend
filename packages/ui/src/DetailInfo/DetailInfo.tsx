@@ -17,6 +17,7 @@ type Props = {
   loading?: boolean
   loadingSkeleton?: [number, number]
   size?: Size
+  testId?: string
   textLeft?: boolean
   tooltip?: React.ReactNode
   variant?: Variant
@@ -30,6 +31,7 @@ const DetailInfo = ({
   label,
   loading,
   loadingSkeleton,
+  testId = '',
   tooltip: Tooltip,
   variant,
   children,
@@ -47,8 +49,8 @@ const DetailInfo = ({
       isDivider={isDivider}
       fillWidth
     >
-      {label && <DetailLabel>{label}</DetailLabel>}
-      <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
+      {label && <DetailLabel data-testid={`detailInfoLabel-${testId}`}>{label}</DetailLabel>}
+      <DetailValue data-testid={`detailInfoValue-${testId}`} haveLabel={!!label} isBold={isBold} variant={variant}>
         {loading && <Loader skeleton={loadingSkeleton} />}
         {!loading && (
           <>

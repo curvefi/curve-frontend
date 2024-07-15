@@ -88,10 +88,11 @@ const ManageLoan = (pageProps: PageContentProps) => {
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label }, idx) => {
+              {tabs.map(({ formType, label }, idx) => {
                 return (
                   <AppFormSlideTab
                     key={label}
+                    testId={formType}
                     disabled={selectedTabIdx === idx}
                     tabLeft={tabPositions[idx]?.left}
                     tabWidth={tabPositions[idx]?.width}

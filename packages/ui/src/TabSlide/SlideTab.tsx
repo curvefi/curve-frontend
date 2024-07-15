@@ -12,10 +12,21 @@ type TabProps = {
   tabLeft: number
   tabTop: number
   tabWidth: number
+  testId?: string
   onChange: () => void
 }
 
-export const SlideTab = ({ className, disabled, label, tabIdx, tabLeft, tabWidth, tabTop, onChange }: TabProps) => {
+export const SlideTab = ({
+  className,
+  disabled,
+  label,
+  tabIdx,
+  tabLeft,
+  tabWidth,
+  tabTop,
+  testId = '',
+  onChange,
+}: TabProps) => {
   const { activeIdx, setSliderPosition } = useContext(Context)
   const checked = tabIdx === activeIdx
 
@@ -27,6 +38,7 @@ export const SlideTab = ({ className, disabled, label, tabIdx, tabLeft, tabWidth
     <>
       <Input
         disabled={disabled}
+        data-testid={`radioInp-${testId}`}
         type="radio"
         tabLeft={tabLeft}
         id={label}

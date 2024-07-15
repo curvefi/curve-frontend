@@ -1,20 +1,21 @@
+import { ethers } from 'ethers'
+
 import createLoanSettings from '@/fixtures/create-loan-settings.json'
 import markets from '@/fixtures/markets.json'
 import tokens from '@/fixtures/tokens.json'
-import { ethers } from 'ethers'
 
-const CHAIN = 'mainnet'
+const CHAIN = 'arbitrum'
+const CHAIN_ID = 42161
 const MARKET_ID = 'CRV-crvUSD'
 describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const market = markets[CHAIN][MARKET_ID]
-  const settings = createLoanSettings[CHAIN][MARKET_ID]
+  const settings = createLoanSettings[CHAIN][market.id]
   const collateralToken = tokens[CHAIN][market.collateral]
-
   const borrowToken = tokens[CHAIN][market.borrow]
 
   beforeEach(() => {
     // prepare wallet
-    cy.createJsonRpcProvider()
+    cy.createJsonRpcProvider(CHAIN_ID)
       .as('jsonRpcProvider', { type: 'static' })
       .createRandomWallet('1', [{ symbol: collateralToken.symbol, amount: settings.collateralTokenToAllocate }])
       .as('wallet', { type: 'static' })
