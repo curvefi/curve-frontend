@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import { formatNumber, shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
+import { formatNumber, shortenTokenAddress } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
@@ -124,16 +124,20 @@ const GaugeListItem = ({ gaugeData }: Props) => {
             {gaugeData.pool?.tvl_usd ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Pool TVL`}</DataTitle>
-                <GaugeInformation className="open">{t`$${formatNumber(gaugeData.pool.tvl_usd)}`}</GaugeInformation>
+                <GaugeInformation className="open">{t`$${formatNumber(gaugeData.pool.tvl_usd, {
+                  showDecimalIfSmallNumberOnly: true,
+                })}`}</GaugeInformation>
               </Box>
             ) : (
               ''
             )}
             {gaugeData.pool?.trading_volume_24h ? (
               <Box flex flexColumn>
-                <DataTitle className="open left-aligned">{t`Pool Volume 24h`}</DataTitle>
+                <DataTitle className="open left-aligned">{t`24h Pool Volume`}</DataTitle>
                 <GaugeInformation className="open">
-                  {t`$${formatNumber(gaugeData.pool.trading_volume_24h)}`}
+                  {t`$${formatNumber(gaugeData.pool.trading_volume_24h, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })}`}
                 </GaugeInformation>
               </Box>
             ) : (
@@ -151,7 +155,11 @@ const GaugeListItem = ({ gaugeData }: Props) => {
             {gaugeData.emissions ? (
               <Box flex flexColumn>
                 <DataTitle className="open left-aligned">{t`Emissions (CRV)`}</DataTitle>
-                <GaugeInformation className="open">{formatNumber(gaugeData.emissions)}</GaugeInformation>
+                <GaugeInformation className="open">
+                  {formatNumber(gaugeData.emissions, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })}
+                </GaugeInformation>
               </Box>
             ) : (
               <Box flex flexColumn>

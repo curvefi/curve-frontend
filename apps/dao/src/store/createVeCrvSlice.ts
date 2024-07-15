@@ -114,7 +114,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
 
         const formattedData = data.locks.map((lock) => ({
           amount: Math.floor(+formatUnits(lock.amount, 18)),
-          day: formatDateFromTimestamp(convertToLocaleTimestamp(lock.day)),
+          day: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.day).getTime() / 1000)),
         }))
 
         get()[sliceKey].setStateByKey('veCrvLocks', {
@@ -141,7 +141,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         const veCrvContract = new Contract(contractVeCRV, abiVeCrv, provider)
         const crvContract = new Contract(contractCrv, abiVeCrv, provider)
 
-        const [lockedVeCrv, totalCrv] = await Promise.all([veCrvContract.totalSupply(), crvContract.totalSupply()])
+        const [lockedVeCrv, totalCrv] = await Promise.all([veCrvContract.supply(), crvContract.totalSupply()])
 
         const formattedLockedVeCrv = formatEther(lockedVeCrv)
         const formattedTotalCrv = formatEther(totalCrv)

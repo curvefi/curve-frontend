@@ -16,4 +16,11 @@ export const abiVeCrv = [
     stateMutability: 'view',
     type: 'function',
   },
+  {
+    inputs: [],
+    name: 'supply',
+    outputs: [{ internalType: 'uint256', name: 'supply', type: 'uint256' }],
+    stateMutability: 'view',
+    type: 'function',
+  },
 ]

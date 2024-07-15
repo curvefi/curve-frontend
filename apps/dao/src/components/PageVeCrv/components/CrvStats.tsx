@@ -32,7 +32,7 @@ const CrvStats = () => {
         />
         <SubTitleColumn
           loading={veCrvData.fetchStatus === 'LOADING'}
-          title={t`Total veCRV`}
+          title={t`Total Locked CRV`}
           data={
             <SubTitleColumnData>
               {formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
