@@ -1,3 +1,4 @@
+import { Chain } from 'curve-lib'
 import {
   RCArbitrumLogo,
   RCAvalancheLogo,
@@ -315,15 +316,15 @@ export const baseNetworksConfig = {
     scanTxPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://www.okx.com/web3/explorer/xlayer/token/${hash}`,
   },
-  5000: {
+  [Chain.Mantle]: {
     // TODO: fix this before going live
     ...NETWORK_CONFIG_DEFAULT,
     name: 'Mantle',
     id: 'mantle' as const,
     hex: '0x1388',
     icon: RCMantleLogo,
-    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
-    networkId: 5000 as const,
+    imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets-mantle/`,
+    networkId: Chain.Mantle,
     orgUIPath: '',
     rpcUrlConnectWallet: `https://rpc.mantle.xyz`,
     symbol: 'MNT',

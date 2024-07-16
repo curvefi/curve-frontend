@@ -1,6 +1,7 @@
 import sortBy from 'lodash/sortBy'
 
 import { ROUTE } from '@/constants'
+import { Chain } from '@/shared/curve-lib'
 import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
 
@@ -481,18 +482,15 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  5000: {
-    // TODO: fix this before going live
+  [Chain.Mantle]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['5000'],
+    ...baseNetworksConfig[Chain.Mantle],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_MANTLE_DEV_RPC_URL! : `https://rpc.mantle.xyz`,
     swap: {
-      fromAddress: '',
-      toAddress: '',
+      fromAddress: '0x201eba5cc46d216ce6dc03f6a759e8e766e956ae', // USDT
+      toAddress: '0x09bc4e0d864854c6afb6eb9a9cdf58ac190d0df9', // USDC
     },
-    showRouterSwap: false,
-    showInSelectNetwork: false,
     stableswapFactory: true,
     twocryptoFactory: true,
     tricryptoFactory: true,
