@@ -2,7 +2,7 @@
   "campaignName": "",
   "platform": "Usual",
   "description": "Points for providing liquidity.",
-  "platformImageId": "pill.png",
+  "platformImageId": "pill-usual.png",
   "dashboardLink": "https://app.usual.money/drugstore",
   "pools": [
     {
