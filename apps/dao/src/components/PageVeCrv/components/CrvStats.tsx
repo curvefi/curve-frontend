@@ -7,10 +7,14 @@ import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
+import { TooltipIcon } from '@/ui/Tooltip'
 
 const CrvStats = () => {
   const { provider } = useStore((state) => state.wallet)
-  const { veCrvData, getVeCrvData } = useStore((state) => state.vecrv)
+  const { veCrvData, getVeCrvData, veCrvFees } = useStore((state) => state.vecrv)
+
+  const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
+  const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
 
   useEffect(() => {
     if (provider && veCrvData.totalCrv === 0 && veCrvData.fetchStatus !== 'ERROR') {
@@ -18,11 +22,14 @@ const CrvStats = () => {
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
+  const veCrvApr =
+    veCrvLoading || veCrvFeesLoading ? 0 : (((veCrvFees.fees[1].fees_usd / veCrvData.totalVeCrv) * 52) / 0.3) * 100
+
   return (
     <Wrapper variant="secondary">
       <StatsRow>
         <SubTitleColumn
-          loading={veCrvData.fetchStatus === 'LOADING'}
+          loading={veCrvLoading}
           title={t`Total CRV`}
           data={
             <SubTitleColumnData>
@@ -31,7 +38,7 @@ const CrvStats = () => {
           }
         />
         <SubTitleColumn
-          loading={veCrvData.fetchStatus === 'LOADING'}
+          loading={veCrvLoading}
           title={t`Total Locked CRV`}
           data={
             <SubTitleColumnData>
@@ -40,7 +47,7 @@ const CrvStats = () => {
           }
         />
         <SubTitleColumn
-          loading={veCrvData.fetchStatus === 'LOADING'}
+          loading={veCrvLoading}
           title={t`Total veCRV`}
           data={
             <SubTitleColumnData>
@@ -49,12 +56,28 @@ const CrvStats = () => {
           }
         />
         <SubTitleColumn
-          loading={veCrvData.fetchStatus === 'LOADING'}
-          title={t`Locked Percentage`}
+          loading={veCrvLoading}
+          title={t`% Locked`}
           data={
             <SubTitleColumnData>{`${formatNumber(veCrvData.lockedPercentage, {
               showDecimalIfSmallNumberOnly: true,
             })}%`}</SubTitleColumnData>
+          }
+        />
+        <SubTitleColumn
+          loading={veCrvLoading || veCrvFeesLoading}
+          title={t`veCRV APR`}
+          data={
+            <Box flex>
+              <SubTitleColumnData>
+                {`~${formatNumber(veCrvApr, {
+                  showDecimalIfSmallNumberOnly: true,
+                })}%`}
+              </SubTitleColumnData>
+              <TooltipIcon>
+                {t`This APR is an annualized projection based on the previous week's fee distribution.`}
+              </TooltipIcon>
+            </Box>
           }
         />
       </StatsRow>
