@@ -1,1 +1,33 @@
+{
+  "campaignName": "",
+  "platform": "Usual",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "pill.png",
+  "dashboardLink": "https://app.usual.money/drugstore",
+  "pools": [
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-189",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
+      "gaugeAddress": "0x5c00817b67b40f3b347bd4275b4bba4840c8127a",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-188",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
+      "gaugeAddress": "0xc2a56e8888786a30a5b56cbe4450a81ddf26ac0c",
+      "network": "ethereum",
+      "multiplier": "1",
+      "tags": ["points"]
+    }
+  ]
+}
+
 
