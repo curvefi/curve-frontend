@@ -16,7 +16,7 @@ const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedInd
   return (
     <>
       {selectChartList.length === 1 ? (
-        <ChartsTitle>{selectChartList[selectedChartIndex]?.label ?? `Loading`}</ChartsTitle>
+        <ChartsTitle>{selectChartList[0]?.label ?? `Loading`}</ChartsTitle>
       ) : (
         <Popover
           buttonProps={{ isDisabled }}

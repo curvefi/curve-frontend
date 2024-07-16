@@ -12,6 +12,9 @@ export { ReactComponent as RCGithubLogo } from './github.svg'
 export { ReactComponent as RCTelegramLogo } from './telegram.svg'
 export { ReactComponent as RCTwitterLogo } from './twitter.svg'
 
+// ICON
+export { ReactComponent as RCPointsIcon } from './points-icon.svg'
+
 // THEME
 export { default as ChadImg } from './chad.png'
 export { ReactComponent as RCMoon } from './moon.svg'

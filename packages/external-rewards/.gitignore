@@ -1,0 +1,4 @@
+# production
+/dist
+
+/src/campaigns/index.ts

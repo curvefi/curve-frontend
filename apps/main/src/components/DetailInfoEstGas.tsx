@@ -5,7 +5,8 @@ import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { FORMAT_OPTIONS, formatNumber, gweiToEther, weiToGwei } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { Chain, gweiToEther, weiToGwei } from '@/shared/curve-lib'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -44,7 +45,11 @@ const DetailInfoEstGas = ({
       const { symbol, gasPricesUnit } = networks[chainId]
       let gasCostInWei = 0
 
-      if ((chainId === 42161 || chainId === 196) && gasInfo?.l2GasPriceWei && typeof estimatedGas === 'number') {
+      if (
+        (chainId === Chain.Arbitrum || chainId === Chain.XLayer || chainId === Chain.Mantle) &&
+        gasInfo?.l2GasPriceWei &&
+        typeof estimatedGas === 'number'
+      ) {
         gasCostInWei = gasInfo.l2GasPriceWei * estimatedGas
       } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curve) {
         if (gasInfo?.l2GasPriceWei && gasInfo?.l1GasPriceWei) {

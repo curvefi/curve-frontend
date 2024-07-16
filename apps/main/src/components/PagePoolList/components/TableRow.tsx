@@ -1,4 +1,5 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
+import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -6,6 +7,7 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils/responsive'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
+import Box from '@/ui/Box'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
 import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
@@ -15,6 +17,7 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 export type TableRowProps = {
   index: number
@@ -29,6 +32,7 @@ export type TableRowProps = {
   searchParams: SearchParams
   showInPoolColumn: boolean
   tokensMapper: TokensMapper
+  campaignRewardsMapper: CampaignRewardsMapper
   tvlCached: Tvl | undefined
   tvl: Tvl | undefined
   volumeCached: Volume | undefined
@@ -49,6 +53,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   searchParams,
   showInPoolColumn,
   tokensMapper,
+  campaignRewardsMapper,
   tvlCached,
   tvl,
   volumeCached,
@@ -57,12 +62,9 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 }) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
+
   return (
-    <LazyItem
-      id={`${poolId}-${index}`}
-      className="row--info"
-      onClick={({ target }) => handleCellClick(target)}
-    >
+    <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
       {showInPoolColumn && (
         <TCellInPool className={`row-in-pool ${isInPool ? 'active' : ''} `}>
           {isInPool ? <TableCellInPool /> : null}
@@ -88,21 +90,37 @@ const TableRow: FunctionComponent<TableRowProps> = ({
             <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === 'rewardsBase'} poolData={poolData} />
           </td>
           <td className="right">
-            <TableCellRewardsCrv isHighlight={sortBy === 'rewardsCrv'} poolData={poolData} rewardsApy={rewardsApy} />
-            <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
-            <TableCellRewardsGauge gauge={poolData?.pool?.gauge} searchText={searchText} />
+            <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
+              {rewardsApy && (
+                <TableCellRewardsCrv
+                  isHighlight={sortBy === 'rewardsCrv'}
+                  poolData={poolData}
+                  rewardsApy={rewardsApy}
+                />
+              )}
+              {rewardsApy && <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />}
+              <TableCellRewardsGauge address={poolData?.pool?.gauge.address} searchText={searchText} />
+              {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+              )}
+            </Box>
           </td>
         </>
       ) : (
         <td className="right">
-          <TCellRewards
-            poolData={poolData}
-            isHighlightBase={sortBy === 'rewardsBase'}
-            isHighlightCrv={sortBy === 'rewardsCrv'}
-            isHighlightOther={sortBy === 'rewardsOther'}
-            rewardsApy={rewardsApy}
-            searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
-          />
+          <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
+            <TCellRewards
+              poolData={poolData}
+              isHighlightBase={sortBy === 'rewardsBase'}
+              isHighlightCrv={sortBy === 'rewardsCrv'}
+              isHighlightOther={sortBy === 'rewardsOther'}
+              rewardsApy={rewardsApy}
+              searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
+            />
+            {poolData && campaignRewardsMapper[poolData.pool.address] && (
+              <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+            )}
+          </Box>
         </td>
       )}
       <td className="right">
@@ -137,21 +155,21 @@ const Item = styled.tr`
  */
 export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = ({ children, id, style, ...props }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {};
+  const { isIntersecting: isVisible } = useIntersectionObserver(ref) ?? {}
 
   // when rendered items might get larger. So we have that in the state to avoid stuttering
-  const [height, setHeight] = useState<string>('88px'); // default height on desktop
+  const [height, setHeight] = useState<string>('88px') // default height on desktop
   useEffect(() => {
     if (isVisible && ref.current) {
-      setHeight(`${ref.current.clientHeight}px`);
+      setHeight(`${ref.current.clientHeight}px`)
     }
-  }, [isVisible]);
+  }, [isVisible])
 
   return (
-    <Item ref={ref} id={id} style={{...style, ...!isVisible && {height}}} {...props}>
+    <Item ref={ref} id={id} style={{ ...style, ...(!isVisible && { height }) }} {...props}>
       {isVisible && children}
     </Item>
-  );
+  )
 }
 
 export default TableRow

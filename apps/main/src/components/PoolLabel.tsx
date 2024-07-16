@@ -85,7 +85,7 @@ const PoolLabel = ({
           <Box flex flexAlignItems="center">
             {!isMobile && (
               <>
-                {poolAlert?.isInformationOnly && (
+                {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
                   <AlertTooltipIcon minWidth="300px" placement="start" {...poolAlert}>
                     {poolAlert.message}
                   </AlertTooltipIcon>
@@ -146,7 +146,7 @@ const PoolLabel = ({
       {tokenAlert && isMobile && <StyledAlertBox alertType={tokenAlert.alertType}>{tokenAlert.message}</StyledAlertBox>}
       {poolAlert && (
         <>
-          {!poolAlert.isInformationOnly ? (
+          {!poolAlert.isInformationOnly && !poolAlert.isInformationOnlyAndShowInForm ? (
             <Box padding="0.5rem 0 0 0">{poolAlert.message}</Box>
           ) : isMobile ? (
             <StyledAlertBox alertType={poolAlert.alertType}>{poolAlert.message}</StyledAlertBox>

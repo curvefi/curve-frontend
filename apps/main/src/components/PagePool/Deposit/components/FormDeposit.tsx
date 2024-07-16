@@ -12,6 +12,7 @@ import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
+import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import AlertSlippage from '@/components/AlertSlippage'
 import FieldsDeposit from '@/components/PagePool/Deposit/components/FieldsDeposit'
@@ -25,9 +26,11 @@ import TransferActions from '@/components/PagePool/components/TransferActions'
 import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormDeposit = ({
+  chainIdPoolId,
   curve,
   imageBaseUrl,
   maxSlippage,
+  poolAlert,
   poolData,
   poolDataCacheOrApi,
   routerParams,
@@ -285,8 +288,16 @@ const FormDeposit = ({
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
           />
         )}
-        <DetailInfoSlippageTolerance customLabel={t`Additional slippage tolerance:`} maxSlippage={maxSlippage} />
+        <DetailInfoSlippageTolerance
+          customLabel={t`Additional slippage tolerance:`}
+          maxSlippage={maxSlippage}
+          stateKey={chainIdPoolId}
+        />
       </div>
+
+      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+      )}
 
       <TransferActions
         curve={curve}

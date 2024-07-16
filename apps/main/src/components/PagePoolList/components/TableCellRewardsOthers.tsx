@@ -10,6 +10,10 @@ type Prop = {
 }
 
 const TableCellRewardsOthers = ({ isHighlight, rewardsApy }: Prop) => {
+  if (!rewardsApy?.other || rewardsApy.other.length === 0) {
+    return null
+  }
+
   return (
     <div>
       {rewardsApy?.other?.map((o) => {

@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/stablecoin-api": "^1.5.3",
+    "@curvefi/stablecoin-api": "^1.5.4",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
@@ -44,6 +44,7 @@
     "react-router-dom": "^6.3.0",
     "react-stately": "3.18.0",
     "recharts": "2.4.1",
+    "curve-lib": "*",
     "sharp": "^0.32.6",
     "styled-components": "5.3.1",
     "swr": "^1.3.0",

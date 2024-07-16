@@ -5,7 +5,7 @@ import type { GasInfo } from '@/store/types'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { gweiToWai } from '@/ui/utils/utilsWeb3'
+import { gweiToWai } from '@/shared/curve-lib'
 import { httpFetcher, log } from '@/utils/helpers'
 import lendingApi from '@/lib/apiLending'
 import networks from '@/networks'

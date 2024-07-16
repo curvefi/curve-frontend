@@ -57,6 +57,7 @@ const Page: NextPage = () => {
     rewardsOther: { name: t`Incentives`, mobile: t`Rewards Incentives` },
     tvl: { name: t`TVL` },
     volume: { name: t`Volume` },
+    points: { name: t`Points` },
   }
 
   const updatePath = useCallback(

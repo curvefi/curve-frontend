@@ -1,0 +1,20 @@
+ {
+  "campaignName": "",
+  "platform": "Symbiotic.fi",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "symbiotic.png",
+  "dashboardLink": "https://app.symbiotic.fi/dashboard",
+  "pools": [
+    {
+      "id": "null",
+      "poolId": "factory-twocrypto-46",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
+      "gaugeAddress": "0xa4cd3c7f8e71115c856dad1dbe042b17722f7807",
+      "network": "ethereum",
+      "multiplier": "0-1",
+      "tags": ["points"]
+    }
+  ]
+}

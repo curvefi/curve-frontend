@@ -10,6 +10,7 @@ import type curveApi from '@curvefi/api'
 import { ethers } from 'ethers'
 import React from 'react'
 import curvejsApi from '@/lib/curvejs'
+import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {
   interface Window {
@@ -59,6 +60,12 @@ declare global {
     integrations: {
       imageBaseurl: string
       listUrl: string
+      tagsUrl: string
+    }
+    rewards: {
+      baseUrl: string
+      imageBaseUrl: string
+      campaignsUrl: string
       tagsUrl: string
     }
     isActiveNetwork: boolean // show UI for this network default true
@@ -248,10 +255,10 @@ declare global {
       id: string
       name: string
       address: string
-      gauge: string
+      gauge: IGaugePool
       lpToken: string
       isCrypto: boolean
-      isStableNg: boolean
+      isNg: boolean
       isFactory: boolean
       isLending: boolean
       implementation: string
@@ -352,6 +359,7 @@ declare global {
     isDisableDeposit?: boolean // display alert in Page action and disable Deposit
     isDisableSwap?: boolean
     isInformationOnly?: boolean // display alert in pool detail information section
+    isInformationOnlyAndShowInForm?: boolean // display alert in pool's form above action
     isCloseOnTooltipOnly?: boolean // should only close if hover over Tooltip
     address?: string
     message: string | React.ReactNode

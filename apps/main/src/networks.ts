@@ -491,7 +491,12 @@ const networks: Record<ChainId, NetworkConfig> = {
       fromAddress: '',
       toAddress: '',
     },
+    showRouterSwap: false,
     showInSelectNetwork: false,
+    stableswapFactory: true,
+    twocryptoFactory: true,
+    tricryptoFactory: true,
+    hasFactory: true,
   },
 }
 

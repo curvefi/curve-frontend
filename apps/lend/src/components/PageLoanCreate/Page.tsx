@@ -2,12 +2,14 @@ import type { NextPage } from 'next'
 
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { t } from '@lingui/macro'
 
 import { REFRESH_INTERVAL } from '@/constants'
 import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import {
   AppPageFormContainer,
@@ -21,6 +23,15 @@ import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'
 import DetailsMarket from 'components/DetailsMarket'
 import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import {
+  PriceAndTradesExpandedContainer,
+  PriceAndTradesExpandedWrapper,
+  ExpandButton,
+  ExpandIcon,
+} from '@/ui/Chart/styles'
+import Box from '@/ui/Box'
+import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -39,12 +50,14 @@ const Page: NextPage = () => {
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
+  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
 
   const owmDataCachedOrApi = owmData ?? owMDataCached
   const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
+  const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
 
   const fetchInitial = useCallback(
     async (api: Api, owmData: OWMData) => {
@@ -86,6 +99,18 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
+  useEffect(() => {
+    if (!isMdUp && chartExpanded) {
+      setChartExpanded(false)
+    }
+  }, [chartExpanded, isMdUp, setChartExpanded])
+
+  useEffect(() => {
+    if (chartExpanded) {
+      scrollToTop()
+    }
+  }, [chartExpanded])
+
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
       <PageTitleBorrowSupplyLinks
@@ -116,6 +141,26 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
+
+      {chartExpanded && networks[rChainId].pricesData && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 var(--spacing-2)">
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
+
       <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
         <AppPageFormsWrapper navHeight={navHeight}>
           {(!isMdUp || !isAdvanceMode) && <TitleComp />}
@@ -125,6 +170,9 @@ const Page: NextPage = () => {
         {isAdvanceMode && rChainId && rOwmId && (
           <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
+            <Box margin="0 0 var(--spacing-2)">
+              <CampaignRewardsBanner poolAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''} />
+            </Box>
             <AppPageInfoContentWrapper variant="secondary">
               <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
               <DetailsMarket {...pageProps} type="borrow" />

@@ -20,7 +20,6 @@ const DetailInfoHealth = ({
   bands,
   formType,
   healthFull,
-  healthNotFull,
   healthMode,
   isPayoff,
   isManage,
@@ -42,28 +41,25 @@ const DetailInfoHealth = ({
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
 }) => {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
-  const loanDetailsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId]?.bands)
+  const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
   const [currentHealthMode, setCurrentHealthMode] = useState(DEFAULT_HEALTH_MODE)
 
-  const { activeBand } = loanDetailsBands ?? {}
   const currentHealthModeColorKey = userLoanDetails?.status?.colorKey
   const newHealthModeColorKey = healthMode?.colorKey
 
   // new health mode
   useEffect(() => {
-    if (typeof activeBand !== 'undefined' && healthFull && healthNotFull) {
+    if (typeof oraclePriceBand === 'number' && healthFull) {
       setHealthMode(
         getHealthMode(
           owmData,
-          activeBand,
+          oraclePriceBand,
           amount,
           bands,
           formType,
           healthFull,
-          healthNotFull,
-          true,
           currentHealthModeColorKey ?? '',
           newHealthModeColorKey ?? ''
         )
@@ -72,13 +68,12 @@ const DetailInfoHealth = ({
       setHealthMode(DEFAULT_HEALTH_MODE)
     }
   }, [
-    activeBand,
+    oraclePriceBand,
     amount,
     bands,
     currentHealthModeColorKey,
     formType,
     healthFull,
-    healthNotFull,
     newHealthModeColorKey,
     owmData,
     setHealthMode,
@@ -86,24 +81,13 @@ const DetailInfoHealth = ({
 
   // current health mode
   useEffect(() => {
-    if (typeof activeBand !== 'undefined' && userLoanDetails) {
-      const { healthFull, healthNotFull, bands } = userLoanDetails
+    if (typeof oraclePriceBand === 'number' && userLoanDetails) {
+      const { healthFull, bands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(
-          owmData,
-          activeBand,
-          amount,
-          bands,
-          formType,
-          healthFull,
-          healthNotFull,
-          false,
-          '',
-          newHealthModeColorKey
-        )
+        getHealthMode(owmData, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey)
       )
     }
-  }, [activeBand, amount, formType, newHealthModeColorKey, owmData, userLoanDetails])
+  }, [oraclePriceBand, amount, formType, newHealthModeColorKey, owmData, userLoanDetails])
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
@@ -158,13 +142,11 @@ export default DetailInfoHealth
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
   owmData: OWMData | undefined,
-  activeBand: number | null,
+  oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
   formType: FormType,
   healthFull: string,
-  healthNotFull: string,
-  isNew: boolean,
   currColorKey: string,
   newColorKey: string
 ) {
@@ -177,7 +159,7 @@ export function getHealthMode(
     warning: '',
   }
 
-  if (helpers.getIsUserCloseToLiquidation(bands?.[0], null, activeBand)) {
+  if (helpers.getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
     let message = ''
 
     if (newColorKey === 'close_to_liquidation') {
@@ -197,7 +179,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthNotFull,
+      percent: healthFull,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

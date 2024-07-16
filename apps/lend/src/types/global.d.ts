@@ -46,6 +46,12 @@ declare global {
       listUrl: string
       tagsUrl: string
     }
+    rewards: {
+      baseUrl: string
+      imageBaseUrl: string
+      campaignsUrl: string
+      tagsUrl: string
+    }
     isActiveNetwork: boolean // show UI for this network default true
     name: string
     networkId: ChainId
@@ -62,6 +68,7 @@ declare global {
     // market list page properties
     marketListFilter: string[]
     marketListFilterType: string[]
+    pricesData: boolean
     marketListShowOnlyInSmallMarkets: { [marketId: string]: boolean }
   }
 

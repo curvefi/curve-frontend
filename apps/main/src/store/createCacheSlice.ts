@@ -1,5 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { sleep } from '@/utils'
 
@@ -20,6 +21,7 @@ type SliceState = {
   routerFormValues: { [chainId: string]: SwapFormValuesCache }
   tokensMapper: { [chainId: string]: TokensMapper }
   tokensNameMapper: { [chainId: string]: { [tokenAddress: string]: string } }
+  campaignRewardsMapper: { [chainId: string]: CampaignRewardsMapper }
   tvlMapper: { [chainId: string]: TvlMapper }
   tvlTotal: { [chainId: string]: number }
   volumeMapper: { [chainId: string]: VolumeMapper }
@@ -46,6 +48,7 @@ const DEFAULT_STATE: SliceState = {
   routerFormValues: {},
   tokensMapper: {},
   tokensNameMapper: {},
+  campaignRewardsMapper: {},
   tvlMapper: {},
   tvlTotal: {},
   volumeMapper: {},

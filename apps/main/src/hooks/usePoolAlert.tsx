@@ -116,6 +116,23 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       ),
     })
 
+    // Avalanche
+    const atricryptoAlert = (): PoolAlert => ({
+      alertType: 'info',
+      isCloseOnTooltipOnly: true,
+      isInformationOnlyAndShowInForm: true,
+      message: (
+        <MessageWrapper>
+          <div>
+            Deposit and Swap with wBTC.e will return an error due to an Aave community decision to freeze this asset.{' '}
+            <ExternalLink $noStyles href="https://app.aave.com/governance/v3/proposal/?proposalId=2">
+              More details
+            </ExternalLink>
+          </div>
+        </MessageWrapper>
+      ),
+    })
+
     // all networks
     const vyperExploitedAlert = (): PoolAlert => ({
       alertType: 'danger',
@@ -163,6 +180,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x353bb1dfbc52bc3b0e7d264216b1455df00f50be': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x353bb1dfbc52bc3b0e7d264216b1455df00f50be&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x353bb1dfbc52bc3b0e7d264216b1455df00f50be&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=137&inputToken=0x3c499c542cef5e3811e1192ce70d8cc03d5c3359&outputChainId=10&outputToken=0xc52d7f23a2e460248db6ee192cb23dd12bddcbf6'}]), // CrossCurve crvUSDC
       '0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x5ecac5fb1d9634f9e1c2dab2381b9adaada5f80b&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=137&inputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f&outputChainId=42161&outputToken=0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f'}]), // CrossCurve 3crypto
       '0x7d04f016749c215e52138b06bb35ee8491e739fd': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x7d04f016749c215e52138b06bb35ee8491e739fd&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x7d04f016749c215e52138b06bb35ee8491e739fd&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9&outputChainId=3&outputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f'}]), // CrossCurve crvUSDT
+      '0x3f833ed02629545dd78afc3d585f7f3918a3de62': crossCurveAlert([{label: 'Mint s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x3f833ed02629545dd78afc3d585f7f3918a3de62&action=deposit&type=curve'}, {label: 'Redeem s-tokens', url: 'https://app.crosscurve.fi/liquidity?pool=0x3f833ed02629545dd78afc3d585f7f3918a3de62&action=withdraw&type=curve'}, {label: 'Cross-chain swap', url: 'https://app.crosscurve.fi/swap?inputChainId=7&inputToken=0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9&outputChainId=3&outputToken=0xc2132d05d31c914a87c6611c10748aeb04b58e8f' }]),
       // ethereum
       '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
       '0xfc636d819d1a98433402ec9dec633d864014f28c': zunamiAlert(),
@@ -180,6 +198,8 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      // avalanche
+      '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
     }
 
     if (poolAddress) {

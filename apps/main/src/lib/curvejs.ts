@@ -22,6 +22,7 @@ import {
 
 import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
+import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
 import {
@@ -297,7 +298,7 @@ const pool = {
       resp.base.week = new BN(resp.base.week).toFixed(8)
     }
 
-    if (isValidAddress(p.gauge)) {
+    if (isValidAddress(p.gauge.address)) {
       const isRewardsOnly = p.rewardsOnly()
 
       // both crv and incentives (others) are in one call
@@ -1279,7 +1280,7 @@ const poolWithdraw = {
   claimableTokens: async (activeKey: string, p: Pool, chainId: ChainId) => {
     let resp = { activeKey, claimableRewards: [] as ClaimableReward[], claimableCrv: '', error: '' }
 
-    if (!isValidAddress(p.gauge)) return resp
+    if (!isValidAddress(p.gauge.address)) return resp
 
     try {
       const isRewardsOnly = p.rewardsOnly()
@@ -1384,9 +1385,12 @@ const wallet = {
   },
   userClaimableFees: async (curve: CurveApi, activeKey: string, walletAddress: string) => {
     log('userClaimableFees', activeKey, walletAddress)
-    let resp = { activeKey, amount: '', error: '' }
+    const resp = { activeKey, '3CRV': '', crvUSD: '', error: '' }
     try {
-      resp.amount = await curve.boosting.claimableFees(walletAddress)
+      ;[resp['3CRV'], resp.crvUSD] = await Promise.all([
+        curve.boosting.claimableFees(walletAddress),
+        curve.boosting.claimableFeesCrvUSD(walletAddress),
+      ])
       return resp
     } catch (error) {
       console.error(error)
@@ -1440,7 +1444,7 @@ const wallet = {
   userPoolRewardCrvApy: async (p: Pool, walletAddress: string) => {
     let userCrvApy = 0
 
-    if (isValidAddress(p.gauge) && !p.rewardsOnly()) {
+    if (isValidAddress(p.gauge.address) && !p.rewardsOnly()) {
       const fetchedCurrentCrvApy = await p.userCrvApy(walletAddress)
       // @ts-ignore
       if (fetchedCurrentCrvApy !== 'NaN') {
@@ -1471,7 +1475,7 @@ const wallet = {
 
     profit.baseProfit = parseBaseProfit(await p.baseProfit(signerAddress))
 
-    if (isValidAddress(p.gauge)) {
+    if (isValidAddress(p.gauge.address)) {
       const isRewardsOnly = p.rewardsOnly()
       if (isRewardsOnly) {
         const rewards = await p.rewardsProfit(signerAddress)
@@ -1691,12 +1695,13 @@ const lockCrv = {
       return resp
     }
   },
-  claimFees: async (activeKey: string, curve: CurveApi, provider: Provider) => {
-    log('claimFees', curve.chainId)
+  claimFees: async (activeKey: string, curve: CurveApi, provider: Provider, key: claimButtonsKey) => {
+    log('claimFees', curve.chainId, key)
     let resp = { activeKey, hash: '', error: '' }
 
     try {
-      resp.hash = await curve.boosting.claimFees()
+      const isClaim3Crv = key === claimButtonsKey['3CRV']
+      resp.hash = isClaim3Crv ? await curve.boosting.claimFees() : await curve.boosting.claimFeesCrvUSD()
       await helpers.waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {

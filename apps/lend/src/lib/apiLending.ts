@@ -33,12 +33,12 @@ export const helpers = {
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
-    activeBand: number | null | undefined
+    oraclePriceBand: number | null | undefined
   ) => {
-    if (typeof userLiquidationBand !== null && activeBand === null) {
+    if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
       return false
-    } else if (typeof activeBand !== 'undefined' && activeBand !== null) {
-      return userFirstBand <= activeBand + 2
+    } else if (typeof oraclePriceBand === 'number') {
+      return userFirstBand <= oraclePriceBand + 2
     }
     return false
   },
@@ -457,25 +457,27 @@ const user = {
       .process(async (owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
         const { owm } = owmData
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances] = await Promise.all([
-          owm.userState(),
-          owm.userHealth(),
-          owm.userHealth(false),
-          owm.userRange(),
-          owm.userBands(),
-          owm.userPrices(),
-          owm.userBandsBalances(),
-          // owm.userLoss(),
-        ])
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand] =
+          await Promise.all([
+            owm.userState(),
+            owm.userHealth(),
+            owm.userHealth(false),
+            owm.userRange(),
+            owm.userBands(),
+            owm.userPrices(),
+            owm.userBandsBalances(),
+            owm.oraclePriceBand(),
+            // owm.userLoss(),
+          ])
 
         const resp = await owm.stats.bandsInfo()
-        const { activeBand, liquidationBand } = resp ?? {}
+        const { liquidationBand } = resp ?? {}
 
         const reversedUserBands = _reverseBands(bands)
         const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
           reversedUserBands[0],
           liquidationBand,
-          activeBand
+          oraclePriceBand
         )
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
@@ -2048,8 +2050,10 @@ async function submit(activeKey: string, submitFn: () => Promise<string>, provid
   }
 }
 
-function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string>, slippage: string) {
-  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? '', isHighPriceImpact: false }
+function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | undefined>, slippage: string) {
+  let resp = { priceImpact: fulfilledValue(priceImpactResp) ?? 'N/A', isHighPriceImpact: false }
+
+  if (resp.priceImpact === 'N/A') return resp
 
   if (+resp.priceImpact > 0 && +slippage > 0) {
     resp.isHighPriceImpact = +resp.priceImpact > +slippage

@@ -73,7 +73,7 @@ const Page: NextPage = () => {
     myHealth: { name: t`My health` },
     myWalletCollateral: { name: t`Wallet balance` },
     myWalletBorrowed: { name: t`Wallet balance` },
-    myVaultShares: { name: t`My vault shares` },
+    myVaultShares: { name: t`Earning deposits` },
     tokenCollateral: { name: t`Collateral` },
     tokenBorrow: { name: t`Borrow` },
     tokenSupply: { name: t`Supply` },

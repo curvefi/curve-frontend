@@ -10,7 +10,7 @@ import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/components/PageL
 import { DEFAULT_FORM_VALUES, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/constants'
 import { _showNoLoanFound } from '@/utils/helpers'
-import { _biCalculatePercentage, _biIsGreaterThan, _biIsGreaterThanOrEqualTo, _biSum } from '@/ui/utils'
+import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@/shared/curve-lib'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getCollateralListPathname } from '@/utils/utilsRouter'
@@ -337,8 +337,8 @@ const LoanRepay = ({
       const { borrowed: stateBorrowed, debt: stateDebt } = state
       const { borrowed: userBorrowed } = userBalances
 
-      const isPayableWithStateBorrowed = _biIsGreaterThanOrEqualTo(stateBorrowed, stateDebt, borrowedTokenDecimals)
-      const isPayableWithWalletBorrowed = _biIsGreaterThanOrEqualTo(userBorrowed, stateDebt, borrowedTokenDecimals)
+      const isPayableWithStateBorrowed = isGreaterThanOrEqualTo(stateBorrowed, stateDebt, borrowedTokenDecimals)
+      const isPayableWithWalletBorrowed = isGreaterThanOrEqualTo(userBorrowed, stateDebt, borrowedTokenDecimals)
 
       return (
         !signerAddress || disable || !!expectedBorrowed || !(isPayableWithWalletBorrowed || isPayableWithStateBorrowed)
@@ -410,8 +410,8 @@ const LoanRepay = ({
 
               if (!expectedBorrowed && state && borrowedTokenDecimals) {
                 const { borrowed: stateBorrowed, debt: stateDebt } = state
-                const totalRepay = _biSum([stateBorrowed, userBorrowed], borrowedTokenDecimals)
-                const isFullRepay = _biIsGreaterThanOrEqualTo(totalRepay, stateDebt, borrowedTokenDecimals)
+                const totalRepay = sum([stateBorrowed, userBorrowed], borrowedTokenDecimals)
+                const isFullRepay = isGreaterThanOrEqualTo(totalRepay, stateDebt, borrowedTokenDecimals)
                 updateFormValues({ userBorrowed, isFullRepay })
                 return
               }
@@ -434,10 +434,10 @@ const LoanRepay = ({
                 const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
                   userLoanDetailsResp?.details?.state ?? {}
 
-                const amountNeeded = _biSum([stateDebt, stateBorrowed], borrowedTokenDecimals)
-                const amountNeededWithInterestRate = amountNeeded + _biCalculatePercentage(amountNeeded, 1n)
+                const amountNeeded = sum([stateDebt, stateBorrowed], borrowedTokenDecimals)
+                const amountNeededWithInterestRate = amountNeeded + getPercentage(amountNeeded, 1n)
 
-                if (_biIsGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
+                if (isGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
                   updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
                   return
                 }

@@ -3,14 +3,13 @@ import type { FilterKey, PagePoolList, PoolListFilter, SearchParams } from '@/co
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFocusRing } from '@react-aria/focus'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
 import {
   DEFAULT_FORM_STATUS,
   DEFAULT_SEARCH_PARAMS,
   getPoolDatasCached,
-  getPoolListActiveKey
+  getPoolListActiveKey,
 } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
@@ -22,6 +21,7 @@ import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/
 import { getUserActiveKey } from '@/store/createUserSlice'
 import networks from '@/networks'
 import useTokensMapper from '@/hooks/useTokensMapper'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
@@ -43,6 +43,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const { tokensMapper } = useTokensMapper(rChainId)
+  const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
@@ -68,6 +69,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -123,7 +125,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
         rewardsApyMapperCachedOrApi,
         volumeMapperCachedOrApi,
         tvlMapperCachedOrApi,
-        userPoolList
+        userPoolList,
+        campaignRewardsMapper
       )
     },
     [
@@ -134,7 +137,9 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
       userPoolList,
-    ]);
+      campaignRewardsMapper,
+    ]
+  )
 
   usePageVisibleInterval(
     useCallback(() => {
@@ -151,6 +156,13 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tvlMapperCachedOrApi, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   const showInPoolColumn = !!curve?.signerAddress
   let colSpan = isMdUp ? 7 : 4

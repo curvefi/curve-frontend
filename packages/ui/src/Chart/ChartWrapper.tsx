@@ -15,7 +15,6 @@ import { useState, useRef, useEffect } from 'react'
 import styled from 'styled-components'
 import { cloneDeep } from 'lodash'
 
-import DateRangePicker from 'ui/src/DateRangePicker'
 import Button from 'ui/src/Button/Button'
 import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
@@ -23,7 +22,6 @@ import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
 import Checkbox from 'ui/src/Checkbox'
-import Box from 'ui/src/Box'
 
 type Props = {
   chartType: ChartType
@@ -50,7 +48,7 @@ type Props = {
   liqRangeNewVisible?: boolean
   lastFetchEndTime: number
   refetchingCapped: boolean
-  selectChartList?: LabelList[]
+  selectChartList: LabelList[]
   latestOraclePrice?: string
 }
 
@@ -101,7 +99,7 @@ const ChartWrapper = ({
   latestOraclePrice,
 }: Props) => {
   const [magnet, setMagnet] = useState(false)
-  const clonedOhlcData = cloneDeep(ohlcData)
+  const clonedOhlcData = [...ohlcData]
 
   const wrapperRef = useRef(null)
 
@@ -154,15 +152,15 @@ const ChartWrapper = ({
       <ContentWrapper>
         <SectionHeader>
           <ChartSelectGroup>
-            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined && flipChart !== undefined ? (
+            {selectedChartIndex !== undefined && setChartSelectedIndex !== undefined ? (
               <>
                 <DialogSelectChart
-                  isDisabled={chartStatus !== 'READY'}
+                  isDisabled={false}
                   selectedChartIndex={selectedChartIndex}
                   selectChartList={selectChartList ?? []}
                   setChartSelectedIndex={setChartSelectedIndex}
                 />
-                {selectedChartIndex > 1 && (
+                {selectedChartIndex > 1 && flipChart !== undefined && (
                   <StyledFlipButton onClick={() => flipChart()} variant={'icon-outlined'}>
                     <StyledFLipIcon name={'ArrowsHorizontal'} size={16} aria-label={'Flip tokens'} />
                   </StyledFlipButton>
@@ -205,14 +203,16 @@ const ChartWrapper = ({
           toggleLiqRangeNewVisible &&
           toggleLiqRangeCurrentVisible && (
             <TipWrapper>
-              <StyledCheckbox
-                fillColor="var(--chart-oracle-price-line)"
-                blank
-                isSelected={oraclePriceVisible}
-                onChange={() => toggleOraclePriceVisible()}
-              >
-                Oracle Price
-              </StyledCheckbox>
+              {oraclePriceData && oraclePriceData?.length > 0 && (
+                <StyledCheckbox
+                  fillColor="var(--chart-oracle-price-line)"
+                  blank
+                  isSelected={oraclePriceVisible}
+                  onChange={() => toggleOraclePriceVisible()}
+                >
+                  Oracle Price
+                </StyledCheckbox>
+              )}
               {liquidationRange?.new && toggleLiqRangeNewVisible && (
                 <StyledCheckbox
                   fillColor="var(--chart-liq-range)"
@@ -270,7 +270,9 @@ const ChartWrapper = ({
           <StyledSpinnerWrapper
             minHeight={chartExpanded ? chartHeight.expanded.toString() + 'px' : chartHeight.standard.toString() + 'px'}
           >
-            <ErrorMessage>{'There was an error fetching the Chart data.'}</ErrorMessage>
+            <ErrorMessage>{`Unable to fetch ${
+              selectedChartIndex !== undefined ? selectChartList?.[selectedChartIndex].label : selectChartList[0].label
+            } data.`}</ErrorMessage>
             <RefreshButton
               size="small"
               variant="text"

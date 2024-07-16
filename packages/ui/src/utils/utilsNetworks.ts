@@ -16,6 +16,7 @@ import {
   RCFraxtalLogo,
   RCXLayerLogo,
   RCXLayerWhiteLogo,
+  RCMantleLogo,
 } from 'ui/src/images'
 
 const CURVE_IMAGE_ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
@@ -31,6 +32,12 @@ const NETWORK_CONFIG_DEFAULT = {
     imageBaseurl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
     listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
     tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
+  },
+  rewards: {
+    baseUrl: 'https://cdn.jsdelivr.net',
+    imageBaseUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
+    campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaign-list.json',
+    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/reward-tags.json',
   },
   isActiveNetwork: true,
 }
@@ -314,7 +321,7 @@ export const baseNetworksConfig = {
     name: 'Mantle',
     id: 'mantle' as const,
     hex: '0x1388',
-    icon: RCEthereumLogo,
+    icon: RCMantleLogo,
     imageBaseUrl: `${CURVE_IMAGE_ASSETS_BASE_PATH}/images/assets/`,
     networkId: 5000 as const,
     orgUIPath: '',

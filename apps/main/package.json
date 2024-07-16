@@ -18,12 +18,13 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "^2.59.1",
+    "@curvefi/api": "^2.61.8",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.0.1",
     "cross-fetch": "^3.1.5",
     "dayjs": "^1.11.7",
+    "external-rewards": "*",
     "ethers": "^6.9.0",
     "focus-visible": "5.2.0",
     "fuse.js": "^6.6.2",
@@ -43,6 +44,7 @@
     "react-is": "16.13.1",
     "react-router-dom": "^6.3.0",
     "react-stately": "3.18.0",
+    "curve-lib": "*",
     "sharp": "^0.32.6",
     "styled-components": "5.3.1",
     "swr": "^2.2.2",

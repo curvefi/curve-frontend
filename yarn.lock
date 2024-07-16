@@ -1406,21 +1406,29 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@curvefi/api@^2.59.1":
-  version "2.59.1"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.59.1.tgz#2fa765feddd70477d3ae2beb23808bd4f354c63a"
-  integrity sha512-kyCyvejIL9WsNn45EIOozfcmODFcCQ9VBXuD3ne+yvi/yQntK452qDslONwmBPzN/8xBd8e7dOGR5m+KPzXDIg==
+"@curvefi/api@^2.61.8":
+  version "2.61.8"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.61.8.tgz#b6ab2ef901aea9a10925e7f0d6edaf6c78a19aef"
+  integrity sha512-KLwS8PrUILoOkeRwp5v0VOLbmfE+uBdLQdTSg3eWIO/L+HXoOJm+R3E4Y0msFAFgn8q6fBzptMsbs4+XZEXuNQ==
   dependencies:
+    "@curvefi/ethcall" "6.0.7"
     axios "^0.21.1"
     bignumber.js "^9.0.1"
-    ethcall "6.0.6"
     ethers "^6.11.0"
     memoizee "^0.4.15"
 
-"@curvefi/lending-api@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-2.1.0.tgz#c56489fcfe5862f112606531d89d9000fb2aa288"
-  integrity sha512-dQk/Fz1OZpB1toKkhFlm8pt77VsANSuoMPHCgK77g86y9NOBwkktiDlDQmDCBMudONCVmE3PkAshXPj8i8tR5g==
+"@curvefi/ethcall@6.0.7":
+  version "6.0.7"
+  resolved "https://registry.yarnpkg.com/@curvefi/ethcall/-/ethcall-6.0.7.tgz#2f12919c65d76febb32a5440f63cc81ec0de01ea"
+  integrity sha512-YIwGVWqtSrOrLooLFqZzftJWbf5Nx9zJlcN7yWW0ICaaTARJ1Ks57FMJYj15WftsyCsp5KWYYe8G513l2EsBFg==
+  dependencies:
+    "@types/node" "^20.2.5"
+    abi-coder "^5.0.0"
+
+"@curvefi/lending-api@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@curvefi/lending-api/-/lending-api-2.1.1.tgz#b727cab936984575cd5d9ebbe3980d849f8d9b16"
+  integrity sha512-jY1RIO1uHrIznpJW8XP/Up52dWlAi+okqaL7blIXcPc+t+hhdcepGGswnm6eqW1m0OBcfIwoCsDZD5N/asfrGw==
   dependencies:
     axios "^0.21.1"
     bignumber.js "^9.0.1"
@@ -1428,10 +1436,10 @@
     ethers "^6.10.0"
     memoizee "^0.4.15"
 
-"@curvefi/stablecoin-api@^1.5.3":
-  version "1.5.3"
-  resolved "https://registry.yarnpkg.com/@curvefi/stablecoin-api/-/stablecoin-api-1.5.3.tgz#c87ae2f2d670ea35eeb00e864b9e6cf88626da4b"
-  integrity sha512-l+GpY3npP5PiLR1z/mG9o9nlW95tM9DhiG55/kiDrdV8hA+2/+j4PzbFiHDUP61TOZ9J79DqwgpHy92yGwIkDA==
+"@curvefi/stablecoin-api@^1.5.4":
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/@curvefi/stablecoin-api/-/stablecoin-api-1.5.4.tgz#e22c6d945827724871715d44d544847fa854176f"
+  integrity sha512-cT5IF2s0QyB/A/szVbifjyWNgA/8Rj7rLN1g0XLbQWUUW6uFr/jOFicaIpxigfFRAGQQ5jyTuTeQHfnNHx/vvQ==
   dependencies:
     "@ethersproject/networks" "^5.5.0"
     axios "^0.21.1"
@@ -9401,14 +9409,6 @@ eth-sig-util@^1.4.2:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
-ethcall@6.0.6:
-  version "6.0.6"
-  resolved "https://registry.yarnpkg.com/ethcall/-/ethcall-6.0.6.tgz#42189442a97a49ff13c8fdf826c45f03c6a73df3"
-  integrity sha512-RV96nKXNRMImCfi1cNuh2LCP+wiEnAwui3MjC4+eKnzohGHY0T5c+T6+E2io7a0zgp/DfczZeZP4DdN0SLM5cQ==
-  dependencies:
-    "@types/node" "^20.2.5"
-    abi-coder "^5.0.0"
-
 ethcall@^4.2.5:
   version "4.8.13"
   resolved "https://registry.npmjs.org/ethcall/-/ethcall-4.8.13.tgz#20b45cfbfea721d1ae66d5a53c96a1fe138390a0"
@@ -14682,7 +14682,14 @@ string_decoder@~1.1.1:
   dependencies:
     safe-buffer "~5.1.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -15811,7 +15818,7 @@ workerpool@6.2.1:
   resolved "https://registry.yarnpkg.com/workerpool/-/workerpool-6.2.1.tgz#46fc150c17d826b86a008e5a4508656777e9c343"
   integrity sha512-ILEIE97kDZvF9Wb9f6h5aXK4swSlKGUcOEGiIYb2OOu/IrDU9iwj0fD//SsA6E5ibwJxpEvhullJY4Sl4GcpAw==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -15824,6 +15831,15 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

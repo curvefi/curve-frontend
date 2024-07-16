@@ -1,6 +1,7 @@
 import { t } from '@lingui/macro'
 
-import { formatNumber, weiToEther } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
+import { weiToEther } from '@/shared/curve-lib'
 import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 import Item from '@/ui/Items/Item'
 import Items from '@/ui/Items/Items'

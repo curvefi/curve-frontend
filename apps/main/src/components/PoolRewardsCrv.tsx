@@ -22,38 +22,44 @@ const PoolRewardsCrv = ({
 }) => {
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gaugeStatus || {}
 
-  const RewardsNudging = () => (
-    <StyledRewardsNudge
-      tooltip={
-        <Trans>
-          This pool has CRV rewards that aren’t streaming yet.
-          <br />
-          Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward
-          streaming for you and everyone else!
-        </Trans>
-      }
-      tooltipProps={{ minWidth: '330px' }}
-    >
-      <RewardsNudgingIcon name="Hourglass" size={20} />
-    </StyledRewardsNudge>
-  )
+  const RewardsNudging = () => {
+    if (!rewardsNeedNudging) return null
+    return (
+      <StyledRewardsNudge
+        tooltip={
+          <Trans>
+            This pool has CRV rewards that aren’t streaming yet.
+            <br />
+            Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward
+            streaming for you and everyone else!
+          </Trans>
+        }
+        tooltipProps={{ minWidth: '330px' }}
+      >
+        <RewardsNudgingIcon name="Hourglass" size={20} />
+      </StyledRewardsNudge>
+    )
+  }
 
-  const CrvRewardsStuckInBridge = () => (
-    <IconTooltip minWidth="330px" customIcon={<StuckInBridgeIcon name="Close" size={16} />}>
-      <Trans>
-        This pool has CRV rewards that aren’t currently being distributed.
-        <br />
-        This pool has a very small amount of rewards waiting to be distributed to it; but since the amount of rewards is
-        very small, the bridge used to send these CRV tokens over is holding onto those tokens until they grow to an
-        amount big enough to be bridged. If this pool continues receiving votes, the amount of tokens to be distributed
-        will grow every Thursday, and eventually unlock and be distributed then.
-      </Trans>
-    </IconTooltip>
-  )
+  const CrvRewardsStuckInBridge = () => {
+    if (!areCrvRewardsStuckInBridge) return null
+    return (
+      <IconTooltip minWidth="330px" customIcon={<StuckInBridgeIcon name="Close" size={16} />}>
+        <Trans>
+          This pool has CRV rewards that aren’t currently being distributed.
+          <br />
+          This pool has a very small amount of rewards waiting to be distributed to it; but since the amount of rewards
+          is very small, the bridge used to send these CRV tokens over is holding onto those tokens until they grow to
+          an amount big enough to be bridged. If this pool continues receiving votes, the amount of tokens to be
+          distributed will grow every Thursday, and eventually unlock and be distributed then.
+        </Trans>
+      </IconTooltip>
+    )
+  }
 
   const CrvRewardsText = ({ crv }: { crv: RewardsApy['crv'] }) => {
     const [base, boosted] = crv
-    if (!base && !boosted) return <></>
+    if (!base && !boosted) return null
     const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
 
     if (!!boosted) {
@@ -73,7 +79,7 @@ const PoolRewardsCrv = ({
       return ''
     } else if (rewardsNeedNudging || areCrvRewardsStuckInBridge) {
       return `${formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })} CRV`
-    } else if (rewardsApy?.crv) {
+    } else if (rewardsApy?.crv && (rewardsApy?.crv[0] !== 0 || rewardsApy?.crv[1] !== 0)) {
       return <CrvRewardsText crv={rewardsApy?.crv ?? []} />
     }
     return ''
@@ -83,14 +89,16 @@ const PoolRewardsCrv = ({
     <ChipInactive>Inactive gauge</ChipInactive>
   ) : (
     <>
-      <Chip
-        isBold={isHighlight}
-        size="md"
-        tooltip={!!rewardsApy ? t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)` : ''}
-        tooltipProps={{ placement: 'bottom end' }}
-      >
-        {rewardsCrvLabel}
-      </Chip>
+      {rewardsCrvLabel ? (
+        <Chip
+          isBold={isHighlight}
+          size="md"
+          tooltip={!!rewardsApy ? t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)` : ''}
+          tooltipProps={{ placement: 'bottom end' }}
+        >
+          {rewardsCrvLabel}
+        </Chip>
+      ) : null}
       {!!rewardsApy && areCrvRewardsStuckInBridge && <CrvRewardsStuckInBridge />}
       {!!rewardsApy && rewardsNeedNudging && <RewardsNudging />}
     </>

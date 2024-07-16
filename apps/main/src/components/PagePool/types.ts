@@ -33,6 +33,7 @@ export type PageTransferProps = {
 }
 
 export type TransferProps = {
+  chainIdPoolId: string
   imageBaseUrl: string
   poolAlert: PoolAlert | null
   maxSlippage: string

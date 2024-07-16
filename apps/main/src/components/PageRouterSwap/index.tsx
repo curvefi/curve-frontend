@@ -66,7 +66,7 @@ const QuickSwap = ({
   const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
   const formStatus = useStore((state) => state.quickSwap.formStatus)
   const formValues = useStore((state) => state.quickSwap.formValues)
-  const globalMaxSlippage = useStore((state) => state.maxSlippage)
+  const globalMaxSlippage = useStore((state) => state.maxSlippage['router'])
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
@@ -514,6 +514,7 @@ const QuickSwap = ({
         <DetailInfoSlippageTolerance
           maxSlippage={globalMaxSlippage || routesAndOutput?.maxSlippage}
           testId="slippage-tolerance"
+          stateKey="router"
         />
       </div>
 

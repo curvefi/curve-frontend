@@ -38,7 +38,7 @@ const TCellRewards = ({
           <PoolRewardsCrv isHighlight={isHighlightCrv} poolData={poolData} rewardsApy={rewardsApy} />
           <TableCellRewardsOthers isHighlight={isHighlightOther} rewardsApy={rewardsApy} />
         </Wrapper>
-        <TableCellRewardsGauge gauge={poolData?.pool?.gauge} searchText={searchText} />
+        <TableCellRewardsGauge address={poolData?.pool?.gauge.address} searchText={searchText} />
       </div>
     )
   }

@@ -71,7 +71,7 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
 
   return (
     <>
-      {(isValidAddress(poolDataCacheOrApi.pool.gauge) || poolDataCacheOrApi.isGaugeKilled) && (
+      {(isValidAddress(poolDataCacheOrApi.pool.gauge.address) || poolDataCacheOrApi.isGaugeKilled) && (
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ label, formType }, idx) => {

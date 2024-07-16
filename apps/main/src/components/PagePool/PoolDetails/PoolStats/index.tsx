@@ -60,7 +60,9 @@ const PoolStats: React.FC<PoolStatsProps> = ({
             <CurrencyReserves rChainId={rChainId} rPoolId={rPoolId} tvl={tvl} tokensMapper={tokensMapper} />
             {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
-              {poolAlert && !poolAlert.isDisableDeposit && <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>}
+              {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
+                <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+              )}
               {tokenAlert && tokenAlert.isInformationOnly && <AlertBox {...tokenAlert}>{tokenAlert.message}</AlertBox>}
 
               {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
@@ -116,7 +118,11 @@ const MainStatsContainer = styled(Box)`
 const MainStatsWrapper = styled(Box)`
   align-items: flex-start;
   display: grid;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem var(--spacing-narrow);
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    padding: 1.5rem var(--spacing-normal);
+  }
 
   @media (min-width: ${breakpoints.lg}rem) {
     padding: 1.5rem;

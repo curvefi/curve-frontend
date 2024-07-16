@@ -1,4 +1,4 @@
-import { weiToEther } from '@/ui/utils/utilsWeb3'
+import { weiToEther } from '@/shared/curve-lib'
 
 export function getMaxAmountMinusGas(estimatedGas: EstimatedGas, gasCost: number, tokenBalance: string) {
   const parsedEstimatedGas = Array.isArray(estimatedGas) ? estimatedGas[0] + estimatedGas[1] : estimatedGas

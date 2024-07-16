@@ -2,7 +2,8 @@ import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber, weiToEther } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
+import { weiToEther } from '@/shared/curve-lib'
 import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 
 import Box from '@/ui/Box'

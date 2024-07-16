@@ -18,7 +18,7 @@ import { ExternalLink } from '@/ui/Link'
 import TokenIcon from '@/components/TokenIcon'
 import Icon from '@/ui/Icon'
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import { ExternalLinkToken } from '@/components/PagePool/PoolDetails/CurrencyReserves/styles'
+import TextEllipsis from '@/ui/TextEllipsis'
 
 type PoolParametersProps = {
   pricesApi: boolean
@@ -35,8 +35,9 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
 
-  const convertSmallNumber = (number: number) => formatNumber(number / 10 ** 8, { showAllFractionDigits: true })
-  const convertNumber = (number: number) => formatNumber(number / 10 ** 18, { showAllFractionDigits: true })
+  const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { showAllFractionDigits: true })
+  const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { showAllFractionDigits: true })
+  const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { showAllFractionDigits: true })
 
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolData.parameters ?? {}
 
@@ -67,14 +68,16 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
   }
 
   const returnPoolType = (poolType: string, coins: number) => {
-    if (poolType === 'main') return t`Stableswap`
-    if (poolType === 'factory') return t`Stableswap`
-    if (poolType === 'stableswapng') return t`Stableswap-NG`
-    if (poolType === 'crypto' && coins === 2) return t`Two Coin Cryptoswap`
-    if (poolType === 'factory_crypto') return t`Two Coin Cryptoswap`
-    if (poolType === 'crypto' && coins === 3) return t`Tricrypto`
-    if (poolType === 'factory_tricrypto') return t`Three Coin Cryptoswap-NG`
-    if (poolType === 'crvusd') return 'crvUSD'
+    const isCrypto = poolData.pool.isCrypto
+    const isNg = poolData.pool.isNg
+
+    if (poolData.pool.isLlamma) return 'Llamma'
+    if (!isCrypto && !isNg) return t`Stableswap`
+    if (!isCrypto && isNg) return t`Stableswap-NG`
+    if (isCrypto && !isNg && coins === 2) return t`Two Coin Cryptoswap`
+    if (isCrypto && !isNg && coins === 3) return t`Tricrypto`
+    if (isCrypto && isNg && coins === 2) return t`Two Coin Cryptoswap-NG`
+    if (isCrypto && isNg && coins === 3) return t`Three Coin Cryptoswap-NG`
   }
 
   const returnAssetType = (id: number) => {
@@ -117,7 +120,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
           </PoolParameter>
         </SectionWrapper>
         {/* Coins with Asset types */}
-        {poolData.pool.isStableNg && pricesData.asset_types && (
+        {poolData.pool.isNg && pricesData.asset_types && (
           <SectionWrapper>
             <SectionTitle>{t`Coins:`}</SectionTitle>
             {poolData.tokens.map((token, idx) => (
@@ -139,7 +142,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
                       <Icon name="Copy" size={16} />
                     </StyledIconButton>
                   </>
-                  {poolData.pool.isStableNg && pricesData.asset_types && (
+                  {poolData.pool.isNg && pricesData.asset_types && (
                     <AssetType>{returnAssetType(pricesData.asset_types[idx])}</AssetType>
                   )}
                 </Box>
@@ -176,13 +179,13 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
           {pricesApi && snapshotData.mid_fee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Mid Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertSmallNumber(snapshotData.mid_fee)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e8(snapshotData.mid_fee)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.out_fee !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Out Fee:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertSmallNumber(snapshotData.out_fee)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e8(snapshotData.out_fee)}</PoolParameterValue>
             </PoolParameter>
           )}
           {snapshotData.a !== null && (
@@ -251,31 +254,31 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
           {pricesApi && snapshotData.offpeg_fee_multiplier !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Off Peg Multiplier:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertNumber(snapshotData.offpeg_fee_multiplier)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e10(snapshotData.offpeg_fee_multiplier)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.gamma !== null && (
             <PoolParameter>
               <PoolParameterTitle>Gamma:</PoolParameterTitle>
-              <PoolParameterValue>{pricesApi ? convertNumber(snapshotData.gamma) : gamma}</PoolParameterValue>
+              <PoolParameterValue>{pricesApi ? convert1e18(snapshotData.gamma) : gamma}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.allowed_extra_profit !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Allowed Extra Profit:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertNumber(snapshotData.allowed_extra_profit)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.allowed_extra_profit)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.fee_gamma !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Fee Gamma:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertNumber(snapshotData.fee_gamma)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.fee_gamma)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.adjustment_step !== null && (
             <PoolParameter>
               <PoolParameterTitle>{t`Adjustment Step:`}</PoolParameterTitle>
-              <PoolParameterValue>{convertNumber(snapshotData.adjustment_step)}</PoolParameterValue>
+              <PoolParameterValue>{convert1e18(snapshotData.adjustment_step)}</PoolParameterValue>
             </PoolParameter>
           )}
           {pricesApi && snapshotData.ma_half_time !== null && (
@@ -330,13 +333,13 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
             {snapshotData.xcp_profit !== null && (
               <StatsContainer>
                 <StatsSymbol>{t`Xcp Profit:`}</StatsSymbol>
-                <StatsData>{convertNumber(snapshotData.xcp_profit)}</StatsData>
+                <StatsData>{convert1e18(snapshotData.xcp_profit)}</StatsData>
               </StatsContainer>
             )}
             {snapshotData.xcp_profit_a !== null && (
               <StatsContainer>
                 <StatsSymbol>{t`Xcp Profit A:`}</StatsSymbol>
-                <StatsData>{convertNumber(snapshotData.xcp_profit_a)}</StatsData>
+                <StatsData>{convert1e18(snapshotData.xcp_profit_a)}</StatsData>
               </StatsContainer>
             )}
           </StatsSection>
@@ -482,7 +485,7 @@ const PoolParameterValue = styled.p`
 `
 
 const PoolParameterLink = styled(ExternalLink)`
-  margin: var(--spacing-1) 0 0 auto;
+  margin: auto 0 0 auto;
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   color: inherit;
@@ -526,6 +529,11 @@ const StatsData = styled.p`
   margin-left: auto;
   font-weight: var(--bold);
   font-size: var(--font-size-2);
+`
+
+export const ExternalLinkToken = styled(TextEllipsis)`
+  font-weight: bold;
+  text-transform: initial;
 `
 
 export default PoolParameters

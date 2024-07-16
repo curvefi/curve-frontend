@@ -43,8 +43,9 @@ import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
 
-import PoolInfoData from '@/components/PagePool/PoolDetails/PoolInfo'
+import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
+import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -76,10 +77,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   const { tokensMapper } = useTokensMapper(rChainId)
   const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
+  const chainIdPoolId = getChainPoolIdActiveKey(rChainId, rPoolId)
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
-  const globalMaxSlippage = useStore((state) => state.maxSlippage)
+  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
+  const globalMaxSlippage = useStore((state) => state.maxSlippage[chainIdPoolId])
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -93,6 +95,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
@@ -127,7 +130,10 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   }, [haveSigner, poolData?.pool.address, pricesApi, pricesApiPoolData, snapshotsMapper])
 
   const maxSlippage = useMemo(() => {
-    return pool ? (globalMaxSlippage ? globalMaxSlippage : pool?.isCrypto ? '0.1' : '0.03') : ''
+    if (globalMaxSlippage) return globalMaxSlippage
+    if (!pool) return ''
+
+    return pool.isCrypto ? '0.1' : '0.03'
   }, [globalMaxSlippage, pool])
 
   const navHeight = useMemo(() => {
@@ -227,6 +233,13 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     )
   }
 
+  // init rewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
+
   useEffect(() => {
     if (!isMdUp && chartExpanded) setChartExpanded(false)
   }, [chartExpanded, isMdUp, setChartExpanded])
@@ -266,6 +279,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
                   ) : (
                     <Swap
                       {...pageTransferProps}
+                      chainIdPoolId={chainIdPoolId}
                       imageBaseUrl={imageBaseUrl}
                       poolAlert={poolAlert}
                       maxSlippage={maxSlippage}
@@ -279,6 +293,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               ) : rFormType === 'deposit' ? (
                 <Deposit
                   {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
                   hasDepositAndStake={hasDepositAndStake}
                   imageBaseUrl={imageBaseUrl}
                   poolAlert={poolAlert}
@@ -291,6 +306,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               ) : rFormType === 'withdraw' ? (
                 <Withdraw
                   {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
                   imageBaseUrl={imageBaseUrl}
                   poolAlert={poolAlert}
                   maxSlippage={maxSlippage}
@@ -306,6 +322,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
         <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
+          {poolAddress && (
+            <Box margin="0 0 var(--spacing-2) 0">
+              <CampaignRewardsBanner poolAddress={poolAddress} />
+            </Box>
+          )}
           {pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
