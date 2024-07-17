@@ -118,6 +118,9 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
       <SectionItem>
         <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
       </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">{t`Branding`}</StyledExternalLink>
+      </SectionItem>
     </ResourcesWrapper>
   )
 }
@@ -209,6 +212,7 @@ const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
         `
       }
     }}
+  }
 `
 
 const FooterLogoWrapper = styled.div`

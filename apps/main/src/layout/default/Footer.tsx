@@ -157,6 +157,9 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
       <SectionItem>
         <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
       </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">Branding</StyledExternalLink>
+      </SectionItem>
     </ResourcesWrapper>
   )
 }
