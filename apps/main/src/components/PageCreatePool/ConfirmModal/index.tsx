@@ -423,8 +423,8 @@ const Transaction = styled(ExternalLink)`
   background-color: var(--page--background-color);
   padding: var(--spacing-2);
   p {
-    margin-right: auto;
     font-weight: var(--bold);
+    margin-right: var(--spacing-1);
   }
 `
 

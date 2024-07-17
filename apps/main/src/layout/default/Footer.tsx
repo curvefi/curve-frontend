@@ -80,6 +80,9 @@ export const CommunitySection = ({
       <SectionItem>
         <StyledExternalLink href="https://curvemonitor.com">Curve Monitor</StyledExternalLink>
       </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://crvhub.com/">Crvhub</StyledExternalLink>
+      </SectionItem>
     </CommunityWrapper>
   )
 }
@@ -98,6 +101,32 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
   return (
     <ResourcesWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
+        <StyledExternalLink href={`https://resources.curve.fi/`}>
+          <Trans>Resources</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi">
+          <Trans>Developer Docs</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">
+          <Trans>Contracts</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">Branding</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/integration/overview/">
+          <Trans>Integrations</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
         <StyledExternalLink href="https://docs.curve.fi/references/whitepapers/overview/">
           <Trans>Whitepaper</Trans>
         </StyledExternalLink>
@@ -105,18 +134,6 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
       <SectionItem>
         <StyledExternalLink href="https://docs.curve.fi/references/audits/">
           <Trans>Audits</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink
-          href={`${orgUIPath}/events/compound_usdt_iearn_busd_susdv2_pax_tbtc_ren_sbtc_hbtc_3pool_gusd_husd_usdk_usdn_linkusd_musd_rsv_dusd_pbtc_bbtc_obtc_ust_eurs_seth_aave_steth/Exchange`}
-        >
-          <Trans>Events</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">
-          <Trans>Contracts</Trans>
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
@@ -128,34 +145,14 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         <StyledExternalLink href={`${orgUIPath}/rootfaq`}>FAQ</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledInternalLink href="/integrations">
-          <Trans>Integrations</Trans>
-        </StyledInternalLink>
-      </SectionItem>
-      <SectionItem>
         <StyledExternalLink href={`${orgUIPath}/donate`}>
           <Trans>Donate</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi">
-          <Trans>Developer Docs</Trans>
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
         <StyledExternalLink href={`https://news.curve.fi/`}>
           <Trans>News</Trans>
         </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href={`https://resources.curve.fi/`}>
-          <Trans>Resources</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-
-      {/* section 3 */}
-      <SectionItem>
-        <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
       </SectionItem>
     </ResourcesWrapper>
   )
