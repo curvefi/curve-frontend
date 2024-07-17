@@ -68,6 +68,9 @@ export const CommunitySection = ({
     <SectionItem>
       <StyledExternalLink href="https://curvemonitor.com">{t`Curve Monitor`}</StyledExternalLink>
     </SectionItem>
+    <SectionItem>
+      <StyledExternalLink href="https://crvhub.com/">{t`Crvhub`}</StyledExternalLink>
+    </SectionItem>
   </CommunityWrapper>
 )
 
@@ -85,6 +88,21 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
   return (
     <ResourcesWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/">{t`Resources`}</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi">{t`Developer Docs`}</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">{t`Branding`}</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/integration/overview/">{t`Integrations`}</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
         <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin/blob/master/doc/curve-stablecoin.pdf">{t`Whitepaper`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
@@ -100,26 +118,7 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         <StyledExternalLink href={`${orgUIPath}/rootfaq`}>{t`FAQ`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledInternalLink href="/integrations">
-          <Trans>Integrations</Trans>
-        </StyledInternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi">{t`Developer Docs`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
         <StyledExternalLink href="https://news.curve.fi/">{t`News`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://resources.curve.fi/">{t`Resources`}</StyledExternalLink>
-      </SectionItem>
-
-      {/* section 3 */}
-      <SectionItem>
-        <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">{t`Branding`}</StyledExternalLink>
       </SectionItem>
     </ResourcesWrapper>
   )
