@@ -57,7 +57,7 @@ export const baseNetworksConfig = {
     rpcUrlConnectWallet: `https://eth.drpc.org`,
     symbol: 'ETH',
     scanAddressPath: (hash: string) => `https://etherscan.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://etherscan.com/tx/${hash}`,
+    scanTxPath: (hash: string) => `https://etherscan.io/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://etherscan.io/token/${hash}`,
   },
   10: {
