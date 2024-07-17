@@ -68,7 +68,7 @@ const CrvStats = () => {
           loading={veCrvLoading || veCrvFeesLoading}
           title={t`veCRV APR`}
           data={
-            <Box flex>
+            <Box flex flexGap="var(--spacing-1)">
               <SubTitleColumnData>
                 {`~${formatNumber(veCrvApr, {
                   showDecimalIfSmallNumberOnly: true,
