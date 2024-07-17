@@ -213,7 +213,7 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
     ],
   })
 
-  const result = fuse.search(filterValue, { limit: 10 })
+  const result = fuse.search(filterValue)
 
   return result.map((r) => r.item)
 }

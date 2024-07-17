@@ -34,6 +34,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
       <MainRow>
         <TitleComp>
           <BoxedDataComp>
+            {gaugeData.is_killed && <BoxedData isKilled>{t`Killed`}</BoxedData>}
             {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
             {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
             {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
@@ -275,13 +276,14 @@ const BoxColumn = styled.div`
   }
 `
 
-const BoxedData = styled.p`
-  border: 1px solid var(--gray-500);
+const BoxedData = styled.p<{ isKilled?: boolean }>`
   padding: var(--spacing-1);
   font-size: var(--font-size-1);
   font-weight: var(--bold);
   text-transform: capitalize;
   margin: auto 0 0;
+  border: 1px solid ${({ isKilled }) => (isKilled ? 'var(--chart-red)' : 'var(--gray-500);')};
+  color: ${({ isKilled }) => (isKilled ? 'var(--chart-red)' : 'inherit')};
   @media (min-width: 33.125rem) {
     margin: 0;
   }
