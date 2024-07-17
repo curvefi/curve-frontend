@@ -40,17 +40,13 @@ const AddGaugeLink = ({
 
     if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.pool.isNg && poolDataCacheOrApi.tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAPNG)
-    }
-    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
+    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 2) {
       setCurrentPoolType(TWOCOINCRYPTOSWAP)
-    }
-    if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
+    } else if (poolDataCacheOrApi.pool.isCrypto && poolDataCacheOrApi.tokens.length === 3) {
       setCurrentPoolType(THREECOINCRYPTOSWAP)
-    }
-    if (poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
+    } else if (poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
       setCurrentPoolType(STABLESWAP)
-    }
-    if (!poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
+    } else if (!poolDataCacheOrApi.pool.isNg && !poolDataCacheOrApi.pool.isCrypto) {
       setCurrentPoolType(STABLESWAPOLD)
     }
 
