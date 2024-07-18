@@ -120,7 +120,6 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
         cloneDeep(parsedTokensMapperNonSmallTvl)
       )
       get()[sliceKey].setStateByKey('loading', false)
-      get().storeCache.setStateByActiveKey('tokensMapper', chainIdStr, cloneDeep(cTokensMapper))
 
       return Object.keys(parsedPartialTokensMapper)
     },

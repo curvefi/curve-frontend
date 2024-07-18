@@ -4,7 +4,7 @@ import { Chip } from '@/ui/Typography'
 
 type Props = {
   isHighLight: boolean
-  tvlCached: Tvl | undefined
+  tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
 }
 

@@ -3,6 +3,7 @@ import type { SetState, GetState } from 'zustand'
 
 import { devtools, persist } from 'zustand/middleware'
 import create from 'zustand'
+import pick from 'lodash/pick'
 import merge from 'lodash/merge'
 
 import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
@@ -77,14 +78,22 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
 const cache = {
   name: 'curve-app-store-cache',
   partialize: (state: State) => {
-    return Object.fromEntries(
-      Object.entries(state).filter(([key]) => {
-        return ['storeCache'].includes(key)
-      })
-    )
+    try {
+      const picked = pick(state, [
+        'storeCache.hasDepositAndStake',
+        'storeCache.hasRouter',
+        'storeCache.poolsMapper',
+        'storeCache.tvlMapper',
+        'storeCache.volumeMapper',
+      ])
+      if (canAddToStorage(picked)) return picked
+      return {}
+    } catch (error) {
+      console.error(error)
+    }
   },
   merge: (persistedState, currentState) => merge(persistedState, currentState),
-  version: 16, // update version number to prevent UI from using cache
+  version: 18, // update version number to prevent UI from using cache
 }
 
 const useStore =
@@ -92,5 +101,13 @@ const useStore =
     ? create<State>(devtools(persist(store, cache)))
     : create<State>(persist(store, cache))
 // const useStore = isDevelopment ? create(devtools(store)) : create(store)
+
+// check if there are too much in storage
+function canAddToStorage<T extends Object>(storageObj: T) {
+  const maxSize = 5 * 1024 * 1024 // 5MB limit
+  const itemSize = (JSON.stringify(storageObj)?.length ?? 0) * 2
+
+  return maxSize >= itemSize
+}
 
 export default useStore

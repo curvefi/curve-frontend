@@ -55,7 +55,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const results = useStore((state) => state.poolList.result)
   const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
   const resultRewardsOtherCount = useStore((state) => state.poolList.resultRewardsOtherCount)
-  const rewardsApyMapperCached = useStore((state) => state.storeCache.rewardsApyMapper[rChainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
   const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
@@ -79,20 +78,13 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
   const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
   const poolDatasLength = (poolDatasCachedOrApi ?? []).length
-  const rewardsApyMapperCachedOrApi = useMemo(
-    () => rewardsApyMapper ?? rewardsApyMapperCached ?? {},
-    [rewardsApyMapper, rewardsApyMapperCached]
-  )
   const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
   const volumeMapperCachedOrApi = useMemo(
     () => volumeMapper ?? volumeMapperCached ?? {},
     [volumeMapper, volumeMapperCached]
   )
 
-  const rewardsApyMapperStr = useMemo(
-    () => getRewardsApyStr(rewardsApyMapper, rewardsApyMapperCached),
-    [rewardsApyMapper, rewardsApyMapperCached]
-  )
+  const rewardsApyMapperStr = useMemo(() => getRewardsApyStr(rewardsApyMapper, {}), [rewardsApyMapper])
 
   const userPoolListStr = useMemo(() => getUserPoolListStr(userPoolList), [userPoolList])
   const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapper), [volumeMapper])
@@ -122,7 +114,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
         rChainId,
         searchParams,
         poolDatasCachedOrApi,
-        rewardsApyMapperCachedOrApi,
+        rewardsApyMapper,
         volumeMapperCachedOrApi,
         tvlMapperCachedOrApi,
         userPoolList,
@@ -132,7 +124,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     [
       rChainId,
       poolDatasCachedOrApi,
-      rewardsApyMapperCachedOrApi,
+      rewardsApyMapper,
       setFormValues,
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
@@ -188,6 +180,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       return parsedFilters
     }
   }, [FILTERS, haveSigner, rChainId])
+
+  console.log({ result, poolDataMapperCached, tvlMapperCached })
 
   return (
     <>
@@ -292,7 +286,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
             </tr>
           ) : Array.isArray(result) &&
             Object.keys(poolDataMapperCached ?? {}).length &&
-            Object.keys(volumeMapperCached ?? {}).length &&
             Object.keys(tvlMapperCached ?? {}).length ? (
             <>
               {result.map((poolId: string, index: number) => (
