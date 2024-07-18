@@ -181,8 +181,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     }
   }, [FILTERS, haveSigner, rChainId])
 
-  console.log({ result, poolDataMapperCached, tvlMapperCached })
-
   return (
     <>
       <SearchWrapper>

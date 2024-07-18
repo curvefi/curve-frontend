@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
-import cloneDeep from 'lodash/cloneDeep'
 import countBy from 'lodash/countBy'
 
 import { log } from '@/utils'
@@ -56,13 +55,17 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
     },
     setTokensMapper: async (chainId, poolDatas) => {
-      get()[sliceKey].setStateByKey('loading', true)
+      const { pools } = get()
+      const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 
-      const chainTvl = networks[chainId].hideSmallPoolsTvl
-      const tvlMapper = get().pools.tvlMapper[chainId] ?? {}
-      const volumeMapper = get().pools.volumeMapper[chainId] ?? {}
-      let cTokensMapper: TokensMapper = cloneDeep(get().tokens.tokensMapper[chainId] ?? {})
-      let cTokensMapperNonSmallTvl: TokensMapper = cloneDeep(get().tokens.tokensMapperNonSmallTvl[chainId] ?? {})
+      sliceState.setStateByKey('loading', true)
+
+      const { hideSmallPoolsTvl: chainTvl, nativeTokens } = networks[chainId]
+      const tvlMapper = pools.tvlMapper[chainId] ?? {}
+      const volumeMapper = pools.volumeMapper[chainId] ?? {}
+      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(chainId)
+      let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
+      let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll } of poolDatas) {
@@ -80,7 +83,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
             const tokenVolume = counted[token] === 0 ? tokenMappedVolume + volume : tokenMappedVolume
 
             const obj: Token = {
-              ...(get().tokens.tokensMapper[chainId]?.[address] ?? DEFAULT_TOKEN),
+              ...(cTokensMapper[address] ?? DEFAULT_TOKEN),
               address,
               symbol: token,
               haveSameTokenName: false,
@@ -113,13 +116,9 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       }
 
       const chainIdStr = chainId.toString()
-      get()[sliceKey].setStateByActiveKey('tokensMapper', chainIdStr, cloneDeep(cTokensMapper))
-      get()[sliceKey].setStateByActiveKey(
-        'tokensMapperNonSmallTvl',
-        chainIdStr,
-        cloneDeep(parsedTokensMapperNonSmallTvl)
-      )
-      get()[sliceKey].setStateByKey('loading', false)
+      sliceState.setStateByActiveKey('tokensMapper', chainIdStr, cTokensMapper)
+      sliceState.setStateByActiveKey('tokensMapperNonSmallTvl', chainIdStr, parsedTokensMapperNonSmallTvl)
+      sliceState.setStateByKey('loading', false)
 
       return Object.keys(parsedPartialTokensMapper)
     },
@@ -145,6 +144,14 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
     str += tokenAddress.charAt(5)
     return str
   }, '')
+}
+
+export function _getDefaultTokenMapper(chainId: ChainId) {
+  const { address, symbol, wrappedAddress, wrappedSymbol } = networks[chainId].nativeTokens
+  return {
+    [address]: { ...DEFAULT_TOKEN, symbol: symbol, address: address },
+    [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },
+  }
 }
 
 export default createTokensSlice

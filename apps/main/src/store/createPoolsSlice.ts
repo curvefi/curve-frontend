@@ -208,8 +208,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         )
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
-        const showHideSmallPools = networks[curve.chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
-        const tokensNameMapper = parsedTokensNameMapper(poolDatas)
+        const showHideSmallPools = networks[chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
+        const nativeTokens = networks[chainId].nativeTokens
+        const tokensNameMapper = {
+          [nativeTokens.address]: nativeTokens.symbol,
+          [nativeTokens.wrappedAddress]: nativeTokens.wrappedSymbol,
+          ...parsedTokensNameMapper(poolDatas),
+        }
 
         set(
           produce((state: State) => {
