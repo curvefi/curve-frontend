@@ -43,4 +43,6 @@ export type TransferProps = {
   tokensMapper: TokensMapper
 } & PageTransferProps
 
-export type DetailInfoTypes = 'user' | 'pool' | 'advanced'
+export type DetailInfoTypes = 'user' | 'pool' | 'advanced' | 'gauge'
+
+export type PoolInfoTab = { key: DetailInfoTypes; label: string }
