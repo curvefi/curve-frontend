@@ -18,6 +18,10 @@ type SliceState = {
     locks: VeCrvDailyLock[]
     fetchStatus: FetchingState
   }
+  veCrvTopLockers: {
+    topLockers: VeCrvTopLocker[]
+    fetchStatus: FetchingState
+  }
   veCrvData: {
     totalVeCrv: number
     totalLockedCrv: number
@@ -34,6 +38,7 @@ export type VeCrvSlice = {
   [sliceKey]: SliceState & {
     getVeCrvFees(): Promise<void>
     getVeCrvLocks(): Promise<void>
+    getVeCrvTopLockers(): Promise<void>
     getVeCrvData(provider: any): Promise<void>
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -51,6 +56,10 @@ const DEFAULT_STATE: SliceState = {
   },
   veCrvLocks: {
     locks: [],
+    fetchStatus: 'LOADING',
+  },
+  veCrvTopLockers: {
+    topLockers: [],
     fetchStatus: 'LOADING',
   },
   veCrvData: {
@@ -127,6 +136,38 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         console.log(error)
         get()[sliceKey].setStateByKey('veCrvLocks', {
           locks: [],
+          fetchStatus: 'ERROR',
+        })
+      }
+    },
+    getVeCrvTopLockers: async () => {
+      get()[sliceKey].setStateByKey('veCrvTopLockers', {
+        topLockers: [],
+        fetchStatus: 'LOADING',
+      })
+
+      try {
+        const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/50')
+        const data: VeCrvTopLockersRes = await veCrvTopLockersRes.json()
+
+        const formattedData = data.users
+          .map((locker) => ({
+            ...locker,
+            locked: Math.floor(+locker.locked / 10 ** 18),
+            weight: Math.floor(+locker.weight / 10 ** 18),
+            weight_ratio: locker.weight_ratio,
+            unlock_time: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(locker.unlock_time).getTime())),
+          }))
+          .sort((a, b) => b.weight - a.weight)
+
+        get()[sliceKey].setStateByKey('veCrvTopLockers', {
+          topLockers: formattedData,
+          fetchStatus: 'SUCCESS',
+        })
+      } catch (error) {
+        console.log(error)
+        get()[sliceKey].setStateByKey('veCrvTopLockers', {
+          topLockers: [],
           fetchStatus: 'ERROR',
         })
       }
