@@ -81,14 +81,16 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
 `
 
 const FeesBox = styled(Box)`
-  min-width: 25rem;
+  @media (min-width: 25rem) {
+    min-width: 25rem;
+  }
 `
 
 const FeesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-  max-height: 31.25rem;
+  max-height: 25rem;
   overflow-y: auto;
   padding: 0 var(--spacing-3);
 `
