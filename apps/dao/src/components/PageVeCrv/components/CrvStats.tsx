@@ -90,6 +90,7 @@ const Wrapper = styled(Box)``
 const StatsRow = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: var(--spacing-4);
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);

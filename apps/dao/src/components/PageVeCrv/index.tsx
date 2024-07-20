@@ -4,6 +4,7 @@ import Box from '@/ui/Box'
 import CrvStats from './components/CrvStats'
 import VeCrvFees from './components/VeCrvFees'
 import DailyLocks from './components/DailyLocks'
+import TopLockers from './components/TopLockers'
 
 const VeCrv = () => {
   return (
@@ -11,9 +12,12 @@ const VeCrv = () => {
       <PageTitle>veCRV</PageTitle>
       <Content>
         <CrvStats />
-        <Box flex flexGap="var(--spacing-2)">
+        <Column>
           <VeCrvFees />
           <DailyLocks />
+        </Column>
+        <Box flex flexGap="var(--spacing-2)">
+          <TopLockers />
         </Box>
       </Content>
     </Wrapper>
@@ -47,6 +51,15 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
+`
+
+const Column = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  @media (min-width: 56.25rem) {
+    flex-direction: row;
+  }
 `
 
 export default VeCrv

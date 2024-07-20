@@ -259,6 +259,24 @@ declare global {
     locks: { day: string; amount: string }[]
   }
 
+  interface VeCrvTopLocker {
+    user: string
+    locked: number
+    weight: number
+    weight_ratio: number
+    unlock_time: string
+  }
+
+  interface VeCrvTopLockersRes {
+    users: {
+      user: string
+      locked: string
+      weight: string
+      weight_ratio: string
+      unlock_time: number
+    }[]
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
