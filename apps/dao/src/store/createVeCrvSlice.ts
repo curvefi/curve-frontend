@@ -1,6 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
+import produce from 'immer'
 import { formatUnits, formatEther, Contract } from 'ethers'
 import { contractVeCRV, contractCrv } from '@/store/contracts'
 import { abiVeCrv } from '@/store/abis'
@@ -22,6 +23,7 @@ type SliceState = {
     topLockers: VeCrvTopLocker[]
     fetchStatus: FetchingState
   }
+  topLockerFilter: TopLockerFilter
   veCrvData: {
     totalVeCrv: number
     totalLockedCrv: number
@@ -39,6 +41,7 @@ export type VeCrvSlice = {
     getVeCrvFees(): Promise<void>
     getVeCrvLocks(): Promise<void>
     getVeCrvTopLockers(): Promise<void>
+    setTopLockerFilter(filter: 'weight' | 'locked' | 'weight_ratio'): void
     getVeCrvData(provider: any): Promise<void>
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -62,6 +65,7 @@ const DEFAULT_STATE: SliceState = {
     topLockers: [],
     fetchStatus: 'LOADING',
   },
+  topLockerFilter: 'weight',
   veCrvData: {
     totalVeCrv: 0,
     totalLockedCrv: 0,
@@ -145,6 +149,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         topLockers: [],
         fetchStatus: 'LOADING',
       })
+      const filter = get()[sliceKey].topLockerFilter
 
       try {
         const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/50')
@@ -155,22 +160,36 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
             ...locker,
             locked: Math.floor(+locker.locked / 10 ** 18),
             weight: Math.floor(+locker.weight / 10 ** 18),
-            weight_ratio: locker.weight_ratio,
+            weight_ratio: Number(locker.weight_ratio.replace('%', '')),
             unlock_time: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(locker.unlock_time).getTime())),
           }))
-          .sort((a, b) => b.weight - a.weight)
+          .sort((a, b) => b[filter] - a[filter])
 
         get()[sliceKey].setStateByKey('veCrvTopLockers', {
           topLockers: formattedData,
+          filter: 'weight',
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
         console.log(error)
         get()[sliceKey].setStateByKey('veCrvTopLockers', {
           topLockers: [],
+          filter: 'weight',
           fetchStatus: 'ERROR',
         })
       }
+    },
+    setTopLockerFilter: (filter: TopLockerFilter) => {
+      const { topLockers } = get()[sliceKey].veCrvTopLockers
+
+      set(
+        produce((state) => {
+          state[sliceKey].topLockerFilter = filter
+          state[sliceKey].veCrvTopLockers.topLockers = [...topLockers].sort(
+            (a: VeCrvTopLocker, b: VeCrvTopLocker) => b[filter] - a[filter]
+          )
+        })
+      )
     },
     getVeCrvData: async (provider: any) => {
       get()[sliceKey].setStateByKey('veCrvData', {

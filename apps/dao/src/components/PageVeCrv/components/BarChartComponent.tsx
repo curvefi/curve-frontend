@@ -7,6 +7,7 @@ import CustomTooltip from './BarChartCustomTooltip'
 
 type Props = {
   data: VeCrvTopLocker[]
+  filter: TopLockerFilter
 }
 
 const COLORS = [
@@ -22,7 +23,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const BarChartComponent = ({ data }: Props) => {
+const BarChartComponent = ({ data, filter }: Props) => {
   const height = 500
   const labelWidth = 100
 
@@ -45,8 +46,8 @@ const BarChartComponent = ({ data }: Props) => {
           <XAxis
             type="number"
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            dataKey="weight"
-            tickFormatter={(weight) => formatNumberWithSuffix(weight)}
+            dataKey={filter}
+            tickFormatter={(value) => (filter === 'weight_ratio' ? `${value}%` : formatNumberWithSuffix(value))}
             tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
             axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
@@ -61,7 +62,7 @@ const BarChartComponent = ({ data }: Props) => {
             axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey="weight" label={false}>
+          <Bar dataKey={filter} label={false}>
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
