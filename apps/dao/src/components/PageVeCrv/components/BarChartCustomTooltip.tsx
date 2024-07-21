@@ -21,7 +21,7 @@ const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, Name
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
             {weight_ratio ? (
-              <TooltipData>{weight_ratio}</TooltipData>
+              <TooltipData>{weight_ratio}%</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
