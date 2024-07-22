@@ -8,7 +8,7 @@ import { formatNumber } from '@/ui/utils/utilsFormat'
 
 import Box from '@/ui/Box'
 
-const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { day, amount } = payload[0].payload
 
@@ -17,9 +17,9 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
         <TooltipTitle>{day}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
-            <TooltipDataTitle>{t`veCRV locked`}</TooltipDataTitle>
+            <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
             {amount ? (
-              <TooltipData>{formatNumber(amount)}</TooltipData>
+              <TooltipData>{formatNumber(amount, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -33,7 +33,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
 }
 
 const TooltipWrapper = styled.div`
-  background-color: var(--page--background-color);
+  background-color: var(--summary_content--background-color);
   padding: var(--spacing-3);
   border-radius: var(--border-radius-1);
   display: flex;
@@ -77,4 +77,4 @@ const TooltipDataNotAvailable = styled.p`
   font-style: italic;
 `
 
-export default CustomTooltip
+export default PositiveAndNegativeBarChartTooltip

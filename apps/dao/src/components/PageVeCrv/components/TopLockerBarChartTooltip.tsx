@@ -7,7 +7,7 @@ import { formatNumber } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 
-const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { user, locked, weight, weight_ratio, unlock_time } = payload[0].payload
 
@@ -59,7 +59,7 @@ const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, Name
 }
 
 const TooltipWrapper = styled.div`
-  background-color: var(--page--background-color);
+  background-color: var(--summary_content--background-color);
   padding: var(--spacing-3);
   border-radius: var(--border-radius-1);
   display: flex;
@@ -69,12 +69,6 @@ const TooltipWrapper = styled.div`
   @media (min-width: 25rem) {
     max-width: 15rem;
   }
-`
-
-const TooltipTitle = styled.p`
-  font-size: var(--font-size-3);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
 `
 
 const TooltipColumn = styled.div`
@@ -108,4 +102,4 @@ const TooltipDataNotAvailable = styled.p`
   font-style: italic;
 `
 
-export default BarChartCustomTooltip
+export default TopLockerBarChartTooltip
