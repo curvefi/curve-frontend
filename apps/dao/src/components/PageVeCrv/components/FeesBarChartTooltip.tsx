@@ -4,33 +4,27 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils/utilsFormat'
+
 import Box from '@/ui/Box'
 
-const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
+const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    const sevenDayDelta = payload[0].payload.gauge_relative_weight_7d_delta
-    const sixtyDayDelta = payload[0].payload.gauge_relative_weight_60d_delta
+    const { date, fees_usd, timestamp } = payload[0].payload
 
     return (
       <TooltipWrapper>
-        <TooltipTitle>{payload[0].payload.title}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Relative Weight`}</TooltipDataTitle>
-            <TooltipData>{payload[0].payload.gauge_relative_weight}%</TooltipData>
+            <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
+            {date ? <TooltipData>{date}</TooltipData> : <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>}
           </TooltipColumn>
+        </Box>
+        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Gauge weight 7d delta`}</TooltipDataTitle>
-            {sevenDayDelta ? (
-              <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>{sevenDayDelta}%</TooltipData>
-            ) : (
-              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
-            )}
-          </TooltipColumn>
-          <TooltipColumn>
-            <TooltipDataTitle>{t`Gauge weight 60d delta`}</TooltipDataTitle>
-            {sixtyDayDelta ? (
-              <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>{sixtyDayDelta}%</TooltipData>
+            <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
+            {fees_usd ? (
+              <TooltipData>{formatNumber(fees_usd, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -88,4 +82,4 @@ const TooltipDataNotAvailable = styled.p`
   font-style: italic;
 `
 
-export default BarChartCustomTooltip
+export default FeesBarChartTooltip

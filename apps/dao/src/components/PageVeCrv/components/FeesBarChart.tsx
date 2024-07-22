@@ -3,14 +3,14 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLin
 
 import { formatNumber } from 'ui/src/utils'
 
-import PositiveAndNegativeBarChartTooltip from './PositiveAndNegativeBarChartTooltip'
+import FeesBarChartTooltip from './FeesBarChartTooltip'
 
-type PositiveAndNegativeBarChartProps = {
-  data: VeCrvDailyLock[]
+type FeesBarChartProps = {
+  data: VeCrvFee[]
   height?: number
 }
 
-const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = ({ data, height = 500 }) => {
+const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <BarChart
@@ -26,7 +26,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
       >
         <CartesianGrid strokeDasharray="3" vertical={false} />
         <XAxis
-          dataKey="day"
+          dataKey="date"
           tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
@@ -34,18 +34,17 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
           allowDataOverflow={false}
         />
         <YAxis
-          dataKey="amount"
+          dataKey="fees_usd"
           tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           tickFormatter={(value) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
           tickCount={10}
         />
-        <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />
-        <ReferenceLine y={0} stroke="#000" opacity={0.3} />
-        <Bar dataKey="amount" label={false} fill="#8884d8">
+        <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
+        <Bar dataKey="fees_usd" label={false} fill="#8884d8">
           {data.map((entry, index) => (
-            <Cell key={`$cell-${index}`} fill={+entry.amount > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
+            <Cell key={`$cell-${index}`} fill={+entry.fees_usd > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
           ))}
         </Bar>
       </BarChart>
@@ -53,4 +52,4 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
   )
 }
 
-export default PositiveAndNegativeBarChart
+export default FeesBarChart

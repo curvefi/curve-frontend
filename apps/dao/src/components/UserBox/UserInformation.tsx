@@ -76,7 +76,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {!userVeCrv || !userAddress ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
-              <h4>{formatNumber(userVeCrv.veCrv)} veCRV</h4>
+              <h4>{formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })} veCRV</h4>
             )}
           </Box>
         )}
@@ -91,7 +91,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {votingPower.loading ? (
               <Loader isLightBg skeleton={[80, 16.5]} />
             ) : (
-              <h4>{formatNumber(votingPower.value)} veCRV</h4>
+              <h4>{formatNumber(votingPower.value, { showDecimalIfSmallNumberOnly: true })} veCRV</h4>
             )}
           </Box>
         )}
@@ -103,7 +103,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
                 <p>{t`Halfway into a proposal vote (3.5 days after creation), voting power begins decaying linearly towards 0 at the end of the proposal vote.`}</p>
               </TooltipIcon>
             </Box>
-            <h4>{formatNumber(decayedVeCrv.value)} veCRV</h4>
+            <h4>{formatNumber(decayedVeCrv.value, { showDecimalIfSmallNumberOnly: true })} veCRV</h4>
           </Box>
         )}
       </Box>

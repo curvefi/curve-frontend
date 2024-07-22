@@ -9,7 +9,7 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
-const DailyLocks = () => {
+const DailyLocks: React.FC = () => {
   const { getVeCrvLocks, veCrvLocks } = useStore((state) => state.vecrv)
 
   const locksFetchSuccess = veCrvLocks.fetchStatus === 'SUCCESS'

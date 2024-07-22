@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Box from '@/ui/Box'
 import CrvStats from './components/CrvStats'
 import VeCrvFees from './components/VeCrvFees'
+import FeesBarChart from './components/FeesBarChart'
 import DailyLocks from './components/DailyLocks'
 import TopLockers from './components/TopLockers'
 
@@ -12,13 +13,11 @@ const VeCrv = () => {
       <PageTitle>veCRV</PageTitle>
       <Content>
         <CrvStats />
+        <VeCrvFees />
         <Column>
-          <VeCrvFees />
+          <TopLockers />
           <DailyLocks />
         </Column>
-        <Box flex flexGap="var(--spacing-2)">
-          <TopLockers />
-        </Box>
       </Content>
     </Wrapper>
   )

@@ -3,9 +3,9 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 
 import { shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
 
-import CustomTooltip from './BarChartCustomTooltip'
+import CustomTooltip from './TopLockerBarChartTooltip'
 
-type Props = {
+type TopLockerBarChartProps = {
   data: VeCrvTopLocker[]
   filter: TopLockerFilter
 }
@@ -23,7 +23,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const BarChartComponent = ({ data, filter }: Props) => {
+const TopLockerBarChart: React.FC<TopLockerBarChartProps> = ({ data, filter }) => {
   const height = 500
   const labelWidth = 100
 
@@ -79,4 +79,4 @@ const ChartContainer = styled.div`
   height: 500px;
 `
 
-export default BarChartComponent
+export default TopLockerBarChart

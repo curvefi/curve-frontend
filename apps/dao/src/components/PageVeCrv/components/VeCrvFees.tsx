@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
@@ -8,8 +8,9 @@ import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from 
 import Box from '@/ui/Box'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
+import VeCrvFeesChart from './VeCrvFeesChart'
 
-const VeCrcFees = () => {
+const VeCrcFees: React.FC = () => {
   const { getVeCrvFees, veCrvFees } = useStore((state) => state.vecrv)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
@@ -23,50 +24,60 @@ const VeCrcFees = () => {
   }, [getVeCrvFees, veCrvFees, feesError])
 
   return (
-    <FeesBox variant="secondary" flex flexColumn>
-      <BoxTitle>{t`Weekly veCRV Fees`}</BoxTitle>
-      <FeesTitlesRow>
-        <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
-        <FeesSubtitle>{t`Fees`}</FeesSubtitle>
-      </FeesTitlesRow>
-      {feesLoading && (
-        <StyledSpinnerWrapper>
-          <Spinner />
-        </StyledSpinnerWrapper>
-      )}
-      {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
-      {feesReady && (
-        <>
-          <FeesContainer>
-            {veCrvFees.fees.map((item) => {
-              const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
-              const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
+    <Wrapper>
+      <FeesBox variant="secondary" flex flexColumn>
+        <BoxTitle>{t`Weekly veCRV Fees`}</BoxTitle>
+        <FeesTitlesRow>
+          <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
+          <FeesSubtitle>{t`Fees`}</FeesSubtitle>
+        </FeesTitlesRow>
+        {feesLoading && (
+          <StyledSpinnerWrapper>
+            <Spinner />
+          </StyledSpinnerWrapper>
+        )}
+        {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
+        {feesReady && (
+          <>
+            <FeesContainer>
+              {veCrvFees.fees.map((item) => {
+                const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
+                const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
 
-              return (
-                <FeeRow key={item.timestamp}>
-                  <FeeDate>
-                    {formatDateFromTimestamp(timestamp)}
-                    {timestamp > currentTime && <> {t` (in progress)`}</>}
-                  </FeeDate>
-                  <FeeData>
-                    $
-                    {formatNumber(item.fees_usd, {
-                      showDecimalIfSmallNumberOnly: true,
-                    })}
-                  </FeeData>
-                </FeeRow>
-              )
-            })}
-          </FeesContainer>
-          <TotalFees>
-            <FeeDate>{t`Total Fees:`}</FeeDate>
-            <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
-          </TotalFees>
-        </>
-      )}
-    </FeesBox>
+                return (
+                  <FeeRow key={item.timestamp}>
+                    <FeeDate>
+                      {formatDateFromTimestamp(timestamp)}
+                      {timestamp > currentTime && <> {t` (in progress)`}</>}
+                    </FeeDate>
+                    <FeeData>
+                      $
+                      {formatNumber(item.fees_usd, {
+                        showDecimalIfSmallNumberOnly: true,
+                      })}
+                    </FeeData>
+                  </FeeRow>
+                )
+              })}
+            </FeesContainer>
+            <TotalFees>
+              <FeeDate>{t`Total Fees:`}</FeeDate>
+              <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
+            </TotalFees>
+          </>
+        )}
+      </FeesBox>
+      <VeCrvFeesChart />
+    </Wrapper>
   )
 }
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  grid-template-columns: 25rem 1fr;
+`
 
 const BoxTitle = styled.h2`
   font-size: var(--font-size-3);
@@ -84,6 +95,11 @@ const FeesBox = styled(Box)`
   @media (min-width: 25rem) {
     min-width: 25rem;
   }
+`
+
+const FeesBarChartWrapper = styled(Box)`
+  width: 100%;
+  padding: 0 var(--spacing-3) var(--spacing-3);
 `
 
 const FeesContainer = styled.div`

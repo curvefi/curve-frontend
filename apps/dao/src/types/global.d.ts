@@ -242,6 +242,7 @@ declare global {
   type VeCrvFee = {
     fees_usd: number
     timestamp: string
+    date: string
   }
 
   interface VeCrvFeesRes {
