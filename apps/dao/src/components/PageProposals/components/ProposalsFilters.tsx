@@ -6,17 +6,18 @@ import Button from '@/ui/Button'
 import Spinner from '@/ui/Spinner'
 
 type Props = {
+  className?: string
   filters: ProposalListFilterItem[]
   activeFilter: ProposalListFilter
   listLength: number
   setActiveFilter: (filter: ProposalListFilter) => void
 }
 
-const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter }: Props) => {
+const ProposalsFilters = ({ filters, activeFilter, listLength, setActiveFilter, className }: Props) => {
   const { filteringProposalsLoading } = useStore((state) => state.proposals)
 
   return (
-    <Container>
+    <Container className={className}>
       {filters.map((filter: ProposalListFilterItem) => (
         <Filter
           onClick={() => setActiveFilter(filter.key)}

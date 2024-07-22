@@ -87,21 +87,18 @@ const Proposals = () => {
             value={searchValue}
           />
           <ListManagerContainer>
-            {!isSmUp ? (
-              <StyledSelectFilter
-                items={PROPOSAL_FILTERS}
-                selectedKey={activeFilter}
-                minWidth="9rem"
-                onSelectionChange={(key) => setActiveFilter(key as ProposalListFilter)}
-              />
-            ) : (
-              <ProposalsFilters
-                filters={PROPOSAL_FILTERS}
-                activeFilter={activeFilter}
-                setActiveFilter={setActiveFilter}
-                listLength={proposals.length}
-              />
-            )}
+            <StyledSelectFilter
+              items={PROPOSAL_FILTERS}
+              selectedKey={activeFilter}
+              minWidth="9rem"
+              onSelectionChange={(key) => setActiveFilter(key as ProposalListFilter)}
+            />
+            <StyledProposalsFilters
+              filters={PROPOSAL_FILTERS}
+              activeFilter={activeFilter}
+              setActiveFilter={setActiveFilter}
+              listLength={proposals.length}
+            />
           </ListManagerContainer>
           <SortingMethodContainer>
             <StyledSelectSortingMethod
@@ -188,7 +185,7 @@ const SortingBox = styled.div`
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;
   padding: var(--spacing-3) var(--spacing-3) 0;
-  @media (min-width: 49.6875rem) {
+  @media (min-width: 63rem) {
     display: flex;
   }
 `
@@ -216,7 +213,7 @@ const ListManagerContainer = styled.div`
     grid-column: 1/-1;
     margin: var(--spacing-1) var(--spacing-2) var(--spacing-2) 0;
   }
-  @media (min-width: 49.6875rem) {
+  @media (min-width: 63rem) {
     margin: auto var(--spacing-2);
   }
 `
@@ -248,6 +245,16 @@ const StyledSelectFilter = styled(SelectSortingMethod)`
   margin: auto 0;
   grid-column: 1/2;
   grid-row: 2/3;
+  @media (min-width: 31.3125rem) {
+    display: none;
+  }
+`
+
+const StyledProposalsFilters = styled(ProposalsFilters)`
+  display: flex;
+  @media (max-width: 31.25rem) {
+    display: none;
+  }
 `
 
 const StyledSelectSortingMethod = styled(SelectSortingMethod)`
