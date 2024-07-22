@@ -329,6 +329,9 @@ const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFi
   if (activeFilter === 'all') {
     return proposals
   }
+  if (activeFilter === 'executable') {
+    return proposals.filter((proposal) => proposal.status === 'Passed' && !proposal.executed)
+  }
   return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
 }
 
