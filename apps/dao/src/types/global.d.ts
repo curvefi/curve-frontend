@@ -278,7 +278,7 @@ declare global {
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
-  type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied'
+  type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
   type SortByFilterProposals = 'voteId' | 'endingSoon'
   type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
