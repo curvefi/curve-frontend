@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { useCallback, useEffect } from 'react'
-import { breakpoints } from '@/ui/utils'
 
 import useStore from '@/store/useStore'
 
@@ -16,7 +15,6 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
 import ErrorMessage from '@/components/ErrorMessage'
-import curve from '@curvefi/api'
 
 const Proposals = () => {
   const {
@@ -111,6 +109,7 @@ const Proposals = () => {
               minWidth="9rem"
               items={PROPOSAL_SORTING_METHODS}
               onSelectionChange={handleSortingMethodChange}
+              description={t`Sort by`}
             />
             <ToggleDirectionIcon
               size={20}
