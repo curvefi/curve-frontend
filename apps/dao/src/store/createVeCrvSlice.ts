@@ -101,10 +101,14 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
           page++
         }
 
-        const totalFees = results.reduce((acc, item) => acc + item.fees_usd, 0)
+        const feesFormatted = results.map((item) => ({
+          ...item,
+          date: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)),
+        }))
+        const totalFees = feesFormatted.reduce((acc, item) => acc + item.fees_usd, 0)
 
         get()[sliceKey].setStateByKey('veCrvFees', {
-          fees: results,
+          fees: feesFormatted,
           veCrvTotalFees: totalFees,
           fetchStatus: 'SUCCESS',
         })

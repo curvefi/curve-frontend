@@ -10,9 +10,9 @@ import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
-import BarChartComponent from '@/components/PageVeCrv/components/BarChartComponent'
+import TopLockerBarChartComponent from '@/components/PageVeCrv/components/TopLockerBarChartComponent'
 
-const TopLockers = () => {
+const TopLockers: React.FC = () => {
   const { getVeCrvTopLockers, veCrvTopLockers, topLockerFilter, setTopLockerFilter } = useStore((state) => state.vecrv)
 
   const lockersFetchSuccess = veCrvTopLockers.fetchStatus === 'SUCCESS'
@@ -54,7 +54,9 @@ const TopLockers = () => {
         {lockersFetchError && (
           <ErrorMessage message={t`Error fetching daily veCRV lockers`} onClick={getVeCrvTopLockers} />
         )}
-        {lockersFetchSuccess && <BarChartComponent data={veCrvTopLockers.topLockers} filter={topLockerFilter} />}
+        {lockersFetchSuccess && (
+          <TopLockerBarChartComponent data={veCrvTopLockers.topLockers} filter={topLockerFilter} />
+        )}
       </Content>
     </Wrapper>
   )

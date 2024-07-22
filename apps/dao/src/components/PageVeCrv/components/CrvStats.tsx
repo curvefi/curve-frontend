@@ -9,7 +9,7 @@ import Box from '@/ui/Box'
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
 import { TooltipIcon } from '@/ui/Tooltip'
 
-const CrvStats = () => {
+const CrvStats: React.FC = () => {
   const { provider } = useStore((state) => state.wallet)
   const { veCrvData, getVeCrvData, veCrvFees } = useStore((state) => state.vecrv)
 
