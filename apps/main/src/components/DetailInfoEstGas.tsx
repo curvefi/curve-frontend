@@ -12,6 +12,7 @@ import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { useCurve } from '@/entities/curve'
 
 export type StepProgress = {
   active: number
@@ -19,14 +20,13 @@ export type StepProgress = {
 }
 
 const DetailInfoEstGas = ({
-  curve,
   chainId,
   isDivider,
   loading,
   estimatedGas,
   stepProgress,
 }: {
-  curve: CurveApi | null
+  curve?: CurveApi | null
   chainId: ChainId
   isDivider?: boolean
   loading: boolean
@@ -34,6 +34,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
+  const curve = useCurve()
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
   const gasInfo = useStore((state) => state.gas.gasInfo)

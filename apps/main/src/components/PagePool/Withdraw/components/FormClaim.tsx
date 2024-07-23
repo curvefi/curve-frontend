@@ -42,7 +42,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = poolData?.gaugeStatus || {}
+  const { rewardsNeedNudging } = poolData?.gauge.status || {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
@@ -175,7 +175,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     }
   }
 
-  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.isGaugeKilled
+  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.gauge.isKilled
 
   return (
     <TransferActions

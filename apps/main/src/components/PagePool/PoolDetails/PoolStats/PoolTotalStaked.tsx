@@ -6,7 +6,11 @@ import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 import Item from '@/ui/Items/Item'
 import Items from '@/ui/Items/Items'
 
-const PoolTotalStaked = ({ poolDataCacheOrApi }: { poolDataCacheOrApi: PoolDataCacheOrApi }) => {
+interface PoolTotalStakedProps {
+  poolDataCacheOrApi: PoolDataCacheOrApi
+}
+
+const PoolTotalStaked: React.FC<PoolTotalStakedProps> = ({ poolDataCacheOrApi }) => {
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
 
   return (

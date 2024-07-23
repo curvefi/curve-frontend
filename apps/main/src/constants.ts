@@ -28,12 +28,16 @@ export const ROUTE = {
 
 // TODO rename to MS
 export const REFRESH_INTERVAL = {
-  '3s': 3000,
-  '15s': 15000,
-  '1m': 60000,
-  '5m': 300000,
-  '11m': 660000,
-}
+  '3s': 1000 * 3,
+  '15s': 1000 * 15,
+  '1m': 1000 * 60,
+  '5m': 1000 * 60 * 5,
+  '10m': 1000 * 60 * 10,
+  '11m': 1000 * 60 * 11,
+  '1h': 1000 * 60 * 60,
+  '1d': 1000 * 60 * 60 * 24,
+  Inf: Infinity,
+} as const
 
 export const CONNECT_STAGE = {
   CONNECT_API: 'api',

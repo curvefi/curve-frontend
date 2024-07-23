@@ -32,7 +32,7 @@ const TableCellRewards = ({
   const haveRewards = haveCrv || haveOther
   const boostedCrvApy = haveCrv && crv?.[1]
   const haveUserCrvApy = userCrvApy && !isNaN(userCrvApy)
-  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gaugeStatus || {}
+  const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
   const showUserCrvRewards = !!poolData && !rewardsNeedNudging && !areCrvRewardsStuckInBridge
 
   const Rewards = () => {

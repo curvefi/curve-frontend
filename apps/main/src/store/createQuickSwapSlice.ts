@@ -35,16 +35,31 @@ type SliceState = {
 
 const sliceKey = 'quickSwap'
 
-// prettier-ignore
 export type QuickSwapSlice = {
   [sliceKey]: SliceState & {
-    fetchUserBalances(curve: CurveApi, fromAddress: string, toAddress: string): Promise<{ fromAmount: string; toAmount: string }>
+    fetchUserBalances(
+      curve: CurveApi,
+      fromAddress: string,
+      toAddress: string
+    ): Promise<{ fromAmount: string; toAmount: string }>
     fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
-    fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
+    fetchRoutesAndOutput(
+      curve: CurveApi,
+      searchedParams: SearchedParams,
+      maxSlippage: string | undefined
+    ): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     resetFormErrors(): void
-    setFormValues(curve: CurveApi | null, updatedFormValues: Partial<FormValues>, searchedParams: SearchedParams, isGetMaxFrom?: boolean, maxSlippage?: string, isFullReset?: boolean, isRefetch?: boolean): Promise<void>
+    setFormValues(
+      curve: CurveApi | null,
+      updatedFormValues: Partial<FormValues>,
+      searchedParams: SearchedParams,
+      isGetMaxFrom?: boolean,
+      maxSlippage?: string,
+      isFullReset?: boolean,
+      isRefetch?: boolean
+    ): Promise<void>
 
     // select token list
     setPoolListFormValues(hideSmallPools: boolean): void
@@ -52,8 +67,20 @@ export type QuickSwapSlice = {
     setSelectFromList(curve: CurveApi | null, selectToList: string[] | undefined): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, globalMaxSlippage: string): Promise<FnStepApproveResponse | undefined>
-    fetchStepSwap(activeKey: string, curve: CurveApi, formValues: FormValues, searchedParams: SearchedParams, maxSlippage: string): Promise<FnStepResponse & { swappedAmount: string; } | undefined>
+    fetchStepApprove(
+      activeKey: string,
+      curve: CurveApi,
+      formValues: FormValues,
+      searchedParams: SearchedParams,
+      globalMaxSlippage: string
+    ): Promise<FnStepApproveResponse | undefined>
+    fetchStepSwap(
+      activeKey: string,
+      curve: CurveApi,
+      formValues: FormValues,
+      searchedParams: SearchedParams,
+      maxSlippage: string
+    ): Promise<(FnStepResponse & { swappedAmount: string }) | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void

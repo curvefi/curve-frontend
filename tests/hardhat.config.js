@@ -44,6 +44,7 @@ module.exports = {
       gasPrice: 'auto',
       throwOnTransactionFailures: true,
       throwOnCallFailures: true,
+      initialBaseFeePerGas: 0,
       loggingEnabled: true,
       forking: {
         url: networkConfig.url,

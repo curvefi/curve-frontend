@@ -10,10 +10,12 @@ import ChipInactive from '@/components/ChipInactive'
 import AddGaugeLink from '@/components/PagePool/components/AddGaugeLink'
 import ContractComp from '@/components/PagePool/components/ContractComp'
 
-const Contracts = ({
-  rChainId,
-  poolDataCacheOrApi,
-}: { rChainId: ChainId } & Pick<PageTransferProps, 'poolDataCacheOrApi'>) => {
+type ContractsProps = {
+  rChainId: ChainId
+  poolDataCacheOrApi: PoolDataCacheOrApi
+} & Pick<PageTransferProps, 'poolDataCacheOrApi'>
+
+const Contracts: React.FC<ContractsProps> = ({ rChainId, poolDataCacheOrApi }) => {
   const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
   const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''
@@ -39,7 +41,7 @@ const Contracts = ({
           rChainId={rChainId}
           label={
             <span>
-              {t`Gauge`} {poolDataCacheOrApi.isGaugeKilled ? <ChipInactive>Inactive</ChipInactive> : null}
+              {t`Gauge`} {poolDataCacheOrApi.gauge.isKilled ? <ChipInactive>Inactive</ChipInactive> : null}
             </span>
           }
           showBottomBorder={false}

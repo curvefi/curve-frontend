@@ -132,7 +132,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                     />
                   </div>
 
-                  {!poolData?.isGaugeKilled && (
+                  {!poolData?.gauge.isKilled && (
                     <div>
                       <MobileTableTitle>
                         {t`Rewards tAPR`}{' '}

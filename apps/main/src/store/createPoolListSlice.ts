@@ -177,13 +177,13 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         return orderBy(
           poolDatas,
           (poolData) => {
-            const { pool, gaugeStatus } = poolData
+            const { pool, gauge } = poolData
             const { base, crv = [], other = [] } = rewardsApyMapper[pool.id] ?? {}
             if (sortKey === 'rewardsBase') {
               return Number(base?.day ?? 0)
             } else if (sortKey === 'rewardsCrv') {
               // Replacing areCrvRewardsStuckInBridge or rewardsNeedNudging CRV with 0
-              const showZero = gaugeStatus?.areCrvRewardsStuckInBridge || gaugeStatus?.rewardsNeedNudging
+              const showZero = gauge.status?.areCrvRewardsStuckInBridge || gauge.status?.rewardsNeedNudging
               return showZero ? 0 : Number(crv?.[0] ?? 0)
             } else if (sortKey === 'rewardsOther') {
               return other.length > 0 ? other.reduce((total, { apy }) => total + apy, 0) : 0
