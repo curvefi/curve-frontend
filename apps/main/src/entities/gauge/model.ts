@@ -1,3 +1,15 @@
+/**
+ * @file entities/gauge/model.ts
+ * @description This file defines the data fetching and mutation logic for gauge-related operations in the Curve.fi DApp.
+ * It's a core part of the 'gauge' entity in the FSD architecture.
+ *
+ * This module exports functions that create React Query options for various gauge operations
+ *
+ * These functions utilize the API methods from './api' and query keys from './query-keys',
+ * providing a clean interface for components to interact with gauge data.
+ * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
+ */
+
 import { queryOptions } from '@tanstack/react-query'
 import * as api from './api'
 import { gaugeKeys as keys } from './query-keys'
