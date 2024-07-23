@@ -25,7 +25,7 @@ const VeCrvFeesChart: React.FC = () => {
   return (
     <Wrapper variant="secondary">
       <TitleRow>
-        <BoxTitle>{t`veCRV fees last 100 weeks`}</BoxTitle>
+        <BoxTitle>{t`veCRV Fees Last 100 Weeks`}</BoxTitle>
       </TitleRow>
       <Content>
         {feesLoading && (

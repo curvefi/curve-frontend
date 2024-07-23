@@ -21,6 +21,11 @@ type SliceState = {
   }
   veCrvTopLockers: {
     topLockers: VeCrvTopLocker[]
+    totalValues: {
+      weight: number
+      locked: number
+      weight_ratio: number
+    }
     fetchStatus: FetchingState
   }
   topLockerFilter: TopLockerFilter
@@ -63,6 +68,11 @@ const DEFAULT_STATE: SliceState = {
   },
   veCrvTopLockers: {
     topLockers: [],
+    totalValues: {
+      weight: 0,
+      locked: 0,
+      weight_ratio: 0,
+    },
     fetchStatus: 'LOADING',
   },
   topLockerFilter: 'weight',
@@ -151,9 +161,13 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
     getVeCrvTopLockers: async () => {
       get()[sliceKey].setStateByKey('veCrvTopLockers', {
         topLockers: [],
+        totalValues: {
+          weight: 0,
+          locked: 0,
+          weight_ratio: 0,
+        },
         fetchStatus: 'LOADING',
       })
-      const filter = get()[sliceKey].topLockerFilter
 
       try {
         const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/25')
@@ -167,10 +181,20 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
             weight_ratio: Number(locker.weight_ratio.replace('%', '')),
             unlock_time: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(locker.unlock_time).getTime())),
           }))
-          .sort((a, b) => b[filter] - a[filter])
+          .filter((locker) => locker.weight_ratio > 0.3)
+
+        const totalValues = formattedData.reduce(
+          (acc, item) => ({
+            weight: acc.weight + item.weight,
+            locked: acc.locked + item.locked,
+            weight_ratio: acc.weight_ratio + item.weight_ratio,
+          }),
+          { weight: 0, locked: 0, weight_ratio: 0 }
+        )
 
         get()[sliceKey].setStateByKey('veCrvTopLockers', {
           topLockers: formattedData,
+          totalValues,
           filter: 'weight',
           fetchStatus: 'SUCCESS',
         })
@@ -178,6 +202,11 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         console.log(error)
         get()[sliceKey].setStateByKey('veCrvTopLockers', {
           topLockers: [],
+          totalValues: {
+            weight: 0,
+            locked: 0,
+            weight_ratio: 0,
+          },
           filter: 'weight',
           fetchStatus: 'ERROR',
         })

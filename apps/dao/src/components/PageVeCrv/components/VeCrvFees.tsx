@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
@@ -16,6 +16,8 @@ const VeCrcFees: React.FC = () => {
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'
   const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
+
+  const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
 
   useEffect(() => {
     if (veCrvFees.fees.length === 0 && !feesError) {
@@ -42,13 +44,12 @@ const VeCrcFees: React.FC = () => {
             <FeesContainer>
               {veCrvFees.fees.map((item) => {
                 const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
-                const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
 
                 return (
                   <FeeRow key={item.timestamp}>
                     <FeeDate>
                       {formatDateFromTimestamp(timestamp)}
-                      {timestamp > currentTime && <> {t` (in progress)`}</>}
+                      {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
                     </FeeDate>
                     <FeeData>
                       $
@@ -97,11 +98,6 @@ const FeesBox = styled(Box)`
   }
 `
 
-const FeesBarChartWrapper = styled(Box)`
-  width: 100%;
-  padding: 0 var(--spacing-3) var(--spacing-3);
-`
-
 const FeesContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -128,7 +124,7 @@ const FeesSubtitle = styled.h4`
 const FeeRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--spacing-5);
+  gap: var(--spacing-3);
   justify-content: space-between;
   border-bottom: 1px solid var(--gray-500a20);
   padding-bottom: var(--spacing-2);

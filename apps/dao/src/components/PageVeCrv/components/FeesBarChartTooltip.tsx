@@ -4,20 +4,30 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber } from '@/ui/utils/utilsFormat'
+import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils/utilsFormat'
 
 import Box from '@/ui/Box'
 
 const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
+  const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
+
   if (active && payload && payload.length) {
     const { date, fees_usd, timestamp } = payload[0].payload
+    const payloadTimestamp = convertToLocaleTimestamp(new Date(timestamp).getTime() / 1000)
 
     return (
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
             <TooltipDataTitle>{t`Distribution Date`}</TooltipDataTitle>
-            {date ? <TooltipData>{date}</TooltipData> : <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>}
+            {date ? (
+              <TooltipData>
+                {date}
+                {payloadTimestamp > currentTime && <strong> {t`(in progress)`}</strong>}
+              </TooltipData>
+            ) : (
+              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
+            )}
           </TooltipColumn>
         </Box>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
@@ -44,12 +54,6 @@ const TooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-`
-
-const TooltipTitle = styled.p`
-  font-size: var(--font-size-3);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
 `
 
 const TooltipColumn = styled.div`
