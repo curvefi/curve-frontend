@@ -15,7 +15,7 @@ const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({
       <TooltipWrapper>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Locker`}</TooltipDataTitle>
+            <TooltipDataTitle>{t`Holder`}</TooltipDataTitle>
             <TooltipData>{user}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
@@ -27,7 +27,7 @@ const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({
             )}
           </TooltipColumn>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Weight`}</TooltipDataTitle>
+            <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
             {weight ? (
               <TooltipData>{formatNumber(weight, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (
@@ -35,7 +35,7 @@ const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({
             )}
           </TooltipColumn>
           <TooltipColumn>
-            <TooltipDataTitle>{t`Locked`}</TooltipDataTitle>
+            <TooltipDataTitle>{t`CRV Locked`}</TooltipDataTitle>
             {locked ? (
               <TooltipData>{formatNumber(locked, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (
