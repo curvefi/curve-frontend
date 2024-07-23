@@ -55,7 +55,7 @@ const TopLockerBarChart: React.FC<TopLockerBarChartProps> = ({ data, filter }) =
             type="category"
             dataKey="user"
             width={labelWidth}
-            interval={1}
+            interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={(user) => (typeof user === 'string' ? shortenTokenAddress(user) : user)}
             tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}

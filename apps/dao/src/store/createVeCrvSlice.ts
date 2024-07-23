@@ -156,7 +156,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
       const filter = get()[sliceKey].topLockerFilter
 
       try {
-        const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/50')
+        const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/25')
         const data: VeCrvTopLockersRes = await veCrvTopLockersRes.json()
 
         const formattedData = data.users

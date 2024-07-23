@@ -35,7 +35,7 @@ const TopLockers: React.FC = () => {
   return (
     <Wrapper variant="secondary">
       <TitleRow>
-        <BoxTitle>{t`Top 50 veCRV Holders`}</BoxTitle>
+        <BoxTitle>{t`Top 25 veCRV Holders`}</BoxTitle>
         <Box flex flexGap="var(--spacing-1)">
           <SelectSortingMethod
             selectedKey={topLockerFilter}
