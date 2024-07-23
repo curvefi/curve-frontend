@@ -17,9 +17,10 @@ import { useMutation, UseMutationResult, useQuery } from '@tanstack/react-query'
 import * as models from './model'
 import { gaugeKeys as keys } from './query-keys'
 import type { AddRewardTokenParams } from './types'
+import { useChainId } from '../chain'
 
 export const useGauge = (poolId: string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useCombinedQueries([
     models.getGaugeStatusQuery(chainId, poolId),
     models.getIsDepositRewardAvailableQuery(chainId, poolId),
@@ -27,33 +28,32 @@ export const useGauge = (poolId: string) => {
 }
 
 export const useIsDepositRewardAvailable = (poolId: string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useQuery(models.getIsDepositRewardAvailableQuery(chainId, poolId))
 }
 
 export const useGaugeManager = (poolId: string) => {
-  const curve = useStore((state) => state.curve)
-  const chainId = curve?.chainId || 0
+  const chainId = useChainId()
   return useQuery(models.getGaugeManagerQuery(chainId, poolId))
 }
 
 export const useGaugeRewardsDistributors = (poolId: string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useQuery(models.getGaugeDistributorsQuery(chainId, poolId))
 }
 
 export const useGaugeDepositRewardIsApproved = (poolId: string, token: string, amount: number | string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useQuery(models.getDepositRewardIsApprovedQuery(chainId, poolId, token, amount))
 }
 
 export const useEstimateGasDepositRewardApprove = (poolId: string, token: string, amount: number | string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useQuery(models.getEstimateGasDepositRewardApproveQuery(chainId, poolId, token, amount))
 }
 
 export const useEstimateGasAddRewardToken = (poolId: string, token?: string, distributor?: string) => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   return useQuery(models.getEstimateGasAddRewardTokenQuery(chainId, poolId, token, distributor))
 }
 
@@ -62,7 +62,7 @@ export const useAddRewardToken = (
   onSuccess: (resp: string, variables: AddRewardTokenParams) => void = () => {},
   onError: (error: Error) => void = () => {}
 ): UseMutationResult<string, Error, AddRewardTokenParams> => {
-  const { chainId } = useStore((state) => state.curve)
+  const chainId = useChainId()
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
 
   return useMutation({
