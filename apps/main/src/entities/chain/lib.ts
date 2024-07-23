@@ -1,6 +1,6 @@
-import useStore from '@/store/useStore'
+import { useCurve } from '@/entities/curve'
 
 export const useChainId = () => {
-  const { chainId } = useStore((state) => state.curve)
-  return chainId || 0
+  const curve = useCurve()
+  return curve?.chainId ?? 0
 }
