@@ -14,8 +14,11 @@ const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameT
 
     return (
       <TooltipWrapper>
-        <TooltipTitle>{day}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+          <TooltipColumn>
+            <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
+            {amount ? <TooltipData>{day}</TooltipData> : <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>}
+          </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
             {amount ? (
@@ -39,12 +42,6 @@ const TooltipWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-`
-
-const TooltipTitle = styled.p`
-  font-size: var(--font-size-3);
-  color: var(--page--text-color);
-  font-weight: var(--bold);
 `
 
 const TooltipColumn = styled.div`

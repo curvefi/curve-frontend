@@ -1,9 +1,7 @@
 import styled from 'styled-components'
 
-import Box from '@/ui/Box'
 import CrvStats from './components/CrvStats'
 import VeCrvFees from './components/VeCrvFees'
-import FeesBarChart from './components/FeesBarChart'
 import DailyLocks from './components/DailyLocks'
 import TopLockers from './components/TopLockers'
 

@@ -1,19 +1,20 @@
 import styled from 'styled-components'
-import { useEffect, useCallback } from 'react'
+import { useEffect, useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 import { TOP_LOCKER_FILTERS } from '@/components/PageVeCrv/constants'
 
 import Box from '@/ui/Box'
-import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
 import TopLockerBarChartComponent from '@/components/PageVeCrv/components/TopLockerBarChartComponent'
 
 const TopLockers: React.FC = () => {
-  const { getVeCrvTopLockers, veCrvTopLockers, topLockerFilter, setTopLockerFilter } = useStore((state) => state.vecrv)
+  const { getVeCrvTopLockers, veCrvTopLockers, topLockerFilter, setTopLockerFilter, veCrvData } = useStore(
+    (state) => state.vecrv
+  )
 
   const lockersFetchSuccess = veCrvTopLockers.fetchStatus === 'SUCCESS'
   const lockersFetchError = veCrvTopLockers.fetchStatus === 'ERROR'
@@ -26,6 +27,37 @@ const TopLockers: React.FC = () => {
     [setTopLockerFilter]
   )
 
+  const othersData: VeCrvTopLocker = useMemo(() => {
+    if (!lockersFetchSuccess || veCrvData.fetchStatus !== 'SUCCESS')
+      return {
+        user: 'Others(<0.5%)',
+        weight: 0,
+        locked: 0,
+        weight_ratio: 0,
+        unlock_time: 'N/A',
+      }
+
+    const othersVeCrv = veCrvData.totalVeCrv - veCrvTopLockers.totalValues.weight
+    const otherLockedCrv = veCrvData.totalLockedCrv - veCrvTopLockers.totalValues.locked
+    const othersWeightRatio = 100 - veCrvTopLockers.totalValues.weight_ratio
+
+    return {
+      user: 'Others(<0.3%)',
+      weight: othersVeCrv,
+      locked: otherLockedCrv,
+      weight_ratio: othersWeightRatio,
+      unlock_time: 'N/A',
+    }
+  }, [
+    lockersFetchSuccess,
+    veCrvData.fetchStatus,
+    veCrvData.totalLockedCrv,
+    veCrvData.totalVeCrv,
+    veCrvTopLockers.totalValues.locked,
+    veCrvTopLockers.totalValues.weight,
+    veCrvTopLockers.totalValues.weight_ratio,
+  ])
+
   useEffect(() => {
     if (veCrvTopLockers.topLockers.length === 0 && veCrvTopLockers.fetchStatus !== 'ERROR') {
       getVeCrvTopLockers()
@@ -35,7 +67,7 @@ const TopLockers: React.FC = () => {
   return (
     <Wrapper variant="secondary">
       <TitleRow>
-        <BoxTitle>{t`Top 25 veCRV Holders`}</BoxTitle>
+        <BoxTitle>{t`veCRV Holder Distribution`}</BoxTitle>
         <Box flex flexGap="var(--spacing-1)">
           <SelectSortingMethod
             selectedKey={topLockerFilter}
@@ -53,7 +85,7 @@ const TopLockers: React.FC = () => {
         )}
         {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvTopLockers} />}
         {lockersFetchSuccess && (
-          <TopLockerBarChartComponent data={veCrvTopLockers.topLockers} filter={topLockerFilter} />
+          <TopLockerBarChartComponent data={[...veCrvTopLockers.topLockers, othersData]} filter={topLockerFilter} />
         )}
       </Content>
     </Wrapper>

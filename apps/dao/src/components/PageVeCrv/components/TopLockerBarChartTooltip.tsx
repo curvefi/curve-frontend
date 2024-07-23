@@ -35,7 +35,7 @@ const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({
             )}
           </TooltipColumn>
           <TooltipColumn>
-            <TooltipDataTitle>{t`CRV Locked`}</TooltipDataTitle>
+            <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
             {locked ? (
               <TooltipData>{formatNumber(locked, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (

@@ -2,10 +2,13 @@ import styled from 'styled-components'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import { useState } from 'react'
 
-import CustomTooltip from './BarChartCustomTooltip'
+import { shortenTokenAddress } from '@/ui/utils'
+
+import CustomTooltip from './TopLockerBarChartTooltip'
 
 type Props = {
-  data: GaugeFormattedData[]
+  data: VeCrvTopLocker[]
+  filter: TopLockerFilter
 }
 
 type CustomLabelProps = {
@@ -16,7 +19,7 @@ type CustomLabelProps = {
   outerRadius: number
   percent: number
   index: number
-  payload: GaugeFormattedData
+  payload: VeCrvTopLocker
 }
 
 const COLORS = [
@@ -32,7 +35,7 @@ const COLORS = [
   '#277DA1',
 ]
 
-const PieChartComponent = ({ data }: Props) => {
+const PieChartComponent = ({ data, filter }: Props) => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
   const height = 300
 
@@ -42,20 +45,20 @@ const PieChartComponent = ({ data }: Props) => {
         <ResponsiveContainer width={'99%'} height={height}>
           <PieChart width={300} height={300}>
             <Pie
-              dataKey="gauge_relative_weight"
-              nameKey="title"
+              dataKey={filter}
+              nameKey="user"
               data={data}
               cx="50%"
               cy="50%"
               outerRadius={100}
               label={CustomLabel}
-              stroke="white"
+              stroke="var(--box--secondary--background-color)"
               strokeWidth={0.5}
-              style={{ outline: 'none' }}
               labelLine={false}
+              style={{ outline: 'none' }}
               isAnimationActive={false}
-              onMouseEnter={(_, index) => setActiveIndex(index)}
-              onMouseLeave={() => setActiveIndex(null)}
+              // onMouseEnter={(_, index) => setActiveIndex(index)}
+              // onMouseLeave={() => setActiveIndex(null)}
             >
               {data.map((item, index) => (
                 <Cell
@@ -75,7 +78,7 @@ const PieChartComponent = ({ data }: Props) => {
 
 // Custom label component
 const CustomLabel = ({ payload, cx, cy, midAngle, outerRadius, index }: CustomLabelProps) => {
-  if (payload.gauge_relative_weight > 1.7) {
+  if (payload.weight_ratio > 1.7) {
     const RADIAN = Math.PI / 180
     // Calculate the starting point at the edge of the pie slice
     const startRadius = outerRadius * 0.99 // Slightly inside the outer edge to ensure visibility
@@ -102,10 +105,10 @@ const CustomLabel = ({ payload, cx, cy, midAngle, outerRadius, index }: CustomLa
           x={labelX}
           y={labelY}
           dy={3}
-          fill="black"
+          fill="var(--page--text-color)"
           textAnchor={labelX > cx ? 'start' : 'end'}
         >
-          {payload.title} ({payload.gauge_relative_weight.toFixed(2)}%)
+          {payload.user.length > 10 ? shortenTokenAddress(payload.user) : payload.user} ({payload.weight_ratio}%)
         </CellLabel>
       </>
     )

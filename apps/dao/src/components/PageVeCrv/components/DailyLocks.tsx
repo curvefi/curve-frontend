@@ -32,7 +32,7 @@ const DailyLocks: React.FC = () => {
           </StyledSpinnerWrapper>
         )}
         {locksFetchError && <ErrorMessage message={t`Error fetching daily veCRV locks`} onClick={getVeCrvLocks} />}
-        {locksFetchSuccess && <PositiveAndNegativeBarChart data={veCrvLocks.locks.slice(256, 356)} />}
+        {locksFetchSuccess && <PositiveAndNegativeBarChart height={520} data={veCrvLocks.locks.slice(256, 356)} />}
       </Content>
     </Wrapper>
   )
