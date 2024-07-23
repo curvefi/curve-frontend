@@ -35,7 +35,7 @@ const TopLockers: React.FC = () => {
   return (
     <Wrapper variant="secondary">
       <TitleRow>
-        <BoxTitle>{t`Top 50 veCRV Lockers`}</BoxTitle>
+        <BoxTitle>{t`Top 50 veCRV Holders`}</BoxTitle>
         <Box flex flexGap="var(--spacing-1)">
           <SelectSortingMethod
             selectedKey={topLockerFilter}
@@ -51,9 +51,7 @@ const TopLockers: React.FC = () => {
             <Spinner />
           </StyledSpinnerWrapper>
         )}
-        {lockersFetchError && (
-          <ErrorMessage message={t`Error fetching daily veCRV lockers`} onClick={getVeCrvTopLockers} />
-        )}
+        {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvTopLockers} />}
         {lockersFetchSuccess && (
           <TopLockerBarChartComponent data={veCrvTopLockers.topLockers} filter={topLockerFilter} />
         )}
