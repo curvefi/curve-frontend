@@ -7,11 +7,11 @@ import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
-import { TooltipIcon } from '@/ui/Tooltip'
+import Tooltip, { TooltipIcon } from '@/ui/Tooltip'
 
 const CrvStats: React.FC = () => {
   const { provider } = useStore((state) => state.wallet)
-  const { veCrvData, getVeCrvData, veCrvFees } = useStore((state) => state.vecrv)
+  const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.vecrv)
 
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
@@ -53,6 +53,19 @@ const CrvStats: React.FC = () => {
             <SubTitleColumnData>
               {formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
             </SubTitleColumnData>
+          }
+        />
+        <SubTitleColumn
+          loading={veCrvHolders.fetchStatus === 'LOADING'}
+          title={t`Total Holders`}
+          data={
+            <Tooltip
+              tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
+            >
+              <SubTitleColumnData>
+                {formatNumber(veCrvHolders.totalHolders, { showDecimalIfSmallNumberOnly: true })}
+              </SubTitleColumnData>
+            </Tooltip>
           }
         />
         <SubTitleColumn

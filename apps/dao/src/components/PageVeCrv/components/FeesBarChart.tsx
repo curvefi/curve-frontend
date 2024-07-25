@@ -12,7 +12,7 @@ type FeesBarChartProps = {
 
 const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ResponsiveContainer width="100%" height={height} debounce={200}>
       <BarChart
         width={500}
         height={300}
@@ -42,7 +42,7 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
           tickCount={10}
         />
         <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-        <Bar dataKey="fees_usd" label={false} fill="#8884d8">
+        <Bar dataKey="fees_usd" label={false} fill="#8884d8" isAnimationActive={false}>
           {data.map((entry, index) => (
             <Cell key={`$cell-${index}`} fill={+entry.fees_usd > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
           ))}

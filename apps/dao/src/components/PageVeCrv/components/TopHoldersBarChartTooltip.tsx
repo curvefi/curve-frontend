@@ -3,11 +3,11 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { formatNumber } from '@/ui/utils'
+import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 
-const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
+const TopHoldersBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const { user, locked, weight, weight_ratio, unlock_time } = payload[0].payload
 
@@ -45,7 +45,9 @@ const TopLockerBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>
             {unlock_time ? (
-              <TooltipData>{unlock_time}</TooltipData>
+              <TooltipData>
+                {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(unlock_time).getTime()))}
+              </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -102,4 +104,4 @@ const TooltipDataNotAvailable = styled.p`
   font-style: italic;
 `
 
-export default TopLockerBarChartTooltip
+export default TopHoldersBarChartTooltip

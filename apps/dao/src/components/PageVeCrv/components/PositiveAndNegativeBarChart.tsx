@@ -12,7 +12,7 @@ type PositiveAndNegativeBarChartProps = {
 
 const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = ({ data, height = 500 }) => {
   return (
-    <ResponsiveContainer width="100%" height={height}>
+    <ResponsiveContainer width="100%" height={height} debounce={200}>
       <BarChart
         width={500}
         height={300}
@@ -43,7 +43,7 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
         />
         <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />
         <ReferenceLine y={0} stroke="#000" opacity={0.3} />
-        <Bar dataKey="amount" label={false} fill="#8884d8">
+        <Bar dataKey="amount" label={false} fill="#8884d8" isAnimationActive={false}>
           {data.map((entry, index) => (
             <Cell key={`$cell-${index}`} fill={+entry.amount > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
           ))}

@@ -3,7 +3,8 @@ import styled from 'styled-components'
 import CrvStats from './components/CrvStats'
 import VeCrvFees from './components/VeCrvFees'
 import DailyLocks from './components/DailyLocks'
-import TopLockers from './components/TopLockers'
+import TopHolders from './components/TopHolders'
+import TopHoldersTable from './TopHoldersTable'
 
 const VeCrv = () => {
   return (
@@ -13,9 +14,10 @@ const VeCrv = () => {
         <CrvStats />
         <VeCrvFees />
         <Column>
-          <TopLockers />
+          <TopHolders />
           <DailyLocks />
         </Column>
+        <TopHoldersTable />
       </Content>
     </Wrapper>
   )

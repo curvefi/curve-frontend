@@ -104,7 +104,7 @@ const FeesContainer = styled.div`
   gap: var(--spacing-2);
   max-height: 25rem;
   overflow-y: auto;
-  padding: 0 var(--spacing-3);
+  padding: var(--spacing-1) var(--spacing-3);
 `
 
 const FeesTitlesRow = styled.div`

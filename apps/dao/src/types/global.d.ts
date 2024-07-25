@@ -260,16 +260,16 @@ declare global {
     locks: { day: string; amount: string }[]
   }
 
-  interface VeCrvTopLocker {
+  interface VeCrvHolder {
     user: string
     locked: number
     weight: number
     weight_ratio: number
-    unlock_time: string
+    unlock_time: number
   }
 
-  interface VeCrvTopLockersRes {
-    users: {
+  interface VeCrvHoldersRes {
+    locks: {
       user: string
       locked: string
       weight: string
@@ -285,5 +285,6 @@ declare global {
   type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
   type ActiveSortDirection = 'asc' | 'desc'
   type GaugeListNavSelection = 'Gauge List' | 'Gauge Weight Distribution' | 'Gauge Voting'
-  type TopLockerFilter = 'weight' | 'locked' | 'weight_ratio'
+  type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
+  type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
 }

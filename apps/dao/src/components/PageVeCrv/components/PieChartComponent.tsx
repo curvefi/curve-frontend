@@ -4,11 +4,11 @@ import { useState } from 'react'
 
 import { shortenTokenAddress } from '@/ui/utils'
 
-import CustomTooltip from './TopLockerBarChartTooltip'
+import CustomTooltip from './TopHoldersBarChartTooltip'
 
 type Props = {
-  data: VeCrvTopLocker[]
-  filter: TopLockerFilter
+  data: VeCrvHolder[]
+  filter: TopHoldersSortBy
 }
 
 type CustomLabelProps = {
@@ -19,7 +19,7 @@ type CustomLabelProps = {
   outerRadius: number
   percent: number
   index: number
-  payload: VeCrvTopLocker
+  payload: VeCrvHolder
 }
 
 const COLORS = [
