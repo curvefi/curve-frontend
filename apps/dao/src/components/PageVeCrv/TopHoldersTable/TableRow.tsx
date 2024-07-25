@@ -27,7 +27,7 @@ const TableRow: React.FC<TableRowProps> = ({ holder, sortBy }) => {
           {formatNumber(holder.locked, { showDecimalIfSmallNumberOnly: true })}
         </TableData>
         <TableData className={sortBy === 'weight_ratio' ? 'active left-padding' : 'left-padding'}>
-          {formatNumber(holder.weight_ratio, { showDecimalIfSmallNumberOnly: true })}%
+          {formatNumber(holder.weight_ratio, { style: 'percent' })}
         </TableData>
         <TableData className={sortBy === 'unlock_time' ? 'active left-padding' : 'left-padding'}>
           {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(holder.unlock_time).getTime()))}
