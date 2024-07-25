@@ -1,5 +1,6 @@
 import useStore from '@/store/useStore'
 
 export const useCurve = () => {
-  return useStore((state) => state.curve)
+  const curve = useStore((state) => state.curve)
+  return { data: curve }
 }
