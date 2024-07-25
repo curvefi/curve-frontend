@@ -33,9 +33,9 @@ export type TableRowProps = {
   showInPoolColumn: boolean
   tokensMapper: TokensMapper
   campaignRewardsMapper: CampaignRewardsMapper
-  tvlCached: Tvl | undefined
+  tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
-  volumeCached: Volume | undefined
+  volumeCached: { value: string } | undefined
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }

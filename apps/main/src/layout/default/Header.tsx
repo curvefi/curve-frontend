@@ -43,11 +43,8 @@ const Header = () => {
   const isLgUp = useStore((state) => state.isLgUp)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
-  const tvlTotalCached = useStore((state) => state.storeCache.tvlTotal?.[rChainId])
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
-  const volumeTotalCached = useStore((state) => state.storeCache.volumeTotal?.[rChainId])
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
-  const volumeCryptoShareCached = useStore((state) => state.storeCache.volumeCryptoShare?.[rChainId])
   const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
   const themeType = useStore((state) => state.themeType)
   const setThemeType = useStore((state) => state.setThemeType)
@@ -69,9 +66,9 @@ const Header = () => {
 
   // prettier-ignore
   const appStats = [
-    { label: t`Total Deposits`, value: formatNumber(tvlTotal ?? tvlTotalCached, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`Daily Volume`, value: formatNumber(volumeTotal ?? volumeTotalCached, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare ?? volumeCryptoShareCached, FORMAT_OPTIONS.PERCENT) },
+    { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: t`Daily Volume`, value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
   ]
 
   const pages: AppPage[] = useMemo(() => {

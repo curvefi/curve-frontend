@@ -3,9 +3,7 @@ import { useMemo } from 'react'
 import useStore from '@/store/useStore'
 
 const useTokensNameMapper = (rChainId: ChainId | '') => {
-  const cached = useStore((state) => state.storeCache.tokensNameMapper[rChainId])
-  const api = useStore((state) => state.tokens.tokensNameMapper[rChainId])
-  const tokensNameMapper = useMemo(() => api ?? cached ?? {}, [api, cached])
+  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {})
   const tokensNameMapperStr = useMemo(() => {
     return Object.keys(tokensNameMapper).reduce((str, address) => {
       str += address.charAt(5)

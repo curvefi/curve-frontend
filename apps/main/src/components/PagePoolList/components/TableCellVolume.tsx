@@ -4,7 +4,7 @@ import { Chip } from '@/ui/Typography'
 
 type Props = {
   isHighLight: boolean
-  volumeCached: Volume | undefined
+  volumeCached: { value: string } | undefined
   volume: Volume | undefined
 }
 

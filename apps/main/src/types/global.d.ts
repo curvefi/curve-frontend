@@ -36,6 +36,7 @@ declare global {
     name: string
     id: NetworkEnum
     networkId: ChainId
+    nativeTokens: { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
     api: typeof curvejsApi
     useApi: boolean
     blocknativeSupport: boolean

@@ -1,5 +1,6 @@
 import sortBy from 'lodash/sortBy'
 
+import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { ROUTE } from '@/constants'
 import { Chain } from '@/shared/curve-lib'
 import { baseNetworksConfig } from '@/ui/utils'
@@ -50,9 +51,10 @@ const NETWORK_CONFIG_DEFAULT = {
 }
 
 const networks: Record<ChainId, NetworkConfig> = {
-  1: {
+  [Chain.Ethereum]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['1'],
+    ...baseNetworksConfig[Chain.Ethereum],
+    nativeTokens: NATIVE_TOKENS[Chain.Ethereum],
     compensations: {
       crveth: true,
       'factory-v2-38': true, // alETH,
@@ -131,9 +133,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  10: {
+  [Chain.Optimism]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['10'],
+    ...baseNetworksConfig[Chain.Optimism],
+    nativeTokens: NATIVE_TOKENS[Chain.Optimism],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -161,9 +164,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  100: {
+  [Chain.Gnosis]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['100'],
+    ...baseNetworksConfig[Chain.Gnosis],
+    nativeTokens: NATIVE_TOKENS[Chain.Gnosis],
     poolFilters: ['all', 'usd', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -189,9 +193,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  1284: {
+  [Chain.Moonbeam]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['1284'],
+    ...baseNetworksConfig[Chain.Moonbeam],
+    nativeTokens: NATIVE_TOKENS[Chain.Moonbeam],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -205,9 +210,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     stableswapFactoryOld: true,
     hasFactory: true,
   },
-  137: {
+  [Chain.Polygon]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['137'],
+    ...baseNetworksConfig[Chain.Polygon],
+    nativeTokens: NATIVE_TOKENS[Chain.Polygon],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -240,9 +246,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  2222: {
+  [Chain.Kava]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['2222'],
+    ...baseNetworksConfig[Chain.Kava],
+    nativeTokens: NATIVE_TOKENS[Chain.Kava],
     poolFilters: ['all', 'usd', 'btc', 'kava', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -260,9 +267,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  250: {
+  [Chain.Fantom]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['250'],
+    ...baseNetworksConfig[Chain.Fantom],
+    nativeTokens: NATIVE_TOKENS[Chain.Fantom],
     customPoolIds: {
       'factory-v2-137': true, // old eywa pool
       'factory-v2-140': true, // old eywa pool
@@ -290,9 +298,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  42161: {
+  [Chain.Arbitrum]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['42161'],
+    ...baseNetworksConfig[Chain.Arbitrum],
+    nativeTokens: NATIVE_TOKENS[Chain.Arbitrum],
     excludeGetUserBalancesTokens: ['0x3aef260cb6a5b469f970fae7a1e233dbd5939378'],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
@@ -321,9 +330,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  43114: {
+  [Chain.Avalanche]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['43114'],
+    ...baseNetworksConfig[Chain.Avalanche],
+    nativeTokens: NATIVE_TOKENS[Chain.Avalanche],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -340,9 +350,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  42220: {
+  [Chain.Celo]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['42220'],
+    ...baseNetworksConfig[Chain.Celo],
+    nativeTokens: NATIVE_TOKENS[Chain.Celo],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -358,9 +369,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  1313161554: {
+  [Chain.Aurora]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['1313161554'],
+    ...baseNetworksConfig[Chain.Aurora],
+    nativeTokens: NATIVE_TOKENS[Chain.Aurora],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -375,9 +387,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     twocryptoFactory: true,
     // hasFactory: true,
   },
-  324: {
+  [Chain.ZkSync]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['324'],
+    ...baseNetworksConfig[Chain.ZkSync],
+    nativeTokens: NATIVE_TOKENS[Chain.ZkSync],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -387,9 +400,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     showInSelectNetwork: false,
     stableswapFactory: true,
   },
-  8453: {
+  [Chain.Base]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['8453'],
+    ...baseNetworksConfig[Chain.Base],
+    nativeTokens: NATIVE_TOKENS[Chain.Base],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -418,9 +432,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     hasFactory: true,
     pricesApi: true,
   },
-  56: {
+  [Chain.Bsc]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['56'],
+    ...baseNetworksConfig[Chain.Bsc],
+    nativeTokens: NATIVE_TOKENS[Chain.Bsc],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludeRoutes: [ROUTE.PAGE_LOCKER],
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
@@ -445,9 +460,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  252: {
+  [Chain.Fraxtal]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['252'],
+    ...baseNetworksConfig[Chain.Fraxtal],
+    nativeTokens: NATIVE_TOKENS[Chain.Fraxtal],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FRAXTAL_DEV_RPC_URL! : `https://rpc.frax.com`,
     // TODO: use correct address once there is a pool
@@ -468,9 +484,10 @@ const networks: Record<ChainId, NetworkConfig> = {
     tricryptoFactory: true,
     hasFactory: true,
   },
-  196: {
+  [Chain.XLayer]: {
     ...NETWORK_CONFIG_DEFAULT,
-    ...baseNetworksConfig['196'],
+    ...baseNetworksConfig[Chain.XLayer],
+    nativeTokens: NATIVE_TOKENS[Chain.XLayer],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_XLAYER_DEV_RPC_URL! : `https://rpc.xlayer.tech`,
     swap: {
@@ -485,6 +502,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   [Chain.Mantle]: {
     ...NETWORK_CONFIG_DEFAULT,
     ...baseNetworksConfig[Chain.Mantle],
+    nativeTokens: NATIVE_TOKENS[Chain.Mantle],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_MANTLE_DEV_RPC_URL! : `https://rpc.mantle.xyz`,
     swap: {
