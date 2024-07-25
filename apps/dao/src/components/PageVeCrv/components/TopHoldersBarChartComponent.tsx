@@ -3,11 +3,11 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 
 import { shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
 
-import CustomTooltip from './TopLockerBarChartTooltip'
+import CustomTooltip from './TopHoldersBarChartTooltip'
 
-type TopLockerBarChartProps = {
-  data: VeCrvTopLocker[]
-  filter: TopLockerFilter
+type TopHoldersBarChartProps = {
+  data: VeCrvHolder[]
+  filter: TopHoldersSortBy
 }
 
 const COLORS = [
@@ -23,13 +23,13 @@ const COLORS = [
   '#277DA1',
 ]
 
-const TopLockerBarChart: React.FC<TopLockerBarChartProps> = ({ data, filter }) => {
+const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter }) => {
   const height = 500
   const labelWidth = 100
 
   return (
     <ChartContainer>
-      <ResponsiveContainer width="100%" height={height}>
+      <ResponsiveContainer width="100%" height={height} debounce={200}>
         <BarChart
           layout="vertical"
           width={500}
@@ -62,7 +62,7 @@ const TopLockerBarChart: React.FC<TopLockerBarChartProps> = ({ data, filter }) =
             axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey={filter} label={false}>
+          <Bar dataKey={filter} label={false} isAnimationActive={false}>
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
@@ -79,4 +79,4 @@ const ChartContainer = styled.div`
   height: 500px;
 `
 
-export default TopLockerBarChart
+export default TopHoldersBarChart

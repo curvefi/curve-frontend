@@ -19,8 +19,11 @@ type SliceState = {
     locks: VeCrvDailyLock[]
     fetchStatus: FetchingState
   }
-  veCrvTopLockers: {
-    topLockers: VeCrvTopLocker[]
+  veCrvHolders: {
+    topHolders: VeCrvHolder[]
+    allHolders: VeCrvHolder[]
+    totalHolders: number
+    canCreateVote: number
     totalValues: {
       weight: number
       locked: number
@@ -28,7 +31,11 @@ type SliceState = {
     }
     fetchStatus: FetchingState
   }
-  topLockerFilter: TopLockerFilter
+  topHoldersSortBy: TopHoldersSortBy
+  allHoldersSortBy: {
+    sortBy: AllHoldersSortBy
+    order: 'asc' | 'desc'
+  }
   veCrvData: {
     totalVeCrv: number
     totalLockedCrv: number
@@ -45,8 +52,9 @@ export type VeCrvSlice = {
   [sliceKey]: SliceState & {
     getVeCrvFees(): Promise<void>
     getVeCrvLocks(): Promise<void>
-    getVeCrvTopLockers(): Promise<void>
-    setTopLockerFilter(filter: 'weight' | 'locked' | 'weight_ratio'): void
+    getVeCrvHolders(): Promise<void>
+    setTopHoldersSortBy(sortBy: TopHoldersSortBy): void
+    setAllHoldersSortBy(sortBy: AllHoldersSortBy): void
     getVeCrvData(provider: any): Promise<void>
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -66,8 +74,11 @@ const DEFAULT_STATE: SliceState = {
     locks: [],
     fetchStatus: 'LOADING',
   },
-  veCrvTopLockers: {
-    topLockers: [],
+  veCrvHolders: {
+    topHolders: [],
+    allHolders: [],
+    totalHolders: 0,
+    canCreateVote: 0,
     totalValues: {
       weight: 0,
       locked: 0,
@@ -75,7 +86,11 @@ const DEFAULT_STATE: SliceState = {
     },
     fetchStatus: 'LOADING',
   },
-  topLockerFilter: 'weight',
+  topHoldersSortBy: 'weight_ratio',
+  allHoldersSortBy: {
+    sortBy: 'weight_ratio',
+    order: 'desc',
+  },
   veCrvData: {
     totalVeCrv: 0,
     totalLockedCrv: 0,
@@ -158,9 +173,10 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         })
       }
     },
-    getVeCrvTopLockers: async () => {
-      get()[sliceKey].setStateByKey('veCrvTopLockers', {
-        topLockers: [],
+    getVeCrvHolders: async () => {
+      get()[sliceKey].setStateByKey('veCrvHolders', {
+        topHolders: [],
+        allHolders: [],
         totalValues: {
           weight: 0,
           locked: 0,
@@ -170,20 +186,35 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
       })
 
       try {
-        const veCrvTopLockersRes = await fetch('https://prices.curve.fi/v1/dao/lockers/25')
-        const data: VeCrvTopLockersRes = await veCrvTopLockersRes.json()
+        let page = 1
+        let allHolders: VeCrvHolder[] = []
 
-        const formattedData = data.users
-          .map((locker) => ({
-            ...locker,
-            locked: Math.floor(+locker.locked / 10 ** 18),
-            weight: Math.floor(+locker.weight / 10 ** 18),
-            weight_ratio: Number(locker.weight_ratio.replace('%', '')),
-            unlock_time: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(locker.unlock_time).getTime())),
+        while (true) {
+          const veCrvHoldersRes = await fetch(`https://prices.curve.fi/v1/dao/lockers?pagination=1000&page=${page}`)
+          const data: VeCrvHoldersRes = await veCrvHoldersRes.json()
+
+          const formattedData = data.locks.map((holder) => ({
+            ...holder,
+            locked: +holder.locked / 10 ** 18,
+            weight: +holder.weight / 10 ** 18,
+            weight_ratio: Number(holder.weight_ratio.replace('%', '')),
           }))
-          .filter((locker) => locker.weight_ratio > 0.3)
 
-        const totalValues = formattedData.reduce(
+          allHolders = [...allHolders, ...formattedData]
+
+          if (data.locks.length < 1000) {
+            break
+          }
+
+          page++
+        }
+
+        const totalHolders = allHolders.length
+        const canCreateVote = allHolders.filter((holder) => holder.weight > 2500).length
+
+        const topHolders = allHolders.slice(0, 100).filter((holder) => holder.weight_ratio > 0.3)
+
+        const totalValues = topHolders.reduce(
           (acc, item) => ({
             weight: acc.weight + item.weight,
             locked: acc.locked + item.locked,
@@ -192,37 +223,79 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
           { weight: 0, locked: 0, weight_ratio: 0 }
         )
 
-        get()[sliceKey].setStateByKey('veCrvTopLockers', {
-          topLockers: formattedData,
+        get()[sliceKey].setStateByKey('veCrvHolders', {
+          topHolders,
+          allHolders,
+          totalHolders,
+          canCreateVote,
           totalValues,
-          filter: 'weight',
           fetchStatus: 'SUCCESS',
         })
       } catch (error) {
         console.log(error)
-        get()[sliceKey].setStateByKey('veCrvTopLockers', {
-          topLockers: [],
+        get()[sliceKey].setStateByKey('veCrvHolders', {
+          topHolders: [],
+          allHolders: [],
+          totalHolders: 0,
+          canCreateVote: 0,
           totalValues: {
             weight: 0,
             locked: 0,
             weight_ratio: 0,
           },
-          filter: 'weight',
           fetchStatus: 'ERROR',
         })
       }
     },
-    setTopLockerFilter: (filter: TopLockerFilter) => {
-      const { topLockers } = get()[sliceKey].veCrvTopLockers
+    setTopHoldersSortBy: (sortBy: TopHoldersSortBy) => {
+      const { topHolders } = get()[sliceKey].veCrvHolders
 
       set(
         produce((state) => {
-          state[sliceKey].topLockerFilter = filter
-          state[sliceKey].veCrvTopLockers.topLockers = [...topLockers].sort(
-            (a: VeCrvTopLocker, b: VeCrvTopLocker) => b[filter] - a[filter]
+          state[sliceKey].topHoldersSortBy = sortBy
+          state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
+            (a: VeCrvHolder, b: VeCrvHolder) => b[sortBy] - a[sortBy]
           )
         })
       )
+    },
+    setAllHoldersSortBy: (sortBy: AllHoldersSortBy) => {
+      const {
+        veCrvHolders: { allHolders },
+        allHoldersSortBy,
+      } = get()[sliceKey]
+
+      let order = allHoldersSortBy.order
+      // reverse order if sortBy is the same as the current sortBy, implying another click on the same label
+      if (sortBy === allHoldersSortBy.sortBy) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            state[sliceKey].veCrvHolders.allHolders = [...allHolders].reverse()
+            state[sliceKey].allHoldersSortBy.order = order
+          })
+        )
+      } else {
+        const formattedAllHolders = [...allHolders].sort((a: VeCrvHolder, b: VeCrvHolder) => {
+          if (sortBy === 'unlock_time') {
+            const aValue = new Date(a.unlock_time).getTime()
+            const bValue = new Date(b.unlock_time).getTime()
+
+            return bValue - aValue
+          }
+
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].allHoldersSortBy.sortBy = sortBy
+            state[sliceKey].allHoldersSortBy.order = 'desc'
+            state[sliceKey].veCrvHolders.allHolders = formattedAllHolders
+          })
+        )
+      }
     },
     getVeCrvData: async (provider: any) => {
       get()[sliceKey].setStateByKey('veCrvData', {
