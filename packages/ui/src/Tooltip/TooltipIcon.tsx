@@ -2,7 +2,7 @@ import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import React from 'react'
 
-import TooltipButton from 'ui/src/Tooltip/TooltipButton'
+import TooltipButton, { IconStyles } from 'ui/src/Tooltip/TooltipButton'
 
 const TooltipIcon = ({
   children,
@@ -10,6 +10,7 @@ const TooltipIcon = ({
   ...props
 }: React.PropsWithChildren<
   TooltipProps & {
+    iconStyles?: IconStyles
     customIcon?: React.ReactNode
   }
 >) => {
