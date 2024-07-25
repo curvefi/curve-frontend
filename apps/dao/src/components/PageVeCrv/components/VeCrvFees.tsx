@@ -46,9 +46,9 @@ const VeCrcFees: React.FC = () => {
                 const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
 
                 return (
-                  <FeeRow key={item.timestamp}>
+                  <FeeRow key={item.date}>
                     <FeeDate>
-                      {formatDateFromTimestamp(timestamp)}
+                      {item.date}
                       {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
                     </FeeDate>
                     <FeeData>
