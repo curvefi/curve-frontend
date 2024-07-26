@@ -4,6 +4,7 @@ import numbro from 'numbro'
 
 export { getStorageValue, setStorageValue } from '@/utils/storage'
 import { shortenAccount } from '@/ui/utils'
+import type { MutationKey, QueryKey } from '@tanstack/react-query'
 
 // https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
 export function isMobile() {
@@ -101,10 +102,142 @@ export function isBonus(slippage: number) {
   return Number(slippage) > 0
 }
 
-export function log(fnName: string, ...args: unknown[]) {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`curve-frontend@${new Date().toISOString()} -> ${fnName}:`, ...args)
+enum LogStatus {
+  ERROR = 'error',
+  SUCCESS = 'success',
+  WARNING = 'warning',
+  INFO = 'info',
+  SETTLED = 'settled',
+  QUERY = 'query',
+  MUTATION = 'mutation',
+  LOADING = 'loading',
+  IDLE = 'idle',
+  STALE = 'stale',
+  FETCHING = 'fetching',
+  PAUSED = 'paused',
+  CANCELLED = 'cancelled',
+}
+
+export function log(
+  fnName: string | QueryKey | MutationKey | string[],
+  status?: LogStatus | string | any,
+  ...args: unknown[]
+) {
+  if (process.env.NODE_ENV !== 'development') return
+
+  const timestamp = new Date().toISOString()
+  const fnNameString = Array.isArray(fnName) ? fnName.join('.') : fnName
+
+  const getStatusStyle = (status?: LogStatus | string) => {
+    if (!status) return ''
+    switch (String(status).toLowerCase()) {
+      case LogStatus.ERROR:
+        return 'background-color: #ff6b6b; color: #ffffff; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.SUCCESS:
+        return 'background-color: #51cf66; color: #ffffff; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.WARNING:
+      case LogStatus.MUTATION:
+        return 'background-color: #feca57; color: #ffffff; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.INFO:
+      case LogStatus.QUERY:
+        return 'background-color: #e3f2fd; color: #1976d2; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.SETTLED:
+        return 'background-color: #f3e5f5; color: #7b1fa2; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.LOADING:
+      case LogStatus.FETCHING:
+        return 'background-color: #e0f7fa; color: #0097a7; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      case LogStatus.IDLE:
+      case LogStatus.STALE:
+      case LogStatus.PAUSED:
+      case LogStatus.CANCELLED:
+        return 'background-color: #f5f5f5; color: #616161; font-weight: bold; padding: 2px 4px; border-radius: 3px;'
+      default:
+        return 'color: inherit;'
+    }
   }
+
+  const formatFnNameString = (fnNameString: string): [string, string[]] => {
+    const parts = fnNameString.split('.')
+    let formattedString = ''
+    const styles: string[] = []
+
+    parts.forEach((part, index) => {
+      if (index > 0) {
+        formattedString += '%c.'
+        styles.push('color: #666;')
+      }
+      formattedString += `%c${part}`
+      styles.push('color: #4CAF50; font-weight: bold;')
+    })
+
+    return [formattedString, styles]
+  }
+
+  const statusStyle = getStatusStyle(status)
+  const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
+
+  const logMethod = (status?: LogStatus | string) => {
+    switch (String(status).toLowerCase()) {
+      case LogStatus.ERROR:
+        return console.error
+      case LogStatus.WARNING:
+      case LogStatus.MUTATION:
+        return console.warn
+      case LogStatus.INFO:
+      case LogStatus.QUERY:
+        return console.info
+      case LogStatus.SUCCESS:
+        return console.log
+      default:
+        return console.log
+    }
+  }
+
+  const logger = logMethod(status)
+
+  if (hasDefinedStatus) {
+    const [formattedFnNameString, fnNameStyles] = formatFnNameString(fnNameString as string)
+    logger(
+      `%cDApp%c @ %c${timestamp}%c -> %c${status}%c\n${formattedFnNameString}${args.length > 0 ? '%c: ' : ''}%c`,
+      'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
+      'color: #666; font-weight: bold;',
+      'color: #2196F3;',
+      'color: #666;',
+      statusStyle,
+      'color: #4CAF50; font-weight: bold;',
+      ...fnNameStyles,
+      ...(args.length > 0 ? ['color: 666;'] : []),
+      'color: inherit;',
+      ...args
+    )
+  } else {
+    logger(
+      `%cDApp%c @ %c${timestamp}%c ->\n%c${fnNameString}${args.length > 0 ? ':' : ''}%c`,
+      'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
+      'color: #666; font-weight: bold;',
+      'color: #2196F3;',
+      'color: #666;',
+      'color: #4CAF50; font-weight: bold;',
+      'color: inherit;',
+      ...args
+    )
+  }
+}
+
+export const logQuery = (queryKey: QueryKey, ...args: unknown[]) => {
+  log(queryKey, LogStatus.QUERY, ...args)
+}
+
+export const logMutation = (mutationKey: MutationKey, ...args: unknown[]) => {
+  log(mutationKey, LogStatus.MUTATION, ...args)
+}
+
+export function logError(key: QueryKey | MutationKey, ...args: unknown[]) {
+  log(key, LogStatus.ERROR, ...args)
+}
+
+export function logSuccess(key: QueryKey | MutationKey, ...args: unknown[]) {
+  log(key, LogStatus.SUCCESS, ...args)
 }
 
 export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | string) {
