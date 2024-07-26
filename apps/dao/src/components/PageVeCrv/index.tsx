@@ -4,7 +4,7 @@ import CrvStats from './components/CrvStats'
 import VeCrvFees from './components/VeCrvFees'
 import DailyLocks from './components/DailyLocks'
 import TopHolders from './components/TopHolders'
-import TopHoldersTable from './TopHoldersTable'
+import HoldersTable from './HoldersTable'
 
 const VeCrv = () => {
   return (
@@ -17,7 +17,7 @@ const VeCrv = () => {
           <TopHolders />
           <DailyLocks />
         </Column>
-        <TopHoldersTable />
+        <HoldersTable />
       </Content>
     </Wrapper>
   )
