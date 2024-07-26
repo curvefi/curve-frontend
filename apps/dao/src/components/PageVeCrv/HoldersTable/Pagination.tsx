@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 
 import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
 
 interface PaginationProps {
   currentPage: number
@@ -47,7 +48,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        Previous
+        <Icon size={16} name="ChevronLeft" />
       </PaginationButton>
       {getPageNumbers().map((number) => (
         <PageNumber
@@ -66,7 +67,7 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        Next
+        <Icon size={16} name="ChevronRight" />
       </PaginationButton>
       <PaginationButton
         variant="text"
@@ -89,6 +90,9 @@ const PaginationWrapper = styled.div`
 `
 
 const PaginationButton = styled(Button)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: var(--spacing-1) var(--spacing-2);
   margin: 0 var(--spacing-1);
   background-color: var(--color-background-secondary);
