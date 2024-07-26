@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 import { TOP_HOLDERS_FILTERS } from '@/components/PageVeCrv/constants'
 
 import Box from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Spinner from './Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
 import TopHoldersBarChartComponent from '@/components/PageVeCrv/components/TopHoldersBarChartComponent'
@@ -71,11 +71,7 @@ const TopLockers: React.FC = () => {
         </Box>
       </TitleRow>
       <Content>
-        {lockersFetchLoading && (
-          <StyledSpinnerWrapper>
-            <Spinner />
-          </StyledSpinnerWrapper>
-        )}
+        {lockersFetchLoading && <Spinner height="31.25rem" />}
         {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvHolders} />}
         {lockersFetchSuccess && (
           <TopHoldersBarChartComponent data={[...veCrvHolders.topHolders, othersData]} filter={topHoldersSortBy} />
@@ -104,12 +100,6 @@ const BoxTitle = styled.h2`
 
 const Content = styled.div`
   padding: 0 var(--spacing-3) var(--spacing-3);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  display: flex;
-  width: 100%;
-  margin-bottom: var(--spacing-4);
 `
 
 export default TopLockers
