@@ -22,9 +22,9 @@ const TitleColumnDataComp: React.FC<Props> = ({ loading, title, data, className 
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
   font-size: var(--font-size-3);
   font-weight: var(--semi-bold);
+  justify-content: space-between;
 `
 
 export const SubTitle = styled.h4`
@@ -37,7 +37,8 @@ export const SubTitle = styled.h4`
   }
 `
 
-export const SubTitleColumnData = styled.h3`
+export const SubTitleColumnData = styled.h3<{ noMargin?: boolean }>`
+  margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
   font-size: var(--font-size-2);
 `
 

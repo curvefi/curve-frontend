@@ -3,12 +3,12 @@ import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
-import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
+import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils'
 
 import Box from '@/ui/Box'
-import Spinner from './Spinner'
+import Spinner from '../components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import VeCrvFeesChart from './VeCrvFeesChart'
+import VeCrvFeesChart from '../VeCrvFeesChart'
 
 const VeCrcFees: React.FC = () => {
   const { getVeCrvFees, veCrvFees } = useStore((state) => state.vecrv)
@@ -71,9 +71,12 @@ const VeCrcFees: React.FC = () => {
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
   gap: var(--spacing-2);
-  grid-template-columns: 25rem 1fr;
+  flex-direction: column;
+  @media (min-width: 56.25rem) {
+    flex-direction: row;
+    grid-template-columns: 25rem 1fr;
+  }
 `
 
 const BoxTitle = styled.h2`

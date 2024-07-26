@@ -9,11 +9,12 @@ interface TableRowProps {
   holder: VeCrvHolder
   sortBy: AllHoldersSortBy
   rank: number
+  minWidth: number
 }
 
-const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, rank }) => {
+const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, rank, minWidth }) => {
   return (
-    <TableRowWrapper>
+    <TableRowWrapper minWidth={minWidth}>
       <TableData>{rank}.</TableData>
       <TableData>
         <StyledExternalLink href={`${networks[1].scanAddressPath}/address/${holder.user}`}>
@@ -36,11 +37,15 @@ const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, rank }) => {
   )
 }
 
-const TableRowWrapper = styled.div`
+const TableRowWrapper = styled.div<{ minWidth: number }>`
   display: grid;
   grid-template-columns: 0.4fr 1fr 1fr 1fr 1fr 1fr;
   padding: var(--spacing-1) 0;
   border-bottom: 1px solid var(--gray-500a20);
+  min-width: ${({ minWidth }) => `${minWidth}rem`};
+  &:last-child {
+    border-bottom: none;
+  }
 `
 
 const TableData = styled.p`

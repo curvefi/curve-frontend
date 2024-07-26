@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 
-import CrvStats from './components/CrvStats'
-import VeCrvFees from './components/VeCrvFees'
-import DailyLocks from './components/DailyLocks'
-import TopHolders from './components/TopHolders'
+import CrvStats from './CrvStats'
+import VeCrvFees from './VeCrvFeesTable'
+import DailyLocks from './DailyLocksChart'
+import TopHolders from './TopHoldersChart'
 import HoldersTable from './HoldersTable'
 
 const VeCrv = () => {
