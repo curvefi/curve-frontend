@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Spinner from './Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
@@ -26,11 +26,7 @@ const DailyLocks: React.FC = () => {
     <Wrapper variant="secondary">
       <BoxTitle>{t`Daily veCRV Locks Last 100 Days`}</BoxTitle>
       <Content>
-        {locksFetchLoading && (
-          <StyledSpinnerWrapper>
-            <Spinner />
-          </StyledSpinnerWrapper>
-        )}
+        {locksFetchLoading && <Spinner height="32.5rem" />}
         {locksFetchError && <ErrorMessage message={t`Error fetching daily veCRV locks`} onClick={getVeCrvLocks} />}
         {locksFetchSuccess && <PositiveAndNegativeBarChart height={520} data={veCrvLocks.locks.slice(256, 356)} />}
       </Content>
@@ -51,12 +47,6 @@ const BoxTitle = styled.h2`
 
 const Content = styled.div`
   padding: 0 var(--spacing-3) var(--spacing-3);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  display: flex;
-  width: 100%;
-  margin-bottom: var(--spacing-4);
 `
 
 export default DailyLocks

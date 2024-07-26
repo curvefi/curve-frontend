@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
 
 import Box from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Spinner from './Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import VeCrvFeesChart from './VeCrvFeesChart'
 
@@ -33,11 +33,7 @@ const VeCrcFees: React.FC = () => {
           <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
           <FeesSubtitle>{t`Fees`}</FeesSubtitle>
         </FeesTitlesRow>
-        {feesLoading && (
-          <StyledSpinnerWrapper>
-            <Spinner />
-          </StyledSpinnerWrapper>
-        )}
+        {feesLoading && <Spinner height="25rem" />}
         {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
         {feesReady && (
           <>
@@ -84,12 +80,6 @@ const BoxTitle = styled.h2`
   font-size: var(--font-size-3);
   font-weight: bold;
   padding: var(--spacing-3);
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  display: flex;
-  width: 100%;
-  margin-bottom: var(--spacing-4);
 `
 
 const FeesBox = styled(Box)`
