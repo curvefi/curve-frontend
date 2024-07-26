@@ -6,12 +6,16 @@ import useStore from '@/store/useStore'
 import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
 
-const TableHeader: React.FC = () => {
+interface TableHeaderProps {
+  minWidth: number
+}
+
+const TableHeader: React.FC<TableHeaderProps> = ({ minWidth }) => {
   const { allHoldersSortBy, setAllHoldersSortBy } = useStore((state) => state.vecrv)
 
   return (
-    <TableHeaderWrapper>
-      <TableContainer>
+    <TableHeaderWrapper minWidth={minWidth}>
+      <TableContainer minWidth={minWidth}>
         <TableTitle>{t`Rank`}</TableTitle>
         <TableTitle>{t`Holder`}</TableTitle>
         <TableTitleButton variant="text" onClick={() => setAllHoldersSortBy('weight')}>
@@ -43,16 +47,17 @@ const TableHeader: React.FC = () => {
   )
 }
 
-const TableHeaderWrapper = styled.div`
-  padding: var(--spacing-3) var(--spacing-4) 0;
+const TableHeaderWrapper = styled.div<{ minWidth: number }>`
   background: var(--box_header--secondary--background-color);
+  min-width: ${({ minWidth }) => `calc(${minWidth}rem + var(--spacing-4) + var(--spacing-4))`};
 `
 
-const TableContainer = styled.div`
+const TableContainer = styled.div<{ minWidth: number }>`
   display: grid;
   justify-content: space-between;
   grid-template-columns: 0.4fr 1fr 1fr 1fr 1fr 1fr;
-  padding: var(--spacing-2) 0;
+  padding: calc(var(--spacing-3) + var(--spacing-2)) var(--spacing-4) var(--spacing-2);
+  min-width: ${({ minWidth }) => `calc(${minWidth}rem + var(--spacing-4) + var(--spacing-4))`};
 `
 
 const TableTitle = styled.p`

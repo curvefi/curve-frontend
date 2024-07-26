@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
 
 interface PaginationProps {
   currentPage: number
@@ -39,53 +41,76 @@ const Pagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPage
 
   return (
     <PaginationWrapper>
-      <PaginationButton variant="text" size="small" onClick={() => onPageChange(1)} disabled={currentPage === 1}>
-        First
-      </PaginationButton>
-      <PaginationButton
-        variant="text"
-        size="small"
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        <Icon size={16} name="ChevronLeft" />
-      </PaginationButton>
-      {getPageNumbers().map((number) => (
-        <PageNumber
+      <Box flex>
+        <PaginationButton
+          className="first-last-button"
           variant="text"
           size="small"
-          key={number}
-          onClick={() => onPageChange(number)}
-          active={currentPage === number}
+          onClick={() => onPageChange(1)}
+          disabled={currentPage === 1}
         >
-          {number}
-        </PageNumber>
-      ))}
-      <PaginationButton
-        variant="text"
-        size="small"
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        <Icon size={16} name="ChevronRight" />
-      </PaginationButton>
-      <PaginationButton
-        variant="text"
-        size="small"
-        onClick={() => onPageChange(totalPages)}
-        disabled={currentPage === totalPages}
-      >
-        Last ({totalPages})
-      </PaginationButton>
+          {t`First`}
+        </PaginationButton>
+        <PaginationButton
+          variant="text"
+          size="small"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <Icon size={16} name="ChevronLeft" />
+        </PaginationButton>
+        {getPageNumbers().map((number) => (
+          <PageNumber
+            variant="text"
+            size="small"
+            key={number}
+            onClick={() => onPageChange(number)}
+            active={currentPage === number}
+          >
+            {number}
+          </PageNumber>
+        ))}
+        <PaginationButton
+          variant="text"
+          size="small"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          <Icon size={16} name="ChevronRight" />
+        </PaginationButton>
+        <PaginationButton
+          className="first-last-button"
+          variant="text"
+          size="small"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          {t`Last`} ({totalPages})
+        </PaginationButton>
+      </Box>
+      <SmallScreenRow>
+        <PaginationButton variant="text" size="small" onClick={() => onPageChange(1)} disabled={currentPage === 1}>
+          {t`First`}
+        </PaginationButton>
+        <PaginationButton
+          variant="text"
+          size="small"
+          onClick={() => onPageChange(totalPages)}
+          disabled={currentPage === totalPages}
+        >
+          {t`Last`} ({totalPages})
+        </PaginationButton>
+      </SmallScreenRow>
     </PaginationWrapper>
   )
 }
 
 const PaginationWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding-top: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3) 0;
   border-top: 1px solid var(--gray-500a20);
 `
 
@@ -95,14 +120,27 @@ const PaginationButton = styled(Button)`
   justify-content: center;
   padding: var(--spacing-1) var(--spacing-2);
   margin: 0 var(--spacing-1);
-  background-color: var(--color-background-secondary);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
   color: var(--page--text-color);
   cursor: pointer;
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+  &.first-last-button {
+    @media (max-width: 27.8125rem) {
+      display: none;
+    }
+  }
+`
+
+const SmallScreenRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: var(--spacing-2);
+  @media (min-width: 27.8125rem) {
+    display: none;
   }
 `
 
