@@ -59,13 +59,13 @@ const CrvStats: React.FC = () => {
           loading={veCrvHolders.fetchStatus === 'LOADING'}
           title={t`Total Holders`}
           data={
-            <Tooltip
+            <StyledTooltip
               tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
             >
               <SubTitleColumnData>
                 {formatNumber(veCrvHolders.totalHolders, { showDecimalIfSmallNumberOnly: true })}
               </SubTitleColumnData>
-            </Tooltip>
+            </StyledTooltip>
           }
         />
         <SubTitleColumn
@@ -81,16 +81,13 @@ const CrvStats: React.FC = () => {
           loading={veCrvLoading || veCrvFeesLoading}
           title={t`veCRV APR`}
           data={
-            <Box flex flexGap="var(--spacing-1)">
-              <SubTitleColumnData>
+            <AprRow>
+              <SubTitleColumnData noMargin>
                 {`~${formatNumber(veCrvApr, {
                   showDecimalIfSmallNumberOnly: true,
                 })}%`}
               </SubTitleColumnData>
-              <TooltipIcon>
-                {t`This APR is an annualized projection based on the previous week's fee distribution.`}
-              </TooltipIcon>
-            </Box>
+            </AprRow>
           }
         />
       </StatsRow>
@@ -101,12 +98,30 @@ const CrvStats: React.FC = () => {
 const Wrapper = styled(Box)``
 
 const StatsRow = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  gap: var(--spacing-4);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
+  row-gap: var(--spacing-3);
+  column-gap: var(--spacing-4);
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
+  @media (min-width: 20.625rem) {
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  }
+  @media (min-width: 48rem) {
+    display: flex;
+    column-gap: var(--spacing-4);
+  }
+`
+
+const StyledTooltip = styled(Tooltip)`
+  min-height: 0;
+`
+
+const AprRow = styled.div`
+  display: flex;
+  gap: 0 var(--spacing-1);
+  padding-top: var(--spacing-1);
+  align-items: flex-end;
 `
 
 export default CrvStats

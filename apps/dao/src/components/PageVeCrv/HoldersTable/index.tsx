@@ -15,6 +15,8 @@ const TopHoldersTable: React.FC = () => {
   const { veCrvHolders, allHoldersSortBy, getVeCrvHolders } = useStore((state) => state.vecrv)
   const [currentPage, setCurrentPage] = useState(1)
 
+  const minWidth = 41.875
+
   const holdersLoading = veCrvHolders.fetchStatus === 'LOADING'
   const holdersError = veCrvHolders.fetchStatus === 'ERROR'
   const holdersReady = veCrvHolders.fetchStatus === 'SUCCESS'
@@ -29,20 +31,23 @@ const TopHoldersTable: React.FC = () => {
 
   return (
     <Wrapper variant="secondary">
-      <TableHeader />
-      <TableBody>
-        {holdersLoading && <Spinner height="31.25rem" />}
-        {holdersReady &&
-          currentHolders.map((holder, index) => (
-            <TableRow
-              key={holder.user}
-              holder={holder}
-              sortBy={allHoldersSortBy.sortBy}
-              rank={indexOfFirstHolder + index + 1}
-            />
-          ))}
-        {holdersError && <ErrorMessage message={t`Error fetching holder data.`} onClick={getVeCrvHolders} />}
-      </TableBody>
+      <Container>
+        <TableHeader minWidth={minWidth} />
+        <TableBody minWidth={minWidth}>
+          {holdersLoading && <Spinner height="31.25rem" />}
+          {holdersReady &&
+            currentHolders.map((holder, index) => (
+              <TableRow
+                minWidth={minWidth}
+                key={holder.user}
+                holder={holder}
+                sortBy={allHoldersSortBy.sortBy}
+                rank={indexOfFirstHolder + index + 1}
+              />
+            ))}
+          {holdersError && <ErrorMessage message={t`Error fetching holder data.`} onClick={getVeCrvHolders} />}
+        </TableBody>
+      </Container>
       {holdersReady && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
     </Wrapper>
   )
@@ -51,16 +56,24 @@ const TopHoldersTable: React.FC = () => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  max-height: 46.875rem;
+  height: 46.875rem;
   padding-bottom: var(--spacing-3);
+  width: 100%;
 `
 
-const TableBody = styled.div`
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  overflow: auto;
+`
+
+const TableBody = styled.div<{ minWidth: number }>`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-4) var(--spacing-3);
-  overflow-y: auto;
+  min-width: ${({ minWidth }) => `${minWidth}rem`};
 `
 
 export default TopHoldersTable
