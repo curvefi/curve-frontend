@@ -1,16 +1,23 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 import Pagination from './Pagination'
+import Spinner from '../components/Spinner'
+import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
 
 const TopHoldersTable: React.FC = () => {
-  const { veCrvHolders, allHoldersSortBy } = useStore((state) => state.vecrv)
+  const { veCrvHolders, allHoldersSortBy, getVeCrvHolders } = useStore((state) => state.vecrv)
   const [currentPage, setCurrentPage] = useState(1)
+
+  const holdersLoading = veCrvHolders.fetchStatus === 'LOADING'
+  const holdersError = veCrvHolders.fetchStatus === 'ERROR'
+  const holdersReady = veCrvHolders.fetchStatus === 'SUCCESS'
 
   const ITEMS_PER_PAGE = 100
 
@@ -24,16 +31,19 @@ const TopHoldersTable: React.FC = () => {
     <Wrapper variant="secondary">
       <TableHeader />
       <TableBody>
-        {currentHolders.map((holder, index) => (
-          <TableRow
-            key={holder.user}
-            holder={holder}
-            sortBy={allHoldersSortBy.sortBy}
-            rank={indexOfFirstHolder + index + 1}
-          />
-        ))}
+        {holdersLoading && <Spinner height="31.25rem" />}
+        {holdersReady &&
+          currentHolders.map((holder, index) => (
+            <TableRow
+              key={holder.user}
+              holder={holder}
+              sortBy={allHoldersSortBy.sortBy}
+              rank={indexOfFirstHolder + index + 1}
+            />
+          ))}
+        {holdersError && <ErrorMessage message={t`Error fetching holder data.`} onClick={getVeCrvHolders} />}
       </TableBody>
-      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+      {holdersReady && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />}
     </Wrapper>
   )
 }
