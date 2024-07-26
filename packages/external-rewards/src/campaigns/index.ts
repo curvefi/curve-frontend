@@ -11,7 +11,7 @@ import Symbiotic from './Symbiotic.json'
 import Usual from './Usual.json'
 import YieldNest from './YieldNest.json'
 import Fraxtal from './Fraxtal.json'
-import Swell from './Swell.json';
+import Swell from './Swell.json'
 
 export {
   DLCLink,
@@ -27,5 +27,5 @@ export {
   Usual,
   YieldNest,
   Fraxtal,
-  Swell
+  Swell,
 }

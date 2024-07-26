@@ -12,6 +12,7 @@ const TableHeader: React.FC = () => {
   return (
     <TableHeaderWrapper>
       <TableContainer>
+        <TableTitle>{t`Rank`}</TableTitle>
         <TableTitle>{t`Holder`}</TableTitle>
         <TableTitleButton variant="text" onClick={() => setAllHoldersSortBy('weight')}>
           {t`veCRV`}
@@ -50,7 +51,7 @@ const TableHeaderWrapper = styled.div`
 const TableContainer = styled.div`
   display: grid;
   justify-content: space-between;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 0.4fr 1fr 1fr 1fr 1fr 1fr;
   padding: var(--spacing-2) 0;
 `
 
