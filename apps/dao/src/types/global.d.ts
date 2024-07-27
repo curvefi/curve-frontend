@@ -284,7 +284,6 @@ declare global {
   type SortByFilterProposals = 'voteId' | 'endingSoon'
   type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
   type ActiveSortDirection = 'asc' | 'desc'
-  type GaugeListNavSelection = 'Gauge List' | 'Gauge Weight Distribution' | 'Gauge Voting'
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
 }

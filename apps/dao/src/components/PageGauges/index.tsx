@@ -10,15 +10,27 @@ import Button from '@/ui/Button'
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 import UserBox from '../UserBox'
+import SubNav from '@/components/SubNav'
 
 const Gauges = () => {
   const { isMdUp } = useStore((state) => state)
 
-  const [navSelection, setNavSelection] = useState<GaugeListNavSelection>('Gauge List')
+  const [navSelection, setNavSelection] = useState('gaugeList')
+
+  const navItems = !isMdUp
+    ? [
+        { key: 'gaugeList', label: t`Gauge List` },
+        { key: 'gaugeWeightDistribution', label: t`Weight Distribution` },
+        { key: 'gaugeVoting', label: t`Gauge Voting` },
+      ]
+    : [
+        { key: 'gaugeList', label: t`Gauge List` },
+        { key: 'gaugeVoting', label: t`Gauge Voting` },
+      ]
 
   useEffect(() => {
-    if (isMdUp && navSelection === 'Gauge Weight Distribution') {
-      setNavSelection('Gauge List')
+    if (isMdUp && navSelection === 'gaugeWeightDistribution') {
+      setNavSelection('gaugeList')
     }
   }, [isMdUp, navSelection])
 
@@ -32,51 +44,18 @@ const Gauges = () => {
         flexGap={'var(--spacing-1)'}
       >
         <Container variant="secondary">
-          <GaugesNavigation>
-            <Box>
-              <GaugesNavButton
-                onClick={() => setNavSelection('Gauge List')}
-                variant="outlined"
-                className={navSelection === 'Gauge List' ? 'active' : ''}
-              >
-                {t`Gauge List`}
-              </GaugesNavButton>
-              {navSelection === 'Gauge List' && <ActiveIndicator />}
-            </Box>
-            {!isMdUp && (
-              <Box>
-                <GaugesNavButton
-                  onClick={() => setNavSelection('Gauge Weight Distribution')}
-                  variant="outlined"
-                  className={navSelection === 'Gauge Weight Distribution' ? 'active' : ''}
-                >
-                  {t`Weight Distribution`}
-                </GaugesNavButton>
-                {navSelection === 'Gauge Weight Distribution' && <ActiveIndicator />}
-              </Box>
-            )}
-            <Box>
-              <GaugesNavButton
-                onClick={() => setNavSelection('Gauge Voting')}
-                variant="outlined"
-                className={navSelection === 'Gauge Voting' ? 'active' : ''}
-              >
-                {t`Gauge Voting`}
-              </GaugesNavButton>
-              {navSelection === 'Gauge Voting' && <ActiveIndicator />}
-            </Box>
-          </GaugesNavigation>
-          {navSelection === 'Gauge List' && <GaugesList />}
-          {navSelection === 'Gauge Weight Distribution' && <GaugeWeightDistribution />}
+          <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
+          {navSelection === 'gaugeList' && <GaugesList />}
+          {navSelection === 'gaugeWeightDistribution' && <GaugeWeightDistribution />}
           {/* {navSelection === 'Gauge Voting' && <GaugeVoting />} */}
         </Container>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
-          {navSelection === 'Gauge Voting' && (
+          {navSelection === 'gaugeVoting' && (
             <Box variant="secondary">
               <UserBox snapshotVotingPower={false} />
             </Box>
           )}
-          {navSelection === 'Gauge List' && isMdUp && <GaugeWeightDistribution />}
+          {navSelection === 'gaugeList' && isMdUp && <GaugeWeightDistribution />}
         </Box>
       </Box>
     </Wrapper>
