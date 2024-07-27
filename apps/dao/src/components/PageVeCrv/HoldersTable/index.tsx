@@ -66,6 +66,9 @@ const Container = styled.div`
   flex-direction: column;
   width: 100%;
   overflow: auto;
+  @media (min-width: 46.25rem) {
+    overflow: hidden;
+  }
 `
 
 const TableBody = styled.div<{ minWidth: number }>`
@@ -74,6 +77,9 @@ const TableBody = styled.div<{ minWidth: number }>`
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-4) var(--spacing-3);
   min-width: ${({ minWidth }) => `${minWidth}rem`};
+  @media (min-width: 46.25rem) {
+    overflow-y: auto;
+  }
 `
 
 export default TopHoldersTable
