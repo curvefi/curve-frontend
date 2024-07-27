@@ -15,8 +15,8 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, rank, minWidth }) => {
   return (
     <TableRowWrapper minWidth={minWidth}>
-      <TableData>{rank}.</TableData>
       <TableData>
+        {rank}.
         <StyledExternalLink href={`${networks[1].scanAddressPath}/address/${holder.user}`}>
           {shortenTokenAddress(holder.user)}
         </StyledExternalLink>
@@ -39,7 +39,7 @@ const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, rank, minWidth }) =
 
 const TableRowWrapper = styled.div<{ minWidth: number }>`
   display: grid;
-  grid-template-columns: 0.4fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr;
   padding: var(--spacing-1) 0;
   border-bottom: 1px solid var(--gray-500a20);
   min-width: ${({ minWidth }) => `${minWidth}rem`};

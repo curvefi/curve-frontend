@@ -16,7 +16,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({ minWidth }) => {
   return (
     <TableHeaderWrapper minWidth={minWidth}>
       <TableContainer minWidth={minWidth}>
-        <TableTitle>{t`Rank`}</TableTitle>
         <TableTitle>{t`Holder`}</TableTitle>
         <TableTitleButton variant="text" onClick={() => setAllHoldersSortBy('weight')}>
           {t`veCRV`}
@@ -55,7 +54,7 @@ const TableHeaderWrapper = styled.div<{ minWidth: number }>`
 const TableContainer = styled.div<{ minWidth: number }>`
   display: grid;
   justify-content: space-between;
-  grid-template-columns: 0.4fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.1fr 1fr 1fr 1fr 1fr;
   padding: calc(var(--spacing-3) + var(--spacing-2)) var(--spacing-4) var(--spacing-2);
   min-width: ${({ minWidth }) => `calc(${minWidth}rem + var(--spacing-4) + var(--spacing-4))`};
 `
