@@ -13,7 +13,7 @@
       "poolAddress": "0x5f6c431ac417f0f430b84a666a563fabe681da94",
       "gaugeAddress": "0x0",
       "network": "ethereum",
-      "multiplier": "5",
+      "multiplier": "3.75",
       "tags": ["points"]
     },
     {
@@ -24,7 +24,7 @@
       "poolAddress": "0xb478bf40dd622086e0d0889eebbadcb63806adde",
       "gaugeAddress": "0x0",
       "network": "ethereum",
-      "multiplier": "5",
+      "multiplier": "3.75",
       "tags": ["points"]
     },
     {
@@ -35,7 +35,7 @@
       "poolAddress": "0x7c4e143b23d72e6938e06291f705b5ae3d5c7c7c",
       "gaugeAddress": "0x0",
       "network": "ethereum",
-      "multiplier": "5",
+      "multiplier": "3.75",
       "tags": ["points"]
     }
   ]
