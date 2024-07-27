@@ -37,6 +37,30 @@
       "network": "ethereum",
       "multiplier": "2",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-215",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0xb9ef9c471f686e9249f5bb3af465560e4b917294",
+      "gaugeAddress": "0xfe37302b416271509dfb72c04bb74fdd3c881a1e",
+      "network": "ethereum",
+      "multiplier": "4",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-stable-ng-208",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x2fd6965730bef5c7e928342ad6e7d4819d08f8c4",
+      "gaugeAddress": "0xe27a2daa63b45d32353375c8cdd2b0d7d46f2987",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
     }
   ]
 }
+
+
