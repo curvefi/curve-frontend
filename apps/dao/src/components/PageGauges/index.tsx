@@ -1,3 +1,5 @@
+import { SubNavItem } from '@/components/SubNav/types'
+
 import styled from 'styled-components'
 import { useState, useEffect } from 'react'
 import { t } from '@lingui/macro'
@@ -17,7 +19,7 @@ const Gauges = () => {
 
   const [navSelection, setNavSelection] = useState('gaugeList')
 
-  const navItems = !isMdUp
+  const navItems: SubNavItem[] = !isMdUp
     ? [
         { key: 'gaugeList', label: t`Gauge List` },
         { key: 'gaugeWeightDistribution', label: t`Weight Distribution` },

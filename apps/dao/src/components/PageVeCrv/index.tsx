@@ -1,23 +1,42 @@
+import { SubNavItem } from '@/components/SubNav/types'
+
+import { useState } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import CrvStats from './CrvStats'
 import VeCrvFees from './VeCrvFeesTable'
 import DailyLocks from './DailyLocksChart'
 import TopHolders from './TopHoldersChart'
 import HoldersTable from './HoldersTable'
+import SubNav from '../SubNav'
+import Box from '@/ui/Box'
 
 const VeCrv = () => {
+  const [navSelection, setNavSelection] = useState('fees')
+
+  const navItems: SubNavItem[] = [
+    { key: 'fees', label: t`veCRV Fees` },
+    { key: 'holders', label: t`Holders` },
+    { key: 'locking', label: t`Locking` },
+  ]
+
   return (
     <Wrapper>
       <PageTitle>veCRV</PageTitle>
-      <Content>
+      <Content variant="secondary">
         <CrvStats />
-        <VeCrvFees />
-        <Column>
-          <TopHolders />
-          <DailyLocks />
-        </Column>
-        <HoldersTable />
+        <SubNavWrapper>
+          <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} nested />
+        </SubNavWrapper>
+        {navSelection === 'fees' && <VeCrvFees />}
+        {navSelection === 'holders' && (
+          <Box flex flexColumn flexGap="var(--spacing-2)">
+            <TopHolders />
+            <HoldersTable />
+          </Box>
+        )}
+        {navSelection === 'locking' && <DailyLocks />}
       </Content>
     </Wrapper>
   )
@@ -46,19 +65,13 @@ const PageTitle = styled.h2`
   padding: 0 2px;
 `
 
-const Content = styled.div`
+const Content = styled(Box)`
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
 `
 
-const Column = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  @media (min-width: 56.25rem) {
-    flex-direction: row;
-  }
+const SubNavWrapper = styled(Box)`
+  padding-bottom: var(--spacing-2);
 `
 
 export default VeCrv

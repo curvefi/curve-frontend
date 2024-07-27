@@ -23,7 +23,7 @@ const DailyLocks: React.FC = () => {
   }, [getVeCrvLocks, veCrvLocks.locks.length, veCrvLocks.fetchStatus])
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper>
       <BoxTitle>{t`Daily veCRV Locks Last 100 Days`}</BoxTitle>
       <Content>
         {locksFetchLoading && <Spinner height="32.5rem" />}

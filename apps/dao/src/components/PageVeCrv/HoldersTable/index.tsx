@@ -30,7 +30,7 @@ const TopHoldersTable: React.FC = () => {
   const totalPages = Math.ceil(veCrvHolders.allHolders.length / ITEMS_PER_PAGE)
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper>
       <Container>
         <TableHeader minWidth={minWidth} />
         <TableBody minWidth={minWidth}>

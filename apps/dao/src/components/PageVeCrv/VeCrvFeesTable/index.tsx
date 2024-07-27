@@ -27,7 +27,7 @@ const VeCrcFees: React.FC = () => {
 
   return (
     <Wrapper>
-      <FeesBox variant="secondary" flex flexColumn>
+      <FeesBox flex flexColumn>
         <BoxTitle>{t`Weekly veCRV Fees`}</BoxTitle>
         <FeesTitlesRow>
           <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
