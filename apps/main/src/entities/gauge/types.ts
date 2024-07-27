@@ -10,13 +10,34 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import { gaugeKeys } from './query-keys'
+import { gaugeKeys } from '@/entities/gauge/query-keys'
+import { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
+import type { NestedKeys, NestedProperty } from '@/shared/types/nested'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
 
-export type GaugeQueryKeys = ReturnType<(typeof gaugeKeys)[keyof typeof gaugeKeys]>
+export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedProperty<PoolTemplate, M>>>
 
-export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ReturnType<(typeof gaugeKeys)[K]>
+export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedProperty<PoolTemplate, M>>
 
-export type AddRewardTokenParams = {
-  token: string
-  distributor: string
+export type GaugeQueryKeys = ExtractQueryKeys<typeof gaugeKeys>
+
+export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ExtractQueryKeyType<typeof gaugeKeys, K>
+
+export type GaugeQueryParams = {
+  chainId?: ChainId
+  poolId?: string
+}
+export type AddRewardParams<T extends Array<any> = PoolMethodParameters<'gauge.addReward'>> = {
+  rewardTokenId?: T[0]
+  distributorId?: T[1]
+}
+
+export type DepositRewardApproveParams<T extends Array<any> = PoolMethodParameters<'gauge.depositRewardApprove'>> = {
+  rewardTokenId?: T[0]
+  amount?: T[1]
+}
+export type DepositRewardParams<T extends Array<any> = PoolMethodParameters<'gauge.depositReward'>> = {
+  rewardTokenId?: T[0]
+  amount?: T[1]
+  epoch?: T[2]
 }

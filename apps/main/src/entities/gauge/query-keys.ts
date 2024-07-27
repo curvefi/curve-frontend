@@ -11,38 +11,95 @@
  * They play a crucial role in maintaining a predictable and efficient data fetching strategy.
  */
 
+import type {
+  AddRewardParams,
+  DepositRewardApproveParams,
+  DepositRewardParams,
+  GaugeQueryParams,
+} from '@/entities/gauge/types'
+
 export const gaugeKeys = {
   all: () => ['gauge'] as const,
   estimateGas: () => ['estimateGas'] as const,
-  params: (chain?: ChainId, id?: string) => [chain, id] as const,
-  gauge: (chain?: ChainId, id?: string) => [...gaugeKeys.all(), ...gaugeKeys.params(chain, id)] as const,
-  version: (chain?: ChainId, id?: string) => [...gaugeKeys.all(), 'version', ...gaugeKeys.params(chain, id)] as const,
-  status: (chain?: ChainId, id?: string) => [...gaugeKeys.all(), 'status', ...gaugeKeys.params(chain, id)] as const,
-  manager: (chain?: ChainId, id?: string) => [...gaugeKeys.all(), 'manager', ...gaugeKeys.params(chain, id)] as const,
-  distributors: (chain?: ChainId, id?: string) =>
-    [...gaugeKeys.all(), 'distributors', ...gaugeKeys.params(chain, id)] as const,
-  isDepositRewardAvailable: (chain?: ChainId, id?: string) =>
-    [...gaugeKeys.all(), 'isDepositRewardAvailable', ...gaugeKeys.params(chain, id)] as const,
-  depositRewardIsApproved: (chain: ChainId, id: string, token: string, amount: number | string) =>
-    [...gaugeKeys.all(), 'depositRewardIsApproved', ...gaugeKeys.params(chain, id), token, amount] as const,
-  estimateGasDepositRewardApprove: (chain?: ChainId, id?: string, token?: string, amount?: number | string) =>
+  params: ({ chainId, poolId }: GaugeQueryParams) => [chainId, poolId] as const,
+  gauge: (params: GaugeQueryParams) => [...gaugeKeys.all(), ...gaugeKeys.params(params)] as const,
+  version: (params: GaugeQueryParams) => [...gaugeKeys.all(), 'version', ...gaugeKeys.params(params)] as const,
+  status: (params: GaugeQueryParams) => [...gaugeKeys.all(), 'status', ...gaugeKeys.params(params)] as const,
+  manager: (params: GaugeQueryParams) => [...gaugeKeys.all(), 'manager', ...gaugeKeys.params(params)] as const,
+  distributors: (params: GaugeQueryParams) =>
+    [...gaugeKeys.all(), 'distributors', ...gaugeKeys.params(params)] as const,
+  isDepositRewardAvailable: (params: GaugeQueryParams) =>
+    [...gaugeKeys.all(), 'isDepositRewardAvailable', ...gaugeKeys.params(params)] as const,
+  depositRewardIsApproved: (params: DepositRewardApproveParams & GaugeQueryParams) =>
+    [
+      ...gaugeKeys.all(),
+      'depositRewardIsApproved',
+      ...gaugeKeys.params(params),
+      params.rewardTokenId,
+      params.amount,
+    ] as const,
+  addRewardToken: ({ chainId, poolId, rewardTokenId, distributorId }: AddRewardParams & GaugeQueryParams) =>
+    [
+      ...gaugeKeys.all(),
+      'addRewardToken',
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
+      distributorId,
+    ] as const,
+  depositRewardApprove: ({ chainId, poolId, rewardTokenId, amount }: DepositRewardApproveParams & GaugeQueryParams) =>
+    [
+      ...gaugeKeys.all(),
+      'depositRewardApprove',
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
+      amount,
+    ] as const,
+  depositReward: ({ chainId, poolId, rewardTokenId, amount, epoch }: DepositRewardParams & GaugeQueryParams) =>
+    [
+      ...gaugeKeys.all(),
+      'depositReward',
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
+      amount,
+      epoch,
+    ] as const,
+  estimateGasDepositRewardApprove: ({
+    chainId,
+    poolId,
+    rewardTokenId,
+    amount,
+  }: DepositRewardApproveParams & GaugeQueryParams) =>
     [
       ...gaugeKeys.all(),
       ...gaugeKeys.estimateGas(),
       'depositRewardApprove',
-      ...gaugeKeys.params(chain, id),
-      token,
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
       amount,
     ] as const,
-  estimateGasAddRewardToken: (chain?: ChainId, poolId?: string, token?: string, distributor?: string) =>
+  estimateGasAddRewardToken: ({ chainId, poolId, rewardTokenId, distributorId }: AddRewardParams & GaugeQueryParams) =>
     [
       ...gaugeKeys.all(),
       ...gaugeKeys.estimateGas(),
       'addRewardToken',
-      ...gaugeKeys.params(chain, poolId),
-      token,
-      distributor,
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
+      distributorId,
     ] as const,
-  addRewardToken: (chain?: ChainId, poolId?: string, token?: string, distributor?: string) =>
-    [...gaugeKeys.all(), 'addRewardToken', ...gaugeKeys.params(chain, poolId), token, distributor] as const,
+  estimateGasDepositReward: ({
+    chainId,
+    poolId,
+    rewardTokenId,
+    amount,
+    epoch,
+  }: DepositRewardParams & GaugeQueryParams) =>
+    [
+      ...gaugeKeys.all(),
+      ...gaugeKeys.estimateGas(),
+      'depositReward',
+      ...gaugeKeys.params({ chainId, poolId }),
+      rewardTokenId,
+      amount,
+      epoch,
+    ] as const,
 } as const
