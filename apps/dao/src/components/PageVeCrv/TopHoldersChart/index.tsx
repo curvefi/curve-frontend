@@ -58,7 +58,7 @@ const TopLockers: React.FC = () => {
   }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper>
       <TitleRow>
         <BoxTitle>{t`veCRV Holder Distribution`}</BoxTitle>
         <Box flex flexGap="var(--spacing-1)">

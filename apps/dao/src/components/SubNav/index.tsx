@@ -8,12 +8,13 @@ import Button from '@/ui/Button'
 interface SubNavProps {
   activeKey: string
   navItems: SubNavItem[]
+  nested?: boolean
   setNavChange: (key: string) => void
 }
 
-const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange }) => {
+const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested }) => {
   return (
-    <NavWrapper>
+    <NavWrapper nested={nested}>
       {navItems.map((item) => (
         <Box>
           <NavButton
@@ -30,13 +31,13 @@ const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange }) =>
   )
 }
 
-const NavWrapper = styled(Box)`
+const NavWrapper = styled(Box)<{ nested?: boolean }>`
   display: flex;
   flex-direction: row;
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
   border-bottom: 1px solid var(--gray-500a20);
-  background-color: var(--box_header--secondary--background-color);
+  ${({ nested }) => (nested ? '' : `background-color: var(--box_header--secondary--background-color);`)}
 `
 
 const NavButton = styled(Button)`

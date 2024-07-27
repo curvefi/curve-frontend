@@ -26,7 +26,7 @@ const CrvStats: React.FC = () => {
     veCrvLoading || veCrvFeesLoading ? 0 : (((veCrvFees.fees[1].fees_usd / veCrvData.totalVeCrv) * 52) / 0.3) * 100
 
   return (
-    <Wrapper variant="secondary">
+    <Wrapper>
       <StatsRow>
         <SubTitleColumn
           loading={veCrvLoading}
@@ -95,7 +95,9 @@ const CrvStats: React.FC = () => {
   )
 }
 
-const Wrapper = styled(Box)``
+const Wrapper = styled(Box)`
+  border-bottom: 1px solid var(--gray-500a20);
+`
 
 const StatsRow = styled.div`
   display: grid;
