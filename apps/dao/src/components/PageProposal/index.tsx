@@ -5,9 +5,8 @@ import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import networks from '@/networks'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import { copyToClipboard } from '@/utils'
-import { shortenTokenAddress } from '@/ui/utils'
+import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
 
 import useProposalsMapper from '@/hooks/useProposalsMapper'
 import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'

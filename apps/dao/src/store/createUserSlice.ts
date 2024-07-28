@@ -55,6 +55,8 @@ const DEFAULT_STATE: SliceState = {
   userVotesMapper: {},
 }
 
+// key user address for user specific snapshots, votes, mappers
+
 const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,

@@ -52,6 +52,7 @@ declare global {
     rSubdirectory: string
     rSubdirectoryUseDefault: boolean
     rProposalId: string
+    rUserAddress: string
     rFormType: RFormType
     redirectPathname: string
     restFullPathname: string
