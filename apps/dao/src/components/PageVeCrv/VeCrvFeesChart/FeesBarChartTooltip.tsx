@@ -34,7 +34,7 @@ const FeesBarChartTooltip: React.FC<TooltipProps<ValueType, NameType>> = ({ acti
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Fees`}</TooltipDataTitle>
             {fees_usd ? (
-              <TooltipData>{formatNumber(fees_usd, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
+              <TooltipData>${formatNumber(fees_usd, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

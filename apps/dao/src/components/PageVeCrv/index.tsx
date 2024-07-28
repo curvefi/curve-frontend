@@ -12,13 +12,15 @@ import HoldersTable from './HoldersTable'
 import SubNav from '../SubNav'
 import Box from '@/ui/Box'
 
-const VeCrv = () => {
-  const [navSelection, setNavSelection] = useState('fees')
+type VeCrvNavSelection = 'fees' | 'holders' | 'locks'
+
+const VeCrv: React.FC = () => {
+  const [navSelection, setNavSelection] = useState<VeCrvNavSelection>('fees')
 
   const navItems: SubNavItem[] = [
     { key: 'fees', label: t`veCRV Fees` },
     { key: 'holders', label: t`Holders` },
-    { key: 'locking', label: t`Locking` },
+    { key: 'locks', label: t`Locks` },
   ]
 
   return (
@@ -27,7 +29,12 @@ const VeCrv = () => {
       <Content variant="secondary">
         <CrvStats />
         <SubNavWrapper>
-          <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} nested />
+          <SubNav
+            activeKey={navSelection}
+            navItems={navItems}
+            setNavChange={setNavSelection as (key: string) => void}
+            nested
+          />
         </SubNavWrapper>
         {navSelection === 'fees' && <VeCrvFees />}
         {navSelection === 'holders' && (
@@ -36,7 +43,7 @@ const VeCrv = () => {
             <HoldersTable />
           </Box>
         )}
-        {navSelection === 'locking' && <DailyLocks />}
+        {navSelection === 'locks' && <DailyLocks />}
       </Content>
     </Wrapper>
   )

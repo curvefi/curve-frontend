@@ -16,7 +16,7 @@ const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nest
   return (
     <NavWrapper nested={nested}>
       {navItems.map((item) => (
-        <Box>
+        <Box key={item.key}>
           <NavButton
             onClick={() => setNavChange(item.key)}
             variant="outlined"
