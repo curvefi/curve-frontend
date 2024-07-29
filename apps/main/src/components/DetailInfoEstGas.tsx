@@ -34,7 +34,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const curve = useCurve()
+  const { data: curve } = useCurve()
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
   const gasInfo = useStore((state) => state.gas.gasInfo)

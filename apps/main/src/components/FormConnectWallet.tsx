@@ -6,15 +6,16 @@ import useStore from '@/store/useStore'
 
 import Button from '@/ui/Button'
 import Spinner from '@/ui/Spinner'
+import { useCurve } from '@/entities/curve'
 
 const FormConnectWallet = ({
-  curve,
   loading,
   children,
 }: React.PropsWithChildren<{
-  curve: CurveApi | null
+  curve?: CurveApi | null
   loading: boolean
 }>) => {
+  const { data: curve } = useCurve()
   const connectState = useStore((state) => state.connectState)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
 
