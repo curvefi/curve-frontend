@@ -61,9 +61,11 @@ export const taskStepStatusStyles = (status: StepStatus) => {
 export function getStepStatus(isSuccess: boolean, isInProgress: boolean, isValid: boolean): StepStatus {
   if (isSuccess) {
     return 'succeeded'
-  } else if (isInProgress) {
+  }
+  if (isInProgress) {
     return 'in-progress'
-  } else if (isValid) {
+  }
+  if (isValid) {
     return 'current'
   }
   return 'pending'
