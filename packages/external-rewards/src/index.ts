@@ -28,6 +28,4 @@ const campaigns = campaignList
   })
   .filter((campaign) => campaign !== null)
 
-console.log(campaigns)
-
 export default campaigns
