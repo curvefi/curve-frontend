@@ -1,4 +1,4 @@
- {
+{
   "campaignName": "",
   "platform": "Eigenlayer",
   "description": "Points for providing liquidity.",
@@ -12,6 +12,17 @@
       "campaignEnd": "1770000000",
       "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
       "gaugeAddress": "0xa4cd3c7f8e71115c856dad1dbe042b17722f7807",
+      "network": "ethereum",
+      "multiplier": "1",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "factory-twocrypto-44",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
+      "gaugeAddress": "0x2d1352df75836a2681f8be063571c8391c04b0dc",
       "network": "ethereum",
       "multiplier": "1",
       "tags": ["points"]
