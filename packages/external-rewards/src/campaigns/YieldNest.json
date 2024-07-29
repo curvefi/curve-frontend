@@ -8,8 +8,8 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
-      "campaignStart": "2024-07-23T00:00:00.000Z",
-      "campaignEnd": "2024-08-11T23:59:59.000Z",
+      "campaignStart": "1721692800",
+      "campaignEnd": "1723420799",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
       "gaugeAddress": "0x2d1352df75836a2681f8be063571c8391c04b0dc",
       "network": "ethereum",
@@ -19,8 +19,8 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
-      "campaignStart": "2024-08-12T00:00:01.000Z",
-      "campaignEnd": "2024-08-25T23:59:59.000Z",
+      "campaignStart": "1723420801",
+      "campaignEnd": "1724630399",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
       "gaugeAddress": "0x2d1352df75836a2681f8be063571c8391c04b0dc",
       "network": "ethereum",
@@ -30,7 +30,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
-      "campaignStart": "2024-08-26T00:00:01.000Z",
+      "campaignStart": "1724630401",
       "campaignEnd": "1770000000",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
       "gaugeAddress": "0x2d1352df75836a2681f8be063571c8391c04b0dc",
