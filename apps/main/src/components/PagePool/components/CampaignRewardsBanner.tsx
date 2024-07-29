@@ -7,6 +7,8 @@ import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress }) => {
   const campaignRewardsPool = useCampaignRewardsMapper()[poolAddress]
 
+  if (!campaignRewardsPool) return null
+
   const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
 
   const bannerMessage = () => {
@@ -14,9 +16,7 @@ const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress 
     return t`Liquidity providers in this pool also earn additional tokens!`
   }
 
-  return campaignRewardsPool ? (
-    <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
-  ) : null
+  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
 }
 
 export default CampaignRewardsBanner
