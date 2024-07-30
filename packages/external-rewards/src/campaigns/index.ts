@@ -11,5 +11,7 @@ import PufferFinance from './PufferFinance.json'
 import Renzo from './Renzo.json'
 import Symbiotic from './Symbiotic.json'
 import Usual from './Usual.json'
+import Usual from './YieldNest.json'
 
-export { DLCLink, Eigenlayer, Elixir, Ethena, Etherfi, Kelpdao, Mellow, PufferFinance, Renzo, Symbiotic, Usual }
+
+export { DLCLink, Eigenlayer, Elixir, Ethena, Etherfi, Kelpdao, Mellow, PufferFinance, Renzo, Symbiotic, Usual, YieldNest }
