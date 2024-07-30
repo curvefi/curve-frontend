@@ -7,6 +7,7 @@ import pick from 'lodash/pick'
 import { _getMarketList } from '@/components/PageMarketList/utils'
 import { getErrorMessage } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -87,6 +88,8 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         get()[sliceKey].setStateByActiveKey('owmDatasMapper', chainId.toString(), owmDatasMapper)
       } else {
         marketListNames.forEach((owmId) => {
+          if (networks[chainId].hideMarketsInUI[owmId]) return
+
           const owm = api.getOneWayMarket(owmId)
           const { owmData, owmDataCache } = getOWMData(owm)
           const { address: cAddress } = owm.collateral_token
