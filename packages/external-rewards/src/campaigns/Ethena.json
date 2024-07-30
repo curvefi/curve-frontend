@@ -8,6 +8,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-166",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xf8db2accdef8e7a26b0e65c3980adc8ce11671a4",
@@ -19,6 +20,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-12",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x02950460e2b9529d0e00284a5fa2d7bdf3fa4d72",
@@ -30,6 +32,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-100",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xf36a4ba50c603204c3fc6d2da8b78a7b69cbc67d",
@@ -41,6 +44,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-11",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xf55b0f6f2da5ffddb104b58a60f2862745960442",
@@ -52,6 +56,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-35",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x5dc1bf6f1e983c0b21efb003c105133736fa0743",
@@ -63,6 +68,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-105",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x670a72e6d22b0956c0d2573288f82dcc5d6e3a61",
@@ -74,6 +80,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-52",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x1c34204fcfe5314dcf53be2671c02c35db58b4e3",
@@ -85,6 +92,7 @@
     {
       "id": "null",
       "poolId": "one-way-market-14",
+      "action": "borrow",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x74f88baa966407b50c10b393bbd789639effe78b",
@@ -96,6 +104,7 @@
     {
       "id": "null",
       "poolId": "one-way-market-11",
+      "action": "borrow",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xb536fea3a01c95dd09932440ec802a75410139d6",
@@ -107,6 +116,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-85",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x096a8865367686290639bc50bf8d85c0110d9fea",

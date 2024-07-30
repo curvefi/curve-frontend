@@ -8,6 +8,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
+      "action": "lp",
       "campaignStart": "1721692800",
       "campaignEnd": "1723420799",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
@@ -19,6 +20,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
+      "action": "lp",
       "campaignStart": "1723420801",
       "campaignEnd": "1724630399",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
@@ -30,6 +32,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-44",
+      "action": "lp",
       "campaignStart": "1724630401",
       "campaignEnd": "1770000000",
       "poolAddress": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
@@ -40,4 +43,3 @@
     }
   ]
 }
-

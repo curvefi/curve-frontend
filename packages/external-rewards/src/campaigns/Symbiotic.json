@@ -1,4 +1,4 @@
- {
+{
   "campaignName": "",
   "platform": "Symbiotic.fi",
   "description": "Points for providing liquidity.",
@@ -8,6 +8,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-46",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",

@@ -8,6 +8,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-49",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xe957ce03ccdd88f02ed8b05c9a3a28abef38514a",

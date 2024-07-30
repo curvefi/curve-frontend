@@ -8,6 +8,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-18",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0xebafb74a98ba14430eedc716c0034123c3040ca4",
@@ -19,6 +20,7 @@
     {
       "id": "null",
       "poolId": "factory-stable-ng-79",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x85de3add465a219ee25e04d22c39ab027cf5c12e",
@@ -30,6 +32,7 @@
     {
       "id": "null",
       "poolId": "one-way-market-16",
+      "action": "borrow",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3",
@@ -41,6 +44,7 @@
     {
       "id": "null",
       "poolId": "factory-twocrypto-46",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
@@ -51,4 +55,3 @@
     }
   ]
 }
-
