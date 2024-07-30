@@ -103,6 +103,17 @@
       "network": "ethereum",
       "multiplier": "5",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x096a8865367686290639bc50bf8d85c0110d9fea",
+      "gaugeAddress": "0x99178264ec6b9de40689ee4f2f561ca3885a4bd2",
+      "network": "arbitrum",
+      "multiplier": "30",
+      "tags": ["points"]
     }
   ]
 }
