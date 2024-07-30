@@ -57,7 +57,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
     {
       "id": "null",
       "poolId": "factory-stable-ng-1",
-      "action": "LP",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "0",
       "poolAddress": "0x0",
