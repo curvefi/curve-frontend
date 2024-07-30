@@ -13,9 +13,6 @@ const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ borrowAdd
   const supplyCampaignRewardsPool = useCampaignRewardsMapper()[supplyAddress]
   const borrowCampaignRewardsPool = useCampaignRewardsMapper()[borrowAddress]
 
-  console.log('supplyCampaignRewardsPool', supplyCampaignRewardsPool)
-  console.log('borrowCampaignRewardsPool', borrowCampaignRewardsPool)
-
   if (!supplyCampaignRewardsPool && !borrowCampaignRewardsPool) return null
 
   const message =

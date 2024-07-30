@@ -7,48 +7,40 @@
   "pools": [
     {
       "id": "null",
-      "poolId": "factory-stable-ng-189",
       "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
-      "gaugeAddress": "0x5c00817b67b40f3b347bd4275b4bba4840c8127a",
+      "address": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
       "network": "ethereum",
       "multiplier": "3",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "factory-stable-ng-188",
       "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
-      "gaugeAddress": "0xc2a56e8888786a30a5b56cbe4450a81ddf26ac0c",
+      "address": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
       "network": "ethereum",
       "multiplier": "1",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "one-way-market-20",
       "action": "borrow",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0xdc8b1caf2e10de76fb67e82c2485e7d4fa098c53",
-      "gaugeAddress": "0x1d701d23ce74d5b721d24d668a79c44db2d5a0ae",
+      "address": "0xdc8b1caf2e10de76fb67e82c2485e7d4fa098c53",
       "network": "ethereum",
       "multiplier": "3",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "one-way-market-20",
       "action": "supply",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x0111646e459e0bba57daca438262f3a092ae24c6",
-      "gaugeAddress": "0x1d701d23ce74d5b721d24d668a79c44db2d5a0ae",
+      "address": "0x0111646e459e0bba57daca438262f3a092ae24c6",
       "network": "ethereum",
       "multiplier": "1",
       "tags": ["points"]

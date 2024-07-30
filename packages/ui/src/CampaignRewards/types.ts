@@ -9,12 +9,10 @@ export interface CampaignRewardsItem {
 
 export interface CampaignRewardsPool {
   id: string
-  poolId: string
   action: RewardsAction
   campaignStart: string
   campaignEnd: string
-  poolAddress: string
-  gaugeAddress: string
+  address: string
   network: string
   multiplier: string
   tags: RewardsTags[]
@@ -27,12 +25,10 @@ export interface RewardsPool {
   platformImageSrc: string
   dashboardLink: string
   id: string
-  poolId: string
   action: RewardsAction
   campaignStart: string
   campaignEnd: string
-  poolAddress: string
-  gaugeAddress: string
+  address: string
   network: string
   multiplier: string
   tags: RewardsTags[]

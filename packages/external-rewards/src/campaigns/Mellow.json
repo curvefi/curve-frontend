@@ -7,12 +7,10 @@
   "pools": [
     {
       "id": "null",
-      "poolId": "factory-twocrypto-46",
       "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
-      "gaugeAddress": "0xa4cd3c7f8e71115c856dad1dbe042b17722f7807",
+      "address": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
       "network": "ethereum",
       "multiplier": "3",
       "tags": ["points"]
