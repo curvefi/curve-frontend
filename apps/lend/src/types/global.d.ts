@@ -66,6 +66,7 @@ declare global {
     symbol: string
 
     // market list page properties
+    hideMarketsInUI: { [owmId: string]: boolean }
     marketListFilter: string[]
     marketListFilterType: string[]
     pricesData: boolean

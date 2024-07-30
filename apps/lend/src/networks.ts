@@ -10,6 +10,7 @@ const DEFAULT_NETWORK_CONFIG = {
   gasPricesUnit: 'GWEI',
   gasPricesUrl: 'https://api.curve.fi/api/getGas',
   gasPricesDefault: 1,
+  hideMarketsInUI: {},
   smallMarketAmount: 10000,
   marketListFilter: ['all', 'leverage', 'user'],
   marketListFilterType: ['borrow', 'lend'],
@@ -37,6 +38,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment
       ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
       : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    hideMarketsInUI: { 'one-way-market-19': true },
     showInSelectNetwork: true,
     pricesData: true,
   },
