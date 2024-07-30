@@ -26,6 +26,17 @@
       "network": "ethereum",
       "multiplier": "1",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "poolId": "one-way-market-19",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "poolAddress": "0x1f9d988cdebfa1fd5563c122a987186e516173c2",
+      "gaugeAddress": "0x4b4d4e87cc5cd3995965dada97d7abde376f8426",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
     }
   ]
 }
