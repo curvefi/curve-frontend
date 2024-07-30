@@ -38,7 +38,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
   - `action`: Action id (found in [`actions.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/actions.json))
   - `campaignStart`: Start of the rewards, as UTC timestamp
   - `campaignEnd`: End of the rewards, as UTC timestamp
-  - `poolAddress`: Address of the pool/market (use address identified as `controller` for lending markets)
+  - `poolAddress`: Address of the pool/market (use address identified as `controller` for lending markets and action: `borrow`, use address identified as `vault` for action: `supply`)
   - `gaugeAddress`: Address of the gauge, or `null`
   - `network`: Network of the pool/market
   - `multiplier`: Multiplier, or `null`

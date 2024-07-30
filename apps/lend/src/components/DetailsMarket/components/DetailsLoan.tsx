@@ -40,8 +40,8 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
 
   const details: Detail[][] = [
     [
-      { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" /> },
-      { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" /> },
+      { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" module="borrow" /> },
+      { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" module="borrow" /> },
       { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
       { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
       { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },

@@ -44,7 +44,7 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
 
   const stats: Detail[][] = [
     [
-      { title: t`Supply Token`, value: <CellToken {...cellProps} type="borrowed" /> },
+      { title: t`Supply Token`, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
       { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
     ],
     [

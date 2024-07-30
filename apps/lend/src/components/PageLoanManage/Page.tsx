@@ -184,7 +184,10 @@ const Page: NextPage = () => {
         <AppPageInfoWrapper>
           {isMdUp && <TitleComp />}
           <Box margin="0 0 var(--spacing-2)">
-            <CampaignRewardsBanner poolAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''} />
+            <CampaignRewardsBanner
+              borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+              supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+            />
           </Box>
           <AppPageInfoTabsWrapper>
             <Tabs>

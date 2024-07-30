@@ -10,6 +10,7 @@ export interface CampaignRewardsItem {
 export interface CampaignRewardsPool {
   id: string
   poolId: string
+  action: RewardsAction
   campaignStart: string
   campaignEnd: string
   poolAddress: string
@@ -27,6 +28,7 @@ export interface RewardsPool {
   dashboardLink: string
   id: string
   poolId: string
+  action: RewardsAction
   campaignStart: string
   campaignEnd: string
   poolAddress: string
@@ -51,3 +53,4 @@ export interface CampaignRewardsBannerCompProps {
 }
 
 export type RewardsTags = 'points' | 'merkle' | 'tokens'
+export type RewardsAction = 'supply' | 'borrow' | 'lp'

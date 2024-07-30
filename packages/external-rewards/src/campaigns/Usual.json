@@ -47,7 +47,7 @@
       "action": "supply",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0xdc8b1caf2e10de76fb67e82c2485e7d4fa098c53",
+      "poolAddress": "0x0111646e459e0bba57daca438262f3a092ae24c6",
       "gaugeAddress": "0x1d701d23ce74d5b721d24d668a79c44db2d5a0ae",
       "network": "ethereum",
       "multiplier": "1",
