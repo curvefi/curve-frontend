@@ -105,7 +105,7 @@ const TableRowMobile = ({
         { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, content: <CellUserVaultShares {...cellProps} />, show: !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0, showLine: true }
       ],
       [
-        { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
+        { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon module="supply" /> },
       ],
       [
         { sortIdKey: '', label: t`Total APR`, content: <CellRewards {...cellProps} type='crv-other' /> }
@@ -125,13 +125,13 @@ const TableRowMobile = ({
                   <TextCaption isBold isCaps>
                     Collateral
                   </TextCaption>{' '}
-                  <CellToken {...cellProps} type="collateral" />
+                  <CellToken {...cellProps} type="collateral" module="borrow" />
                 </Box>
                 <Box>
                   <TextCaption isBold isCaps>
                     Borrow
                   </TextCaption>{' '}
-                  <CellToken {...cellProps} type="borrowed" />
+                  <CellToken {...cellProps} type="borrowed" module="borrow" />
                 </Box>
               </TokensWrapper>
               <CellMaxLeverage {...cellProps} showTitle size="sm" />

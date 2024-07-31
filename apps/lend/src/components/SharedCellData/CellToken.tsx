@@ -16,6 +16,7 @@ const CellToken = ({
   owmDataCachedOrApi,
   showLeverageIcon,
   type,
+  module,
   ...props
 }: ChipProps & {
   hideIcon?: boolean
@@ -24,16 +25,23 @@ const CellToken = ({
   owmDataCachedOrApi: OWMDataCacheOrApi
   showLeverageIcon?: boolean
   type: 'collateral' | 'borrowed'
+  module: 'borrow' | 'supply'
 }) => {
   const { collateral_token, borrowed_token } = owmDataCachedOrApi?.owm ?? {}
-  const campaignRewards = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.controller || '']
+  const campaignRewardsBorrow = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.controller || '']
+  const campaignRewardsSupply = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.vault || '']
 
   const token = type === 'collateral' ? collateral_token : borrowed_token
 
   return hideIcon ? (
     <>
       <Chip {...props}>{token?.symbol}</Chip>
-      {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
+      {campaignRewardsBorrow && type === 'collateral' && module === 'borrow' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsBorrow} />
+      )}
+      {campaignRewardsSupply && type === 'borrowed' && module === 'supply' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsSupply} />
+      )}
     </>
   ) : (
     <Box flex>
@@ -44,7 +52,12 @@ const CellToken = ({
         rChainId={rChainId}
         token={token}
       />
-      {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
+      {campaignRewardsBorrow && type === 'collateral' && module === 'borrow' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsBorrow} />
+      )}
+      {campaignRewardsSupply && type === 'borrowed' && module === 'supply' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsSupply} />
+      )}
     </Box>
   )
 }

@@ -68,8 +68,8 @@ const TableRow = ({
   const CONTENT: { borrow: Content[], supply: Content[] } = {
     borrow: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showBorrowSignerCell },
-      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral' isVisible={isVisible} /> },
-      { className: 'left', content: <CellToken {...cellProps} type='borrowed' isVisible={isVisible} /> },
+      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral' isVisible={isVisible} module='borrow' /> },
+      { className: 'left', content: <CellToken {...cellProps} type='borrowed' isVisible={isVisible} module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
       { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
@@ -82,7 +82,7 @@ const TableRow = ({
     ],
     supply: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
-      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} isVisible={isVisible} type='borrowed' /> },
+      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} isVisible={isVisible} type='borrowed' module='supply' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
       { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },

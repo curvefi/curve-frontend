@@ -4,8 +4,12 @@ import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 
-const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress }) => {
-  const campaignRewardsPool = useCampaignRewardsMapper()[poolAddress]
+interface CampaignRewardsBannerProps {
+  address: string
+}
+
+const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ address }) => {
+  const campaignRewardsPool = useCampaignRewardsMapper()[address]
 
   if (!campaignRewardsPool) return null
 

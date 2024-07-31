@@ -7,60 +7,53 @@
   "pools": [
     {
       "id": "null",
-      "poolId": "factory-stable-ng-80",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x278cfb6f06b1efc09d34fc7127d6060c61d629db",
-      "gaugeAddress": "0x0bfb387b87e8bf173a10a7dcf786b0b7875f6771",
+      "address": "0x278cfb6f06b1efc09d34fc7127d6060c61d629db",
       "network": "ethereum",
       "multiplier": "2",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "factory-stable-ng-157",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5",
-      "gaugeAddress": "0x053df3e4d0ced9a3bf0494f97e83ce1f13bdc0e2",
+      "address": "0xdb74dfdd3bb46be8ce6c33dc9d82777bcfc3ded5",
       "network": "ethereum",
       "multiplier": "3",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "factory-stable-ng-177",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
-      "gaugeAddress": "0x0",
+      "address": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
       "network": "ethereum",
       "multiplier": "2",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "factory-stable-ng-215",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0xb9ef9c471f686e9249f5bb3af465560e4b917294",
-      "gaugeAddress": "0xfe37302b416271509dfb72c04bb74fdd3c881a1e",
+      "address": "0xb9ef9c471f686e9249f5bb3af465560e4b917294",
       "network": "ethereum",
       "multiplier": "4",
       "tags": ["points"]
     },
     {
       "id": "null",
-      "poolId": "factory-stable-ng-208",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0x2fd6965730bef5c7e928342ad6e7d4819d08f8c4",
-      "gaugeAddress": "0xe27a2daa63b45d32353375c8cdd2b0d7d46f2987",
+      "address": "0x2fd6965730bef5c7e928342ad6e7d4819d08f8c4",
       "network": "ethereum",
       "multiplier": "4",
       "tags": ["points"]
     }
   ]
 }
-
-

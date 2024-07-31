@@ -18,7 +18,7 @@ const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignR
       </RewardsMessage>
       <RewardsIconsWrapper>
         {campaignRewardsPool.map((rewardItem, index) => (
-          <RewardsCompSmall key={`${rewardItem.poolAddress}-${index}`} rewardsPool={rewardItem} highContrast banner />
+          <RewardsCompSmall key={`${rewardItem.address}-${index}`} rewardsPool={rewardItem} highContrast banner />
         ))}
       </RewardsIconsWrapper>
     </Wrapper>

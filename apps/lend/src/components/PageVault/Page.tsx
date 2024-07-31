@@ -26,6 +26,8 @@ import DetailsUser from 'components/DetailsUser'
 import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import Tabs, { Tab } from '@/ui/Tab'
 import Vault from '@/components/PageVault/index'
+import Box from '@/ui/Box'
+import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -143,6 +145,12 @@ const Page: NextPage = () => {
         {isAdvanceMode && rChainId && rOwmId && (
           <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
+            <Box margin="0 0 var(--spacing-2)">
+              <CampaignRewardsBanner
+                borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+              />
+            </Box>
             <AppPageInfoTabsWrapper>
               <Tabs>
                 {DETAIL_INFO_TYPES.map(({ key, label }) => (
