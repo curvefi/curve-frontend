@@ -10,7 +10,7 @@ import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 
 export type ButtonVariant = 'outlined'
 
-function Popover2Button({ buttonVariant, onSelectionDelete, ...props }) {
+function Popover2Button({ buttonVariant, ...props }) {
   let ref = props.buttonRef
   let { buttonProps } = useButton(props, ref)
 
@@ -20,10 +20,10 @@ function Popover2Button({ buttonVariant, onSelectionDelete, ...props }) {
         {props.children}
       </Button>
 
-      {onSelectionDelete && (
+      {props.onSelectionDelete && (
         <>
           <DividerHorizontal />
-          <SelectIconBtnDelete loading={props.loading} onSelectionDelete={onSelectionDelete} />
+          <SelectIconBtnDelete loading={props.loading} onSelectionDelete={props.onSelectionDelete} />
         </>
       )}
     </Wrapper>
