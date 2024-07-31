@@ -49,8 +49,6 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     fetchLlammaOhlcData,
     fetchOraclePoolOhlcData,
     fetchMoreData,
-    setChartSelectedIndex,
-    selectedChartIndex,
     activityHidden,
     chartExpanded,
     setChartExpanded,
@@ -64,6 +62,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+  const [selectedChartIndex, setChartSelectedIndex] = useState(0)
 
   const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
 

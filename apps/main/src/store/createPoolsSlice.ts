@@ -61,7 +61,6 @@ type SliceState = {
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
     timeOption: TimeOptions
-    selectedChartIndex: number
     chartExpanded: boolean
     activityHidden: boolean
     chartStatus: FetchingStatus
@@ -96,7 +95,6 @@ export type PoolsSlice = {
     fetchMorePricesApiCharts: (chainId: ChainId, selectedChartIndex: number, poolAddress: string, interval: number, timeUnit: string, start: number, end: number, chartCombinations: PricesApiCoin[][], isFlipped: boolean[]) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
-    setChartSelectedIndex: (index: number) => void
     setChartExpanded: (expanded: boolean) => void
     setActivityHidden: (hidden: boolean) => void
 
@@ -131,7 +129,6 @@ const DEFAULT_STATE: SliceState = {
     tradeEventsData: [],
     liquidityEventsData: [],
     timeOption: '1d',
-    selectedChartIndex: 0,
     chartExpanded: false,
     activityHidden: false,
     chartStatus: 'LOADING',
@@ -796,13 +793,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       set(
         produce((state: State) => {
           state.pools.pricesApiState.timeOption = timeOption
-        })
-      )
-    },
-    setChartSelectedIndex: (index: number) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.selectedChartIndex = index
         })
       )
     },

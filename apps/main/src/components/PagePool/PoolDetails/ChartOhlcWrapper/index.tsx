@@ -25,7 +25,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
     pricesApiState: {
       chartOhlcData,
       chartStatus,
-      selectedChartIndex,
       timeOption,
       chartExpanded,
       activityHidden,
@@ -33,7 +32,6 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
       refetchingCapped,
       lastFetchEndTime,
     },
-    setChartSelectedIndex,
     setChartTimeOption,
     setChartExpanded,
     fetchPricesApiCharts,
@@ -44,6 +42,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
+  const [selectedChartIndex, setChartSelectedIndex] = useState<number>(0)
   const [isFlipped, setIsFlipped] = useState<boolean[]>([])
 
   const chartHeight = {

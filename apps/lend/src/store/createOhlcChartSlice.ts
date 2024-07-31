@@ -44,7 +44,6 @@ type SliceState = {
   lendControllerData: LlammaControllerEvent[]
   activityFetchStatus: FetchingStatus
   timeOption: TimeOptions
-  selectedChartIndex: number
   activityHidden: boolean
   chartExpanded: boolean
   oraclePriceVisible: boolean
@@ -106,7 +105,6 @@ export type OhlcChartSlice = {
       start: number,
       end: number
     ): Promise<void>
-    setChartSelectedIndex(index: number): void
     fetchPoolActivity(chainId: ChainId, poolAddress: string): Promise<void>
     setActivityHidden(bool?: boolean): void
     setChartExpanded(bool?: boolean): void
@@ -139,7 +137,6 @@ const DEFAULT_STATE: SliceState = {
   lendControllerData: [],
   activityFetchStatus: 'LOADING',
   timeOption: '1d',
-  selectedChartIndex: 0,
   activityHidden: false,
   chartExpanded: false,
   oraclePriceVisible: true,
@@ -605,13 +602,6 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         console.log(error)
       }
-    },
-    setChartSelectedIndex: (index: number) => {
-      set(
-        produce((state: State) => {
-          state[sliceKey].selectedChartIndex = index
-        })
-      )
     },
     setActivityHidden: (bool?: boolean) => {
       set(
