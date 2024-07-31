@@ -197,7 +197,7 @@ const TableRowContent = ({
                   </Button>
                 ) : (
                   <Button variant="filled" onClick={() => handleCellClick()}>
-                    {t`Supply ${borrowed_token?.symbol ?? ''}`}
+                    {t`Lend ${borrowed_token?.symbol ?? ''}`}
                   </Button>
                 )}
               </MobileTableActions>

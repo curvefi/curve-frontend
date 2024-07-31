@@ -42,7 +42,7 @@ const PageTitleBorrowSupplyLinks = ({
         className={activeKey === 'supply' ? 'active' : ''}
         href={getVaultPathname(params, rOwmId, 'deposit')}
       >
-        Supply
+        Lend
       </StyledLink>
     </AppPageFormTitleLinks>
   )
