@@ -1,4 +1,4 @@
-import { Params } from 'react-router'
+import { Filter, FilterType, SortId } from '@/components/PageMarketList/utils'
 
 export type FormStatus = {
   error: string
@@ -6,54 +6,20 @@ export type FormStatus = {
   noResult: boolean
 }
 
-export type TableLabelsMapper = {
-  isInMarket: { name: string }
-  name: { name: string }
-  available: { name: string }
-  cap: { name: string }
-  utilization: { name: string }
-  capUtilization: { name: string }
-  rateBorrow: { name: string }
-  rateLend: { name: string }
-  myHealth: { name: string }
-  myDebt: { name: string }
-  myVaultShares: { name: string }
-  myWalletBorrowed: { name: string }
-  myWalletCollateral: { name: string }
-  tokenCollateral: { name: string }
-  tokenBorrow: { name: string }
-  tokenSupply: { name: string }
-  totalCollateralValue: { name: string }
-  totalDebt: { name: string }
-  totalLiquidity: { name: string }
-  rewardsCRV: { name: string }
-  rewardsOthers: { name: string }
-  leverage: { name: string }
-}
-
-export type FilterMapper = {
-  [key: string]: {
-    id: string
-    displayName: string
-  }
-}
-
-export type Order = 'desc' | 'asc'
-export type FilterKey = 'all' | 'leverage' | 'user'
-export type FilterTypeKey = 'borrow' | 'supply'
-export type SortKey = keyof TableLabelsMapper
-export type BorrowKey = 'long' | 'short'
-export type MarketListToken = { address: string; symbol: string }
+export type FilterKey = keyof typeof Filter
+export type FilterTypeKey = keyof typeof FilterType
+export type FilterListProps = { id: string; displayName: string }
+export type SortKey = keyof typeof SortId
+export interface FilterTypeMapper extends Record<FilterType, FilterListProps> {}
+export interface TableLabelsMapper extends Record<SortId, { name: string }> {}
 
 export type PageMarketList = {
   rChainId: ChainId
   api: Api | null
-  isBorrow: boolean
   isLoaded: boolean
-  params: Params
   searchParams: SearchParams
-  filterMapper: FilterMapper
-  filterTypeMapper: FilterMapper
+  filterList: FilterListProps[]
+  filterTypeMapper: FilterTypeMapper
   tableLabelsMapper: TableLabelsMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
@@ -61,44 +27,56 @@ export type PageMarketList = {
 export type MarketListItem = {
   address: string
   symbol: string
-  long: { [owmId: string]: boolean }
-  short: { [owmId: string]: boolean }
-}
-
-export type FoldTableLabels = {
-  borrow: TableLabel[]
-  supply: TableLabel[]
+  markets: { [owmId: string]: boolean }
 }
 
 export type MarketListMapper = {
   [tokenAddress: string]: MarketListItem
 }
 
+export type MarketListItemResult = {
+  address: string
+  symbol: string
+  markets: string[]
+}
+
 export type SearchParams = {
   filterKey: FilterKey
   filterTypeKey: FilterTypeKey
-  borrowKey: BorrowKey
   hideSmallMarkets: boolean
   searchText: string
-  sortBy: keyof TableLabelsMapper
+  sortBy: SortKey | ''
   sortByOrder: Order
 }
 
+export type TableSettings = {
+  isNotSortable?: boolean
+  sortBy?: SortKey | ''
+  sortByOrder?: Order
+}
+
+export type TableProps = MarketListItemResult & {
+  pageProps: PageMarketList
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
+  tableLabels: TableLabel[]
+  tableSettings: TableSettings
+}
+
 export type TableLabel = {
-  sortIdKey: keyof TableLabelsMapper | ''
-  label: string
+  sortIdKey: SortKey
   className: string
-  buttons?: { sortIdKey: keyof TableLabelsMapper; label: string }[]
+  indicatorPlacement?: 'left' | 'right'
   isNotSortable?: boolean
   width?: string
   show?: boolean
 }
 
-export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchParams'> & {
+export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'tableLabelsMapper'> & {
   owmId: string
   owmDataCachedOrApi: OWMDataCacheOrApi
-  isBorrow: boolean
-  loanExists: boolean | undefined
+  filterTypeKey: FilterTypeKey
+  loanExists: boolean
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   userActiveKey: string
@@ -107,19 +85,11 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchPar
 
 export type TableCellProps = {
   rChainId: ChainId
-  rOwmId: string
   owmId: string
   owmDataCachedOrApi: OWMDataCacheOrApi
   userActiveKey: string
-  isBorrow: boolean
+  filterTypeKey: FilterTypeKey
+  rOwmId: string
   isBold: boolean
   size: 'md'
-}
-
-export type TableRowSettings = {
-  isOpen?: boolean
-  filterTypeKey?: FilterTypeKey
-  borrowKey?: BorrowKey
-  sortBy?: keyof TableLabelsMapper
-  sortByOrder?: Order
 }

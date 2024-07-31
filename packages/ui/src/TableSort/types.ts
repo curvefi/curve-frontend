@@ -1,6 +1,7 @@
 import React from 'react'
 
 export interface TableSortSelectProps<T> {
+  className?: string
   searchParams: T
   labelsMapper: LabelsMapper
   onSelectionDelete?(): void

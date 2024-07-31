@@ -1,144 +1,43 @@
-import type {
-  MarketListItem,
-  PageMarketList,
-  TableLabel,
-  TableRowProps,
-  TableRowSettings,
-} from '@/components/PageMarketList/types'
-import type { Params, NavigateFunction } from 'react-router-dom'
+import type { TableProps } from '@/components/PageMarketList/types'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
-import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/utils/utilsRouter'
-import { helpers } from '@/lib/apiLending'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import Table from '@/ui/Table'
 import TableHead from '@/components/PageMarketList/components/TableRowViewContentTable/TableHead'
 import TableHeadMobile from '@/components/PageMarketList/components/TableRowViewContentTable/TableHeadMobile'
-import TableRow from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
-import TableRowMobile from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
+import TableRowContainer from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import TextCaption from '@/ui/TextCaption'
 
-const TableRowViewContentTable = ({
-  params,
-  navigate,
-  someLoanExists,
-  marketListItem,
-  showBorrowSignerCell,
-  showSupplySignerCell,
-  tableLabels,
-  tableRowSettings,
-  ...pageProps
-}: Pick<PageMarketList, 'rChainId' | 'api' | 'isBorrow' | 'searchParams' | 'tableLabelsMapper' | 'updatePath'> & {
-  params: Params
-  navigate: NavigateFunction
-  marketListItem: MarketListItem
-  someLoanExists: boolean
-  showBorrowSignerCell: boolean
-  showSupplySignerCell: boolean
-  tableLabels: TableLabel[]
-  tableRowSettings: TableRowSettings
-}) => {
-  const { rChainId, api, isBorrow, searchParams, tableLabelsMapper } = pageProps
-  const { address, long, short } = marketListItem
-
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
-  const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
-  const owmDatasCachedMapper = useStore((state) => state.storeCache.owmDatasMapper[rChainId])
-  const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
-  const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
-
+const MarketListTable = ({ pageProps, address, markets, tableLabels, tableSettings, ...rest }: TableProps) => {
+  const { searchParams } = pageProps
   const { filterTypeKey } = searchParams
 
-  const result = useMemo(() => {
-    if (long || short) {
-      return [...Object.keys(long ?? {}), ...Object.keys(short ?? {})]
-    }
-  }, [long, short])
-
-  const defaultTableProps: TableRowProps = {
-    rChainId,
-    api,
-    owmId: '',
-    owmDataCachedOrApi: undefined,
-    isBorrow,
-    loanExists: false,
-    searchParams,
-    showBorrowSignerCell,
-    showSupplySignerCell,
-    userActiveKey: '',
-    handleCellClick: () => {},
-  }
+  const isMdUp = useStore((state) => state.layout.isMdUp)
 
   return (
-    <MarketContentTable>
-      {isMdUp ? (
-        <TableHead {...pageProps} address={address} tableLabels={tableLabels} tableRowSettings={tableRowSettings} />
-      ) : (
-        <TableHeadMobile />
-      )}
+    <MarketContentTable isAllMarkets={address === 'all'}>
+      {/* TABLE HEAD */}
+      {isMdUp && <TableHead {...pageProps} address={address} tableLabels={tableLabels} />}
+      {!isMdUp && <TableHeadMobile />}
+
+      {/* TABLE BODY */}
       <tbody>
-        {typeof result === 'undefined' ? (
-          isMdUp ? (
-            <TableRow {...defaultTableProps} />
-          ) : (
-            <TableRowMobile {...defaultTableProps} tableLabelsMapper={tableLabelsMapper} />
-          )
-        ) : Array.isArray(result) && result.length > 0 ? (
-          result.map((owmId) => {
-            const owmDataCached = owmDatasCachedMapper?.[owmId]
-            const owmData = owmDatasMapper?.[owmId]
-            const owmDataCachedOrApi = owmData ?? owmDataCached
-            const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
-            const loanExists = loansExistsMapper[userActiveKey]?.loanExists
-
-            const handleCellClick = (target?: EventTarget) => {
-              if (target && (target as HTMLElement).nodeName === 'BUTTON') return
-
-              // update view
-              if (filterTypeKey === 'borrow') {
-                setMarketsStateByKey('marketDetailsView', loanExists ? 'user' : 'market')
-              } else if (filterTypeKey === 'supply') {
-                const { gauge = '0', vaultShares = '0' } = marketsBalancesMapper[userActiveKey] ?? {}
-                const haveSupply = +gauge + +vaultShares > 0
-                setMarketsStateByKey('marketDetailsView', haveSupply ? 'user' : 'market')
-              }
-
-              if (filterTypeKey === 'supply') {
-                navigate(getVaultPathname(params, owmId, 'deposit'))
-              } else if (loanExists) {
-                navigate(getLoanManagePathname(params, owmId, 'loan'))
-              } else {
-                navigate(getLoanCreatePathname(params, owmId, 'create'))
-              }
-            }
-
-            const tableRowProps: TableRowProps = {
-              rChainId,
-              api,
-              owmId,
-              owmDataCachedOrApi,
-              isBorrow,
-              loanExists,
-              searchParams,
-              showBorrowSignerCell,
-              showSupplySignerCell,
-              userActiveKey,
-              handleCellClick,
-            }
-
-            return isMdUp ? (
-              <TableRow key={owmId} {...tableRowProps} />
-            ) : (
-              <TableRowMobile key={owmId} {...tableRowProps} tableLabelsMapper={tableLabelsMapper} />
-            )
-          })
+        {Array.isArray(markets) && markets.length > 0 ? (
+          markets.map((owmId, idx) => (
+            <TableRowContainer
+              key={`${owmId}${idx}${filterTypeKey}`}
+              {...pageProps}
+              {...rest}
+              owmId={owmId}
+              filterTypeKey={filterTypeKey}
+            />
+          ))
         ) : (
           <tr>
             <td colSpan={tableLabels.length + 1}>
@@ -153,9 +52,18 @@ const TableRowViewContentTable = ({
   )
 }
 
-const MarketContentTable = styled(Table)`
+const MarketContentTable = styled(Table)<{ isAllMarkets: boolean }>`
   background-color: var(--tab-secondary--background-color);
-  box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+
+  ${({ isAllMarkets }) => {
+    if (isAllMarkets)
+      return `
+        border-bottom: 1px solid var(--border-400);
+        margin-top: var(--spacing-normal);
+      `
+
+    return `box-shadow: 3px 3px 0 var(--box--primary--shadow-color);`
+  }}
 
   th,
   th button {
@@ -186,6 +94,16 @@ const MarketContentTable = styled(Table)`
       border-bottom: 1px solid var(--border-400);
     }
 
+    thead > tr > th:first-of-type:not(.noPadding),
+    tbody > tr > td:first-of-type:not(.noPadding) {
+      padding-left: var(--spacing-narrow);
+    }
+
+    thead > tr > th:last-of-type:not(.noPadding),
+    tbody > tr > td:last-of-type:not(.noPadding) {
+      padding-right: var(--spacing-narrow);
+    }
+
     tbody > td:not(:last-of-type),
     thead > th:not(:last-of-type) {
       padding-left: var(--spacing-1);
@@ -204,4 +122,4 @@ const MarketContentTable = styled(Table)`
   }
 `
 
-export default TableRowViewContentTable
+export default MarketListTable

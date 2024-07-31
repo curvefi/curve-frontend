@@ -13,6 +13,7 @@ import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
 
 function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
+  className,
   searchParams,
   labelsMapper,
   updatePath,
@@ -30,7 +31,7 @@ function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 
   const title = 'Sort By'
 
   return (
-    <Box>
+    <Box className={className}>
       <OpenDialogButton overlayTriggerState={overlayTriggerState} showCaret variant="icon-outlined">
         {sortLabel && (
           <Box>
