@@ -1,6 +1,6 @@
 import type { FormType } from '@/components/PageLoanCreate/types'
 
-import { useMemo } from 'react'
+import { useMemo, useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -16,6 +16,7 @@ const LoanCreate = (pageProps: PageContentProps) => {
   const navigate = useNavigate()
 
   const resetState = useStore((state) => state.loanCreate.resetState)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   // form tabs
   const FORM_TYPES = useMemo(() => {
@@ -26,6 +27,13 @@ const LoanCreate = (pageProps: PageContentProps) => {
     }
     return forms
   }, [owmDataCachedOrApi?.hasLeverage])
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   return (
     <AppFormContent variant="primary" shadowed>

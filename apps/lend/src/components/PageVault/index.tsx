@@ -1,11 +1,12 @@
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/components/PageVault/types'
 
 import { t } from '@lingui/macro'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getVaultPathname } from '@/utils/utilsRouter'
 import { useSlideTabState } from '@/ui/hooks'
+import useStore from '@/store/useStore'
 
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@/ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
@@ -16,10 +17,12 @@ import VaultUnstake from '@/components/PageVault/VaultUnstake'
 import VaultClaim from '@/components/PageVault/VaultClaim'
 
 const Vault = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType } = pageProps
+  const { rOwmId, rFormType, rChainId } = pageProps
   const params = useParams()
   const navigate = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
+
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
@@ -40,6 +43,13 @@ const Vault = (pageProps: PageContentProps) => {
   ]
 
   const tabs = !rFormType || rFormType === 'deposit' ? DEPOSIT_TABS : WITHDRAW_TABS
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   return (
     <AppFormContent variant="primary" shadowed>

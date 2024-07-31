@@ -1,6 +1,6 @@
 import type { CollateralFormType, FormType, LeverageFormType, LoanFormType } from '@/components/PageLoanManage/types'
 
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useMemo, useRef, useEffect } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -17,13 +17,14 @@ import LoanCollateralAdd from '@/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/components/PageLoanManage/LoanCollateralRemove'
 
 const ManageLoan = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType, userActiveKey, owmDataCachedOrApi } = pageProps
+  const { rOwmId, rFormType, userActiveKey, owmDataCachedOrApi, rChainId } = pageProps
   const params = useParams()
   const navigate = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const FORM_TYPES = useMemo(() => {
     const forms: { key: FormType; label: string }[] = [
@@ -65,6 +66,13 @@ const ManageLoan = (pageProps: PageContentProps) => {
     },
     [loanExistsResp, navigate, params, rOwmId]
   )
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   const tabs =
     !rFormType || rFormType === 'loan'
