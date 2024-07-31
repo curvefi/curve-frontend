@@ -8,7 +8,7 @@ import Icon from 'ui/src/Icon/Icon'
 import Popover2 from 'ui/src/Popover2/Popover2'
 import Popover2Button from 'ui/src/Popover2/Popover2Button'
 
-function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
+function Popover2Trigger({ label, children, showExpandIcon, onSelectionDelete, ...props }) {
   let ref = React.useRef(null)
   let state = useOverlayTriggerState(props)
   let { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
@@ -21,6 +21,7 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
         {...props.buttonProps}
         {...triggerProps}
         buttonRef={ref}
+        onSelectionDelete={onSelectionDelete}
       >
         {showExpandIcon ? (
           <ButtonWrapper>
@@ -33,7 +34,7 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
       </Popover2Button>
       {state.isOpen && (
         <Popover2 {...props} triggerRef={ref} state={state}>
-          {React.cloneElement(children, { ...overlayProps, ...state })}
+          {React.cloneElement(children as React.ReactElement<React.PropsWithChildren>, { ...overlayProps, ...state })}
         </Popover2>
       )}
     </>

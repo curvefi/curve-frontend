@@ -5,19 +5,41 @@ import styled from 'styled-components'
 
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
+import DividerHorizontal from 'ui/src/DividerHorizontal'
+import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 
 export type ButtonVariant = 'outlined'
 
-function Popover2Button({ buttonVariant, ...props }) {
+function Popover2Button({ buttonVariant, onSelectionDelete, ...props }) {
   let ref = props.buttonRef
   let { buttonProps } = useButton(props, ref)
 
   return (
-    <Button {...buttonProps} variant={buttonVariant} ref={ref} style={props.buttonStyles}>
-      {props.children}
-    </Button>
+    <Wrapper variant={buttonVariant}>
+      <Button {...buttonProps} variant={buttonVariant} ref={ref} style={props.buttonStyles}>
+        {props.children}
+      </Button>
+
+      {onSelectionDelete && (
+        <>
+          <DividerHorizontal />
+          <SelectIconBtnDelete loading={props.loading} onSelectionDelete={onSelectionDelete} />
+        </>
+      )}
+    </Wrapper>
   )
 }
+
+const Wrapper = styled.div<{ variant?: ButtonVariant }>`
+  align-items: center;
+  display: inline-flex;
+
+  ${({ variant }) => {
+    if (variant === 'outlined') {
+      return `${buttonOutlinedStyles};`
+    }
+  }}
+`
 
 const Button = styled.button<{ variant?: ButtonVariant }>`
   ${focusVisible};
@@ -37,12 +59,6 @@ const Button = styled.button<{ variant?: ButtonVariant }>`
   :disabled {
     opacity: 0.7;
   }
-
-  ${({ variant }) => {
-    if (variant === 'outlined') {
-      return `${buttonOutlinedStyles};`
-    }
-  }}
 `
 
 export default Popover2Button
