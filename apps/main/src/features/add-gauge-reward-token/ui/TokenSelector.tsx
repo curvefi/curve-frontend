@@ -1,23 +1,26 @@
-import React, { useEffect, useMemo } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { t } from '@lingui/macro'
-import { isAddressEqual, zeroAddress, type Address } from 'viem'
 import { useGaugeRewardsDistributors } from '@/entities/gauge'
+import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
+import { FlexItemToken, StyledTokenComboBox, SubTitle } from '@/features/add-gauge-reward-token/ui'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { FlexItemToken, SubTitle, StyledTokenComboBox } from './styled'
+import { t } from '@lingui/macro'
+import React, { useEffect, useMemo } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { isAddressEqual, zeroAddress, type Address } from 'viem'
 
 export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disabled: boolean }> = ({
   chainId,
   poolId,
   disabled,
 }) => {
-  const { getValues, setValue, watch } = useFormContext()
-  const rewardToken = watch('rewardToken')
+  const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
+  const rewardTokenId = watch('rewardTokenId')
   const imageBaseUrl = getImageBaseUrl(chainId)
   const { tokensMapper } = useTokensMapper(chainId)
-  const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } =
-    useGaugeRewardsDistributors(poolId)
+  const { data: gaugeRewardsDistributors, isSuccess: isGaugeRewardsDistributorsSuccess } = useGaugeRewardsDistributors({
+    chainId,
+    poolId,
+  })
 
   const filteredTokens = useMemo(() => {
     const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {})
@@ -31,13 +34,13 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
 
-    const rewardToken = getValues('rewardToken')
+    const rewardTokenId = getValues('rewardTokenId')
 
     const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(
-      (gaugeRewardToken) => isAddressEqual(gaugeRewardToken as Address, rewardToken as Address)
+      (gaugeRewardToken) => isAddressEqual(gaugeRewardToken as Address, rewardTokenId)
     )
-    if (isRewardTokenInGaugeRewardsDistributors || rewardToken === zeroAddress) {
-      setValue('rewardToken', filteredTokens[0].address)
+    if (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress) {
+      setValue('rewardTokenId', filteredTokens[0].address as Address, { shouldValidate: true })
     }
   }, [gaugeRewardsDistributors, getValues, setValue, isGaugeRewardsDistributorsSuccess, filteredTokens])
 
@@ -48,11 +51,11 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
         title={t`Select a Token`}
         imageBaseUrl={imageBaseUrl}
         listBoxHeight="400px"
-        selectedToken={rewardToken ? tokensMapper[rewardToken] : undefined}
+        selectedToken={rewardTokenId ? tokensMapper[rewardTokenId] : undefined}
         showSearch={true}
         tokens={filteredTokens}
         onSelectionChange={(value) => {
-          setValue('rewardToken', value as string, { shouldValidate: true })
+          setValue('rewardTokenId', value as Address, { shouldValidate: true })
         }}
         disabled={disabled}
       />

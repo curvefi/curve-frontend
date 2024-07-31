@@ -9,7 +9,6 @@ export interface ManageGaugeProps {
 export type AddRewardTokenProps = {
   chainId: ChainId
   poolId: string
-  walletAddress: string
 }
 
-export type FormValues = z.infer<typeof schema>
+export type AddRewardFormValues = z.infer<typeof schema>

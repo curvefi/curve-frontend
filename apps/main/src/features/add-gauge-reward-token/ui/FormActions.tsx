@@ -1,61 +1,28 @@
-import AlertFormError from '@/components/AlertFormError'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import { useEstimateGasAddRewardToken } from '@/entities/gauge'
-import { ErrorMessage } from '@hookform/error-message'
+import { useAddRewardTokenIsMutating, useIsDepositRewardAvailable } from '@/entities/gauge'
+import { useAddRewardTokenFormContext } from '@/features/add-gauge-reward-token/lib'
+import { StyledButton } from '@/features/add-gauge-reward-token/ui/styled'
 import { t } from '@lingui/macro'
 import React from 'react'
-import { useFormContext } from 'react-hook-form'
-import { ErrorContainer, StyledButton } from './styled'
 
-export const FormActions: React.FC<{ chainId: ChainId; poolId: string; disabled: boolean; loading: boolean }> = ({
-  chainId,
-  poolId,
-  disabled,
-  loading,
-}) => {
+export const FormActions: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const {
-    formState: { errors, isValid },
+    formState: { isValid, isSubmitting },
     watch,
-    clearErrors,
-  } = useFormContext()
-  const rewardToken = watch('rewardToken')
-  const distributor = watch('distributor')
+  } = useAddRewardTokenFormContext()
+  const rewardTokenId = watch('rewardTokenId')
+  const distributorId = watch('distributorId')
 
-  const { data: estimatedGas, isPending: isPendingGasEstimate } = useEstimateGasAddRewardToken(
-    poolId,
-    rewardToken,
-    distributor
-  )
+  const { data: isDepositRewardAvailable, isFetching: isFetchingIsDepositRewardAvailable } =
+    useIsDepositRewardAvailable({ chainId, poolId })
+
+  const isMutatingAddRewardToken = useAddRewardTokenIsMutating({ chainId, poolId, rewardTokenId, distributorId })
+
+  const isDisabled = !isDepositRewardAvailable || !isValid
+  const isLoading = isSubmitting || isFetchingIsDepositRewardAvailable || isMutatingAddRewardToken
 
   return (
     <>
-      <DetailInfoEstGas chainId={chainId} estimatedGas={estimatedGas ?? null} loading={isPendingGasEstimate} />
-
-      <ErrorContainer>
-        <ErrorMessage
-          errors={errors}
-          name="rewardToken"
-          render={({ message }) => (
-            <AlertFormError errorKey={message} handleBtnClose={() => clearErrors('rewardToken')} />
-          )}
-        />
-        <ErrorMessage
-          errors={errors}
-          name="distributor"
-          render={({ message }) => (
-            <AlertFormError errorKey={message} handleBtnClose={() => clearErrors('distributor')} />
-          )}
-        />
-        <ErrorMessage
-          errors={errors}
-          name="root.serverError"
-          render={({ message }) => (
-            <AlertFormError errorKey={message} handleBtnClose={() => clearErrors('root.serverError')} />
-          )}
-        />
-      </ErrorContainer>
-
-      <StyledButton disabled={!isValid || disabled} loading={loading} variant="filled" size="medium">
+      <StyledButton disabled={isDisabled} loading={isLoading} variant="filled" size="medium">
         {t`Add Reward`}
       </StyledButton>
     </>
