@@ -246,9 +246,9 @@ export const baseNetworksConfig = {
     orgUIPath: '',
     rpcUrlConnectWallet: 'https://mainnet.era.zksync.io',
     symbol: 'ETH',
-    scanAddressPath: (hash: string) => `https://explorer.zksync.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://explorer.zksync.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://explorer.zksync.io/token/${hash}`,
+    scanAddressPath: (hash: string) => `https://era.zksync.network/address/${hash}`,
+    scanTxPath: (hash: string) => `https://era.zksync.network/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://era.zksync.network/token/${hash}`,
   },
   8453: {
     ...NETWORK_CONFIG_DEFAULT,
