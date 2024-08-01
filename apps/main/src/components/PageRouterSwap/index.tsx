@@ -13,6 +13,7 @@ import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/store/createTokensSlice'
 import { getTokensObjList } from '@/store/createQuickSwapSlice'
 import { getChainSignerActiveKey } from '@/utils'
+import { handleSubmitResp } from '@/utils/utilsForm'
 import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useSelectToList from '@/components/PageRouterSwap/components/useSelectToList'
@@ -161,23 +162,15 @@ const QuickSwap = ({
       } ${toToken} at max slippage ${maxSlippage}%.`
       const { dismiss } = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
-
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
+      const txHash = handleSubmitResp(activeKey, isSubscribed, curve, dismiss, resp, setTxInfoBar)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
-        const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toToken}.`
-        setTxInfoBar(
-          <TxInfoBar
-            description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
-            onClose={() => updateFormValues({}, false, '', true)}
-          />
-        )
-      }
-      if (resp?.error) setTxInfoBar(null)
-      if (typeof dismiss === 'function') dismiss()
+      if (!txHash) return
+
+      const txMessage = t`Transaction completed. Received ${resp?.swappedAmount ?? ''} ${toToken}.`
+      setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} />)
     },
-    [activeKey, chainId, fetchStepSwap, notifyNotification, updateFormValues]
+    [activeKey, fetchStepSwap, notifyNotification]
   )
 
   const getSteps = useCallback(

@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js'
 import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
+import { handleSubmitResp } from '@/utils/utilsForm'
 import useStore from '@/store/useStore'
 
 import { FieldsWrapper } from '@/components/PagePool/styles'
@@ -69,12 +69,11 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
+      const txHash = handleSubmitResp(activeKey, isSubscribed, curve, dismiss, resp, setTxInfoBar)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
+      if (!txHash) return
+
+      setTxInfoBar(<TxInfoBar description={t`Transaction completed.`} txHash={txHash} />)
     },
     [fetchStepStake, notifyNotification]
   )
