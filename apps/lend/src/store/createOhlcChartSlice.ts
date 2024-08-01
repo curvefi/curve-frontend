@@ -24,6 +24,9 @@ import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 type SliceState = {
   chartLlammaOhlc: {
     data: LpPriceOhlcDataFormatted[]
+    oraclePriceData: OraclePriceData[]
+    baselinePriceData: LlamaBaselinePriceData[]
+    volumeData: VolumeData[]
     refetchingCapped: boolean
     lastFetchEndTime: number
     fetchStatus: FetchingStatus
@@ -31,15 +34,14 @@ type SliceState = {
   }
   chartOraclePoolOhlc: {
     data: LpPriceOhlcDataFormatted[]
+    oraclePriceData: OraclePriceData[]
+    baselinePriceData: LlamaBaselinePriceData[]
     refetchingCapped: boolean
     lastFetchEndTime: number
     fetchStatus: FetchingStatus
     // flag for disabling oracle pool data if no oracle pools are found for the market on the api
     dataDisabled: boolean
   }
-  volumeData: VolumeData[]
-  oraclePriceData: OraclePriceData[]
-  baselinePriceData: LlamaBaselinePriceData[]
   lendTradesData: LlammaTradeEvent[]
   lendControllerData: LlammaControllerEvent[]
   activityFetchStatus: FetchingStatus
@@ -95,7 +97,13 @@ export type OhlcChartSlice = {
       timeUnit: string,
       start: number,
       end: number
-    ): Promise<{ data: LpPriceOhlcDataFormatted[]; refetchingCapped: boolean; lastFetchEndTime: number }>
+    ): Promise<{
+      ohlcData: LpPriceOhlcDataFormatted[]
+      oracleData: OraclePriceData[]
+      baselineData: LlamaBaselinePriceData[]
+      refetchingCapped: boolean
+      lastFetchEndTime: number
+    }>
     fetchMoreData(
       chainId: ChainId,
       controller: string,
@@ -118,6 +126,9 @@ export type OhlcChartSlice = {
 const DEFAULT_STATE: SliceState = {
   chartLlammaOhlc: {
     data: [],
+    volumeData: [],
+    oraclePriceData: [],
+    baselinePriceData: [],
     refetchingCapped: false,
     lastFetchEndTime: 0,
     fetchStatus: 'LOADING',
@@ -125,14 +136,13 @@ const DEFAULT_STATE: SliceState = {
   },
   chartOraclePoolOhlc: {
     data: [],
+    oraclePriceData: [],
+    baselinePriceData: [],
     refetchingCapped: false,
     lastFetchEndTime: 0,
     fetchStatus: 'LOADING',
     dataDisabled: false,
   },
-  volumeData: [],
-  oraclePriceData: [],
-  baselinePriceData: [],
   lendTradesData: [],
   lendControllerData: [],
   activityFetchStatus: 'LOADING',
@@ -168,13 +178,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           state[sliceKey].chartLlammaOhlc = {
             fetchStatus: 'LOADING',
             data: DEFAULT_STATE.chartLlammaOhlc.data,
+            volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
+            oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
+            baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
             refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
             lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
             dataDisabled: DEFAULT_STATE.chartLlammaOhlc.dataDisabled,
           }
-          state[sliceKey].volumeData = DEFAULT_STATE.volumeData
-          state[sliceKey].oraclePriceData = DEFAULT_STATE.oraclePriceData
-          state[sliceKey].baselinePriceData = DEFAULT_STATE.baselinePriceData
         })
       )
       const network = networks[chainId].id.toLowerCase()
@@ -239,9 +249,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
             state[sliceKey].chartLlammaOhlc.lastFetchEndTime = lendOhlcResponse.data[0].time
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
-            state[sliceKey].volumeData = volumeArray
-            state[sliceKey].oraclePriceData = oraclePriceArray
-            state[sliceKey].baselinePriceData = baselinePriceArray
+            state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
+            state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
+            state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
           })
         )
       } catch (error) {
@@ -250,13 +260,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'ERROR',
               data: DEFAULT_STATE.chartLlammaOhlc.data,
+              volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
+              oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
+              baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
               refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
               lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
               dataDisabled: true,
             }
-            state[sliceKey].volumeData = DEFAULT_STATE.volumeData
-            state[sliceKey].oraclePriceData = DEFAULT_STATE.oraclePriceData
-            state[sliceKey].baselinePriceData = DEFAULT_STATE.baselinePriceData
           })
         )
         console.log(error)
@@ -347,6 +357,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           state[sliceKey].chartOraclePoolOhlc = {
             fetchStatus: 'LOADING',
             data: DEFAULT_STATE.chartOraclePoolOhlc.data,
+            oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
+            baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
             refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
             lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
             dataDisabled: DEFAULT_STATE.chartOraclePoolOhlc.dataDisabled,
@@ -372,17 +384,40 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           throw new Error('No oracle OHLC data found. Data may be unavailable for this pool.')
         }
 
-        const oracleOhlcFormatted = oracleOhlcResponse.data.map((data: any) => {
-          return {
-            ...data,
-            time: convertToLocaleTimestamp(data.time) as UTCTimestamp,
+        let baselinePriceArray: LlamaBaselinePriceData[] = []
+        let oraclePriceArray: OraclePriceData[] = []
+        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+
+        for (const item of oracleOhlcResponse.data) {
+          if (item.base_price) {
+            baselinePriceArray.push({
+              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              base_price: item.base_price,
+            })
           }
-        })
+
+          if (item.oracle_price) {
+            oraclePriceArray.push({
+              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              value: item.oracle_price,
+            })
+          }
+
+          ohlcDataArray.push({
+            time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
+        }
 
         set(
           produce((state: State) => {
-            state[sliceKey].chartOraclePoolOhlc.data = oracleOhlcFormatted
-            state[sliceKey].chartOraclePoolOhlc.refetchingCapped = oracleOhlcFormatted.length < 299
+            state[sliceKey].chartOraclePoolOhlc.data = ohlcDataArray
+            state[sliceKey].chartOraclePoolOhlc.oraclePriceData = oraclePriceArray
+            state[sliceKey].chartOraclePoolOhlc.baselinePriceData = baselinePriceArray
+            state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
             state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = oracleOhlcResponse.data[0].time
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
           })
@@ -393,6 +428,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'ERROR',
               data: DEFAULT_STATE.chartOraclePoolOhlc.data,
+              oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
+              baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
               refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
               lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
               dataDisabled: true,
@@ -418,16 +455,40 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
         )
         const oracleOhlcResponse = await oracleOhlcDataFetch.json()
-        const oracleOhlcFormatted = oracleOhlcResponse.data.map((data: any) => {
-          return {
-            ...data,
-            time: convertToLocaleTimestamp(data.time) as UTCTimestamp,
+
+        let baselinePriceArray: LlamaBaselinePriceData[] = []
+        let oraclePriceArray: OraclePriceData[] = []
+        let ohlcDataArray: LpPriceOhlcDataFormatted[] = []
+
+        for (const item of oracleOhlcResponse.data) {
+          if (item.base_price) {
+            baselinePriceArray.push({
+              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              base_price: item.base_price,
+            })
           }
-        })
+
+          if (item.oracle_price) {
+            oraclePriceArray.push({
+              time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+              value: item.oracle_price,
+            })
+          }
+
+          ohlcDataArray.push({
+            time: convertToLocaleTimestamp(item.time) as UTCTimestamp,
+            open: item.open,
+            close: item.close,
+            high: item.high,
+            low: item.low,
+          })
+        }
 
         return {
-          data: oracleOhlcFormatted,
-          refetchingCapped: oracleOhlcFormatted.length < 299,
+          data: ohlcDataArray,
+          oraclePriceData: oraclePriceArray,
+          baselinePriceData: baselinePriceArray,
+          refetchingCapped: ohlcDataArray.length < 299,
           lastFetchEndTime: oracleOhlcResponse.data[0].time,
         }
       } catch (error) {
@@ -470,7 +531,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
-              data: [...oracleData.data, ...state[sliceKey].chartOraclePoolOhlc.data],
+              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
               refetchingCapped: oracleData.refetchingCapped,
               lastFetchEndTime: oracleData.lastFetchEndTime,
               dataDisabled: false,
@@ -479,13 +542,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
               data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,
               lastFetchEndTime: llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
-            state[sliceKey].volumeData = [...llammaData.volumeData, ...state[sliceKey].volumeData]
-            state[sliceKey].oraclePriceData = [...llammaData.oracleData, ...state[sliceKey].oraclePriceData]
-            state[sliceKey].baselinePriceData = [...llammaData.baselineData, ...state[sliceKey].baselinePriceData]
           })
         )
 
@@ -499,7 +562,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
-              data: [...oracleData.data, ...state[sliceKey].chartOraclePoolOhlc.data],
+              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
               refetchingCapped: oracleData.refetchingCapped,
               lastFetchEndTime: oracleData.lastFetchEndTime,
               dataDisabled: false,
@@ -518,13 +583,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
               data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,
               lastFetchEndTime: llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
-            state[sliceKey].volumeData = [...llammaData.volumeData, ...state[sliceKey].volumeData]
-            state[sliceKey].oraclePriceData = [...llammaData.oracleData, ...state[sliceKey].oraclePriceData]
-            state[sliceKey].baselinePriceData = [...llammaData.baselineData, ...state[sliceKey].baselinePriceData]
           })
         )
 
