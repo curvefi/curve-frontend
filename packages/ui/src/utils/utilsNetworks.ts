@@ -195,9 +195,9 @@ export const baseNetworksConfig = {
     orgUIPath: 'https://avax.curve.fi',
     rpcUrlConnectWallet: 'https://api.avax.network/ext/bc/C/rpc',
     symbol: 'AVAX',
-    scanAddressPath: (hash: string) => `https://snowtrace.io/address/${hash}`,
-    scanTxPath: (hash: string) => `https://snowtrace.io/tx/${hash}`,
-    scanTokenPath: (hash: string) => `https://snowtrace.io/token/${hash}`,
+    scanAddressPath: (hash: string) => `https://snowscan.xyz/address/${hash}`,
+    scanTxPath: (hash: string) => `https://snowscan.xyz/tx/${hash}`,
+    scanTokenPath: (hash: string) => `https://snowscan.xyz/token/${hash}`,
   },
   42220: {
     ...NETWORK_CONFIG_DEFAULT,
