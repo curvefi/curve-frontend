@@ -485,9 +485,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         }
 
         return {
-          data: ohlcDataArray,
-          oraclePriceData: oraclePriceArray,
-          baselinePriceData: baselinePriceArray,
+          ohlcData: ohlcDataArray,
+          oracleData: oraclePriceArray,
+          baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
           lastFetchEndTime: oracleOhlcResponse.data[0].time,
         }
