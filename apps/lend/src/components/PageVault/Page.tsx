@@ -58,7 +58,7 @@ const Page: NextPage = () => {
   const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Supply Details`, key: 'market' }]
+  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Lend Details`, key: 'market' }]
   if (signerAddress) {
     DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
   }

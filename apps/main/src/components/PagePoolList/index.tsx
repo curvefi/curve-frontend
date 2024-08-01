@@ -27,8 +27,6 @@ import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Checkbox from '@/ui/Checkbox'
-import DialogSortDesktop from '@/components/PagePoolList/components/DialogSort/DialogSortDesktop'
-import DialogSortMobile from '@/components/PagePoolList/components/DialogSort/DialogSortMobile'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
@@ -37,6 +35,8 @@ import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobil
 import TableButtonFilters from '@/ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
+import TableSortSelect from '@/ui/TableSort/TableSortSelect'
+import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -209,7 +209,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
           <Box>
             <Box flex gridColumnGap={2}>
               {!isXSmDown && (
-                <DialogSortDesktop searchParams={searchParams} tableLabels={tableLabels} updatePath={updatePath} />
+                <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               )}
               {networks[rChainId].showHideSmallPoolsCheckbox ||
               (typeof poolDatasCachedOrApi !== 'undefined' && poolDatasLength > 10) ? (
@@ -232,7 +232,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                   filterKey={searchParams.filterKey}
                   updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
                 />
-                <DialogSortMobile searchParams={searchParams} tableLabels={tableLabels} updatePath={updatePath} />
+                <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               </Box>
             )}
           </Box>

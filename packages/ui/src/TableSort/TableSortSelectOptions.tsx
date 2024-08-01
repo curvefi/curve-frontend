@@ -1,12 +1,11 @@
-import type { PoolListTableLabel } from '@/components/PagePoolList/types'
+import type { LabelsMapper } from 'ui/src/TableSort/types'
 
-import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
-import { Chip } from '@/ui/Typography'
-import { Radio, RadioGroup } from '@/ui/Radio'
-import Icon from '@/ui/Icon'
+import { Chip } from 'ui/src/Typography'
+import { Radio, RadioGroup } from 'ui/src/Radio'
+import Icon from 'ui/src/Icon'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },
@@ -14,24 +13,24 @@ const sortOrder = {
 }
 
 type Props = {
-  tableLabels: PoolListTableLabel
+  labelsMapper: LabelsMapper
   value: string
   toggle?: () => void
   handleRadioGroupChange(updatedSortValue: string, cb: (() => void) | undefined): void
 }
 
-const DialogSortContent = ({ tableLabels, value, handleRadioGroupChange, toggle }: Props) => {
+const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => {
   return (
     <>
       <SortHeader>
-        <StyledChip>{t`Asc`}</StyledChip> <StyledChip>{t`Desc`}</StyledChip>
+        <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
       </SortHeader>
       <RadioGroup
         aria-label="Type"
         onChange={(updatedSortValue) => handleRadioGroupChange(updatedSortValue, toggle)}
         value={value}
       >
-        {Object.entries(tableLabels).map(([key, { name, mobile }]) => {
+        {Object.entries(labelsMapper).map(([key, { name, mobile }]) => {
           const tableLabel = mobile ? mobile : name
           return (
             <RadioWrapper key={key}>
@@ -100,4 +99,4 @@ const RadioWrapper = styled.div`
   font-weight: var(--font-weight--bold);
 `
 
-export default DialogSortContent
+export default TableSortSelectOptions

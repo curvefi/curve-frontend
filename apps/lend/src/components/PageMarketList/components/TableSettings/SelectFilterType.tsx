@@ -1,43 +1,68 @@
-import type { FilterTypeKey, SearchParams } from '@/components/PageMarketList/types'
+import type { SearchParams, TableLabel, TableLabelsMapper } from '@/components/PageMarketList/types'
 
-import React from 'react'
-import { Item } from 'react-stately'
-import { t } from '@lingui/macro'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
 
-import Select from '@/ui/Select'
+import useStore from '@/store/useStore'
 
-type ListItem = { id: string; displayName: string }
+import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
+import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 
 const SelectFilterType = ({
-  isLoading,
-  list,
-  filterKey,
+  showBorrowSignerCell,
+  showSupplySignerCell,
+  searchParams,
+  tableLabels,
+  tableLabelsMapper,
   updatePath,
 }: {
-  isLoading: boolean
-  list: ListItem[]
-  filterKey: string
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
+  searchParams: SearchParams
+  tableLabels: TableLabel[]
+  tableLabelsMapper: TableLabelsMapper
   updatePath: (updatedSearchParams: Partial<SearchParams>) => void
 }) => {
-  return (
-    <Select
-      aria-label={t`Select type`}
-      items={list}
-      loading={isLoading}
-      minWidth="200px"
-      selectedKey={filterKey}
-      onSelectionChange={(filterTypeKey) => updatePath({ filterTypeKey: filterTypeKey as FilterTypeKey })}
-      onSelectionDelete={() => updatePath({ filterTypeKey: 'borrow' })}
-    >
-      {({ id, displayName }: ListItem) => {
-        return (
-          <Item key={id} textValue={id}>
-            <strong>{displayName}</strong>
-          </Item>
-        )
-      }}
-    </Select>
+  const { filterTypeKey, sortBy, sortByOrder } = searchParams
+
+  const isXSmDown = useStore((state) => state.layout.isXSmDown)
+
+  const sortSelectMapper = useMemo(() => {
+    return tableLabels.reduce((prev, { sortIdKey }) => {
+      if (filterTypeKey === 'borrow' && !showBorrowSignerCell && sortIdKey.startsWith('my')) return prev
+      if (filterTypeKey === 'supply' && !showSupplySignerCell && sortIdKey.startsWith('my')) return prev
+      if (!tableLabelsMapper[sortIdKey]?.name) return prev
+      prev[sortIdKey] = tableLabelsMapper[sortIdKey]
+
+      return prev
+    }, {} as { [label: string]: { name: string } })
+  }, [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, tableLabelsMapper])
+
+  // only show close button  settings is not on default
+  const onSelectDeleteFn = useMemo(() => {
+    if (sortBy === '' && sortByOrder === 'desc') return {}
+    return { onSelectionDelete: () => updatePath({ sortBy: '', sortByOrder: 'desc' }) }
+  }, [sortBy, sortByOrder, updatePath])
+
+  return !isXSmDown ? (
+    <TableSortSelect
+      searchParams={searchParams}
+      labelsMapper={sortSelectMapper}
+      updatePath={updatePath}
+      {...onSelectDeleteFn}
+    />
+  ) : (
+    <StyledTableSortSelectMobile searchParams={searchParams} labelsMapper={sortSelectMapper} updatePath={updatePath} />
   )
 }
+
+const StyledTableSortSelectMobile = styled(TableSortSelectMobile)`
+  height: 100%;
+
+  > button {
+    height: 100%;
+    font-size: var(--font-size-2);
+  }
+`
 
 export default SelectFilterType

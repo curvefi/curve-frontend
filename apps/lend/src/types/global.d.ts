@@ -281,6 +281,13 @@ declare global {
   }
   type MarketsTotalLiquidityMapper = { [owmId: string]: MarketTotalLiquidity }
 
+  type MarketTotalCollateralValue = {
+    total: number | null
+    tooltipContent: { label: string; value: string }[]
+    error: string
+  }
+  type MarketsTotalCollateralValueMapper = { [owmId: string]: MarketTotalCollateralValue }
+
   type RewardOther = {
     apy: number
     decimals?: number

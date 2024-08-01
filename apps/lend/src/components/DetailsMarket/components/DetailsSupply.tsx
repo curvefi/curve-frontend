@@ -33,7 +33,8 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
 
   const details = [
     [
-      { title: t`Supply token`, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
+      { title: t`Lend`, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
+      { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" module="supply" /> },
       { title: 'TVL', value: <CellSupplyTotalLiquidity {...cellProps} /> },
       { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
     ],

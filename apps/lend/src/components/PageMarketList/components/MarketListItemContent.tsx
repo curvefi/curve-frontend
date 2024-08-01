@@ -1,45 +1,55 @@
-import type { MarketListItem, PageMarketList, TableLabel } from '@/components/PageMarketList/types'
-import type { NavigateFunction } from 'react-router-dom'
+import type { MarketListItemResult, PageMarketList, TableLabel } from '@/components/PageMarketList/types'
 
 import React from 'react'
+import styled from 'styled-components'
+
+import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import MarketListTable from '@/components/PageMarketList/components/TableRowViewContentTable'
 import MarketListItemHeader from '@/components/PageMarketList/components/MarketListItemHeader'
-import MarketListItemContentBody from '@/components/PageMarketList/components/MarketListItemContentBody'
 
 const MarketListItemContent = ({
-  navigate,
   pageProps,
   marketListItem,
-  showBorrowSignerCell,
-  showSupplySignerCell,
-  tableLabels,
+  ...props
 }: {
-  navigate: NavigateFunction
   pageProps: PageMarketList
-  marketListItem: MarketListItem
+  marketListItem: MarketListItemResult
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
+  const { rChainId } = pageProps
   const { address } = marketListItem
 
-  const tableRowSettings = useStore((state) => state.marketList.tableRowsSettings[address])
+  const tableSettings = useStore((state) => state.marketList.tableRowsSettings[address])
+
+  if (address === 'all') {
+    return <MarketListTable {...props} pageProps={pageProps} {...marketListItem} tableSettings={tableSettings} />
+  }
 
   return (
-    <React.Fragment>
-      <MarketListItemHeader {...pageProps} marketListItem={marketListItem} />
-      <MarketListItemContentBody
-        {...pageProps}
-        navigate={navigate}
-        marketListItem={marketListItem}
-        tableRowSettings={tableRowSettings}
-        showBorrowSignerCell={showBorrowSignerCell}
-        showSupplySignerCell={showSupplySignerCell}
-        tableLabels={tableLabels}
-      />
-    </React.Fragment>
+    <>
+      <MarketListItemHeader rChainId={rChainId} {...marketListItem} />
+      <TableWrapper>
+        <MarketListTable {...props} pageProps={pageProps} {...marketListItem} tableSettings={tableSettings} />
+      </TableWrapper>
+    </>
   )
 }
+
+const TableWrapper = styled.div`
+  border: 1px solid var(--box_header--primary--background-color);
+  box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+
+  @media (min-width: ${breakpoints.xs}rem) {
+    margin: 0 var(--spacing-narrow);
+  }
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    margin: 0 var(--spacing-normal);
+  }
+`
 
 export default MarketListItemContent

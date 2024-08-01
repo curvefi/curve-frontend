@@ -1,28 +1,34 @@
-import type { MarketListItem, PageMarketList } from '@/components/PageMarketList/types'
-
 import React from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
+import networks from '@/networks'
 
-import TableHeadCellTokenLabel from '@/components/PageMarketList/components/TableRowViewContentTable/TableHeadCellTokenLabel'
+import Box from '@/ui/Box'
+import TokenIcon from '@/components/TokenIcon'
 
 const MarketListItemHeader = ({
   rChainId,
-  marketListItem,
-}: Pick<PageMarketList, 'rChainId'> & {
-  marketListItem: MarketListItem
+  address,
+  symbol,
+}: {
+  rChainId: ChainId
+  address: string
+  symbol: string
 }) => {
-  const { address, symbol } = marketListItem
+  const { imageBaseUrl } = networks[rChainId]
 
   return (
-    <Wrapper>
-      <TableHeadCellTokenLabel rChainId={rChainId} address={address} symbol={symbol} />
-    </Wrapper>
+    <TableTokenWrapper>
+      <Wrapper flex flexAlignItems="center">
+        {<StyledTokenIcon imageBaseUrl={imageBaseUrl} token={symbol} address={address} />}
+        <strong>{symbol}</strong>
+      </Wrapper>
+    </TableTokenWrapper>
   )
 }
 
-const Wrapper = styled.div`
+const TableTokenWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   padding: var(--spacing-1) var(--spacing-narrow);
@@ -32,6 +38,14 @@ const Wrapper = styled.div`
     padding-left: var(--spacing-normal);
     padding-right: var(--spacing-normal);
   }
+`
+
+const Wrapper = styled(Box)`
+  min-width: 100px;
+`
+
+const StyledTokenIcon = styled(TokenIcon)`
+  margin-right: var(--spacing-1);
 `
 
 export default MarketListItemHeader

@@ -377,6 +377,48 @@ const market = {
 
     return results
   },
+  fetchMarketsTotalCollateralValue: async (api: Api, owmDatas: OWMData[]) => {
+    log('fetchMarketsTotalCollateralValue', owmDatas.length)
+    let results: MarketsTotalCollateralValueMapper = {}
+    const useMultiCall = owmDatas.length > 1
+
+    await PromisePool.for(owmDatas)
+      .handleError((errorObj, { owm }) => {
+        console.error(errorObj)
+        const error = getErrorMessage(errorObj, 'error-api')
+        results[owm.id] = { total: null, tooltipContent: [], error }
+      })
+      .process(async (owmData) => {
+        const { owm } = owmData
+        const { collateral_token, borrowed_token } = owm
+
+        const [ammBalance, collateralUsdRate, borrowedUsdRate] = await Promise.all([
+          owm.stats.ammBalances(useMultiCall),
+          api.getUsdRate(collateral_token.address),
+          api.getUsdRate(borrowed_token.address),
+        ])
+
+        if (collateralUsdRate.toString() === 'NaN' || borrowedUsdRate.toString() === 'NaN') {
+          results[owm.id] = { total: null, tooltipContent: [], error: 'Unable to get usd rate' }
+          return
+        }
+
+        const borrowedUsd = +ammBalance.borrowed * +borrowedUsdRate
+        const collateralUsd = +ammBalance.collateral * +collateralUsdRate
+        const total = +borrowedUsd + +collateralUsd
+
+        let tooltipContent: { label: string; value: string }[] = []
+        if (total !== 0)
+          tooltipContent = [
+            { label: collateral_token?.symbol, value: ammBalance.collateral },
+            { label: borrowed_token?.symbol, value: ammBalance.borrowed },
+          ]
+
+        results[owm.id] = { total, tooltipContent, error: '' }
+      })
+
+    return results
+  },
 }
 
 const user = {

@@ -1,10 +1,9 @@
-import type { FoldTableLabels, PageMarketList } from '@/components/PageMarketList/types'
+import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
 
 import React, { useCallback, useEffect } from 'react'
-import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { FilterType } from '@/components/PageMarketList/utils'
 import { _getActiveKey } from '@/store/createMarketListSlice'
 import useStore from '@/store/useStore'
 
@@ -16,12 +15,11 @@ import TableSettings from '@/components/PageMarketList/components/TableSettings/
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 
 const MarketList = (pageProps: PageMarketList) => {
-  const { rChainId, isLoaded, searchParams, api, tableLabelsMapper, updatePath } = pageProps
-  const navigate = useNavigate()
+  const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
-  const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
+  const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
@@ -39,33 +37,34 @@ const MarketList = (pageProps: PageMarketList) => {
     showSignerCell && Object.values(userMarketsBalances)?.some((b) => +b.vaultShares > 0 || +b.gauge > 0)
 
   // prettier-ignore
-  const FOLD_TABLE_LABELS: FoldTableLabels = {
-    borrow: [
-      { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'tokenCollateral', label: tableLabelsMapper.tokenCollateral.name, className: 'left', width: '140px' },
-      { sortIdKey: 'tokenBorrow', label: tableLabelsMapper.tokenBorrow.name, className: 'left', width: '140px' },
-      { sortIdKey: 'leverage', label: tableLabelsMapper.leverage.name, className: 'left', width: '120px' },
-      { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, className: '', show: showBorrowSignerCell, width: '120px' },
-      { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, className: '', show: showBorrowSignerCell, width: '120px' },
-      { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, className: 'right nowrap' },
-      { sortIdKey: 'available', label: tableLabelsMapper.available.name, className: 'right', width: '140px' },
-      { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, className: 'right', width: '140px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, className: 'right', width: '140px' },
-      { sortIdKey: 'cap', label: tableLabelsMapper.utilization.name, className: 'right', width: '140px' },
-      { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, className: 'right', width: '220px' },
+  const TABLE_LABELS: { borrow: TableLabel[]; supply: TableLabel[] } = {
+    [FilterType.borrow]: [
+      { sortIdKey: 'isInMarket', className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
+      { sortIdKey: 'tokenCollateral', className: 'left', width: '150px' },
+      { sortIdKey: 'tokenBorrow', className: 'left', width: '130px' },
+      { sortIdKey: 'leverage', className: 'left', width: '120px' },
+      { sortIdKey: 'myHealth', className: '', show: showBorrowSignerCell, width: '120px' },
+      { sortIdKey: 'myDebt', className: '', show: showBorrowSignerCell, width: '120px' },
+      { sortIdKey: 'rateBorrow', className: 'right nowrap' },
+      { sortIdKey: 'available', className: 'right', width: '140px' },
+      { sortIdKey: 'totalDebt', className: 'right', width: '140px' },
+      { sortIdKey: 'cap', className: 'right', width: '140px' },
+      { sortIdKey: 'utilization', className: 'right', width: '140px' },
+      { sortIdKey: 'totalCollateralValue', className: 'right', width: '220px' },
     ],
-    supply: [
-      { sortIdKey: 'isInMarket', label: tableLabelsMapper.isInMarket.name, className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, className: 'left', width: '140px' },
-      { sortIdKey: 'leverage', label: tableLabelsMapper.leverage.name, className: 'left', width: '120px' },
-      { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, className: 'right', show: showSupplySignerCell, width: '240px' },
-      { sortIdKey: '', label: t`Total APR`, className: 'right', ...(showSupplySignerCell ? { } : { width: '160px'  }) },
-      { sortIdKey: 'totalLiquidity', label: tableLabelsMapper.totalLiquidity.name, className: 'right', width: '160px' },
-    ]
+    [FilterType.supply]: [
+      { sortIdKey: 'isInMarket', className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
+      { sortIdKey: 'tokenSupply', className: 'left', width: '140px' },
+      { sortIdKey: 'tokenCollateral', className: 'left', width: '140px' },
+      { sortIdKey: 'leverage', className: 'left', width: '120px' },
+      { sortIdKey: 'myVaultShares', className: 'right', show: showSupplySignerCell, width: '240px' },
+      { sortIdKey: 'totalApr', className: 'right', ...(showSupplySignerCell ? {} : { width: '160px' }) },
+      { sortIdKey: 'totalLiquidity', className: 'right', width: '160px' },
+    ],
   }
 
-  const prevKey = _getPrevKey(activeKey, prevActiveKey)
-  const result = results[activeKey] ?? resultCached ?? results[prevKey] ?? undefined
+  const parsedResult =
+    results[activeKey] ?? resultCached ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
@@ -95,22 +94,27 @@ const MarketList = (pageProps: PageMarketList) => {
 
   usePageVisibleInterval(() => updateFormValues(true), REFRESH_INTERVAL['5m'], isPageVisible && isLoaded)
 
-  const tableLabels = FOLD_TABLE_LABELS[searchParams.filterTypeKey]
+  const tableLabels = TABLE_LABELS[searchParams.filterTypeKey]
 
   return (
     <>
       {/* MARKET LIST SETTINGS */}
-      <TableSettings {...pageProps} />
+      <TableSettings
+        {...pageProps}
+        showBorrowSignerCell={showBorrowSignerCell}
+        showSupplySignerCell={showSupplySignerCell}
+        tableLabelsSelector={TABLE_LABELS}
+        tableLabels={tableLabels}
+      />
 
       {/* MARKET LIST */}
       <MarketListWrapper>
         {formStatus.noResult && !formStatus.isLoading ? (
           <MarketListNoResult searchParams={searchParams} signerAddress={signerAddress} updatePath={updatePath} />
-        ) : Array.isArray(result) ? (
-          result.map((marketListItem) => (
+        ) : Array.isArray(parsedResult) ? (
+          parsedResult.map((marketListItem) => (
             <MarketListItemContent
               key={marketListItem.address}
-              navigate={navigate}
               pageProps={pageProps}
               marketListItem={marketListItem}
               showBorrowSignerCell={showBorrowSignerCell}
@@ -132,9 +136,5 @@ const MarketListWrapper = styled.div`
   width: 100%;
   padding-bottom: var(--spacing-wide);
 `
-
-function _getPrevKey(activeKey: string, prevActiveKey: string) {
-  return activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? prevActiveKey : ''
-}
 
 export default MarketList
