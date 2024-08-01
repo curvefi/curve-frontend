@@ -78,7 +78,7 @@ class BigDecimal {
   }
 
   private scaleFactor(scale: number): bigint {
-    return 10n ** BigInt(scale)
+    return BigInt('1' + '0'.repeat(scale))
   }
 
   private toScaledBigInt(): bigint {
@@ -279,16 +279,19 @@ class BigDecimal {
 
   toFixed(dp: number): string {
     if (dp < 0) throw new Error('Decimal places must be non-negative')
-    const str = this.toString()
-    if (dp === 0) return str
-    return str + '.' + '0'.repeat(dp)
+    const rounded = this.round(dp)
+    const intStr = rounded._integerPart.toString()
+    const fracStr = rounded._fractionalPart.toString().padStart(dp, '0')
+    return `${rounded._isNegative ? '-' : ''}${intStr}${dp > 0 ? '.' + fracStr : ''}`
   }
 
   round(dp: number): BigDecimal {
-    const scaled = this.scaleUp(dp)
-    // Use BigInt constructor explicitly
-    return new BigDecimal(scaled._integerPart * 10n ** BigInt(dp) + scaled._fractionalPart, dp)
+    if (dp < 0) throw new Error('Decimal places must be non-negative')
+    const scaleFactor = this.scaleFactor(dp)
+    const scaled = this.scaleUp(dp + 1)
+    const rounded = scaled._integerPart * scaleFactor + (scaled._fractionalPart + 5n * this.scaleFactor(0)) / 10n
+    return new BigDecimal(rounded, dp)
   }
 }
 
-export default BigDecimal
+export { BigDecimal, BigDecimal as BD }

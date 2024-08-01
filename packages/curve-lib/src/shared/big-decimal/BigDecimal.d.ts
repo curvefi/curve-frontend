@@ -31,7 +31,7 @@ export declare namespace BigDecimalTypes {
   type FractionPart = `${number}`
   export type StringDecimal = `${IntegerPart}` | `${IntegerPart}.${FractionPart}`
 
-  type Value = StringDecimal | number | bigint | BigDecimal
+  type Value = StringDecimal | number | bigint | string | BigDecimal
 
   interface Config {
     DECIMAL_PLACES?: number
