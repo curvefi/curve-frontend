@@ -5,7 +5,7 @@ import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
-import { log } from '@/utils/helpers'
+import { httpFetcher, log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
 import isEqual from 'lodash/isEqual'
 import networks from '@/networks'
@@ -20,6 +20,7 @@ type SliceState = {
   connectState: ConnectState
   curve: Curve | null
   crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
+  dailyVolume: number | null
   isAdvanceMode: boolean
   isLoadingApi: false
   isLoadingCurve: true
@@ -35,6 +36,7 @@ type SliceState = {
 // prettier-ignore
 export interface AppSlice extends SliceState {
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
+  fetchDailyVolume(): Promise<void>
   setAppCache<T>(key: AppCacheKeys, value: T): void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
@@ -50,6 +52,7 @@ const DEFAULT_STATE: SliceState = {
   connectState: { status: '' as const, stage: '' },
   curve: null,
   crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
+  dailyVolume: null,
   isAdvanceMode: false,
   isLoadingApi: false,
   isLoadingCurve: true,
@@ -70,6 +73,16 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
     const fetchedTotalSupply = await networks[chainId].api.helpers.getTotalSupply(api)
     get().updateGlobalStoreByKey('crvusdTotalSupply', fetchedTotalSupply)
   },
+  fetchDailyVolume: async () => {
+    const { updateGlobalStoreByKey } = get()
+    try {
+      const resp = await httpFetcher('https://api.curve.fi/api/getVolumes/ethereum/crvusd-amms')
+      updateGlobalStoreByKey('dailyVolume', resp.data?.totalVolume ?? 'NaN')
+    } catch (error) {
+      console.error(error)
+      updateGlobalStoreByKey('dailyVolume', 'NaN')
+    }
+  },
   setAppCache: <T>(key: AppCacheKeys, value: T) => {
     get().updateGlobalStoreByKey(key, value)
     setStorageValue('APP_CACHE', {
@@ -86,6 +99,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
     get().updateGlobalStoreByKey('connectState', value)
   },
   updateCurveJs: async (curveApi: Curve, prevCurveApi: Curve | null, wallet: Wallet | null) => {
+    const { gas, loans, usdRates, ...state } = get()
+
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     log('updateCurveJs', curveApi?.chainId, {
@@ -96,25 +111,26 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     // reset store
     if (isUserSwitched || !curveApi.signerAddress) {
-      get().loans.setStateByKey('userWalletBalancesMapper', {})
-      get().loans.setStateByKey('userDetailsMapper', {})
+      loans.setStateByKey('userWalletBalancesMapper', {})
+      loans.setStateByKey('userDetailsMapper', {})
     }
 
     // update network settings from api
-    get().updateGlobalStoreByKey('curve', curveApi)
-    get().updateGlobalStoreByKey('isLoadingCurve', false)
+    state.updateGlobalStoreByKey('curve', curveApi)
+    state.updateGlobalStoreByKey('isLoadingCurve', false)
 
     // get collateral list
     const { collateralDatas } = await get().collaterals.fetchCollaterals(curveApi)
-    await get().loans.fetchLoansDetails(curveApi, collateralDatas)
+    await loans.fetchLoansDetails(curveApi, collateralDatas)
 
     if (!prevCurveApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(curveApi)
-      get().usdRates.fetchAllStoredUsdRates(curveApi)
-      get().fetchCrvUSDTotalSupply(curveApi)
+      gas.fetchGasInfo(curveApi)
+      usdRates.fetchAllStoredUsdRates(curveApi)
+      state.fetchCrvUSDTotalSupply(curveApi)
+      state.fetchDailyVolume()
     }
 
-    get().updateGlobalStoreByKey('isLoadingApi', false)
+    state.updateGlobalStoreByKey('isLoadingApi', false)
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
