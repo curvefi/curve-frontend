@@ -499,7 +499,9 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         console.log(error)
         return {
-          data: [],
+          ohlcData: [],
+          oracleData: [],
+          baselineData: [],
           refetchingCapped: false,
           lastFetchEndTime: 0,
         }
