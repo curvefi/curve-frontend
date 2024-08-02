@@ -178,13 +178,18 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   }, [owm])
 
   const selectChartList = useCallback(() => {
+    if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
+      return [{ label: t`Loading` }, { label: t`Loading` }]
+    }
+
     if (owm) {
       if (chartOraclePoolOhlc.dataDisabled) {
         return [{ label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)` }]
       }
+
       return [
         {
-          label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (Oracle)`,
+          label: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
         },
         {
           label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
@@ -193,7 +198,15 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     } else {
       return []
     }
-  }, [chartOraclePoolOhlc.dataDisabled, coins, owm])
+  }, [
+    chartOraclePoolOhlc.borrowedToken.symbol,
+    chartOraclePoolOhlc.collateralToken.symbol,
+    chartOraclePoolOhlc.dataDisabled,
+    chartOraclePoolOhlc.fetchStatus,
+    coins?.borrowedToken.symbol,
+    coins?.collateralToken.symbol,
+    owm,
+  ])
 
   // set chart selected index to llamma if oracle pool is disabled due to no oracle pools being found for market on the api
   useEffect(() => {
