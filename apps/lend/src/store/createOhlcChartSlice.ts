@@ -39,6 +39,14 @@ type SliceState = {
     refetchingCapped: boolean
     lastFetchEndTime: number
     fetchStatus: FetchingStatus
+    borrowedToken: {
+      address: string
+      symbol: string
+    }
+    collateralToken: {
+      address: string
+      symbol: string
+    }
     // flag for disabling oracle pool data if no oracle pools are found for the market on the api
     dataDisabled: boolean
   }
@@ -103,6 +111,14 @@ export type OhlcChartSlice = {
       baselineData: LlamaBaselinePriceData[]
       refetchingCapped: boolean
       lastFetchEndTime: number
+      borrowedToken: {
+        address: string
+        symbol: string
+      }
+      collateralToken: {
+        address: string
+        symbol: string
+      }
     }>
     fetchMoreData(
       chainId: ChainId,
@@ -138,6 +154,14 @@ const DEFAULT_STATE: SliceState = {
     data: [],
     oraclePriceData: [],
     baselinePriceData: [],
+    borrowedToken: {
+      address: '',
+      symbol: '',
+    },
+    collateralToken: {
+      address: '',
+      symbol: '',
+    },
     refetchingCapped: false,
     lastFetchEndTime: 0,
     fetchStatus: 'LOADING',
@@ -359,6 +383,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             data: DEFAULT_STATE.chartOraclePoolOhlc.data,
             oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
             baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
+            borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
+            collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
             refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
             lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
             dataDisabled: DEFAULT_STATE.chartOraclePoolOhlc.dataDisabled,
@@ -415,6 +441,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc.data = ohlcDataArray
+            state[sliceKey].chartOraclePoolOhlc.collateralToken = {
+              address: oracleOhlcResponse.oracle_pools[0].collateral_address,
+              symbol: oracleOhlcResponse.oracle_pools[0].collateral_symbol,
+            }
+            state[sliceKey].chartOraclePoolOhlc.borrowedToken = {
+              address: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_address,
+              symbol: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_symbol,
+            }
             state[sliceKey].chartOraclePoolOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartOraclePoolOhlc.baselinePriceData = baselinePriceArray
             state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
@@ -428,6 +462,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'ERROR',
               data: DEFAULT_STATE.chartOraclePoolOhlc.data,
+              borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
+              collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
               oraclePriceData: DEFAULT_STATE.chartOraclePoolOhlc.oraclePriceData,
               baselinePriceData: DEFAULT_STATE.chartOraclePoolOhlc.baselinePriceData,
               refetchingCapped: DEFAULT_STATE.chartOraclePoolOhlc.refetchingCapped,
@@ -490,6 +526,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
           lastFetchEndTime: oracleOhlcResponse.data[0].time,
+          collateralToken: {
+            address: oracleOhlcResponse.oracle_pools[0].collateral_address,
+            symbol: oracleOhlcResponse.oracle_pools[0].collateral_symbol,
+          },
+          borrowedToken: {
+            address: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_address,
+            symbol: oracleOhlcResponse.oracle_pools[oracleOhlcResponse.oracle_pools.length - 1].borrowed_symbol,
+          },
         }
       } catch (error) {
         set(
@@ -502,6 +546,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           ohlcData: [],
           oracleData: [],
           baselineData: [],
+          collateralToken: DEFAULT_STATE.chartOraclePoolOhlc.collateralToken,
+          borrowedToken: DEFAULT_STATE.chartOraclePoolOhlc.borrowedToken,
           refetchingCapped: false,
           lastFetchEndTime: 0,
         }
@@ -534,6 +580,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
               data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              borrowedToken: oracleData.borrowedToken,
+              collateralToken: oracleData.collateralToken,
               oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
               baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
               refetchingCapped: oracleData.refetchingCapped,
@@ -565,6 +613,8 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
               data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              borrowedToken: oracleData.borrowedToken,
+              collateralToken: oracleData.collateralToken,
               oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
               baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
               refetchingCapped: oracleData.refetchingCapped,
