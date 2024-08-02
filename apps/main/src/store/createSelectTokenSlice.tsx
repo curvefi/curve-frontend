@@ -18,7 +18,6 @@ type FilterOptions = {
 
 const sliceKey = 'selectToken'
 
-// prettier-ignore
 export type SelectTokenSlice = {
   [sliceKey]: SliceState & {
     filterFn(filterValue: string, tokens: Token[], filterOptions: FilterOptions): Token[]

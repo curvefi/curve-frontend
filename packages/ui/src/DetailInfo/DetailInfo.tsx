@@ -112,6 +112,7 @@ const Wrapper = styled(Box)<WrapperProps>`
   }};
 
   .svg-tooltip {
+    margin-top: 0.25rem;
     top: 0.1rem;
   }
 
