@@ -136,7 +136,7 @@ const TableRowContent = ({
                 ) : (
                   <>
                     <TextCaption isBold isCaps>
-                      Collatleral
+                      Collateral
                     </TextCaption>{' '}
                     <CellToken {...cellProps} type="collateral" module="supply" />
                   </>
