@@ -1,6 +1,6 @@
 {
   "name": "main",
-  "version": "0.1.0",
+  "version": "2.1.0",
   "private": true,
   "engines": {
     "node": ">=18.17"
@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "^2.61.8",
+    "@curvefi/api": "^2.61.13",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@lingui/react": "^4.6.0",
