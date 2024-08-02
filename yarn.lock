@@ -1436,10 +1436,10 @@
     ethers "^6.10.0"
     memoizee "^0.4.15"
 
-"@curvefi/stablecoin-api@^1.5.4":
-  version "1.5.4"
-  resolved "https://registry.yarnpkg.com/@curvefi/stablecoin-api/-/stablecoin-api-1.5.4.tgz#e22c6d945827724871715d44d544847fa854176f"
-  integrity sha512-cT5IF2s0QyB/A/szVbifjyWNgA/8Rj7rLN1g0XLbQWUUW6uFr/jOFicaIpxigfFRAGQQ5jyTuTeQHfnNHx/vvQ==
+"@curvefi/stablecoin-api@^1.5.5":
+  version "1.5.5"
+  resolved "https://registry.yarnpkg.com/@curvefi/stablecoin-api/-/stablecoin-api-1.5.5.tgz#fc67c0bb2bc0dd85850ac34f254e0087090309de"
+  integrity sha512-K6i9jMC9isOZT+I1fV4Xu6NoKOFvxx+Q7X9OR3qkL7Y++5E+ofVZq/bXeVpGl0ms3FpmRrZYginwHsSINpjbFA==
   dependencies:
     "@ethersproject/networks" "^5.5.0"
     axios "^0.21.1"
