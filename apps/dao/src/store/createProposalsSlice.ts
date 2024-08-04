@@ -98,7 +98,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             status: status,
             votesFor,
             votesAgainst,
-            minSupport: convertNumberTen(+proposal.supportRequired),
+            minSupport: convertNumberEighteen(+proposal.supportRequired) * 100,
             minAcceptQuorumPercent,
             quorumVeCrv,
             totalVeCrv,

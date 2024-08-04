@@ -20,7 +20,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
     votesAgainst,
     quorumVeCrv,
     minAcceptQuorumPercent,
-    totalVeCrv,
+    minSupport,
     status,
     executed,
     currentQuorumPercentage,
@@ -63,10 +63,10 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
           <StyledVotesStatusBox
             votesFor={votesFor}
             votesAgainst={votesAgainst}
-            totalVeCrv={totalVeCrv}
             currentQuorumPercentage={currentQuorumPercentage}
             quorumVeCrv={quorumVeCrv}
             minAcceptQuorumPercent={minAcceptQuorumPercent}
+            minSupport={minSupport}
           />
         </VoteWrapper>
       </ProposalContainer>
