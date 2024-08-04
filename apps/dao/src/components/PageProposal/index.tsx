@@ -182,7 +182,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                     <VotesStatusBox
                       votesFor={proposal?.votesFor}
                       votesAgainst={proposal?.votesAgainst}
-                      totalVeCrv={proposal?.totalVeCrv}
+                      minSupport={proposal?.minSupport}
                       quorumVeCrv={proposal?.quorumVeCrv}
                       minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
                       currentQuorumPercentage={proposal?.currentQuorumPercentage}
@@ -258,7 +258,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 <VotesStatusBox
                   votesFor={proposal?.votesFor}
                   votesAgainst={proposal?.votesAgainst}
-                  totalVeCrv={proposal?.totalVeCrv}
+                  minSupport={proposal?.minSupport}
                   quorumVeCrv={proposal?.quorumVeCrv}
                   minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
                   currentQuorumPercentage={proposal?.currentQuorumPercentage}
