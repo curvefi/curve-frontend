@@ -11,9 +11,9 @@ import { TooltipIcon } from '@/ui/Tooltip'
 type Props = {
   votesFor: number
   votesAgainst: number
-  totalVeCrv: number
   quorumVeCrv: number
   minAcceptQuorumPercent: number
+  minSupport: number
   currentQuorumPercentage: number
   className?: string
 }
@@ -21,51 +21,72 @@ type Props = {
 const VotesStatusBox = ({
   votesFor,
   votesAgainst,
-  totalVeCrv,
   quorumVeCrv,
   currentQuorumPercentage,
   minAcceptQuorumPercent,
+  minSupport,
   className,
 }: Props) => {
+  const support = (votesFor / (votesFor + votesAgainst)) * 100
+  const against = (votesAgainst / (votesFor + votesAgainst)) * 100
+
   return (
     <Box className={className}>
       <VoteFor>
         <Box flex>
           <p className="vote-label">{t`For:`}</p>
           <p className="vote-count">{formatNumberWithSuffix(votesFor)} veCRV</p>
-          <PercentageVotes>{((votesFor / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
+          <PercentageVotes>{support.toFixed(2)}%</PercentageVotes>
         </Box>
-        <ProgressBar yesVote percentage={(votesFor / totalVeCrv) * 100} />
+        <ProgressBar yesVote percentage={support} />
       </VoteFor>
       <VoteAgainst>
         <Box flex>
           <p className="vote-label">{t`Against:`}</p>
           <p className="vote-count">{formatNumberWithSuffix(votesAgainst)} veCRV</p>
-          <PercentageVotes>{((votesAgainst / totalVeCrv) * 100).toFixed(2)}%</PercentageVotes>
+          <PercentageVotes>{against.toFixed(2)}%</PercentageVotes>
         </Box>
-        <ProgressBar yesVote={false} percentage={(votesAgainst / totalVeCrv) * 100} />
+        <ProgressBar yesVote={false} percentage={against} />
       </VoteAgainst>
-      <Quorum>
-        <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-          {votesFor >= quorumVeCrv ? (
-            <QuorumPassedIcon name="CheckmarkFilled" size={16} />
-          ) : (
-            <QuorumFailedIcon name="Misuse" size={16} />
-          )}
-          <p>{t`Quorum:`}</p>
-          <p>
-            {formatNumberWithSuffix(votesFor)} of {formatNumberWithSuffix(quorumVeCrv)}
-          </p>
-          <TooltipIcon minWidth="200px">
-            <TooltipText>{t`A minimum of ${minAcceptQuorumPercent}% of veCRV tokens must vote 'For' in order for a proposal to meet quorum.`}</TooltipText>
-          </TooltipIcon>
-        </Box>
-        <ProgressBar
-          yesVote={currentQuorumPercentage >= minAcceptQuorumPercent}
-          percentage={currentQuorumPercentage}
-          quorum
-        />
-      </Quorum>
+      <Box flex flexColumn margin="var(--spacing-4) 0 0" flexGap="var(--spacing-2)">
+        <VoteStatus>
+          <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+            {support >= minSupport ? (
+              <QuorumPassedIcon name="CheckmarkFilled" size={16} />
+            ) : (
+              <QuorumFailedIcon name="Misuse" size={16} />
+            )}
+            <p>{t`Support Needed:`}</p>
+            <p>{minSupport}%</p>
+            <TooltipIcon minWidth="200px">
+              <TooltipText>{t`A minimum support of ${minSupport}% is required for a proposal to pass.`}</TooltipText>
+            </TooltipIcon>
+          </Box>
+          <ProgressBar yesVote={support >= minSupport} percentage={support} status statusPercentage={minSupport} />
+        </VoteStatus>
+        <VoteStatus>
+          <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+            {votesFor >= quorumVeCrv ? (
+              <QuorumPassedIcon name="CheckmarkFilled" size={16} />
+            ) : (
+              <QuorumFailedIcon name="Misuse" size={16} />
+            )}
+            <p>{t`Quorum:`}</p>
+            <p>
+              {formatNumberWithSuffix(votesFor)} of {formatNumberWithSuffix(quorumVeCrv)}
+            </p>
+            <TooltipIcon minWidth="200px">
+              <TooltipText>{t`A minimum of ${minAcceptQuorumPercent}% of veCRV tokens must vote 'For' in order for a proposal to meet quorum.`}</TooltipText>
+            </TooltipIcon>
+          </Box>
+          <ProgressBar
+            yesVote={currentQuorumPercentage >= minAcceptQuorumPercent}
+            percentage={currentQuorumPercentage}
+            status
+            statusPercentage={minAcceptQuorumPercent}
+          />
+        </VoteStatus>
+      </Box>
     </Box>
   )
 }
@@ -101,10 +122,9 @@ const PercentageVotes = styled.p`
   margin-left: var(--spacing-1);
 `
 
-const Quorum = styled.div`
+const VoteStatus = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: var(--spacing-4);
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   gap: var(--spacing-1);

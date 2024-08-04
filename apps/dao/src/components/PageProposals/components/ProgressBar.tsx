@@ -4,14 +4,15 @@ import styled from 'styled-components'
 interface ProgressBarProps {
   percentage: number
   yesVote: boolean
-  quorum?: boolean
+  status?: boolean
+  statusPercentage?: number
 }
 
-const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, yesVote, quorum }) => {
+const ProgressBar: React.FC<ProgressBarProps> = ({ percentage, yesVote, status, statusPercentage }) => {
   return (
     <ProgressBarContainer>
-      <ProgressBarFill percentage={percentage} yesVote={yesVote} quorum={quorum} />
-      {quorum && <QuorumLine />}
+      <ProgressBarFill percentage={percentage} statusPercentage={statusPercentage} yesVote={yesVote} status={status} />
+      {status && statusPercentage && <QuorumLine statusPercentage={statusPercentage} />}
     </ProgressBarContainer>
   )
 }
@@ -24,9 +25,16 @@ const ProgressBarContainer = styled.div`
   border-radius: 2px;
 `
 
-const ProgressBarFill = styled.div.attrs<ProgressBarProps>(({ percentage, yesVote, quorum }) => ({
+const ProgressBarFill = styled.div.attrs<ProgressBarProps>(({ percentage, statusPercentage, yesVote, status }) => ({
   style: {
-    backgroundColor: quorum ? 'var(--primary-400a50)' : yesVote ? 'var(--chart-green)' : 'var(--chart-red)',
+    backgroundColor:
+      status && statusPercentage
+        ? percentage >= statusPercentage
+          ? 'var(--chart-green)'
+          : 'var(--chart-red)'
+        : yesVote
+        ? 'var(--chart-green)'
+        : 'var(--chart-red)',
     width: `${percentage}%`,
   },
 }))<ProgressBarProps>`
@@ -34,10 +42,10 @@ const ProgressBarFill = styled.div.attrs<ProgressBarProps>(({ percentage, yesVot
   border-radius: 2px;
 `
 
-const QuorumLine = styled.div`
+const QuorumLine = styled.div<{ statusPercentage: number }>`
   position: absolute;
   top: 50%;
-  left: 30%;
+  left: ${({ statusPercentage }) => `${statusPercentage}%`};
   width: 2px;
   height: 140%;
   background-color: var(--page--text-color);
