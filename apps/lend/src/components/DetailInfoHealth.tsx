@@ -5,7 +5,9 @@ import styled from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
 import { formatNumber } from '@/ui/utils'
 
+import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
+import ExternalLink from 'ui/src/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { helpers } from '@/lib/apiLending'
@@ -102,8 +104,16 @@ const DetailInfoHealth = ({
       loadingSkeleton={[85, 20]}
       label={t`Health:`}
       tooltip={
-        <IconTooltip placement="top end">
-          {t`The loan metric indicates the current health of your position.`}
+        <IconTooltip placement="top end" textAlign="left" minWidth="250px">
+          <Box grid gridGap={2}>
+            <p>{t`The loan metric indicates the current health of your position.`}</p>
+            <p>
+              {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+              <ExternalLink href="https://resources.curve.fi/lending/overview/#health-hard-liquidation" $noStyles>
+                Click here to learn more.
+              </ExternalLink>
+            </p>
+          </Box>
         </IconTooltip>
       }
     >
