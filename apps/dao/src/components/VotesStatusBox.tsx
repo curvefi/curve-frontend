@@ -27,8 +27,9 @@ const VotesStatusBox = ({
   minSupport,
   className,
 }: Props) => {
-  const support = (votesFor / (votesFor + votesAgainst)) * 100
-  const against = (votesAgainst / (votesFor + votesAgainst)) * 100
+  const totalVotes = votesFor + votesAgainst
+  const support = totalVotes > 0 ? (votesFor / totalVotes) * 100 : 0
+  const against = totalVotes > 0 ? (votesAgainst / totalVotes) * 100 : 0
 
   return (
     <Box className={className}>
@@ -56,8 +57,10 @@ const VotesStatusBox = ({
             ) : (
               <QuorumFailedIcon name="Misuse" size={16} />
             )}
-            <p>{t`Support Needed:`}</p>
-            <p>{minSupport}%</p>
+            <p>{t`Min Support:`}</p>
+            <p>
+              {support.toFixed(2)}% of {minSupport}%
+            </p>
             <TooltipIcon minWidth="200px">
               <TooltipText>{t`A minimum support of ${minSupport}% is required for a proposal to pass.`}</TooltipText>
             </TooltipIcon>
