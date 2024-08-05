@@ -2,7 +2,7 @@ import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
 import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
 
 import { t } from '@lingui/macro'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
@@ -20,6 +20,8 @@ import AlertBox from '@/ui/AlertBox'
 import PoolInfoData from '@/components/ChartOhlcWrapper'
 import ChartBandBalances from '@/components/ChartBandBalances'
 import DetailInfo from '@/ui/DetailInfo'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import UserInfoStats from '@/components/LoanInfoUser/components/UserInfoStats'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
@@ -169,7 +171,15 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId }: Props) => {
       <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
         {isSoftLiquidation && (
           <AlertBox alertType="warning">
-            {t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}
+            <Box grid gridGap={3}>
+              <p>{t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}</p>
+              <p>
+                {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+                <ExternalLink href="https://resources.curve.fi/crvusd/loan-details/#hard-liquidations" $noStyles>
+                  Click here to learn more.
+                </ExternalLink>
+              </p>
+            </Box>
           </AlertBox>
         )}
         <StatsContentWrapper rowGridTemplate={isAdvanceMode ? 'auto 1fr' : 'auto auto auto 1fr auto'}>
@@ -182,8 +192,19 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId }: Props) => {
           </UserInfoStats>
           <UserInfoStats title={t`Health`}>
             {healthMode?.percent && userStatus && (
-              <HealthColorText as="strong" colorKey={userStatus.colorKey}>
-                {formatNumber(healthMode.percent, FORMAT_OPTIONS.PERCENT)}
+              <HealthColorText colorKey={userStatus.colorKey}>
+                <strong>{formatNumber(healthMode.percent, FORMAT_OPTIONS.PERCENT)} </strong>
+                <StyledIconTooltip minWidth="250px">
+                  <Box grid gridGap={2}>
+                    <p>{t`The loan metric indicates the current health of your position.`}</p>
+                    <p>
+                      {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+                      <ExternalLink href="https://resources.curve.fi/crvusd/loan-details/#hard-liquidations" $noStyles>
+                        Click here to learn more.
+                      </ExternalLink>
+                    </p>
+                  </Box>
+                </StyledIconTooltip>
               </HealthColorText>
             )}
           </UserInfoStats>
@@ -444,6 +465,14 @@ const PoolInfoWrapper = styled(Box)`
 
 const PoolInfoContainer = styled(Box)`
   background-color: var(--tab-secondary--content--background-color);
+`
+
+const StyledIconTooltip = styled(IconTooltip)`
+  min-width: 0;
+
+  @media (min-width: ${breakpoints.xs}rem) {
+    min-width: auto;
+  }
 `
 
 export default LoanInfoUser
