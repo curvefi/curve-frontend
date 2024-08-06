@@ -50,6 +50,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
       rFormType = 'withdraw'
     } else if (parsedTransfer === 'swap') {
       rFormType = 'swap'
+    } else if (parsedTransfer === 'manage') {
+      rFormType = 'manage'
     }
   }
 
