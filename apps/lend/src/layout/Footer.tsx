@@ -115,9 +115,6 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         <StyledExternalLink href={`${orgUIPath}/bugbounty`}>{t`Bug Bounty`}</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/rootfaq`}>{t`FAQ`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
         <StyledExternalLink href="https://news.curve.fi/">{t`News`}</StyledExternalLink>
       </SectionItem>
     </ResourcesWrapper>
