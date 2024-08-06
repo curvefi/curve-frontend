@@ -12,7 +12,7 @@
       "campaignEnd": "1770000000",
       "address": "0xebafb74a98ba14430eedc716c0034123c3040ca4",
       "network": "bsc",
-      "multiplier": "4",
+      "multiplier": "1",
       "tags": ["points"]
     },
     {
@@ -22,7 +22,7 @@
       "campaignEnd": "1770000000",
       "address": "0x85de3add465a219ee25e04d22c39ab027cf5c12e",
       "network": "ethereum",
-      "multiplier": "3",
+      "multiplier": "2",
       "tags": ["points"]
     },
     {
@@ -42,7 +42,7 @@
       "campaignEnd": "1770000000",
       "address": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
       "network": "ethereum",
-      "multiplier": "3",
+      "multiplier": "2",
       "tags": ["points"]
     }
   ]
