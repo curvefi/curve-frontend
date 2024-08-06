@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
 
-import { Contract, formatEther } from 'ethers'
+import { Contract, formatEther, formatUnits } from 'ethers'
 import produce from 'immer'
 
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
@@ -23,7 +23,22 @@ type SliceState = {
   }
   userAddress: string | null
   userEns: string | null
-  userVotesMapper: { [voteId: string]: UserVoteData }
+  userVotesMapper: { [userAddress: string]: UserVoteData }
+  userLocksMapper: {
+    [userAddress: string]: {
+      fetchingState: FetchingState
+      locks: UserLock[]
+    }
+  }
+  userMapper: {
+    [userAddress: string]: {
+      ens: string
+    }
+  }
+  userLocksSortBy: {
+    key: UserLocksSortBy
+    order: 'asc' | 'desc'
+  }
 }
 
 const sliceKey = 'user'
@@ -32,6 +47,9 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: WalletState): void
+    getUserEns(userAddress: string): void
+    getUserLocks(userAddress: string): void
+    setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     setUserProposalVotes(curve: CurveApi): void
     // helpers
@@ -52,7 +70,13 @@ const DEFAULT_STATE: SliceState = {
   snapshotVeCrvMapper: {},
   userAddress: null,
   userEns: null,
+  userMapper: {},
   userVotesMapper: {},
+  userLocksMapper: {},
+  userLocksSortBy: {
+    key: 'date',
+    order: 'desc',
+  },
 }
 
 // key user address for user specific snapshots, votes, mappers
@@ -79,6 +103,124 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         userEns: getWalletSignerEns(wallet),
         snapshotVeCrvMapper: {},
       })
+    },
+    getUserEns: async (userAddress: string) => {
+      const { provider } = get().wallet
+
+      if (!provider) {
+        console.error("Can't fetch ens, no provider available")
+        return
+      }
+
+      try {
+        const ensName = await provider.lookupAddress(userAddress)
+
+        console.log(ensName)
+
+        set(
+          produce((state) => {
+            state[sliceKey].userMapper[userAddress] = {
+              ens: ensName || null,
+            }
+          })
+        )
+      } catch (error) {
+        console.error('Error fetching ENS name:', error)
+        set(
+          produce((state) => {
+            state[sliceKey].userMapper[userAddress] = {
+              ens: null,
+            }
+          })
+        )
+      }
+    },
+    getUserLocks: async (userAddress: string) => {
+      set(
+        produce((state) => {
+          state[sliceKey].userLocksMapper[userAddress] = {
+            fetchingState: 'LOADING',
+            locks: [],
+          }
+        })
+      )
+
+      try {
+        const locksRes = await fetch(`https://prices.curve.fi/v1/dao/locks/${userAddress}`)
+        const locks: UserLockRes = await locksRes.json()
+
+        const formattedData = locks.locks.map((lock) => {
+          return {
+            amount: +lock.amount / 1e18,
+            unlock_time: lock.unlock_time,
+            lock_type: lock.lock_type,
+            locked_balance: +lock.locked_balance / 1e18,
+            block_number: lock.block_number,
+            date: lock.dt,
+            transaction_hash: lock.transaction_hash,
+          }
+        })
+
+        console.log(formattedData)
+
+        set(
+          produce((state) => {
+            state[sliceKey].userLocksMapper[userAddress] = {
+              fetchingState: 'SUCCESS',
+              locks: formattedData,
+            }
+          })
+        )
+      } catch (error) {
+        console.log(error)
+
+        set(
+          produce((state) => {
+            state[sliceKey].userLocksMapper[userAddress] = {
+              fetchingState: 'ERROR',
+              locks: [],
+            }
+          })
+        )
+      }
+    },
+    setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
+      const {
+        userLocksMapper: {
+          [userAddress]: { locks },
+        },
+        userLocksSortBy,
+      } = get()[sliceKey]
+
+      let order = userLocksSortBy.order
+      if (sortBy === userLocksSortBy.key) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            const reversedEntries = [...locks].reverse()
+            state[sliceKey].userLocksMapper[userAddress].locks = reversedEntries
+            state[sliceKey].userLocksSortBy.order = order
+          })
+        )
+      } else {
+        const sortedEntries = [...locks].sort((a, b) => {
+          if (sortBy === 'date') {
+            const aValue = new Date(a.date).getTime()
+            const bValue = new Date(b.date).getTime()
+            return bValue - aValue
+          }
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userLocksSortBy.sortBy = sortBy
+            state[sliceKey].userLocksSortBy.order = 'desc'
+            state[sliceKey].userLocksMapper[userAddress].locks = sortedEntries
+          })
+        )
+      }
     },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
       set(

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -7,7 +7,7 @@ import useStore from '@/store/useStore'
 import TableHeader from './TableHeader'
 import TableRow from './TableRow'
 import Pagination from './Pagination'
-import Spinner from '../components/Spinner'
+import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
 
@@ -23,11 +23,13 @@ const TopHoldersTable: React.FC = () => {
 
   const ITEMS_PER_PAGE = 100
 
+  const allHoldersArray = useMemo(() => Object.entries(veCrvHolders.allHolders), [veCrvHolders.allHolders])
+
   const indexOfLastHolder = currentPage * ITEMS_PER_PAGE
   const indexOfFirstHolder = indexOfLastHolder - ITEMS_PER_PAGE
-  const currentHolders = veCrvHolders.allHolders.slice(indexOfFirstHolder, indexOfLastHolder)
+  const currentHolders = allHoldersArray.slice(indexOfFirstHolder, indexOfLastHolder)
 
-  const totalPages = Math.ceil(veCrvHolders.allHolders.length / ITEMS_PER_PAGE)
+  const totalPages = Math.ceil(allHoldersArray.length / ITEMS_PER_PAGE)
 
   return (
     <Wrapper>
@@ -36,12 +38,12 @@ const TopHoldersTable: React.FC = () => {
         <TableBody minWidth={minWidth}>
           {holdersLoading && <Spinner height="31.25rem" />}
           {holdersReady &&
-            currentHolders.map((holder, index) => (
+            currentHolders.map(([address, holder], index) => (
               <TableRow
                 minWidth={minWidth}
-                key={holder.user}
+                key={address}
                 holder={holder}
-                sortBy={allHoldersSortBy.sortBy}
+                sortBy={allHoldersSortBy.key}
                 rank={indexOfFirstHolder + index + 1}
               />
             ))}

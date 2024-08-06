@@ -7,7 +7,7 @@ import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
-import Tooltip, { TooltipIcon } from '@/ui/Tooltip'
+import Tooltip from '@/ui/Tooltip'
 
 const CrvStats: React.FC = () => {
   const { provider } = useStore((state) => state.wallet)

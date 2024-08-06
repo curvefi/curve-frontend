@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 import { TOP_HOLDERS_FILTERS } from '@/components/PageVeCrv/constants'
 
 import Box from '@/ui/Box'
-import Spinner from '../components/Spinner'
+import Spinner from '../../Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
 import TopHoldersBarChartComponent from '@/components/PageVeCrv/TopHoldersChart/TopHoldersBarChartComponent'

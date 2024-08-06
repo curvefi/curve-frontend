@@ -279,6 +279,30 @@ declare global {
     }[]
   }
 
+  interface UserLockApi {
+    amount: string
+    unlock_time: number
+    lock_type: veCrvLockType
+    locked_balance: string
+    block_number: number
+    dt: string
+    transaction_hash: string
+  }
+
+  interface UserLockRes {
+    locks: UserLockApi[]
+  }
+
+  interface UserLock {
+    amount: number
+    unlock_time: number
+    lock_type: veCrvLockType
+    locked_balance: number
+    block_number: number
+    date: string
+    transaction_hash: string
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
@@ -287,4 +311,6 @@ declare global {
   type ActiveSortDirection = 'asc' | 'desc'
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
+  type UserLocksSortBy = 'date' | 'amount'
+  type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 }
