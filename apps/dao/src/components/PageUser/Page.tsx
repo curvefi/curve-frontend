@@ -23,7 +23,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={rUserAddress} />
+      <DocumentHead title={`veCRV Holder - ${rUserAddress}`} />
       <Container>
         <UserPage routerParams={{ rUserAddress }} />
       </Container>

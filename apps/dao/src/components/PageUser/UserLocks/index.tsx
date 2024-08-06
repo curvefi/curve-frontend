@@ -6,65 +6,61 @@ import useStore from '@/store/useStore'
 import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils'
 
 import Box from '@/ui/Box'
-import Spinner from '../../Spinner'
+import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import VeCrvFeesChart from '../VeCrvFeesChart'
 
-const VeCrcFees: React.FC = () => {
-  const { getVeCrvFees, veCrvFees } = useStore((state) => state.vecrv)
+interface UserLocksProps {
+  userAddress: string
+}
 
-  const feesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const feesError = veCrvFees.fetchStatus === 'ERROR'
-  const feesReady = veCrvFees.fetchStatus === 'SUCCESS'
+const UserLocks: React.FC<UserLocksProps> = ({ userAddress }) => {
+  const { getUserLocks, userLocksMapper } = useStore((state) => state.user)
+
+  const userLocks = userLocksMapper[userAddress]
+
+  const locksLoading = userLocks?.fetchingState === 'LOADING' ?? true
+  const locksError = userLocks?.fetchingState === 'ERROR' ?? false
+  const locksReady = userLocks?.fetchingState === 'SUCCESS' ?? false
 
   const currentTime = convertToLocaleTimestamp(new Date().getTime() / 1000)
 
   useEffect(() => {
-    if (veCrvFees.fees.length === 0 && !feesError) {
-      getVeCrvFees()
+    if (!userLocksMapper[userAddress] && !locksError) {
+      getUserLocks(userAddress)
     }
-  }, [getVeCrvFees, veCrvFees, feesError])
+  }, [getUserLocks, userLocksMapper, userAddress, locksError])
 
   return (
     <Wrapper>
       <FeesBox flex flexColumn>
-        <BoxTitle>{t`Weekly veCRV Fees`}</BoxTitle>
+        <BoxTitle>{t`User Locks`}</BoxTitle>
         <FeesTitlesRow>
-          <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
-          <FeesSubtitle>{t`Fees`}</FeesSubtitle>
+          <FeesSubtitle>{t`Date`}</FeesSubtitle>
+          <FeesSubtitle>{t`Amount`}</FeesSubtitle>
         </FeesTitlesRow>
-        {feesLoading && <Spinner height="25rem" />}
-        {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
-        {feesReady && (
+        {locksLoading && <Spinner height="25rem" />}
+        {locksError && <ErrorMessage message="Error fetching user locks." onClick={() => getUserLocks(userAddress)} />}
+        {locksReady && (
           <>
             <FeesContainer>
-              {veCrvFees.fees.map((item) => {
-                const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
-
+              {userLocks.locks.map((item, index) => {
                 return (
-                  <FeeRow key={item.date}>
-                    <FeeDate>
-                      {item.date}
-                      {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
-                    </FeeDate>
+                  <FeeRow key={`${item.transaction_hash}-${index}`}>
+                    <FeeDate>{item.date}</FeeDate>
                     <FeeData>
-                      $
-                      {formatNumber(item.fees_usd, {
+                      {formatNumber(item.amount, {
                         showDecimalIfSmallNumberOnly: true,
                       })}
                     </FeeData>
+                    <FeeData>{item.lock_type}</FeeData>
+                    <FeeData>{item.locked_balance}</FeeData>
                   </FeeRow>
                 )
               })}
             </FeesContainer>
-            <TotalFees>
-              <FeeDate>{t`Total Fees:`}</FeeDate>
-              <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
-            </TotalFees>
           </>
         )}
       </FeesBox>
-      <VeCrvFeesChart />
     </Wrapper>
   )
 }
@@ -75,7 +71,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   @media (min-width: 56.25rem) {
     flex-direction: row;
-    grid-template-columns: 25rem 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
 `
 
@@ -146,4 +142,4 @@ const TotalFees = styled.div`
   margin-top: var(--spacing-3);
 `
 
-export default VeCrcFees
+export default UserLocks
