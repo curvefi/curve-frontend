@@ -24,7 +24,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const { activeKey, formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const loanCreateDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
@@ -112,10 +113,17 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
 
     // create loan prices
     if (formValues.n && liqRangesMapper && currentChart.data) {
-      const currentPrices = liqRangesMapper[formValues.n].prices
-      // flip order to match other data
-      const range = formatRange([currentPrices[1], currentPrices[0]])
-      liqRanges.new = range
+      if (liqRangesMapper[formValues.n].prices.length !== 0) {
+        const currentPrices = liqRangesMapper[formValues.n].prices
+        // flip order to match other data
+        const range = formatRange([currentPrices[1], currentPrices[0]])
+        liqRanges.new = range
+      } else {
+        const currentPrices = loanCreateDetailInfo.prices
+
+        const range = formatRange([currentPrices[0], currentPrices[1]])
+        liqRanges.new = range
+      }
     }
 
     // current loan prices
@@ -160,6 +168,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     addCollateralPrices,
     removeCollateralPrices,
     repayLeveragePrices,
+    loanCreateDetailInfo,
   ])
 
   const coins: LendingMarketTokens = useMemo(() => {
