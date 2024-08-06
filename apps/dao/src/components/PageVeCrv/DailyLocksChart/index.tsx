@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
-import Spinner from '../components/Spinner'
+import Spinner from '../../Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 

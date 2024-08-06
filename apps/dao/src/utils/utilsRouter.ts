@@ -13,7 +13,7 @@ export function getPath({ locale, network, ...rest }: Params, rerouteRoute: stri
 }
 
 export function parseParams(params: Params, chainIdNotRequired?: boolean) {
-  const { proposalId } = params
+  const { proposalId, userAddress } = params
 
   const paths = window.location.hash.substring(2).split('/')
 
@@ -48,6 +48,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     rSubdirectory,
     rSubdirectoryUseDefault,
     rProposalId: proposalId,
+    rUserAddress: userAddress,
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams
