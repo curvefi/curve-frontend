@@ -1,18 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useEffect, useMemo } from 'react'
-import { ethers } from 'ethers'
+import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import { copyToClipboard } from '@/utils'
-import { shortenTokenAddress, formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@/ui/utils'
+import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@/ui/utils'
 
-import SpinnerComponent from '../Spinner'
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
-import UserLocks from './UserLocks'
 import IconButton from '@/ui/IconButton'
 import PaginatedTable, { Column } from '../PaginatedTable'
 import { TableRowWrapper, TableData } from '../PaginatedTable/TableRow'
@@ -44,17 +40,20 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
 
   const tableMinWidth = 41.875
 
+  const userProposalVotes = userProposalVotesMapper[rUserAddress]?.votes ?? {}
+  const userProposalVotesArray = Object.values(userProposalVotes)
+
   const holdersLoading = fetchStatus === 'LOADING'
   const holdersError = fetchStatus === 'ERROR'
   const holdersSuccess = fetchStatus === 'SUCCESS'
 
-  const ownershipVotesLoading = userProposalVotesMapper[rUserAddress]
+  const userProposalVotesLoading = userProposalVotesMapper[rUserAddress]
     ? userProposalVotesMapper[rUserAddress].fetchingState === 'LOADING'
     : true
-  const ownershipVotesError = userProposalVotesMapper[rUserAddress]
+  const userProposalVotesError = userProposalVotesMapper[rUserAddress]
     ? userProposalVotesMapper[rUserAddress].fetchingState === 'ERROR'
     : false
-  const ownershipVotesSuccess = userProposalVotesMapper[rUserAddress]
+  const userProposalVotesSuccess = userProposalVotesMapper[rUserAddress]
     ? userProposalVotesMapper[rUserAddress].fetchingState === 'SUCCESS'
     : false
 
@@ -108,10 +107,10 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
 
   // Get user ownership votes
   useEffect(() => {
-    if (!userProposalVotesMapper[rUserAddress] && ownershipVotesLoading && !ownershipVotesError) {
+    if (!userProposalVotesMapper[rUserAddress] && userProposalVotesLoading && !userProposalVotesError) {
       getUserProposalVotes(rUserAddress)
     }
-  }, [getUserProposalVotes, rUserAddress, ownershipVotesLoading, ownershipVotesError, userProposalVotesMapper])
+  }, [getUserProposalVotes, rUserAddress, userProposalVotesLoading, userProposalVotesError, userProposalVotesMapper])
 
   const lockTypeLabel = (lockType: veCrvLockType) => {
     switch (lockType) {
@@ -186,11 +185,7 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
           />
         </UserStats>
         <PaginatedTable<UserProposalVoteData>
-          data={
-            Array.isArray(userProposalVotesMapper[rUserAddress]?.votes)
-              ? userProposalVotesMapper[rUserAddress]?.votes
-              : []
-          }
+          data={userProposalVotesArray}
           minWidth={tableMinWidth}
           fetchingState={userProposalVotesMapper[rUserAddress]?.fetchingState ?? 'LOADING'}
           columns={votesLabels}
