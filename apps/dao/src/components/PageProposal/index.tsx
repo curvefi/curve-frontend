@@ -195,6 +195,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                     <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
                       {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                         <VoteDialog
+                          userAddress={userAddress ?? ''}
                           snapshotVotingPower
                           activeProposal={activeProposal}
                           votingPower={snapshotVeCrv}
@@ -244,6 +245,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
             >
               {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
                 <VoteDialog
+                  userAddress={userAddress ?? ''}
                   snapshotVotingPower
                   activeProposal={activeProposal}
                   votingPower={snapshotVeCrv}
