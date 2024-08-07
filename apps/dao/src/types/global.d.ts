@@ -303,6 +303,48 @@ declare global {
     transaction_hash: string
   }
 
+  interface UserProposalVoteResData {
+    proposal: {
+      vote_id: number
+      vote_type: string
+      creator: string
+      start_date: number
+      snapshot_block: number
+      ipfs_metadata: string
+      metadata: string
+      votes_for: string
+      votes_against: string
+      vote_count: number
+      support_required: string
+      min_accept_quorum: string
+      total_supply: string
+      executed: boolean
+      transaction_hash: string
+      dt: string
+    }
+    votes: {
+      voter: string
+      supports: boolean
+      voting_power: string
+      transaction_hash: string
+    }[]
+  }
+
+  interface UserProposalVoteData {
+    vote_id: number
+    vote_type: string
+    vote_for: number
+    vote_against: number
+    vote_open: number
+    vote_close: number
+  }
+
+  interface UserProposalVotesRes {
+    page: number
+    count: number
+    data: UserProposalVoteResData[]
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
@@ -312,5 +354,6 @@ declare global {
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
   type UserLocksSortBy = 'date' | 'amount'
+  type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
   type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 }

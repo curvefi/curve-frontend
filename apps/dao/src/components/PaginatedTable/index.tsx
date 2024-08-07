@@ -39,8 +39,10 @@ const PaginatedTable = <T,>({
   minWidth,
 }: PaginatedTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const ITEMS_PER_PAGE = 100
 
+  const fetchFeedbackHeight = '15rem'
+
+  const ITEMS_PER_PAGE = 100
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem)
@@ -52,9 +54,13 @@ const PaginatedTable = <T,>({
       <Container>
         <TableHeader<T> columns={columns} title={title} sortBy={sortBy} setSortBy={setSortBy} minWidth={minWidth} />
         <TableBody>
-          {fetchingState === 'LOADING' && <Spinner height="31.25rem" />}
+          {fetchingState === 'LOADING' && <Spinner height={fetchFeedbackHeight} />}
           {fetchingState === 'SUCCESS' && currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
-          {fetchingState === 'ERROR' && <ErrorMessage message={errorMessage} onClick={getData} />}
+          {fetchingState === 'ERROR' && (
+            <ErrorMessageWrapper height={fetchFeedbackHeight}>
+              <ErrorMessage message={errorMessage} onClick={getData} />
+            </ErrorMessageWrapper>
+          )}
         </TableBody>
       </Container>
       {fetchingState === 'SUCCESS' && (
@@ -67,7 +73,7 @@ const PaginatedTable = <T,>({
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  height: 46.875rem;
+  max-height: 46.875rem;
   padding-bottom: var(--spacing-3);
   width: 100%;
 `
@@ -80,6 +86,16 @@ const Container = styled.div`
   @media (min-width: 46.25rem) {
     overflow: hidden;
   }
+`
+
+const ErrorMessageWrapper = styled(Box)<{ height: string }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: ${({ height }) => height};
+  padding-top: var(--spacing-4);
+  width: 100%;
 `
 
 const TableBody = styled.div`

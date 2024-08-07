@@ -112,15 +112,16 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
 
       try {
         let page = 1
+        const pagination = 1000
         let results: VeCrvFee[] = []
 
         while (true) {
           const veCrvFeesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/fees/distributions?page=${page}&per_page=100`
+            `https://prices.curve.fi/v1/dao/fees/distributions?page=${page}&per_page=${pagination}`
           )
           const data: VeCrvFeesRes = await veCrvFeesRes.json()
           results = results.concat(data.distributions)
-          if (data.distributions.length < 100) {
+          if (data.distributions.length < pagination) {
             break
           }
           page++
