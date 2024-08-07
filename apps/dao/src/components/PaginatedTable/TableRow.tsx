@@ -44,6 +44,9 @@ export const TableData = styled.p`
   &.left-padding {
     padding-left: var(--spacing-2);
   }
+  &.capitalize {
+    text-transform: capitalize;
+  }
   &.active {
     font-weight: var(--bold);
   }
