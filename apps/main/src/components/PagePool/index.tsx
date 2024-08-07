@@ -56,6 +56,7 @@ import { useGaugeManager } from '@/entities/gauge'
 import Loader from '@/ui/Loader'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
+import { BlockSkeleton } from '@/shared/ui/skeleton'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -107,7 +108,10 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(poolData?.pool.id!)
+  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
+    chainId,
+    poolId: poolData?.pool.id!,
+  })
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
@@ -129,25 +133,9 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     if (pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]) {
       tabs.push({ label: t`Advanced`, key: 'advanced' })
     }
-    if (
-      !isPendingGaugeManager &&
-      !!signerAddress &&
-      !!gaugeManager &&
-      isAddressEqual(gaugeManager, signerAddress as Address)
-    ) {
-      tabs.push({ label: t`Manage Gauge`, key: 'gauge' })
-    }
 
     return tabs
-  }, [
-    signerAddress,
-    pricesApi,
-    pricesApiPoolData,
-    snapshotsMapper,
-    poolData?.pool.address,
-    isPendingGaugeManager,
-    gaugeManager,
-  ])
+  }, [signerAddress, pricesApi, pricesApiPoolData, snapshotsMapper, poolData?.pool.address])
 
   const maxSlippage = useMemo(() => {
     if (globalMaxSlippage) return globalMaxSlippage
@@ -226,11 +214,24 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress])
 
-  const FORM_TYPES: { key: TransferFormType; label: string }[] = [
-    { key: 'deposit', label: t`Deposit` },
-    { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
-    { key: 'swap', label: t`Swap` },
-  ]
+  const isAvailableManageGauge = useMemo(() => {
+    return (
+      !isPendingGaugeManager &&
+      !!signerAddress &&
+      !!gaugeManager &&
+      isAddressEqual(gaugeManager, signerAddress as Address)
+    )
+  }, [isPendingGaugeManager, signerAddress, gaugeManager])
+
+  const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
+    () => [
+      { key: 'deposit', label: t`Deposit` },
+      { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
+      { key: 'swap', label: t`Swap` },
+      ...(isAvailableManageGauge ? [{ key: 'manage', label: t`Manage` } as const] : []),
+    ],
+    [themeType, isAvailableManageGauge]
+  )
 
   const toggleForm = (updatedFormType: TransferFormType) => {
     const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
@@ -286,7 +287,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
             <AppFormHeader
-              formTypes={FORM_TYPES}
+              formTypes={ACTION_TABS}
               activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
               handleClick={(key: string) => toggleForm(key as TransferFormType)}
             />
@@ -335,6 +336,12 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
                   userPoolBalances={userPoolBalances}
                   userPoolBalancesLoading={userPoolBalancesLoading}
                 />
+              ) : rFormType === 'manage' ? (
+                poolData ? (
+                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+                ) : (
+                  <BlockSkeleton width={341} />
+                )
               ) : null}
             </AppFormContentWrapper>
           </AppFormContent>
@@ -403,11 +410,6 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               !basePoolsLoading && (
                 <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
               )}
-            {selectedTab === 'gauge' && !!signerAddress && (
-              <Suspense fallback={<Loader skeleton={[360, 180]} />}>
-                <ManageGauge poolId={poolData!.pool.id} chainId={rChainId} walletAddress={signerAddress} />
-              </Suspense>
-            )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>
