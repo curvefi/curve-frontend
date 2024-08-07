@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
 
-import { Contract, formatEther, formatUnits } from 'ethers'
+import { Contract, formatEther } from 'ethers'
 import produce from 'immer'
 
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
@@ -23,7 +23,13 @@ type SliceState = {
   }
   userAddress: string | null
   userEns: string | null
-  userVotesMapper: { [userAddress: string]: UserVoteData }
+  userVotesMapper: { [userAddress: string]: UserVoteData[] }
+  userProposalVotesMapper: {
+    [userAddress: string]: {
+      fetchingState: FetchingState
+      votes: UserProposalVoteData[]
+    }
+  }
   userLocksMapper: {
     [userAddress: string]: {
       fetchingState: FetchingState
@@ -39,6 +45,10 @@ type SliceState = {
     key: UserLocksSortBy
     order: 'asc' | 'desc'
   }
+  userProposalVotesSortBy: {
+    key: UserProposalVotesSortBy
+    order: 'asc' | 'desc'
+  }
 }
 
 const sliceKey = 'user'
@@ -48,6 +58,8 @@ export type UserSlice = {
   [sliceKey]: SliceState & {
     updateUserData(curve: CurveApi, wallet: WalletState): void
     getUserEns(userAddress: string): void
+    getUserProposalVotes(userAddress: string): void
+    setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     getUserLocks(userAddress: string): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
@@ -72,9 +84,14 @@ const DEFAULT_STATE: SliceState = {
   userEns: null,
   userMapper: {},
   userVotesMapper: {},
+  userProposalVotesMapper: {},
   userLocksMapper: {},
   userLocksSortBy: {
     key: 'date',
+    order: 'desc',
+  },
+  userProposalVotesSortBy: {
+    key: 'vote_id',
     order: 'desc',
   },
 }
@@ -115,8 +132,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       try {
         const ensName = await provider.lookupAddress(userAddress)
 
-        console.log(ensName)
-
         set(
           produce((state) => {
             state[sliceKey].userMapper[userAddress] = {
@@ -130,6 +145,65 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           produce((state) => {
             state[sliceKey].userMapper[userAddress] = {
               ens: null,
+            }
+          })
+        )
+      }
+    },
+    getUserProposalVotes: async (userAddress: string) => {
+      set(
+        produce((state) => {
+          state[sliceKey].userProposalVotesMapper[userAddress] = {
+            fetchingState: 'LOADING',
+            votes: {},
+          }
+        })
+      )
+
+      try {
+        const pagination = 1000
+        let page = 1
+        let results: UserProposalVoteResData[] = []
+
+        while (true) {
+          const ownershipVotesRes = await fetch(
+            `https://prices.curve.fi/v1/dao/proposals/votes/user/${userAddress}?pagination=${pagination}&page=${page}`
+          )
+          const ownershipVotes: UserProposalVotesRes = await ownershipVotesRes.json()
+
+          results = results.concat(ownershipVotes.data)
+          if (ownershipVotes.data.length < pagination) {
+            break
+          }
+          page++
+        }
+
+        const formattedData: UserProposalVoteData[] = results.map((data) => {
+          return {
+            vote_id: data.proposal.vote_id,
+            vote_type: data.proposal.vote_type,
+            vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
+            vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
+            vote_open: data.proposal.start_date,
+            vote_close: data.proposal.start_date + 640000,
+          }
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userProposalVotesMapper[userAddress] = {
+              fetchingState: 'SUCCESS',
+              votes: formattedData,
+            }
+          })
+        )
+      } catch (error) {
+        console.error(error)
+        set(
+          produce((state) => {
+            state[sliceKey].userProposalVotesMapper[userAddress] = {
+              fetchingState: 'ERROR',
+              votes: [],
             }
           })
         )
@@ -160,8 +234,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             transaction_hash: lock.transaction_hash,
           }
         })
-
-        console.log(formattedData)
 
         set(
           produce((state) => {
@@ -222,6 +294,55 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
+    setUserProposalVotesSortBy: (userAddress: string, sortBy: UserProposalVotesSortBy) => {
+      const {
+        userProposalVotesMapper: {
+          [userAddress]: { votes },
+        },
+        userProposalVotesSortBy,
+      } = get()[sliceKey]
+
+      let order = userProposalVotesSortBy.order
+
+      if (sortBy === userProposalVotesSortBy.key) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            const reversedEntries = [...votes].reverse()
+            state[sliceKey].userProposalVotesMapper[userAddress].votes = reversedEntries
+            state[sliceKey].userProposalVotesSortBy.order = order
+          })
+        )
+      } else {
+        const sortedEntries = [...votes].sort((a, b) => {
+          if (sortBy === 'vote_close') {
+            const aClose = a.vote_close
+            const bClose = b.vote_close
+
+            return bClose - aClose
+          }
+          if (sortBy === 'vote_open') {
+            return b.vote_open - a.vote_open
+          }
+          if (sortBy === 'vote_for') {
+            return b.vote_for - a.vote_for
+          }
+          if (sortBy === 'vote_against') {
+            return b.vote_against - a.vote_against
+          }
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userProposalVotesSortBy.key = sortBy
+            state[sliceKey].userProposalVotesSortBy.order = 'desc'
+            state[sliceKey].userProposalVotesMapper[userAddress].votes = sortedEntries
+          })
+        )
+      }
+    },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
       set(
         produce((state) => {
@@ -240,7 +361,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         produce((state) => {
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: false,
-            value: Number(formatEther(snapshotValue)),
+            value: +(snapshotValue / 1e18),
             blockNumber: snapshot,
           }
         })

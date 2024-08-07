@@ -28,9 +28,18 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,
   } = useStore((state) => state.vecrv)
-  const { getUserEns, userMapper, getUserLocks, userLocksMapper, userLocksSortBy, setUserLocksSortBy } = useStore(
-    (state) => state.user
-  )
+  const {
+    getUserEns,
+    userMapper,
+    getUserLocks,
+    userLocksMapper,
+    getUserProposalVotes,
+    userProposalVotesMapper,
+    userProposalVotesSortBy,
+    setUserProposalVotesSortBy,
+    userLocksSortBy,
+    setUserLocksSortBy,
+  } = useStore((state) => state.user)
   const { provider } = useStore((state) => state.wallet)
 
   const tableMinWidth = 41.875
@@ -39,11 +48,30 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
   const holdersError = fetchStatus === 'ERROR'
   const holdersSuccess = fetchStatus === 'SUCCESS'
 
+  const ownershipVotesLoading = userProposalVotesMapper[rUserAddress]
+    ? userProposalVotesMapper[rUserAddress].fetchingState === 'LOADING'
+    : true
+  const ownershipVotesError = userProposalVotesMapper[rUserAddress]
+    ? userProposalVotesMapper[rUserAddress].fetchingState === 'ERROR'
+    : false
+  const ownershipVotesSuccess = userProposalVotesMapper[rUserAddress]
+    ? userProposalVotesMapper[rUserAddress].fetchingState === 'SUCCESS'
+    : false
+
   const locksLabel: Column<UserLock>[] = [
     { key: 'date', label: 'Date' },
     { key: 'lock_type', label: 'Lock Type', disabled: true },
     { key: 'amount', label: 'Amount' },
     { key: 'unlock_time', label: 'Unlock Time', disabled: true },
+  ]
+
+  const votesLabels: Column<UserProposalVoteData>[] = [
+    { key: 'vote_id', label: 'Vote ID' },
+    { key: 'vote_type', label: 'Vote Type', disabled: true },
+    { key: 'vote_for', label: 'For Weight' },
+    { key: 'vote_against', label: 'Against Weight' },
+    { key: 'vote_open', label: 'Vote Start' },
+    { key: 'vote_close', label: 'Vote End' },
   ]
 
   const user: VeCrvHolder = allHolders[rUserAddress] || {
@@ -64,17 +92,26 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
     }
   }, [getVeCrvHolders, allHolders, holdersLoading, holdersError])
 
+  // Get user ENS
   useEffect(() => {
     if (!userMapper[rUserAddress] && provider) {
       getUserEns(rUserAddress)
     }
   }, [getUserEns, rUserAddress, userMapper, provider])
 
+  // Get user locks
   useEffect(() => {
     if (!userLocksMapper[rUserAddress]) {
       getUserLocks(rUserAddress)
     }
   }, [getUserLocks, rUserAddress, userLocksMapper])
+
+  // Get user ownership votes
+  useEffect(() => {
+    if (!userProposalVotesMapper[rUserAddress] && ownershipVotesLoading && !ownershipVotesError) {
+      getUserProposalVotes(rUserAddress)
+    }
+  }, [getUserProposalVotes, rUserAddress, ownershipVotesLoading, ownershipVotesError, userProposalVotesMapper])
 
   const lockTypeLabel = (lockType: veCrvLockType) => {
     switch (lockType) {
@@ -148,6 +185,53 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
             }
           />
         </UserStats>
+        <PaginatedTable<UserProposalVoteData>
+          data={
+            Array.isArray(userProposalVotesMapper[rUserAddress]?.votes)
+              ? userProposalVotesMapper[rUserAddress]?.votes
+              : []
+          }
+          minWidth={tableMinWidth}
+          fetchingState={userProposalVotesMapper[rUserAddress]?.fetchingState ?? 'LOADING'}
+          columns={votesLabels}
+          sortBy={userProposalVotesSortBy}
+          title="Proposal Votes"
+          errorMessage={t`An error occurred while fetching proposal votes.`}
+          setSortBy={(key) => setUserProposalVotesSortBy(rUserAddress, key as UserProposalVotesSortBy)}
+          getData={() => getUserProposalVotes(rUserAddress)}
+          renderRow={(proposalVote, index) => (
+            <TableRowWrapper key={index} columns={votesLabels.length} minWidth={tableMinWidth}>
+              <TableData className={userProposalVotesSortBy.key === 'vote_id' ? 'active left-padding' : 'left-padding'}>
+                #{proposalVote.vote_id}
+              </TableData>
+              <TableData className="left-padding capitalize">{proposalVote.vote_type}</TableData>
+              <TableData
+                className={userProposalVotesSortBy.key === 'vote_for' ? 'active left-padding' : 'left-padding'}
+              >
+                {formatNumber(proposalVote.vote_for, {
+                  showDecimalIfSmallNumberOnly: true,
+                })}
+              </TableData>
+              <TableData
+                className={userProposalVotesSortBy.key === 'vote_against' ? 'active left-padding' : 'left-padding'}
+              >
+                {formatNumber(proposalVote.vote_against, {
+                  showDecimalIfSmallNumberOnly: true,
+                })}
+              </TableData>
+              <TableData
+                className={userProposalVotesSortBy.key === 'vote_open' ? 'active left-padding' : 'left-padding'}
+              >
+                {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_open))}
+              </TableData>
+              <TableData
+                className={userProposalVotesSortBy.key === 'vote_close' ? 'active left-padding' : 'left-padding'}
+              >
+                {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_close))}
+              </TableData>
+            </TableRowWrapper>
+          )}
+        />
         <PaginatedTable<UserLock>
           data={userLocksMapper[rUserAddress]?.locks ?? []}
           minWidth={tableMinWidth}
@@ -155,7 +239,7 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
           columns={locksLabel}
           sortBy={userLocksSortBy}
           title="veCRV Locking Activity"
-          errorMessage={t`Error fetching locks`}
+          errorMessage={t`An error occurred while fetching user locking activity.`}
           setSortBy={(key) => setUserLocksSortBy(rUserAddress, key as UserLocksSortBy)}
           getData={() => getUserLocks(rUserAddress)}
           renderRow={(lock, index) => (
