@@ -337,6 +337,7 @@ declare global {
     vote_against: number
     vote_open: number
     vote_close: number
+    vote_total_supply: number
   }
 
   interface UserProposalVotesRes {

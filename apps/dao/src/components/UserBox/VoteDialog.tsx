@@ -1,10 +1,10 @@
 import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { delayAction } from '@/ui/utils/helpers'
+import { formatNumber, delayAction } from '@/ui/utils'
 
 import ModalDialog from '@/ui/Dialog'
 import Button from '@/ui/Button'
@@ -15,6 +15,7 @@ import AlertBox from '@/ui/AlertBox'
 import ModalPendingTx from '@/ui/ModalPendingTx'
 
 type Props = {
+  userAddress: string
   activeProposal?: ActiveProposal
   testId?: string
   proposalId?: string
@@ -23,13 +24,26 @@ type Props = {
   className?: string
 }
 
-const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVotingPower, proposalId }: Props) => {
+const VoteDialog = ({
+  userAddress,
+  activeProposal,
+  testId,
+  className,
+  votingPower,
+  snapshotVotingPower,
+  proposalId,
+}: Props) => {
   const overlayTriggerState = useOverlayTriggerState({})
   const [vote, setVote] = useState<boolean | null>(null)
 
   const isMobile = useStore((state) => state.isMobile)
   const { castVote, voteTx } = useStore((state) => state.proposals)
-  const { userVotesMapper } = useStore((state) => state.user)
+  const { userProposalVotesMapper } = useStore((state) => state.user)
+
+  const userProposalVotesLoading = userProposalVotesMapper[userAddress].fetchingState === 'LOADING'
+  const voted = userProposalVotesMapper[userAddress].votes[proposalId ?? '']
+  const votedFor = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_for ?? 0) > 0
+  const votedAgainst = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_against ?? 0) > 0
 
   const handleClose = () => {
     if (isMobile) {
@@ -38,6 +52,8 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
       overlayTriggerState.close()
     }
   }
+
+  const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)})%`
 
   return (
     <Wrapper className={className}>
@@ -49,15 +65,41 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
             {t`Voting power too low to participate in this proposal.`}
           </VotingMessage>
         ) : // Already voted
-        proposalId && userVotesMapper[proposalId] ? (
+        proposalId && voted ? (
           <VotedMessageWrapper>
             <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
             <VotedMessage>
-              {t`${userVotesMapper[proposalId].userVote ? 'For' : 'Against'}`}
-              {userVotesMapper[proposalId].userVote ? (
-                <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} />
-              ) : (
-                <Icon color="var(--chart-red)" name="Misuse" size={16} />
+              {votedFor && (
+                <VotedRow>
+                  <VotedRowItem>
+                    <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
+                  </VotedRowItem>
+                  <VotedRowItem>
+                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
+                      showDecimalIfSmallNumberOnly: true,
+                    })}{' '}
+                    {votePercentage(
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                    )}
+                  </VotedRowItem>
+                </VotedRow>
+              )}
+              {votedAgainst && (
+                <VotedRow>
+                  <VotedRowItem>
+                    <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
+                  </VotedRowItem>
+                  <VotedRowItem>
+                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
+                      showDecimalIfSmallNumberOnly: true,
+                    })}{' '}
+                    {votePercentage(
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                    )}
+                  </VotedRowItem>
+                </VotedRow>
               )}
             </VotedMessage>
           </VotedMessageWrapper>
@@ -153,15 +195,41 @@ const VoteDialog = ({ activeProposal, testId, className, votingPower, snapshotVo
           </>
         )
       ) : // Voted successfully
-      proposalId && userVotesMapper[proposalId] ? (
+      proposalId && voted ? (
         <VotedMessageWrapper>
           <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
           <VotedMessage>
-            {t`${userVotesMapper[proposalId].userVote ? 'For' : 'Against'}`}
-            {userVotesMapper[proposalId].userVote ? (
-              <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} />
-            ) : (
-              <Icon color="var(--chart-red)" name="Misuse" size={16} />
+            {votedFor && (
+              <VotedRow>
+                <VotedRowItem>
+                  <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
+                </VotedRowItem>
+                <VotedRowItem>
+                  {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })}{' '}
+                  {votePercentage(
+                    userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
+                    userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                  )}
+                </VotedRowItem>
+              </VotedRow>
+            )}
+            {votedAgainst && (
+              <VotedRow>
+                <VotedRowItem>
+                  <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
+                </VotedRowItem>
+                <VotedRowItem>
+                  {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })}{' '}
+                  {votePercentage(
+                    userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
+                    userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                  )}
+                </VotedRowItem>
+              </VotedRow>
             )}
           </VotedMessage>
         </VotedMessageWrapper>
@@ -233,7 +301,7 @@ const VotingMessage = styled.p`
   padding: var(--spacing-2);
   color: var(--button_outlined--color);
   font-weight: var(--semi-bold);
-  font-size: var(--font-size-1);
+  font-size: var(--font-size-2);
   line-height: 1.2;
   margin-right: auto;
   background-color: var(--box_header--secondary--background-color);
@@ -244,23 +312,37 @@ const VotingMessage = styled.p`
 
 const VotedMessageWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   gap: var(--spacing-2);
-  align-items: center;
   justify-content: space-between;
   background-color: var(--box_header--secondary--background-color);
   padding: var(--spacing-2);
 `
 
-const VotedMessage = styled.p`
+const VotedMessage = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
   gap: var(--spacing-1);
   color: var(--button_outlined--color);
   font-weight: var(--bold);
   font-size: var(--font-size-1);
   line-height: 1.5;
+`
+
+const VotedRow = styled(Box)`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--spacing-1);
+  font-size: var(--font-size-2);
+`
+
+const VotedRowItem = styled.span`
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-1);
+  align-items: center;
 `
 
 const VoteDialogButton = styled(Button)`

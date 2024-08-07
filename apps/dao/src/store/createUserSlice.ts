@@ -27,7 +27,7 @@ type SliceState = {
   userProposalVotesMapper: {
     [userAddress: string]: {
       fetchingState: FetchingState
-      votes: UserProposalVoteData[]
+      votes: { [proposalId: string]: UserProposalVoteData }
     }
   }
   userLocksMapper: {
@@ -63,7 +63,6 @@ export type UserSlice = {
     getUserLocks(userAddress: string): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
-    setUserProposalVotes(curve: CurveApi): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -102,7 +101,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: WalletState) => {
-      const setUserProposalVotes = get()[sliceKey].setUserProposalVotes
+      const getUserProposalVotes = get()[sliceKey].getUserProposalVotes
       const userAddress = getWalletSignerAddress(wallet)
 
       try {
@@ -113,7 +112,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         console.error(error)
       }
 
-      setUserProposalVotes(curve)
+      getUserProposalVotes(userAddress)
 
       get()[sliceKey].setStateByKeys({
         userAddress,
@@ -163,7 +162,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       try {
         const pagination = 1000
         let page = 1
-        let results: UserProposalVoteResData[] = []
+        let results: { [proposalId: string]: UserProposalVoteData } = {}
 
         while (true) {
           const ownershipVotesRes = await fetch(
@@ -171,29 +170,29 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           )
           const ownershipVotes: UserProposalVotesRes = await ownershipVotesRes.json()
 
-          results = results.concat(ownershipVotes.data)
+          ownershipVotes.data.forEach((data) => {
+            results[`${data.proposal.vote_id}-${data.proposal.vote_type.toUpperCase()}`] = {
+              vote_id: data.proposal.vote_id,
+              vote_type: data.proposal.vote_type,
+              vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
+              vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
+              vote_open: data.proposal.start_date,
+              vote_close: data.proposal.start_date + 640000,
+              vote_total_supply: +data.proposal.total_supply / 1e18,
+            }
+          })
+
           if (ownershipVotes.data.length < pagination) {
             break
           }
           page++
         }
 
-        const formattedData: UserProposalVoteData[] = results.map((data) => {
-          return {
-            vote_id: data.proposal.vote_id,
-            vote_type: data.proposal.vote_type,
-            vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
-            vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
-            vote_open: data.proposal.start_date,
-            vote_close: data.proposal.start_date + 640000,
-          }
-        })
-
         set(
           produce((state) => {
             state[sliceKey].userProposalVotesMapper[userAddress] = {
               fetchingState: 'SUCCESS',
-              votes: formattedData,
+              votes: results,
             }
           })
         )
@@ -203,7 +202,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           produce((state) => {
             state[sliceKey].userProposalVotesMapper[userAddress] = {
               fetchingState: 'ERROR',
-              votes: [],
+              votes: {},
             }
           })
         )
@@ -306,42 +305,29 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       if (sortBy === userProposalVotesSortBy.key) {
         order = order === 'asc' ? 'desc' : 'asc'
-
-        set(
-          produce((state) => {
-            const reversedEntries = [...votes].reverse()
-            state[sliceKey].userProposalVotesMapper[userAddress].votes = reversedEntries
-            state[sliceKey].userProposalVotesSortBy.order = order
-          })
-        )
       } else {
-        const sortedEntries = [...votes].sort((a, b) => {
-          if (sortBy === 'vote_close') {
-            const aClose = a.vote_close
-            const bClose = b.vote_close
-
-            return bClose - aClose
-          }
-          if (sortBy === 'vote_open') {
-            return b.vote_open - a.vote_open
-          }
-          if (sortBy === 'vote_for') {
-            return b.vote_for - a.vote_for
-          }
-          if (sortBy === 'vote_against') {
-            return b.vote_against - a.vote_against
-          }
-          return b[sortBy] - a[sortBy]
-        })
-
-        set(
-          produce((state) => {
-            state[sliceKey].userProposalVotesSortBy.key = sortBy
-            state[sliceKey].userProposalVotesSortBy.order = 'desc'
-            state[sliceKey].userProposalVotesMapper[userAddress].votes = sortedEntries
-          })
-        )
+        order = 'desc'
       }
+
+      const sortedEntries = Object.entries(votes).sort(([, a], [, b]) => {
+        if (sortBy === 'vote_close') return b.vote_close - a.vote_close
+        if (sortBy === 'vote_open') return b.vote_open - a.vote_open
+        if (sortBy === 'vote_for') return b.vote_for - a.vote_for
+        if (sortBy === 'vote_against') return b.vote_against - a.vote_against
+        return b[sortBy] - a[sortBy]
+      })
+
+      if (order === 'asc') sortedEntries.reverse()
+
+      const sortedVotes = Object.fromEntries(sortedEntries)
+
+      set(
+        produce((state) => {
+          state[sliceKey].userProposalVotesSortBy.key = sortBy
+          state[sliceKey].userProposalVotesSortBy.order = order
+          state[sliceKey].userProposalVotesMapper[userAddress].votes = sortedVotes
+        })
+      )
     },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
       set(
@@ -361,30 +347,11 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         produce((state) => {
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: false,
-            value: +(snapshotValue / 1e18),
+            value: Number(snapshotValue) / 1e18,
             blockNumber: snapshot,
           }
         })
       )
-    },
-    setUserProposalVotes: async (curve: CurveApi) => {
-      try {
-        const userVotes = await curve.dao.userProposalVotes()
-
-        let userProposalsObject: { [voteId: string]: UserVoteData } = {}
-
-        for (const vote of userVotes) {
-          userProposalsObject[`${vote.voteId}-${vote.voteType}`] = {
-            voteId: vote.voteId,
-            voteType: vote.voteType,
-            userVote: vote.userVote,
-          }
-        }
-
-        get()[sliceKey].setStateByKey('userVotesMapper', userProposalsObject)
-      } catch (error) {
-        console.error(error)
-      }
     },
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
