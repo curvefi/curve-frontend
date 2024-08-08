@@ -5,13 +5,13 @@ import styled from 'styled-components'
 
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
-const Chip = (props: React.PropsWithChildren<ChipProps>) => {
+const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: string }>) => {
   const { children, className, tooltip, tooltipProps, ...rest } = props
   const ref = React.useRef<HTMLDivElement>(null)
 
   const LabelComp = () => {
     return (
-      <Label {...rest} className={className} ref={ref}>
+      <Label {...rest} {...(tooltip ? {} : { as })} className={className} ref={ref}>
         {children}
       </Label>
     )
@@ -19,7 +19,7 @@ const Chip = (props: React.PropsWithChildren<ChipProps>) => {
 
   if (tooltip) {
     return (
-      <Tooltip tooltip={tooltip} {...tooltipProps}>
+      <Tooltip as={as} tooltip={tooltip} {...tooltipProps}>
         <LabelComp />
       </Tooltip>
     )
