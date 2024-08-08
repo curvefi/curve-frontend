@@ -1,8 +1,10 @@
 import { SubNavItem } from '@/components/SubNav/types'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+
+import useStore from '@/store/useStore'
 
 import CrvStats from './CrvStats'
 import VeCrvFees from './VeCrvFeesTable'
@@ -15,6 +17,7 @@ import Box from '@/ui/Box'
 type VeCrvNavSelection = 'fees' | 'holders' | 'locks'
 
 const VeCrv: React.FC = () => {
+  const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.vecrv)
   const [navSelection, setNavSelection] = useState<VeCrvNavSelection>('fees')
 
   const navItems: SubNavItem[] = [
@@ -22,6 +25,12 @@ const VeCrv: React.FC = () => {
     { key: 'holders', label: t`Holders` },
     { key: 'locks', label: t`Locks` },
   ]
+
+  useEffect(() => {
+    if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
+      getVeCrvHolders()
+    }
+  }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
     <Wrapper>

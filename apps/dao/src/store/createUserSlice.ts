@@ -115,7 +115,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       getUserProposalVotes(userAddress)
 
       get()[sliceKey].setStateByKeys({
-        userAddress,
+        userAddress: userAddress.toLowerCase(),
         userEns: getWalletSignerEns(wallet),
         snapshotVeCrvMapper: {},
       })
@@ -150,9 +150,11 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
     },
     getUserProposalVotes: async (userAddress: string) => {
+      const address = userAddress.toLowerCase()
+
       set(
         produce((state) => {
-          state[sliceKey].userProposalVotesMapper[userAddress] = {
+          state[sliceKey].userProposalVotesMapper[address] = {
             fetchingState: 'LOADING',
             votes: {},
           }
@@ -166,9 +168,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         while (true) {
           const ownershipVotesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals/votes/user/${userAddress}?pagination=${pagination}&page=${page}`
+            `https://prices.curve.fi/v1/dao/proposals/votes/user/${address}?pagination=${pagination}&page=${page}`
           )
           const ownershipVotes: UserProposalVotesRes = await ownershipVotesRes.json()
+
+          if (!ownershipVotes.data) {
+            break
+          }
 
           ownershipVotes.data.forEach((data) => {
             results[`${data.proposal.vote_id}-${data.proposal.vote_type.toUpperCase()}`] = {
@@ -190,7 +196,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userProposalVotesMapper[userAddress] = {
+            state[sliceKey].userProposalVotesMapper[address] = {
               fetchingState: 'SUCCESS',
               votes: results,
             }
@@ -200,7 +206,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         console.error(error)
         set(
           produce((state) => {
-            state[sliceKey].userProposalVotesMapper[userAddress] = {
+            state[sliceKey].userProposalVotesMapper[address] = {
               fetchingState: 'ERROR',
               votes: {},
             }
@@ -209,9 +215,11 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
     },
     getUserLocks: async (userAddress: string) => {
+      const address = userAddress.toLowerCase()
+
       set(
         produce((state) => {
-          state[sliceKey].userLocksMapper[userAddress] = {
+          state[sliceKey].userLocksMapper[address] = {
             fetchingState: 'LOADING',
             locks: [],
           }
@@ -219,7 +227,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       )
 
       try {
-        const locksRes = await fetch(`https://prices.curve.fi/v1/dao/locks/${userAddress}`)
+        const locksRes = await fetch(`https://prices.curve.fi/v1/dao/locks/${address}`)
         const locks: UserLockRes = await locksRes.json()
 
         const formattedData = locks.locks.map((lock) => {
@@ -236,7 +244,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userLocksMapper[userAddress] = {
+            state[sliceKey].userLocksMapper[address] = {
               fetchingState: 'SUCCESS',
               locks: formattedData,
             }
@@ -247,7 +255,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userLocksMapper[userAddress] = {
+            state[sliceKey].userLocksMapper[address] = {
               fetchingState: 'ERROR',
               locks: [],
             }
@@ -256,9 +264,11 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
     },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
+      const address = userAddress.toLowerCase()
+
       const {
         userLocksMapper: {
-          [userAddress]: { locks },
+          [address]: { locks },
         },
         userLocksSortBy,
       } = get()[sliceKey]
@@ -270,7 +280,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         set(
           produce((state) => {
             const reversedEntries = [...locks].reverse()
-            state[sliceKey].userLocksMapper[userAddress].locks = reversedEntries
+            state[sliceKey].userLocksMapper[address].locks = reversedEntries
             state[sliceKey].userLocksSortBy.order = order
           })
         )
@@ -288,15 +298,17 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           produce((state) => {
             state[sliceKey].userLocksSortBy.sortBy = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
-            state[sliceKey].userLocksMapper[userAddress].locks = sortedEntries
+            state[sliceKey].userLocksMapper[address].locks = sortedEntries
           })
         )
       }
     },
     setUserProposalVotesSortBy: (userAddress: string, sortBy: UserProposalVotesSortBy) => {
+      const address = userAddress.toLowerCase()
+
       const {
         userProposalVotesMapper: {
-          [userAddress]: { votes },
+          [address]: { votes },
         },
         userProposalVotesSortBy,
       } = get()[sliceKey]
@@ -325,7 +337,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         produce((state) => {
           state[sliceKey].userProposalVotesSortBy.key = sortBy
           state[sliceKey].userProposalVotesSortBy.order = order
-          state[sliceKey].userProposalVotesMapper[userAddress].votes = sortedVotes
+          state[sliceKey].userProposalVotesMapper[address].votes = sortedVotes
         })
       )
     },

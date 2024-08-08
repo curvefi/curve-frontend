@@ -3,6 +3,7 @@ import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
+import networks from '@/networks'
 import { copyToClipboard } from '@/utils'
 import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@/ui/utils'
 
@@ -10,6 +11,7 @@ import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import { ExternalLink } from '@/ui/Link'
 import PaginatedTable, { Column } from '../PaginatedTable'
 import { TableRowWrapper, TableData } from '../PaginatedTable/TableRow'
 
@@ -38,33 +40,43 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
   } = useStore((state) => state.user)
   const { provider } = useStore((state) => state.wallet)
 
+  const userAddress = rUserAddress.toLowerCase()
+
   const tableMinWidth = 41.875
 
-  const userProposalVotes = userProposalVotesMapper[rUserAddress]?.votes ?? {}
+  const userProposalVotes = userProposalVotesMapper[userAddress]?.votes ?? {}
   const userProposalVotesArray = Object.values(userProposalVotes)
 
   const holdersLoading = fetchStatus === 'LOADING'
   const holdersError = fetchStatus === 'ERROR'
   const holdersSuccess = fetchStatus === 'SUCCESS'
 
-  const userProposalVotesLoading = userProposalVotesMapper[rUserAddress]
-    ? userProposalVotesMapper[rUserAddress].fetchingState === 'LOADING'
+  const userLocksLoading = userLocksMapper[userAddress]
+    ? userLocksMapper[userAddress]?.fetchingState === 'LOADING'
     : true
-  const userProposalVotesError = userProposalVotesMapper[rUserAddress]
-    ? userProposalVotesMapper[rUserAddress].fetchingState === 'ERROR'
-    : false
-  const userProposalVotesSuccess = userProposalVotesMapper[rUserAddress]
-    ? userProposalVotesMapper[rUserAddress].fetchingState === 'SUCCESS'
+  const userLocksError = userLocksMapper[userAddress] ? userLocksMapper[userAddress]?.fetchingState === 'ERROR' : false
+  const userLocksSuccess = userLocksMapper[userAddress]
+    ? userLocksMapper[userAddress]?.fetchingState === 'SUCCESS'
     : false
 
-  const locksLabel: Column<UserLock>[] = [
+  const userProposalVotesLoading = userProposalVotesMapper[userAddress]
+    ? userProposalVotesMapper[userAddress].fetchingState === 'LOADING'
+    : true
+  const userProposalVotesError = userProposalVotesMapper[userAddress]
+    ? userProposalVotesMapper[userAddress].fetchingState === 'ERROR'
+    : false
+  const userProposalVotesSuccess = userProposalVotesMapper[userAddress]
+    ? userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS'
+    : false
+
+  const LOCKS_LABELS: Column<UserLock>[] = [
     { key: 'date', label: 'Date' },
     { key: 'lock_type', label: 'Lock Type', disabled: true },
     { key: 'amount', label: 'Amount' },
     { key: 'unlock_time', label: 'Unlock Time', disabled: true },
   ]
 
-  const votesLabels: Column<UserProposalVoteData>[] = [
+  const VOTES_LABELS: Column<UserProposalVoteData>[] = [
     { key: 'vote_id', label: 'Vote ID' },
     { key: 'vote_type', label: 'Vote Type', disabled: true },
     { key: 'vote_for', label: 'For Weight' },
@@ -73,7 +85,7 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
     { key: 'vote_close', label: 'Vote End' },
   ]
 
-  const user: VeCrvHolder = allHolders[rUserAddress] || {
+  const user: VeCrvHolder = allHolders[userAddress] || {
     user: rUserAddress,
     locked: 0,
     unlock_time: 0,
@@ -93,24 +105,24 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
 
   // Get user ENS
   useEffect(() => {
-    if (!userMapper[rUserAddress] && provider) {
-      getUserEns(rUserAddress)
+    if (!userMapper[userAddress] && provider) {
+      getUserEns(userAddress)
     }
-  }, [getUserEns, rUserAddress, userMapper, provider])
+  }, [getUserEns, userAddress, userMapper, provider])
 
   // Get user locks
   useEffect(() => {
-    if (!userLocksMapper[rUserAddress]) {
-      getUserLocks(rUserAddress)
+    if (!userLocksMapper[userAddress] && userLocksLoading && !userLocksError) {
+      getUserLocks(userAddress)
     }
-  }, [getUserLocks, rUserAddress, userLocksMapper])
+  }, [getUserLocks, userAddress, userLocksMapper, userLocksLoading, userLocksError])
 
   // Get user ownership votes
   useEffect(() => {
-    if (!userProposalVotesMapper[rUserAddress] && userProposalVotesLoading && !userProposalVotesError) {
-      getUserProposalVotes(rUserAddress)
+    if (!userProposalVotesMapper[userAddress] && userProposalVotesLoading && !userProposalVotesError) {
+      getUserProposalVotes(userAddress)
     }
-  }, [getUserProposalVotes, rUserAddress, userProposalVotesLoading, userProposalVotesError, userProposalVotesMapper])
+  }, [getUserProposalVotes, userAddress, userProposalVotesLoading, userProposalVotesError, userProposalVotesMapper])
 
   const lockTypeLabel = (lockType: veCrvLockType) => {
     switch (lockType) {
@@ -131,20 +143,30 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
         <UserHeader variant="secondary">
           <Box flex flexAlignItems="center">
             <Box flex flexColumn flexJustifyContent="center">
-              <h3>{userMapper[rUserAddress]?.ens || rUserAddress}</h3>
-              {userMapper[rUserAddress]?.ens && rUserAddress && (
-                <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+              <h3>{userMapper[userAddress]?.ens || userAddress}</h3>
+              {userMapper[userAddress]?.ens && userAddress && (
+                <Box flex flexAlignItems="center">
                   <p>{rUserAddress}</p>{' '}
-                  <StyledCopyButton size="small" onClick={() => handleCopyClick(rUserAddress)}>
-                    <Icon name="Copy" size={16} />
-                  </StyledCopyButton>
+                  <Box margin="0 0 0 var(--spacing-1)" flex>
+                    <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
+                      <Icon name="Copy" size={16} />
+                    </StyledCopyButton>
+                    <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>
+                      <Icon name="Launch" size={16} />
+                    </StyledExternalLink>
+                  </Box>
                 </Box>
               )}
             </Box>
-            {!userMapper[rUserAddress]?.ens && (
-              <StyledCopyButton size="small" onClick={() => handleCopyClick(rUserAddress)}>
-                <Icon name="Copy" size={16} />
-              </StyledCopyButton>
+            {!userMapper[userAddress]?.ens && (
+              <Box flex margin="0 0 0 var(--spacing-1)">
+                <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
+                  <Icon name="Copy" size={16} />
+                </StyledCopyButton>
+                <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>
+                  <Icon name="Launch" size={16} />
+                </StyledExternalLink>
+              </Box>
             )}
           </Box>
         </UserHeader>
@@ -187,15 +209,15 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
         <PaginatedTable<UserProposalVoteData>
           data={userProposalVotesArray}
           minWidth={tableMinWidth}
-          fetchingState={userProposalVotesMapper[rUserAddress]?.fetchingState ?? 'LOADING'}
-          columns={votesLabels}
+          fetchingState={userProposalVotesMapper[userAddress]?.fetchingState ?? 'LOADING'}
+          columns={VOTES_LABELS}
           sortBy={userProposalVotesSortBy}
           title="Proposal Votes"
           errorMessage={t`An error occurred while fetching proposal votes.`}
-          setSortBy={(key) => setUserProposalVotesSortBy(rUserAddress, key as UserProposalVotesSortBy)}
-          getData={() => getUserProposalVotes(rUserAddress)}
+          setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
+          getData={() => getUserProposalVotes(userAddress)}
           renderRow={(proposalVote, index) => (
-            <TableRowWrapper key={index} columns={votesLabels.length} minWidth={tableMinWidth}>
+            <TableRowWrapper key={index} columns={VOTES_LABELS.length} minWidth={tableMinWidth}>
               <TableData className={userProposalVotesSortBy.key === 'vote_id' ? 'active left-padding' : 'left-padding'}>
                 #{proposalVote.vote_id}
               </TableData>
@@ -228,17 +250,17 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
           )}
         />
         <PaginatedTable<UserLock>
-          data={userLocksMapper[rUserAddress]?.locks ?? []}
+          data={userLocksMapper[userAddress]?.locks ?? []}
           minWidth={tableMinWidth}
-          fetchingState={userLocksMapper[rUserAddress]?.fetchingState ?? 'LOADING'}
-          columns={locksLabel}
+          fetchingState={userLocksMapper[userAddress]?.fetchingState ?? 'LOADING'}
+          columns={LOCKS_LABELS}
           sortBy={userLocksSortBy}
           title="veCRV Locking Activity"
           errorMessage={t`An error occurred while fetching user locking activity.`}
-          setSortBy={(key) => setUserLocksSortBy(rUserAddress, key as UserLocksSortBy)}
-          getData={() => getUserLocks(rUserAddress)}
+          setSortBy={(key) => setUserLocksSortBy(userAddress, key as UserLocksSortBy)}
+          getData={() => getUserLocks(userAddress.toLowerCase())}
           renderRow={(lock, index) => (
-            <TableRowWrapper key={index} columns={locksLabel.length} minWidth={tableMinWidth}>
+            <TableRowWrapper key={index} columns={LOCKS_LABELS.length} minWidth={tableMinWidth}>
               <TableData className={userLocksSortBy.key === 'date' ? 'active left-padding' : 'left-padding'}>
                 {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.date).getTime() / 1000))}
               </TableData>
@@ -298,6 +320,22 @@ const UserStats = styled(Box)`
 const StyledCopyButton = styled(IconButton)`
   &:hover {
     color: var(--button_icon--hover--color);
+  }
+  &:active {
+    color: white;
+    background-color: var(--primary-400);
+  }
+`
+
+const StyledExternalLink = styled(ExternalLink)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  opacity: 0.6;
+  &:hover {
+    color: var(--button_icon--hover--color);
+    opacity: 1;
   }
   &:active {
     color: white;

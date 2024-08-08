@@ -55,147 +55,34 @@ const VoteDialog = ({
 
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)})%`
 
-  return (
-    <Wrapper className={className}>
-      {activeProposal?.active ? (
-        // Voting power too low
-        votingPower.value === 0 ? (
-          <VotingMessage>
-            <Icon name="WarningSquareFilled" size={20} />
-            {t`Voting power too low to participate in this proposal.`}
-          </VotingMessage>
-        ) : // Already voted
-        proposalId && voted ? (
-          <VotedMessageWrapper>
-            <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
-            <VotedMessage>
-              {votedFor && (
-                <VotedRow>
-                  <VotedRowItem>
-                    <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
-                  </VotedRowItem>
-                  <VotedRowItem>
-                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
-                      showDecimalIfSmallNumberOnly: true,
-                    })}{' '}
-                    {votePercentage(
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
-                    )}
-                  </VotedRowItem>
-                </VotedRow>
-              )}
-              {votedAgainst && (
-                <VotedRow>
-                  <VotedRowItem>
-                    <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
-                  </VotedRowItem>
-                  <VotedRowItem>
-                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
-                      showDecimalIfSmallNumberOnly: true,
-                    })}{' '}
-                    {votePercentage(
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
-                    )}
-                  </VotedRowItem>
-                </VotedRow>
-              )}
-            </VotedMessage>
-          </VotedMessageWrapper>
-        ) : (
-          // Vote
-          <>
-            <VoteDialogButton variant="filled" onClick={overlayTriggerState.open}>
-              {t`Vote on Proposal`}
-            </VoteDialogButton>
-            {overlayTriggerState.isOpen && (
-              <ModalDialog
-                noContentPadding
-                testId={testId}
-                title={''}
-                state={{ ...overlayTriggerState, close: handleClose }}
-              >
-                <ModalContainer>
-                  <ModalHeader
-                    flex
-                    flexJustifyContent="space-between"
-                    flexAlignItems="center"
-                    padding="var(--spacing-3)"
-                  >
-                    <ModalTitle>{t`Vote for proposal`}</ModalTitle>
-                    <CloseButton variant="text" onClick={handleClose}>
-                      <Icon name="Close" size={32} />
-                    </CloseButton>
-                  </ModalHeader>
-                  <BlurWrapper>
-                    {voteTx.status === 'LOADING' && (
-                      <ModalPendingTx
-                        transactionHash={voteTx.hash!}
-                        txLink={voteTx.txLink!}
-                        pendingMessage={t`Casting vote...`}
-                      />
-                    )}
-                    <UserInformationContainer flex padding="var(--spacing-3)" flexJustifyContent="center">
-                      <UserInformation
-                        snapshotVotingPower={snapshotVotingPower}
-                        votingPower={votingPower}
-                        activeProposal={activeProposal}
-                        noLink
-                      />
-                    </UserInformationContainer>
-                    <VoteButtonsWrapper flex flexColumn flexGap="var(--spacing-3)" flexJustifyContent="center">
-                      {voteTx.status !== 'SUCCESS' && (
-                        <Box
-                          flex
-                          flexGap="var(--spacing-2)"
-                          margin="var(--spacing-2) 0"
-                          flexDirection="row"
-                          flexJustifyContent="center"
-                        >
-                          <Button
-                            variant="select-flat"
-                            className={vote === true ? 'active' : ''}
-                            onClick={() => setVote(true)}
-                          >
-                            {t`For`}
-                          </Button>
-                          <Button
-                            variant="select-flat"
-                            className={vote === false ? 'active' : ''}
-                            onClick={() => setVote(false)}
-                          >
-                            {t`Against`}
-                          </Button>
-                        </Box>
-                      )}
-                      {voteTx.status === 'ERROR' && (
-                        <StyledAlertBox alertType="error" limitHeight>
-                          {voteTx.error}
-                        </StyledAlertBox>
-                      )}
-                      {voteTx.status === 'SUCCESS' && (
-                        <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>
-                      )}
-                      {voteTx.status !== 'SUCCESS' && (
-                        <VoteButton
-                          variant="icon-filled"
-                          disabled={vote === null}
-                          onClick={() => castVote(1, 'PARAMETER', vote!)}
-                          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
-                        >
-                          {t`Cast Vote`}
-                        </VoteButton>
-                      )}
-                    </VoteButtonsWrapper>
-                  </BlurWrapper>
-                </ModalContainer>
-              </ModalDialog>
-            )}{' '}
-          </>
-        )
-      ) : // Voted successfully
-      proposalId && voted ? (
+  // Voting power too low
+  if (activeProposal?.active && votingPower.value === 0) {
+    return (
+      <Wrapper className={className}>
+        <VotingMessage>
+          <Icon name="WarningSquareFilled" size={20} />
+          {t`Voting power too low to participate in this proposal.`}
+        </VotingMessage>
+      </Wrapper>
+    )
+  }
+
+  // Voting has ended - no vote
+  if (!activeProposal?.active && proposalId && !voted) {
+    return (
+      <Wrapper className={className}>
+        <VotingMessage>
+          <Icon name="WarningSquareFilled" size={20} />
+          {t`Voting has ended`}
+        </VotingMessage>
+      </Wrapper>
+    )
+  }
+
+  // Voted successfully
+  if (proposalId && voted) {
+    return (
+      <Wrapper className={className}>
         <VotedMessageWrapper>
           <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
           <VotedMessage>
@@ -233,10 +120,94 @@ const VoteDialog = ({
             )}
           </VotedMessage>
         </VotedMessageWrapper>
-      ) : (
-        // Voting ended
-        <VotingMessage>{t`Voting has ended`}</VotingMessage>
-      )}
+      </Wrapper>
+    )
+  }
+
+  return (
+    <Wrapper className={className}>
+      {/* Vote */}
+      <>
+        <VoteDialogButton variant="filled" onClick={overlayTriggerState.open}>
+          {t`Vote on Proposal`}
+        </VoteDialogButton>
+        {overlayTriggerState.isOpen && (
+          <ModalDialog
+            noContentPadding
+            testId={testId}
+            title={''}
+            state={{ ...overlayTriggerState, close: handleClose }}
+          >
+            <ModalContainer>
+              <ModalHeader flex flexJustifyContent="space-between" flexAlignItems="center" padding="var(--spacing-3)">
+                <ModalTitle>{t`Vote for proposal`}</ModalTitle>
+                <CloseButton variant="text" onClick={handleClose}>
+                  <Icon name="Close" size={32} />
+                </CloseButton>
+              </ModalHeader>
+              <BlurWrapper>
+                {voteTx.status === 'LOADING' && (
+                  <ModalPendingTx
+                    transactionHash={voteTx.hash!}
+                    txLink={voteTx.txLink!}
+                    pendingMessage={t`Casting vote...`}
+                  />
+                )}
+                <UserInformationContainer flex padding="var(--spacing-3)" flexJustifyContent="center">
+                  <UserInformation
+                    snapshotVotingPower={snapshotVotingPower}
+                    votingPower={votingPower}
+                    activeProposal={activeProposal}
+                    noLink
+                  />
+                </UserInformationContainer>
+                <VoteButtonsWrapper flex flexColumn flexGap="var(--spacing-3)" flexJustifyContent="center">
+                  {voteTx.status !== 'SUCCESS' && (
+                    <Box
+                      flex
+                      flexGap="var(--spacing-2)"
+                      margin="var(--spacing-2) 0"
+                      flexDirection="row"
+                      flexJustifyContent="center"
+                    >
+                      <Button
+                        variant="select-flat"
+                        className={vote === true ? 'active' : ''}
+                        onClick={() => setVote(true)}
+                      >
+                        {t`For`}
+                      </Button>
+                      <Button
+                        variant="select-flat"
+                        className={vote === false ? 'active' : ''}
+                        onClick={() => setVote(false)}
+                      >
+                        {t`Against`}
+                      </Button>
+                    </Box>
+                  )}
+                  {voteTx.status === 'ERROR' && (
+                    <StyledAlertBox alertType="error" limitHeight>
+                      {voteTx.error}
+                    </StyledAlertBox>
+                  )}
+                  {voteTx.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
+                  {voteTx.status !== 'SUCCESS' && (
+                    <VoteButton
+                      variant="icon-filled"
+                      disabled={vote === null}
+                      onClick={() => castVote(1, 'PARAMETER', vote!)}
+                      loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+                    >
+                      {t`Cast Vote`}
+                    </VoteButton>
+                  )}
+                </VoteButtonsWrapper>
+              </BlurWrapper>
+            </ModalContainer>
+          </ModalDialog>
+        )}{' '}
+      </>
     </Wrapper>
   )
 }
@@ -296,12 +267,13 @@ const VoteButtonsWrapper = styled(Box)`
 const VotingMessage = styled.p`
   display: flex;
   flex-direction: row;
+  width: 100%;
   align-items: center;
   gap: var(--spacing-2);
   padding: var(--spacing-2);
   color: var(--button_outlined--color);
   font-weight: var(--semi-bold);
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-1);
   line-height: 1.2;
   margin-right: auto;
   background-color: var(--box_header--secondary--background-color);

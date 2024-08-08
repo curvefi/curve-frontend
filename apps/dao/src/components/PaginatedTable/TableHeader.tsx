@@ -13,7 +13,7 @@ interface TableHeaderProps<T> {
 
 const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth }: TableHeaderProps<T>) => (
   <TableHeaderWrapper>
-    <TableTitle>{title}</TableTitle>
+    {title && <TableTitle>{title}</TableTitle>}
     <TableContainer columns={columns.length} minWidth={minWidth}>
       {columns.map((column) => (
         <TableTitleButton

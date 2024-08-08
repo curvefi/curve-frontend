@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useNavigate } from 'react-router-dom'
 
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
@@ -8,7 +9,7 @@ import networks from '@/networks'
 import { formatNumberWithSuffix } from '@/ui/utils'
 
 import Box from '@/ui/Box'
-import { ExternalLink } from '@/ui/Link'
+import { ExternalLink, InternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
 
 type Props = {
@@ -20,6 +21,7 @@ type Props = {
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
   const curveJsProposalLoadingState = useStore((state) => state.proposals.curveJsProposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.curveJsProposalMapper[rProposalId])
+  const navigate = useNavigate()
 
   return (
     <Wrapper className={className}>
@@ -52,9 +54,14 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                   ) : (
                     <AgainstIcon name="Misuse" size={16} />
                   )}
-                  <StyledExternalLink href={`https://etherscan.io/address/${vote.voter}`}>
+                  <StyledInternalLink
+                    onClick={(e) => {
+                      e.preventDefault()
+                      navigate(`/ethereum/user/${vote.voter}`)
+                    }}
+                  >
                     {shortenTokenAddress(vote.voter)}
-                  </StyledExternalLink>
+                  </StyledInternalLink>
                 </Box>
                 <StyledExternalLink href={networks[1].scanTxPath(vote.tx)}>
                   <Data>
@@ -120,6 +127,16 @@ const Data = styled.p`
   &.align-right {
     text-align: right;
   }
+`
+
+const StyledInternalLink = styled(InternalLink)`
+  color: inherit;
+  font-weight: var(--semi-bold);
+  font-size: var(--font-size-2);
+  text-decoration: none;
+  text-transform: none;
+  display: flex;
+  flex-direction: column;
 `
 
 const StyledExternalLink = styled(ExternalLink)`

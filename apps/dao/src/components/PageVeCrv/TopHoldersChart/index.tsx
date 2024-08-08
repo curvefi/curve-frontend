@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useEffect, useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
@@ -50,12 +50,6 @@ const TopLockers: React.FC = () => {
     veCrvHolders.totalValues.weight,
     veCrvHolders.totalValues.weight_ratio,
   ])
-
-  useEffect(() => {
-    if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
-      getVeCrvHolders()
-    }
-  }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 
   return (
     <Wrapper>

@@ -112,7 +112,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
 
       try {
         let page = 1
-        const pagination = 1000
+        const pagination = 100
         let results: VeCrvFee[] = []
 
         while (true) {
@@ -188,15 +188,18 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
       })
 
       try {
+        const pagination = 1000
         let page = 1
         let allHolders: { [address: string]: VeCrvHolder } = {}
 
         while (true) {
-          const veCrvHoldersRes = await fetch(`https://prices.curve.fi/v1/dao/lockers?pagination=1000&page=${page}`)
+          const veCrvHoldersRes = await fetch(
+            `https://prices.curve.fi/v1/dao/lockers?pagination=${pagination}&page=${page}`
+          )
           const data: VeCrvHoldersRes = await veCrvHoldersRes.json()
 
           data.locks.forEach((holder) => {
-            allHolders[holder.user] = {
+            allHolders[holder.user.toLowerCase()] = {
               ...holder,
               locked: +holder.locked / 10 ** 18,
               weight: +holder.weight / 10 ** 18,
@@ -204,7 +207,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
             }
           })
 
-          if (data.locks.length < 1000) {
+          if (data.locks.length < pagination) {
             break
           }
 
@@ -283,17 +286,12 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
         )
       } else {
         const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => {
-          if (sortBy === 'unlock_time') {
-            const aValue = new Date(a.unlock_time).getTime()
-            const bValue = new Date(b.unlock_time).getTime()
-            return bValue - aValue
-          }
           return b[sortBy] - a[sortBy]
         })
 
         set(
           produce((state) => {
-            state[sliceKey].allHoldersSortBy.sortBy = sortBy
+            state[sliceKey].allHoldersSortBy.key = sortBy
             state[sliceKey].allHoldersSortBy.order = 'desc'
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
           })
