@@ -2,12 +2,13 @@ import styled from 'styled-components'
 
 const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: boolean }>`
   font-size: var(--font-size-1);
+  text-transform: ${({ isCaps }) => (isCaps ? 'uppercase' : 'initial')};
 
   ${({ isBold }) => {
     if (isBold) {
       return `font-weight: bold;`
     }
-  }}
+  }};
 
   ${({ isBlock }) => {
     if (isBlock) {
@@ -16,12 +17,6 @@ const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: 
         margin-bottom: 2px;
       `
     }
-  }}
-
-  ${({ isCaps }) => {
-    if (isCaps) {
-      return `text-transform: uppercase;`
-    }
-  }}
+  }};
 `
 export default TextCaption
