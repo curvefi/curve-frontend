@@ -49,31 +49,6 @@ export const Wrapper = styled.div`
   }
 `
 
-export const ContentStat = styled.div<{ isRow?: boolean }>`
-  align-items: center;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: var(--spacing-narrow);
-
-  &.isRow {
-    display: grid;
-    grid-gap: var(--spacing-1);
-    margin-right: var(--spacing-wide);
-    margin-top: var(--spacing-3);
-  }
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    align-items: flex-end;
-    display: grid;
-    grid-gap: var(--spacing-1);
-    margin-right: var(--spacing-wide);
-
-    &.isRow {
-      margin-top: 0;
-    }
-  }
-`
-
 export const ContentStats = styled.div`
   @media (min-width: ${breakpoints.sm}rem) {
     align-items: flex-start;
@@ -99,26 +74,6 @@ export const Content = styled.div<{ paddingTop?: boolean; isBorderBottom?: boole
   @media (min-width: ${breakpoints.sm}rem) {
     padding-left: var(--spacing-normal);
     padding-right: var(--spacing-normal);
-  }
-`
-
-export const ContentStatTitle = styled.span`
-  font-size: var(--font-size-1);
-  font-weight: bold;
-  text-transform: uppercase;
-  max-width: 100px;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    white-space: nowrap;
-  }
-`
-
-export const ContentStatValue = styled.span`
-  font-weight: bold;
-  text-align: right;
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    text-align: left;
   }
 `
 

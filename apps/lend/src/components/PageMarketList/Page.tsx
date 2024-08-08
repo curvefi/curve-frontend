@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { ROUTE } from '@/constants'
+import { ROUTE, TITLE_MAPPER } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
@@ -49,28 +49,6 @@ const Page: NextPage = () => {
   const FILTER_TYPE_MAPPER = {
     borrow: { id: 'borrow', displayName: t`Borrow` },
     supply: { id: 'supply', displayName: t`Lend` },
-  }
-
-  const TABLE_LABELS_MAPPER: TableLabelsMapper = {
-    isInMarket: { name: '' },
-    name: { name: t`Markets` },
-    available: { name: t`Available` },
-    cap: { name: t`Supplied` },
-    utilization: { name: t`Utilization %` },
-    rateBorrow: { name: t`Borrow APY` },
-    rateLend: { name: t`Lend APR` },
-    myDebt: { name: t`My debt` },
-    myHealth: { name: t`My health` },
-    myVaultShares: { name: t`Earning deposits` },
-    tokenCollateral: { name: t`Collateral` },
-    tokenBorrow: { name: t`Borrow` },
-    tokenSupply: { name: t`Lend` },
-    totalCollateralValue: { name: t`Collateral value` },
-    totalDebt: { name: t`Borrowed` },
-    totalLiquidity: { name: t`TVL` },
-    totalApr: { name: t`Total APR` },
-    points: { name: t`Points` },
-    leverage: { name: t`Leverage` },
   }
 
   useEffect(() => {
@@ -131,7 +109,7 @@ const Page: NextPage = () => {
             searchParams={parsedSearchParams}
             filterList={filterList}
             filterTypeMapper={FILTER_TYPE_MAPPER}
-            tableLabelsMapper={TABLE_LABELS_MAPPER}
+            tableLabelsMapper={TITLE_MAPPER}
             updatePath={updatePath}
           />
         )}

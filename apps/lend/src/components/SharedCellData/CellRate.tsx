@@ -25,7 +25,9 @@ const CellRate = ({
 
   return (
     <>
-      {typeof resp === 'undefined' ? null : error ? (
+      {typeof resp === 'undefined' ? (
+        '-'
+      ) : error ? (
         '?'
       ) : type === 'borrow' ? (
         <Chip {...props}>{formatNumber(rates?.borrowApy, FORMAT_OPTIONS.PERCENT)}</Chip>

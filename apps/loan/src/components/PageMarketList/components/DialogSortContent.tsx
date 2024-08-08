@@ -1,11 +1,13 @@
-import type { FormValues, Order, TableLabel, SortKey } from '@/components/PageMarketList/types'
+import type { FormValues, Order, SortKey } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
+import { TITLE_MAPPER, TITLE } from '@/constants'
 import { delayAction } from '@/utils/helpers'
+
 import { Chip } from '@/ui/Typography'
 import { Radio, RadioGroup } from '@/ui/Radio'
 import Box from '@/ui/Box'
@@ -19,11 +21,11 @@ const sortOrder = {
 
 type Props = {
   formValues: FormValues
-  tableLabels: TableLabel
+  someLoanExists: boolean
   updateFormValues: (formValues: Partial<FormValues>) => void
 }
 
-const DialogSortContent = ({ formValues, tableLabels, updateFormValues }: Props) => {
+const DialogSortContent = ({ formValues, someLoanExists, updateFormValues }: Props) => {
   let overlayTriggerState = useOverlayTriggerState({})
 
   const handleRadioGroupChange = (updatedSortValue: string) => {
@@ -43,13 +45,13 @@ const DialogSortContent = ({ formValues, tableLabels, updateFormValues }: Props)
     let label: React.ReactNode | '' = ''
 
     if (formValues.sortBy) {
-      const foundLabel = tableLabels[formValues.sortBy]
+      const foundLabel = TITLE_MAPPER[formValues.sortBy]
       if (foundLabel) {
         label = foundLabel.name
       }
     }
     return label
-  }, [formValues.sortBy, tableLabels])
+  }, [formValues.sortBy])
 
   const value = `${formValues.sortBy}-${formValues.sortByOrder}`
 
@@ -71,19 +73,33 @@ const DialogSortContent = ({ formValues, tableLabels, updateFormValues }: Props)
             <StyledChip>{t`Asc`}</StyledChip> <StyledChip>{t`Desc`}</StyledChip>
           </SortHeader>
           <RadioGroup aria-label="Type" onChange={handleRadioGroupChange} value={value}>
-            {Object.entries(tableLabels).map(([key, { name: tableLabel }]) => {
+            {[
+              TITLE.name,
+              TITLE.myDebt,
+              TITLE.myHealth,
+              TITLE.rate,
+              TITLE.totalBorrowed,
+              TITLE.cap,
+              TITLE.available,
+              TITLE.totalCollateral,
+            ].map((titleKey: TitleKey) => {
+              const label = TITLE_MAPPER[titleKey]?.name
+              if (!label) return null
+
+              if (titleKey.startsWith('my') && !someLoanExists) return null
+
               return (
-                <RadioWrapper key={key}>
-                  {tableLabel}{' '}
+                <RadioWrapper key={titleKey}>
+                  {label}{' '}
                   <RadiosWrapper>
                     {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => {
                       return (
                         <StyledRadio
                           key={orderKey}
-                          aria-label={`Sort by ${tableLabel} ${label}`}
+                          aria-label={`Sort by ${label} ${label}`}
                           isCustom
-                          className={value === `${key}-${orderKey}` ? 'selected' : ''}
-                          value={`${key}-${orderKey}`}
+                          className={value === `${titleKey}-${orderKey}` ? 'selected' : ''}
+                          value={`${titleKey}-${orderKey}`}
                         >
                           {IconComp}
                         </StyledRadio>

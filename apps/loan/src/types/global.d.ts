@@ -10,6 +10,8 @@ import type stablecoinApi from '@curvefi/stablecoin-api'
 
 import curvejsApi from '@/lib/apiCrvusd'
 
+import { TITLE } from '@/constants'
+
 declare global {
   interface Window {
     clipboardData: any
@@ -202,4 +204,6 @@ declare global {
     address: string
     message: string | ReactNode
   }
+
+  type TitleKey = keyof typeof TITLE
 }

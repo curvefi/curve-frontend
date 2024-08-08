@@ -31,7 +31,9 @@ const CellTotalCollateralValue = ({
 
   return (
     <>
-      {typeof totalCollateralValue === 'undefined' || total === null ? null : error ? (
+      {typeof totalCollateralValue === 'undefined' || total === null ? (
+        '-'
+      ) : error ? (
         '?'
       ) : (
         <>
@@ -62,6 +64,7 @@ const StyledChip = styled(Chip)`
 `
 
 const TotalSummary = styled(TextCaption)`
+  margin-top: 0.1rem;
   white-space: nowrap;
 `
 

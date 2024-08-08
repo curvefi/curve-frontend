@@ -25,7 +25,7 @@ const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type
       {error ? (
         '?'
       ) : !liqPriceRange || !details ? (
-        ''
+        '-'
       ) : type === 'range' ? (
         <strong>{`${liqPriceRange.price2} to ${liqPriceRange.price1}`}</strong>
       ) : type === 'band' ? (

@@ -46,7 +46,9 @@ const CellCap = ({
 
   return (
     <>
-      {typeof resp === 'undefined' || typeof totalResp === 'undefined' ? null : error ? (
+      {typeof resp === 'undefined' || typeof totalResp === 'undefined' ? (
+        '-'
+      ) : error ? (
         '?'
       ) : (
         <Chip {...props}>

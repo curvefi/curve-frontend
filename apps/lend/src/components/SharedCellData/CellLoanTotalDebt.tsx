@@ -21,7 +21,9 @@ const CellLoanTotalDebt = ({
 
   return (
     <>
-      {typeof resp === 'undefined' ? null : error ? (
+      {typeof resp === 'undefined' ? (
+        '-'
+      ) : error ? (
         '?'
       ) : (
         <Chip {...props}>{formatNumber(totalDebt, { notation: 'compact' })}</Chip>

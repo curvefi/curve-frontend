@@ -6,7 +6,6 @@ import type {
   MarketListMapper,
   MarketListItemResult,
   SearchParams,
-  SortKey,
   TableSettings,
 } from '@/components/PageMarketList/types'
 
@@ -14,12 +13,8 @@ import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 
-import {
-  SortId,
-  DEFAULT_FORM_STATUS,
-  _searchByTokensAddresses,
-  _getMarketList,
-} from '@/components/PageMarketList/utils'
+import { DEFAULT_FORM_STATUS, _searchByTokensAddresses, _getMarketList } from '@/components/PageMarketList/utils'
+import { TITLE } from '@/constants'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
@@ -50,10 +45,10 @@ export type MarketListSlice = {
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
     filterUserList(api: Api, owmDatas: OWMData[], filterTypeKey: FilterTypeKey): OWMData[]
     filterLeverageMarkets(owmDatas: OWMData[]): OWMData[]
-    sortByUserData(api: Api, sortKey: SortKey, owmData: OWMData): number
-    sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
+    sortByUserData(api: Api, sortKey: TitleKey, owmData: OWMData): number
+    sortFn(api: Api, sortKey: TitleKey, order: Order, owmDatas: OWMData[]): OWMData[]
     sortByCollateral(api: Api, owmDatas: OWMData[]): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
-    sortByAll(api: Api, owmDatas: OWMData[], sortBy: SortKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
+    sortByAll(api: Api, owmDatas: OWMData[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
     setFormValues(rChainId: ChainId, api: Api | null, shouldRefetch?: boolean): Promise<void>
 
     // helpers
@@ -146,9 +141,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const statsTotalMapper = markets.statsTotalsMapper[chainId] ?? {}
       const totalCollateralValuesMapper = markets.totalCollateralValuesMapper[chainId] ?? {}
 
-      if (sortKey === SortId.tokenCollateral) {
+      if (sortKey === TITLE.tokenCollateral) {
         return orderBy(owmDatas, ({ owm }) => owm.collateral_token.symbol.toLowerCase(), [order])
-      } else if (sortKey === SortId.tokenBorrow || sortKey === SortId.tokenSupply) {
+      } else if (sortKey === TITLE.tokenBorrow || sortKey === TITLE.tokenSupply) {
         return orderBy(owmDatas, ({ owm }) => owm.borrowed_token.symbol.toLowerCase(), [order])
       } else if (sortKey === 'rateBorrow') {
         return orderBy(owmDatas, ({ owm }) => +(ratesMapper?.[owm.id]?.rates?.borrowApy ?? '0'), [order])
@@ -430,18 +425,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
   },
 })
 
-export function getCollateralDatasCached(owmDatasMapperCached: OWMDatasCacheMapper | undefined) {
-  const owmDatasCached: OWMDataCache[] = []
-
-  if (owmDatasMapperCached) {
-    for (const key in owmDatasMapperCached) {
-      owmDatasCached.push(owmDatasMapperCached[key])
-    }
-  }
-
-  return owmDatasCached
-}
-
 export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   const { filterKey, filterTypeKey, searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
@@ -502,7 +485,7 @@ function getTableRowSettings(
 
   return {
     ...prevTableSettings,
-    sortBy: sortBy || filterTypeKey === 'borrow' ? SortId.totalCollateralValue : SortId.totalLiquidity,
+    sortBy: sortBy || filterTypeKey === 'borrow' ? TITLE.totalCollateralValue : TITLE.totalLiquidity,
     sortByOrder: sortByOrder || 'desc',
     isNotSortable: isNotSortable,
   }

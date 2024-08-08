@@ -1,10 +1,9 @@
 import type { IndicatorPlacement } from '@/ui/Table/types'
-import type { FormValues, Order, TableLabel, SortKey } from '@/components/PageMarketList/types'
+import type { FormValues, Order, SortKey } from '@/components/PageMarketList/types'
 
-import styled from 'styled-components'
-
-import { breakpoints } from '@/ui/utils/responsive'
-import { TheadSortButton } from '@/ui/Table'
+import { TheadSortButton, Th, Tr } from '@/ui/Table'
+import { TITLE_MAPPER, TITLE } from '@/constants'
+import TooltipIcon from 'ui/src/Tooltip/TooltipIcon'
 
 interface TheadBtnProps {
   align: string[]
@@ -14,17 +13,23 @@ interface TheadBtnProps {
   handleBtnClickSort: (sortBy: string, sortOrder: Order) => void
 }
 
+type Content = {
+  titleKey: TitleKey
+  className: string
+  show?: boolean
+  width?: string
+  indicatorPlacement?: IndicatorPlacement
+}
+
 const TableHead = ({
   formValues,
   isReadyDetail,
   someLoanExists,
-  tableLabels,
   updateFormValues,
 }: {
   formValues: FormValues
   isReadyDetail: boolean
   someLoanExists: boolean
-  tableLabels: TableLabel
   updateFormValues: (formValues: Partial<FormValues>) => void
 }) => {
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
@@ -40,85 +45,56 @@ const TableHead = ({
     handleBtnClickSort,
   }
 
+  // prettier-ignore
+  const contents: Content[] = [
+    { titleKey: TITLE.isInMarket, show: someLoanExists, className: 'left', width: '20px', indicatorPlacement: 'right' },
+    { titleKey: TITLE.name, className: 'left', width: '150px' },
+    { titleKey: TITLE.myHealth, show: someLoanExists, className: 'right', width: '120px' },
+    { titleKey: TITLE.myDebt, show: someLoanExists, className: 'right', width: '120px' },
+    { titleKey: TITLE.rate, className: 'right' },
+    { titleKey: TITLE.totalBorrowed, className: 'right', width: '120px' },
+    { titleKey: TITLE.cap, className: 'right', width: '120px' },
+    { titleKey: TITLE.available, className: 'right', width: '120px' },
+    { titleKey: TITLE.totalCollateral, className: 'right', width: '260px' },
+  ]
+
   return (
     <>
       <colgroup>
-        <ColInPool className="row-in-pool" />
-        <Col className="left collateral" />
-        <col className="right rate" />
-        <col className="right total-borrowed" />
-        <col className="right cap" />
-        <col className="right available" />
-        <col className="right total-collateral" />
+        {contents.map(({ titleKey, width, show }, idx) => {
+          if (typeof show !== 'undefined' && !show) return null
+
+          return <col key={`col${idx}`} {...(width ? { width } : {})} />
+        })}
       </colgroup>
       <thead>
-        <tr>
-          <th className="in-pool"> </th>
-          <th className="left">
-            <TheadSortButton sortIdKey="name" {...props} loading={false}>
-              {tableLabels.name.name}
-            </TheadSortButton>
-          </th>
+        <Tr>
+          {contents.map(({ titleKey, className, width, show }, idx) => {
+            if (typeof show !== 'undefined' && !show) return null
 
-          {someLoanExists && (
-            <>
-              <th className="right">
-                <TheadSortButton sortIdKey="myHealth" {...props} loading={!isReadyDetail}>
-                  {tableLabels.myHealth.name}
+            const { name, tooltip, tooltipProps = {} } = TITLE_MAPPER[titleKey]
+            const key = `thead${idx}`
+
+            if (titleKey === TITLE.isInMarket) {
+              return (
+                <Th key={key} className="in-pool">
+                  {' '}
+                </Th>
+              )
+            }
+
+            return (
+              <Th key={key} className={className}>
+                <TheadSortButton sortIdKey={titleKey} {...props} loading={!isReadyDetail}>
+                  {name} {tooltip && <TooltipIcon {...tooltipProps}>{tooltip}</TooltipIcon>}
                 </TheadSortButton>
-              </th>
-              <th className="right">
-                <TheadSortButton sortIdKey="myDebt" {...props} loading={!isReadyDetail}>
-                  {tableLabels.myDebt.name}
-                </TheadSortButton>
-              </th>
-            </>
-          )}
-          <th className="right">
-            <TheadSortButton sortIdKey="rate" {...props} loading={!isReadyDetail}>
-              {tableLabels.rate.name}
-            </TheadSortButton>
-          </th>
-          <th className="right">
-            <TheadSortButton sortIdKey="totalBorrowed" {...props} loading={!isReadyDetail}>
-              {tableLabels.totalBorrowed.name}{' '}
-            </TheadSortButton>
-          </th>
-          <th className="right">
-            <TheadSortButton sortIdKey="cap" {...props} loading={!isReadyDetail}>
-              {tableLabels.cap.name}
-            </TheadSortButton>
-          </th>
-          <th className="right">
-            <TheadSortButton sortIdKey="available" {...props} loading={!isReadyDetail}>
-              {tableLabels.available.name}
-            </TheadSortButton>
-          </th>
-          <th className="right">
-            <TheadSortButton sortIdKey="totalCollateral" {...props} loading={!isReadyDetail}>
-              {tableLabels.totalCollateral.name}
-            </TheadSortButton>
-          </th>
-        </tr>
+              </Th>
+            )
+          })}
+        </Tr>
       </thead>
     </>
   )
 }
-
-TableHead.displayName = 'TableHead'
-
-const Col = styled.col`
-  @media (min-width: ${breakpoints.lg}rem) {
-    min-width: 200px;
-
-    &.collateral {
-      min-width: 350px;
-    }
-  }
-`
-
-const ColInPool = styled.col`
-  width: 25px;
-`
 
 export default TableHead

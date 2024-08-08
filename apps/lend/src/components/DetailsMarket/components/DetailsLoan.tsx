@@ -1,21 +1,14 @@
 import type { Detail } from '@/components/DetailsMarket/types'
 
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 
+import { TITLE, TITLE_MAPPER } from '@/constants'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-  DarkContent,
-  SubTitle,
-  Wrapper,
-} from '@/components/DetailsMarket/styles'
+import { Content, DarkContent, SubTitle, Wrapper } from '@/components/DetailsMarket/styles'
+import Box from '@/ui/Box'
 import CellRate from '@/components/SharedCellData/CellRate'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellCap from '@/components/SharedCellData/CellCap'
@@ -24,8 +17,8 @@ import DetailsLoanChartBalances from '@/components/DetailsMarket/components/Deta
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
-import Box from '@/ui/Box'
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, userActiveKey } = pageProps
@@ -38,19 +31,18 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
     size: 'md' as const,
   }
 
-  const details: Detail[][] = [
+  const details: { titleKey: TitleKey; value: React.ReactNode }[][] = [
     [
-      { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" module="borrow" /> },
-      { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" module="borrow" /> },
-      { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
-      { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
-      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.tokenCollateral, value: <CellToken {...cellProps} type="collateral" module="borrow" /> },
+      { titleKey: TITLE.tokenBorrow, value: <CellToken {...cellProps} type="borrowed" module="borrow" /> },
+      { titleKey: TITLE.rateBorrow, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
     ],
     [
-      { title: t`Total Debt`, value: <CellLoanTotalDebt {...cellProps} /> },
-      { title: t`Total supplied`, value: <CellCap {...cellProps} type="cap" /> },
-      { title: t`Utilization %`, value: <CellCap {...cellProps} type="utilization" /> },
-      { title: t`Total Collateral Value`, value: <CellTotalCollateralValue {...cellProps} /> },
+      { titleKey: TITLE.available, value: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.totalDebt, value: <CellLoanTotalDebt {...cellProps} /> },
+      { titleKey: TITLE.cap, value: <CellCap {...cellProps} type="cap" /> },
+      { titleKey: TITLE.utilization, value: <CellCap {...cellProps} type="utilization" /> },
+      { titleKey: TITLE.totalCollateralValue, value: <CellTotalCollateralValue {...cellProps} /> },
     ],
   ]
 
@@ -58,20 +50,17 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
     <div>
       {/* stats */}
       <Content paddingTop isBorderBottom>
-        {details.map((detailSection) => {
-          return (
-            <ContentStats key={detailSection[0].title}>
-              {detailSection.map(({ title, value, className = '' }) => {
-                return (
-                  <ContentStat key={`detail-${title}`} className={className}>
-                    <ContentStatTitle>{title}</ContentStatTitle>
-                    <ContentStatValue>{value}</ContentStatValue>
-                  </ContentStat>
-                )
-              })}
-            </ContentStats>
-          )
-        })}
+        <ListInfoItemsWrapper>
+          {details.map((detailSection, idx) => (
+            <ListInfoItems key={`infos-${idx}`}>
+              {detailSection.map(({ value, titleKey, ...props }, idx) => (
+                <ListInfoItem key={`info-${idx}`} title={TITLE_MAPPER[titleKey].name} {...props}>
+                  {value}
+                </ListInfoItem>
+              ))}
+            </ListInfoItems>
+          ))}
+        </ListInfoItemsWrapper>
       </Content>
 
       <Content isBorderBottom>

@@ -1,13 +1,11 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
+import TextCaption from '@/ui/TextCaption'
 
-const TableCellMarketsTotalDebt = (props: ChipProps) => {
+const TableCellMarketsTotalDebt = () => {
   const totalSupplyResp = useStore((state) => state.crvusdTotalSupply)
 
   const { total, minted, pegKeepersDebt, error } = totalSupplyResp ?? {}
@@ -20,17 +18,18 @@ const TableCellMarketsTotalDebt = (props: ChipProps) => {
       {typeof totalSupplyResp === 'undefined' ? null : error ? (
         '?'
       ) : (
-        <Chip {...props}>
-          {formatNumber(pegKeepersDebt, { defaultValue: '-' })}{' '}
-          <DebtFraction>({formattedDebtFraction} of total supply)</DebtFraction>
-        </Chip>
+        <StyledTotalSupply>
+          {formatNumber(pegKeepersDebt, { defaultValue: '-' })}
+          <TextCaption>{formattedDebtFraction} of total supply</TextCaption>
+        </StyledTotalSupply>
       )}
     </>
   )
 }
 
-const DebtFraction = styled.span`
-  font-weight: normal;
+const StyledTotalSupply = styled.div`
+  display: grid;
+  grid-gap: 0.1rem;
 `
 
 export default TableCellMarketsTotalDebt

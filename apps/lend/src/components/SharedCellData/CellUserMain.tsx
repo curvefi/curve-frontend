@@ -1,6 +1,5 @@
 import React from 'react'
 import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
@@ -8,7 +7,7 @@ import useVaultShares from '@/hooks/useVaultShares'
 
 import Chip from '@/ui/Typography/Chip'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
-import TextCaption from '@/ui/TextCaption'
+import ListInfoItem from '@/ui/ListInfo'
 
 const CellUserMain = ({
   rChainId,
@@ -32,16 +31,14 @@ const CellUserMain = ({
   const totalVaultShares = +vaultShares + +gauge
   const { borrowedAmount, borrowedAmountUsd } = useVaultShares(rChainId, rOwmId, totalVaultShares)
 
-  const label = type === 'borrow' ? t`Debt (${borrowed_token?.symbol})` : t`Earning deposits`
   const value = type === 'borrow' ? formatNumber(details?.state?.debt) : borrowedAmount
 
   return (
-    <Wrapper>
-      <TextCaption isBold isCaps>
-        {label}
-      </TextCaption>
-      <TextValue>{error || (type !== 'borrow' && userBalancesError) ? '?' : value}</TextValue>
-
+    <ListInfoItem
+      title={type === 'borrow' ? t`Debt` : t`Earning deposits`}
+      titleDescription={type === 'borrow' ? `(${borrowed_token?.symbol})` : ''}
+      mainValue={error || (type !== 'borrow' && userBalancesError) ? '?' : value}
+    >
       {type === 'borrow' ? (
         <InpChipUsdRate isBold hideRate address={borrowed_token?.address} amount={details?.state?.debt} />
       ) : (
@@ -51,21 +48,8 @@ const CellUserMain = ({
           {formatNumber(totalVaultShares, { maximumSignificantDigits: 5 })} {t`vault shares`}
         </Chip>
       )}
-    </Wrapper>
+    </ListInfoItem>
   )
 }
-
-const Wrapper = styled.div`
-  border: 1px solid var(--nav_button--border-color);
-  display: grid;
-  padding: var(--spacing-narrow);
-  margin-bottom: var(--spacing-normal);
-`
-
-export const TextValue = styled.span`
-  font-size: var(--font-size-6);
-  font-weight: bold;
-  margin-bottom: var(--spacing-1);
-`
 
 export default CellUserMain

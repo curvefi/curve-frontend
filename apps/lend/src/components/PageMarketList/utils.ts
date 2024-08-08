@@ -5,28 +5,6 @@ import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 import startsWith from 'lodash/startsWith'
 
-export enum SortId {
-  isInMarket = 'isInMarket',
-  name = 'name',
-  available = 'available',
-  cap = 'cap',
-  utilization = 'utilization',
-  rateBorrow = 'rateBorrow',
-  rateLend = 'rateLend',
-  myDebt = 'myDebt',
-  myHealth = 'myHealth',
-  myVaultShares = 'myVaultShares',
-  tokenCollateral = 'tokenCollateral',
-  tokenBorrow = 'tokenBorrow',
-  tokenSupply = 'tokenSupply',
-  totalCollateralValue = 'totalCollateralValue',
-  totalDebt = 'totalDebt',
-  totalLiquidity = 'totalLiquidity',
-  leverage = 'leverage',
-  totalApr = 'totalApr',
-  points = 'points',
-}
-
 export enum Filter {
   all = 'all',
   leverage = 'leverage',

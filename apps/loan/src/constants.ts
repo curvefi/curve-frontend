@@ -1,3 +1,7 @@
+import type { TooltipProps } from '@/ui/Tooltip/types'
+
+import { t } from '@lingui/macro'
+
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 export const ASSETS_BASE_PATH = 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
@@ -35,3 +39,35 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export enum TITLE {
+  isInMarket = 'isInMarket',
+  name = 'name',
+  tokenCollateral = 'tokenCollateral',
+  tokenBorrow = 'tokenBorrow',
+  rate = 'rate',
+  available = 'available',
+  totalBorrowed = 'totalBorrowed',
+  cap = 'cap',
+  totalCollateral = 'totalCollateral',
+  myDebt = 'myDebt',
+  myHealth = 'myHealth',
+}
+
+export const TITLE_MAPPER: Record<TITLE, { name: string; tooltip?: string; tooltipProps?: TooltipProps }> = {
+  isInMarket: { name: '' },
+  name: { name: t`Markets` },
+  tokenCollateral: { name: t`Collateral` },
+  tokenBorrow: { name: t`Borrow` },
+  myDebt: { name: t`My debt` },
+  myHealth: { name: t`My health` },
+  rate: {
+    name: t`Borrow rate`,
+    tooltip: t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`,
+    tooltipProps: { minWidth: '200px', textAlign: 'left' },
+  },
+  available: { name: t`Available` },
+  totalBorrowed: { name: t`Borrowed` },
+  cap: { name: t`Cap` },
+  totalCollateral: { name: t`Total collateral value` },
+}

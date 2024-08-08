@@ -11,6 +11,7 @@ import useStore from '@/store/useStore'
 
 import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartBandBalances from '@/components/ChartBandBalances'
+import DetailsInfo from '@/components/LoanInfoLlamma/components/DetailsInfo'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
 import PoolInfoData from '@/components/ChartOhlcWrapper'
@@ -77,6 +78,10 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
 
   return (
     <Wrapper>
+      <div className="wrapper">
+        <DetailsInfo rChainId={rChainId} collateralId={llammaId} />
+      </div>
+
       {!chartExpanded && (
         <div className="wrapper">
           <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
@@ -120,10 +125,6 @@ const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
       </InfoWrapper>
     </Wrapper>
   )
-}
-
-LoanInfoLlamma.defaultProps = {
-  className: '',
 }
 
 const Wrapper = styled.div`

@@ -1,26 +1,21 @@
 import type { Detail } from '@/components/DetailsMarket/types'
 
 import React from 'react'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { TITLE, TITLE_MAPPER } from '@/constants'
 import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-} from '@/components/DetailsMarket/styles'
+import { Content } from '@/components/DetailsMarket/styles'
 import AlertNoVaultSharesFound from '@/components/AlertNoVaultSharesFound'
 import CellUserMain from '@/components/SharedCellData/CellUserMain'
 import CellRate from '@/components/SharedCellData/CellRate'
 import CellToken from '@/components/SharedCellData/CellToken'
 import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserSupplyStakedUnstaked from '@/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, owmDataCachedOrApi } = pageProps
@@ -42,17 +37,14 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
     size: 'md' as const,
   }
 
+  // prettier-ignore
   const stats: Detail[][] = [
     [
-      { title: t`Lend`, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
-      { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
+      { titleKey: TITLE.tokenSupply, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
+      { titleKey: TITLE.rateLend, value: <CellRate {...cellProps} type="supply" /> },
     ],
     [
-      {
-        title: t`Vault shares`,
-        value: <DetailsUserSupplyStakedUnstaked userActiveKey={userActiveKey} />,
-        className: 'isRow',
-      },
+      { titleKey: TITLE.vaultShares, value: <DetailsUserSupplyStakedUnstaked userActiveKey={userActiveKey} />, className: 'isRow' },
     ],
   ]
 
@@ -66,24 +58,20 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
             <CellUserMain {...cellProps} type="supply" />
 
             {/* stats */}
-            <div>
-              {stats.map((detailSection) => {
-                return (
-                  <ContentStats key={detailSection[0].title}>
-                    {detailSection.map(({ className = '', title, value, show }) => {
-                      return (
-                        _showContent(show) && (
-                          <ContentStat className={className} key={`detail-${title}`}>
-                            <ContentStatTitle>{title}</ContentStatTitle>
-                            <ContentStatValue>{value}</ContentStatValue>
-                          </ContentStat>
-                        )
-                      )
-                    })}
-                  </ContentStats>
-                )
-              })}
-            </div>
+            <ListInfoItemsWrapper>
+              {stats.map((detailSection, idx) => (
+                <ListInfoItems key={`infos-${idx}`}>
+                  {detailSection.map(({ show, value, titleKey, ...props }, idx) => {
+                    if (!_showContent(show)) return null
+                    return (
+                      <ListInfoItem key={`info-${idx}`} {...props} title={TITLE_MAPPER[titleKey].name}>
+                        {value}
+                      </ListInfoItem>
+                    )
+                  })}
+                </ListInfoItems>
+              ))}
+            </ListInfoItemsWrapper>
           </Wrapper>
         </Content>
       ) : (

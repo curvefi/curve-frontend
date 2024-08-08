@@ -38,7 +38,7 @@ const CellRewards = ({
       ) : invalidGaugeAddress ? (
         <ChipInactive>No gauge</ChipInactive>
       ) : type === 'crv-other' ? (
-        <Chip {...props}>
+        <Wrapper {...props}>
           {totalApr.minMax}{' '}
           {!isMdUp && tooltipValues ? (
             <>
@@ -65,7 +65,7 @@ const CellRewards = ({
               <Icon className="svg-tooltip" size={16} name="InformationSquare" />
             </StyledChip>
           )}
-        </Chip>
+        </Wrapper>
       ) : null}
     </span>
   )
@@ -83,6 +83,10 @@ const DetailsBtn = styled(Button)`
   font-family: inherit;
   font-weight: bold;
   font-size: var(--font-size-2);
+`
+
+const Wrapper = styled(Chip)`
+  white-space: nowrap;
 `
 
 export default CellRewards

@@ -1,5 +1,4 @@
 import React from 'react'
-import { t } from '@lingui/macro'
 
 import { LARGE_APY } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
@@ -25,27 +24,27 @@ const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
         <span>
           -<IconTooltip>Not available currently</IconTooltip>
         </span>
+      ) : typeof base === 'undefined' ? (
+        '-'
       ) : (
-        typeof base !== 'undefined' && (
-          <>
-            {+base.day > LARGE_APY ? (
-              <ChipVolatileBaseApy isBold={isHighlight} />
-            ) : (
-              <Chip
-                isBold={isHighlight}
-                size="md"
-                tooltip={!!base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
-                tooltipProps={{
-                  noWrap: true,
-                  placement: 'bottom end',
-                  textAlign: 'left',
-                }}
-              >
-                {formatNumber(base.day, FORMAT_OPTIONS.PERCENT)}
-              </Chip>
-            )}
-          </>
-        )
+        <>
+          {+base.day > LARGE_APY ? (
+            <ChipVolatileBaseApy isBold={isHighlight} />
+          ) : (
+            <Chip
+              isBold={isHighlight}
+              size="md"
+              tooltip={!!base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
+              tooltipProps={{
+                noWrap: true,
+                placement: 'bottom end',
+                textAlign: 'left',
+              }}
+            >
+              {formatNumber(base.day, FORMAT_OPTIONS.PERCENT)}
+            </Chip>
+          )}
+        </>
       )}
     </>
   )

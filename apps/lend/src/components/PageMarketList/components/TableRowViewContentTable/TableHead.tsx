@@ -1,4 +1,4 @@
-import type { TableLabel, PageMarketList, SortKey } from '@/components/PageMarketList/types'
+import type { TableLabel, PageMarketList } from '@/components/PageMarketList/types'
 
 import React from 'react'
 import styled from 'styled-components'
@@ -37,7 +37,7 @@ const TableHead = ({
     loading: formStatus.isLoading,
     sortBy: rowSearchParams?.sortBy ?? '',
     sortByOrder: rowSearchParams?.sortByOrder ?? 'desc',
-    handleBtnClickSort: (sortBy: string, sortByOrder: Order) => updatePath({ sortBy: sortBy as SortKey, sortByOrder }),
+    handleBtnClickSort: (sortBy: string, sortByOrder: Order) => updatePath({ sortBy: sortBy as TitleKey, sortByOrder }),
   }
 
   return (
