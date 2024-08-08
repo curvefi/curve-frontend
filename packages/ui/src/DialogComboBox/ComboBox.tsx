@@ -135,18 +135,6 @@ const ListBoxWrapper = styled.div<{ boxHeight: string; topContentHeight: number 
   }
 `
 
-// @media (min-width: ${breakpoints.md}rem) {
-//   outline: 1px solid red;
-// }
-//
-// ${({ boxHeight }) => {
-//   if (boxHeight) {
-//     return `
-//       height: ${boxHeight};
-//     `
-//   }
-// }}
-
 const Header = styled(Box)`
   margin: 1.5rem 0.5rem 0 1rem;
 `

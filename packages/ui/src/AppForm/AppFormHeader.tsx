@@ -37,7 +37,7 @@ const AppFormHeader = ({
           })}
         </Tabs>
       )}
-      <IconButton hidden />
+      {formTypes.length === 1 && <IconButton hidden />}
     </Header>
   )
 }
