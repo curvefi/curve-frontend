@@ -42,10 +42,11 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
       // compile a list of pool/markets using pool/vault address as key
       campaigns.forEach((campaign: CampaignRewardsItem) => {
         campaign.pools.forEach((pool: CampaignRewardsPool) => {
-          if (!campaignRewardsMapper[pool.address.toLowerCase()]) {
-            campaignRewardsMapper[pool.address.toLowerCase()] = []
-          }
           if (pool.network.toLowerCase() === network.toLowerCase()) {
+            if (!campaignRewardsMapper[pool.address.toLowerCase()]) {
+              campaignRewardsMapper[pool.address.toLowerCase()] = []
+            }
+
             campaignRewardsMapper[pool.address.toLowerCase()].push({
               campaignName: campaign.campaignName,
               platform: campaign.platform,
