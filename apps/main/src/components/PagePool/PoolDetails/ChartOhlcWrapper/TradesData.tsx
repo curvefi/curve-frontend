@@ -12,13 +12,11 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-type Props = {
-  lpTradesData: LpTradesData[]
-  chainId: ChainId
-  tradesTokens: LpTradeToken[]
-}
-
-const TradesData = ({ lpTradesData, chainId, tradesTokens }: Props) => {
+const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
+  lpTradesData,
+  chainId,
+  tradesTokens,
+}) => {
   return (
     <>
       {lpTradesData.map((transaction, index) => {

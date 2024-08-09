@@ -14,12 +14,10 @@ import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/Poo
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 
-type PoolInfoDataProps = {
-  rChainId: ChainId
-  pricesApiPoolData: PricesApiPool
-}
-
-const PoolInfoData: React.FC<PoolInfoDataProps> = ({ rChainId, pricesApiPoolData }) => {
+const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
+  rChainId,
+  pricesApiPoolData,
+}) => {
   const themeType = useStore((state) => state.themeType)
   const {
     pricesApiState: {
