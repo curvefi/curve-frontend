@@ -12,6 +12,8 @@ import Renzo from './Renzo.json';
 import Symbiotic from './Symbiotic.json';
 import Usual from './Usual.json';
 import YieldNest from './YieldNest.json';
+import Fraxtal from './Fraxtal.json';
+
 
 export {
   DLCLink,
@@ -25,5 +27,6 @@ export {
   Renzo,
   Symbiotic,
   Usual,
-  YieldNest
+  YieldNest,
+  Fraxtal
 };
