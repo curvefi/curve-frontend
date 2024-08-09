@@ -66,7 +66,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
 }
 ```
 
-## Adding an rewards to the list
+## Adding rewards to the list
 
 Conditions the project must meet in order to be added to the list of rewards:
 
