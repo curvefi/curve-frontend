@@ -34,6 +34,17 @@
       "network": "ethereum",
       "multiplier": "3.75",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x88dfb9370fe350aa51ade31c32549d4d3a24faf2",
+      "network": "ethereum",
+      "multiplier": "3.75",
+      "tags": ["points"]
     }
   ]
 }
+
