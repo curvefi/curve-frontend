@@ -118,8 +118,9 @@ export function formatNumber(val: number | string | undefined | null, options?: 
               return _formatNumber(val, { ...rest, minimumSignificantDigits: 2, maximumSignificantDigits: 2 })
             }
           } else if (Number(val) <= 0.0009 && !('showAllFractionDigits' in (options ?? {}))) {
+            const { style } = parsedOptions
             // format number to maximumSignificantDigits of 4 if value is <= 0.0009
-            return _formatNumber(val, { maximumSignificantDigits: 4 })
+            return _formatNumber(val, { ...(style ? { style } : {}), maximumSignificantDigits: 4 })
           }
         }
 
