@@ -119,10 +119,12 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         const range = formatRange([currentPrices[1], currentPrices[0]])
         liqRanges.new = range
       } else {
-        const currentPrices = loanCreateDetailInfo.prices
+        const currentPrices = loanCreateDetailInfo?.prices
 
-        const range = formatRange([currentPrices[0], currentPrices[1]])
-        liqRanges.new = range
+        if (currentPrices) {
+          const range = formatRange([currentPrices[0], currentPrices[1]])
+          liqRanges.new = range
+        }
       }
     }
 
