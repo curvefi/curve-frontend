@@ -15,7 +15,7 @@ import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import CellToken from '@/components/SharedCellData/CellToken'
-import CellRate from '@/components/SharedCellData/CellRate'
+import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
@@ -68,7 +68,7 @@ const TableRowContent = ({
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
       { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
-      { className: 'right', content: <CellRate {...cellProps} type='borrow' /> },
+      { className: 'right', content: <CellBorrowRate {...cellProps} /> },
       { className: 'right', content: <CellCap {...cellProps} type='available' /> },
       { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
       { className: 'right', content: <CellCap {...cellProps} type='cap' /> },
@@ -81,7 +81,7 @@ const TableRowContent = ({
       { className: 'left', content: <CellToken {...cellProps} type='collateral'  module='supply' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
-      { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },
+      { className: 'right', content: <CellRewards {...cellProps} /> },
       { className: 'right', content: <CellSupplyTotalLiquidity {...cellProps} /> },
     ]
   }

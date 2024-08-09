@@ -6,6 +6,11 @@ import type { ReactNode } from 'react'
 import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
+import type { TooltipProps } from '@/ui/Tooltip/types'
+
+import React from 'react'
+
+import { TITLE } from '@/constants'
 
 declare global {
   interface Window {
@@ -162,6 +167,7 @@ declare global {
     owmDataCachedOrApi: OWMDataCacheOrApi
     borrowed_token: OWM['borrowed_token'] | undefined
     collateral_token: OWM['collateral_token'] | undefined
+    titleMapper: TitleMapper
   }
 
   // MARKET PROPERTIES
@@ -342,7 +348,7 @@ declare global {
       bandsBalances: BandsBalancesData[]
       bandsPct: string
       isCloseToLiquidation: boolean
-      // loss: UserLoss = not working
+      loss: UserLoss
       prices: string[]
       range: number | null
       state: { collateral: string; borrowed: string; debt: string; N: string }
@@ -385,4 +391,9 @@ declare global {
   type UsdRate = { [tokenAddress: string]: string | number }
   type Wallet = WalletState
   type MarketDetailsView = 'user' | 'market' | ''
+  type TitleKey = keyof typeof TITLE
+  type TitleMapper = Record<
+    TITLE,
+    { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
+  >
 }

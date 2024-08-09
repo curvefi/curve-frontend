@@ -13,6 +13,7 @@ import ChipInactive from '@/components/ChipInactive'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import ListInfoItem from '@/ui/ListInfo'
 import TextCaption from '@/ui/TextCaption'
 
 // TODO: refactor to UI
@@ -22,11 +23,9 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
   return (
     <RewardsWrapper>
       <RewardsTitle>
-        <TextCaption isCaps isBold>
-          Total APR
-        </TextCaption>
-        <br />
-        {totalApr.minMax}
+        <ListInfoItem as="div" title={t`Total APR`}>
+          {totalApr.minMax}
+        </ListInfoItem>
       </RewardsTitle>
 
       {/* BASE */}

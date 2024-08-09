@@ -1,5 +1,5 @@
-import type { IndicatorPlacement } from '@/ui/Table/types'
 import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
+import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
@@ -7,15 +7,6 @@ import useStore from '@/store/useStore'
 import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-
-interface TheadBtnProps {
-  align: string[]
-  loading: boolean
-  indicatorPlacement: IndicatorPlacement
-  sortBy: string
-  sortByOrder: Order
-  handleBtnClickSort: (sortBy: string, sortOrder: Order) => void
-}
 
 const TableHead = ({
   loading,
@@ -37,10 +28,8 @@ const TableHead = ({
     updateFormValues({ sortBy: sortBy as SortId, sortByOrder: sortByOrder as Order })
   }
 
-  const props: TheadBtnProps = {
-    align: ['left', 'end'],
+  const props: Omit<TheadSortButtonProps<SortId>, 'sortIdKey'> = {
     loading,
-    indicatorPlacement: 'left',
     sortBy: formValues.sortBy,
     sortByOrder: formValues.sortByOrder,
     handleBtnClickSort,
@@ -67,7 +56,7 @@ const TableHead = ({
       <Thead>
         <tr>
           <Th className="left">
-            <TheadSortButton sortIdKey="poolName" {...props} align={['left', 'center']} indicatorPlacement="right">
+            <TheadSortButton sortIdKey="poolName" {...props} indicatorPlacement="right">
               {tableLabel.poolName.name}
             </TheadSortButton>
           </Th>
@@ -101,7 +90,7 @@ const TableHead = ({
             </Box>
           </Th>
           <Th className="right">
-            <TheadSortButton sortIdKey="liquidityUsd" {...props} align={['right', 'center']} indicatorPlacement="left">
+            <TheadSortButton sortIdKey="liquidityUsd" {...props} indicatorPlacement="left">
               {tableLabel.liquidityUsd.name}
             </TheadSortButton>
           </Th>

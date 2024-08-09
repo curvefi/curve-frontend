@@ -1,34 +1,27 @@
-import type { Detail } from '@/components/DetailsMarket/types'
-
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 
+import { TITLE } from '@/constants'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-  DarkContent,
-  SubTitle,
-  Wrapper,
-} from '@/components/DetailsMarket/styles'
-import CellRate from '@/components/SharedCellData/CellRate'
-import CellToken from '@/components/SharedCellData/CellToken'
+import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/components/DetailsMarket/styles'
+import Box from '@/ui/Box'
+import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
+import CellRewards from '@/components/SharedCellData/CellRewards'
+import CellToken from '@/components/SharedCellData/CellToken'
+import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import DetailsLoanChartBalances from '@/components/DetailsMarket/components/DetailsLoanChartBalances'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
-import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
-import Box from '@/ui/Box'
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
-  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, userActiveKey } = pageProps
+  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper, userActiveKey } =
+    pageProps
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const cellProps = {
@@ -38,43 +31,40 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
     size: 'md' as const,
   }
 
-  const details: Detail[][] = [
+  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
     [
-      { title: t`Collateral`, value: <CellToken {...cellProps} type="collateral" module="borrow" /> },
-      { title: t`Borrow`, value: <CellToken {...cellProps} type="borrowed" module="borrow" /> },
-      { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
-      { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" className="paddingLeft" /> },
-      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="borrow" /> },
+      { titleKey: TITLE.tokenBorrow, content: <CellToken {...cellProps} type="borrowed" module="borrow" /> },
+      { titleKey: TITLE.rateBorrow, content: <CellBorrowRate {...cellProps} /> },
+      { titleKey: TITLE.rateLend, content: <CellRewards {...cellProps} /> },
     ],
     [
-      { title: t`Total Debt`, value: <CellLoanTotalDebt {...cellProps} /> },
-      { title: t`Total supplied`, value: <CellCap {...cellProps} type="cap" /> },
-      { title: t`Utilization %`, value: <CellCap {...cellProps} type="utilization" /> },
-      { title: t`Total Collateral Value`, value: <CellTotalCollateralValue {...cellProps} /> },
+      { titleKey: TITLE.available, content: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.totalDebt, content: <CellLoanTotalDebt {...cellProps} /> },
+      { titleKey: TITLE.cap, content: <CellCap {...cellProps} type="cap" /> },
+      { titleKey: TITLE.utilization, content: <CellCap {...cellProps} type="utilization" /> },
+      { titleKey: TITLE.totalCollateralValue, content: <CellTotalCollateralValue {...cellProps} /> },
     ],
   ]
 
   return (
     <div>
       {/* stats */}
-      <Content paddingTop isBorderBottom>
-        {details.map((detailSection) => {
-          return (
-            <ContentStats key={detailSection[0].title}>
-              {detailSection.map(({ title, value, className = '' }) => {
-                return (
-                  <ContentStat key={`detail-${title}`} className={className}>
-                    <ContentStatTitle>{title}</ContentStatTitle>
-                    <ContentStatValue>{value}</ContentStatValue>
-                  </ContentStat>
-                )
-              })}
-            </ContentStats>
-          )
-        })}
-      </Content>
+      <ContentWrapper paddingTop isBorderBottom>
+        <ListInfoItemsWrapper>
+          {contents.map((groupedContent, idx) => (
+            <ListInfoItems key={`contents${idx}`}>
+              {groupedContent.map(({ titleKey, content }, idx) => (
+                <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                  {content}
+                </ListInfoItem>
+              ))}
+            </ListInfoItems>
+          ))}
+        </ListInfoItemsWrapper>
+      </ContentWrapper>
 
-      <Content isBorderBottom>
+      <ContentWrapper isBorderBottom>
         {networks[rChainId]?.pricesData && !chartExpanded && (
           <Box padding="0 0 var(--spacing-normal)">
             <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
@@ -86,10 +76,10 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
           borrowed_token={borrowed_token}
           collateral_token={collateral_token}
         />
-      </Content>
+      </ContentWrapper>
 
       <Wrapper>
-        <Content paddingTop>
+        <ContentWrapper paddingTop>
           <DetailsContracts
             rChainId={rChainId}
             owmDataCachedOrApi={owmDataCachedOrApi}
@@ -97,7 +87,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
             collateral_token={collateral_token}
             type={type}
           />
-        </Content>
+        </ContentWrapper>
 
         <DarkContent>
           <SubTitle>{t`Parameters`}</SubTitle>

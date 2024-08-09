@@ -1,4 +1,5 @@
-import type { TableLabel, PageMarketList, SortKey } from '@/components/PageMarketList/types'
+import type { TableLabel, PageMarketList } from '@/components/PageMarketList/types'
+import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 import React from 'react'
 import styled from 'styled-components'
@@ -9,21 +10,13 @@ import useStore from '@/store/useStore'
 import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import { TheadSortButton } from '@/ui/Table'
 
-interface TheadBtnProps {
-  align: string[]
-  loading: boolean
-  sortBy: string
-  sortByOrder: Order
-  handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
-}
-
 const TableHead = ({
   address,
   searchParams,
   tableLabels,
-  tableLabelsMapper,
+  titleMapper,
   updatePath,
-}: Pick<PageMarketList, 'searchParams' | 'tableLabelsMapper' | 'updatePath'> & {
+}: Pick<PageMarketList, 'searchParams' | 'titleMapper' | 'updatePath'> & {
   address: string
   tableLabels: TableLabel[]
 }) => {
@@ -32,12 +25,11 @@ const TableHead = ({
 
   const rowSearchParams = address === 'all' ? searchParams : { ...(tableSetting ?? {}), ...searchParams }
 
-  const props: TheadBtnProps = {
-    align: ['left', 'end'],
+  const theadSortButtonProps: Omit<TheadSortButtonProps<TitleKey>, 'sortIdKey'> = {
     loading: formStatus.isLoading,
     sortBy: rowSearchParams?.sortBy ?? '',
     sortByOrder: rowSearchParams?.sortByOrder ?? 'desc',
-    handleBtnClickSort: (sortBy: string, sortByOrder: Order) => updatePath({ sortBy: sortBy as SortKey, sortByOrder }),
+    handleBtnClickSort: (sortBy: string, sortByOrder: Order) => updatePath({ sortBy: sortBy as TitleKey, sortByOrder }),
   }
 
   return (
@@ -51,10 +43,10 @@ const TableHead = ({
       </colgroup>
       <thead>
         <tr>
-          {tableLabels.map(({ sortIdKey, className, show, isNotSortable = true }, idx) => {
+          {tableLabels.map(({ sortIdKey, className, show, isNotSortable = true, ...props }, idx) => {
             if (!_showContent(show)) return null
 
-            const label = tableLabelsMapper[sortIdKey].name
+            const label = titleMapper[sortIdKey].title
             const key = `${sortIdKey}-${idx}`
             const parsedIsNotSortable = tableSetting?.isNotSortable && isNotSortable
 
@@ -66,6 +58,7 @@ const TableHead = ({
 
                 {!parsedIsNotSortable && (
                   <StyledTheadSortButton
+                    {...theadSortButtonProps}
                     {...props}
                     indicatorPlacement={className.startsWith('left') ? 'right' : 'left'}
                     className={className}

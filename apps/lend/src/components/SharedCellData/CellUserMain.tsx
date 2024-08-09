@@ -8,7 +8,7 @@ import useVaultShares from '@/hooks/useVaultShares'
 
 import Chip from '@/ui/Typography/Chip'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
-import TextCaption from '@/ui/TextCaption'
+import ListInfoItem from '@/ui/ListInfo'
 
 const CellUserMain = ({
   rChainId,
@@ -32,40 +32,31 @@ const CellUserMain = ({
   const totalVaultShares = +vaultShares + +gauge
   const { borrowedAmount, borrowedAmountUsd } = useVaultShares(rChainId, rOwmId, totalVaultShares)
 
-  const label = type === 'borrow' ? t`Debt (${borrowed_token?.symbol})` : t`Earning deposits`
   const value = type === 'borrow' ? formatNumber(details?.state?.debt) : borrowedAmount
 
   return (
-    <Wrapper>
-      <TextCaption isBold isCaps>
-        {label}
-      </TextCaption>
-      <TextValue>{error || (type !== 'borrow' && userBalancesError) ? '?' : value}</TextValue>
-
-      {type === 'borrow' ? (
-        <InpChipUsdRate isBold hideRate address={borrowed_token?.address} amount={details?.state?.debt} />
-      ) : (
-        <Chip>
-          {borrowedAmountUsd}
-          <br />
-          {formatNumber(totalVaultShares, { maximumSignificantDigits: 5 })} {t`vault shares`}
-        </Chip>
-      )}
-    </Wrapper>
+    <ListInfoItem
+      title={type === 'borrow' ? t`Debt` : t`Earning deposits`}
+      titleDescription={type === 'borrow' ? `(${borrowed_token?.symbol})` : ''}
+      mainValue={error || (type !== 'borrow' && userBalancesError) ? '?' : value}
+    >
+      <Wrapper>
+        {type === 'borrow' ? (
+          <InpChipUsdRate isBold hideRate address={borrowed_token?.address} amount={details?.state?.debt} />
+        ) : (
+          <Chip size="xs">
+            {borrowedAmountUsd}
+            <br />
+            {formatNumber(totalVaultShares, { maximumSignificantDigits: 5 })} {t`vault shares`}
+          </Chip>
+        )}
+      </Wrapper>
+    </ListInfoItem>
   )
 }
 
 const Wrapper = styled.div`
-  border: 1px solid var(--nav_button--border-color);
-  display: grid;
-  padding: var(--spacing-narrow);
-  margin-bottom: var(--spacing-normal);
-`
-
-export const TextValue = styled.span`
-  font-size: var(--font-size-6);
-  font-weight: bold;
-  margin-bottom: var(--spacing-1);
+  margin-top: 0.2rem;
 `
 
 export default CellUserMain

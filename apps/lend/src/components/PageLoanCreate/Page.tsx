@@ -7,9 +7,10 @@ import { t } from '@lingui/macro'
 import { REFRESH_INTERVAL } from '@/constants'
 import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
+import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
-import networks from '@/networks'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -38,6 +39,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
@@ -136,6 +138,7 @@ const Page: NextPage = () => {
     userActiveKey: helpers.getUserActiveKey(api, owmData),
     borrowed_token,
     collateral_token,
+    titleMapper,
   }
 
   return (

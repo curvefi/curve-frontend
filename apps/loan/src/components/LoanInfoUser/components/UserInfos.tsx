@@ -1,0 +1,100 @@
+import React from 'react'
+import styled from 'styled-components'
+
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { TITLE } from '@/constants'
+import { breakpoints } from '@/ui/utils/responsive'
+import useStore from '@/store/useStore'
+
+import { HealthColorText } from '@/components/LoanInfoUser/styles'
+import AlertSoftLiquidation from '@/components/LoanInfoUser/components/AlertSoftLiquidation'
+import UserInfoDebt from '@/components/LoanInfoUser/components/UserInfoDebt'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import UserInfoLiquidationRange from '@/components/LoanInfoUser/components/UserInfoLiquidationRange'
+import UserInfoLoss from '@/components/LoanInfoUser/components/UserInfoLoss'
+import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
+
+const UserInfos = ({
+  llammaId,
+  llamma,
+  isSoftLiquidation,
+  healthMode,
+  titleMapper,
+}: {
+  llammaId: string
+  llamma: Llamma | null
+  isSoftLiquidation: boolean
+  healthMode: HealthMode
+  titleMapper: TitleMapper
+}) => {
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+
+  const {
+    coins: [stablecoin],
+    coinAddresses: [stablecoinAddress],
+  } = llamma ?? { coins: [], coinAddresses: [] }
+
+  const { userBandsPct, userStatus } = userLoanDetails ?? {}
+  const props = { llammaId, llamma }
+
+  // prettier-ignore
+  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean }[][] = [
+    [
+      { titleKey: TITLE.healthStatus, content: <HealthColorText colorKey={userStatus?.colorKey}>{userStatus?.label ?? '-'}</HealthColorText> },
+      { titleKey: TITLE.healthPercent, content: <HealthColorText colorKey={userStatus?.colorKey}>{healthMode?.percent ? formatNumber(healthMode?.percent, FORMAT_OPTIONS.PERCENT) : '-'}</HealthColorText> },
+    ],
+    [
+      { titleKey: TITLE.liquidationRange, content: <UserInfoLiquidationRange {...props} type='liquidationRange' /> },
+      { titleKey: TITLE.liquidationBandRange, content: <UserInfoLiquidationRange {...props} type='liquidationBandRange' />, show: isAdvanceMode },
+      { titleKey: TITLE.liquidationRangePercent, content: formatNumber(userBandsPct, FORMAT_OPTIONS.PERCENT) },
+    ],
+    [
+      { titleKey: TITLE.lossCollateral, content: <UserInfoLoss {...props} type='lossCollateral' /> },
+      { titleKey: TITLE.lossAmount, content: <UserInfoLoss {...props} type='lossAmount' /> },
+      { titleKey: TITLE.lossPercent, content: <UserInfoLoss {...props} type='lossPercent' /> },
+    ],
+    [
+      { titleKey: TITLE.llammaBalances, content: <UserInfoLlammaBalances {...props} /> }
+    ]
+  ]
+
+  return (
+    <>
+      {isSoftLiquidation && <AlertSoftLiquidation {...props} />}
+
+      <Wrapper>
+        <ListInfoItemsWrapper>
+          {contents.map((contentsGrouped, idx) => (
+            <ListInfoItems key={`contents${idx}`}>
+              {contentsGrouped.map(({ titleKey, content, show }, idx) => {
+                if (typeof show !== 'undefined' && !show) return null
+
+                return (
+                  <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                    {content}
+                  </ListInfoItem>
+                )
+              })}
+            </ListInfoItems>
+          ))}
+        </ListInfoItemsWrapper>
+        <UserInfoDebt llammaId={llammaId} stablecoin={stablecoin} stablecoinAddress={stablecoinAddress} />
+      </Wrapper>
+    </>
+  )
+}
+
+const Wrapper = styled.div`
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column-reverse;
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    position: relative;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+`
+
+export default UserInfos

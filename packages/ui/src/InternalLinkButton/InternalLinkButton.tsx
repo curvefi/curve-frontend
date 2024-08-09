@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { ReactComponent as ExternalIcon } from '@/images/external.svg'
+import { ReactComponent as ExternalIcon } from 'ui/src/images/external.svg'
 
 import Button from 'ui/src/Button'
 

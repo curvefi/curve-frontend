@@ -1,33 +1,14 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import React from 'react'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
-
-const CellLoanTotalDebt = ({
-  rChainId,
-  rOwmId,
-  ...props
-}: ChipProps & {
-  rChainId: ChainId
-  rOwmId: string
-}) => {
+const CellLoanTotalDebt = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const resp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
   const { totalDebt, error } = resp || {}
 
-  return (
-    <>
-      {typeof resp === 'undefined' ? null : error ? (
-        '?'
-      ) : (
-        <Chip {...props}>{formatNumber(totalDebt, { notation: 'compact' })}</Chip>
-      )}
-    </>
-  )
+  return <>{typeof resp === 'undefined' ? '-' : error ? '?' : formatNumber(totalDebt, { notation: 'compact' })}</>
 }
 
 export default CellLoanTotalDebt

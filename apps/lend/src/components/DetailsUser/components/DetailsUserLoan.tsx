@@ -1,25 +1,18 @@
-import type { Detail } from '@/components/DetailsMarket/types'
-
 import React from 'react'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { TITLE } from '@/constants'
 import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-} from '@/components/DetailsMarket/styles'
+import { ContentWrapper } from '@/components/DetailsMarket/styles'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
 import Box from '@/ui/Box'
 import CellHealthStatus from '@/components/SharedCellData/CellHealthStatus'
 import CellUserMain from '@/components/SharedCellData/CellUserMain'
+import CellLlammaBalances from '@/components/SharedCellData/CellLlammaBalances'
 import CellLiquidationRange from '@/components/SharedCellData/CellLiquidationRange'
 import CellLoanState from '@/components/SharedCellData/CellLoanState'
 import CellRate from '@/components/SharedCellData/CellRate'
@@ -28,9 +21,10 @@ import DetailsUserLoanAlertSoftLiquidation from '@/components/DetailsUser/compon
 import DetailsUserLoanChartBandBalances from '@/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import DetailsUserLoanChartLiquidationRange from '@/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, api, owmDataCachedOrApi, userActiveKey } = pageProps
+  const { rChainId, rOwmId, api, owmDataCachedOrApi, titleMapper, userActiveKey } = pageProps
 
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
@@ -55,11 +49,15 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   }
 
   // prettier-ignore
-  const stats: Detail[][] = [
+  const contents: { titleKey: TitleKey, content: React.ReactNode, show?: boolean }[][] = [
     [
-      { title: t`Status`, value: <CellHealthStatus {...cellProps}  type="status"  /> },
-      { title: t`Health`, value: <CellHealthStatus {...cellProps} type="percent"  /> },
-      { title: t`Borrow APY`, value: <CellRate {...cellProps} type="borrow" /> }
+      { titleKey: TITLE.healthStatus, content: <CellHealthStatus {...cellProps} type="status" /> },
+      { titleKey: TITLE.healthPercent, content: <CellHealthStatus {...cellProps} type="percent"  /> },
+    ],
+    [
+      { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
+      { titleKey: TITLE.liquidationBandRange, content: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvanceMode },
+      { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
     ],
     [
       { title: t`Liquidation range`, value: <CellLiquidationRange {...cellProps} type='range' /> },
@@ -67,7 +65,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { title: t`Range %`, value: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
     ],
     [
-      { title: t`Collateral composition`, value: <CellLoanState {...cellProps} />, className: 'isRow' },
+      { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }
     ]
   ]
 
@@ -76,41 +74,37 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       {showConnectWallet ? (
         <DetailsConnectWallet />
       ) : foundLoan ? (
-        <Wrapper>
+        <div>
           {isSoftLiquidation && (
             <AlertContent>
               <DetailsUserLoanAlertSoftLiquidation {...pageProps} />
             </AlertContent>
           )}
 
-          <Content paddingTop isBorderBottom>
+          <ContentWrapper paddingTop isBorderBottom>
             <StatsWrapper>
-              <CellUserMain {...cellProps} type="borrow" />
+              <CellUserMain {...pageProps} type="borrow" />
 
               {/* stats */}
-              <Box>
-                {stats.map((detailSection) => {
-                  return (
-                    <ContentStats key={detailSection[0].title}>
-                      {detailSection.map(({ className = '', title, value, show }) => {
-                        return (
-                          _showContent(show) && (
-                            <ContentStat className={className} key={`detail-${title}`}>
-                              <ContentStatTitle>{title}</ContentStatTitle>
-                              <ContentStatValue>{value}</ContentStatValue>
-                            </ContentStat>
-                          )
-                        )
-                      })}
-                    </ContentStats>
-                  )
-                })}
-              </Box>
+              <ListInfoItemsWrapper>
+                {contents.map((groupedContents, idx) => (
+                  <ListInfoItems key={`contents${idx}`}>
+                    {groupedContents.map(({ titleKey, content, show, ...props }, idx) => {
+                      if (!_showContent(show)) return null
+                      return (
+                        <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                          {content}
+                        </ListInfoItem>
+                      )
+                    })}
+                  </ListInfoItems>
+                ))}
+              </ListInfoItemsWrapper>
             </StatsWrapper>
-          </Content>
+          </ContentWrapper>
 
           {/* CHARTS */}
-          <Content>
+          <ContentWrapper>
             {networks[rChainId]?.pricesData && !chartExpanded && (
               <Box padding="0 0 var(--spacing-normal)">
                 <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
@@ -121,26 +115,21 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
             ) : (
               <DetailsUserLoanChartLiquidationRange {...pageProps} />
             )}
-          </Content>
-        </Wrapper>
+          </ContentWrapper>
+        </div>
       ) : (
-        <Content paddingTop>
+        <ContentWrapper paddingTop>
           <AlertNoLoanFound alertType="" owmId={rOwmId} />
-        </Content>
+        </ContentWrapper>
       )}
     </div>
   )
 }
 
-const AlertContent = styled(Content)`
+const AlertContent = styled(ContentWrapper)`
   & {
     padding-top: var(--spacing-normal);
     padding-bottom: 0;
-  }
-`
-
-const Wrapper = styled.div`
-  @media (min-width: ${breakpoints.sm}rem) {
   }
 `
 

@@ -4,9 +4,9 @@ import React, { useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { FilterType, SortId } from '@/components/PageMarketList/utils'
+import { TITLE } from '@/constants'
+import { FilterType } from '@/components/PageMarketList/utils'
 import { _showContent } from '@/utils/helpers'
-import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
@@ -20,16 +20,16 @@ import CellInPool from '@/components/SharedCellData/CellInPool'
 import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellRate from '@/components/SharedCellData/CellRate'
+import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
-import TextCaption from '@/ui/TextCaption'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 type Content = {
-  sortIdKey: SortId
+  tableKey: TitleKey
   show?: boolean
   showLine?: boolean
   content: React.ReactNode
@@ -43,8 +43,8 @@ const TableRowContent = ({
   filterTypeKey,
   loanExists,
   userActiveKey,
+  titleMapper,
   handleCellClick,
-  tableLabelsMapper,
 }: TableRowProps) => {
   const userVaultShares = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
 
@@ -71,30 +71,28 @@ const TableRowContent = ({
   const content: { borrow: Content[][], supply: Content[][] } = {
     [FilterType.borrow]: [
       [
-        { sortIdKey: SortId.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
-        { sortIdKey: SortId.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
       ],
       [
-        { sortIdKey: SortId.rateBorrow, content: <CellRate {...cellProps} type='borrow' /> }
+        { tableKey: TITLE.rateBorrow, content: <CellBorrowRate {...cellProps} /> },
       ],
       [
-        { sortIdKey: SortId.available, content: <CellCap {...cellProps} type='available' /> },
-        { sortIdKey: SortId.totalDebt, content: <CellLoanTotalDebt {...cellProps} /> },
+        { tableKey: TITLE.available, content: <CellCap {...cellProps} type='available' /> },
+        { tableKey: TITLE.totalDebt, content: <CellLoanTotalDebt {...cellProps} /> },
+        { tableKey: TITLE.cap, content: <CellCap {...cellProps} type='cap' /> },
+        { tableKey: TITLE.utilization, content: <CellCap {...cellProps} type='utilization' /> },
       ],
       [
-        { sortIdKey: SortId.cap, content: <CellCap {...cellProps} type='cap' /> },
-        { sortIdKey: SortId.cap, content: <CellCap {...cellProps} type='utilization' /> },
-      ],
-      [
-        { sortIdKey: SortId.totalCollateralValue, content: <CellTotalCollateralValue {...cellProps} /> }
+        { tableKey: TITLE.totalCollateralValue, content: <CellTotalCollateralValue {...cellProps} /> }
       ]
     ],
     [FilterType.supply]: [
       [
-        { sortIdKey: SortId.myVaultShares, content: <CellUserVaultShares {...cellProps} />, show: showMyVaultCell, showLine: true }
+        { tableKey: TITLE.myVaultShares, content: <CellUserVaultShares {...cellProps} />, show: showMyVaultCell, showLine: true }
       ],
       [
-        { sortIdKey: SortId.totalApr, content: <CellRewards {...cellProps} type='crv-other' /> }
+        { tableKey: TITLE.totalApr, content: <CellRewards {...cellProps} /> }
       ]
     ]
   }
@@ -107,42 +105,26 @@ const TableRowContent = ({
         {showInMarket && <CellInPool {...cellProps} isInMarket />}
         <MobileLabelContent>
           <Box onClick={() => handleCellClick()}>
-            <TokensWrapper>
-              <Box>
-                {filterTypeKey === 'borrow' ? (
-                  <>
-                    <TextCaption isBold isCaps>
-                      Collateral
-                    </TextCaption>{' '}
-                    <CellToken {...cellProps} type="collateral" module="borrow" />
-                  </>
-                ) : (
-                  <>
-                    <TextCaption isBold isCaps>
-                      Lend
-                    </TextCaption>{' '}
-                    <CellToken {...cellProps} type="borrowed" module="supply" />
-                  </>
-                )}
-              </Box>
-              <Box>
-                {filterTypeKey === 'borrow' ? (
-                  <>
-                    <TextCaption isBold isCaps>
-                      Borrow
-                    </TextCaption>{' '}
-                    <CellToken {...cellProps} type="borrowed" module="borrow" />
-                  </>
-                ) : (
-                  <>
-                    <TextCaption isBold isCaps>
-                      Collateral
-                    </TextCaption>{' '}
-                    <CellToken {...cellProps} type="collateral" module="supply" />
-                  </>
-                )}
-              </Box>
-            </TokensWrapper>
+            <StyledTokens>
+              {filterTypeKey === 'borrow' ? (
+                <StyledToken title={t`Collateral`}>
+                  <CellToken {...cellProps} type="collateral" module="borrow" />
+                </StyledToken>
+              ) : (
+                <StyledToken title={t`Lend`}>
+                  <CellToken {...cellProps} type="borrowed" module="supply" />
+                </StyledToken>
+              )}
+              {filterTypeKey === 'borrow' ? (
+                <StyledToken title={t`Borrow`}>
+                  <CellToken {...cellProps} type="borrowed" module="borrow" />
+                </StyledToken>
+              ) : (
+                <StyledToken title={t`Collateral`}>
+                  <CellToken {...cellProps} type="collateral" module="supply" />
+                </StyledToken>
+              )}
+            </StyledTokens>
             <CellMaxLeverage {...cellProps} showTitle size="sm" />
           </Box>
           <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
@@ -166,25 +148,16 @@ const TableRowContent = ({
 
                   return (
                     <React.Fragment key={detailsKey}>
-                      <DetailContent $detailsLength={details.length}>
-                        {details.map(({ sortIdKey, content, show }, idx) => {
+                      <ListInfoItems>
+                        {details.map(({ tableKey, content, show }, idx) => {
                           if (!_showContent(show)) return null
-
-                          const label = tableLabelsMapper[sortIdKey]?.name ?? ''
-                          const key = `detail-${label}-${idx}`
-                          const detailsLength = details.length
-                          const isLast = detailsLength - 1 === idx
-
                           return (
-                            <DetailWrapper key={key} detailsLength={detailsLength} isLast={isLast}>
-                              <TextCaption isBold isCaps>
-                                {label}
-                              </TextCaption>
+                            <ListInfoItem key={`info-${idx}`} {...titleMapper[tableKey]}>
                               {content}
-                            </DetailWrapper>
+                            </ListInfoItem>
                           )
                         })}
-                      </DetailContent>
+                      </ListInfoItems>
                       {showLine && <hr />}
                     </React.Fragment>
                   )
@@ -229,26 +202,8 @@ const TableRowMobile = (props: TableRowProps) => {
   )
 }
 
-const DetailWrapper = styled.div<{ detailsLength: number; isLast: boolean }>`
-  display: grid;
-  grid-gap: var(--spacing-1);
-  ${({ detailsLength }) => detailsLength === 1 && 'width: 100%'};
-  ${({ isLast }) => !isLast && `margin-right: var(--spacing-narrow)`};
-`
-
-const DetailContent = styled.div<{ $detailsLength: number }>`
-  display: grid;
-  grid-template-columns: ${({ $detailsLength }) => `repeat(${$detailsLength}, 1fr)`};
-  grid-gap: var(--spacing-1);
-  margin-top: var(--spacing-2);
-`
-
-const DetailsContent = styled.div`
+const DetailsContent = styled(ListInfoItemsWrapper)`
   margin-top: var(--spacing-3);
-
-  > ${DetailContent}:not(:last-child) {
-    margin-bottom: var(--spacing-3);
-  }
 `
 
 const TableItem = styled(Tr)`
@@ -296,14 +251,13 @@ const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
 `
 
-const TokensWrapper = styled.div`
+const StyledTokens = styled(ListInfoItems)`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: var(--spacing-1);
+`
 
-  @media (min-width: ${breakpoints.sm}rem) {
-    grid-template-columns: 1fr 1fr;
-  }
+const StyledToken = styled(ListInfoItem)`
+  margin-bottom: 0;
 `
 
 export default TableRowMobile

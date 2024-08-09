@@ -35,3 +35,26 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export enum TITLE {
+  isInMarket = 'isInMarket',
+  name = 'name',
+  tokenCollateral = 'tokenCollateral',
+  tokenBorrow = 'tokenBorrow',
+  rate = 'rate',
+  available = 'available',
+  totalBorrowed = 'totalBorrowed',
+  cap = 'cap',
+  totalCollateral = 'totalCollateral',
+  myDebt = 'myDebt',
+  myHealth = 'myHealth',
+  healthStatus = 'healthStatus',
+  healthPercent = 'healthPercent',
+  liquidationRange = 'liquidationRange',
+  liquidationBandRange = 'liquidationBandRange',
+  liquidationRangePercent = 'liquidationRangePercent',
+  lossCollateral = 'lossCollateral',
+  lossAmount = 'lossAmount',
+  lossPercent = 'lossPercent',
+  llammaBalances = 'llammaBalances',
+}

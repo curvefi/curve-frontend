@@ -25,7 +25,6 @@ const ListInfoItem = ({
   className = '',
   as,
   isFull,
-  mainValue,
   title,
   titleNoCap,
   titleDescription,
@@ -33,7 +32,9 @@ const ListInfoItem = ({
   tooltipProps,
   ...props
 }: PropsWithChildren<Props>) => {
-  const parsedTitleOpacity = mainValue ? 1 : null
+  const { mainValue } = props
+  const isMain = 'mainValue' in props
+  const parsedTitleOpacity = isMain ? 1 : null
 
   return (
     // @ts-ignore
@@ -41,7 +42,7 @@ const ListInfoItem = ({
       {...props}
       {...(as ? { as } : {})}
       className={className}
-      {...(mainValue ? { isMain: !!mainValue, as: 'div' } : {})}
+      {...(isMain ? { isMain, as: 'div' } : {})}
       isFull={isFull}
     >
       {tooltip ? (
@@ -58,7 +59,7 @@ const ListInfoItem = ({
           {title} {titleDescription ? <TitleDescription>{titleDescription}</TitleDescription> : ''}
         </Title>
       )}
-      {!!mainValue && <MainValue>{mainValue}</MainValue>}
+      {isMain && <MainValue>{mainValue}</MainValue>}
       {children ?? '-'}
     </Wrapper>
   )

@@ -35,4 +35,5 @@ export type PageLoanManageProps = {
   rChainId: ChainId
   rCollateralId: string
   rFormType: FormType
+  titleMapper: TitleMapper
 }
