@@ -54,6 +54,16 @@
       "network": "ethereum",
       "multiplier": "4",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x6e9b6660b94fa74a8087d7ee14dc28698249d242",
+      "network": "fraxtal",
+      "multiplier": "4",
+      "tags": ["points"]
     }
   ]
 }
