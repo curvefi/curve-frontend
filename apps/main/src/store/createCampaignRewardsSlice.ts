@@ -37,6 +37,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
       let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key
       campaigns.forEach((campaign: CampaignRewardsItem) => {
@@ -44,15 +45,18 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
           if (!campaignRewardsMapper[pool.address.toLowerCase()]) {
             campaignRewardsMapper[pool.address.toLowerCase()] = []
           }
-          campaignRewardsMapper[pool.address.toLowerCase()].push({
-            campaignName: campaign.campaignName,
-            platform: campaign.platform,
-            description: campaign.description,
-            platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
-            dashboardLink: campaign.dashboardLink,
-            ...pool,
-            address: pool.address.toLowerCase(),
-          })
+
+          if (pool.network.toLowerCase() === network.toLowerCase()) {
+            campaignRewardsMapper[pool.address.toLowerCase()].push({
+              campaignName: campaign.campaignName,
+              platform: campaign.platform,
+              description: campaign.description,
+              platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
+              dashboardLink: campaign.dashboardLink,
+              ...pool,
+              address: pool.address.toLowerCase(),
+            })
+          }
         })
       })
 
