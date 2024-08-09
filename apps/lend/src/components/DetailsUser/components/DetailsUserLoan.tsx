@@ -15,7 +15,7 @@ import CellUserMain from '@/components/SharedCellData/CellUserMain'
 import CellLlammaBalances from '@/components/SharedCellData/CellLlammaBalances'
 import CellLiquidationRange from '@/components/SharedCellData/CellLiquidationRange'
 import CellLoanState from '@/components/SharedCellData/CellLoanState'
-import CellRate from '@/components/SharedCellData/CellRate'
+import CellLoss from '@/components/SharedCellData/CellLoss'
 import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserLoanAlertSoftLiquidation from '@/components/DetailsUser/components/DetailsUserLoanAlertSoftLiquidation'
 import DetailsUserLoanChartBandBalances from '@/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
@@ -60,9 +60,9 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
       { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
     ],
     [
-      { title: t`Liquidation range`, value: <CellLiquidationRange {...cellProps} type='range' /> },
-      { title: t`Band range`, value: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvanceMode },
-      { title: t`Range %`, value: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
+      { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
+      { titleKey: TITLE.lossAmount, content: <CellLoss {...cellProps} type='amount' /> },
+      { titleKey: TITLE.lossPercent, content: <CellLoss {...cellProps} type='percent' /> },
     ],
     [
       { titleKey: TITLE.llammaBalances, content: <CellLlammaBalances {...cellProps} /> }

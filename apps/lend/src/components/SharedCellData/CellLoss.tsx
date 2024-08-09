@@ -3,7 +3,6 @@ import React from 'react'
 import useStore from '@/store/useStore'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import Chip from '@/ui/Typography/Chip'
 
 const SMALL_NUMBER = 0.0001
 
@@ -20,20 +19,12 @@ const CellLoss = ({ userActiveKey, type }: { userActiveKey: string; type: 'amoun
       ) : !details ? (
         '-'
       ) : type === 'amount' ? (
-        <>
-          {Number(loss) <= SMALL_NUMBER && Number(loss) !== 0 ? (
-            <Chip tooltip={loss}>{`<${SMALL_NUMBER}`}</Chip>
-          ) : (
-            formatNumber(loss)
-          )}
-        </>
+        <>{Number(loss) <= SMALL_NUMBER || Number(loss) === 0 ? 0 : formatNumber(loss)}</>
       ) : type === 'percent' ? (
         <>
-          {Number(loss_pct) <= SMALL_NUMBER && Number(loss) !== 0 ? (
-            <Chip tooltip={loss_pct}>{`<${SMALL_NUMBER}%`}</Chip>
-          ) : (
-            formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })
-          )}
+          {Number(loss_pct) <= SMALL_NUMBER || Number(loss_pct) === 0
+            ? 0
+            : formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })}
         </>
       ) : null}
     </>

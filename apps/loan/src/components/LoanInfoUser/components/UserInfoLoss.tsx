@@ -37,6 +37,9 @@ const UserInfoLoss = ({
   }
 
   if (type === 'lossCollateral') {
+    const depositedCollateral = formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })
+    const currentCollateralEst = formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })
+
     return (
       <Chip
         size="md"
@@ -44,10 +47,10 @@ const UserInfoLoss = ({
           <Box gridGap={3}>
             <Box gridGap={1} padding="0.25rem">
               <Box grid gridTemplateColumns="140px auto" gridGap={1}>
-                <strong>Deposited</strong> <Value>{formatNumber(deposited_collateral)}</Value>
+                <strong>Deposited</strong> <Value>{depositedCollateral}</Value>
               </Box>
               <Box grid gridTemplateColumns="140px auto" gridGap={1}>
-                <strong>Current Bal. (est.)*</strong> <Value>- {formatNumber(current_collateral_estimation)}</Value>
+                <strong>Current Bal. (est.)*</strong> <Value>- {currentCollateralEst}</Value>
               </Box>
               <hr />
               <div className="right">
@@ -60,26 +63,19 @@ const UserInfoLoss = ({
           </Box>
         }
       >
-        {`${formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })}`}{' '}
-        <TextCaption>/ {formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })}</TextCaption>
+        {`${currentCollateralEst}`} <TextCaption>/ {depositedCollateral}</TextCaption>
       </Chip>
     )
   }
 
   if (type === 'lossAmount') {
-    return Number(loss) <= SMALL_AMOUNT && Number(loss) !== 0 ? (
-      <Chip tooltip={loss}>{SMALL_AMOUNT}</Chip>
-    ) : (
-      formatNumber(loss)
-    )
+    return Number(loss) <= SMALL_AMOUNT || Number(loss) === 0 ? 0 : formatNumber(loss)
   }
 
   if (type === 'lossPercent') {
-    return Number(loss_pct) <= SMALL_AMOUNT && Number(loss_pct) !== 0 ? (
-      <Chip tooltip={loss_pct}>{SMALL_AMOUNT}</Chip>
-    ) : (
-      formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT })
-    )
+    return Number(loss_pct) <= SMALL_AMOUNT || Number(loss_pct) === 0
+      ? 0
+      : formatNumber(loss_pct, { ...FORMAT_OPTIONS.PERCENT })
   }
 
   return null

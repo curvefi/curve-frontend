@@ -28,6 +28,9 @@ const CellLoanState = ({
     return Math.abs(Number(deposited_collateral) - Number(current_collateral_estimation)).toString()
   }, [current_collateral_estimation, deposited_collateral])
 
+  const depositedCollateral = formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })
+  const currentCollateralEst = formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })
+
   return (
     <>
       {typeof current_collateral_estimation === 'undefined' ||
@@ -43,11 +46,10 @@ const CellLoanState = ({
             <Box gridGap={3}>
               <Box gridGap={1} padding="0.25rem">
                 <Box grid gridTemplateColumns="140px auto" gridGap={1}>
-                  <strong>Deposited</strong> <StyledValue>{formatNumber(deposited_collateral)}</StyledValue>
+                  <strong>Deposited</strong> <StyledValue>{depositedCollateral}</StyledValue>
                 </Box>
                 <Box grid gridTemplateColumns="140px auto" gridGap={1}>
-                  <strong>Current Bal. (est.)*</strong>{' '}
-                  <StyledValue>- {formatNumber(current_collateral_estimation)}</StyledValue>
+                  <strong>Current Bal. (est.)*</strong> <StyledValue>- {currentCollateralEst}</StyledValue>
                 </Box>
                 <hr />
                 <div className="right">
@@ -60,8 +62,7 @@ const CellLoanState = ({
             </Box>
           }
         >
-          {`${formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })}`}{' '}
-          <TextCaption>/ {formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })}</TextCaption>
+          {`${currentCollateralEst}`} <TextCaption>/ {depositedCollateral}</TextCaption>
         </Chip>
       )}
     </>
