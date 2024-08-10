@@ -183,9 +183,7 @@ const VoteWrapper = styled.div`
   padding: var(--spacing-3);
 `
 
-const StyledVoteCountdown = styled(VoteCountdown)`
-  /* margin-left: auto; */
-`
+const StyledVoteCountdown = styled(VoteCountdown)``
 
 const ProposalExecuted = styled.h4`
   border: 1px solid var(--gray-500);
