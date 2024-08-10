@@ -222,6 +222,12 @@ declare global {
     epoch: number
   }
 
+  interface UserMapper {
+    [userAddress: string]: {
+      ens: string
+    }
+  }
+
   interface UserVoteData {
     voteId: number
     voteType: 'PARAMETER' | 'OWNERSHIP'
@@ -346,6 +352,28 @@ declare global {
     data: UserProposalVoteResData[]
   }
 
+  type UserGaugeVoteResData = {
+    gauge: string
+    gauge_name: string
+    weight: number
+    block_number: number
+    timestamp: string
+    transaction: string
+  }
+
+  type UserGaugeVoteData = {
+    gauge: string
+    gauge_name: string
+    weight: number
+    block_number: number
+    timestamp: number
+    transaction: string
+  }
+
+  type UserGaugeVotesRes = {
+    votes: UserGaugeVoteResData[]
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
@@ -355,6 +383,7 @@ declare global {
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
   type UserLocksSortBy = 'date' | 'amount'
+  type UserGaugeVotesSortBy = 'weight' | 'timestamp'
   type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
   type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 }

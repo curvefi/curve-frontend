@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { WalletState } from '@web3-onboard/core'
 
-import { Contract, formatEther } from 'ethers'
+import { Contract } from 'ethers'
 import produce from 'immer'
 
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
@@ -36,17 +36,23 @@ type SliceState = {
       locks: UserLock[]
     }
   }
-  userMapper: {
+  userGaugeVotesMapper: {
     [userAddress: string]: {
-      ens: string
+      fetchingState: FetchingState
+      votes: UserGaugeVoteData[]
     }
   }
+  userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
     order: 'asc' | 'desc'
   }
   userProposalVotesSortBy: {
     key: UserProposalVotesSortBy
+    order: 'asc' | 'desc'
+  }
+  userGaugeVotesSortBy: {
+    key: UserGaugeVotesSortBy
     order: 'asc' | 'desc'
   }
 }
@@ -59,9 +65,11 @@ export type UserSlice = {
     updateUserData(curve: CurveApi, wallet: WalletState): void
     getUserEns(userAddress: string): void
     getUserProposalVotes(userAddress: string): void
-    setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
+    getUserGaugeVotes(userAddress: string): void
     getUserLocks(userAddress: string): void
+    setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
+    setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -84,6 +92,7 @@ const DEFAULT_STATE: SliceState = {
   userMapper: {},
   userVotesMapper: {},
   userProposalVotesMapper: {},
+  userGaugeVotesMapper: {},
   userLocksMapper: {},
   userLocksSortBy: {
     key: 'date',
@@ -91,6 +100,10 @@ const DEFAULT_STATE: SliceState = {
   },
   userProposalVotesSortBy: {
     key: 'vote_id',
+    order: 'desc',
+  },
+  userGaugeVotesSortBy: {
+    key: 'timestamp',
     order: 'desc',
   },
 }
@@ -263,6 +276,49 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
+    getUserGaugeVotes: async (userAddress: string) => {
+      const address = userAddress.toLowerCase()
+
+      set(
+        produce((state) => {
+          state[sliceKey].userGaugeVotesMapper[address] = {
+            fetchingState: 'LOADING',
+            votes: [],
+          }
+        })
+      )
+
+      try {
+        const gaugeVotesRes = await fetch(`https://prices.curve.fi/v1/dao/gauges/votes/user/${address}`)
+        const gaugeVotes: UserGaugeVotesRes = await gaugeVotesRes.json()
+
+        const formattedVotes = gaugeVotes.votes.map((vote) => {
+          return {
+            ...vote,
+            timestamp: new Date(vote.timestamp).getTime(),
+          }
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVotesMapper[address] = {
+              fetchingState: 'SUCCESS',
+              votes: formattedVotes,
+            }
+          })
+        )
+      } catch (error) {
+        console.error(error)
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVotesMapper[address] = {
+              fetchingState: 'ERROR',
+              votes: [],
+            }
+          })
+        )
+      }
+    },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
       const address = userAddress.toLowerCase()
 
@@ -340,6 +396,41 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           state[sliceKey].userProposalVotesMapper[address].votes = sortedVotes
         })
       )
+    },
+    setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => {
+      const address = userAddress.toLowerCase()
+
+      const {
+        userGaugeVotesMapper: {
+          [address]: { votes },
+        },
+        userGaugeVotesSortBy,
+      } = get()[sliceKey]
+
+      let order = userGaugeVotesSortBy.order
+      if (sortBy === userGaugeVotesSortBy.key) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            const reversedEntries = [...votes].reverse()
+            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].userGaugeVotesSortBy.order = order
+          })
+        )
+      } else {
+        const sortedEntries = [...votes].sort((a, b) => {
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVotesSortBy.sortBy = sortBy
+            state[sliceKey].userGaugeVotesSortBy.order = 'desc'
+            state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
+          })
+        )
+      }
     },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
       set(

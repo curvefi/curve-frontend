@@ -32,7 +32,6 @@ const Proposals = () => {
     setProposals,
     proposals,
   } = useStore((state) => state.proposals)
-  const isSmUp = useStore((state) => state.isSmUp)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const navigate = useNavigate()
   const curve = useStore((state) => state.curve)
