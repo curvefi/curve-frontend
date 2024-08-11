@@ -43,7 +43,6 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       fetchingState={userProposalVotesMapper[userAddress]?.fetchingState ?? 'LOADING'}
       columns={VOTES_LABELS}
       sortBy={userProposalVotesSortBy}
-      title={t`Proposal Votes`}
       errorMessage={t`An error occurred while fetching proposal votes.`}
       setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
       getData={() => getUserProposalVotes(userAddress)}

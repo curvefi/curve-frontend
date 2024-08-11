@@ -293,8 +293,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const gaugeVotes: UserGaugeVotesRes = await gaugeVotesRes.json()
 
         const formattedVotes = gaugeVotes.votes.map((vote) => {
+          const gaugeName = vote.gauge_name
+            ? vote.gauge_name.replace(/(Curve\.fi |Gauge Deposit)/g, '').trim()
+            : vote.gauge_name
+
           return {
             ...vote,
+            gauge_name: gaugeName,
             timestamp: new Date(vote.timestamp).getTime(),
           }
         })
@@ -352,7 +357,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userLocksSortBy.sortBy = sortBy
+            state[sliceKey].userLocksSortBy.key = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
             state[sliceKey].userLocksMapper[address].locks = sortedEntries
           })
@@ -425,7 +430,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVotesSortBy.sortBy = sortBy
+            state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
             state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
           })

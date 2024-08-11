@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import useStore from '@/store/useStore'
 
@@ -10,6 +10,7 @@ import UserHeader from './UserHeader'
 import UserProposalVotesTable from './UserProposalVotesTable'
 import UserLocksTable from './UserLocksTable'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
+import SubNav from '@/components/SubNav'
 
 type Props = {
   routerParams: {
@@ -24,6 +25,13 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
   } = useStore((state) => state.vecrv)
   const { getUserEns, userMapper } = useStore((state) => state.user)
   const { provider } = useStore((state) => state.wallet)
+  const [activeNavKey, setNavKey] = useState('proposals')
+
+  const navItems = [
+    { key: 'proposals', label: t`User Proposal Votes` },
+    { key: 'gauge_votes', label: t`User Gauge Votes` },
+    { key: 'locks', label: t`User Locks` },
+  ]
 
   const userAddress = rUserAddress.toLowerCase()
 
@@ -59,9 +67,14 @@ const UserPage = ({ routerParams: { rUserAddress } }: Props) => {
       <UserPageContainer variant="secondary">
         <UserHeader userAddress={userAddress} userMapper={userMapper} />
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
-        <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
-        <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
-        <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
+        <SubNav activeKey={activeNavKey} navItems={navItems} setNavChange={setNavKey} />
+        {activeNavKey === 'proposals' && (
+          <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
+        )}
+        {activeNavKey === 'gauge_votes' && (
+          <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
+        )}
+        {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
       </UserPageContainer>
     </Wrapper>
   )
