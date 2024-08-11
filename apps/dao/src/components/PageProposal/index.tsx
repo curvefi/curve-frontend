@@ -16,7 +16,7 @@ import IconButton from '@/ui/IconButton'
 import Tooltip from '@/ui/Tooltip'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
+import { InternalLink } from '@/ui/Link'
 import VoteCountdown from '../VoteCountdown'
 import Script from './components/Script'
 import VotesStatusBox from '../VotesStatusBox'
@@ -98,7 +98,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
   return (
     <Wrapper>
       <BackButtonWrapper variant="secondary">
-        <BackButton variant="text" onClick={() => navigate(`/ethereum/proposals/`)}>
+        <BackButton variant="text" onClick={() => navigate(`/ethereum/proposals`)}>
           <Icon name="ArrowLeft" size={16} />
           {t`Back to proposals`}
         </BackButton>
@@ -210,9 +210,13 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <VoteInformationBox>
                 <Box>
                   <SubTitle>{t`Proposer`}</SubTitle>
-                  <StyledExternalLink href={networks[1].scanAddressPath(proposal?.creator)}>
+                  <StyledExternalLink
+                    onClick={(e) => {
+                      e.preventDefault()
+                      navigate(`/ethereum/user/${proposal?.creator}`)
+                    }}
+                  >
                     {shortenTokenAddress(proposal?.creator)}
-                    <Icon name="Launch" size={16} />
                   </StyledExternalLink>
                 </Box>
                 <Box>
@@ -461,7 +465,7 @@ const MetaDataParaphraph = styled.p`
   word-break: break-word;
 `
 
-const StyledExternalLink = styled(ExternalLink)`
+const StyledExternalLink = styled(InternalLink)`
   display: flex;
   align-items: end;
   gap: var(--spacing-1);

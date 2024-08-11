@@ -5,35 +5,38 @@ import Button from '@/ui/Button'
 
 interface TableHeaderProps<T> {
   columns: { key: keyof T; label: string; disabled?: boolean }[]
-  title: string
+  title?: string
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   setSortBy: (key: keyof T) => void
   minWidth: number
 }
 
-const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth }: TableHeaderProps<T>) => (
-  <TableHeaderWrapper>
-    {title && <TableTitle>{title}</TableTitle>}
-    <TableContainer columns={columns.length} minWidth={minWidth}>
-      {columns.map((column) => (
-        <TableTitleButton
-          disabled={column.disabled}
-          key={column.key as string}
-          variant="text"
-          onClick={() => !column.disabled && setSortBy(column.key)}
-        >
-          {column.label}
-          {sortBy.key === column.key && (
-            <StyledIcon size={16} name={sortBy.order === 'asc' ? 'ArrowUp' : 'ArrowDown'} />
-          )}
-        </TableTitleButton>
-      ))}
-    </TableContainer>
-  </TableHeaderWrapper>
-)
+const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth }: TableHeaderProps<T>) => {
+  return (
+    <TableHeaderWrapper noTitle={title === undefined}>
+      {title && <TableTitle>{title}</TableTitle>}
+      <TableContainer columns={columns.length} minWidth={minWidth}>
+        {columns.map((column) => (
+          <TableTitleButton
+            disabled={column.disabled}
+            key={column.key as string}
+            variant="text"
+            onClick={() => !column.disabled && setSortBy(column.key)}
+          >
+            {column.label}
+            {sortBy.key === column.key && (
+              <StyledIcon size={16} name={sortBy.order === 'asc' ? 'ArrowUp' : 'ArrowDown'} />
+            )}
+          </TableTitleButton>
+        ))}
+      </TableContainer>
+    </TableHeaderWrapper>
+  )
+}
 
-const TableHeaderWrapper = styled.div`
+const TableHeaderWrapper = styled.div<{ noTitle: boolean }>`
   background: var(--box_header--secondary--background-color);
+  padding: ${({ noTitle }) => (noTitle ? 'var(--spacing-3)' : '0')} 0 0 0;
 `
 
 const TableContainer = styled.div<{ columns: number; minWidth: number }>`

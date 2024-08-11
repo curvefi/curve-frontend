@@ -41,7 +41,6 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
       fetchingState={userGaugeVotesMapper[userAddress]?.fetchingState ?? 'LOADING'}
       columns={GAUGE_VOTES_LABELS}
       sortBy={userGaugeVotesSortBy}
-      title={t`Gauge Votes`}
       errorMessage={t`An error occurred while fetching user gauge votes.`}
       setSortBy={(key) => setUserGaugeVotesSortBy(userAddress, key as UserGaugeVotesSortBy)}
       getData={() => getUserGaugeVotes(userAddress.toLowerCase())}
@@ -53,7 +52,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
           <TableData className="left-padding">{gaugeVote.gauge_name}</TableData>
           <TableData className="left-padding">{shortenTokenAddress(gaugeVote.gauge)}</TableData>
           <TableData className={userGaugeVotesSortBy.key === 'weight' ? 'active left-padding' : 'left-padding'}>
-            {formatNumber(gaugeVote.weight, { showDecimalIfSmallNumberOnly: true })}
+            {(gaugeVote.weight / 100).toFixed(2)}%
           </TableData>
         </TableRowWrapper>
       )}

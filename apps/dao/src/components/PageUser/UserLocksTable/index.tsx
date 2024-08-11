@@ -50,7 +50,6 @@ const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => 
       fetchingState={userLocksMapper[userAddress]?.fetchingState ?? 'LOADING'}
       columns={LOCKS_LABELS}
       sortBy={userLocksSortBy}
-      title={t`veCRV Locking Activity`}
       errorMessage={t`An error occurred while fetching user locking activity.`}
       setSortBy={(key) => setUserLocksSortBy(userAddress, key as UserLocksSortBy)}
       getData={() => getUserLocks(userAddress.toLowerCase())}

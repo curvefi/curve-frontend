@@ -18,7 +18,7 @@ interface PaginatedTableProps<T> {
   columns: Column<T>[]
   data: T[]
   fetchingState: 'LOADING' | 'SUCCESS' | 'ERROR'
-  title: string
+  title?: string
   errorMessage: string
   setSortBy: (key: keyof T) => void
   getData: () => void
