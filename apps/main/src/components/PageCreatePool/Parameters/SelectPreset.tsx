@@ -126,7 +126,7 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                 </SelectButtonWrapper>
               </>
             )}
-            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
+            {swapType === CRYPTOSWAP && tokenAmount === 2 && (
               <>
                 <SelectButtonWrapper>
                   <SelectButton
