@@ -110,10 +110,6 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
-              </>
-            )}
-            {swapType === CRYPTOSWAP && tokenAmount === 2 && (
-              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 2}
@@ -122,13 +118,16 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     description={i18n._(POOL_PRESETS[2].description)}
                     handleClick={() => {
                       updatePoolPresetIndex(2)
-                      setMidValue(i18n._(POOL_PRESETS[2].defaultParams.midFee))
-                      setOutValue(i18n._(POOL_PRESETS[2].defaultParams.outFee))
+                      setStableFeeValue(i18n._(POOL_PRESETS[2].defaultParams.stableSwapFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
+              </>
+            )}
+            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
+              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 3}
@@ -174,10 +173,6 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
-              </>
-            )}
-            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
-              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 6}
@@ -193,6 +188,10 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
+              </>
+            )}
+            {swapType === CRYPTOSWAP && tokenAmount === 3 && (
+              <>
                 <SelectButtonWrapper>
                   <SelectButton
                     selected={poolPresetIndex === 7}
@@ -203,6 +202,21 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                       updatePoolPresetIndex(7)
                       setMidValue(i18n._(POOL_PRESETS[7].defaultParams.midFee))
                       setOutValue(i18n._(POOL_PRESETS[7].defaultParams.outFee))
+                      overlayTriggerState.close()
+                    }}
+                    paddingSize={'small'}
+                  />
+                </SelectButtonWrapper>
+                <SelectButtonWrapper>
+                  <SelectButton
+                    selected={poolPresetIndex === 8}
+                    name={POOL_PRESETS[8].name}
+                    descriptionName={i18n._(POOL_PRESETS[8].descriptionName)}
+                    description={i18n._(POOL_PRESETS[8].description)}
+                    handleClick={() => {
+                      updatePoolPresetIndex(8)
+                      setMidValue(i18n._(POOL_PRESETS[8].defaultParams.midFee))
+                      setOutValue(i18n._(POOL_PRESETS[8].defaultParams.outFee))
                       overlayTriggerState.close()
                     }}
                     paddingSize={'small'}
