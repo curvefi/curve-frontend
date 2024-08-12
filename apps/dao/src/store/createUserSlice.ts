@@ -216,7 +216,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           })
         )
       } catch (error) {
-        console.error(error)
         set(
           produce((state) => {
             state[sliceKey].userProposalVotesMapper[address] = {
@@ -304,11 +303,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }
         })
 
+        const sortedVotes = formattedVotes.sort((a, b) => b.weight - a.weight).sort((a, b) => b.timestamp - a.timestamp)
+
         set(
           produce((state) => {
             state[sliceKey].userGaugeVotesMapper[address] = {
               fetchingState: 'SUCCESS',
-              votes: formattedVotes,
+              votes: sortedVotes,
             }
           })
         )

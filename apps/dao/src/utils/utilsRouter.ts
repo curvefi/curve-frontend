@@ -13,7 +13,7 @@ export function getPath({ locale, network, ...rest }: Params, rerouteRoute: stri
 }
 
 export function parseParams(params: Params, chainIdNotRequired?: boolean) {
-  const { proposalId, userAddress } = params
+  const { proposalId, userAddress, gaugeAddress } = params
 
   const paths = window.location.hash.substring(2).split('/')
 
@@ -21,7 +21,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   const network = getNetworkFromUrl()
 
   // subdirectory
-  let rSubdirectory = ROUTE.PAGE_PROPOSALS.substring(1)
+  let rSubdirectory = ROUTE.PAGE_PROPOSALS.substring(1) || ROUTE.PAGE_GAUGES.substring(1)
   let rSubdirectoryUseDefault = true
 
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
@@ -49,6 +49,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     rSubdirectoryUseDefault,
     rProposalId: proposalId,
     rUserAddress: userAddress,
+    rGaugeAddress: gaugeAddress,
     redirectPathname,
     restFullPathname: getRestFullPathname(),
   } as RouterParams

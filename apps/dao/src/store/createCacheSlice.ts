@@ -9,7 +9,7 @@ type SliceState = {
   cacheProposalsMapper: { [voteId: string]: ProposalData }
   cacheCurveJsProposalMapper: { [voteId: string]: CurveJsProposalData }
   cacheGaugeWeightHistoryMapper: { [gaugeAddress: string]: GaugeWeightHistoryData }
-  cacheGaugeMapper: GaugeFormattedData[]
+  cacheGaugeMapper: { [gaugeAddress: string]: GaugeFormattedData }
 }
 
 const sliceKey = 'storeCache'
@@ -27,7 +27,7 @@ const DEFAULT_STATE: SliceState = {
   cacheProposalsMapper: {},
   cacheCurveJsProposalMapper: {},
   cacheGaugeWeightHistoryMapper: {},
-  cacheGaugeMapper: [],
+  cacheGaugeMapper: {},
 }
 
 const TIMEOUT_MS = 4000

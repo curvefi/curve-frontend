@@ -4,7 +4,6 @@ import { t } from '@lingui/macro'
 import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import { copyToClipboard } from '@/utils'
 import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
 

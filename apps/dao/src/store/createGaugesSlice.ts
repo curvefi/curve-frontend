@@ -14,9 +14,8 @@ type SliceState = {
   activeSortBy: SortByFilterGauges
   activeSortDirection: ActiveSortDirection
   searchValue: string
-  gaugeMapper: PricesGaugeOverviewData[]
+  gaugeMapper: GaugeMapper
   gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
-  gaugeFormattedData: GaugeFormattedData[]
   filteredGauges: GaugeFormattedData[]
 }
 
@@ -44,9 +43,8 @@ const DEFAULT_STATE: SliceState = {
   activeSortBy: 'relativeWeight',
   activeSortDirection: 'desc',
   searchValue: '',
-  gaugeMapper: [],
+  gaugeMapper: {},
   gaugeWeightHistoryMapper: {},
-  gaugeFormattedData: [],
   filteredGauges: [],
 }
 
@@ -56,24 +54,24 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     getGauges: async (forceReload: boolean = false) => {
       const { gaugeMapper } = get()[sliceKey]
 
-      if (gaugeMapper.length === 0 || forceReload) {
+      if (Object.keys(gaugeMapper).length === 0 || forceReload) {
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'LOADING')
       }
 
       try {
-        const gauges = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
-        const formattedGauges: PricesGaugeOverviewResponse = await gauges.json()
+        const response = await fetch('https://prices.curve.fi/v1/dao/gauges/overview')
+        const formattedGauges: PricesGaugeOverviewResponse = await response.json()
 
-        const gaugeFormattedData = formattedGauges.gauges
-          .map((gauge) => ({
+        const newGaugeMapper: GaugeMapper = {}
+
+        formattedGauges.gauges.forEach((gauge) => {
+          newGaugeMapper[gauge.address.toLowerCase()] = {
             ...gauge,
-            platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : null,
+            platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
             title: gauge.pool?.name
-              ? // remove extras like "Factory Pool" etc
-                (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
-              : gauge.market?.name
-              ? gauge.market.name
-              : shortenTokenAddress(gauge.address),
+              ? (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
+              : gauge.market?.name ?? shortenTokenAddress(gauge.address) ?? '',
+            gauge_weight: +gauge.gauge_weight,
             gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
             gauge_relative_weight_7d_delta:
               gauge.gauge_relative_weight_7d_delta != null
@@ -83,15 +81,14 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
               gauge.gauge_relative_weight_60d_delta != null
                 ? +(gauge.gauge_relative_weight_60d_delta * 100).toFixed(4)
                 : null,
-          }))
-          .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
+          }
+        })
 
-        get().setAppStateByKey(sliceKey, 'gaugeMapper', formattedGauges.gauges)
-        get().storeCache.setStateByKey('cacheGaugeMapper', gaugeFormattedData)
-        get().setAppStateByKey(sliceKey, 'gaugeFormattedData', gaugeFormattedData)
+        get().setAppStateByKey(sliceKey, 'gaugeMapper', newGaugeMapper)
+        get().storeCache.setStateByKey('cacheGaugeMapper', newGaugeMapper)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'SUCCESS')
       } catch (error) {
-        console.log(error)
+        console.error('Error fetching gauges:', error)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'ERROR')
       }
     },
@@ -137,9 +134,9 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
     },
     selectFilteredSortedGauges: () => {
-      const { gaugeFormattedData, activeSortBy, activeSortDirection } = get()[sliceKey]
+      const { gaugeMapper, activeSortBy, activeSortDirection } = get()[sliceKey]
       const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
-      const gaugeData = gaugeFormattedData ?? cacheGaugeMapper
+      const gaugeData = gaugeMapper ?? cacheGaugeMapper
       const sortedGauges = sortGauges(gaugeData, activeSortBy, activeSortDirection)
       return sortedGauges
     },
@@ -186,10 +183,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
   },
 })
 
-const convertNumber = (number: number) => {
-  return number / 10 ** 18
-}
-
 const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   const fuse = new Fuse<GaugeFormattedData>(gauges, {
     ignoreLocation: true,
@@ -218,32 +211,35 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   return result.map((r) => r.item)
 }
 
-const sortGauges = (gauges: GaugeFormattedData[], sortBy: SortByFilterGauges, sortDirection: ActiveSortDirection) => {
-  let gaugesCopy = [...gauges]
+const sortGauges = (
+  gauges: GaugeMapper,
+  sortBy: SortByFilterGauges,
+  sortDirection: ActiveSortDirection
+): GaugeFormattedData[] => {
+  const gaugeArray = Object.values(gauges)
 
-  if (sortBy === 'relativeWeight') {
-    if (sortDirection === 'asc') {
-      gaugesCopy = gaugesCopy.sort((a, b) => a.gauge_relative_weight - b.gauge_relative_weight)
-    } else {
-      gaugesCopy = gaugesCopy.sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
+  const sortFn = (a: GaugeFormattedData, b: GaugeFormattedData): number => {
+    switch (sortBy) {
+      case 'relativeWeight':
+        return (b.gauge_relative_weight - a.gauge_relative_weight) * (sortDirection === 'asc' ? -1 : 1)
+      case '7dayWeight':
+        return (
+          ((b.gauge_relative_weight_7d_delta ?? 0) - (a.gauge_relative_weight_7d_delta ?? 0)) *
+          (sortDirection === 'asc' ? -1 : 1)
+        )
+      case '60dayWeight':
+        return (
+          ((b.gauge_relative_weight_60d_delta ?? 0) - (a.gauge_relative_weight_60d_delta ?? 0)) *
+          (sortDirection === 'asc' ? -1 : 1)
+        )
+      default:
+        return sortDirection === 'asc'
+          ? (a[sortBy] as string).localeCompare(b[sortBy] as string)
+          : (b[sortBy] as string).localeCompare(a[sortBy] as string)
     }
-  } else if (sortBy === '7dayWeight') {
-    if (sortDirection === 'asc') {
-      gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_7d_delta ?? 0) - (b.gauge_weight_7d_delta ?? 0))
-    } else {
-      gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_7d_delta ?? 0) - (a.gauge_weight_7d_delta ?? 0))
-    }
-  } else if (sortBy === '60dayWeight') {
-    if (sortDirection === 'asc') {
-      gaugesCopy = gaugesCopy.sort((a, b) => (a.gauge_weight_60d_delta ?? 0) - (b.gauge_weight_60d_delta ?? 0))
-    } else {
-      gaugesCopy = gaugesCopy.sort((a, b) => (b.gauge_weight_60d_delta ?? 0) - (a.gauge_weight_60d_delta ?? 0))
-    }
-  } else {
-    gaugesCopy = orderBy(gaugesCopy, [sortBy], [sortDirection])
   }
 
-  return gaugesCopy
+  return gaugeArray.sort(sortFn)
 }
 
 export default createGaugesSlice
