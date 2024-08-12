@@ -50,10 +50,10 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>
           <TableData className="left-padding">{gaugeVote.gauge_name}</TableData>
-          <TableData className="left-padding">{shortenTokenAddress(gaugeVote.gauge)}</TableData>
           <TableData className={userGaugeVotesSortBy.key === 'weight' ? 'active left-padding' : 'left-padding'}>
             {(gaugeVote.weight / 100).toFixed(2)}%
           </TableData>
+          <TableData className="left-padding">{shortenTokenAddress(gaugeVote.gauge)}</TableData>
         </TableRowWrapper>
       )}
     />

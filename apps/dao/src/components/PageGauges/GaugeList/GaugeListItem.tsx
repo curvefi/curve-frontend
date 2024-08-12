@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
@@ -10,8 +11,8 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
-import LineChartComponent from '../components/LineChartComponent'
+import { ExternalLink, InternalLink } from '@/ui/Link'
+import LineChartComponent from '../../Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 
@@ -22,6 +23,7 @@ type Props = {
 const GaugeListItem = ({ gaugeData }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
@@ -147,10 +149,14 @@ const GaugeListItem = ({ gaugeData }: Props) => {
             <Box flex flexColumn>
               <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
               <GaugeData className="open">
-                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+                <StyledInternalLink
+                  onClick={(e) => {
+                    e.preventDefault()
+                    navigate(`/ethereum/gauges/${gaugeData.address}`)
+                  }}
+                >
                   {shortenTokenAddress(gaugeData.address)}
-                  <Icon name="Launch" size={16} />
-                </StyledExternalLink>
+                </StyledInternalLink>
               </GaugeData>
             </Box>
             {gaugeData.emissions ? (
@@ -345,6 +351,21 @@ const GaugeDetailsContainer = styled.div`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
+  display: flex;
+  align-items: end;
+  gap: var(--spacing-1);
+  color: var(--page--text-color);
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
+  text-transform: none;
+  text-decoration: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+`
+
+const StyledInternalLink = styled(InternalLink)`
   display: flex;
   align-items: end;
   gap: var(--spacing-1);

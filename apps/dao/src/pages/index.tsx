@@ -10,7 +10,7 @@ const PageProposal = dynamic(() => import('@/components/PageProposal/Page'), { s
 const PageGauges = dynamic(() => import('@/components/PageGauges/Page'), { ssr: false })
 const PageVeCrv = dynamic(() => import('@/components/PageVeCrv/Page'), { ssr: false })
 const PageUser = dynamic(() => import('@/components/PageUser/Page'), { ssr: false })
-
+const PageGauge = dynamic(() => import('@/components/PageGauge/Page'), { ssr: false })
 const App: NextPage = (pageProps) => {
   const SubRoutes = (
     <>
@@ -20,6 +20,7 @@ const App: NextPage = (pageProps) => {
       <Route path=":network/user/:userAddress" element={<PageUser />} />
       <Route path=":network/vecrv" element={<PageVeCrv />} />
       <Route path=":network/gauges" element={<PageGauges />} />
+      <Route path=":network/gauges/:gaugeAddress" element={<PageGauge />} />
     </>
   )
 

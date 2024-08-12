@@ -1,15 +1,22 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 
-import BarChartComponent from '../components/BarChartComponent'
+import BarChartComponent from '../../Charts/BarChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
 
 const GaugeWeightDistribution = () => {
-  const { getGauges, gaugesLoading, gaugeFormattedData } = useStore((state) => state.gauges)
+  const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
+
+  const formattedData = useMemo(() => {
+    return Object.values(gaugeMapper)
+      .filter((gauge) => gauge.gauge_relative_weight > 0.5)
+      .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
+  }, [gaugeMapper])
 
   return (
     <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
@@ -28,7 +35,7 @@ const GaugeWeightDistribution = () => {
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
           </ErrorMessageWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && <BarChartComponent data={gaugeFormattedData} />}
+        {gaugesLoading === 'SUCCESS' && <BarChartComponent data={formattedData} />}
       </Box>
     </Box>
   )

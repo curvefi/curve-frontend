@@ -1,9 +1,6 @@
 import styled from 'styled-components'
 
-import networks from '@/networks'
-import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
-
-import { ExternalLink } from '@/ui/Link'
+import { formatNumber } from '@/ui/utils'
 
 interface TableRowProps {
   holder: any

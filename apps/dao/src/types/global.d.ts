@@ -53,6 +53,7 @@ declare global {
     rSubdirectoryUseDefault: boolean
     rProposalId: string
     rUserAddress: string
+    rGaugeAddress: string
     rFormType: RFormType
     redirectPathname: string
     restFullPathname: string
@@ -212,6 +213,10 @@ declare global {
     title: string
     platform: string
     gauge_weight: number
+  }
+
+  interface GaugeMapper {
+    [gaugeAddress: string]: GaugeFormattedData
   }
 
   type GaugeWeightHistoryData = {
