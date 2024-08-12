@@ -38,7 +38,7 @@ const TooltipBaseApy = ({
       </ul>
 
       {baseApy?.day && Number(baseApy.day) < 0 && (
-        <NegativeBaseApy size="xs">
+        <NegativeBaseApy>
           {t`Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance.`}
         </NegativeBaseApy>
       )}
