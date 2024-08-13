@@ -1,21 +1,42 @@
+import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
+import styled from 'styled-components'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import { getTokenName } from '@/utils/utilsLoan'
 import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
+import TextCaption from '@/ui/TextCaption'
 
 type Props = {
-  llamma: Llamma | undefined
-  loanDetails: Partial<LoanDetails> | undefined
+  rChainId: ChainId
+  collateralId: string
 }
 
-const TableCellTotalCollateral = ({ llamma, loanDetails }: Props) => {
-  const { totalCollateral, totalStablecoin } = loanDetails ?? {}
+const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
+  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
+  const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+
+  const { totalCollateral, totalStablecoin } = loanDetails ?? {}
+
+  const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
+  const totalCollateralValue = (totalCollateralUsd + Number(totalStablecoin)).toString()
+
+  const tooltipContent = useMemo<{ label: string; value: string | number }[]>(() => {
+    if (!llamma || !totalCollateralUsd || !totalStablecoin) return []
+
+    const { collateral, stablecoin } = getTokenName(llamma)
+
+    return [
+      { label: collateral, value: totalCollateralUsd },
+      { label: stablecoin, value: totalStablecoin },
+    ]
+  }, [llamma, totalCollateralUsd, totalStablecoin])
 
   if (isUndefined(totalCollateral) || isUndefined(totalStablecoin) || isUndefined(collateralUsdRate)) {
     return <></>
@@ -29,37 +50,31 @@ const TableCellTotalCollateral = ({ llamma, loanDetails }: Props) => {
     )
   }
 
-  const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
-  const totalCollateralValue = (totalCollateralUsd + Number(totalStablecoin)).toString()
-
   return (
-    <Chip
-      size="md"
-      tooltip={
-        <>
-          {llamma ? (
-            <Box gridGap={1} padding="0.25rem">
-              {[
-                { label: getTokenName(llamma).stablecoin, value: totalStablecoin },
-                { label: getTokenName(llamma).collateral, value: totalCollateralUsd },
-              ].map(({ label, value }) => (
-                <Box key={label} grid gridTemplateColumns="repeat(2, minmax(100px, 1fr))" gridGap={1}>
-                  <strong>{label}</strong>
-                  {formatNumber(value, { ...getFractionDigitsOptions(value, 2) })}
-                </Box>
-              ))}
-              <hr />
-              <div>
-                ≈ {formatNumber(totalCollateralValue, { ...getFractionDigitsOptions(totalCollateralValue, 2) })}
-              </div>
-            </Box>
-          ) : null}
-        </>
-      }
-    >
+    <Box grid>
       {formatNumber(totalCollateralValue, { notation: 'compact', currency: 'USD' })}
-    </Chip>
+      {isAdvanceMode && (
+        <>
+          {+totalCollateralValue > 0 && (
+            <TotalSummary>
+              {' '}
+              {tooltipContent.map(({ label, value }, idx) => {
+                const isLast = tooltipContent.length - 1 === idx
+                return `${idx === 0 ? '' : ''}${formatNumber(value, { notation: 'compact' })} ${label}${
+                  isLast ? '' : ' + '
+                }`
+              })}
+            </TotalSummary>
+          )}
+        </>
+      )}
+    </Box>
   )
 }
+
+const TotalSummary = styled(TextCaption)`
+  margin-top: 0.2rem;
+  white-space: nowrap;
+`
 
 export default TableCellTotalCollateral

@@ -15,7 +15,7 @@ import TableRowContainer from '@/components/PageMarketList/components/TableRowVi
 import TextCaption from '@/ui/TextCaption'
 
 const MarketListTable = ({ pageProps, address, markets, tableLabels, tableSettings, ...rest }: TableProps) => {
-  const { searchParams } = pageProps
+  const { searchParams, titleMapper } = pageProps
   const { filterTypeKey } = searchParams
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -23,7 +23,7 @@ const MarketListTable = ({ pageProps, address, markets, tableLabels, tableSettin
   return (
     <MarketContentTable isAllMarkets={address === 'all'}>
       {/* TABLE HEAD */}
-      {isMdUp && <TableHead {...pageProps} address={address} tableLabels={tableLabels} />}
+      {isMdUp && <TableHead {...pageProps} address={address} tableLabels={tableLabels} titleMapper={titleMapper} />}
       {!isMdUp && <TableHeadMobile />}
 
       {/* TABLE BODY */}

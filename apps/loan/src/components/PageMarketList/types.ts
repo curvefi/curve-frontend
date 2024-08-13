@@ -1,4 +1,3 @@
-import React from 'react'
 import { Params } from 'react-router'
 
 export type FormStatus = {
@@ -33,16 +32,10 @@ export type PageCollateralList = {
   rChainId: ChainId
 }
 
-export type TableLabel = {
-  [label: string]: {
-    name: string | React.ReactNode
-  }
-}
-
 export type TableRowProps = {
   className?: string
+  rChainId: ChainId
   collateralId: string
-  collateralData: CollateralData
   collateralDataCachedOrApi: CollateralDataCache | CollateralData | undefined
   loanDetails: Partial<LoanDetails> | undefined
   loanExists: boolean | undefined

@@ -20,10 +20,12 @@ function TooltipButton({
   onClick,
   increaseZIndex,
   iconStyles = {},
+  as,
   ...props
 }: React.PropsWithChildren<
   TooltipTriggerProps &
     TooltipProps & {
+      as?: string
       className?: string
       tooltip: React.ReactNode | string
       showIcon?: boolean
@@ -62,8 +64,9 @@ function TooltipButton({
   )
 
   return (
-    <StyledTooltipButton>
-      <Button ref={ref} {...triggerProps} className={className} onClick={handleBtnClick}>
+    // @ts-ignore TODO: as error
+    <StyledTooltipButton {...(as ? { as } : {})}>
+      <Button ref={ref} {...triggerProps} className={`${className} tooltip-button`} onClick={handleBtnClick}>
         {showIcon || customIcon
           ? customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />
           : children}

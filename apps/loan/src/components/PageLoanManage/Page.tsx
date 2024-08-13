@@ -15,6 +15,7 @@ import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -40,6 +41,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { curve, routerParams } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
@@ -65,8 +67,8 @@ const Page: NextPage = () => {
   const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(() => {
     return isAdvanceMode
       ? [
-          { label: t`Your Loan Details`, key: 'user' },
           { label: t`LLAMMA Details`, key: 'llamma' },
+          { label: t`Your Loan Details`, key: 'user' },
         ]
       : [{ label: t`Your Loan Details`, key: 'user' }]
   }, [isAdvanceMode])
@@ -175,6 +177,7 @@ const Page: NextPage = () => {
               rChainId={rChainId}
               rCollateralId={rCollateralId}
               rFormType={rFormType as FormType}
+              titleMapper={titleMapper}
             />
           )}
         </AppPageFormsWrapper>
@@ -204,8 +207,12 @@ const Page: NextPage = () => {
             </Tabs>
           </AppPageInfoTabsWrapper>
           <AppPageInfoContentWrapper variant="secondary">
-            {selectedTab === 'user' && isValidRouterParams && <LoanInfoUser {...formProps} rChainId={rChainId} />}
-            {selectedTab === 'llamma' && isValidRouterParams && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
+            {selectedTab === 'llamma' && isValidRouterParams && (
+              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            )}
+            {selectedTab === 'user' && isValidRouterParams && (
+              <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>

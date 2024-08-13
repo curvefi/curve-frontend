@@ -1,4 +1,4 @@
-import type { SearchParams, TableLabel, TableLabelsMapper } from '@/components/PageMarketList/types'
+import type { SearchParams, TableLabel } from '@/components/PageMarketList/types'
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
@@ -13,14 +13,14 @@ const SelectFilterType = ({
   showSupplySignerCell,
   searchParams,
   tableLabels,
-  tableLabelsMapper,
+  titleMapper,
   updatePath,
 }: {
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   searchParams: SearchParams
   tableLabels: TableLabel[]
-  tableLabelsMapper: TableLabelsMapper
+  titleMapper: TitleMapper
   updatePath: (updatedSearchParams: Partial<SearchParams>) => void
 }) => {
   const { filterTypeKey, sortBy, sortByOrder } = searchParams
@@ -31,12 +31,19 @@ const SelectFilterType = ({
     return tableLabels.reduce((prev, { sortIdKey }) => {
       if (filterTypeKey === 'borrow' && !showBorrowSignerCell && sortIdKey.startsWith('my')) return prev
       if (filterTypeKey === 'supply' && !showSupplySignerCell && sortIdKey.startsWith('my')) return prev
-      if (!tableLabelsMapper[sortIdKey]?.name) return prev
-      prev[sortIdKey] = tableLabelsMapper[sortIdKey]
+      if (!titleMapper[sortIdKey]?.title) return prev
+
+      const { title } = titleMapper[sortIdKey]
+
+      if (!prev[sortIdKey]) {
+        prev[sortIdKey] = { name: title }
+      } else {
+        prev[sortIdKey].name = title
+      }
 
       return prev
-    }, {} as { [label: string]: { name: string } })
-  }, [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, tableLabelsMapper])
+    }, {} as { [label: string]: { name: string | React.ReactNode } })
+  }, [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper])
 
   // only show close button  settings is not on default
   const onSelectDeleteFn = useMemo(() => {

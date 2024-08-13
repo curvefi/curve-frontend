@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
+import Th from '@/ui/Table/Th'
 
 const TableHeadMobile = () => {
   return (
@@ -9,7 +10,7 @@ const TableHeadMobile = () => {
         <Col className="left collateral" />
       </colgroup>
       <thead>
-        <tr></tr>
+        <Th className="left">Markets</Th>
       </thead>
     </>
   )

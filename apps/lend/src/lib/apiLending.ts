@@ -499,7 +499,7 @@ const user = {
       .process(async (owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
         const { owm } = owmData
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand] =
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, loss] =
           await Promise.all([
             owm.userState(),
             owm.userHealth(),
@@ -509,7 +509,7 @@ const user = {
             owm.userPrices(),
             owm.userBandsBalances(),
             owm.oraclePriceBand(),
-            // owm.userLoss(),
+            owm.userLoss(),
           ])
 
         const resp = await owm.stats.bandsInfo()
@@ -540,7 +540,7 @@ const user = {
             isCloseToLiquidation,
             range,
             prices,
-            // loss: _parseUserLoss(loss),
+            loss,
             status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
@@ -2050,15 +2050,6 @@ async function _fetchChartBandBalancesData(
     parsedBandBalances.unshift(r)
   }
   return parsedBandBalances
-}
-
-function _parseUserLoss(userLoss: UserLoss) {
-  const smallAmount = 0.00000001
-  let resp = cloneDeep(userLoss)
-  resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
-  resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
-
-  return resp
 }
 
 // TODO: refactor shared between pool and lend

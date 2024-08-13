@@ -9,7 +9,7 @@ import { formatNumber } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
-import ExternalLink from 'ui/src/Link/ExternalLink'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 

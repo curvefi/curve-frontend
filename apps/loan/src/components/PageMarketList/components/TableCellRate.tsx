@@ -5,22 +5,26 @@ import styled from 'styled-components'
 import React from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 
 interface Props extends ChipProps {
-  parameters: LoanDetails['parameters'] | undefined
+  collateralId: string
 }
 
-const TableCellRate = ({ parameters, ...props }: Props) => {
-  const { rate, future_rate } = parameters ?? {}
+const TableCellRate = ({ collateralId, ...props }: Props) => {
+  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
+  const { rate, future_rate } = loanDetails?.parameters ?? {}
 
-  return isUndefined(rate) || isUndefined(future_rate) ? (
-    <></>
-  ) : (
-    <Box flex>
+  if (isUndefined(rate) || isUndefined(future_rate)) {
+    return <></>
+  }
+
+  return (
+    <Box flex flexAlignItems="center">
       <Chip
         {...props}
         size="md"

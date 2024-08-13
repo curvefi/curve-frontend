@@ -1,90 +1,73 @@
-import type { PageCollateralList } from '@/components/PageMarketList/types'
 import type { TableRowProps } from '@/components/PageMarketList/types'
 
 import { useRef } from 'react'
 import styled from 'styled-components'
 
+import { TITLE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-import useStore from '@/store/useStore'
 
-import CollateralLabel from '@/components/CollateralLabel'
-import TableCellAvailable from '@/components/PageMarketList/components/TableCellAvailable'
-import TableCellCap from '@/components/PageMarketList/components/TableCellCap'
+import TokenLabel from '@/components/TokenLabel'
 import TableCellInPool from '@/components/PageMarketList/components/TableCellInPool'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
-import TableCellTotalBorrowed from '@/components/PageMarketList/components/TableCellTotalBorrowed'
-import TableCellUserDebt from '@/components/PageMarketList/components/TableCellUserDebt'
-import TableCellUserHealth from '@/components/PageMarketList/components/TableCellUserHealth'
+import TableCellUser from '@/components/PageMarketList/components/TableCellUser'
+import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
 
 const TableRow = ({
   className,
   rChainId,
   collateralId,
-  collateralData,
   collateralDataCachedOrApi,
-  loanDetails,
   loanExists,
   someLoanExists,
   handleCellClick,
-}: Pick<PageCollateralList, 'rChainId'> &
-  TableRowProps & {
-    someLoanExists: boolean
-  }) => {
+}: TableRowProps & {
+  someLoanExists: boolean | undefined
+}) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
 
-  const userDetails = useStore((state) => state.loans.userDetailsMapper[collateralId])
-
   const isVisible = !!entry?.isIntersecting
+
+  const props = { rChainId, collateralId, collateralDataCachedOrApi }
+
+  // prettier-ignore
+  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; className?: string }[] = [
+    { titleKey: TITLE.isInMarket, content: <TableCellInPool />, show: someLoanExists, className: `row-in-pool ${loanExists ? 'active' : ''}` },
+    { titleKey: TITLE.name, content: <TokenLabel showAlert {...props} type="collateral" size='lg' /> },
+    { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: someLoanExists, className: 'right' },
+    { titleKey: TITLE.myDebt, content: <TableCellUser {...props} type='debt' />, show: someLoanExists, className: 'right border-right' },
+    { titleKey: TITLE.rate, content: <TableCellRate {...props} />, className: 'right' },
+    { titleKey: TITLE.totalBorrowed, content: <TableCellUtilization {...props} type='borrowed' />, className: 'right' },
+    { titleKey: TITLE.cap, content: <TableCellUtilization {...props} type='cap' />, className: 'right' },
+    { titleKey: TITLE.available, content: <TableCellUtilization {...props} type='available' />, className: 'right' },
+    { titleKey: TITLE.totalCollateral, content: <TableCellTotalCollateral {...props} />, className: 'right' },
+  ]
 
   return (
     <Item ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`} onClick={handleCellClick}>
-      <TCellInPool className={`row-in-pool ${someLoanExists && loanExists ? 'active' : ''} `}>
-        {someLoanExists && loanExists ? <TableCellInPool /> : null}
-      </TCellInPool>
-      <td>
-        <CollateralLabel
-          chainId={rChainId}
-          isVisible={isVisible}
-          collateralData={collateralDataCachedOrApi}
-          tableListProps={{
-            onClick: handleCellClick,
-          }}
-        />
-      </td>
-      {someLoanExists && (
-        <>
-          <td className="right">
-            <TableCellUserHealth userHealth={userDetails?.userHealth} />
+      {contents.map(({ titleKey, content, show, className }, idx) => {
+        if (typeof show !== 'undefined' && !show) return null
+
+        const key = `td${idx}`
+
+        if (titleKey === TITLE.isInMarket) {
+          return (
+            <TCellInPool key={key} className={className}>
+              {loanExists && content}
+            </TCellInPool>
+          )
+        }
+
+        return (
+          <td key={key} className={className}>
+            {content}
           </td>
-          <td className="right border-right">
-            <TableCellUserDebt userDebt={userDetails?.userState?.debt} />
-          </td>
-        </>
-      )}
-      <td className="right">
-        <TableCellRate parameters={loanDetails?.parameters} />
-      </td>
-      <td className="right">
-        <TableCellTotalBorrowed totalDebt={loanDetails?.totalDebt} />
-      </td>
-      <td className="right">
-        <TableCellCap cap={loanDetails?.capAndAvailable?.cap} />
-      </td>
-      <td className="right">
-        <TableCellAvailable available={loanDetails?.capAndAvailable?.available} />
-      </td>
-      <td className="right">
-        <TableCellTotalCollateral llamma={collateralData?.llamma} loanDetails={loanDetails} />
-      </td>
+        )
+      })}
     </Item>
   )
-}
-
-TableRow.defaultProps = {
-  className: '',
 }
 
 export const TCellInPool = styled.td`

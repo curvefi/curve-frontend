@@ -1,29 +1,20 @@
-import type { Detail } from '@/components/DetailsMarket/types'
-
 import React from 'react'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { _showContent } from '@/utils/helpers'
+import { TITLE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-} from '@/components/DetailsMarket/styles'
+import { ContentWrapper } from '@/components/DetailsMarket/styles'
 import AlertNoVaultSharesFound from '@/components/AlertNoVaultSharesFound'
 import CellUserMain from '@/components/SharedCellData/CellUserMain'
-import CellRate from '@/components/SharedCellData/CellRate'
 import CellToken from '@/components/SharedCellData/CellToken'
 import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserSupplyStakedUnstaked from '@/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, api, userActiveKey, owmDataCachedOrApi } = pageProps
+  const { rChainId, rOwmId, api, userActiveKey, owmDataCachedOrApi, titleMapper } = pageProps
 
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 
@@ -42,17 +33,13 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
     size: 'md' as const,
   }
 
-  const stats: Detail[][] = [
+  // prettier-ignore
+  const contents: { titleKey: TitleKey, content: React.ReactNode }[][] = [
     [
-      { title: t`Lend`, value: <CellToken {...cellProps} type="borrowed" module="supply" /> },
-      { title: t`Lend APR`, value: <CellRate {...cellProps} type="supply" /> },
+      { titleKey: TITLE.tokenSupply, content: <CellToken {...cellProps} type="borrowed" module="supply" /> },
     ],
     [
-      {
-        title: t`Vault shares`,
-        value: <DetailsUserSupplyStakedUnstaked userActiveKey={userActiveKey} />,
-        className: 'isRow',
-      },
+      { titleKey: TITLE.vaultShares, content: <DetailsUserSupplyStakedUnstaked userActiveKey={userActiveKey} /> },
     ],
   ]
 
@@ -61,31 +48,24 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
       {showConnectWallet ? (
         <DetailsConnectWallet />
       ) : foundVaultShares ? (
-        <Content paddingTop>
+        <ContentWrapper paddingTop>
           <Wrapper>
-            <CellUserMain {...cellProps} type="supply" />
+            <CellUserMain {...pageProps} type="supply" />
 
             {/* stats */}
-            <div>
-              {stats.map((detailSection) => {
-                return (
-                  <ContentStats key={detailSection[0].title}>
-                    {detailSection.map(({ className = '', title, value, show }) => {
-                      return (
-                        _showContent(show) && (
-                          <ContentStat className={className} key={`detail-${title}`}>
-                            <ContentStatTitle>{title}</ContentStatTitle>
-                            <ContentStatValue>{value}</ContentStatValue>
-                          </ContentStat>
-                        )
-                      )
-                    })}
-                  </ContentStats>
-                )
-              })}
-            </div>
+            <ListInfoItemsWrapper>
+              {contents.map((groupedContents, idx) => (
+                <ListInfoItems key={`contents${idx}`}>
+                  {groupedContents.map(({ titleKey, content }, idx) => (
+                    <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                      {content}
+                    </ListInfoItem>
+                  ))}
+                </ListInfoItems>
+              ))}
+            </ListInfoItemsWrapper>
           </Wrapper>
-        </Content>
+        </ContentWrapper>
       ) : (
         <AlertNoVaultSharesFound hideLink={window?.location?.hash?.includes('vault')} {...pageProps} />
       )}

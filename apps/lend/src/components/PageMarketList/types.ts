@@ -1,4 +1,4 @@
-import { Filter, FilterType, SortId } from '@/components/PageMarketList/utils'
+import { Filter, FilterType } from '@/components/PageMarketList/utils'
 
 export type FormStatus = {
   error: string
@@ -9,9 +9,7 @@ export type FormStatus = {
 export type FilterKey = keyof typeof Filter
 export type FilterTypeKey = keyof typeof FilterType
 export type FilterListProps = { id: string; displayName: string }
-export type SortKey = keyof typeof SortId
 export interface FilterTypeMapper extends Record<FilterType, FilterListProps> {}
-export interface TableLabelsMapper extends Record<SortId, { name: string }> {}
 
 export type PageMarketList = {
   rChainId: ChainId
@@ -20,7 +18,7 @@ export type PageMarketList = {
   searchParams: SearchParams
   filterList: FilterListProps[]
   filterTypeMapper: FilterTypeMapper
-  tableLabelsMapper: TableLabelsMapper
+  titleMapper: TitleMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
 
@@ -45,13 +43,13 @@ export type SearchParams = {
   filterTypeKey: FilterTypeKey
   hideSmallMarkets: boolean
   searchText: string
-  sortBy: SortKey | ''
+  sortBy: TitleKey | ''
   sortByOrder: Order
 }
 
 export type TableSettings = {
   isNotSortable?: boolean
-  sortBy?: SortKey | ''
+  sortBy?: TitleKey | ''
   sortByOrder?: Order
 }
 
@@ -64,7 +62,7 @@ export type TableProps = MarketListItemResult & {
 }
 
 export type TableLabel = {
-  sortIdKey: SortKey
+  sortIdKey: TitleKey
   className: string
   indicatorPlacement?: 'left' | 'right'
   isNotSortable?: boolean
@@ -72,7 +70,7 @@ export type TableLabel = {
   show?: boolean
 }
 
-export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'tableLabelsMapper'> & {
+export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'titleMapper'> & {
   owmId: string
   owmDataCachedOrApi: OWMDataCacheOrApi
   filterTypeKey: FilterTypeKey

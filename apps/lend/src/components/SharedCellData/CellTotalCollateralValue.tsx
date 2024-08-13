@@ -1,22 +1,12 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
 import TextCaption from '@/ui/TextCaption'
 
-const CellTotalCollateralValue = ({
-  rChainId,
-  rOwmId,
-  ...props
-}: ChipProps & {
-  rChainId: ChainId
-  rOwmId: string
-}) => {
+const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
@@ -31,25 +21,23 @@ const CellTotalCollateralValue = ({
 
   return (
     <>
-      {typeof totalCollateralValue === 'undefined' || total === null ? null : error ? (
+      {typeof totalCollateralValue === 'undefined' || total === null ? (
+        '-'
+      ) : error ? (
         '?'
       ) : (
         <>
-          <StyledChip {...props}>{formatNumber(total, { notation: 'compact', currency: 'USD' })}</StyledChip>
-          {isAdvanceMode && (
-            <>
-              {+total > 0 && (
-                <TotalSummary>
-                  {' '}
-                  {tooltipContent.map(({ label, value }, idx) => {
-                    const isLast = tooltipContent.length - 1 === idx
-                    return `${idx === 0 ? '' : ''}${formatNumber(value, { notation: 'compact' })} ${label}${
-                      isLast ? '' : ' + '
-                    }`
-                  })}
-                </TotalSummary>
-              )}
-            </>
+          {formatNumber(total, { notation: 'compact', currency: 'USD' })}
+          <br />
+          {isAdvanceMode && +total > 0 && (
+            <TotalSummary>
+              {tooltipContent.map(({ label, value }, idx) => {
+                const isLast = tooltipContent.length - 1 === idx
+                return `${idx === 0 ? '' : ''}${formatNumber(value, { notation: 'compact' })} ${label}${
+                  isLast ? '' : ' + '
+                }`
+              })}
+            </TotalSummary>
           )}
         </>
       )}
@@ -57,11 +45,8 @@ const CellTotalCollateralValue = ({
   )
 }
 
-const StyledChip = styled(Chip)`
-  display: block;
-`
-
 const TotalSummary = styled(TextCaption)`
+  margin-top: 0.2rem;
   white-space: nowrap;
 `
 

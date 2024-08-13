@@ -1,4 +1,5 @@
-import type { Order, PoolListTableLabel, SearchParams, SortKey, TheadBtnProps } from '@/components/PagePoolList/types'
+import type { Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
+import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
@@ -33,12 +34,14 @@ const TableHead = ({
   tableLabels: PoolListTableLabel
   updatePath(searchParams: Partial<SearchParams>): void
 }) => {
-  const handleBtnClickSort = useCallback((sortBy: string, sortByOrder: Order) => {
-    updatePath({ sortBy: sortBy as SortKey, sortByOrder })
-  }, [updatePath]);
+  const handleBtnClickSort = useCallback(
+    (sortBy: string, sortByOrder: Order) => {
+      updatePath({ sortBy: sortBy as SortKey, sortByOrder })
+    },
+    [updatePath]
+  )
 
-  const props: TheadBtnProps = {
-    indicatorPlacement: 'left',
+  const props: Omit<TheadSortButtonProps<SortKey>, 'sortIdKey' | 'loading'> = {
     sortBy: searchParams.sortBy,
     sortByOrder: searchParams.sortByOrder,
     handleBtnClickSort,

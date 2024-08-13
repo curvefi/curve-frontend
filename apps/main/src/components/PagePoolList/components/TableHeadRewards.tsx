@@ -1,11 +1,12 @@
-import type { PoolListTableLabel, TheadBtnProps } from '@/components/PagePoolList/types'
+import type { PoolListTableLabel } from '@/components/PagePoolList/types'
+import type { SortKey } from '@/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
 import React from 'react'
 
 import Box from '@/ui/Box'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import TheadSortButton from '@/ui/Table/TheadSortButton'
+import TheadSortButton, { type TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 const TableHeadRewards = ({
   isReadyRewardsApy,
@@ -13,7 +14,7 @@ const TableHeadRewards = ({
   resultRewardsOtherCount,
   tableLabels,
   ...props
-}: TheadBtnProps & {
+}: Omit<TheadSortButtonProps<SortKey>, 'sortIdKey' | 'loading'> & {
   isReadyRewardsApy: boolean
   resultRewardsCrvCount: number
   resultRewardsOtherCount: number

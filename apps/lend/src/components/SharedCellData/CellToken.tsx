@@ -1,13 +1,11 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import React from 'react'
 
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import Chip from '@/ui/Typography/Chip'
-import TokenLabel from '@/components/TokenLabel'
-import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 import Box from '@/ui/Box'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
+import TokenLabel from '@/components/TokenLabel'
 
 const CellToken = ({
   hideIcon,
@@ -17,8 +15,7 @@ const CellToken = ({
   showLeverageIcon,
   type,
   module,
-  ...props
-}: ChipProps & {
+}: {
   hideIcon?: boolean
   rChainId: ChainId
   isVisible?: boolean
@@ -35,7 +32,7 @@ const CellToken = ({
 
   return hideIcon ? (
     <>
-      <Chip {...props}>{token?.symbol}</Chip>
+      <Chip>{token?.symbol}</Chip>
       {campaignRewardsBorrow && type === 'collateral' && module === 'borrow' && (
         <CampaignRewardsRow rewardItems={campaignRewardsBorrow} />
       )}

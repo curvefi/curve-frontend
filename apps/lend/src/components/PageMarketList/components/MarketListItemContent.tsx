@@ -10,7 +10,6 @@ import MarketListTable from '@/components/PageMarketList/components/TableRowView
 import MarketListItemHeader from '@/components/PageMarketList/components/MarketListItemHeader'
 
 const MarketListItemContent = ({
-  pageProps,
   marketListItem,
   ...props
 }: {
@@ -20,20 +19,20 @@ const MarketListItemContent = ({
   showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
-  const { rChainId } = pageProps
+  const { rChainId } = props.pageProps
   const { address } = marketListItem
 
   const tableSettings = useStore((state) => state.marketList.tableRowsSettings[address])
 
   if (address === 'all') {
-    return <MarketListTable {...props} pageProps={pageProps} {...marketListItem} tableSettings={tableSettings} />
+    return <MarketListTable {...props} {...marketListItem} tableSettings={tableSettings} />
   }
 
   return (
     <>
       <MarketListItemHeader rChainId={rChainId} {...marketListItem} />
       <TableWrapper>
-        <MarketListTable {...props} pageProps={pageProps} {...marketListItem} tableSettings={tableSettings} />
+        <MarketListTable {...props} {...marketListItem} tableSettings={tableSettings} />
       </TableWrapper>
     </>
   )

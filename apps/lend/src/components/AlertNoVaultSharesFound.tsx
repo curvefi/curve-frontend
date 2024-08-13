@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import { getVaultPathname } from '@/utils/utilsRouter'
 import useStore from '@/store/useStore'
 
-import { Content } from '@/components/DetailsMarket/styles'
+import { ContentWrapper } from '@/components/DetailsMarket/styles'
 import AlertBox from '@/ui/AlertBox'
 import InternalLink from '@/ui/Link/InternalLink'
 import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
@@ -23,7 +23,7 @@ const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageConten
       <Spinner />
     </SpinnerWrapper>
   ) : +userMarketBalances.vaultShares === 0 ? (
-    <Content paddingTop>
+    <ContentWrapper paddingTop>
       <StyledAlertBox alertType="">
         <TextCaption isCaps isBold>
           {t`No supply details found for this market`}
@@ -41,7 +41,7 @@ const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageConten
           .
         </TextCaption>
       </StyledAlertBox>
-    </Content>
+    </ContentWrapper>
   ) : null
 }
 

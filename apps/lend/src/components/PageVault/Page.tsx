@@ -11,6 +11,7 @@ import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -34,6 +35,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { routerParams, api } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rSubdirectory, rFormType } = routerParams
 
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
@@ -131,6 +133,7 @@ const Page: NextPage = () => {
     userActiveKey: helpers.getUserActiveKey(api, owmData),
     borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
     collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
+    titleMapper,
   }
 
   return (

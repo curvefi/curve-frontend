@@ -1,129 +1,77 @@
 import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
-import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
 
 import { t } from '@lingui/macro'
-import React, { useMemo, useState } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
+import React from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
 import useStore from '@/store/useStore'
 
 import { SubTitle } from '@/components/LoanInfoLlamma/styles'
-import ChartBandBalances from '@/components/ChartBandBalances'
+import DetailsBandsChart from '@/components/LoanInfoLlamma/components/DetailsBandsChart'
+import DetailsInfo from '@/components/LoanInfoLlamma/components/DetailsInfo'
 import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
 import PoolInfoData from '@/components/ChartOhlcWrapper'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId'> {
+interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId' | 'titleMapper'> {
   className?: string
 }
 
-const DEFAULT_BAND_CHART_DATA = {
-  collateral: '0',
-  collateralUsd: '0',
-  isLiquidationBand: '',
-  isOraclePriceBand: false,
-  isNGrouped: false,
-  n: '',
-  p_up: '0',
-  p_down: '0',
-  stablecoin: '0',
-  collateralStablecoinUsd: 0,
-}
-
-const LoanInfoLlamma = ({ llamma, llammaId, rChainId }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+const LoanInfoLlamma = (props: Props) => {
+  const { rChainId, llamma, llammaId } = props
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-
-  const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
-    startIndex: undefined,
-    endIndex: undefined,
-  })
-
-  const { bandsBalances, priceInfo } = loanDetails ?? {}
-  const { oraclePrice, oraclePriceBand } = priceInfo ?? {}
-
-  const chartBandBalancesData = useMemo(() => {
-    let data = cloneDeep(bandsBalances ?? [])
-
-    if (data?.length > 0 && typeof oraclePriceBand === 'number') {
-      const firstN = data[0].n
-      const lastN = data[data.length - 1].n
-      if (oraclePriceBand > +firstN) {
-        if (+firstN + 1 !== oraclePriceBand) {
-          // add a group of bands between lastN and oraclePriceBand
-          data.unshift({ ...DEFAULT_BAND_CHART_DATA, n: `${+firstN + 1}...${oraclePriceBand - 1}`, isNGrouped: true })
-        }
-        data.unshift({ ...DEFAULT_BAND_CHART_DATA, isOraclePriceBand: true, n: `${oraclePriceBand}` })
-      } else if (oraclePriceBand < +lastN) {
-        if (+lastN - 1 !== oraclePriceBand) {
-          // add a group of bands between lastN and oraclePriceBand
-          data.push({ ...DEFAULT_BAND_CHART_DATA, n: `${+lastN - 1}...${oraclePriceBand + 1}`, isNGrouped: true })
-        }
-        data.push({ ...DEFAULT_BAND_CHART_DATA, isOraclePriceBand: true, n: `${oraclePriceBand}` })
-      }
-    }
-    return data
-  }, [bandsBalances, oraclePriceBand])
-
-  const chartBandBalancesDataLength = chartBandBalancesData.length
-
-  const parsedChartBandBalancesData = useMemo(() => {
-    setBrushIndex({ startIndex: undefined, endIndex: undefined })
-    return parseData(chartBandBalancesData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chartBandBalancesDataLength])
 
   return (
     <Wrapper>
+      <div className="wrapper">
+        <DetailsInfo {...props} collateralId={llammaId} />
+      </div>
+
       {!chartExpanded && (
-        <div className="wrapper">
-          <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+        <div className={isAdvanceMode ? 'wrapper' : ''}>
+          <PoolInfoData {...props} />
         </div>
       )}
 
-      <div className="wrapper">
-        <ChartBandBalances
-          llamma={llamma}
-          brushIndex={brushIndex}
-          data={parsedChartBandBalancesData}
-          oraclePrice={oraclePrice}
-          oraclePriceBand={oraclePriceBand}
-          showLiquidationIndicator={false}
-          title={t`Bands`}
-          setBrushIndex={setBrushIndex}
-        />
-      </div>
+      {isAdvanceMode && (
+        <>
+          <div className="wrapper">
+            <DetailsBandsChart llammaId={llammaId} llamma={llamma} />
+          </div>
 
-      <InfoWrapper className="wrapper last">
-        <ContractsWrapper>
-          <SubTitle>{t`Contracts`}</SubTitle>
-          <DetailInfoAddressLookup isBorderBottom chainId={rChainId} title={t`AMM`} address={llamma?.address ?? ''} />
-          <DetailInfoAddressLookup
-            isBorderBottom
-            chainId={rChainId}
-            title={t`Controller`}
-            address={llamma?.controller ?? ''}
-          />
-          <DetailInfoAddressLookup
-            chainId={rChainId}
-            title={t`Monetary Policy`}
-            address={llamma?.monetaryPolicy ?? ''}
-          />
-        </ContractsWrapper>
+          <InfoWrapper className="wrapper last">
+            <ContractsWrapper>
+              <SubTitle>{t`Contracts`}</SubTitle>
+              <DetailInfoAddressLookup
+                isBorderBottom
+                chainId={rChainId}
+                title={t`AMM`}
+                address={llamma?.address ?? ''}
+              />
+              <DetailInfoAddressLookup
+                isBorderBottom
+                chainId={rChainId}
+                title={t`Controller`}
+                address={llamma?.controller ?? ''}
+              />
+              <DetailInfoAddressLookup
+                chainId={rChainId}
+                title={t`Monetary Policy`}
+                address={llamma?.monetaryPolicy ?? ''}
+              />
+            </ContractsWrapper>
 
-        <ParametersWrapper>
-          <SubTitle>{t`Loan parameters`}</SubTitle>
-          <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
-        </ParametersWrapper>
-      </InfoWrapper>
+            <ParametersWrapper>
+              <SubTitle>{t`Loan parameters`}</SubTitle>
+              <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
+            </ParametersWrapper>
+          </InfoWrapper>
+        </>
+      )}
     </Wrapper>
   )
-}
-
-LoanInfoLlamma.defaultProps = {
-  className: '',
 }
 
 const Wrapper = styled.div`
@@ -159,21 +107,3 @@ const ParametersWrapper = styled.div`
 `
 
 export default LoanInfoLlamma
-
-function findDataIndex(d: BandsBalancesData) {
-  return (
-    +d.collateral !== 0 ||
-    +d.collateralUsd !== 0 ||
-    d.isLiquidationBand ||
-    d.isOraclePriceBand ||
-    +d.stablecoin ||
-    d.isNGrouped
-  )
-}
-
-// show +-50 active data if it is not user Chart
-function parseData(data: BandsBalancesData[]) {
-  const firstDataIdx = data.findIndex(findDataIndex)
-  const lastDataIdx = data.findLastIndex(findDataIndex)
-  return data.slice(firstDataIdx, lastDataIdx + 1)
-}

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import type { FilterListProps, SearchParams, TableLabelsMapper } from '@/components/PageMarketList/types'
+import type { FilterListProps, SearchParams } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import React, { useEffect, useState } from 'react'
@@ -11,6 +11,7 @@ import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import { AppPageContainer } from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
@@ -23,6 +24,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
@@ -49,28 +51,6 @@ const Page: NextPage = () => {
   const FILTER_TYPE_MAPPER = {
     borrow: { id: 'borrow', displayName: t`Borrow` },
     supply: { id: 'supply', displayName: t`Lend` },
-  }
-
-  const TABLE_LABELS_MAPPER: TableLabelsMapper = {
-    isInMarket: { name: '' },
-    name: { name: t`Markets` },
-    available: { name: t`Available` },
-    cap: { name: t`Supplied` },
-    utilization: { name: t`Utilization %` },
-    rateBorrow: { name: t`Borrow APY` },
-    rateLend: { name: t`Lend APR` },
-    myDebt: { name: t`My debt` },
-    myHealth: { name: t`My health` },
-    myVaultShares: { name: t`Earning deposits` },
-    tokenCollateral: { name: t`Collateral` },
-    tokenBorrow: { name: t`Borrow` },
-    tokenSupply: { name: t`Lend` },
-    totalCollateralValue: { name: t`Collateral value` },
-    totalDebt: { name: t`Borrowed` },
-    totalLiquidity: { name: t`TVL` },
-    totalApr: { name: t`Total APR` },
-    points: { name: t`Points` },
-    leverage: { name: t`Leverage` },
   }
 
   useEffect(() => {
@@ -131,7 +111,7 @@ const Page: NextPage = () => {
             searchParams={parsedSearchParams}
             filterList={filterList}
             filterTypeMapper={FILTER_TYPE_MAPPER}
-            tableLabelsMapper={TABLE_LABELS_MAPPER}
+            titleMapper={titleMapper}
             updatePath={updatePath}
           />
         )}

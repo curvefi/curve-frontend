@@ -21,10 +21,10 @@ const TableSettings = ({
   showSupplySignerCell,
   searchParams,
   tableLabels,
-  tableLabelsMapper,
+  titleMapper,
   tableLabelsSelector,
   updatePath,
-}: Pick<PageMarketList, 'filterList' | 'filterTypeMapper' | 'searchParams' | 'tableLabelsMapper' | 'updatePath'> & {
+}: Pick<PageMarketList, 'filterList' | 'filterTypeMapper' | 'searchParams' | 'titleMapper' | 'updatePath'> & {
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   tableLabels: TableLabel[]
@@ -62,7 +62,7 @@ const TableSettings = ({
             showBorrowSignerCell={showBorrowSignerCell}
             showSupplySignerCell={showSupplySignerCell}
             tableLabels={tableLabels}
-            tableLabelsMapper={tableLabelsMapper}
+            titleMapper={titleMapper}
             updatePath={updatePath}
           />
         </FiltersWrapper>
