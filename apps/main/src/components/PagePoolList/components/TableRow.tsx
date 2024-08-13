@@ -31,7 +31,6 @@ export type TableRowProps = {
   rewardsApy: RewardsApy | undefined
   searchParams: SearchParams
   showInPoolColumn: boolean
-  tokensMapper: TokensMapper
   campaignRewardsMapper: CampaignRewardsMapper
   tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
@@ -52,7 +51,6 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   rewardsApy,
   searchParams,
   showInPoolColumn,
-  tokensMapper,
   campaignRewardsMapper,
   tvlCached,
   tvl,
@@ -81,7 +79,6 @@ const TableRow: FunctionComponent<TableRowProps> = ({
             searchTextByOther,
             onClick: handleCellClick,
           }}
-          tokensMapper={tokensMapper}
         />
       </td>
       {isMdUp ? (

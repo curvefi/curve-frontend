@@ -15,26 +15,26 @@ import ChipToken from '@/components/ChipToken'
 import TokenIcons from '@/components/TokenIcons'
 import TableCellReferenceAsset from '@/components/PagePoolList/components/TableCellReferenceAsset'
 
+type PoolListProps = {
+  quickViewValue?: string | React.ReactNode | null
+  searchText?: string
+  searchTextByTokensAndAddresses?: { [address: string]: boolean }
+  searchTextByOther?: { [address: string]: boolean }
+  onClick(target: EventTarget): void
+}
+
 const PoolLabel = ({
   className,
   imageBaseUrl,
   isVisible,
   poolData,
   poolListProps,
-  tokensMapper,
 }: {
   className?: string
   imageBaseUrl: string
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
-  poolListProps?: {
-    quickViewValue?: string | React.ReactNode | null
-    searchText?: string
-    searchTextByTokensAndAddresses?: { [address: string]: boolean }
-    searchTextByOther?: { [address: string]: boolean }
-    onClick(target: EventTarget): void
-  }
-  tokensMapper: TokensMapper
+  poolListProps?: PoolListProps
 }) => {
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
@@ -63,14 +63,7 @@ const PoolLabel = ({
     <div>
       <Wrapper className={className} onClick={({ target }) => handleClick(target)}>
         <IconsWrapper>
-          {isVisible && (
-            <TokenIcons
-              imageBaseUrl={imageBaseUrl}
-              tokens={tokens}
-              tokenAddresses={tokenAddresses}
-              tokensMapper={tokensMapper}
-            />
-          )}
+          {isVisible && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={tokens} tokenAddresses={tokenAddresses} />}
         </IconsWrapper>
         <Box fillWidth>
           <TableCellReferenceAsset

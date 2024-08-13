@@ -20,7 +20,6 @@ import { getImageBaseUrl, getVolumeTvlStr } from '@/utils/utilsCurvejs'
 import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import networks from '@/networks'
-import useTokensMapper from '@/hooks/useTokensMapper'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { ExternalLink } from '@/ui/Link'
@@ -42,7 +41,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const settingsRef = useRef<HTMLDivElement>(null)
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const { tokensMapper } = useTokensMapper(rChainId)
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
@@ -296,7 +294,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                   imageBaseUrl={imageBaseUrl}
                   showInPoolColumn={showInPoolColumn}
                   tableLabels={tableLabels}
-                  tokensMapper={tokensMapper}
                   showDetail={showDetail}
                   setShowDetail={setShowDetail}
                   curve={curve}
