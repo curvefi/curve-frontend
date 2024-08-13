@@ -16,15 +16,16 @@ const TextEllipsis = styled.span<{
   white-space: nowrap;
 
   @media (min-width: ${breakpoints.sm}rem) {
-    max-width: ${({ smMaxWidth }) => smMaxWidth || '320px'};
+    max-width: ${({ smMaxWidth, maxWidth }) => smMaxWidth || maxWidth || '320px'};
   }
 
   @media (min-width: ${breakpoints.md}rem) {
-    max-width: ${({ mdMaxWidth }) => mdMaxWidth || '768px;'};
+    max-width: ${({ mdMaxWidth, smMaxWidth, maxWidth }) => mdMaxWidth || smMaxWidth || maxWidth || '768px;'};
   }
 
   @media (min-width: ${breakpoints.lg}rem) {
-    max-width: ${({ lgMaxWidth }) => lgMaxWidth || '1024px'};
+    max-width: ${({ lgMaxWidth, mdMaxWidth, smMaxWidth, maxWidth }) =>
+      lgMaxWidth || mdMaxWidth || smMaxWidth || maxWidth || '1024px'};
   }
 `
 
