@@ -85,8 +85,20 @@ export const POOL_PRESETS: PRESETS = {
       offpegFeeMultiplier: '2',
     },
   },
-  // cryptoswap
   2: {
+    name: 'Liquid Restaking Tokens',
+    descriptionName: t`Liquid Restaking Tokens`,
+    description: t`Suitable for LRTs`,
+    defaultParams: {
+      ...fillerParams,
+      stableSwapFee: '0.01',
+      stableA: '500',
+      maExpTime: '600',
+      offpegFeeMultiplier: '5',
+    },
+  },
+  // cryptoswap
+  3: {
     name: 'Crypto',
     descriptionName: t`Crypto`,
     description: t`Suitable for most volatile pairs such as LDO <> ETH`,
@@ -102,7 +114,7 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-  3: {
+  4: {
     name: 'Forex',
     descriptionName: t`Forex`,
     description: t`Suitable for forex pairs with low relative volatility`,
@@ -118,7 +130,7 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-  4: {
+  5: {
     name: 'Liquid Staking Derivatives',
     descriptionName: t`Liquid Staking Derivatives`,
     description: t`Suitable for liquid staking derivatives soft-pegged to its underlying asset.`,
@@ -134,7 +146,7 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-  5: {
+  6: {
     name: 'Liquid Restaking Tokens',
     descriptionName: t`Liquid Restaking Tokens`,
     description: t`Suitable for LRTs`,
@@ -151,7 +163,7 @@ export const POOL_PRESETS: PRESETS = {
     },
   },
   // tricrypto
-  6: {
+  7: {
     name: 'Tricrypto',
     descriptionName: t`Tricrypto`,
     description: t`Suitable for USD stablecoin <> BTC stablecoin <> ETH.`,
@@ -167,7 +179,7 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
-  7: {
+  8: {
     name: 'Three Coin Volatile',
     descriptionName: t`Three Coin Volatile`,
     description: t`Suitable for volatile tokens paired against ETH and USD stablecoins`,
