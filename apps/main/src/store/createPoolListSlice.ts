@@ -122,6 +122,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       return poolDatas
     },
     filterBySearchText: (searchText: string, poolDatas: (PoolDataCache | PoolData)[]) => {
+      // special use case for aUSD₮
+      searchText = searchText.replace(/T|t/g, 'T|₮')
       let parsedSearchText = searchText.toLowerCase().trim()
 
       let results: { searchTerm: string; results: (PoolDataCache | PoolData)[] } = {
