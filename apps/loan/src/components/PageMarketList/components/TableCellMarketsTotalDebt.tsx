@@ -1,8 +1,12 @@
+import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { ROUTE } from '@/constants'
 import useStore from '@/store/useStore'
 
+import InternalLink from '@/ui/Link/InternalLink'
 import TextCaption from '@/ui/TextCaption'
 
 const TableCellMarketsTotalDebt = () => {
@@ -23,6 +27,9 @@ const TableCellMarketsTotalDebt = () => {
           <TextCaption>{formattedDebtFraction} of total supply</TextCaption>
         </StyledTotalSupply>
       )}
+      <StyledLink $noStyles href={ROUTE.PAGE_PEGKEEPERS}>
+        {t`View details`}
+      </StyledLink>
     </>
   )
 }
@@ -30,6 +37,13 @@ const TableCellMarketsTotalDebt = () => {
 const StyledTotalSupply = styled.div`
   display: grid;
   grid-gap: 0.1rem;
+`
+
+const StyledLink = styled(InternalLink)`
+  color: inherit;
+  font-size: var(--font-size-2);
+  margin-top: var(--spacing-2);
+  text-transform: initial;
 `
 
 export default TableCellMarketsTotalDebt
