@@ -63,6 +63,8 @@ class BigDecimal {
 
   static fr = BigDecimal.from
 
+  static zero = BigDecimal.from(0)
+
   /**
    * Changes the sign of the BigDecimal.
    * @returns A new BigDecimal with the opposite sign.
@@ -225,15 +227,11 @@ class BigDecimal {
    * @returns -1 if this < other, 0 if this === other, 1 if this > other
    */
   compareTo(other: BigDecimal): number {
-    const maxScale = Math.max(this._scale, other._scale)
-    const thisScaled = this.scaleUp(maxScale)
-    const otherScaled = other.scaleUp(maxScale)
-
-    if (thisScaled._integerPart !== otherScaled._integerPart) {
-      return thisScaled._integerPart > otherScaled._integerPart ? 1 : -1
+    if (this._integerPart !== other._integerPart) {
+      return this._integerPart > other._integerPart ? 1 : -1
     }
-    if (thisScaled._fractionalPart !== otherScaled._fractionalPart) {
-      return thisScaled._fractionalPart > otherScaled._fractionalPart ? 1 : -1
+    if (this._fractionalPart !== other._fractionalPart) {
+      return this._fractionalPart > other._fractionalPart ? 1 : -1
     }
     return 0
   }
