@@ -9,6 +9,7 @@ import GaugeWeightHistoryChart from '@/components/Charts/GaugeWeightHistoryChart
 import GaugeHeader from './GaugeHeader'
 import GaugeStats from './GaugeStats'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import GaugeVotesTable from './GaugeVotesTable'
 
 type GaugeProps = {
   routerParams: {
@@ -19,13 +20,10 @@ type GaugeProps = {
 const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
   const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
+
+  const tableMinWidth = 41.875
   const gaugeData = gaugeMapper[gaugeAddress]
-
-  console.log('gaugeMapper', gaugeMapper)
-
   const loading = gaugesLoading === 'LOADING'
-  const error = gaugesLoading === 'ERROR'
-  const success = gaugesLoading === 'SUCCESS'
 
   return (
     <Wrapper>
@@ -36,6 +34,7 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
         <Content>
           <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
         </Content>
+        <GaugeVotesTable gaugeAddress={gaugeAddress} tableMinWidth={tableMinWidth} />
       </GaugePageContainer>
     </Wrapper>
   )

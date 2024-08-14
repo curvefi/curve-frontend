@@ -15,8 +15,13 @@ type SliceState = {
   activeSortDirection: ActiveSortDirection
   searchValue: string
   gaugeMapper: GaugeMapper
+  gaugeVotesMapper: GaugeVotesMapper
   gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
   filteredGauges: GaugeFormattedData[]
+  gaugeVotesSortBy: {
+    key: GaugeVotesSortBy
+    order: 'asc' | 'desc'
+  }
 }
 
 const sliceKey = 'gauges'
@@ -25,12 +30,14 @@ const sliceKey = 'gauges'
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
     getGauges(forceReload?: boolean): Promise<void>
+    getGaugeVotes(gaugeAddress: string): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
     setSearchValue(searchValue: string): void
     setActiveSortBy(sortBy: SortByFilterGauges): void
     setActiveSortDirection(direction: ActiveSortDirection): void
     selectFilteredSortedGauges(): GaugeFormattedData[]
     setGauges(searchValue: string): void
+    setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -44,8 +51,13 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
   searchValue: '',
   gaugeMapper: {},
+  gaugeVotesMapper: {},
   gaugeWeightHistoryMapper: {},
   filteredGauges: [],
+  gaugeVotesSortBy: {
+    key: 'timestamp',
+    order: 'desc',
+  },
 }
 
 const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSlice => ({
@@ -90,6 +102,44 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       } catch (error) {
         console.error('Error fetching gauges:', error)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'ERROR')
+      }
+    },
+    getGaugeVotes: async (gaugeAddress: string) => {
+      const address = gaugeAddress.toLowerCase()
+
+      set(
+        produce(get(), (state) => {
+          state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
+            fetchingState: 'LOADING',
+            votes: [],
+          }
+        })
+      )
+
+      try {
+        const response = await fetch(`https://prices.curve.fi/v1/dao/gauges/${address}/votes`)
+        const data: GaugeVotesResponse = await response.json()
+
+        const formattedData = data.votes.map((vote) => ({
+          ...vote,
+          timestamp: new Date(vote.timestamp).getTime(),
+        }))
+
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
+              fetchingState: 'SUCCESS',
+              votes: formattedData,
+            }
+          })
+        )
+      } catch (error) {
+        console.error('Error fetching gauge votes:', error)
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeVotesMapper[gaugeAddress].fetchingState = 'ERROR'
+          })
+        )
       }
     },
     getHistoricGaugeWeights: async (gaugeAddress: string) => {
@@ -161,6 +211,41 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           filteredGauges: gauges,
         })
       }, 500)
+    },
+    setGaugeVotesSortBy: (gaugeAddress: string, sortBy: GaugeVotesSortBy) => {
+      const address = gaugeAddress.toLowerCase()
+
+      const {
+        gaugeVotesMapper: {
+          [address]: { votes },
+        },
+        gaugeVotesSortBy,
+      } = get()[sliceKey]
+
+      let order = gaugeVotesSortBy.order
+      if (sortBy === gaugeVotesSortBy.key) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            const reversedEntries = [...votes].reverse()
+            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].userGaugeVotesSortBy.order = order
+          })
+        )
+      } else {
+        const sortedEntries = [...votes].sort((a, b) => {
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVotesSortBy.key = sortBy
+            state[sliceKey].userGaugeVotesSortBy.order = 'desc'
+            state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
+          })
+        )
+      }
     },
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)

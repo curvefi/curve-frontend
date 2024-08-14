@@ -55,11 +55,11 @@ const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => 
       getData={() => getUserLocks(userAddress.toLowerCase())}
       renderRow={(lock, index) => (
         <TableRowWrapper key={index} columns={LOCKS_LABELS.length} minWidth={tableMinWidth}>
-          <TableData className={userLocksSortBy.key === 'date' ? 'active left-padding' : 'left-padding'}>
+          <TableData className={userLocksSortBy.key === 'date' ? 'sortby-active left-padding' : 'left-padding'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.date).getTime() / 1000))}
           </TableData>
           <TableData className="left-padding">{lockTypeLabel(lock.lock_type)}</TableData>
-          <TableData className={userLocksSortBy.key === 'amount' ? 'active left-padding' : 'left-padding'}>
+          <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active left-padding' : 'left-padding'}>
             {formatNumber(lock.amount, { showDecimalIfSmallNumberOnly: true })}
           </TableData>
           <TableData className="left-padding">
