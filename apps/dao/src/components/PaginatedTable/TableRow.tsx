@@ -1,6 +1,10 @@
+import type { InternalLinkProps } from '@/ui/Link/InternalLink'
+
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
+
+import { InternalLink } from '@/ui/Link'
 
 interface TableRowProps {
   holder: any
@@ -44,7 +48,27 @@ export const TableData = styled.p`
   &.capitalize {
     text-transform: capitalize;
   }
-  &.active {
+  &.sortby-active {
+    font-weight: var(--bold);
+  }
+`
+
+export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
+  font-variant-numeric: tabular-nums;
+  font-size: var(--font-size-2);
+  font-weight: var(--semi-bold);
+  line-height: 1.5;
+  display: flex;
+  gap: var(--spacing-1);
+  text-decoration: none;
+  color: inherit;
+  &.left-padding {
+    padding-left: var(--spacing-2);
+  }
+  &.capitalize {
+    text-transform: capitalize;
+  }
+  &.sortby-active {
     font-weight: var(--bold);
   }
 `

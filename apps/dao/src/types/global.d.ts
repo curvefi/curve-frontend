@@ -219,6 +219,33 @@ declare global {
     [gaugeAddress: string]: GaugeFormattedData
   }
 
+  type GaugeVoteResData = {
+    user: string
+    weight: number
+    block_number: number
+    timestamp: string
+    transaction: string
+  }
+
+  type GaugeVotesResponse = {
+    votes: GaugeVoteResData[]
+  }
+
+  type GaugeVoteData = {
+    user: string
+    weight: number
+    block_number: number
+    timestamp: number
+    transaction: string
+  }
+
+  interface GaugeVotesMapper {
+    [gaugeAddress: string]: {
+      fetchingState: FetchingState
+      votes: GaugeVote[]
+    }
+  }
+
   type GaugeWeightHistoryData = {
     is_killed: boolean
     gauge_weight: number
@@ -390,5 +417,6 @@ declare global {
   type UserLocksSortBy = 'date' | 'amount'
   type UserGaugeVotesSortBy = 'weight' | 'timestamp'
   type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
+  type GaugeVotesSortBy = 'weight' | 'timestamp'
   type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 }
