@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 
@@ -8,7 +7,7 @@ import Box from '@/ui/Box'
 import GaugeWeightHistoryChart from '@/components/Charts/GaugeWeightHistoryChart'
 import GaugeHeader from './GaugeHeader'
 import GaugeStats from './GaugeStats'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { SpinnerWrapper } from '@/ui/Spinner'
 import GaugeVotesTable from './GaugeVotesTable'
 
 type GaugeProps = {
@@ -29,7 +28,7 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
     <Wrapper>
       <PageTitle>{t`Gauge`}</PageTitle>
       <GaugePageContainer variant="secondary">
-        <GaugeHeader gaugeAddress={gaugeAddress} />
+        <GaugeHeader gaugeAddress={gaugeAddress} gaugeData={gaugeData} dataLoading={loading} />
         <GaugeStats gaugeData={gaugeData} dataLoading={loading} />
         <Content>
           <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
@@ -75,11 +74,6 @@ const Content = styled.div`
   flex-direction: column;
   padding: var(--spacing-3);
   width: 100%;
-`
-
-const StyledSpinnerWrapper = styled(SpinnerWrapper)`
-  width: 100%;
-  min-width: 100%;
 `
 
 export default Gauge

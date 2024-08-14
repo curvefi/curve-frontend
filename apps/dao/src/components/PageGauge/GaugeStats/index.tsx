@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import { formatNumber, convertToLocaleTimestamp } from '@/ui/utils/'
+
 import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
 import Box from '@/ui/Box'
 import Loader from '@/ui/Loader'
@@ -10,71 +12,113 @@ interface GaugeStatsProps {
   dataLoading: boolean
 }
 
-const GaugeStats = ({ gaugeData, dataLoading }: GaugeStatsProps) => (
-  <Wrapper>
-    <BoxedDataComp>
-      {dataLoading ? (
-        <>
-          <Loader isLightBg skeleton={[65, 25]} />
-          <Loader isLightBg skeleton={[35, 25]} />
-        </>
-      ) : (
-        <>
-          <h3>{gaugeData.title}</h3>
-          {gaugeData.is_killed && <BoxedData isKilled>{t`Killed`}</BoxedData>}
-          {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
-          {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
-          {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
-        </>
-      )}
-    </BoxedDataComp>
-    <Box flex flexGap="var(--spacing-4)">
-      <SubTitleColumn
-        loading={dataLoading}
-        title={t`Relative Weight`}
-        data={<SubTitleColumnData>{gaugeData?.gauge_relative_weight.toFixed(2)}%</SubTitleColumnData>}
-      />
-      <SubTitleColumn
-        loading={dataLoading}
-        title={t`7d Delta`}
-        data={
-          <StyledSubTitleColumnData
-            className={`${
-              gaugeData?.gauge_relative_weight_7d_delta
-                ? gaugeData?.gauge_relative_weight_7d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData?.gauge_relative_weight_7d_delta
-              ? `${gaugeData?.gauge_relative_weight_7d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </StyledSubTitleColumnData>
-        }
-      />
-      <SubTitleColumn
-        loading={dataLoading}
-        title={t`60d Delta`}
-        data={
-          <StyledSubTitleColumnData
-            className={`${
-              gaugeData?.gauge_relative_weight_60d_delta
-                ? gaugeData?.gauge_relative_weight_60d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData?.gauge_relative_weight_60d_delta
-              ? `${gaugeData?.gauge_relative_weight_60d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </StyledSubTitleColumnData>
-        }
-      />
-    </Box>
-  </Wrapper>
-)
+const GaugeStats = ({ gaugeData, dataLoading }: GaugeStatsProps) => {
+  console.log(gaugeData)
+  console.log(dataLoading)
+  return (
+    <Wrapper>
+      <Box flex flexGap="var(--spacing-4)">
+        <SubTitleColumn
+          loading={dataLoading}
+          title={t`Relative Weight`}
+          data={<SubTitleColumnData>{gaugeData?.gauge_relative_weight.toFixed(2)}%</SubTitleColumnData>}
+        />
+        <SubTitleColumn
+          loading={dataLoading}
+          title={t`7d Delta`}
+          data={
+            <StyledSubTitleColumnData
+              className={`${
+                gaugeData?.gauge_relative_weight_7d_delta
+                  ? gaugeData?.gauge_relative_weight_7d_delta > 0
+                    ? 'green'
+                    : 'red'
+                  : ''
+              }`}
+            >
+              {gaugeData?.gauge_relative_weight_7d_delta
+                ? `${gaugeData?.gauge_relative_weight_7d_delta.toFixed(2)}%`
+                : 'N/A'}
+            </StyledSubTitleColumnData>
+          }
+        />
+        <SubTitleColumn
+          loading={dataLoading}
+          title={t`60d Delta`}
+          data={
+            <StyledSubTitleColumnData
+              className={`${
+                gaugeData?.gauge_relative_weight_60d_delta
+                  ? gaugeData?.gauge_relative_weight_60d_delta > 0
+                    ? 'green'
+                    : 'red'
+                  : ''
+              }`}
+            >
+              {gaugeData?.gauge_relative_weight_60d_delta
+                ? `${gaugeData?.gauge_relative_weight_60d_delta.toFixed(2)}%`
+                : 'N/A'}
+            </StyledSubTitleColumnData>
+          }
+        />
+        {gaugeData?.pool?.tvl_usd ? (
+          <SubTitleColumn
+            loading={dataLoading}
+            title={t`Pool TVL`}
+            data={
+              <SubTitleColumnData>{t`$${formatNumber(gaugeData.pool.tvl_usd, {
+                showDecimalIfSmallNumberOnly: true,
+              })}`}</SubTitleColumnData>
+            }
+          />
+        ) : (
+          ''
+        )}
+        {gaugeData?.pool?.trading_volume_24h ? (
+          <SubTitleColumn
+            loading={dataLoading}
+            title={t`24h Pool Volume`}
+            data={
+              <SubTitleColumnData>{t`$${formatNumber(gaugeData.pool.trading_volume_24h, {
+                showDecimalIfSmallNumberOnly: true,
+              })}`}</SubTitleColumnData>
+            }
+          />
+        ) : (
+          ''
+        )}
+        {gaugeData?.emissions ? (
+          <SubTitleColumn
+            loading={dataLoading}
+            title={t`Emissions (CRV)`}
+            data={
+              <SubTitleColumnData>
+                {formatNumber(gaugeData.emissions, {
+                  showDecimalIfSmallNumberOnly: true,
+                })}
+              </SubTitleColumnData>
+            }
+          />
+        ) : (
+          <SubTitleColumn
+            loading={dataLoading}
+            title={t`Emissions (CRV)`}
+            data={<SubTitleColumnData>{t`N/A`}</SubTitleColumnData>}
+          />
+        )}
+        <SubTitleColumn
+          loading={dataLoading}
+          title={t`Created`}
+          data={
+            <SubTitleColumnData>
+              {new Date(convertToLocaleTimestamp(new Date(gaugeData?.creation_date).getTime())).toLocaleString()}
+            </SubTitleColumnData>
+          }
+        />
+      </Box>
+    </Wrapper>
+  )
+}
 
 const Wrapper = styled(Box)`
   display: flex;

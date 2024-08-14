@@ -149,14 +149,10 @@ const GaugeListItem = ({ gaugeData }: Props) => {
             <Box flex flexColumn>
               <DataTitle className="open left-aligned">{t`Gauge`}</DataTitle>
               <GaugeData className="open">
-                <StyledInternalLink
-                  onClick={(e) => {
-                    e.preventDefault()
-                    navigate(`/ethereum/gauges/${gaugeData.address}`)
-                  }}
-                >
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
                   {shortenTokenAddress(gaugeData.address)}
-                </StyledInternalLink>
+                  <Icon name="Launch" size={16} />
+                </StyledExternalLink>
               </GaugeData>
             </Box>
             {gaugeData.emissions ? (
@@ -181,6 +177,15 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               </GaugeInformation>
             </Box>
           </GaugeDetailsContainer>
+          <StyledInternalLink
+            onClick={(e) => {
+              e.preventDefault()
+              navigate(`/ethereum/gauges/${gaugeData.address}`)
+            }}
+          >
+            {t`See more Gauge details`}
+            <Icon name="ArrowRight" size={16} />
+          </StyledInternalLink>
         </OpenContainer>
       )}
     </GaugeBox>
@@ -337,6 +342,7 @@ const OpenContainer = styled.div`
   display: flex;
   flex-direction: column;
   padding: var(--spacing-3) var(--spacing-1) 0;
+  gap: var(--spacing-2);
 `
 
 const GaugeDetailsContainer = styled.div`
@@ -345,7 +351,7 @@ const GaugeDetailsContainer = styled.div`
   gap: var(--spacing-3);
   border-top: 1px solid var(--gray-500a20);
   padding-top: var(--spacing-3);
-  padding-bottom: var(--spacing-2);
+  padding-bottom: var(--spacing-3);
   @media (min-width: 28.125rem) {
   }
 `
@@ -367,14 +373,16 @@ const StyledExternalLink = styled(ExternalLink)`
 
 const StyledInternalLink = styled(InternalLink)`
   display: flex;
-  align-items: end;
-  gap: var(--spacing-1);
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
   color: var(--page--text-color);
   font-size: var(--font-size-2);
+  padding: var(--spacing-2);
   font-weight: var(--bold);
   text-transform: none;
   text-decoration: none;
-
+  border: 1px solid var(--gray-500a20);
   &:hover {
     cursor: pointer;
   }
