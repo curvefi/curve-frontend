@@ -3,7 +3,7 @@ import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
+import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
 import { getTokenName } from '@/utils/utilsLoan'
 import useStore from '@/store/useStore'
 
@@ -27,14 +27,14 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
   const totalCollateralValue = (totalCollateralUsd + Number(totalStablecoin)).toString()
 
-  const tooltipContent = useMemo<{ label: string; value: string | number }[]>(() => {
+  const breakdowns = useMemo<{ label: string; value: string | number; isUsd: boolean }[]>(() => {
     if (!llamma || !totalCollateralUsd || !totalStablecoin) return []
 
     const { collateral, stablecoin } = getTokenName(llamma)
 
     return [
-      { label: collateral, value: totalCollateralUsd },
-      { label: stablecoin, value: totalStablecoin },
+      { label: collateral, value: totalCollateralUsd, isUsd: true },
+      { label: stablecoin, value: totalStablecoin, isUsd: false },
     ]
   }, [llamma, totalCollateralUsd, totalStablecoin])
 
@@ -57,12 +57,13 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
         <>
           {+totalCollateralValue > 0 && (
             <TotalSummary>
-              {' '}
-              {tooltipContent.map(({ label, value }, idx) => {
-                const isLast = tooltipContent.length - 1 === idx
-                return `${idx === 0 ? '' : ''}${formatNumber(value, { notation: 'compact' })} ${label}${
-                  isLast ? '' : ' + '
-                }`
+              {breakdowns.map(({ label, value, isUsd }, idx) => {
+                const isLast = breakdowns.length - 1 === idx
+                const formatOptions: NumberFormatOptions = isUsd
+                  ? { currency: 'USD', style: 'currency', notation: 'compact' }
+                  : { notation: 'compact' }
+
+                return `${idx === 0 ? '' : ''}${formatNumber(value, formatOptions)} ${label}${isLast ? '' : ' + '}`
               })}
             </TotalSummary>
           )}
