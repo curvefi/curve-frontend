@@ -1,4 +1,6 @@
 import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
 import { Chip } from '@/ui/Typography'
 
 type Props = {
@@ -17,10 +19,14 @@ const TableCellReferenceAsset = ({ isCrypto, referenceAsset }: Props) => {
     : ''
 
   return (
-    <Chip size="xs" tooltip={tooltip}>
+    <StyledChip size="xs" tooltip={tooltip}>
       {referenceAsset ? referenceAssets[referenceAsset] ?? referenceAsset : ''}
-    </Chip>
+    </StyledChip>
   )
 }
+
+const StyledChip = styled(Chip)`
+  margin-bottom: 0.125rem;
+`
 
 export default TableCellReferenceAsset

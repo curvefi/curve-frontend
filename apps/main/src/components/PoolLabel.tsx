@@ -14,7 +14,6 @@ import ChipPool from '@/components/ChipPool'
 import ChipToken from '@/components/ChipToken'
 import TokenIcons from '@/components/TokenIcons'
 import TableCellReferenceAsset from '@/components/PagePoolList/components/TableCellReferenceAsset'
-import TableCellFactory from '@/components/PagePoolList/components/TableCellFactory'
 
 const PoolLabel = ({
   className,
@@ -74,13 +73,10 @@ const PoolLabel = ({
           )}
         </IconsWrapper>
         <Box fillWidth>
-          <PoolTypeWrapper>
-            <TableCellReferenceAsset
-              isCrypto={poolData?.pool?.isCrypto}
-              referenceAsset={poolData?.pool?.referenceAsset}
-            />{' '}
-            <TableCellFactory isFactory={poolData?.pool?.isFactory} />
-          </PoolTypeWrapper>
+          <TableCellReferenceAsset
+            isCrypto={poolData?.pool?.isCrypto}
+            referenceAsset={poolData?.pool?.referenceAsset}
+          />
 
           <Box flex flexAlignItems="center">
             {!isMobile && (
@@ -161,10 +157,6 @@ PoolLabel.defaultProps = {
   className: '',
   isVisible: true,
 }
-
-const PoolTypeWrapper = styled.div`
-  margin-bottom: 0.125rem; // 2px;
-`
 
 const IconsWrapper = styled.div`
   min-width: 3.3125rem; // 53px
