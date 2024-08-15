@@ -21,7 +21,7 @@ const COLORS = [
 ]
 
 const BarChartComponent = ({ data }: Props) => {
-  const height = 500
+  const height = 300
   const labelWidth = 100
 
   const reducedData = data.filter((item, index) => {
@@ -29,36 +29,45 @@ const BarChartComponent = ({ data }: Props) => {
   })
 
   return (
-    <ChartContainer>
+    <ChartContainer height={height}>
       <ResponsiveContainer width="100%" height={height}>
         <BarChart
-          layout="vertical"
+          layout="horizontal"
           width={500}
           height={height}
           data={reducedData}
           margin={{
             top: 16,
-            right: 16,
-            left: 16,
-            bottom: 16,
+            right: 8,
+            left: 48,
+            bottom: 60,
           }}
         >
-          <CartesianGrid strokeDasharray="3" horizontal={false} />
+          <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
           <XAxis
-            type="number"
-            tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickFormatter={(value) => `${value}%`}
-            tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-            axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-          />
-          <YAxis
             type="category"
             dataKey="title"
             width={labelWidth}
-            interval={1}
+            interval={0}
+            tick={{
+              fill: 'var(--page--text-color)',
+              fontWeight: 'var(--bold)',
+              fontSize: 'var(--font-size-1)',
+              textAnchor: 'end',
+            }}
+            tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+            axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+            angle={-45}
+            height={60}
+          />
+          <YAxis
+            type="number"
+            orientation="right"
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-            axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+            tickFormatter={(value) => `${value}%`}
+            tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+            axisLine={false}
+            dx={4}
           />
           <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
           <Bar dataKey="gauge_relative_weight" label={false}>
@@ -72,10 +81,10 @@ const BarChartComponent = ({ data }: Props) => {
   )
 }
 
-const ChartContainer = styled.div`
+const ChartContainer = styled.div<{ height: number }>`
   position: relative;
   width: 100%;
-  height: 500px;
+  height: ${({ height }) => height}px;
 `
 
 export default BarChartComponent
