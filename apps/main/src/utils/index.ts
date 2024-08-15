@@ -119,14 +119,14 @@ enum LogStatus {
 }
 
 export function log(
-  fnName: string | QueryKey | MutationKey | string[],
+  key: string | QueryKey | MutationKey | string[],
   status?: LogStatus | string | any,
   ...args: unknown[]
 ) {
   if (process.env.NODE_ENV !== 'development') return
 
   const timestamp = new Date().toISOString()
-  const fnNameString = Array.isArray(fnName) ? fnName.join('.') : fnName
+  const keyArray = typeof key === 'string' ? key.split('.') : Array.isArray(key) ? key : [key]
 
   const getStatusStyle = (status?: LogStatus | string) => {
     if (!status) return ''
@@ -156,15 +156,14 @@ export function log(
     }
   }
 
-  const formatFnNameString = (fnNameString: string): [string, string[]] => {
-    const parts = fnNameString.split('.')
+  const formatKeyArray = (keyArray: string[]): [string, string[]] => {
     let formattedString = ''
     const styles: string[] = []
 
-    parts.forEach((part, index) => {
+    keyArray.forEach((part, index) => {
       if (index > 0) {
-        formattedString += '%c.'
-        styles.push('color: #666;')
+        formattedString += '%c → '
+        styles.push('color: #666; font-size: 0.75em;')
       }
       formattedString += `%c${part}`
       styles.push('color: #4CAF50; font-weight: bold;')
@@ -172,9 +171,6 @@ export function log(
 
     return [formattedString, styles]
   }
-
-  const statusStyle = getStatusStyle(status)
-  const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
 
   const logMethod = (status?: LogStatus | string) => {
     switch (String(status).toLowerCase()) {
@@ -195,29 +191,32 @@ export function log(
 
   const logger = logMethod(status)
 
+  const hasDefinedStatus = status && Object.values(LogStatus).includes(status as LogStatus)
+
   if (hasDefinedStatus) {
-    const [formattedFnNameString, fnNameStyles] = formatFnNameString(fnNameString as string)
+    const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
     logger(
-      `%cDApp%c @ %c${timestamp}%c -> %c${status}%c\n${formattedFnNameString}${args.length > 0 ? '%c: ' : ''}%c`,
+      `%cDApp%c @ %c${timestamp}%c -> %c${status}%c\n${formattedKeyString}${args.length > 0 ? '%c: ' : ''}%c`,
       'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
       'color: #666; font-weight: bold;',
       'color: #2196F3;',
       'color: #666;',
-      statusStyle,
+      getStatusStyle(status),
       'color: #4CAF50; font-weight: bold;',
-      ...fnNameStyles,
+      ...keyStyles,
       ...(args.length > 0 ? ['color: 666;'] : []),
       'color: inherit;',
       ...args
     )
   } else {
+    const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
     logger(
-      `%cDApp%c @ %c${timestamp}%c ->\n%c${fnNameString}${args.length > 0 ? ':' : ''}%c`,
+      `%cDApp%c @ %c${timestamp}%c ->\n${formattedKeyString}${args.length > 0 ? '%c: ' : ''}%c`,
       'background: #1e63e9; color: white; padding: 2px 4px; border-radius: 3px;',
       'color: #666; font-weight: bold;',
       'color: #2196F3;',
       'color: #666;',
-      'color: #4CAF50; font-weight: bold;',
+      ...keyStyles,
       'color: inherit;',
       ...args
     )
