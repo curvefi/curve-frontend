@@ -39,12 +39,8 @@ const Gauges = () => {
   return (
     <Wrapper>
       <PageTitle>{t`Curve Gauges`}</PageTitle>
-      <Box
-        grid
-        gridTemplateColumns={isMdUp ? (navSelection === 'Gauge List' ? 'auto 25rem' : 'auto 20rem') : 'auto'}
-        fillWidth
-        flexGap={'var(--spacing-1)'}
-      >
+      <Box flex flexColumn fillWidth flexGap={'var(--spacing-2)'}>
+        {navSelection === 'gaugeList' && isMdUp && <GaugeWeightDistribution />}
         <Container variant="secondary">
           <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
           {navSelection === 'gaugeList' && <GaugesList />}
@@ -57,7 +53,6 @@ const Gauges = () => {
               <UserBox snapshotVotingPower={false} />
             </Box>
           )}
-          {navSelection === 'gaugeList' && isMdUp && <GaugeWeightDistribution />}
         </Box>
       </Box>
     </Wrapper>
