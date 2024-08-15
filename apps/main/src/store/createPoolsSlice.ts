@@ -17,7 +17,6 @@ import type {
 } from '@/ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
-import { BigNumber } from 'bignumber.js'
 import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
 import produce from 'immer'
@@ -290,30 +289,31 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
+      const { usdRates } = get()
+      const { ...sliceState } = get()[sliceKey]
       const { chainId } = curve
       const { pool, isWrapped, tokens, tokenAddresses } = poolData
 
       const [balancesResp, usdRatesMapper] = await Promise.all([
-        networks[chainId].api.pool.poolBalances(pool, isWrapped),
-        get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
+        curvejsApi.pool.poolBalances(pool, isWrapped),
+        usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
       ])
 
       const { balances } = balancesResp
       const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
       let crTokens: CurrencyReservesToken[] = []
-      let total = new BigNumber(0)
-      let totalUsd = new BigNumber(0)
+      let total = 0
+      let totalUsd = 0
 
       for (const idx in tokenAddresses) {
         const tokenAddress = tokenAddresses[idx]
         const usdRate = usdRatesMapper[tokenAddress] ?? 0
         const usdRateError = isNaN(usdRate)
-        const balance = balances[idx]
-        const balanceUsd =
-          !isEmpty && +usdRate > 0 && !usdRateError ? new BigNumber(balance).multipliedBy(usdRate).toString() : '0'
+        const balance = Number(balances[idx])
+        const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
 
-        total = total.plus(balance)
-        totalUsd = totalUsd.plus(balanceUsd)
+        total += balance
+        totalUsd += balanceUsd
         const crToken: CurrencyReservesToken = {
           token: tokens[idx],
           tokenAddress,
@@ -332,9 +332,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         } else if (poolData.pool.isCrypto && isNaN(cr.usdRate)) {
           cr.percentShareInPool = 'NaN'
         } else if (poolData.pool.isCrypto) {
-          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
+          cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
         } else {
-          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
+          cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
         }
         return cr
       })
@@ -346,7 +346,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         totalUsd: totalUsd.toString(),
       }
 
-      get()[sliceKey].setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
+      sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
     fetchPoolsChunkRewardsApy: async (chainId, poolDatas) => {
       const { results } = await PromisePool.for(poolDatas).process(

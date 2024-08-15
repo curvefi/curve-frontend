@@ -105,8 +105,8 @@ declare global {
   type CurrencyReservesToken = {
     token: string
     tokenAddress: string
-    balance: string
-    balanceUsd: string
+    balance: number
+    balanceUsd: number
     usdRate: number
     percentShareInPool: string
   }
