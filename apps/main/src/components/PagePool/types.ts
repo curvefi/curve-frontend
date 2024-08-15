@@ -14,7 +14,7 @@ export type Slippage = {
   error: string
 }
 
-export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage'
+export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
 
 export type Seed = {
   isSeed: boolean | null

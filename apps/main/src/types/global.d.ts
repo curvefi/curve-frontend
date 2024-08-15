@@ -117,7 +117,7 @@ declare global {
   }
   type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
 
-  type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage' | ''
+  type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
   type RouterParams = {
     rLocale: Locale | null
     rLocalePathname: string

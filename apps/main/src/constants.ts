@@ -24,7 +24,7 @@ export const ROUTE = {
   PAGE_LOCKER_ADJUST_DATE: '/adjust_date',
   PAGE_POOL_DEPOSIT: '/deposit',
   PAGE_POOL_WITHDRAW: '/withdraw',
-  PAGE_POOL_MANAGE: '/manage',
+  PAGE_POOL_MANAGE: '/manage-gauge',
 } as const
 
 // TODO rename to MS
