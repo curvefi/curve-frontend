@@ -144,6 +144,7 @@ function CalendarCell({ state, date }) {
 }
 
 function DatePicker(props) {
+  let { locale } = useLocale()
   const state = useDatePickerState(props)
   const ref = React.useRef<HTMLDivElement>(null)
 
@@ -152,6 +153,7 @@ function DatePicker(props) {
 
   const dateFieldState = useDateFieldState({
     ...dateFieldProps,
+    locale,
     createCalendar,
   })
 
