@@ -10,6 +10,7 @@
  */
 
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
+import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 import { logQuery } from '@/utils'
 import { QueryFunction } from '@tanstack/react-query'
@@ -19,7 +20,7 @@ export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, Ga
   queryKey,
 }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId] = queryKey
+  const [, , , , chainId, poolId] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -32,14 +33,14 @@ export const queryGaugeManager: QueryFunction<
   GaugeQueryKeyType<'manager'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId] = queryKey
+  const [, , , , chainId, poolId] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
   const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
   if (!gaugeManager || gaugeManager === zeroAddress) {
-    throw new Error('Invalid gauge manager')
+    return undefined
   }
   return gaugeManager
 }
@@ -49,7 +50,7 @@ export const queryGaugeDistributors: QueryFunction<
   GaugeQueryKeyType<'distributors'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId] = queryKey
+  const [, , , , chainId, poolId] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -62,14 +63,13 @@ export const queryGaugeVersion: QueryFunction<
   GaugeQueryKeyType<'version'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId] = queryKey
+  const [, , , , chainId, poolId] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
   const version = await pool.gauge.gaugeVersion()
-  if (version === null) throw new Error('Failed to fetch gauge version')
-  return version
+  return version ?? null
 }
 
 export const queryIsDepositRewardAvailable: QueryFunction<
@@ -77,7 +77,7 @@ export const queryIsDepositRewardAvailable: QueryFunction<
   GaugeQueryKeyType<'isDepositRewardAvailable'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId] = queryKey
+  const [, , , , chainId, poolId] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -90,52 +90,11 @@ export const queryDepositRewardIsApproved: QueryFunction<
   GaugeQueryKeyType<'depositRewardIsApproved'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , chainId, poolId, token, amount] = queryKey
+  const [, , , , chainId, poolId, token, amount] = queryKey
   if (!chainId || !poolId || !token || !isAddress(token) || !amount) throw new Error('Missing required parameters')
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
-  return pool.gauge.depositRewardIsApproved(token, amount)
-}
-
-// Estimate Gas
-export const queryEstimateGasDepositRewardApprove: QueryFunction<
-  PoolMethodResult<'gauge.estimateGas.depositRewardApprove'>,
-  GaugeQueryKeyType<'estimateGasDepositRewardApprove'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, , , chainId, poolId, token, amount] = queryKey
-  if (!chainId || !poolId || !token || !isAddress(token) || !amount) throw new Error('Missing required parameters')
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-
-  return await pool.gauge.estimateGas.depositRewardApprove(token, amount)
-}
-
-export const queryEstimateGasAddRewardToken: QueryFunction<
-  PoolMethodResult<'gauge.estimateGas.addReward'>,
-  GaugeQueryKeyType<'estimateGasAddRewardToken'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, , , chainId, poolId, token, distributor] = queryKey
-  if (!chainId || !poolId || !token || !isAddress(token) || !distributor) throw new Error('Missing required parameters')
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return await pool.gauge.estimateGas.addReward(token, distributor)
-}
-
-export const queryEstimateGasDepositReward: QueryFunction<
-  PoolMethodResult<'gauge.estimateGas.depositReward'>,
-  GaugeQueryKeyType<'estimateGasDepositReward'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, , , chainId, poolId, token, amount, epoch] = queryKey
-  if (!chainId || !poolId || !token || !isAddress(token) || !amount || !epoch)
-    throw new Error('Missing required parameters')
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return pool.gauge.estimateGas.depositReward(token, amount, epoch)
+  const strAmount = BD.from(amount).toString()
+  return pool.gauge.depositRewardIsApproved(token, strAmount)
 }
