@@ -13,16 +13,11 @@
 import { REFRESH_INTERVAL } from '@/constants'
 import * as api from '@/entities/gauge/api'
 import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import { gaugeKeys as keys } from '@/entities/gauge/query-keys'
+import { gaugeKeys as keys } from '@/entities/gauge/model'
+import type { DepositRewardApproveParams, GaugeQueryParams } from '@/entities/gauge/types'
 import { queryOptions } from '@tanstack/react-query'
-import type {
-  AddRewardParams,
-  DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
-} from '@/entities/gauge/types'
 
-export const getGaugeStatusQuery = (params: GaugeQueryParams) =>
+export const getGaugeStatusQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.status(params),
     queryFn: api.queryGaugeStatus,
@@ -30,7 +25,7 @@ export const getGaugeStatusQuery = (params: GaugeQueryParams) =>
     enabled: conditions.enabledGaugeStatus(params),
   })
 
-export const getIsDepositRewardAvailableQuery = (params: GaugeQueryParams) =>
+export const getIsDepositRewardAvailableQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.isDepositRewardAvailable(params),
     queryFn: api.queryIsDepositRewardAvailable,
@@ -38,7 +33,7 @@ export const getIsDepositRewardAvailableQuery = (params: GaugeQueryParams) =>
     enabled: conditions.enabledIsDepositRewardAvailable(params),
   })
 
-export const getGaugeManagerQuery = (params: GaugeQueryParams) =>
+export const getGaugeManagerQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.manager(params),
     queryFn: api.queryGaugeManager,
@@ -46,7 +41,7 @@ export const getGaugeManagerQuery = (params: GaugeQueryParams) =>
     enabled: conditions.enabledGaugeManager(params),
   })
 
-export const getGaugeDistributorsQuery = (params: GaugeQueryParams) =>
+export const getGaugeDistributorsQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.distributors(params),
     queryFn: api.queryGaugeDistributors,
@@ -54,7 +49,7 @@ export const getGaugeDistributorsQuery = (params: GaugeQueryParams) =>
     enabled: conditions.enabledGaugeDistributors(params),
   })
 
-export const getGaugeVersionQuery = (params: GaugeQueryParams) =>
+export const getGaugeVersionQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.version(params),
     queryFn: api.queryGaugeVersion,
@@ -62,34 +57,10 @@ export const getGaugeVersionQuery = (params: GaugeQueryParams) =>
     enabled: conditions.enabledGaugeVersion(params),
   })
 
-export const getDepositRewardIsApprovedQuery = (params: DepositRewardApproveParams & GaugeQueryParams) =>
+export const getDepositRewardIsApprovedQueryOptions = (params: DepositRewardApproveParams & GaugeQueryParams) =>
   queryOptions({
     queryKey: keys.depositRewardIsApproved(params),
     queryFn: api.queryDepositRewardIsApproved,
     staleTime: REFRESH_INTERVAL['1h'],
     enabled: conditions.enabledDepositRewardIsApproved(params),
-  })
-
-export const getEstimateGasDepositRewardApproveQuery = (params: DepositRewardApproveParams & GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.estimateGasDepositRewardApprove(params),
-    queryFn: api.queryEstimateGasDepositRewardApprove,
-    staleTime: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasDepositRewardApprove(params),
-  })
-
-export const getEstimateGasAddRewardTokenQuery = (params: AddRewardParams & GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.estimateGasAddRewardToken(params),
-    queryFn: api.queryEstimateGasAddRewardToken,
-    staleTime: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasAddRewardToken(params),
-  })
-
-export const getEstimateGasDepositRewardQuery = (params: DepositRewardParams & GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.estimateGasDepositReward(params),
-    queryFn: api.queryEstimateGasDepositReward,
-    staleTime: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasDepositReward(params),
   })

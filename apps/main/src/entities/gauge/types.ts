@@ -10,7 +10,7 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import { gaugeKeys } from '@/entities/gauge/query-keys'
+import { gaugeKeys } from '@/entities/gauge/model'
 import { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
 import type { NestedKeys, NestedProperty } from '@/shared/types/nested'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'

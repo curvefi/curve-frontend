@@ -11,7 +11,7 @@
  */
 
 import * as models from '@/entities/gauge/model'
-import { gaugeKeys as keys } from '@/entities/gauge/query-keys'
+import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type {
   AddRewardParams,
   DepositRewardApproveParams,
