@@ -11,71 +11,22 @@
  */
 
 import * as models from '@/entities/gauge/model'
-import type {
-  AddRewardParams,
-  DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
-} from '@/entities/gauge/types'
-import { useCombinedQueries } from '@/shared/lib/queries'
-import { useQuery } from '@tanstack/react-query'
+import type { GaugeQueryParams } from '@/entities/gauge/types'
+import { useCombinedQueries } from '@/shared/lib/queries/combine'
+import { createQueryHook } from '@/shared/lib/queries/factory'
 
 export const useGauge = ({ chainId, poolId }: GaugeQueryParams) => {
   return useCombinedQueries([
-    models.getGaugeStatusQuery({ chainId, poolId }),
-    models.getIsDepositRewardAvailableQuery({ chainId, poolId }),
+    models.getGaugeStatusQueryOptions({ chainId, poolId }),
+    models.getIsDepositRewardAvailableQueryOptions({ chainId, poolId }),
   ])
 }
 
-export const useGaugeVersion = ({ chainId, poolId }: GaugeQueryParams) => {
-  return useQuery(models.getGaugeVersionQuery({ chainId, poolId }))
-}
-
-export const useIsDepositRewardAvailable = ({ chainId, poolId }: GaugeQueryParams) => {
-  return useQuery(models.getIsDepositRewardAvailableQuery({ chainId, poolId }))
-}
-
-export const useGaugeManager = ({ chainId, poolId }: GaugeQueryParams) => {
-  return useQuery(models.getGaugeManagerQuery({ chainId, poolId }))
-}
-
-export const useGaugeRewardsDistributors = ({ chainId, poolId }: GaugeQueryParams) => {
-  return useQuery(models.getGaugeDistributorsQuery({ chainId, poolId }))
-}
-
-export const useGaugeDepositRewardIsApproved = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-}: GaugeQueryParams & DepositRewardApproveParams) => {
-  return useQuery(models.getDepositRewardIsApprovedQuery({ chainId, poolId, rewardTokenId, amount }))
-}
-
-export const useEstimateGasAddRewardToken = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  distributorId,
-}: GaugeQueryParams & AddRewardParams) => {
-  return useQuery(models.getEstimateGasAddRewardTokenQuery({ chainId, poolId, rewardTokenId, distributorId }))
-}
-
-export const useEstimateGasDepositRewardApprove = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-}: GaugeQueryParams & DepositRewardApproveParams) => {
-  return useQuery(models.getEstimateGasDepositRewardApproveQuery({ chainId, poolId, rewardTokenId, amount }))
-}
-
-export const useEstimateGasDepositReward = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-  epoch,
-}: GaugeQueryParams & DepositRewardParams) => {
-  return useQuery(models.getEstimateGasDepositRewardQuery({ chainId, poolId, rewardTokenId, amount, epoch }))
-}
+export const useGaugeVersion = createQueryHook(models.getGaugeVersionQueryOptions)
+export const useIsDepositRewardAvailable = createQueryHook(models.getIsDepositRewardAvailableQueryOptions)
+export const useGaugeManager = createQueryHook(models.getGaugeManagerQueryOptions)
+export const useGaugeRewardsDistributors = createQueryHook(models.getGaugeDistributorsQueryOptions)
+export const useGaugeDepositRewardIsApproved = createQueryHook(models.getDepositRewardIsApprovedQueryOptions)
+export const useEstimateGasAddRewardToken = createQueryHook(models.getEstimateGasAddRewardTokenQueryOptions)
+export const useEstimateGasDepositRewardApprove = createQueryHook(models.getEstimateGasDepositRewardApproveQueryOptions)
+export const useEstimateGasDepositReward = createQueryHook(models.getEstimateGasDepositRewardQueryOptions)
