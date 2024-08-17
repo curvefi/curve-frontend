@@ -1,20 +1,20 @@
-import { isAddress, isAddressEqual, zeroAddress } from 'viem'
-import { z } from 'zod'
-import { type Address } from 'viem'
+import { create, test, enforce } from 'vest'
+import { isAddress, isAddressEqual, zeroAddress, type Address } from 'viem'
 
-export const schema = z.object({
-  rewardTokenId: z
-    .custom<Address>((val) => isAddress(val as string), {
-      message: 'Invalid ERC20 token address',
-    })
-    .refine((address) => !isAddressEqual(address, zeroAddress), {
-      message: 'Reward token address cannot be zero address',
-    }),
-  distributorId: z
-    .custom<Address>((val) => isAddress(val as string), {
-      message: 'Invalid distributor address',
-    })
-    .refine((address) => !isAddressEqual(address, zeroAddress), {
-      message: 'Distributor address cannot be zero address',
-    }),
+export const addGaugeRewardTokenValidationSuite = create((data: { rewardTokenId: string; distributorId: string }) => {
+  test('rewardTokenId', 'Invalid ERC20 token address', () => {
+    enforce(isAddress(data.rewardTokenId)).isTruthy()
+  })
+
+  test('rewardTokenId', 'Reward token address cannot be zero address', () => {
+    enforce(!isAddressEqual(data.rewardTokenId as Address, zeroAddress)).isTruthy()
+  })
+
+  test('distributorId', 'Invalid distributor address', () => {
+    enforce(isAddress(data.distributorId)).isTruthy()
+  })
+
+  test('distributorId', 'Distributor address cannot be zero address', () => {
+    enforce(!isAddressEqual(data.distributorId as Address, zeroAddress)).isTruthy()
+  })
 })

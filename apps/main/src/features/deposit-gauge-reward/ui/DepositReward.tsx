@@ -1,7 +1,6 @@
-import { TIME_FRAMES } from '@/constants'
 import { useGaugeRewardsDistributors } from '@/entities/gauge'
-import { schema } from '@/features/deposit-gauge-reward/model/form-schema'
-import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
+import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/features/deposit-gauge-reward/model'
+import { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import {
   AmountTokenInput,
   DepositStepper,
@@ -13,9 +12,8 @@ import { formDefaultOptions } from '@/shared/model/form'
 import { FormErrorsDisplay } from '@/shared/ui/forms'
 import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/shared/ui/styled-containers'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { vestResolver } from '@hookform/resolvers/vest'
 import { FormProvider, useForm } from 'react-hook-form'
-import { zeroAddress } from 'viem'
 
 export const DepositReward: React.FC<{
   chainId: ChainId
@@ -28,13 +26,8 @@ export const DepositReward: React.FC<{
 
   const methods = useForm<DepositRewardFormValues>({
     ...formDefaultOptions,
-    resolver: zodResolver(schema),
-    defaultValues: {
-      rewardTokenId: zeroAddress,
-      amount: '',
-      epoch: 1 * TIME_FRAMES.WEEK,
-      step: DepositRewardStep.APPROVAL,
-    },
+    resolver: vestResolver(depositRewardValidationSuite),
+    defaultValues: DepositRewardDefaultValues,
   })
 
   if (isPendingRewardDistributors) {

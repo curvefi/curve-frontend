@@ -1,10 +1,9 @@
-import { zodResolver } from '@hookform/resolvers/zod'
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/entities/gauge'
-import { schema } from '@/features/add-gauge-reward-token/model/form-schema'
+import { addGaugeRewardTokenValidationSuite } from '@/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/features/add-gauge-reward-token/types'
 import networks from '@/networks'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -14,6 +13,7 @@ import { DistributorInput, EstimatedGasInfo, FormActions, TokenSelector } from '
 import { formDefaultOptions } from '@/shared/model/form'
 import { FormErrorsDisplay } from '@/shared/ui/forms'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
+import { vestResolver } from '@hookform/resolvers/vest'
 import { zeroAddress } from 'viem'
 
 export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId }) => {
@@ -26,7 +26,7 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
 
   const methods = useForm<AddRewardFormValues>({
     ...formDefaultOptions,
-    resolver: zodResolver(schema),
+    resolver: vestResolver(addGaugeRewardTokenValidationSuite),
     defaultValues: {
       rewardTokenId: zeroAddress,
       distributorId: signerAddress ?? zeroAddress,

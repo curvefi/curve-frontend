@@ -1,10 +1,14 @@
-import type { z } from 'zod'
-import type { schema } from '@/features/deposit-gauge-reward/model/form-schema'
-
-export type DepositRewardFormValues = z.infer<typeof schema>
+import { Address } from 'viem'
 
 export enum DepositRewardStep {
   APPROVAL = 'APPROVAL',
   DEPOSIT = 'DEPOSIT',
   CONFIRMATION = 'CONFIRMATION',
+}
+
+export interface DepositRewardFormValues {
+  rewardTokenId: Address
+  amount: string
+  epoch: number
+  step: DepositRewardStep
 }
