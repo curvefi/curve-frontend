@@ -77,16 +77,6 @@ export const AmountTokenInput: React.FC<{
     return filteredTokens
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, setValue])
 
-  useEffect(() => {
-    if (isTokenBalancesLoading || !tokenBalance) return
-
-    if (parseEther(amount) > parseEther(tokenBalance)) {
-      setError('amount', { message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}` })
-    } else {
-      clearErrors('amount')
-    }
-  }, [amount, setError, tokenBalance, isTokenBalancesLoading, clearErrors])
-
   const onChangeAmount = useCallback(
     (amount: string) => {
       setValue('amount', amount, { shouldValidate: true })
@@ -103,9 +93,14 @@ export const AmountTokenInput: React.FC<{
     [rewardTokenId, setValue]
   )
 
-  const onMaxButtonClick = useCallback(() => {
-    tokenBalance && setValue('amount', tokenBalance, { shouldValidate: true })
-  }, [tokenBalance, setValue])
+  const onMaxButtonClick = useCallback(
+    (e?: React.MouseEvent<HTMLButtonElement>) => {
+      e?.preventDefault()
+      if (!tokenBalance) return
+      setValue('amount', tokenBalance, { shouldValidate: true })
+    },
+    [tokenBalance, setValue]
+  )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
 

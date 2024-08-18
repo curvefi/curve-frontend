@@ -18,17 +18,28 @@ export const GasEstimation: React.FC<{
   const epoch = watch('epoch')
   const step = watch('step')
 
-  const { data: estimatedGasDepositRewardApprove, isLoading: isLoadingGasEstimateDepositRewardApprove } =
-    useEstimateGasDepositRewardApprove({ chainId, poolId, rewardTokenId, amount })
+  const {
+    data: estimatedGasDepositRewardApprove,
+    isLoading: isLoadingGasEstimateDepositRewardApprove,
+    isFetching: isFetchingGasEstimateDepositRewardApprove,
+  } = useEstimateGasDepositRewardApprove(
+    { chainId, poolId, rewardTokenId, amount },
+    step === DepositRewardStep.APPROVAL && isValid
+  )
 
-  const { data: estimatedGasDepositReward, isLoading: isLoadingGasEstimateDepositReward } = useEstimateGasDepositReward(
+  const {
+    data: estimatedGasDepositReward,
+    isLoading: isLoadingGasEstimateDepositReward,
+    isFetching: isFetchingGasEstimateDepositReward,
+  } = useEstimateGasDepositReward(
     {
       chainId,
       poolId,
       rewardTokenId,
       amount,
       epoch,
-    }
+    },
+    step === DepositRewardStep.DEPOSIT && isValid
   )
 
   return (
@@ -37,14 +48,14 @@ export const GasEstimation: React.FC<{
         <DetailInfoEstGas
           chainId={chainId}
           estimatedGas={estimatedGasDepositRewardApprove ?? null}
-          loading={isLoadingGasEstimateDepositRewardApprove && isValid}
+          loading={(isLoadingGasEstimateDepositRewardApprove || isFetchingGasEstimateDepositRewardApprove) && isValid}
         />
       )}
       {step === DepositRewardStep.DEPOSIT && (
         <DetailInfoEstGas
           chainId={chainId}
           estimatedGas={estimatedGasDepositReward ?? null}
-          loading={isLoadingGasEstimateDepositReward && isValid}
+          loading={(isLoadingGasEstimateDepositReward || isFetchingGasEstimateDepositReward) && isValid}
         />
       )}
     </FlexContainer>
