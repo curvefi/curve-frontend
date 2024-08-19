@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import useStore from '@/store/useStore'
 
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
+import { TOP_HOLDERS } from '@/constants'
 
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp, shortenTokenAddress } from '@/ui/utils/'
 
@@ -62,7 +63,9 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             }}
             className="left-padding"
           >
-            {shortenTokenAddress(gaugeVote.user)}
+            {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
+              ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
+              : shortenTokenAddress(gaugeVote.user)}
           </TableDataLink>
         </TableRowWrapper>
       )}

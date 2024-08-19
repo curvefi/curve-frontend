@@ -140,6 +140,7 @@ declare global {
     votes: {
       tx: string
       voteId: number
+      topHolder: string | null
       voter: string
       supports: boolean
       stake: number
@@ -187,6 +188,7 @@ declare global {
       tvl_usd: number
       trading_volume_24h: number
     } | null
+    tokens: [{ symbol: string; address: string; precision: number }]
     market: {
       name: string
       chain: string

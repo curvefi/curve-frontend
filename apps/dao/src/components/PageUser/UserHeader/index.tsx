@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 import networks from '@/networks'
 import { copyToClipboard } from '@/utils'
+import { TOP_HOLDERS } from '@/constants'
 
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
@@ -24,8 +25,8 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
     <Wrapper variant="secondary">
       <Box flex flexAlignItems="center">
         <Box flex flexColumn flexJustifyContent="center">
-          <h3>{user?.ens || userAddress}</h3>
-          {user?.ens && userAddress && (
+          <h3>{TOP_HOLDERS[userAddress]?.title || user?.ens || userAddress}</h3>
+          {((TOP_HOLDERS[userAddress]?.title && userAddress) || (user?.ens && userAddress)) && (
             <Box flex flexAlignItems="center">
               <p>{userAddress}</p>{' '}
               <Box margin="0 0 0 var(--spacing-1)" flex>
@@ -39,7 +40,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
             </Box>
           )}
         </Box>
-        {!userMapper[userAddress]?.ens && (
+        {!userMapper[userAddress]?.ens && !TOP_HOLDERS[userAddress]?.title && (
           <Box flex margin="0 0 0 var(--spacing-1)">
             <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
               <Icon name="Copy" size={16} />

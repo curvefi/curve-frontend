@@ -5,6 +5,7 @@ import type { WalletState } from '@web3-onboard/core'
 import { Contract } from 'ethers'
 import produce from 'immer'
 
+import { SEVEN_DAYS } from '@/constants'
 import { getWalletSignerAddress, getWalletSignerEns } from '@/store/createWalletSlice'
 import { contractVeCRV } from '@/store/contracts'
 import { abiVeCrv } from '@/store/abis'
@@ -196,7 +197,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               vote_for: +(data.votes.find((v) => v.supports)?.voting_power ?? 0) / 1e18,
               vote_against: +(data.votes.find((v) => !v.supports)?.voting_power ?? 0) / 1e18,
               vote_open: data.proposal.start_date,
-              vote_close: data.proposal.start_date + 640000,
+              vote_close: data.proposal.start_date + SEVEN_DAYS,
               vote_total_supply: +data.proposal.total_supply / 1e18,
             }
           })
