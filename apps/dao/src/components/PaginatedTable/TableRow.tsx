@@ -62,6 +62,7 @@ export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
   gap: var(--spacing-1);
   text-decoration: none;
   color: inherit;
+  text-transform: none;
   &.left-padding {
     padding-left: var(--spacing-2);
   }

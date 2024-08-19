@@ -2,11 +2,13 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
 import networks from '@/networks'
+import { SEVEN_DAYS, TOP_HOLDERS } from '@/constants'
 
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 import { t } from '@lingui/macro'
+import Voters from '@/components/PageProposal/Voters'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -15,6 +17,12 @@ type SliceState = {
   filteringProposalsLoading: boolean
   curveJsProposalLoadingState: FetchingState
   voteTx: {
+    hash: string | null
+    txLink: string | null
+    error: string | null
+    status: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
+  }
+  executeTx: {
     hash: string | null
     txLink: string | null
     error: string | null
@@ -42,6 +50,7 @@ export type ProposalsSlice = {
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(searchValue: string): void
     castVote(voteId: number, voteType: ProposalType, support: boolean): void
+    executeProposal(voteId: number, voteType: ProposalType): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -53,6 +62,12 @@ const DEFAULT_STATE: SliceState = {
   filteringProposalsLoading: true,
   curveJsProposalLoadingState: 'LOADING',
   voteTx: {
+    hash: null,
+    txLink: null,
+    error: null,
+    status: '',
+  },
+  executeTx: {
     hash: null,
     txLink: null,
     error: null,
@@ -84,21 +99,22 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         let proposalsObject: { [voteId: string]: ProposalData } = {}
 
         for (const proposal of proposals) {
-          const minAcceptQuorumPercent = convertNumberEighteen(+proposal.minAcceptQuorum) * 100
-          const totalVeCrv = convertNumberEighteen(+proposal.totalSupply)
+          const minAcceptQuorumPercent = (+proposal.minAcceptQuorum / 1e18) * 100
+          const minSupport = (+proposal.supportRequired / 1e18) * 100
+          const totalVeCrv = +proposal.totalSupply / 1e18
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-          const votesFor = convertNumberEighteen(+proposal.votesFor)
-          const votesAgainst = convertNumberEighteen(+proposal.votesAgainst)
+          const votesFor = +proposal.votesFor / 1e18
+          const votesAgainst = +proposal.votesAgainst / 1e18
           const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
 
-          const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst)
+          const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst, minSupport)
 
           proposalsObject[`${proposal.voteId}-${proposal.voteType}`] = {
             ...proposal,
             status: status,
             votesFor,
             votesAgainst,
-            minSupport: convertNumberEighteen(+proposal.supportRequired) * 100,
+            minSupport: minSupport,
             minAcceptQuorumPercent,
             quorumVeCrv,
             totalVeCrv,
@@ -124,7 +140,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const formattedVotes = proposal.votes
           .map((vote) => ({
             ...vote,
-            stake: convertNumberEighteen(vote.stake),
+            topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
+            stake: vote.stake / 1e18,
             relativePower: (vote.stake / +proposal.totalSupply) * 100,
           }))
           .sort()
@@ -162,7 +179,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     setProposals: (searchValue: string) => {
       const { selectFilteredSortedProposals } = get()[sliceKey]
-      // get()[sliceKey].setStateByKey('filteringProposalsLoading', true)
 
       const proposals = selectFilteredSortedProposals()
 
@@ -271,6 +287,77 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         console.log(error)
       }
     },
+    executeProposal: async (voteId: number, voteType: ProposalType) => {
+      const { curve } = get()
+
+      const provider = get().wallet.provider
+      const notifyNotification = get().wallet.notifyNotification
+      const fetchGasInfo = get().gas.fetchGasInfo
+
+      let dismissNotificationHandler
+
+      if (!curve || !provider) return
+
+      const notifyPendingMessage = t`Please confirm to execute proposal.`
+      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      get()[sliceKey].setStateByKey('executeTx', {
+        ...get()[sliceKey].executeTx,
+        status: 'CONFIRMING',
+      })
+
+      dismissNotificationHandler = dismissConfirm
+
+      try {
+        await fetchGasInfo(curve)
+      } catch (error) {
+        console.log(error)
+      }
+
+      try {
+        const voteResponseHash = await curve.dao.executeVote(voteType, voteId)
+
+        if (voteResponseHash) {
+          get()[sliceKey].setStateByKey('executeTx', {
+            ...get()[sliceKey].executeTx,
+            status: 'LOADING',
+          })
+
+          dismissConfirm()
+          const deployingNotificationMessage = t`Executing proposal...`
+          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          get()[sliceKey].setStateByKey('executeTx', {
+            ...get()[sliceKey].executeTx,
+            hash: voteResponseHash,
+            txLink: networks[1].scanTxPath(voteResponseHash),
+          })
+          const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
+          if (receipt.status === 1) {
+            get()[sliceKey].setStateByKey('executeTx', {
+              ...get()[sliceKey].executeTx,
+              status: 'SUCCESS',
+            })
+
+            dismissDeploying()
+            const successNotificationMessage = t`Proposal executed successfully.`
+            notifyNotification(successNotificationMessage, 'success', 15000)
+          }
+        }
+      } catch (error) {
+        if (typeof dismissNotificationHandler === 'function') {
+          dismissNotificationHandler()
+        }
+
+        get()[sliceKey].setStateByKey('executeTx', {
+          ...get()[sliceKey].executeTx,
+          status: 'ERROR',
+          error: error.message,
+        })
+
+        console.log(error)
+      }
+    },
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
@@ -283,21 +370,20 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
   },
 })
 
-const getProposalStatus = (startDate: number, quorumVeCrv: number, votesFor: number, votesAgainst: number) => {
+const getProposalStatus = (
+  startDate: number,
+  quorumVeCrv: number,
+  votesFor: number,
+  votesAgainst: number,
+  minSupport: number
+) => {
   const totalVotes = votesFor + votesAgainst
-  const passedQuorum = totalVotes >= quorumVeCrv
+  const passedQuorum = votesFor >= quorumVeCrv
+  const passedMinimum = (votesFor / totalVotes) * 100 > minSupport
 
-  if (startDate + 604800 > Math.floor(Date.now() / 1000)) return 'Active'
-  if (passedQuorum && votesFor > votesAgainst) return 'Passed'
+  if (startDate + SEVEN_DAYS > Math.floor(Date.now() / 1000)) return 'Active'
+  if (passedQuorum && passedMinimum) return 'Passed'
   return 'Denied'
-}
-
-const convertNumberEighteen = (number: number) => {
-  return number / 10 ** 18
-}
-
-const convertNumberTen = (number: number) => {
-  return number / 10 ** 10
 }
 
 const searchFn = (filterValue: string, proposals: ProposalData[]) => {
@@ -342,21 +428,21 @@ const sortProposals = (
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.startDate + 604800 > currentTimestamp)
+    const activeProposals = proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS > currentTimestamp)
     const passedProposals = orderBy(
-      proposals.filter((proposal) => proposal.startDate + 604800 < currentTimestamp),
+      proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS < currentTimestamp),
       ['voteId'],
       ['desc']
     )
 
     if (activeSortDirection === 'asc') {
       return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + 604800 - currentTimestamp], ['desc']),
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + SEVEN_DAYS - currentTimestamp], ['desc']),
         ...passedProposals,
       ]
     } else {
       return [
-        ...orderBy(activeProposals, [(proposal) => proposal.startDate + 604800 - currentTimestamp], ['asc']),
+        ...orderBy(activeProposals, [(proposal) => proposal.startDate + SEVEN_DAYS - currentTimestamp], ['asc']),
         ...passedProposals,
       ]
     }

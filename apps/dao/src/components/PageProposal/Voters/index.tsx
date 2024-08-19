@@ -60,7 +60,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                       navigate(`/ethereum/user/${vote.voter}`)
                     }}
                   >
-                    {shortenTokenAddress(vote.voter)}
+                    {vote.topHolder ? vote.topHolder : shortenTokenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
                 <StyledExternalLink href={networks[1].scanTxPath(vote.tx)}>

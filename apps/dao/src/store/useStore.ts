@@ -12,6 +12,7 @@ import createProposalsSlice, { ProposalsSlice } from '@/store/createProposalsSli
 import createUserSlice, { UserSlice } from '@/store/createUserSlice'
 import createGaugesSlice, { GaugesSlice } from '@/store/createGaugesSlice'
 import createVeCrvSlice, { VeCrvSlice } from '@/store/createVeCrvSlice'
+import createTokensSlice, { TokensSlice } from './createTokensSlice'
 
 export type State = GlobalSlice &
   CacheSlice &
@@ -20,7 +21,8 @@ export type State = GlobalSlice &
   ProposalsSlice &
   UserSlice &
   GaugesSlice &
-  VeCrvSlice
+  VeCrvSlice &
+  TokensSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
@@ -31,6 +33,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGaugesSlice(set, get),
   ...createUserSlice(set, get),
   ...createVeCrvSlice(set, get),
+  ...createTokensSlice(set, get),
 })
 
 // cache all items in CacheSlice store

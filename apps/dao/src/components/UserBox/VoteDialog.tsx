@@ -37,7 +37,9 @@ const VoteDialog = ({
   const [vote, setVote] = useState<boolean | null>(null)
 
   const isMobile = useStore((state) => state.isMobile)
-  const { castVote, voteTx } = useStore((state) => state.proposals)
+  const { castVote, voteTx, executeProposal, executeTx } = useStore((state) => state.proposals)
+  const curveJsProposal = useStore((state) => state.proposals.curveJsProposalMapper[proposalId ?? ''])
+  const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const { userProposalVotesMapper } = useStore((state) => state.user)
 
   const userProposalVotesLoading = userProposalVotesMapper[userAddress].fetchingState === 'LOADING'
@@ -54,6 +56,42 @@ const VoteDialog = ({
   }
 
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)})%`
+
+  const executeProposalComponent = () => {
+    const id = curveJsProposal?.voteId
+    const type = curveJsProposal?.voteType
+
+    return (
+      <>
+        {executeTx.status === 'LOADING' && (
+          <Box margin={'var(--spacing-3) 0 0 0'}>
+            <ModalPendingTx
+              transactionHash={executeTx.hash!}
+              txLink={executeTx.txLink!}
+              pendingMessage={t`Executing proposal...`}
+            />
+          </Box>
+        )}
+        {executeTx.status === 'ERROR' && (
+          <Box margin={'var(--spacing-3) 0 0 0'}>
+            <StyledAlertBox alertType="error" limitHeight>
+              {executeTx.error}
+            </StyledAlertBox>
+          </Box>
+        )}
+        {executeTx.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
+        {executeTx.status !== 'SUCCESS' && (
+          <ExecuteButton
+            variant="icon-filled"
+            onClick={() => executeProposal(id, type as ProposalType)}
+            loading={executeTx.status === 'CONFIRMING' || executeTx.status === 'LOADING'}
+          >
+            {t`Execute`}
+          </ExecuteButton>
+        )}
+      </>
+    )
+  }
 
   // Voting power too low
   if (activeProposal?.active && votingPower.value === 0) {
@@ -75,6 +113,7 @@ const VoteDialog = ({
           <Icon name="WarningSquareFilled" size={20} />
           {t`Voting has ended`}
         </VotingMessage>
+        {proposal.status === 'Passed' && !proposal.executed && executeProposalComponent()}
       </Wrapper>
     )
   }
@@ -120,6 +159,7 @@ const VoteDialog = ({
             )}
           </VotedMessage>
         </VotedMessageWrapper>
+        {proposal.status === 'Passed' && !proposal.executed && executeProposalComponent()}
       </Wrapper>
     )
   }
@@ -324,6 +364,10 @@ const VoteDialogButton = styled(Button)`
 const VoteButton = styled(Button)`
   margin: 0 auto var(--spacing-2);
   padding: var(--spacing-2) var(--spacing-5);
+`
+
+const ExecuteButton = styled(VoteButton)`
+  margin: var(--spacing-3) 0 0;
 `
 
 const StyledAlertBox = styled(AlertBox)`

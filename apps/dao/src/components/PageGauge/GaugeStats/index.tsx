@@ -13,8 +13,6 @@ interface GaugeStatsProps {
 }
 
 const GaugeStats = ({ gaugeData, dataLoading }: GaugeStatsProps) => {
-  console.log(gaugeData)
-  console.log(dataLoading)
   return (
     <Wrapper>
       <Box flex flexGap="var(--spacing-4)">

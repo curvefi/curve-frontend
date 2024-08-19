@@ -15,6 +15,7 @@ import { ExternalLink, InternalLink } from '@/ui/Link'
 import LineChartComponent from '../../Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
+import TitleComp from './TitleComp'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -25,6 +26,8 @@ const GaugeListItem = ({ gaugeData }: Props) => {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
 
+  const imageBaseUrl = networks[1].imageBaseUrl
+
   useEffect(() => {
     if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
       getHistoricGaugeWeights(gaugeData.address)
@@ -34,15 +37,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
   return (
     <GaugeBox onClick={() => setOpen(!open)}>
       <MainRow>
-        <TitleComp>
-          <BoxedDataComp>
-            {gaugeData.is_killed && <BoxedData isKilled>{t`Killed`}</BoxedData>}
-            {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
-            {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
-            {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
-          </BoxedDataComp>
-          <Title>{gaugeData.title}</Title>
-        </TitleComp>
+        <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
         <DataComp>
           <BoxColumn>
             <DataTitle>{t`Weight`}</DataTitle>
@@ -214,48 +209,6 @@ const MainRow = styled.div`
   }
 `
 
-const TitleComp = styled.div`
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-template-rows: 1fr;
-  justify-content: space-between;
-  grid-row: 1 / 2;
-  gap: var(--spacing-2);
-  border-bottom: 1px solid var(--gray-500a20);
-  padding-bottom: var(--spacing-2);
-  @media (min-width: 33.125rem) {
-    display: flex;
-    flex-direction: column;
-    border-bottom: none;
-  }
-`
-
-const BoxedDataComp = styled.div`
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-1);
-  grid-row: 1 / 2;
-  margin-left: auto;
-  margin-right: var(--spacing-2);
-  @media (min-width: 33.125rem) {
-    display: flex;
-    flex-direction: row;
-    margin-left: 0;
-  }
-`
-
-const Title = styled.h3`
-  font-size: var(--font-size-3);
-  font-weight: var(--bold);
-  margin: auto 0 0;
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
-  margin-left: var(--spacing-2);
-  @media (min-width: 33.125rem) {
-    margin: auto 0 0 0.25rem;
-  }
-`
-
 const DataComp = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr auto;
@@ -284,19 +237,6 @@ const BoxColumn = styled.div`
   }
   @media (min-width: 33.125rem) {
     margin: auto 0 auto auto;
-  }
-`
-
-const BoxedData = styled.p<{ isKilled?: boolean }>`
-  padding: var(--spacing-1);
-  font-size: var(--font-size-1);
-  font-weight: var(--bold);
-  text-transform: capitalize;
-  margin: auto 0 0;
-  border: 1px solid ${({ isKilled }) => (isKilled ? 'var(--chart-red)' : 'var(--gray-500);')};
-  color: ${({ isKilled }) => (isKilled ? 'var(--chart-red)' : 'inherit')};
-  @media (min-width: 33.125rem) {
-    margin: 0;
   }
 `
 
