@@ -11,14 +11,21 @@ export const EstimatedGasInfo: React.FC<{ chainId: ChainId; poolId: string }> = 
 
   const rewardTokenId = watch('rewardTokenId')
   const distributorId = watch('distributorId')
-  const { data: estimatedGas, isPending: isPendingGasEstimate } = useEstimateGasAddRewardToken({
-    chainId,
-    poolId,
-    rewardTokenId,
-    distributorId,
-  })
+  const { data: estimatedGas, isFetching: isFetchingGasEstimate } = useEstimateGasAddRewardToken(
+    {
+      chainId,
+      poolId,
+      rewardTokenId,
+      distributorId,
+    },
+    isValid
+  )
 
   return (
-    <DetailInfoEstGas chainId={chainId} estimatedGas={estimatedGas ?? null} loading={isPendingGasEstimate && isValid} />
+    <DetailInfoEstGas
+      chainId={chainId}
+      estimatedGas={estimatedGas ?? null}
+      loading={isFetchingGasEstimate && isValid}
+    />
   )
 }
