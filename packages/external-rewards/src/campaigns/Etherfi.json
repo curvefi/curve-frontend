@@ -42,7 +42,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb9ef9c471f686e9249f5bb3af465560e4b917294",
       "network": "ethereum",
-      "multiplier": "4",
+      "multiplier": "2",
       "tags": ["points"]
     },
     {
@@ -52,8 +52,39 @@
       "campaignEnd": "1770000000",
       "address": "0x2fd6965730bef5c7e928342ad6e7d4819d08f8c4",
       "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xcccd572b22dee28479b11dd99589a1e4c0682a7e",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x6a8a274a670484fc358ab5ae00a1e0aa9ab11ae6",
+      "network": "ethereum",
+      "multiplier": "4",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xb92b054b9cc33685e7f8c3f85177c4b6dc061391",
+      "network": "ethereum",
       "multiplier": "4",
       "tags": ["points"]
     }
   ]
 }
+
