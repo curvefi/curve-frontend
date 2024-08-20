@@ -5,6 +5,8 @@ import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
+import { ethers, Contract } from 'ethers'
+import { Interface } from '@ethersproject/abi'
 import { httpFetcher, log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
 import isEqual from 'lodash/isEqual'
@@ -35,6 +37,7 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
+  getContract(jsonModuleName: string, contractAddress: string, provider: Provider): Promise<ethers.Contract | null>
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   fetchDailyVolume(): Promise<void>
   setAppCache<T>(key: AppCacheKeys, value: T): void
@@ -65,9 +68,22 @@ const DEFAULT_STATE: SliceState = {
   themeType: 'default',
 }
 
-const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
+  getContract: async (jsonModuleName, contractAddress, provider) => {
+    try {
+      const abi = await import(`@/abis/${jsonModuleName}.json`).then((module) => module.default)
+
+      if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
+
+      const iface = new Interface(abi)
+      return new Contract(contractAddress, iface.format(), provider)
+    } catch (error) {
+      console.error(error)
+      return null
+    }
+  },
   fetchCrvUSDTotalSupply: async (api: Curve) => {
     const chainId = api.chainId
     const fetchedTotalSupply = await networks[chainId].api.helpers.getTotalSupply(api)
@@ -124,7 +140,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>) => ({
     await loans.fetchLoansDetails(curveApi, collateralDatas)
 
     if (!prevCurveApi || isNetworkSwitched) {
-      gas.fetchGasInfo(curveApi)
       usdRates.fetchAllStoredUsdRates(curveApi)
       state.fetchCrvUSDTotalSupply(curveApi)
       state.fetchDailyVolume()

@@ -28,7 +28,6 @@ const TableRow = ({
   tableLabel,
   haveBoost,
   poolData,
-  tokensMapper,
   walletAddress,
   walletPoolData,
 }: {
@@ -36,7 +35,6 @@ const TableRow = ({
   tableLabel: TableLabel
   haveBoost: boolean
   poolData: PoolData
-  tokensMapper: TokensMapper
   walletAddress: string
   walletPoolData: WalletPoolData
 }) => {
@@ -128,7 +126,6 @@ const TableRow = ({
                     poolListProps={{
                       onClick: () => handleRowClick(walletPoolData.poolId),
                     }}
-                    tokensMapper={tokensMapper}
                   />
                 )}
                 <IconButton onClick={handleShowDetailClick}>
@@ -190,16 +187,7 @@ const TableRow = ({
         </Tr>
       ) : (
         <Tr ref={rowRef} onClick={() => handleRowClick(walletPoolData.poolId)}>
-          <Td>
-            {poolData && (
-              <PoolLabel
-                imageBaseUrl={imageBaseUrl}
-                isVisible={isVisible}
-                poolData={poolData}
-                tokensMapper={tokensMapper}
-              />
-            )}
-          </Td>
+          <Td>{poolData && <PoolLabel imageBaseUrl={imageBaseUrl} isVisible={isVisible} poolData={poolData} />}</Td>
           <Td className="right">
             <TableCellRewards
               poolData={poolData}

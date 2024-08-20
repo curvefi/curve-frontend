@@ -45,7 +45,6 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   showDetail,
   tableLabel,
   themeType,
-  tokensMapper,
   tvlCached,
   tvl,
   volumeCached,
@@ -96,7 +95,6 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                 searchTextByOther,
                 onClick: handleCellClick,
               }}
-              tokensMapper={tokensMapper}
             />
             <IconButton
               onClick={() =>

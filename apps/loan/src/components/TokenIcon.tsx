@@ -1,82 +1,13 @@
-import type { ImgHTMLAttributes } from 'react'
-
-import Image from 'next/image'
-import React, { useMemo } from 'react'
-import styled from 'styled-components'
-
+import React from 'react'
 import useStore from '@/store/useStore'
 
-type Size = 'sm'
+import TokenIconComp, { type TokenIconProps } from '@/ui/Token/TokenIcon'
 
-interface Prop extends ImgHTMLAttributes<HTMLImageElement> {
-  className?: string
-  imageBaseUrl: string | null
-  token: string
-  address?: string
-  size?: Size
-}
-
-const DEFAULT_IMAGE = '/images/default-crypto.png'
-
-const TokenIcon = ({ className, imageBaseUrl, token, size, address }: Prop) => {
-  const storedSrc = useStore((state) => state.tokens.tokensImage[address ?? ''])
+function TokenIcon(props: Omit<TokenIconProps, 'setTokenImage'>) {
+  const storedSrc = useStore((state) => state.tokens.tokensImage[props.address || ''])
   const setTokenImage = useStore((state) => state.tokens.setTokenImage)
 
-  const img = useMemo(() => {
-    let parsedImg = { src: DEFAULT_IMAGE, address: '' }
-
-    if (address && imageBaseUrl) {
-      parsedImg.address = address
-      if (typeof storedSrc !== 'undefined') {
-        parsedImg.src = storedSrc === null ? DEFAULT_IMAGE : storedSrc
-      } else {
-        parsedImg.src = `${imageBaseUrl}${address?.toLowerCase()}.png`
-      }
-    }
-    return parsedImg
-  }, [address, imageBaseUrl, storedSrc])
-
-  const handleOnError = (evt: React.SyntheticEvent<HTMLImageElement, Event>, address: string) => {
-    ;(evt.target as HTMLImageElement).src = DEFAULT_IMAGE
-    setTokenImage(address, null)
-  }
-
-  if (img.src === '') {
-    return null
-  } else {
-    const classNames = `${className} ${size || ''}`.trim()
-
-    return (
-      <Icon
-        className={classNames}
-        alt={token}
-        onError={(evt) => handleOnError(evt, img.address)}
-        src={img.src}
-        loading="lazy"
-        width="26"
-        height="26"
-      />
-    )
-  }
+  return <TokenIconComp {...props} storedSrc={storedSrc} setTokenImage={setTokenImage} />
 }
-
-TokenIcon.defaultProps = {
-  className: '',
-}
-
-const Icon = styled(Image)`
-  height: 1.625rem;
-  width: 1.625rem;
-
-  border: 1px solid transparent;
-  border-radius: 50%;
-
-  /* || MODIFIERS */
-
-  &.sm {
-    height: 1.25rem;
-    width: 1.25rem;
-  }
-`
 
 export default TokenIcon
