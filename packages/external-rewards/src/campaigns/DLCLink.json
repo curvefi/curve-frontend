@@ -14,6 +14,17 @@
       "network": "arbitrum",
       "multiplier": "5",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "borrow",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x3e293db65c81742e32b74e21a0787d2936beedf7",
+      "network": "arbitrum",
+      "multiplier": "5",
+      "tags": ["points"]
     }
   ]
 }
+
