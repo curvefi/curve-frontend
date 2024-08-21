@@ -11,7 +11,7 @@ import type {
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 import isUndefined from 'lodash/isUndefined'
-import { Suspense, useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { REFRESH_INTERVAL, ROUTE } from '@/constants'
@@ -53,10 +53,10 @@ import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewa
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
 import { useGaugeManager } from '@/entities/gauge'
-import Loader from '@/ui/Loader'
+import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
-import { BlockSkeleton } from '@/shared/ui/skeleton'
+import { useSignerAddress } from '@/entities/signer'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -82,7 +82,8 @@ const DEFAULT_SEED: Seed = {
 const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
-  const { chainId, signerAddress } = curve ?? {}
+  const { chainId } = curve ?? {}
+  const { data: signerAddress } = useSignerAddress()
   const navigate = useNavigate()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
@@ -214,29 +215,37 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress])
 
-  const isAvailableManageGauge = useMemo(() => {
-    return (
+  const isAvailableManageGauge = useMemo(
+    () =>
       !isPendingGaugeManager &&
       !!signerAddress &&
       !!gaugeManager &&
-      isAddressEqual(gaugeManager, signerAddress as Address)
-    )
-  }, [isPendingGaugeManager, signerAddress, gaugeManager])
+      isAddressEqual(gaugeManager, signerAddress as Address),
+    [isPendingGaugeManager, signerAddress, gaugeManager]
+  )
 
   const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
     () => [
       { key: 'deposit', label: t`Deposit` },
       { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
       { key: 'swap', label: t`Swap` },
-      ...(isAvailableManageGauge ? [{ key: 'manage', label: t`Manage` } as const] : []),
     ],
-    [themeType, isAvailableManageGauge]
+    [themeType]
   )
 
-  const toggleForm = (updatedFormType: TransferFormType) => {
-    const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
-    navigate(pathname)
-  }
+  const toggleForm = useCallback(
+    (updatedFormType: TransferFormType) => {
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
+      navigate(pathname)
+    },
+    [navigate, params]
+  )
+
+  useEffect(() => {
+    if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
+      toggleForm('deposit')
+    }
+  }, [isAvailableManageGauge, rFormType, toggleForm])
 
   const TitleComp = () => {
     const referenceAsset: { [referenceAsset: string]: string } = {
@@ -290,6 +299,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               formTypes={ACTION_TABS}
               activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
               handleClick={(key: string) => toggleForm(key as TransferFormType)}
+              showMenuButton={isAvailableManageGauge}
             />
 
             <AppFormContentWrapper>
@@ -336,11 +346,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
                   userPoolBalances={userPoolBalances}
                   userPoolBalancesLoading={userPoolBalancesLoading}
                 />
-              ) : rFormType === 'manage' ? (
+              ) : rFormType === 'manage-gauge' ? (
                 poolData ? (
                   <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
                 ) : (
-                  <BlockSkeleton width={341} />
+                  <BlockSkeleton width={339} />
                 )
               ) : null}
             </AppFormContentWrapper>
