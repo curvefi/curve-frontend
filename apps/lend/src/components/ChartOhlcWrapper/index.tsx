@@ -24,7 +24,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
   const loanCollateralRemoveActiveKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const { formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const { activeKey, formValues, activeKeyLiqRange } = useStore((state) => state.loanCreate)
+  const loanCreateDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
   const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
@@ -43,14 +44,10 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     chartLlammaOhlc,
     chartOraclePoolOhlc,
     timeOption,
-    volumeData,
-    oraclePriceData,
     setChartTimeOption,
     fetchLlammaOhlcData,
     fetchOraclePoolOhlcData,
     fetchMoreData,
-    setChartSelectedIndex,
-    selectedChartIndex,
     activityHidden,
     chartExpanded,
     setChartExpanded,
@@ -64,12 +61,24 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
+  const [selectedChartIndex, setChartSelectedIndex] = useState(0)
 
   const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
 
   const currentChart = useMemo(() => {
     return selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
   }, [chartLlammaOhlc, chartOraclePoolOhlc, selectedChartIndex])
+
+  const oraclePriceData = useMemo(() => {
+    if (selectedChartIndex === 0) {
+      if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+      if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
+      return undefined
+    }
+    if (chartLlammaOhlc.oraclePriceData.length > 0) return chartLlammaOhlc.oraclePriceData
+    if (chartOraclePoolOhlc.oraclePriceData.length > 0) return chartOraclePoolOhlc.oraclePriceData
+    return undefined
+  }, [chartLlammaOhlc.oraclePriceData, chartOraclePoolOhlc.oraclePriceData, selectedChartIndex])
 
   const selectedLiqRange = useMemo(() => {
     let liqRanges: LiquidationRanges = {
@@ -104,10 +113,19 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
 
     // create loan prices
     if (formValues.n && liqRangesMapper && currentChart.data) {
-      const currentPrices = liqRangesMapper[formValues.n].prices
-      // flip order to match other data
-      const range = formatRange([currentPrices[1], currentPrices[0]])
-      liqRanges.new = range
+      if (liqRangesMapper[formValues.n].prices.length !== 0) {
+        const currentPrices = liqRangesMapper[formValues.n].prices
+        // flip order to match other data
+        const range = formatRange([currentPrices[1], currentPrices[0]])
+        liqRanges.new = range
+      } else {
+        const currentPrices = loanCreateDetailInfo?.prices
+
+        if (currentPrices) {
+          const range = formatRange([currentPrices[0], currentPrices[1]])
+          liqRanges.new = range
+        }
+      }
     }
 
     // current loan prices
@@ -152,6 +170,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     addCollateralPrices,
     removeCollateralPrices,
     repayLeveragePrices,
+    loanCreateDetailInfo,
   ])
 
   const coins: LendingMarketTokens = useMemo(() => {
@@ -170,13 +189,18 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   }, [owm])
 
   const selectChartList = useCallback(() => {
+    if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
+      return [{ label: t`Loading` }, { label: t`Loading` }]
+    }
+
     if (owm) {
       if (chartOraclePoolOhlc.dataDisabled) {
         return [{ label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)` }]
       }
+
       return [
         {
-          label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (Oracle)`,
+          label: t`${chartOraclePoolOhlc.collateralToken.symbol} / ${chartOraclePoolOhlc.borrowedToken.symbol}`,
         },
         {
           label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)`,
@@ -185,7 +209,15 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     } else {
       return []
     }
-  }, [chartOraclePoolOhlc.dataDisabled, coins, owm])
+  }, [
+    chartOraclePoolOhlc.borrowedToken.symbol,
+    chartOraclePoolOhlc.collateralToken.symbol,
+    chartOraclePoolOhlc.dataDisabled,
+    chartOraclePoolOhlc.fetchStatus,
+    coins?.borrowedToken.symbol,
+    coins?.collateralToken.symbol,
+    owm,
+  ])
 
   // set chart selected index to llamma if oracle pool is disabled due to no oracle pools being found for market on the api
   useEffect(() => {
@@ -337,7 +369,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartExpanded={chartExpanded}
           themeType={themeType}
           ohlcData={currentChart.data}
-          volumeData={volumeData}
+          volumeData={chartLlammaOhlc.volumeData}
           oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
@@ -397,8 +429,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartExpanded={false}
           themeType={themeType}
           ohlcData={currentChart.data}
-          volumeData={volumeData}
-          oraclePriceData={oraclePriceData.length > 0 ? oraclePriceData : undefined}
+          volumeData={chartLlammaOhlc.volumeData}
+          oraclePriceData={oraclePriceData}
           liquidationRange={selectedLiqRange}
           timeOption={timeOption}
           selectedChartIndex={selectedChartIndex}

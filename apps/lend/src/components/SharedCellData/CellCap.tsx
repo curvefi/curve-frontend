@@ -1,19 +1,15 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import { useMemo } from 'react'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
 import TextCaption from '@/ui/TextCaption'
 
 const CellCap = ({
   rChainId,
   rOwmId,
   type,
-  ...props
-}: ChipProps & {
+}: {
   rChainId: ChainId
   rOwmId: string
   type: 'cap' | 'available' | 'cap-utilization' | 'utilization'
@@ -46,29 +42,27 @@ const CellCap = ({
 
   return (
     <>
-      {typeof resp === 'undefined' || typeof totalResp === 'undefined' ? null : error ? (
+      {typeof resp === 'undefined' || typeof totalResp === 'undefined' ? (
+        '-'
+      ) : error ? (
         '?'
-      ) : (
-        <Chip {...props}>
-          {type === 'available' ? (
-            formattedAvailable
-          ) : type === 'cap' ? (
-            formattedCap
-          ) : type === 'utilization' ? (
-            formattedLiquidityUtilization || '0%'
-          ) : type === 'cap-utilization' ? (
+      ) : type === 'available' ? (
+        formattedAvailable
+      ) : type === 'cap' ? (
+        formattedCap
+      ) : type === 'utilization' ? (
+        formattedLiquidityUtilization || '0%'
+      ) : type === 'cap-utilization' ? (
+        <>
+          {formattedCap}
+          {formattedLiquidityUtilization && (
             <>
-              {formattedCap}
-              {formattedLiquidityUtilization && (
-                <>
-                  <br />
-                  <TextCaption>{formattedLiquidityUtilization}</TextCaption>
-                </>
-              )}
+              <br />
+              <TextCaption>{formattedLiquidityUtilization}</TextCaption>
             </>
-          ) : null}
-        </Chip>
-      )}
+          )}
+        </>
+      ) : null}
     </>
   )
 }

@@ -10,6 +10,8 @@ import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/Tooltip'
 
+export type IconStyles = { $svgTop?: string }
+
 function TooltipButton({
   className = '',
   children,
@@ -17,16 +19,20 @@ function TooltipButton({
   customIcon,
   onClick,
   increaseZIndex,
+  iconStyles = {},
+  as,
   ...props
 }: React.PropsWithChildren<
   TooltipTriggerProps &
     TooltipProps & {
+      as?: string
       className?: string
       tooltip: React.ReactNode | string
       showIcon?: boolean
       customIcon?: React.ReactNode
       increaseZIndex?: boolean
       onClick?: () => void
+      iconStyles?: IconStyles
     }
 >) {
   const state = useTooltipTriggerState({ delay: 0, ...props })
@@ -58,10 +64,11 @@ function TooltipButton({
   )
 
   return (
-    <StyledTooltipButton>
-      <Button ref={ref} {...triggerProps} className={className} onClick={handleBtnClick}>
+    // @ts-ignore TODO: as error
+    <StyledTooltipButton {...(as ? { as } : {})}>
+      <Button ref={ref} {...triggerProps} className={`${className} tooltip-button`} onClick={handleBtnClick}>
         {showIcon || customIcon
-          ? customIcon ?? <Icon className="svg-tooltip" name="InformationSquare" size={16} />
+          ? customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />
           : children}
       </Button>
       {state.isOpen && (
@@ -100,6 +107,11 @@ const Button = styled.span`
       opacity: 1;
     }
   }
+`
+
+const StyledIcon = styled(Icon)<IconStyles>`
+  position: relative;
+  top: ${({ $svgTop }) => $svgTop || `0.2rem`};
 `
 
 export default TooltipButton

@@ -1,14 +1,11 @@
-import type {
-  PageMarketList,
-  TableCellProps,
-  TableRowProps,
-  TableLabelsMapper,
-} from '@/components/PageMarketList/types'
+import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { TITLE } from '@/constants'
+import { FilterType } from '@/components/PageMarketList/utils'
 import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
@@ -23,37 +20,32 @@ import CellInPool from '@/components/SharedCellData/CellInPool'
 import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellRate from '@/components/SharedCellData/CellRate'
+import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
-import TextCaption from '@/ui/TextCaption'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 type Content = {
-  sortIdKey: keyof TableLabelsMapper | ''
-  label: string
-  labels?: { sortIdKey: keyof TableLabelsMapper; label: string }[]
+  tableKey: TitleKey
   show?: boolean
   showLine?: boolean
   content: React.ReactNode
 }
 
-const TableRowMobile = ({
+const TableRowContent = ({
   rChainId,
   api,
   owmId,
   owmDataCachedOrApi,
-  isBorrow,
+  filterTypeKey,
   loanExists,
-  tableLabelsMapper,
   userActiveKey,
+  titleMapper,
   handleCellClick,
-}: Pick<PageMarketList, 'tableLabelsMapper'> & TableRowProps) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
-
+}: TableRowProps) => {
   const userVaultShares = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
 
   const [showDetail, setShowDetail] = useState<string>('')
@@ -61,8 +53,8 @@ const TableRowMobile = ({
   const { signerAddress } = api ?? {}
   const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
 
-  const isVisible = !!entry?.isIntersecting
   const isHideDetail = showDetail === owmId
+  const showMyVaultCell = !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0
 
   const cellProps: TableCellProps = {
     rChainId,
@@ -70,172 +62,148 @@ const TableRowMobile = ({
     owmId,
     owmDataCachedOrApi,
     userActiveKey,
-    isBorrow,
+    filterTypeKey,
     isBold: false,
     size: 'md',
   }
 
-  const userHaveLoan = !!signerAddress && !!loanExists
-  const someLoanExists = !!signerAddress && loanExists
-
   // prettier-ignore
   const content: { borrow: Content[][], supply: Content[][] } = {
-    borrow: [
+    [FilterType.borrow]: [
       [
-        { sortIdKey: 'myDebt', label: tableLabelsMapper.myDebt.name, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: someLoanExists, showLine: true },
-        { sortIdKey: 'myHealth', label: tableLabelsMapper.myHealth.name, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, showLine: true, show: someLoanExists },
+        { tableKey: TITLE.myDebt, content: <CellLoanUserState userActiveKey={userActiveKey} type='debt' />, show: loanExists, showLine: true },
+        { tableKey: TITLE.myHealth, content: <CellLoanUserHealth userActiveKey={userActiveKey} />, show: loanExists, showLine: true },
       ],
       [
-        { sortIdKey: 'rateBorrow', label: tableLabelsMapper.rateBorrow.name, content: <CellRate {...cellProps} type='borrow' /> },
+        { tableKey: TITLE.rateBorrow, content: <CellBorrowRate {...cellProps} /> },
       ],
       [
-        { sortIdKey: 'available', label: tableLabelsMapper.available.name, content: <CellCap {...cellProps} type='available' /> },
-        { sortIdKey: 'totalDebt', label: tableLabelsMapper.totalDebt.name, content: <CellLoanTotalDebt {...cellProps} /> },
+        { tableKey: TITLE.available, content: <CellCap {...cellProps} type='available' /> },
+        { tableKey: TITLE.totalDebt, content: <CellLoanTotalDebt {...cellProps} /> },
+        { tableKey: TITLE.cap, content: <CellCap {...cellProps} type='cap' /> },
+        { tableKey: TITLE.utilization, content: <CellCap {...cellProps} type='utilization' /> },
       ],
       [
-        { sortIdKey: 'cap', label: tableLabelsMapper.cap.name, content: <CellCap {...cellProps} type='cap' /> },
-        { sortIdKey: 'cap', label: tableLabelsMapper.utilization.name, content: <CellCap {...cellProps} type='utilization' /> },
-      ],
-      [
-        { sortIdKey: 'totalCollateralValue', label: tableLabelsMapper.totalCollateralValue.name, content: <CellTotalCollateralValue {...cellProps} /> },
+        { tableKey: TITLE.totalCollateralValue, content: <CellTotalCollateralValue {...cellProps} /> }
       ]
     ],
-    supply: [
+    [FilterType.supply]: [
       [
-        { sortIdKey: 'myVaultShares', label: tableLabelsMapper.myVaultShares.name, content: <CellUserVaultShares {...cellProps} />, show: !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0, showLine: true }
+        { tableKey: TITLE.myVaultShares, content: <CellUserVaultShares {...cellProps} />, show: showMyVaultCell, showLine: true }
       ],
       [
-        { sortIdKey: 'tokenSupply', label: tableLabelsMapper.tokenSupply.name, content: <CellToken {...cellProps} type='borrowed' hideIcon /> },
-      ],
-      [
-        { sortIdKey: '', label: t`Total APR`, content: <CellRewards {...cellProps} type='crv-other' /> }
+        { tableKey: TITLE.totalApr, content: <CellRewards {...cellProps} /> }
       ]
     ]
   }
 
-  return (
-    <TableItem ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`}>
-      <TCell>
-        <MobileLabelWrapper flexAlignItems="center" grid gridTemplateColumns={userHaveLoan ? '20px 1fr' : '1fr'}>
-          {userHaveLoan && <CellInPool {...cellProps} isInMarket />}
-          <MobileLabelContent>
-            <Box onClick={() => handleCellClick()}>
-              <TokensWrapper>
-                <Box>
-                  <TextCaption isBold isCaps>
-                    Collateral
-                  </TextCaption>{' '}
-                  <CellToken {...cellProps} type="collateral" />
-                </Box>
-                <Box>
-                  <TextCaption isBold isCaps>
-                    Borrow
-                  </TextCaption>{' '}
-                  <CellToken {...cellProps} type="borrowed" />
-                </Box>
-              </TokensWrapper>
-              <CellMaxLeverage {...cellProps} showTitle size="sm" />
-            </Box>
-            <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
-              {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
-            </IconButton>
-          </MobileLabelContent>
-        </MobileLabelWrapper>
+  const showInMarket = filterTypeKey === 'borrow' ? loanExists : showMyVaultCell
 
-        <MobileTableContentWrapper className={isHideDetail ? '' : 'show'}>
-          <MobileTableContent>
-            {!isHideDetail && (
-              <>
-                <DetailsContent onClick={(evt) => handleCellClick(evt.target)}>
-                  {content[isBorrow ? 'borrow' : 'supply'].map((details, idx) => {
-                    const detailsKey = `details-${idx}`
-                    const show = details.some(({ show }) => _showContent(show))
-                    const showLine = details.some(({ showLine }) => showLine)
-                    return (
-                      show && (
-                        <React.Fragment key={detailsKey}>
-                          <DetailContent key={details[0].label} $detailsLength={details.length}>
-                            {details.map(({ label, labels, content, show }, idx) => {
-                              const key = `detail-${label}-${idx}`
-                              const detailsLength = details.length
-                              const isLast = detailsLength - 1 === idx
-                              return (
-                                _showContent(show) && (
-                                  <DetailWrapper key={key} detailsLength={detailsLength} isLast={isLast}>
-                                    {typeof labels !== 'undefined' ? (
-                                      <Box flex flexDirection="column">
-                                        <TextCaption isBold isCaps>
-                                          {label}
-                                        </TextCaption>
-                                        <TextCaption isBold isCaps>
-                                          {labels.map(({ label }, idx) => {
-                                            const isNotLast = idx !== labels.length - 1
-                                            return (
-                                              <React.Fragment key={`${key}-${label}`}>
-                                                {label}
-                                                {isNotLast && '+'}
-                                              </React.Fragment>
-                                            )
-                                          })}
-                                        </TextCaption>
-                                      </Box>
-                                    ) : (
-                                      <TextCaption isBold isCaps>
-                                        {label}
-                                      </TextCaption>
-                                    )}
-                                    {content}
-                                  </DetailWrapper>
-                                )
-                              )
-                            })}
-                          </DetailContent>
-                          {showLine && <hr />}
-                        </React.Fragment>
-                      )
-                    )
-                  })}
-                </DetailsContent>
-                <MobileTableActions>
-                  {isBorrow ? (
-                    <Button variant="filled" onClick={() => handleCellClick()}>
-                      {loanExists ? t`Manage Loan` : t`Get Loan`}
-                    </Button>
-                  ) : (
-                    <Button variant="filled" onClick={() => handleCellClick()}>
-                      {t`Supply ${borrowed_token?.symbol ?? ''}`}
-                    </Button>
-                  )}
-                </MobileTableActions>
-              </>
-            )}
-          </MobileTableContent>
-        </MobileTableContentWrapper>
-      </TCell>
+  return (
+    <TCell className="noPadding">
+      <MobileLabelWrapper flexAlignItems="center" grid gridTemplateColumns={showInMarket ? '20px 1fr' : '1fr'}>
+        {showInMarket && <CellInPool {...cellProps} isInMarket />}
+        <MobileLabelContent>
+          <Box onClick={() => handleCellClick()}>
+            <StyledTokens>
+              {filterTypeKey === 'borrow' ? (
+                <StyledToken title={t`Collateral`}>
+                  <CellToken {...cellProps} type="collateral" module="borrow" />
+                </StyledToken>
+              ) : (
+                <StyledToken title={t`Lend`}>
+                  <CellToken {...cellProps} type="borrowed" module="supply" />
+                </StyledToken>
+              )}
+              {filterTypeKey === 'borrow' ? (
+                <StyledToken title={t`Borrow`}>
+                  <CellToken {...cellProps} type="borrowed" module="borrow" />
+                </StyledToken>
+              ) : (
+                <StyledToken title={t`Collateral`}>
+                  <CellToken {...cellProps} type="collateral" module="supply" />
+                </StyledToken>
+              )}
+            </StyledTokens>
+            <CellMaxLeverage {...cellProps} showTitle size="sm" />
+          </Box>
+          <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
+            {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
+          </IconButton>
+        </MobileLabelContent>
+      </MobileLabelWrapper>
+
+      <MobileTableContentWrapper className={isHideDetail ? '' : 'show'}>
+        <MobileTableContent>
+          {!isHideDetail && (
+            <>
+              <DetailsContent onClick={(evt) => handleCellClick(evt.target)}>
+                {content[filterTypeKey].map((details, idx) => {
+                  const detailsKey = `details-${idx}`
+                  const show = details.some(({ show }) => _showContent(show))
+
+                  if (!show) return null
+
+                  const showLine = details.some(({ showLine }) => showLine)
+
+                  return (
+                    <React.Fragment key={detailsKey}>
+                      <ListInfoItems>
+                        {details.map(({ tableKey, content, show }, idx) => {
+                          if (!_showContent(show)) return null
+                          return (
+                            <ListInfoItem key={`info-${idx}`} {...titleMapper[tableKey]}>
+                              {content}
+                            </ListInfoItem>
+                          )
+                        })}
+                      </ListInfoItems>
+                      {showLine && <hr />}
+                    </React.Fragment>
+                  )
+                })}
+              </DetailsContent>
+              <MobileTableActions>
+                {filterTypeKey === FilterType.borrow ? (
+                  <Button variant="filled" onClick={() => handleCellClick()}>
+                    {loanExists ? t`Manage Loan` : t`Get Loan`}
+                  </Button>
+                ) : (
+                  <Button variant="filled" onClick={() => handleCellClick()}>
+                    {t`Lend ${borrowed_token?.symbol ?? ''}`}
+                  </Button>
+                )}
+              </MobileTableActions>
+            </>
+          )}
+        </MobileTableContent>
+      </MobileTableContentWrapper>
+    </TCell>
+  )
+}
+
+const TableRowMobile = (props: TableRowProps) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const entry = useIntersectionObserver(ref)
+
+  const isVisible = !!entry?.isIntersecting
+  const [height, setHeight] = useState(0)
+
+  useEffect(() => {
+    if (!isVisible || !ref.current || height !== 0) return
+
+    setHeight(ref.current.getBoundingClientRect().height)
+  }, [height, isVisible])
+
+  return (
+    <TableItem ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`} rowHeight={height}>
+      {isVisible && <TableRowContent {...props} />}
     </TableItem>
   )
 }
 
-const DetailWrapper = styled.div<{ detailsLength: number; isLast: boolean }>`
-  display: grid;
-  grid-gap: var(--spacing-1);
-  ${({ detailsLength }) => detailsLength === 1 && 'width: 100%'};
-  ${({ isLast }) => !isLast && `margin-right: var(--spacing-narrow)`};
-`
-
-const DetailContent = styled.div<{ $detailsLength: number }>`
-  display: grid;
-  grid-template-columns: ${({ $detailsLength }) => `repeat(${$detailsLength}, 1fr)`};
-  grid-gap: var(--spacing-1);
-  margin-top: var(--spacing-2);
-`
-
-const DetailsContent = styled.div`
+const DetailsContent = styled(ListInfoItemsWrapper)`
   margin-top: var(--spacing-3);
-
-  > ${DetailContent}:not(:last-child) {
-    margin-bottom: var(--spacing-3);
-  }
 `
 
 const TableItem = styled(Tr)`
@@ -283,10 +251,13 @@ const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
 `
 
-const TokensWrapper = styled.div`
+const StyledTokens = styled(ListInfoItems)`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-gap: var(--spacing-1);
+`
+
+const StyledToken = styled(ListInfoItem)`
+  margin-bottom: 0;
 `
 
 export default TableRowMobile

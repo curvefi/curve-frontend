@@ -93,7 +93,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           stateKey.startsWith('user') ||
           stateKey === 'usdRates' ||
           stateKey === 'tokens' ||
-          stateKey === 'chartBands'
+          stateKey === 'chartBands' ||
+          stateKey === 'campaigns'
         ) {
           // @ts-ignore
           if ('resetState' in get()[stateKey]) get()[stateKey].resetState()

@@ -13,6 +13,7 @@ import { hasLeverage } from '@/components/PageLoanCreate/utils'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -37,6 +38,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { routerParams, curve } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rCollateralId, rFormType } = routerParams
 
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
@@ -201,24 +203,15 @@ const Page: NextPage = () => {
           )}
         </AppPageFormsWrapper>
 
-        {!isAdvanceMode && !chartExpanded && (
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <AppPageInfoContentWrapper variant="secondary">
-              <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        )}
-
-        {isAdvanceMode && (
-          <LoanInfoWrapper>
-            {isMdUp && !chartExpanded && <TitleComp />}
-            <AppPageInfoContentWrapper variant="secondary">
-              <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-              {isValidRouterParams && rChainId && <LoanInfoLlamma {...formProps} rChainId={rChainId} />}
-            </AppPageInfoContentWrapper>
-          </LoanInfoWrapper>
-        )}
+        <AppPageInfoWrapper>
+          {isMdUp && !chartExpanded && <TitleComp />}
+          <AppPageInfoContentWrapper variant="secondary">
+            <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+            {isValidRouterParams && rChainId && (
+              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            )}
+          </AppPageInfoContentWrapper>
+        </AppPageInfoWrapper>
       </Wrapper>
     </>
   )
@@ -237,15 +230,6 @@ const Title = styled(TextEllipsis)`
   font-weight: bold;
   line-height: 1;
   padding: 0 2px;
-`
-
-const LoanInfoWrapper = styled.div`
-  margin-bottom: 2rem;
-  width: 100%;
-
-  @media (min-width: ${breakpoints.md}rem) {
-    margin-left: 1.5rem;
-  }
 `
 
 const PriceAndTradesExpandedContainer = styled(Box)`

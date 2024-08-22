@@ -6,7 +6,7 @@ import { ExternalLink } from 'ui/src/Link'
 import Box from 'ui/src/Box'
 
 const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
-  const { campaignName, platform, description, dashboardLink, campaignStart, campaignEnd } = rewardsPool
+  const { campaignName, platform, description, action, dashboardLink, campaignStart, campaignEnd } = rewardsPool
 
   const options: Intl.DateTimeFormatOptions = {
     month: 'long',
@@ -32,6 +32,18 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
     return <TooltipTitle>{platform}</TooltipTitle>
   }
 
+  const getDescription = () => {
+    if (action === 'lp') {
+      return description
+    }
+
+    if (action === 'supply') {
+      return 'Earn points by supplying liquidity.'
+    }
+
+    return 'Earn points by borrowing.'
+  }
+
   return (
     <TooltipWrapper>
       {title()}
@@ -41,7 +53,7 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
           <TooltipParagraph>{`to: ${end}`}</TooltipParagraph>
         </Box>
       )}
-      <TooltipParagraph>{description}</TooltipParagraph>
+      <TooltipParagraph>{getDescription()}</TooltipParagraph>
       <ExternalLink $noStyles href={dashboardLink}>
         Learn more
       </ExternalLink>
@@ -65,6 +77,7 @@ const TooltipTitle = styled.h3`
 
 const TooltipParagraph = styled.p`
   text-align: left;
+  font-weight: normal;
 `
 
 export default TooltipMessage

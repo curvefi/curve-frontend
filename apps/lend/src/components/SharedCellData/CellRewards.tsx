@@ -18,13 +18,11 @@ const CellRewards = ({
   className = '',
   rChainId,
   rOwmId,
-  type,
   ...props
 }: ChipProps & {
   className?: string
   rChainId: ChainId
   rOwmId: string
-  type: 'crv-other'
 }) => {
   const { isReady, isError, invalidGaugeAddress, totalApr, tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -37,8 +35,8 @@ const CellRewards = ({
         '?'
       ) : invalidGaugeAddress ? (
         <ChipInactive>No gauge</ChipInactive>
-      ) : type === 'crv-other' ? (
-        <Chip {...props}>
+      ) : (
+        <Wrapper {...props}>
           {totalApr.minMax}{' '}
           {!isMdUp && tooltipValues ? (
             <>
@@ -65,8 +63,8 @@ const CellRewards = ({
               <Icon className="svg-tooltip" size={16} name="InformationSquare" />
             </StyledChip>
           )}
-        </Chip>
-      ) : null}
+        </Wrapper>
+      )}
     </span>
   )
 }
@@ -83,6 +81,10 @@ const DetailsBtn = styled(Button)`
   font-family: inherit;
   font-weight: bold;
   font-size: var(--font-size-2);
+`
+
+const Wrapper = styled(Chip)`
+  white-space: nowrap;
 `
 
 export default CellRewards

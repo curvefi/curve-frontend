@@ -16,7 +16,7 @@ import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
 import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
 import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
 import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
@@ -45,7 +45,6 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   showDetail,
   tableLabel,
   themeType,
-  tokensMapper,
   tvlCached,
   tvl,
   volumeCached,
@@ -96,7 +95,6 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                 searchTextByOther,
                 onClick: handleCellClick,
               }}
-              tokensMapper={tokensMapper}
             />
             <IconButton
               onClick={() =>
@@ -114,52 +112,49 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
           <MobileTableContent themeType={themeType}>
             {isShowDetail && (
               <>
-                <div style={{ gridArea: 'grid-volume' }}>
-                  <MobileTableTitle>{tableLabel.volume.name}</MobileTableTitle>
-                  <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
-                </div>
-                <div style={{ gridArea: 'grid-tvl' }}>
-                  <MobileTableTitle>{tableLabel.tvl.name}</MobileTableTitle>
-                  <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
-                </div>
-                <div style={{ gridArea: 'grid-rewards' }}>
-                  <div>
-                    <MobileTableTitle>{tableLabel.rewardsBase.name}</MobileTableTitle>
+                <ListInfoItems>
+                  <ListInfoItem title={tableLabel.volume.name}>
+                    <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+                  </ListInfoItem>
+                  <ListInfoItem title={tableLabel.tvl.name}>
+                    <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
+                  </ListInfoItem>
+
+                  <ListInfoItem title={t`BASE vAPY`} titleNoCap>
                     <TableCellRewardsBase
                       base={rewardsApy?.base}
                       isHighlight={sortBy === 'rewardsBase'}
                       poolData={poolData}
                     />
-                  </div>
+                  </ListInfoItem>
 
                   {!poolData?.gauge.isKilled && (
-                    <div>
-                      <MobileTableTitle>
-                        {t`Rewards tAPR`}{' '}
-                        <IconTooltip
-                          placement="top"
-                          minWidth="200px"
-                        >{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
-                        {tableLabel.rewardsCrv.name} + {tableLabel.rewardsOther.name}
-                      </MobileTableTitle>
-                      <TCellRewards
-                        poolData={poolData}
-                        isHighlightBase={sortBy === 'rewardsBase'}
-                        isHighlightCrv={sortBy === 'rewardsCrv'}
-                        isHighlightOther={sortBy === 'rewardsOther'}
-                        rewardsApy={rewardsApy}
-                        searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
-                      />
+                    <>
+                      <ListInfoItem
+                        title={t`REWARDS tAPR`}
+                        titleNoCap
+                        titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
+                        tooltip={t`Token APR based on current prices of tokens and reward rates`}
+                      >
+                        <TCellRewards
+                          poolData={poolData}
+                          isHighlightBase={sortBy === 'rewardsBase'}
+                          isHighlightCrv={sortBy === 'rewardsCrv'}
+                          isHighlightOther={sortBy === 'rewardsOther'}
+                          rewardsApy={rewardsApy}
+                          searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
+                        />
+                      </ListInfoItem>
                       {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                        <CampaignRewardsWrapper>
-                          <MobileTableTitle>{t`Additional external rewards`}</MobileTableTitle>
+                        <ListInfoItem title={t`Additional external rewards`}>
                           <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
-                        </CampaignRewardsWrapper>
+                        </ListInfoItem>
                       )}
-                    </div>
+                    </>
                   )}
-                </div>
-                <MobileTableActions style={{ gridArea: 'grid-actions' }}>
+                </ListInfoItems>
+
+                <MobileTableActions>
                   <Button variant="filled" onClick={({ target }) => handleCellClick(target)}>
                     {t`Deposit`}
                   </Button>
@@ -194,21 +189,10 @@ const MobileLabelContent = styled.div`
   width: 100%;
 `
 
-const MobileTableTitle = styled.div`
-  font-size: var(--font-size-2);
-  font-weight: var(--table_head--font-weight);
-`
-
 const MobileTableContent = styled.div<{ themeType: Theme }>`
   display: grid;
   min-height: 150px;
   padding: ${({ themeType }) => (themeType === 'chad' ? '1rem 0.75rem 0.75rem' : '1rem 1rem 0.75rem 1rem')};
-
-  grid-gap: var(--spacing-3);
-  grid-template-areas:
-    'grid-volume grid-tvl'
-    'grid-rewards grid-rewards'
-    'grid-actions grid-actions';
 `
 
 const MobileTableActions = styled.div`
@@ -231,13 +215,6 @@ const MobileTableContentWrapper = styled.div`
 
 const TCell = styled.td`
   border-bottom: 1px solid var(--border-400);
-`
-
-const CampaignRewardsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  margin-top: var(--spacing-2);
 `
 
 export default TableRowMobile

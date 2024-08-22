@@ -1,3 +1,5 @@
+import React from 'react'
+
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
@@ -10,13 +12,17 @@ const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type
 
   return (
     <>
-      {typeof resp === 'undefined' ? null : error ? (
+      {typeof resp === 'undefined' ? (
+        '-'
+      ) : error ? (
         '?'
-      ) : (
-        <HealthColorText as="strong" colorKey={details?.status?.colorKey}>
-          {type === 'status' ? details?.status?.label : formatNumber(details?.healthFull, FORMAT_OPTIONS.PERCENT)}
+      ) : type === 'status' ? (
+        <HealthColorText colorKey={details?.status?.colorKey}>{details?.status?.label}</HealthColorText>
+      ) : type === 'percent' ? (
+        <HealthColorText colorKey={details?.status?.colorKey}>
+          {formatNumber(details?.healthFull, FORMAT_OPTIONS.PERCENT)}
         </HealthColorText>
-      )}
+      ) : null}
     </>
   )
 }

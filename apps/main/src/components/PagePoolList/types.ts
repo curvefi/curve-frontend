@@ -1,5 +1,4 @@
 import type { Params } from 'react-router'
-import type { IndicatorPlacement } from '@/ui/Table/types'
 
 import React from 'react'
 
@@ -69,11 +68,4 @@ export type PagePoolList = {
 export type PoolListFilter = {
   key: FilterKey
   label: string
-}
-
-export type TheadBtnProps = {
-  indicatorPlacement: IndicatorPlacement
-  sortBy: string
-  sortByOrder: Order
-  handleBtnClickSort: (sortBy: string, sortOrder: Order) => void
 }

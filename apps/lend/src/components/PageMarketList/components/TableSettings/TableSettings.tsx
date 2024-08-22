@@ -1,31 +1,38 @@
-import type { FilterTypeKey, PageMarketList } from '@/components/PageMarketList/types'
+import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
 import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
-import networks from '@/networks'
 
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
 import SearchInput from '@/ui/SearchInput'
 import SelectFilter from '@/components/PageMarketList/components/TableSettings/SelectFilter'
-import TableButtonFilters from '@/ui/TableButtonFilters'
+import SelectFilterType from '@/components/PageMarketList/components/TableSettings/SelectFilterType'
+import SelectFilterBorrowLend from '@/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
 
 const TableSettings = ({
-  rChainId,
-  filterMapper,
+  filterList,
   filterTypeMapper,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   searchParams,
+  tableLabels,
+  titleMapper,
+  tableLabelsSelector,
   updatePath,
-}: Pick<PageMarketList, 'rChainId' | 'api' | 'searchParams' | 'filterMapper' | 'filterTypeMapper' | 'updatePath'>) => {
+}: Pick<PageMarketList, 'filterList' | 'filterTypeMapper' | 'searchParams' | 'titleMapper' | 'updatePath'> & {
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
+  tableLabels: TableLabel[]
+  tableLabelsSelector: { borrow: TableLabel[]; supply: TableLabel[] }
+}) => {
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const filterList = useMemo(() => {
-    return networks[rChainId].marketListFilter.map((key) => filterMapper[key])
-  }, [filterMapper, rChainId])
+  const { hideSmallMarkets, searchText } = searchParams
 
   return (
     <>
@@ -35,25 +42,34 @@ const TableSettings = ({
             id="inp-search-integrations"
             className={isFocusVisible ? 'focus-visible' : ''}
             {...focusProps}
-            value={searchParams.searchText}
+            value={searchText}
             handleInputChange={(val) => updatePath({ searchText: val })}
             handleSearchClose={() => updatePath({ searchText: '' })}
           />
         </SearchWrapper>
         <FiltersWrapper grid gridArea="filters" flexJustifyContent="flex-start" gridAutoFlow="column">
-          <StyledTableButtonFilters
-            disabled={false}
-            filters={filterTypeMapper}
-            filterKey={searchParams.filterTypeKey}
-            updateRouteFilterKey={(filterTypeKey: FilterTypeKey) => updatePath({ filterTypeKey })}
+          <SelectFilterBorrowLend
+            filterTypeMapper={filterTypeMapper}
+            searchParams={searchParams}
+            tableLabelsSelector={tableLabelsSelector}
+            updatePath={updatePath}
           />
-          {/* TODO: add sort by */}
+        </FiltersWrapper>
+        <FiltersWrapper grid gridArea="filters2" flexJustifyContent="flex-start" gridAutoFlow="column">
           <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
+          <SelectFilterType
+            searchParams={searchParams}
+            showBorrowSignerCell={showBorrowSignerCell}
+            showSupplySignerCell={showSupplySignerCell}
+            tableLabels={tableLabels}
+            titleMapper={titleMapper}
+            updatePath={updatePath}
+          />
         </FiltersWrapper>
         <FilterSmallWrapper grid gridArea="hide">
           <Checkbox
-            isSelected={searchParams.hideSmallMarkets}
-            onChange={() => updatePath({ hideSmallMarkets: !searchParams.hideSmallMarkets })}
+            isSelected={hideSmallMarkets}
+            onChange={() => updatePath({ hideSmallMarkets: !hideSmallMarkets })}
           >{t`Hide very small markets`}</Checkbox>
         </FilterSmallWrapper>
       </SettingsWrapper>
@@ -67,16 +83,24 @@ const SettingsWrapper = styled.div`
   grid-template-areas:
     'grid-search'
     'grid-filters'
+    'grid-filters2'
     'grid-hide';
   padding-bottom: 0;
 
   @media (min-width: ${breakpoints.sm}rem) {
     grid-gap: var(--spacing-narrow);
-    grid-template-columns: auto 1fr;
-    grid-template-areas: 'grid-filters grid-search grid-hide';
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+      'grid-filters grid-search grid-hide'
+      'grid-filters2 grid-filters2 grid-filters2';
     justify-content: flex-start;
     padding: 0 var(--spacing-normal);
     padding-top: var(--spacing-wide);
+  }
+
+  @media (min-width: ${breakpoints.md}rem) {
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas: 'grid-filters grid-filters2 grid-search grid-hide';
   }
 `
 
@@ -117,17 +141,6 @@ const StyledSearchInput = styled(SearchInput)`
 
   @media (min-width: ${breakpoints.sm}rem) {
     min-height: 100%;
-  }
-`
-
-const StyledTableButtonFilters = styled(TableButtonFilters)`
-  align-items: flex-start;
-  flex-wrap: nowrap;
-
-  button {
-    margin-right: 0;
-    margin-bottom: 0;
-    min-height: var(--height-medium);
   }
 `
 

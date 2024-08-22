@@ -28,6 +28,19 @@
   },
   {
     "campaign": "Usual.json"
+  },
+  {
+    "campaign": "Elixir.json"
+  },
+  {
+    "campaign": "YieldNest.json"
+  },
+  {
+    "campaign": "Fraxtal.json"
+  },
+  {
+    "campaign": "Swell.json"
   }
 ]
+
 

@@ -11,6 +11,7 @@ import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -26,12 +27,15 @@ import DetailsUser from 'components/DetailsUser'
 import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import Tabs, { Tab } from '@/ui/Tab'
 import Vault from '@/components/PageVault/index'
+import Box from '@/ui/Box'
+import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
   const { routerParams, api } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rSubdirectory, rFormType } = routerParams
 
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
@@ -56,7 +60,7 @@ const Page: NextPage = () => {
   const [initialLoaded, setInitialLoaded] = useState(false)
 
   // set tabs
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Supply Details`, key: 'market' }]
+  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Lend Details`, key: 'market' }]
   if (signerAddress) {
     DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
   }
@@ -129,6 +133,7 @@ const Page: NextPage = () => {
     userActiveKey: helpers.getUserActiveKey(api, owmData),
     borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
     collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
+    titleMapper,
   }
 
   return (
@@ -143,6 +148,12 @@ const Page: NextPage = () => {
         {isAdvanceMode && rChainId && rOwmId && (
           <AppPageInfoWrapper>
             {isMdUp && <TitleComp />}
+            <Box margin="0 0 var(--spacing-2)">
+              <CampaignRewardsBanner
+                borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+              />
+            </Box>
             <AppPageInfoTabsWrapper>
               <Tabs>
                 {DETAIL_INFO_TYPES.map(({ key, label }) => (

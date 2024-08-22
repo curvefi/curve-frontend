@@ -1,17 +1,10 @@
 import React from 'react'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { TITLE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
 
-import {
-  Content,
-  ContentStat,
-  ContentStats,
-  ContentStatTitle,
-  ContentStatValue,
-  DarkContent,
-} from '@/components/DetailsMarket/styles'
+import { ContentWrapper, DarkContent } from '@/components/DetailsMarket/styles'
 import Box from '@/ui/Box'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
@@ -19,10 +12,11 @@ import CellToken from '@/components/SharedCellData/CellToken'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
 import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
-  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token } = pageProps
+  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper } = pageProps
 
   const cellProps = {
     rChainId,
@@ -31,40 +25,37 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
     size: 'md' as const,
   }
 
-  const details = [
+  const contents: { titleKey: TitleKey; content: React.ReactNode }[][] = [
     [
-      { title: t`Supply token`, value: <CellToken {...cellProps} type="borrowed" /> },
-      { title: 'TVL', value: <CellSupplyTotalLiquidity {...cellProps} /> },
-      { title: t`Available`, value: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.tokenSupply, content: <CellToken {...cellProps} type="borrowed" module="supply" /> },
+      { titleKey: TITLE.tokenCollateral, content: <CellToken {...cellProps} type="collateral" module="supply" /> },
     ],
     [
-      { title: t`Total Debt`, value: <CellLoanTotalDebt {...cellProps} /> },
-      { title: t`Total supplied`, value: <CellCap {...cellProps} type="cap" /> },
-      { title: t`Utilization %`, value: <CellCap {...cellProps} type="utilization" /> },
+      { titleKey: TITLE.available, content: <CellCap {...cellProps} type="available" /> },
+      { titleKey: TITLE.totalDebt, content: <CellLoanTotalDebt {...cellProps} /> },
+      { titleKey: TITLE.cap, content: <CellCap {...cellProps} type="cap" /> },
+      { titleKey: TITLE.totalLiquidity, content: <CellSupplyTotalLiquidity {...cellProps} /> },
     ],
   ]
 
   return (
     <Wrapper>
       {/* stats */}
-      <Content paddingTop>
-        {details.map((detailSection) => {
-          return (
-            <ContentStats key={detailSection[0].title}>
-              {detailSection.map(({ title, value }) => {
-                return (
-                  <ContentStat key={`detail-${title}`}>
-                    <ContentStatTitle>{title}</ContentStatTitle>
-                    <ContentStatValue>{value}</ContentStatValue>
-                  </ContentStat>
-                )
-              })}
-            </ContentStats>
-          )
-        })}
+      <ContentWrapper paddingTop>
+        <ListInfoItemsWrapper>
+          {contents.map((groupedContents, idx) => (
+            <ListInfoItems key={`contents${idx}`}>
+              {groupedContents.map(({ titleKey, content }, idx) => (
+                <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                  {content}
+                </ListInfoItem>
+              ))}
+            </ListInfoItems>
+          ))}
+        </ListInfoItemsWrapper>
 
         <DetailsSupplyRewards rChainId={rChainId} rOwmId={rOwmId} />
-      </Content>
+      </ContentWrapper>
 
       <StyledDarkContent>
         <Box grid gridGap={3}>

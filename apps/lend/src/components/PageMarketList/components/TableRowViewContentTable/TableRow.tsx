@@ -1,8 +1,9 @@
-import type { TableRowProps, TableCellProps } from '@/components/PageMarketList/types'
+import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
 
-import React, { useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 
+import { FilterType } from '@/components/PageMarketList/utils'
 import { _showContent } from '@/utils/helpers'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
@@ -14,7 +15,7 @@ import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import CellToken from '@/components/SharedCellData/CellToken'
-import CellRate from '@/components/SharedCellData/CellRate'
+import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
@@ -24,32 +25,26 @@ import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
 type Content = {
   className: string
   content: React.ReactNode
-  isInMarket?: boolean
   show?: boolean
 }
 
-const TableRow = ({
+const TableRowContent = ({
   rChainId,
   api,
   owmId,
   owmDataCachedOrApi,
-  isBorrow,
+  filterTypeKey,
   loanExists,
   showBorrowSignerCell,
   showSupplySignerCell,
   userActiveKey,
-  handleCellClick,
 }: TableRowProps) => {
-  const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
-
   const marketsBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 
   const { signerAddress } = api ?? {}
   const { gauge, vaultShares } = marketsBalancesResp ?? {}
 
-  const isVisible = !!entry?.isIntersecting
-  const userHaveLoan = !!signerAddress && !!loanExists
+  const userHaveLoan = !!signerAddress && loanExists
   const haveVaultShares = +(vaultShares ?? '0') > 0 || +(gauge ?? '0') > 0
   const userSupplied = !!signerAddress && haveVaultShares
 
@@ -59,55 +54,77 @@ const TableRow = ({
     owmId,
     owmDataCachedOrApi,
     userActiveKey,
-    isBorrow,
+    filterTypeKey,
     isBold: false,
     size: 'md',
   }
 
   // prettier-ignore
   const CONTENT: { borrow: Content[], supply: Content[] } = {
-    borrow: [
+    [FilterType.borrow]: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showBorrowSignerCell },
-      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral' isVisible={isVisible} /> },
-      { className: 'left', content: <CellToken {...cellProps} type='borrowed' isVisible={isVisible} /> },
+      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral'  module='borrow' /> },
+      { className: 'left', content: <CellToken {...cellProps} type='borrowed'  module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
       { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
-      { className: 'right', content: <CellRate {...cellProps} type='borrow' /> },
+      { className: 'right', content: <CellBorrowRate {...cellProps} /> },
       { className: 'right', content: <CellCap {...cellProps} type='available' /> },
       { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
       { className: 'right', content: <CellCap {...cellProps} type='cap' /> },
       { className: 'right', content: <CellCap {...cellProps} type='utilization' /> },
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
     ],
-    supply: [
+    [FilterType.supply]: [
       { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
-      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} isVisible={isVisible} type='borrowed' /> },
+      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps}  type='borrowed' module='supply' /> },
+      { className: 'left', content: <CellToken {...cellProps} type='collateral'  module='supply' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
-      { className: 'right', content: <CellRewards {...cellProps} type='crv-other' /> },
+      { className: 'right', content: <CellRewards {...cellProps} /> },
       { className: 'right', content: <CellSupplyTotalLiquidity {...cellProps} /> },
     ]
   }
 
+  return CONTENT[filterTypeKey].map(({ className, content, show }, idx) => {
+    if (!_showContent(show)) return null
+
+    return (
+      <Td key={idx} className={className}>
+        {content}
+      </Td>
+    )
+  })
+}
+
+const TableRow = (props: TableRowProps) => {
+  const ref = useRef<HTMLTableRowElement>(null)
+  const entry = useIntersectionObserver(ref)
+
+  const [height, setHeight] = useState(0)
+
+  const isVisible = !!entry?.isIntersecting
+
+  useEffect(() => {
+    if (!isVisible || !ref.current || height !== 0) return
+    setHeight(ref.current.getBoundingClientRect().height)
+  }, [height, isVisible])
+
   return (
-    <Tr ref={ref} className={`row--info ${isVisible ? '' : 'pending'}`} onClick={(evt) => handleCellClick(evt.target)}>
-      {CONTENT[isBorrow ? 'borrow' : 'supply'].map(({ className, content, isInMarket, show }, idx) => {
-        return (
-          _showContent(show) && (
-            <Td key={idx} className={className}>
-              {_showContent(isInMarket) ? content : null}
-            </Td>
-          )
-        )
-      })}
+    <Tr
+      ref={ref}
+      className={`row--info ${isVisible ? '' : 'pending'}`}
+      onClick={(evt) => props.handleCellClick(evt.target)}
+      rowHeight={height}
+    >
+      {isVisible && <TableRowContent {...props} />}
     </Tr>
   )
 }
 
-export const Tr = styled.tr`
+export const Tr = styled.tr<{ rowHeight: number }>`
   &.pending {
-    height: 3.25rem;
+    height: ${({ rowHeight }) => `${rowHeight}px` || '2.8125rem'}; // default 45px
   }
 
   :hover:not(.disabled) {
@@ -117,8 +134,8 @@ export const Tr = styled.tr`
 `
 
 export const cellCss = css`
-  padding-bottom: var(--spacing-1);
-  padding-top: var(--spacing-2);
+  padding-bottom: var(--spacing-narrow);
+  padding-top: var(--spacing-narrow);
   padding-left: var(--spacing-1);
   padding-right: var(--spacing-1);
 

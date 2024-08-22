@@ -36,6 +36,7 @@ declare global {
     name: string
     id: NetworkEnum
     networkId: ChainId
+    nativeTokens: { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
     api: typeof curvejsApi
     useApi: boolean
     blocknativeSupport: boolean
@@ -104,8 +105,8 @@ declare global {
   type CurrencyReservesToken = {
     token: string
     tokenAddress: string
-    balance: string
-    balanceUsd: string
+    balance: number
+    balanceUsd: number
     usdRate: number
     percentShareInPool: string
   }

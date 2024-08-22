@@ -18,7 +18,7 @@ import networks from '@/networks'
 
 import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertFormError from '@/components/AlertFormError'
-import AlertInfoSelfLiquidation from 'ui/src/AlertBox/AlertInfoSelfLiquidation'
+import AlertInfoSelfLiquidation from '@/ui/AlertBox/AlertInfoSelfLiquidation'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import InputReadOnly from '@/ui/InputReadOnly'

@@ -35,30 +35,34 @@ const DEFAULT_STATE: SliceState = {
 const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): CampaignRewardsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    initCampaignRewards: async (chainId: ChainId) => {
+    initCampaignRewards: (chainId: ChainId) => {
       let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key
       campaigns.forEach((campaign: CampaignRewardsItem) => {
         campaign.pools.forEach((pool: CampaignRewardsPool) => {
-          if (!campaignRewardsMapper[pool.poolAddress.toLowerCase()]) {
-            campaignRewardsMapper[pool.poolAddress.toLowerCase()] = []
+          if (pool.network.toLowerCase() === network.toLowerCase()) {
+            if (!campaignRewardsMapper[pool.address.toLowerCase()]) {
+              campaignRewardsMapper[pool.address.toLowerCase()] = []
+            }
+
+            campaignRewardsMapper[pool.address.toLowerCase()].push({
+              campaignName: campaign.campaignName,
+              platform: campaign.platform,
+              description: campaign.description,
+              platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
+              dashboardLink: campaign.dashboardLink,
+              ...pool,
+              address: pool.address.toLowerCase(),
+            })
           }
-          campaignRewardsMapper[pool.poolAddress.toLowerCase()].push({
-            campaignName: campaign.campaignName,
-            platform: campaign.platform,
-            description: campaign.description,
-            platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
-            dashboardLink: campaign.dashboardLink,
-            ...pool,
-            poolAddress: pool.poolAddress.toLowerCase(),
-          })
         })
       })
 
       // sort pools by multiplier to prepare for pool list sorting
-      Object.keys(campaignRewardsMapper).forEach((poolAddress: string) => {
-        campaignRewardsMapper[poolAddress].sort((a, b) => +a.multiplier - +b.multiplier)
+      Object.keys(campaignRewardsMapper).forEach((address: string) => {
+        campaignRewardsMapper[address].sort((a, b) => +a.multiplier - +b.multiplier)
       })
 
       set(

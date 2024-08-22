@@ -21,6 +21,7 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
         {...props.buttonProps}
         {...triggerProps}
         buttonRef={ref}
+        onSelectionDelete={props.onSelectionDelete}
       >
         {showExpandIcon ? (
           <ButtonWrapper>
@@ -33,7 +34,7 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
       </Popover2Button>
       {state.isOpen && (
         <Popover2 {...props} triggerRef={ref} state={state}>
-          {React.cloneElement(children, { ...overlayProps, ...state })}
+          {React.cloneElement(children as React.ReactElement<React.PropsWithChildren>, { ...overlayProps, ...state })}
         </Popover2>
       )}
     </>

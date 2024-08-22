@@ -1,9 +1,26 @@
-import type { MarketListMapper } from '@/components/PageMarketList/types'
+import type { FormStatus, MarketListMapper } from '@/components/PageMarketList/types'
 
 import differenceWith from 'lodash/differenceWith'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 import startsWith from 'lodash/startsWith'
+
+export enum Filter {
+  all = 'all',
+  leverage = 'leverage',
+  user = 'user',
+}
+
+export enum FilterType {
+  borrow = 'borrow',
+  supply = 'supply',
+}
+
+export const DEFAULT_FORM_STATUS: FormStatus = {
+  error: '',
+  isLoading: true,
+  noResult: false,
+}
 
 export function _isStartPartOrEnd(searchString: string, string: string) {
   return startsWith(string, searchString) || string.includes(searchString) || string === searchString
@@ -48,13 +65,13 @@ export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
     const { address: bAddress, symbol: bSymbol } = borrowed_token
 
     if (!marketListMapper[cAddress]) {
-      marketListMapper[cAddress] = { long: {}, short: {}, symbol: cSymbol, address: cAddress }
+      marketListMapper[cAddress] = { markets: {}, symbol: cSymbol, address: cAddress }
     }
     if (!marketListMapper[bAddress]) {
-      marketListMapper[bAddress] = { long: {}, short: {}, symbol: bSymbol, address: bAddress }
+      marketListMapper[bAddress] = { markets: {}, symbol: bSymbol, address: bAddress }
     }
-    marketListMapper[cAddress].long[id] = true
-    marketListMapper[bAddress].short[id] = true
+    marketListMapper[cAddress].markets[id] = true
+    marketListMapper[bAddress].markets[id] = true
   })
 
   // filter crvusd

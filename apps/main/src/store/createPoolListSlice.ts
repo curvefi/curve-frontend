@@ -124,6 +124,9 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
     filterBySearchText: (searchText: string, poolDatas: (PoolDataCache | PoolData)[]) => {
       let parsedSearchText = searchText.toLowerCase().trim()
 
+      // special search case for aUSD₮
+      if (parsedSearchText.endsWith('ausdt')) parsedSearchText = 'aUSD₮'
+
       let results: { searchTerm: string; results: (PoolDataCache | PoolData)[] } = {
         searchTerm: '',
         results: [],
@@ -153,7 +156,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
     filterSmallTvl: (poolDatas: (PoolDataCache | PoolData)[], tvlMapper: TvlMapper, chainId: ChainId) => {
       const hideSmallPoolsTvl = networks[chainId].hideSmallPoolsTvl
       return poolDatas.filter(({ pool }) => {
-        return +(tvlMapper[pool.id]?.value || '0') > hideSmallPoolsTvl
+        return +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl
       })
     },
     sortFn: (
@@ -309,7 +312,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
         for (const idx in tablePoolDatas) {
           const poolData = tablePoolDatas[idx]
           if (!hidePoolsMapper[poolData.pool.id]) {
-            const { crv = [], other = [] } = rewardsApyMapper[poolData.pool.id] ?? {}
+            const { crv = [], other = [] } = rewardsApyMapper?.[poolData.pool.id] ?? {}
             if (other.length > 0) resultRewardsOtherCount++
             if (crv?.[0] > 0) resultRewardsCrvCount++
             result.push(poolData.pool.id)

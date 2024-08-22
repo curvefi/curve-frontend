@@ -1,13 +1,11 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
 import React from 'react'
 
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import Chip from '@/ui/Typography/Chip'
-import TokenLabel from '@/components/TokenLabel'
-import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 import Box from '@/ui/Box'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
+import TokenLabel from '@/components/TokenLabel'
 
 const CellToken = ({
   hideIcon,
@@ -16,24 +14,31 @@ const CellToken = ({
   owmDataCachedOrApi,
   showLeverageIcon,
   type,
-  ...props
-}: ChipProps & {
+  module,
+}: {
   hideIcon?: boolean
   rChainId: ChainId
   isVisible?: boolean
   owmDataCachedOrApi: OWMDataCacheOrApi
   showLeverageIcon?: boolean
   type: 'collateral' | 'borrowed'
+  module: 'borrow' | 'supply'
 }) => {
   const { collateral_token, borrowed_token } = owmDataCachedOrApi?.owm ?? {}
-  const campaignRewards = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.controller || '']
+  const campaignRewardsBorrow = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.controller || '']
+  const campaignRewardsSupply = useCampaignRewardsMapper()[owmDataCachedOrApi?.owm?.addresses?.vault || '']
 
   const token = type === 'collateral' ? collateral_token : borrowed_token
 
   return hideIcon ? (
     <>
-      <Chip {...props}>{token?.symbol}</Chip>
-      {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
+      <Chip>{token?.symbol}</Chip>
+      {campaignRewardsBorrow && type === 'collateral' && module === 'borrow' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsBorrow} />
+      )}
+      {campaignRewardsSupply && type === 'borrowed' && module === 'supply' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsSupply} />
+      )}
     </>
   ) : (
     <Box flex>
@@ -44,7 +49,12 @@ const CellToken = ({
         rChainId={rChainId}
         token={token}
       />
-      {campaignRewards && type === 'collateral' && <CampaignRewardsRow rewardItems={campaignRewards} />}
+      {campaignRewardsBorrow && type === 'collateral' && module === 'borrow' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsBorrow} />
+      )}
+      {campaignRewardsSupply && type === 'borrowed' && module === 'supply' && (
+        <CampaignRewardsRow rewardItems={campaignRewardsSupply} />
+      )}
     </Box>
   )
 }

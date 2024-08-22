@@ -1,13 +1,15 @@
-import type { ChipProps } from '@/ui/Typography/types'
-
+import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { ROUTE } from '@/constants'
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
+import InternalLink from '@/ui/Link/InternalLink'
+import TextCaption from '@/ui/TextCaption'
 
-const TableCellMarketsTotalDebt = (props: ChipProps) => {
+const TableCellMarketsTotalDebt = () => {
   const totalSupplyResp = useStore((state) => state.crvusdTotalSupply)
 
   const { total, minted, pegKeepersDebt, error } = totalSupplyResp ?? {}
@@ -20,17 +22,28 @@ const TableCellMarketsTotalDebt = (props: ChipProps) => {
       {typeof totalSupplyResp === 'undefined' ? null : error ? (
         '?'
       ) : (
-        <Chip {...props}>
-          {formatNumber(pegKeepersDebt, { defaultValue: '-' })}{' '}
-          <DebtFraction>({formattedDebtFraction} of total supply)</DebtFraction>
-        </Chip>
+        <StyledTotalSupply>
+          {formatNumber(pegKeepersDebt, { defaultValue: '-' })}
+          <TextCaption>{formattedDebtFraction} of total supply</TextCaption>
+        </StyledTotalSupply>
       )}
+      <StyledLink $noStyles href={ROUTE.PAGE_PEGKEEPERS}>
+        {t`View details`}
+      </StyledLink>
     </>
   )
 }
 
-const DebtFraction = styled.span`
-  font-weight: normal;
+const StyledTotalSupply = styled.div`
+  display: grid;
+  grid-gap: 0.1rem;
+`
+
+const StyledLink = styled(InternalLink)`
+  color: inherit;
+  font-size: var(--font-size-2);
+  margin-top: var(--spacing-2);
+  text-transform: initial;
 `
 
 export default TableCellMarketsTotalDebt

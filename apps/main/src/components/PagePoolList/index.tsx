@@ -20,15 +20,12 @@ import { getImageBaseUrl, getVolumeTvlStr } from '@/utils/utilsCurvejs'
 import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import networks from '@/networks'
-import useTokensMapper from '@/hooks/useTokensMapper'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Checkbox from '@/ui/Checkbox'
-import DialogSortDesktop from '@/components/PagePoolList/components/DialogSort/DialogSortDesktop'
-import DialogSortMobile from '@/components/PagePoolList/components/DialogSort/DialogSortMobile'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
@@ -37,12 +34,13 @@ import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobil
 import TableButtonFilters from '@/ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
+import TableSortSelect from '@/ui/TableSort/TableSortSelect'
+import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const { tokensMapper } = useTokensMapper(rChainId)
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
@@ -55,7 +53,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const results = useStore((state) => state.poolList.result)
   const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
   const resultRewardsOtherCount = useStore((state) => state.poolList.resultRewardsOtherCount)
-  const rewardsApyMapperCached = useStore((state) => state.storeCache.rewardsApyMapper[rChainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
   const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
@@ -79,20 +76,13 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
   const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
   const poolDatasLength = (poolDatasCachedOrApi ?? []).length
-  const rewardsApyMapperCachedOrApi = useMemo(
-    () => rewardsApyMapper ?? rewardsApyMapperCached ?? {},
-    [rewardsApyMapper, rewardsApyMapperCached]
-  )
   const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
   const volumeMapperCachedOrApi = useMemo(
     () => volumeMapper ?? volumeMapperCached ?? {},
     [volumeMapper, volumeMapperCached]
   )
 
-  const rewardsApyMapperStr = useMemo(
-    () => getRewardsApyStr(rewardsApyMapper, rewardsApyMapperCached),
-    [rewardsApyMapper, rewardsApyMapperCached]
-  )
+  const rewardsApyMapperStr = useMemo(() => getRewardsApyStr(rewardsApyMapper, {}), [rewardsApyMapper])
 
   const userPoolListStr = useMemo(() => getUserPoolListStr(userPoolList), [userPoolList])
   const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapper), [volumeMapper])
@@ -122,7 +112,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
         rChainId,
         searchParams,
         poolDatasCachedOrApi,
-        rewardsApyMapperCachedOrApi,
+        rewardsApyMapper,
         volumeMapperCachedOrApi,
         tvlMapperCachedOrApi,
         userPoolList,
@@ -132,7 +122,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     [
       rChainId,
       poolDatasCachedOrApi,
-      rewardsApyMapperCachedOrApi,
+      rewardsApyMapper,
       setFormValues,
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
@@ -217,7 +207,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
           <Box>
             <Box flex gridColumnGap={2}>
               {!isXSmDown && (
-                <DialogSortDesktop searchParams={searchParams} tableLabels={tableLabels} updatePath={updatePath} />
+                <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               )}
               {networks[rChainId].showHideSmallPoolsCheckbox ||
               (typeof poolDatasCachedOrApi !== 'undefined' && poolDatasLength > 10) ? (
@@ -240,7 +230,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                   filterKey={searchParams.filterKey}
                   updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
                 />
-                <DialogSortMobile searchParams={searchParams} tableLabels={tableLabels} updatePath={updatePath} />
+                <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               </Box>
             )}
           </Box>
@@ -292,7 +282,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
             </tr>
           ) : Array.isArray(result) &&
             Object.keys(poolDataMapperCached ?? {}).length &&
-            Object.keys(volumeMapperCached ?? {}).length &&
             Object.keys(tvlMapperCached ?? {}).length ? (
             <>
               {result.map((poolId: string, index: number) => (
@@ -305,7 +294,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                   imageBaseUrl={imageBaseUrl}
                   showInPoolColumn={showInPoolColumn}
                   tableLabels={tableLabels}
-                  tokensMapper={tokensMapper}
                   showDetail={showDetail}
                   setShowDetail={setShowDetail}
                   curve={curve}

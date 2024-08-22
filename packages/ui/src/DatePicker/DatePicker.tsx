@@ -16,7 +16,6 @@ import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import useStore from '@/store/useStore'
 
 import Box from 'ui/src/Box'
 import Chip from 'ui/src/Typography/Chip'
@@ -145,11 +144,11 @@ function CalendarCell({ state, date }) {
 }
 
 function DatePicker(props) {
+  let { locale } = useLocale()
   const state = useDatePickerState(props)
   const ref = React.useRef<HTMLDivElement>(null)
 
   const { groupProps, labelProps, fieldProps, buttonProps, calendarProps } = useDatePicker(props, state, ref)
-  const locale = useStore((state) => state.locale)
   const dateFieldProps: DateFieldStateOptions = { ...fieldProps, ...props.dateFieldProps }
 
   const dateFieldState = useDateFieldState({

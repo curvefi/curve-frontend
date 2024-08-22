@@ -4,8 +4,14 @@ import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 
-const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress }) => {
-  const campaignRewardsPool = useCampaignRewardsMapper()[poolAddress]
+interface CampaignRewardsBannerProps {
+  address: string
+}
+
+const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ address }) => {
+  const campaignRewardsPool = useCampaignRewardsMapper()[address]
+
+  if (!campaignRewardsPool) return null
 
   const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
 
@@ -14,9 +20,7 @@ const CampaignRewardsBanner: React.FC<{ poolAddress: string }> = ({ poolAddress 
     return t`Liquidity providers in this pool also earn additional tokens!`
   }
 
-  return campaignRewardsPool ? (
-    <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
-  ) : null
+  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
 }
 
 export default CampaignRewardsBanner

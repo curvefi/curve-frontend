@@ -1,0 +1,50 @@
+{
+  "campaignName": "",
+  "platform": "Elixir",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "Elixir.png",
+  "dashboardLink": "https://www.elixir.xyz/apothecary",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x5f6c431ac417f0f430b84a666a563fabe681da94",
+      "network": "ethereum",
+      "multiplier": "3.75",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xb478bf40dd622086e0d0889eebbadcb63806adde",
+      "network": "ethereum",
+      "multiplier": "3.75",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x7c4e143b23d72e6938e06291f705b5ae3d5c7c7c",
+      "network": "ethereum",
+      "multiplier": "3.75",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x88dfb9370fe350aa51ade31c32549d4d3a24faf2",
+      "network": "ethereum",
+      "multiplier": "3.75",
+      "tags": ["points"]
+    }
+  ]
+}
+

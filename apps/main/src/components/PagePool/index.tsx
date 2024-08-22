@@ -361,7 +361,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
           {isMdUp && !chartExpanded && <TitleComp />}
           {poolAddress && (
             <Box margin="0 0 var(--spacing-2) 0">
-              <CampaignRewardsBanner poolAddress={poolAddress} />
+              <CampaignRewardsBanner address={poolAddress} />
             </Box>
           )}
           {pricesApiPoolData && pricesApi && !chartExpanded && (

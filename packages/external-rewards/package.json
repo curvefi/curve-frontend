@@ -1,20 +1,11 @@
 {
   "name": "external-rewards",
-  "version": "0.0.0",
-  "main": "dist/index.ts",
+  "version": "0.2.0",
+  "main": "src/index.tsx",
   "types": "src/index.ts",
   "license": "MIT",
   "private": true,
-  "exports": {
-    "./*": {
-      "types": "./src/*.ts",
-      "default": "./dist/*.js"
-    }
-  },
   "scripts": {
-    "prebuild": "node pre-build.js",
-    "build": "npm run prebuild && tsc",
-    "dev": "npm run prebuild && tsc --watch",
     "lint": "eslint \"**/*.ts*\""
   },
   "devDependencies": {

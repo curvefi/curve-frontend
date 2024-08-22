@@ -18,7 +18,7 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/stablecoin-api": "^1.5.4",
+    "@curvefi/stablecoin-api": "^1.5.5",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",

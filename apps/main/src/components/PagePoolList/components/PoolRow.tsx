@@ -16,7 +16,6 @@ interface PoolRowProps {
   imageBaseUrl: string
   showInPoolColumn: boolean
   tableLabels: PoolListTableLabel
-  tokensMapper: TokensMapper
   showDetail: string
   setShowDetail: (value: ((prevState: string) => string) | string) => void
   curve: CurveApi | null
@@ -36,7 +35,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   imageBaseUrl,
   showInPoolColumn,
   tableLabels,
-  tokensMapper,
   showDetail,
   setShowDetail,
   curve,
@@ -83,7 +81,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     poolDataCachedOrApi: poolData ?? poolDataCached,
     rewardsApy: rewardsApyMapper?.[poolId],
     showInPoolColumn: showInPoolColumn,
-    tokensMapper,
     tvlCached: tvlMapperCached?.[poolId],
     tvl: tvlMapper?.[poolId],
     volumeCached: volumeMapperCached?.[poolId],

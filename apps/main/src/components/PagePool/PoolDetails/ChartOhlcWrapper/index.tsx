@@ -23,7 +23,6 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
     pricesApiState: {
       chartOhlcData,
       chartStatus,
-      selectedChartIndex,
       timeOption,
       chartExpanded,
       activityHidden,
@@ -31,7 +30,6 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
       refetchingCapped,
       lastFetchEndTime,
     },
-    setChartSelectedIndex,
     setChartTimeOption,
     setChartExpanded,
     fetchPricesApiCharts,
@@ -42,6 +40,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
+  const [selectedChartIndex, setChartSelectedIndex] = useState<number>(0)
   const [isFlipped, setIsFlipped] = useState<boolean[]>([])
 
   const chartHeight = {

@@ -4,6 +4,7 @@ import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { Filter } from '@/components/PageMarketList/utils'
 import { shortenAccount } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
@@ -36,7 +37,7 @@ const MarketListNoResult = ({
         <>
           {t`No market found for "${shortenAccount(signerAddress)}".`}
           <br />{' '}
-          <Button variant="text" onClick={() => updatePath({ filterKey: 'all' })}>
+          <Button variant="text" onClick={() => updatePath({ filterKey: Filter.all })}>
             {t`view all markets`}
           </Button>
         </>

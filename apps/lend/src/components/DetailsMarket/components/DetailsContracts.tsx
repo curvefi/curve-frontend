@@ -1,6 +1,5 @@
 import React from 'react'
 import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
 import { INVALID_ADDRESS } from '@/constants'
 
@@ -28,8 +27,8 @@ const DetailsContracts = ({
   let contracts: { borrow: ContractItems[], supply: ContractItems[] } = {
     borrow: [
       [
-        { label: <TokenWrapper><Chip isBold size="sm">{t`Collateral`}</Chip> <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} /></TokenWrapper>, address: addresses?.collateral_token },
-        { label: <TokenWrapper><Chip isBold size="sm">{t`Borrowed`}</Chip> <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} /></TokenWrapper>, address: addresses?.borrowed_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
       ],
       [
         { label: 'AMM', address: addresses?.amm },
@@ -39,7 +38,8 @@ const DetailsContracts = ({
     ],
     supply: [
       [
-        { label: <TokenWrapper><Chip isBold size="sm">{t`Borrowed`}</Chip> <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} /></TokenWrapper>, address: addresses?.borrowed_token }
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.borrowed_token },
       ],
       [
         { label: t`Vault`, address: addresses?.vault },
@@ -84,13 +84,5 @@ const DetailsContracts = ({
     </>
   )
 }
-
-const TokenWrapper = styled.div`
-  display: grid;
-  grid-gap: var(--spacing-1);
-  justify-items: flex-start;
-  padding-bottom: var(--spacing-1);
-  padding-top: var(--spacing-1);
-`
 
 export default DetailsContracts

@@ -1,4 +1,4 @@
-import type { FormValues, PageCollateralList, TableLabel, TableRowProps } from '@/components/PageMarketList/types'
+import type { FormValues, PageCollateralList, TableRowProps } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
@@ -12,12 +12,12 @@ import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRoute
 import cloneDeep from 'lodash/cloneDeep'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import DialogSortContent from '@/components/PageMarketList/components/DialogSortContent'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
 import TableHead from '@/components/PageMarketList/components/TableHead'
@@ -28,6 +28,7 @@ import TableRowMobile from '@/components/PageMarketList/components/TableRowMobil
 const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) => {
   const navigate = useNavigate()
   const settingsRef = useRef<HTMLDivElement>(null)
+  const titleMapper = useTitleMapper()
 
   const curve = useStore((state) => state.curve)
   const activeKey = useStore((state) => state.collateralList.activeKey)
@@ -48,6 +49,7 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
 
   const [showDetail, setShowDetail] = useState<string>('')
 
+  const { signerAddress } = curve || {}
   const collateralDatasCached = getCollateralDatasCached(collateralDatasCachedMapper)
   const collateralDatasCachedOrApi = collateralDatas ?? collateralDatasCached
   const isReady = collateralDatasCachedOrApi.length > 0
@@ -55,24 +57,6 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
   const loansDetailsMapperState = useMemo(() => {
     return Object.keys(loansDetailsMapper).join(',')
   }, [loansDetailsMapper])
-
-  const TABLE_LABEL: TableLabel = {
-    name: { name: t`Markets` },
-    myHealth: { name: t`My health` },
-    myDebt: { name: t`My debt` },
-    rate: {
-      name: (
-        <>
-          {t`Borrow rate`}{' '}
-          <IconTooltip minWidth="200px">{t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`}</IconTooltip>
-        </>
-      ),
-    },
-    totalBorrowed: { name: t`Total debt` },
-    cap: { name: t`Cap` },
-    available: { name: t`Available to borrow` },
-    totalCollateral: { name: t`Total collateral value` },
-  }
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
@@ -106,6 +90,8 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
 
   // fetch partial user loan details
   const someLoanExists = useMemo(() => {
+    if (!signerAddress) return false
+
     let loansExists = false
 
     if (result?.length > 0 && curve && loanExistsMapper && collateralDatasMapper && !isLoadingApi) {
@@ -136,7 +122,8 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
             <Box flex gridColumnGap={2} margin="1rem 0 0 0.25rem">
               <DialogSortContent
                 formValues={formValues}
-                tableLabels={TABLE_LABEL}
+                someLoanExists={someLoanExists}
+                titleMapper={titleMapper}
                 updateFormValues={updateFormValues}
               />
             </Box>
@@ -151,7 +138,7 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
             formValues={formValues}
             isReadyDetail={!!loanExistsMapper && pageLoaded}
             someLoanExists={someLoanExists}
-            tableLabels={TABLE_LABEL}
+            titleMapper={titleMapper}
             updateFormValues={updateFormValues}
           />
         )}
@@ -195,10 +182,9 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
               const collateralDataCached = collateralDatasCachedMapper?.[collateralId]
               const collateralData = collateralDatasMapper?.[collateralId]
 
-              const tableRowProps: Pick<PageCollateralList, 'rChainId'> & TableRowProps = {
+              const tableRowProps: TableRowProps = {
                 rChainId,
                 collateralId,
-                collateralData,
                 collateralDataCachedOrApi: collateralData ?? collateralDataCached,
                 loanDetails: loansDetailsMapper[collateralId],
                 loanExists,
@@ -209,8 +195,8 @@ const CollateralList = ({ pageLoaded, params, rChainId }: PageCollateralList) =>
                 <TableRowMobile
                   key={collateralId}
                   {...tableRowProps}
-                  tableLabel={TABLE_LABEL}
                   showDetail={showDetail}
+                  titleMapper={titleMapper}
                   setShowDetail={setShowDetail}
                 />
               ) : (
@@ -284,10 +270,6 @@ const StyledTable = styled(Table)`
         padding-right: 0.375rem; //6px
         padding-top: inherit;
         padding-bottom: inherit;
-
-        + td {
-          padding-left: 0;
-        }
       }
 
       &.center {

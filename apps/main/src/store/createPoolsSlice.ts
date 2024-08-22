@@ -17,7 +17,6 @@ import type {
 } from '@/ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
-import { BigNumber } from 'bignumber.js'
 import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
 import produce from 'immer'
@@ -30,6 +29,7 @@ import pick from 'lodash/pick'
 import { INVALID_ADDRESS } from '@/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl, log } from '@/utils'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -60,7 +60,6 @@ type SliceState = {
     tradeEventsData: LpTradesData[]
     liquidityEventsData: LpLiquidityEventsData[]
     timeOption: TimeOptions
-    selectedChartIndex: number
     chartExpanded: boolean
     activityHidden: boolean
     chartStatus: FetchingStatus
@@ -118,7 +117,6 @@ export type PoolsSlice = {
     ) => void
     fetchPricesApiActivity: (chainId: ChainId, poolAddress: string, chartCombinations: PricesApiCoin[][]) => void
     setChartTimeOption: (timeOption: TimeOptions) => void
-    setChartSelectedIndex: (index: number) => void
     setChartExpanded: (expanded: boolean) => void
     setActivityHidden: (hidden: boolean) => void
 
@@ -153,7 +151,6 @@ const DEFAULT_STATE: SliceState = {
     tradeEventsData: [],
     liquidityEventsData: [],
     timeOption: '1d',
-    selectedChartIndex: 0,
     chartExpanded: false,
     activityHidden: false,
     chartStatus: 'LOADING',
@@ -169,44 +166,44 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     ...DEFAULT_STATE,
 
     fetchPoolsTvl: async (curve, poolDatas) => {
+      const { storeCache } = get()
+      const { tvlMapper: sTvlMapper } = get()[sliceKey]
+
       log('fetchPoolsTvl', curve.chainId, poolDatas.length)
       const chainId = curve.chainId
 
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
-          const item = await networks[chainId].api.pool.getTvl(poolData.pool, chainId)
+          const item = await curvejsApi.pool.getTvl(poolData.pool, chainId)
           return [item.poolId, item]
         })
 
-      const tvlMapper = {
-        ...get()[sliceKey].tvlMapper[chainId],
-        ...Object.fromEntries(results),
-      }
+      const tvlMapper = { ...sTvlMapper[chainId], ...Object.fromEntries(results) }
       get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
 
       //  update cache
-      get().storeCache.setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
+      storeCache.setTvlVolumeMapper('tvlMapper', chainId, tvlMapper)
     },
     fetchPoolsVolume: async (chainId, poolDatas) => {
+      const { storeCache } = get()
+      const { volumeMapper: sVolumeMapper } = get()[sliceKey]
+
       log('fetchPoolsVolume', chainId, poolDatas.length)
 
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
-          const item = await networks[chainId].api.pool.getVolume(poolData.pool)
+          const item = await curvejsApi.pool.getVolume(poolData.pool)
           return [item.poolId, item]
         })
 
       // update volumeMapper
-      let volumeMapper: VolumeMapper = {
-        ...get()[sliceKey].volumeMapper[chainId],
-        ...Object.fromEntries(results),
-      }
+      let volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
       get()[sliceKey].setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
 
       //  update cache
-      get().storeCache.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
+      storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
       const chainId = curve.chainId
@@ -230,8 +227,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         )
 
         const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
-        const showHideSmallPools = networks[curve.chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
-        const tokensNameMapper = parsedTokensNameMapper(poolDatas)
+        const showHideSmallPools = networks[chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
+        const nativeTokens = networks[chainId].nativeTokens
+        const tokensNameMapper = {
+          [nativeTokens.address]: nativeTokens.symbol,
+          [nativeTokens.wrappedAddress]: nativeTokens.wrappedSymbol,
+          ...parsedTokensNameMapper(poolDatas),
+        }
 
         set(
           produce((state: State) => {
@@ -246,7 +248,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
         // update cache
         get().storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
-        get().storeCache.setStateByActiveKey('tokensNameMapper', chainId.toString(), tokensNameMapper)
 
         const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
 
@@ -311,30 +312,31 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
+      const { usdRates } = get()
+      const { ...sliceState } = get()[sliceKey]
       const { chainId } = curve
       const { pool, isWrapped, tokens, tokenAddresses } = poolData
 
       const [balancesResp, usdRatesMapper] = await Promise.all([
-        networks[chainId].api.pool.poolBalances(pool, isWrapped),
-        get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
+        curvejsApi.pool.poolBalances(pool, isWrapped),
+        usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
       ])
 
       const { balances } = balancesResp
       const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
       let crTokens: CurrencyReservesToken[] = []
-      let total = new BigNumber(0)
-      let totalUsd = new BigNumber(0)
+      let total = 0
+      let totalUsd = 0
 
       for (const idx in tokenAddresses) {
         const tokenAddress = tokenAddresses[idx]
         const usdRate = usdRatesMapper[tokenAddress] ?? 0
         const usdRateError = isNaN(usdRate)
-        const balance = balances[idx]
-        const balanceUsd =
-          !isEmpty && +usdRate > 0 && !usdRateError ? new BigNumber(balance).multipliedBy(usdRate).toString() : '0'
+        const balance = Number(balances[idx])
+        const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
 
-        total = total.plus(balance)
-        totalUsd = totalUsd.plus(balanceUsd)
+        total += balance
+        totalUsd += balanceUsd
         const crToken: CurrencyReservesToken = {
           token: tokens[idx],
           tokenAddress,
@@ -353,9 +355,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         } else if (poolData.pool.isCrypto && isNaN(cr.usdRate)) {
           cr.percentShareInPool = 'NaN'
         } else if (poolData.pool.isCrypto) {
-          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
+          cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
         } else {
-          cr.percentShareInPool = new BigNumber(cr.balanceUsd).dividedBy(totalUsd).multipliedBy(100).toFixed(2)
+          cr.percentShareInPool = ((cr.balance / total) * 100).toFixed(2)
         }
         return cr
       })
@@ -367,7 +369,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         totalUsd: totalUsd.toString(),
       }
 
-      get()[sliceKey].setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
+      sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
     fetchPoolsChunkRewardsApy: async (chainId, poolDatas) => {
       const { results } = await PromisePool.for(poolDatas).process(
@@ -392,14 +394,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         chunks = chunk(poolDatas, 200)
       }
 
-      while (currentChunk < chunks.length) {
-        const chunkResult = await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currentChunk])
-        currentChunk++
-
-        // set result to cache once complete
-        if (typeof chunks[currentChunk] === 'undefined') {
-          get().storeCache.setStateByActiveKey('rewardsApyMapper', chainId.toString(), chunkResult)
-        }
+      while (currenChunk < chunks.length) {
+        await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currenChunk])
+        currenChunk++
       }
     },
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
@@ -455,11 +452,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         volumeTotal: volumeObj.totalVolume,
         volumeCryptoShare: volumeObj.cryptoShare,
       })
-
-      // add to storeCache
-      get().storeCache.setStateByActiveKey('tvlTotal', chainId.toString(), tvl)
-      get().storeCache.setStateByActiveKey('volumeTotal', chainId.toString(), volumeObj.totalVolume)
-      get().storeCache.setStateByActiveKey('volumeCryptoShare', chainId.toString(), volumeObj.cryptoShare)
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
       const curve = get().curve
@@ -827,13 +819,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         })
       )
     },
-    setChartSelectedIndex: (index: number) => {
-      set(
-        produce((state: State) => {
-          state.pools.pricesApiState.selectedChartIndex = index
-        })
-      )
-    },
     setChartExpanded: (expanded: boolean) => {
       set(
         produce((state: State) => {
@@ -877,6 +862,7 @@ export default createPoolsSlice
 
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
+  const parsedTokensMapper: TokensMapper = {}
   const grouped = groupBy(tokensMapper, (v) => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
@@ -884,8 +870,10 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
 
   if (duplicatedTokenNames.length) {
     Object.entries(tokensMapper).forEach(([key, tokenObj]) => {
-      tokensMapper[key]!.haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
+      parsedTokensMapper[key] = tokenObj
+      parsedTokensMapper[key]!.haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
     })
+    return parsedTokensMapper
   }
 
   return tokensMapper

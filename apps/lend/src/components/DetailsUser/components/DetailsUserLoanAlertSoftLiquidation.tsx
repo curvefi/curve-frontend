@@ -5,6 +5,8 @@ import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
+import Box from '@/ui/Box'
+import ExternalLink from '@/ui/Link/ExternalLink'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ borrowed_token, collateral_token, userActiveKey }: PageContentProps) => {
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
@@ -32,7 +34,15 @@ const DetailsUserLoanAlertSoftLiquidation = ({ borrowed_token, collateral_token,
 
   return (
     <AlertBox alertType="warning">
-      {t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}
+      <Box grid gridGap={3}>
+        <p>{t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}</p>
+        <p>
+          {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+          <ExternalLink href="https://resources.curve.fi/lending/overview/#health-hard-liquidation" $noStyles>
+            Click here to learn more.
+          </ExternalLink>
+        </p>
+      </Box>
     </AlertBox>
   )
 }

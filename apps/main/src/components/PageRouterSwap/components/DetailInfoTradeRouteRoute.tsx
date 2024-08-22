@@ -13,6 +13,7 @@ import networks, { networksIdMapper } from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
+import TextEllipsis from '@/ui/TextEllipsis'
 
 const DetailInfoTradeRouteRoute = ({
   params,
@@ -39,10 +40,13 @@ const DetailInfoTradeRouteRoute = ({
     }
   }, [params, route.poolId, route.routeUrlId, swapCustomRouteRedirect])
 
+  const labelProps = { maxWidth: '70px', smMaxWidth: '90px' }
+
   const InputAndOutputTokenLabel =
     (routesLength || 1) > 1 ? (
       <RouteTokenNames>
-        {inputToken} <RouteTokenNameIcon name="ArrowRight" size={16} /> {outputToken}{' '}
+        <TextEllipsis {...labelProps}>{inputToken}</TextEllipsis> <RouteTokenNameIcon name="ArrowRight" size={16} />{' '}
+        <TextEllipsis {...labelProps}>{outputToken}</TextEllipsis>{' '}
       </RouteTokenNames>
     ) : null
 
@@ -69,12 +73,13 @@ const DetailInfoTradeRouteRoute = ({
 }
 
 const RouteTokenNameIcon = styled(Icon)`
-  position: relative;
-  top: 4px;
   width: 10px;
+  margin: 0 var(--spacing-1);
 `
 
 const RouteTokenNames = styled.span`
+  align-items: center;
+  display: inline-flex;
   font-size: var(--font-size-1);
   padding: 1px 3px;
   opacity: 0.7;

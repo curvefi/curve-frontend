@@ -1,0 +1,14 @@
+[
+  {
+    "id": "borrow",
+    "displayName": "Borrow"
+  },
+  {
+    "id": "supply",
+    "displayName": "Lend"
+  },
+  {
+    "id": "lp",
+    "displayName": "LP"
+  }
+]

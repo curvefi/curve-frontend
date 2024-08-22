@@ -3,48 +3,37 @@ import type { State } from '@/store/useStore'
 import type {
   FilterTypeKey,
   FormStatus,
-  MarketListItem,
   MarketListMapper,
-  MarketListToken,
-  Order,
+  MarketListItemResult,
   SearchParams,
-  SortKey,
-  TableRowSettings,
+  TableSettings,
 } from '@/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 
-import { _searchByTokensAddresses } from '@/components/PageMarketList/utils'
+import { DEFAULT_FORM_STATUS, _searchByTokensAddresses, _getMarketList } from '@/components/PageMarketList/utils'
+import { TITLE } from '@/constants'
+import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
-export const DEFAULT_FORM_STATUS: FormStatus = {
-  error: '',
-  isLoading: true,
-  noResult: false,
-}
-
 // isTableRowOpen
 type SliceState = {
   initialLoaded: boolean
   activeKey: string
   marketListMapper: { [chainId: string]: MarketListMapper }
-  tableRowsSettings: { [tokenAddress: string]: TableRowSettings }
+  tableRowsSettings: { [tokenAddress: string]: TableSettings }
   formStatus: FormStatus
   searchParams: SearchParams
   searchTextByTokensAndAddresses: { [activeKey: string]: { [address: string]: boolean } }
   searchTextByOther: { [activeKey: string]: { [address: string]: boolean } }
-  result: { [activeKey: string]: MarketListItem[] }
-  resultTokenList: { [activeKey: string]: MarketListToken[] }
+  result: { [activeKey: string]: MarketListItemResult[] }
   showHideSmallPools: boolean
-  tokenSearchParams: { [tableRowTokenAddress: string]: { sortBy: SortKey; sortByOrder: Order } }
-  tokenResult: { [tableRowTokenAddress: string]: { long: string[]; short: string[] } }
 }
 
 const sliceKey = 'marketList'
@@ -56,11 +45,11 @@ export type MarketListSlice = {
     filterBySearchText(searchText: string, owmDatas: OWMData[]): OWMData[]
     filterUserList(api: Api, owmDatas: OWMData[], filterTypeKey: FilterTypeKey): OWMData[]
     filterLeverageMarkets(owmDatas: OWMData[]): OWMData[]
-    sortFn(api: Api, sortKey: SortKey, order: Order, owmDatas: OWMData[]): OWMData[]
+    sortByUserData(api: Api, sortKey: TitleKey, owmData: OWMData): number
+    sortFn(api: Api, sortKey: TitleKey, order: Order, owmDatas: OWMData[]): OWMData[]
+    sortByCollateral(api: Api, owmDatas: OWMData[]): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
+    sortByAll(api: Api, owmDatas: OWMData[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
     setFormValues(rChainId: ChainId, api: Api | null, shouldRefetch?: boolean): Promise<void>
-    sortTableRow(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tableRowTokenAddress: string): Promise<void>
-    updateTableRowSettings(rChainId: ChainId, api: Api | null, searchParams: SearchParams, tokenAddress: string, updatedSettings: Partial<TableRowSettings>): void
-    updateTableRowsSettings(searchParams: Partial<SearchParams>): void
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -80,18 +69,14 @@ const DEFAULT_STATE: SliceState = {
     filterKey: 'all',
     filterTypeKey: 'borrow',
     hideSmallMarkets: true,
-    sortBy: 'available',
+    sortBy: '',
     sortByOrder: 'desc',
     searchText: '',
-    borrowKey: 'long',
   },
   searchTextByTokensAndAddresses: {},
   searchTextByOther: {},
   result: {},
-  resultTokenList: {},
   showHideSmallPools: false,
-  tokenSearchParams: {},
-  tokenResult: {},
 }
 
 const createMarketListSlice = (set: SetState<State>, get: GetState<State>): MarketListSlice => ({
@@ -129,39 +114,59 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       }
       return results.results
     },
-    sortFn: (api, sortKey, order, owmDatas) => {
-      const { chainId } = api
+    sortByUserData: (api, sortKey, owmData) => {
+      const { user } = get()
 
-      if (sortKey === 'name') {
-        return orderBy(owmDatas, ({ owm }) => owm?.collateral_token.symbol.toLowerCase(), [order])
+      const userActiveKey = helpers.getUserActiveKey(api, owmData)
+
+      if (sortKey === 'myHealth') {
+        return Number(user.loansHealthsMapper[userActiveKey]?.healthNotFull ?? 0)
+      } else if (sortKey === 'myDebt') {
+        return Number(user.loansStatesMapper[userActiveKey]?.debt ?? 0)
+      } else if (sortKey === 'myVaultShares') {
+        return Number(user.marketsBalancesMapper[userActiveKey]?.vaultShares ?? 0)
+      }
+      return 0
+    },
+    sortFn: (api, sortKey, order, owmDatas) => {
+      const { markets } = get()
+      const { ...sliceState } = get()[sliceKey]
+
+      const { chainId } = api
+      const statsCapAndAvailableMapper = markets.statsCapAndAvailableMapper[chainId] ?? {}
+      const ratesMapper = markets.ratesMapper[chainId] ?? {}
+      const rewardsMapper = markets.rewardsMapper[chainId] ?? {}
+      const totalLiquidityMapper = markets.totalLiquidityMapper[chainId] ?? {}
+      const leverageMapper = markets.maxLeverageMapper[chainId] ?? {}
+      const statsTotalMapper = markets.statsTotalsMapper[chainId] ?? {}
+      const totalCollateralValuesMapper = markets.totalCollateralValuesMapper[chainId] ?? {}
+
+      if (sortKey === TITLE.tokenCollateral) {
+        return orderBy(owmDatas, ({ owm }) => owm.collateral_token.symbol.toLowerCase(), [order])
+      } else if (sortKey === TITLE.tokenBorrow || sortKey === TITLE.tokenSupply) {
+        return orderBy(owmDatas, ({ owm }) => owm.borrowed_token.symbol.toLowerCase(), [order])
       } else if (sortKey === 'rateBorrow') {
-        const ratesMapper = get().markets.ratesMapper[chainId] ?? {}
         return orderBy(owmDatas, ({ owm }) => +(ratesMapper?.[owm.id]?.rates?.borrowApy ?? '0'), [order])
       } else if (sortKey === 'rateLend') {
-        const ratesMapper = get().markets.ratesMapper[chainId] ?? {}
         return orderBy(owmDatas, ({ owm }) => +(ratesMapper?.[owm.id]?.rates?.lendApy ?? '0'), [order])
-      } else if (sortKey === 'available') {
-        const statsCapAndAvailableMapper = get().markets.statsCapAndAvailableMapper[chainId] ?? {}
-        return orderBy(owmDatas, ({ owm }) => +(statsCapAndAvailableMapper[owm.id]?.available ?? '0'), [order])
+      } else if (sortKey === 'available' || sortKey === 'cap') {
+        return orderBy(owmDatas, ({ owm }) => +(statsCapAndAvailableMapper[owm.id]?.[sortKey] ?? '0'), [order])
+      } else if (sortKey === 'leverage') {
+        return orderBy(owmDatas, ({ owm }) => +(leverageMapper[owm.id]?.maxLeverage ?? '0'), [order])
+      } else if (sortKey === 'totalApr') {
+        return orderBy(owmDatas, ({ owm }) => sortByRewards(owm, rewardsMapper, ratesMapper), [order])
+      } else if (sortKey === 'totalLiquidity') {
+        return orderBy(owmDatas, ({ owm }) => +(totalLiquidityMapper[owm.id]?.totalLiquidity ?? '0'), [order])
+      } else if (sortKey === 'totalDebt') {
+        return orderBy(owmDatas, ({ owm }) => +(statsTotalMapper[owm.id]?.totalDebt ?? '0'), [order])
+      } else if (sortKey === 'utilization') {
+        return orderBy(owmDatas, ({ owm }) => sortByUtilization(owm, statsCapAndAvailableMapper, statsTotalMapper), [
+          order,
+        ])
+      } else if (sortKey === 'totalCollateralValue') {
+        return orderBy(owmDatas, ({ owm }) => +(totalCollateralValuesMapper[owm.id]?.total ?? '0'), [order])
       } else if (sortKey.startsWith('my')) {
-        return orderBy(
-          owmDatas,
-          (owmData) => {
-            const userActiveKey = helpers.getUserActiveKey(api, owmData)
-            const loanExits = get().user.loansExistsMapper[userActiveKey]?.loanExists ?? false
-            const userLoanDetails = get().user.loansDetailsMapper[userActiveKey]?.details
-            const userBalances = get().user.marketsBalancesMapper[userActiveKey]
-
-            if (sortKey === 'myHealth') {
-              return loanExits ? +(userLoanDetails?.healthNotFull ?? '0') : '0'
-            } else if (sortKey === 'myDebt') {
-              return loanExits ? +(userLoanDetails?.state?.debt ?? '0') : '0'
-            } else if (sortKey === 'myVaultShares') {
-              return +(userBalances?.vaultShares ?? '0')
-            }
-          },
-          [order]
-        )
+        return orderBy(owmDatas, (owmData) => sliceState.sortByUserData(api, sortKey, owmData), [order])
       }
 
       return owmDatas
@@ -183,9 +188,59 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     filterLeverageMarkets: (owmDatas) => {
       return owmDatas.filter(({ hasLeverage }) => hasLeverage)
     },
+    sortByCollateral: (api, owmDatas) => {
+      const { markets } = get()
+      let { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+
+      const { chainId } = api
+      const owmDatasMapper = markets.owmDatasMapper[chainId]
+      const parsedTableRowsSettings: { [tokenAddress: string]: TableSettings } = {}
+
+      const { marketListMapper } = _getMarketList(owmDatas, markets.crvusdAddress[chainId])
+
+      const marketsResult = sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map((m, idx) => {
+        // set table settings for each market
+        parsedTableRowsSettings[m.address] = getTableRowSettings(m.address, searchParams, tableRowsSettings, idx !== 0)
+
+        const tokenOwmDatas = Object.keys(m.markets).map((k) => owmDatasMapper[k])
+
+        return {
+          address: m.address,
+          symbol: m.symbol,
+          markets: sliceState
+            .sortFn(
+              api,
+              searchParams.filterTypeKey === 'borrow' ? 'totalCollateralValue' : 'totalLiquidity',
+              'desc',
+              tokenOwmDatas
+            )
+            .map((m) => m.owm.id),
+        }
+      })
+
+      return { result: marketsResult, tableRowsSettings: parsedTableRowsSettings }
+    },
+    sortByAll: (api, owmDatas, sortBy, sortByOrder) => {
+      const { marketListMapper, searchParams, ...sliceState } = get()[sliceKey]
+
+      const marketResult = sliceState.sortFn(api, sortBy, sortByOrder, owmDatas).map((d) => d.owm.id)
+
+      return {
+        result: [{ address: 'all', symbol: 'all', markets: marketResult }],
+        tableRowsSettings: { all: { isNotSortable: false, sortBy, sortByOrder } },
+      }
+    },
     setFormValues: async (rChainId, api, shouldRefetch) => {
       const { markets, storeCache, usdRates, user } = get()
-      const { initialLoaded, marketListMapper, searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
+      let {
+        activeKey: prevActiveKey,
+        initialLoaded,
+        marketListMapper,
+        searchParams,
+        tableRowsSettings,
+        result,
+        ...sliceState
+      } = get()[sliceKey]
       const storedOwmDatas = markets.owmDatas[rChainId]
       const storedOwmDatasMapper = markets.owmDatasMapper[rChainId]
       const storedMarketListMapper = marketListMapper[rChainId]
@@ -193,7 +248,30 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       // update activeKey, formStatus
       const activeKey = _getActiveKey(rChainId, searchParams)
-      sliceState.setStateByKeys({ activeKey, formStatus: { error: '', noResult: false, isLoading: true } })
+
+      // pending results
+      let pendingIsReset
+      let pendingMarkets: { address: string; symbol: string; markets: string[] }[] = []
+      if (!activeKey.charAt(0).startsWith(prevActiveKey.charAt(0))) {
+        pendingIsReset = true
+      } else if (activeKey.endsWith('--')) {
+        pendingIsReset = false
+        pendingMarkets = result[activeKey] ?? []
+      } else {
+        pendingIsReset = false
+        pendingMarkets = result[activeKey] ?? result[prevActiveKey] ?? { address: 'all', symbol: 'all', markets: [] }
+      }
+
+      if (pendingIsReset) {
+        sliceState.setStateByKey('result', { [activeKey]: [] })
+      } else {
+        sliceState.setStateByActiveKey('result', activeKey, pendingMarkets)
+      }
+
+      sliceState.setStateByKeys({
+        activeKey,
+        formStatus: { error: '', noResult: false, isLoading: true },
+      })
 
       // allow UI to update paint
       await sleep(100)
@@ -201,10 +279,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       if (!api || !storedOwmDatasMapper || !storedMarketListMapper || !storedUsdRatesMapper) return
 
       const { chainId, signerAddress } = api
-      const { filterKey, filterTypeKey, hideSmallMarkets, searchText } = searchParams
+      const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = searchParams
 
       // get market list for table
-      let cMarketList = sortByFn(Object.values(storedMarketListMapper), (l) => l.symbol)
       let cOwmDatas = _getOwmDatasFromMarketList(storedMarketListMapper, storedOwmDatasMapper)
 
       if (signerAddress) {
@@ -236,34 +313,62 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         cOwmDatas = sliceState.filterSmallMarkets(api, cOwmDatas)
       }
 
-      // update collapse list
-      const cTableRowsSettings: { [address: string]: TableRowSettings } = {}
-      const isOpen = cOwmDatas.length <= 30 || filterKey === 'user'
-      cMarketList.forEach(({ address }) => {
-        if (isOpen) get()[sliceKey].sortTableRow(rChainId, api, searchParams, address)
+      // api calls
+      // wait for api to finish if sortBy key exists
+      if (sortBy && !sortBy.startsWith('my')) {
+        let fns: string[] = []
 
-        if (typeof cTableRowsSettings[address] === 'undefined') {
-          cTableRowsSettings[address] = { isOpen }
-        } else {
-          cTableRowsSettings[address].isOpen = isOpen
+        switch (sortBy) {
+          case 'leverage':
+            fns = ['maxLeverageMapper']
+            break
+          case 'rateBorrow':
+            fns = ['ratesMapper']
+            break
+          case 'available':
+          case 'cap':
+          case 'totalDebt':
+          case 'utilization':
+            fns = ['statsCapAndAvailableMapper', 'statsTotalsMapper']
+            break
+          case 'totalCollateralValue':
+            fns = ['totalCollateralValuesMapper']
+            break
+          case 'totalApr':
+            fns = ['rewardsMapper', 'ratesMapper']
+            break
+          case 'totalLiquidity':
+            fns = ['totalLiquidityMapper']
+            break
         }
-      })
+
+        await Promise.all(fns.map((k) => markets.fetchDatas(k, api, cOwmDatas, shouldRefetch)))
+      }
+
+      if (sortBy && sortBy.startsWith('my')) {
+        await Promise.all(
+          ['loansHealthsMapper', 'loansStatesMapper'].map((k) => user.fetchLoanDatas(k, api, cOwmDatas, shouldRefetch))
+        )
+      }
+
+      const sorted = sortBy
+        ? sliceState.sortByAll(api, cOwmDatas, sortBy, sortByOrder)
+        : sliceState.sortByCollateral(api, cOwmDatas)
 
       // set result
-      cMarketList = _filterResult(cMarketList, cOwmDatas)
-      sliceState.setStateByActiveKey('result', activeKey, cMarketList)
       sliceState.setStateByKeys({
-        tableRowsSettings: { ...tableRowsSettings, ...cTableRowsSettings },
+        tableRowsSettings: sorted.tableRowsSettings,
         formStatus: {
           error: '',
-          noResult: cMarketList.length === 0,
+          noResult: sorted.result.length === 0,
           isLoading: false,
         },
       })
+      sliceState.setStateByActiveKey('result', activeKey, sorted.result)
 
       // save to cache
-      if (activeKey === `${chainId}-all-`) {
-        storeCache.setStateByActiveKey('marketListResult', activeKey, cMarketList)
+      if (activeKey === `${chainId}-borrow-all-`) {
+        storeCache.setStateByActiveKey('marketListResult', activeKey, sorted.result)
       }
 
       // api calls
@@ -299,63 +404,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       )
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
     },
-    sortTableRow: async (rChainId, api, searchParams, tableRowTokenAddress) => {
-      if (!api) return
-
-      const cSettings = cloneDeep(get()[sliceKey].tableRowsSettings[tableRowTokenAddress] ?? {})
-
-      const {
-        borrowKey = searchParams?.borrowKey ?? 'long',
-        sortBy = searchParams?.sortBy ?? cSettings.filterTypeKey === 'borrow' ? 'available' : 'totalLiquidity',
-        sortByOrder = searchParams?.sortByOrder ?? 'desc',
-      } = cSettings
-
-      // update token table header sort icons
-      get()[sliceKey].setStateByActiveKey('tokenSearchParams', tableRowTokenAddress, { sortBy, sortByOrder })
-
-      // stored
-      const storedMarketList = get()[sliceKey].marketListMapper[rChainId] ?? {}
-      const storedOwmDatasMapper = get().markets.owmDatasMapper[rChainId]
-      const storedTokenResult = get()[sliceKey].tokenResult[tableRowTokenAddress]
-
-      // sort token table
-      const marketListByTokenSelectTab = storedMarketList?.[tableRowTokenAddress]?.[borrowKey] ?? {}
-      let owmDatas = Object.keys(marketListByTokenSelectTab).map((owmId) => storedOwmDatasMapper[owmId])
-
-      owmDatas = searchParams.searchText
-        ? get()[sliceKey].filterBySearchText(searchParams.searchText, owmDatas)
-        : owmDatas
-      owmDatas = get()[sliceKey].sortFn(api, sortBy, sortByOrder, owmDatas)
-
-      let cTokenResult = cloneDeep(storedTokenResult ?? { long: [], short: [] })
-      cTokenResult[borrowKey] = owmDatas.map(({ owm }) => owm.id)
-      get()[sliceKey].setStateByActiveKey('tokenResult', tableRowTokenAddress, cTokenResult)
-    },
-    updateTableRowSettings: (rChainId, api, searchParams, tableRowTokenAddress, updatedSettings) => {
-      let cSettings = cloneDeep(get()[sliceKey].tableRowsSettings[tableRowTokenAddress])
-
-      if (typeof cSettings === 'undefined') {
-        cSettings = updatedSettings
-      } else {
-        cSettings = { ...cSettings, ...updatedSettings }
-      }
-      get()[sliceKey].setStateByActiveKey('tableRowsSettings', tableRowTokenAddress, cSettings)
-      get()[sliceKey].sortTableRow(rChainId, api, searchParams, tableRowTokenAddress)
-    },
-    updateTableRowsSettings: (updatedSearchParams) => {
-      let cTableRowsSettings = cloneDeep(get()[sliceKey].tableRowsSettings)
-
-      const { filterTypeKey, borrowKey, sortBy, sortByOrder } = updatedSearchParams
-
-      Object.keys(cTableRowsSettings).forEach((address) => {
-        let tableRowSettings = cTableRowsSettings[address]
-        if (typeof filterTypeKey !== 'undefined') tableRowSettings['filterTypeKey'] = filterTypeKey
-        if (typeof borrowKey !== 'undefined') tableRowSettings['borrowKey'] = borrowKey
-        if (typeof sortBy !== 'undefined') tableRowSettings['sortBy'] = sortBy
-        if (typeof sortByOrder !== 'undefined') tableRowSettings['sortByOrder'] = sortByOrder
-      })
-      get()[sliceKey].setStateByKey('tableRowsSettings', cTableRowsSettings)
-    },
 
     // slice helpers
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
@@ -372,32 +420,21 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, { ...DEFAULT_STATE })
     },
   },
 })
 
-export function getCollateralDatasCached(owmDatasMapperCached: OWMDatasCacheMapper | undefined) {
-  const owmDatasCached: OWMDataCache[] = []
-
-  if (owmDatasMapperCached) {
-    for (const key in owmDatasMapperCached) {
-      owmDatasCached.push(owmDatasMapperCached[key])
-    }
-  }
-
-  return owmDatasCached
-}
-
 export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
-  const { filterKey, searchText } = searchParams
+  const { filterKey, filterTypeKey, searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
     parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }
-  return `${chainId}-${filterKey}-${parsedSearchText}`
+  const sortByStr = sortBy ? `-${sortBy}-${sortByOrder}` : ''
+  return `${chainId}-${filterTypeKey}-${filterKey}-${parsedSearchText}${sortByStr}`
 }
 
 function _getOwmDatasFromMarketList(marketListMapper: MarketListMapper, owmDatasMapper: OWMDatasMapper) {
@@ -405,41 +442,53 @@ function _getOwmDatasFromMarketList(marketListMapper: MarketListMapper, owmDatas
 
   // get all owmIds
   Object.keys(marketListMapper).forEach((tokenAddress) => {
-    const { long, short } = marketListMapper[tokenAddress]
-    Object.keys({ ...long, ...short }).forEach((owmId) => {
+    const { markets } = marketListMapper[tokenAddress]
+    Object.keys(markets).forEach((owmId) => {
       owmDatas[owmId] = owmDatasMapper[owmId]
     })
   })
   return Object.values(owmDatas) ?? []
 }
 
-function _filterResult(marketList: MarketListItem[], owmDatas: OWMData[]) {
-  const owmDatasMapper = owmDatas?.reduce((prev, { owm }) => {
-    prev[owm.id] = true
-    return prev
-  }, {} as { [owmId: string]: boolean })
+function sortByRewards(owm: OWM, rewardsMapper: MarketsRewardsMapper, ratesMapper: MarketsRatesMapper) {
+  const rewards = rewardsMapper[owm.id]?.rewards
+  const rates = ratesMapper[owm.id]?.rates
 
-  return marketList
-    .map((marketListItem) => {
-      const { long, short } = marketListItem
-      const filteredLong: { [owmId: string]: boolean } = {}
-      const filteredLend: { [owmId: string]: boolean } = {}
-      Object.keys(long).forEach((lendOwmId) => {
-        if (owmDatasMapper[lendOwmId]) {
-          filteredLong[lendOwmId] = true
-        }
-      })
-      Object.keys(short).forEach((lendOwmId) => {
-        if (owmDatasMapper[lendOwmId]) {
-          filteredLend[lendOwmId] = true
-        }
-      })
-      return { ...marketListItem, long: filteredLong, short: filteredLend }
-    })
-    .filter((marketListItem) => {
-      const { long, short } = marketListItem
-      return Object.keys(long).length > 0 || Object.keys(short).length > 0
-    })
+  if (!rewards || !rates) return 0
+
+  const { other = [], crv = [0, 0] } = rewards
+  const { lendApr } = rates
+
+  return Number(getTotalApr(Number(lendApr), crv[0], crv[1], other)?.max ?? 0)
+}
+
+function sortByUtilization(
+  owm: OWM,
+  statsCapAndAvailableMapper: MarketsStatsCapAndAvailableMapper,
+  statsTotalsMapper: MarketsStatsTotalsMapper
+) {
+  const statsCapAndAvailable = statsCapAndAvailableMapper[owm.id]
+  const statsTotals = statsTotalsMapper[owm.id]
+
+  if (!statsCapAndAvailable || !statsTotals) return 0
+
+  return (+(statsTotals.totalDebt ?? '0') / +statsCapAndAvailable.cap) * 100
+}
+
+function getTableRowSettings(
+  tokenAddress: string,
+  { sortBy, sortByOrder, filterTypeKey }: SearchParams,
+  tableSettingsMapper: { [tokenAddress: string]: TableSettings },
+  isNotSortable: boolean
+) {
+  const prevTableSettings = tableSettingsMapper[tokenAddress] ?? {}
+
+  return {
+    ...prevTableSettings,
+    sortBy: sortBy || filterTypeKey === 'borrow' ? TITLE.totalCollateralValue : TITLE.totalLiquidity,
+    sortByOrder: sortByOrder || 'desc',
+    isNotSortable: isNotSortable,
+  }
 }
 
 export default createMarketListSlice

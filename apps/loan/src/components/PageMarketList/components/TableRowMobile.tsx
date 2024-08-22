@@ -1,53 +1,66 @@
-import type { PageCollateralList, TableLabel } from '@/components/PageMarketList/types'
 import type { TableRowProps } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
+import { TITLE } from '@/constants'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-import useStore from '@/store/useStore'
 
 import { Item, TCellInPool } from '@/components/PageMarketList/components/TableRow'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import CollateralLabel from '@/components/CollateralLabel'
+import TokenLabel from '@/components/TokenLabel'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
-import TableCellAvailable from '@/components/PageMarketList/components/TableCellAvailable'
-import TableCellCap from '@/components/PageMarketList/components/TableCellCap'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
 import TableCellInPool from '@/components/PageMarketList/components/TableCellInPool'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
-import TableCellTotalBorrowed from '@/components/PageMarketList/components/TableCellTotalBorrowed'
-import TableCellUserDebt from '@/components/PageMarketList/components/TableCellUserDebt'
-import TableCellUserHealth from '@/components/PageMarketList/components/TableCellUserHealth'
+import TableCellUser from '@/components/PageMarketList/components/TableCellUser'
 
 const TableRowMobile = ({
-  className,
+  className = '',
   rChainId,
   collateralId,
-  collateralData,
   collateralDataCachedOrApi,
-  loanDetails,
   loanExists,
   showDetail,
-  tableLabel,
+  titleMapper,
   handleCellClick,
   setShowDetail,
-}: Pick<PageCollateralList, 'rChainId'> &
-  TableRowProps & {
-    showDetail: string
-    tableLabel: TableLabel
-    setShowDetail: React.Dispatch<React.SetStateAction<string>>
-  }) => {
+}: TableRowProps & {
+  showDetail: string
+  titleMapper: TitleMapper
+  setShowDetail: React.Dispatch<React.SetStateAction<string>>
+}) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
 
-  const userDetails = useStore((state) => state.loans.userDetailsMapper[collateralId])
-
   const isVisible = !!entry?.isIntersecting
   const isShowDetail = showDetail === collateralId
+
+  const props = { rChainId, collateralId, collateralDataCachedOrApi }
+
+  // prettier-ignore
+  const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; isBorder?: boolean }[][] = [
+    [
+      { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: loanExists },
+      { titleKey: TITLE.myDebt, content: <TableCellUser {...props} type='debt' />, show: loanExists, isBorder: true }
+    ],
+    [
+      { titleKey: TITLE.rate, content: <TableCellRate {...props} /> },
+    ],
+    [
+      { titleKey: TITLE.available, content: <TableCellUtilization {...props} type='available' /> },
+      { titleKey: TITLE.cap, content: <TableCellUtilization {...props} type='cap' /> },
+      { titleKey: TITLE.totalBorrowed, content: <TableCellUtilization {...props} type='borrowed' /> },
+    ],
+    [
+      { titleKey: TITLE.totalCollateral, content: <TableCellTotalCollateral {...props} /> },
+    ]
+  ]
 
   return (
     <Item ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
@@ -59,14 +72,9 @@ const TableRowMobile = ({
             </TCellInPool>
           )}
           <MobileLabelContent>
-            <CollateralLabel
-              chainId={rChainId}
-              isVisible={isVisible}
-              collateralData={collateralDataCachedOrApi}
-              tableListProps={{
-                onClick: handleCellClick,
-              }}
-            />
+            <Box grid gridTemplateColumns="1fr 1fr">
+              <TokenLabel showAlert {...props} type="collateral" />
+            </Box>
             <IconButton
               onClick={() =>
                 setShowDetail((prevState) => {
@@ -80,56 +88,27 @@ const TableRowMobile = ({
         </MobileLabelWrapper>
 
         <MobileTableContentWrapper className={isShowDetail ? 'show' : ''}>
-          <MobileTableContent>
+          <StyledListInfoItemsWrapper>
             {isShowDetail && (
               <>
-                {loanExists && (
-                  <>
-                    <div>
-                      <span>{tableLabel.myDebt.name}</span>
-                      <span>
-                        <TableCellUserHealth userHealth={userDetails?.userHealth} />
-                      </span>
-                    </div>
-                    <div>
-                      <span>{tableLabel.myHealth.name}</span>
-                      <span>
-                        <TableCellUserDebt userDebt={userDetails?.userState?.debt} />
-                      </span>
-                    </div>
-                    <hr />
-                  </>
-                )}
-                <div>
-                  <span>{tableLabel.rate.name}</span>
-                  <span>
-                    <TableCellRate parameters={loanDetails?.parameters} />
-                  </span>
-                </div>
-                <div>
-                  <span>{tableLabel.totalBorrowed.name}</span>
-                  <span>
-                    <TableCellTotalBorrowed totalDebt={loanDetails?.totalDebt} />
-                  </span>
-                </div>
-                <div>
-                  <span>{tableLabel.cap.name}</span>
-                  <span>
-                    <TableCellCap cap={loanDetails?.capAndAvailable?.cap} />
-                  </span>
-                </div>
-                <div>
-                  <span>{tableLabel.available.name}</span>
-                  <span>
-                    <TableCellAvailable available={loanDetails?.capAndAvailable?.available} />
-                  </span>
-                </div>
-                <div>
-                  <span>{tableLabel.totalCollateral.name}</span>
-                  <span>
-                    <TableCellTotalCollateral llamma={collateralData?.llamma} loanDetails={loanDetails} />
-                  </span>
-                </div>
+                {contents.map((groupedTds, idx) => {
+                  const shows = groupedTds.filter(({ show }) => typeof show !== 'undefined')
+
+                  // hide section if section have show but it is false
+                  if (shows.length !== 0 && shows.every(({ show }) => !show)) return null
+
+                  return (
+                    <ListInfoItems key={`contents${idx}`}>
+                      {groupedTds.map(({ titleKey, content, isBorder }, idx) => (
+                        <React.Fragment key={`td${idx}`}>
+                          <ListInfoItem {...titleMapper[titleKey]}>{content}</ListInfoItem>
+                          {isBorder && <hr />}
+                        </React.Fragment>
+                      ))}
+                    </ListInfoItems>
+                  )
+                })}
+
                 <MobileTableActions>
                   <Button variant="filled" onClick={handleCellClick}>
                     {loanExists ? t`Manage Loan` : t`Create Loan`}
@@ -137,15 +116,11 @@ const TableRowMobile = ({
                 </MobileTableActions>
               </>
             )}
-          </MobileTableContent>
+          </StyledListInfoItemsWrapper>
         </MobileTableContentWrapper>
       </TCell>
     </Item>
   )
-}
-
-TableRowMobile.defaultProps = {
-  className: '',
 }
 
 const MobileLabelWrapper = styled(Box)`
@@ -157,22 +132,14 @@ const MobileLabelWrapper = styled(Box)`
 `
 
 const MobileLabelContent = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   padding: 4px;
   width: 100%;
 `
 
-const MobileTableContent = styled.div`
-  min-height: 150px;
-  padding: 1rem 1rem 0.75rem 1rem;
-
-  > div {
-    align-items: flex-start;
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-  }
+const StyledListInfoItemsWrapper = styled(ListInfoItemsWrapper)`
+  padding: var(--spacing-narrow);
 `
 
 const MobileTableActions = styled.div`

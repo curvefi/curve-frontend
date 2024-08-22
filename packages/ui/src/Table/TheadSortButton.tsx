@@ -10,29 +10,31 @@ import TheadButton from 'ui/src/Table/TheadButton'
 
 export type Order = 'desc' | 'asc'
 
+export type TheadSortButtonProps<T> = React.PropsWithChildren<
+  React.ButtonHTMLAttributes<HTMLButtonElement> &
+    ButtonProps & {
+      disabled?: boolean
+      indicatorPlacement?: IndicatorPlacement
+      loading?: boolean
+      nowrap?: boolean
+      sortIdKey: T
+      sortBy: T | ''
+      sortByOrder: Order
+      handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
+    }
+>
+
 const TheadSortButton = ({
   children,
   disabled,
-  indicatorPlacement,
-  loading,
+  indicatorPlacement = 'left',
+  loading = false,
   sortBy,
   sortByOrder,
   sortIdKey,
   handleBtnClickSort,
   ...props
-}: React.PropsWithChildren<
-  React.ButtonHTMLAttributes<HTMLButtonElement> &
-    ButtonProps & {
-      disabled?: boolean
-      indicatorPlacement?: IndicatorPlacement
-      loading: boolean
-      nowrap?: boolean
-      sortIdKey: string
-      sortBy: string
-      sortByOrder: Order
-      handleBtnClickSort: (sortBy: string, sortByOrder: Order) => void
-    }
->) => {
+}: TheadSortButtonProps<string>) => {
   const handleClick = (activeSortBy: string) => {
     let updatedSortOrder: Order = 'desc'
 
@@ -71,10 +73,5 @@ const StyledSortIcon = styled(SortIcon)<{ isVisible: boolean }>`
   display: ${({ isVisible }) => (isVisible ? 'inline-block' : 'none')};
   font-size: 5px;
 `
-
-TheadSortButton.defaultProps = {
-  align: ['center', 'center'],
-  indicatorPlacement: 'left',
-}
 
 export default TheadSortButton

@@ -43,6 +43,7 @@ const Header = () => {
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)
+  const dailyVolume = useStore((state) => state.dailyVolume)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isLgUp = useStore((state) => state.layout.isLgUp)
@@ -93,7 +94,8 @@ const Header = () => {
   // prettier-ignore
   const appStats = [
     { label: 'TVL', value: formattedTvl },
-    { label: t`crvUSD Total Supply`, value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: t`Daily volume`, value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+    { label: t`Total Supply`, value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
   ]
 

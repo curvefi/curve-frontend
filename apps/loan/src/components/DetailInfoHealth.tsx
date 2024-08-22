@@ -7,7 +7,9 @@ import { getIsUserCloseToLiquidation } from '@/utils/utilsCurvejs'
 import { parseHealthPercent } from '@/utils/utilsLoan'
 import { formatNumber } from '@/ui/utils'
 
+import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
@@ -112,8 +114,16 @@ const DetailInfoHealth = ({
       loadingSkeleton={[85, 20]}
       label={t`Health:`}
       tooltip={
-        <IconTooltip placement="top end">
-          {t`The loan metric indicates the current health of your position.`}
+        <IconTooltip placement="top end" textAlign="left" minWidth="250px">
+          <Box grid gridGap={2}>
+            <p>{t`The loan metric indicates the current health of your position.`}</p>
+            <p>
+              {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+              <ExternalLink href="https://resources.curve.fi/crvusd/loan-details/#hard-liquidations" $noStyles>
+                Click here to learn more.
+              </ExternalLink>
+            </p>
+          </Box>
         </IconTooltip>
       }
     >

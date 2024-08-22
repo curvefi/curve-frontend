@@ -1,9 +1,10 @@
-import type { FilterKey, SearchParams } from '@/components/PageMarketList/types'
+import type { SearchParams } from '@/components/PageMarketList/types'
 
 import React from 'react'
 import { Item } from 'react-stately'
 import { t } from '@lingui/macro'
 
+import { Filter } from '@/components/PageMarketList/utils'
 import Select from '@/ui/Select'
 
 type ListItem = { id: string; displayName: string }
@@ -24,8 +25,8 @@ const SelectFilter = ({
       loading={false}
       minWidth="200px"
       selectedKey={filterKey}
-      onSelectionChange={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
-      onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: 'all' }) : undefined}
+      onSelectionChange={(filterKey) => updatePath({ filterKey: filterKey as Filter })}
+      onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: Filter.all }) : undefined}
     >
       {({ id, displayName }: ListItem) => {
         return (

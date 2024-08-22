@@ -9,9 +9,10 @@ import { REFRESH_INTERVAL } from '@/constants'
 import { _getSelectedTab } from '@/components/PageLoanManage/utils'
 import { helpers } from '@/lib/apiLending'
 import { scrollToTop } from '@/utils/helpers'
+import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
-import networks from '@/networks'
+import useTitleMapper from '@/hooks/useTitleMapper'
 
 import {
   AppPageFormContainer,
@@ -42,6 +43,7 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const { pageLoaded, api, routerParams } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
   const owmDataCache = useStore((state) => state.storeCache.owmDatasMapper[rChainId]?.[rOwmId])
@@ -150,6 +152,7 @@ const Page: NextPage = () => {
     userActiveKey,
     borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
     collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
+    titleMapper,
   }
 
   return (
@@ -184,7 +187,10 @@ const Page: NextPage = () => {
         <AppPageInfoWrapper>
           {isMdUp && <TitleComp />}
           <Box margin="0 0 var(--spacing-2)">
-            <CampaignRewardsBanner poolAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''} />
+            <CampaignRewardsBanner
+              borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+              supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+            />
           </Box>
           <AppPageInfoTabsWrapper>
             <Tabs>

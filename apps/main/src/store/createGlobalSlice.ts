@@ -179,6 +179,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().userBalances.resetState()
       get().lockedCrv.resetState()
       get().createPool.resetState()
+      get().campaigns.resetState()
     }
 
     if (isUserSwitched || !curveApi.signerAddress) {

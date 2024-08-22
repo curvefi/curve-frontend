@@ -7,14 +7,24 @@
   "pools": [
     {
       "id": "null",
-      "poolId": "factory-stable-ng-49",
+      "action": "lp",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "poolAddress": "0xe957ce03ccdd88f02ed8b05c9a3a28abef38514a",
-      "gaugeAddress": "0x02b8e750e68cb648db2c2ac4bbb47a10a5c12588",
+      "address": "0xe957ce03ccdd88f02ed8b05c9a3a28abef38514a",
+      "network": "arbitrum",
+      "multiplier": "5",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "borrow",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x3e293db65c81742e32b74e21a0787d2936beedf7",
       "network": "arbitrum",
       "multiplier": "5",
       "tags": ["points"]
     }
   ]
 }
+

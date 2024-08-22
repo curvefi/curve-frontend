@@ -3,6 +3,7 @@ import useStore from '@/store/useStore'
 
 import { INVALID_ADDRESS } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { getTotalApr } from '@/utils/utilsRewards'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
@@ -27,29 +28,11 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   }
 }
 
-function _getTotalApr(lendApr: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
-  const othersTotal = (others ?? []).reduce((prev, curr) => {
-    prev += curr.apy
-    return prev
-  }, 0)
-
-  const min = (lendApr + crvBase + othersTotal).toString()
-  const max = (lendApr + crvBoost + othersTotal).toString()
-
-  return {
-    min,
-    max,
-    minMax:
-      min === max
-        ? formatNumber(min, FORMAT_OPTIONS.PERCENT)
-        : `${formatNumber(min, FORMAT_OPTIONS.PERCENT)} - ${formatNumber(max, FORMAT_OPTIONS.PERCENT)}`,
-  }
-}
-
 function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   return {
     lendApr: formatNumber(lendApr, FORMAT_OPTIONS.PERCENT),
     lendApy: `${formatNumber(lendApy, FORMAT_OPTIONS.PERCENT)} APY`,
+    crvBase,
     crv: crvBase > 0 ? formatNumber(crvBase, FORMAT_OPTIONS.PERCENT) : '',
     crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, FORMAT_OPTIONS.PERCENT) : '',
     incentives: others.map((o) => `${formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} ${o.symbol}`),
@@ -73,7 +56,7 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const others = other ?? []
 
   return {
-    totalApr: _getTotalApr(lendApr, crvBase, crvBoost, others),
+    totalApr: getTotalApr(lendApr, crvBase, crvBoost, others),
     tooltipValues: _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others),
   }
 }
