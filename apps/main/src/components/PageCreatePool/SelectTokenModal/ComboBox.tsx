@@ -43,7 +43,7 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
       inputRef,
       listBoxRef,
       popoverRef,
-    } as AriaComboBoxOptions<T>,
+    },
     state
   )
 
