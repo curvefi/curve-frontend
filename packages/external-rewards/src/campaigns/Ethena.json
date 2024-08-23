@@ -104,6 +104,16 @@
       "network": "arbitrum",
       "multiplier": "30",
       "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x167478921b907422f8e88b43c4af2b8bea278d3a",
+      "network": "ethereum",
+      "multiplier": "30",
+      "tags": ["points"]
     }
   ]
 }
