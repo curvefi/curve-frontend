@@ -51,7 +51,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     } else if (parsedTransfer === 'swap') {
       rFormType = 'swap'
     } else if (parsedTransfer === 'manage') {
-      rFormType = 'manage'
+      rFormType = 'manage-gauge'
     }
   }
 

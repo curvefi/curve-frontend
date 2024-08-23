@@ -394,9 +394,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         chunks = chunk(poolDatas, 200)
       }
 
-      while (currenChunk < chunks.length) {
-        await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currenChunk])
-        currenChunk++
+      while (currentChunk < chunks.length) {
+        await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currentChunk])
+        currentChunk++
       }
     },
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
