@@ -24,8 +24,8 @@ const AppFormHeader = ({
           <HeaderTitle>{formTypes[0].label}</HeaderTitle>
         </>
       ) : (
-        <Tabs>
-          <>
+        <>
+          <Tabs>
             {formTypes.map(({ key, label }) => {
               const isActiveForm = !activeFormKey && key === activeFormKey
               return (
@@ -39,9 +39,9 @@ const AppFormHeader = ({
                 </StyledTab>
               )
             })}
-            {showMenuButton && <SandwichMenu onItemClick={handleClick} />}
-          </>
-        </Tabs>
+          </Tabs>
+          {showMenuButton && <SandwichMenu onItemClick={handleClick} />}
+        </>
       )}
       {formTypes.length === 1 && <IconButton hidden />}
     </Header>

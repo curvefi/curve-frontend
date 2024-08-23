@@ -3,7 +3,7 @@ import networks from '@/networks'
 
 export const useChainId = () => {
   const { data: curve } = useCurve()
-  const chainId = curve?.chainId ?? 0
+  const chainId = (curve?.chainId ?? 0) as ChainId
   return { data: chainId }
 }
 

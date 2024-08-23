@@ -56,7 +56,7 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
     }
 
     const onApproveError = (error: Error) => {
-      setError('root.serverError', error)
+      setError('root.serverError', { message: error.message })
     }
 
     depositRewardApprove(
@@ -88,7 +88,7 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
           }, 2000)
         },
         onError: (error: Error) => {
-          setError('root.serverError', error)
+          setError('root.serverError', { message: error.message })
         },
       }
     )

@@ -1,3 +1,3 @@
 export type ChainQueryParams = {
-  chainId: number
+  chainId: ChainId
 }

@@ -31,5 +31,4 @@ export const FormContainer = styled.div`
   flex-direction: column;
   gap: var(--spacing-3);
   width: 100%;
-  max-width: 480px;
 `

@@ -57,6 +57,7 @@ import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 import { useSignerAddress } from '@/entities/signer'
+import { useChainId } from '@/entities/chain'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -82,7 +83,6 @@ const DEFAULT_SEED: Seed = {
 const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
-  const { chainId } = curve ?? {}
   const { data: signerAddress } = useSignerAddress()
   const navigate = useNavigate()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
@@ -110,7 +110,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
-    chainId,
+    chainId: rChainId,
     poolId: poolData?.pool.id!,
   })
 
@@ -201,11 +201,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   // seed crypto pool initial rate
   useEffect(() => {
-    if (chainId && poolData && !isUndefined(currencyReserves)) {
-      fetchSeedData(chainId, poolData, currencyReserves)
+    if (rChainId && poolData && !isUndefined(currencyReserves)) {
+      fetchSeedData(rChainId, poolData, currencyReserves)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, currencyReserves?.total])
+  }, [rChainId, poolId, currencyReserves?.total])
 
   // fetch user pool info
   useEffect(() => {
@@ -213,7 +213,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       fetchUserPoolInfo(curve, poolId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [rChainId, poolId, signerAddress])
 
   const isAvailableManageGauge = useMemo(
     () =>
