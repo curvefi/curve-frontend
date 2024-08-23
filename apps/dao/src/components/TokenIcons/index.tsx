@@ -84,7 +84,7 @@ type WrapperProps = {
 
 const Wrapper = styled.div<WrapperProps>`
   display: inline-grid;
-  min-width: 53px;
+  /* min-width: 53px; */
 
   ${({ iconsPerRow, colSpan }) => {
     return `

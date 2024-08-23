@@ -19,16 +19,10 @@ const Gauges = () => {
 
   const [navSelection, setNavSelection] = useState('gaugeList')
 
-  const navItems: SubNavItem[] = !isMdUp
-    ? [
-        { key: 'gaugeList', label: t`Gauge List` },
-        { key: 'gaugeWeightDistribution', label: t`Weight Distribution` },
-        { key: 'gaugeVoting', label: t`Gauge Voting` },
-      ]
-    : [
-        { key: 'gaugeList', label: t`Gauge List` },
-        { key: 'gaugeVoting', label: t`Gauge Voting` },
-      ]
+  const navItems: SubNavItem[] = [
+    { key: 'gaugeList', label: t`Gauges` },
+    { key: 'gaugeVoting', label: t`Voting` },
+  ]
 
   useEffect(() => {
     if (isMdUp && navSelection === 'gaugeWeightDistribution') {
@@ -38,15 +32,15 @@ const Gauges = () => {
 
   return (
     <Wrapper>
-      <PageTitle>{t`Curve Gauges`}</PageTitle>
-      <Box flex flexColumn fillWidth flexGap={'var(--spacing-2)'}>
-        {navSelection === 'gaugeList' && isMdUp && <GaugeWeightDistribution />}
-        <Container variant="secondary">
+      <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
+        <GaugeWeightDistribution />
+        <Box>
           <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
-          {navSelection === 'gaugeList' && <GaugesList />}
-          {navSelection === 'gaugeWeightDistribution' && <GaugeWeightDistribution />}
-          {/* {navSelection === 'Gauge Voting' && <GaugeVoting />} */}
-        </Container>
+          <Container variant="secondary">
+            {navSelection === 'gaugeList' && <GaugesList />}
+            {/* {navSelection === 'Gauge Voting' && <GaugeVoting />} */}
+          </Container>
+        </Box>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
           {navSelection === 'gaugeVoting' && (
             <Box variant="secondary">
@@ -72,50 +66,13 @@ const Wrapper = styled(Box)`
   }
 `
 
-const PageTitle = styled.h2`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-3);
-  background-color: black;
-  color: var(--nav--page--color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
-`
-
 const Container = styled(Box)`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-`
-
-const GaugesNavigation = styled(Box)`
-  display: flex;
-  flex-direction: row;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  border-bottom: 1px solid var(--gray-500a20);
-  background-color: var(--box_header--secondary--background-color);
-`
-
-const GaugesNavButton = styled(Button)`
   border: none;
-  font-size: var(--font-size-2);
-  font-family: var(--font);
-  text-transform: none;
-  font-weight: var(--bold);
-  line-break: break-spaces;
-  &:hover {
-    background-color: var(--box--secondary--background-color);
-  }
-`
-
-const ActiveIndicator = styled.div`
-  background-color: var(--primary-400);
-  width: calc(100%);
-  height: 2px;
-  transform: translateY(calc(var(--spacing-2) + 1px));
 `
 
 export default Gauges

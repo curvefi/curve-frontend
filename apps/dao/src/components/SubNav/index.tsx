@@ -9,14 +9,15 @@ interface SubNavProps {
   activeKey: string
   navItems: SubNavItem[]
   nested?: boolean
+  className?: string
   setNavChange: (key: string) => void
 }
 
-const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested }) => {
+const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => {
   return (
-    <NavWrapper nested={nested}>
+    <NavWrapper nested={nested} className={className}>
       {navItems.map((item) => (
-        <Box key={item.key}>
+        <ButtonWrapper key={item.key}>
           <NavButton
             onClick={() => setNavChange(item.key)}
             variant="outlined"
@@ -24,8 +25,7 @@ const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nest
           >
             {item.label}
           </NavButton>
-          {activeKey === item.key && <ActiveIndicator />}
-        </Box>
+        </ButtonWrapper>
       ))}
     </NavWrapper>
   )
@@ -34,10 +34,10 @@ const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nest
 const NavWrapper = styled(Box)<{ nested?: boolean }>`
   display: flex;
   flex-direction: row;
-  gap: var(--spacing-3);
-  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  border-bottom: 1px solid var(--gray-500a20);
-  ${({ nested }) => (nested ? '' : `background-color: var(--box_header--secondary--background-color);`)}
+`
+
+const ButtonWrapper = styled(Box)`
+  background-color: var(--page--background-color);
 `
 
 const NavButton = styled(Button)`
@@ -47,16 +47,13 @@ const NavButton = styled(Button)`
   text-transform: none;
   font-weight: var(--bold);
   line-break: break-spaces;
-  &:hover {
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
+  background-color: var(--box_header--secondary--background-color);
+  &.active {
+    border-top: 2px solid var(--primary-400);
+    padding-top: calc(var(--spacing-3) - 2px);
     background-color: var(--box--secondary--background-color);
   }
-`
-
-const ActiveIndicator = styled.div`
-  background-color: var(--primary-400);
-  width: calc(100%);
-  height: 2px;
-  transform: translateY(calc(var(--spacing-2) + 1px));
 `
 
 export default SubNav

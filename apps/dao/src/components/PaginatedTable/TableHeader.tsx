@@ -9,19 +9,21 @@ interface TableHeaderProps<T> {
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   setSortBy: (key: keyof T) => void
   minWidth: number
+  gridTemplateColumns?: string
 }
 
-const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth }: TableHeaderProps<T>) => {
+const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth, gridTemplateColumns }: TableHeaderProps<T>) => {
   return (
     <TableHeaderWrapper noTitle={title === undefined}>
       {title && <TableTitle>{title}</TableTitle>}
-      <TableContainer columns={columns.length} minWidth={minWidth}>
-        {columns.map((column) => (
+      <TableContainer columns={columns.length} minWidth={minWidth} gridTemplateColumns={gridTemplateColumns}>
+        {columns.map((column, index) => (
           <TableTitleButton
             disabled={column.disabled}
             key={column.key as string}
             variant="text"
             onClick={() => !column.disabled && setSortBy(column.key)}
+            className={index === 0 ? 'align-left' : ''}
           >
             {column.label}
             {sortBy.key === column.key && (
@@ -39,12 +41,13 @@ const TableHeaderWrapper = styled.div<{ noTitle: boolean }>`
   padding: ${({ noTitle }) => (noTitle ? 'var(--spacing-3)' : '0')} 0 0 0;
 `
 
-const TableContainer = styled.div<{ columns: number; minWidth: number }>`
+const TableContainer = styled.div<{ columns: number; minWidth: number; gridTemplateColumns?: string }>`
   display: grid;
   justify-content: space-between;
   grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
   padding: calc(var(--spacing-2)) var(--spacing-4) var(--spacing-2);
   min-width: ${({ minWidth }) => `${minWidth}rem`};
+  grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
 `
 
 const TableTitle = styled.p`
@@ -61,19 +64,23 @@ const TableTitleButton = styled(Button)`
   font-variant-numeric: tabular-nums;
   font-size: var(--font-size-2);
   font-weight: var(--bold);
+  line-height: 1.5;
   display: flex;
-  align-items: center;
+  align-items: bottom;
   font-family: var(--font);
-  margin-right: auto;
   text-transform: none;
   color: var(--page-text-color);
+  margin: 0 0 0 auto;
+  &.align-left {
+    margin: 0 auto 0 0;
+  }
   &:disabled {
     color: var(--page-text-color);
   }
 `
 
 const StyledIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
+  margin: auto 0 auto var(--spacing-1);
 `
 
 export default TableHeader

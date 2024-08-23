@@ -27,8 +27,8 @@ const VeCrcFees: React.FC = () => {
 
   return (
     <Wrapper>
+      <VeCrvFeesChart />
       <FeesBox flex flexColumn>
-        <BoxTitle>{t`Weekly veCRV Fees`}</BoxTitle>
         <FeesTitlesRow>
           <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
           <FeesSubtitle>{t`Fees`}</FeesSubtitle>
@@ -64,7 +64,6 @@ const VeCrcFees: React.FC = () => {
           </>
         )}
       </FeesBox>
-      <VeCrvFeesChart />
     </Wrapper>
   )
 }
@@ -86,6 +85,7 @@ const BoxTitle = styled.h2`
 `
 
 const FeesBox = styled(Box)`
+  padding-top: var(--spacing-3);
   @media (min-width: 25rem) {
     min-width: 25rem;
   }

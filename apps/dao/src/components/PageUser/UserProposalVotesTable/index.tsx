@@ -48,39 +48,45 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       errorMessage={t`An error occurred while fetching proposal votes.`}
       setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
       getData={() => getUserProposalVotes(userAddress)}
+      gridTemplateColumns={'0.5fr 1fr 1fr 1fr 1fr 1fr'}
       renderRow={(proposalVote, index) => (
-        <TableRowWrapper key={index} columns={VOTES_LABELS.length} minWidth={tableMinWidth}>
+        <TableRowWrapper
+          key={index}
+          columns={VOTES_LABELS.length}
+          minWidth={tableMinWidth}
+          gridTemplateColumns={'0.5fr 1fr 1fr 1fr 1fr 1fr'}
+        >
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()
               navigate(`/ethereum/proposals/${proposalVote.vote_id}-${proposalVote.vote_type.toUpperCase()}`)
             }}
-            className={userProposalVotesSortBy.key === 'vote_id' ? 'sortby-active left-padding' : 'left-padding'}
+            className={userProposalVotesSortBy.key === 'vote_id' ? 'sortby-active  align-left' : ' align-left'}
           >
             #{proposalVote.vote_id}
           </TableDataLink>
-          <TableData className="left-padding capitalize">{proposalVote.vote_type}</TableData>
+          <TableData className="right-padding capitalize">{proposalVote.vote_type}</TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_for' ? 'sortby-active left-padding' : 'left-padding'}
+            className={userProposalVotesSortBy.key === 'vote_for' ? 'sortby-active right-padding' : 'right-padding'}
           >
             {formatNumber(proposalVote.vote_for, {
               showDecimalIfSmallNumberOnly: true,
             })}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_against' ? 'sortby-active left-padding' : 'left-padding'}
+            className={userProposalVotesSortBy.key === 'vote_against' ? 'sortby-active right-padding' : 'right-padding'}
           >
             {formatNumber(proposalVote.vote_against, {
               showDecimalIfSmallNumberOnly: true,
             })}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_open' ? 'sortby-active left-padding' : 'left-padding'}
+            className={userProposalVotesSortBy.key === 'vote_open' ? 'sortby-active right-padding' : 'right-padding'}
           >
             {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_open))}
           </TableData>
           <TableData
-            className={userProposalVotesSortBy.key === 'vote_close' ? 'sortby-active left-padding' : 'left-padding'}
+            className={userProposalVotesSortBy.key === 'vote_close' ? 'sortby-active right-padding' : 'right-padding'}
           >
             {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.vote_close))}
           </TableData>

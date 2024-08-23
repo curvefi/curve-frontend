@@ -10,11 +10,11 @@ interface Props {
   className?: string
 }
 
-const TitleColumnDataComp: React.FC<Props> = ({ loading, title, data, className }) => {
+const MetricsComp: React.FC<Props> = ({ loading, title, data, className }) => {
   return (
     <Wrapper className={className}>
-      <SubTitle>{title}</SubTitle>
-      {loading ? <Loader isLightBg skeleton={[56, 16.5]} /> : data}
+      <MetricsTitle>{title}</MetricsTitle>
+      {loading ? <Loader isLightBg skeleton={[56, 18]} /> : data}
     </Wrapper>
   )
 }
@@ -27,9 +27,9 @@ const Wrapper = styled(Box)`
   justify-content: space-between;
 `
 
-export const SubTitle = styled.h4`
+export const MetricsTitle = styled.p`
   font-size: var(--font-size-1);
-  opacity: 0.5;
+  opacity: 0.8;
   &.align-right {
     @media (min-width: 32.5rem) {
       text-align: right;
@@ -37,9 +37,9 @@ export const SubTitle = styled.h4`
   }
 `
 
-export const SubTitleColumnData = styled.h3<{ noMargin?: boolean }>`
+export const MetricsColumnData = styled.h3<{ noMargin?: boolean }>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
-  font-size: var(--font-size-2);
+  font-size: var(--font-size-3);
 `
 
-export default TitleColumnDataComp
+export default MetricsComp

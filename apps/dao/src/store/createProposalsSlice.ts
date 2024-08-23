@@ -8,7 +8,6 @@ import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 import { t } from '@lingui/macro'
-import Voters from '@/components/PageProposal/Voters'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -34,7 +33,7 @@ type SliceState = {
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
-  activeSortDirection: ActiveSortDirection
+  activeSortDirection: SortDirection
 }
 
 const sliceKey = 'proposals'
@@ -46,7 +45,7 @@ export type ProposalsSlice = {
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
-    setActiveSortDirection(direction: ActiveSortDirection): void
+    setActiveSortDirection(direction: SortDirection): void
     selectFilteredSortedProposals(): ProposalData[]
     setProposals(searchValue: string): void
     castVote(voteId: number, voteType: ProposalType, support: boolean): void
@@ -202,7 +201,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     setActiveFilter: (filter: ProposalListFilter) => {
       get()[sliceKey].setStateByKey('activeFilter', filter)
     },
-    setActiveSortDirection: (direction: ActiveSortDirection) => {
+    setActiveSortDirection: (direction: SortDirection) => {
       get()[sliceKey].setStateByKey('activeSortDirection', direction)
     },
     setActiveSortBy: (sortBy: SortByFilterProposals) => {
@@ -424,7 +423,7 @@ const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFi
 const sortProposals = (
   proposals: ProposalData[],
   activeSortBy: SortByFilterProposals,
-  activeSortDirection: ActiveSortDirection
+  activeSortDirection: SortDirection
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)

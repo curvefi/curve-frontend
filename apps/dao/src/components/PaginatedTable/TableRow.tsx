@@ -12,10 +12,11 @@ interface TableRowProps {
   labels: { key: string; label: string }[]
   rank: number
   minWidth: number
+  gridTemplateColumns?: string
 }
 
-const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, minWidth }) => (
-  <TableRowWrapper minWidth={minWidth} columns={labels.length}>
+const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, minWidth, gridTemplateColumns }) => (
+  <TableRowWrapper minWidth={minWidth} columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
         {formatNumber(holder[label.key], { showDecimalIfSmallNumberOnly: true })}
@@ -24,9 +25,10 @@ const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, minWi
   </TableRowWrapper>
 )
 
-export const TableRowWrapper = styled.div<{ minWidth: number; columns: number }>`
+export const TableRowWrapper = styled.div<{ minWidth: number; columns: number; gridTemplateColumns?: string }>`
   display: grid;
-  grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
+  grid-template-columns: ${({ columns, gridTemplateColumns }) =>
+    gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
   padding: var(--spacing-1) 0;
   border-bottom: 1px solid var(--gray-500a20);
   min-width: ${({ minWidth }) => `${minWidth}rem`};
@@ -42,14 +44,20 @@ export const TableData = styled.p`
   line-height: 1.5;
   display: flex;
   gap: var(--spacing-1);
-  &.left-padding {
-    padding-left: var(--spacing-2);
+  margin-left: auto;
+  &.right-padding {
+    padding-right: var(--spacing-2);
   }
   &.capitalize {
     text-transform: capitalize;
   }
   &.sortby-active {
     font-weight: var(--bold);
+  }
+  &.align-left {
+    margin-right: auto;
+    margin-left: 0;
+    padding-left: var(--spacing-2);
   }
 `
 
@@ -63,14 +71,20 @@ export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
   text-decoration: none;
   color: inherit;
   text-transform: none;
-  &.left-padding {
-    padding-left: var(--spacing-2);
+  margin-left: auto;
+  &.right-padding {
+    padding-right: var(--spacing-2);
   }
   &.capitalize {
     text-transform: capitalize;
   }
   &.sortby-active {
     font-weight: var(--bold);
+  }
+  &.align-left {
+    margin-right: auto;
+    margin-left: 0;
+    padding-left: var(--spacing-2);
   }
 `
 

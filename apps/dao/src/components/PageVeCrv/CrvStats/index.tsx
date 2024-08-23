@@ -6,7 +6,7 @@ import { formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
-import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
+import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Tooltip from '@/ui/Tooltip'
 
 const CrvStats: React.FC = () => {
@@ -27,83 +27,87 @@ const CrvStats: React.FC = () => {
 
   return (
     <Wrapper>
-      <StatsRow>
-        <SubTitleColumn
-          loading={veCrvLoading}
-          title={t`Total CRV`}
-          data={
-            <SubTitleColumnData>
-              {formatNumber(veCrvData.totalCrv, { showDecimalIfSmallNumberOnly: true })}
-            </SubTitleColumnData>
-          }
-        />
-        <SubTitleColumn
-          loading={veCrvLoading}
-          title={t`Total Locked CRV`}
-          data={
-            <SubTitleColumnData>
-              {formatNumber(veCrvData.totalLockedCrv, { showDecimalIfSmallNumberOnly: true })}
-            </SubTitleColumnData>
-          }
-        />
-        <SubTitleColumn
-          loading={veCrvLoading}
-          title={t`Total veCRV`}
-          data={
-            <SubTitleColumnData>
-              {formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
-            </SubTitleColumnData>
-          }
-        />
-        <SubTitleColumn
-          loading={veCrvHolders.fetchStatus === 'LOADING'}
-          title={t`Total Holders`}
-          data={
-            <StyledTooltip
-              tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
-            >
-              <SubTitleColumnData>
-                {formatNumber(veCrvHolders.totalHolders, { showDecimalIfSmallNumberOnly: true })}
-              </SubTitleColumnData>
-            </StyledTooltip>
-          }
-        />
-        <SubTitleColumn
-          loading={veCrvLoading}
-          title={t`% Locked`}
-          data={
-            <SubTitleColumnData>{`${formatNumber(veCrvData.lockedPercentage, {
-              showDecimalIfSmallNumberOnly: true,
-            })}%`}</SubTitleColumnData>
-          }
-        />
-        <SubTitleColumn
-          loading={veCrvLoading || veCrvFeesLoading}
-          title={t`veCRV APR`}
-          data={
-            <AprRow>
-              <SubTitleColumnData noMargin>
-                {`~${formatNumber(veCrvApr, {
-                  showDecimalIfSmallNumberOnly: true,
-                })}%`}
-              </SubTitleColumnData>
-            </AprRow>
-          }
-        />
-      </StatsRow>
+      <Container>
+        <h3>{t`VECRV METRICS`}</h3>
+        <Box flex flexGap="var(--spacing-3)" flexJustifyContent="space-between">
+          <MetricsComp
+            loading={veCrvLoading}
+            title={t`Total CRV`}
+            data={
+              <MetricsColumnData>
+                {formatNumber(veCrvData.totalCrv, { showDecimalIfSmallNumberOnly: true })}
+              </MetricsColumnData>
+            }
+          />
+          <MetricsComp
+            loading={veCrvLoading}
+            title={t`Locked CRV`}
+            data={
+              <MetricsColumnData>
+                {formatNumber(veCrvData.totalLockedCrv, { showDecimalIfSmallNumberOnly: true })}
+              </MetricsColumnData>
+            }
+          />
+          <MetricsComp
+            loading={veCrvLoading}
+            title={t`veCRV`}
+            data={
+              <MetricsColumnData>
+                {formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
+              </MetricsColumnData>
+            }
+          />
+          <MetricsComp
+            loading={veCrvHolders.fetchStatus === 'LOADING'}
+            title={t`Holders`}
+            data={
+              <StyledTooltip
+                tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
+              >
+                <MetricsColumnData>
+                  {formatNumber(veCrvHolders.totalHolders, { showDecimalIfSmallNumberOnly: true })}
+                </MetricsColumnData>
+              </StyledTooltip>
+            }
+          />
+          <MetricsComp
+            loading={veCrvLoading}
+            title={t`CRV Supply Locked`}
+            data={
+              <MetricsColumnData>{`${formatNumber(veCrvData.lockedPercentage, {
+                showDecimalIfSmallNumberOnly: true,
+              })}%`}</MetricsColumnData>
+            }
+          />
+          <MetricsComp
+            loading={veCrvLoading || veCrvFeesLoading}
+            title={t`veCRV APR`}
+            data={
+              <AprRow>
+                <MetricsColumnData noMargin>
+                  {`~${formatNumber(veCrvApr, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })}%`}
+                </MetricsColumnData>
+              </AprRow>
+            }
+          />
+        </Box>
+      </Container>
     </Wrapper>
   )
 }
 
 const Wrapper = styled(Box)`
-  border-bottom: 1px solid var(--gray-500a20);
+  display: flex;
+  flex-direction: column;
+  background-color: var(--box--secondary--background-color);
 `
 
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr));
-  row-gap: var(--spacing-3);
-  column-gap: var(--spacing-4);
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
   @media (min-width: 20.625rem) {

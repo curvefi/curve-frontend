@@ -51,7 +51,7 @@ const BarChartComponent = ({ data }: Props) => {
             interval={0}
             tick={{
               fill: 'var(--page--text-color)',
-              fontWeight: 'var(--bold)',
+
               fontSize: 'var(--font-size-1)',
               textAnchor: 'end',
             }}
@@ -63,7 +63,7 @@ const BarChartComponent = ({ data }: Props) => {
           <YAxis
             type="number"
             orientation="right"
-            tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
+            tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
             tickFormatter={(value) => `${value}%`}
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}

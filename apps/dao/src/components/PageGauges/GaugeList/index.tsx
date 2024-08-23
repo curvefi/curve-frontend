@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { GAUGES_SORTING_METHODS } from '../constants'
+import { GAUGE_VOTES_TABLE_LABELS } from '../constants'
 
 import Box from '@/ui/Box'
 import GaugeListItem from './GaugeListItem'
@@ -13,43 +13,45 @@ import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import Icon from '@/ui/Icon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
+import PaginatedTable from '@/components/PaginatedTable'
 
 const GaugesList = () => {
   const {
     getGauges,
     setGauges,
     gaugesLoading,
-    activeSortBy,
-    activeSortDirection,
-    setActiveSortBy,
-    setActiveSortDirection,
+    gaugeListSortBy,
+    setGaugeListSortBy,
     setSearchValue,
     searchValue,
     filteredGauges,
   } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
+  const tableMinWidth = 41.875
 
-  const handleSortingMethodChange = useCallback(
-    (key: React.Key) => {
-      setActiveSortBy(key as SortByFilterGauges)
-    },
-    [setActiveSortBy]
-  )
-
-  const handleChangeSortingDirection = useCallback(() => {
-    setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
-  }, [activeSortDirection, setActiveSortDirection])
+  const loading = gaugesLoading === 'LOADING'
+  const error = gaugesLoading === 'ERROR'
+  const success = gaugesLoading === 'SUCCESS'
 
   useEffect(() => {
     if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
       setGauges(searchValue)
     }
-  }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, activeSortBy, activeSortDirection])
+  }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, gaugeListSortBy])
+
+  const handleSortChange = useCallback(
+    (key: keyof GaugeFormattedData) => {
+      setGaugeListSortBy(key as SortByFilterGaugesKeys)
+      setGauges(searchValue)
+    },
+    [setGaugeListSortBy, setGauges, searchValue]
+  )
 
   return (
     <>
       <Header>
+        <h3>CURVE GAUGES</h3>
         <StyledSearchInput
           id="inpSearchProposals"
           placeholder={t`Search`}
@@ -58,19 +60,6 @@ const GaugesList = () => {
           handleSearchClose={() => setSearchValue('')}
           value={searchValue}
         />
-        <SortingBox>
-          <StyledSelectSortingMethod
-            selectedKey={activeSortBy}
-            minWidth="9rem"
-            items={GAUGES_SORTING_METHODS}
-            onSelectionChange={handleSortingMethodChange}
-          />
-          <ToggleDirectionIcon
-            size={20}
-            name={activeSortDirection === 'asc' ? 'ArrowUp' : 'ArrowDown'}
-            onClick={() => handleChangeSortingDirection()}
-          />
-        </SortingBox>
       </Header>
       <GaugeListWrapper>
         {searchValue !== '' && (
@@ -89,13 +78,18 @@ const GaugesList = () => {
           </ErrorMessageWrapper>
         )}
         {gaugesLoading === 'SUCCESS' && (
-          <Box flex flexColumn flexGap={'var(--spacing-2)'}>
-            {filteredGauges.map((gauge, index) => (
-              <LazyItem key={`gauge-${index}`} defaultHeight={'67'}>
-                <GaugeListItem gaugeData={gauge} />
-              </LazyItem>
-            ))}
-          </Box>
+          <PaginatedTable<GaugeFormattedData>
+            data={filteredGauges}
+            minWidth={tableMinWidth}
+            fetchingState={gaugesLoading ?? 'LOADING'}
+            columns={GAUGE_VOTES_TABLE_LABELS}
+            sortBy={gaugeListSortBy}
+            errorMessage={t`An error occurred while fetching gauges.`}
+            setSortBy={handleSortChange}
+            getData={() => getGauges(true)}
+            renderRow={(gauge, index) => <GaugeListItem key={index} gaugeData={gauge} />}
+            gridTemplateColumns="2fr 1fr 1fr 1fr 0.2fr"
+          />
         )}
       </GaugeListWrapper>
     </>
@@ -107,7 +101,7 @@ const Header = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-3);
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
   width: 100%;
   @media (min-width: 29.0625rem) {
     flex-direction: row;
@@ -122,32 +116,12 @@ const StyledSearchInput = styled(SearchInput)`
   }
 `
 
-const SortingBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  margin-right: auto;
-  @media (min-width: 29.0625rem) {
-    margin: 0 0 0 auto;
-  }
-`
-
-const StyledSelectSortingMethod = styled(SelectSortingMethod)`
-  margin: auto 0 auto auto;
-`
-
-const ToggleDirectionIcon = styled(Icon)`
-  margin: auto 0 auto var(--spacing-2);
-  &:hover {
-    cursor: pointer;
-  }
-`
-
 const GaugeListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0 0 var(--spacing-5);
   @media (min-width: 29.0625rem) {
-    padding: 0 var(--spacing-3) var(--spacing-5);
+    padding: 0 0 var(--spacing-5);
   }
 `
 

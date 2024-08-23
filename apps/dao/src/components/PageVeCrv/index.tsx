@@ -34,26 +34,27 @@ const VeCrv: React.FC = () => {
 
   return (
     <Wrapper>
-      <PageTitle>veCRV</PageTitle>
-      <Content variant="secondary">
+      <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
         <CrvStats />
-        <SubNavWrapper>
+        <Box>
           <SubNav
             activeKey={navSelection}
             navItems={navItems}
             setNavChange={setNavSelection as (key: string) => void}
             nested
           />
-        </SubNavWrapper>
-        {navSelection === 'fees' && <VeCrvFees />}
-        {navSelection === 'holders' && (
-          <Box flex flexColumn flexGap="var(--spacing-2)">
-            <TopHolders />
-            <HoldersTable />
-          </Box>
-        )}
-        {navSelection === 'locks' && <DailyLocks />}
-      </Content>
+          <Container variant="secondary">
+            {navSelection === 'fees' && <VeCrvFees />}
+            {navSelection === 'holders' && (
+              <Box flex flexColumn flexGap="var(--spacing-2)">
+                <TopHolders />
+                <HoldersTable />
+              </Box>
+            )}
+            {navSelection === 'locks' && <DailyLocks />}
+          </Container>
+        </Box>
+      </Box>
     </Wrapper>
   )
 }
@@ -71,23 +72,13 @@ const Wrapper = styled.div`
   }
 `
 
-const PageTitle = styled.h2`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-3);
-  background-color: black;
-  color: var(--nav--page--color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
-`
-
-const Content = styled(Box)`
+const Container = styled(Box)`
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
-`
-
-const SubNavWrapper = styled(Box)`
-  padding-bottom: var(--spacing-2);
+  width: 100%;
+  height: 100%;
+  border: none;
 `
 
 export default VeCrv

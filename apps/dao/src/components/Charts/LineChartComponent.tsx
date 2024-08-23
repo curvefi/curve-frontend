@@ -27,10 +27,10 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           bottom: 16,
         }}
       >
-        <CartesianGrid strokeDasharray="3" vertical={false} />
+        <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} vertical={true} />
         <XAxis
           dataKey="epoch"
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           minTickGap={20}
@@ -40,7 +40,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           }}
         />
         <YAxis
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
           tickFormatter={(value) => `${value}%`}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
@@ -51,8 +51,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         <Legend
           margin={{ top: 16, bottom: 16 }}
           verticalAlign="top"
-          iconType="circle"
-          iconSize={8}
+          iconSize={0}
           height={32}
           formatter={(value) => 'Relative Gauge Weight'}
           wrapperStyle={{
@@ -64,7 +63,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         <Line
           type="monotone"
           dataKey="gauge_relative_weight"
-          stroke="var(--chart-purple)"
+          stroke="var(--primary-400)"
           strokeWidth={2}
           activeDot={{ r: 4 }}
           dot={{
