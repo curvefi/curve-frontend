@@ -48,10 +48,10 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       getData={() => getGaugeVotes(gaugeAddress)}
       renderRow={(gaugeVote, index) => (
         <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length} minWidth={tableMinWidth}>
-          <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active left-padding' : 'left-padding'}>
+          <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>
-          <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active left-padding' : 'left-padding'}>
+          <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
             {formatNumber(gaugeVote.weight, {
               showDecimalIfSmallNumberOnly: true,
             })}
@@ -61,7 +61,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
               e.preventDefault()
               navigate(`/ethereum/user/${gaugeVote.user}`)
             }}
-            className="left-padding"
+            className="right-padding"
           >
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title

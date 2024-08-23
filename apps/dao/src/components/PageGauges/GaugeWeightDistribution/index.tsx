@@ -21,10 +21,7 @@ const GaugeWeightDistribution = () => {
   return (
     <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
-        <ChartToolBar>
-          <ChartTitle>{t`Gauges Relative Weight Distribution`}</ChartTitle>
-          <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
-        </ChartToolBar>
+        <ChartTitle>{t`Relative Weight Distribution`}</ChartTitle>
         {gaugesLoading === 'LOADING' && (
           <StyledSpinnerWrapper>
             <Spinner size={24} />
@@ -37,6 +34,7 @@ const GaugeWeightDistribution = () => {
         )}
         {gaugesLoading === 'SUCCESS' && <BarChartComponent data={formattedData} />}
       </Box>
+      <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
     </Box>
   )
 }
@@ -46,20 +44,15 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   min-width: 100%;
 `
 
-const ChartToolBar = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-  margin: 0 0 var(--spacing-2);
-`
-
 const ChartTitle = styled.h4`
-  font-size: var(--font-size-2);
   font-weight: var(--bold);
+  text-transform: uppercase;
+  margin: 0 0 var(--spacing-2);
 `
 
 const ChartDescription = styled.p`
   font-size: var(--font-size-1);
+  margin-bottom: var(--spacing-3);
 `
 
 const ErrorMessageWrapper = styled.div`

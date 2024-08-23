@@ -11,8 +11,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   gaugesLoading: FetchingState
   filteringGaugesLoading: boolean
-  activeSortBy: SortByFilterGauges
-  activeSortDirection: ActiveSortDirection
+  gaugeListSortBy: SortByFilterGauges
   searchValue: string
   gaugeMapper: GaugeMapper
   gaugeVotesMapper: GaugeVotesMapper
@@ -20,7 +19,7 @@ type SliceState = {
   filteredGauges: GaugeFormattedData[]
   gaugeVotesSortBy: {
     key: GaugeVotesSortBy
-    order: 'asc' | 'desc'
+    order: SortDirection
   }
 }
 
@@ -33,8 +32,7 @@ export type GaugesSlice = {
     getGaugeVotes(gaugeAddress: string): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
     setSearchValue(searchValue: string): void
-    setActiveSortBy(sortBy: SortByFilterGauges): void
-    setActiveSortDirection(direction: ActiveSortDirection): void
+    setGaugeListSortBy(sortByKey: SortByFilterGaugesKeys): void
     selectFilteredSortedGauges(): GaugeFormattedData[]
     setGauges(searchValue: string): void
     setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
@@ -47,8 +45,10 @@ export type GaugesSlice = {
 const DEFAULT_STATE: SliceState = {
   gaugesLoading: 'LOADING',
   filteringGaugesLoading: true,
-  activeSortBy: 'relativeWeight',
-  activeSortDirection: 'desc',
+  gaugeListSortBy: {
+    key: 'gauge_relative_weight',
+    order: 'desc',
+  },
   searchValue: '',
   gaugeMapper: {},
   gaugeVotesMapper: {},
@@ -184,10 +184,10 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
     },
     selectFilteredSortedGauges: () => {
-      const { gaugeMapper, activeSortBy, activeSortDirection } = get()[sliceKey]
+      const { gaugeMapper, gaugeListSortBy } = get()[sliceKey]
       const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
       const gaugeData = gaugeMapper ?? cacheGaugeMapper
-      const sortedGauges = sortGauges(gaugeData, activeSortBy, activeSortDirection)
+      const sortedGauges = sortGauges(gaugeData, gaugeListSortBy)
       return sortedGauges
     },
     setGauges: (searchValue: string) => {
@@ -250,11 +250,18 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     setSearchValue: (filterValue) => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
     },
-    setActiveSortDirection: (direction: ActiveSortDirection) => {
-      get()[sliceKey].setStateByKey('activeSortDirection', direction)
-    },
-    setActiveSortBy: (sortBy: SortByFilterGauges) => {
-      get()[sliceKey].setStateByKey('activeSortBy', sortBy)
+    setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => {
+      if (sortByKey === get()[sliceKey].gaugeListSortBy.key) {
+        get()[sliceKey].setStateByKey('gaugeListSortBy', {
+          key: sortByKey,
+          order: get()[sliceKey].gaugeListSortBy.order === 'asc' ? 'desc' : 'asc',
+        })
+      } else {
+        get()[sliceKey].setStateByKey('gaugeListSortBy', {
+          key: sortByKey,
+          order: get()[sliceKey].gaugeListSortBy.order,
+        })
+      }
     },
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
@@ -296,31 +303,14 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   return result.map((r) => r.item)
 }
 
-const sortGauges = (
-  gauges: GaugeMapper,
-  sortBy: SortByFilterGauges,
-  sortDirection: ActiveSortDirection
-): GaugeFormattedData[] => {
+const sortGauges = (gauges: GaugeMapper, sortBy: SortByFilterGauges): GaugeFormattedData[] => {
   const gaugeArray = Object.values(gauges)
 
   const sortFn = (a: GaugeFormattedData, b: GaugeFormattedData): number => {
-    switch (sortBy) {
-      case 'relativeWeight':
-        return (b.gauge_relative_weight - a.gauge_relative_weight) * (sortDirection === 'asc' ? -1 : 1)
-      case '7dayWeight':
-        return (
-          ((b.gauge_relative_weight_7d_delta ?? 0) - (a.gauge_relative_weight_7d_delta ?? 0)) *
-          (sortDirection === 'asc' ? -1 : 1)
-        )
-      case '60dayWeight':
-        return (
-          ((b.gauge_relative_weight_60d_delta ?? 0) - (a.gauge_relative_weight_60d_delta ?? 0)) *
-          (sortDirection === 'asc' ? -1 : 1)
-        )
-      default:
-        return sortDirection === 'asc'
-          ? (a[sortBy] as string).localeCompare(b[sortBy] as string)
-          : (b[sortBy] as string).localeCompare(a[sortBy] as string)
+    if (sortBy.order === 'asc') {
+      return (a[sortBy.key] ?? 0) - (b[sortBy.key] ?? 0)
+    } else {
+      return (b[sortBy.key] ?? 0) - (a[sortBy.key] ?? 0)
     }
   }
 

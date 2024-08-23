@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import GaugeWeightHistoryChart from '@/components/Charts/GaugeWeightHistoryChart'
 import GaugeHeader from './GaugeHeader'
-import GaugeStats from './GaugeStats'
+import GaugeMetrics from './GaugeMetrics'
 import { SpinnerWrapper } from '@/ui/Spinner'
 import GaugeVotesTable from './GaugeVotesTable'
 
@@ -26,10 +26,9 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
 
   return (
     <Wrapper>
-      <PageTitle>{t`Gauge`}</PageTitle>
       <GaugePageContainer variant="secondary">
         <GaugeHeader gaugeAddress={gaugeAddress} gaugeData={gaugeData} dataLoading={loading} />
-        <GaugeStats gaugeData={gaugeData} dataLoading={loading} />
+        <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
         <Content>
           <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />
         </Content>
@@ -50,16 +49,6 @@ const Wrapper = styled.div`
   @media (min-width: 34.375rem) {
     max-width: 95%;
   }
-`
-
-const PageTitle = styled.h2`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-3);
-  background-color: black;
-  color: var(--nav--page--color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
 `
 
 const GaugePageContainer = styled(Box)`

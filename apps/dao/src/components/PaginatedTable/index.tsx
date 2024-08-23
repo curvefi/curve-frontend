@@ -24,6 +24,7 @@ interface PaginatedTableProps<T> {
   getData: () => void
   renderRow: (item: T, index: number) => React.ReactNode
   minWidth: number
+  gridTemplateColumns?: string
 }
 
 const PaginatedTable = <T,>({
@@ -37,12 +38,13 @@ const PaginatedTable = <T,>({
   setSortBy,
   renderRow,
   minWidth,
+  gridTemplateColumns,
 }: PaginatedTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1)
 
   const fetchFeedbackHeight = '15rem'
 
-  const ITEMS_PER_PAGE = 100
+  const ITEMS_PER_PAGE = 50
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem)
@@ -52,7 +54,14 @@ const PaginatedTable = <T,>({
   return (
     <Wrapper>
       <Container>
-        <TableHeader<T> columns={columns} title={title} sortBy={sortBy} setSortBy={setSortBy} minWidth={minWidth} />
+        <TableHeader<T>
+          columns={columns}
+          title={title}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          minWidth={minWidth}
+          gridTemplateColumns={gridTemplateColumns}
+        />
         <TableBody>
           {fetchingState === 'LOADING' && <Spinner height={fetchFeedbackHeight} />}
           {fetchingState === 'SUCCESS' && currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
@@ -73,7 +82,6 @@ const PaginatedTable = <T,>({
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  max-height: 46.875rem;
   padding-bottom: var(--spacing-3);
   width: 100%;
 `

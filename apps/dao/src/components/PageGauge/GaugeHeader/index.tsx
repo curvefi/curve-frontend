@@ -11,6 +11,7 @@ import IconButton from '@/ui/IconButton'
 import TooltipButton from '@/ui/Tooltip'
 import { ExternalLink } from '@/ui/Link'
 import Loader from '@/ui/Loader'
+import SmallLabel from '@/components/SmallLabel'
 
 interface GaugeHeaderProps {
   gaugeAddress: string
@@ -28,55 +29,19 @@ const GaugeHeader = ({ gaugeAddress, gaugeData, dataLoading }: GaugeHeaderProps)
       <BoxedDataComp>
         {dataLoading ? (
           <>
-            <Loader isLightBg skeleton={[65, 25]} />
-            <Loader isLightBg skeleton={[35, 25]} />
+            <Loader isLightBg skeleton={[65, 28]} />
+            <Loader isLightBg skeleton={[35, 28]} />
           </>
         ) : (
           <>
-            <h3>{gaugeData.title}</h3>
-            {gaugeData.is_killed && <BoxedData isKilled>{t`Killed`}</BoxedData>}
-            {gaugeData.platform && <BoxedData>{gaugeData.platform}</BoxedData>}
-            {gaugeData.pool?.chain && <BoxedData>{gaugeData.pool.chain}</BoxedData>}
-            {gaugeData.market?.chain && <BoxedData>{gaugeData.market.chain}</BoxedData>}
+            <h2>{gaugeData.title}</h2>
+            {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
+            {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}
+            {gaugeData.pool?.chain && <SmallLabel description={gaugeData.pool.chain} isNetwork />}
+            {gaugeData.market?.chain && <SmallLabel description={gaugeData.market.chain} isNetwork />}
           </>
         )}
       </BoxedDataComp>
-      <Box flex flexColumn flexGap="var(--spacing-2)">
-        <Box flex flexDirection="column">
-          <AddressTitle>{t`Gauge Address:`}</AddressTitle>
-          <Box flex flexAlignItems="center" flexJustifyContent="space-between" flexGap="var(--spacing-2)">
-            <Address>{gaugeAddress}</Address>{' '}
-            <Box flex flexAlignItems="center">
-              <TooltipButton onClick={() => handleCopyClick(gaugeAddress)} noWrap tooltip={t`Copy address`}>
-                <Icon name="Copy" size={16} />
-              </TooltipButton>
-              <StyledExternalLink size="small" href={networks[1].scanAddressPath(gaugeAddress)}>
-                <Icon name="Launch" size={16} />
-              </StyledExternalLink>
-            </Box>
-          </Box>
-        </Box>
-        {gaugeData?.pool?.address && (
-          <Box flex flexDirection="column">
-            <AddressTitle>{t`Pool Address:`}</AddressTitle>
-            <Box flex flexAlignItems="center" flexJustifyContent="space-between" flexGap="var(--spacing-2)">
-              <Address>{gaugeData.pool?.address}</Address>{' '}
-              <Box flex flexAlignItems="center">
-                <TooltipButton
-                  onClick={() => handleCopyClick(gaugeData.pool?.address ?? '')}
-                  noWrap
-                  tooltip={t`Copy address`}
-                >
-                  <Icon name="Copy" size={16} />
-                </TooltipButton>
-                <StyledExternalLink size="small" href={networks[1].scanAddressPath(gaugeData.pool?.address)}>
-                  <Icon name="Launch" size={16} />
-                </StyledExternalLink>
-              </Box>
-            </Box>
-          </Box>
-        )}
-      </Box>
     </Wrapper>
   )
 }

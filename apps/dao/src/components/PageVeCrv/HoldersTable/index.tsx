@@ -33,28 +33,27 @@ const TopHoldersTable: React.FC = () => {
         fetchingState={veCrvHolders.fetchStatus ?? 'LOADING'}
         columns={HOLDERS_LABELS}
         sortBy={allHoldersSortBy}
-        title=""
         errorMessage={t`An error occurred while veCRV holders data.`}
         setSortBy={(key) => setAllHoldersSortBy(key as AllHoldersSortBy)}
         getData={() => getVeCrvHolders()}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} minWidth={tableMinWidth} columns={HOLDERS_LABELS.length}>
-            <TableData>
+            <TableData className="align-left">
               {index + 1}.
               <StyledInternalLink href={`/ethereum/user/${holder.user}`}>
                 {shortenTokenAddress(holder.user)}
               </StyledInternalLink>
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'weight' ? 'active left-padding' : 'left-padding'}>
+            <TableData className={allHoldersSortBy.key === 'weight' ? 'active right-padding' : 'right-padding'}>
               {formatNumber(holder.weight, { showDecimalIfSmallNumberOnly: true })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'locked' ? 'active left-padding' : 'left-padding'}>
+            <TableData className={allHoldersSortBy.key === 'locked' ? 'active right-padding' : 'right-padding'}>
               {formatNumber(holder.locked, { showDecimalIfSmallNumberOnly: true })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'weight_ratio' ? 'active left-padding' : 'left-padding'}>
+            <TableData className={allHoldersSortBy.key === 'weight_ratio' ? 'active right-padding' : 'right-padding'}>
               {formatNumber(holder.weight_ratio, { style: 'percent' })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'unlock_time' ? 'active left-padding' : 'left-padding'}>
+            <TableData className={allHoldersSortBy.key === 'unlock_time' ? 'active right-padding' : 'right-padding'}>
               {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(holder.unlock_time).getTime()))}
             </TableData>
           </TableRowWrapper>
@@ -67,7 +66,6 @@ const TopHoldersTable: React.FC = () => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  height: 46.875rem;
   padding-bottom: var(--spacing-3);
   width: 100%;
 `

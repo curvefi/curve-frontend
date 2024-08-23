@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils/'
-import SubTitleColumn, { SubTitleColumnData } from '@/components/SubTitleColumn'
+import SubTitleColumn, { SubTitleColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
 
 interface UserStatsProps {

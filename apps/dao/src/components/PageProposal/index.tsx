@@ -25,7 +25,7 @@ import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
-import TitleColumnDataComp, { SubTitle, SubTitleColumnData } from '@/components/SubTitleColumn'
+import TitleColumnDataComp, { SubTitle, SubTitleColumnData } from '@/components/MetricsComp'
 
 type Props = {
   routerParams: {

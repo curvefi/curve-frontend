@@ -412,8 +412,15 @@ declare global {
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
   type SortByFilterProposals = 'voteId' | 'endingSoon'
-  type SortByFilterGauges = 'relativeWeight' | '7dayWeight' | '60dayWeight'
-  type ActiveSortDirection = 'asc' | 'desc'
+  type SortByFilterGaugesKeys =
+    | 'gauge_relative_weight'
+    | 'gauge_relative_weight_7d_delta'
+    | 'gauge_relative_weight_60d_delta'
+  type SortByFilterGauges = {
+    key: SortByFilterGaugesKeys
+    order: SortDirection
+  }
+  type SortDirection = 'asc' | 'desc'
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
   type UserLocksSortBy = 'date' | 'amount'

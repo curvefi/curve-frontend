@@ -24,27 +24,27 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
           bottom: 16,
         }}
       >
-        <CartesianGrid strokeDasharray="3" vertical={false} />
+        <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
         <XAxis
           dataKey="date"
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-          tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-          axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
+          tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+          axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
           minTickGap={20}
           allowDataOverflow={false}
         />
         <YAxis
           dataKey="fees_usd"
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-          tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-          axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
+          tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+          axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
           tickFormatter={(value) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
           tickCount={10}
         />
         <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-        <Bar dataKey="fees_usd" label={false} fill="#8884d8" isAnimationActive={false}>
+        <Bar dataKey="fees_usd" label={false} fill={'var(--primary-400)'} isAnimationActive={false}>
           {data.map((entry, index) => (
-            <Cell key={`$cell-${index}`} fill={+entry.fees_usd > 0 ? 'var(--chart-green)' : 'var(--chart-red)'} />
+            <Cell key={`$cell-${index}`} fill={'var(--primary-400)'} />
           ))}
         </Bar>
       </BarChart>

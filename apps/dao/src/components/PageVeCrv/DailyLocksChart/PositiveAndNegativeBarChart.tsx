@@ -24,20 +24,20 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
           bottom: 16,
         }}
       >
-        <CartesianGrid strokeDasharray="3" vertical={false} />
+        <CartesianGrid fillOpacity={0.6} strokeWidth={0.3} horizontal={true} vertical={false} />
         <XAxis
           dataKey="day"
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-          tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-          axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
+          tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+          axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
           minTickGap={20}
           allowDataOverflow={false}
         />
         <YAxis
           dataKey="amount"
-          tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-          tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
-          axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
+          tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
+          tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
+          axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
           tickFormatter={(value) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
           tickCount={10}
         />
