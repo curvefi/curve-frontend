@@ -1,6 +1,6 @@
 import type { ComboBoxStateOptions } from 'react-stately'
 
-import { useButton, useComboBox, useFocusRing } from 'react-aria'
+import { useButton, useComboBox, useFocusRing, type AriaComboBoxOptions } from 'react-aria'
 import { useComboBoxState } from '@react-stately/combobox'
 import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react'
 import styled from 'styled-components'
@@ -40,11 +40,10 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
   const { listBoxProps } = useComboBox(
     {
       ...props,
-      children: props.children!,
       inputRef,
       listBoxRef,
       popoverRef,
-    },
+    } as AriaComboBoxOptions<T>,
     state
   )
 
