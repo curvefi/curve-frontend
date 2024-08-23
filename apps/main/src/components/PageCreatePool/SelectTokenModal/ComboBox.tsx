@@ -40,7 +40,7 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
   const { listBoxProps } = useComboBox(
     {
       ...props,
-      children: props.children || (() => null),
+      children: props.children ?? <></>,
       inputRef,
       listBoxRef,
       popoverRef,
