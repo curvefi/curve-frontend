@@ -50,7 +50,7 @@
     "react-hook-form": "^7.52.1",
     "react-is": "16.13.1",
     "react-router-dom": "^6.3.0",
-    "react-stately": "^3.32.2",
+    "react-stately": "3.18.0",
     "sharp": "^0.32.6",
     "styled-components": "5.3.1",
     "swr": "^2.2.2",
