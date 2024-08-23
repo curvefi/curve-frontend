@@ -1,7 +1,8 @@
 import { chainKeys } from '@/entities/chain'
+import type { PoolQueryParams } from '@/entities/pool/types'
 
 export const poolKeys = {
-  root: () => [...chainKeys.root(), 'pool'] as const,
-  lists: () => [...poolKeys.root(), 'list'] as const,
-  list: (filters: string) => [...poolKeys.lists(), filters] as const,
+  root: ({ chainId, poolId }: PoolQueryParams) => [...chainKeys.root({ chainId }), 'pool', poolId] as const,
+  lists: (params: PoolQueryParams) => [...poolKeys.root(params), 'list'] as const,
+  list: (params: PoolQueryParams & { filters?: string }) => [...poolKeys.lists(params), params.filters] as const,
 } as const

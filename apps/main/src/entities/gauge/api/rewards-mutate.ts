@@ -18,7 +18,7 @@ export const mutateAddRewardToken: MutateFunction<
   Error,
   GaugeQueryKeyType<'addRewardToken'>
 > = async (queryKey) => {
-  const [, , , , chainId, poolId, token, distributor] = queryKey
+  const [, chainId, , poolId, , , token, distributor] = queryKey
   if (!chainId || !poolId || !token || !distributor) throw new Error('Missing required parameters')
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
@@ -30,7 +30,7 @@ export const mutateDepositRewardApprove: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositRewardApprove'>
 > = async (queryKey) => {
-  const [, , , , chainId, poolId, token, amount] = queryKey
+  const [, chainId, , poolId, , , token, amount] = queryKey
   if (!chainId || !poolId || !token || !amount) throw new Error('Missing required parameters')
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
@@ -42,7 +42,7 @@ export const mutateDepositReward: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositReward'>
 > = async (queryKey) => {
-  const [, , , , chainId, poolId, token, amount, epoch] = queryKey
+  const [, chainId, , poolId, , , token, amount, epoch] = queryKey
   if (!chainId || !poolId || !token || !amount || !epoch) throw new Error('Missing required parameters')
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)

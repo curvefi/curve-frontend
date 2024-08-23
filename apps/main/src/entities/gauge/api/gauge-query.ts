@@ -20,7 +20,7 @@ export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, Ga
   queryKey,
 }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId] = queryKey
+  const [, chainId, , poolId, ,] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -33,7 +33,7 @@ export const queryGaugeManager: QueryFunction<
   GaugeQueryKeyType<'manager'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId] = queryKey
+  const [, chainId, , poolId, ,] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -50,7 +50,7 @@ export const queryGaugeDistributors: QueryFunction<
   GaugeQueryKeyType<'distributors'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId] = queryKey
+  const [, chainId, , poolId, ,] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -63,7 +63,7 @@ export const queryGaugeVersion: QueryFunction<
   GaugeQueryKeyType<'version'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId] = queryKey
+  const [, chainId, , poolId, ,] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -77,7 +77,7 @@ export const queryIsDepositRewardAvailable: QueryFunction<
   GaugeQueryKeyType<'isDepositRewardAvailable'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId] = queryKey
+  const [, chainId, , poolId, ,] = queryKey
   if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
 
   const curve = useStore.getState().curve
@@ -90,7 +90,7 @@ export const queryDepositRewardIsApproved: QueryFunction<
   GaugeQueryKeyType<'depositRewardIsApproved'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , chainId, poolId, token, amount] = queryKey
+  const [, chainId, , poolId, , , token, amount] = queryKey
   if (!chainId || !poolId || !token || !isAddress(token) || !amount) throw new Error('Missing required parameters')
 
   const curve = useStore.getState().curve

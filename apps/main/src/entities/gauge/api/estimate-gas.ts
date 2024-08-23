@@ -10,7 +10,7 @@ export const queryEstimateGasDepositRewardApprove: QueryFunction<
   GaugeQueryKeyType<'estimateGasDepositRewardApprove'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , , chainId, poolId, token, amount] = queryKey
+  const [, chainId, , poolId, , , , token, amount] = queryKey
   if (!chainId || !poolId || !token || !isAddress(token) || !amount) throw new Error('Missing required parameters')
 
   const curve = useStore.getState().curve
@@ -24,7 +24,7 @@ export const queryEstimateGasAddRewardToken: QueryFunction<
   GaugeQueryKeyType<'estimateGasAddRewardToken'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , , chainId, poolId, token, distributor] = queryKey
+  const [, chainId, , poolId, , , , token, distributor] = queryKey
   if (!chainId || !poolId || !token || !isAddress(token) || !distributor) throw new Error('Missing required parameters')
 
   const curve = useStore.getState().curve
@@ -37,7 +37,7 @@ export const queryEstimateGasDepositReward: QueryFunction<
   GaugeQueryKeyType<'estimateGasDepositReward'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, , , , , chainId, poolId, token, amount, epoch] = queryKey
+  const [, chainId, , poolId, , , , token, amount, epoch] = queryKey
   if (!chainId || !poolId || !token || !isAddress(token) || !amount || !epoch)
     throw new Error('Missing required parameters')
 

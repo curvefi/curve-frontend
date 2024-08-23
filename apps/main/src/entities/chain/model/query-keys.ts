@@ -1,3 +1,5 @@
+import type { ChainQueryParams } from '@/entities/chain/types'
+
 export const chainKeys = {
-  root: () => ['chain'] as const,
+  root: ({ chainId }: ChainQueryParams) => ['chain', chainId] as const,
 } as const
