@@ -80,7 +80,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
         <WarningBox message={t`Oracle address needs to start with '0x'.`} />
       )}
       {token.oracleAddress.length !== 0 && token.oracleAddress.length < 42 && (
-        <WarningBox message={t`The address needs to be 42 characters long.`} />
+        <WarningBox message={t`Oracle address needs to be 42 characters long.`} />
       )}
       <TextInput
         row
@@ -92,6 +92,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       {token.oracleFunction !== '' && !validateOracleFunction(token.oracleFunction) && (
         <WarningBox message={t`Oracle function name needs to end with '()'.`} />
       )}
+      <WarningBox message={t`Oracle must have a precision of 18 decimals.`} informational />
     </InputContainer>
   )
 }
