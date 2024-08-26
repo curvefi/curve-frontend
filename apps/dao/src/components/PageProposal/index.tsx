@@ -25,7 +25,7 @@ import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Loader from 'ui/src/Loader/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
-import TitleColumnDataComp, { SubTitle, SubTitleColumnData } from '@/components/MetricsComp'
+import MetricsComp, { MetricsTitle, MetricsColumnData } from '@/components/MetricsComp'
 
 type Props = {
   routerParams: {
@@ -105,7 +105,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
       <Box flex>
         <ProposalContainer variant="secondary">
           <ProposalHeader>
-            <TitleColumnDataComp
+            <MetricsComp
               loading={proposal === null}
               title={t`Status`}
               data={
@@ -119,7 +119,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               }
             />
             {proposal?.status === 'Passed' && (
-              <TitleColumnDataComp
+              <MetricsComp
                 loading={proposal === null}
                 title={t`Executed`}
                 data={
@@ -129,15 +129,15 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                 }
               />
             )}
-            <TitleColumnDataComp
+            <MetricsComp
               loading={false}
               title={t`Proposal ID`}
-              data={<SubTitleColumnData>#{voteId}</SubTitleColumnData>}
+              data={<MetricsColumnData>#{voteId}</MetricsColumnData>}
             />
-            <TitleColumnDataComp
+            <MetricsComp
               loading={false}
               title={t`Proposal Type`}
-              data={<SubTitleColumnData>{voteType}</SubTitleColumnData>}
+              data={<MetricsColumnData>{voteType}</MetricsColumnData>}
             />
             <TimeRemainingBox
               loading={!proposal}
@@ -162,7 +162,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
             <>
               <MetaData>
                 <Box flex flexJustifyContent="space-between" flexAlignItems="end">
-                  <SubTitle>{t`Metadata`}</SubTitle>
+                  <MetricsTitle>{t`Metadata`}</MetricsTitle>
                   <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
                     <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
                       {t`Raw IPFS`}
@@ -208,7 +208,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
 
               <VoteInformationBox>
                 <Box>
-                  <SubTitle>{t`Proposer`}</SubTitle>
+                  <MetricsTitle>{t`Proposer`}</MetricsTitle>
                   <StyledExternalLink
                     onClick={(e) => {
                       e.preventDefault()
@@ -219,15 +219,15 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
                   </StyledExternalLink>
                 </Box>
                 <Box>
-                  <SubTitle>{t`Created`}</SubTitle>
+                  <MetricsTitle>{t`Created`}</MetricsTitle>
                   <VoteInformationData>{createdDate}</VoteInformationData>
                 </Box>
                 <Box>
-                  <SubTitle>{t`Snapshot Block`}</SubTitle>
+                  <MetricsTitle>{t`Snapshot Block`}</MetricsTitle>
                   <VoteInformationData>{curveJsProposal?.snapshotBlock}</VoteInformationData>
                 </Box>
                 <Box>
-                  <SubTitle>{t`Ends`}</SubTitle>
+                  <MetricsTitle>{t`Ends`}</MetricsTitle>
                   <VoteInformationData>{endDate}</VoteInformationData>
                 </Box>
               </VoteInformationBox>
@@ -441,7 +441,7 @@ const TopBarColumn = styled(Box)`
   font-weight: var(--semi-bold);
 `
 
-const TimeRemainingBox = styled(TitleColumnDataComp)`
+const TimeRemainingBox = styled(MetricsComp)`
   @media (min-width: 32.5rem) {
     margin: 0 0 0 auto;
     text-align: right;
