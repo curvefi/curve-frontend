@@ -93,32 +93,57 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
 
       try {
-        const proposals = await curve.dao.getProposalList()
+        let page = 1
+        const pagination = 500
+        let results: PricesProposalResponseData[] = []
+
+        while (true) {
+          const proposalsRes = await fetch(
+            `https://prices.curve.fi/v1/dao/proposals?pagination=${pagination}&page=${page}&status_filter=all&type_filter=all`
+          )
+          const data: PricesProposalsResponse = await proposalsRes.json()
+          results = results.concat(data.proposals)
+          if (data.proposals.length < pagination) {
+            break
+          }
+          page++
+        }
 
         let proposalsObject: { [voteId: string]: ProposalData } = {}
 
-        for (const proposal of proposals) {
-          const minAcceptQuorumPercent = (+proposal.minAcceptQuorum / 1e18) * 100
-          const minSupport = (+proposal.supportRequired / 1e18) * 100
-          const totalVeCrv = +proposal.totalSupply / 1e18
+        for (const proposal of results) {
+          const minAcceptQuorumPercent = (+proposal.min_accept_quorum / 1e18) * 100
+          const minSupport = (+proposal.support_required / 1e18) * 100
+          const totalVeCrv = +proposal.total_supply / 1e18
           const quorumVeCrv = (minAcceptQuorumPercent / 100) * totalVeCrv
-          const votesFor = +proposal.votesFor / 1e18
-          const votesAgainst = +proposal.votesAgainst / 1e18
+          const votesFor = +proposal.votes_for / 1e18
+          const votesAgainst = +proposal.votes_against / 1e18
           const currentQuorumPercentage = (votesFor / totalVeCrv) * 100
 
-          const status = getProposalStatus(proposal.startDate, quorumVeCrv, votesFor, votesAgainst, minSupport)
+          const status = getProposalStatus(proposal.start_date, quorumVeCrv, votesFor, votesAgainst, minSupport)
 
-          proposalsObject[`${proposal.voteId}-${proposal.voteType}`] = {
-            ...proposal,
+          proposalsObject[`${proposal.vote_id}-${proposal.vote_type.toUpperCase()}`] = {
+            voteId: proposal.vote_id,
+            voteType: proposal.vote_type.toUpperCase() as ProposalType,
+            creator: proposal.creator,
+            startDate: proposal.start_date,
+            metadata: proposal.metadata,
+            executed: proposal.executed,
             status: status,
             votesFor,
             votesAgainst,
-            minSupport: minSupport,
+            minSupport,
             minAcceptQuorumPercent,
             quorumVeCrv,
             totalVeCrv,
             totalVotes: votesFor + votesAgainst,
             currentQuorumPercentage,
+            totalSupply: proposal.total_supply,
+            snapshotBlock: proposal.snapshot_block,
+            ipfsMetadata: proposal.ipfs_metadata,
+            voteCount: proposal.vote_count,
+            supportRequired: proposal.support_required,
+            minAcceptQuorum: proposal.min_accept_quorum,
           }
         }
 

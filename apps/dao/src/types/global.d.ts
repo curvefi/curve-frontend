@@ -107,6 +107,29 @@ declare global {
     executed: boolean
   }
 
+  type PricesProposalResponseData = {
+    creator: string
+    dt: string
+    executed: boolean
+    ipfs_metadata: string
+    metadata: string
+    min_accept_quorum: string
+    snapshot_block: number
+    start_date: number
+    support_required: string
+    total_supply: string
+    transaction_hash: string
+    vote_count: number
+    vote_id: number
+    vote_type: string
+    votes_against: string
+    votes_for: string
+  }
+
+  type PricesProposalsResponse = {
+    proposals: PricesProposalResponseData[]
+  }
+
   interface ProposalData extends ProposalResponseData {
     status: 'Active' | 'Passed' | 'Denied'
     votesFor: number
@@ -121,7 +144,7 @@ declare global {
 
   type CurveJsProposalData = {
     voteId: number
-    voteType: 'PARAMETER' | 'OWNERSHIP'
+    voteType: ProposalType
     creator: string
     startDate: number
     snapshotBlock: number

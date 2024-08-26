@@ -34,8 +34,6 @@ const GaugeListItem = ({ gaugeData }: Props) => {
     }
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
-  console.log(gaugeData)
-
   return (
     <GaugeBox onClick={() => setOpen(!open)}>
       <DataComp>
