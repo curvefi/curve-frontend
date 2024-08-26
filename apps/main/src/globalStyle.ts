@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
 import { CURVE_ASSETS_URL } from '@/ui/utils'
 
 const GlobalStyle = createGlobalStyle`
@@ -52,21 +52,9 @@ const GlobalStyle = createGlobalStyle`
   .height--full {
     height: 100%;
   }
-
-  .nowrap {
-    white-space: nowrap;
-  }
-
+  
   .vertical-align-middle {
     vertical-align: middle;
-  }
-
-  .right {
-    text-align: right;
-  }
-
-  .left {
-    text-align: left;
   }
 `
 

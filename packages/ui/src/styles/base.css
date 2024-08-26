@@ -15,6 +15,14 @@
     width: 1px;
 }
 
+.nowrap {
+    white-space: nowrap;
+}
+
+.right {
+    text-align: right;
+}
+
 .left {
     text-align: left;
 }
