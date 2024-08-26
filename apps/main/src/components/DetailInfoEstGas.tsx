@@ -26,7 +26,6 @@ const DetailInfoEstGas = ({
   estimatedGas,
   stepProgress,
 }: {
-  curve?: CurveApi | null
   chainId: ChainId
   isDivider?: boolean
   loading: boolean

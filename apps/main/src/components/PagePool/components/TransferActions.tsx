@@ -61,9 +61,7 @@ const TransferActions = ({
       {signerAddress && !isLoading && !walletBalancesLoading && typeof userPoolBalances === 'undefined' && (
         <AlertBox alertType="error">{t`Unable to get wallet balances`}</AlertBox>
       )}
-      <FormConnectWallet curve={curve} loading={isLoading}>
-        {children}
-      </FormConnectWallet>
+      <FormConnectWallet loading={isLoading}>{children}</FormConnectWallet>
     </>
   )
 }

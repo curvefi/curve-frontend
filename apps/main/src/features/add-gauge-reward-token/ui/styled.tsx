@@ -26,9 +26,3 @@ export const StyledButton = styled(Button)`
 export const StyledTokenComboBox = styled(TokenComboBox)`
   height: var(--height-medium);
 `
-
-export const ErrorContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-`

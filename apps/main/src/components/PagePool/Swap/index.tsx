@@ -525,7 +525,6 @@ const Swap = ({
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             isDivider
             chainId={rChainId}
             {...formEstGas}

@@ -12,7 +12,6 @@ const FormConnectWallet = ({
   loading,
   children,
 }: React.PropsWithChildren<{
-  curve?: CurveApi | null
   loading: boolean
 }>) => {
   const { data: curve } = useCurve()

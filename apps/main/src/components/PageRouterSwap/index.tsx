@@ -503,7 +503,6 @@ const QuickSwap = ({
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             loading={typeof formEstGas === 'undefined' && routesAndOutputLoading}
@@ -528,7 +527,7 @@ const QuickSwap = ({
       />
 
       {/* actions */}
-      <FormConnectWallet loading={!steps.length} curve={curve}>
+      <FormConnectWallet loading={!steps.length}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
       </FormConnectWallet>

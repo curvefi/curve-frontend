@@ -466,7 +466,6 @@ const FormWithdraw = ({
         {formValues.selected !== 'lpToken' && <DetailInfoSlippage {...slippage} />}
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             isDivider={haveSlippage}
             {...formEstGas}

@@ -187,7 +187,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
