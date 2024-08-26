@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils/'
-import SubTitleColumn, { SubTitleColumnData } from '@/components/MetricsComp'
+import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
 
 interface UserStatsProps {
@@ -13,38 +13,38 @@ interface UserStatsProps {
 const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
   return (
     <Wrapper>
-      <SubTitleColumn
+      <MetricsComp
         loading={holdersLoading}
         title={t`veCRV`}
         data={
-          <SubTitleColumnData>
+          <MetricsColumnData>
             {formatNumber(veCrvHolder.weight, { showDecimalIfSmallNumberOnly: true })}
-          </SubTitleColumnData>
+          </MetricsColumnData>
         }
       />
-      <SubTitleColumn
+      <MetricsComp
         loading={holdersLoading}
         title={t`Locked CRV`}
         data={
-          <SubTitleColumnData>
+          <MetricsColumnData>
             {formatNumber(veCrvHolder.locked, { showDecimalIfSmallNumberOnly: true })}
-          </SubTitleColumnData>
+          </MetricsColumnData>
         }
       />
-      <SubTitleColumn
+      <MetricsComp
         loading={holdersLoading}
         title={t`Weight Ratio`}
-        data={<SubTitleColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</SubTitleColumnData>}
+        data={<MetricsColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</MetricsColumnData>}
       />
-      <SubTitleColumn
+      <MetricsComp
         loading={holdersLoading}
         title={t`Unlock Time`}
         data={
-          <SubTitleColumnData>
+          <MetricsColumnData>
             {veCrvHolder.unlock_time
               ? formatDateFromTimestamp(convertToLocaleTimestamp(new Date(veCrvHolder.unlock_time).getTime()))
               : 'N/A'}
-          </SubTitleColumnData>
+          </MetricsColumnData>
         }
       />
     </Wrapper>
