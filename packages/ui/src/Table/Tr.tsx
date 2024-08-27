@@ -4,8 +4,15 @@ const Tr = styled.tr`
   min-height: 3.75rem;
   cursor: pointer;
 
-  &:hover {
+  + tr:not(.searchTermsResult) {
+    border-top: 1px solid var(--border-400);
+  }
+
+  &:not(.searchTermsResult):hover {
     background-color: var(--table_row--hover--color);
+    + tr.searchTermsResult {
+      background-color: var(--table_row--hover--color);
+    }
   }
 `
 

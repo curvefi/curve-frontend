@@ -8,14 +8,16 @@ import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
 import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
 
+type Filters = { [_: string]: { id: string; displayName: string; color?: string } } | undefined
+
+const FILTER_DEFAULT = { selectedLabel: 'Filter by', selectedColor: null }
+
 const TableButtonFiltersMobile = ({
   filters,
   filterKey,
   updateRouteFilterKey,
 }: {
-  filters: {
-    [_: string]: { id: string; displayName: string; color?: string }
-  }
+  filters: Filters
   filterKey: string
   updateRouteFilterKey(filterKey: string): void
 }) => {
@@ -27,13 +29,12 @@ const TableButtonFiltersMobile = ({
   }
 
   const { selectedLabel, selectedColor } = useMemo(() => {
-    if (filterKey) {
-      const found = filters[filterKey]
-      if (found) {
-        return { selectedLabel: found.displayName, selectedColor: found.color }
-      }
-    }
-    return { selectedLabel: 'Filter by', selectedColor: null }
+    if (!filters || !filterKey) return FILTER_DEFAULT
+
+    const found = filters[filterKey]
+    if (!found) return FILTER_DEFAULT
+
+    return { selectedLabel: found.displayName, selectedColor: found.color }
   }, [filters, filterKey])
 
   return (
@@ -45,10 +46,11 @@ const TableButtonFiltersMobile = ({
       {overlayTriggerState.isOpen && (
         <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: () => overlayTriggerState.close() }}>
           <RadioGroup aria-label={`Filter by`} onChange={handleRadioGroupChange} value={filterKey}>
-            {Object.keys(filters).map((k) => {
-              const item = filters[k]
-              return <TableButtonFiltersMobileItem key={item.id} item={item} />
-            })}
+            {filters &&
+              Object.keys(filters).map((k) => {
+                const item = filters[k]
+                return <TableButtonFiltersMobileItem key={item.id} item={item} />
+              })}
           </RadioGroup>
         </ModalDialog>
       )}
