@@ -1,11 +1,20 @@
 import styled from 'styled-components'
 
-const Td = styled.td`
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--border-400);
+import { breakpoints } from 'ui/src/utils'
 
-  &.right {
-    text-align: right;
+const Td = styled.td<{ $first?: boolean; $last?: boolean }>`
+  padding: 0.5rem;
+
+  &.border-right {
+    border-right: 1px solid var(--border-400);
+  }
+
+  ${({ $first }) => $first && `padding-left: var(--spacing-narrow);`};
+  ${({ $last }) => $last && `padding-right: var(--spacing-narrow);`};
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    ${({ $first }) => $first && `padding-left: var(--spacing-normal);`};
+    ${({ $last }) => $last && `padding-right: var(--spacing-normal);`};
   }
 `
 
