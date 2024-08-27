@@ -11496,6 +11496,8 @@ __metadata:
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
     tsconfig: "npm:*"
+  peerDependencies:
+    fuse.js: ^6.6.2
   languageName: unknown
   linkType: soft
 

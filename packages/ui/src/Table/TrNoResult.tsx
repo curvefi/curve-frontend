@@ -21,7 +21,6 @@ export type TrNoResultProps = {
 
 const TrNoResult = ({ type, noResultKey, value, action }: TrNoResultProps) => {
   const listType = type === 'pool' ? 'pool' : 'market'
-  console.log('no result', { type, noResultKey, value, action })
 
   return (
     <Wrapper>
