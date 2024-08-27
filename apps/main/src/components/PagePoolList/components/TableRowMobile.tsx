@@ -8,12 +8,12 @@ import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
 
-import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
+import { CellInPool } from '@/ui/Table'
+import { LazyItem, type TableRowProps } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
-import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
@@ -78,11 +78,9 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
 
   return (
     <LazyItem id={`${index}`} className="row--info">
-      <TCell>
-        <MobileLabelWrapper flex>
-          <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
-            {isInPool ? <TableCellInPool /> : null}
-          </TCellInPool>
+      <td>
+        <Box grid gridTemplateColumns={isInPool ? 'auto 1fr' : '1fr'}>
+          <CellInPool as="div" isMobile isIn={isInPool} type="pool" />
           <MobileLabelContent>
             <PoolLabel
               isVisible
@@ -106,7 +104,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
           </MobileLabelContent>
-        </MobileLabelWrapper>
+        </Box>
 
         <MobileTableContentWrapper className={isShowDetail ? 'show' : ''}>
           <MobileTableContent themeType={themeType}>
@@ -142,7 +140,6 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                           isHighlightCrv={sortBy === 'rewardsCrv'}
                           isHighlightOther={sortBy === 'rewardsOther'}
                           rewardsApy={rewardsApy}
-                          searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
                         />
                       </ListInfoItem>
                       {poolData && campaignRewardsMapper[poolData.pool.address] && (
@@ -169,23 +166,16 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
             )}
           </MobileTableContent>
         </MobileTableContentWrapper>
-      </TCell>
+      </td>
     </LazyItem>
   )
 }
-
-const MobileLabelWrapper = styled(Box)`
-  .row-in-pool {
-    align-items: center;
-    display: inline-flex;
-    min-width: 1rem;
-  }
-`
 
 const MobileLabelContent = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 4px;
+  padding-left: var(--spacing-narrow);
   width: 100%;
 `
 
@@ -211,10 +201,6 @@ const MobileTableContentWrapper = styled.div`
     max-height: 100rem;
     transition: max-height 1s ease-in-out;
   }
-`
-
-const TCell = styled.td`
-  border-bottom: 1px solid var(--border-400);
 `
 
 export default TableRowMobile
