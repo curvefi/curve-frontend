@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 
-import { delayAction } from 'ui/src/utils/helpers'
+import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
 
 import { RadioGroup } from 'ui/src/Radio'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
@@ -23,9 +23,17 @@ const TableButtonFiltersMobile = ({
 }) => {
   let overlayTriggerState = useOverlayTriggerState({})
 
+  const handleClose = () => {
+    if (getIsMobile()) {
+      delayAction(overlayTriggerState.close)
+    } else {
+      overlayTriggerState.close()
+    }
+  }
+
   const handleRadioGroupChange = (updatedFilterKey: string) => {
     updateRouteFilterKey(updatedFilterKey)
-    delayAction(overlayTriggerState.close)
+    handleClose()
   }
 
   const { selectedLabel, selectedColor } = useMemo(() => {
@@ -44,7 +52,7 @@ const TableButtonFiltersMobile = ({
         {selectedLabel}
       </OpenDialogButton>
       {overlayTriggerState.isOpen && (
-        <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: () => overlayTriggerState.close() }}>
+        <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: handleClose }}>
           <RadioGroup aria-label={`Filter by`} onChange={handleRadioGroupChange} value={filterKey}>
             {filters &&
               Object.keys(filters).map((k) => {

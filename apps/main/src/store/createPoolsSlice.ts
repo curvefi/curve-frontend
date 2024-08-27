@@ -851,7 +851,7 @@ export default createPoolsSlice
 
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const parsedTokensMapper: TokensMapper = {}
+  const parsedTokensMapper = JSON.parse(JSON.stringify(tokensMapper))
   const grouped = groupBy(tokensMapper, (v) => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
@@ -865,7 +865,7 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
     return parsedTokensMapper
   }
 
-  return tokensMapper
+  return parsedTokensMapper
 }
 
 async function getPools(

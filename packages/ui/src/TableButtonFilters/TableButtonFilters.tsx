@@ -68,6 +68,7 @@ const Wrapper = styled(Box)`
   button {
     margin-right: var(--spacing-2);
     margin-bottom: var(--spacing-2);
+    min-height: 32px;
   }
 `
 
