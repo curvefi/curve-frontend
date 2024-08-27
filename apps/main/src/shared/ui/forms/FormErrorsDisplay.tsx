@@ -3,7 +3,7 @@ import { ErrorContainer } from '@/shared/ui/styled-containers'
 import { ErrorMessage } from '@hookform/error-message'
 import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import type { FormError } from '@/shared/ui/forms/error-types'
+import type { FormError } from 'shared/ui/forms/error-types'
 
 const getErrorMessage = (error: FormError): string => {
   if (!error) return 'Unknown error'

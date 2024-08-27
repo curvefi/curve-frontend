@@ -4,6 +4,6 @@ export const formDefaultOptions = {
   resetOptions: {
     keepErrors: false,
   },
-  delayError: 200,
+  delayError: 150,
   criteriaMode: 'all',
 } as const

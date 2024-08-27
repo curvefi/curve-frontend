@@ -1,4 +1,4 @@
-import type { Tab } from '@/shared/ui/tab-slider/TabSlider'
+import type { Tab } from 'shared/ui/tab-slider/TabSlider'
 import type { TabValue } from '@/widgets/manage-gauge/types'
 import { t } from '@lingui/macro'
 
