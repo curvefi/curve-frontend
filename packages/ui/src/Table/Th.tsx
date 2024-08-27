@@ -1,9 +1,18 @@
 import styled from 'styled-components'
 
-const Th = styled.th`
-  padding: 1.5rem 0.5rem 0.25rem 0.5rem;
+import { breakpoints } from 'ui/src/utils'
+
+const Th = styled.th<{ $first?: boolean; $last?: boolean }>`
+  padding: var(--spacing-1) var(--spacing-2);
   height: 1px;
-  cursor: pointer;
+
+  ${({ $first }) => $first && `padding-left: var(--spacing-narrow);`};
+  ${({ $last }) => $last && `padding-right: var(--spacing-narrow);`};
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    ${({ $first }) => $first && `padding-left: var(--spacing-normal);`};
+    ${({ $last }) => $last && `padding-right: var(--spacing-normal);`};
+  }
 `
 
 export default Th
