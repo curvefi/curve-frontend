@@ -1,8 +1,11 @@
 import styled from 'styled-components'
 
 const Tr = styled.tr`
-  min-height: 3.75rem;
   cursor: pointer;
+
+  &.pending {
+    height: 3.4375rem; // 55px
+  }
 
   + tr:not(.searchTermsResult) {
     border-top: 1px solid var(--border-400);
