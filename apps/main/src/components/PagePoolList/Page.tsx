@@ -13,6 +13,7 @@ import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useSearchTermMapper from '@/hooks/useSearchTermMapper'
 import useStore from '@/store/useStore'
 
 import DocumentHead from '@/layout/default/DocumentHead'
@@ -25,6 +26,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
   const { chainId } = curve ?? {}
 
@@ -120,6 +122,7 @@ const Page: NextPage = () => {
             params={params}
             tableLabels={TABLE_LABEL}
             searchParams={parsedSearchParams}
+            searchTermMapper={searchTermMapper}
             updatePath={updatePath}
           />
         )}

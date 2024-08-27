@@ -6,17 +6,21 @@ import type {
   MarketListMapper,
   MarketListItemResult,
   SearchParams,
+  SearchTermResult,
   TableSettings,
 } from '@/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
+import uniqBy from 'lodash/uniqBy'
 
-import { DEFAULT_FORM_STATUS, _searchByTokensAddresses, _getMarketList } from '@/components/PageMarketList/utils'
+import { DEFAULT_FORM_STATUS, _getMarketList, parseSearchTermResults } from '@/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { TITLE } from '@/constants'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
+import { searchByText } from '@/shared/curve-lib'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
 
@@ -32,6 +36,8 @@ type SliceState = {
   searchParams: SearchParams
   searchTextByTokensAndAddresses: { [activeKey: string]: { [address: string]: boolean } }
   searchTextByOther: { [activeKey: string]: { [address: string]: boolean } }
+  searchedByTokens: SearchTermResult
+  searchedByAddresses: SearchTermResult
   result: { [activeKey: string]: MarketListItemResult[] }
   showHideSmallPools: boolean
 }
@@ -75,6 +81,8 @@ const DEFAULT_STATE: SliceState = {
   },
   searchTextByTokensAndAddresses: {},
   searchTextByOther: {},
+  searchedByTokens: {},
+  searchedByAddresses: {},
   result: {},
   showHideSmallPools: false,
 }
@@ -98,21 +106,28 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       })
     },
     filterBySearchText: (searchText, owmDatas) => {
-      let parsedSearchText = searchText.toLowerCase().trim()
+      const { formStatus, ...sliceState } = get()[sliceKey]
 
-      let results: { searchTerm: string; results: OWMData[] } = {
-        searchTerm: '',
-        results: [],
-      }
+      const { tokensResult, addressesResult } = searchByText(
+        searchText,
+        owmDatas,
+        [SEARCH_TERM['owm.borrowed_token.symbol'], SEARCH_TERM['owm.collateral_token.symbol']],
+        [
+          SEARCH_TERM['owm.borrowed_token.address'],
+          SEARCH_TERM['owm.collateral_token.address'],
+          SEARCH_TERM['owm.addresses.controller'],
+          SEARCH_TERM['owm.addresses.amm'],
+          SEARCH_TERM['owm.addresses.vault'],
+          SEARCH_TERM['owm.addresses.gauge'],
+        ]
+      )
 
-      const searchByTokensAddressesResult = _searchByTokensAddresses(parsedSearchText, searchText, owmDatas)
-      results.searchTerm = parsedSearchText
-      results.results = searchByTokensAddressesResult
+      sliceState.setStateByKeys({
+        searchedByTokens: parseSearchTermResults(tokensResult),
+        searchedByAddresses: parseSearchTermResults(addressesResult),
+      })
 
-      if (results.searchTerm !== parsedSearchText) {
-        results.results = []
-      }
-      return results.results
+      return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.owm.id).map((r) => r.item)
     },
     sortByUserData: (api, sortKey, owmData) => {
       const { user } = get()
@@ -270,7 +285,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       sliceState.setStateByKeys({
         activeKey,
-        formStatus: { error: '', noResult: false, isLoading: true },
+        formStatus: { ...DEFAULT_FORM_STATUS, isLoading: true },
+        searchedByAddresses: {},
+        searchedByTokens: {},
       })
 
       // allow UI to update paint
@@ -294,6 +311,12 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         }
       }
 
+      // hide small markets
+      if (hideSmallMarkets) {
+        await markets.fetchDatas('statsCapAndAvailableMapper', api, cOwmDatas, shouldRefetch)
+        cOwmDatas = sliceState.filterSmallMarkets(api, cOwmDatas)
+      }
+
       if (filterKey) {
         if (filterKey === 'user' && !!signerAddress) {
           cOwmDatas = sliceState.filterUserList(api, cOwmDatas, searchParams.filterTypeKey)
@@ -305,12 +328,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // searchText
       if (searchText) {
         cOwmDatas = sliceState.filterBySearchText(searchText, cOwmDatas)
-      }
-
-      // hide small markets
-      if (hideSmallMarkets) {
-        await markets.fetchDatas('statsCapAndAvailableMapper', api, cOwmDatas, shouldRefetch)
-        cOwmDatas = sliceState.filterSmallMarkets(api, cOwmDatas)
       }
 
       // api calls

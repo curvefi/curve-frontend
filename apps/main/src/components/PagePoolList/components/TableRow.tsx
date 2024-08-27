@@ -2,22 +2,19 @@ import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
+import { Td, Tr, CellInPool } from '@/ui/Table'
 import Box from '@/ui/Box'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
 import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
 import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
-import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
-import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 export type TableRowProps = {
   index: number
@@ -63,12 +60,8 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
-      {showInPoolColumn && (
-        <TCellInPool className={`row-in-pool ${isInPool ? 'active' : ''} `}>
-          {isInPool ? <TableCellInPool /> : null}
-        </TCellInPool>
-      )}
-      <td>
+      {showInPoolColumn && <CellInPool isIn={isInPool} type="pool" />}
+      <Td $first={!showInPoolColumn}>
         <PoolLabel
           isVisible
           imageBaseUrl={imageBaseUrl}
@@ -80,13 +73,13 @@ const TableRow: FunctionComponent<TableRowProps> = ({
             onClick: handleCellClick,
           }}
         />
-      </td>
+      </Td>
       {isMdUp ? (
         <>
-          <td className="right">
+          <Td className="right">
             <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === 'rewardsBase'} poolData={poolData} />
-          </td>
-          <td className="right">
+          </Td>
+          <Td className="right">
             <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
               {rewardsApy && (
                 <TableCellRewardsCrv
@@ -96,15 +89,14 @@ const TableRow: FunctionComponent<TableRowProps> = ({
                 />
               )}
               {rewardsApy && <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />}
-              <TableCellRewardsGauge address={poolData?.pool?.gauge.address} searchText={searchText} />
               {poolData && campaignRewardsMapper[poolData.pool.address] && (
                 <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
               )}
             </Box>
-          </td>
+          </Td>
         </>
       ) : (
-        <td className="right">
+        <Td className="right">
           <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
             <TCellRewards
               poolData={poolData}
@@ -112,40 +104,22 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               isHighlightCrv={sortBy === 'rewardsCrv'}
               isHighlightOther={sortBy === 'rewardsOther'}
               rewardsApy={rewardsApy}
-              searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
             />
             {poolData && campaignRewardsMapper[poolData.pool.address] && (
               <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
             )}
           </Box>
-        </td>
+        </Td>
       )}
-      <td className="right">
+      <Td className="right">
         <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
-      </td>
-      <td className="right">
+      </Td>
+      <Td className="right" $last>
         <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
-      </td>
+      </Td>
     </LazyItem>
   )
 }
-
-export const TCellInPool = styled.td`
-  &.active {
-    color: var(--box--primary--color);
-    background-color: var(--table_detail_row--active--background-color);
-  }
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    border-bottom: none;
-  }
-`
-
-const Item = styled.tr`
-  :hover {
-    background-color: var(--table_row--hover--color);
-  }
-`
 
 /**
  * Component to lazy load the <Item> table row when it is visible in the viewport.
@@ -163,9 +137,9 @@ export const LazyItem: FunctionComponent<HTMLAttributes<HTMLTableRowElement>> = 
   }, [isVisible])
 
   return (
-    <Item ref={ref} id={id} style={{ ...style, ...(!isVisible && { height }) }} {...props}>
+    <Tr ref={ref} id={id} style={{ ...style, ...(!isVisible && { height }) }} {...props}>
       {isVisible && children}
-    </Item>
+    </Tr>
   )
 }
 

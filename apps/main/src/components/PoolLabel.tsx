@@ -1,7 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PagePoolList/utils'
 import useStore from '@/store/useStore'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokenAlert from '@/hooks/useTokenAlert'
@@ -23,31 +22,21 @@ type PoolListProps = {
   onClick(target: EventTarget): void
 }
 
-const PoolLabel = ({
-  className,
-  imageBaseUrl,
-  isVisible,
-  poolData,
-  poolListProps,
-}: {
+type Props = {
   className?: string
   imageBaseUrl: string
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
   poolListProps?: PoolListProps
-}) => {
+}
+
+const PoolLabel = ({ className, imageBaseUrl, isVisible, poolData, poolListProps }: Props) => {
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const isMobile = useStore((state) => state.isMobile)
 
   const { pool, tokens = [], tokenAddresses = [] } = poolData ?? {}
-  const { searchText, searchTextByTokensAndAddresses, searchTextByOther, quickViewValue, onClick } = poolListProps ?? {}
-  const parsedSearchText = searchText?.toLowerCase().trim()
-  const isHighlightPoolAddress = pool && parsedSearchText ? pool.address.includes(parsedSearchText) : false
-  const isHighlightPoolName =
-    !!pool && !!parsedSearchText && !!searchTextByOther && pool.address in searchTextByOther
-      ? pool.name.toLowerCase().includes(parsedSearchText)
-      : false
+  const { quickViewValue, onClick } = poolListProps ?? {}
 
   const handleClick = (target: EventTarget) => {
     if (typeof onClick === 'function') {
@@ -86,40 +75,21 @@ const PoolLabel = ({
                 )}
               </>
             )}
-            {pool && (
-              <ChipPool
-                isHighlightPoolName={isHighlightPoolName}
-                isHighlightPoolAddress={isHighlightPoolAddress}
-                poolAddress={pool.address}
-                poolName={pool.name}
-              />
-            )}
+            {pool && <ChipPool poolAddress={pool.address} poolName={pool.name} />}
           </Box>
 
           <PoolLabelTokensWrapper>
             {pool && (
               <div>
                 {isMobile
-                  ? tokens.map((token, idx) => {
-                      return <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>
-                    })
+                  ? tokens.map((token, idx) => <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>)
                   : isVisible &&
                     tokens.map((token, idx) => {
                       const tokenAddress = tokenAddresses[idx]
-                      const parsedSearchTexts = parsedSearchText ? parsedSearchTextToList(parsedSearchText) : null
-
-                      const isHighlight =
-                        !!parsedSearchTexts &&
-                        !!searchTextByTokensAndAddresses &&
-                        pool.address in searchTextByTokensAndAddresses
-                          ? parsedSearchTexts.some((st) => isStartPartOrEnd(st, token.toLowerCase())) ||
-                            parsedSearchTexts.some((st) => isStartPartOrEnd(st, tokenAddress.toLowerCase()))
-                          : false
 
                       return (
                         <ChipToken
-                          key={`${token}-${tokenAddress}-${idx}`}
-                          isHighlight={isHighlight}
+                          key={`${token}${tokenAddress}${idx}`}
                           tokenName={token}
                           tokenAddress={tokenAddress}
                         />
@@ -176,6 +146,7 @@ const StyledAlertBox = styled(AlertBox)`
   margin: var(--spacing-2) 0;
   max-height: 100px;
   overflow: scroll;
+  max-width: 260px;
 `
 
 export default PoolLabel
