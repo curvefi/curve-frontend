@@ -137,7 +137,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         if (pool?.isCrypto || pool?.isMeta) {
           const seedAmounts = pool.isCrypto
             ? await networks[chainId].api.poolDeposit.cryptoSeedAmounts(pool, cFirstFormAmount)
-            : networks[chainId].api.poolDeposit.metaUnderlyingSeedAmounts(pool, cFirstFormAmount)
+            : await networks[chainId].api.poolDeposit.metaUnderlyingSeedAmounts(pool, cFirstFormAmount)
 
           return cFormAmounts.map((a, idx) => {
             a.value = seedAmounts[idx]

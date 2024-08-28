@@ -76,8 +76,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
 // the storage crashes in some browsers if the size of the object is too big
 const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
 
-let setItem: typeof localStorage.setItem;
-
 // cache all items in CacheSlice store
 const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'curve-app-store-cache',
@@ -97,7 +95,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
 
 const useStore =
   process.env.NODE_ENV === 'development'
-    ? create<State>(devtools(persist(store, cache)))
-    : create<State>(persist(store, cache))
+    ? create(devtools(persist(store, cache)))
+    : create(persist(store, cache))
 
 export default useStore
