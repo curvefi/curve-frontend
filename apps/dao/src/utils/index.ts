@@ -1,5 +1,6 @@
 export * from './utilsStorage'
 export * from './utilsRouter'
+export * from './utilsDates'
 
 export function copyToClipboard(text: string) {
   if (window.clipboardData && window.clipboardData.setData) {
@@ -19,5 +20,20 @@ export function copyToClipboard(text: string) {
     } finally {
       document.body.removeChild(textarea)
     }
+  }
+}
+
+export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | string) {
+  if (error?.message) {
+    const message = error.message.toString()
+    if (message.includes('Bad swap type')) {
+      return 'error-swap-not-available'
+    } else if (message.includes('user rejected action')) {
+      return 'error-user-rejected-action'
+    } else {
+      return error.message
+    }
+  } else {
+    return errorMessage
   }
 }

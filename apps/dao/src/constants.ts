@@ -1,7 +1,10 @@
+export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
+
 export const MAIN_ROUTE = {
   PAGE_PROPOSALS: '/proposals',
   PAGE_GAUGES: '/gauges',
   PAGE_VECRV: '/vecrv',
+  PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
 }
 

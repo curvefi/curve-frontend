@@ -18,7 +18,7 @@ import Icon from '@/ui/Icon'
 import { InternalLink } from '@/ui/Link'
 import VoteCountdown from '../VoteCountdown'
 import Script from './components/Script'
-import VotesStatusBox from '../VotesStatusBox'
+import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
 import Voters from './Voters'
 import UserBox from '../UserBox'
 import VoteDialog from '../UserBox/VoteDialog'
@@ -178,14 +178,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <VotesAndUserBox>
                 {proposal && (
                   <Box padding="0 var(--spacing-3)">
-                    <VotesStatusBox
-                      votesFor={proposal?.votesFor}
-                      votesAgainst={proposal?.votesAgainst}
-                      minSupport={proposal?.minSupport}
-                      quorumVeCrv={proposal?.quorumVeCrv}
-                      minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
-                      currentQuorumPercentage={proposal?.currentQuorumPercentage}
-                    />
+                    <ProposalVoteStatusBox proposalData={proposal} />
                   </Box>
                 )}
                 <UserAndVotersBox>
@@ -260,14 +253,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
           {proposal && (
             <>
               <VotesWrapper variant="secondary">
-                <VotesStatusBox
-                  votesFor={proposal?.votesFor}
-                  votesAgainst={proposal?.votesAgainst}
-                  minSupport={proposal?.minSupport}
-                  quorumVeCrv={proposal?.quorumVeCrv}
-                  minAcceptQuorumPercent={proposal?.minAcceptQuorumPercent}
-                  currentQuorumPercentage={proposal?.currentQuorumPercentage}
-                />
+                <ProposalVoteStatusBox proposalData={proposal} />
               </VotesWrapper>
               <Box variant="secondary">
                 <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />

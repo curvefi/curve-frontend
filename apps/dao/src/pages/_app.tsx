@@ -126,18 +126,14 @@ function CurveApp({ Component }: AppProps) {
 
   // initiate proposals list
   useEffect(() => {
-    if (curve) {
-      getProposals(curve)
-      getGauges()
-    }
-  }, [curve, getGauges, getProposals])
+    getProposals()
+    getGauges()
+  }, [getGauges, getProposals])
 
   usePageVisibleInterval(
     () => {
-      if (curve) {
-        getProposals(curve)
-        getGauges()
-      }
+      getProposals()
+      getGauges()
     },
     REFRESH_INTERVAL['5m'],
     isPageVisible
