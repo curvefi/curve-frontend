@@ -15,7 +15,7 @@ export const HelperFields: React.FC<{ chainId: ChainId; poolId: string }> = ({ c
 
   return (
     <FlexContainer>
-      <FieldHelperUsdRate amount={amount} usdRate={tokenUsdRate} />
+      <FieldHelperUsdRate amount={amount ?? '0'} usdRate={tokenUsdRate} />
     </FlexContainer>
   )
 }

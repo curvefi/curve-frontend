@@ -36,7 +36,7 @@ export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ cha
             id="deposit-epoch"
             type="number"
             testId="deposit-epoch"
-            value={String(epoch / TIME_FRAMES.WEEK)}
+            value={String((epoch ?? 0) / TIME_FRAMES.WEEK)}
             onChange={onEpochChange}
           />
         </StyledInputProvider>

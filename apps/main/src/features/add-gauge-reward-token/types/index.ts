@@ -1,3 +1,5 @@
+import type { Address } from 'viem'
+
 export interface ManageGaugeProps {
   pool: PoolData
   chainId: ChainId
@@ -9,6 +11,6 @@ export type AddRewardTokenProps = {
 }
 
 export type AddRewardFormValues = {
-  rewardTokenId: string
-  distributorId: string
+  rewardTokenId?: Address
+  distributorId?: Address
 }

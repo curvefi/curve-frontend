@@ -21,9 +21,9 @@ import useStore from '@/store/useStore'
 import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import { formatNumber } from '@/utils'
 import { t } from '@lingui/macro'
-import { useCallback, useEffect, useMemo, type Key } from 'react'
+import { useCallback, useMemo, type Key } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { Address, isAddressEqual, parseEther } from 'viem'
+import { Address, isAddressEqual } from 'viem'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
@@ -70,7 +70,12 @@ export const AmountTokenInput: React.FC<{
         activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address))
     )
 
-    if (!filteredTokens.some((token) => isAddressEqual(token.address as Address, getValues('rewardTokenId')))) {
+    const rewardTokenId = getValues('rewardTokenId')
+    if (
+      rewardTokenId &&
+      filteredTokens.length > 0 &&
+      !filteredTokens.some((token) => isAddressEqual(token.address as Address, rewardTokenId))
+    ) {
       setValue('rewardTokenId', filteredTokens[0].address as Address, { shouldValidate: true })
     }
 
@@ -86,7 +91,7 @@ export const AmountTokenInput: React.FC<{
 
   const onChangeToken = useCallback(
     (value: Key) => {
-      if (isAddressEqual(value as Address, rewardTokenId)) return
+      if (rewardTokenId && isAddressEqual(value as Address, rewardTokenId)) return
       setValue('rewardTokenId', value as Address, { shouldValidate: true })
       setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
     },
@@ -123,7 +128,7 @@ export const AmountTokenInput: React.FC<{
               }
             }
             testId="deposit-amount"
-            value={isMaxLoading ? '' : amount}
+            value={isMaxLoading ? '' : amount ?? ''}
             onChange={onChangeAmount}
           />
         </FlexItemAmount>

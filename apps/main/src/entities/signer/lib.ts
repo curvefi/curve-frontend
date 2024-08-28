@@ -13,7 +13,9 @@ export const useIsSignerConnected = () => {
   return { data: !!signerAddress }
 }
 
-export const useTokensBalances = (tokens: Address[]): { data: (string | undefined)[]; isLoading: boolean } => {
+export const useTokensBalances = (
+  tokens: (Address | undefined)[]
+): { data: (string | undefined)[]; isLoading: boolean } => {
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
 
@@ -21,7 +23,7 @@ export const useTokensBalances = (tokens: Address[]): { data: (string | undefine
 
   const balances = useMemo(() => {
     if (userBalancesLoading) return tokens.map(() => undefined)
-    return tokens.map((token) => userBalancesMapper[token])
+    return tokens.map((token) => (token ? userBalancesMapper[token] : undefined))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensKey, userBalancesMapper, userBalancesLoading])
 

@@ -4,14 +4,14 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import { useChainId } from '@/entities/chain'
 
-export const useTokens = (addresses: Address[]): { data: (Token | undefined)[] } => {
+export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | undefined)[] } => {
   const { data: chainId } = useChainId()
   const { tokensMapper } = useTokensMapper(chainId)
 
   const tokensKey = JSON.stringify(addresses)
 
   const tokens = useMemo(
-    () => addresses.map((address) => tokensMapper[address]),
+    () => addresses.map((address) => (address ? tokensMapper[address] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tokensKey, tokensMapper]
   )
@@ -19,13 +19,13 @@ export const useTokens = (addresses: Address[]): { data: (Token | undefined)[] }
   return { data: tokens }
 }
 
-export const useTokensUSDRates = (tokens: Address[]): { data: (number | undefined)[] } => {
+export const useTokensUSDRates = (tokens: (Address | undefined)[]): { data: (number | undefined)[] } => {
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
 
   const tokensKey = JSON.stringify(tokens)
 
   const usdRates = useMemo(
-    () => tokens.map((token) => usdRatesMapper[token]),
+    () => tokens.map((token) => (token ? usdRatesMapper[token] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tokensKey, usdRatesMapper]
   )

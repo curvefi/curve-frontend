@@ -1,3 +1,4 @@
+import type { CombinedGaugeParams } from '@/entities/gauge'
 import { Address } from 'viem'
 
 export enum DepositRewardStep {
@@ -7,8 +8,12 @@ export enum DepositRewardStep {
 }
 
 export interface DepositRewardFormValues {
-  rewardTokenId: Address
-  amount: string
-  epoch: number
+  rewardTokenId?: Address
+  amount?: string
+  epoch?: number
+  step: DepositRewardStep
+}
+
+export type GaugeValidationSuite = CombinedGaugeParams & {
   step: DepositRewardStep
 }
