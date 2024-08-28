@@ -69,6 +69,15 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId, curve?.signerAddress, isLoadingCurve])
 
+  useEffect(() => {
+    console.log('Conditions:', {
+      rChainId,
+      rFormType,
+      vecrvInfo: !!vecrvInfo,
+      isLoadingCurve: !isLoadingCurve,
+    })
+  }, [rChainId, rFormType, vecrvInfo, isLoadingCurve])
+
   return (
     <>
       <DocumentHead title={t`CRV Locker`} />

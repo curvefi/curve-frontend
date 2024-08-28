@@ -10,6 +10,9 @@ export const MAIN_ROUTE = {
 
 export const ROUTE = {
   ...MAIN_ROUTE,
+  PAGE_VECRV_CREATE: '/vecrv/create',
+  PAGE_VECRV_ADJUST_CRV: '/vecrv/adjust_crv',
+  PAGE_VECRV_ADJUST_DATE: '/vecrv/adjust_date',
   PAGE_404: '/404',
 } as const
 
