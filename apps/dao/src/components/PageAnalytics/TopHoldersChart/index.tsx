@@ -3,13 +3,13 @@ import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { TOP_HOLDERS_FILTERS } from '@/components/PageVeCrv/constants'
+import { TOP_HOLDERS_FILTERS } from '@/components/PageAnalytics/constants'
 
 import Box from '@/ui/Box'
 import Spinner from '../../Spinner'
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import ErrorMessage from '@/components/ErrorMessage'
-import TopHoldersBarChartComponent from '@/components/PageVeCrv/TopHoldersChart/TopHoldersBarChartComponent'
+import TopHoldersBarChartComponent from '@/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 
 const TopLockers: React.FC = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
@@ -65,7 +65,7 @@ const TopLockers: React.FC = () => {
         </Box>
       </TitleRow>
       <Content>
-        {lockersFetchLoading && <Spinner height="31.25rem" />}
+        {lockersFetchLoading && <Spinner height="19.75rem" />}
         {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvHolders} />}
         {lockersFetchSuccess && (
           <TopHoldersBarChartComponent data={[...veCrvHolders.topHolders, othersData]} filter={topHoldersSortBy} />
