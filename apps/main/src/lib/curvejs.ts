@@ -543,7 +543,7 @@ const poolDeposit = {
   // seed info
   cryptoSeedAmounts: (p: Pool, amount: string) => {
     log('cryptoSeedAmounts', p.name)
-    return p.getSeedAmounts(amount)
+    return p.cryptoSeedAmounts(amount)
   },
   cryptoSeedInitialRate: async (p: Pool, tokens: string[]) => {
     log('cryptoSeedInitialRate', p.name, tokens)
@@ -559,7 +559,7 @@ const poolDeposit = {
   },
   metaUnderlyingSeedAmounts: (p: Pool, amount1: string) => {
     log('metaUnderlyingSeedAmounts', p.name, amount1)
-    return p.getSeedAmounts(amount1, true)
+    return p.metaUnderlyingSeedAmounts(amount1)
   },
 
   depositBalancedAmounts: async (activeKey: string, p: Pool, isWrapped: boolean) => {
