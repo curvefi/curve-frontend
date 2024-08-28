@@ -66,6 +66,31 @@ class BigDecimal {
   static zero = BigDecimal.from(0)
 
   /**
+   * Checks if a value is valid for creating a BigDecimal instance.
+   * @param value The value to check.
+   * @returns True if the value is valid, false otherwise.
+   */
+  static isValid(value: unknown): boolean {
+    if (value instanceof BigDecimal) {
+      return true
+    }
+
+    if (typeof value === 'string') {
+      return /^-?\d+(\.\d+)?$/.test(value)
+    }
+
+    if (typeof value === 'number') {
+      return !isNaN(value) && isFinite(value)
+    }
+
+    if (typeof value === 'bigint') {
+      return true
+    }
+
+    return false
+  }
+
+  /**
    * Changes the sign of the BigDecimal.
    * @returns A new BigDecimal with the opposite sign.
    */
