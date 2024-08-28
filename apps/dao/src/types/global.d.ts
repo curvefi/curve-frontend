@@ -88,6 +88,8 @@ declare global {
     l2GasPriceWei?: number
   }
 
+  type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
+
   type ProposalType = 'PARAMETER' | 'OWNERSHIP'
 
   type ProposalResponseData = {
@@ -431,6 +433,25 @@ declare global {
     votes: UserGaugeVoteResData[]
   }
 
+  interface FnStepEstGasApprovalResponse {
+    activeKey: string
+    isApproved: boolean
+    estimatedGas: EstimatedGas
+    error: string
+  }
+
+  interface FnStepApproveResponse {
+    activeKey: string
+    hashes: string[]
+    error: string
+  }
+
+  interface FnStepResponse {
+    activeKey: string
+    hash: string
+    error: string
+  }
+
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
@@ -451,4 +472,39 @@ declare global {
   type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
   type GaugeVotesSortBy = 'weight' | 'timestamp'
   type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
+
+  export enum ClaimButtonsKey {
+    '3CRV' = '3CRV',
+    crvUSD = 'crvUSD',
+  }
+  export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
 }
+
+const ALERT_FORM_ERROR_KEYS = {
+  'error-user-rejected-action': 'error-user-rejected-action',
+  'error-est-gas-approval': 'error-est-gas-approval',
+  'error-invalid-provider': 'error-invalid-provider',
+  'error-pool-list': 'error-pool-list',
+  'error-step-approve': 'error-step-approve',
+  'error-step-deposit': 'error-step-deposit',
+  'error-step-swap': 'error-step-swap',
+  'error-step-stake': 'error-step-stake',
+  'error-step-withdraw': 'error-step-withdraw',
+  'error-step-unstake': 'error-step-unstake',
+  'error-swap-exchange-and-output': 'error-swap-exchange-and-output',
+  'error-swap-not-available': 'error-swap-not-available',
+  'error-deposit-bonus': 'error-deposit-bonus',
+  'error-deposit-balance': 'error-deposit-balance',
+  'error-deposit-withdraw-expected': 'error-deposit-withdraw-expected',
+  'error-deposit-withdraw-expected-bonus': 'error-deposit-withdraw-expected-bonus',
+  'error-step-claim': 'error-step-claim',
+  'error-get-claimable': 'error-get-claimable',
+  'error-get-dashboard-data': 'error-get-dashboard-data',
+  'error-get-gas': 'error-get-gas',
+  'error-get-locked-crv-info': 'error-get-locked-crv-info',
+  'error-step-claim-fees': 'error-step-claim-fees',
+  'error-step-create-locked-crv': 'error-step-create-locked-crv',
+  'error-step-locked-time': 'error-step-locked-time',
+  'error-step-locked-crv': 'error-step-locked-crv',
+  'error-withdraw-locked-crv': 'error-withdraw-locked-crv',
+} as const

@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { useCallback } from 'react'
 
 import VoteCountdown from '../../VoteCountdown'
-import VotesStatusBox from '../../VotesStatusBox'
+import ProposalVoteStatusBox from '@/components/ProposalVoteStatusBox'
 import LazyItem from '@/ui/LazyItem'
 
 type Props = {
@@ -11,20 +11,7 @@ type Props = {
 }
 
 const Proposal = ({ proposalData, handleClick }: Props) => {
-  const {
-    voteId,
-    voteType,
-    startDate,
-    metadata,
-    votesFor,
-    votesAgainst,
-    quorumVeCrv,
-    minAcceptQuorumPercent,
-    minSupport,
-    status,
-    executed,
-    currentQuorumPercentage,
-  } = proposalData
+  const { voteId, voteType, startDate, metadata, status, executed } = proposalData
 
   const truncateMetadata = useCallback((metadata: string | null, maxLength: number) => {
     if (!metadata) {
@@ -60,14 +47,7 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
           <ProposalMetadata>{truncateMetadata(metadata, 300)}</ProposalMetadata>
         </InformationWrapper>
         <VoteWrapper>
-          <StyledVotesStatusBox
-            votesFor={votesFor}
-            votesAgainst={votesAgainst}
-            currentQuorumPercentage={currentQuorumPercentage}
-            quorumVeCrv={quorumVeCrv}
-            minAcceptQuorumPercent={minAcceptQuorumPercent}
-            minSupport={minSupport}
-          />
+          <StyledProposalVoteStatusBox proposalData={proposalData} />
         </VoteWrapper>
       </ProposalContainer>
     </LazyItem>
@@ -214,7 +194,7 @@ const ProposalExecuted = styled.h4`
   }
 `
 
-const StyledVotesStatusBox = styled(VotesStatusBox)`
+const StyledProposalVoteStatusBox = styled(ProposalVoteStatusBox)`
   margin: var(--spacing-1) 0;
 `
 

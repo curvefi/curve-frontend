@@ -40,7 +40,7 @@ const sliceKey = 'proposals'
 
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
-    getProposals(curve: CurveApi): void
+    getProposals(): void
     getProposal(curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP'): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
@@ -84,7 +84,7 @@ const DEFAULT_STATE: SliceState = {
 const createProposalsSlice = (set: SetState<State>, get: GetState<State>): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    getProposals: async (curve: CurveApi) => {
+    getProposals: async () => {
       const { proposalsMapper } = get()[sliceKey]
       const { cacheProposalsMapper } = get().storeCache
 
@@ -129,7 +129,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             startDate: proposal.start_date,
             metadata: proposal.metadata,
             executed: proposal.executed,
-            status: status,
+            status,
             votesFor,
             votesAgainst,
             minSupport,

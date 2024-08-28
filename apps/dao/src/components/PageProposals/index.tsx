@@ -34,7 +34,6 @@ const Proposals = () => {
   } = useStore((state) => state.proposals)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const navigate = useNavigate()
-  const curve = useStore((state) => state.curve)
 
   const isLoading = proposalsLoadingState === 'LOADING' || filteringProposalsLoading
   const isSuccess = proposalsLoadingState === 'SUCCESS' && !filteringProposalsLoading
@@ -128,7 +127,7 @@ const Proposals = () => {
             )}
             {isError && (
               <ErrorMessageWrapper>
-                <ErrorMessage message={t`Error fetching proposals`} onClick={() => getProposals(curve!)} />
+                <ErrorMessage message={t`Error fetching proposals`} onClick={() => getProposals()} />
               </ErrorMessageWrapper>
             )}
             {isSuccess &&
