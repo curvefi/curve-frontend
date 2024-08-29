@@ -46,6 +46,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       errorMessage={t`An error occurred while fetching proposal votes.`}
       setSortBy={(key) => setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)}
       getData={() => getGaugeVotes(gaugeAddress)}
+      noDataMessage={t`No gauge weight votes found for this gauge.`}
       renderRow={(gaugeVote, index) => (
         <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length} minWidth={tableMinWidth}>
           <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>

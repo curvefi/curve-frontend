@@ -49,6 +49,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
       getData={() => getUserProposalVotes(userAddress)}
       gridTemplateColumns={'0.5fr 1fr 1fr 1fr 1fr 1fr'}
+      noDataMessage={t`No proposal votes found for this user.`}
       renderRow={(proposalVote, index) => (
         <TableRowWrapper
           key={index}

@@ -72,6 +72,7 @@ export const TableDataLink = styled(InternalLink)<InternalLinkProps>`
   color: inherit;
   text-transform: none;
   margin-left: auto;
+  text-decoration: underline;
   &.right-padding {
     padding-right: var(--spacing-2);
   }

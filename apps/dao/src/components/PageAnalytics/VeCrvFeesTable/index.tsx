@@ -27,43 +27,49 @@ const VeCrcFees: React.FC = () => {
 
   return (
     <Wrapper>
-      <VeCrvFeesChart />
-      <FeesBox flex flexColumn>
-        <FeesTitlesRow>
-          <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
-          <FeesSubtitle>{t`Fees`}</FeesSubtitle>
-        </FeesTitlesRow>
-        {feesLoading && <Spinner height="25rem" />}
-        {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
-        {feesReady && (
-          <>
-            <FeesContainer>
-              {veCrvFees.fees.map((item) => {
-                const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
+      {feesLoading ? (
+        <Spinner height="27.125rem" />
+      ) : (
+        <>
+          <VeCrvFeesChart />
+          <FeesBox flex flexColumn>
+            <FeesTitlesRow>
+              <FeesSubtitle>{t`Distribution Date`}</FeesSubtitle>
+              <FeesSubtitle>{t`Fees`}</FeesSubtitle>
+            </FeesTitlesRow>
+            {feesLoading && <Spinner height="27.125rem" />}
+            {feesError && <ErrorMessage message="Error fetching veCRV historical fees" onClick={getVeCrvFees} />}
+            {feesReady && (
+              <>
+                <FeesContainer>
+                  {veCrvFees.fees.map((item) => {
+                    const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
 
-                return (
-                  <FeeRow key={item.date}>
-                    <FeeDate>
-                      {item.date}
-                      {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
-                    </FeeDate>
-                    <FeeData>
-                      $
-                      {formatNumber(item.fees_usd, {
-                        showDecimalIfSmallNumberOnly: true,
-                      })}
-                    </FeeData>
-                  </FeeRow>
-                )
-              })}
-            </FeesContainer>
-            <TotalFees>
-              <FeeDate>{t`Total Fees:`}</FeeDate>
-              <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
-            </TotalFees>
-          </>
-        )}
-      </FeesBox>
+                    return (
+                      <FeeRow key={item.date}>
+                        <FeeDate>
+                          {item.date}
+                          {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
+                        </FeeDate>
+                        <FeeData>
+                          $
+                          {formatNumber(item.fees_usd, {
+                            showDecimalIfSmallNumberOnly: true,
+                          })}
+                        </FeeData>
+                      </FeeRow>
+                    )
+                  })}
+                </FeesContainer>
+                <TotalFees>
+                  <FeeDate>{t`Total Fees:`}</FeeDate>
+                  <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
+                </TotalFees>
+              </>
+            )}
+          </FeesBox>
+        </>
+      )}
     </Wrapper>
   )
 }
@@ -78,12 +84,6 @@ const Wrapper = styled.div`
   }
 `
 
-const BoxTitle = styled.h2`
-  font-size: var(--font-size-3);
-  font-weight: bold;
-  padding: var(--spacing-3);
-`
-
 const FeesBox = styled(Box)`
   padding-top: var(--spacing-3);
   @media (min-width: 25rem) {
@@ -95,7 +95,7 @@ const FeesContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
-  max-height: 25rem;
+  max-height: 27.125rem;
   overflow-y: auto;
   padding: var(--spacing-1) var(--spacing-3);
 `

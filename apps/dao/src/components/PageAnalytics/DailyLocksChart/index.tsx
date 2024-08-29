@@ -39,7 +39,7 @@ const Wrapper = styled(Box)`
   margin-bottom: auto;
 `
 
-const BoxTitle = styled.h2`
+const BoxTitle = styled.h4`
   font-size: var(--font-size-3);
   font-weight: bold;
   padding: var(--spacing-3);

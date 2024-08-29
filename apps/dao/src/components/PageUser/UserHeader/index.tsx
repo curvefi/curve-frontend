@@ -58,7 +58,9 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
 const Wrapper = styled(Box)`
   padding: var(--spacing-3);
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
 `

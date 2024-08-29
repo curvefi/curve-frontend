@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 
@@ -7,8 +6,8 @@ import Box from '@/ui/Box'
 import GaugeWeightHistoryChart from '@/components/Charts/GaugeWeightHistoryChart'
 import GaugeHeader from './GaugeHeader'
 import GaugeMetrics from './GaugeMetrics'
-import { SpinnerWrapper } from '@/ui/Spinner'
 import GaugeVotesTable from './GaugeVotesTable'
+import BackButton from '../BackButton'
 
 type GaugeProps = {
   routerParams: {
@@ -26,8 +25,9 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
 
   return (
     <Wrapper>
+      <BackButton path="/ethereum/gauges" label="Back to gauges" />
       <GaugePageContainer variant="secondary">
-        <GaugeHeader gaugeAddress={gaugeAddress} gaugeData={gaugeData} dataLoading={loading} />
+        <GaugeHeader gaugeData={gaugeData} dataLoading={loading} />
         <GaugeMetrics gaugeData={gaugeData} dataLoading={loading} />
         <Content>
           <GaugeWeightHistoryChart gaugeAddress={gaugeAddress} minHeight={25} />

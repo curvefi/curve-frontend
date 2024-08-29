@@ -65,7 +65,7 @@ const TopLockers: React.FC = () => {
         </Box>
       </TitleRow>
       <Content>
-        {lockersFetchLoading && <Spinner height="19.75rem" />}
+        {lockersFetchLoading && <Spinner height="18.75rem" />}
         {lockersFetchError && <ErrorMessage message={t`Error fetching veCRV holders`} onClick={getVeCrvHolders} />}
         {lockersFetchSuccess && (
           <TopHoldersBarChartComponent data={[...veCrvHolders.topHolders, othersData]} filter={topHoldersSortBy} />
@@ -87,7 +87,7 @@ const TitleRow = styled.div`
   padding: var(--spacing-3);
 `
 
-const BoxTitle = styled.h2`
+const BoxTitle = styled.h4`
   font-size: var(--font-size-3);
   font-weight: bold;
 `

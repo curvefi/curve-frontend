@@ -46,6 +46,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
       errorMessage={t`An error occurred while fetching user gauge votes.`}
       setSortBy={(key) => setUserGaugeVotesSortBy(userAddress, key as UserGaugeVotesSortBy)}
       getData={() => getUserGaugeVotes(userAddress.toLowerCase())}
+      noDataMessage={t`No gauge votes found for this user.`}
       renderRow={(gaugeVote, index) => (
         <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} minWidth={tableMinWidth}>
           <TableData className={userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>

@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumber, formatNumberWithSuffix } from '@/ui/utils'
+import { formatNumberWithSuffix } from '@/ui/utils'
 
 import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
 import ProgressBar from '@/components/ProposalVoteStatusBox/ProgressBar'
 import { TooltipIcon } from '@/ui/Tooltip'
 
@@ -27,7 +26,8 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
       <Box flex flexColumn flexGap="var(--spacing-2)">
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)">
-            <Data>Participation</Data>
+            <HighlightedData>{t`Quorum`} </HighlightedData>
+            <Data>({minAcceptQuorumPercent}%)</Data>
           </Box>
           <Box flex flexGap="var(--spacing-1)">
             <HighlightedData>{formatNumberWithSuffix(votesFor)}</HighlightedData>{' '}
@@ -43,14 +43,25 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
       </Box>
 
       <Box flex flexColumn flexGap="var(--spacing-2)">
+        <Box flex flexGap="var(--spacing-1)" flexJustifyContent="space-between">
+          <Box flex flexGap="var(--spacing-1)">
+            <HighlightedData>{t`Min Support`}</HighlightedData>
+            <Data>({minSupport}%)</Data>
+          </Box>
+          <Box flex flexGap="var(--spacing-1)">
+            <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            <Data>{t`of ${minSupport}%`}</Data>
+          </Box>
+        </Box>
         <ProgressBar active={totalVotes > 0} support={support} minSupport={minSupport} />
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)">
-            <Data className="for">For</Data> <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            <HighlightedData className="for">For</HighlightedData>{' '}
+            <HighlightedData>{support.toFixed(2)}%</HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)">
             <HighlightedData>{against.toFixed(2)}%</HighlightedData>
-            <Data className="against">Against</Data>
+            <HighlightedData className="against">Against</HighlightedData>
           </Box>
         </Box>
       </Box>

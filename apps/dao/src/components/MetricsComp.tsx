@@ -22,7 +22,7 @@ const MetricsComp: React.FC<Props> = ({ loading, title, data, className }) => {
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   justify-content: space-between;
 `
@@ -39,7 +39,7 @@ export const MetricsTitle = styled.p`
 
 export const MetricsColumnData = styled.h3<{ noMargin?: boolean }>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : 'var(--spacing-1)')};
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
 `
 
 export default MetricsComp

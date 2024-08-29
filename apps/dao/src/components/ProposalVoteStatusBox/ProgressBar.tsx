@@ -40,14 +40,9 @@ const SupportLine = styled.div<{ quorum: boolean; minSupport: number; active: bo
   top: 50%;
   left: ${({ minSupport }) => `${minSupport}%`};
   width: 2px;
-  height: 50%;
-  background-color: var(--primary-400);
-  ${({ quorum, active }) =>
-    quorum
-      ? 'transform: translateY(calc(-200% - 1px));'
-      : active
-      ? 'transform: translateY(100%);'
-      : 'transform: translateY(calc(100% + 1px));'};
+  height: 100%;
+  background-color: var(--page--text-color);
+  transform: translateY(calc(-50%));
 `
 
 export default ProgressBar

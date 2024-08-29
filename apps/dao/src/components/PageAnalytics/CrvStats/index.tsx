@@ -28,8 +28,8 @@ const CrvStats: React.FC = () => {
   return (
     <Wrapper>
       <Container>
-        <h3>{t`VECRV METRICS`}</h3>
-        <Box flex flexGap="var(--spacing-3)" flexJustifyContent="space-between">
+        <h4>{t`VECRV METRICS`}</h4>
+        <MetricsContainer>
           <MetricsComp
             loading={veCrvLoading}
             title={t`Total CRV`}
@@ -84,15 +84,11 @@ const CrvStats: React.FC = () => {
             title={t`veCRV APR`}
             data={
               <AprRow>
-                <MetricsColumnData noMargin>
-                  {`~${formatNumber(veCrvApr, {
-                    showDecimalIfSmallNumberOnly: true,
-                  })}%`}
-                </MetricsColumnData>
+                <MetricsColumnData noMargin>{`~${veCrvApr.toFixed(2)}%`}</MetricsColumnData>
               </AprRow>
             }
           />
-        </Box>
+        </MetricsContainer>
       </Container>
     </Wrapper>
   )
@@ -117,6 +113,13 @@ const Container = styled.div`
     display: flex;
     column-gap: var(--spacing-4);
   }
+`
+
+const MetricsContainer = styled(Box)`
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--spacing-3) var(--spacing-4);
 `
 
 const StyledTooltip = styled(Tooltip)`

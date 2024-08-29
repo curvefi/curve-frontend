@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 type SmallLabelProps = {
-  description: string
+  description: React.ReactNode | string
   isKilled?: boolean
   isNetwork?: boolean
   className?: string
@@ -27,8 +27,8 @@ const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
   @media (min-width: 33.125rem) {
     margin: 0;
   }
-  ${({ isNetwork }) =>
-    isNetwork &&
+  ${({ isKilled }) =>
+    isKilled &&
     `
       color: 'var(--chart-red)';
       border: 1px solid 'var(--chart-red)';

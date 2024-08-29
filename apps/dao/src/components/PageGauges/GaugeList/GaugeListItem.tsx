@@ -16,6 +16,8 @@ import LineChartComponent from '../../Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import TitleComp from './TitleComp'
+import CopyIconButton from '@/components/CopyIconButton'
+import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -110,10 +112,16 @@ const GaugeListItem = ({ gaugeData }: Props) => {
                 </StatsTitleRow>
                 <StatsRow>
                   {gaugeData.pool?.address && (
-                    <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
-                      {shortenTokenAddress(gaugeData.pool.address)}
-                      <Icon name="Launch" size={16} />
-                    </StyledExternalLink>
+                    <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+                      <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
+                        {shortenTokenAddress(gaugeData.pool.address)}
+                      </StyledExternalLink>
+                      <ExternalLinkIconButton
+                        href={networks[1].scanAddressPath(gaugeData.pool.address)}
+                        tooltip={t`View on explorer`}
+                      />
+                      <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.pool.address} />
+                    </Box>
                   )}
                   <h5>
                     {gaugeData.pool?.trading_volume_24h
@@ -142,10 +150,16 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               <h6>{t`Created`}</h6>
             </StatsTitleRow>
             <StatsRow>
-              <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
-                {shortenTokenAddress(gaugeData.address)}
-                <Icon name="Launch" size={16} />
-              </StyledExternalLink>
+              <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+                  {shortenTokenAddress(gaugeData.address)}
+                </StyledExternalLink>
+                <ExternalLinkIconButton
+                  href={networks[1].scanAddressPath(gaugeData.address)}
+                  tooltip={t`View on explorer`}
+                />
+                <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
+              </Box>
               <h5>
                 {gaugeData.emissions
                   ? formatNumber(gaugeData.emissions, {
@@ -285,6 +299,9 @@ const StyledInternalLink = styled(InternalLink)`
   margin-left: auto;
   &:hover {
     cursor: pointer;
+    color: var(--button_outlined--hover--color);
+    border-color: var(--button_outlined--hover--color);
+    background-color: var(--button_outlined--hover--background-color);
   }
 `
 

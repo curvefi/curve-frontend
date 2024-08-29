@@ -6,6 +6,7 @@ import Pagination from './Pagination'
 import Spinner from '@/components/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
+import NoTableData from './NoTableData'
 
 export interface Column<T> {
   key: keyof T
@@ -24,6 +25,7 @@ interface PaginatedTableProps<T> {
   getData: () => void
   renderRow: (item: T, index: number) => React.ReactNode
   minWidth: number
+  noDataMessage: string
   gridTemplateColumns?: string
 }
 
@@ -38,6 +40,7 @@ const PaginatedTable = <T,>({
   setSortBy,
   renderRow,
   minWidth,
+  noDataMessage,
   gridTemplateColumns,
 }: PaginatedTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1)
@@ -70,9 +73,12 @@ const PaginatedTable = <T,>({
               <ErrorMessage message={errorMessage} onClick={getData} />
             </ErrorMessageWrapper>
           )}
+          {fetchingState === 'SUCCESS' && currentItems.length === 0 && (
+            <NoTableData height={fetchFeedbackHeight} noDataMessage={noDataMessage} />
+          )}
         </TableBody>
       </Container>
-      {fetchingState === 'SUCCESS' && (
+      {fetchingState === 'SUCCESS' && currentItems.length > 0 && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       )}
     </Wrapper>

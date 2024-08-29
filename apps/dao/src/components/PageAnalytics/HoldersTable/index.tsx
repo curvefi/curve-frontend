@@ -6,7 +6,7 @@ import useStore from '@/store/useStore'
 import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
 
 import PaginatedTable, { Column } from '@/components/PaginatedTable'
-import { TableRowWrapper, TableData } from '@/components/PaginatedTable/TableRow'
+import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
 import { InternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 
@@ -36,24 +36,26 @@ const TopHoldersTable: React.FC = () => {
         errorMessage={t`An error occurred while veCRV holders data.`}
         setSortBy={(key) => setAllHoldersSortBy(key as AllHoldersSortBy)}
         getData={() => getVeCrvHolders()}
+        noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
           <TableRowWrapper key={holder.user} minWidth={tableMinWidth} columns={HOLDERS_LABELS.length}>
-            <TableData className="align-left">
-              {index + 1}.
-              <StyledInternalLink href={`/ethereum/user/${holder.user}`}>
-                {shortenTokenAddress(holder.user)}
-              </StyledInternalLink>
-            </TableData>
-            <TableData className={allHoldersSortBy.key === 'weight' ? 'active right-padding' : 'right-padding'}>
+            <TableDataLink className="align-left" href={`/ethereum/user/${holder.user}`}>
+              {index + 1}. {shortenTokenAddress(holder.user)}
+            </TableDataLink>
+            <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
               {formatNumber(holder.weight, { showDecimalIfSmallNumberOnly: true })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'locked' ? 'active right-padding' : 'right-padding'}>
+            <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
               {formatNumber(holder.locked, { showDecimalIfSmallNumberOnly: true })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'weight_ratio' ? 'active right-padding' : 'right-padding'}>
+            <TableData
+              className={allHoldersSortBy.key === 'weight_ratio' ? 'sortby-active right-padding' : 'right-padding'}
+            >
               {formatNumber(holder.weight_ratio, { style: 'percent' })}
             </TableData>
-            <TableData className={allHoldersSortBy.key === 'unlock_time' ? 'active right-padding' : 'right-padding'}>
+            <TableData
+              className={allHoldersSortBy.key === 'unlock_time' ? 'sortby-active right-padding' : 'right-padding'}
+            >
               {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(holder.unlock_time).getTime()))}
             </TableData>
           </TableRowWrapper>

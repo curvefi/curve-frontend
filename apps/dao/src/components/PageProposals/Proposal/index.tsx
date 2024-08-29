@@ -1,9 +1,11 @@
 import styled from 'styled-components'
 import { useCallback } from 'react'
+import { t } from '@lingui/macro'
 
 import VoteCountdown from '../../VoteCountdown'
 import ProposalVoteStatusBox from '@/components/ProposalVoteStatusBox'
 import LazyItem from '@/ui/LazyItem'
+import SmallLabel from '@/components/SmallLabel'
 
 type Props = {
   proposalData: ProposalData
@@ -28,17 +30,20 @@ const Proposal = ({ proposalData, handleClick }: Props) => {
       <ProposalContainer onClick={() => handleClick(`${voteId}-${voteType}`)}>
         <InformationWrapper>
           <ProposalDetailsRow>
-            <ProposalStatus
+            <SmallLabel
               className={`${status === 'Active' && 'active'} ${status === 'Denied' && 'denied'} ${
                 status === 'Passed' && 'passed'
               }`}
-            >
-              {status}
-            </ProposalStatus>
+              description={<ProposalStatus className={status}>{status}</ProposalStatus>}
+            />
             {status === 'Passed' && (
-              <ProposalExecuted className={executed ? 'executed' : 'executable'}>
-                {executed ? 'Executed' : 'Executable'}
-              </ProposalExecuted>
+              <SmallLabel
+                description={
+                  <ExecutedStatus className={executed ? 'executed' : 'executable'}>
+                    {executed ? t`Executed` : t`Executable`}
+                  </ExecutedStatus>
+                }
+              />
             )}
             <ProposalId>#{voteId}</ProposalId>
             <ProposalType>{voteType}</ProposalType>
@@ -93,11 +98,9 @@ const ProposalId = styled.h4`
 `
 
 const ProposalStatus = styled.h4`
-  border: 1px solid var(--gray-500);
   font-size: var(--font-size-1);
   text-transform: uppercase;
-  padding: 0.2rem 0.4rem;
-  &.passed {
+  &.Passed {
     :before {
       display: inline-block;
       content: '';
@@ -108,7 +111,7 @@ const ProposalStatus = styled.h4`
       border-radius: 50%;
     }
   }
-  &.denied {
+  &.Denied {
     :before {
       display: inline-block;
       content: '';
@@ -119,7 +122,7 @@ const ProposalStatus = styled.h4`
       border-radius: 50%;
     }
   }
-  &.active {
+  &.Active {
     :before {
       display: inline-block;
       content: '';
@@ -165,11 +168,9 @@ const VoteWrapper = styled.div`
 
 const StyledVoteCountdown = styled(VoteCountdown)``
 
-const ProposalExecuted = styled.h4`
-  border: 1px solid var(--gray-500);
+const ExecutedStatus = styled.h4`
   font-size: var(--font-size-1);
   text-transform: uppercase;
-  padding: 0.2rem 0.4rem;
   &.executed {
     :before {
       display: inline-block;

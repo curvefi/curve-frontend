@@ -10,7 +10,6 @@ import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
 import useProposalsMapper from '@/hooks/useProposalsMapper'
 import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'
 
-import Button from '@/ui/Button'
 import IconButton from '@/ui/IconButton'
 import Tooltip from '@/ui/Tooltip'
 import Box from '@/ui/Box'
@@ -23,9 +22,10 @@ import Voters from './Voters'
 import UserBox from '../UserBox'
 import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Loader from 'ui/src/Loader/Loader'
 import ErrorMessage from '@/components/ErrorMessage'
 import MetricsComp, { MetricsTitle, MetricsColumnData } from '@/components/MetricsComp'
+import SmallLabel from '../SmallLabel'
+import BackButton from '../BackButton'
 
 type Props = {
   routerParams: {
@@ -96,33 +96,19 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
 
   return (
     <Wrapper>
-      <BackButtonWrapper variant="secondary">
-        <BackButton variant="text" onClick={() => navigate(`/ethereum/proposals`)}>
-          <Icon name="ArrowLeft" size={16} />
-          {t`Back to proposals`}
-        </BackButton>
-      </BackButtonWrapper>
+      <BackButton path="/ethereum/proposals" label={t`Back to proposals`} />
       <Box flex>
         <ProposalContainer variant="secondary">
           <ProposalHeader>
-            <MetricsComp
-              loading={proposal === null}
-              title={t`Status`}
-              data={
-                <Status
-                  className={`${proposal?.status === 'Active' && 'active'} ${
-                    proposal?.status === 'Denied' && 'denied'
-                  } ${proposal?.status === 'Passed' && 'passed'}`}
-                >
-                  {proposal?.status}
-                </Status>
-              }
+            <SmallLabel
+              className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
+                proposal?.status === 'Passed' && 'passed'
+              }`}
+              description={<Status className={proposal?.status}>{proposal?.status}</Status>}
             />
             {proposal?.status === 'Passed' && (
-              <MetricsComp
-                loading={proposal === null}
-                title={t`Executed`}
-                data={
+              <SmallLabel
+                description={
                   <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
                     {proposal?.executed ? t`Executed` : t`Executable`}
                   </ExecutedStatus>
@@ -142,7 +128,7 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
             <TimeRemainingBox
               loading={!proposal}
               title={t`Time Remaining`}
-              data={<VoteCountdown startDate={proposal?.startDate} />}
+              data={<StyledVoteCountdown startDate={proposal?.startDate} />}
             />
           </ProposalHeader>
           {isError && !isLoading && (
@@ -202,14 +188,14 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <VoteInformationBox>
                 <Box>
                   <MetricsTitle>{t`Proposer`}</MetricsTitle>
-                  <StyledExternalLink
+                  <StyledInternalLink
                     onClick={(e) => {
                       e.preventDefault()
                       navigate(`/ethereum/user/${proposal?.creator}`)
                     }}
                   >
                     {shortenTokenAddress(proposal?.creator)}
-                  </StyledExternalLink>
+                  </StyledInternalLink>
                 </Box>
                 <Box>
                   <MetricsTitle>{t`Created`}</MetricsTitle>
@@ -324,18 +310,6 @@ const StyledVoters = styled(Voters)`
   width: 100%;
 `
 
-const BackButtonWrapper = styled(Box)`
-  margin: 0 auto var(--spacing-2) var(--spacing-3);
-`
-
-const BackButton = styled(Button)`
-  display: flex;
-  align-items: center;
-  font-size: var(--font-size-2);
-  gap: var(--spacing-2);
-  color: var(--page--text-color);
-`
-
 const ErrorWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -358,7 +332,7 @@ const ProposalHeader = styled.div`
 
 const Status = styled.h3`
   font-size: var(--font-size-2);
-  &.passed {
+  &.Passed {
     :before {
       display: inline-block;
       content: '';
@@ -369,7 +343,7 @@ const Status = styled.h3`
       border-radius: 50%;
     }
   }
-  &.denied {
+  &.Denied {
     :before {
       display: inline-block;
       content: '';
@@ -380,7 +354,29 @@ const Status = styled.h3`
       border-radius: 50%;
     }
   }
-  &.active {
+  &.Active {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-orange);
+      border-radius: 50%;
+    }
+  }
+  &.executed {
+    :before {
+      display: inline-block;
+      content: '';
+      margin: auto 0.3rem auto 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background: var(--chart-green);
+      border-radius: 50%;
+    }
+  }
+  &.executable {
     :before {
       display: inline-block;
       content: '';
@@ -419,19 +415,15 @@ const ExecutedStatus = styled.h3`
   }
 `
 
-const TopBarColumn = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-1);
-  font-size: var(--font-size-3);
-  font-weight: var(--semi-bold);
-`
-
 const TimeRemainingBox = styled(MetricsComp)`
   @media (min-width: 32.5rem) {
     margin: 0 0 0 auto;
     text-align: right;
   }
+`
+
+const StyledVoteCountdown = styled(VoteCountdown)`
+  margin-top: var(--spacing-1);
 `
 
 const MetaData = styled.div`
@@ -450,7 +442,7 @@ const MetaDataParaphraph = styled.p`
   word-break: break-word;
 `
 
-const StyledExternalLink = styled(InternalLink)`
+const StyledInternalLink = styled(InternalLink)`
   display: flex;
   align-items: end;
   gap: var(--spacing-1);
@@ -458,7 +450,6 @@ const StyledExternalLink = styled(InternalLink)`
   font-size: var(--font-size-2);
   font-weight: var(--bold);
   text-transform: none;
-  text-decoration: none;
 
   &:hover {
     cursor: pointer;
@@ -488,10 +479,6 @@ const VotesWrapper = styled(Box)`
   padding: var(--spacing-3);
   min-width: 20rem;
   gap: var(--spacing-2);
-`
-
-const StyledLoader = styled(Loader)`
-  margin-left: auto;
 `
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`

@@ -53,6 +53,7 @@ const UserLocksTable = ({ userAddress, tableMinWidth }: UserLocksTableProps) => 
       errorMessage={t`An error occurred while fetching user locking activity.`}
       setSortBy={(key) => setUserLocksSortBy(userAddress, key as UserLocksSortBy)}
       getData={() => getUserLocks(userAddress.toLowerCase())}
+      noDataMessage={t`No locking activity found for this user.`}
       renderRow={(lock, index) => (
         <TableRowWrapper key={index} columns={LOCKS_LABELS.length} minWidth={tableMinWidth}>
           <TableData className={userLocksSortBy.key === 'date' ? 'sortby-active align-left' : 'align-left'}>

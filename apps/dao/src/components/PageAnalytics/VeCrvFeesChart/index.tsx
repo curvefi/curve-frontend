@@ -48,7 +48,7 @@ const TitleRow = styled.div`
   padding: var(--spacing-3);
 `
 
-const BoxTitle = styled.h2`
+const BoxTitle = styled.h4`
   font-size: var(--font-size-3);
   font-weight: bold;
 `

@@ -5,12 +5,8 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS } from '../constants'
 
-import Box from '@/ui/Box'
 import GaugeListItem from './GaugeListItem'
-import LazyItem from '@/ui/LazyItem'
 import SearchInput from '@/ui/SearchInput'
-import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
-import Icon from '@/ui/Icon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import PaginatedTable from '@/components/PaginatedTable'
@@ -30,10 +26,6 @@ const GaugesList = () => {
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const tableMinWidth = 41.875
 
-  const loading = gaugesLoading === 'LOADING'
-  const error = gaugesLoading === 'ERROR'
-  const success = gaugesLoading === 'SUCCESS'
-
   useEffect(() => {
     if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
       setGauges(searchValue)
@@ -51,7 +43,7 @@ const GaugesList = () => {
   return (
     <>
       <Header>
-        <h3>CURVE GAUGES</h3>
+        <h3>{t`CURVE GAUGES`}</h3>
         <StyledSearchInput
           id="inpSearchProposals"
           placeholder={t`Search`}

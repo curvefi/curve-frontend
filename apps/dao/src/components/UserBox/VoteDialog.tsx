@@ -42,7 +42,6 @@ const VoteDialog = ({
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const { userProposalVotesMapper } = useStore((state) => state.user)
 
-  const userProposalVotesLoading = userProposalVotesMapper[userAddress].fetchingState === 'LOADING'
   const voted = userProposalVotesMapper[userAddress].votes[proposalId ?? '']
   const votedFor = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_for ?? 0) > 0
   const votedAgainst = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_against ?? 0) > 0
@@ -201,7 +200,7 @@ const VoteDialog = ({
                     noLink
                   />
                 </UserInformationContainer>
-                <VoteButtonsWrapper flex flexColumn flexGap="var(--spacing-3)" flexJustifyContent="center">
+                <VoteButtonsWrapper>
                   {voteTx.status !== 'SUCCESS' && (
                     <Box
                       flex
@@ -210,20 +209,24 @@ const VoteDialog = ({
                       flexDirection="row"
                       flexJustifyContent="center"
                     >
-                      <Button
-                        variant="select-flat"
-                        className={vote === true ? 'active' : ''}
+                      <VoteSelectButton
+                        variant="filled"
+                        for={true}
+                        voteFor={vote === true}
+                        className={`for ${vote === true ? 'yes-active' : ''}`}
                         onClick={() => setVote(true)}
                       >
                         {t`For`}
-                      </Button>
-                      <Button
-                        variant="select-flat"
-                        className={vote === false ? 'active' : ''}
+                      </VoteSelectButton>
+                      <VoteSelectButton
+                        variant="filled"
+                        for={false}
+                        voteFor={vote === true}
+                        className={`against ${vote === false ? 'no-active' : ''}`}
                         onClick={() => setVote(false)}
                       >
                         {t`Against`}
-                      </Button>
+                      </VoteSelectButton>
                     </Box>
                   )}
                   {voteTx.status === 'ERROR' && (
@@ -302,6 +305,10 @@ const VoteButtonsWrapper = styled(Box)`
   margin-top: var(--spacing-3);
   padding: var(--spacing-3);
   background-color: var(--box_header--secondary--background-color);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  justify-content: center;
 `
 
 const VotingMessage = styled.p`
@@ -359,6 +366,37 @@ const VotedRowItem = styled.span`
 
 const VoteDialogButton = styled(Button)`
   margin-right: auto;
+`
+
+const VoteSelectButton = styled(Button)<{ for?: boolean; voteFor?: boolean }>`
+  width: 50%;
+  padding-top: var(--spacing-2);
+  padding-bottom: var(--spacing-2);
+  color: var(--text-color);
+  ${({ for: isFor, voteFor: isSelected }) => {
+    if (isFor && isSelected) {
+      return `
+        background-color: var(--chart-green);
+        border: 1px solid var(--chart-green);
+        color: var(--white);
+        &:hover {
+          background-color: var(--chart-green);
+          opacity: 0.8;
+        }
+      `
+    } else if (!isFor && !isSelected) {
+      return `
+        background-color: var(--chart-red);
+        border: 1px solid var(--chart-red);
+        color: var(--white);
+        &:hover {
+          background-color: var(--chart-red);
+          opacity: 0.8;
+        }
+      `
+    }
+    return ''
+  }}
 `
 
 const VoteButton = styled(Button)`

@@ -73,9 +73,9 @@ const Proposals = () => {
 
   return (
     <Wrapper>
-      <PageTitle>Proposals</PageTitle>
       <ProposalsContainer variant="secondary">
-        <SortingBox>
+        <Header>
+          <h3>{t`PROPOSALS`}</h3>
           <StyledSearchInput
             id="inpSearchProposals"
             placeholder={t`Search`}
@@ -84,6 +84,8 @@ const Proposals = () => {
             handleSearchClose={() => setSearchValue('')}
             value={searchValue}
           />
+        </Header>
+        <SortingBox>
           <ListManagerContainer>
             <StyledSelectFilter
               items={PROPOSAL_FILTERS}
@@ -158,6 +160,18 @@ const Wrapper = styled(Box)`
   }
 `
 
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
+  width: 100%;
+  @media (min-width: 29.0625rem) {
+    flex-direction: row;
+  }
+`
+
 const ProposalsContainer = styled(Box)`
   flex-grow: 1;
   display: flex;
@@ -165,7 +179,6 @@ const ProposalsContainer = styled(Box)`
   min-width: 100%;
   width: 100%;
   max-width: 100vw;
-  row-gap: var(--spacing-3);
 `
 
 const ProposalsWrapper = styled.div`
@@ -182,7 +195,7 @@ const SortingBox = styled.div`
   display: grid;
   grid-template-columns: auto auto;
   grid-template-rows: auto auto;
-  padding: var(--spacing-3) var(--spacing-3) 0;
+  padding: 0 var(--spacing-3) var(--spacing-3);
   @media (min-width: 63rem) {
     display: flex;
   }
@@ -190,11 +203,9 @@ const SortingBox = styled.div`
 
 const StyledSearchInput = styled(SearchInput)`
   width: calc(100vw - var(--spacing-3) - var(--spacing-3));
-  margin: var(--spacing-2) 0;
   grid-row: 1/2;
   grid-column: 1/3;
   @media (min-width: 28.1875rem) {
-    margin: var(--spacing-2) var(--spacing-2) var(--spacing-2) 0;
     width: 15rem;
     grid-row: 1/2;
     grid-column: 1/2;
@@ -209,10 +220,10 @@ const ListManagerContainer = styled.div`
   @media (min-width: 28.1875rem) {
     grid-row: 2/3; // Changed to second row
     grid-column: 1/-1;
-    margin: var(--spacing-1) var(--spacing-2) var(--spacing-2) 0;
+    margin: var(--spacing-1) 0 var(--spacing-2) 0;
   }
   @media (min-width: 63rem) {
-    margin: auto var(--spacing-2);
+    margin: auto 0;
   }
 `
 
