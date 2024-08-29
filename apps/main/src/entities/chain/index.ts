@@ -1,2 +1,2 @@
 export * from './lib'
-export * from './model/query-keys'
+export * from './model'

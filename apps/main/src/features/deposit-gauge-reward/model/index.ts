@@ -1,2 +1,2 @@
 export * from './default-values'
-export * from './form-schema'
+export * from './validation-suite'

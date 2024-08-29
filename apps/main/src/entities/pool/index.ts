@@ -1,2 +1,2 @@
-export * from './model/query-keys'
+export * from './model'
 export * from './types'
