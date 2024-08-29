@@ -77,6 +77,7 @@ const GaugesList = () => {
             columns={GAUGE_VOTES_TABLE_LABELS}
             sortBy={gaugeListSortBy}
             errorMessage={t`An error occurred while fetching gauges.`}
+            noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
             getData={() => getGauges(true)}
             renderRow={(gauge, index) => <GaugeListItem key={index} gaugeData={gauge} />}
