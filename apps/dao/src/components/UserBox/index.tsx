@@ -34,7 +34,7 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower, active
         </Box>
       ) : (
         <ConnectMessage>
-          <p>{t`Please connect a wallet to see more user information.`}</p>
+          <p>{t`Please connect a wallet to see user information.`}</p>
           <StyledButton variant="outlined" onClick={handleConnectWallet}>
             {t`Connect Wallet`}
           </StyledButton>
@@ -47,8 +47,6 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower, active
 const Wrapper = styled(Box)`
   display: flex;
   flex-direction: column;
-  width: 20rem;
-  max-width: 100%;
   gap: var(--spacing-1);
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);

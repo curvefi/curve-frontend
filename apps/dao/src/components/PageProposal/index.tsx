@@ -1,11 +1,9 @@
 import styled from 'styled-components'
-import { useNavigate } from 'react-router-dom'
 import { t } from '@lingui/macro'
 import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { copyToClipboard } from '@/utils'
-import { shortenTokenAddress, convertToLocaleTimestamp } from '@/ui/utils'
 
 import useProposalsMapper from '@/hooks/useProposalsMapper'
 import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'
@@ -14,8 +12,6 @@ import IconButton from '@/ui/IconButton'
 import Tooltip from '@/ui/Tooltip'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
-import { InternalLink } from '@/ui/Link'
-import VoteCountdown from '../VoteCountdown'
 import Script from './components/Script'
 import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
 import Voters from './Voters'
@@ -23,21 +19,21 @@ import UserBox from '../UserBox'
 import VoteDialog from '../UserBox/VoteDialog'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
-import MetricsComp, { MetricsTitle, MetricsColumnData } from '@/components/MetricsComp'
-import SmallLabel from '../SmallLabel'
+import { MetricsTitle } from '@/components/MetricsComp'
 import BackButton from '../BackButton'
+import ProposalHeader from './ProposalHeader'
+import ProposalInformation from './ProposalInformation'
 
-type Props = {
+type ProposalProps = {
   routerParams: {
     rProposalId: string
   }
 }
 
-const Proposal = ({ routerParams: { rProposalId } }: Props) => {
+const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.provider)
   const curve = useStore((state) => state.curve)
-  const navigate = useNavigate()
   const { proposalsLoadingState, getProposal, curveJsProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
@@ -65,15 +61,6 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
     [proposal?.status, proposal?.startDate]
   )
 
-  const createdDate = useMemo(
-    () => new Date(convertToLocaleTimestamp(proposal?.startDate) * 1000).toLocaleString(),
-    [proposal?.startDate]
-  )
-  const endDate = useMemo(
-    () => new Date(convertToLocaleTimestamp(proposal?.startDate + 604800) * 1000).toLocaleString(),
-    [proposal?.startDate]
-  )
-
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
   }
@@ -98,121 +85,69 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
     <Wrapper>
       <BackButton path="/ethereum/proposals" label={t`Back to proposals`} />
       <Box flex>
-        <ProposalContainer variant="secondary">
-          <ProposalHeader>
-            <SmallLabel
-              className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
-                proposal?.status === 'Passed' && 'passed'
-              }`}
-              description={<Status className={proposal?.status}>{proposal?.status}</Status>}
-            />
-            {proposal?.status === 'Passed' && (
-              <SmallLabel
-                description={
-                  <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
-                    {proposal?.executed ? t`Executed` : t`Executable`}
-                  </ExecutedStatus>
-                }
-              />
+        <Box flex flexDirection="column" flexGap="var(--spacing-1)" style={{ width: '100%' }}>
+          <ProposalContainer variant="secondary">
+            <ProposalHeader proposal={proposal} voteId={voteId} voteType={voteType} />
+            {isError && !isLoading && (
+              <ErrorWrapper>
+                <ErrorMessage
+                  message={t`Error loading proposal data`}
+                  onClick={() => curve && getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')}
+                />
+              </ErrorWrapper>
             )}
-            <MetricsComp
-              loading={false}
-              title={t`Proposal ID`}
-              data={<MetricsColumnData>#{voteId}</MetricsColumnData>}
-            />
-            <MetricsComp
-              loading={false}
-              title={t`Proposal Type`}
-              data={<MetricsColumnData>{voteType}</MetricsColumnData>}
-            />
-            <TimeRemainingBox
-              loading={!proposal}
-              title={t`Time Remaining`}
-              data={<StyledVoteCountdown startDate={proposal?.startDate} />}
-            />
-          </ProposalHeader>
-          {isError && !isLoading && (
-            <ErrorWrapper>
-              <ErrorMessage
-                message={t`Error loading proposal data`}
-                onClick={() => curve && getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')}
-              />
-            </ErrorWrapper>
-          )}
-          {isLoading && (
-            <StyledSpinnerWrapper>
-              <Spinner />
-            </StyledSpinnerWrapper>
-          )}
-          {isFetched && (
-            <>
-              <MetaData>
-                <Box flex flexJustifyContent="space-between" flexAlignItems="end">
-                  <MetricsTitle>{t`Metadata`}</MetricsTitle>
-                  <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
-                    <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
-                      {t`Raw IPFS`}
-                      <Icon name="Copy" size={16} />
-                    </StyledCopyButton>
-                  </Tooltip>
-                </Box>
-                <MetaDataParaphraph>{proposal?.metadata}</MetaDataParaphraph>
-              </MetaData>
-              {curveJsProposal && <Script script={curveJsProposal?.script} />}
-
-              {/* Votes and User Box inline on small screens */}
-              <VotesAndUserBox>
-                {proposal && (
-                  <Box padding="0 var(--spacing-3)">
-                    <ProposalVoteStatusBox proposalData={proposal} />
+            {isLoading && (
+              <StyledSpinnerWrapper>
+                <Spinner />
+              </StyledSpinnerWrapper>
+            )}
+            {isFetched && (
+              <>
+                <MetaData>
+                  <Box flex flexJustifyContent="space-between" flexAlignItems="end">
+                    <MetricsTitle>{t`Metadata`}</MetricsTitle>
+                    <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
+                      <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
+                        {t`Raw IPFS`}
+                        <Icon name="Copy" size={16} />
+                      </StyledCopyButton>
+                    </Tooltip>
                   </Box>
-                )}
-                <UserAndVotersBox>
-                  {proposal && <StyledVoters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />}
-                  <UserBoxWrapper variant="secondary">
-                    <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
-                      {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
-                        <VoteDialog
-                          userAddress={userAddress ?? ''}
-                          snapshotVotingPower
-                          activeProposal={activeProposal}
-                          votingPower={snapshotVeCrv}
-                          proposalId={rProposalId}
-                        />
-                      )}
-                    </UserBox>
-                  </UserBoxWrapper>
-                </UserAndVotersBox>
-              </VotesAndUserBox>
+                  <MetaDataParaphraph>{proposal?.metadata}</MetaDataParaphraph>
+                </MetaData>
+                {curveJsProposal && <Script script={curveJsProposal?.script} />}
 
-              <VoteInformationBox>
-                <Box>
-                  <MetricsTitle>{t`Proposer`}</MetricsTitle>
-                  <StyledInternalLink
-                    onClick={(e) => {
-                      e.preventDefault()
-                      navigate(`/ethereum/user/${proposal?.creator}`)
-                    }}
-                  >
-                    {shortenTokenAddress(proposal?.creator)}
-                  </StyledInternalLink>
-                </Box>
-                <Box>
-                  <MetricsTitle>{t`Created`}</MetricsTitle>
-                  <VoteInformationData>{createdDate}</VoteInformationData>
-                </Box>
-                <Box>
-                  <MetricsTitle>{t`Snapshot Block`}</MetricsTitle>
-                  <VoteInformationData>{curveJsProposal?.snapshotBlock}</VoteInformationData>
-                </Box>
-                <Box>
-                  <MetricsTitle>{t`Ends`}</MetricsTitle>
-                  <VoteInformationData>{endDate}</VoteInformationData>
-                </Box>
-              </VoteInformationBox>
-            </>
-          )}
-        </ProposalContainer>
+                {/* Votes and User Box inline on small screens */}
+                <VotesAndUserBox>
+                  {proposal && (
+                    <Box padding="0 var(--spacing-3)">
+                      <ProposalVoteStatusBox proposalData={proposal} />
+                    </Box>
+                  )}
+                </VotesAndUserBox>
+              </>
+            )}
+            {proposal && proposal?.voteCount !== 0 && (
+              <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
+            )}
+            <ProposalInformationWrapper>
+              <ProposalInformation proposal={proposal} snapshotBlock={proposal?.snapshotBlock ?? 0} />
+            </ProposalInformationWrapper>
+          </ProposalContainer>
+          <UserSmScreenWrapper variant="secondary">
+            <UserBox votingPower={snapshotVeCrv} snapshotVotingPower activeProposal={activeProposal}>
+              {proposal && snapshotVeCrv !== undefined && !snapshotVeCrv.loading! && (
+                <VoteDialog
+                  userAddress={userAddress ?? ''}
+                  snapshotVotingPower
+                  activeProposal={activeProposal}
+                  votingPower={snapshotVeCrv}
+                  proposalId={rProposalId}
+                />
+              )}
+            </UserBox>
+          </UserSmScreenWrapper>
+        </Box>
 
         <SecondColumnBox display="flex" flexColumn flexGap={'var(--spacing-1)'} margin="0 0 auto var(--spacing-1)">
           <Box variant="secondary">
@@ -241,8 +176,8 @@ const Proposal = ({ routerParams: { rProposalId } }: Props) => {
               <VotesWrapper variant="secondary">
                 <ProposalVoteStatusBox proposalData={proposal} />
               </VotesWrapper>
-              <Box variant="secondary">
-                <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
+              <Box variant="secondary" padding="var(--spacing-3)">
+                <ProposalInformation proposal={proposal} snapshotBlock={proposal?.snapshotBlock ?? 0} />
               </Box>
             </>
           )}
@@ -269,8 +204,10 @@ const ProposalContainer = styled(Box)`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  width: 100%;
   gap: var(--spacing-4);
   margin-bottom: auto;
+  padding-bottom: var(--spacing-4);
 `
 
 const SecondColumnBox = styled(Box)`
@@ -288,26 +225,18 @@ const VotesAndUserBox = styled.div`
   }
 `
 
-const UserAndVotersBox = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto auto;
-  gap: var(--spacing-4);
-  @media (min-width: 41.875rem) {
-    gap: 0;
-    grid-template-columns: auto 20rem;
+const UserSmScreenWrapper = styled(Box)`
+  border-top: 1px solid var(--border-color);
+  @media (min-width: 55.625rem) {
+    display: none;
   }
 `
 
-const UserBoxWrapper = styled(Box)`
-  margin: 0 var(--spacing-3);
-  @media (min-width: 41.875rem) {
-    margin: var(--spacing-3) var(--spacing-3) auto 0;
+const ProposalInformationWrapper = styled.div`
+  padding: 0 var(--spacing-3);
+  @media (min-width: 55.625rem) {
+    display: none;
   }
-`
-
-const StyledVoters = styled(Voters)`
-  width: 100%;
 `
 
 const ErrorWrapper = styled.div`
@@ -318,112 +247,6 @@ const ErrorWrapper = styled.div`
   width: 39.75rem;
   max-width: 100%;
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-4);
-`
-
-const ProposalHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--spacing-3);
-  background-color: var(--box_header--secondary--background-color);
-  padding: var(--spacing-3);
-`
-
-const Status = styled.h3`
-  font-size: var(--font-size-2);
-  &.Passed {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-green);
-      border-radius: 50%;
-    }
-  }
-  &.Denied {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-red);
-      border-radius: 50%;
-    }
-  }
-  &.Active {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-orange);
-      border-radius: 50%;
-    }
-  }
-  &.executed {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-green);
-      border-radius: 50%;
-    }
-  }
-  &.executable {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-orange);
-      border-radius: 50%;
-    }
-  }
-`
-
-const ExecutedStatus = styled.h3`
-  font-size: var(--font-size-2);
-  &.executed {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-green);
-      border-radius: 50%;
-    }
-  }
-  &.executable {
-    :before {
-      display: inline-block;
-      content: '';
-      margin: auto 0.3rem auto 0;
-      width: 0.5rem;
-      height: 0.5rem;
-      background: var(--chart-orange);
-      border-radius: 50%;
-    }
-  }
-`
-
-const TimeRemainingBox = styled(MetricsComp)`
-  @media (min-width: 32.5rem) {
-    margin: 0 0 0 auto;
-    text-align: right;
-  }
-`
-
-const StyledVoteCountdown = styled(VoteCountdown)`
-  margin-top: var(--spacing-1);
 `
 
 const MetaData = styled.div`
@@ -440,37 +263,6 @@ const MetaDataParaphraph = styled.p`
   font-weight: var(--semi-bold);
   white-space: pre-line;
   word-break: break-word;
-`
-
-const StyledInternalLink = styled(InternalLink)`
-  display: flex;
-  align-items: end;
-  gap: var(--spacing-1);
-  color: var(--page--text-color);
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  text-transform: none;
-
-  &:hover {
-    cursor: pointer;
-  }
-`
-
-const VoteInformationBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  padding: var(--spacing-3);
-  gap: var(--spacing-3);
-  border-top: 1px solid var(--gray-500a20);
-  font-variant-numeric: tabular-nums;
-`
-
-const VoteInformationData = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  font-variant-numeric: tabular-nums;
 `
 
 const VotesWrapper = styled(Box)`

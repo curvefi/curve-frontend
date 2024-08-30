@@ -14,8 +14,15 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
 
     return (
       <TooltipWrapper>
-        <TooltipTitle>{formatDateFromTimestamp(epoch)}</TooltipTitle>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+          <TooltipColumn>
+            <TooltipDataTitle>{t`Date`}</TooltipDataTitle>
+            {epoch ? (
+              <TooltipData>{formatDateFromTimestamp(epoch)}</TooltipData>
+            ) : (
+              <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
+            )}
+          </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge Weight`}</TooltipDataTitle>
             {gauge_weight ? (
@@ -57,7 +64,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
 }
 
 const TooltipWrapper = styled.div`
-  background-color: var(--box--secondary--background-color);
+  background-color: var(--summary_content--background-color);
   padding: var(--spacing-3);
   border-radius: var(--border-radius-1);
   display: flex;

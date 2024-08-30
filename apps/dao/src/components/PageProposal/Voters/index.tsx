@@ -78,7 +78,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
 }
 
 const Wrapper = styled(Box)`
-  padding: var(--spacing-3);
+  padding: 0 var(--spacing-3);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
@@ -107,7 +107,7 @@ const VotesContainer = styled.div`
   flex-direction: column;
   gap: var(--spacing-2);
   overflow-y: scroll;
-  max-height: 20rem;
+  max-height: 30rem;
 `
 
 const DataRow = styled.div`

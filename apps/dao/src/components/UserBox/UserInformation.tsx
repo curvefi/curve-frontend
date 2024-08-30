@@ -135,11 +135,4 @@ const SubTitle = styled.h4`
   opacity: 0.5;
 `
 
-const DecayDescription = styled.p`
-  margin-top: var(--spacing-1);
-  margin-bottom: var(--spacing-1);
-  line-height: 1.5;
-  font-size: var(--font-size-2);
-`
-
 export default UserInformation

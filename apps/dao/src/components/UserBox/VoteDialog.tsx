@@ -54,7 +54,7 @@ const VoteDialog = ({
     }
   }
 
-  const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)})%`
+  const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
 
   const executeProposalComponent = () => {
     const id = curveJsProposal?.voteId
@@ -96,25 +96,18 @@ const VoteDialog = ({
   if (activeProposal?.active && votingPower.value === 0) {
     return (
       <Wrapper className={className}>
-        <VotingMessage>
-          <Icon name="WarningSquareFilled" size={20} />
-          {t`Voting power too low to participate in this proposal.`}
-        </VotingMessage>
+        <VotingMessage>{t`Voting power too low to participate in this proposal.`}</VotingMessage>
       </Wrapper>
     )
   }
 
   // Voting has ended - no vote
   if (!activeProposal?.active && proposalId && !voted) {
-    return (
-      <Wrapper className={className}>
-        <VotingMessage>
-          <Icon name="WarningSquareFilled" size={20} />
-          {t`Voting has ended`}
-        </VotingMessage>
-        {proposal.status === 'Passed' && !proposal.executed && executeProposalComponent()}
-      </Wrapper>
-    )
+    if (proposal.status !== 'Passed' && !proposal.executed) {
+      return null
+    }
+
+    return <Wrapper className={className}>{executeProposalComponent()}</Wrapper>
   }
 
   // Voted successfully
@@ -322,7 +315,6 @@ const VotingMessage = styled.p`
   font-weight: var(--semi-bold);
   font-size: var(--font-size-1);
   line-height: 1.2;
-  margin-right: auto;
   background-color: var(--box_header--secondary--background-color);
   svg {
     color: var(--warning-400);

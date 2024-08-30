@@ -29,7 +29,8 @@ const Wrapper = styled(Box)`
 
 export const MetricsTitle = styled.p`
   font-size: var(--font-size-1);
-  opacity: 0.8;
+  font-weight: var(--bold);
+  opacity: 0.5;
   &.align-right {
     @media (min-width: 32.5rem) {
       text-align: right;

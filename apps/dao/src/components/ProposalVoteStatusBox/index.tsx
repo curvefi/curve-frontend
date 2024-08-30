@@ -5,7 +5,7 @@ import { formatNumberWithSuffix } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import ProgressBar from '@/components/ProposalVoteStatusBox/ProgressBar'
-import { TooltipIcon } from '@/ui/Tooltip'
+import Tooltip, { TooltipIcon } from '@/ui/Tooltip'
 
 type ProposalVoteStatusBoxProps = {
   proposalData: ProposalData
@@ -25,13 +25,13 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
       {/* Quroum */}
       <Box flex flexColumn flexGap="var(--spacing-2)">
         <Box flex flexJustifyContent="space-between">
-          <Box flex flexGap="var(--spacing-1)">
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>{t`Quorum`} </HighlightedData>
-            <Data>({minAcceptQuorumPercent}%)</Data>
           </Box>
-          <Box flex flexGap="var(--spacing-1)">
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>{formatNumberWithSuffix(votesFor)}</HighlightedData>{' '}
             <Data>of {formatNumberWithSuffix(quorumVeCrv)}</Data>
+            <TooltipIcon>{t`The minimum number of For votes required to reach quorum is ${minAcceptQuorumPercent}%.`}</TooltipIcon>
           </Box>
         </Box>
         <ProgressBar
@@ -44,23 +44,27 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
 
       <Box flex flexColumn flexGap="var(--spacing-2)">
         <Box flex flexGap="var(--spacing-1)" flexJustifyContent="space-between">
-          <Box flex flexGap="var(--spacing-1)">
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>{t`Min Support`}</HighlightedData>
-            <Data>({minSupport}%)</Data>
           </Box>
-          <Box flex flexGap="var(--spacing-1)">
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>{support.toFixed(2)}%</HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
+            <TooltipIcon>{t`The minimum support required to pass the proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
         </Box>
         <ProgressBar active={totalVotes > 0} support={support} minSupport={minSupport} />
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)">
             <HighlightedData className="for">For</HighlightedData>{' '}
-            <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesFor)} veCRV`}>
+              <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)">
-            <HighlightedData>{against.toFixed(2)}%</HighlightedData>
+            <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesAgainst)} veCRV`}>
+              <HighlightedData>{against.toFixed(2)}%</HighlightedData>
+            </Tooltip>
             <HighlightedData className="against">Against</HighlightedData>
           </Box>
         </Box>
@@ -83,6 +87,11 @@ const Data = styled.p`
   }
   &.against {
     color: var(--chart-red);
+  }
+  &.align-right {
+    text-align: right;
+  }
+  &.fade {
   }
 `
 
