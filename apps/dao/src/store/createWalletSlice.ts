@@ -3,16 +3,15 @@ import type { GetState, SetState } from 'zustand'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import type { State } from '@/store/useStore'
 
-import { ethers, isError } from 'ethers'
-import produce from 'immer'
+import { BrowserProvider, ethers } from 'ethers'
+import cloneDeep from 'lodash/cloneDeep'
 
-import { CONNECT_STAGE } from '@/ui/utils'
+import { CONNECT_STAGE } from '@/constants'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   onboard: OnboardAPI | null
-  provider: Provider | null
 }
 
 const sliceKey = 'wallet'
@@ -22,7 +21,7 @@ export type WalletSlice = {
   [sliceKey]: SliceState & {
     notifyNotification(message: string, type: NotificationType, autoDismiss?: number): ({ dismiss: () => void; update: UpdateNotification | undefined })
     updateConnectWalletStateKeys(): void
-    updateProvider(wallet: Wallet | null): Promise<void>
+    getProvider(sliceKey: 'lockedCrv' | ''): Provider | null
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -33,7 +32,6 @@ export type WalletSlice = {
 
 const DEFAULT_STATE: SliceState = {
   onboard: null,
-  provider: null,
 }
 
 const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSlice => ({
@@ -61,17 +59,40 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
     updateConnectWalletStateKeys: () => {
       get().updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
     },
-    updateProvider: async (wallet) => {
+    getProvider: (sliceKey) => {
+      let provider = null
+
+      // get provider from onboard
       try {
-        const storedProvider = get().wallet.provider
-        const newProvider = wallet ? getProvider(wallet) : null
-        if (storedProvider) await storedProvider.removeAllListeners()
-        get().wallet.setStateByKey('provider', newProvider)
+        const onboard = get().wallet.onboard
+
+        if (onboard) {
+          const wallet = onboard.state.get().wallets?.[0]
+          provider = wallet ? new BrowserProvider(wallet.provider) : null
+        }
       } catch (error) {
-        if (!isError(error, 'NETWORK_ERROR')) {
-          console.error(error)
+        console.error('error getting wallet')
+      }
+
+      // update form error if provider is not found
+      if (!provider && sliceKey) {
+        const storedFormStatus = get()[sliceKey]?.formStatus
+        if (
+          storedFormStatus &&
+          typeof storedFormStatus === 'object' &&
+          'step' in storedFormStatus &&
+          'formProcessing' in storedFormStatus &&
+          'error' in storedFormStatus
+        ) {
+          get()[sliceKey].setStateByKey('formStatus', {
+            ...storedFormStatus,
+            step: '',
+            formProcessing: false,
+            error: 'error-invalid-provider',
+          })
         }
       }
+      return provider
     },
 
     // slice helpers
@@ -85,14 +106,7 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      set(
-        produce((state: State) => {
-          state.wallet = {
-            ...state.wallet,
-            ...DEFAULT_STATE,
-          }
-        })
-      )
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

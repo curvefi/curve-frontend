@@ -10,7 +10,7 @@ import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Tooltip from '@/ui/Tooltip'
 
 const CrvStats: React.FC = () => {
-  const { provider } = useStore((state) => state.wallet)
+  const provider = useStore((state) => state.wallet.getProvider(''))
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
 
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'

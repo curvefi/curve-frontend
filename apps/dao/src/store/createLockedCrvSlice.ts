@@ -155,7 +155,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       return resp
     },
     fetchStepApprove: async (activeKey, curve, rFormType, formValues) => {
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (provider) {
         let cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
@@ -189,7 +189,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepCreate: async (activeKey, curve, formValues) => {
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (provider && formValues.lockedAmt && formValues.utcDate && formValues.days) {
         let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -230,7 +230,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseCrv: async (activeKey, curve, formValues) => {
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (provider) {
         let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -268,7 +268,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       }
     },
     fetchStepIncreaseTime: async (activeKey, curve, formValues) => {
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider(sliceKey)
 
       if (provider) {
         let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
