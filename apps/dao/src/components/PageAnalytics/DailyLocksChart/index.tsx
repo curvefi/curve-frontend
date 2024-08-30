@@ -10,7 +10,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
 const DailyLocks: React.FC = () => {
-  const { getVeCrvLocks, veCrvLocks } = useStore((state) => state.vecrv)
+  const { getVeCrvLocks, veCrvLocks } = useStore((state) => state.analytics)
 
   const locksFetchSuccess = veCrvLocks.fetchStatus === 'SUCCESS'
   const locksFetchError = veCrvLocks.fetchStatus === 'ERROR'

@@ -11,7 +11,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import VeCrvFeesChart from '../VeCrvFeesChart'
 
 const VeCrcFees: React.FC = () => {
-  const { getVeCrvFees, veCrvFees } = useStore((state) => state.vecrv)
+  const { getVeCrvFees, veCrvFees } = useStore((state) => state.analytics)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'
@@ -43,13 +43,11 @@ const VeCrcFees: React.FC = () => {
               <>
                 <FeesContainer>
                   {veCrvFees.fees.map((item) => {
-                    const timestamp = convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)
-
                     return (
                       <FeeRow key={item.date}>
                         <FeeDate>
                           {item.date}
-                          {timestamp > currentTime && <strong> {t`(in progress)`}</strong>}
+                          {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
                         </FeeDate>
                         <FeeData>
                           $

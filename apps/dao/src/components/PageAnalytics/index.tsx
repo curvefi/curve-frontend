@@ -17,7 +17,7 @@ import Box from '@/ui/Box'
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
 const Analytics: React.FC = () => {
-  const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.vecrv)
+  const { getVeCrvHolders, veCrvHolders } = useStore((state) => state.analytics)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 
   const navItems: SubNavItem[] = [

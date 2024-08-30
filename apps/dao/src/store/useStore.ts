@@ -11,7 +11,7 @@ import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
 import createProposalsSlice, { ProposalsSlice } from '@/store/createProposalsSlice'
 import createUserSlice, { UserSlice } from '@/store/createUserSlice'
 import createGaugesSlice, { GaugesSlice } from '@/store/createGaugesSlice'
-import createVeCrvSlice, { VeCrvSlice } from '@/store/createVeCrvSlice'
+import createAnalyticsSlice, { AnalyticsSlice } from '@/store/createAnalyticsSlice'
 import createTokensSlice, { TokensSlice } from './createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
@@ -23,7 +23,7 @@ export type State = GlobalSlice &
   ProposalsSlice &
   UserSlice &
   GaugesSlice &
-  VeCrvSlice &
+  AnalyticsSlice &
   TokensSlice &
   LockedCrvSlice &
   UsdRatesSlice
@@ -36,7 +36,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createProposalsSlice(set, get),
   ...createGaugesSlice(set, get),
   ...createUserSlice(set, get),
-  ...createVeCrvSlice(set, get),
+  ...createAnalyticsSlice(set, get),
   ...createTokensSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createUsdRatesSlice(set, get),

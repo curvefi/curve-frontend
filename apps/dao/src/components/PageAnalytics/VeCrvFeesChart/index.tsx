@@ -10,7 +10,7 @@ import ErrorMessage from '@/components/ErrorMessage'
 import FeesBarChart from './FeesBarChart'
 
 const VeCrvFeesChart: React.FC = () => {
-  const { veCrvFees, getVeCrvFees } = useStore((state) => state.vecrv)
+  const { veCrvFees, getVeCrvFees } = useStore((state) => state.analytics)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'

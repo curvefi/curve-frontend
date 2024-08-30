@@ -11,7 +11,7 @@ import { InternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 
 const TopHoldersTable: React.FC = () => {
-  const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.vecrv)
+  const { veCrvHolders, allHoldersSortBy, setAllHoldersSortBy, getVeCrvHolders } = useStore((state) => state.analytics)
 
   const tableMinWidth = 41.875
 

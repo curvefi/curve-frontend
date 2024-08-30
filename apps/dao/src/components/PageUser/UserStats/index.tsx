@@ -17,7 +17,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
       <Box grid gridTemplateColumns="1fr 1fr 1fr 1fr" flexGap="var(--spacing-3) var(--spacing-4)">
         <MetricsComp
           loading={holdersLoading}
-          title={t`veCRV`}
+          title={t`Total veCRV`}
           data={
             <MetricsColumnData>
               {formatNumber(veCrvHolder.weight, { showDecimalIfSmallNumberOnly: true })}
@@ -35,11 +35,6 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
         />
         <MetricsComp
           loading={holdersLoading}
-          title={t`Weight Ratio`}
-          data={<MetricsColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</MetricsColumnData>}
-        />
-        <MetricsComp
-          loading={holdersLoading}
           title={t`Unlock Time`}
           data={
             <MetricsColumnData>
@@ -48,6 +43,11 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
                 : 'N/A'}
             </MetricsColumnData>
           }
+        />
+        <MetricsComp
+          loading={holdersLoading}
+          title={t`Weight Ratio`}
+          data={<MetricsColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</MetricsColumnData>}
         />
       </Box>
     </Wrapper>

@@ -45,10 +45,10 @@ type SliceState = {
   }
 }
 
-const sliceKey = 'vecrv'
+const sliceKey = 'analytics'
 
 // prettier-ignore
-export type VeCrvSlice = {
+export type AnalyticsSlice = {
   [sliceKey]: SliceState & {
     getVeCrvFees(): Promise<void>
     getVeCrvLocks(): Promise<void>
@@ -100,7 +100,7 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlice => ({
+const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): AnalyticsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getVeCrvFees: async () => {
@@ -113,7 +113,7 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
       try {
         let page = 1
         const pagination = 100
-        let results: VeCrvFee[] = []
+        let results: VeCrvFeeRes[] = []
 
         while (true) {
           const veCrvFeesRes = await fetch(
@@ -127,9 +127,9 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
           page++
         }
 
-        const feesFormatted = results.map((item) => ({
+        const feesFormatted: VeCrvFee[] = results.map((item) => ({
           ...item,
-          timestamp: +item.timestamp,
+          timestamp: convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000),
           date: formatDateFromTimestamp(convertToLocaleTimestamp(new Date(item.timestamp).getTime() / 1000)),
         }))
         const totalFees = feesFormatted.reduce((acc, item) => acc + item.fees_usd, 0)
@@ -356,4 +356,4 @@ const createVeCrvSlice = (set: SetState<State>, get: GetState<State>): VeCrvSlic
   },
 })
 
-export default createVeCrvSlice
+export default createAnalyticsSlice

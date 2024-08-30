@@ -11,7 +11,7 @@ import Tooltip from '@/ui/Tooltip'
 
 const CrvStats: React.FC = () => {
   const { provider } = useStore((state) => state.wallet)
-  const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.vecrv)
+  const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
 
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'

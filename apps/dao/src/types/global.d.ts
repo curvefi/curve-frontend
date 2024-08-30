@@ -305,6 +305,11 @@ declare global {
     endTimestamp: number
   }
 
+  type VeCrvFeeRes = {
+    fees_usd: number
+    timestamp: string
+  }
+
   type VeCrvFee = {
     fees_usd: number
     timestamp: number
@@ -312,7 +317,7 @@ declare global {
   }
 
   interface VeCrvFeesRes {
-    distributions: VeCrvFee[]
+    distributions: VeCrvFeeRes[]
     page: number
     count: number
   }
