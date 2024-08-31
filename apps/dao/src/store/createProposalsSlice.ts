@@ -234,7 +234,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const { curve } = get()
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider('')
       const notifyNotification = get().wallet.notifyNotification
       const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -314,7 +314,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     executeProposal: async (voteId: number, voteType: ProposalType) => {
       const { curve } = get()
 
-      const provider = get().wallet.provider
+      const provider = get().wallet.getProvider('')
       const notifyNotification = get().wallet.notifyNotification
       const fetchGasInfo = get().gas.fetchGasInfo
 

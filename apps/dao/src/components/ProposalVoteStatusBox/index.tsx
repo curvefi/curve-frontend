@@ -55,17 +55,17 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
         </Box>
         <ProgressBar active={totalVotes > 0} support={support} minSupport={minSupport} />
         <Box flex flexJustifyContent="space-between">
-          <Box flex flexGap="var(--spacing-1)">
-            <HighlightedData className="for">For</HighlightedData>{' '}
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
+            <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
             <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesFor)} veCRV`}>
               <HighlightedData>{support.toFixed(2)}%</HighlightedData>
             </Tooltip>
           </Box>
-          <Box flex flexGap="var(--spacing-1)">
+          <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesAgainst)} veCRV`}>
               <HighlightedData>{against.toFixed(2)}%</HighlightedData>
             </Tooltip>
-            <HighlightedData className="against">Against</HighlightedData>
+            <HighlightedData className="against">{t`Against`}</HighlightedData>
           </Box>
         </Box>
       </Box>

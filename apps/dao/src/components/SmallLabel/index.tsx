@@ -20,7 +20,6 @@ const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
   font-size: var(--font-size-1);
   font-weight: var(--bold);
   text-transform: capitalize;
-  margin: auto 0 0;
   border: 1px solid var(--gray-500);
   border-radius: 0.75rem;
   color: inherit;

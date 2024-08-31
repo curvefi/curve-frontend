@@ -1,14 +1,10 @@
-import { useOverlayTriggerState } from 'react-stately'
 import styled from 'styled-components'
-import { useState } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { formatNumber, delayAction } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 
-import ModalDialog from '@/ui/Dialog'
 import Button from '@/ui/Button'
-import UserInformation from './UserInformation'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import AlertBox from '@/ui/AlertBox'
@@ -24,19 +20,7 @@ type Props = {
   className?: string
 }
 
-const VoteDialog = ({
-  userAddress,
-  activeProposal,
-  testId,
-  className,
-  votingPower,
-  snapshotVotingPower,
-  proposalId,
-}: Props) => {
-  const overlayTriggerState = useOverlayTriggerState({})
-  const [vote, setVote] = useState<boolean | null>(null)
-
-  const isMobile = useStore((state) => state.isMobile)
+const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
   const { castVote, voteTx, executeProposal, executeTx } = useStore((state) => state.proposals)
   const curveJsProposal = useStore((state) => state.proposals.curveJsProposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
@@ -45,14 +29,6 @@ const VoteDialog = ({
   const voted = userProposalVotesMapper[userAddress].votes[proposalId ?? '']
   const votedFor = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_for ?? 0) > 0
   const votedAgainst = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_against ?? 0) > 0
-
-  const handleClose = () => {
-    if (isMobile) {
-      delayAction(overlayTriggerState.close)
-    } else {
-      overlayTriggerState.close()
-    }
-  }
 
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
 
@@ -159,91 +135,23 @@ const VoteDialog = ({
   return (
     <Wrapper className={className}>
       {/* Vote */}
-      <>
-        <VoteDialogButton variant="filled" onClick={overlayTriggerState.open}>
-          {t`Vote on Proposal`}
-        </VoteDialogButton>
-        {overlayTriggerState.isOpen && (
-          <ModalDialog
-            noContentPadding
-            testId={testId}
-            title={''}
-            state={{ ...overlayTriggerState, close: handleClose }}
-          >
-            <ModalContainer>
-              <ModalHeader flex flexJustifyContent="space-between" flexAlignItems="center" padding="var(--spacing-3)">
-                <ModalTitle>{t`Vote for proposal`}</ModalTitle>
-                <CloseButton variant="text" onClick={handleClose}>
-                  <Icon name="Close" size={32} />
-                </CloseButton>
-              </ModalHeader>
-              <BlurWrapper>
-                {voteTx.status === 'LOADING' && (
-                  <ModalPendingTx
-                    transactionHash={voteTx.hash!}
-                    txLink={voteTx.txLink!}
-                    pendingMessage={t`Casting vote...`}
-                  />
-                )}
-                <UserInformationContainer flex padding="var(--spacing-3)" flexJustifyContent="center">
-                  <UserInformation
-                    snapshotVotingPower={snapshotVotingPower}
-                    votingPower={votingPower}
-                    activeProposal={activeProposal}
-                    noLink
-                  />
-                </UserInformationContainer>
-                <VoteButtonsWrapper>
-                  {voteTx.status !== 'SUCCESS' && (
-                    <Box
-                      flex
-                      flexGap="var(--spacing-2)"
-                      margin="var(--spacing-2) 0"
-                      flexDirection="row"
-                      flexJustifyContent="center"
-                    >
-                      <VoteSelectButton
-                        variant="filled"
-                        for={true}
-                        voteFor={vote === true}
-                        className={`for ${vote === true ? 'yes-active' : ''}`}
-                        onClick={() => setVote(true)}
-                      >
-                        {t`For`}
-                      </VoteSelectButton>
-                      <VoteSelectButton
-                        variant="filled"
-                        for={false}
-                        voteFor={vote === true}
-                        className={`against ${vote === false ? 'no-active' : ''}`}
-                        onClick={() => setVote(false)}
-                      >
-                        {t`Against`}
-                      </VoteSelectButton>
-                    </Box>
-                  )}
-                  {voteTx.status === 'ERROR' && (
-                    <StyledAlertBox alertType="error" limitHeight>
-                      {voteTx.error}
-                    </StyledAlertBox>
-                  )}
-                  {voteTx.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
-                  {voteTx.status !== 'SUCCESS' && (
-                    <VoteButton
-                      variant="icon-filled"
-                      disabled={vote === null}
-                      onClick={() => castVote(1, 'PARAMETER', vote!)}
-                      loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
-                    >
-                      {t`Cast Vote`}
-                    </VoteButton>
-                  )}
-                </VoteButtonsWrapper>
-              </BlurWrapper>
-            </ModalContainer>
-          </ModalDialog>
-        )}{' '}
-      </>
+      <Box flex flexGap="var(--spacing-2)">
+        <VoteButton
+          isFor
+          variant="icon-filled"
+          onClick={() => castVote(1, 'PARAMETER', true)}
+          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+        >
+          {t`Vote For`}
+        </VoteButton>
+        <VoteButton
+          variant="icon-filled"
+          onClick={() => castVote(1, 'PARAMETER', false)}
+          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+        >
+          {t`Vote Against`}
+        </VoteButton>
+      </Box>
     </Wrapper>
   )
 }
@@ -251,57 +159,6 @@ const VoteDialog = ({
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-`
-
-const ModalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  position: relative;
-  z-index: 99 !important;
-  @media (max-width: 26.5625rem) {
-    height: 100vh;
-    max-height: 100vh;
-  }
-`
-
-const ModalHeader = styled(Box)``
-
-const ModalTitle = styled.h3``
-
-const BlurWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  position: relative;
-`
-
-const CloseButton = styled(Button)`
-  padding: 0;
-  display: flex;
-  align-self: center;
-  justify-content: center;
-  svg {
-    color: var(--page--text-color);
-    width: 32px;
-    height: 32px;
-  }
-`
-
-const UserInformationContainer = styled(Box)`
-  @media (max-width: 26.5625rem) {
-    margin: auto 0;
-  }
-`
-
-const VoteButtonsWrapper = styled(Box)`
-  margin-top: var(--spacing-3);
-  padding: var(--spacing-3);
-  background-color: var(--box_header--secondary--background-color);
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-2);
-  justify-content: center;
 `
 
 const VotingMessage = styled.p`
@@ -356,17 +213,13 @@ const VotedRowItem = styled.span`
   align-items: center;
 `
 
-const VoteDialogButton = styled(Button)`
-  margin-right: auto;
-`
-
-const VoteSelectButton = styled(Button)<{ for?: boolean; voteFor?: boolean }>`
+const VoteButton = styled(Button)<{ isFor?: boolean }>`
   width: 50%;
   padding-top: var(--spacing-2);
   padding-bottom: var(--spacing-2);
   color: var(--text-color);
-  ${({ for: isFor, voteFor: isSelected }) => {
-    if (isFor && isSelected) {
+  ${({ isFor }) => {
+    if (isFor) {
       return `
         background-color: var(--chart-green);
         border: 1px solid var(--chart-green);
@@ -376,7 +229,7 @@ const VoteSelectButton = styled(Button)<{ for?: boolean; voteFor?: boolean }>`
           opacity: 0.8;
         }
       `
-    } else if (!isFor && !isSelected) {
+    } else if (!isFor) {
       return `
         background-color: var(--chart-red);
         border: 1px solid var(--chart-red);
@@ -389,11 +242,6 @@ const VoteSelectButton = styled(Button)<{ for?: boolean; voteFor?: boolean }>`
     }
     return ''
   }}
-`
-
-const VoteButton = styled(Button)`
-  margin: 0 auto var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-5);
 `
 
 const ExecuteButton = styled(VoteButton)`

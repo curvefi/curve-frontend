@@ -19,7 +19,7 @@ const GaugeWeightDistribution = () => {
   }, [gaugeMapper])
 
   return (
-    <Box flex flexColumn padding={'0 var(--spacing-3)'} variant="secondary">
+    <Wrapper variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
         <ChartTitle>{t`Relative Weight Distribution`}</ChartTitle>
         {gaugesLoading === 'LOADING' && (
@@ -35,9 +35,18 @@ const GaugeWeightDistribution = () => {
         {gaugesLoading === 'SUCCESS' && <BarChartComponent data={formattedData} />}
       </Box>
       <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
-    </Box>
+    </Wrapper>
   )
 }
+
+const Wrapper = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--spacing-3);
+  @media (max-width: 54.6875rem) {
+    display: none;
+  }
+`
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   width: 100%;

@@ -163,11 +163,12 @@ const Wrapper = styled(Box)`
 const Header = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
+  gap: var(--spacing-2);
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
   width: 100%;
-  @media (min-width: 29.0625rem) {
+  @media (min-width: 29.375rem) {
+    align-items: center;
+    justify-content: space-between;
     flex-direction: row;
   }
 `
@@ -203,9 +204,7 @@ const SortingBox = styled.div`
 
 const StyledSearchInput = styled(SearchInput)`
   width: calc(100vw - var(--spacing-3) - var(--spacing-3));
-  grid-row: 1/2;
-  grid-column: 1/3;
-  @media (min-width: 28.1875rem) {
+  @media (min-width: 29.375rem) {
     width: 15rem;
     grid-row: 1/2;
     grid-column: 1/2;
@@ -215,11 +214,7 @@ const StyledSearchInput = styled(SearchInput)`
 const ListManagerContainer = styled.div`
   display: flex;
   flex-direction: row;
-  grid-row: 2/3;
-  grid-column: 1/2;
-  @media (min-width: 28.1875rem) {
-    grid-row: 2/3; // Changed to second row
-    grid-column: 1/-1;
+  @media (min-width: 37.4375rem) {
     margin: var(--spacing-1) 0 var(--spacing-2) 0;
   }
   @media (min-width: 63rem) {
@@ -232,44 +227,30 @@ const SortingMethodContainer = styled.div`
   flex-direction: row;
   align-items: center;
   margin: auto 0 auto auto;
-  grid-row: 2/3;
-  grid-column: 2/3;
   @media (min-width: 28.1875rem) {
     grid-row: 1/2; // Changed to second row
     grid-column: 2/3;
   }
 `
 
-const PageTitle = styled.h2`
-  margin: var(--spacing-2) auto var(--spacing-1) var(--spacing-3);
-  background-color: black;
-  color: var(--nav--page--color);
-  font-size: var(--font-size-5);
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
-`
-
 const StyledSelectFilter = styled(SelectSortingMethod)`
   margin: auto 0;
   grid-column: 1/2;
   grid-row: 2/3;
-  @media (min-width: 31.3125rem) {
+  @media (min-width: 37.5rem) {
     display: none;
   }
 `
 
 const StyledProposalsFilters = styled(ProposalsFilters)`
   display: flex;
-  @media (max-width: 31.25rem) {
+  @media (max-width: 37.4375rem) {
     display: none;
   }
 `
 
 const StyledSelectSortingMethod = styled(SelectSortingMethod)`
   margin: auto 0;
-  grid-column: 1/2;
-  grid-row: 2/3;
   @media (min-width: 28.1875rem) {
     grid-column: 1/2;
     grid-row: 1/2;

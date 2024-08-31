@@ -22,9 +22,9 @@ const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) =
   const {
     veCrvHolders: { allHolders, fetchStatus },
     getVeCrvHolders,
-  } = useStore((state) => state.vecrv)
+  } = useStore((state) => state.analytics)
   const { getUserEns, userMapper } = useStore((state) => state.user)
-  const { provider } = useStore((state) => state.wallet)
+  const provider = useStore((state) => state.wallet.getProvider(''))
   const [activeNavKey, setNavKey] = useState('proposals')
 
   const navItems = [

@@ -32,7 +32,7 @@ type ProposalProps = {
 
 const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
   const [voteId, voteType] = rProposalId.split('-')
-  const provider = useStore((state) => state.wallet.provider)
+  const provider = useStore((state) => state.wallet.getProvider(''))
   const curve = useStore((state) => state.curve)
   const { proposalsLoadingState, getProposal, curveJsProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
@@ -127,7 +127,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
                 </VotesAndUserBox>
               </>
             )}
-            {proposal && proposal?.voteCount !== 0 && (
+            {proposal && !isLoading && proposal?.voteCount !== 0 && (
               <Voters rProposalId={rProposalId} totalVotes={proposal?.totalVotes} />
             )}
             <ProposalInformationWrapper>
@@ -211,6 +211,7 @@ const ProposalContainer = styled(Box)`
 `
 
 const SecondColumnBox = styled(Box)`
+  min-width: 22.875rem;
   @media (max-width: 55.625rem) {
     display: none;
   }

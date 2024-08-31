@@ -14,7 +14,7 @@ const MetricsComp: React.FC<Props> = ({ loading, title, data, className }) => {
   return (
     <Wrapper className={className}>
       <MetricsTitle>{title}</MetricsTitle>
-      {loading ? <Loader isLightBg skeleton={[56, 18]} /> : data}
+      {loading ? <StyledLoader isLightBg skeleton={[56, 18]} /> : data}
     </Wrapper>
   )
 }
@@ -25,6 +25,10 @@ const Wrapper = styled(Box)`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
   justify-content: space-between;
+`
+
+const StyledLoader = styled(Loader)`
+  margin-top: var(--spacing-1);
 `
 
 export const MetricsTitle = styled.p`

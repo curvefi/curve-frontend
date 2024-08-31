@@ -9,6 +9,7 @@ import Icon from '@/ui/Icon'
 import { TooltipIcon } from '@/ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
 import ExternalLink from '@/ui/Link/ExternalLink'
+import InternalLink from '@/ui/Link/InternalLink'
 import Box from '@/ui/Box'
 
 type Props = {
@@ -55,17 +56,16 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
             {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
           </Box>
         ) : (
-          <StyledExternalLink href={`https://etherscan.io/address/${userAddress}`}>
+          <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
             <Box flex flexAlignItems="end">
               {userEns ? (
                 <UserIdentifier>{userEns}</UserIdentifier>
               ) : (
                 <UserIdentifier>{shortenTokenAddress(userAddress ?? '')}</UserIdentifier>
               )}
-              <Icon name="Launch" size={16} />
             </Box>
             {userEns && <SmallAddress>{shortenTokenAddress(userAddress ?? '')}</SmallAddress>}
-          </StyledExternalLink>
+          </StyledInternalLink>
         )}
       </Box>
 
@@ -111,13 +111,11 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
   )
 }
 
-const StyledExternalLink = styled(ExternalLink)`
+const StyledInternalLink = styled(ExternalLink)`
   color: inherit;
   font-weight: 500;
   text-decoration: none;
   text-transform: none;
-  display: flex;
-  flex-direction: column;
 `
 
 const UserIdentifier = styled.h4`
