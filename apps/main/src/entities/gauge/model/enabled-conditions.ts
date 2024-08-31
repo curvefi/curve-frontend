@@ -1,3 +1,4 @@
+import { checkGaugeValidity } from '@/entities/gauge/lib'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type {
   AddRewardParams,
@@ -6,100 +7,39 @@ import type {
   GaugeQueryParams,
 } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
-import { isNumber } from 'lodash'
-import { isAddress, parseEther, zeroAddress } from 'viem'
 
-export function enabledGaugeStatus({ chainId, poolId }: GaugeQueryParams) {
-  return !!chainId && !!poolId
+export const enabledGaugeStatus = (data: GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledIsDepositRewardAvailable = ({ chainId, poolId }: GaugeQueryParams) => {
-  return !!chainId && !!poolId
+export const enabledIsDepositRewardAvailable = (data: GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledGaugeManager = ({ chainId, poolId }: GaugeQueryParams) => {
-  return !!chainId && !!poolId
+export const enabledGaugeManager = (data: GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledGaugeDistributors = ({ chainId, poolId }: GaugeQueryParams) => {
-  return !!chainId && !!poolId
+export const enabledGaugeDistributors = (data: GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledGaugeVersion = ({ chainId, poolId }: GaugeQueryParams) => {
-  return !!chainId && !!poolId
+export const enabledGaugeVersion = (data: GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledDepositRewardIsApproved = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-}: DepositRewardApproveParams & GaugeQueryParams) => {
-  return (
-    !!chainId &&
-    !!poolId &&
-    !!rewardTokenId &&
-    isAddress(rewardTokenId) &&
-    rewardTokenId !== zeroAddress &&
-    !!amount &&
-    (typeof amount === 'string' ? parseEther(amount) > 0 : amount > 0)
-  )
+export const enabledDepositRewardIsApproved = (data: DepositRewardApproveParams & GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledEstimateGasDepositRewardApprove = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-}: DepositRewardApproveParams & GaugeQueryParams) => {
-  return (
-    !!chainId &&
-    !!poolId &&
-    !!rewardTokenId &&
-    isAddress(rewardTokenId) &&
-    rewardTokenId !== zeroAddress &&
-    !!amount &&
-    (typeof amount === 'string' ? parseEther(amount) > 0 : amount > 0)
-  )
+export const enabledEstimateGasDepositRewardApprove = (data: DepositRewardApproveParams & GaugeQueryParams) => {
+  return checkGaugeValidity(data)
 }
 
-export const enabledEstimateGasAddRewardToken = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  distributorId,
-}: AddRewardParams & GaugeQueryParams) => {
-  return (
-    !!chainId &&
-    !!poolId &&
-    !!rewardTokenId &&
-    isAddress(rewardTokenId) &&
-    rewardTokenId !== zeroAddress &&
-    !!distributorId &&
-    isAddress(distributorId) &&
-    distributorId !== zeroAddress &&
-    !!queryClient.getQueryData(keys.isDepositRewardAvailable({ chainId, poolId }))
-  )
+export const enabledEstimateGasAddRewardToken = (data: AddRewardParams & GaugeQueryParams) => {
+  return checkGaugeValidity(data) && !!queryClient.getQueryData(keys.isDepositRewardAvailable(data))
 }
 
-export const enabledEstimateGasDepositReward = ({
-  chainId,
-  poolId,
-  rewardTokenId,
-  amount,
-  epoch,
-}: DepositRewardParams & GaugeQueryParams) => {
-  return (
-    !!chainId &&
-    !!poolId &&
-    !!rewardTokenId &&
-    isAddress(rewardTokenId) &&
-    rewardTokenId !== zeroAddress &&
-    !!amount &&
-    (typeof amount === 'string' ? parseEther(amount) > 0 : amount > 0) &&
-    !!epoch &&
-    isNumber(epoch) &&
-    epoch > 0 &&
-    !!queryClient.getQueryData(keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }))
-  )
+export const enabledEstimateGasDepositReward = (data: DepositRewardParams & GaugeQueryParams) => {
+  return checkGaugeValidity(data) && !!queryClient.getQueryData(keys.depositRewardIsApproved(data))
 }

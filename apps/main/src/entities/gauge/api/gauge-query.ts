@@ -9,22 +9,23 @@
  * business logic and data fetching.
  */
 
+import { assertGaugeValidity } from '@/entities/gauge/lib'
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 import { logQuery } from '@/utils'
 import { QueryFunction } from '@tanstack/react-query'
-import { isAddress, zeroAddress, type Address } from 'viem'
+import { zeroAddress, type Address } from 'viem'
 
 export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, GaugeQueryKeyType<'status'>> = async ({
   queryKey,
 }) => {
   logQuery(queryKey)
   const [, chainId, , poolId, ,] = queryKey
-  if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
+  const _valid = assertGaugeValidity({ chainId, poolId })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
+  const pool = curve.getPool(_valid.poolId)
   return pool.gaugeStatus()
 }
 
@@ -34,10 +35,10 @@ export const queryGaugeManager: QueryFunction<
 > = async ({ queryKey }) => {
   logQuery(queryKey)
   const [, chainId, , poolId, ,] = queryKey
-  if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
+  const _valid = assertGaugeValidity({ chainId, poolId })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
+  const pool = curve.getPool(_valid.poolId)
   const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
   if (!gaugeManager || gaugeManager === zeroAddress) {
     return undefined
@@ -51,10 +52,10 @@ export const queryGaugeDistributors: QueryFunction<
 > = async ({ queryKey }) => {
   logQuery(queryKey)
   const [, chainId, , poolId, ,] = queryKey
-  if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
+  const _valid = assertGaugeValidity({ chainId, poolId })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
+  const pool = curve.getPool(_valid.poolId)
   return pool.gauge.gaugeDistributors()
 }
 
@@ -64,10 +65,10 @@ export const queryGaugeVersion: QueryFunction<
 > = async ({ queryKey }) => {
   logQuery(queryKey)
   const [, chainId, , poolId, ,] = queryKey
-  if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
+  const _valid = assertGaugeValidity({ chainId, poolId })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
+  const pool = curve.getPool(_valid.poolId)
   const version = await pool.gauge.gaugeVersion()
   return version ?? null
 }
@@ -78,10 +79,10 @@ export const queryIsDepositRewardAvailable: QueryFunction<
 > = async ({ queryKey }) => {
   logQuery(queryKey)
   const [, chainId, , poolId, ,] = queryKey
-  if (!chainId || !poolId) throw new Error('Missing required parameters: chainId or poolId')
+  const _valid = assertGaugeValidity({ chainId, poolId })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
+  const pool = curve.getPool(_valid.poolId)
   return pool.gauge.isDepositRewardAvailable()
 }
 
@@ -90,11 +91,11 @@ export const queryDepositRewardIsApproved: QueryFunction<
   GaugeQueryKeyType<'depositRewardIsApproved'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
-  const [, chainId, , poolId, , , token, amount] = queryKey
-  if (!chainId || !poolId || !token || !isAddress(token) || !amount) throw new Error('Missing required parameters')
+  const [, chainId, , poolId, , , rewardTokenId, amount] = queryKey
+  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount })
 
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  const strAmount = BD.from(amount).toString()
-  return pool.gauge.depositRewardIsApproved(token, strAmount)
+  const pool = curve.getPool(_valid.poolId)
+  const strAmount = BD.from(_valid.amount).toString()
+  return pool.gauge.depositRewardIsApproved(_valid.rewardTokenId, strAmount)
 }

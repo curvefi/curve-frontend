@@ -9,6 +9,7 @@
  * business logic and data fetching.
  */
 
+import { assertGaugeValidity } from '@/entities/gauge/lib'
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
 import useStore from '@/store/useStore'
 import { type MutateFunction } from '@tanstack/react-query'
@@ -18,11 +19,12 @@ export const mutateAddRewardToken: MutateFunction<
   Error,
   GaugeQueryKeyType<'addRewardToken'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , token, distributor] = queryKey
-  if (!chainId || !poolId || !token || !distributor) throw new Error('Missing required parameters')
+  const [, chainId, , poolId, , , rewardTokenId, distributorId] = queryKey
+  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, distributorId })
+
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return pool.gauge.addReward(token, distributor)
+  const pool = curve.getPool(_valid.poolId)
+  return pool.gauge.addReward(_valid.rewardTokenId, _valid.distributorId)
 }
 
 export const mutateDepositRewardApprove: MutateFunction<
@@ -30,11 +32,12 @@ export const mutateDepositRewardApprove: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositRewardApprove'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , token, amount] = queryKey
-  if (!chainId || !poolId || !token || !amount) throw new Error('Missing required parameters')
+  const [, chainId, , poolId, , , rewardTokenId, amount] = queryKey
+  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount })
+
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return pool.gauge.depositRewardApprove(token, amount)
+  const pool = curve.getPool(_valid.poolId)
+  return pool.gauge.depositRewardApprove(_valid.rewardTokenId, _valid.amount)
 }
 
 export const mutateDepositReward: MutateFunction<
@@ -42,9 +45,10 @@ export const mutateDepositReward: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositReward'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , token, amount, epoch] = queryKey
-  if (!chainId || !poolId || !token || !amount || !epoch) throw new Error('Missing required parameters')
+  const [, chainId, , poolId, , , rewardTokenId, amount, epoch] = queryKey
+  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount, epoch })
+
   const curve = useStore.getState().curve
-  const pool = curve.getPool(poolId)
-  return pool.gauge.depositReward(token, amount, epoch)
+  const pool = curve.getPool(_valid.poolId)
+  return pool.gauge.depositReward(_valid.rewardTokenId, _valid.amount, _valid.epoch)
 }
