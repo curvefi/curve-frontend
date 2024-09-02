@@ -21,9 +21,10 @@ import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 
 type Props = {
   gaugeData: GaugeFormattedData
+  gridTemplateColumns: string
 }
 
-const GaugeListItem = ({ gaugeData }: Props) => {
+const GaugeListItem = ({ gaugeData, gridTemplateColumns }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
@@ -38,7 +39,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
 
   return (
     <GaugeBox onClick={() => setOpen(!open)}>
-      <DataComp>
+      <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
         <BoxColumn>
           <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
@@ -172,12 +173,7 @@ const GaugeListItem = ({ gaugeData }: Props) => {
               </h5>
             </StatsRow>
           </Box>
-          <Box
-            flex
-            flexGap={'var(--spacing-3)'}
-            flexAlignItems={'center'}
-            margin={'var(--spacing-3) 0 var(--spacing-2) auto'}
-          >
+          <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'auto auto auto 0'}>
             <StyledInternalLink
               onClick={(e) => {
                 e.preventDefault()
@@ -207,9 +203,9 @@ const GaugeBox = styled.div`
   }
 `
 
-const DataComp = styled.div`
+const DataComp = styled.div<{ gridTemplateColumns: string }>`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 0.2fr;
+  grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
 `
 
 const BoxColumn = styled.div`
@@ -217,16 +213,13 @@ const BoxColumn = styled.div`
   flex-direction: column;
   justify-content: center;
   gap: var(--spacing-1);
-  margin-right: auto;
   padding: 0 var(--spacing-2);
+  margin: auto 0 auto auto;
   &:first-child {
     margin-left: var(--spacing-2);
   }
   &:last-child {
     margin-right: var(--spacing-2);
-  }
-  @media (min-width: 33.125rem) {
-    margin: auto 0 auto auto;
   }
 `
 

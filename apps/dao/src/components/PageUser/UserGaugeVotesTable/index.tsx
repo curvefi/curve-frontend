@@ -22,6 +22,8 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   )
   const navigate = useNavigate()
 
+  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr'
+
   const userGaugeVotesLoading = userGaugeVotesMapper[userAddress]
     ? userGaugeVotesMapper[userAddress]?.fetchingState === 'LOADING'
     : true
@@ -47,8 +49,9 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
       setSortBy={(key) => setUserGaugeVotesSortBy(userAddress, key as UserGaugeVotesSortBy)}
       getData={() => getUserGaugeVotes(userAddress.toLowerCase())}
       noDataMessage={t`No gauge votes found for this user.`}
+      gridTemplateColumns={gridTemplateColumns}
       renderRow={(gaugeVote, index) => (
-        <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} minWidth={tableMinWidth}>
+        <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className={userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>

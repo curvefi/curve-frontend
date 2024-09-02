@@ -21,6 +21,8 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
     useStore((state) => state.user)
   const navigate = useNavigate()
 
+  const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 6rem 6rem'
+
   const userProposalVotes = userProposalVotesMapper[userAddress]?.votes ?? {}
   const userProposalVotesArray = Object.values(userProposalVotes)
 
@@ -48,15 +50,10 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       errorMessage={t`An error occurred while fetching proposal votes.`}
       setSortBy={(key) => setUserProposalVotesSortBy(userAddress, key as UserProposalVotesSortBy)}
       getData={() => getUserProposalVotes(userAddress)}
-      gridTemplateColumns={'0.5fr 1fr 1fr 1fr 1fr 1fr'}
+      gridTemplateColumns={gridTemplateColumns}
       noDataMessage={t`No proposal votes found for this user.`}
       renderRow={(proposalVote, index) => (
-        <TableRowWrapper
-          key={index}
-          columns={VOTES_LABELS.length}
-          minWidth={tableMinWidth}
-          gridTemplateColumns={'0.5fr 1fr 1fr 1fr 1fr 1fr'}
-        >
+        <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableDataLink
             onClick={(e) => {
               e.preventDefault()

@@ -472,7 +472,7 @@ declare global {
   type SortDirection = 'asc' | 'desc'
   type TopHoldersSortBy = 'weight' | 'locked' | 'weight_ratio'
   type AllHoldersSortBy = 'weight' | 'locked' | 'weight_ratio' | 'unlock_time'
-  type UserLocksSortBy = 'date' | 'amount'
+  type UserLocksSortBy = 'date' | 'amount' | 'unlock_time'
   type UserGaugeVotesSortBy = 'weight' | 'timestamp'
   type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
   type GaugeVotesSortBy = 'weight' | 'timestamp'

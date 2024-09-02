@@ -28,7 +28,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
           <h3>{TOP_HOLDERS[userAddress]?.title || user?.ens || userAddress}</h3>
           {((TOP_HOLDERS[userAddress]?.title && userAddress) || (user?.ens && userAddress)) && (
             <Box flex flexAlignItems="center">
-              <p>{userAddress}</p>{' '}
+              <UserAddress>{userAddress}</UserAddress>{' '}
               <Box margin="0 0 0 var(--spacing-1)" flex>
                 <StyledCopyButton size="small" onClick={() => handleCopyClick(userAddress)}>
                   <Icon name="Copy" size={16} />
@@ -89,6 +89,10 @@ const StyledExternalLink = styled(ExternalLink)`
     color: white;
     background-color: var(--primary-400);
   }
+`
+
+const UserAddress = styled.p`
+  line-break: anywhere;
 `
 
 export default UserHeader

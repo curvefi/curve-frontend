@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { formatNumberWithSuffix } from '@/ui/utils'
+import { breakpoints } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import ProgressBar from '@/components/ProposalVoteStatusBox/ProgressBar'
@@ -82,6 +83,7 @@ const Wrapper = styled.div`
 const Data = styled.p`
   font-size: var(--font-size-2);
   font-weight: var(--semi-bold);
+  padding-bottom: var(--spacing-1);
   &.for {
     color: var(--chart-green);
   }
@@ -93,10 +95,19 @@ const Data = styled.p`
   }
   &.fade {
   }
+  @media (min-width: ${breakpoints.sm}rem) {
+    align-self: flex-end;
+    padding-bottom: 0;
+  }
 `
 
 const HighlightedData = styled(Data)`
   font-weight: var(--bold);
+  padding-bottom: var(--spacing-1);
+  align-self: flex-end;
+  @media (min-width: ${breakpoints.sm}rem) {
+    padding-bottom: 0;
+  }
 `
 
 export default ProposalVoteStatusBox

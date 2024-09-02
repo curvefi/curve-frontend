@@ -21,6 +21,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   const { getGaugeVotes, gaugeVotesMapper, gaugeVotesSortBy, setGaugeVotesSortBy } = useStore((state) => state.gauges)
   const navigate = useNavigate()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
+  const gridTemplateColumns = '5.3125rem 1fr 1fr'
 
   const gaugeVotesLoading = gaugeVotesMapper[gaugeAddress]
     ? gaugeVotesMapper[gaugeAddress].fetchingState === 'LOADING'
@@ -44,13 +45,20 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       columns={GAUGE_VOTES_TABLE_LABELS}
       sortBy={gaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)}
+      setSortBy={(key) => {
+        console.log('key', key)
+        setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
+      }}
       getData={() => getGaugeVotes(gaugeAddress)}
       noDataMessage={t`No gauge weight votes found for this gauge.`}
       overflowYBreakpoint={tableMinWidth}
-      gridTemplateColumns={`85px 1fr 1fr`}
+      gridTemplateColumns={gridTemplateColumns}
       renderRow={(gaugeVote, index) => (
-        <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length} gridTemplateColumns={`85px 1fr 1fr`}>
+        <TableRowWrapper
+          key={index}
+          columns={GAUGE_VOTES_TABLE_LABELS.length}
+          gridTemplateColumns={gridTemplateColumns}
+        >
           <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>

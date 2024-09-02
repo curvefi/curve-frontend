@@ -46,15 +46,15 @@ type SliceState = {
   userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
-    order: 'asc' | 'desc'
+    order: SortDirection
   }
   userProposalVotesSortBy: {
     key: UserProposalVotesSortBy
-    order: 'asc' | 'desc'
+    order: SortDirection
   }
   userGaugeVotesSortBy: {
     key: UserGaugeVotesSortBy
-    order: 'asc' | 'desc'
+    order: SortDirection
   }
 }
 
@@ -135,7 +135,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       })
     },
     getUserEns: async (userAddress: string) => {
-      const { provider } = get().wallet
+      const provider = get().wallet.getProvider('')
 
       if (!provider) {
         console.error("Can't fetch ens, no provider available")

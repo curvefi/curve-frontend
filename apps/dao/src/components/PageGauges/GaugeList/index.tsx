@@ -24,7 +24,8 @@ const GaugesList = () => {
   } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const tableMinWidth = 41.875
+  const tableMinWidth = 42.3125
+  const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
 
   useEffect(() => {
     if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
@@ -80,8 +81,10 @@ const GaugesList = () => {
             noDataMessage={t`No gauges found`}
             setSortBy={handleSortChange}
             getData={() => getGauges(true)}
-            renderRow={(gauge, index) => <GaugeListItem key={index} gaugeData={gauge} />}
-            gridTemplateColumns="2fr 1fr 1fr 1fr 0.2fr"
+            renderRow={(gauge, index) => (
+              <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
+            )}
+            gridTemplateColumns={gridTemplateColumns}
           />
         )}
       </GaugeListWrapper>
@@ -96,6 +99,9 @@ const Header = styled.div`
   justify-content: space-between;
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
   width: 100%;
+  h3 {
+    margin-right: auto;
+  }
   @media (min-width: 29.0625rem) {
     flex-direction: row;
   }

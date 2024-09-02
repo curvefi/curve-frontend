@@ -69,6 +69,7 @@ const TableTitleButton = styled(Button)`
   text-transform: none;
   color: var(--page-text-color);
   margin: 0 0 0 auto;
+  align-items: center;
   &.align-left {
     margin: 0 auto 0 0;
   }

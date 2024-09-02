@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import Fuse from 'fuse.js'
-import orderBy from 'lodash/orderBy'
 import produce from 'immer'
 
 import { shortenTokenAddress } from '@/ui/utils'
@@ -229,8 +228,8 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         set(
           produce((state) => {
             const reversedEntries = [...votes].reverse()
-            state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
-            state[sliceKey].userGaugeVotesSortBy.order = order
+            state[sliceKey].gaugeVotesMapper[address].votes = reversedEntries
+            state[sliceKey].gaugeVotesSortBy.order = order
           })
         )
       } else {
@@ -240,9 +239,9 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVotesSortBy.key = sortBy
-            state[sliceKey].userGaugeVotesSortBy.order = 'desc'
-            state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
+            state[sliceKey].gaugeVotesSortBy.key = sortBy
+            state[sliceKey].gaugeVotesSortBy.order = 'desc'
+            state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
           })
         )
       }

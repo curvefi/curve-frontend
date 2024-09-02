@@ -4,6 +4,7 @@ import { useEffect, useMemo } from 'react'
 
 import useStore from '@/store/useStore'
 import { copyToClipboard } from '@/utils'
+import { breakpoints } from '@/ui/utils'
 
 import useProposalsMapper from '@/hooks/useProposalsMapper'
 import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'
@@ -105,7 +106,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
               <>
                 <MetaData>
                   <Box flex flexJustifyContent="space-between" flexAlignItems="end">
-                    <MetricsTitle>{t`Metadata`}</MetricsTitle>
+                    <MetadataTitle>{t`Metadata`}</MetadataTitle>
                     <Tooltip tooltip={t`Copy to clipboard`} minWidth="135px">
                       <StyledCopyButton size="medium" onClick={() => handleCopyClick(proposal?.ipfsMetadata)}>
                         {t`Raw IPFS`}
@@ -214,6 +215,13 @@ const SecondColumnBox = styled(Box)`
   min-width: 22.875rem;
   @media (max-width: 55.625rem) {
     display: none;
+  }
+`
+
+const MetadataTitle = styled(MetricsTitle)`
+  align-self: center;
+  @media (min-width: ${breakpoints.sm}rem) {
+    align-self: flex-end;
   }
 `
 

@@ -14,7 +14,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
   return (
     <Wrapper>
       <h4>{t`USER STATS`}</h4>
-      <Box grid gridTemplateColumns="1fr 1fr 1fr 1fr" flexGap="var(--spacing-3) var(--spacing-4)">
+      <MetricsContainer>
         <MetricsComp
           loading={holdersLoading}
           title={t`Total veCRV`}
@@ -49,7 +49,7 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
           title={t`Weight Ratio`}
           data={<MetricsColumnData>{formatNumber(veCrvHolder.weight_ratio)}%</MetricsColumnData>}
         />
-      </Box>
+      </MetricsContainer>
     </Wrapper>
   )
 }
@@ -61,6 +61,15 @@ const Wrapper = styled(Box)`
   gap: var(--spacing-3);
   padding: var(--spacing-3) var(--spacing-3);
   border-bottom: 1px solid var(--gray-500a20);
+`
+
+const MetricsContainer = styled(Box)`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-3) var(--spacing-4);
+  @media (min-width: 28.75rem) {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 `
 
 export default UserStats
