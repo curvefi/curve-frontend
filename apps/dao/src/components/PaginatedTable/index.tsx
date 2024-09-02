@@ -26,6 +26,7 @@ interface PaginatedTableProps<T> {
   renderRow: (item: T, index: number) => React.ReactNode
   minWidth: number
   noDataMessage: string
+  overflowYBreakpoint?: number // rem
   gridTemplateColumns?: string
 }
 
@@ -41,11 +42,13 @@ const PaginatedTable = <T,>({
   renderRow,
   minWidth,
   noDataMessage,
+  overflowYBreakpoint,
   gridTemplateColumns,
 }: PaginatedTableProps<T>) => {
   const [currentPage, setCurrentPage] = useState(1)
 
-  const fetchFeedbackHeight = '15rem'
+  const FETCH_FEEDBACK_HEIGHT = '15rem'
+  const OVERFLOW_Y_BREAKPOINT = overflowYBreakpoint ? `${overflowYBreakpoint}rem` : '46.25rem'
 
   const ITEMS_PER_PAGE = 50
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE
@@ -56,27 +59,31 @@ const PaginatedTable = <T,>({
 
   return (
     <Wrapper>
-      <Container>
-        <TableHeader<T>
-          columns={columns}
-          title={title}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          minWidth={minWidth}
-          gridTemplateColumns={gridTemplateColumns}
-        />
-        <TableBody>
-          {fetchingState === 'LOADING' && <Spinner height={fetchFeedbackHeight} />}
-          {fetchingState === 'SUCCESS' && currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
-          {fetchingState === 'ERROR' && (
-            <ErrorMessageWrapper height={fetchFeedbackHeight}>
-              <ErrorMessage message={errorMessage} onClick={getData} />
-            </ErrorMessageWrapper>
-          )}
-          {fetchingState === 'SUCCESS' && currentItems.length === 0 && (
-            <NoTableData height={fetchFeedbackHeight} noDataMessage={noDataMessage} />
-          )}
-        </TableBody>
+      <Container overflowYBreakpoint={OVERFLOW_Y_BREAKPOINT}>
+        <TableContent minWidth={minWidth}>
+          <TableHeaderWrapper>
+            <TableHeader<T>
+              columns={columns}
+              title={title}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              gridTemplateColumns={gridTemplateColumns}
+            />
+          </TableHeaderWrapper>
+          <TableBody>
+            {fetchingState === 'LOADING' && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
+            {fetchingState === 'SUCCESS' &&
+              currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
+            {fetchingState === 'ERROR' && (
+              <ErrorMessageWrapper height={FETCH_FEEDBACK_HEIGHT}>
+                <ErrorMessage message={errorMessage} onClick={getData} />
+              </ErrorMessageWrapper>
+            )}
+            {fetchingState === 'SUCCESS' && currentItems.length === 0 && (
+              <NoTableData height={FETCH_FEEDBACK_HEIGHT} noDataMessage={noDataMessage} />
+            )}
+          </TableBody>
+        </TableContent>
       </Container>
       {fetchingState === 'SUCCESS' && currentItems.length > 0 && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
@@ -92,14 +99,18 @@ const Wrapper = styled(Box)`
   width: 100%;
 `
 
-const Container = styled.div`
+const Container = styled.div<{ overflowYBreakpoint: string }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow: auto;
-  @media (min-width: 46.25rem) {
-    overflow: hidden;
+  overflow-x: auto;
+  @media (max-width: ${({ overflowYBreakpoint }) => overflowYBreakpoint}) {
+    overflow-y: auto;
   }
+`
+
+const TableContent = styled.div<{ minWidth: number }>`
+  min-width: ${({ minWidth }) => `${minWidth}rem`};
 `
 
 const ErrorMessageWrapper = styled(Box)<{ height: string }>`
@@ -112,14 +123,15 @@ const ErrorMessageWrapper = styled(Box)<{ height: string }>`
   width: 100%;
 `
 
+const TableHeaderWrapper = styled.div`
+  width: 100%;
+`
+
 const TableBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
   padding: var(--spacing-2) var(--spacing-4) var(--spacing-3);
-  @media (min-width: 46.25rem) {
-    overflow-y: auto;
-  }
 `
 
 export default PaginatedTable

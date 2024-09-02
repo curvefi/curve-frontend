@@ -48,7 +48,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       getData={() => getGaugeVotes(gaugeAddress)}
       noDataMessage={t`No gauge weight votes found for this gauge.`}
       renderRow={(gaugeVote, index) => (
-        <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length} minWidth={tableMinWidth}>
+        <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length}>
           <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>

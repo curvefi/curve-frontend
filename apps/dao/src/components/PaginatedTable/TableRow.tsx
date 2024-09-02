@@ -11,12 +11,11 @@ interface TableRowProps {
   sortBy: { key: string; label: string; order: 'asc' | 'desc' }
   labels: { key: string; label: string }[]
   rank: number
-  minWidth: number
   gridTemplateColumns?: string
 }
 
-const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, minWidth, gridTemplateColumns }) => (
-  <TableRowWrapper minWidth={minWidth} columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
+const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, gridTemplateColumns }) => (
+  <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
         {formatNumber(holder[label.key], { showDecimalIfSmallNumberOnly: true })}
@@ -25,13 +24,12 @@ const TableRow: React.FC<TableRowProps> = ({ holder, sortBy, labels, rank, minWi
   </TableRowWrapper>
 )
 
-export const TableRowWrapper = styled.div<{ minWidth: number; columns: number; gridTemplateColumns?: string }>`
+export const TableRowWrapper = styled.div<{ columns: number; gridTemplateColumns?: string }>`
   display: grid;
   grid-template-columns: ${({ columns, gridTemplateColumns }) =>
     gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
   padding: var(--spacing-1) 0;
   border-bottom: 1px solid var(--gray-500a20);
-  min-width: ${({ minWidth }) => `${minWidth}rem`};
   &:last-child {
     border-bottom: none;
   }

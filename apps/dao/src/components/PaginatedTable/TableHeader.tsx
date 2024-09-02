@@ -8,15 +8,14 @@ interface TableHeaderProps<T> {
   title?: string
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   setSortBy: (key: keyof T) => void
-  minWidth: number
   gridTemplateColumns?: string
 }
 
-const TableHeader = <T,>({ columns, title, sortBy, setSortBy, minWidth, gridTemplateColumns }: TableHeaderProps<T>) => {
+const TableHeader = <T,>({ columns, title, sortBy, setSortBy, gridTemplateColumns }: TableHeaderProps<T>) => {
   return (
     <TableHeaderWrapper noTitle={title === undefined}>
       {title && <TableTitle>{title}</TableTitle>}
-      <TableContainer columns={columns.length} minWidth={minWidth} gridTemplateColumns={gridTemplateColumns}>
+      <TableContainer columns={columns.length} gridTemplateColumns={gridTemplateColumns}>
         {columns.map((column, index) => (
           <TableTitleButton
             disabled={column.disabled}
@@ -41,12 +40,11 @@ const TableHeaderWrapper = styled.div<{ noTitle: boolean }>`
   padding: ${({ noTitle }) => (noTitle ? 'var(--spacing-3)' : '0')} 0 0 0;
 `
 
-const TableContainer = styled.div<{ columns: number; minWidth: number; gridTemplateColumns?: string }>`
+const TableContainer = styled.div<{ columns: number; gridTemplateColumns?: string }>`
   display: grid;
   justify-content: space-between;
   grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
   padding: calc(var(--spacing-2)) var(--spacing-4) var(--spacing-2);
-  min-width: ${({ minWidth }) => `${minWidth}rem`};
   grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
 `
 
