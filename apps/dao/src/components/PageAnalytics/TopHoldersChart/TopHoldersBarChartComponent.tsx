@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
 import { shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
+import { TOP_HOLDERS } from '@/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
 
@@ -27,6 +28,16 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
   const height = 300
   const labelWidth = 100
 
+  const userFormatter = (user: string): string => {
+    const address = user.toLowerCase()
+
+    if (TOP_HOLDERS[address]) {
+      return TOP_HOLDERS[address].title
+    }
+
+    return user.length > 15 ? shortenTokenAddress(user)?.toString() ?? user : user
+  }
+
   return (
     <ChartContainer height={height}>
       <ResponsiveContainer width="100%" height={height} debounce={200}>
@@ -38,7 +49,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
           margin={{
             top: 16,
             right: 16,
-            left: 16,
+            left: 0,
             bottom: 16,
           }}
         >
@@ -47,7 +58,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
             type="category"
             dataKey="user"
             width={labelWidth}
-            tickFormatter={(user) => (typeof user === 'string' && user.length > 15 ? shortenTokenAddress(user) : user)}
+            tickFormatter={userFormatter}
             tick={{
               fill: 'var(--page--text-color)',
               fontWeight: 'var(--bold)',

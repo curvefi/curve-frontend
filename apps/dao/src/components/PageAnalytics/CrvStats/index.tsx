@@ -117,9 +117,11 @@ const Container = styled.div`
 
 const MetricsContainer = styled(Box)`
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: var(--spacing-3) var(--spacing-4);
+  @media (min-width: 28.125rem) {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 `
 
 const StyledTooltip = styled(Tooltip)`

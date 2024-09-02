@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import { shortenTokenAddress, formatNumber, formatDateFromTimestamp, convertToLocaleTimestamp } from '@/ui/utils'
+import { TOP_HOLDERS } from '@/constants'
 
 import PaginatedTable, { Column } from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
@@ -38,10 +39,15 @@ const TopHoldersTable: React.FC = () => {
         getData={() => getVeCrvHolders()}
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (
-          <TableRowWrapper key={holder.user} minWidth={tableMinWidth} columns={HOLDERS_LABELS.length}>
-            <TableDataLink className="align-left" href={`/ethereum/user/${holder.user}`}>
-              {index + 1}. {shortenTokenAddress(holder.user)}
-            </TableDataLink>
+          <TableRowWrapper key={holder.user} columns={HOLDERS_LABELS.length}>
+            <StyledTableDataLink className="align-left" href={`/ethereum/user/${holder.user}`}>
+              <span>{index + 1}.</span>
+              <span style={{ textDecoration: 'underline' }}>
+                {TOP_HOLDERS[holder.user.toLowerCase()]
+                  ? TOP_HOLDERS[holder.user.toLowerCase()].title
+                  : shortenTokenAddress(holder.user)}
+              </span>
+            </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
               {formatNumber(holder.weight, { showDecimalIfSmallNumberOnly: true })}
             </TableData>
@@ -72,14 +78,8 @@ const Wrapper = styled(Box)`
   width: 100%;
 `
 
-const StyledInternalLink = styled(InternalLink)`
-  color: inherit;
-  font-weight: var(--semi-bold);
-  font-size: var(--font-size-2);
+const StyledTableDataLink = styled(TableDataLink)`
   text-decoration: none;
-  text-transform: none;
-  display: flex;
-  flex-direction: column;
 `
 
 export default TopHoldersTable

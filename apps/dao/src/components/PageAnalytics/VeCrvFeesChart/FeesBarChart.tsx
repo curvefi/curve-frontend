@@ -20,7 +20,7 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
         margin={{
           top: 16,
           right: 20,
-          left: 20,
+          left: 10,
           bottom: 16,
         }}
       >
