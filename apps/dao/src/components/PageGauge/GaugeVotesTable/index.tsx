@@ -47,8 +47,10 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       setSortBy={(key) => setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)}
       getData={() => getGaugeVotes(gaugeAddress)}
       noDataMessage={t`No gauge weight votes found for this gauge.`}
+      overflowYBreakpoint={tableMinWidth}
+      gridTemplateColumns={`85px 1fr 1fr`}
       renderRow={(gaugeVote, index) => (
-        <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length}>
+        <TableRowWrapper key={index} columns={GAUGE_VOTES_TABLE_LABELS.length} gridTemplateColumns={`85px 1fr 1fr`}>
           <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>

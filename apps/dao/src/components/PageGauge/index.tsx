@@ -19,7 +19,7 @@ const Gauge = ({ routerParams: { rGaugeAddress } }: GaugeProps) => {
   const gaugeAddress = rGaugeAddress.toLowerCase()
   const { gaugeMapper, gaugesLoading } = useStore((state) => state.gauges)
 
-  const tableMinWidth = 41.875
+  const tableMinWidth = 21.875
   const gaugeData = gaugeMapper[gaugeAddress]
   const loading = gaugesLoading === 'LOADING'
 

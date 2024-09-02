@@ -61,15 +61,13 @@ const PaginatedTable = <T,>({
     <Wrapper>
       <Container overflowYBreakpoint={OVERFLOW_Y_BREAKPOINT}>
         <TableContent minWidth={minWidth}>
-          <TableHeaderWrapper>
-            <TableHeader<T>
-              columns={columns}
-              title={title}
-              sortBy={sortBy}
-              setSortBy={setSortBy}
-              gridTemplateColumns={gridTemplateColumns}
-            />
-          </TableHeaderWrapper>
+          <TableHeader<T>
+            columns={columns}
+            title={title}
+            sortBy={sortBy}
+            setSortBy={setSortBy}
+            gridTemplateColumns={gridTemplateColumns}
+          />
           <TableBody>
             {fetchingState === 'LOADING' && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
             {fetchingState === 'SUCCESS' &&
@@ -123,15 +121,11 @@ const ErrorMessageWrapper = styled(Box)<{ height: string }>`
   width: 100%;
 `
 
-const TableHeaderWrapper = styled.div`
-  width: 100%;
-`
-
 const TableBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-1);
-  padding: var(--spacing-2) var(--spacing-4) var(--spacing-3);
+  padding: var(--spacing-2) var(--spacing-3) var(--spacing-3);
 `
 
 export default PaginatedTable

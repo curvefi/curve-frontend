@@ -44,7 +44,7 @@ const TableContainer = styled.div<{ columns: number; gridTemplateColumns?: strin
   display: grid;
   justify-content: space-between;
   grid-template-columns: ${({ columns }) => `repeat(${columns}, 1fr)`};
-  padding: calc(var(--spacing-2)) var(--spacing-4) var(--spacing-2);
+  padding: calc(var(--spacing-2)) var(--spacing-3) var(--spacing-2);
   grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
 `
 

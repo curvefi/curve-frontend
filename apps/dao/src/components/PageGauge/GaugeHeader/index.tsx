@@ -49,7 +49,6 @@ const BoxedDataComp = styled.div`
   align-items: center;
   gap: var(--spacing-1);
   grid-row: 1 / 2;
-  margin-left: auto;
   margin-right: var(--spacing-2);
   @media (min-width: 33.125rem) {
     display: flex;
