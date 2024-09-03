@@ -192,6 +192,7 @@ declare global {
     address: string
     ethAddress?: string
     symbol: string
+    decimals: number
     haveSameTokenName: boolean // use to display token address if duplicated token names
     volume?: number
   }
@@ -227,6 +228,7 @@ declare global {
     seedData: { token: string; percent: number }[]
     tokenAddresses: string[]
     tokenAddressesAll: string[]
+    tokenDecimalsAll: number[]
     tokens: string[]
     tokensCountBy: { [key: string]: number }
     tokensAll: string[]

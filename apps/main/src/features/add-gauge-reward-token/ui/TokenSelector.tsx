@@ -27,6 +27,7 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
     return Object.values(tokensMapper).filter(
       (token): token is Token =>
         token !== undefined &&
+        token.decimals === 18 &&
         !gaugeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address))
     )
   }, [tokensMapper, gaugeRewardsDistributors])

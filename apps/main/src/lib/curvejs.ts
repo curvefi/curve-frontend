@@ -183,6 +183,7 @@ const pool = {
     const tokenAddressesAll = isWrappedOnly
       ? p.wrappedCoinAddresses
       : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
+    const tokenDecimalsAll = isWrappedOnly ? p.wrappedDecimals : [...p.underlyingDecimals, ...p.wrappedDecimals]
     const tokensCountBy = countBy(tokens)
 
     const poolData: PoolData = {
@@ -211,6 +212,7 @@ const pool = {
       isWrapped: isWrappedOnly ?? false,
       seedData: [],
       tokenAddressesAll,
+      tokenDecimalsAll,
       tokenAddresses,
       tokens,
       tokensCountBy,
