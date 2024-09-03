@@ -4,8 +4,8 @@ import { enforce, group, test } from 'vest'
 
 export const chainValidationGroup = ({ chainId }: ChainQueryParams) =>
   group('chainValidation', () => {
-    test('chainId', 'Invalid chain ID', () => {
-      enforce(chainId).isNotEmpty().isValidChainId()
+    test('chainId', () => {
+      enforce(chainId).message('Chain ID is required').isNotEmpty().message('Invalid chain ID').isValidChainId()
     })
   })
 

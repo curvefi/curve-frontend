@@ -1,13 +1,13 @@
 import { gaugeValidationGroup } from '@/entities/gauge'
-import { createValidationSuite } from '@/shared/validation'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { createValidationSuite } from '@/shared/validation'
 import { enforce, test } from 'vest'
 
-const depositRewardValidationGroup = (data: DepositRewardFormValues) => {
+const depositRewardValidationGroup = <T extends DepositRewardFormValues>(data: T) => {
   gaugeValidationGroup(data)
 
-  test('step', 'Invalid deposit reward step', () => {
-    enforce(Object.values(DepositRewardStep).includes(data.step)).isTruthy()
+  test('step', () => {
+    enforce(Object.values(DepositRewardStep).includes(data.step)).message('Invalid deposit reward step')
   })
 }
 

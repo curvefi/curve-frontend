@@ -22,23 +22,24 @@ export const gaugeValidationGroup = ({
   epoch,
 }: CombinedGaugeParams) =>
   group('gaugeValidation', () => {
-    const state = useStore.getState()
-    const userBalancesMapper = state.userBalances.userBalancesMapper
-
     poolValidationGroup({
       chainId,
       poolId,
     })
 
-    test('distributorId', 'Invalid distributor ID', () => addressValidationFn(distributorId))
+    test('distributorId', () => addressValidationFn(distributorId))
 
-    test('rewardTokenId', 'Invalid reward token ID', () => tokenIdValidationFn(rewardTokenId))
+    test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
 
-    test('amount', 'Amount exceeds wallet balance', () => {
+    test('amount', () => {
       amountValidationFn(amount)
 
       if (!rewardTokenId || !amount) return
+
+      const state = useStore.getState()
+      const userBalancesMapper = state.userBalances.userBalancesMapper
       const tokenBalance = userBalancesMapper[rewardTokenId]
+
       if (!tokenBalance) return
 
       enforce(amount).condition((amount) => {
@@ -49,11 +50,12 @@ export const gaugeValidationGroup = ({
       })
     })
 
-    test('epoch', 'Invalid epoch', () => {
+    test('epoch', () => {
       enforce(epoch)
-        .isNotEmpty('Epoch is required')
+        .message(t`Epoch is required`)
+        .isNotEmpty()
+        .message(t`Epoch should be a positive number`)
         .isPositiveNumber()
-        .greaterThan(0, 'Epoch must be greater than 0')
         .condition((epoch: unknown) => ({
           pass: typeof epoch === 'number' && epoch % TIME_FRAMES.WEEK === 0,
           message: t`Epoch must be a multiple of a week`,

@@ -67,8 +67,8 @@ export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
   group('poolValidation', () => {
     chainValidationGroup({ chainId })
 
-    test('poolId', 'Invalid pool ID', () => {
-      enforce(poolId).isNotEmpty('Pool ID is required')
+    test('poolId', () => {
+      enforce(poolId).message('Pool ID is required').isNotEmpty()
     })
   })
 

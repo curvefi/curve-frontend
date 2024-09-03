@@ -4,13 +4,22 @@ import { extendEnforce } from '@/shared/validation/enforce-extension'
 
 extendEnforce(enforce)
 
+function getFieldsList<T extends object, F extends Extract<keyof T, string>[] = Extract<keyof T, string>[]>(
+  data: T,
+  fields?: F
+): F {
+  return fields && fields.length > 0 ? fields : (Object.keys(data) as F)
+}
+
 export function checkValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
   data: D,
   fields?: Extract<keyof D, string>[]
 ): boolean {
-  const result = suite(data, fields)
-  return !result.hasErrors()
+  const fieldsList = getFieldsList(data, fields)
+  const result = suite(data, fieldsList)
+  const errors = fieldsList.map((field) => result.getErrors(field)).flat()
+  return errors.length === 0
 }
 
 export function assertValidity<D extends object, S extends Suite<any, any>>(
@@ -18,19 +27,21 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
   data: D,
   fields?: Extract<keyof D, string>[]
 ): ValidatedData<D> {
-  const result = suite(data, fields)
-  if (result.hasErrors()) {
-    const errors = result.getErrors()
-    const errorMessages = Object.values(errors).flat()
-    throw new Error('Validation failed: ' + errorMessages.join(', '))
+  const fieldsList = getFieldsList(data, fields)
+  const result = suite(data, fieldsList)
+  const errors = fieldsList.map((field) => result.getErrors(field)).flat()
+  if (errors.length > 0) {
+    throw new Error('Validation failed: ' + errors.join(', '))
   }
   return data as ValidatedData<D>
 }
 
-export function createValidationSuite<T extends object>(validationGroup: (data: T) => void) {
-  return create((data: T, fields?: Extract<keyof T, string>[]) => {
-    const fieldList = fields && fields.length > 0 ? fields : Object.keys(data)
-    only(fieldList)
+export function createValidationSuite<
+  T extends object,
+  F extends Extract<keyof T, string>[] = Extract<keyof T, string>[]
+>(validationGroup: (data: T) => void) {
+  return create((data: T, fieldsList?: F) => {
+    only(fieldsList)
     validationGroup(data)
   })
 }
