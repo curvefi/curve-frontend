@@ -1,5 +1,5 @@
 import { gaugeValidationGroup } from '@/entities/gauge'
-import { createValidationSuite } from '@/entities/validation'
+import { createValidationSuite } from '@/shared/validation'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import { enforce, test } from 'vest'
 

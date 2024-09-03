@@ -1,5 +1,5 @@
 import type { ChainQueryParams } from '@/entities/chain/types'
-import { createValidationSuite } from '@/entities/validation'
+import { createValidationSuite } from '@/shared/validation'
 import { enforce, group, test } from 'vest'
 
 export const chainValidationGroup = ({ chainId }: ChainQueryParams) =>
