@@ -52,21 +52,30 @@ const { data: curve } = useCurve()
 
 ## 4. Vest
 
-[Vest](https://vestjs.dev/) is used for form validation:
+[Vest](https://vestjs.dev/) is used for data validation:
 
-- Create validation suites for each form
-- Use `test` function to define individual validation rules
+- Create validation groups for each entity or form
+- Use `enforce.extend` or validation fn to define individual validation rules
 - Implement `enforce` for more complex validations
+- Create validation groups for each entity or form
+- Utilize `checkValidity` and `assertValidity` functions and their derivatives to validate data
 
 Example:
 
 ```typescript
-export const addGaugeRewardTokenValidationSuite = create((data: { rewardTokenId: string; distributorId: string }) => {
-  test('rewardTokenId', 'Invalid ERC20 token address', () => {
-    enforce(isAddress(data.rewardTokenId)).isTruthy()
+export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
+  group('poolValidation', () => {
+    chainValidationGroup({ chainId })
+
+    test('poolId', 'Invalid pool ID', () => {
+      enforce(poolId).isNotEmpty('Pool ID is required')
+    })
   })
-  // ... more validations
-})
+
+export const poolValidationSuite = createValidationSuite(poolValidationGroup)
+
+const isValid = checkPoolValidity({ chainId: 1, poolId: 'example-pool' })
+const validatedData = assertPoolValidity({ chainId: 1, poolId: 'example-pool' })
 ```
 
 ## 5. Viem
