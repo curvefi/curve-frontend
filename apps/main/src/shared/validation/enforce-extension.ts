@@ -1,18 +1,14 @@
 import { BD } from '@/shared/curve-lib'
 import { isAddress, zeroAddress } from 'viem'
+import isDecimal from 'validator/lib/isDecimal'
 
 export const extendEnforce = (enforce: typeof import('vest').enforce) =>
   enforce.extend({
+    isDecimal,
     isAddress: <T extends unknown>(value: T) => {
       return {
         pass: !!value && typeof value === 'string' && isAddress(value),
         message: () => 'Must be a valid Ethereum address',
-      }
-    },
-    isBigDecimal: <T extends unknown>(value: T) => {
-      return {
-        pass: !!value && BD.isValid(value),
-        message: () => 'Must be a valid BigDecimal',
       }
     },
     isNotZeroAddress: <T extends unknown>(value: T) => {
