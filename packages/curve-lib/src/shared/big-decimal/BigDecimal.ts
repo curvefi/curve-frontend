@@ -76,7 +76,7 @@ class BigDecimal {
     }
 
     if (typeof value === 'string') {
-      return /^-?\d+(\.\d+)?$/.test(value)
+      return /^-?\d+(\.\d{1,18})?$/.test(value)
     }
 
     if (typeof value === 'number') {

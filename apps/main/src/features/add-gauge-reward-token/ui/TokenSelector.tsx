@@ -39,7 +39,7 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
     const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(
       (gaugeRewardToken) => isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address)
     )
-    if (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress) {
+    if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
       setValue('rewardTokenId', filteredTokens[0].address as Address, { shouldValidate: true })
     }
   }, [gaugeRewardsDistributors, getValues, setValue, isGaugeRewardsDistributorsSuccess, filteredTokens])
