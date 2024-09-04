@@ -1413,10 +1413,10 @@
     "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
-"@curvefi/api@^2.61.14":
-  version "2.61.14"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.61.14.tgz#25db7cdb68d52b68fb92e4f359d16838133e9439"
-  integrity sha512-lFRq1d3kGHKyppWyTI+4tnsa8XkUnd2CkWVE2LiCJl+loQDZjRMn+UA7OasoMB+bbiFI28kV+JNQBCsPyiJfZg==
+"@curvefi/api@^2.61.8":
+  version "2.61.8"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.61.8.tgz#b6ab2ef901aea9a10925e7f0d6edaf6c78a19aef"
+  integrity sha512-KLwS8PrUILoOkeRwp5v0VOLbmfE+uBdLQdTSg3eWIO/L+HXoOJm+R3E4Y0msFAFgn8q6fBzptMsbs4+XZEXuNQ==
   dependencies:
     "@curvefi/ethcall" "6.0.7"
     axios "^0.21.1"
@@ -1424,10 +1424,10 @@
     ethers "^6.11.0"
     memoizee "^0.4.15"
 
-"@curvefi/api@^2.61.8":
-  version "2.61.8"
-  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.61.8.tgz#b6ab2ef901aea9a10925e7f0d6edaf6c78a19aef"
-  integrity sha512-KLwS8PrUILoOkeRwp5v0VOLbmfE+uBdLQdTSg3eWIO/L+HXoOJm+R3E4Y0msFAFgn8q6fBzptMsbs4+XZEXuNQ==
+"@curvefi/api@^2.63.3":
+  version "2.63.3"
+  resolved "https://registry.yarnpkg.com/@curvefi/api/-/api-2.63.3.tgz#6a78dbafc952f6bf23d633e5f9246015c6b53505"
+  integrity sha512-qnc1FbZIoTl9gD2l1bx/JdzS4n9/z8/PeDl8UW2WxHodOBiHiHYEf3guHv7TULnZLHdlwrPkvF+2wj2JoF8Bgg==
   dependencies:
     "@curvefi/ethcall" "6.0.7"
     axios "^0.21.1"
