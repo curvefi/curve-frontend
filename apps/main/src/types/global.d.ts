@@ -11,7 +11,6 @@ import { ethers } from 'ethers'
 import React from 'react'
 import curvejsApi from '@/lib/curvejs'
 import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
-import { BigDecimal } from '@/shared/curve-lib'
 
 declare global {
   interface Window {

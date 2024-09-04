@@ -17,6 +17,7 @@ import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useSelectToList from '@/components/PageRouterSwap/components/useSelectToList'
 import useStore from '@/store/useStore'
+import useTokensNameMapper from '@/hooks/useTokensNameMapper'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
@@ -36,8 +37,6 @@ import Stepper from '@/ui/Stepper'
 import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
-import { useVolumeMapping } from '@/entities/pool/lib/pool-info'
-import { useTraceUpdate } from '@/useTraceUpdate'
 
 const QuickSwap = ({
   pageLoaded,
@@ -60,7 +59,7 @@ const QuickSwap = ({
 
   const curve = useStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
-  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {});
+  const { tokensNameMapper } = useTokensNameMapper(rChainId)
   const { selectToList, selectToListStr } = useSelectToList(rChainId)
   const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
@@ -79,6 +78,7 @@ const QuickSwap = ({
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const volumesMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
@@ -86,42 +86,10 @@ const QuickSwap = ({
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
 
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
-  const volumesMapper = useVolumeMapping(rChainId, poolDatas)
-
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
-  useTraceUpdate('QuickSwap', {
-      curve,
-      tokensNameMapper,
-      chainSignerActiveKey,
-      activeKey,
-      formEstGas,
-      formStatus,
-      formValues,
-      globalMaxSlippage,
-      isLoadingApi,
-      isPageVisible,
-      notifyNotification,
-      routesAndOutput,
-      isHideSmallPools,
-      isMaxLoading,
-      selectFromList,
-      tokensMapperNonSmallTvl,
-      userBalancesMapper,
-      userBalancesLoading,
-      usdRatesMapper,
-      fetchStepApprove,
-      fetchStepSwap,
-      resetFormErrors,
-      setFormValues,
-      setSelectFromList,
-      setSelectToList,
-        poolDatas,
-        volumesMapper
-  })
   const { fromAddress, toAddress } = searchedParams
 
   const isReady = pageLoaded && !isLoadingApi && isPageVisible

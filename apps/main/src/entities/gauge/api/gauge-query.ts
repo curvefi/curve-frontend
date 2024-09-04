@@ -10,13 +10,12 @@
  */
 
 import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType } from '@/entities/gauge/types'
+import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 import { logQuery } from '@/utils'
 import { QueryFunction } from '@tanstack/react-query'
 import { zeroAddress, type Address } from 'viem'
-import { PoolMethodResult } from '@/entities/pool'
 
 export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, GaugeQueryKeyType<'status'>> = async ({
   queryKey,

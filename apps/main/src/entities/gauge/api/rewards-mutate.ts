@@ -10,10 +10,9 @@
  */
 
 import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType } from '@/entities/gauge/types'
+import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
 import useStore from '@/store/useStore'
 import { type MutateFunction } from '@tanstack/react-query'
-import { PoolMethodResult } from '@/entities/pool'
 
 export const mutateAddRewardToken: MutateFunction<
   PoolMethodResult<'gauge.addReward'>,

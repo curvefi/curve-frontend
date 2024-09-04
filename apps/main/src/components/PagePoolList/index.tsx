@@ -31,7 +31,6 @@ import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 import TableSortSelect from '@/ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
-import { useLiquidityMapping, useVolumeMapping } from '@/entities/pool/lib/pool-info'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -44,33 +43,44 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const poolDatas = useStore((state) => state.pools.pools[rChainId] ?? [])
+  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
+  const poolDatas = useStore((state) => state.pools.pools[rChainId])
   const results = useStore((state) => state.poolList.result)
   const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
   const resultRewardsOtherCount = useStore((state) => state.poolList.resultRewardsOtherCount)
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
+  const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
+  const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
   const userActiveKey = getUserActiveKey(curve)
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
   const userPoolListError = useStore((state) => state.user.poolListError)
+  const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
+  const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const volumeMapping = useVolumeMapping(rChainId, poolDatas)
-  const liquidityMapping = useLiquidityMapping(rChainId, poolDatas)
 
   const [showDetail, setShowDetail] = useState('')
 
   const result =
     results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
   const haveSigner = !!curve?.signerAddress
-  const poolDatasLength = (poolDatas ?? []).length
+  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
+  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
+  const poolDatasLength = (poolDatasCachedOrApi ?? []).length
+  const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
+  const volumeMapperCachedOrApi = useMemo(
+    () => volumeMapper ?? volumeMapperCached ?? {},
+    [volumeMapper, volumeMapperCached]
+  )
+
   const rewardsApyMapperStr = useMemo(() => getRewardsApyStr(rewardsApyMapper, {}), [rewardsApyMapper])
 
   const userPoolListStr = useMemo(() => getUserPoolListStr(userPoolList), [userPoolList])
-  const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapping), [volumeMapping])
+  const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapper), [volumeMapper])
   const imageBaseUrl = getImageBaseUrl(rChainId)
   const isReady = (poolDatasLength > 0 && volumeMapperStr !== '') || (poolDatasLength === 0 && formStatus.noResult)
 
@@ -96,21 +106,21 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
       setFormValues(
         rChainId,
         searchParams,
-        poolDatas,
+        poolDatasCachedOrApi,
         rewardsApyMapper,
-        volumeMapping,
-        liquidityMapping,
+        volumeMapperCachedOrApi,
+        tvlMapperCachedOrApi,
         userPoolList,
         campaignRewardsMapper
       )
     },
     [
       rChainId,
-      poolDatas,
+      poolDatasCachedOrApi,
       rewardsApyMapper,
       setFormValues,
-      liquidityMapping,
-      volumeMapping,
+      tvlMapperCachedOrApi,
+      volumeMapperCachedOrApi,
       userPoolList,
       campaignRewardsMapper,
     ]
@@ -130,7 +140,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   useEffect(() => {
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [liquidityMapping, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
+  }, [tvlMapperCachedOrApi, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -195,7 +205,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                 <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               )}
               {networks[rChainId].showHideSmallPoolsCheckbox ||
-              (typeof poolDatas !== 'undefined' && poolDatasLength > 10) ? (
+              (typeof poolDatasCachedOrApi !== 'undefined' && poolDatasLength > 10) ? (
                 <Checkbox
                   isDisabled={searchParams.filterKey === 'user'}
                   isSelected={searchParams.filterKey === 'user' ? false : searchParams.hideSmallPools}
@@ -228,8 +238,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
           <TableHead
             isMdUp={isMdUp}
             isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
-            isReadyTvl={isReady && liquidityMapping && Object.keys(liquidityMapping).length > 0}
-            isReadyVolume={isReady && volumeMapping && (Object.keys(volumeMapping).length > 0 || formStatus.noResult)}
+            isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
+            isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
             resultRewardsCrvCount={resultRewardsCrvCount}
             resultRewardsOtherCount={resultRewardsOtherCount}
             searchParams={searchParams}
@@ -266,7 +276,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
               </TableRowNotFound>
             </tr>
           ) : Array.isArray(result) &&
-            Object.keys(volumeMapping ?? {}).length ? (
+            Object.keys(poolDataMapperCached ?? {}).length &&
+            Object.keys(tvlMapperCached ?? {}).length ? (
             <>
               {result.map((poolId: string, index: number) => (
                 <PoolRow

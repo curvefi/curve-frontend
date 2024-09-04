@@ -45,7 +45,9 @@ type SliceState = {
   stakedMapper: {
     [poolAddress: string]: { totalStakedPercent: number | string; gaugeTotalSupply: number | string; timestamp: number }
   }
+  tvlMapper: { [chainId: string]: TvlMapper }
   tvlTotal: number | null
+  volumeMapper: { [chainId: string]: VolumeMapper }
   volumeTotal: number | null
   volumeCryptoShare: number | null
   pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool }
@@ -71,6 +73,8 @@ const sliceKey = 'pools'
 
 export type PoolsSlice = {
   [sliceKey]: SliceState & {
+    fetchPoolsTvl: (curve: CurveApi, poolDatas: PoolData[]) => Promise<void>
+    fetchPoolsVolume: (chainId: ChainId, poolDatas: PoolData[]) => Promise<void>
     fetchPools(
       curve: CurveApi,
       poolIds: string[],
@@ -132,7 +136,9 @@ const DEFAULT_STATE: SliceState = {
   currencyReserves: {},
   rewardsApyMapper: {},
   stakedMapper: {},
+  tvlMapper: {},
   tvlTotal: null,
+  volumeMapper: {},
   volumeTotal: null,
   volumeCryptoShare: null,
   pricesApiPoolsMapper: {},
@@ -157,6 +163,47 @@ const DEFAULT_STATE: SliceState = {
 const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
+
+    fetchPoolsTvl: async (curve, poolDatas) => {
+      const { storeCache } = get()
+      const { tvlMapper: sTvlMapper } = get()[sliceKey]
+
+      log('fetchPoolsTvl', curve.chainId, poolDatas.length)
+      const chainId = curve.chainId
+
+      const { results } = await PromisePool.for(poolDatas)
+        .withConcurrency(10)
+        .process(async (poolData) => {
+          const item = await curvejsApi.pool.getTvl(poolData.pool, chainId)
+          return [item.poolId, item]
+        })
+
+      const tvlMapper = { ...sTvlMapper[chainId], ...Object.fromEntries(results) }
+      get()[sliceKey].setStateByActiveKey('tvlMapper', chainId.toString(), tvlMapper)
+
+      //  update cache
+      storeCache.setTvlVolumeMapper('tvlMapper', chainId, tvlMapper)
+    },
+    fetchPoolsVolume: async (chainId, poolDatas) => {
+      const { storeCache } = get()
+      const { volumeMapper: sVolumeMapper } = get()[sliceKey]
+
+      log('fetchPoolsVolume', chainId, poolDatas.length)
+
+      const { results } = await PromisePool.for(poolDatas)
+        .withConcurrency(10)
+        .process(async (poolData) => {
+          const item = await curvejsApi.pool.getVolume(poolData.pool)
+          return [item.poolId, item]
+        })
+
+      // update volumeMapper
+      let volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
+      get()[sliceKey].setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
+
+      //  update cache
+      storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
+    },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
       const chainId = curve.chainId
 
@@ -203,6 +250,11 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
         const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
 
+        // fetch tvls and volumes
+        await Promise.all([
+          get().pools.fetchPoolsVolume(chainId, partialPoolDatas),
+          get().pools.fetchPoolsTvl(curve, partialPoolDatas),
+        ])
         const partialTokens = await get().tokens.setTokensMapper(chainId, partialPoolDatas)
 
         if (curve.signerAddress) {
@@ -367,15 +419,17 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const pool = poolData.pool
 
       try {
-        const [, , { parameters }] = await Promise.all([
+        const [, , volume, { parameters }] = await Promise.all([
           get().pools.fetchPoolCurrenciesReserves(curve, poolData),
           get().pools.fetchPoolsRewardsApy(chainId, [poolData]),
+          networks[chainId].api.pool.getVolume(pool),
           networks[chainId].api.pool.poolParameters(pool),
         ])
 
         set(
           produce((state: State) => {
             state.pools.poolsMapper[chainId][pool.id].parameters = parameters
+            state.pools.volumeMapper[chainId][pool.id] = volume
           })
         )
       } catch (error) {
@@ -796,6 +850,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         poolsMapper: get()[sliceKey].poolsMapper,
         currencyReserves: get()[sliceKey].currencyReserves,
         rewardsApyMapper: get()[sliceKey].rewardsApyMapper,
+        tvlMapper: get()[sliceKey].tvlMapper,
+        volumeMapper: get()[sliceKey].volumeMapper,
       })
     },
   },

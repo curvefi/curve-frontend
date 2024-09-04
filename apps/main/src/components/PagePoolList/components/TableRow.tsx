@@ -27,11 +27,14 @@ export type TableRowProps = {
   isInPool: boolean
   imageBaseUrl: string
   poolData: PoolData | undefined
+  poolDataCachedOrApi: PoolDataCache | PoolData | undefined
   rewardsApy: RewardsApy | undefined
   searchParams: SearchParams
   showInPoolColumn: boolean
   campaignRewardsMapper: CampaignRewardsMapper
+  tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
+  volumeCached: { value: string } | undefined
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
@@ -44,11 +47,14 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   isInPool,
   imageBaseUrl,
   poolData,
+  poolDataCachedOrApi,
   rewardsApy,
   searchParams,
   showInPoolColumn,
   campaignRewardsMapper,
+  tvlCached,
   tvl,
+  volumeCached,
   volume,
   handleCellClick,
 }) => {
@@ -66,7 +72,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
         <PoolLabel
           isVisible
           imageBaseUrl={imageBaseUrl}
-          poolData={poolData}
+          poolData={poolDataCachedOrApi}
           poolListProps={{
             searchText: searchText,
             searchTextByTokensAndAddresses,
@@ -115,10 +121,10 @@ const TableRow: FunctionComponent<TableRowProps> = ({
         </td>
       )}
       <td className="right">
-        <TableCellVolume isHighLight={sortBy === 'volume'} volume={volume} />
+        <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
       </td>
       <td className="right">
-        <TableCellTvl isHighLight={sortBy === 'tvl'} tvl={tvl} />
+        <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
       </td>
     </LazyItem>
   )
