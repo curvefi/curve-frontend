@@ -310,7 +310,7 @@ declare global {
 
   type VeCrvFee = {
     fees_usd: number
-    timestamp: string
+    timestamp: number
     date: string
   }
 
