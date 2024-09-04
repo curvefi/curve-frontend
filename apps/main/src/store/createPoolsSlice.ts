@@ -26,7 +26,6 @@ import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
 
-import { INVALID_ADDRESS } from '@/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl, log } from '@/utils'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import curvejsApi from '@/lib/curvejs'
@@ -831,112 +830,81 @@ async function getPools(
   failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null
 ) {
   const chainId = curve.chainId
-  const poolsMapper: PoolDataMapper = cloneDeep(currentPoolsMapper)
-  const poolsMapperCache: PoolDataCacheMapper = cloneDeep(currentPoolsMapperCached)
-
-  for (const idx in poolList) {
-    const poolId = poolList[idx]
-    const pool = curve.getPool(poolId) as Pool
-    const poolData = networks[chainId].api.pool.getPoolData(pool, chainId, poolsMapper[poolId])
-    poolData.failedFetching24hOldVprice = failedFetching24hOldVprice
-      ? failedFetching24hOldVprice[pool.address] ?? false
-      : false
-    poolsMapper[poolId] = poolData
-    poolsMapper[poolId].seedData = getSeedAmounts(poolData)
-    poolsMapper[poolId].curvefiUrl = getCurvefiUrl(poolId, networks[chainId].orgUIPath)
-
-    const [gaugeStatusResp, isGaugeKilledResp] = await Promise.allSettled([pool.gaugeStatus(), pool.isGaugeKilled()])
-    poolData.gauge.status = fulfilledValue(gaugeStatusResp) ?? null
-    poolData.gauge.isKilled = fulfilledValue(isGaugeKilledResp) ?? null
-
-    if (poolData.gauge.status?.rewardsNeedNudging || poolData.gauge.status?.areCrvRewardsStuckInBridge) {
-      log(
-        'rewardsNeedNudging, areCrvRewardsStuckInBridge',
-        pool.id,
-        poolData.gauge.status.rewardsNeedNudging,
-        poolData.gauge.status.areCrvRewardsStuckInBridge
-      )
+  const pools = poolList.map(poolId => curve.getPool(poolId))
+  const gauges = await Promise.all(
+    pools.map(pool =>
+      Promise.allSettled([pool.gaugeStatus(), pool.isGaugeKilled()])
+        .then(results => results.map(v => fulfilledValue(v) ?? null))
+        .then(([status, isKilled]) => ({ status, isKilled }))
+    )
+  );
+  gauges.forEach(({ status }, index) => {
+    if (status?.rewardsNeedNudging || status?.areCrvRewardsStuckInBridge) {
+      log('gauges reward need nudging', poolList[index], status?.rewardsNeedNudging, status?.areCrvRewardsStuckInBridge)
     }
+  });
 
-    // poolDataCached
-    const poolDataCache = pick(poolsMapper[poolId], [
-      'hasWrapped',
-      'gauge',
-      'tokens',
-      'tokensCountBy',
-      'tokensAll',
-      'tokensLowercase',
-      'tokenAddresses',
-      'tokenAddressesAll',
-      'pool.id',
-      'pool.name',
-      'pool.address',
-      'pool.gauge',
-      'pool.lpToken',
-      'pool.implementation',
-      'pool.isCrypto',
-      'pool.isFactory',
-      'pool.isLending',
-      'pool.referenceAsset',
-      'pool.isNg',
-    ]) as PoolDataCache
+  const poolEntries: [string, PoolData][] = pools.map((pool, idx) => {
+    const poolData = networks[chainId].api.pool.getPoolData(pool, chainId, currentPoolsMapper[pool.id])
+    return [pool.id, {
+      ...poolData,
+      seedData: getSeedAmounts(poolData),
+      curvefiUrl: getCurvefiUrl(pool.id, networks[chainId].orgUIPath),
+      failedFetching24hOldVprice: Boolean(failedFetching24hOldVprice?.[pool.address]),
+      gauge: gauges[idx]
+    }]
+  })
 
-    if (poolDataCache) {
-      poolsMapperCache[poolId] = poolDataCache
-    }
+  const cacheEntries = poolEntries.map(([poolId, poolData]) => [poolId, pick(poolData, [
+    'hasWrapped',
+    'gauge',
+    'tokens',
+    'tokensCountBy',
+    'tokensAll',
+    'tokensLowercase',
+    'tokenAddresses',
+    'tokenAddressesAll',
+    'pool.id',
+    'pool.name',
+    'pool.address',
+    'pool.gauge',
+    'pool.lpToken',
+    'pool.implementation',
+    'pool.isCrypto',
+    'pool.isFactory',
+    'pool.isLending',
+    'pool.referenceAsset',
+    'pool.isNg',
+  ])] as [string, PoolDataCache])
+
+  return {
+    poolsMapper: {...currentPoolsMapper, ...Object.fromEntries(poolEntries)},
+    poolsMapperCache: {...currentPoolsMapperCached, ...Object.fromEntries(cacheEntries)},
   }
-
-  return { poolsMapper, poolsMapperCache }
 }
 
 function getSeedAmounts({ pool }: PoolData) {
+  const total = pool.underlyingCoins.length
   if (pool.isMeta && !pool.isCrypto) {
-    const total = pool.underlyingCoins.length
     const wrappedTotal = pool.wrappedCoins.length
     return pool.underlyingCoins.map((token, idx) => {
-      if (idx === 0) {
-        return { token, percent: 100 / wrappedTotal }
-      } else {
-        const metaTokensTotal = total - 1
-        return { token, percent: 100 / wrappedTotal / metaTokensTotal }
-      }
+      const metaTokensTotal = idx === 0 ? 1 : total - 1
+      return { token, percent: 100 / wrappedTotal / metaTokensTotal }
     })
-  } else {
-    const total = pool.underlyingCoins.length
-    return pool.underlyingCoins.map((token) => ({ token, percent: 100 / total }))
   }
+  return pool.underlyingCoins.map((token) => ({ token, percent: 100 / total }))
 }
 
 // remove pools we do not want to display in pool list
 export function filterCustomPools(poolDatas: PoolData[], chainId: ChainId) {
-  const filteredPoolsDatas = []
   const customPoolIds = networks[chainId].customPoolIds
-
-  for (const idx in poolDatas) {
-    const poolData = poolDatas[idx]
-    if (!customPoolIds[poolData.pool.id]) {
-      filteredPoolsDatas.push(poolData)
-    }
-  }
-  return filteredPoolsDatas
+  return poolDatas.filter((pool) => !customPoolIds[pool.pool.id]);
 }
 
 export function parsedTokensNameMapper(poolDatas: PoolData[]) {
-  const tokensNameMapper: { [address: string]: string } = {}
-
-  for (const idx in poolDatas) {
-    const { underlyingCoinAddresses, underlyingCoins, wrappedCoinAddresses, wrappedCoins, id, lpToken } =
-      poolDatas[idx].pool
-    const addresses = [...underlyingCoinAddresses, ...wrappedCoinAddresses]
-    const tokens = [...underlyingCoins, ...wrappedCoins]
-
-    addresses.map((address, idx) => {
-      tokensNameMapper[address] = tokens[idx]
-    })
-
-    if (lpToken !== INVALID_ADDRESS) {
-      tokensNameMapper[lpToken] = `${id} LP`
-    }
-  }
-  return tokensNameMapper
+  return Object.fromEntries(poolDatas.flatMap(({ pool }) => [
+    [pool.lpToken, `${pool.id} LP`],
+    pool.underlyingCoins.map((coin, idx) => [pool.underlyingCoinAddresses[idx], coin]),
+    pool.wrappedCoins.map((coin, idx) => [pool.wrappedCoinAddresses[idx], coin]),
+  ]));
 }

@@ -5,12 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
-import {
-  DEFAULT_FORM_STATUS,
-  DEFAULT_SEARCH_PARAMS,
-  getPoolDatasCached,
-  getPoolListActiveKey,
-} from '@/store/createPoolListSlice'
+import { DEFAULT_FORM_STATUS, DEFAULT_SEARCH_PARAMS, getPoolListActiveKey } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'

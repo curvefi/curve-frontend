@@ -9,8 +9,7 @@ export const volumeQueryOptions = (params: PoolQueryParams) =>
     queryKey: poolKeys.volume(params),
     queryFn: queryVolume,
     staleTime: REFRESH_INTERVAL['1m'],
-    enabled: checkPoolValidity(params),
-    gcTime: REFRESH_INTERVAL['1w'],
+    enabled: checkPoolValidity(params)
   })
 
 export const liquidityQueryOptions = (params: PoolQueryParams) =>
@@ -19,5 +18,4 @@ export const liquidityQueryOptions = (params: PoolQueryParams) =>
     queryFn: queryLiquidity,
     staleTime: REFRESH_INTERVAL['1m'],
     enabled: checkPoolValidity(params),
-    gcTime: REFRESH_INTERVAL['1w'],
   })

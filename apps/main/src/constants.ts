@@ -27,11 +27,6 @@ export const ROUTE = {
   PAGE_POOL_MANAGE: '/manage-gauge',
 } as const
 
-export const TIME_FRAMES = {
-  WEEK: 7 * 24 * 60 * 60,
-  MONTH: 30 * 24 * 60 * 60,
-} as const
-
 // TODO rename to MS
 export const REFRESH_INTERVAL = {
   '3s': 1000 * 3,
@@ -42,8 +37,12 @@ export const REFRESH_INTERVAL = {
   '11m': 1000 * 60 * 11,
   '1h': 1000 * 60 * 60,
   '1d': 1000 * 60 * 60 * 24,
-  '1w': 1000 * 60 * 60 * 24 * 7,
   Inf: Infinity,
+} as const
+
+export const TIME_FRAMES = {
+  WEEK: 7 * 24 * 60 * 60,
+  MONTH: 30 * 24 * 60 * 60,
 } as const
 
 export const CONNECT_STAGE = {
