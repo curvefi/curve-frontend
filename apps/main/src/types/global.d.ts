@@ -272,8 +272,6 @@ declare global {
     }
   }
 
-  type PricesApiPoolDataMapper = { [poolAddress: string]: PricesApiPoolData }
-
   type PricesApiPoolData = {
     name: string
     registry: string

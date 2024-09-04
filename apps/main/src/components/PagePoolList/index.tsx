@@ -5,12 +5,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
-import {
-  DEFAULT_FORM_STATUS,
-  DEFAULT_SEARCH_PARAMS,
-  getPoolDatasCached,
-  getPoolListActiveKey,
-} from '@/store/createPoolListSlice'
+import { DEFAULT_FORM_STATUS, DEFAULT_SEARCH_PARAMS, getPoolListActiveKey } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -73,7 +68,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const result =
     results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
   const haveSigner = !!curve?.signerAddress
-  const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
+  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
   const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
   const poolDatasLength = (poolDatasCachedOrApi ?? []).length
   const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
