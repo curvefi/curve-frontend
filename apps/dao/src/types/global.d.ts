@@ -264,6 +264,14 @@ declare global {
     transaction: string
   }
 
+  type GaugeVote = {
+    user: string
+    weight: number
+    block_number: number
+    timestamp: number
+    transaction: string
+  }
+
   interface GaugeVotesMapper {
     [gaugeAddress: string]: {
       fetchingState: FetchingState

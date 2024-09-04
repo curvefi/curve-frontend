@@ -38,7 +38,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   }, [getGaugeVotes, gaugeAddress, gaugeVotesLoading, gaugeVotesError, gaugeVotesMapper])
 
   return (
-    <PaginatedTable<GaugeVoteData>
+    <PaginatedTable<GaugeVote>
       data={gaugeVotes}
       minWidth={tableMinWidth}
       fetchingState={gaugeVotesMapper[gaugeAddress]?.fetchingState ?? 'LOADING'}
