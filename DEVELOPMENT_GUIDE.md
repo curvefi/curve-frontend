@@ -55,9 +55,9 @@ const { data: curve } = useCurve()
 [Vest](https://vestjs.dev/) is used for data validation:
 
 - Create validation groups for each entity or form
-- Use `enforce.extend` or validation fn to define individual validation rules
+- Use `enforce.extend` or validation functions to define individual validation rules
 - Implement `enforce` for more complex validations
-- Create validation groups for each entity or form
+- Create validation groups for each important data context to enable on-the-fly data validation
 - Utilize `checkValidity` and `assertValidity` functions and their derivatives to validate data
 
 Example:
