@@ -127,7 +127,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
       // special search case for aUSD₮
       if (parsedSearchText.endsWith('ausdt')) parsedSearchText = 'aUSD₮'
 
-      const results: { searchTerm: string; results: (PoolDataCache | PoolData)[] } = {
+      let results: { searchTerm: string; results: (PoolDataCache | PoolData)[] } = {
         searchTerm: '',
         results: [],
       }
@@ -350,6 +350,18 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
   },
 })
+
+export function getPoolDatasCached(poolsMapperCached: PoolDataCacheMapper | undefined) {
+  const poolDatasCached: PoolDataCache[] = []
+
+  if (poolsMapperCached) {
+    for (const key in poolsMapperCached) {
+      poolDatasCached.push(poolsMapperCached[key])
+    }
+  }
+
+  return poolDatasCached
+}
 
 export function getPoolListActiveKey(chainId: ChainId, searchParams: SearchParams) {
   const { filterKey, hideSmallPools, searchText, sortBy, sortByOrder } = searchParams
