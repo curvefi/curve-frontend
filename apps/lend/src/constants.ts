@@ -52,7 +52,7 @@ export enum TITLE {
   tokenSupply = 'tokenSupply',
   totalCollateralValue = 'totalCollateralValue',
   totalDebt = 'totalDebt',
-  totalLiquidity = 'liquidity',
+  totalLiquidity = 'totalLiquidity',
   leverage = 'leverage',
   totalApr = 'totalApr',
   points = 'points',

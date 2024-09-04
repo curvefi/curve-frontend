@@ -26,8 +26,8 @@ const PoolParameters: React.FC<
 > = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
   const pricesApi = networks[rChainId].pricesApi
-  const { data: tvl } = useLiquidity({ chainId: rChainId, poolId: rPoolId })
-  const { data: volume } = useVolume({ chainId: rChainId, poolId: rPoolId })
+  const tvlQuery = useLiquidity({ chainId: rChainId, poolId: rPoolId })
+  const volumeQuery = useVolume({ chainId: rChainId, poolId: rPoolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (!!poolData?.pool?.wrappedCoins) {
@@ -37,27 +37,28 @@ const PoolParameters: React.FC<
   }, [poolData?.pool?.wrappedCoins])
 
   const liquidityUtilization = useMemo(() => {
-    if (tvl?.value && volume?.value) {
-      if (tvl.value.isZero() || volume.value.isZero()) {
+    if (tvlQuery.data && volumeQuery.data) {
+      const tvl = BigDecimal.from(tvlQuery.data)
+      const volume = BigDecimal.from(volumeQuery.data)
+      if (tvl.isZero() || volume.isZero()) {
         return formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
       } else {
-        return volume.value.div(tvl.value).times(new BigDecimal(100)).toString()
+        return volume.div(tvl).times(new BigDecimal(100)).toString()
       }
     } else {
       return '-'
     }
-  }, [tvl, volume])
+  }, [tvlQuery.data, volumeQuery.data])
 
   const { gamma, adminFee, fee } = parameters ?? {}
 
-  const dailyUsdStr = volume?.value?.toString() ?? '-'
   return (
     <>
       <article>
         <Items listItemMargin="var(--spacing-1)">
           <Item>
             {t`Daily USD volume:`}{' '}
-            <strong title={dailyUsdStr}>{dailyUsdStr}</strong>
+            <strong title={volumeQuery.data ?? '-'}>{volumeQuery.data ?? '-'}</strong>
           </Item>
           <Item>
             {t`Liquidity utilization:`}{' '}
