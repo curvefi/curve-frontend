@@ -56,14 +56,13 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
     },
     setTokensMapper: async (chainId, poolDatas) => {
-      const { pools } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
-      const { hideSmallPoolsTvl: chainTvl, nativeTokens } = networks[chainId]
-      const tvlMapper = pools.tvlMapper[chainId] ?? {}
-      const volumeMapper = pools.volumeMapper[chainId] ?? {}
+      const { hideSmallPoolsTvl: chainTvl } = networks[chainId]
+      const tvlMapper = {} as TvlMapper //TODO: const tvlMapper = pools.tvlMapper[chainId] ?? {}
+      const volumeMapper = {} as VolumeMapper //TODO: const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(chainId)
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
