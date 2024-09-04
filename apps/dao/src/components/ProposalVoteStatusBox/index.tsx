@@ -30,9 +30,9 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>{t`Quorum`} </HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>{formatNumberWithSuffix(votesFor)}</HighlightedData>{' '}
-            <Data>of {formatNumberWithSuffix(quorumVeCrv)}</Data>
-            <TooltipIcon>{t`The minimum number of For votes required to reach quorum is ${minAcceptQuorumPercent}%.`}</TooltipIcon>
+            <HighlightedData>{currentQuorumPercentage.toFixed(2)}%</HighlightedData>{' '}
+            <Data>of {formatNumberWithSuffix(minAcceptQuorumPercent)}%</Data>
+            <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
         </Box>
         <ProgressBar
@@ -51,7 +51,7 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData>{support.toFixed(2)}%</HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
-            <TooltipIcon>{t`The minimum support required to pass the proposal is ${minSupport}%.`}</TooltipIcon>
+            <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
         </Box>
         <ProgressBar active={totalVotes > 0} support={support} minSupport={minSupport} />

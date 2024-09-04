@@ -20,7 +20,7 @@ type Props = {
 
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
   const curveJsProposalLoadingState = useStore((state) => state.proposals.curveJsProposalLoadingState)
-  const currentProposal = useStore((state) => state.proposals.curveJsProposalMapper[rProposalId])
+  const currentProposal = useStore((state) => state.proposals.proposalMapper[rProposalId])
   const navigate = useNavigate()
 
   return (
@@ -35,7 +35,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(currentProposal?.voteCount)}</Data>
+            <Data className="align-right">{formatNumber(currentProposal?.vote_count)}</Data>
           </Box>
         </Box>
       </TotalWrapper>
@@ -47,7 +47,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
           </Box>
           <VotesContainer>
             {currentProposal.votes.map((vote) => (
-              <DataRow key={`${vote.tx}-${vote.supports}`}>
+              <DataRow key={`${vote.transaction_hash}-${vote.supports}`}>
                 <Box flex>
                   {vote.supports ? (
                     <ForIcon name="CheckmarkFilled" size={16} />
@@ -63,7 +63,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                     {vote.topHolder ? vote.topHolder : shortenTokenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                <StyledExternalLink href={networks[1].scanTxPath(vote.tx)}>
+                <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
                   <Data>
                     {formatNumberWithSuffix(+vote.stake)} ({vote.relativePower.toFixed(2)}%)
                   </Data>

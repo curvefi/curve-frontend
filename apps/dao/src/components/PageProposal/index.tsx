@@ -7,7 +7,7 @@ import { copyToClipboard } from '@/utils'
 import { breakpoints } from '@/ui/utils'
 
 import useProposalsMapper from '@/hooks/useProposalsMapper'
-import useCurveJsProposalMapper from '@/hooks/useCurveJsProposalMapper'
+import useProposalMapper from '@/hooks/useProposalMapper'
 
 import IconButton from '@/ui/IconButton'
 import Tooltip from '@/ui/Tooltip'
@@ -38,9 +38,9 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
   const { proposalsLoadingState, getProposal, curveJsProposalLoadingState } = useStore((state) => state.proposals)
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
-  const { curveJsProposalMapper } = useCurveJsProposalMapper()
+  const { proposalMapper } = useProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
-  const curveJsProposal = curveJsProposalMapper[rProposalId] ?? null
+  const curveJsProposal = proposalMapper[rProposalId] ?? null
   const proposal = proposalsMapper[rProposalId] ?? null
 
   const isLoading =
@@ -212,7 +212,7 @@ const ProposalContainer = styled(Box)`
 `
 
 const SecondColumnBox = styled(Box)`
-  min-width: 22.875rem;
+  width: 22.875rem;
   @media (max-width: 55.625rem) {
     display: none;
   }

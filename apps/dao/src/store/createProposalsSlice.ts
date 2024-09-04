@@ -29,7 +29,7 @@ type SliceState = {
   }
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
-  curveJsProposalMapper: { [proposalId: string]: CurveJsProposalData }
+  proposalMapper: ProposalMapper
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
@@ -76,7 +76,7 @@ const DEFAULT_STATE: SliceState = {
   activeFilter: 'all',
   activeSortBy: 'endingSoon',
   activeSortDirection: 'desc',
-  curveJsProposalMapper: {},
+  proposalMapper: {},
   proposalsMapper: {},
   proposals: [],
 }
@@ -159,29 +159,34 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'LOADING')
 
       try {
-        const proposal = await curve.dao.getProposal(voteType, voteId)
+        const proposal = await fetch(
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`
+        )
+        const data: PricesProposalResponse = await proposal.json()
 
-        const formattedVotes = proposal.votes
-          .map((vote) => ({
-            ...vote,
-            topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
-            stake: vote.stake / 1e18,
-            relativePower: (vote.stake / +proposal.totalSupply) * 100,
-          }))
-          .sort()
-        const sortedVotes = formattedVotes.sort((a, b) => b.stake - a.stake)
+        const formattedData = {
+          ...data,
+          votes_for: +data.votes_for / 1e18,
+          votes_against: +data.votes_against / 1e18,
+          support_required: +data.support_required / 1e18,
+          min_accept_quorum: +data.min_accept_quorum / 1e18,
+          total_supply: +data.total_supply / 1e18,
+          creator_voting_power: +data.creator_voting_power / 1e18,
+          votes: data.votes
+            .map((vote) => ({
+              ...vote,
+              topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
+              stake: +vote.voting_power / 1e18,
+              relativePower: (+vote.voting_power / +data.total_supply) * 100,
+            }))
+            .sort((a, b) => b.stake - a.stake),
+        }
 
         set(
           produce((state: State) => {
             state[sliceKey].curveJsProposalLoadingState = 'SUCCESS'
-            state[sliceKey].curveJsProposalMapper[`${voteId}-${voteType}`] = {
-              ...proposal,
-              votes: sortedVotes,
-            }
-            state.storeCache.cacheCurveJsProposalMapper[`${voteId}-${voteType}`] = {
-              ...proposal,
-              votes: sortedVotes,
-            }
+            state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
+            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
           })
         )
       } catch (error) {

@@ -128,10 +128,6 @@ declare global {
     votes_for: string
   }
 
-  type PricesProposalsResponse = {
-    proposals: PricesProposalResponseData[]
-  }
-
   interface ProposalData extends ProposalResponseData {
     status: 'Active' | 'Passed' | 'Denied'
     votesFor: number
@@ -144,38 +140,13 @@ declare global {
     currentQuorumPercentage: number
   }
 
-  type CurveJsProposalData = {
-    voteId: number
-    voteType: ProposalType
-    creator: string
-    startDate: number
-    snapshotBlock: number
-    ipfsMetadata: string
-    metadata: string
-    votesFor: string
-    votesAgainst: string
-    voteCount: number
-    supportRequired: string
-    minAcceptQuorum: string
-    totalSupply: string
-    executed: boolean
-    tx: string
-    creatorVotingPower: number
-    script: string
-    votes: {
-      tx: string
-      voteId: number
-      topHolder: string | null
-      voter: string
-      supports: boolean
-      stake: number
-      relativePower: number
-    }[]
+  type PricesProposalsResponse = {
+    proposals: PricesProposalResponseData[]
   }
 
-  type PricesProposalData = {
+  type PricesProposalResponse = {
     vote_id: number
-    vote_type: string
+    vote_type: ProposalType
     creator: string
     start_date: number
     snapshot_block: number
@@ -188,16 +159,51 @@ declare global {
     min_accept_quorum: string
     total_supply: string
     executed: boolean
+    transaction_hash: string
+    dt: string
     creator_voting_power: string
     execution_tx: string
     script: string
-    votes: {
+    votes: Array<{
       voter: string
       supports: boolean
-      voting_power: string | number
-      relative_power: number
+      voting_power: string
       transaction_hash: string
-    }[]
+    }>
+  }
+
+  type PricesProposalData = {
+    vote_id: number
+    vote_type: ProposalType
+    creator: string
+    start_date: number
+    snapshot_block: number
+    ipfs_metadata: string
+    metadata: string
+    votes_for: number
+    votes_against: number
+    vote_count: number
+    support_required: number
+    min_accept_quorum: number
+    total_supply: number
+    executed: boolean
+    transaction_hash: string
+    dt: string
+    creator_voting_power: number
+    execution_tx: string
+    script: string
+    votes: Array<{
+      voter: string
+      topHolder: string | null
+      stake: number
+      relativePower: number
+      supports: boolean
+      transaction_hash: string
+    }>
+  }
+
+  type ProposalMapper = {
+    [proposalId: string]: PricesProposalData
   }
 
   type PricesGaugeOverviewData = {
@@ -246,23 +252,15 @@ declare global {
     [gaugeAddress: string]: GaugeFormattedData
   }
 
-  type GaugeVoteResData = {
-    user: string
-    weight: number
-    block_number: number
-    timestamp: string
-    transaction: string
-  }
-
   type GaugeVotesResponse = {
-    votes: GaugeVoteResData[]
+    votes: GaugeVoteData[]
   }
 
   type GaugeVoteData = {
     user: string
     weight: number
     block_number: number
-    timestamp: number
+    timestamp: string
     transaction: string
   }
 
@@ -312,7 +310,7 @@ declare global {
 
   type VeCrvFee = {
     fees_usd: number
-    timestamp: number
+    timestamp: string
     date: string
   }
 
@@ -416,7 +414,7 @@ declare global {
     data: UserProposalVoteResData[]
   }
 
-  type UserGaugeVoteResData = {
+  type UserGaugeVoteData = {
     gauge: string
     gauge_name: string
     weight: number
@@ -425,17 +423,8 @@ declare global {
     transaction: string
   }
 
-  type UserGaugeVoteData = {
-    gauge: string
-    gauge_name: string
-    weight: number
-    block_number: number
-    timestamp: number
-    transaction: string
-  }
-
   type UserGaugeVotesRes = {
-    votes: UserGaugeVoteResData[]
+    votes: UserGaugeVoteData[]
   }
 
   interface FnStepEstGasApprovalResponse {

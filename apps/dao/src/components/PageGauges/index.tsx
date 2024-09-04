@@ -7,11 +7,11 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
-import Button from '@/ui/Button'
 
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 import UserBox from '../UserBox'
+import GaugeVoting from './GaugeVoting'
 import SubNav from '@/components/SubNav'
 
 const Gauges = () => {
@@ -38,7 +38,7 @@ const Gauges = () => {
           <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
           <Container variant="secondary">
             {navSelection === 'gaugeList' && <GaugesList />}
-            {/* {navSelection === 'Gauge Voting' && <GaugeVoting />} */}
+            {navSelection === 'gaugeVoting' && <GaugeVoting />}
           </Container>
         </Box>
         <Box flex flexColumn flexGap={'var(--spacing-1)'}>

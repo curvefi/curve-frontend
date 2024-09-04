@@ -22,7 +22,7 @@ type Props = {
 
 const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
   const { castVote, voteTx, executeProposal, executeTx } = useStore((state) => state.proposals)
-  const curveJsProposal = useStore((state) => state.proposals.curveJsProposalMapper[proposalId ?? ''])
+  const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const { userProposalVotesMapper } = useStore((state) => state.user)
 
@@ -33,13 +33,13 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
 
   const executeProposalComponent = () => {
-    const id = curveJsProposal?.voteId
-    const type = curveJsProposal?.voteType
+    const id = pricesProposal?.vote_id
+    const type = pricesProposal?.vote_type
 
     return (
       <>
         {executeTx.status === 'LOADING' && (
-          <Box margin={'var(--spacing-3) 0 0 0'}>
+          <Box>
             <ModalPendingTx
               transactionHash={executeTx.hash!}
               txLink={executeTx.txLink!}
@@ -48,7 +48,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
           </Box>
         )}
         {executeTx.status === 'ERROR' && (
-          <Box margin={'var(--spacing-3) 0 0 0'}>
+          <Box>
             <StyledAlertBox alertType="error" limitHeight>
               {executeTx.error}
             </StyledAlertBox>
@@ -83,51 +83,56 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
       return null
     }
 
-    return <Wrapper className={className}>{executeProposalComponent()}</Wrapper>
+    return (
+      proposal.status === 'Passed' &&
+      !pricesProposal?.executed && <Wrapper className={className}>{executeProposalComponent()}</Wrapper>
+    )
   }
 
   // Voted successfully
   if (proposalId && voted) {
     return (
       <Wrapper className={className}>
-        <VotedMessageWrapper>
-          <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
-          <VotedMessage>
-            {votedFor && (
-              <VotedRow>
-                <VotedRowItem>
-                  <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
-                </VotedRowItem>
-                <VotedRowItem>
-                  {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
-                    showDecimalIfSmallNumberOnly: true,
-                  })}{' '}
-                  {votePercentage(
-                    userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
-                    userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
-                  )}
-                </VotedRowItem>
-              </VotedRow>
-            )}
-            {votedAgainst && (
-              <VotedRow>
-                <VotedRowItem>
-                  <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
-                </VotedRowItem>
-                <VotedRowItem>
-                  {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
-                    showDecimalIfSmallNumberOnly: true,
-                  })}{' '}
-                  {votePercentage(
-                    userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
-                    userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
-                  )}
-                </VotedRowItem>
-              </VotedRow>
-            )}
-          </VotedMessage>
-        </VotedMessageWrapper>
-        {proposal.status === 'Passed' && !proposal.executed && executeProposalComponent()}
+        <Box flex flexColumn flexGap="var(--spacing-3)">
+          <VotedMessageWrapper>
+            <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
+            <VotedMessage>
+              {votedFor && (
+                <VotedRow>
+                  <VotedRowItem>
+                    <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
+                  </VotedRowItem>
+                  <VotedRowItem>
+                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_for, {
+                      showDecimalIfSmallNumberOnly: true,
+                    })}{' '}
+                    {votePercentage(
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                    )}
+                  </VotedRowItem>
+                </VotedRow>
+              )}
+              {votedAgainst && (
+                <VotedRow>
+                  <VotedRowItem>
+                    <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
+                  </VotedRowItem>
+                  <VotedRowItem>
+                    {formatNumber(userProposalVotesMapper[userAddress].votes[proposalId].vote_against, {
+                      showDecimalIfSmallNumberOnly: true,
+                    })}{' '}
+                    {votePercentage(
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                    )}
+                  </VotedRowItem>
+                </VotedRow>
+              )}
+            </VotedMessage>
+          </VotedMessageWrapper>
+          {proposal.status === 'Passed' && !pricesProposal?.executed && executeProposalComponent()}
+        </Box>
       </Wrapper>
     )
   }
@@ -244,9 +249,7 @@ const VoteButton = styled(Button)<{ isFor?: boolean }>`
   }}
 `
 
-const ExecuteButton = styled(VoteButton)`
-  margin: var(--spacing-3) 0 0;
-`
+const ExecuteButton = styled(VoteButton)``
 
 const StyledAlertBox = styled(AlertBox)`
   width: 100%;
