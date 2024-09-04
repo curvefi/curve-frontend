@@ -19,6 +19,7 @@ import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/default/DocumentHead'
 import IconButton from '@/ui/IconButton'
 import QuickSwap from '@/components/PageRouterSwap/index'
+import { useTraceUpdate } from '@/useTraceUpdate'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -58,6 +59,19 @@ const Page: NextPage = () => {
     },
     [location.search, navigate, params]
   )
+  useTraceUpdate('PageRouterSwap', {
+    pageLoaded,
+    routerParams,
+      isLoadingCurve,
+      hasRouter,
+      paramsFromAddress,
+      paramsToAddress,
+      paramsMaxSlippage,
+      rChainId,
+      tokensMapperStr,
+      fromAddress: routerCached?.fromAddress,
+    toAddress: routerCached?.toAddress,
+  })
 
   useEffect(() => {
     scrollToTop()

@@ -4,9 +4,8 @@ import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import networks from '@/networks'
-import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import { Item, Items } from '@/ui/Items'
@@ -17,6 +16,8 @@ import PoolTotalStaked from '@/components/PagePool/PoolDetails/PoolStats/PoolTot
 import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
 import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
+import { useLiquidity, useVolume } from '@/entities/pool/lib/pool-info'
+import { BigDecimal } from '@/shared/curve-lib'
 
 const PoolParameters: React.FC<
   {
@@ -25,8 +26,8 @@ const PoolParameters: React.FC<
 > = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
   const pricesApi = networks[rChainId].pricesApi
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
+  const { data: tvl } = useLiquidity({ chainId: rChainId, poolId: rPoolId })
+  const { data: volume } = useVolume({ chainId: rChainId, poolId: rPoolId })
 
   const haveWrappedCoins = useMemo(() => {
     if (!!poolData?.pool?.wrappedCoins) {
@@ -37,10 +38,10 @@ const PoolParameters: React.FC<
 
   const liquidityUtilization = useMemo(() => {
     if (tvl?.value && volume?.value) {
-      if (+tvl.value === 0 || +volume.value === 0) {
+      if (tvl.value.isZero() || volume.value.isZero()) {
         return formatNumber(0, { style: 'percent', maximumFractionDigits: 0 })
       } else {
-        return formatNumber((Number(volume.value) / Number(tvl.value)) * 100, FORMAT_OPTIONS.PERCENT)
+        return volume.value.div(tvl.value).times(new BigDecimal(100)).toString()
       }
     } else {
       return '-'
@@ -49,15 +50,14 @@ const PoolParameters: React.FC<
 
   const { gamma, adminFee, fee } = parameters ?? {}
 
+  const dailyUsdStr = volume?.value?.toString() ?? '-'
   return (
     <>
       <article>
         <Items listItemMargin="var(--spacing-1)">
           <Item>
             {t`Daily USD volume:`}{' '}
-            <strong title={volume?.value ?? '-'}>
-              {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
-            </strong>
+            <strong title={dailyUsdStr}>{dailyUsdStr}</strong>
           </Item>
           <Item>
             {t`Liquidity utilization:`}{' '}

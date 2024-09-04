@@ -7,6 +7,7 @@ import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
+import { useLiquidityMapping, useVolumeMapping } from '@/entities/pool/lib/pool-info'
 
 interface PoolRowProps {
   poolId: string
@@ -45,16 +46,15 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const formValues = useStore((state) => state.poolList.formValues)
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const poolDatasMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
-  const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
-  const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const themeType = useStore((state) => state.themeType)
-  const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
-  const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
+
+  const poolDatas = useStore((state) => state.pools.pools[rChainId])
+  const tvlMapper = useLiquidityMapping(rChainId, poolDatas)
+  const volumeMapper = useVolumeMapping(rChainId, poolDatas)
 
   const handleCellClick = useCallback(
     (target: EventTarget, formType?: 'swap' | 'withdraw') => {
@@ -67,7 +67,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     [navigate, poolId]
   )
 
-  const poolDataCached = poolDataMapperCached?.[poolId]
   const poolData = poolDatasMapper?.[poolId]
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
@@ -78,12 +77,9 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     imageBaseUrl,
     poolId,
     poolData,
-    poolDataCachedOrApi: poolData ?? poolDataCached,
     rewardsApy: rewardsApyMapper?.[poolId],
     showInPoolColumn: showInPoolColumn,
-    tvlCached: tvlMapperCached?.[poolId],
     tvl: tvlMapper?.[poolId],
-    volumeCached: volumeMapperCached?.[poolId],
     volume: volumeMapper?.[poolId],
     handleCellClick,
     campaignRewardsMapper,

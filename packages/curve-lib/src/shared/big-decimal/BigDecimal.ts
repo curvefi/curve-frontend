@@ -308,6 +308,22 @@ class BigDecimal {
     return `${rounded._isNegative ? '-' : ''}${intStr}${dp > 0 ? '.' + fracStr : ''}`
   }
 
+  toPercent(): string {
+    // todo: this is not the same as in utilsFormat.ts
+    return this.toFixed(2) + '%'
+  }
+
+  toCompact(): string {
+    // todo: this is not the same as in utilsFormat.ts
+    if (this.gt(new BigDecimal(1000000))) {
+      return this.toFixed(2)
+    }
+    if (this.gt(new BigDecimal(10))) {
+      return this.toString()
+    }
+    return this.toFixed(5)
+  }
+
   round(dp: number): BigDecimal {
     if (dp < 0) throw new Error('Decimal places must be non-negative')
     const scaleFactor = this.scaleFactor(dp)

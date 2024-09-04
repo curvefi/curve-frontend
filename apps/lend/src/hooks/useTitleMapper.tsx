@@ -21,7 +21,7 @@ const useTitleMapper = (): TitleMapper => {
     tokenSupply: { title: t`Lend` },
     totalCollateralValue: { title: t`Collateral value` },
     totalDebt: { title: t`Borrowed` },
-    totalLiquidity: { title: t`TVL` },
+    liquidity: { title: t`TVL` },
     totalApr: { title: t`Total APR` },
     points: { title: t`Points` },
     leverage: { title: t`Leverage` },

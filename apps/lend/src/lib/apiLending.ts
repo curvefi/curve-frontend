@@ -308,11 +308,11 @@ const market = {
       .handleError((errorObj, { owm }) => {
         console.error(errorObj)
         const error = getErrorMessage(errorObj, 'error-api')
-        results[owm.id] = { totalLiquidity: '', error }
+        results[owm.id] = { liquidity: '', error }
       })
       .process(async ({ owm }) => {
         const totalLiquidity = await owm.vault.totalLiquidity()
-        results[owm.id] = { totalLiquidity, error: '' }
+        results[owm.id] = { totalLiquidity: liquidity, error: '' }
       })
 
     return results
