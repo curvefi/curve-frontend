@@ -39,7 +39,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   }, [getUserGaugeVotes, userAddress, userGaugeVotesMapper, userGaugeVotesLoading, userGaugeVotesError])
 
   return (
-    <PaginatedTable<UserGaugeVoteData>
+    <PaginatedTable<UserGaugeVote>
       data={userGaugeVotesMapper[userAddress]?.votes ?? []}
       minWidth={tableMinWidth}
       fetchingState={userGaugeVotesMapper[userAddress]?.fetchingState ?? 'LOADING'}

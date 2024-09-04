@@ -40,7 +40,7 @@ type SliceState = {
   userGaugeVotesMapper: {
     [userAddress: string]: {
       fetchingState: FetchingState
-      votes: UserGaugeVoteData[]
+      votes: UserGaugeVote[]
     }
   }
   userMapper: UserMapper

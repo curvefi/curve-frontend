@@ -431,8 +431,17 @@ declare global {
     transaction: string
   }
 
+  type UserGaugeVote = {
+    gauge: string
+    gauge_name: string
+    weight: number
+    block_number: number
+    timestamp: number
+    transaction: string
+  }
+
   type UserGaugeVotesRes = {
-    votes: UserGaugeVoteData[]
+    votes: UserGaugeVote[]
   }
 
   interface FnStepEstGasApprovalResponse {

@@ -16,7 +16,7 @@ export const VOTES_LABELS: Column<UserProposalVoteData>[] = [
   { key: 'vote_close', label: 'End' },
 ]
 
-export const GAUGE_VOTES_LABELS: Column<UserGaugeVoteData>[] = [
+export const GAUGE_VOTES_LABELS: Column<UserGaugeVote>[] = [
   { key: 'timestamp', label: 'Date' },
   { key: 'gauge_name', label: 'Gauge Name', disabled: true },
   { key: 'weight', label: 'Weight' },
