@@ -137,28 +137,32 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
     )
   }
 
-  return (
-    <Wrapper className={className}>
-      {/* Vote */}
-      <Box flex flexGap="var(--spacing-2)">
-        <VoteButton
-          isFor
-          variant="icon-filled"
-          onClick={() => castVote(1, 'PARAMETER', true)}
-          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
-        >
-          {t`Vote For`}
-        </VoteButton>
-        <VoteButton
-          variant="icon-filled"
-          onClick={() => castVote(1, 'PARAMETER', false)}
-          loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
-        >
-          {t`Vote Against`}
-        </VoteButton>
-      </Box>
-    </Wrapper>
-  )
+  if (userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS') {
+    return (
+      <Wrapper className={className}>
+        {/* Vote */}
+        <Box flex flexGap="var(--spacing-2)">
+          <VoteButton
+            isFor
+            variant="icon-filled"
+            onClick={() => castVote(1, 'PARAMETER', true)}
+            loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+          >
+            {t`Vote For`}
+          </VoteButton>
+          <VoteButton
+            variant="icon-filled"
+            onClick={() => castVote(1, 'PARAMETER', false)}
+            loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+          >
+            {t`Vote Against`}
+          </VoteButton>
+        </Box>
+      </Wrapper>
+    )
+  }
+
+  return null
 }
 
 const Wrapper = styled.div`
