@@ -1,5 +1,5 @@
 import { TIME_FRAMES } from '@/constants'
-import type { CombinedGaugeParams } from '@/entities/gauge/types'
+import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
 import {
   addressValidationFn,
@@ -13,22 +13,15 @@ import { formatNumber } from '@/utils'
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
 
-export const gaugeValidationGroup = ({
-  chainId,
-  poolId,
-  distributorId,
-  rewardTokenId,
-  amount,
-  epoch,
-}: CombinedGaugeParams) =>
-  group('gaugeValidation', () => {
-    poolValidationGroup({
-      chainId,
-      poolId,
-    })
-
+export const gaugeAddRewardTokenValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
+  group('gaugeAddRewardTokenValidationGroup', () => {
     test('distributorId', () => addressValidationFn(distributorId))
 
+    test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
+  })
+
+export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
+  group('gaugeDepositRewardValidationGroup', () => {
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
 
     test('amount', () => {
@@ -62,5 +55,12 @@ export const gaugeValidationGroup = ({
         }))
     })
   })
+
+export const gaugeValidationGroup = (data: CombinedGaugeParams) => {
+  poolValidationGroup(data)
+
+  gaugeAddRewardTokenValidationGroup(data)
+  gaugeDepositRewardValidationGroup(data)
+}
 
 export const gaugeValidationSuite = createValidationSuite(gaugeValidationGroup)
