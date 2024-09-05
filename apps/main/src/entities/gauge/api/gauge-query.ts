@@ -41,7 +41,7 @@ export const queryGaugeManager: QueryFunction<
   const pool = curve.getPool(_valid.poolId)
   const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
   if (!gaugeManager || gaugeManager === zeroAddress) {
-    return undefined
+    throw new Error('Gauge manager not found')
   }
   return gaugeManager
 }
