@@ -7,6 +7,8 @@ import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
+const drpcUrl = (network: string) =>
+  `https://lb.drpc.org/ogrpc?network=${network}&dkey=${process.env.NEXT_PUBLIC_FRONTEND_DRPC_KEY}`
 
 const NETWORK_CONFIG_DEFAULT = {
   api: curvejsApi,
@@ -87,9 +89,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       { name: 'linkusd', url: 'https://classic.curve.fi/linkusd/withdraw' },
       { name: 'tricrypto', url: 'https://classic.curve.fi/tricrypto/withdraw' },
     ],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
-      : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL! : drpcUrl('ethereum'),
     swap: {
       fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
       toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -142,9 +142,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=optimism',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL! : drpcUrl('optimism'),
     swap: {
       fromAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
       toAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
@@ -223,9 +221,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       { name: 'atricrypto', url: 'https://polygon.curve.fi/atricrypto/withdraw' },
       { name: 'atricrypto2', url: 'https://polygon.curve.fi/atricrypto2/withdraw' },
     ],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=polygon',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL! : drpcUrl('polygon'),
     swap: {
       fromAddress: '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063',
       toAddress: '0xc2132d05d31c914a87c6611c10748aeb04b58e8f',
@@ -309,9 +305,7 @@ const networks: Record<ChainId, NetworkConfig> = {
       return f !== 'BOOSTING' && f !== 'LOCKER'
     }),
     hidePoolRewards: { tricrypto: true },
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=arbitrum',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL! : drpcUrl('arbitrum'),
     swap: {
       fromAddress: '0xff970a61a04b1ca14834a43f5de4533ebddb5cc8',
       toAddress: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
@@ -411,7 +405,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     }),
     customPoolIds: { 'factory-v2-4': true, 'factory-v2-5': true },
     hideSmallPoolsTvl: 5000,
-    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=base',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : drpcUrl('base'),
     showHideSmallPoolsCheckbox: true,
     swap: {
       fromAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
@@ -441,7 +435,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     forms: NETWORK_CONFIG_DEFAULT.forms.filter((f) => {
       return f !== 'BOOSTING' && f !== 'LOCKER' && f !== 'SWAP_REQUIRED'
     }),
-    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=bsc',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : drpcUrl('bsc'),
     swap: {
       fromAddress: '0xe9c803f48dffe50180bd5b01dc04da939e3445fc',
       toAddress: '0xcba2aeec821b0b119857a9ab39e09b034249681a',
