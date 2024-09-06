@@ -1,27 +1,26 @@
 import type {
-  TimeOptions,
-  LpPriceOhlcDataFormatted,
-  LabelList,
-  LiquidationRanges,
+  ChartColors,
+  ChartHeight,
   ChartType,
   FetchingStatus,
-  ChartHeight,
-  VolumeData,
+  LabelList,
+  LiquidationRanges,
+  LpPriceOhlcDataFormatted,
   OraclePriceData,
-  ChartColors,
+  TimeOptions,
+  VolumeData,
 } from './types'
 
-import { useState, useRef, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { cloneDeep } from 'lodash'
 
 import Button from 'ui/src/Button/Button'
-import Icon from 'ui/src/Icon'
-import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
 import Checkbox from 'ui/src/Checkbox'
+import Icon from 'ui/src/Icon'
+import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 
 type Props = {
   chartType: ChartType

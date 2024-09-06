@@ -12,7 +12,7 @@ import Icon from '@/ui/Icon'
 import TradesData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import LiquidityData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 
-interface Props {
+const PoolActivity: React.FC<{
   poolAddress: string
   chainId: ChainId
   chartExpanded: boolean
@@ -20,17 +20,7 @@ interface Props {
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
   refetchPricesData: () => void
-}
-
-const PoolActivity = ({
-  chainId,
-  poolAddress,
-  chartExpanded,
-  coins,
-  tradesTokens,
-  chartCombinations,
-  refetchPricesData,
-}: Props) => {
+}> = ({ chainId, poolAddress, chartExpanded, coins, tradesTokens, chartCombinations, refetchPricesData }) => {
   const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
   const {
     pricesApiState: { activityStatus, tradeEventsData, liquidityEventsData },

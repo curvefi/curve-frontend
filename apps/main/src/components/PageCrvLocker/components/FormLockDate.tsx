@@ -202,7 +202,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       <div>
         {!!signerAddress && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             estimatedGas={formEstGas.estimatedGas}

@@ -2,7 +2,7 @@ import type { FormType } from '@/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/components/PagePool/types'
 
 import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { isValidAddress } from '@/utils'
 import networks from '@/networks'
@@ -29,11 +29,15 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
 
-  const TABS: { label: string; formType: FormType }[] = [
-    { label: t`Deposit`, formType: 'DEPOSIT' },
-    { label: t`Stake`, formType: 'STAKE' },
-    { label: t`Deposit & Stake`, formType: 'DEPOSIT_STAKE' },
-  ]
+  const TABS = useMemo<{ label: string; formType: FormType }[]>(
+    () =>
+      [
+        { label: t`Deposit`, formType: 'DEPOSIT' },
+        { label: t`Stake`, formType: 'STAKE' },
+        { label: t`Deposit & Stake`, formType: 'DEPOSIT_STAKE' },
+      ] as const,
+    []
+  )
 
   // tabs positions
   useEffect(() => {
@@ -113,7 +117,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}
           {formType === 'DEPOSIT_STAKE' && (
             <>
-              {poolDataCacheOrApi.isGaugeKilled ? (
+              {poolDataCacheOrApi.gauge.isKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
                 <FormDepositStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
@@ -122,7 +126,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           )}
           {formType === 'STAKE' && (
             <>
-              {poolDataCacheOrApi.isGaugeKilled ? (
+              {poolDataCacheOrApi.gauge.isKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
                 <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />

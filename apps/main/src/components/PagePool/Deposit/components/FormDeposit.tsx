@@ -281,7 +281,6 @@ const FormDeposit = ({
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             isDivider
             chainId={rChainId}
             {...formEstGas}

@@ -128,7 +128,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                     />
                   </ListInfoItem>
 
-                  {!poolData?.isGaugeKilled && (
+                  {!poolData?.gauge.isKilled && (
                     <>
                       <ListInfoItem
                         title={t`REWARDS tAPR`}

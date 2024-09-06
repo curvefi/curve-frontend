@@ -4,6 +4,7 @@ import { Tab } from './Tab'
 
 const Tabs = styled.div`
   display: flex;
+  flex-wrap: nowrap;
 
   > ${Tab}.active {
     &:not(:first-of-type) {

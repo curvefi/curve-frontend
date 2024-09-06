@@ -10,6 +10,7 @@ import useTokenAlert from '@/hooks/useTokenAlert'
 
 import AlertBox from '@/ui/AlertBox'
 import FormConnectWallet from '@/components/FormConnectWallet'
+import { useSignerAddress } from '@/entities/signer'
 
 const TransferActions = ({
   children,
@@ -24,7 +25,7 @@ const TransferActions = ({
     loading?: boolean
   } & Pick<TransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'seed' | 'userPoolBalances'>
 >) => {
-  const { signerAddress } = curve || {}
+  const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const connectState = useStore((state) => state.connectState)
@@ -61,9 +62,7 @@ const TransferActions = ({
       {signerAddress && !isLoading && !walletBalancesLoading && typeof userPoolBalances === 'undefined' && (
         <AlertBox alertType="error">{t`Unable to get wallet balances`}</AlertBox>
       )}
-      <FormConnectWallet curve={curve} loading={isLoading}>
-        {children}
-      </FormConnectWallet>
+      <FormConnectWallet loading={isLoading}>{children}</FormConnectWallet>
     </>
   )
 }

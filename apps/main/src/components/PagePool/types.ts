@@ -14,7 +14,7 @@ export type Slippage = {
   error: string
 }
 
-export type TransferFormType = 'swap' | 'deposit' | 'withdraw'
+export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
 
 export type Seed = {
   isSeed: boolean | null
@@ -43,4 +43,6 @@ export type TransferProps = {
   tokensMapper: TokensMapper
 } & PageTransferProps
 
-export type DetailInfoTypes = 'user' | 'pool' | 'advanced'
+export type DetailInfoTypes = 'user' | 'pool' | 'advanced' | 'gauge'
+
+export type PoolInfoTab = { key: DetailInfoTypes; label: string }

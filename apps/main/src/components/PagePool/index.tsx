@@ -1,25 +1,38 @@
-import type { DetailInfoTypes, EstimatedGas, Slippage, TransferFormType } from '@/components/PagePool/types'
-import type { Seed } from '@/components/PagePool/types'
-import type { PageTransferProps } from '@/components/PagePool/types'
+import type {
+  DetailInfoTypes,
+  EstimatedGas,
+  PageTransferProps,
+  PoolInfoTab,
+  Seed,
+  Slippage,
+  TransferFormType,
+} from '@/components/PagePool/types'
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 import isUndefined from 'lodash/isUndefined'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { REFRESH_INTERVAL, ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getChainPoolIdActiveKey } from '@/utils'
-import { getPath } from '@/utils/utilsRouter'
-import { getUserPoolActiveKey } from '@/store/createUserSlice'
-import { useNavigate } from 'react-router-dom'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokensMapper from '@/hooks/useTokensMapper'
+import networks from '@/networks'
+import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import useStore from '@/store/useStore'
+import { breakpoints } from '@/ui/utils/responsive'
+import { getChainPoolIdActiveKey } from '@/utils'
+import { getPath } from '@/utils/utilsRouter'
+import { useNavigate } from 'react-router-dom'
 
+import Deposit from '@/components/PagePool/Deposit'
+import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
+import Swap from '@/components/PagePool/Swap'
+import MySharesStats from '@/components/PagePool/UserDetails'
+import Withdraw from '@/components/PagePool/Withdraw'
+import AlertBox from '@/ui/AlertBox'
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import {
   AppPageFormContainer,
   AppPageFormTitleWrapper,
@@ -28,24 +41,23 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
-import { Chip } from '@/ui/Typography'
-import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
-import Deposit from '@/components/PagePool/Deposit'
-import MySharesStats from '@/components/PagePool/UserDetails'
-import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/components/PagePool/Swap'
-import Withdraw from '@/components/PagePool/Withdraw'
-import Tabs, { Tab } from '@/ui/Tab'
-import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
+import Tabs, { Tab } from '@/ui/Tab'
+import TextEllipsis from '@/ui/TextEllipsis'
+import { Chip } from '@/ui/Typography'
 
+import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
-import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
+import { useGaugeManager } from '@/entities/gauge'
+import { BlockSkeleton } from '@/shared/ui/skeleton'
+import { ManageGauge } from '@/widgets/manage-gauge'
+import { isAddressEqual, type Address } from 'viem'
+import { useSignerAddress } from '@/entities/signer'
+import { useChainId } from '@/entities/chain'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -68,10 +80,10 @@ const DEFAULT_SEED: Seed = {
   error: '',
 }
 
-const Transfer = (pageTransferProps: PageTransferProps) => {
+const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
-  const { chainId, signerAddress } = curve ?? {}
+  const { signerAddress } = curve ?? {}
   const navigate = useNavigate()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
@@ -97,11 +109,15 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
+  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
+    chainId: rChainId,
+    poolId: poolData?.pool.id!,
+  })
+
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
   const { pool } = poolDataCacheOrApi
-  const haveSigner = !!signerAddress
   const poolId = poolData?.pool?.id
   const imageBaseUrl = networks[rChainId].imageBaseUrl
   const poolAddress = poolData?.pool.address
@@ -109,25 +125,18 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const pricesApi = networks[rChainId].pricesApi
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
 
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(() => {
-    return haveSigner
-      ? pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]
-        ? [
-            { label: t`Pool Details`, key: 'pool' },
-            { label: t`Your Details`, key: 'user' },
-            { label: t`Advanced`, key: 'advanced' },
-          ]
-        : [
-            { label: t`Pool Details`, key: 'pool' },
-            { label: t`Your Details`, key: 'user' },
-          ]
-      : pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]
-      ? [
-          { label: t`Pool Details`, key: 'pool' },
-          { label: t`Advanced`, key: 'advanced' },
-        ]
-      : [{ label: t`Pool Details`, key: 'pool' }]
-  }, [haveSigner, poolData?.pool.address, pricesApi, pricesApiPoolData, snapshotsMapper])
+  const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
+    const tabs: PoolInfoTab[] = [{ label: t`Pool Details`, key: 'pool' }]
+
+    if (!!signerAddress) {
+      tabs.push({ label: t`Your Details`, key: 'user' })
+    }
+    if (pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]) {
+      tabs.push({ label: t`Advanced`, key: 'advanced' })
+    }
+
+    return tabs
+  }, [signerAddress, pricesApi, pricesApiPoolData, snapshotsMapper, poolData?.pool.address])
 
   const maxSlippage = useMemo(() => {
     if (globalMaxSlippage) return globalMaxSlippage
@@ -192,11 +201,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // seed crypto pool initial rate
   useEffect(() => {
-    if (chainId && poolData && !isUndefined(currencyReserves)) {
-      fetchSeedData(chainId, poolData, currencyReserves)
+    if (rChainId && poolData && !isUndefined(currencyReserves)) {
+      fetchSeedData(rChainId, poolData, currencyReserves)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, currencyReserves?.total])
+  }, [rChainId, poolId, currencyReserves?.total])
 
   // fetch user pool info
   useEffect(() => {
@@ -204,18 +213,39 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       fetchUserPoolInfo(curve, poolId)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [rChainId, poolId, signerAddress])
 
-  const FORM_TYPES: { key: TransferFormType; label: string }[] = [
-    { key: 'deposit', label: t`Deposit` },
-    { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
-    { key: 'swap', label: t`Swap` },
-  ]
+  const isAvailableManageGauge = useMemo(
+    () =>
+      !isPendingGaugeManager &&
+      !!signerAddress &&
+      !!gaugeManager &&
+      isAddressEqual(gaugeManager, signerAddress as Address),
+    [isPendingGaugeManager, signerAddress, gaugeManager]
+  )
 
-  const toggleForm = (updatedFormType: TransferFormType) => {
-    const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
-    navigate(pathname)
-  }
+  const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
+    () => [
+      { key: 'deposit', label: t`Deposit` },
+      { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
+      { key: 'swap', label: t`Swap` },
+    ],
+    [themeType]
+  )
+
+  const toggleForm = useCallback(
+    (updatedFormType: TransferFormType) => {
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
+      navigate(pathname)
+    },
+    [navigate, params]
+  )
+
+  useEffect(() => {
+    if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
+      toggleForm('deposit')
+    }
+  }, [isAvailableManageGauge, rFormType, toggleForm])
 
   const TitleComp = () => {
     const referenceAsset: { [referenceAsset: string]: string } = {
@@ -266,9 +296,10 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
             <AppFormHeader
-              formTypes={FORM_TYPES}
+              formTypes={ACTION_TABS}
               activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
               handleClick={(key: string) => toggleForm(key as TransferFormType)}
+              showMenuButton={isAvailableManageGauge}
             />
 
             <AppFormContentWrapper>
@@ -315,6 +346,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                   userPoolBalances={userPoolBalances}
                   userPoolBalancesLoading={userPoolBalancesLoading}
                 />
+              ) : rFormType === 'manage-gauge' ? (
+                poolData ? (
+                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+                ) : (
+                  <BlockSkeleton width={339} />
+                )
               ) : null}
             </AppFormContentWrapper>
           </AppFormContent>
@@ -334,7 +371,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           )}
           <AppPageInfoTabsWrapper>
             <Tabs>
-              {DETAIL_INFO_TYPES.map(({ key, label }) => (
+              {poolInfoTabs.map(({ key, label }) => (
                 <Tab
                   key={key}
                   className={selectedTab === key ? 'active' : ''}

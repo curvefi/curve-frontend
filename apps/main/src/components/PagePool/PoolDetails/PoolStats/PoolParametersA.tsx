@@ -8,7 +8,7 @@ import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/Poo
 import Chip from '@/ui/Typography/Chip'
 import Item from '@/ui/Items/Item'
 
-const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] }) => {
+const PoolParametersA: React.FC<{ parameters: PoolData['parameters'] }> = ({ parameters }) => {
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
 
   const rampADetails = useMemo(() => {
