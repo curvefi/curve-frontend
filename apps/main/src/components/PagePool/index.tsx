@@ -83,7 +83,7 @@ const DEFAULT_SEED: Seed = {
 const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
-  const { data: signerAddress } = useSignerAddress()
+  const { signerAddress } = curve ?? {}
   const navigate = useNavigate()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
