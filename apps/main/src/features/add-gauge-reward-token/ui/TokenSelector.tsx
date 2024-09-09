@@ -1,8 +1,10 @@
+import { NETWORK_TOKEN } from '@/constants'
 import { useGaugeRewardsDistributors } from '@/entities/gauge'
 import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
 import { FlexItemToken, StyledTokenComboBox, SubTitle } from '@/features/add-gauge-reward-token/ui'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import { NETWORK_CONSTANTS } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
 import React, { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -28,9 +30,11 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
       (token): token is Token =>
         token !== undefined &&
         token.decimals === 18 &&
-        !gaugeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address))
+        ![...gaugeRewardTokens, zeroAddress, NETWORK_TOKEN, NETWORK_CONSTANTS[chainId].ALIASES.crv].some(
+          (rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)
+        )
     )
-  }, [tokensMapper, gaugeRewardsDistributors])
+  }, [gaugeRewardsDistributors, tokensMapper, chainId])
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return

@@ -3,6 +3,8 @@ import sortBy from 'lodash/sortBy'
 import { baseNetworksConfig } from '@/ui/utils'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
+const drpcUrl = (network: string) =>
+  `https://lb.drpc.org/ogrpc?network=${network}&dkey=${process.env.NEXT_PUBLIC_FRONTEND_DRPC_KEY}`
 
 const DEFAULT_NETWORK_CONFIG = {
   blocknativeSupport: true,
@@ -35,9 +37,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   1: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['1'],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
-      : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL! : drpcUrl('ethereum'),
     hideMarketsInUI: { 'one-way-market-19': true },
     showInSelectNetwork: true,
     pricesData: true,
@@ -45,9 +45,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   10: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['10'],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=optimism',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL! : drpcUrl('optimism'),
     isActiveNetwork: false,
   },
   100: {
@@ -65,9 +63,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   137: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['137'],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=polygon',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_POLYGON_DEV_RPC_URL! : drpcUrl('polygon'),
     isActiveNetwork: false,
   },
   2222: {
@@ -87,9 +83,7 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...baseNetworksConfig['42161'],
     showInSelectNetwork: true,
     marketListShowOnlyInSmallMarkets: { 'one-way-market-7': true },
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL!
-      : 'https://curve.drpc.org/ogrpc?network=arbitrum',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ARBITRUM_DEV_RPC_URL! : drpcUrl('arbitrum'),
     pricesData: true,
   },
   43114: {
@@ -119,13 +113,13 @@ const networks: Record<ChainId, NetworkConfig> = {
   8453: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['8453'],
-    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=base',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : drpcUrl('base'),
     isActiveNetwork: false,
   },
   56: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['56'],
-    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : 'https://curve.drpc.org/ogrpc?network=bsc',
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : drpcUrl('bsc'),
     isActiveNetwork: false,
   },
 }

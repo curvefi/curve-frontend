@@ -1,3 +1,4 @@
+import { REFRESH_INTERVAL } from '@/constants'
 import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
 import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
@@ -77,15 +78,11 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
       },
       {
         onSuccess: (data: string) => {
-          setValue('step', DepositRewardStep.CONFIRMATION, { shouldValidate: true })
+          setValue('step', DepositRewardStep.CONFIRMATION)
           setLatestTxInfo({
             description: t`Reward deposited`,
             txHash: networks[chainId].scanTxPath(data),
           })
-
-          setTimeout(() => {
-            setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
-          }, 2000)
         },
         onError: (error: Error) => {
           setError('root.serverError', { message: error.message })
@@ -102,6 +99,12 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
   })
 
   useLayoutEffect(() => {
+    if (step === DepositRewardStep.CONFIRMATION) {
+      const timer = setTimeout(() => {
+        setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
+      }, REFRESH_INTERVAL['2s'])
+      return () => clearTimeout(timer)
+    }
     if (isDepositRewardApproved) {
       setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
       return

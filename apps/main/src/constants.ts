@@ -29,6 +29,8 @@ export const ROUTE = {
 
 // TODO rename to MS
 export const REFRESH_INTERVAL = {
+  '1s': 1000,
+  '2s': 1000 * 2,
   '3s': 1000 * 3,
   '15s': 1000 * 15,
   '1m': 1000 * 60,

@@ -478,7 +478,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       if (selectedChartIndex === 0 || selectedChartIndex === 1) {
         try {
-          const priceUnit = selectedChartIndex === 0 ? 'token0' : 'usd'
+          const priceUnit = selectedChartIndex === 0 ? 'usd' : 'token0'
 
           const lpPriceRes = await fetch(
             `https://prices.curve.fi/v1/lp_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}&price_units=${priceUnit}`

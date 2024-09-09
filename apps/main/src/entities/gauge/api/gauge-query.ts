@@ -31,7 +31,7 @@ export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, Ga
 }
 
 export const queryGaugeManager: QueryFunction<
-  Address | undefined, // PoolMethodResult<'gauge.gaugeManager'>,
+  Address | null, // PoolMethodResult<'gauge.gaugeManager'>,
   GaugeQueryKeyType<'manager'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
@@ -42,7 +42,7 @@ export const queryGaugeManager: QueryFunction<
   const pool = curve.getPool(_valid.poolId)
   const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
   if (!gaugeManager || gaugeManager === zeroAddress) {
-    return undefined
+    return null
   }
   return gaugeManager
 }

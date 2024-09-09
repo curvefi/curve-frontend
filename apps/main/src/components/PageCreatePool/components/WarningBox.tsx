@@ -6,19 +6,20 @@ import Icon from '@/ui/Icon'
 type Props = {
   message: string
   children?: ReactNode
+  informational?: boolean
 }
 
-const WarningBox = ({ message, children }: Props) => {
+const WarningBox = ({ message, children, informational = false }: Props) => {
   return (
-    <WarningBoxWrapper>
-      <StyledIcon name={'InformationSquareFilled'} size={24} aria-label="search icon" />
+    <WarningBoxWrapper informational={informational}>
+      <StyledIcon name={'InformationSquareFilled'} size={24} aria-label="Information Icon" />
       <p>{message}</p>
       {children}
     </WarningBoxWrapper>
   )
 }
 
-const WarningBoxWrapper = styled.div`
+const WarningBoxWrapper = styled.div<{ informational: boolean }>`
   display: flex;
   background: var(--box--primary--background);
   padding: var(--spacing-2) var(--spacing-3);
@@ -28,7 +29,7 @@ const WarningBoxWrapper = styled.div`
   color: var(--box--primary--color);
   svg {
     margin: auto var(--spacing-2) auto 0;
-    color: var(--warning-400);
+    color: ${({ informational }) => (informational ? 'var(--box--primary--color)' : 'var(--warning-400)')};
   }
   p {
     margin: auto auto auto 0;

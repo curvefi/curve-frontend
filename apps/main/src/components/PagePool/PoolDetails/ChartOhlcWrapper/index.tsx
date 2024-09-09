@@ -172,10 +172,10 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
       chartOhlcData.length !== 0
         ? [
             {
-              label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
+              label: t`LP Token (USD)`,
             },
             {
-              label: t`LP Token (USD)`,
+              label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
             },
           ].concat(
             chartCombinations.map((chart, index) => {
