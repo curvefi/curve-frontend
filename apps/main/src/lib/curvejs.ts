@@ -171,7 +171,7 @@ const network = {
 }
 
 const pool = {
-  getPoolData: (p: Pool, chainId: ChainId, storedPoolData: PoolData | undefined) => {
+  getPoolData: (p: Pool, chainId: ChainId) => {
     const isWrappedOnly = networks[chainId].poolIsWrappedOnly[p.id]
     const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
     const tokens = isWrappedOnly
@@ -193,20 +193,18 @@ const pool = {
 
       // stats
       currenciesReserves: null,
-      parameters: storedPoolData?.parameters
-        ? storedPoolData.parameters
-        : {
-            A: '',
-            adminFee: '',
-            fee: '',
-            future_A: undefined,
-            future_A_time: undefined,
-            gamma: undefined,
-            initial_A: undefined,
-            initial_A_time: undefined,
-            lpTokenSupply: '',
-            virtualPrice: '',
-          },
+      parameters: {
+        A: '',
+        adminFee: '',
+        fee: '',
+        future_A: undefined,
+        future_A_time: undefined,
+        gamma: undefined,
+        initial_A: undefined,
+        initial_A_time: undefined,
+        lpTokenSupply: '',
+        virtualPrice: '',
+      },
       hasVyperVulnerability: p.hasVyperVulnerability(),
       hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
       isWrapped: isWrappedOnly ?? false,
@@ -226,34 +224,6 @@ const pool = {
     }
 
     return poolData
-  },
-  getTvl: async (p: Pool, chainId: ChainId) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    try {
-      resp.value = networks[chainId].poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
-  getVolume: async (p: Pool) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    try {
-      resp.value = await p.stats.volume()
-      return resp
-    } catch (error) {
-      if (p.inApi) {
-        console.error(error)
-        resp.errorMessage = 'Unable to get volume'
-      }
-      return resp
-    }
   },
   poolBalances: async (p: Pool, isWrapped: boolean) => {
     let resp = { balances: [] as string[], error: '' }

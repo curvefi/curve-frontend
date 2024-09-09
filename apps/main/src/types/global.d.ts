@@ -196,6 +196,7 @@ declare global {
     decimals: number
     haveSameTokenName: boolean // use to display token address if duplicated token names
     volume?: number
+    poolIds?: string[]
   }
   type TokensMapper = { [tokenAddress: string]: Token | undefined }
   type TokensNameMapper = { [tokenAddress: string]: string }
@@ -206,7 +207,6 @@ declare global {
     userBalanceUsd: number
     usdRate: number | undefined
   }
-  type UserTokensMapper = { [tokenAddress: string]: UserToken }
 
   type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 

@@ -1,19 +1,19 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type {
-  PricesApiPool,
-  PricesApiPoolResponse,
-  TimeOptions,
+  FetchingStatus,
+  LpLiquidityEventsApiResponse,
+  LpLiquidityEventsData,
   LpPriceApiResponse,
   LpPriceOhlcData,
+  LpPriceOhlcDataFormatted,
   LpTradesApiResponse,
   LpTradesData,
-  LpLiquidityEventsApiResponse,
-  FetchingStatus,
-  PricesApiCoin,
-  LpPriceOhlcDataFormatted,
-  LpLiquidityEventsData,
   LpTradeToken,
+  PricesApiCoin,
+  PricesApiPool,
+  PricesApiPoolResponse,
+  TimeOptions
 } from '@/ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -24,7 +24,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import chunk from 'lodash/chunk'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
-import pick from 'lodash/pick'
 
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl, log } from '@/utils'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
@@ -75,7 +74,7 @@ export type PoolsSlice = {
       curve: CurveApi,
       poolIds: string[],
       failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null
-    ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
+    ): Promise<PoolDataMapper | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchBasePools(curve: CurveApi): Promise<void>
     fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
@@ -168,17 +167,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           })
         )
 
-        const currentPoolsMapper = get()[sliceKey].poolsMapper[chainId] ?? {}
-        const currentPoolsMapperCached = get().storeCache.poolsMapper[chainId] ?? {}
-        const { poolsMapper, poolsMapperCache } = await getPools(
-          curve,
-          poolIds,
-          currentPoolsMapper,
-          currentPoolsMapperCached,
-          failedFetching24hOldVprice
-        )
-
-        const poolDatas = Object.entries(poolsMapper).map(([_, v]) => v)
+        const poolMapping = await getPools(curve, poolIds, failedFetching24hOldVprice)
+        const poolDatas = Object.values(poolMapping)
         const showHideSmallPools = networks[chainId].showHideSmallPoolsCheckbox || poolDatas.length > 10
         const nativeTokens = networks[chainId].nativeTokens
         const tokensNameMapper = {
@@ -190,26 +180,14 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         set(
           produce((state: State) => {
             state.pools.pools[chainId] = filterCustomPools(poolDatas, chainId)
-            state.pools.poolsMapper[chainId] = poolsMapper
+            state.pools.poolsMapper[chainId] = poolMapping
             state.poolList.showHideSmallPools = showHideSmallPools
             state.tokens.tokensNameMapper[chainId] = tokensNameMapper
             state.pools.haveAllPools[chainId] = true
             state.pools.poolsLoading[chainId] = false
           })
         )
-
-        // update cache
-        get().storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
-
-        const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
-
-        const partialTokens = await get().tokens.setTokensMapper(chainId, partialPoolDatas)
-
-        if (curve.signerAddress) {
-          get().userBalances.fetchUserBalancesByTokens(curve, partialTokens)
-        }
-
-        return { poolsMapper, poolDatas: partialPoolDatas }
+        return poolMapping
       } catch (error) {
         console.error(error)
 
@@ -229,8 +207,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         curve.tricryptoFactory.fetchNewPools(),
         curve.stableNgFactory.fetchNewPools(),
       ])
-      const resp = await get()[sliceKey].fetchPools(curve, [poolId], null)
-      return resp?.poolsMapper?.[poolId]
+      const poolMapping = await get()[sliceKey].fetchPools(curve, [poolId], null)
+      return poolMapping?.[poolId]
     },
     fetchBasePools: async (curve: CurveApi) => {
       const chainId = curve.chainId
@@ -804,30 +782,24 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 export default createPoolsSlice
 
 // check for duplicate token name
-export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const parsedTokensMapper: TokensMapper = {}
-  const grouped = groupBy(tokensMapper, (v) => v!.symbol)
-  const duplicatedTokenNames = Object.entries(grouped)
+export function addHaveSameTokenNames(tokensMapper: TokensMapper): TokensMapper {
+  const duplicatedTokenNames = Object.entries(groupBy(tokensMapper, (v) => v!.symbol))
     .filter(([_, v]) => v.length > 1)
-    .map((v) => v[0])
+    .map(([key]) => key)
 
   if (duplicatedTokenNames.length) {
-    Object.entries(tokensMapper).forEach(([key, tokenObj]) => {
-      parsedTokensMapper[key] = tokenObj
-      parsedTokensMapper[key]!.haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
-    })
-    return parsedTokensMapper
+    return Object.fromEntries(Object.entries(tokensMapper).map(([key, tokenObj]) => [key, tokenObj && {
+      ...tokenObj,
+      haveSameTokenName: duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
+    }]))
   }
-
   return tokensMapper
 }
 
 async function getPools(
   curve: CurveApi,
   poolList: string[],
-  currentPoolsMapper: PoolDataMapper,
-  currentPoolsMapperCached: PoolDataCacheMapper,
-  failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null
+  failedFetching24hOldVprice: { [p: string]: boolean } | null
 ) {
   const chainId = curve.chainId
   const pools = poolList.map(poolId => curve.getPool(poolId))
@@ -844,8 +816,8 @@ async function getPools(
     }
   });
 
-  const poolEntries: [string, PoolData][] = pools.map((pool, idx) => {
-    const poolData = networks[chainId].api.pool.getPoolData(pool, chainId, currentPoolsMapper[pool.id])
+  return Object.fromEntries(pools.map((pool, idx) => {
+    const poolData = networks[chainId].api.pool.getPoolData(pool, chainId)
     return [pool.id, {
       ...poolData,
       seedData: getSeedAmounts(poolData),
@@ -853,34 +825,7 @@ async function getPools(
       failedFetching24hOldVprice: Boolean(failedFetching24hOldVprice?.[pool.address]),
       gauge: gauges[idx]
     }]
-  })
-
-  const cacheEntries = poolEntries.map(([poolId, poolData]) => [poolId, pick(poolData, [
-    'hasWrapped',
-    'gauge',
-    'tokens',
-    'tokensCountBy',
-    'tokensAll',
-    'tokensLowercase',
-    'tokenAddresses',
-    'tokenAddressesAll',
-    'pool.id',
-    'pool.name',
-    'pool.address',
-    'pool.gauge',
-    'pool.lpToken',
-    'pool.implementation',
-    'pool.isCrypto',
-    'pool.isFactory',
-    'pool.isLending',
-    'pool.referenceAsset',
-    'pool.isNg',
-  ])] as [string, PoolDataCache])
-
-  return {
-    poolsMapper: {...currentPoolsMapper, ...Object.fromEntries(poolEntries)},
-    poolsMapperCache: {...currentPoolsMapperCached, ...Object.fromEntries(cacheEntries)},
-  }
+  }))
 }
 
 function getSeedAmounts({ pool }: PoolData) {

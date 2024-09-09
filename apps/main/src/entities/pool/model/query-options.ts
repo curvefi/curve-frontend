@@ -8,7 +8,7 @@ export const volumeQueryOptions = (params: PoolQueryParams) =>
   queryOptions({
     queryKey: poolKeys.volume(params),
     queryFn: queryVolume,
-    staleTime: REFRESH_INTERVAL['1m'],
+    staleTime: REFRESH_INTERVAL['5m'],
     enabled: checkPoolValidity(params)
   })
 
@@ -16,6 +16,6 @@ export const liquidityQueryOptions = (params: PoolQueryParams) =>
   queryOptions({
     queryKey: poolKeys.liquidity(params),
     queryFn: queryLiquidity,
-    staleTime: REFRESH_INTERVAL['1m'],
+    staleTime: REFRESH_INTERVAL['5m'],
     enabled: checkPoolValidity(params),
   })

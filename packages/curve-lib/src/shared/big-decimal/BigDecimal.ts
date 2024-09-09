@@ -27,7 +27,7 @@ class BigDecimal {
     if (typeof value === 'string') {
       const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(value)
       if (!match) {
-        throw new Error('Invalid string format. Expected "integer.fraction" or "integer"')
+        throw new Error(`Invalid string format. Expected "integer.fraction" or "integer" but got ${JSON.stringify(value)}`)
       }
 
       const [, sign, intPart, fracPart = ''] = match
@@ -83,11 +83,7 @@ class BigDecimal {
       return !isNaN(value) && isFinite(value)
     }
 
-    if (typeof value === 'bigint') {
-      return true
-    }
-
-    return false
+    return typeof value === 'bigint';
   }
 
   /**
