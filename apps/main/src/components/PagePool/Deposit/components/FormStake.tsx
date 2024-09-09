@@ -144,7 +144,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       updateFormValues({})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // steps
   useEffect(() => {
@@ -195,7 +195,6 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       </div>
 
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}

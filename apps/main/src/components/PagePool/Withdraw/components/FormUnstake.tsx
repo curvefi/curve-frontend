@@ -151,7 +151,6 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       )}
 
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}

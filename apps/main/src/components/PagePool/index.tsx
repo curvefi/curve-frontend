@@ -9,8 +9,6 @@ import type {
 } from '@/components/PagePool/types'
 
 import { t } from '@lingui/macro'
-import cloneDeep from 'lodash/cloneDeep'
-import isUndefined from 'lodash/isUndefined'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
@@ -56,8 +54,6 @@ import { useGaugeManager } from '@/entities/gauge'
 import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
-import { useSignerAddress } from '@/entities/signer'
-import { useChainId } from '@/entities/chain'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -75,9 +71,7 @@ export const DEFAULT_SLIPPAGE: Slippage = {
 
 const DEFAULT_SEED: Seed = {
   isSeed: null,
-  cryptoSeedInitialRate: '',
   loaded: false,
-  error: '',
 }
 
 const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
@@ -149,36 +143,6 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     return layoutHeight.mainNav + layoutHeight.secondaryNav
   }, [layoutHeight])
 
-  const fetchSeedData = useCallback(
-    async (chainId: ChainId, poolData: PoolData, currencyReserves: CurrencyReserves) => {
-      try {
-        const { hasWrapped, pool } = poolData
-        let resp = cloneDeep(DEFAULT_SEED)
-
-        if (currencyReserves.total !== '0') {
-          resp.isSeed = false
-        } else if (!pool.isCrypto) {
-          resp.isSeed = true
-        } else {
-          if (hasWrapped) {
-            setPoolIsWrapped(poolData, true)
-          }
-
-          const seedTokens = hasWrapped ? pool.wrappedCoins : pool.underlyingCoins
-          resp.cryptoSeedInitialRate = await networks[chainId].api.poolDeposit.cryptoSeedInitialRate(pool, seedTokens)
-          resp.isSeed = true
-        }
-
-        setSeed({ ...resp, loaded: true })
-      } catch (error) {
-        console.error(error)
-        const errorMessage = error?.message || t`Unable to get seed initial rate`
-        setSeed({ ...DEFAULT_SEED, error: errorMessage, loaded: true })
-      }
-    },
-    [setPoolIsWrapped]
-  )
-
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {
       fetchPoolStats(curve, poolData)
@@ -199,13 +163,16 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     }
   }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
 
-  // seed crypto pool initial rate
+  // is seed
   useEffect(() => {
-    if (rChainId && poolData && !isUndefined(currencyReserves)) {
-      fetchSeedData(rChainId, poolData, currencyReserves)
-    }
+    if (!poolData || !currencyReserves) return
+
+    const isSeed = Number(currencyReserves.total) === 0
+
+    if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
+    setSeed({ isSeed, loaded: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rChainId, poolId, currencyReserves?.total])
+  }, [poolData?.pool?.id, currencyReserves?.total])
 
   // fetch user pool info
   useEffect(() => {
@@ -463,12 +430,6 @@ const Title = styled(TextEllipsis)`
 const StatsWrapper = styled(Box)`
   align-items: flex-start;
   display: grid;
-
-  /* @media (min-width: ${breakpoints.lg}rem) {
-    &:not(.loading) {
-      grid-template-columns: 1fr 18.75rem;
-    }
-  } */
 `
 
 const PriceAndTradesWrapper = styled(Box)`
