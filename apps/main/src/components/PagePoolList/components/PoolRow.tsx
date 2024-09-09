@@ -7,7 +7,7 @@ import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-import { useLiquidityMapping, useVolumeMapping } from '@/entities/pool/lib/pool-info'
+import { useLiquidityMapping, usePools, useVolumeMapping } from '@/entities/pool/lib/pool-info'
 
 interface PoolRowProps {
   poolId: string
@@ -52,7 +52,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const themeType = useStore((state) => state.themeType)
   const campaignRewardsMapper = useCampaignRewardsMapper()
 
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
+  const poolDatas = usePools(rChainId)
   const tvlMapper = useLiquidityMapping(rChainId, poolDatas)
   const volumeMapper = useVolumeMapping(rChainId, poolDatas)
 

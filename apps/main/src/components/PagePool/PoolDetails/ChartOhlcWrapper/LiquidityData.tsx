@@ -15,14 +15,15 @@ import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 import type React from 'react'
 import { useTokenMapping } from '@/entities/token'
+import { usePools } from '@/entities/pool/lib/pool-info'
 
 const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
   lpEventsData,
   chainId,
   coins,
 }) => {
-  const pools = useStore((state) => state.pools.pools[chainId])
-  const tokenMapping = useTokenMapping(chainId, pools)
+  const pools = usePools(chainId)
+  const tokenMapping = useTokenMapping(chainId)
 
   return (
     <>

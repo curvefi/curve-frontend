@@ -2,6 +2,7 @@ import { poolValidationSuite } from '@/entities/pool/model'
 import { CombinedPoolParams, PoolQueryKeyType } from '@/entities/pool/types'
 import { assertValidity, checkValidity } from '@/shared/validation/lib'
 import type { ValidatedData } from '@/shared/validation/types'
+import { chainValidationSuite } from '@/entities/chain'
 
 export function checkPoolValidity<T extends CombinedPoolParams>(
   data: T,
@@ -16,3 +17,13 @@ export function assertPoolValidity<T extends CombinedPoolParams>(
 ): ValidatedData<T> {
   return assertValidity(poolValidationSuite, data, fields)
 }
+
+export const assertPoolsValidity = <T extends CombinedPoolParams>(
+  data: T,
+  fields?: Extract<keyof T, string>[]
+): ValidatedData<T> => assertValidity(chainValidationSuite, data, fields)
+
+export const checkPoolsValidity = <T extends CombinedPoolParams>(
+  data: T,
+  fields?: Extract<keyof T, string>[]
+): boolean => checkValidity(chainValidationSuite, data, fields)

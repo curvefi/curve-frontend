@@ -17,6 +17,7 @@ import useStore from '@/store/useStore'
 import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
+import { usePools } from '@/entities/pool/lib/pool-info'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -28,13 +29,10 @@ const Page: NextPage = () => {
   const { chainId } = curve ?? {}
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
+  const { data: poolDatas = [] } = usePools(rChainId)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
 
-  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
-  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
-  const poolDatasLength = (poolDatasCachedOrApi ?? []).length
+  const poolDatasLength = poolDatas.length
 
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 

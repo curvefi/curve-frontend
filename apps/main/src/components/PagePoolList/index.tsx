@@ -31,7 +31,7 @@ import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 import TableSortSelect from '@/ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
-import { useLiquidityMapping, useVolumeMapping } from '@/entities/pool/lib/pool-info'
+import { useLiquidityMapping, usePools, useVolumeMapping } from '@/entities/pool/lib/pool-info'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -44,7 +44,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const poolDatas = useStore((state) => state.pools.pools[rChainId] ?? [])
+  const { data: poolDatas = [] } = usePools(rChainId)
   const results = useStore((state) => state.poolList.result)
   const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
   const resultRewardsOtherCount = useStore((state) => state.poolList.resultRewardsOtherCount)
@@ -58,15 +58,15 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const volumeMapping = useVolumeMapping(rChainId, poolDatas)
-  const liquidityMapping = useLiquidityMapping(rChainId, poolDatas)
+  const volumeMapping = useVolumeMapping(rChainId)
+  const liquidityMapping = useLiquidityMapping(rChainId)
 
   const [showDetail, setShowDetail] = useState('')
 
   const result =
     results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
   const haveSigner = !!curve?.signerAddress
-  const poolDatasLength = (poolDatas ?? []).length
+  const poolDatasLength = poolDatas.length
   const rewardsApyMapperStr = useMemo(() => getRewardsApyStr(rewardsApyMapper, {}), [rewardsApyMapper])
 
   const userPoolListStr = useMemo(() => getUserPoolListStr(userPoolList), [userPoolList])

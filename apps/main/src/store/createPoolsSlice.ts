@@ -800,7 +800,7 @@ async function getPools(
   curve: CurveApi,
   poolList: string[],
   failedFetching24hOldVprice: { [p: string]: boolean } | null
-) {
+): Promise<Record<string, PoolData>> {
   const chainId = curve.chainId
   const pools = poolList.map(poolId => curve.getPool(poolId))
   const gauges = await Promise.all(
@@ -816,7 +816,7 @@ async function getPools(
     }
   });
 
-  return Object.fromEntries(pools.map((pool, idx) => {
+  const poolMapping = Object.fromEntries(pools.map((pool, idx) => {
     const poolData = networks[chainId].api.pool.getPoolData(pool, chainId)
     return [pool.id, {
       ...poolData,
@@ -826,6 +826,8 @@ async function getPools(
       gauge: gauges[idx]
     }]
   }))
+  console.log('poolMapping', poolMapping)
+  return poolMapping
 }
 
 function getSeedAmounts({ pool }: PoolData) {
