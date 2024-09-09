@@ -1,16 +1,21 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import { shortenTokenAddress } from '@/ui/utils'
+import networks from '@/networks'
 import Box from '@/ui/Box'
 import TokenIcons from '@/components/TokenIcons'
 import SmallLabel from '@/components/SmallLabel'
+import CopyIconButton from '@/components/CopyIconButton'
+import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 
 interface TitleCompProps {
   gaugeData: GaugeFormattedData
   imageBaseUrl: string
+  gaugeAddress?: string
 }
 
-const TitleComp = ({ gaugeData, imageBaseUrl }: TitleCompProps) => {
+const TitleComp = ({ gaugeData, imageBaseUrl, gaugeAddress }: TitleCompProps) => {
   return (
     <Wrapper>
       {gaugeData.tokens && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={gaugeData.tokens} />}
@@ -28,6 +33,18 @@ const TitleComp = ({ gaugeData, imageBaseUrl }: TitleCompProps) => {
               <TokenSymbol key={`${token.symbol}-${index}`}>{token.symbol}</TokenSymbol>
             ))}
           </SymbolsWrapper>
+        )}
+        {gaugeAddress && (
+          <Box flex flexGap="var(--spacing-1)">
+            <GaugeAddress>{shortenTokenAddress(gaugeAddress)}</GaugeAddress>
+            <ButtonsWrapper>
+              <ExternalLinkIconButton
+                href={networks[1].scanAddressPath(gaugeAddress ?? '')}
+                tooltip={t`View gauge on explorer`}
+              />
+              <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />
+            </ButtonsWrapper>
+          </Box>
         )}
       </Box>
     </Wrapper>
@@ -75,6 +92,20 @@ const SymbolsWrapper = styled.div`
 
 const TokenSymbol = styled.p`
   font-size: var(--font-size-2);
+`
+
+const GaugeAddress = styled.p`
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
+  margin-left: var(--spacing-2);
+  @media (min-width: 33.125rem) {
+    margin: 0 0 0 0.25rem;
+  }
+`
+
+const ButtonsWrapper = styled.div`
+  display: flex;
+  gap: var(--spacing-1);
 `
 
 export default TitleComp

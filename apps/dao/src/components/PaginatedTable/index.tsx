@@ -78,7 +78,7 @@ const PaginatedTable = <T,>({
               </ErrorMessageWrapper>
             )}
             {fetchingState === 'SUCCESS' && currentItems.length === 0 && (
-              <NoTableData height={FETCH_FEEDBACK_HEIGHT} noDataMessage={noDataMessage} />
+              <NoTableData height={FETCH_FEEDBACK_HEIGHT} noDataMessage={noDataMessage} refetchData={getData} />
             )}
           </TableBody>
         </TableContent>

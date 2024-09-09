@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 import networks from '@/networks'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
@@ -11,13 +10,14 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
-import { ExternalLink, InternalLink } from '@/ui/Link'
+import { ExternalLink } from '@/ui/Link'
 import LineChartComponent from '../../Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import TitleComp from './TitleComp'
 import CopyIconButton from '@/components/CopyIconButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
+import InternalLinkButton from '@/components/InternalLinkButton'
 
 type Props = {
   gaugeData: GaugeFormattedData
@@ -27,7 +27,6 @@ type Props = {
 const GaugeListItem = ({ gaugeData, gridTemplateColumns }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
 
   const imageBaseUrl = networks[1].imageBaseUrl
 
@@ -174,15 +173,7 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns }: Props) => {
             </StatsRow>
           </Box>
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'auto auto auto 0'}>
-            <StyledInternalLink
-              onClick={(e) => {
-                e.preventDefault()
-                navigate(`/ethereum/gauges/${gaugeData.address}`)
-              }}
-            >
-              {t`VIEW GAUGE`}
-              <Icon name="ArrowRight" size={16} />
-            </StyledInternalLink>
+            <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VIEW GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
       )}
@@ -275,26 +266,6 @@ const StyledExternalLink = styled(ExternalLink)`
 
   &:hover {
     cursor: pointer;
-  }
-`
-
-const StyledInternalLink = styled(InternalLink)`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-2);
-  font-size: var(--font-size-2);
-  padding: var(--spacing-2) var(--spacing-4);
-  font-weight: var(--bold);
-  text-transform: none;
-  text-decoration: none;
-  border: 1px solid var(--link--color);
-  margin-left: auto;
-  &:hover {
-    cursor: pointer;
-    color: var(--button_outlined--hover--color);
-    border-color: var(--button_outlined--hover--color);
-    background-color: var(--button_outlined--hover--background-color);
   }
 `
 

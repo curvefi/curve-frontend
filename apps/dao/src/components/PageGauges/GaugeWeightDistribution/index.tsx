@@ -38,10 +38,21 @@ const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) 
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
   }, [gaugeMapper, isUserVotes, userAddress, userGaugeVoteWeightsMapper])
 
+  if (!userAddress && isUserVotes) {
+    return (
+      <Wrapper variant="secondary">
+        <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
+          <ChartTitle>{isUserVotes ? t`Your Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
+          <ErrorMessageWrapper>{t`No user address connected`}</ErrorMessageWrapper>
+        </Box>
+      </Wrapper>
+    )
+  }
+
   return (
     <Wrapper variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
-        <ChartTitle>{isUserVotes ? t`Your Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
+        <ChartTitle>{isUserVotes ? t`User Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
         {loading && (
           <StyledSpinnerWrapper>
             <Spinner size={24} />
@@ -60,7 +71,9 @@ const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) 
           />
         )}
         {success && formattedData.length === 0 && (
-          <ErrorMessageWrapper>{t`No gauge votes found for user ${userAddress}`}</ErrorMessageWrapper>
+          <ErrorMessageWrapper>
+            <ErrorMessage message={t`No gauge votes found`} />
+          </ErrorMessageWrapper>
         )}
       </Box>
       {!isUserVotes && <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>}
@@ -100,8 +113,8 @@ const ErrorMessageWrapper = styled.div`
   align-items: center;
   width: 100%;
   min-width: 100%;
-  padding: var(--spacing-4);
-  margin-bottom: var(--spacing-3);
+  padding: var(--spacing-5);
+  margin-bottom: var(--spacing-2);
 `
 
 export default GaugeWeightDistribution

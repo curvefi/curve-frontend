@@ -463,6 +463,7 @@ declare global {
   }
 
   type UserGaugeVoteWeight = {
+    title: string
     userPower: number
     userVeCrv: number
     userFutureVeCrv: number
@@ -533,6 +534,7 @@ declare global {
   type UserGaugeVotesSortBy = 'weight' | 'timestamp'
   type UserProposalVotesSortBy = 'vote_id' | 'vote_for' | 'vote_against' | 'vote_open' | 'vote_close'
   type GaugeVotesSortBy = 'weight' | 'timestamp'
+  type UserGaugeVoteWeightsSortBy = 'userPower' | 'userVeCrv'
   type veCrvLockType = 'CREATE_LOCK' | 'WITHDRAW' | 'INCREASE_LOCK_AMOUNT' | 'INCREASE_UNLOCK_TIME'
 
   export enum ClaimButtonsKey {

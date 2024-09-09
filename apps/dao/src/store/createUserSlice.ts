@@ -57,6 +57,10 @@ type SliceState = {
     key: UserGaugeVotesSortBy
     order: SortDirection
   }
+  userGaugeVoteWeightsSortBy: {
+    key: UserGaugeVoteWeightsSortBy
+    order: SortDirection
+  }
 }
 
 const sliceKey = 'user'
@@ -73,6 +77,7 @@ export type UserSlice = {
     setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => void
+    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightsSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -108,6 +113,10 @@ const DEFAULT_STATE: SliceState = {
   },
   userGaugeVotesSortBy: {
     key: 'timestamp',
+    order: 'desc',
+  },
+  userGaugeVoteWeightsSortBy: {
+    key: 'userPower',
     order: 'desc',
   },
 }
@@ -339,7 +348,11 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         produce((state) => {
           state[sliceKey].userGaugeVoteWeightsMapper[address] = {
             fetchingState: 'LOADING',
-            weights: [],
+            data: {
+              powerUsed: 0,
+              veCrvUsed: 0,
+              gauges: [],
+            },
           }
         })
       )
@@ -373,6 +386,18 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       } catch (error) {
         console.error(error)
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVoteWeightsMapper[address] = {
+              fetchingState: 'ERROR',
+              data: {
+                powerUsed: 0,
+                veCrvUsed: 0,
+                gauges: [],
+              },
+            }
+          })
+        )
       }
     },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
@@ -484,6 +509,41 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
             state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
+          })
+        )
+      }
+    },
+    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightsSortBy) => {
+      const address = userAddress.toLowerCase()
+
+      const {
+        userGaugeVoteWeightsMapper: {
+          [address]: { data },
+        },
+        userGaugeVoteWeightsSortBy,
+      } = get()[sliceKey]
+
+      let order = userGaugeVoteWeightsSortBy.order
+      if (sortBy === userGaugeVoteWeightsSortBy.key) {
+        order = order === 'asc' ? 'desc' : 'asc'
+
+        set(
+          produce((state) => {
+            const reversedEntries = [...data.gauges].reverse()
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = reversedEntries
+            state[sliceKey].userGaugeVoteWeightsSortBy.order = order
+          })
+        )
+      } else {
+        const sortedEntries = [...data.gauges].sort((a, b) => {
+          return b[sortBy] - a[sortBy]
+        })
+
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
+            state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = sortedEntries
           })
         )
       }

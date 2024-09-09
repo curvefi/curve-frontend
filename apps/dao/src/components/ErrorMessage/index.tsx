@@ -5,16 +5,18 @@ import Icon from '@/ui/Icon'
 
 type Props = {
   message: string
-  onClick: (e?: React.MouseEvent) => void
+  onClick?: (e?: React.MouseEvent) => void
 }
 
 const ErrorMessage = ({ message, onClick }: Props) => {
   return (
     <>
       <Message>{message}</Message>
-      <IconButton onClick={onClick} size="small">
-        <Icon name="Renew" size={16} />
-      </IconButton>
+      {onClick && (
+        <IconButton onClick={onClick} size="small">
+          <Icon name="Renew" size={16} />
+        </IconButton>
+      )}
     </>
   )
 }

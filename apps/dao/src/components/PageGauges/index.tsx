@@ -10,7 +10,6 @@ import Box from '@/ui/Box'
 
 import GaugesList from './GaugeList'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
-import UserBox from '../UserBox'
 import GaugeVoting from './GaugeVoting'
 import SubNav from '@/components/SubNav'
 
@@ -40,13 +39,6 @@ const Gauges = () => {
             {navSelection === 'gaugeList' && <GaugesList />}
             {navSelection === 'gaugeVoting' && <GaugeVoting />}
           </Container>
-        </Box>
-        <Box flex flexColumn flexGap={'var(--spacing-1)'}>
-          {navSelection === 'gaugeVoting' && (
-            <Box variant="secondary">
-              <UserBox snapshotVotingPower={false} />
-            </Box>
-          )}
         </Box>
       </Box>
     </Wrapper>

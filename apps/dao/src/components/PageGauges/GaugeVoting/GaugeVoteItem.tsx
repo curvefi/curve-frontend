@@ -6,88 +6,68 @@ import { formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 
 import Box from '@/ui/Box'
-import MetricsComp, { MetricsRowData } from '@/components/MetricsComp'
-import SmallLabel from '@/components/SmallLabel'
-import CopyIconButton from '@/components/CopyIconButton'
-import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
+import InternalLinkButton from '@/components/InternalLinkButton'
+import TitleComp from '@/components/PageGauges/GaugeList/TitleComp'
 
 type GaugeVoteItemProps = {
   gauge: UserGaugeVoteWeight
+  gridTemplateColumns: string
 }
 
-const GaugeVoteItem = ({ gauge }: GaugeVoteItemProps) => {
+const GaugeVoteItem = ({ gauge, gridTemplateColumns }: GaugeVoteItemProps) => {
   const gaugeMapperData = useStore((state) => state.gauges.gaugeMapper[gauge.gaugeAddress])
 
+  const imageBaseUrl = networks[1].imageBaseUrl
+
   return (
-    <Wrapper key={gauge.gaugeAddress}>
-      <Box flex flexJustifyContent="space-between" flexAlignItems="center">
-        <BoxedDataComp>
-          <h4>{gaugeMapperData?.title}</h4>
-          {gaugeMapperData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
-          {gaugeMapperData.platform && <SmallLabel description={gaugeMapperData.platform} />}
-          {gaugeMapperData.pool?.chain && <SmallLabel description={gaugeMapperData.pool.chain} isNetwork />}
-          {gaugeMapperData.market?.chain && <SmallLabel description={gaugeMapperData.market.chain} isNetwork />}
-        </BoxedDataComp>
-        <Box flex flexGap="var(--spacing-1)">
-          <GaugeAddress>{gauge.gaugeAddress}</GaugeAddress>
-          <ButtonsWrapper>
-            <ExternalLinkIconButton
-              href={networks[1].scanAddressPath(gauge.gaugeAddress ?? '')}
-              tooltip={t`View on explorer`}
-            />
-            <CopyIconButton copyContent={gauge.gaugeAddress ?? ''} tooltip={t`Copy address`} />
-          </ButtonsWrapper>
-        </Box>
+    <Wrapper key={gauge.gaugeAddress} gridTemplateColumns={gridTemplateColumns}>
+      <Box flex flexColumn flexGap="var(--spacing-2)">
+        <TitleComp gaugeData={gaugeMapperData} imageBaseUrl={imageBaseUrl} gaugeAddress={gauge.gaugeAddress} />
       </Box>
-      <Box flex flexGap="var(--spacing-3)">
-        <MetricsComp
-          loading={false}
-          title="User Weight"
-          row
-          data={<MetricsRowData>{gauge.userPower}%</MetricsRowData>}
-        />
-        <MetricsComp
-          loading={false}
-          title="User veCRV used"
-          row
-          data={
-            <MetricsRowData>
-              {formatNumber(gauge.userVeCrv, { showDecimalIfSmallNumberOnly: true })} veCRV
-            </MetricsRowData>
-          }
-        />
-      </Box>
+      <BoxColumn>
+        <GaugeData>{gauge.userPower}%</GaugeData>
+      </BoxColumn>
+      <BoxColumn>
+        <GaugeData>{formatNumber(gauge.userVeCrv, { showDecimalIfSmallNumberOnly: true })}</GaugeData>
+      </BoxColumn>
+      <InternalLinkButton smallSize to={`/ethereum/gauges/${gauge.gaugeAddress}`}>
+        {t`VIEW GAUGE`}
+      </InternalLinkButton>
     </Wrapper>
   )
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: var(--spacing-3);
+const Wrapper = styled.div<{ gridTemplateColumns: string }>`
+  display: grid;
+  padding: var(--spacing-2) 0 calc(var(--spacing-2) + var(--spacing-1));
   width: 100%;
-  flex-grow: 1;
   gap: var(--spacing-2);
-`
-
-const BoxedDataComp = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--spacing-1);
-  margin-right: var(--spacing-2);
-  h4 {
-    margin-right: var(--spacing-1);
+  border-bottom: 1px solid var(--gray-500a20);
+  grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
+  &:last-child {
+    border-bottom: none;
   }
 `
 
-const GaugeAddress = styled.p`
-  font-size: var(--font-size-2);
+const BoxColumn = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--spacing-1);
+  padding: 0 var(--spacing-2);
+  margin: auto 0 auto auto;
+  &:first-child {
+    margin-left: var(--spacing-2);
+  }
+  &:last-child {
+    margin-right: var(--spacing-2);
+  }
 `
 
-const ButtonsWrapper = styled.div`
-  display: flex;
-  gap: var(--spacing-1);
+const GaugeData = styled.p`
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
+  text-align: right;
 `
 
 export default GaugeVoteItem
