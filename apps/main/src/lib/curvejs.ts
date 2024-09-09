@@ -21,9 +21,9 @@ import {
 } from '@/utils/utilsCurvejs'
 
 import networks from '@/networks'
-import { BN, formatNumber } from '@/ui/utils'
+import { BN } from '@/ui/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress, shortenTokenName } from '@/utils'
+import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
 import {
   excludeLowExchangeRateCheck,
@@ -210,7 +210,6 @@ const pool = {
       hasVyperVulnerability: p.hasVyperVulnerability(),
       hasWrapped: isWrappedOnly ?? !hasNoWrapped(p),
       isWrapped: isWrappedOnly ?? false,
-      seedData: [],
       tokenAddressesAll,
       tokenDecimalsAll,
       tokenAddresses,
@@ -544,28 +543,6 @@ const router = {
 }
 
 const poolDeposit = {
-  // seed info
-  cryptoSeedAmounts: (p: Pool, amount: string) => {
-    log('cryptoSeedAmounts', p.name)
-    return p.cryptoSeedAmounts(amount)
-  },
-  cryptoSeedInitialRate: async (p: Pool, tokens: string[]) => {
-    log('cryptoSeedInitialRate', p.name, tokens)
-    const seedAmounts = await poolDeposit.cryptoSeedAmounts(p, '1')
-    if (seedAmounts[0] && seedAmounts[1]) {
-      const initialRate = Number(seedAmounts[0]) / Number(seedAmounts[1])
-      const formattedInitialRate = formatNumber(initialRate, { showAllFractionDigits: true })
-      return `${formattedInitialRate} ${shortenTokenName(tokens[0])} = ${formatNumber(1)} ${shortenTokenName(
-        tokens[1]
-      )}`
-    }
-    return ''
-  },
-  metaUnderlyingSeedAmounts: (p: Pool, amount1: string) => {
-    log('metaUnderlyingSeedAmounts', p.name, amount1)
-    return p.metaUnderlyingSeedAmounts(amount1)
-  },
-
   depositBalancedAmounts: async (activeKey: string, p: Pool, isWrapped: boolean) => {
     log('depositBalancedAmounts', p.name, isWrapped)
     let resp = { activeKey, amounts: [] as string[], error: '' }

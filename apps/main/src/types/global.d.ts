@@ -225,7 +225,6 @@ declare global {
     isWrapped: boolean
     currenciesReserves: CurrencyReserves | null
     parameters: PoolParameters
-    seedData: { token: string; percent: number }[]
     tokenAddresses: string[]
     tokenAddressesAll: string[]
     tokenDecimalsAll: number[]

@@ -898,7 +898,6 @@ async function getPools(
       ? failedFetching24hOldVprice[pool.address] ?? false
       : false
     poolsMapper[poolId] = poolData
-    poolsMapper[poolId].seedData = getSeedAmounts(poolData)
     poolsMapper[poolId].curvefiUrl = getCurvefiUrl(poolId, networks[chainId].orgUIPath)
 
     const [gaugeStatusResp, isGaugeKilledResp] = await Promise.allSettled([pool.gaugeStatus(), pool.isGaugeKilled()])
@@ -943,24 +942,6 @@ async function getPools(
   }
 
   return { poolsMapper, poolsMapperCache }
-}
-
-function getSeedAmounts({ pool }: PoolData) {
-  if (pool.isMeta && !pool.isCrypto) {
-    const total = pool.underlyingCoins.length
-    const wrappedTotal = pool.wrappedCoins.length
-    return pool.underlyingCoins.map((token, idx) => {
-      if (idx === 0) {
-        return { token, percent: 100 / wrappedTotal }
-      } else {
-        const metaTokensTotal = total - 1
-        return { token, percent: 100 / wrappedTotal / metaTokensTotal }
-      }
-    })
-  } else {
-    const total = pool.underlyingCoins.length
-    return pool.underlyingCoins.map((token) => ({ token, percent: 100 / total }))
-  }
 }
 
 // remove pools we do not want to display in pool list

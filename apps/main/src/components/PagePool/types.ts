@@ -18,9 +18,7 @@ export type TransferFormType = 'swap' | 'deposit' | 'withdraw' | 'manage-gauge'
 
 export type Seed = {
   isSeed: boolean | null
-  cryptoSeedInitialRate: string
   loaded: boolean
-  error: string
 }
 
 export type PageTransferProps = {
