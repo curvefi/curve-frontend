@@ -225,7 +225,6 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
           <Title as="h1">{pool?.name || ''}</Title>
         </StyledExternalLink>
         {pool?.referenceAsset && <StyledChip>{referenceAsset[pool.referenceAsset] ?? pool.referenceAsset}</StyledChip>}
-        {pool?.isFactory && <StyledFactoryChip>{t`FACTORY`}</StyledFactoryChip>}
       </AppPageFormTitleWrapper>
     )
   }
@@ -406,10 +405,6 @@ const StyledChip = styled(Chip)`
 
   color: black;
   background-color: white;
-`
-
-const StyledFactoryChip = styled(StyledChip)`
-  background-color: var(--warning-400);
 `
 
 const StyledExternalLink = styled(ExternalLink)`
