@@ -79,9 +79,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           newGaugeMapper[gauge.address.toLowerCase()] = {
             ...gauge,
             platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
-            title: gauge.pool?.name
-              ? (gauge.pool.name.split(': ')[1] || gauge.pool.name).replace(/curve\.fi/i, '').trim()
-              : gauge.market?.name ?? shortenTokenAddress(gauge.address) ?? '',
+            title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
             gauge_weight: +gauge.gauge_weight,
             gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
             gauge_relative_weight_7d_delta:
@@ -314,6 +312,16 @@ const sortGauges = (gauges: GaugeMapper, sortBy: SortByFilterGauges): GaugeForma
   }
 
   return gaugeArray.sort(sortFn)
+}
+
+const formatGaugeTitle = (poolName: string | undefined, marketName: string | null, address: string): string => {
+  if (poolName) {
+    return (poolName.split(': ')[1] || poolName)
+      .replace(/curve\.fi/i, '')
+      .replace(/\(FRAXBP\)/i, '')
+      .trim()
+  }
+  return marketName ?? shortenTokenAddress(address) ?? ''
 }
 
 export default createGaugesSlice

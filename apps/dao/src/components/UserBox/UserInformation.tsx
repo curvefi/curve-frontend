@@ -111,7 +111,7 @@ const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPo
   )
 }
 
-const StyledInternalLink = styled(ExternalLink)`
+const StyledInternalLink = styled(InternalLink)`
   color: inherit;
   font-weight: 500;
   text-decoration: none;

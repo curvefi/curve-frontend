@@ -8,33 +8,62 @@ import BarChartComponent from '../../Charts/BarChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import Box from '@/ui/Box'
+import GaugeVotingCustomTooltip from '../../Charts/GaugeVotingBarChartCustomTooltip'
+import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
 
-const GaugeWeightDistribution = () => {
+type GaugeWeightDistributionProps = {
+  isUserVotes: boolean
+}
+
+const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
+  const { userAddress, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
+  const userData = userGaugeVoteWeightsMapper[userAddress ?? '']
 
-  const formattedData = useMemo(() => {
+  const loading = isUserVotes ? userData?.fetchingState === 'LOADING' : gaugesLoading === 'LOADING'
+  const error = isUserVotes ? userData?.fetchingState === 'ERROR' : gaugesLoading === 'ERROR'
+  const success = isUserVotes ? userData?.fetchingState === 'SUCCESS' : gaugesLoading === 'SUCCESS'
+
+  const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
+  const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
+    if (isUserVotes) {
+      return userGaugeVoteWeightsMapper[userAddress ?? '']?.data?.gauges.map((gauge) => ({
+        ...gauge,
+        title: gaugeMapper[gauge.gaugeAddress].title,
+      }))
+    }
+
     return Object.values(gaugeMapper)
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-  }, [gaugeMapper])
+  }, [gaugeMapper, isUserVotes, userAddress, userGaugeVoteWeightsMapper])
 
   return (
     <Wrapper variant="secondary">
       <Box flex flexColumn padding={'var(--spacing-3) 0 0'}>
-        <ChartTitle>{t`Relative Weight Distribution`}</ChartTitle>
-        {gaugesLoading === 'LOADING' && (
+        <ChartTitle>{isUserVotes ? t`Your Vote Weight Distribution` : t`Relative Weight Distribution`}</ChartTitle>
+        {loading && (
           <StyledSpinnerWrapper>
             <Spinner size={24} />
           </StyledSpinnerWrapper>
         )}
-        {gaugesLoading === 'ERROR' && (
+        {error && (
           <ErrorMessageWrapper>
             <ErrorMessage message={t`Error fetching gauges`} onClick={() => getGauges(true)} />
           </ErrorMessageWrapper>
         )}
-        {gaugesLoading === 'SUCCESS' && <BarChartComponent data={formattedData} />}
+        {success && formattedData.length > 0 && (
+          <BarChartComponent
+            data={formattedData}
+            dataKey={dataKey as keyof (typeof formattedData)[0]}
+            CustomTooltip={isUserVotes ? GaugeVotingCustomTooltip : GaugesCustomTooltip}
+          />
+        )}
+        {success && formattedData.length === 0 && (
+          <ErrorMessageWrapper>{t`No gauge votes found for user ${userAddress}`}</ErrorMessageWrapper>
+        )}
       </Box>
-      <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>
+      {!isUserVotes && <ChartDescription>{t`Showing gauges with >0.5% relative gauge weight`}</ChartDescription>}
     </Wrapper>
   )
 }

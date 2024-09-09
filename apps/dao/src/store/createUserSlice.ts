@@ -43,6 +43,7 @@ type SliceState = {
       votes: UserGaugeVote[]
     }
   }
+  userGaugeVoteWeightsMapper: UserGaugeVoteWeightsMapper
   userMapper: UserMapper
   userLocksSortBy: {
     key: UserLocksSortBy
@@ -67,6 +68,7 @@ export type UserSlice = {
     getUserEns(userAddress: string): void
     getUserProposalVotes(userAddress: string): void
     getUserGaugeVotes(userAddress: string): void
+    getUserGaugeVoteWeights(userAddress: string): void
     getUserLocks(userAddress: string): void
     setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
@@ -94,6 +96,7 @@ const DEFAULT_STATE: SliceState = {
   userVotesMapper: {},
   userProposalVotesMapper: {},
   userGaugeVotesMapper: {},
+  userGaugeVoteWeightsMapper: {},
   userLocksMapper: {},
   userLocksSortBy: {
     key: 'date',
@@ -324,6 +327,52 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             }
           })
         )
+      }
+    },
+    getUserGaugeVoteWeights: async (userAddress: string) => {
+      const address = userAddress.toLowerCase()
+      const curve = get().curve
+
+      if (!curve) return
+
+      set(
+        produce((state) => {
+          state[sliceKey].userGaugeVoteWeightsMapper[address] = {
+            fetchingState: 'LOADING',
+            weights: [],
+          }
+        })
+      )
+
+      try {
+        const gaugeVoteWeightsRes = await curve.dao.userGaugeVotes(userAddress)
+
+        const data = {
+          powerUsed: Number(gaugeVoteWeightsRes.powerUsed),
+          veCrvUsed: Number(gaugeVoteWeightsRes.veCrvUsed),
+          gauges: gaugeVoteWeightsRes.gauges
+            .map((gauge) => ({
+              userPower: Number(gauge.userPower),
+              userVeCrv: Number(gauge.userVeCrv),
+              userFutureVeCrv: Number(gauge.userFutureVeCrv),
+              expired: gauge.expired,
+              ...gauge.gaugeData,
+              relativeWeight: Number(gauge.gaugeData.relativeWeight),
+              totalVeCrv: Number(gauge.gaugeData.totalVeCrv),
+            }))
+            .sort((a, b) => b.userPower - a.userPower),
+        }
+
+        set(
+          produce((state) => {
+            state[sliceKey].userGaugeVoteWeightsMapper[address] = {
+              fetchingState: 'SUCCESS',
+              data,
+            }
+          })
+        )
+      } catch (error) {
+        console.error(error)
       }
     },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {

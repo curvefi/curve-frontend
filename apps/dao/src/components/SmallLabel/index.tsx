@@ -9,7 +9,7 @@ type SmallLabelProps = {
 
 const SmallLabel = ({ description, isKilled, className, isNetwork }: SmallLabelProps) => {
   return (
-    <BoxedData isKilled={isKilled} isNetwork={isNetwork} className={className}>
+    <BoxedData isKilled={!!isKilled} isNetwork={isNetwork} className={className}>
       {description}
     </BoxedData>
   )
@@ -29,8 +29,8 @@ const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
   ${({ isKilled }) =>
     isKilled &&
     `
-      color: 'var(--chart-red)';
-      border: 1px solid 'var(--chart-red)';
+      color: var(--chart-red);
+      border: 1px solid var(--chart-red);
     `}
 
   ${({ isNetwork }) =>

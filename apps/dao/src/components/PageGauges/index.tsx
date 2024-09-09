@@ -33,7 +33,7 @@ const Gauges = () => {
   return (
     <Wrapper>
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <GaugeWeightDistribution />
+        <GaugeWeightDistribution isUserVotes={navSelection === 'gaugeVoting'} />
         <Box>
           <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
           <Container variant="secondary">

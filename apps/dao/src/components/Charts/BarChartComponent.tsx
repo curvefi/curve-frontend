@@ -1,10 +1,10 @@
 import styled from 'styled-components'
-import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts'
 
-import CustomTooltip from './BarChartCustomTooltip'
-
-type Props = {
-  data: GaugeFormattedData[]
+type Props<T> = {
+  data: T[]
+  dataKey: keyof T & string
+  CustomTooltip: React.ComponentType<TooltipProps<any, any>>
 }
 
 const COLORS = [
@@ -20,13 +20,9 @@ const COLORS = [
   '#277DA1',
 ]
 
-const BarChartComponent = ({ data }: Props) => {
+const BarChartComponent = <T extends Record<string, any>>({ data, dataKey, CustomTooltip }: Props<T>) => {
   const height = 300
   const labelWidth = 100
-
-  const reducedData = data.filter((item, index) => {
-    return item.gauge_relative_weight > 0.5
-  })
 
   return (
     <ChartContainer height={height}>
@@ -35,7 +31,7 @@ const BarChartComponent = ({ data }: Props) => {
           layout="horizontal"
           width={500}
           height={height}
-          data={reducedData}
+          data={data}
           margin={{
             top: 16,
             right: 8,
@@ -48,7 +44,7 @@ const BarChartComponent = ({ data }: Props) => {
             type="category"
             dataKey="title"
             width={labelWidth}
-            interval={0}
+            interval={data.length > 50 ? 1 : 0}
             tick={{
               fill: 'var(--page--text-color)',
 
@@ -69,9 +65,9 @@ const BarChartComponent = ({ data }: Props) => {
             axisLine={false}
             dx={4}
           />
-          <Tooltip content={CustomTooltip} cursor={{ opacity: 0.3 }} />
-          <Bar dataKey="gauge_relative_weight" label={false}>
-            {reducedData.map((entry, index) => (
+          <Tooltip content={(props) => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
+          <Bar dataKey={dataKey as string} label={false}>
+            {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>

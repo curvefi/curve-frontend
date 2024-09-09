@@ -444,6 +444,57 @@ declare global {
     votes: UserGaugeVote[]
   }
 
+  type UserGaugeVoteWeightResData = {
+    userPower: string
+    userVeCrv: string
+    userFutureVeCrv: string
+    expired: boolean
+    gaugeData: {
+      gaugeAddress: string
+      isKilled: boolean
+      lpTokenAddress: string
+      network: string
+      poolAddress: string
+      poolName: string
+      poolUrl: string
+      relativeWeight: string
+      totalVeCrv: string
+    }[]
+  }
+
+  type UserGaugeVoteWeight = {
+    userPower: number
+    userVeCrv: number
+    userFutureVeCrv: number
+    expired: boolean
+    gaugeAddress: string
+    isKilled: boolean
+    lpTokenAddress: string
+    network: string
+    poolAddress: string
+    poolName: string
+    poolUrl: string
+    relativeWeight: number
+    totalVeCrv: number
+  }
+
+  type UserGaugeVoteWeightRes = {
+    powerUsed: string
+    veCrvUsed: string
+    gauges: UserGaugeVoteWeightResData[]
+  }
+
+  type UserGaugeVoteWeightsMapper = {
+    [userAddress: string]: {
+      fetchingState: FetchingState
+      data: {
+        powerUsed: number
+        veCrvUsed: number
+        gauges: UserGaugeVoteWeight[]
+      }
+    }
+  }
+
   interface FnStepEstGasApprovalResponse {
     activeKey: string
     isApproved: boolean
