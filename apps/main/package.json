@@ -1,6 +1,6 @@
 {
   "name": "main",
-  "version": "0.1.0",
+  "version": "2.1.0",
   "private": true,
   "engines": {
     "node": ">=18.17"
@@ -18,14 +18,20 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "^2.61.8",
+    "@curvefi/api": "^2.63.4",
+    "@hookform/error-message": "^2.0.1",
+    "@hookform/resolvers": "^3.9.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
+    "@tanstack/query-sync-storage-persister": "^5.53.1",
+    "@tanstack/react-query": "^5.53.1",
+    "@tanstack/react-query-persist-client": "^5.53.1",
     "bignumber.js": "^9.0.1",
     "cross-fetch": "^3.1.5",
+    "curve-lib": "*",
     "dayjs": "^1.11.7",
-    "external-rewards": "*",
     "ethers": "^6.9.0",
+    "external-rewards": "*",
     "focus-visible": "5.2.0",
     "fuse.js": "^6.6.2",
     "immer": "^9.0.12",
@@ -41,14 +47,17 @@
     "react": "^18.2.0",
     "react-aria": "3.22.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.53.0",
     "react-is": "16.13.1",
     "react-router-dom": "^6.3.0",
     "react-stately": "3.18.0",
-    "curve-lib": "*",
     "sharp": "^0.32.6",
-    "styled-components": "5.3.1",
+    "styled-components": "5.3.11",
     "swr": "^2.2.2",
     "ui": "*",
+    "validator": "^13.12.0",
+    "vest": "^5.4.1",
+    "viem": "^2.21.1",
     "zustand": "^4.5.5"
   },
   "devDependencies": {
@@ -63,6 +72,7 @@
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
     "@types/styled-components": "5.1.14",
+    "@types/validator": "^13.12.1",
     "eslint-config-custom": "*",
     "pinst": "^2.1.4",
     "tsconfig": "*",

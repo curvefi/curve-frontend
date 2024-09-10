@@ -1,0 +1,30 @@
+{
+  "campaignName": "",
+  "platform": "Resolv",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "resolv.png",
+  "dashboardLink": "https://app.resolv.xyz/overview/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "1725364800",
+      "campaignEnd": "1770000000",
+      "address": "0x3ee841f47947fefbe510366e4bbb49e145484195",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "1725364800",
+      "campaignEnd": "1770000000",
+      "address": "0x8e001d4bac0eae1eea348dfc22f9b8bda67dd211",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"]
+    }
+  ]
+}
+

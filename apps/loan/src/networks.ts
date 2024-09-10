@@ -4,6 +4,8 @@ import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/apiCrvusd'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
+const drpcUrl = (network: string) =>
+  `https://lb.drpc.org/ogrpc?network=${network}&dkey=${process.env.NEXT_PUBLIC_FRONTEND_DRPC_KEY}`
 
 const DEFAULT_NETWORK_CONFIG = {
   api: curvejsApi,
@@ -14,9 +16,7 @@ const networks: Record<ChainId, NetworkConfig> = {
   1: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['1'],
-    rpcUrl: isDevelopment
-      ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
-      : `https://curve.drpc.org/ogrpc?network=ethereum`,
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL! : drpcUrl('ethereum'),
   },
 }
 

@@ -118,7 +118,7 @@ declare global {
   }
   type CurrencyReservesMapper = { [chainPoolId: string]: CurrencyReserves }
 
-  type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | ''
+  type RFormType = 'deposit' | 'withdraw' | 'swap' | 'adjust_crv' | 'adjust_date' | 'create' | 'manage-gauge' | ''
   type RouterParams = {
     rLocale: Locale | null
     rLocalePathname: string
@@ -192,6 +192,7 @@ declare global {
     address: string
     ethAddress?: string
     symbol: string
+    decimals: number
     haveSameTokenName: boolean // use to display token address if duplicated token names
     volume?: number
   }
@@ -208,21 +209,25 @@ declare global {
 
   type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
+  interface Gauge {
+    status: GaugeStatus | null
+    isKilled: boolean | null
+  }
+
   interface PoolData {
     idx?: number
     chainId: ChainId
     pool: Pool
 
-    gaugeStatus: GaugeStatus | null
+    gauge: Gauge
     hasWrapped: boolean
     hasVyperVulnerability: boolean
-    isGaugeKilled: boolean | null
     isWrapped: boolean
     currenciesReserves: CurrencyReserves | null
     parameters: PoolParameters
-    seedData: { token: string; percent: number }[]
     tokenAddresses: string[]
     tokenAddressesAll: string[]
+    tokenDecimalsAll: number[]
     tokens: string[]
     tokensCountBy: { [key: string]: number }
     tokensAll: string[]
@@ -242,10 +247,9 @@ declare global {
   type PoolDataMapper = { [poolAddress: string]: PoolData }
 
   type PoolDataCache = {
-    gaugeStatus: GaugeStatus | null
+    gauge: Gauge
     hasWrapped: boolean
     hasVyperVulnerability: boolean
-    isGaugeKilled: boolean | null
     tokenAddresses: string[]
     tokenAddressesAll: string[]
     tokens: string[]

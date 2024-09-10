@@ -56,6 +56,10 @@ This repository is organized as follows:
 - `/packages/ui`: Shared CSS styled components using [styled-components](https://styled-components.com/).
 - `/packages/onboard-helpers`: Shared wallet connection using [Blocknative's Onboard](https://onboard.blocknative.com/).
 
+## Development Guide
+
+For detailed information on development practices and usage of new libraries, please refer to our [Development Guide](./DEVELOPMENT_GUIDE.md).
+
 ## Testing
 
 For testing the DApp application, follow these steps:

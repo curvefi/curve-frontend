@@ -18,14 +18,11 @@ import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
 import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 
-const PoolParameters = ({
-  parameters,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams,
-}: {
-  parameters: PoolParameters
-} & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
+const PoolParameters: React.FC<
+  {
+    parameters: PoolParameters
+  } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
+> = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
   const pricesApi = networks[rChainId].pricesApi
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])

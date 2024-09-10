@@ -13,14 +13,13 @@ import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
+import type React from 'react'
 
-type Props = {
-  lpEventsData: LpLiquidityEventsData[]
-  chainId: ChainId
-  coins: PricesApiCoin[]
-}
-
-const LiquidityData = ({ lpEventsData, chainId, coins }: Props) => {
+const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
+  lpEventsData,
+  chainId,
+  coins,
+}) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
 
   return (

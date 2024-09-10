@@ -6,13 +6,14 @@ import styled from 'styled-components'
 import { formatNumber, formatNumberUsdRate } from '@/ui/utils'
 
 import Chip from '@/ui/Typography/Chip'
+import { BD } from '@/shared/curve-lib'
 
 const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {
   const usdRateTotal = useMemo(() => {
     let total = ''
 
     if (!isUndefined(usdRate) && !isNaN(usdRate) && +usdRate > 0 && +amount > 0) {
-      total = (Number(usdRate) * Number(amount)).toString()
+      total = BD.from(usdRate).times(BD.from(amount)).toString()
     }
     return total
   }, [usdRate, amount])

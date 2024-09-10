@@ -9,12 +9,16 @@ import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/Poo
 
 type AdminFee = string | number | undefined
 
-type Props = {
+interface DaoFeeProps {
+  adminFee: AdminFee
+}
+
+interface PoolParametersDaoFeesProps {
   adminFee: AdminFee
   isEymaPools: boolean
 }
 
-const DaoFee = ({ adminFee }: { adminFee: AdminFee }) => {
+const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => {
   return (
     <Item>
       {t`DAO fee:`}{' '}
@@ -35,10 +39,12 @@ const DaoFee = ({ adminFee }: { adminFee: AdminFee }) => {
   )
 }
 
-const PoolParametersDaoFees = ({ adminFee, isEymaPools }: Props) => {
+const PoolParametersDaoFees: React.FC<PoolParametersDaoFeesProps> = ({ adminFee, isEymaPools }) => {
   if (typeof adminFee === 'undefined') {
     return <></>
-  } else if (isEymaPools) {
+  }
+
+  if (isEymaPools) {
     const parsedAdminFee = +adminFee / 2
     return (
       <>
@@ -53,9 +59,9 @@ const PoolParametersDaoFees = ({ adminFee, isEymaPools }: Props) => {
         </Item>
       </>
     )
-  } else {
-    return <DaoFee adminFee={adminFee} />
   }
+
+  return <DaoFee adminFee={adminFee} />
 }
 
 export default PoolParametersDaoFees

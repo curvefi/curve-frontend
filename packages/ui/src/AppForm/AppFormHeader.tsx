@@ -1,17 +1,20 @@
 import styled from 'styled-components'
 
-import { breakpoints } from 'ui/src/utils'
 import IconButton from 'ui/src/IconButton'
 import Tabs, { Tab } from 'ui/src/Tab'
+import { breakpoints } from 'ui/src/utils'
+import SandwichMenu from './ui/SandwichMenu'
 
 const AppFormHeader = ({
   formTypes,
   activeFormKey,
   handleClick,
+  showMenuButton = false,
 }: {
   formTypes: { key: string; label: string }[]
   activeFormKey: string
   handleClick(formKey: string): void
+  showMenuButton?: boolean
 }) => {
   return (
     <Header>
@@ -21,21 +24,24 @@ const AppFormHeader = ({
           <HeaderTitle>{formTypes[0].label}</HeaderTitle>
         </>
       ) : (
-        <Tabs>
-          {formTypes.map(({ key, label }) => {
-            const isActiveForm = !activeFormKey && key === activeFormKey
-            return (
-              <StyledTab
-                key={key}
-                className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
-                disabled={isActiveForm || activeFormKey === key}
-                onClick={() => handleClick(key)}
-              >
-                {label}
-              </StyledTab>
-            )
-          })}
-        </Tabs>
+        <>
+          <Tabs>
+            {formTypes.map(({ key, label }) => {
+              const isActiveForm = !activeFormKey && key === activeFormKey
+              return (
+                <StyledTab
+                  key={key}
+                  className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
+                  disabled={isActiveForm || activeFormKey === key}
+                  onClick={() => handleClick(key)}
+                >
+                  {label}
+                </StyledTab>
+              )
+            })}
+          </Tabs>
+          {showMenuButton && <SandwichMenu onItemClick={handleClick} />}
+        </>
       )}
       {formTypes.length === 1 && <IconButton hidden />}
     </Header>

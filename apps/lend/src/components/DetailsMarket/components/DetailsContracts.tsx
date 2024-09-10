@@ -39,7 +39,7 @@ const DetailsContracts = ({
     supply: [
       [
         { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
-        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.borrowed_token },
+        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
       ],
       [
         { label: t`Vault`, address: addresses?.vault },

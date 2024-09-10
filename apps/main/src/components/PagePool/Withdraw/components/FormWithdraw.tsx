@@ -218,7 +218,7 @@ const FormWithdraw = ({
       updateFormValues({}, null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -466,7 +466,6 @@ const FormWithdraw = ({
         {formValues.selected !== 'lpToken' && <DetailInfoSlippage {...slippage} />}
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             isDivider={haveSlippage}
             {...formEstGas}
@@ -485,7 +484,6 @@ const FormWithdraw = ({
       )}
 
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}
