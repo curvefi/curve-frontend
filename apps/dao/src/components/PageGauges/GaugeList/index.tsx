@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS } from '../constants'
 
-import GaugeListItem from './GaugeListItem'
+import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'

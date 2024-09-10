@@ -58,7 +58,7 @@ type SliceState = {
     order: SortDirection
   }
   userGaugeVoteWeightsSortBy: {
-    key: UserGaugeVoteWeightsSortBy
+    key: UserGaugeVoteWeightSortBy
     order: SortDirection
   }
 }
@@ -77,7 +77,7 @@ export type UserSlice = {
     setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
     setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => void
-    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightsSortBy) => void
+    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightSortBy) => void
     setSnapshotVeCrv(signer: any, userAddress: string, snapshot: number, proposalId: string): void
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -513,7 +513,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         )
       }
     },
-    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightsSortBy) => {
+    setUserGaugeVoteWeightsSortBy: (userAddress: string, sortBy: UserGaugeVoteWeightSortBy) => {
       const address = userAddress.toLowerCase()
 
       const {

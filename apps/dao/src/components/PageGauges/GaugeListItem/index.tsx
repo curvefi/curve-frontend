@@ -11,10 +11,12 @@ import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
-import LineChartComponent from '../../Charts/LineChartComponent'
+import LineChartComponent from '@/components/Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import TitleComp from './TitleComp'
+import GaugeListColumns from './GaugeListColumns'
+import GaugeWeightVotesColumns from './GaugeWeightVotesColumns'
 import CopyIconButton from '@/components/CopyIconButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 import InternalLinkButton from '@/components/InternalLinkButton'
@@ -22,9 +24,10 @@ import InternalLinkButton from '@/components/InternalLinkButton'
 type Props = {
   gaugeData: GaugeFormattedData
   gridTemplateColumns: string
+  userGaugeWeightVoteData?: UserGaugeVoteWeight
 }
 
-const GaugeListItem = ({ gaugeData, gridTemplateColumns }: Props) => {
+const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
 
@@ -40,39 +43,11 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns }: Props) => {
     <GaugeBox onClick={() => setOpen(!open)}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
-        <BoxColumn>
-          <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
-        </BoxColumn>
-        <BoxColumn>
-          <GaugeData
-            className={`${
-              gaugeData.gauge_relative_weight_7d_delta
-                ? gaugeData.gauge_relative_weight_7d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData.gauge_relative_weight_7d_delta
-              ? `${gaugeData.gauge_relative_weight_7d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </GaugeData>
-        </BoxColumn>
-        <BoxColumn>
-          <GaugeData
-            className={`${
-              gaugeData.gauge_relative_weight_60d_delta
-                ? gaugeData.gauge_relative_weight_60d_delta > 0
-                  ? 'green'
-                  : 'red'
-                : ''
-            }`}
-          >
-            {gaugeData.gauge_relative_weight_60d_delta
-              ? `${gaugeData.gauge_relative_weight_60d_delta.toFixed(2)}%`
-              : 'N/A'}
-          </GaugeData>
-        </BoxColumn>
+        {userGaugeWeightVoteData ? (
+          <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
+        ) : (
+          <GaugeListColumns gaugeData={gaugeData} />
+        )}
         <StyledIconButton size="small">
           {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
         </StyledIconButton>
@@ -197,36 +172,6 @@ const GaugeBox = styled.div`
 const DataComp = styled.div<{ gridTemplateColumns: string }>`
   display: grid;
   grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
-`
-
-const BoxColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: var(--spacing-1);
-  padding: 0 var(--spacing-2);
-  margin: auto 0 auto auto;
-  &:first-child {
-    margin-left: var(--spacing-2);
-  }
-  &:last-child {
-    margin-right: var(--spacing-2);
-  }
-`
-
-const GaugeData = styled.p`
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  text-align: right;
-  &.green {
-    color: var(--chart-green);
-  }
-  &.red {
-    color: var(--chart-red);
-  }
-  &.open {
-    font-size: var(--font-size-2);
-  }
 `
 
 const StyledIconButton = styled(IconButton)`

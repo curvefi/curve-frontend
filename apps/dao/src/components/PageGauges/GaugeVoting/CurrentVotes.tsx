@@ -8,7 +8,7 @@ import { formatNumber } from '@/ui/utils'
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import GaugeVoteItem from './GaugeVoteItem'
+import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import Box from '@/ui/Box'
 import PaginatedTable from '@/components/PaginatedTable'
 
@@ -21,6 +21,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const { setUserGaugeVoteWeightsSortBy, userGaugeVoteWeightsSortBy, getUserGaugeVoteWeights } = useStore(
     (state) => state.user
   )
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
 
   const tableMinWidth = 42.3125
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
@@ -59,10 +60,15 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
         sortBy={userGaugeVoteWeightsSortBy}
         errorMessage={t`An error occurred while fetching user gauge weight votes.`}
         noDataMessage={t`No gauge votes found`}
-        setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress, key as UserGaugeVoteWeightsSortBy)}
+        setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress, key as UserGaugeVoteWeightSortBy)}
         getData={() => getUserGaugeVoteWeights(userAddress)}
         renderRow={(gauge, index) => (
-          <GaugeVoteItem key={index} gauge={gauge} gridTemplateColumns={gridTemplateColumns} />
+          <GaugeListItem
+            key={index}
+            gaugeData={gaugeMapper[gauge.gaugeAddress]}
+            userGaugeWeightVoteData={gauge}
+            gridTemplateColumns={gridTemplateColumns}
+          />
         )}
         gridTemplateColumns={gridTemplateColumns}
       />
