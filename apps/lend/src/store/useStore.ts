@@ -1,7 +1,7 @@
-import type { SetState, GetState } from 'zustand'
+import type { GetState, SetState } from 'zustand'
+import { create } from 'zustand'
 
 import { devtools, persist } from 'zustand/middleware'
-import create from 'zustand'
 import merge from 'lodash/merge'
 
 import createCacheSlice, { CacheSlice } from '@/store/createCacheSlice'
@@ -29,6 +29,7 @@ import createChartBandsSlice, { ChartBandsSlice } from '@/store/createChartBands
 import createIntegrationsSlice, { IntegrationsSlice } from '@/store/createIntegrationsSlice'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/store/createOhlcChartSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
+import type { PersistOptions } from 'zustand/middleware/persist'
 
 export type State = CacheSlice &
   AppSlice &
@@ -86,15 +87,9 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
 
 // cache all items in CacheSlice store
 
-const cache = {
+const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'lending-app-store-cache',
-  partialize: (state: State) => {
-    return Object.fromEntries(
-      Object.entries(state).filter(([key]) => {
-        return ['storeCache'].includes(key)
-      })
-    )
-  },
+  partialize: ({ storeCache }: State) => ({  storeCache }),
   // @ts-ignore
   merge: (persistedState, currentState) => merge(persistedState, currentState),
   version: 3, // update version number to prevent UI from using cache
@@ -102,7 +97,7 @@ const cache = {
 
 const useStore =
   process.env.NODE_ENV === 'development'
-    ? create<State>(devtools(persist(store, cache)))
-    : create<State>(persist(store, cache))
+    ? create(devtools(persist(store, cache)))
+    : create(persist(store, cache))
 
 export default useStore

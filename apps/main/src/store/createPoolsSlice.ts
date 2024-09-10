@@ -1,19 +1,19 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type {
-  PricesApiPool,
-  PricesApiPoolResponse,
-  TimeOptions,
+  FetchingStatus,
+  LpLiquidityEventsApiResponse,
+  LpLiquidityEventsData,
   LpPriceApiResponse,
   LpPriceOhlcData,
+  LpPriceOhlcDataFormatted,
   LpTradesApiResponse,
   LpTradesData,
-  LpLiquidityEventsApiResponse,
-  FetchingStatus,
-  PricesApiCoin,
-  LpPriceOhlcDataFormatted,
-  LpLiquidityEventsData,
   LpTradeToken,
+  PricesApiCoin,
+  PricesApiPool,
+  PricesApiPoolResponse,
+  TimeOptions
 } from '@/ui/Chart/types'
 import type { UTCTimestamp } from 'lightweight-charts'
 
@@ -83,7 +83,6 @@ export type PoolsSlice = {
     ): Promise<{ poolsMapper: PoolDataMapper; poolDatas: PoolData[] } | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchBasePools(curve: CurveApi): Promise<void>
-    fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
@@ -371,32 +370,21 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
-    fetchPoolsChunkRewardsApy: async (chainId, poolDatas) => {
-      const { results } = await PromisePool.for(poolDatas).process(
-        async (poolData: PoolData) => await networks[chainId].api.pool.poolAllRewardsApy(chainId, poolData.pool)
-      )
-      // create mapper
-      const rewardsApyMapper: RewardsApyMapper = cloneDeep(get()[sliceKey].rewardsApyMapper[chainId] ?? {})
-      for (const idx in results) {
-        const rewardsApy = results[idx]
-        rewardsApyMapper[rewardsApy.poolId] = rewardsApy
-      }
-      get()[sliceKey].setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
-      return rewardsApyMapper
-    },
     fetchPoolsRewardsApy: async (chainId, poolDatas) => {
       log('fetchPoolsRewardsApy', chainId, poolDatas.length)
+      let rewardsApyMapper: RewardsApyMapper = { ...get()[sliceKey].rewardsApyMapper[chainId] }
+      const pool = networks[chainId].api.pool
 
-      let chunks = [poolDatas]
-      let currentChunk = 0
-
-      if (poolDatas.length > 200) {
-        chunks = chunk(poolDatas, 200)
-      }
-
-      while (currentChunk < chunks.length) {
-        await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currentChunk])
-        currentChunk++
+      // retrieve data in chunks so that the data can already be displayed in the UI
+      for (const part of chunk(poolDatas, 200)) {
+        const { results } = await PromisePool.for(part).process(
+          (poolData) => pool.poolAllRewardsApy(chainId, poolData.pool)
+        )
+        rewardsApyMapper = {
+          ...rewardsApyMapper,
+          ...Object.fromEntries(results.map((rewardsApy) => [rewardsApy.poolId, rewardsApy])),
+        }
+        get()[sliceKey].setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
       }
     },
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
