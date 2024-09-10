@@ -13,11 +13,12 @@ import GaugesCustomTooltip from '../../Charts/GaugesBarChartCustomTooltip'
 
 type GaugeWeightDistributionProps = {
   isUserVotes: boolean
+  userAddress?: string
 }
 
-const GaugeWeightDistribution = ({ isUserVotes }: GaugeWeightDistributionProps) => {
+const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
-  const { userAddress, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
+  const { userGaugeVoteWeightsMapper } = useStore((state) => state.user)
   const userData = userGaugeVoteWeightsMapper[userAddress ?? '']
 
   const loading = isUserVotes ? userData?.fetchingState === 'LOADING' : gaugesLoading === 'LOADING'

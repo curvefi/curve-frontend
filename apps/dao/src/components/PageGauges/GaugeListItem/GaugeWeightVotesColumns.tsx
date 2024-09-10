@@ -1,19 +1,35 @@
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils/'
+
+import Tooltip from '@/ui/Tooltip'
 
 type GaugeWeightVotesColumnsProps = {
   userGaugeWeightVoteData: UserGaugeVoteWeight
 }
 
 const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
+  const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
+
+  const hasFutureVeCrv = userFutureVeCrv > userVeCrv
+
   return (
     <>
       <BoxColumn>
-        <GaugeData>{userGaugeWeightVoteData.userPower}%</GaugeData>
+        <GaugeData>{userPower}%</GaugeData>
       </BoxColumn>
       <BoxColumn>
-        <GaugeData>{formatNumber(userGaugeWeightVoteData.userVeCrv, { showDecimalIfSmallNumberOnly: true })}</GaugeData>
+        <Tooltip
+          tooltip={t`Updating gauge vote will updated used veCRV from ${formatNumber(userVeCrv)} to ${formatNumber(
+            userFutureVeCrv
+          )}`}
+        >
+          <GaugeData>
+            {formatNumber(userVeCrv, { showDecimalIfSmallNumberOnly: true })}
+            {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { showDecimalIfSmallNumberOnly: true })}`}
+          </GaugeData>
+        </Tooltip>
       </BoxColumn>
     </>
   )
@@ -36,7 +52,6 @@ const BoxColumn = styled.div`
 
 const GaugeData = styled.p`
   font-size: var(--font-size-2);
-  font-weight: var(--bold);
   text-align: right;
 `
 

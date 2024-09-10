@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
+import { useConnectWallet } from '@/onboard'
 
 import Box from '@/ui/Box'
 
@@ -15,6 +16,8 @@ import SubNav from '@/components/SubNav'
 
 const Gauges = () => {
   const { isMdUp } = useStore((state) => state)
+  const [{ wallet }] = useConnectWallet()
+  const userAddress = wallet?.accounts[0].address
 
   const [navSelection, setNavSelection] = useState('gaugeList')
 
@@ -32,12 +35,12 @@ const Gauges = () => {
   return (
     <Wrapper>
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <GaugeWeightDistribution isUserVotes={navSelection === 'gaugeVoting'} />
+        <GaugeWeightDistribution isUserVotes={navSelection === 'gaugeVoting'} userAddress={userAddress} />
         <Box>
           <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
           <Container variant="secondary">
             {navSelection === 'gaugeList' && <GaugesList />}
-            {navSelection === 'gaugeVoting' && <GaugeVoting />}
+            {navSelection === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
           </Container>
         </Box>
       </Box>

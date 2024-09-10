@@ -20,7 +20,7 @@ const MetricsComp: React.FC<Props> = ({ loading, title, data, className, row = f
   )
 }
 
-const Wrapper = styled(Box)<{ row: boolean }>`
+const Wrapper = styled(Box)<{ row?: boolean }>`
   display: flex;
   flex-direction: ${({ row }) => (row ? 'row' : 'column')};
   font-size: var(--font-size-2);
@@ -28,12 +28,12 @@ const Wrapper = styled(Box)<{ row: boolean }>`
   justify-content: space-between;
 `
 
-const StyledLoader = styled(Loader)<{ row: boolean }>`
+const StyledLoader = styled(Loader)<{ row?: boolean }>`
   margin-top: ${({ row }) => (row ? '0' : 'var(--spacing-2)')};
   margin-left: ${({ row }) => (row ? 'var(--spacing-2)' : '0')};
 `
 
-export const MetricsTitle = styled.p<{ row: boolean }>`
+export const MetricsTitle = styled.p<{ row?: boolean }>`
   font-size: var(--font-size-1);
   font-weight: var(--bold);
   opacity: 0.5;

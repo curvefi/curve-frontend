@@ -56,9 +56,10 @@ const PaginatedTable = <T,>({
   const currentItems = data.slice(indexOfFirstItem, indexOfLastItem)
 
   const totalPages = Math.ceil(data.length / ITEMS_PER_PAGE)
+  const noPagination = data.length <= ITEMS_PER_PAGE
 
   return (
-    <Wrapper>
+    <Wrapper noPagination={noPagination}>
       <Container overflowYBreakpoint={OVERFLOW_Y_BREAKPOINT}>
         <TableContent minWidth={minWidth}>
           <TableHeader<T>
@@ -83,17 +84,17 @@ const PaginatedTable = <T,>({
           </TableBody>
         </TableContent>
       </Container>
-      {fetchingState === 'SUCCESS' && currentItems.length > 0 && (
+      {fetchingState === 'SUCCESS' && currentItems.length > 0 && !noPagination && (
         <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
       )}
     </Wrapper>
   )
 }
 
-const Wrapper = styled(Box)`
+const Wrapper = styled(Box)<{ noPagination: boolean }>`
   display: flex;
   flex-direction: column;
-  padding-bottom: var(--spacing-3);
+  padding-bottom: ${({ noPagination }) => (noPagination ? '0' : 'var(--spacing-3)')};
   width: 100%;
 `
 
@@ -101,9 +102,9 @@ const Container = styled.div<{ overflowYBreakpoint: string }>`
   display: flex;
   flex-direction: column;
   width: 100%;
-  overflow-x: auto;
   @media (max-width: ${({ overflowYBreakpoint }) => overflowYBreakpoint}) {
     overflow-y: auto;
+    overflow-x: auto;
   }
 `
 

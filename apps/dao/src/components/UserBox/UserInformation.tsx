@@ -5,10 +5,8 @@ import { useMemo } from 'react'
 import useStore from '@/store/useStore'
 import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 
-import Icon from '@/ui/Icon'
 import { TooltipIcon } from '@/ui/Tooltip'
 import Loader from 'ui/src/Loader/Loader'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import InternalLink from '@/ui/Link/InternalLink'
 import Box from '@/ui/Box'
 

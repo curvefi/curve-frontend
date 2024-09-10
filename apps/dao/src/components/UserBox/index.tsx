@@ -12,9 +12,10 @@ type Props = {
   votingPower?: SnapshotVotingPower
   activeProposal?: ActiveProposal
   snapshotVotingPower: boolean
+  row?: boolean
 }
 
-const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
+const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal, row }: Props) => {
   const [{ wallet }, connect] = useConnectWallet()
 
   const handleConnectWallet = async () => {
