@@ -13,6 +13,7 @@ import Box from '@/ui/Box'
 import PaginatedTable from '@/components/PaginatedTable'
 import InternalLink from '@/ui/Link/InternalLink'
 import Button from '@/ui/Button'
+import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -68,7 +69,9 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               title="Power used"
               data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
             />
-            <VoteButton variant="filled">{t`Add Gauge`}</VoteButton>
+            <Box margin="0 0 0 auto">
+              <ComboBoxSelectGauge title={''} />
+            </Box>
           </Box>
         )}
       </VoteStats>

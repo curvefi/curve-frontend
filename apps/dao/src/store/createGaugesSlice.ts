@@ -20,6 +20,14 @@ type SliceState = {
     key: GaugeVotesSortBy
     order: SortDirection
   }
+  selectGaugeFilterValue: string
+  selectGaugeListResult: GaugeFormattedData[]
+  selectedGauge: GaugeFormattedData | null
+}
+
+type FilterOptions = {
+  showSearch?: boolean
+  endsWith(string: string, substring: string): boolean
 }
 
 const sliceKey = 'gauges'
@@ -35,6 +43,9 @@ export type GaugesSlice = {
     selectFilteredSortedGauges(): GaugeFormattedData[]
     setGauges(searchValue: string): void
     setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
+    setSelectGaugeFilterValue(filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions): void
+    setSelectedGauge(gauge: GaugeFormattedData | null): void
+
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
     resetState(): void
@@ -57,6 +68,9 @@ const DEFAULT_STATE: SliceState = {
     key: 'timestamp',
     order: 'desc',
   },
+  selectGaugeFilterValue: '',
+  selectGaugeListResult: [],
+  selectedGauge: null,
 }
 
 const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSlice => ({
@@ -260,6 +274,27 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         })
       }
     },
+    setSelectGaugeFilterValue: (filterValue, gauges, filterOptions) => {
+      get()[sliceKey].setStateByKey('searchValue', filterValue)
+
+      // filter result
+      let result = gauges
+
+      if (filterValue && filterOptions.showSearch) {
+        result = selectGaugeFilterFn(filterValue, gauges, filterOptions)
+      }
+      get()[sliceKey].setStateByKey('selectGaugeListResult', result)
+    },
+    setSelectedGauge: (gauge) => {
+      if (!gauge) {
+        get()[sliceKey].setStateByKey('selectedGauge', null)
+        return
+      }
+
+      get()[sliceKey].setStateByKey('selectedGauge', gauge)
+    },
+
+    // slice helpers
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
@@ -298,6 +333,22 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
   const result = fuse.search(filterValue)
 
   return result.map((r) => r.item)
+}
+
+const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], { endsWith }: FilterOptions) => {
+  const fuse = new Fuse<GaugeFormattedData>(gauges, {
+    ignoreLocation: true,
+    threshold: 0.01,
+    keys: ['title', 'address'],
+  })
+
+  const result = fuse.search(filterValue)
+
+  if (result.length > 0) {
+    return result.map((r) => r.item)
+  } else {
+    return gauges.filter((item) => endsWith(item.address, filterValue))
+  }
 }
 
 const sortGauges = (gauges: GaugeMapper, sortBy: SortByFilterGauges): GaugeFormattedData[] => {

@@ -37,3 +37,9 @@ export function getErrorMessage(error: Error, errorMessage: AlertFormErrorKey | 
     return errorMessage
   }
 }
+
+export function delayAction<T>(cb: T) {
+  if (typeof cb === 'function') {
+    setTimeout(() => cb(), 50)
+  }
+}
