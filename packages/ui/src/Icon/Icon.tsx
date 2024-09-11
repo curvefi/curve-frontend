@@ -43,6 +43,7 @@ import {
   UpToTop,
   WarningSquareFilled,
   StoragePool,
+  OverflowMenuVertical,
 } from '@carbon/icons-react'
 import { useMemo } from 'react'
 
@@ -89,6 +90,7 @@ const icon = {
   UpToTop,
   WarningSquareFilled,
   StoragePool,
+  OverflowMenuVertical,
 } as const
 
 export interface IconProps extends CarbonIconProps {

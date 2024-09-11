@@ -13,7 +13,7 @@ import FormClaim from '@/components/PagePool/Withdraw/components/FormClaim'
 import FormWithdraw from '@/components/PagePool/Withdraw/components/FormWithdraw'
 import FormUnstake from '@/components/PagePool/Withdraw/components/FormUnstake'
 
-const Withdraw = (transferProps: TransferProps) => {
+const Withdraw: React.FC<TransferProps> = (transferProps) => {
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { curve, poolData, poolDataCacheOrApi } = transferProps
@@ -71,7 +71,7 @@ const Withdraw = (transferProps: TransferProps) => {
 
   return (
     <>
-      {(isValidAddress(poolDataCacheOrApi.pool.gauge.address) || poolDataCacheOrApi.isGaugeKilled) && (
+      {(isValidAddress(poolDataCacheOrApi.pool.gauge.address) || poolDataCacheOrApi.gauge.isKilled) && (
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ label, formType }, idx) => {

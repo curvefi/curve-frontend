@@ -146,12 +146,11 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
 
       {haveSigner && (
         <div>
-          <DetailInfoEstGas curve={curve} chainId={rChainId} {...formEstGas} />
+          <DetailInfoEstGas chainId={rChainId} {...formEstGas} />
         </div>
       )}
 
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}

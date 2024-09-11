@@ -43,7 +43,7 @@ export type PoolDepositSlice = {
     fetchUserPoolWalletBalances(curve: CurveApi, poolId: string): Promise<Balances>
     fetchExpected(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues): Promise<void>
     fetchMaxAmount(activeKey: string, chainId: ChainId, pool: Pool, loadMaxAmount: LoadMaxAmount): Promise<Amount[]>
-    fetchSeedAmount(curve: CurveApi, pool: Pool): Promise<Amount[]>
+    fetchSeedAmount(poolData: PoolData, formValues: FormValues): Promise<Pick<FormValues, 'amounts' | 'isWrapped'>>
     fetchSlippage(activeKey: string, chainId: ChainId, formType: FormType, pool: Pool, formValues: FormValues, maxSlippage: string): Promise<void>
     setFormValues(formType: FormType, curve: CurveApi | null, poolId: string, poolData: PoolData | undefined, formValues: Partial<FormValues>, loadMaxAmount: LoadMaxAmount | null, isSeed: boolean | null, maxSlippage: string): Promise<void>
 
@@ -130,32 +130,35 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       cFormValues.amounts[idx].value = userBalance
       return cFormValues.amounts
     },
-    fetchSeedAmount: async ({ chainId }, pool) => {
-      let cFormAmounts: Amount[] = cloneDeep(get()[sliceKey].formValues.amounts)
-      const cFirstFormAmount = cFormAmounts[0].value
-      if (+cFirstFormAmount > 0) {
-        if (pool?.isCrypto || pool?.isMeta) {
-          const seedAmounts = pool.isCrypto
-            ? await networks[chainId].api.poolDeposit.cryptoSeedAmounts(pool, cFirstFormAmount)
-            : networks[chainId].api.poolDeposit.metaUnderlyingSeedAmounts(pool, cFirstFormAmount)
+    fetchSeedAmount: async (poolData, formValues) => {
+      const { hasWrapped, pool } = poolData
+      const { underlyingCoins, underlyingCoinAddresses, wrappedCoins, wrappedCoinAddresses } = pool
 
-          return cFormAmounts.map((a, idx) => {
-            a.value = seedAmounts[idx]
-            return a
-          })
-        } else {
-          return cFormAmounts.map((a) => {
-            a.value = cFirstFormAmount
-            return a
-          })
+      const firstAmount = formValues.amounts[0].value
+      const haveFirstAmount = Number(firstAmount) > 0
+      const tokens = hasWrapped ? wrappedCoins : underlyingCoins
+      const tokenAddresses = hasWrapped ? wrappedCoinAddresses : underlyingCoinAddresses
+
+      try {
+        const seedAmounts = haveFirstAmount ? await pool.getSeedAmounts(firstAmount, !hasWrapped) : null
+        return {
+          amounts: tokens.map((token, idx) => ({
+            token,
+            tokenAddress: tokenAddresses[idx],
+            value: seedAmounts?.[idx] || '',
+          })),
+          isWrapped: hasWrapped,
         }
-      } else {
-        return cFormAmounts.map((a, idx) => {
-          if (idx !== 0) {
-            a.value = ''
-          }
-          return a
-        })
+      } catch (error) {
+        console.error('Api error getSeedAmounts', error)
+
+        return {
+          amounts: tokens.map((token, idx) => {
+            const value = idx === 0 ? formValues.amounts[idx].value : ''
+            return { token, tokenAddress: tokenAddresses[idx], value }
+          }),
+          isWrapped: hasWrapped,
+        }
       }
     },
     fetchSlippage: async (activeKey, chainId, formType, pool, formValues, maxSlippage) => {
@@ -239,9 +242,11 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         }
 
         // update amounts input based on options (Seed, MaxAmount, BalancedAmounts)
-        if (isSeed && +cFormValues.amounts[0].value > 0) {
+        if (isSeed) {
           // get seed amounts
-          cFormValues.amounts = await get()[sliceKey].fetchSeedAmount(curve, pool)
+          const { amounts, isWrapped } = await get()[sliceKey].fetchSeedAmount(poolData, cFormValues)
+          cFormValues.amounts = amounts
+          cFormValues.isWrapped = isWrapped
           activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
           get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
         }

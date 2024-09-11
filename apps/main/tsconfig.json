@@ -5,13 +5,14 @@
     "paths": {
       "@/*": ["*"],
       "@/ui": ["../../../packages/ui/src/index.ts"],
+      "@/shared/ui/*": ["../../../packages/ui/src/shared/ui/*"],
       "@/ui/*": ["../../../packages/ui/src/*"],
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
       "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"],
       "@/shared/curve-lib": ["../../../packages/curve-lib/src/index.ts"],
       "@/shared/external-rewards": ["../../../packages/external-rewards/src/index.ts"]
-    },
+    }
   },
   "exclude": ["node_modules", "cypress"],
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]

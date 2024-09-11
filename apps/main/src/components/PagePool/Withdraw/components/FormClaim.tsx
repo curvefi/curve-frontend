@@ -42,7 +42,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   const poolId = poolData?.pool?.id
   const haveSigner = !!signerAddress
-  const { rewardsNeedNudging } = poolData?.gaugeStatus || {}
+  const { rewardsNeedNudging } = poolData?.gauge.status || {}
   const haveClaimableCrv = +formValues.claimableCrv > 0
   const haveClaimableRewards = +formValues.claimableRewards.length > 0
 
@@ -141,7 +141,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       updateFormValues()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // fetch claimable
   useEffect(() => {
@@ -175,11 +175,10 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     }
   }
 
-  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.isGaugeKilled
+  const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.gauge.isKilled
 
   return (
     <TransferActions
-      curve={curve}
       poolData={poolData}
       poolDataCacheOrApi={poolDataCacheOrApi}
       loading={!chainId || !steps.length || seed.isSeed === null}

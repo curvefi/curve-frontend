@@ -1,0 +1,46 @@
+import { TIME_FRAMES } from '@/constants'
+import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/entities/gauge'
+import type { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/features/deposit-gauge-reward/ui'
+import { FlexContainer } from '@/shared/ui/styled-containers'
+import { InputDebounced } from '@/ui/InputComp'
+import { useCallback } from 'react'
+import { useFormContext } from 'react-hook-form'
+
+export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+  const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()
+  const rewardTokenId = watch('rewardTokenId')
+  const amount = watch('amount')
+  const epoch = watch('epoch')
+
+  const onEpochChange = useCallback(
+    (epoch: string) => setValue('epoch', parseInt(epoch) * TIME_FRAMES.WEEK, { shouldValidate: true }),
+    [setValue]
+  )
+
+  const isPendingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })
+  const isPendingDepositReward = useDepositRewardIsMutating({ chainId, poolId, rewardTokenId, amount, epoch })
+
+  const isDisabled = isPendingDepositReward || isPendingDepositRewardApprove
+
+  return (
+    <FlexContainer>
+      <EpochLabel htmlFor="deposit-epoch">Distribution duration (in weeks)</EpochLabel>
+      <EpochInputWrapper>
+        <StyledInputProvider
+          id="deposit-epoch"
+          inputVariant={formState.errors.epoch ? 'error' : undefined}
+          disabled={isDisabled}
+        >
+          <InputDebounced
+            id="deposit-epoch"
+            type="number"
+            testId="deposit-epoch"
+            value={String((epoch ?? 0) / TIME_FRAMES.WEEK)}
+            onChange={onEpochChange}
+          />
+        </StyledInputProvider>
+      </EpochInputWrapper>
+    </FlexContainer>
+  )
+}

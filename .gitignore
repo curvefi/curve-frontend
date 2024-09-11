@@ -34,6 +34,7 @@ yarn-error.log*
 # IDE config
 .idea/
 .vscode/
+.cursorignore
 
 # husky
 .husky
@@ -53,3 +54,6 @@ report.*.json
 
 # turbo
 .turbo
+
+# hardhat
+tests/cache

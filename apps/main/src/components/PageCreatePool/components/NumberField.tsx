@@ -16,9 +16,9 @@ interface Props extends AriaNumberFieldProps {
 }
 
 const NumberField = (props: Props) => {
-  const { label } = props
+  const { label, minValue = 0, maxValue = Infinity } = props
   const { locale } = useLocale()
-  const state = useNumberFieldState({ ...props, locale })
+  const state = useNumberFieldState({ ...props, locale, minValue, maxValue })
   const inputRef = useRef(null)
   const { labelProps, groupProps, inputProps } = useNumberField(props, state, inputRef)
 

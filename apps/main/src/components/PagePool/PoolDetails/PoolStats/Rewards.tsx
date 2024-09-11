@@ -23,13 +23,13 @@ import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import Spacer from '@/ui/Spacer'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
-type Props = {
+type RewardsProps = {
   chainId: ChainId
   poolData: PoolData
   rewardsApy: RewardsApy | undefined
 }
 
-const Rewards = ({ chainId, poolData, rewardsApy }: Props) => {
+const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const campaignRewardsMapper = useCampaignRewardsMapper()

@@ -1,31 +1,33 @@
 import type { AppProps } from 'next/app'
 
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
+import '@/globals.css'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
-import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { OverlayProvider } from '@react-aria/overlays'
-import delay from 'lodash/delay'
-import 'intersection-observer'
 import 'focus-visible'
-import '@/globals.css'
+import 'intersection-observer'
+import delay from 'lodash/delay'
+import { useCallback, useEffect, useState } from 'react'
+import { I18nProvider as AriaI18nProvider } from 'react-aria'
+import { HashRouter } from 'react-router-dom'
 
-import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
-import { getPageWidthClassName } from '@/ui/utils'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, getStorageValue, removeExtraSpaces } from '@/utils'
 import { REFRESH_INTERVAL } from '@/constants'
-import { initOnboard } from 'onboard-helpers'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import { getPageWidthClassName } from '@/ui/utils'
+import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { initOnboard } from 'onboard-helpers'
 import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 
-import Page from '@/layout/default'
 import GlobalStyle from '@/globalStyle'
+import Page from '@/layout/default'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProviderWrapper } from '@/shared/api/query-provider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -166,12 +168,14 @@ function CurveApp({ Component }: AppProps) {
         <HashRouter>
           <I18nProvider i18n={i18n}>
             <AriaI18nProvider locale={locale}>
-              <OverlayProvider>
-                <Page>
-                  <Component />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
+              <QueryProviderWrapper persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProviderWrapper>
             </AriaI18nProvider>
           </I18nProvider>
         </HashRouter>

@@ -280,7 +280,7 @@ const Swap = ({
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // maxSlippage
   useEffect(() => {
@@ -525,7 +525,6 @@ const Swap = ({
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             isDivider
             chainId={rChainId}
             {...formEstGas}
@@ -561,7 +560,6 @@ const Swap = ({
 
       {/* actions*/}
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}

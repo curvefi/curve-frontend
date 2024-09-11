@@ -14,12 +14,10 @@ import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/Poo
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
 import Box from '@/ui/Box'
 
-type Props = {
-  rChainId: ChainId
-  pricesApiPoolData: PricesApiPool
-}
-
-const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
+const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
+  rChainId,
+  pricesApiPoolData,
+}) => {
   const themeType = useStore((state) => state.themeType)
   const {
     pricesApiState: {
@@ -174,10 +172,10 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: Props) => {
       chartOhlcData.length !== 0
         ? [
             {
-              label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
+              label: t`LP Token (USD)`,
             },
             {
-              label: t`LP Token (USD)`,
+              label: t`LP Token (${pricesApiPoolData.coins[0].symbol})`,
             },
           ].concat(
             chartCombinations.map((chart, index) => {

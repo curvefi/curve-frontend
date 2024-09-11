@@ -22,7 +22,6 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   // subdirectory
   let rSubdirectory = ROUTE.PAGE_SWAP.substring(1)
   let rSubdirectoryUseDefault = true
-
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
     const foundSubdirectory = Object.keys(MAIN_ROUTE).find((k) => {
@@ -50,6 +49,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
       rFormType = 'withdraw'
     } else if (parsedTransfer === 'swap') {
       rFormType = 'swap'
+    } else if (parsedTransfer === 'manage-gauge') {
+      rFormType = 'manage-gauge'
     }
   }
 

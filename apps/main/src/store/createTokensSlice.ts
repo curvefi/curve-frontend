@@ -35,6 +35,7 @@ export type TokensSlice = {
 const DEFAULT_TOKEN: Token = {
   address: '',
   symbol: '',
+  decimals: 0,
   haveSameTokenName: false,
   volume: 0,
 }
@@ -68,7 +69,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let partialTokensMapper: TokensMapper = {}
 
-      for (const { pool, tokenAddressesAll, tokensAll } of poolDatas) {
+      for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
         const tvl = +(tvlMapper[pool.id]?.value ?? '0')
         const volume = +(volumeMapper[pool.id]?.value ?? '0')
         let counted = countBy(tokensAll)
@@ -86,6 +87,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
               ...(cTokensMapper[address] ?? DEFAULT_TOKEN),
               address,
               symbol: token,
+              decimals: tokenDecimalsAll[idx],
               haveSameTokenName: false,
               volume: tokenVolume,
             }

@@ -208,7 +208,7 @@ const FormDepositStake = ({
       updateFormValues({}, null, null)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // max Slippage
   useEffect(() => {
@@ -281,7 +281,6 @@ const FormDepositStake = ({
 
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             isDivider
             chainId={rChainId}
             {...formEstGas}
@@ -300,7 +299,6 @@ const FormDepositStake = ({
       )}
 
       <TransferActions
-        curve={curve}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}
         loading={!chainId || !steps.length || !seed.loaded}

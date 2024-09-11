@@ -21,7 +21,7 @@ const InputDebounced = ({
 }: Omit<InputProps, 'onChange'> & {
   className?: string
   delay: number
-  labelProps: InputLabelProps | false
+  labelProps?: InputLabelProps | false
   value: string
   testId?: string
   onChange: (value: string) => void

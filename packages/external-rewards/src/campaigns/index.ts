@@ -12,6 +12,7 @@ import Usual from './Usual.json'
 import YieldNest from './YieldNest.json'
 import Fraxtal from './Fraxtal.json'
 import Swell from './Swell.json'
+import Resolv from './Resolv.json'
 
 export {
   DLCLink,
@@ -28,4 +29,5 @@ export {
   YieldNest,
   Fraxtal,
   Swell,
+  Resolv,
 }
