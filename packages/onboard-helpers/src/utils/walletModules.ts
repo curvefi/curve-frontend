@@ -23,7 +23,15 @@ export const ledger = ledgerModule({
   walletConnectVersion: 2,
   projectId: WALLET_CONNECT_PROJECT_ID,
 })
-export const gnosis = gnosisModule()
+export const gnosis = gnosisModule({
+  whitelistedDomains: [
+    /^https:\/\/gnosis-safe\.io$/,
+    /^https:\/\/app\.safe\.global$/,
+    /^https:\/\/safe\.global$/,
+    /^https:\/\/safe\.mainnet\.frax\.com$/,
+    /^https:\/\/safe\.optimism\.io$/,
+  ],
+})
 export const coinbaseWalletSdk = coinbaseWalletModule({ darkMode: true })
 export const fortmatic = fortmaticModule({ apiKey: 'pk_live_190B10CE18F47DCD' })
 
