@@ -12,12 +12,12 @@ import {
   frontier,
   bitget,
   trust,
+  metamaskSDKWallet,
 } from './utils/walletModules'
 
 export * from '@web3-onboard/react'
 
-// @ts-ignore
-export function initOnboard(i18n, locale, themeType, networks) {
+export function initOnboard(i18n: any, locale: any, themeType: any, networks: any) {
   let theme: 'system' | 'light' | 'dark' = 'system'
   if (themeType === 'default' || themeType === 'chad') {
     theme = 'light'
@@ -49,6 +49,7 @@ export function initOnboard(i18n, locale, themeType, networks) {
       frontier,
       bitget,
       trust,
+      metamaskSDKWallet,
     ],
     chains,
     appMetadata: {
