@@ -1,0 +1,19 @@
+{
+  "campaignName": "",
+  "platform": "Lombard",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "lombard.png",
+  "dashboardLink": "https://www.lombard.finance/app/defi/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2f3bc4c27a4437aeca13de0e37cdf1028f3706f0",
+      "network": "ethereum",
+      "multiplier": "3",
+      "tags": ["points"]
+    }
+  ]
+}
