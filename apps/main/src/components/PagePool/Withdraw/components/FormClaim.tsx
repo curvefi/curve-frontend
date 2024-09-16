@@ -141,7 +141,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       updateFormValues()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress])
+  }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // fetch claimable
   useEffect(() => {
@@ -179,7 +179,6 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   return (
     <TransferActions
-      curve={curve}
       poolData={poolData}
       poolDataCacheOrApi={poolDataCacheOrApi}
       loading={!chainId || !steps.length || seed.isSeed === null}

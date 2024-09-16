@@ -77,7 +77,6 @@ export type PoolsSlice = {
     ): Promise<PoolDataMapper | undefined>
     fetchNewPool(curve: CurveApi, poolId: string): Promise<PoolData | undefined>
     fetchBasePools(curve: CurveApi): Promise<void>
-    fetchPoolsChunkRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<RewardsApyMapper>
     fetchPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchMissingPoolsRewardsApy(chainId: ChainId, poolDatas: PoolData[]): Promise<void>
     fetchPoolStats: (curve: CurveApi, poolData: PoolData) => Promise<void>
@@ -296,32 +295,21 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
-    fetchPoolsChunkRewardsApy: async (chainId, poolDatas) => {
-      const { results } = await PromisePool.for(poolDatas).process(
-        async (poolData: PoolData) => await networks[chainId].api.pool.poolAllRewardsApy(chainId, poolData.pool)
-      )
-      // create mapper
-      const rewardsApyMapper: RewardsApyMapper = cloneDeep(get()[sliceKey].rewardsApyMapper[chainId] ?? {})
-      for (const idx in results) {
-        const rewardsApy = results[idx]
-        rewardsApyMapper[rewardsApy.poolId] = rewardsApy
-      }
-      get()[sliceKey].setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
-      return rewardsApyMapper
-    },
     fetchPoolsRewardsApy: async (chainId, poolDatas) => {
       log('fetchPoolsRewardsApy', chainId, poolDatas.length)
+      let rewardsApyMapper: RewardsApyMapper = { ...get()[sliceKey].rewardsApyMapper[chainId] }
+      const pool = networks[chainId].api.pool
 
-      let chunks = [poolDatas]
-      let currentChunk = 0
-
-      if (poolDatas.length > 200) {
-        chunks = chunk(poolDatas, 200)
-      }
-
-      while (currentChunk < chunks.length) {
-        await get().pools.fetchPoolsChunkRewardsApy(chainId, chunks[currentChunk])
-        currentChunk++
+      // retrieve data in chunks so that the data can already be displayed in the UI
+      for (const part of chunk(poolDatas, 200)) {
+        const { results } = await PromisePool.for(part).process(
+          (poolData) => pool.poolAllRewardsApy(chainId, poolData.pool)
+        )
+        rewardsApyMapper = {
+          ...rewardsApyMapper,
+          ...Object.fromEntries(results.map((rewardsApy) => [rewardsApy.poolId, rewardsApy])),
+        }
+        get()[sliceKey].setStateByActiveKey('rewardsApyMapper', chainId.toString(), rewardsApyMapper)
       }
     },
     fetchMissingPoolsRewardsApy: async (chainId, poolDatas) => {
@@ -820,7 +808,6 @@ async function getPools(
     const poolData = networks[chainId].api.pool.getPoolData(pool, chainId)
     return [pool.id, {
       ...poolData,
-      seedData: getSeedAmounts(poolData),
       curvefiUrl: getCurvefiUrl(pool.id, networks[chainId].orgUIPath),
       failedFetching24hOldVprice: Boolean(failedFetching24hOldVprice?.[pool.address]),
       gauge: gauges[idx]
@@ -828,18 +815,6 @@ async function getPools(
   }))
   console.log('poolMapping', poolMapping)
   return poolMapping
-}
-
-function getSeedAmounts({ pool }: PoolData) {
-  const total = pool.underlyingCoins.length
-  if (pool.isMeta && !pool.isCrypto) {
-    const wrappedTotal = pool.wrappedCoins.length
-    return pool.underlyingCoins.map((token, idx) => {
-      const metaTokensTotal = idx === 0 ? 1 : total - 1
-      return { token, percent: 100 / wrappedTotal / metaTokensTotal }
-    })
-  }
-  return pool.underlyingCoins.map((token) => ({ token, percent: 100 / total }))
 }
 
 // remove pools we do not want to display in pool list

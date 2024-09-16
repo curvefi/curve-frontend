@@ -1,10 +1,9 @@
 // @ts-nocheck
-import type { SetState, GetState } from 'zustand'
-
+import { create, type GetState, type SetState } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import create from 'zustand'
-import pick from 'lodash/pick'
+import { type PersistOptions } from 'zustand/middleware/persist'
 import merge from 'lodash/merge'
+import debounce from 'lodash/debounce'
 
 import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
@@ -74,40 +73,29 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCampaignRewardsSlice(set, get),
 })
 
+// the storage crashes in some browsers if the size of the object is too big
+const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
+
 // cache all items in CacheSlice store
-const cache = {
+const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'curve-app-store-cache',
-  partialize: (state: State) => {
-    try {
-      const picked = pick(state, [
-        'storeCache.hasDepositAndStake',
-        'storeCache.hasRouter',
-        'storeCache.poolsMapper',
-        'storeCache.tvlMapper',
-        'storeCache.volumeMapper',
-      ])
-      if (canAddToStorage(picked)) return picked
-      return {}
-    } catch (error) {
-      console.error(error)
-    }
+  partialize: ({ storeCache }: State) => ({  storeCache }),
+  merge,
+  storage: {
+    getItem: name => JSON.parse(localStorage.getItem(name)),
+    // debounce storage to avoid performance issues serializing too often. The item can be large.
+    setItem: debounce((name, value) => {
+      const json = JSON.stringify(value)
+      return MAX_SIZE >= json.length ? localStorage.removeItem(name) : localStorage.setItem(name, json)
+    }, 1000),
+    removeItem: name => localStorage.removeItem(name),
   },
-  merge: (persistedState, currentState) => merge(persistedState, currentState),
   version: 18, // update version number to prevent UI from using cache
 }
 
 const useStore =
   process.env.NODE_ENV === 'development'
-    ? create<State>(devtools(persist(store, cache)))
-    : create<State>(persist(store, cache))
-// const useStore = isDevelopment ? create(devtools(store)) : create(store)
-
-// check if there are too much in storage
-function canAddToStorage<T extends Object>(storageObj: T) {
-  const maxSize = 5 * 1024 * 1024 // 5MB limit
-  const itemSize = (JSON.stringify(storageObj)?.length ?? 0) * 2
-
-  return maxSize >= itemSize
-}
+    ? create(devtools(persist(store, cache)))
+    : create(persist(store, cache))
 
 export default useStore

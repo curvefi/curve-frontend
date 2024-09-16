@@ -207,11 +207,11 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Creating Stableswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-stableswap-pool',
+                  link: 'https://resources.curve.fi/factory-pools/creating-a-stableswap-ng-pool/',
                 }}
                 link2={{
                   title: t`Learn more: Creating Cryptoswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-cryptoswap-pool',
+                  link: 'https://resources.curve.fi/factory-pools/creating-a-twocrypto-ng-pool/',
                 }}
               />
             )}
