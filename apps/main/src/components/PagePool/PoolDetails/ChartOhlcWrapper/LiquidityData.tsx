@@ -14,13 +14,16 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 import type React from 'react'
+import { useTokenMapping } from '@/entities/token'
+import { usePools } from '@/entities/pool/lib/pool-info'
 
 const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
   lpEventsData,
   chainId,
   coins,
 }) => {
-  const tokensMapper = useStore((state) => state.tokens.tokensMapper)
+  const pools = usePools(chainId)
+  const tokenMapping = useTokenMapping(chainId)
 
   return (
     <>
@@ -54,9 +57,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                               size="sm"
                               imageBaseUrl={getImageBaseUrl(chainId)}
                               token={coins[index].address}
-                              address={
-                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
-                              }
+                              address={tokenMapping[coins[index].address]?.ethAddress || coins[index].address}
                             />
                           </LpAssetRow>
                         )
@@ -83,7 +84,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                               imageBaseUrl={getImageBaseUrl(chainId)}
                               token={coins[index].address}
                               address={
-                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
+                                tokenMapping?.[coins[index].address]?.ethAddress || coins[index].address
                               }
                             />
                           </LpAssetRow>

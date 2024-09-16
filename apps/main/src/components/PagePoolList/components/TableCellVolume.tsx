@@ -4,11 +4,10 @@ import { Chip } from '@/ui/Typography'
 
 type Props = {
   isHighLight: boolean
-  volumeCached: { value: string } | undefined
   volume: Volume | undefined
 }
 
-const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => {
+const TableCellVolume = ({ isHighLight, volume }: Props) => {
   return (
     <Chip
       isBold={isHighLight}
@@ -16,7 +15,7 @@ const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => {
       tooltip={formatNumber(volume?.value, FORMAT_OPTIONS.USD)}
       tooltipProps={{ placement: 'bottom end' }}
     >
-      {formatNumber(volume?.value ?? volumeCached?.value, {
+      {formatNumber(volume?.value, {
         currency: 'USD',
         notation: 'compact',
       })}

@@ -20,7 +20,7 @@ import type {
 import { poolKeys } from '@/entities/pool'
 
 export const gaugeKeys = {
-  root: (params: GaugeQueryParams) => [...poolKeys.root(params), 'gauge'] as const,
+  root: (params: GaugeQueryParams) => [...poolKeys.pool(params), 'gauge'] as const,
   estimateGas: () => ['estimateGas'] as const,
   gauge: (params: GaugeQueryParams) => [...gaugeKeys.root(params)] as const,
   version: (params: GaugeQueryParams) => [...gaugeKeys.root(params), 'version'] as const,

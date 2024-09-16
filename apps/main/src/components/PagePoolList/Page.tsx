@@ -3,12 +3,11 @@ import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
-import { getPoolDatasCached } from '@/store/createPoolListSlice'
 import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
@@ -18,6 +17,7 @@ import useStore from '@/store/useStore'
 import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
+import { usePools } from '@/entities/pool/lib/pool-info'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -29,13 +29,10 @@ const Page: NextPage = () => {
   const { chainId } = curve ?? {}
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
+  const { data: poolDatas = [] } = usePools(rChainId)
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
 
-  const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
-  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
-  const poolDatasLength = (poolDatasCachedOrApi ?? []).length
+  const poolDatasLength = poolDatas.length
 
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 

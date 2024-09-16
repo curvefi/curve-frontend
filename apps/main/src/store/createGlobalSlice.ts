@@ -192,38 +192,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     get().updateGlobalStoreByKey('curve', curveApi)
     get().updateGlobalStoreByKey('isLoadingCurve', false)
 
-    // get poolList
-    const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curveApi)
-
-    // default hideSmallPools to false if poolIds length < 10
-    get().poolList.setStateByKey('formValues', { ...get().poolList.formValues, hideSmallPools: poolIds.length > 10 })
-
-    // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
-    const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-      chainId === 2222 ? await networks[chainId].api.network.getFailedFetching24hOldVprice() : {}
-
-    await get().pools.fetchPools(
-      curveApi,
-      poolIds.filter((poolId) => !networks[chainId].customPoolIds[poolId]),
-      failedFetching24hOldVprice
-    )
-
-    if (!prevCurveApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(curveApi)
-      get().updateGlobalStoreByKey('isLoadingApi', false)
-      get().pools.fetchPricesApiPools(chainId)
-      get().pools.fetchBasePools(curveApi)
-
-      // pull all api calls before isLoadingApi if it is not needed for initial load
-      get().usdRates.fetchAllStoredUsdRates(curveApi)
-      get().pools.fetchTotalVolumeAndTvl(curveApi)
-    } else {
-      get().updateGlobalStoreByKey('isLoadingApi', false)
-    }
-
-    if (curveApi.signerAddress) {
-      get().user.fetchUserPoolList(curveApi)
-    }
   },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => {
     set(

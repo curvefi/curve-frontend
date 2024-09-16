@@ -34,20 +34,15 @@ i18n.activate('en')
 
 function CurveApp({ Component }: AppProps) {
   const curve = useStore((state) => state.curve)
-  const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
-  const poolDatas = useStore((state) => state.pools.pools[chainId])
   const themeType = useStore((state) => state.themeType)
   const setPageWidth = useStore((state) => state.setPageWidth)
   const fetchPools = useStore((state) => state.pools.fetchPools)
-  const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
-  const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
-  const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
@@ -58,15 +53,6 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
   }, [setPageWidth, updateGlobalStoreByKey])
-
-  const fetchPoolsVolumeTvl = useCallback(
-    async (curve: CurveApi) => {
-      const chainId = curve.chainId
-      await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
-      setTokensMapper(chainId, poolDatas)
-    },
-    [fetchPoolsTvl, fetchPoolsVolume, poolDatas, setTokensMapper]
-  )
 
   useEffect(() => {
     if (!pageWidth) return
@@ -141,7 +127,6 @@ function CurveApp({ Component }: AppProps) {
       if (curve) {
         fetchGasInfo(curve)
         fetchAllStoredUsdRates(curve)
-        fetchPoolsVolumeTvl(curve)
 
         if (curve.signerAddress) {
           fetchAllStoredBalances(curve)

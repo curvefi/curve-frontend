@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 
 import { ROUTE } from '@/constants'
@@ -25,13 +25,10 @@ const Page: NextPage = () => {
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
-  const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
   const hidePoolsMapper = rChainId ? networks[rChainId].customPoolIds : null
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
-
-  const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 
   useEffect(() => {
     scrollToTop()
@@ -67,17 +64,17 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={poolDataCacheOrApi?.pool?.name ?? 'Pool'} />
+      <DocumentHead title={poolData?.pool?.name ?? 'Pool'} />
       {rChainId &&
         rFormType &&
         rPoolId &&
-        poolDataCacheOrApi?.pool?.id === rPoolId &&
+        poolData?.pool?.id === rPoolId &&
         typeof hasDepositAndStake !== 'undefined' && (
           <Transfer
             curve={curve}
             params={params}
             poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
+            poolDataCacheOrApi={poolData}
             routerParams={{ rChainId, rPoolId, rFormType }}
             hasDepositAndStake={hasDepositAndStake}
           />

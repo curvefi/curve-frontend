@@ -27,7 +27,7 @@ class BigDecimal {
     if (typeof value === 'string') {
       const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(value)
       if (!match) {
-        throw new Error('Invalid string format. Expected "integer.fraction" or "integer"')
+        throw new Error(`Invalid string format. Expected "integer.fraction" or "integer" but got ${JSON.stringify(value)}`)
       }
 
       const [, sign, intPart, fracPart = ''] = match
@@ -83,11 +83,7 @@ class BigDecimal {
       return !isNaN(value) && isFinite(value)
     }
 
-    if (typeof value === 'bigint') {
-      return true
-    }
-
-    return false
+    return typeof value === 'bigint';
   }
 
   /**
@@ -306,6 +302,22 @@ class BigDecimal {
     const intStr = rounded._integerPart.toString()
     const fracStr = rounded._fractionalPart.toString().padStart(dp, '0')
     return `${rounded._isNegative ? '-' : ''}${intStr}${dp > 0 ? '.' + fracStr : ''}`
+  }
+
+  toPercent(): string {
+    // todo: this is not the same as in utilsFormat.ts
+    return this.toFixed(2) + '%'
+  }
+
+  toCompact(): string {
+    // todo: this is not the same as in utilsFormat.ts
+    if (this.gt(new BigDecimal(1000000))) {
+      return this.toFixed(2)
+    }
+    if (this.gt(new BigDecimal(10))) {
+      return this.toString()
+    }
+    return this.toFixed(5)
   }
 
   round(dp: number): BigDecimal {

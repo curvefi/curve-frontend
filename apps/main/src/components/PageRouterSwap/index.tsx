@@ -17,7 +17,6 @@ import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useSelectToList from '@/components/PageRouterSwap/components/useSelectToList'
 import useStore from '@/store/useStore'
-import useTokensNameMapper from '@/hooks/useTokensNameMapper'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
@@ -37,6 +36,8 @@ import Stepper from '@/ui/Stepper'
 import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
+import { useVolumeMapping } from '@/entities/pool/lib/pool-info'
+import { useHighLiquidityTokens } from '@/entities/token'
 
 const QuickSwap = ({
   pageLoaded,
@@ -59,7 +60,7 @@ const QuickSwap = ({
 
   const curve = useStore((state) => state.curve)
   const { chainId, signerAddress } = curve ?? {}
-  const { tokensNameMapper } = useTokensNameMapper(rChainId)
+  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {});
   const { selectToList, selectToListStr } = useSelectToList(rChainId)
   const chainSignerActiveKey = getChainSignerActiveKey(rChainId, signerAddress)
   const activeKey = useStore((state) => state.quickSwap.activeKey)
@@ -74,11 +75,9 @@ const QuickSwap = ({
   const isHideSmallPools = useStore((state) => state.poolList.formValues.hideSmallPools)
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const selectFromList = useStore((state) => state.quickSwap.selectFromList[chainSignerActiveKey])
-  const tokensMapperNonSmallTvl = useStore((state) => state.tokens.tokensMapperNonSmallTvl[rChainId] ?? {})
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
   const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const volumesMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
@@ -86,10 +85,13 @@ const QuickSwap = ({
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
 
+  const pools = useStore((state) => state.pools.pools[rChainId])
+  const volumesMapper = useVolumeMapping(rChainId, pools)
+  const tokensMapperNonSmallTvl = useHighLiquidityTokens(rChainId, pools)
+
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
-
   const { fromAddress, toAddress } = searchedParams
 
   const isReady = pageLoaded && !isLoadingApi && isPageVisible
@@ -342,7 +344,8 @@ const QuickSwap = ({
 
   // toToken list
   useEffect(() => {
-    setSelectToList(isReady ? curve : null, isHideSmallPools ? tokensMapperNonSmallTvl : tokensMapper)
+    const mapping = isHideSmallPools ? tokensMapperNonSmallTvl : tokensMapper
+    if (mapping) setSelectToList(isReady ? curve : null, mapping)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isHideSmallPools, isReady, tokensMapperStr, tokensMapperNonSmallTvlStr, volumesMapper])
 

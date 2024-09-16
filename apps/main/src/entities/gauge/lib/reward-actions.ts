@@ -17,13 +17,14 @@ import type {
   DepositRewardApproveParams,
   DepositRewardParams,
   GaugeQueryParams,
-  PoolMethodResult,
+
 } from '@/entities/gauge/types'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
 import { t } from '@lingui/macro'
 import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
+import { PoolMethodResult } from '@/entities/pool'
 
 export const useAddRewardToken = ({
   chainId,

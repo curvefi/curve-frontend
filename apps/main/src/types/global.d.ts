@@ -11,6 +11,7 @@ import { ethers } from 'ethers'
 import React from 'react'
 import curvejsApi from '@/lib/curvejs'
 import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
+import { BigDecimal } from '@/shared/curve-lib'
 
 declare global {
   interface Window {
@@ -195,6 +196,7 @@ declare global {
     decimals: number
     haveSameTokenName: boolean // use to display token address if duplicated token names
     volume?: number
+    poolIds?: string[]
   }
   type TokensMapper = { [tokenAddress: string]: Token | undefined }
   type TokensNameMapper = { [tokenAddress: string]: string }
@@ -205,7 +207,6 @@ declare global {
     userBalanceUsd: number
     usdRate: number | undefined
   }
-  type UserTokensMapper = { [tokenAddress: string]: UserToken }
 
   type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
@@ -270,8 +271,6 @@ declare global {
       referenceAsset: string
     }
   }
-
-  type PricesApiPoolDataMapper = { [poolAddress: string]: PricesApiPoolData }
 
   type PricesApiPoolData = {
     name: string
