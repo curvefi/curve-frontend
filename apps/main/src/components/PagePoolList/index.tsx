@@ -36,12 +36,14 @@ import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 import TableSortSelect from '@/ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
+import { usePoolMapping } from '@/entities/pool/lib/pool-list'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const campaignRewardsMapper = useCampaignRewardsMapper()
+  const { data: poolsFromApi } = usePoolMapping(rChainId);
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
@@ -74,7 +76,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
   const haveSigner = !!curve?.signerAddress
   const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
-  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
+  console.log({poolDatas, poolDatasCached, poolsFromApi})
+  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached ?? poolsFromApi
   const poolDatasLength = (poolDatasCachedOrApi ?? []).length
   const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
   const volumeMapperCachedOrApi = useMemo(
@@ -108,6 +111,16 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
+      console.log({
+        rChainId,
+        searchParams,
+        poolDatasCachedOrApi,
+        rewardsApyMapper,
+        volumeMapperCachedOrApi,
+        tvlMapperCachedOrApi,
+        userPoolList,
+        campaignRewardsMapper
+      })
       setFormValues(
         rChainId,
         searchParams,

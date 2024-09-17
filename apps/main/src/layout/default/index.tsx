@@ -12,12 +12,14 @@ import useStore from '@/store/useStore'
 import Header from '@/layout/default/Header'
 import Footer from '@/layout/default/Footer'
 import GlobalBanner from '@/ui/Banner'
+import { useCurve } from '@/entities/curve'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
 
+  const { data: curve } = useCurve();
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
@@ -54,7 +56,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <GlobalBanner
         ref={globalAlertRef}
         networkName={rNetwork}
-        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
+        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API) || !curve?.hasProvider()}
         showSwitchNetworkMessage={showSwitchNetworkMessage}
         maintenanceMessage={maintenanceMessage}
         handleNetworkChange={handleNetworkChange}

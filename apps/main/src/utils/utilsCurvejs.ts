@@ -4,24 +4,19 @@ import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
-  let curveApi: CurveApi | undefined
   const { networkId, rpcUrl } = networks[chainId] ?? {}
-
-  try {
-    if (networkId) {
-      curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-
-      if (wallet) {
-        await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
-        return curveApi
-      } else if (rpcUrl) {
-        await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
-        return curveApi
-      }
-    }
-  } catch (error) {
-    console.error(error)
+  if (!networkId) {
+    throw new Error('Network ID is not defined')
   }
+  const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
+  if (wallet) {
+    await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+  } else if (rpcUrl) {
+    await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
+  } else {
+    await curveApi.init()
+  }
+  return curveApi
 }
 
 export function hasNoWrapped(pool: Pool) {
