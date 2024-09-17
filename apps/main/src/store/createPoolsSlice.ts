@@ -206,7 +206,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
       const chainId = curve.chainId
-      console.log({fetchPools: poolIds})
 
       try {
         set(

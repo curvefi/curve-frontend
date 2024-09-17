@@ -108,16 +108,6 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
-      console.log({
-        rChainId,
-        searchParams,
-        poolDatasCachedOrApi,
-        rewardsApyMapper,
-        volumeMapperCachedOrApi,
-        tvlMapperCachedOrApi,
-        userPoolList,
-        campaignRewardsMapper
-      })
       setFormValues(
         rChainId,
         searchParams,
