@@ -30,8 +30,7 @@
     "turbo": "1.13.3",
     "typescript": "^5"
   },
-  "dependencies": {},
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@4.5.0",
   "lint-staged": {
     "apps/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
