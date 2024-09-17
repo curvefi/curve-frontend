@@ -292,7 +292,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         if (!!signerAddress && +cFormValues.lpToken > 0) {
           // validate lpToken balances
           const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
-          const lpTokenError = +cFormValues.lpToken > (+balances.lpToken ?? '0') ? 'lpToken-too-much' : ''
+          const lpTokenError = +cFormValues.lpToken > (+(balances.lpToken ?? '0')) ? 'lpToken-too-much' : ''
 
           if (lpTokenError) {
             get()[sliceKey].setStateByKey('formStatus', {
