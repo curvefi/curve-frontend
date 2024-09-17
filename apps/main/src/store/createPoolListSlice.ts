@@ -55,9 +55,7 @@ export type PoolListSlice = {
     filterBySearchText(searchText: string, poolDatas: (PoolDataCache | PoolData)[]): (PoolDataCache | PoolData)[]
     filterSmallTvl(poolDatas: (PoolDataCache | PoolData)[], tvlMapper: TvlMapper, chainId: ChainId): (PoolDataCache | PoolData)[]
     sortFn(sortKey: SortKey, order: Order, poolDatas: (PoolDataCache | PoolData)[], rewardsApyMapper: RewardsApyMapper, tvlMapper: TvlMapper, volumeMapper: VolumeMapper, campaignRewardsMapper: CampaignRewardsMapper): (PoolDataCache | PoolData)[]
-    setFormValues(rChainId: ChainId, searchParams: SearchParams,
-                  poolDatasCachedOrApi: (PoolDataCache | PoolData)[],
-                  rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    setFormValues(rChainId: ChainId, searchParams: SearchParams, poolDatasCachedOrApi: (PoolDataCache | PoolData)[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
