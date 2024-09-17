@@ -165,7 +165,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${rCollateralId}`} />
+      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
       {provider ? (
         <>
           {chartExpanded && (
@@ -206,6 +206,45 @@ const Page: NextPage = () => {
                 />
               )}
             </AppPageFormsWrapper>
+      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
+      {chartExpanded && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex>
+            {isMdUp && <TitleComp />}
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
+      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+        <AppPageFormsWrapper navHeight={navHeight}>
+          {!isMdUp && !chartExpanded && <TitleComp />}
+          {rChainId && rCollateralId && (
+            <LoanCreate
+              curve={curve}
+              isReady={isReady}
+              isLeverage={isLeverage}
+              loanExists={loanExists}
+              llamma={llamma}
+              llammaId={llammaId}
+              params={params}
+              rChainId={rChainId}
+              rCollateralId={rCollateralId}
+              rFormType={rFormType}
+              fetchInitial={fetchInitial}
+            />
+          )}
+        </AppPageFormsWrapper>
 
             <AppPageInfoWrapper>
               {isMdUp && !chartExpanded && <TitleComp />}
