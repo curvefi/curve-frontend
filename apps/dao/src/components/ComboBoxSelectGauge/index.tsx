@@ -11,21 +11,18 @@ import useStore from '@/store/useStore'
 import networks from '@/networks'
 
 import ComboBox from '@/components/ComboBoxSelectGauge/ComboBox'
-import ComboBoxSelectedGauge from '@/components/ComboBoxSelectGauge/ComboBoxSelectedGauge'
 import ComboBoxSelectedGaugeButton from '@/components/ComboBoxSelectGauge/ComboBoxSelectedGaugeButton'
 import ModalDialog from '@/ui/Dialog'
 
 const ComboBoxGauges = ({
   disabled,
   listBoxHeight,
-  showSearch,
   testId,
   title,
   onOpen,
 }: {
   disabled?: boolean
   listBoxHeight?: string
-  showSearch?: boolean
   testId?: string
   title: string
   onOpen?: () => void
@@ -33,8 +30,7 @@ const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const { selectGaugeFilterValue, selectedGauge, setSelectedGauge, setStateByKey, gaugeMapper, gaugesLoading } =
-    useStore((state) => state.gauges)
+  const { selectedGauge, setSelectedGauge, setStateByKey, gaugeMapper } = useStore((state) => state.gauges)
   const isMobile = useStore((state) => state.isMobile)
   const gauges = Object.values(gaugeMapper).sort((a, b) => b.gauge_weight - a.gauge_weight)
 
@@ -72,21 +68,14 @@ const ComboBoxGauges = ({
     }
   }
 
-  // update result if tokens list changed.
-  useEffect(() => {
-    if (Array.isArray(gauges) && gauges.length > 0) {
-      if (selectGaugeFilterValue) {
-        handleInpChange(selectGaugeFilterValue, gauges)
-      } else {
-        setResult(gauges)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gauges])
-
   return (
     <>
-      <ComboBoxSelectedGaugeButton isDisabled={disabled} testId={testId} onPress={handleOpen}>
+      <ComboBoxSelectedGaugeButton
+        variant={selectedGauge ? 'outlined' : 'filled'}
+        isDisabled={disabled}
+        testId={testId}
+        onPress={handleOpen}
+      >
         {t`Add Gauge`}
       </ComboBoxSelectedGaugeButton>
       {overlayTriggerState.isOpen && (

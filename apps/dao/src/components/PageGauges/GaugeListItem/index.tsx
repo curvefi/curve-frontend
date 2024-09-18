@@ -3,31 +3,38 @@ import { t } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 
 import networks from '@/networks'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import { formatNumber, shortenTokenAddress } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
 import LineChartComponent from '@/components/Charts/LineChartComponent'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import TitleComp from './TitleComp'
 import GaugeListColumns from './GaugeListColumns'
 import GaugeWeightVotesColumns from './GaugeWeightVotesColumns'
-import CopyIconButton from '@/components/CopyIconButton'
-import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 import InternalLinkButton from '@/components/InternalLinkButton'
+import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
+import GaugeDetails from './GaugeDetails'
 
 type Props = {
   gaugeData: GaugeFormattedData
   gridTemplateColumns: string
   userGaugeWeightVoteData?: UserGaugeVoteWeight
+  availablePower?: number
+  userGaugeVote?: boolean
+  addUserVote?: boolean
 }
 
-const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData }: Props) => {
+const GaugeListItem = ({
+  gaugeData,
+  gridTemplateColumns,
+  userGaugeWeightVoteData,
+  availablePower,
+  userGaugeVote = false,
+  addUserVote = false,
+}: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
 
@@ -40,7 +47,7 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
   return (
-    <GaugeBox onClick={() => setOpen(!open)}>
+    <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote}>
       <DataComp gridTemplateColumns={gridTemplateColumns}>
         <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
         {userGaugeWeightVoteData ? (
@@ -54,6 +61,16 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData
       </DataComp>
       {open && (
         <OpenContainer>
+          {userGaugeVote && availablePower && userGaugeWeightVoteData && (
+            <Box
+              margin={'0 0 var(--spacing-3) 0'}
+              onClick={(e?: React.MouseEvent) => {
+                e?.stopPropagation()
+              }}
+            >
+              <VoteGaugeField availablePower={availablePower} userGaugeVoteData={userGaugeWeightVoteData} />
+            </Box>
+          )}
           {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
             <ErrorWrapper onClick={(e) => e.stopPropagation()}>
               <ErrorMessage
@@ -77,76 +94,7 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData
             gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'SUCCESS' && (
               <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
             )}
-          <Box flex flexColumn>
-            {gaugeData.pool && (
-              <>
-                <StatsTitleRow>
-                  <h6>{t`Pool`}</h6>
-                  <h6>{t`24 Volume`}</h6>
-                  <h6>{t`TVL`}</h6>
-                </StatsTitleRow>
-                <StatsRow>
-                  {gaugeData.pool?.address && (
-                    <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                      <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
-                        {shortenTokenAddress(gaugeData.pool.address)}
-                      </StyledExternalLink>
-                      <ExternalLinkIconButton
-                        href={networks[1].scanAddressPath(gaugeData.pool.address)}
-                        tooltip={t`View on explorer`}
-                      />
-                      <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.pool.address} />
-                    </Box>
-                  )}
-                  <h5>
-                    {gaugeData.pool?.trading_volume_24h
-                      ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                          showDecimalIfSmallNumberOnly: true,
-                          currency: 'USD',
-                        })
-                      : 'N/A'}
-                  </h5>
-                  <h5>
-                    {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
-                      ? formatNumber(gaugeData.pool.tvl_usd, {
-                          showDecimalIfSmallNumberOnly: true,
-                          currency: 'USD',
-                        })
-                      : 'N/A'}
-                  </h5>
-                </StatsRow>
-              </>
-            )}
-          </Box>
-          <Box flex flexColumn>
-            <StatsTitleRow>
-              <h6>{t`Gauge`}</h6>
-              <h6>{t`Emissions (CRV)`}</h6>
-              <h6>{t`Created`}</h6>
-            </StatsTitleRow>
-            <StatsRow>
-              <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
-                  {shortenTokenAddress(gaugeData.address)}
-                </StyledExternalLink>
-                <ExternalLinkIconButton
-                  href={networks[1].scanAddressPath(gaugeData.address)}
-                  tooltip={t`View on explorer`}
-                />
-                <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
-              </Box>
-              <h5>
-                {gaugeData.emissions
-                  ? formatNumber(gaugeData.emissions, {
-                      showDecimalIfSmallNumberOnly: true,
-                    })
-                  : 'N/A'}
-              </h5>
-              <h5>
-                {new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}
-              </h5>
-            </StatsRow>
-          </Box>
+          <GaugeDetails gaugeData={gaugeData} />
           <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'auto auto auto 0'}>
             <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VIEW GAUGE`}</InternalLinkButton>
           </Box>
@@ -156,11 +104,12 @@ const GaugeListItem = ({ gaugeData, gridTemplateColumns, userGaugeWeightVoteData
   )
 }
 
-const GaugeBox = styled.div`
+const GaugeBox = styled.div<{ addUserVote: boolean }>`
   display: grid;
   padding: var(--spacing-2) 0 calc(var(--spacing-2) + var(--spacing-1));
   gap: var(--spacing-1);
   border-bottom: 1px solid var(--gray-500a20);
+  ${({ addUserVote }) => addUserVote && 'border: 1px solid inherit;'}
   &:hover {
     cursor: pointer;
   }
@@ -184,34 +133,6 @@ const OpenContainer = styled.div`
   flex-direction: column;
   padding: var(--spacing-3) var(--spacing-1) 0;
   gap: var(--spacing-2);
-`
-
-const StatsTitleRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  border-bottom: 1px solid var(--gray-500a20);
-  padding: var(--spacing-1) var(--spacing-2);
-`
-
-const StatsRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  padding: var(--spacing-2);
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  display: flex;
-  align-items: end;
-  gap: var(--spacing-1);
-  color: var(--page--text-color);
-  font-size: var(--font-size-2);
-  font-weight: var(--bold);
-  text-transform: none;
-  text-decoration: none;
-
-  &:hover {
-    cursor: pointer;
-  }
 `
 
 const ErrorWrapper = styled.div`

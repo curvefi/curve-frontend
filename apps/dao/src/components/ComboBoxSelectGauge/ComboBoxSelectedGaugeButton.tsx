@@ -13,7 +13,7 @@ const ComboBoxSelectedGaugeButton = (props: React.PropsWithChildren<AriaButtonPr
   const { children, onPress, ...rest } = props
 
   return (
-    <StyledButtonComp variant="filled" {...buttonProps} {...rest} ref={ref}>
+    <StyledButtonComp variant={props.variant} {...buttonProps} {...rest} ref={ref}>
       {children}
     </StyledButtonComp>
   )

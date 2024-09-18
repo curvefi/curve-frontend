@@ -11,7 +11,6 @@ import useStore from '@/store/useStore'
 import { RCEditClear } from '@/ui/images'
 import { StyledInput } from '@/ui/InputComp/styles'
 import Box from '@/ui/Box/Box'
-import Checkbox from '@/ui/Checkbox'
 import ComboBoxListChunk from '@/components/ComboBoxSelectGauge/ComboBoxListChunk'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton/IconButton'
@@ -46,7 +45,6 @@ const ComboBox = ({
   const [topContentHeight, setTopContentHeight] = useState<number | undefined>()
 
   const filterValue = useStore((state) => state.gauges.selectGaugeFilterValue)
-  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
 
   useEffect(() => {
     if (topContentRef?.current) {

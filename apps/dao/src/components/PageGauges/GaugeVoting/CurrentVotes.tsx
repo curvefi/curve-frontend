@@ -4,6 +4,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
 import { formatNumber, shortenTokenAddress } from '@/ui/utils'
+import networks from '@/networks'
 
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
@@ -14,6 +15,7 @@ import PaginatedTable from '@/components/PaginatedTable'
 import InternalLink from '@/ui/Link/InternalLink'
 import Button from '@/ui/Button'
 import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
+import VoteGauge from './VoteGauge'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -25,11 +27,28 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const { setUserGaugeVoteWeightsSortBy, userGaugeVoteWeightsSortBy, getUserGaugeVoteWeights } = useStore(
     (state) => state.user
   )
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const { gaugeMapper, selectedGauge, setSelectedGauge } = useStore((state) => state.gauges)
 
   const loading = !userData || userData?.fetchingState === 'LOADING'
   const tableMinWidth = 42.3125
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
+
+  const formattedSelectedGauge: UserGaugeVoteWeight = {
+    title: selectedGauge?.title ?? '',
+    userPower: 0,
+    userVeCrv: 0,
+    expired: false,
+    gaugeAddress: selectedGauge?.address.toLowerCase() ?? '',
+    isKilled: selectedGauge?.is_killed ?? false,
+    lpTokenAddress: selectedGauge?.lp_token ?? '',
+    network: selectedGauge?.pool?.chain ?? selectedGauge?.market?.chain ?? '',
+    poolAddress: selectedGauge?.pool?.address ?? '',
+    poolName: selectedGauge?.pool?.name ?? selectedGauge?.market?.name ?? '',
+    poolUrl: '', // not available from prices
+    relativeWeight: selectedGauge?.gauge_relative_weight ?? 0,
+    totalVeCrv: 0,
+    userFutureVeCrv: 0,
+  }
 
   return (
     <Wrapper>
@@ -75,6 +94,14 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
           </Box>
         )}
       </VoteStats>
+      {selectedGauge && (
+        <VoteGauge
+          imageBaseUrl={networks[1].imageBaseUrl}
+          gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
+          userGaugeVoteData={formattedSelectedGauge}
+          availablePower={userData?.data.powerUsed}
+        />
+      )}
       {userAddress && (
         <PaginatedTable<UserGaugeVoteWeight>
           data={userData?.data.gauges ?? []}
@@ -92,6 +119,8 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               gaugeData={gaugeMapper[gauge.gaugeAddress]}
               userGaugeWeightVoteData={gauge}
               gridTemplateColumns={gridTemplateColumns}
+              availablePower={userData?.data.powerUsed}
+              userGaugeVote={true}
             />
           )}
           gridTemplateColumns={gridTemplateColumns}
@@ -111,16 +140,13 @@ const VoteStats = styled(Box)`
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
+  border-bottom: 1px solid var(--gray-500a20);
 `
 
 const StyledInternalLink = styled(InternalLink)`
   text-decoration: none;
   color: inherit;
   text-transform: none;
-`
-
-const VoteButton = styled(Button)`
-  margin-left: auto;
 `
 
 export default CurrentVotes
