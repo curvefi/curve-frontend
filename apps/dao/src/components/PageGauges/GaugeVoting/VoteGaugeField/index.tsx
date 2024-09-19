@@ -17,13 +17,13 @@ type VoteGaugeFieldProps = {
 }
 
 const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGaugeVoteData, newVote = false }) => {
-  const formattedPower = userGaugeVoteData.userPower / 100
-  const [power, setPower] = useState(formattedPower)
+  const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
+  const maxPower = newVote ? 100 - availablePower : 100 - availablePower + userGaugeVoteData.userPower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
   const { castVote, castVoteLoading } = useStore((state) => state.gauges)
 
-  const address = useStore((state) => state.user.userAddress?.toLowerCase())
+  const address = userAddress?.toLowerCase()
   const canVote = newVote
     ? true
     : userGaugeVoteData.nextVoteTime.timestamp && Date.now() > userGaugeVoteData.nextVoteTime.timestamp
@@ -54,11 +54,11 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
       <Box flex flexGap="var(--spacing-2)">
         <NumberField
           row={newVote ? false : true}
-          label={t`Available Power: ${100 - availablePower}%`}
+          label={t`Available Power: ${maxPower}%`}
           defaultValue={power}
-          onChange={(value) => setPower(value)}
-          formatOptions={{ style: 'percent' }}
-          maxValue={100 - availablePower}
+          onChange={setPower}
+          formatOptions={{ style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }}
+          maxValue={maxPower / 100}
         />
         <ButtonWrapper>
           <StyledButton disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>

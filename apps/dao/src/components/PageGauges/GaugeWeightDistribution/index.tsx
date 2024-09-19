@@ -75,7 +75,9 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
         )}
         {success && formattedData.length === 0 && (
           <ErrorMessageWrapper>
-            <ErrorMessage message={t`No gauge votes found`} />
+            <ErrorMessage
+              message={isUserVotes ? t`No gauge votes found` : t`No gauges with with >0.5% relative gauge weight found`}
+            />
           </ErrorMessageWrapper>
         )}
       </Box>
