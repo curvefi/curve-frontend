@@ -16,12 +16,14 @@ export const StyledIconButton = styled.button<Omit<IconButtonProps, 'className'>
   background-color: transparent;
   border: none;
 
-  cursor: pointer;
+  :not(:disabled) {
+    cursor: pointer;
+  }
 
   opacity: ${({ opacity }) => opacity || 0.6};
   transition: opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
-  :hover {
+  :hover:not(:disabled) {
     opacity: 1;
   }
 
