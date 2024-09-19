@@ -1,30 +1,27 @@
-import type { FormType } from '@/components/PagePool/Deposit/types'
-import type { TransferProps } from '@/components/PagePool/types'
+import type { FormType } from '@/components/PagePool/contextPool'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { isValidAddress } from '@/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 import networks from '@/networks'
-import useStore from '@/store/useStore'
 
-import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
 import { StyledTabSlide } from '@/components/PagePool/styles'
 import { SlideTab, SlideTabs } from '@/ui/TabSlide'
 import AlertBox from '@/ui/AlertBox'
 import AlertCompensation from '@/components/PagePool/Deposit/components/AlertCompensation'
 import FormDeposit from '@/components/PagePool/Deposit/components/FormDeposit'
-import FormDepositStake from '@/components/PagePool/Deposit/components/FormDepositStake'
 import FormStake from '@/components/PagePool/Deposit/components/FormStake'
 
-const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
-  const tabsRef = useRef<HTMLDivElement>(null)
+type Props = {
+  hasDepositAndStake: boolean
+}
 
-  const { params, poolAlert, poolData, poolDataCacheOrApi } = transferProps
-  const { rChainId } = transferProps.routerParams
-  const formType = useStore((state) => state.poolDeposit.formType)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
-  const setStateByKeys = useStore((state) => state.poolDeposit.setStateByKeys)
+const Deposit: React.FC<Props> = ({ hasDepositAndStake }) => {
+  const { rChainId, poolAlert, formType, poolData, poolDataCacheOrApi, setFormType } = usePoolContext()
+
+  const tabsRef = useRef<HTMLDivElement>(null)
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
@@ -59,22 +56,15 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
   const handleTabChange = useCallback(
     (idx: number) => {
-      setStateByKeys({
-        formStatus: DEFAULT_FORM_STATUS,
-        formType: TABS[idx].formType,
-      })
+      setFormType(TABS[idx].formType)
       setSelectedTabIdx(idx)
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setStateByKeys]
+    [TABS, setFormType]
   )
 
   // onMount
   useEffect(() => {
-    if (poolData) {
-      handleTabChange(0)
-      resetState(poolData, 'DEPOSIT')
-    }
+    handleTabChange(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolData?.pool?.id])
 
@@ -109,18 +99,18 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
       {poolAlert && poolAlert.isDisableDeposit ? (
         <>
-          <AlertCompensation rChainId={rChainId} params={params} poolId={poolDataCacheOrApi.pool.id} />
+          <AlertCompensation />
           <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
         </>
       ) : (
         <>
-          {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}
+          {formType === 'DEPOSIT' && <FormDeposit formType="DEPOSIT" />}
           {formType === 'DEPOSIT_STAKE' && (
             <>
               {poolDataCacheOrApi.gauge.isKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
-                <FormDepositStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
+                <FormDeposit formType="DEPOSIT_STAKE" />
               )}
             </>
           )}
@@ -129,7 +119,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
               {poolDataCacheOrApi.gauge.isKilled ? (
                 <AlertBox alertType="warning">{t`Staking is disabled due to inactive Gauge.`}</AlertBox>
               ) : (
-                <FormStake hasDepositAndStake={hasDepositAndStake} {...transferProps} />
+                <FormStake />
               )}
             </>
           )}

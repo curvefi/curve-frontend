@@ -851,21 +851,21 @@ export default createPoolsSlice
 
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const parsedTokensMapper: TokensMapper = {}
+  const parsedTokensMapper = { ...tokensMapper }
+
   const grouped = groupBy(tokensMapper, (v) => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
     .map((v) => v[0])
 
-  if (duplicatedTokenNames.length) {
-    Object.entries(tokensMapper).forEach(([key, tokenObj]) => {
-      parsedTokensMapper[key] = tokenObj
-      parsedTokensMapper[key]!.haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj!.symbol) !== -1
-    })
-    return parsedTokensMapper
-  }
+  if (!duplicatedTokenNames.length) return parsedTokensMapper
 
-  return tokensMapper
+  Object.entries(tokensMapper).forEach(([key, tokenObj]) => {
+    if (!tokenObj) return
+    const haveSameTokenName = duplicatedTokenNames.indexOf(tokenObj.symbol) !== -1
+    parsedTokensMapper[key] = { ...tokenObj, haveSameTokenName }
+  })
+  return parsedTokensMapper
 }
 
 async function getPools(

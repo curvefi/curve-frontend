@@ -1,216 +1,224 @@
-import type { ReactNode } from 'react'
-import type { FormValues, FormStatus, StepKey } from '@/components/PagePool/Deposit/types'
-import type { TransferProps } from '@/components/PagePool/types'
+import type { StakeFormValues } from '@/entities/deposit'
 import type { Step } from '@/ui/Stepper/types'
 
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import BigNumber from 'bignumber.js'
 
-import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
+import { useApproveStake, useStake, useStakeEstGasApproval } from '@/entities/deposit'
+import { StakeContext } from '@/components/PagePool/Deposit/contextStake'
+import { calcNewCrvApr } from '@/components/PagePool/Deposit/utils'
+import { getActiveStep } from '@/ui/Stepper/helpers'
+import { getMutationStepLabel, getMutationStepStatus, showStepApprove } from '@/components/PagePool/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
+import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 import useStore from '@/store/useStore'
 
 import { FieldsWrapper } from '@/components/PagePool/styles'
+import { TxInfoBars } from '@/ui/TxInfoBar'
 import AlertFormError from '@/components/AlertFormError'
-import AlertBox from '@/ui/AlertBox'
 import DetailInfoExpectedApy from '@/components/PagePool/components/DetailInfoExpectedApy'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
+import DetailsInfoEstGas from '@/components/PagePool/components/DetailsInfoEstGas'
+import FieldLpToken from '@/components/PagePool/Deposit/components/FieldLpToken'
 import Stepper from '@/ui/Stepper'
 import TransferActions from '@/components/PagePool/components/TransferActions'
-import TxInfoBar from '@/ui/TxInfoBar'
 
-const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
-  const isSubscribed = useRef(false)
+const FormStake = () => {
+  const { rChainId, chainId, signerAddress, poolId, poolBaseSignerKeys, pool, signerPoolBalances, isSeed, scanTxPath } =
+    usePoolContext()
+  const { gaugeTotalSupply } = usePoolTotalStaked(pool) ?? {}
 
-  const { chainId, signerAddress } = curve || {}
-  const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolDeposit.formStatus)
-  const formValues = useStore((state) => state.poolDeposit.formValues)
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
-  const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
-  const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
-  const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
+  const crvApr = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId ?? '']?.crv?.[0])
 
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
+  const [formValues, setFormValues] = useState<StakeFormValues>({
+    lpToken: '',
+    lpTokenError: '',
+  })
 
-  const poolId = poolData?.pool?.id
-  const haveSigner = !!signerAddress
+  const { lpToken, lpTokenError } = formValues
+
+  const lpTokenBalance = signerPoolBalances?.['lpToken']
+  const newCrvApr = useMemo(() => calcNewCrvApr(crvApr, lpToken, gaugeTotalSupply), [crvApr, lpToken, gaugeTotalSupply])
+  const showAprChange = Number(crvApr) > 0 && !!newCrvApr && newCrvApr.ratio > 1.25
+  const isInProgress = useMemo(() => steps.some(({ status }) => status === 'in-progress'), [steps])
+
+  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useStakeEstGasApproval({
+    ...poolBaseSignerKeys,
+    isInProgress,
+    lpToken,
+    lpTokenError,
+  })
+
+  const actionParams = {
+    ...poolBaseSignerKeys,
+    lpToken,
+    lpTokenError,
+    isLoadingDetails: estGasApprovalState.isFetching,
+    isApproved: isApproved,
+  }
+
+  const {
+    enabled: enabledApprove,
+    mutation: {
+      mutate: approve,
+      data: approveData,
+      status: approveStatus,
+      error: approveError,
+      reset: approveReset,
+      ...approveState
+    },
+  } = useApproveStake(actionParams)
+
+  const {
+    enabled: enabledStake,
+    mutation: {
+      mutate: stake,
+      data: stakeData,
+      status: stakeStatus,
+      error: stakeError,
+      reset: stakeReset,
+      ...stakeState
+    },
+  } = useStake(actionParams)
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      setTxInfoBar(null)
-      setFormValues('STAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+    (updatedFormValues: Partial<StakeFormValues>) => {
+      approveReset()
+      stakeReset()
+
+      setFormValues((prevFormValues) => {
+        const all = { ...prevFormValues, lpTokenError: '', ...updatedFormValues }
+
+        // validation
+        let lpTokenError: StakeFormValues['lpTokenError'] = ''
+        if (signerAddress) lpTokenError = Number(all.lpToken) > Number(lpTokenBalance) ? 'too-much' : ''
+        return { ...all, lpTokenError }
+      })
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [approveReset, lpTokenBalance, signerAddress, stakeReset]
   )
 
-  const handleApproveClick = useCallback(
-    async (activeKey: string, curve: CurveApi, pool: Pool, formValues: FormValues) => {
-      const notifyMessage = t`Please approve spending your LP Tokens.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
-      await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [fetchStepApprove, notifyNotification]
-  )
-
-  const handleStakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
-      const notifyMessage = t`Please confirm staking of ${formValues.lpToken} LP Tokens`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
-      const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
-
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [fetchStepStake, notifyNotification]
-  )
-
-  const getSteps = useCallback(
-    (
-      activeKey: string,
-      curve: CurveApi,
-      poolData: PoolData,
-      formValues: FormValues,
-      formStatus: FormStatus,
-      steps: Step[]
-    ) => {
-      const isValid = !formStatus.error && +formValues.lpToken > 0
-      const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
-      const isComplete = formStatus.formTypeCompleted === 'STAKE'
-
-      const stepsObj: { [key: string]: Step } = {
-        APPROVAL: {
-          key: 'APPROVAL',
-          status: getStepStatus(isApproved, formStatus.step === 'APPROVAL', isValid && !formStatus.formProcessing),
-          type: 'action',
-          content: isApproved ? t`Spending Approved` : t`Approve Spending`,
-          onClick: () => handleApproveClick(activeKey, curve, poolData.pool, formValues),
-        },
-        STAKE: {
-          key: 'STAKE',
-          status: getStepStatus(isComplete, formStatus.step === 'STAKE', isValid && formStatus.isApproved),
-          type: 'action',
-          content: isComplete ? t`Stake Complete` : t`Stake`,
-          onClick: () => handleStakeClick(activeKey, curve, poolData, formValues),
-        },
-      }
-
-      let stepsKey: StepKey[]
-
-      if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
-      } else {
-        stepsKey = formStatus.isApproved ? ['STAKE'] : ['APPROVAL', 'STAKE']
-      }
-
-      return stepsKey.map((key) => stepsObj[key])
-    },
-    [handleApproveClick, handleStakeClick]
-  )
-
-  // onMount
-  useEffect(() => {
-    isSubscribed.current = true
-
-    return () => {
-      isSubscribed.current = false
-    }
+  const resetForm = useCallback(() => {
+    setFormValues({ lpToken: '', lpTokenError: '' })
   }, [])
 
+  // reset form if signerAddress changed
   useEffect(() => {
-    if (poolId) {
-      resetState(poolData, 'STAKE')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolId])
+    resetForm()
+  }, [resetForm, signerAddress])
 
-  // curve state change
+  // reset form after stake
   useEffect(() => {
-    if (chainId && poolId) {
-      updateFormValues({})
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+    if (stakeState.isSuccess) resetForm()
+  }, [resetForm, stakeState.isSuccess])
 
   // steps
   useEffect(() => {
-    if (curve && poolId) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, steps)
-      setSteps(updatedSteps)
+    if (!chainId || !poolId || !signerAddress || isSeed === null) {
+      setSteps([])
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
 
-  const activeStep = !!signerAddress ? getActiveStep(steps) : null
-  const disableForm = seed.isSeed === null || formStatus.formProcessing
-  const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
+    const actionParams = {
+      chainId,
+      poolId,
+      signerAddress,
+      lpToken,
+      lpTokenError,
+      isLoadingDetails: false,
+    }
+
+    const APPROVAL: Step = {
+      key: 'APPROVAL',
+      status: getMutationStepStatus(enabledApprove.enabled, approveStatus),
+      type: 'action',
+      content: getMutationStepLabel(true, approveStatus),
+      onClick: () => {
+        approveReset()
+        approve({ ...actionParams, isApproved: false })
+      },
+    }
+
+    const SUBMIT: Step = {
+      key: 'STAKE',
+      status: getMutationStepStatus(enabledStake.enabled, stakeStatus),
+      type: 'action',
+      content: `${t`Stake`} ${getMutationStepLabel(false, stakeStatus)}`,
+      onClick: () => {
+        stakeReset()
+        stake({ ...actionParams, isApproved: true })
+      },
+    }
+
+    const showApproveAction = showStepApprove(isApproved, approveData, stakeData)
+    setSteps(showApproveAction ? [APPROVAL, SUBMIT] : [SUBMIT])
+  }, [
+    approve,
+    approveData,
+    approveReset,
+    approveStatus,
+    chainId,
+    enabledApprove.enabled,
+    enabledStake.enabled,
+    isApproved,
+    isSeed,
+    lpToken,
+    lpTokenError,
+    poolId,
+    signerAddress,
+    stake,
+    stakeData,
+    stakeReset,
+    stakeStatus,
+  ])
 
   return (
-    <>
-      {/* input fields */}
-      <FieldsWrapper>
-        <FieldLpToken
-          amount={formValues.lpToken}
-          balance={formatNumber(balLpToken)}
-          balanceLoading={balancesLoading}
-          hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
-          haveSigner={haveSigner}
-          handleAmountChange={(lpToken) => updateFormValues({ lpToken })}
-          disabledMaxButton={disableForm || !haveSigner}
-          disableInput={disableForm}
-          handleMaxClick={() => {
-            updateFormValues({ lpToken: (userPoolBalances?.lpToken as string) ?? '0' })
-          }}
-        />
-      </FieldsWrapper>
+    <StakeContext.Provider
+      value={{
+        formValues,
+        isDisabled: approveState.isPending || stakeState.isPending || isSeed === null,
+        isLoading: isSeed === null,
+        updateFormValues,
+      }}
+    >
+      {isSeed !== null && (
+        <>
+          <FieldsWrapper>
+            <FieldLpToken />
+          </FieldsWrapper>
 
-      <div>
-        <DetailInfoExpectedApy
-          lpTokenAmount={formValues.lpToken}
-          poolDataCacheOrApi={poolDataCacheOrApi}
-          crvApr={rewardsApy?.crv?.[0]}
-        />
+          <div>
+            {showAprChange && <DetailInfoExpectedApy crvApr={crvApr} newCrvApr={newCrvApr} />}
+            <DetailsInfoEstGas
+              activeStep={!!signerAddress ? getActiveStep(steps) : null}
+              isDivider={showAprChange}
+              estimatedGas={estimatedGas}
+              estimatedGasIsLoading={estGasApprovalState.isFetching}
+              stepsLength={steps.length}
+            />
+          </div>
+        </>
+      )}
 
-        {haveSigner && (
-          <DetailInfoEstGas
-            chainId={rChainId}
-            {...formEstGas}
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
-          />
+      <TransferActions>
+        {isSeed !== null && (
+          <>
+            <Stepper steps={steps} />
+            <AlertFormError
+              errorKey={
+                (enabledApprove.error || estGasApprovalState.error || approveError || stakeError)?.message ?? ''
+              }
+            />
+            {(!!approveData || !!stakeData) && (
+              <div>
+                <TxInfoBars data={approveData} error={approveError} scanTxPath={scanTxPath} />
+                <TxInfoBars data={stakeData} error={stakeError} label={t`stake`} scanTxPath={scanTxPath} />
+              </div>
+            )}
+          </>
         )}
-      </div>
-
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-        userPoolBalances={userPoolBalances}
-      >
-        {formStatus.error === 'lpToken-too-much' ? (
-          <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
-        ) : formStatus.error ? (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />
-        ) : null}
-        {txInfoBar}
-        <Stepper steps={steps} />
       </TransferActions>
-    </>
+    </StakeContext.Provider>
   )
 }
 

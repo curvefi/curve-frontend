@@ -1,581 +1,397 @@
-import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/components/PagePool/Swap/types'
-import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/components/PagePool/types'
+import type { SwapFormValues } from '@/entities/swap'
 import type { Step } from '@/ui/Stepper/types'
 
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_EXCHANGE_OUTPUT, DEFAULT_EST_GAS, getSwapTokens } from '@/components/PagePool/Swap/utils'
-import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/constants'
-import { formatNumber } from '@/ui/utils'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import cloneDeep from 'lodash/cloneDeep'
-import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { SwapContext } from '@/components/PagePool/Swap/contextSwap'
+import {
+  useApproveSwap,
+  useSwap,
+  useSwapExchangeDetails,
+  useSwapEstGasApproval,
+  useSwapIgnoreExchangeRateCheck,
+} from '@/entities/swap'
+import { getActiveStep } from '@/ui/Stepper/helpers'
+import { getMutationStepLabel, getMutationStepStatus, showStepApprove } from '@/components/PagePool/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
+import { useUsdRates } from '@/entities/usd-rates'
 import useStore from '@/store/useStore'
 
 import { FieldsWrapper } from '@/components/PagePool/styles'
-import AlertBox from '@/ui/AlertBox'
+import { TxInfoBars } from '@/ui/TxInfoBar'
+import AlertPool from '@/components/PagePool/components/AlertPool'
 import AlertFormError from '@/components/AlertFormError'
 import AlertFormWarning from '@/components/AlertFormWarning'
 import AlertSlippage from '@/components/AlertSlippage'
 import Box from '@/ui/Box'
-import Checkbox from '@/ui/Checkbox'
-import ChipInpHelper from '@/components/ChipInpHelper'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import BtnSwapTokens from '@/components/PagePool/Swap/components/BtnSwapTokens'
+import CheckboxIsWrapped from '@/components/PagePool/Swap/components/CheckboxIsWrapped'
 import DetailInfoPriceImpact from '@/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import DetailInfoExchangeRate from '@/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoSlippageTolerance from '@/components/PagePool/components/DetailInfoSlippageTolerance'
-import FieldHelperUsdRate from '@/components/FieldHelperUsdRate'
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import DetailsInfoEstGas from '@/components/PagePool/components/DetailsInfoEstGas'
+import FieldFrom from '@/components/PagePool/Swap/components/FieldFrom'
+import FieldTo from '@/components/PagePool/Swap/components/FieldTo'
 import Stepper from '@/ui/Stepper'
-import TokenComboBox from '@/components/ComboBoxSelectToken'
 import TransferActions from '@/components/PagePool/components/TransferActions'
-import TxInfoBar from '@/ui/TxInfoBar'
 import WarningModal from '@/components/PagePool/components/WarningModal'
 
-const Swap = ({
-  chainIdPoolId,
-  curve,
-  imageBaseUrl,
-  maxSlippage,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  routerParams,
-  seed,
-  tokensMapper,
-  userPoolBalances,
-  userPoolBalancesLoading,
-}: Pick<PageTransferProps, 'curve' | 'params' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'> & {
-  chainIdPoolId: string
-  imageBaseUrl: string
-  poolAlert: PoolAlert | null
-  maxSlippage: string
-  seed: Seed
-  tokensMapper: TokensMapper
-  userPoolBalances: Balances | undefined
-  userPoolBalancesLoading: boolean
-}) => {
-  const isSubscribed = useRef(false)
+const Swap = () => {
+  const {
+    rChainId,
+    rPoolId,
+    chainId,
+    poolId,
+    isWrapped,
+    isSeed,
+    signerAddress,
+    maxSlippage,
+    poolBaseKeys,
+    poolBaseSignerKeys,
+    pool,
+    poolTvl,
+    signerPoolBalances,
+    tokens,
+    scanTxPath,
+  } = usePoolContext()
 
-  const { chainId, signerAddress } = curve || {}
-  const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolSwap.activeKey)
-  const exchangeOutput = useStore((state) => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
-  const formEstGas = useStore((state) => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
-  const formStatus = useStore((state) => state.poolSwap.formStatus)
-  const formValues = useStore((state) => state.poolSwap.formValues)
   const hasRouter = useStore((state) => state.hasRouter)
-  const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
-  const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
-  const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
-  const resetState = useStore((state) => state.poolSwap.resetState)
-  const setFormValues = useStore((state) => state.poolSwap.setFormValues)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [formValues, setFormValues] = useState<SwapFormValues>({
+    isFrom: null,
+    fromAddress: '',
+    fromToken: '',
+    fromAmount: '',
+    fromError: '',
+    toAddress: '',
+    toAmount: '',
+    toError: '',
+    toToken: '',
+  })
 
-  const poolId = poolData?.pool?.id
-  const haveSigner = !!signerAddress
-  const userFromBalance = userPoolBalances?.[formValues.fromAddress]
-  const userToBalance = userPoolBalances?.[formValues.toAddress]
-  const fromUsdRate = usdRatesMapper[formValues.fromAddress]
-  const toUsdRate = usdRatesMapper[formValues.toAddress]
+  const { isFrom, fromToken, fromAddress, fromAmount, fromError, toToken, toAddress, toAmount, toError } = formValues
 
-  const { selectList, swapTokensMapper } = useMemo(
-    () => getSwapTokens(tokensMapper, poolDataCacheOrApi),
-    [poolDataCacheOrApi, tokensMapper]
-  )
+  const { data: usdRatesMapper } = useUsdRates({
+    ...poolBaseKeys,
+    addresses: [fromAddress, toAddress],
+  })
+  const toUsdRate = usdRatesMapper?.[toAddress]
+
+  const { data: ignoreExchangeRateCheck } = useSwapIgnoreExchangeRateCheck(poolBaseKeys)
+
+  const isInProgress = useMemo(() => steps.some(({ status }) => status === 'in-progress'), [steps])
+
+  const {
+    data: {
+      exchangeRates = [],
+      isHighImpact = false,
+      priceImpact = null,
+      fromAmount: expectedFromAmount = '',
+      toAmount: expectedToAmount = '',
+      modal = null,
+      warning: exchangeWarning = '',
+    } = {},
+    ...exchangeDetailsState
+  } = useSwapExchangeDetails({
+    ...poolBaseKeys,
+    isInProgress,
+    isFrom,
+    fromAmount,
+    fromAddress,
+    fromToken,
+    toAddress,
+    toAmount,
+    toToken,
+    isWrapped,
+    maxSlippage,
+    ignoreExchangeRateCheck,
+    tokens,
+  })
+
+  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useSwapEstGasApproval({
+    ...poolBaseSignerKeys,
+    isInProgress,
+    fromAddress,
+    toAddress,
+    fromAmount,
+    isWrapped,
+    maxSlippage,
+  })
+
+  const actionParams = {
+    ...poolBaseSignerKeys,
+    fromAmount,
+    fromAddress,
+    fromToken,
+    fromError,
+    toError,
+    isWrapped,
+    isLoadingDetails: exchangeDetailsState.isFetching || estGasApprovalState.isFetching,
+    isApproved: isApproved,
+  }
+
+  const {
+    enabled: enabledApprove,
+    mutation: {
+      mutate: approve,
+      data: approveData,
+      status: approveStatus,
+      error: approveError,
+      reset: approveReset,
+      ...approveState
+    },
+  } = useApproveSwap(actionParams)
+
+  const {
+    enabled: enabledSwap,
+    mutation: { mutate: swap, data: swapData, status: swapStatus, error: swapError, reset: swapReset, ...swapState },
+  } = useSwap({ ...actionParams, toAddress, toToken, toAmount, maxSlippage })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
+    (updatedFormValues: Partial<SwapFormValues>) => {
+      approveReset()
+      swapReset()
       setConfirmedLoss(false)
-      setTxInfoBar(null)
 
-      setFormValues(
-        curve,
-        poolDataCacheOrApi.pool.id,
-        poolData,
-        updatedFormValues,
-        isGetMaxFrom,
-        seed.isSeed,
-        updatedMaxSlippage || maxSlippage
-      )
+      setFormValues((prevFormValues) => {
+        const all = { ...prevFormValues, fromError: '', toError: '', ...updatedFormValues }
+        const updatedFromBalance = signerPoolBalances?.[all.fromAddress] ?? ''
+
+        // validation
+        let fromError: SwapFormValues['fromError'] = ''
+        if (signerAddress) fromError = Number(all.fromAmount) > Number(updatedFromBalance) ? 'too-much' : ''
+        let toError: SwapFormValues['toError'] = Number(all.toAmount) > Number(poolTvl) ? 'too-much-reserves' : ''
+
+        return { ...all, fromError, toError }
+      })
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage]
+    [approveReset, swapReset, signerPoolBalances, poolTvl, signerAddress]
   )
 
-  const handleSwapClick = useCallback(
-    async (
-      actionActiveKey: string,
-      curve: CurveApi,
-      poolData: PoolData,
-      formValues: FormValues,
-      maxSlippage: string
-    ) => {
-      const { fromAmount, fromToken, toToken } = formValues
-      const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
-      const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
-
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        setTxInfoBar(
-          <TxInfoBar
-            description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={networks[curve.chainId].scanTxPath(resp.hash)}
-            onClose={() => {
-              updateFormValues({}, null, null)
-            }}
-          />
-        )
-      }
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues]
-  )
-
-  const getSteps = useCallback(
-    (
-      actionActiveKey: string,
-      curve: CurveApi,
-      poolData: PoolData,
-      formEstGas: FormEstGas,
-      formValues: FormValues,
-      formStatus: FormStatus,
-      exchangeOutput: ExchangeOutput,
-      confirmedLoss: boolean,
-      steps: Step[],
-      isSeed: boolean,
-      maxSlippage: string,
-      userPoolBalancesLoading: boolean
-    ) => {
-      const { formProcessing, formTypeCompleted, step } = formStatus
-      const isValid =
-        !userPoolBalancesLoading &&
-        !isSeed &&
-        !formStatus.error &&
-        !formValues.fromError &&
-        !formValues.toError &&
-        +formValues.fromAmount > 0
-      const isApprove = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
-      const isComplete = formTypeCompleted === 'SWAP'
-
-      const stepsObj: { [key: string]: Step } = {
-        APPROVAL: {
-          key: 'APPROVAL',
-          status: getStepStatus(isApprove, step === 'APPROVAL', isValid && !formProcessing),
-          type: 'action',
-          content: isApprove ? t`Spending Approved` : t`Approve Spending`,
-          onClick: async () => {
-            const notifyMessage = t`Please approve spending your ${formValues.fromToken}.`
-            const { dismiss } = notifyNotification(notifyMessage, 'pending')
-            await fetchStepApprove(actionActiveKey, curve, poolData.pool, formValues, maxSlippage)
-            if (typeof dismiss === 'function') dismiss()
-          },
-        },
-        SWAP: {
-          key: 'SWAP',
-          status: getStepStatus(isComplete, step === 'SWAP', formStatus.isApproved && isValid),
-          type: 'action',
-          content: isComplete ? t`Swap Complete` : t`Swap`,
-          ...(!!exchangeOutput.modal
-            ? {
-                modal: {
-                  title: t`Warning!`,
-                  content: (
-                    // TODO: fix typescript error
-                    // @ts-ignore
-                    <WarningModal {...exchangeOutput.modal} confirmed={confirmedLoss} setConfirmed={setConfirmedLoss} />
-                  ),
-                  cancelBtnProps: {
-                    label: t`Cancel`,
-                    onClick: () => {
-                      setConfirmedLoss(false)
-                    },
-                  },
-                  isDismissable: false,
-                  primaryBtnProps: {
-                    onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage),
-                    disabled: !confirmedLoss,
-                  },
-                  primaryBtnLabel: 'Swap anyway',
-                },
-              }
-            : { onClick: () => handleSwapClick(actionActiveKey, curve, poolData, formValues, maxSlippage) }),
-        },
-      }
-
-      let stepsKey: StepKey[]
-
-      if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
-      } else {
-        stepsKey = formStatus.isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
-      }
-
-      return stepsKey.map((key) => stepsObj[key])
-    },
-    [fetchStepApprove, handleSwapClick, notifyNotification]
-  )
-
-  const fetchData = useCallback(() => {
-    if (curve && poolData && isPageVisible && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
-      updateFormValues({}, null, '')
-    }
-  }, [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, poolData, updateFormValues])
-
-  // onMount
+  // switch between wrapped or underlying tokens
   useEffect(() => {
-    isSubscribed.current = true
+    if (tokens.length === 0) return
 
-    return () => {
-      isSubscribed.current = false
-    }
+    const currTokens = isWrapped ? pool?.underlyingCoins : pool?.wrappedCoins
+    if (!currTokens) return
+
+    const fromIdx = fromToken ? currTokens.findIndex((token) => fromToken === token) : 0
+    const toIdx = toToken ? currTokens.findIndex((token) => toToken === token) : 1
+
+    const { symbol: updatedFromToken, address: updatedFromAddress } = tokens[fromIdx]
+    const { symbol: updatedToToken, address: updatedToAddress } = tokens[toIdx]
+
+    updateFormValues({
+      fromToken: updatedFromToken,
+      fromAddress: updatedFromAddress,
+      fromAmount: isFrom ? fromAmount : '',
+      toToken: updatedToToken,
+      toAddress: updatedToAddress,
+      toAmount: isFrom ? '' : toAmount,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tokens])
+
+  const resetForm = useCallback(() => {
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      fromAmount: '',
+      toAmount: '',
+    }))
   }, [])
 
+  // update formValues based on exchange details
   useEffect(() => {
-    if (poolId) {
-      resetState(poolData)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolId])
+    if (!exchangeDetailsState.isSuccess) return
 
-  // get user balances
-  useEffect(() => {
-    if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      fetchUserPoolInfo(curve, poolId, true)
-    }
+    isFrom ? updateFormValues({ toAmount: expectedToAmount }) : updateFormValues({ fromAmount: expectedFromAmount })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
+  }, [exchangeDetailsState.isSuccess, isFrom, expectedToAmount, expectedFromAmount])
 
-  // get usdRates
+  // reset form if signerAddress changed
   useEffect(() => {
-    if (formValues.fromAddress || formValues.toAddress) {
-      if (formValues.fromAddress && isUndefined(fromUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.fromAddress])
-      }
-      if (formValues.toAddress && isUndefined(toUsdRate)) {
-        fetchUsdRateByTokens(curve, [formValues.toAddress])
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve, formValues, fromUsdRate, toUsdRate])
+    resetForm()
+  }, [resetForm, signerAddress])
 
-  // curve state change
+  // reset form after swap
   useEffect(() => {
-    if (chainId && poolId) {
-      updateFormValues({}, null, null)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, seed.isSeed])
+    if (swapState.isSuccess) resetForm()
+  }, [resetForm, swapState.isSuccess])
 
-  // maxSlippage
+  // reset confirmation loss
   useEffect(() => {
-    updateFormValues({}, null, maxSlippage)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxSlippage])
+    if (swapState.isError) setConfirmedLoss(false)
+  }, [swapState.isError])
 
   // steps
   useEffect(() => {
-    if (curve && poolData && seed.isSeed !== null) {
-      const updatedSteps = getSteps(
-        activeKey,
-        curve,
-        poolData,
-        formEstGas,
-        formValues,
-        formStatus,
-        exchangeOutput,
-        confirmedLoss,
-        steps,
-        seed.isSeed,
-        maxSlippage,
-        userPoolBalancesLoading
-      )
-      setSteps(updatedSteps)
+    if (!chainId || !poolId || !signerAddress || isSeed === null) {
+      setSteps([])
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    const actionParams = {
+      chainId,
+      poolId,
+      signerAddress,
+      fromAmount,
+      fromAddress,
+      fromToken,
+      fromError,
+      isWrapped,
+      isLoadingDetails: false,
+    }
+
+    const APPROVAL: Step = {
+      key: 'APPROVAL',
+      status: getMutationStepStatus(enabledApprove.enabled, approveStatus),
+      type: 'action',
+      content: getMutationStepLabel(true, approveStatus),
+      onClick: () => {
+        approveReset()
+        approve({ ...actionParams, isApproved: false })
+      },
+    }
+
+    const onClick = () => {
+      swapReset()
+      swap({ ...actionParams, isApproved: true, toAddress, toToken, toAmount, maxSlippage })
+    }
+
+    const SUBMIT: Step = {
+      key: 'SUBMIT',
+      status: getMutationStepStatus(enabledSwap.enabled, swapStatus),
+      type: 'action',
+      content: `${t`Swap`} ${getMutationStepLabel(false, swapStatus)}`,
+      ...(!!modal
+        ? {
+            modal: {
+              title: t`Warning!`,
+              content: <WarningModal {...modal} confirmed={confirmedLoss} setConfirmed={setConfirmedLoss} />,
+              cancelBtnProps: { label: t`Cancel`, onClick: () => setConfirmedLoss(false) },
+              isDismissable: false,
+              primaryBtnProps: { onClick, disabled: !confirmedLoss },
+              primaryBtnLabel: 'Swap anyway',
+            },
+          }
+        : { onClick }),
+    }
+
+    const showApproveAction = showStepApprove(isApproved, approveData, swapData)
+    setSteps(showApproveAction ? [APPROVAL, SUBMIT] : [SUBMIT])
   }, [
+    approve,
+    approveData,
+    approveReset,
+    approveStatus,
     chainId,
-    poolId,
     confirmedLoss,
-    exchangeOutput?.modal,
-    formEstGas,
-    formStatus,
-    formValues,
+    enabledApprove.enabled,
+    enabledSwap.enabled,
+    fromAddress,
+    fromAmount,
+    fromError,
+    fromToken,
+    isApproved,
+    isSeed,
+    isWrapped,
     maxSlippage,
-    seed.isSeed,
-    userPoolBalancesLoading,
+    modal,
+    poolId,
+    signerAddress,
+    swap,
+    swapData,
+    swapReset,
+    swapStatus,
+    toAddress,
+    toAmount,
+    toToken,
   ])
 
-  // pageVisible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [isPageVisible])
-
-  // re-fetch data
-  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'], isPageVisible)
-
-  const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
-
   return (
-    <>
-      {/* input fields */}
-      <FieldsWrapper>
-        <div>
-          <Box grid gridGap={1}>
-            <StyledInputProvider
-              id="fromAmount"
-              grid
-              gridTemplateColumns="1fr auto 38%"
-              inputVariant={formValues.fromError ? 'error' : undefined}
-              disabled={isDisabled}
-            >
-              <InputDebounced
-                id="inpFromAmount"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userPoolBalancesLoading,
-                    description: formatNumber(userFromBalance),
-                  }
-                }
-                value={formValues.fromAmount}
-                onChange={(fromAmount) => {
-                  updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
-                }}
-              />
-              <InputMaxBtn
-                disabled={isDisabled || isMaxLoading}
-                loading={isMaxLoading}
-                isNetworkToken={formValues.fromAddress.toLowerCase() === NETWORK_TOKEN}
-                onClick={() => {
-                  updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
-                }}
-              />
-              <TokenComboBox
-                title={t`Select a Token`}
-                disabled={isDisabled || selectList.length === 0}
-                imageBaseUrl={imageBaseUrl}
-                listBoxHeight="400px"
-                selectedToken={swapTokensMapper[formValues.fromAddress]}
-                showSearch={false}
-                tokens={selectList}
-                onSelectionChange={(value) => {
-                  const val = value as string
-                  const cFormValues = cloneDeep(formValues)
-                  if (val === formValues.toAddress) {
-                    cFormValues.toAddress = formValues.fromAddress
-                    cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
-                  }
-
-                  cFormValues.fromAddress = val
-                  cFormValues.fromToken = swapTokensMapper[val].symbol
-
-                  if (formValues.isFrom || formValues.isFrom === null) {
-                    cFormValues.toAmount = ''
-                  } else {
-                    cFormValues.fromAmount = ''
-                  }
-
-                  updateFormValues(cFormValues, null, '')
-                }}
-              />
-            </StyledInputProvider>
-            <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-            {formValues.fromError && (
-              <ChipInpHelper size="xs" isDarkBg isError>
-                {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-              </ChipInpHelper>
-            )}
-          </Box>
-
-          <Box flex flexJustifyContent="center">
-            <IconButton
-              disabled={isDisabled}
-              onClick={() => {
-                const cFormValues = cloneDeep(formValues)
-                cFormValues.isFrom = true
-                cFormValues.fromAmount = formValues.toAmount
-                cFormValues.fromToken = formValues.toToken
-                cFormValues.fromAddress = formValues.toAddress
-                cFormValues.toToken = formValues.fromToken
-                cFormValues.toAddress = formValues.fromAddress
-                cFormValues.toAmount = ''
-
-                updateFormValues(cFormValues, null, '')
-              }}
-              size="medium"
-            >
-              <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
-            </IconButton>
-          </Box>
-        </div>
-
-        {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        <div>
-          <StyledInputProvider
-            id="toAmount"
-            inputVariant={formValues.toError ? 'error' : undefined}
-            disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            grid
-            gridTemplateColumns="1fr 38%"
-          >
-            <InputDebounced
-              id="inpToAmount"
-              type="number"
-              labelProps={
-                haveSigner && {
-                  label: t`Avail.`,
-                  descriptionLoading: userPoolBalancesLoading,
-                  description: formatNumber(userToBalance),
-                }
-              }
-              value={formValues.toAmount}
-              onChange={(toAmount) => {
-                updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
-              }}
-            />
-            <TokenComboBox
-              title={t`Select a Token`}
-              disabled={isDisabled || selectList.length === 0}
-              imageBaseUrl={imageBaseUrl}
-              listBoxHeight="400px"
-              selectedToken={swapTokensMapper[formValues.toAddress]}
-              showSearch={false}
-              tokens={selectList}
-              onSelectionChange={(value) => {
-                const val = value as string
-                const cFormValues = cloneDeep(formValues)
-                if (val === formValues.fromAddress) {
-                  cFormValues.fromAddress = formValues.toAddress
-                  cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
-                }
-
-                cFormValues.toAddress = val
-                cFormValues.toToken = swapTokensMapper[val].symbol
-
-                if (formValues.isFrom || formValues.isFrom === null) {
-                  cFormValues.toAmount = ''
-                } else {
-                  cFormValues.fromAmount = ''
-                }
-                updateFormValues(cFormValues, null, '')
-              }}
-            />
-          </StyledInputProvider>
-          <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-        </div>
-
-        {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
-          <div>
-            <Checkbox
-              isDisabled={isDisabled || !poolData || networks[rChainId].poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
-              isSelected={formValues.isWrapped}
-              onChange={(isWrapped) => {
-                if (poolData) {
-                  const fromIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.fromAddress)
-                  const toIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.toAddress)
-                  const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                  const cFormValues = cloneDeep(formValues)
-                  cFormValues.isWrapped = isWrapped
-                  cFormValues.fromToken = wrapped.tokens[fromIdx]
-                  cFormValues.fromAddress = wrapped.tokenAddresses[fromIdx]
-                  cFormValues.toToken = wrapped.tokens[toIdx]
-                  cFormValues.toAddress = wrapped.tokenAddresses[toIdx]
-
-                  if (cFormValues.isFrom) {
-                    cFormValues.toAmount = ''
-                  } else {
-                    cFormValues.fromAmount = ''
-                  }
-
-                  updateFormValues(cFormValues, null, '')
-                }
-              }}
-            >
-              {t`Swap Wrapped`}
-            </Checkbox>
-          </div>
-        )}
-      </FieldsWrapper>
+    <SwapContext.Provider
+      value={{
+        formValues,
+        isDisabled: approveState.isPending || swapState.isPending || !hasRouter || isSeed === null || isSeed,
+        isLoading: isSeed === null,
+        updateFormValues,
+      }}
+    >
+      <StyledFieldsWrapper>
+        <FieldFrom
+          estimatedGas={estimatedGas}
+          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          usdRatesMapper={usdRatesMapper}
+        />
+        <BtnSwapTokens />
+        <FieldTo usdRatesMapper={usdRatesMapper} />
+        <CheckboxIsWrapped />
+      </StyledFieldsWrapper>
 
       <Box>
-        <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />
-
-        <DetailInfoPriceImpact
-          loading={exchangeOutput.loading}
-          priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={exchangeOutput.isHighImpact}
+        <DetailInfoExchangeRate
+          exchangeRates={exchangeRates}
+          loading={exchangeDetailsState.isFetching || exchangeDetailsState.isFetching}
         />
-
-        {haveSigner && (
-          <DetailInfoEstGas
-            isDivider
-            chainId={rChainId}
-            {...formEstGas}
-            stepProgress={activeStep && steps.length > 1 ? { active: activeStep, total: steps.length } : null}
-          />
-        )}
-        <DetailInfoSlippageTolerance maxSlippage={maxSlippage} stateKey={chainIdPoolId} />
+        <DetailInfoPriceImpact
+          loading={exchangeDetailsState.isFetching || exchangeDetailsState.isFetching}
+          priceImpact={priceImpact}
+          isHighImpact={isHighImpact}
+        />
+        <DetailsInfoEstGas
+          activeStep={!!signerAddress ? getActiveStep(steps) : null}
+          estimatedGas={estimatedGas}
+          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          stepsLength={steps.length}
+        />
+        <DetailInfoSlippageTolerance
+          customLabel={t`Additional slippage tolerance:`}
+          maxSlippage={maxSlippage}
+          stateKey={`${rChainId}-${rPoolId}`}
+        />
       </Box>
 
-      {poolAlert && poolAlert?.isInformationOnlyAndShowInForm && (
-        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-      )}
-
-      <AlertSlippage
-        maxSlippage={maxSlippage}
-        usdAmount={
-          !isUndefined(toUsdRate) && !isNaN(toUsdRate)
-            ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
-            : ''
-        }
-      />
-      <AlertFormWarning errorKey={formStatus.warning} />
-      <AlertFormError
-        errorKey={formStatus.error}
-        handleBtnClose={() => {
-          updateFormValues({}, null, null)
-        }}
-      />
-
-      {formValues.toError ? (
-        <AlertBox alertType="error">{t`The entered amount exceeds the available currency reserves.`}</AlertBox>
-      ) : null}
-
-      {/* actions*/}
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-        userPoolBalances={userPoolBalances}
-      >
-        {txInfoBar}
+      <TransferActions>
         <Stepper steps={steps} />
+        <AlertFormError
+          errorKey={
+            (
+              enabledApprove.error ||
+              enabledSwap.error ||
+              estGasApprovalState.error ||
+              exchangeDetailsState.error ||
+              approveError ||
+              swapError
+            )?.message ?? ''
+          }
+        />
+        <AlertPool />
+        <AlertSlippage
+          maxSlippage={maxSlippage}
+          usdAmount={
+            !isUndefined(toUsdRate) && !isNaN(toUsdRate) ? (Number(toAmount) * Number(toUsdRate)).toString() : ''
+          }
+        />
+        <AlertFormWarning errorKey={exchangeWarning} />
+        {(!!approveData || !!swapData) && (
+          <div>
+            <TxInfoBars data={approveData} error={approveError} scanTxPath={scanTxPath} />
+            <TxInfoBars data={swapData} error={swapError} label={t`swap`} scanTxPath={scanTxPath} />
+          </div>
+        )}
       </TransferActions>
-    </>
+    </SwapContext.Provider>
   )
 }
 
-const StyledInputProvider = styled(InputProvider)`
-  padding-right: var(--spacing-1);
+const StyledFieldsWrapper = styled(FieldsWrapper)`
+  margin-top: var(--spacing-normal);
 `
 
 export default Swap

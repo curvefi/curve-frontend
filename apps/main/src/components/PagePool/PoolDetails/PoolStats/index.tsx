@@ -1,64 +1,40 @@
-import type { PageTransferProps } from '@/components/PagePool/types'
-
+import React from 'react'
 import { t } from '@lingui/macro'
-import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
+import { getPath } from '@/utils/utilsRouter'
+import { usePoolContext } from '@/components/PagePool/contextPool'
+import { usePoolDetails } from '@/entities/pool'
 import useTokenAlert from '@/hooks/useTokenAlert'
 import useStore from '@/store/useStore'
-import { getPath } from '@/utils/utilsRouter'
 
+import { InternalLink } from '@/ui/Link'
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import CurrencyReserves from '@/components/PagePool/PoolDetails/CurrencyReserves'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/components/PagePool/PoolDetails/PoolStats/Rewards'
-import { InternalLink } from '@/ui/Link'
 
-type PoolStatsProps = {
-  poolAlert: PoolAlert | null
-  tokensMapper: TokensMapper
-} & Pick<PageTransferProps, 'curve' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
-
-const PoolStats: React.FC<PoolStatsProps> = ({
-  curve,
-  routerParams,
-  poolAlert,
-  poolData,
-  poolDataCacheOrApi,
-  tokensMapper,
-}) => {
+const PoolStats: React.FC = () => {
+  const { poolBaseKeys, poolAlert, poolDataCacheOrApi, poolData } = usePoolContext()
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
 
-  const { rChainId, rPoolId } = routerParams
-  const { chainId } = curve ?? {}
+  const { data: poolDetails } = usePoolDetails(poolBaseKeys)
 
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
+  const { parameters, rewardsApy } = poolDetails ?? {}
+
   const params = useStore((state) => state.routerProps?.params)
-
-  const poolId = poolData?.pool?.id
-
   const risksPathname = params && getPath(params, `/risk-disclaimer`)
-
-  // fetch stats
-  useEffect(() => {
-    if (curve && poolData) {
-      fetchPoolStats(curve, poolData)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId])
 
   return (
     <GridContainer>
       <MainStatsContainer flex flexColumn>
         <MainStatsWrapper grid>
           <Box grid gridRowGap={3}>
-            <CurrencyReserves rChainId={rChainId} rPoolId={rPoolId} tvl={tvl} tokensMapper={tokensMapper} />
-            {poolData && <RewardsComp chainId={rChainId} poolData={poolData} rewardsApy={rewardsApy} />}
+            <CurrencyReserves />
+            {rewardsApy && <RewardsComp rewardsApy={rewardsApy} />}
             <Box grid gridRowGap={2}>
               {poolAlert && !poolAlert.isDisableDeposit && !poolAlert.isInformationOnlyAndShowInForm && (
                 <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
@@ -85,16 +61,7 @@ const PoolStats: React.FC<PoolStatsProps> = ({
         </MainStatsWrapper>
       </MainStatsContainer>
 
-      <OtherStatsWrapper>
-        {poolData?.parameters && (
-          <PoolParameters
-            parameters={poolData.parameters}
-            poolData={poolData}
-            poolDataCacheOrApi={poolDataCacheOrApi}
-            routerParams={routerParams}
-          />
-        )}
-      </OtherStatsWrapper>
+      <OtherStatsWrapper>{parameters && <PoolParameters parameters={parameters} />}</OtherStatsWrapper>
     </GridContainer>
   )
 }

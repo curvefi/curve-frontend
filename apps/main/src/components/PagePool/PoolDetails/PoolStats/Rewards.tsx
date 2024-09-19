@@ -6,8 +6,8 @@ import { copyToClipboard } from '@/lib/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { haveRewardsApy } from '@/utils/utilsCurvejs'
 import { shortenTokenName } from '@/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 import networks from '@/networks'
-import useStore from '@/store/useStore'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 import { LARGE_APY } from '@/constants'
@@ -24,16 +24,18 @@ import Spacer from '@/ui/Spacer'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 type RewardsProps = {
-  chainId: ChainId
-  poolData: PoolData
   rewardsApy: RewardsApy | undefined
 }
 
-const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
+const Rewards: React.FC<RewardsProps> = ({ rewardsApy }) => {
+  const { chainId, poolData } = usePoolContext()
+
+  const { pool, failedFetching24hOldVprice } = poolData ?? {}
+
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const campaignRewardsMapper = useCampaignRewardsMapper()
-  const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
+  const campaignRewardsPool = campaignRewardsMapper[pool?.address ?? '']
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
@@ -44,11 +46,11 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
     copyToClipboard(address)
   }
 
-  if (!haveBase && !poolData?.failedFetching24hOldVprice && !haveCrv && !haveOther) return null
+  if (!haveBase && !failedFetching24hOldVprice && !haveCrv && !haveOther) return null
 
   return (
     <RewardsWrapper>
-      {(haveBase || poolData?.failedFetching24hOldVprice) && (
+      {(haveBase || failedFetching24hOldVprice) && (
         <RewardsContainer>
           <Box flex fillWidth>
             <RewardsTitle>{t`Base vAPY`}</RewardsTitle>

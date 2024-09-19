@@ -6,8 +6,8 @@ import networks from '@/networks'
 import useStore from '@/store/useStore'
 import dayjs from '@/lib/dayjs'
 
-const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
-  const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
+const usePoolTotalStaked = (pool: Pool | undefined) => {
+  const { address = '', lpToken, gauge } = pool ?? {}
 
   const curve = useStore((state) => state.curve)
   const getProvider = useStore((state) => state.wallet.getProvider)
@@ -57,7 +57,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   useEffect(() => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
-    if (address && curve && shouldCallApi) {
+    if (address && curve && shouldCallApi && gauge && lpToken) {
       ;(async () => {
         const rpcUrl = networks[curve.chainId].rpcUrl
         const provider = getProvider('') || new JsonRpcProvider(rpcUrl)

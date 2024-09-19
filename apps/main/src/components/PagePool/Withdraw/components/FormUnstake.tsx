@@ -1,168 +1,149 @@
-import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
+import type { UnstakeFormValues } from '@/entities/withdraw'
 import type { Step } from '@/ui/Stepper/types'
-import type { TransferProps } from '@/components/PagePool/types'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 
-import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
-import { getStepStatus } from '@/ui/Stepper/helpers'
-import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import { useUnstake, useUnstakeEstGas } from '@/entities/withdraw'
+import { UnstakeContext } from '@/components/PagePool/Withdraw/contextUnstake'
+import { getMutationStepLabel, getMutationStepStatus } from '@/components/PagePool/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 
+import { TxInfoBars } from '@/ui/TxInfoBar'
 import AlertFormError from '@/components/AlertFormError'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
-import TransferActions from '@/components/PagePool/components/TransferActions'
+import DetailsInfoEstGas from '@/components/PagePool/components/DetailsInfoEstGas'
+import FieldGauge from '@/components/PagePool/Withdraw/components/FieldGauge'
 import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
+import TransferActions from '@/components/PagePool/components/TransferActions'
 
-const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
-  const isSubscribed = useRef(false)
+const FormUnstake = () => {
+  const { chainId, signerAddress, poolId, poolBaseSignerKeys, signerPoolBalances, isSeed, scanTxPath } =
+    usePoolContext()
 
-  const { chainId, signerAddress } = curve || {}
-  const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formEstGas = useStore((state) => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const notifyNotification = useStore((state) => state.wallet.notifyNotification)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-
+  const [formValues, setFormValues] = useState<UnstakeFormValues>({ gauge: '', gaugeError: '' })
   const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
-  const poolId = poolData?.pool?.id
-  const haveSigner = !!signerAddress
+  const { gauge, gaugeError } = formValues
+
+  const gaugeBalance = signerPoolBalances?.['gauge'] ?? ''
+  const isInProgress = useMemo(() => steps.some(({ status }) => status === 'in-progress'), [steps])
+
+  const actionParams = {
+    ...poolBaseSignerKeys,
+    isLoadingDetails: false,
+    isApproved: true,
+    gauge,
+    gaugeError,
+  }
+
+  const { data: { estimatedGas = null } = {}, ...estGasApprovalState } = useUnstakeEstGas({
+    ...actionParams,
+    isInProgress,
+  })
+
+  const {
+    enabled: enabledUnstake,
+    mutation: {
+      mutate: unstake,
+      data: unstakeData,
+      status: unstakeStatus,
+      error: unstakeError,
+      reset: unstakeReset,
+      ...unstakeState
+    },
+  } = useUnstake(actionParams)
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      setTxInfoBar(null)
-      setFormValues('UNSTAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+    (updatedFormValues: Partial<UnstakeFormValues>) => {
+      unstakeReset()
+
+      setFormValues((prevFormValues) => {
+        const all = { ...prevFormValues, gaugeError: '', ...updatedFormValues }
+        let gaugeError: UnstakeFormValues['gaugeError'] = ''
+        if (signerAddress) gaugeError = Number(all.gauge) > Number(gaugeBalance) ? 'too-much' : ''
+        return { ...all, gaugeError }
+      })
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [gaugeBalance, signerAddress, unstakeReset]
   )
 
-  const handleUnstakeClick = useCallback(
-    async (activeKey: string, curve: CurveApi, poolData: PoolData, formValues: FormValues) => {
-      const notifyMessage = t`Please confirm unstaking of ${formValues.stakedLpToken} LP Tokens`
-      const { dismiss } = notifyNotification(notifyMessage, 'pending')
-      const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
-
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
-      }
-      if (typeof dismiss === 'function') dismiss()
-    },
-    [fetchStepUnstake, notifyNotification]
-  )
-
-  const getSteps = useCallback(
-    (
-      activeKey: string,
-      curve: CurveApi,
-      poolData: PoolData,
-      formValues: FormValues,
-      formStatus: FormStatus,
-      isSeed: boolean
-    ) => {
-      const { step } = formStatus
-      const isValid = !isSeed && !formStatus.error && +formValues.stakedLpToken > 0
-      const isComplete = formStatus.formTypeCompleted === 'UNSTAKE'
-
-      const stepsObj: { [key: string]: Step } = {
-        UNSTAKE: {
-          key: 'UNSTAKE',
-          status: getStepStatus(isComplete, step === 'UNSTAKE', isValid),
-          type: 'action',
-          content: isComplete ? t`Unstake Complete` : t`Unstake`,
-          onClick: () => handleUnstakeClick(activeKey, curve, poolData, formValues),
-        },
-      }
-
-      return ['UNSTAKE'].map((key) => stepsObj[key])
-    },
-    [handleUnstakeClick]
-  )
-
-  // onMount
-  useEffect(() => {
-    isSubscribed.current = true
-
-    return () => {
-      isSubscribed.current = false
-    }
+  const resetForm = useCallback(() => {
+    setFormValues({ gauge: '', gaugeError: '' })
   }, [])
 
+  // reset form if signerAddress changed
   useEffect(() => {
-    if (poolId) {
-      resetState(poolData, 'UNSTAKE')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolId])
+    resetForm()
+  }, [resetForm, signerAddress])
 
-  // curve state change
+  // reset form after unstake
   useEffect(() => {
-    if (chainId && poolId) {
-      updateFormValues({})
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, seed.isSeed, signerAddress])
+    if (unstakeState.isSuccess) resetForm()
+  }, [resetForm, unstakeState.isSuccess])
 
   // steps
   useEffect(() => {
-    if (curve && poolData && seed.isSeed !== null) {
-      const updatedSteps = getSteps(activeKey, curve, poolData, formValues, formStatus, seed.isSeed)
-      setSteps(updatedSteps)
+    if (!chainId || !poolId || !signerAddress || isSeed === null) {
+      setSteps([])
+      return
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, signerAddress, formValues, formStatus])
 
-  const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
-  const balGauge = userPoolBalances?.gauge as string
+    const SUBMIT: Step = {
+      key: 'SUBMIT',
+      status: getMutationStepStatus(enabledUnstake.enabled, unstakeStatus),
+      type: 'action',
+      content: `${t`Unstake`} ${getMutationStepLabel(false, unstakeStatus)}`,
+      onClick: () => {
+        unstakeReset()
+        unstake({
+          chainId,
+          poolId,
+          signerAddress,
+          isLoadingDetails: false,
+          isApproved: true,
+          gauge,
+          gaugeError,
+        })
+      },
+    }
+
+    setSteps([SUBMIT])
+  }, [
+    chainId,
+    enabledUnstake.enabled,
+    gauge,
+    gaugeError,
+    isSeed,
+    poolId,
+    signerAddress,
+    unstake,
+    unstakeReset,
+    unstakeStatus,
+  ])
 
   return (
-    <>
-      {/* input fields */}
-      <FieldLpToken
-        amount={formValues.stakedLpToken}
-        balanceLoading={haveSigner && typeof userPoolBalances === 'undefined'}
-        balance={haveSigner ? formatNumber(balGauge) : ''}
-        hasError={+formValues.stakedLpToken > +balGauge}
-        haveSigner={haveSigner}
-        handleAmountChange={(stakedLpToken) => {
-          updateFormValues({ stakedLpToken })
-        }}
-        disabledMaxButton={isDisabled}
-        disableInput={isDisabled}
-        handleMaxClick={() => {
-          updateFormValues({ stakedLpToken: (userPoolBalances?.gauge as string) ?? '0' })
-        }}
+    <UnstakeContext.Provider
+      value={{
+        formValues,
+        isLoading: isSeed === null,
+        isDisabled: unstakeState.isPending || isSeed === null || isSeed,
+        updateFormValues,
+      }}
+    >
+      <FieldGauge />
+      <DetailsInfoEstGas
+        activeStep={1}
+        estimatedGas={estimatedGas}
+        estimatedGasIsLoading={estGasApprovalState.isFetching}
+        stepsLength={steps.length}
       />
 
-      {haveSigner && (
-        <div>
-          <DetailInfoEstGas chainId={rChainId} {...formEstGas} />
-        </div>
-      )}
-
-      <TransferActions
-        poolData={poolData}
-        poolDataCacheOrApi={poolDataCacheOrApi}
-        loading={!chainId || !steps.length || !seed.loaded}
-        routerParams={routerParams}
-        seed={seed}
-        userPoolBalances={userPoolBalances}
-      >
-        {formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />}
-        {txInfoBar}
+      <TransferActions>
         <Stepper steps={steps} />
+        <AlertFormError errorKey={(enabledUnstake.error || estGasApprovalState.error || unstakeError)?.message ?? ''} />
+        <TxInfoBars data={unstakeData} error={unstakeError} label={t`unstake`} scanTxPath={scanTxPath} />
       </TransferActions>
-    </>
+    </UnstakeContext.Provider>
   )
 }
 

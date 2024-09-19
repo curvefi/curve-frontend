@@ -1,10 +1,9 @@
-import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -18,12 +17,13 @@ import Stats from '@/ui/Stats'
 import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
 import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 
-const PoolParameters: React.FC<
-  {
-    parameters: PoolParameters
-  } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
-> = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
-  const { rChainId, rPoolId } = routerParams
+type Props = {
+  parameters: PoolParameters
+}
+
+const PoolParameters: React.FC<Props> = ({ parameters }) => {
+  const { rChainId, rPoolId, poolDataCacheOrApi, poolData, pool } = usePoolContext()
+
   const pricesApi = networks[rChainId].pricesApi
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
@@ -76,7 +76,7 @@ const PoolParameters: React.FC<
         </Items>
       </article>
 
-      <PoolTotalStaked poolDataCacheOrApi={poolDataCacheOrApi} />
+      <PoolTotalStaked pool={pool} />
 
       <article>
         <Items listItemMargin="var(--spacing-1)">

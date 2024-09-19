@@ -1,5 +1,3 @@
-import type { Slippage } from '@/components/PagePool/types'
-
 import React, { useMemo } from 'react'
 import { t, Trans } from '@lingui/macro'
 
@@ -9,7 +7,12 @@ import { Chip } from '@/ui/Typography'
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
-interface Props extends Slippage {}
+interface Props {
+  isLoading: boolean
+  isHighSlippage: boolean | undefined
+  isBonus: boolean | undefined
+  slippage: number | null | undefined
+}
 
 type SlippageDetail = {
   isBold: boolean
@@ -18,7 +21,7 @@ type SlippageDetail = {
   variant: 'warning' | 'success' | ''
 }
 
-const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Props) => {
+const DetailInfoSlippage: React.FC<Props> = ({ isLoading, isHighSlippage, isBonus, slippage }) => {
   const { isBold, label, tip, variant } = useMemo(() => {
     let slippageDetail: SlippageDetail = {
       isBold: false,
@@ -59,7 +62,7 @@ const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Prop
   return (
     <DetailInfo
       isBold={isBold}
-      loading={loading}
+      loading={isLoading}
       loadingSkeleton={[50, 23]}
       variant={variant}
       label={label}

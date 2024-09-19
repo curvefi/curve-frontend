@@ -1,0 +1,119 @@
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
+import { breakpoints, formatNumber, formatNumberUsdRate } from '@/ui/utils'
+import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import { shortenTokenAddress } from '@/utils'
+
+import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
+import Chip from '@/ui/Typography/Chip'
+import Box from '@/ui/Box'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Icon from '@/ui/Icon'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import TextEllipsis from '@/ui/TextEllipsis'
+import TooltipButton from '@/ui/Tooltip'
+import TokenIcon from '@/components/TokenIcon'
+
+interface CurrencyReservesProps {
+  cr: CurrencyReservesToken | undefined
+  network: NetworkConfig
+  rChainId: ChainId
+  tokenObj: Token
+  tokenLink: string | undefined
+  handleCopyClick(address: string): void
+}
+
+const CurrencyReservesContent = ({
+  cr,
+  network,
+  rChainId,
+  tokenObj,
+  tokenLink,
+  handleCopyClick,
+}: CurrencyReservesProps) => {
+  const { symbol = '', address = '', ethAddress, haveSameTokenName } = tokenObj ?? {}
+
+  return (
+    <Wrapper flex flexJustifyContent="space-between" isBorderBottom>
+      <Box flex flexAlignItems="center" gridGap={1}>
+        <TokenIcon size="sm" imageBaseUrl={getImageBaseUrl(rChainId)} token={symbol} address={ethAddress || address} />
+
+        <Box grid gridGap={1}>
+          <TokenLabelLink $noStyles href={network.scanTokenPath(address)}>
+            <ExternalLinkToken>{symbol}</ExternalLinkToken>{' '}
+            {haveSameTokenName ? (
+              <Chip opacity={0.7} size="xs">
+                {shortenTokenAddress(address)}
+              </Chip>
+            ) : null}
+          </TokenLabelLink>
+
+          <Box flex flexAlignItems="center" gridGap={2}>
+            <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
+            <TooltipButton onClick={() => handleCopyClick(address)} noWrap tooltip={t`Copy address`}>
+              <Icon name="Copy" size={16} />
+            </TooltipButton>
+
+            {tokenLink && (
+              <TokenLink $noStyles href={tokenLink}>
+                <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
+              </TokenLink>
+            )}
+          </Box>
+        </Box>
+      </Box>
+
+      <Box className={'right'} flex flexDirection="column">
+        <Chip size="md" isBold>
+          {formatNumber(cr?.balance, { defaultValue: '-' })}{' '}
+        </Chip>
+        <TokenBalancePercent opacity={0.7}>
+          {typeof cr?.percentShareInPool === 'undefined' || cr.percentShareInPool === 'NaN'
+            ? '?%'
+            : formatNumber(cr.percentShareInPool, {
+                style: 'percent',
+                ...(Number(cr.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
+              })}
+        </TokenBalancePercent>
+      </Box>
+    </Wrapper>
+  )
+}
+
+const Wrapper = styled(StyledStats)`
+  padding-top: var(--spacing-2);
+`
+
+const TokenLabelLink = styled(ExternalLink)`
+  align-items: baseline;
+  color: inherit;
+  display: inline-flex;
+  grid-gap: var(--spacing-1);
+  text-decoration: none;
+  text-transform: initial;
+`
+
+export const TokenBalancePercent = styled(Chip)`
+  align-items: center;
+  display: inline-flex;
+  justify-content: right;
+  min-height: var(--height-small);
+  min-width: 3.75rem; //60px
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    min-height: 24px;
+  }
+`
+
+export const ExternalLinkToken = styled(TextEllipsis)`
+  font-weight: bold;
+  text-transform: initial;
+`
+
+export const TokenLink = styled(ExternalLink)`
+  color: inherit;
+  text-transform: initial;
+`
+
+export default CurrencyReservesContent

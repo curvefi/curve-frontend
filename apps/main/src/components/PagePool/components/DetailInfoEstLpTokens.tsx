@@ -1,42 +1,41 @@
-import type { FormLpTokenExpected } from '@/components/PagePool/Deposit/types'
-
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
-const DetailInfoEstLpTokens = ({
-  formLpTokenExpected,
-  maxSlippage,
-  poolDataCacheOrApi,
-}: {
-  formLpTokenExpected: FormLpTokenExpected
-  maxSlippage: string
-  poolDataCacheOrApi: PoolDataCacheOrApi
-}) => {
-  const { referenceAsset } = poolDataCacheOrApi.pool
+type Props = {
+  expected: string | undefined
+  virtualPrice: string | undefined
+  isLoading: boolean
+}
+
+const DetailInfoEstLpTokens: React.FC<Props> = ({ expected = '', virtualPrice, isLoading }) => {
+  const { pool, maxSlippage } = usePoolContext()
+
+  const { referenceAsset } = pool ?? {}
   const showTooltip = referenceAsset !== 'CRYPTO'
-  const parsedVirtualPrice = `${formatNumber(formLpTokenExpected.virtualPrice)} ${referenceAsset}`
+  const parsedVirtualPrice = `${formatNumber(virtualPrice)} ${referenceAsset}`
 
   // min lp tokens received including slippage
   const lpTokensExpectedWithSlippage = useMemo(() => {
-    const expectedNum = Number(formLpTokenExpected.expected)
+    const expectedNum = Number(expected)
     const maxSlippageNum = Number(maxSlippage)
 
     if (expectedNum && maxSlippageNum) {
       return (expectedNum * (100 - maxSlippageNum)) / 100
     }
-  }, [formLpTokenExpected.expected, maxSlippage])
+  }, [expected, maxSlippage])
 
   return (
     <DetailInfo
       isBold
-      loading={formLpTokenExpected.loading}
+      loading={isLoading}
       loadingSkeleton={[85, 23]}
-      className={formLpTokenExpected.expected.length > 20 ? 'isRow' : ''}
+      className={expected.length > 20 ? 'isRow' : ''}
       label={t`Minimum LP Tokens:`}
       tooltip={
         showTooltip ? (

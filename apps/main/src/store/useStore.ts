@@ -18,13 +18,10 @@ import createDashboardSlice, { DashboardSlice } from '@/store/createDashboardSli
 import createTokensSlice, { TokensSlice } from '@/store/createTokensSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from '@/store/createUsdRatesSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/store/createLockedCrvSlice'
-import createPoolSwapSlice, { PoolSwapSlice } from '@/store/createPoolSwapSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/store/createCreatePoolSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/store/createIntegrationsSlice'
 import createSelectTokenSlice, { SelectTokenSlice } from '@/store/createSelectTokenSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/store/createDeployGaugeSlice'
-import createPoolDepositSlice, { PoolDepositSlice } from '@/store/createPoolDepositSlice'
-import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/store/createPoolWithdrawSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
 
 export type State = GlobalSlice &
@@ -32,9 +29,6 @@ export type State = GlobalSlice &
   WalletSlice &
   CacheSlice &
   PoolsSlice &
-  PoolDepositSlice &
-  PoolWithdrawSlice &
-  PoolSwapSlice &
   UserSlice &
   PoolListSlice &
   QuickSwapSlice &
@@ -56,9 +50,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createWalletSlice(set, get),
   ...createPoolListSlice(set, get),
   ...createPoolsSlice(set, get),
-  ...createPoolDepositSlice(set, get),
-  ...createPoolWithdrawSlice(set, get),
-  ...createPoolSwapSlice(set, get),
   ...createUserSlice(set, get),
   ...createDashboardSlice(set, get),
   ...createQuickSwapSlice(set, get),

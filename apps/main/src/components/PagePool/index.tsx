@@ -1,28 +1,21 @@
-import type {
-  DetailInfoTypes,
-  EstimatedGas,
-  PageTransferProps,
-  PoolInfoTab,
-  Seed,
-  Slippage,
-  TransferFormType,
-} from '@/components/PagePool/types'
+import type { FormType } from '@/components/PagePool/contextPool'
+import type { DetailInfoTypes, PageTransferProps, PoolInfoTab, TransferFormType } from '@/components/PagePool/types'
 
 import { t } from '@lingui/macro'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { REFRESH_INTERVAL, ROUTE } from '@/constants'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { ROUTE } from '@/constants'
+import { PoolContext } from '@/components/PagePool/contextPool'
 import usePoolAlert from '@/hooks/usePoolAlert'
-import useTokensMapper from '@/hooks/useTokensMapper'
 import networks from '@/networks'
-import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getChainPoolIdActiveKey } from '@/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { useNavigate } from 'react-router-dom'
+import { usePoolTokenList } from '@/entities/pool'
+import { useSignerPoolBalances } from '@/entities/signer'
 
 import Deposit from '@/components/PagePool/Deposit'
 import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
@@ -55,25 +48,6 @@ import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 
-export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
-  loading: false,
-  estimatedGas: null,
-  error: null,
-}
-
-export const DEFAULT_SLIPPAGE: Slippage = {
-  loading: false,
-  slippage: null,
-  isHighSlippage: false,
-  isBonus: false,
-  error: '',
-}
-
-const DEFAULT_SEED: Seed = {
-  isSeed: null,
-  loaded: false,
-}
-
 const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
@@ -81,27 +55,21 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   const navigate = useNavigate()
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
 
-  const { tokensMapper } = useTokensMapper(rChainId)
-  const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, rPoolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const globalMaxSlippage = useStore((state) => state.maxSlippage[chainIdPoolId])
-  const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.isMdUp)
+  const isWrapped = useStore((state) => state.showWrapped[rPoolId]) ?? false
   const layoutHeight = useStore((state) => state.layoutHeight)
   const themeType = useStore((state) => state.themeType)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const chartExpanded = useStore((state) => state.pools.pricesApiState.chartExpanded)
   const setChartExpanded = useStore((state) => state.pools.setChartExpanded)
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
+  const poolTvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId]?.value)
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
     chainId: rChainId,
@@ -109,15 +77,31 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   })
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
-  const [seed, setSeed] = useState(DEFAULT_SEED)
+  const [formType, setFormType] = useState<FormType>('DEPOSIT')
+  const [isSeed, setIsSeed] = useState<boolean | null>(null)
 
-  const { pool } = poolDataCacheOrApi
-  const poolId = poolData?.pool?.id
-  const imageBaseUrl = networks[rChainId].imageBaseUrl
-  const poolAddress = poolData?.pool.address
+  const { imageBaseUrl = '' } = networks[rChainId] ?? {}
+  const { chainId } = curve || {}
+  const { pool, hasWrapped } = poolDataCacheOrApi
+  const { id: poolId, address: poolAddress } = poolData?.pool ?? {}
 
+  const { scanTxPath } = networks[rChainId]
   const pricesApi = networks[rChainId].pricesApi
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
+
+  const { poolBaseKeys, poolBaseSignerKeys } = useMemo(() => {
+    return {
+      poolBaseKeys: { chainId, poolId },
+      poolBaseSignerKeys: { chainId, signerAddress, poolId },
+    }
+  }, [chainId, poolId, signerAddress])
+
+  const { data: { tokens = [], tokensMapper = {} } = {} } = usePoolTokenList({ ...poolBaseKeys, isWrapped })
+
+  const { data: signerPoolBalances, ...signerPoolBalancesState } = useSignerPoolBalances({
+    ...poolBaseSignerKeys,
+    formType,
+  })
 
   const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
     const tabs: PoolInfoTab[] = [{ label: t`Pool Details`, key: 'pool' }]
@@ -143,14 +127,6 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     return layoutHeight.mainNav + layoutHeight.secondaryNav
   }, [layoutHeight])
 
-  const fetchData = useCallback(() => {
-    if (isPageVisible && curve && poolData) {
-      fetchPoolStats(curve, poolData)
-    }
-  }, [curve, fetchPoolStats, isPageVisible, poolData])
-
-  usePageVisibleInterval(() => fetchData, REFRESH_INTERVAL['5m'], isPageVisible)
-
   useEffect(() => {
     if (
       curve &&
@@ -162,25 +138,6 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       fetchPricesPoolSnapshots(rChainId, poolAddress)
     }
   }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
-
-  // is seed
-  useEffect(() => {
-    if (!poolData || !currencyReserves) return
-
-    const isSeed = Number(currencyReserves.total) === 0
-
-    if (isSeed && poolData.hasWrapped) setPoolIsWrapped(poolData, true)
-    setSeed({ isSeed, loaded: true })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolData?.pool?.id, currencyReserves?.total])
-
-  // fetch user pool info
-  useEffect(() => {
-    if (curve && poolId && !!signerAddress) {
-      fetchUserPoolInfo(curve, poolId)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rChainId, poolId, signerAddress])
 
   const isAvailableManageGauge = useMemo(
     () =>
@@ -207,6 +164,23 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     },
     [navigate, params]
   )
+
+  const setPoolIsWrapped = useCallback(
+    (poolId: string, isWrapped: boolean) => {
+      updateGlobalStoreByKey('showWrapped', { [poolId]: isWrapped })
+    },
+    [updateGlobalStoreByKey]
+  )
+
+  // is seed
+  useEffect(() => {
+    if (!poolId || typeof poolTvl === 'undefined') return
+
+    const isSeed = Number(poolTvl) === 0
+    if (isSeed) updateGlobalStoreByKey('showWrapped', { [poolId]: isSeed && hasWrapped })
+    setIsSeed(isSeed)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hasWrapped, poolId, poolTvl])
 
   useEffect(() => {
     if (!isAvailableManageGauge && rFormType === 'manage-gauge') {
@@ -241,7 +215,37 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
   }, [chartExpanded, isMdUp, setChartExpanded])
 
   return (
-    <>
+    <PoolContext.Provider
+      value={{
+        rChainId,
+        rPoolId,
+        curve,
+        chainId,
+        signerAddress,
+        formType,
+        hasWrapped,
+        isWrapped,
+        imageBaseUrl,
+        poolDataCacheOrApi,
+        poolData,
+        pool: poolData?.pool,
+        poolId: poolData?.pool?.id,
+        poolAlert,
+        poolBaseKeys,
+        poolBaseSignerKeys,
+        poolTvl,
+        maxSlippage,
+        isSeed,
+        signerPoolBalances,
+        signerPoolBalancesIsLoading: signerPoolBalancesState.isFetching,
+        signerPoolBalancesIsError: signerPoolBalancesState.isError,
+        tokens,
+        tokensMapper,
+        setPoolIsWrapped,
+        setFormType,
+        scanTxPath,
+      }}
+    >
       {pricesApiPoolData && pricesApi && chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
@@ -269,56 +273,20 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
             />
 
             <AppFormContentWrapper>
-              {rFormType === 'swap' ? (
+              {rFormType === 'swap' && (
+                <>{poolAlert?.isDisableSwap ? <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox> : <Swap />}</>
+              )}
+              {rFormType === 'deposit' && <Deposit hasDepositAndStake={hasDepositAndStake} />}
+              {rFormType === 'withdraw' && <Withdraw />}
+              {rFormType === 'manage-gauge' && (
                 <>
-                  {poolAlert?.isDisableSwap ? (
-                    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+                  {poolData ? (
+                    <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
                   ) : (
-                    <Swap
-                      {...pageTransferProps}
-                      chainIdPoolId={chainIdPoolId}
-                      imageBaseUrl={imageBaseUrl}
-                      poolAlert={poolAlert}
-                      maxSlippage={maxSlippage}
-                      seed={seed}
-                      tokensMapper={tokensMapper}
-                      userPoolBalances={userPoolBalances}
-                      userPoolBalancesLoading={userPoolBalancesLoading}
-                    />
+                    <BlockSkeleton width={339} />
                   )}
                 </>
-              ) : rFormType === 'deposit' ? (
-                <Deposit
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  hasDepositAndStake={hasDepositAndStake}
-                  imageBaseUrl={imageBaseUrl}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
-                />
-              ) : rFormType === 'withdraw' ? (
-                <Withdraw
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  imageBaseUrl={imageBaseUrl}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
-                />
-              ) : rFormType === 'manage-gauge' ? (
-                poolData ? (
-                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-                ) : (
-                  <BlockSkeleton width={339} />
-                )
-              ) : null}
+              )}
             </AppFormContentWrapper>
           </AppFormContent>
         </AppPageFormsWrapper>
@@ -352,33 +320,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
           </AppPageInfoTabsWrapper>
 
           <AppPageInfoContentWrapper variant="secondary">
-            {selectedTab === 'user' && (
-              <MySharesStats
-                curve={curve}
-                poolData={poolData}
-                poolDataCacheOrApi={poolDataCacheOrApi}
-                routerParams={routerParams}
-                tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-              />
-            )}
+            {selectedTab === 'user' && <MySharesStats />}
             {selectedTab === 'pool' && (
-              <StatsWrapper
-                as="section"
-                className={!curve || !poolData ? 'loading' : ''}
-                grid
-                gridRowGap="1rem"
-                variant="secondary"
-              >
-                <PoolStats
-                  curve={curve}
-                  routerParams={routerParams}
-                  poolData={poolData}
-                  poolDataCacheOrApi={poolDataCacheOrApi}
-                  poolAlert={poolAlert}
-                  tokensMapper={tokensMapper}
-                />
-              </StatsWrapper>
+              <PoolStatsWrapper as="section" className={!curve || !poolData ? 'loading' : ''} variant="secondary">
+                <PoolStats />
+              </PoolStatsWrapper>
             )}
             {selectedTab === 'advanced' &&
               poolData &&
@@ -389,7 +335,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>
-    </>
+    </PoolContext.Provider>
   )
 }
 
@@ -425,6 +371,10 @@ const Title = styled(TextEllipsis)`
 const StatsWrapper = styled(Box)`
   align-items: flex-start;
   display: grid;
+`
+
+const PoolStatsWrapper = styled(StatsWrapper)`
+  grid-row-gap: 1rem;
 `
 
 const PriceAndTradesWrapper = styled(Box)`

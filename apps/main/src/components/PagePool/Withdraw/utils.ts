@@ -1,59 +1,32 @@
-import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
+import type { FormType, ClaimableDetailsResp } from '@/entities/withdraw'
 
 import { t } from '@lingui/macro'
 
-export const DEFAULT_FORM_VALUES: FormValues = {
-  amounts: [],
-  claimableRewards: [],
-  claimableCrv: '',
-  isWrapped: false,
-  lpToken: '',
-  stakedLpToken: '',
-  selected: '',
-  selectedToken: '',
-  selectedTokenAddress: '',
-}
-
-export const DEFAULT_FORM_STATUS: FormStatus = {
-  isApproved: false,
-  isClaimCrv: false,
-  isClaimRewards: false,
-  formProcessing: false,
-  formTypeCompleted: '',
-  step: '',
-  error: '',
-}
-
-export function resetFormAmounts(formValues: FormValues) {
-  return formValues.amounts.map((a) => ({ ...a, value: '' }))
-}
-
 export function getTokensText(
-  { claimableCrv, claimableRewards }: FormValues,
-  { isClaimCrv, isClaimRewards }: FormStatus
+  claimableCrv: string,
+  claimableRewards: ClaimableDetailsResp['claimableRewards'],
+  formType: FormType
 ) {
-  let message = []
-
-  if (isClaimCrv) {
-    message.push(`CRV ${claimableCrv}`)
-  } else if (isClaimRewards) {
-    claimableRewards.map(({ symbol, amount }) => {
-      message.push(`${symbol} ${amount}`)
-    })
+  switch (formType) {
+    case 'CLAIM_CRV':
+      return `CRV ${claimableCrv}`
+    case 'CLAIM_REWARDS':
+      return claimableRewards.map(({ symbol, amount }) => `${symbol} ${amount}`).join(', ')
+    default:
+      return ''
   }
-
-  return message.join(', ')
 }
 
 export function getClaimText(
-  formValues: FormValues,
-  formStatus: FormStatus,
+  claimableCrv: string,
+  claimableRewards: ClaimableDetailsResp['claimableRewards'],
+  formType: FormType,
   comp: 'notify' | 'inProgress' | 'success' | 'successTxInfo' | 'claimCrvButton',
   rewardsNeedNudging: boolean | undefined
 ) {
-  const tokensMessage = getTokensText(formValues, formStatus)
-  const haveClaimableCrv = +formValues.claimableCrv > 0
-  const haveClaimableRewards = formValues.claimableRewards.length > 0
+  const tokensMessage = getTokensText(claimableCrv, claimableRewards, formType)
+  const haveClaimableCrv = +claimableCrv > 0
+  const haveClaimableRewards = claimableRewards.length > 0
   let type: 'isClaimOnly' | 'isNudgeAndClaim' | 'isNudgeOnly' | '' = ''
 
   if (haveClaimableCrv || haveClaimableRewards) {

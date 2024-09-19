@@ -1,46 +1,29 @@
-import type { Seed } from '@/components/PagePool/types'
-
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
+import { usePoolContext } from '@/components/PagePool/contextPool'
+import { usePoolSeedAmounts } from '@/entities/pool'
 
 import AlertBox from '@/ui/AlertBox'
 
-type Props = {
-  seed: Seed
-  poolData: PoolData | undefined
-}
+const AlertSeedAmounts: React.FC = () => {
+  const { isWrapped, isSeed, poolBaseKeys } = usePoolContext()
 
-const AlertSeedAmounts = ({ seed, poolData }: Props) => {
-  const [seedAmounts, setSeedAmounts] = useState<string[]>([])
+  const { data: seedAmounts } = usePoolSeedAmounts({
+    ...poolBaseKeys,
+    firstAmount: '1',
+    isSeed,
+    useUnderlying: !isWrapped,
+  })
 
-  const { isSeed, loaded } = seed
+  const parsedSeedAmounts = useMemo(() => {
+    if (!seedAmounts) return []
+    return seedAmounts.map(({ token, amount }) => `${formatNumber(amount, { showAllFractionDigits: true })} ${token}`)
+  }, [seedAmounts])
 
-  const getSeedRatio = useCallback(async (poolData: PoolData) => {
-    try {
-      const { pool, hasWrapped } = poolData
-
-      const tokens = hasWrapped ? pool.wrappedCoins : pool.underlyingCoins
-      const useUnderlying = !hasWrapped
-
-      const seedAmounts = await pool.getSeedAmounts('1', useUnderlying)
-
-      setSeedAmounts(
-        tokens.map((token, idx) => `${formatNumber(seedAmounts[idx], { showAllFractionDigits: true })} ${token}`)
-      )
-    } catch (error) {
-      console.error(error)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!!poolData && loaded && isSeed) getSeedRatio(poolData)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolData?.pool?.id, loaded, isSeed])
-
-  const seedAmountsLength = seedAmounts.length
+  const seedAmountsLength = parsedSeedAmounts.length
 
   return (
     <>
@@ -49,13 +32,13 @@ const AlertSeedAmounts = ({ seed, poolData }: Props) => {
           <div>
             <p>
               {seedAmountsLength === 2 &&
-                t`This pool is empty. Assuming you are adding ${seedAmounts[0]}, the equivalent amount of the other token should be ${seedAmounts[1]}.`}
+                t`This pool is empty. Assuming you are adding ${parsedSeedAmounts[0]}, the equivalent amount of the other token should be ${parsedSeedAmounts[1]}.`}
               {seedAmountsLength !== 2 &&
-                t`This pool is empty. Assuming you are adding ${seedAmounts[0]}, the equivalent amounts of the other tokens should be:`}
+                t`This pool is empty. Assuming you are adding ${parsedSeedAmounts[0]}, the equivalent amounts of the other tokens should be:`}
             </p>
             {seedAmountsLength !== 2 && (
               <StyledSeedAmounts>
-                {seedAmounts.map((seedAmount, idx) => {
+                {parsedSeedAmounts.map((seedAmount, idx) => {
                   if (idx === 0) return null
                   return <StyledSeedAmount key={seedAmount}>{seedAmount}</StyledSeedAmount>
                 })}

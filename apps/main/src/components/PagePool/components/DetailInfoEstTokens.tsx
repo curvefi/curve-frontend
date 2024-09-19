@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -10,7 +10,7 @@ type Props = {
   showEst: boolean
 }
 
-const DetailInfoEstTokens = ({ tokens, amounts, showEst }: Props) => {
+const DetailInfoEstTokens: React.FC<Props> = ({ tokens, amounts, showEst }) => {
   const haveEstReceived = useMemo(() => amounts.reduce((prev, curr) => prev + Number(curr), 0), [amounts])
   const showEstReceived = haveEstReceived && !!tokens.length && showEst
 
