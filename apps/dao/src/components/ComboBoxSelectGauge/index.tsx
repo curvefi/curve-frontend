@@ -30,9 +30,19 @@ const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
+  const { userAddress, userGaugeVoteWeightsMapper } = useStore((state) => state.user)
   const { selectedGauge, setSelectedGauge, setStateByKey, gaugeMapper } = useStore((state) => state.gauges)
   const isMobile = useStore((state) => state.isMobile)
-  const gauges = Object.values(gaugeMapper).sort((a, b) => b.gauge_weight - a.gauge_weight)
+
+  const userGaugeVoteWeights = userGaugeVoteWeightsMapper[userAddress ?? '']
+  const gauges = Object.values(gaugeMapper)
+    .filter(
+      (gauge) =>
+        !userGaugeVoteWeights?.data.gauges.some(
+          (userGauge) => userGauge.gaugeAddress.toLowerCase() === gauge.address.toLowerCase()
+        )
+    )
+    .sort((a, b) => b.gauge_weight - a.gauge_weight)
 
   const imageBaseUrl = networks[1].imageBaseUrl
 

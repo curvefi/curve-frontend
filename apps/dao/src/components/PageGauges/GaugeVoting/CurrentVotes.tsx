@@ -13,7 +13,6 @@ import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import Box from '@/ui/Box'
 import PaginatedTable from '@/components/PaginatedTable'
 import InternalLink from '@/ui/Link/InternalLink'
-import Button from '@/ui/Button'
 import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
 import VoteGauge from './VoteGauge'
 
@@ -27,9 +26,13 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const { setUserGaugeVoteWeightsSortBy, userGaugeVoteWeightsSortBy, getUserGaugeVoteWeights } = useStore(
     (state) => state.user
   )
-  const { gaugeMapper, selectedGauge, setSelectedGauge } = useStore((state) => state.gauges)
+  const { gaugeMapper, selectedGauge, gaugesLoading } = useStore((state) => state.gauges)
 
-  const loading = !userData || userData?.fetchingState === 'LOADING'
+  const userGauges = userData?.data.gauges ?? []
+  const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
+  const gaugeMapperLoading = gaugesLoading === 'LOADING'
+  const tableLoading = userWeightsLoading || gaugeMapperLoading
+
   const tableMinWidth = 42.3125
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
 
@@ -48,6 +51,10 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
     relativeWeight: selectedGauge?.gauge_relative_weight ?? 0,
     totalVeCrv: 0,
     userFutureVeCrv: 0,
+    nextVoteTime: {
+      fetchingState: null,
+      timestamp: null,
+    },
   }
 
   return (
@@ -57,7 +64,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
         {userAddress && (
           <Box flex flexGap="var(--spacing-4)">
             <MetricsComp
-              loading={loading}
+              loading={userWeightsLoading}
               title="User"
               data={
                 <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
@@ -66,7 +73,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               }
             />
             <MetricsComp
-              loading={loading}
+              loading={userWeightsLoading}
               title="veCRV"
               data={
                 <MetricsColumnData>
@@ -75,7 +82,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               }
             />
             <MetricsComp
-              loading={loading}
+              loading={userWeightsLoading}
               title="veCRV used"
               data={
                 <MetricsColumnData>
@@ -84,7 +91,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               }
             />
             <MetricsComp
-              loading={loading}
+              loading={userWeightsLoading}
               title="Power used"
               data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
             />
@@ -104,9 +111,9 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
       )}
       {userAddress && (
         <PaginatedTable<UserGaugeVoteWeight>
-          data={userData?.data.gauges ?? []}
+          data={userGauges}
           minWidth={tableMinWidth}
-          fetchingState={userData?.fetchingState ?? 'LOADING'}
+          fetchingState={tableLoading ? 'LOADING' : userData.fetchingState}
           columns={USER_VOTES_TABLE_LABELS}
           sortBy={userGaugeVoteWeightsSortBy}
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}

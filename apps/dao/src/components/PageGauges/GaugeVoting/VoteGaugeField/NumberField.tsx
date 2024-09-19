@@ -13,10 +13,11 @@ interface Props extends AriaNumberFieldProps {
   row?: boolean
   description?: string
   className?: string
+  maxValue?: number
 }
 
 const NumberField = (props: Props) => {
-  const { label, minValue = 0, maxValue = Infinity } = props
+  const { label, minValue = 0, maxValue = props.maxValue } = props
   const { locale } = useLocale()
   const state = useNumberFieldState({ ...props, locale, minValue, maxValue })
   const inputRef = useRef(null)
@@ -33,7 +34,7 @@ const NumberField = (props: Props) => {
         )}
       </Box>
       <div {...groupProps}>
-        <StyledInput {...inputProps} ref={inputRef} />
+        <StyledInput type="number" {...inputProps} ref={inputRef} />
       </div>
     </InputWrapper>
   )

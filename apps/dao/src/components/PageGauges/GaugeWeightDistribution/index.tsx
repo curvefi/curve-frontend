@@ -19,7 +19,7 @@ type GaugeWeightDistributionProps = {
 const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistributionProps) => {
   const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
   const { userGaugeVoteWeightsMapper } = useStore((state) => state.user)
-  const userData = userGaugeVoteWeightsMapper[userAddress ?? '']
+  const userData = userAddress ? userGaugeVoteWeightsMapper[userAddress] : null
 
   const loading = isUserVotes ? userData?.fetchingState === 'LOADING' : gaugesLoading === 'LOADING'
   const error = isUserVotes ? userData?.fetchingState === 'ERROR' : gaugesLoading === 'ERROR'
@@ -28,16 +28,18 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
   const dataKey = isUserVotes ? 'userPower' : 'gauge_relative_weight'
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
     if (isUserVotes) {
-      return userGaugeVoteWeightsMapper[userAddress ?? '']?.data?.gauges.map((gauge) => ({
-        ...gauge,
-        title: gaugeMapper[gauge.gaugeAddress].title,
-      }))
+      return (
+        userData?.data?.gauges.map((gauge) => ({
+          ...gauge,
+          title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
+        })) ?? []
+      )
     }
 
     return Object.values(gaugeMapper)
       .filter((gauge) => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
-  }, [gaugeMapper, isUserVotes, userAddress, userGaugeVoteWeightsMapper])
+  }, [gaugeMapper, isUserVotes, userData])
 
   if (!userAddress && isUserVotes) {
     return (

@@ -19,13 +19,13 @@ const VeCrvFeesChart: React.FC = () => {
   const reverseOrderFees = useMemo(() => {
     if (!feesReady || veCrvFees.fees.length === 0) return []
 
-    return [...veCrvFees.fees].reverse().slice(-100)
+    return [...veCrvFees.fees].reverse().slice(-52)
   }, [feesReady, veCrvFees.fees])
 
   return (
     <Wrapper>
       <TitleRow>
-        <BoxTitle>{t`veCRV Fees Last 100 Weeks`}</BoxTitle>
+        <BoxTitle>{t`veCRV Fees Last 52 Weeks`}</BoxTitle>
       </TitleRow>
       <Content>
         {feesLoading && <Spinner height="31.25rem" />}

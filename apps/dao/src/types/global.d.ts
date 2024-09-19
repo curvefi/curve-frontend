@@ -477,6 +477,10 @@ declare global {
     poolUrl: string
     relativeWeight: number
     totalVeCrv: number
+    nextVoteTime: {
+      fetchingState: FetchingState | null
+      timestamp: number | null
+    }
   }
 
   type UserGaugeVoteWeightRes = {

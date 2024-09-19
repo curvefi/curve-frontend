@@ -1,9 +1,14 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useState, useEffect } from 'react'
+
+import useStore from '@/store/useStore'
+import { convertToLocaleTimestamp } from '@/ui/utils'
 
 import Button from '@/ui/Button'
 import NumberField from './NumberField'
 import Box from '@/ui/Box'
+import { TooltipIcon } from '@/ui/Tooltip'
 
 type VoteGaugeFieldProps = {
   availablePower: number
@@ -13,6 +18,36 @@ type VoteGaugeFieldProps = {
 
 const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGaugeVoteData, newVote = false }) => {
   const formattedPower = userGaugeVoteData.userPower / 100
+  const [power, setPower] = useState(formattedPower)
+
+  const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
+  const { castVote, castVoteLoading } = useStore((state) => state.gauges)
+
+  const address = useStore((state) => state.user.userAddress?.toLowerCase())
+  const canVote = newVote
+    ? true
+    : userGaugeVoteData.nextVoteTime.timestamp && Date.now() > userGaugeVoteData.nextVoteTime.timestamp
+
+  const loading = userGaugeVoteData.nextVoteTime.fetchingState === 'LOADING' || castVoteLoading === 'LOADING'
+
+  const handleCastVote = () => {
+    if (!address) return
+    castVote(address, userGaugeVoteData.gaugeAddress, power)
+  }
+
+  useEffect(() => {
+    if (!address) return
+
+    if (!newVote && userGaugeVoteData.nextVoteTime.fetchingState === null) {
+      getVoteForGaugeNextTime(address, userGaugeVoteData.gaugeAddress)
+    }
+  }, [
+    address,
+    getVoteForGaugeNextTime,
+    newVote,
+    userGaugeVoteData.gaugeAddress,
+    userGaugeVoteData.nextVoteTime.fetchingState,
+  ])
 
   return (
     <Wrapper>
@@ -20,13 +55,30 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
         <NumberField
           row={newVote ? false : true}
           label={t`Available Power: ${100 - availablePower}%`}
-          defaultValue={formattedPower}
+          defaultValue={power}
+          onChange={(value) => setPower(value)}
           formatOptions={{ style: 'percent' }}
+          maxValue={100 - availablePower}
         />
         <ButtonWrapper>
-          <Button variant="filled">{newVote ? t`Vote` : t`Update Vote`}</Button>
+          <StyledButton disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>
+            {newVote ? t`Vote` : t`Update Vote`}
+          </StyledButton>
         </ButtonWrapper>
       </Box>
+      {!canVote && !loading && userGaugeVoteData.nextVoteTime.timestamp && (
+        <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
+          <VoteOnCooldown>
+            {t`Next vote available on:`}{' '}
+            <span>
+              {new Date(
+                convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime())
+              ).toLocaleString()}
+            </span>
+          </VoteOnCooldown>
+          <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
+        </Box>
+      )}
     </Wrapper>
   )
 }
@@ -44,6 +96,19 @@ const ButtonWrapper = styled.div`
   margin-top: auto;
   margin-bottom: var(--spacing-1);
   align-items: center;
+`
+
+const StyledButton = styled(Button)`
+  padding: var(--spacing-1) var(--spacing-4);
+`
+
+const VoteOnCooldown = styled.p`
+  padding-left: var(--spacing-2);
+  font-size: var(--font-size-2);
+  align-self: flex-end;
+  span {
+    font-weight: var(--semi-bold);
+  }
 `
 
 export default VoteGaugeField

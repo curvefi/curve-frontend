@@ -9,6 +9,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   gaugesLoading: FetchingState
+  castVoteLoading: FetchingState | null
   filteringGaugesLoading: boolean
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
@@ -38,6 +39,7 @@ export type GaugesSlice = {
     getGauges(forceReload?: boolean): Promise<void>
     getGaugeVotes(gaugeAddress: string): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
+
     setSearchValue(searchValue: string): void
     setGaugeListSortBy(sortByKey: SortByFilterGaugesKeys): void
     selectFilteredSortedGauges(): GaugeFormattedData[]
@@ -45,6 +47,8 @@ export type GaugesSlice = {
     setGaugeVotesSortBy(gaugeAddress: string, sortBy: GaugeVotesSortBy): void
     setSelectGaugeFilterValue(filterValue: string, gauges: GaugeFormattedData[], filterOptions: FilterOptions): void
     setSelectedGauge(gauge: GaugeFormattedData | null): void
+
+    castVote(userAddress: string, gaugeAddress: string, voteWeight: number): Promise<void>
 
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
@@ -54,6 +58,7 @@ export type GaugesSlice = {
 
 const DEFAULT_STATE: SliceState = {
   gaugesLoading: 'LOADING',
+  castVoteLoading: null,
   filteringGaugesLoading: true,
   gaugeListSortBy: {
     key: 'gauge_relative_weight',
@@ -194,6 +199,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         console.log(error)
       }
     },
+
     selectFilteredSortedGauges: () => {
       const { gaugeMapper, gaugeListSortBy } = get()[sliceKey]
       const cacheGaugeMapper = get().storeCache.cacheGaugeMapper
@@ -292,6 +298,58 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
 
       get()[sliceKey].setStateByKey('selectedGauge', gauge)
+    },
+
+    castVote: async (userAddress: string, gaugeAddress: string, voteWeight: number) => {
+      const curve = get().curve
+      const provider = get().wallet.getProvider('')
+      const { getUserGaugeVoteWeights } = get().user
+
+      if (!curve) return
+
+      const address = gaugeAddress.toLowerCase()
+
+      set(
+        produce(get(), (state) => {
+          state[sliceKey].castVoteLoading = 'LOADING'
+        })
+      )
+
+      try {
+        const res = await curve.dao.voteForGauge(address, voteWeight * 100)
+        const reciept = await provider.waitForTransaction(res)
+
+        console.log('reciept', reciept)
+
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].castVoteLoading = 'SUCCESS'
+          })
+        )
+
+        await getUserGaugeVoteWeights(userAddress, true)
+
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].selectedGauge = null
+          })
+        )
+
+        setTimeout(() => {
+          set(
+            produce(get(), (state) => {
+              state[sliceKey].castVoteLoading = null
+            })
+          )
+        }, 5000)
+      } catch (error) {
+        console.error('Error casting vote:', error)
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].castVoteLoading = 'ERROR'
+          })
+        )
+      }
     },
 
     // slice helpers
