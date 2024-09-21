@@ -12,8 +12,6 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
 
   const isPoints = rewardsPool.tags.includes('points')
 
-  console.log(rewardsPool)
-
   return (
     <Tooltip
       tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
