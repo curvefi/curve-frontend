@@ -36,6 +36,7 @@ import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 import TableSortSelect from '@/ui/TableSort/TableSortSelect'
 import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)
@@ -67,6 +68,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -236,81 +238,91 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
           </Box>
         </TableFilterSettings>
       </Box>
-      <StyledTable cellPadding={0} cellSpacing={0}>
-        {isXSmDown ? (
-          <TableHeadMobile showInPoolColumn={showInPoolColumn} />
-        ) : (
-          <TableHead
-            isMdUp={isMdUp}
-            isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
-            isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
-            isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
-            resultRewardsCrvCount={resultRewardsCrvCount}
-            resultRewardsOtherCount={resultRewardsOtherCount}
-            searchParams={searchParams}
-            showInPoolColumn={showInPoolColumn}
-            tableLabels={tableLabels}
-            updatePath={updatePath}
+      {!provider ? (
+        <ConnectWalletWrapper>
+          <ConnectWallet
+            description={t`Connect wallet to view pool list`}
+            connectText={t`Connect Wallet`}
+            loadingText={t`Connecting`}
           />
-        )}
-        <tbody>
-          {formStatus.noResult ? (
-            <tr>
-              <TableRowNotFound colSpan={colSpan}>
-                {searchParams.filterKey === 'user' && userPoolListLoaded && !!userPoolListError ? (
-                  <>{t`Sorry, we are unable to load your pools.`}</>
-                ) : searchParams.searchText.length > 0 ? (
-                  searchParams.filterKey === 'all' ? (
-                    <>
-                      {t`Didn't find what you're looking for?`}{' '}
-                      <ExternalLink $noStyles href="https://t.me/curvefi">
-                        {t`Join the Telegram`}
-                      </ExternalLink>
-                    </>
-                  ) : (
-                    <>
-                      {t`No pool found for "${searchParams.searchText}". Feel free to search other tabs, or`}{' '}
-                      <Button variant="text" onClick={() => updatePath(DEFAULT_SEARCH_PARAMS)}>
-                        {t`view all pools.`}
-                      </Button>
-                    </>
-                  )
-                ) : (
-                  <>{t`No pool found in this category`}</>
-                )}
-              </TableRowNotFound>
-            </tr>
-          ) : Array.isArray(result) &&
-            Object.keys(poolDataMapperCached ?? {}).length &&
-            Object.keys(tvlMapperCached ?? {}).length ? (
-            <>
-              {result.map((poolId: string, index: number) => (
-                <PoolRow
-                  key={poolId}
-                  index={index}
-                  poolId={poolId}
-                  rChainId={rChainId}
-                  searchParams={searchParams}
-                  imageBaseUrl={imageBaseUrl}
-                  showInPoolColumn={showInPoolColumn}
-                  tableLabels={tableLabels}
-                  showDetail={showDetail}
-                  setShowDetail={setShowDetail}
-                  curve={curve}
-                />
-              ))}
-            </>
+        </ConnectWalletWrapper>
+      ) : (
+        <StyledTable cellPadding={0} cellSpacing={0}>
+          {isXSmDown ? (
+            <TableHeadMobile showInPoolColumn={showInPoolColumn} />
           ) : (
-            <tr>
-              <td colSpan={colSpan}>
-                <SpinnerWrapper>
-                  <Spinner />
-                </SpinnerWrapper>
-              </td>
-            </tr>
+            <TableHead
+              isMdUp={isMdUp}
+              isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
+              isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
+              isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
+              resultRewardsCrvCount={resultRewardsCrvCount}
+              resultRewardsOtherCount={resultRewardsOtherCount}
+              searchParams={searchParams}
+              showInPoolColumn={showInPoolColumn}
+              tableLabels={tableLabels}
+              updatePath={updatePath}
+            />
           )}
-        </tbody>
-      </StyledTable>
+          <tbody>
+            {formStatus.noResult ? (
+              <tr>
+                <TableRowNotFound colSpan={colSpan}>
+                  {searchParams.filterKey === 'user' && userPoolListLoaded && !!userPoolListError ? (
+                    <>{t`Sorry, we are unable to load your pools.`}</>
+                  ) : searchParams.searchText.length > 0 ? (
+                    searchParams.filterKey === 'all' ? (
+                      <>
+                        {t`Didn't find what you're looking for?`}{' '}
+                        <ExternalLink $noStyles href="https://t.me/curvefi">
+                          {t`Join the Telegram`}
+                        </ExternalLink>
+                      </>
+                    ) : (
+                      <>
+                        {t`No pool found for "${searchParams.searchText}". Feel free to search other tabs, or`}{' '}
+                        <Button variant="text" onClick={() => updatePath(DEFAULT_SEARCH_PARAMS)}>
+                          {t`view all pools.`}
+                        </Button>
+                      </>
+                    )
+                  ) : (
+                    <>{t`No pool found in this category`}</>
+                  )}
+                </TableRowNotFound>
+              </tr>
+            ) : Array.isArray(result) &&
+              Object.keys(poolDataMapperCached ?? {}).length &&
+              Object.keys(tvlMapperCached ?? {}).length ? (
+              <>
+                {result.map((poolId: string, index: number) => (
+                  <PoolRow
+                    key={poolId}
+                    index={index}
+                    poolId={poolId}
+                    rChainId={rChainId}
+                    searchParams={searchParams}
+                    imageBaseUrl={imageBaseUrl}
+                    showInPoolColumn={showInPoolColumn}
+                    tableLabels={tableLabels}
+                    showDetail={showDetail}
+                    setShowDetail={setShowDetail}
+                    curve={curve}
+                  />
+                ))}
+              </>
+            ) : (
+              <tr>
+                <td colSpan={colSpan}>
+                  <SpinnerWrapper>
+                    <Spinner />
+                  </SpinnerWrapper>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </StyledTable>
+      )}
     </>
   )
 }
@@ -410,6 +422,15 @@ const StyledTable = styled(Table)`
       }
     }
   }
+`
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: var(--spacing-5) var(--spacing-4);
 `
 
 export default PoolList
