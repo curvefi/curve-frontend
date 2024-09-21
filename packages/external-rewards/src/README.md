@@ -41,6 +41,7 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
   - `network`: Network of the pool/market
   - `multiplier`: Multiplier, or `null`
   - `tags`: Array of pool/market specific tags (any of the tags ids listed here: [`rewards-tags.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/reward-tags.json))
+  - `lock`: Requires locking position for a specific duration, or `false`
 
 ### Example:
 
@@ -60,7 +61,8 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
       "address": "0x0",
       "network": "ethereum",
       "multiplier": "1x",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

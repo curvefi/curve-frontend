@@ -16,6 +16,7 @@ export interface CampaignRewardsPool {
   network: string
   multiplier: string
   tags: RewardsTags[]
+  lock: string
 }
 
 export interface RewardsPool {
@@ -32,6 +33,7 @@ export interface RewardsPool {
   network: string
   multiplier: string
   tags: RewardsTags[]
+  lock: boolean
 }
 
 export type CampaignRewardsMapper = { [poolAddress: string]: RewardsPool[] }

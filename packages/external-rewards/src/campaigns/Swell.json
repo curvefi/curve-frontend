@@ -13,7 +13,8 @@
       "address": "0x73e4bec1a111869f395cbb24f6676826bf86d905",
       "network": "ethereum",
       "multiplier": "5",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

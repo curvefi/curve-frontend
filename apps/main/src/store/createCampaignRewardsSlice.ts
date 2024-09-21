@@ -55,6 +55,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
               dashboardLink: campaign.dashboardLink,
               ...pool,
               address: pool.address.toLowerCase(),
+              lock: pool.lock === 'true',
             })
           }
         })

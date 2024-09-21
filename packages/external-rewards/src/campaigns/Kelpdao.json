@@ -13,7 +13,8 @@
       "address": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
       "network": "ethereum",
       "multiplier": "2",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     },
     {
       "id": "null",
@@ -23,7 +24,8 @@
       "address": "0x3772ba91b46f456ae487cb0974040c861c045810",
       "network": "ethereum",
       "multiplier": "2",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

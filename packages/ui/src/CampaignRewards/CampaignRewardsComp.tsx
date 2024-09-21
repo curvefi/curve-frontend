@@ -5,11 +5,14 @@ import Image from 'next/image'
 
 import Tooltip from 'ui/src/Tooltip'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
+import Icon from 'ui/src/Icon'
 
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
 
   const isPoints = rewardsPool.tags.includes('points')
+
+  console.log(rewardsPool)
 
   return (
     <Tooltip
@@ -21,6 +24,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
         {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
+        {rewardsPool.lock && <Icon size={16} name="Locked" />}
       </Container>
     </Tooltip>
   )
