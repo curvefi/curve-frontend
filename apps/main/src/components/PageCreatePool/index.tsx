@@ -28,6 +28,7 @@ import PoolInfo from '@/components/PageCreatePool/PoolInfo'
 import Summary from '@/components/PageCreatePool/Summary'
 import Parameters from '@/components/PageCreatePool/Parameters'
 import InfoBox from '@/components/PageCreatePool/components/InfoBox'
+import ConnectWallet from '@/components/ConnectWallet'
 
 type Props = {
   curve: CurveApi
@@ -52,6 +53,7 @@ const CreatePool = ({ curve }: Props) => {
     updateParametersValidation,
     updatePoolInfoValidation,
   } = useStore((state) => state.createPool)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const isNavEnabled = useCallback(() => {
     if (navigationIndex === 0) {
@@ -168,7 +170,15 @@ const CreatePool = ({ curve }: Props) => {
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
-      {!chainId ? (
+      {!provider ? (
+        <NotAvailableWrapper>
+          <ConnectWallet
+            description={t`Connect wallet to access pool creation`}
+            connectText={t`Connect Wallet`}
+            loadingText={t`Connecting`}
+          />
+        </NotAvailableWrapper>
+      ) : !chainId ? (
         <NotAvailableWrapper>
           <StyledSpinner isDisabled size={24} />
           <LoadingMessage>{t`Connecting to network`}</LoadingMessage>
@@ -329,13 +339,9 @@ const NotAvailableWrapper = styled.div`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  margin-top: var(--spacing-5);
+  margin: var(--spacing-5) auto auto;
   background: var(--page--background-color);
   padding: var(--spacing-4) var(--spacing-3);
-  width: 90%;
-  @media (min-width: 46.875rem) {
-    width: 700px;
-  }
 `
 
 const NotAvailableTitle = styled.h4`
