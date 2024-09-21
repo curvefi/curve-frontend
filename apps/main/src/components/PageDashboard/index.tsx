@@ -18,6 +18,7 @@ import TableRow from '@/components/PageDashboard/components/TableRow'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Summary from '@/components/PageDashboard/components/Summary'
 import TableSortDialog from '@/components/PageDashboard/components/TableSortDialog'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Dashboard = ({
   curve,
@@ -44,6 +45,7 @@ const Dashboard = ({
   const resultRewardsCrvCount = useStore((state) => state.dashboard.resultRewardsCrvCount)
   const resultRewardsOtherCount = useStore((state) => state.dashboard.resultRewardsOtherCount)
   const setFormValues = useStore((state) => state.dashboard.setFormValues)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { chainId, signerAddress } = curve ?? {}
   const haveBoost = networks[rChainId].forms.indexOf('BOOSTING') !== -1
@@ -112,8 +114,17 @@ const Dashboard = ({
   const colSpan = isXSmDown ? 1 : 5
   const haveMissingPools = networks[rChainId].missingPools?.length > 0
 
-  return (
+  return !provider ? (
+    <ConnectWalletWrapper>
+      <ConnectWallet
+        description="Connect wallet to view dashboard"
+        connectText="Connect Wallet"
+        loadingText="Connecting"
+      />
+    </ConnectWalletWrapper>
+  ) : (
     <>
+      {console.log('provider', provider)}
       <Summary
         activeKey={activeKey}
         curve={curve}
@@ -142,7 +153,7 @@ const Dashboard = ({
                   </SpinnerWrapper>
                 </td>
               </tr>
-            ) : !formValues.walletAddress ? (
+            ) : !formValues.walletAddress || !provider ? (
               <tr>
                 <td colSpan={colSpan}>
                   <SpinnerWrapper>{t`Please connect wallet or enter a wallet address to view active pools.`}</SpinnerWrapper>
@@ -203,6 +214,14 @@ const Dashboard = ({
     </>
   )
 }
+
+const ConnectWalletWrapper = styled.div`
+  padding-top: var(--spacing-5);
+  margin: 0 auto auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 const MissingPoolDescription = styled.p`
   padding: 1rem;
