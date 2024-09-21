@@ -8,6 +8,7 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x73e4bec1a111869f395cbb24f6676826bf86d905",

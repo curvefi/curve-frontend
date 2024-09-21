@@ -8,6 +8,7 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
@@ -19,6 +20,7 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
@@ -30,6 +32,7 @@
     {
       "id": "null",
       "action": "borrow",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xdc8b1caf2e10de76fb67e82c2485e7d4fa098c53",
@@ -41,6 +44,7 @@
     {
       "id": "null",
       "action": "supply",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x0111646e459e0bba57daca438262f3a092ae24c6",
