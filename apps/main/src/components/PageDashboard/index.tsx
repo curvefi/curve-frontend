@@ -124,7 +124,6 @@ const Dashboard = ({
     </ConnectWalletWrapper>
   ) : (
     <>
-      {console.log('provider', provider)}
       <Summary
         activeKey={activeKey}
         curve={curve}

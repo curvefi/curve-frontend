@@ -2,6 +2,8 @@ import type { NextPage } from 'next'
 
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
@@ -12,6 +14,8 @@ import useStore from '@/store/useStore'
 import { scrollToTop } from '@/utils'
 import DocumentHead from '@/layout/default/DocumentHead'
 import Transfer from '@/components/PagePool/index'
+import ConnectWallet from '@/components/ConnectWallet'
+import Box from '@/ui/Box'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -28,6 +32,7 @@ const Page: NextPage = () => {
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
   const hidePoolsMapper = rChainId ? networks[rChainId].customPoolIds : null
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
 
@@ -68,7 +73,18 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={poolDataCacheOrApi?.pool?.name ?? 'Pool'} />
-      {rChainId &&
+      {!provider ? (
+        <Box display="flex" fillWidth>
+          <ConnectWalletWrapper>
+            <ConnectWallet
+              description={t`Connect wallet to view pool`}
+              connectText={t`Connect Wallet`}
+              loadingText={t`Connecting`}
+            />
+          </ConnectWalletWrapper>
+        </Box>
+      ) : (
+        rChainId &&
         rFormType &&
         rPoolId &&
         poolDataCacheOrApi?.pool?.id === rPoolId &&
@@ -81,9 +97,21 @@ const Page: NextPage = () => {
             routerParams={{ rChainId, rPoolId, rFormType }}
             hasDepositAndStake={hasDepositAndStake}
           />
-        )}
+        )
+      )}
     </>
   )
 }
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: var(--spacing-5) auto auto;
+  padding: var(--spacing-4) var(--spacing-4);
+  background: var(--page--background-color);
+  background-color: var(--table--background-color);
+`
 
 export default Page

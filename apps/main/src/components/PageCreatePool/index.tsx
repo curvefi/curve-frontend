@@ -341,7 +341,7 @@ const NotAvailableWrapper = styled.div`
   justify-content: center;
   margin: var(--spacing-5) auto auto;
   background: var(--page--background-color);
-  padding: var(--spacing-4) var(--spacing-3);
+  padding: var(--spacing-4) var(--spacing-4);
 `
 
 const NotAvailableTitle = styled.h4`
