@@ -10,7 +10,6 @@ export interface CampaignRewardsItem {
 export interface CampaignRewardsPool {
   id: string
   action: RewardsAction
-  description: string
   campaignStart: string
   campaignEnd: string
   address: string

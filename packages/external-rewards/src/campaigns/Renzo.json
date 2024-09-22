@@ -8,7 +8,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xebafb74a98ba14430eedc716c0034123c3040ca4",
@@ -20,7 +19,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x85de3add465a219ee25e04d22c39ab027cf5c12e",
@@ -32,7 +30,6 @@
     {
       "id": "null",
       "action": "borrow",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3",
@@ -44,7 +41,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
@@ -56,7 +52,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xcec99cff3632cf1f16652cc5b1e80eb08be25983",
@@ -68,7 +63,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x6e9b6660b94fa74a8087d7ee14dc28698249d242",

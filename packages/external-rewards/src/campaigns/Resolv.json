@@ -8,7 +8,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "1725364800",
       "campaignEnd": "1770000000",
       "address": "0x3ee841f47947fefbe510366e4bbb49e145484195",
@@ -20,7 +19,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "1725364800",
       "campaignEnd": "1770000000",
       "address": "0x8e001d4bac0eae1eea348dfc22f9b8bda67dd211",
@@ -32,7 +30,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xc907ba505c2e1cbc4658c395d4a2c7e6d2c32656",

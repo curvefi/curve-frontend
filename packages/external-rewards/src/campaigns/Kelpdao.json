@@ -8,7 +8,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x6683eafe46cb9ed394f298e14b87ed680c17cedd",
@@ -20,7 +19,6 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x3772ba91b46f456ae487cb0974040c861c045810",

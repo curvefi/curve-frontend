@@ -50,10 +50,10 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
             campaignRewardsMapper[pool.address.toLowerCase()].push({
               campaignName: campaign.campaignName,
               platform: campaign.platform,
+              description: campaign.description,
               platformImageSrc: `${networks[chainId].rewards.imageBaseUrl}/${campaign.platformImageId}`,
               dashboardLink: campaign.dashboardLink,
               ...pool,
-              description: pool.description !== 'null' ? pool.description : campaign.description,
               address: pool.address.toLowerCase(),
               lock: pool.lock === 'true',
             })
