@@ -86,7 +86,11 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
     // debounce storage to avoid performance issues serializing too often. The item can be large.
     setItem: debounce((name, value) => {
       const json = JSON.stringify(value)
-      return MAX_SIZE >= json.length ? localStorage.removeItem(name) : localStorage.setItem(name, json)
+      if (json.length > MAX_SIZE) {
+        console.warn(`Cache item ${name} is too big (${json.length} bytes), removing it.`)
+        return localStorage.removeItem(name)
+      }
+      return localStorage.setItem(name, json)
     }, 1000),
     removeItem: name => localStorage.removeItem(name),
   },
