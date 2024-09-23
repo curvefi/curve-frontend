@@ -8,23 +8,26 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x8c65cec3847ad99bdc02621bdbc89f2ace56934b",
       "network": "ethereum",
       "multiplier": "3",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     },
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xcec99cff3632cf1f16652cc5b1e80eb08be25983",
       "network": "ethereum",
       "multiplier": "3",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
-

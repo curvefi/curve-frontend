@@ -8,42 +8,50 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xb3c8ce1ee157b0dcaa96897c9170aee6281706c9",
       "network": "ethereum",
       "multiplier": "1",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     },
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x39f5b252de249790faed0c2f05abead56d2088e1",
       "network": "ethereum",
       "multiplier": "2",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     },
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xeeda34a377dd0ca676b9511ee1324974fa8d980d",
       "network": "ethereum",
       "multiplier": "2",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     },
     {
       "id": "null",
       "action": "borrow",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x4f87158350c296955966059c50263f711ce0817c",
       "network": "ethereum",
       "multiplier": "2",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
