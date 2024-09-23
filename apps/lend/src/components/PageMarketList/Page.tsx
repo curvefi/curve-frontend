@@ -17,6 +17,8 @@ import { AppPageContainer } from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
 import MarketList from '@/components/PageMarketList/index'
 import Settings from '@/layout/Settings'
+import ConnectWallet from '@/components/ConnectWallet'
+import Box from '@/ui/Box'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -29,7 +31,7 @@ const Page: NextPage = () => {
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const setStateByKey = useStore((state) => state.marketList.setStateByKey)
-
+  const provider = useStore((state) => state.wallet.getProvider(''))
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
@@ -102,20 +104,32 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Markets`} />
-      <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '990px' : ''}>
-        {rChainId && parsedSearchParams && (
-          <MarketList
-            rChainId={rChainId}
-            isLoaded={loaded}
-            api={api}
-            searchParams={parsedSearchParams}
-            filterList={filterList}
-            filterTypeMapper={FILTER_TYPE_MAPPER}
-            titleMapper={titleMapper}
-            updatePath={updatePath}
-          />
-        )}
-      </StyledAppPageContainer>
+      {provider ? (
+        <StyledAppPageContainer $maxWidth={parsedSearchParams?.filterTypeKey === 'supply' ? '990px' : ''}>
+          {rChainId && parsedSearchParams && (
+            <MarketList
+              rChainId={rChainId}
+              isLoaded={loaded}
+              api={api}
+              searchParams={parsedSearchParams}
+              filterList={filterList}
+              filterTypeMapper={FILTER_TYPE_MAPPER}
+              titleMapper={titleMapper}
+              updatePath={updatePath}
+            />
+          )}
+        </StyledAppPageContainer>
+      ) : (
+        <Box display="flex" fillWidth>
+          <ConnectWalletWrapper>
+            <ConnectWallet
+              description="Connect wallet to view markets list"
+              connectText="Connect Wallet"
+              loadingText="Connecting"
+            />
+          </ConnectWalletWrapper>
+        </Box>
+      )}
       <Settings showScrollButton />
     </>
   )
@@ -131,6 +145,16 @@ const StyledAppPageContainer = styled(AppPageContainer)<{ $maxWidth: string }>`
       `
     }
   }}
+`
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: var(--spacing-5) auto auto;
+  background: var(--page--background-color);
+  padding: var(--spacing-4) var(--spacing-4);
 `
 
 function _querySymbol(searchPath: string) {
