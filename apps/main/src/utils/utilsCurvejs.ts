@@ -2,6 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
+import { JsonRpcProvider } from 'ethers'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
   const { networkId, rpcUrl } = networks[chainId] ?? {}

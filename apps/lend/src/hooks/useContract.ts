@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+import { createRpcProvider } from 'main/src/store/createWalletSlice'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
@@ -38,10 +39,10 @@ const useAbiGaugeTotalSupply = (
     if (rChainId) {
       const provider = signerRequired
         ? getProvider('')
-        : getProvider('') || new JsonRpcProvider(networks[rChainId].rpcUrl)
+        : createRpcProvider(rChainId, getProvider)
 
       if (jsonModuleName && contractAddress && provider) {
-        ;(async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
+        (async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
       }
     }
   }, [contractAddress, getContract, getProvider, jsonModuleName, rChainId, signerRequired])
