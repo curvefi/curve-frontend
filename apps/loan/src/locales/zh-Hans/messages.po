@@ -15,51 +15,51 @@ msgstr ""
 
 #: src/components/ChartBandBalances/index.tsx:154
 msgid "(Soft liquidation)"
-msgstr ""
+msgstr "(软清算)"
 
 #: src/components/PageLoanManage/Page.tsx:131
 msgid "{0}"
-msgstr ""
+msgstr "{0}"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:286
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:242
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:228
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:301
 msgid "{0} Avail."
-msgstr ""
+msgstr "{0} 可用."
 
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:226
 msgid "{0} Avail. {1}"
-msgstr ""
+msgstr "{0} 可用. {1}"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:223
 msgid "{0} Avail. {collateralLabelValue}"
-msgstr ""
+msgstr "{0} 可用. {collateralLabelValue}"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:225
 msgid "{0} Avail. ${userStablecoinBalance}"
-msgstr ""
+msgstr "{0} 可用. ${userStablecoinBalance}"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:319
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:269
 msgid "{0} borrow amount"
-msgstr ""
+msgstr "借款金额 {0}"
 
 #: src/components/PageLoanCreate/Page.tsx:153
 msgid "{rCollateralId}"
-msgstr ""
+msgstr "{rCollateralId}"
 
 #: src/components/LoanInfoUser/index.tsx:237
 msgid "% lost"
-msgstr ""
+msgstr "损失率"
 
 #: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:21
 msgid "A"
-msgstr ""
+msgstr "A"
 
 #: src/components/PageLoanManage/index.tsx:50
 msgid "Add"
-msgstr ""
+msgstr "添加"
 
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:153
 msgid "Add Collateral"
@@ -67,19 +67,19 @@ msgstr ""
 
 #: src/domain/components/DetailInfoLiqRangeEdit.tsx:66
 #~ msgid "Adjust liquidation range"
-#~ msgstr ""
+#~ msgstr "添加抵押品"
 
 #: src/components/DetailInfoLiqRangeEdit.tsx:45
 msgid "Adjust N:"
-msgstr ""
+msgstr "调整 N:"
 
 #: src/components/AdvancedSettings.tsx:130
 msgid "Advanced Settings"
-msgstr ""
+msgstr "高级设置"
 
 #: src/components/LoanInfoLlamma/index.tsx:94
 msgid "AMM"
-msgstr ""
+msgstr "自动做市商"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:301
 msgid "Amount is greater than {0}"
@@ -87,7 +87,7 @@ msgstr ""
 
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:304
 msgid "Amount must be <= {0}"
-msgstr ""
+msgstr "金额大于 {0}"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:161
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:140
@@ -96,92 +96,92 @@ msgstr ""
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:97
 #: src/components/PageLoanManage/LoanSwap/index.tsx:161
 msgid "Approve Spending"
-msgstr ""
+msgstr "批准支出"
 
 #: src/components/PageMarketList/components/DialogSortContent.tsx:71
 msgid "Asc"
-msgstr ""
+msgstr "升序"
 
 #: src/layout/Footer.tsx:86
 msgid "Audits"
-msgstr ""
+msgstr "审计"
 
 #: src/components/PageMarketList/index.tsx:73
 msgid "Available to borrow"
-msgstr ""
+msgstr "可借用"
 
 #: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:37
 msgid "band"
-msgstr ""
+msgstr "区间"
 
 #: src/components/ChartBandBalances/index.tsx:139
 #: src/components/ChartBandBalances/index.tsx:172
 msgid "Band {n}"
-msgstr ""
+msgstr "区间 {n}"
 
 #: src/components/LoanInfoUser/index.tsx:208
 msgid "Band range"
-msgstr ""
+msgstr "区间范围"
 
 #: src/components/DetailInfoLiqRange.tsx:136
 msgid "Band range:"
-msgstr ""
+msgstr "区间范围:"
 
 #: src/components/LoanInfoLlamma/index.tsx:86
 #: src/components/LoanInfoUser/index.tsx:260
 msgid "Bands"
-msgstr ""
+msgstr "区间"
 
 #: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:24
 msgid "Base price"
-msgstr ""
+msgstr "基础价格"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:360
 msgid "Be careful, if the collateral price dips, you would need to repay the entire amount to reclaim your initial position."
-msgstr ""
+msgstr "请小心，如果抵押品价格下跌，您需要偿还全部金额才能恢复您的初始头寸。"
 
 #: src/domain/layout/HeaderMobile.tsx:122
 #~ msgid "BETA"
-#~ msgstr ""
+#~ msgstr "测试版"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:173
 msgid "Borrow"
-msgstr ""
+msgstr "借用"
 
 #: src/components/PageLoanManage/index.tsx:44
 msgid "Borrow more"
-msgstr ""
+msgstr "借更多"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:194
 msgid "Borrow more anyway"
-msgstr ""
+msgstr "仍然借更多"
 
 #: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:48
 #: src/components/LoanInfoUser/index.tsx:196
 #: src/components/LoanInfoUser/index.tsx:215
 #: src/components/PageMarketList/index.tsx:66
 msgid "Borrow rate"
-msgstr ""
+msgstr "借贷利率"
 
 #: src/components/DetailInfoBorrowRate.tsx:18
 msgid "Borrow rate:"
-msgstr ""
+msgstr "借贷利率:"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:173
 msgid "Borrowed"
-msgstr ""
+msgstr "已借"
 
 #: src/domain/components/DetailInfoHealth.tsx:180
 #~ msgid "Borrowing {0} will put you close to soft liquidation."
-#~ msgstr ""
+#~ msgstr "借用 {0} 将使您接近软清算。"
 
 #: src/components/DetailInfoHealth.tsx:184
 msgid "Borrowing {formattedAmount} will put you close to soft liquidation."
-msgstr ""
+msgstr "借用 {formattedAmount} 将使您接近软清算。"
 
 #: src/layout/Footer.tsx:92
 msgid "Bug Bounty"
-msgstr ""
+msgstr "漏洞赏金"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:194
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:151
@@ -189,542 +189,542 @@ msgstr ""
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:169
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:187
 msgid "Cancel"
-msgstr ""
+msgstr "取消"
 
 #: src/components/PageMarketList/index.tsx:72
 msgid "Cap"
-msgstr ""
+msgstr "上限"
 
 #: src/components/DetailInfoHealth.tsx:196
 msgid "Close to liquidation range!"
-msgstr ""
+msgstr "接近清算范围！"
 
 #: src/layout/Footer.tsx:32
 #: src/layout/Footer.tsx:50
 msgid "CN"
-msgstr ""
+msgstr "中国"
 
 #: src/components/PageLoanManage/index.tsx:38
 msgid "Collateral"
-msgstr ""
+msgstr "抵押品"
 
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:153
 msgid "Collateral Added"
-msgstr ""
+msgstr "抵押品已添加"
 
 #: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:44
 msgid "collateral median price"
-msgstr ""
+msgstr "抵押品中位价格"
 
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:137
 msgid "Collateral Removed"
-msgstr ""
+msgstr "抵押品已移除"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:39
 msgid "Collateral:"
-msgstr ""
+msgstr "抵押品:"
 
 #: src/layout/HeaderMobile.tsx:140
 msgid "Community"
-msgstr ""
+msgstr "社区"
 
 #: src/components/DialogHealthWarning.tsx:27
 #: src/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning.tsx:41
 #: src/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning.tsx:26
 msgid "Confirm warning to proceed."
-msgstr ""
+msgstr "确认警告以继续。"
 
 #: src/domain/layout/index.tsx:68
 #~ msgid "Connect wallet"
-#~ msgstr ""
+#~ msgstr "连接钱包"
 
 #: src/components/ConnectWallet.tsx:51
 #: src/components/LoanFormConnect.tsx:25
 msgid "Connect Wallet"
-msgstr ""
+msgstr "连接钱包"
 
 #: src/components/LoanInfoLlamma/index.tsx:93
 #: src/layout/Footer.tsx:89
 msgid "Contracts"
-msgstr ""
+msgstr "合约"
 
 #: src/components/LoanInfoLlamma/index.tsx:98
 msgid "Controller"
-msgstr ""
+msgstr "控制器"
 
 #: src/components/PageLoanCreate/Page.tsx:153
 msgid "Create"
-msgstr ""
+msgstr "创建"
 
 #: src/components/PageLoanCreate/index.tsx:30
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:174
 #: src/components/PageMarketList/components/TableRowMobile.tsx:135
 msgid "Create Loan"
-msgstr ""
+msgstr "创建贷款"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning.tsx:21
 msgid "Creating a leverage loan means you will not receive any crvUSD to your address and will instead assume a significantly larger debt position."
-msgstr ""
+msgstr "创建杠杆贷款意味着您不会收到任何 crvUSD 到您的地址，而是将承担一个更大的债务头寸。"
 
 #: src/layout/HeaderMobile.tsx:189
 #: src/layout/HeaderSecondary.tsx:49
 msgid "crvUSD"
-msgstr ""
+msgstr "crvUSD"
 
 #: src/layout/Header.tsx:78
 #: src/layout/HeaderMobile.tsx:135
 msgid "crvUSD Pools"
-msgstr ""
+msgstr "crvUSD 池"
 
 #: src/layout/HeaderMobile.tsx:180
 #: src/layout/HeaderSecondary.tsx:41
 msgid "crvUSD Total Supply"
-msgstr ""
+msgstr "crvUSD 总供应量"
 
 #: src/components/LoanInfoUser/index.tsx:225
 msgid "Current balance (est.) / Deposited"
-msgstr ""
+msgstr "当前余额（估算）/ 已存入"
 
 #: src/layout/Footer.tsx:64
 msgid "Curve Monitor"
-msgstr ""
+msgstr "Curve 监控器"
 
 #: src/components/AdvancedSettings.tsx:185
 msgid "Custom"
-msgstr ""
+msgstr "自定义"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:258
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:308
 msgid "Debt"
-msgstr ""
+msgstr "债务"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:39
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:43
 msgid "Debt:"
-msgstr ""
+msgstr "债务:"
 
 #: src/components/PageLoanManage/index.tsx:39
 msgid "Deleverage"
-msgstr ""
+msgstr "去杠杆"
 
 #: src/components/PageMarketList/components/DialogSortContent.tsx:71
 msgid "Desc"
-msgstr ""
+msgstr "描述"
 
 #: src/layout/Footer.tsx:103
 msgid "Developer Docs"
-msgstr ""
+msgstr "开发者文档"
 
 #: src/components/PageMarketList/index.tsx:165
 msgid "Didn't find what you're looking for?"
-msgstr ""
+msgstr "没有找到您要找的内容吗？"
 
 #: src/components/AdvancedSettings.tsx:135
 msgid "Discard"
-msgstr ""
+msgstr "丢弃"
 
 #: src/layout/Footer.tsx:42
 msgid "Discord"
-msgstr ""
+msgstr "Discord"
 
 #: src/layout/Footer.tsx:38
 msgid "Dodo"
-msgstr ""
+msgstr "Dodo"
 
 #: src/layout/Footer.tsx:61
 msgid "Dune Analytics"
-msgstr ""
+msgstr "Dune 数据分析"
 
 #: src/components/Page404/Page.tsx:11
 msgid "Error 404"
-msgstr ""
+msgstr "Error 404"
 
 #: src/components/DetailInfoEstimateGas.tsx:61
 msgid "Estimated TX cost"
-msgstr ""
+msgstr "预计交易成本"
 
 #: src/components/DetailInfoEstimateGas.tsx:65
 msgid "Estimated TX cost:"
-msgstr ""
+msgstr "预计交易成本:"
 
 #: src/layout/Footer.tsx:95
 msgid "FAQ"
-msgstr ""
+msgstr "FAQ"
 
 #: src/layout/Footer.tsx:114
 msgid "Github"
-msgstr ""
+msgstr "Github"
 
 #: src/components/LoanInfoUser/index.tsx:185
 msgid "Health"
-msgstr ""
+msgstr "健康"
 
 #: src/components/DetailInfoHealth.tsx:113
 msgid "Health:"
-msgstr ""
+msgstr "健康:"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:60
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:269
 msgid "High price impact:"
-msgstr ""
+msgstr "高价格影响:"
 
 #: src/domain/components/DetailInfoHealth.tsx:182
 #~ msgid "Increasing your borrowed amount by {0} will put you close to soft liquidation."
-#~ msgstr ""
+#~ msgstr "将您的借款金额增加 {0} 将使您接近软清算。"
 
 #: src/components/DetailInfoHealth.tsx:186
 msgid "Increasing your borrowed amount by {formattedAmount} will put you close to soft liquidation."
-msgstr ""
+msgstr "将您的借款金额增加 {formattedAmount} 将使您接近软清算。"
 
 #: src/components/PageIntegrations/Page.tsx:38
 #: src/layout/Footer.tsx:99
 #: src/layout/Header.tsx:42
 msgid "Integrations"
-msgstr ""
+msgstr "集成"
 
 #: src/components/PageMarketList/index.tsx:167
 msgid "Join the Telegram"
-msgstr ""
+msgstr "加入 Telegram"
 
 #: src/components/PageLoanCreate/index.tsx:31
 msgid "Leverage"
-msgstr ""
+msgstr "杠杆"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:51
 msgid "Leverage:"
-msgstr ""
+msgstr "杠杆:"
 
 #: src/domain/components/DetailInfoLiqRange.tsx:68
 #~ msgid "Liquidation price range is the range of prices at which your collateral will get liquidated over time. Soft liquidation begins when the oracle price of your collateral hits the top of the range.  Hard liquidation occurs when the oracle price drops to the bottom of the range, and your collateral is converted entirely to stablecoins."
-#~ msgstr ""
+#~ msgstr "清算价格范围是指在一段时间内，您的抵押品将被清算的价格范围。软清算在您的抵押品的预言机价格达到范围顶部时开始。硬清算发生在预言机价格降至范围底部时，您的抵押品将全部转换为稳定币。"
 
 #: src/components/ChartLiquidationRange/index.tsx:92
 #: src/components/LoanInfoUser/index.tsx:164
 #: src/components/LoanInfoUser/index.tsx:205
 msgid "Liquidation range"
-msgstr ""
+msgstr "清算范围"
 
 #: src/components/LoanInfoUser/index.tsx:266
 msgid "Liquidation Range"
-msgstr ""
+msgstr "清算范围"
 
 #: src/components/DetailInfoLiqRange.tsx:100
 msgid "Liquidation range:"
-msgstr ""
+msgstr "清算范围:"
 
 #: src/components/ChartLiquidationRange/index.tsx:101
 msgid "Liquidation range{0}"
-msgstr ""
+msgstr "清算范围{0}"
 
 #: src/domain/layout/Footer.tsx:62
 #~ msgid "Llama Airforce"
-#~ msgstr ""
+#~ msgstr "Llama Airforce"
 
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:293
 msgid "LLAMMA {collateralName} Avail."
-msgstr ""
+msgstr "LLAMMA {collateralName} 可用"
 
 #: src/components/LoanInfoUser/index.tsx:281
 msgid "LLAMMA Balances"
-msgstr ""
+msgstr "LLAMMA 余额"
 
 #: src/components/PageLoanManage/Page.tsx:58
 msgid "LLAMMA Details"
-msgstr ""
+msgstr "LLAMMA 详情"
 
 #: src/components/LoanFormConnect.tsx:29
 msgid "Loading"
-msgstr ""
+msgstr "加载中"
 
 #: src/components/PageLoanManage/index.tsx:37
 msgid "Loan"
-msgstr ""
+msgstr "贷款"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:174
 msgid "Loan Created"
-msgstr ""
+msgstr "贷款已创建"
 
 #: src/components/LoanInfoLlamma/index.tsx:109
 msgid "Loan parameters"
-msgstr ""
+msgstr "贷款参数"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:390
 msgid "Loan Parameters"
-msgstr ""
+msgstr "贷款参数"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfo.tsx:49
 msgid "Loan to Value ratio:"
-msgstr ""
+msgstr "贷款价值比:"
 
 #: src/components/LoanInfoUser/index.tsx:233
 msgid "Loss amount"
-msgstr ""
+msgstr "损失金额"
 
 #: src/components/PageLoanManage/Page.tsx:131
 msgid "Manage"
-msgstr ""
+msgstr "管理"
 
 #: src/components/PageMarketList/components/TableRowMobile.tsx:135
 msgid "Manage Loan"
-msgstr ""
+msgstr "管理贷款"
 
 #: src/components/PageMarketList/index.tsx:60
 #: src/components/PageMarketList/Page.tsx:33
 #: src/layout/Header.tsx:40
 msgid "Markets"
-msgstr ""
+msgstr "市场"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:331
 msgid "Max borrow amount"
-msgstr ""
+msgstr "最大借款金额"
 
 #: src/components/AdvancedSettings.tsx:155
 msgid "Max Slippage"
-msgstr ""
+msgstr "最大滑点"
 
 #: src/components/AdvancedSettings.tsx:157
 msgid "Maximum difference between expected price of the trade, versus the price when the trade is executed."
-msgstr ""
+msgstr "交易预期价格与实际执行价格之间的最大差额。"
 
 #: src/components/AdvancedSettings.tsx:115
 msgid "Min. slippage is 0.01%"
-msgstr ""
+msgstr "最小滑点为 0.01%"
 
 #: src/layout/HeaderMobile.tsx:164
 msgid "Mode"
-msgstr ""
+msgstr "模式"
 
 #: src/components/LoanInfoLlamma/index.tsx:103
 msgid "Monetary Policy"
-msgstr ""
+msgstr "货币政策"
 
 #: src/components/PageMarketList/index.tsx:62
 msgid "My debt"
-msgstr ""
+msgstr "我的债务"
 
 #: src/components/PageMarketList/index.tsx:61
 msgid "My health"
-msgstr ""
+msgstr "我的健康"
 
 #: src/components/DetailInfoN.tsx:10
 msgid "N:"
-msgstr ""
+msgstr "N:"
 
 #: src/layout/Footer.tsx:106
 msgid "News"
-msgstr ""
+msgstr "新闻"
 
 #: src/components/PageMarketList/index.tsx:172
 msgid "No collateral found for \"{0}\". Feel free to search other tabs, or"
-msgstr ""
+msgstr "未找到 \"{0}\" 的抵押品。请随意搜索其他标签，或"
 
 #: src/components/PageMarketList/index.tsx:179
 msgid "No collateral found in this category"
-msgstr ""
+msgstr "在此类别中未找到抵押品"
 
 #: src/components/PageIntegrations/index.tsx:115
 msgid "No integration apps found with for {0} {1}{2}"
-msgstr ""
+msgstr "未找到与 {0} {1}{2} 相关的集成应用"
 
 #: src/components/LoanFormAlertError.tsx:45
 msgid "Not eligible for liquidation"
-msgstr ""
+msgstr "不符合清算资格"
 
 #: src/hooks/useTokenAlert.tsx:22
 msgid "Note: maDAI, maUSDC and maUSDT are LP tokens from the Morpho protocol, a third-party service not affiliated with Curve. <0>Learn more here</0>."
-msgstr ""
+msgstr "注意：maDAI、maUSDC 和 maUSDT 是 Morpho 协议的流动性池（LP）代币，这是一个与 Curve 无关的第三方服务。<0>了解更多信息</0>。"
 
 #: src/layout/HeaderMobile.tsx:172
 #: src/layout/HeaderSecondary.tsx:61
 msgid "off"
-msgstr ""
+msgstr "关"
 
 #: src/layout/HeaderMobile.tsx:172
 #: src/layout/HeaderSecondary.tsx:61
 msgid "on"
-msgstr ""
+msgstr "开"
 
 #: src/components/AlertFormWarning.tsx:30
 msgid "Once the loan is paid off, you will no longer be able to manage this loan."
-msgstr ""
+msgstr "一旦贷款偿还，您将无法再管理此贷款。"
 
 #: src/components/AlertFormError.tsx:39
 #: src/components/AlertFormWarning.tsx:27
 msgid "Only full repayment is allowed when in soft-liquidation mode."
-msgstr ""
+msgstr "在软清算模式下，仅允许全额偿还。"
 
 #: src/components/ChartBandBalances/index.tsx:304
 #: src/components/ChartLiquidationRange/index.tsx:215
 msgid "Oracle"
-msgstr ""
+msgstr "Oracle"
 
 #: src/components/ChartBandBalances/index.tsx:136
 #: src/components/ChartLiquidationRange/index.tsx:110
 msgid "Oracle price"
-msgstr ""
+msgstr "Oracle 价格"
 
 #: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:36
 msgid "Oracle Price"
-msgstr ""
+msgstr "Oracle 价格"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:35
 msgid "Partial repayment LLAMMA changes:"
-msgstr ""
+msgstr "部分还款 LLAMMA 变更:"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:111
 msgid "Please approve a repayment of {debt} {0}."
-msgstr ""
+msgstr "请批准偿还 {debt} {0}。"
 
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:107
 msgid "Please approve deleverage with {fTokenName} at {maxSlippage}% max slippage."
-msgstr ""
+msgstr "请批准以 {maxSlippage}% 的最大滑点进行 {fTokenName} 去杠杆。"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:110
 msgid "Please approve full repay."
-msgstr ""
+msgstr "请批准全额偿还。"
 
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:142
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:162
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:99
 msgid "Please approve spending of {0}"
-msgstr ""
+msgstr "请批准支出 {0}。"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:161
 msgid "Please approve spending your {0}"
-msgstr ""
+msgstr "请批准支出你的 {0}"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:163
 msgid "Please approve spending your {0}."
-msgstr ""
+msgstr "请批准支出你的 {0}。"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:165
 msgid "Please approve spending your {item1Name}."
-msgstr ""
+msgstr "请批准支出你的 {item1Name}。"
 
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:113
 msgid "Please confirm {stablecoinName} self-liquidation at max {maxSlippage}% slippage."
-msgstr ""
+msgstr "请确认 {stablecoinName} 在最大 {maxSlippage}% 的滑点下自我清算。"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:115
 msgid "Please confirm borrowing of {0} {1} and adding {2} {3}."
-msgstr ""
+msgstr "请确认借入 {0} {1} 并添加 {2} {3}。"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:118
 msgid "Please confirm borrowing of {0} {1}."
-msgstr ""
+msgstr "请确认借入 {0} {1}。"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:121
 msgid "Please confirm deposit of {0} {1}"
-msgstr ""
+msgstr "请确认存入 {0} {1}。"
 
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:101
 msgid "Please confirm depositing {0} {1}"
-msgstr ""
+msgstr "请确认存入 {0} {1}。"
 
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:98
 msgid "Please confirm removal of {0} {1}"
-msgstr ""
+msgstr "请确认移除 {0} {1}。"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:113
 msgid "Please confirm swapping {swapAmount} {item1Name} at max {maxSlippage} slippage."
-msgstr ""
+msgstr "请确认以最大 {maxSlippage} 的滑点交换 {swapAmount} {item1Name}。"
 
 #: src/domain/layout/index.tsx:66
 #~ msgid "Please connect wallet to view loan details"
-#~ msgstr ""
+#~ msgstr "请连接钱包以查看贷款详情。"
 
 #: src/domain/layout/index.tsx:56
 #~ msgid "Please switch your wallet's network to <0>{0}</0>to use Curve on <1>{1}</1>."
-#~ msgstr ""
+#~ msgstr "请将您的钱包网络切换到 <0>{0}</0> 以在 <1>{1}</1> 上使用 Curve。"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:60
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:269
 #: src/components/PageLoanManage/LoanSwap/index.tsx:296
 msgid "Price impact:"
-msgstr ""
+msgstr "价格影响:"
 
 #: src/components/LoanInfoUser/index.tsx:211
 msgid "Range %"
-msgstr ""
+msgstr "范围 %"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:43
 msgid "Receive:"
-msgstr ""
+msgstr "接收:"
 
 #: src/components/PageLoanManage/index.tsx:51
 msgid "Remove"
-msgstr ""
+msgstr "移除"
 
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:137
 msgid "Remove Collateral"
-msgstr ""
+msgstr "移除抵押物"
 
 #: src/domain/components/DetailInfoHealth.tsx:178
 #~ msgid "Removing {0} collateral, will put you close to soft liquidation."
-#~ msgstr ""
+#~ msgstr "移除 {0} 抵押物将使您接近软清算。"
 
 #: src/components/DetailInfoHealth.tsx:182
 msgid "Removing {formattedAmount} collateral, will put you close to soft liquidation."
-msgstr ""
+msgstr "移除 {formattedAmount} 抵押物将使您接近软清算。"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:172
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:155
 msgid "Repaid"
-msgstr ""
+msgstr "已还款"
 
 #: src/components/PageLoanManage/index.tsx:45
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:172
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:155
 msgid "Repay"
-msgstr ""
+msgstr "还款"
 
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:176
 msgid "Repay anyway"
-msgstr ""
+msgstr "仍要还款"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:268
 msgid "Repay in full and close loan"
-msgstr ""
+msgstr "全额还款并关闭贷款"
 
 #: src/layout/Footer.tsx:109
 #: src/layout/HeaderMobile.tsx:152
 msgid "Resources"
-msgstr ""
+msgstr "资源"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:56
 msgid "Return to wallet:"
-msgstr ""
+msgstr "返回钱包:"
 
 #: src/components/PageDisclaimer/Page.tsx:28
 #: src/components/PageDisclaimer/Page.tsx:30
 #: src/layout/Header.tsx:41
 msgid "Risk Disclaimer"
-msgstr ""
+msgstr "风险声明"
 
 #: src/components/AdvancedSettings.tsx:147
 msgid "Save"
-msgstr ""
+msgstr "保存"
 
 #: src/components/PageLoanManage/index.tsx:46
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:110
 msgid "Self-liquidate"
-msgstr ""
+msgstr "自我清算"
 
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:110
 msgid "Self-liquidated"
-msgstr ""
+msgstr "已自我清算"
 
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:203
 msgid "Self-liquidation amount"
-msgstr ""
+msgstr "自我清算金额"
 
 #: src/components/DetailInfoSlippageTolerance.tsx:14
 msgid "Slippage tolerance:"
-msgstr ""
+msgstr "滑点容忍度:"
 
 #: src/components/PageMarketList/components/DialogSortContent.tsx:65
 msgid "Sort By"
-msgstr ""
+msgstr "排序方式"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:161
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:140
@@ -733,79 +733,79 @@ msgstr ""
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:97
 #: src/components/PageLoanManage/LoanSwap/index.tsx:161
 msgid "Spending Approved"
-msgstr ""
+msgstr "支出已批准"
 
 #: src/components/LoanInfoUser/index.tsx:178
 msgid "Status"
-msgstr ""
+msgstr "状态"
 
 #: src/components/DetailInfoEstimateGas.tsx:62
 msgid "Step {0} of {1}"
-msgstr ""
+msgstr "第 {0} 步，共 {1} 步"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:176
 msgid "Swap"
-msgstr ""
+msgstr "Swap"
 
 #: src/domain/components/AlertFormError.tsx:30
 #~ msgid "Swap is not available."
-#~ msgstr ""
+#~ msgstr "交换不可用"
 
 #: src/components/PageLoanManage/LoanSwap/index.tsx:176
 msgid "Swapped"
-msgstr ""
+msgstr "已交换"
 
 #: src/layout/Footer.tsx:28
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: src/components/PageMarketList/index.tsx:67
 msgid "The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing."
-msgstr ""
+msgstr "借款利率会随着 crvUSD 的供需变化而变化，体现在价格和总债务与 PegKeeper 债务的对比中。利率会上升以鼓励减少债务，下降以鼓励借款。"
 
 #: src/components/PageIntegrations/Page.tsx:43
 msgid "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
-msgstr ""
+msgstr "以下应用程序均声称是在 Curve 生态系统上构建的。请注意，对这些协议的真实性、准确性或安全性没有任何保证。使用任何链接的风险由您自行承担，因此请自行进行研究并保持谨慎。如果您发现任何链接存在问题或希望将其他内容添加到此列表中，请在以下 GitHub 仓库中创建 PR <0>https://github.com/curvefi/curve-external-integrations</0>。"
 
 #: src/components/DetailInfoHealth.tsx:116
 msgid "The loan metric indicates the current health of your position."
-msgstr ""
+msgstr "贷款指标显示您当前头寸的健康状况。"
 
 #: src/components/DetailInfoLiqRange.tsx:94
 msgid "The range of prices where collateral is managed by the market-maker.  Collateral begins to be sold off when its price enters your liquidation range (\"soft liquidation\").  If the market-maker cannot keep the position sufficiently collateralized, an externally triggered \"hard\" liquidation may take place."
-msgstr ""
+msgstr "在这个价格范围内，抵押物由做市商管理。当抵押物的价格进入您的清算范围（“软清算”）时，抵押物将开始被抛售。如果做市商无法保持头寸的足够抵押，可能会发生外部触发的“硬清算”。"
 
 #: src/hooks/useTokenAlert.tsx:34
 msgid "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown. This is out of our control, but we will do everything in our power to make sure the peg of Ren assets is maintained."
-msgstr ""
+msgstr "Ren 网络目前仍在运行，但预计不久将停机。确切日期目前尚不清楚。这不在我们的控制范围内，但我们会尽一切努力确保 Ren 资产的锚定得以维持。"
 
 #: src/components/LoanInfoUser/index.tsx:238
 msgid "This metric measures the loss in collateral value caused by LLAMMA's soft liquidation process, which is activated when the oracle price falls within a user’s liquidation range."
-msgstr ""
+msgstr "该指标衡量由 LLAMMA 的软清算过程造成的抵押物价值损失，当预言机价格落入用户的清算范围时，该过程会被激活。"
 
 #: src/domain/components/loan-collateral-list/index.tsx:56
 #~ msgid "Total borrowed"
-#~ msgstr ""
+#~ msgstr "总借款"
 
 #: src/components/PageMarketList/index.tsx:74
 msgid "Total collateral value"
-msgstr ""
+msgstr "总抵押物价值"
 
 #: src/components/PageMarketList/index.tsx:71
 msgid "Total debt"
-msgstr ""
+msgstr "总债务"
 
 #: src/components/LoanInfoUser/index.tsx:296
 msgid "Total debt:"
-msgstr ""
+msgstr "总债务:"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:138
 msgid "Total position collateral:"
-msgstr ""
+msgstr "总头寸抵押物:"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes.tsx:42
 msgid "Trade routed through:"
-msgstr ""
+msgstr "交易通过:"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:373
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:108
@@ -814,108 +814,108 @@ msgstr ""
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:127
 #: src/components/PageLoanManage/LoanSwap/index.tsx:127
 msgid "Transaction complete"
-msgstr ""
+msgstr "交易完成"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:126
 msgid "Transaction complete."
-msgstr ""
+msgstr "交易完成。"
 
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:115
 msgid "Transaction complete. This loan is paid-off and will no longer be manageable."
-msgstr ""
+msgstr "交易完成。此贷款已还清，将不再可管理。"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:118
 msgid "Transaction complete. This loan is payoff and will no longer be manageable."
-msgstr ""
+msgstr "交易完成。此贷款已结清，将不再可管理。"
 
 #: src/components/PageLoanManage/LoanLiquidate/index.tsx:121
 msgid "Transaction complete. This loan will no longer exist. Click <0>here</0> to go back to collateral list."
-msgstr ""
+msgstr "交易完成。此贷款将不再存在。点击 <0>这里</0> 返回抵押物列表。"
 
 #: src/layout/Footer.tsx:25
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: src/components/LoanFormAlertError.tsx:40
 msgid "Unable to add collateral"
-msgstr ""
+msgstr "无法添加抵押物"
 
 #: src/components/AlertFormError.tsx:44
 #: src/components/LoanFormAlertError.tsx:36
 msgid "Unable to approve spending"
-msgstr ""
+msgstr "无法批准支出"
 
 #: src/components/LoanFormAlertError.tsx:38
 msgid "Unable to borrow more."
-msgstr ""
+msgstr "无法借款更多。"
 
 #: src/components/LoanFormAlertError.tsx:37
 msgid "Unable to create loan."
-msgstr ""
+msgstr "无法创建贷款。"
 
 #: src/components/AlertFormError.tsx:43
 #: src/components/LoanFormAlertError.tsx:51
 msgid "Unable to find provider"
-msgstr ""
+msgstr "无法找到提供者。"
 
 #: src/components/AlertFormError.tsx:42
 #: src/components/LoanFormAlertError.tsx:50
 msgid "Unable to get approval or estimated gas"
-msgstr ""
+msgstr "无法获得批准或估算的燃气费用。"
 
 #: src/components/AlertFormError.tsx:36
 msgid "Unable to get deleverage info"
-msgstr ""
+msgstr "无法获取去杠杆信息。"
 
 #: src/domain/components/AlertFormError.tsx:31
 #~ msgid "Unable to get exchange rates and swap amount"
-#~ msgstr ""
+#~ msgstr "无法获取汇率和兑换金额。"
 
 #: src/components/LoanFormAlertError.tsx:52
 msgid "Unable to get max amount"
-msgstr ""
+msgstr "无法获取最大金额。"
 
 #: src/components/AlertFormError.tsx:48
 msgid "Unable to get total supply"
-msgstr ""
+msgstr "无法获取总供应量。"
 
 #: src/components/DetailInfoEstimateGas.tsx:78
 #: src/components/PageMarketList/components/TableCellTotalCollateral.tsx:26
 msgid "Unable to get USD rate"
-msgstr ""
+msgstr "无法获取美元汇率。"
 
 #: src/components/LoanFormAlertError.tsx:39
 msgid "Unable to remove collateral"
-msgstr ""
+msgstr "无法移除抵押品。"
 
 #: src/components/LoanFormAlertError.tsx:42
 msgid "Unable to repay loan"
-msgstr ""
+msgstr "无法还款。"
 
 #: src/components/LoanFormAlertError.tsx:46
 #: src/components/LoanFormAlertError.tsx:47
 msgid "Unable to self liquidate"
-msgstr ""
+msgstr "无法自我清算。"
 
 #: src/components/LoanFormAlertError.tsx:41
 msgid "Unable to swap"
-msgstr ""
+msgstr "无法交换。"
 
 #: src/components/PageMarketList/index.tsx:174
 msgid "view all collateral."
-msgstr ""
+msgstr "查看所有抵押品。"
 
 #: src/layout/HeaderMobile.tsx:136
 msgid "Visit Curve.fi"
-msgstr ""
+msgstr "访问 Curve.fi。"
 
 #: src/components/LoanInfoUser/index.tsx:307
 msgid "Wallet Balances"
-msgstr ""
+msgstr "钱包余额。"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:362
 msgid "WARNING: The corresponding deleverage button is also not yet available."
-msgstr ""
+msgstr "警告：相应的去杠杆按钮尚未可用。"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:178
 #: src/components/PageLoanManage/CollateralDecrease/index.tsx:141
@@ -923,69 +923,69 @@ msgstr ""
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:159
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:177
 msgid "Warning!"
-msgstr ""
+msgstr "警告！"
 
 #: src/components/LoanFormAlertWarning.tsx:22
 msgid "Warning! Exchange rate is too low!"
-msgstr ""
+msgstr "警告！汇率过低！"
 
 #: src/layout/Footer.tsx:83
 msgid "Whitepaper"
-msgstr ""
+msgstr "白皮书"
 
 #: src/layout/Footer.tsx:57
 msgid "Wiki CN"
-msgstr ""
+msgstr "维基中文"
 
 #: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:29
 msgid "x-axis display"
-msgstr ""
+msgstr "x 轴显示"
 
 #: src/domain/components/loan-info-user/index.tsx:148
 #~ msgid "You are in soft-liquidation mode. The amount currently at risk is {0} {1}. In this mode, you cannot withdraw collateral or add more to your position.  To exit self-liquidation mode you can repay or self-liquidate."
-#~ msgstr ""
+#~ msgstr "您处于软清算模式。目前风险金额为 {0} {1}。在此模式下，您无法提取抵押品或增加您的头寸。要退出自我清算模式，您可以选择还款或进行自我清算。"
 
 #: src/components/LoanInfoUser/index.tsx:174
 msgid "You are in soft-liquidation mode. The amount currently at risk is {softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate)."
-msgstr ""
+msgstr "您处于软清算模式。目前风险金额为 {softLiquidationAmountText}。在此模式下，您无法部分提取或增加抵押品。为了降低强清算的风险，您可以还款，或者要退出软清算，您可以关闭（自我清算）。"
 
 #: src/components/AlertFormWarning.tsx:33
 msgid "You are not in liquidation mode."
-msgstr ""
+msgstr "您不在清算模式中。"
 
 #: src/components/DetailInfoHealth.tsx:178
 msgid "You are still close to soft liquidation."
-msgstr ""
+msgstr "您仍然接近软清算。"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:359
 msgid "You can leverage your collateral up to 9x. This has the effect of repeat trading crvUSD to collateral and depositing to maximize your collateral position. Essentially, all borrowed crvUSD is utilized to purchase more collateral."
-msgstr ""
+msgstr "您可以将抵押品杠杆提高至 9 倍。这会重复交易 crvUSD 以获取抵押品并存入资金，从而最大化您的抵押品头寸。实际上，所有借入的 crvUSD 都用于购买更多抵押品。"
 
 #: src/components/AlertFormError.tsx:47
 msgid "You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation."
-msgstr ""
+msgstr "您在清算模式下无法调整抵押品。您的选项是还款或自我清算。"
 
 #: src/components/AlertFormWarning.tsx:36
 msgid "You do not have enough crvUSD for self-liquidation."
-msgstr ""
+msgstr "您没有足够的 crvUSD 进行自我清算。"
 
 #: src/components/PageMarketList/components/TableCellInPool.tsx:9
 msgid "You have a balance in this pool"
-msgstr ""
+msgstr "您在此池中有余额"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/DialogHighPriceImpactWarning.tsx:23
 msgid "You have a high price impact {priceImpact}%!"
-msgstr ""
+msgstr "您有高达 {priceImpact}% 的价格影响！"
 
 #: src/components/PageLoanManage/Page.tsx:57
 #: src/components/PageLoanManage/Page.tsx:60
 msgid "Your Loan Details"
-msgstr ""
+msgstr "您的贷款详情"
 
 #: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:38
 msgid "Your loan will be paid off"
-msgstr ""
+msgstr "您的贷款将被偿还"
 
 #: src/layout/Footer.tsx:45
 msgid "YouTube"
-msgstr ""
+msgstr "YouTube"
