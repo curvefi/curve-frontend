@@ -28,7 +28,6 @@ import PoolInfo from '@/components/PageCreatePool/PoolInfo'
 import Summary from '@/components/PageCreatePool/Summary'
 import Parameters from '@/components/PageCreatePool/Parameters'
 import InfoBox from '@/components/PageCreatePool/components/InfoBox'
-import ConnectWallet from '@/components/ConnectWallet'
 
 type Props = {
   curve: CurveApi
@@ -53,7 +52,6 @@ const CreatePool = ({ curve }: Props) => {
     updateParametersValidation,
     updatePoolInfoValidation,
   } = useStore((state) => state.createPool)
-  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const isNavEnabled = useCallback(() => {
     if (navigationIndex === 0) {
@@ -170,15 +168,7 @@ const CreatePool = ({ curve }: Props) => {
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
-      {!provider ? (
-        <NotAvailableWrapper>
-          <ConnectWallet
-            description={t`Connect wallet to access pool creation`}
-            connectText={t`Connect Wallet`}
-            loadingText={t`Connecting`}
-          />
-        </NotAvailableWrapper>
-      ) : !chainId ? (
+      {!chainId ? (
         <NotAvailableWrapper>
           <StyledSpinner isDisabled size={24} />
           <LoadingMessage>{t`Connecting to network`}</LoadingMessage>
