@@ -29,7 +29,7 @@ class BigDecimal {
     if (typeof value === 'string') {
       const match = BigDecimal.DECIMAL_REGEX.exec(value)
       if (!match) {
-        throw new Error('Invalid string format. Expected "integer", "integer.fraction", or ".fraction"')
+        throw new Error('Invalid string format. Expected "integer", "integer.fraction", or ".fraction" where fraction is 1 to 18 digits')
       }
 
       const [, sign, intPart, fracPart = ''] = match
