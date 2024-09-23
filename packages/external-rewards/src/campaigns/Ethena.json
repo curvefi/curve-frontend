@@ -15,7 +15,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -27,7 +27,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -39,7 +39,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -51,7 +51,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -63,7 +63,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -75,7 +75,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     },
     {
       "id": "null",
@@ -135,7 +135,7 @@
       "network": "ethereum",
       "multiplier": "30",
       "tags": ["points"],
-      "lock": "false"
+      "lock": "true"
     }
   ]
 }
