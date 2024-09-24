@@ -35,6 +35,7 @@ import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -55,6 +56,7 @@ const Page: NextPage = () => {
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
@@ -147,7 +149,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${llamma?.collateralSymbol}` ?? t`Manage`} />
+      <DocumentHead title={t`${llamma?.collateralSymbol}`} />
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
@@ -207,10 +209,17 @@ const Page: NextPage = () => {
             </Tabs>
           </AppPageInfoTabsWrapper>
           <AppPageInfoContentWrapper variant="secondary">
-            {selectedTab === 'llamma' && isValidRouterParams && (
+            {!provider && (
+              <ConnectWallet
+                description={t`Connect your wallet to view market`}
+                connectText={t`Connect`}
+                loadingText={t`Connecting...`}
+              />
+            )}
+            {provider && selectedTab === 'llamma' && isValidRouterParams && (
               <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
             )}
-            {selectedTab === 'user' && isValidRouterParams && (
+            {provider && selectedTab === 'user' && isValidRouterParams && (
               <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
             )}
           </AppPageInfoContentWrapper>

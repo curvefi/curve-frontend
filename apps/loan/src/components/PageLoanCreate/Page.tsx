@@ -32,6 +32,7 @@ import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -56,6 +57,7 @@ const Page: NextPage = () => {
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const [loaded, setLoaded] = useState(false)
 
@@ -163,7 +165,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${rCollateralId}` ?? t`Create`} />
+      <DocumentHead title={t`${rCollateralId}`} />
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
@@ -207,8 +209,15 @@ const Page: NextPage = () => {
           {isMdUp && !chartExpanded && <TitleComp />}
           <AppPageInfoContentWrapper variant="secondary">
             <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-            {isValidRouterParams && rChainId && (
-              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+            {!provider ? (
+              <ConnectWallet
+                description={t`Connect your wallet to view market`}
+                connectText={t`Connect`}
+                loadingText={t`Connecting...`}
+              />
+            ) : (
+              isValidRouterParams &&
+              rChainId && <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
             )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
