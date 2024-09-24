@@ -17,11 +17,10 @@ const FormConnectWallet = ({
   const { data: curve } = useCurve()
   const connectState = useStore((state) => state.connectState)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
-  const provider = useStore((state) => state.wallet.getProvider(''))
 
   return (
     <>
-      {!provider && !isLoading(connectState) ? (
+      {!isLoading(connectState) && !loading && !curve?.signerAddress ? (
         <Button fillWidth size="large" variant="filled" onClick={updateConnectWalletStateKeys}>
           {t`Connect Wallet`}
         </Button>

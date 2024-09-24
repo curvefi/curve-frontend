@@ -19,6 +19,7 @@ import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/default/DocumentHead'
 import IconButton from '@/ui/IconButton'
 import QuickSwap from '@/components/PageRouterSwap/index'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -33,6 +34,7 @@ const Page: NextPage = () => {
   const maxSlippage = useStore((state) => state.maxSlippage['router'])
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const provider = useStore((state) => state.wallet.getProvider(''))
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
 
   const [loaded, setLoaded] = useState(false)
@@ -112,30 +114,38 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Swap`} />
-      <StyledQuickSwapWrapper variant="primary" shadowed>
-        <BoxHeader className="title-text">
-          <IconButton testId="hidden" hidden />
-          {t`Swap`}
-          <AdvancedSettings stateKey="router" testId="advance-settings" maxSlippage={maxSlippage} />
-        </BoxHeader>
-
-        <Box grid gridRowGap={3} padding>
-          {rChainId && (
-            <QuickSwap
-              pageLoaded={loaded}
-              params={params}
-              searchedParams={{
-                fromAddress: paramsFromAddress,
-                toAddress: paramsToAddress,
-              }}
-              rChainId={rChainId}
-              tokensMapper={tokensMapper}
-              tokensMapperStr={tokensMapperStr}
-              redirect={redirect}
-            />
-          )}
+      {!provider ? (
+        <Box display="flex" fillWidth flexJustifyContent="center">
+          <ConnectWalletWrapper>
+            <ConnectWallet description="Connect wallet to swap" connectText="Connect Wallet" loadingText="Connecting" />
+          </ConnectWalletWrapper>
         </Box>
-      </StyledQuickSwapWrapper>
+      ) : (
+        <StyledQuickSwapWrapper variant="primary" shadowed>
+          <BoxHeader className="title-text">
+            <IconButton testId="hidden" hidden />
+            {t`Swap`}
+            <AdvancedSettings stateKey="router" testId="advance-settings" maxSlippage={maxSlippage} />
+          </BoxHeader>
+
+          <Box grid gridRowGap={3} padding>
+            {rChainId && (
+              <QuickSwap
+                pageLoaded={loaded}
+                params={params}
+                searchedParams={{
+                  fromAddress: paramsFromAddress,
+                  toAddress: paramsToAddress,
+                }}
+                rChainId={rChainId}
+                tokensMapper={tokensMapper}
+                tokensMapperStr={tokensMapperStr}
+                redirect={redirect}
+              />
+            )}
+          </Box>
+        </StyledQuickSwapWrapper>
+      )}
     </>
   )
 }
@@ -148,6 +158,11 @@ const StyledQuickSwapWrapper = styled(Box)`
     margin: 1.5rem auto;
     max-width: var(--transfer-min-width);
   }
+`
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  margin: var(--spacing-3) auto;
 `
 
 export default Page
