@@ -12,9 +12,6 @@ export { ReactComponent as RCGithubLogo } from './github.svg'
 export { ReactComponent as RCTelegramLogo } from './telegram.svg'
 export { ReactComponent as RCTwitterLogo } from './twitter.svg'
 
-// CONNECT WALLET ART
-export { ReactComponent as RCConnectWalletDark } from './curve_illustration-dark.svg'
-export { ReactComponent as RCConnectWalletLight } from './curve_illustration-light.svg'
 // ICON
 export { ReactComponent as RCPointsIcon } from './points-icon.svg'
 

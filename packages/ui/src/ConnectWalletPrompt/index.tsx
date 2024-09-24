@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Button from '../Button'
 import Spinner from '../Spinner'
 
-import { LogoImg, RCConnectWalletDark, RCConnectWalletLight } from '../images'
+import { LogoImg } from '../images'
 
 type ConnectWalletPromptProps = {
   connectWallet: () => void
@@ -24,12 +24,15 @@ const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
   loadingText,
   theme = 'light',
 }) => {
-  const BackgroundSvg = theme === 'light' ? RCConnectWalletLight : RCConnectWalletDark
+  const BackgroundSvg =
+    theme === 'light'
+      ? 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/curve_illustration-light.svg'
+      : 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/curve_illustration-dark.svg'
 
   return (
     <Wrapper>
       <ImageWrapper>
-        <StyledBackgroundSvg as={BackgroundSvg} />
+        <StyledBackground src={BackgroundSvg} alt="Curve Logo" />
         <OverlayWrapper>
           <CurveLogo src={LogoImg} alt="Curve Logo" />
           <OverlayText>Enter Curve</OverlayText>
@@ -91,11 +94,11 @@ const OverlayWrapper = styled.div`
   transform: translate(-50%, -50%);
 `
 
-const StyledBackgroundSvg = styled.svg`
-  height: auto;
+const StyledBackground = styled.img`
+  width: 1400px;
   max-width: 100%;
-  width: 800px;
-  margin: 0 auto;
+  height: 100%;
+  object-fit: contain;
 `
 
 const OverlayText = styled.p`
