@@ -42,8 +42,11 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
           const apiNew = await helpers.initApi(chainId, useWallet ? wallet : null)
-          if (!apiNew) throw new Error()
-          updateApi(apiNew, prevApi, wallet)
+
+          if (apiNew) {
+            updateApi(apiNew, prevApi, wallet)
+          }
+
           updateConnectState('success', '')
         } catch (error) {
           console.error(error)

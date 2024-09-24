@@ -5,7 +5,7 @@ import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
   let curveApi: CurveApi | undefined
-  const { networkId, rpcUrl } = networks[chainId] ?? {}
+  const { networkId } = networks[chainId] ?? {}
 
   try {
     if (networkId) {
