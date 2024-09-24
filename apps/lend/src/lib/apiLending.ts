@@ -86,9 +86,9 @@ export const helpers = {
     let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
       if (networks[api.chainId].gasL2) {
-        // const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([api.getGasPriceFromL2(), api.getGasPriceFromL1()])
-        // resp.l2GasPriceWei = l2GasPriceWei
-        // resp.l1GasPriceWei = l1GasPriceWei
+        const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([api.getGasPriceFromL2(), api.getGasPriceFromL1()])
+        resp.l2GasPriceWei = l2GasPriceWei
+        resp.l1GasPriceWei = l1GasPriceWei
       }
       return resp
     } catch (error) {
