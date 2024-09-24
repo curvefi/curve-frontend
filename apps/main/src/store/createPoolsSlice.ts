@@ -307,7 +307,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
             state.pools.basePoolsLoading = false
           })
         )
-        console.error(error)
+        console.error('Failed to fetch base pools', error)
       }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {

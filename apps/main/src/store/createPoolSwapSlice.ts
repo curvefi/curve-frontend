@@ -1,23 +1,24 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { EstimatedGas as FormEstGas } from '@/components/PagePool/types'
-import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
+import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/components/PagePool/Swap/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
 
 import cloneDeep from 'lodash/cloneDeep'
-import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import { Contract, Interface } from 'ethers'
 
 import {
   DEFAULT_EST_GAS,
   DEFAULT_EXCHANGE_OUTPUT,
   DEFAULT_FORM_STATUS,
-  DEFAULT_FORM_VALUES,
+  DEFAULT_FORM_VALUES
 } from '@/components/PagePool/Swap/utils'
 import { NETWORK_TOKEN } from '@/constants'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
 import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
+import { createRpcProvider } from '@/store/createWalletSlice'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -81,7 +82,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (typeof storedIgnoreExchangeRateCheck !== 'undefined') {
         return storedIgnoreExchangeRateCheck
       } else {
-        const provider = state.wallet.getProvider('') || new JsonRpcProvider(networks[chainId].rpcUrl)
+        const provider = createRpcProvider(chainId, state.wallet.getProvider)
 
         if (!provider) return false
 

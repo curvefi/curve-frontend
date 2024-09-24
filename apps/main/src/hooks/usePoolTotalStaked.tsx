@@ -5,6 +5,7 @@ import { isValidAddress } from '@/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import dayjs from '@/lib/dayjs'
+import { createRpcProvider } from '@/store/createWalletSlice'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
@@ -58,9 +59,9 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
     if (address && curve && shouldCallApi) {
-      ;(async () => {
-        const rpcUrl = networks[curve.chainId].rpcUrl
-        const provider = getProvider('') || new JsonRpcProvider(rpcUrl)
+      (async () => {
+        const provider = createRpcProvider(curve.chainId, getProvider)
+        if (!provider) return
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null

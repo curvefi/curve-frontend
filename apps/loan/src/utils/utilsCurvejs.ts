@@ -6,20 +6,16 @@ import { BN } from '@/ui/utils'
 import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null): Promise<Curve | undefined> {
-  try {
-    const { networkId, rpcUrl } = networks[chainId]
-    const api = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
-
-    if (wallet) {
-      await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
-      return api
-    } else if (rpcUrl) {
-      await api.init('JsonRpc', { url: rpcUrl }, { chainId })
-      return api
-    }
-  } catch (error) {
-    console.error(error)
+  const { networkId, rpcUrl } = networks[chainId]
+  const curveApi = cloneDeep((await import('@curvefi/stablecoin-api')).default) as Curve
+  if (wallet) {
+    await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+  } else if (rpcUrl) {
+    await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
+  } else {
+    await curveApi.init()
   }
+  return curveApi
 }
 
 export function getImageBaseUrl(rChainId: ChainId) {

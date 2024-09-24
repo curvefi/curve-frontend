@@ -42,7 +42,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
           const api = await initCurveJs(chainId, useWallet ? wallet : null)
-          if (!api) throw new Error()
           const parsedApi: Curve = { ...api, chainId: 1 }
           updateCurveJs(parsedApi, prevCurveApi, wallet)
           updateConnectState('success', '')

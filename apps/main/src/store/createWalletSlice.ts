@@ -3,10 +3,11 @@ import type { GetState, SetState } from 'zustand'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 import type { State } from '@/store/useStore'
 
-import { BrowserProvider, ethers } from 'ethers'
+import { BrowserProvider, ethers, JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { CONNECT_STAGE } from '@/constants'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -126,4 +127,16 @@ export function getWalletChainId(wallet: Wallet | undefined | null) {
 export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
   if (!wallet) return ''
   return wallet.accounts[0]?.address
+}
+
+export function createRpcProvider(chainId: ChainId, getProvider: WalletSlice['wallet']['getProvider']) {
+  const provider = getProvider('')
+  if (provider) {
+    return provider
+  }
+  const rpcUrl = networks[chainId].rpcUrl
+  if (rpcUrl) {
+    return new JsonRpcProvider(rpcUrl)
+  }
+  return null
 }
