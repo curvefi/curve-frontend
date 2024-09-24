@@ -15,6 +15,7 @@ import Swell from './Swell.json';
 import Resolv from './Resolv.json';
 import Lombard from './Lombard.json';
 import TurtleSeeds from './TurtleSeeds.json';
+import SolvProtocol from './SolvProtocol.json';
 
 export {
   DLCLink,
@@ -33,5 +34,6 @@ export {
   Swell,
   Resolv,
   Lombard,
-  TurtleSeeds
+  TurtleSeeds,
+  SolvProtocol
 }
