@@ -7,7 +7,7 @@ import type {
   SwapEstGasApproval,
 } from '@/entities/swap'
 
-export const keys = {
+export const swapKeys = {
   base: ({ chainId, poolId }: PoolBase) => {
     return ['swapBase', chainId, poolId] as const
   },
@@ -17,7 +17,7 @@ export const keys = {
 
   // query
   ignoreExchangeRateCheck: (params: PoolBase) => {
-    return ['ignoreExchangeRateCheck', ...keys.base(params)] as const
+    return ['ignoreExchangeRateCheck', ...swapKeys.base(params)] as const
   },
   swapExchangeDetails: ({
     isFrom,
@@ -34,7 +34,7 @@ export const keys = {
   }: SwapExchangeDetails) => {
     return [
       'swapExchangeDetails',
-      ...keys.base(rest),
+      ...swapKeys.base(rest),
       isFrom,
       fromAmount,
       fromAddress,
@@ -50,7 +50,7 @@ export const keys = {
   swapEstGasApproval: ({ isWrapped, fromAddress, toAddress, fromAmount, maxSlippage, ...rest }: SwapEstGasApproval) => {
     return [
       'swapEstGasApproval',
-      ...keys.signerBase(rest),
+      ...swapKeys.signerBase(rest),
       isWrapped,
       fromAddress,
       toAddress,
@@ -61,9 +61,9 @@ export const keys = {
 
   // mutation
   approveSwap: ({ isWrapped, fromAmount, fromAddress, ...rest }: ApproveSwap) => {
-    return ['approveSwap', ...keys.signerBase(rest), isWrapped, fromAmount, fromAddress] as const
+    return ['approveSwap', ...swapKeys.signerBase(rest), isWrapped, fromAmount, fromAddress] as const
   },
   swap: ({ isWrapped, fromAmount, fromAddress, toAddress, maxSlippage, ...rest }: Swap) => {
-    return ['swap', ...keys.signerBase(rest), isWrapped, fromAmount, fromAddress, toAddress, maxSlippage] as const
+    return ['swap', ...swapKeys.signerBase(rest), isWrapped, fromAmount, fromAddress, toAddress, maxSlippage] as const
   },
 }

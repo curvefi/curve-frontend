@@ -10,7 +10,7 @@ import { amountsDescription, tokensDescription } from '@/components/PagePool/uti
 import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
 import * as api from '@/entities/deposit/api'
-import * as conditions from '@/entities/deposit/model/mutation-conditions'
+import * as conditions from '@/entities/deposit/model/deposit-mutation-conditions'
 
 const autoDismissMs = REFRESH_INTERVAL['5s']
 

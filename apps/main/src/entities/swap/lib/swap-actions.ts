@@ -9,7 +9,7 @@ import { REFRESH_INTERVAL } from '@/constants'
 import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
 import * as api from '@/entities/swap/api'
-import * as conditions from '@/entities/swap/model/mutation-conditions'
+import * as conditions from '@/entities/swap/model/swap-mutation-conditions'
 
 const autoDismissMs = REFRESH_INTERVAL['5s']
 

@@ -5,14 +5,14 @@ import type { WaitForTxReceiptResp } from '@/shared/curve-lib'
 
 import { logMutation } from '@/utils'
 import { waitForTxStatuses } from '@/shared/curve-lib'
-import { keys } from '@/entities/swap/model/keys'
+import { swapKeys } from '@/entities/swap/model/swap-keys'
 import useStore from '@/store/useStore'
 
 const invalidPoolId = 'Missing poolId'
 const invalidProvider = 'Missing signer provider'
 
 export const mutateSwapApprove: MutateFunction<WaitForTxReceiptResp, TxHashError, ApproveSwap> = async (params) => {
-  logMutation(keys.approveSwap(params))
+  logMutation(swapKeys.approveSwap(params))
   const { poolId, isWrapped, fromAmount, fromAddress } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -26,7 +26,7 @@ export const mutateSwapApprove: MutateFunction<WaitForTxReceiptResp, TxHashError
 }
 
 export const mutateSwap: MutateFunction<WaitForTxReceiptResp, TxHashError, Swap> = async (params) => {
-  logMutation(keys.swap(params))
+  logMutation(swapKeys.swap(params))
   const { poolId, isWrapped, fromAmount, fromAddress, toAddress, maxSlippage } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)

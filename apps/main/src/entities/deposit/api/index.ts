@@ -1,2 +1,2 @@
-export * from './mutation-api'
-export * from './query-api'
+export * from './deposit-mutation'
+export * from './deposit-query'

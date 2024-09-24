@@ -1,2 +1,2 @@
-export * from './mutation-api'
-export * from './query-api'
+export * from './swap-mutation'
+export * from './swap-query'

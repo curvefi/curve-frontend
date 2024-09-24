@@ -2,7 +2,7 @@ import type { QueryFunction } from '@tanstack/react-query'
 import type { Amount, DepositQueryKeyType, DepositDetailsResp, DepositEstGasApprovalResp } from '@/entities/deposit'
 
 import { isBonus, isHighSlippage } from '@/utils'
-import { total } from '@/entities/deposit/model/query-conditions'
+import { total } from '@/entities/deposit/model/deposit-query-conditions'
 import curvejsApi, { warnIncorrectEstGas } from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 

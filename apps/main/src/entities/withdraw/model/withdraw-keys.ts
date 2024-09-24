@@ -10,7 +10,7 @@ import type {
   UnstakeEstGas,
 } from '@/entities/withdraw'
 
-export const keys = {
+export const withdrawKeys = {
   base: ({ chainId, poolId }: PoolBase) => {
     return [chainId, poolId] as const
   },
@@ -30,7 +30,7 @@ export const keys = {
   }: WithdrawDetails) => {
     return [
       'withdrawDetails',
-      ...keys.base(rest),
+      ...withdrawKeys.base(rest),
       selected,
       lpToken,
       amounts,
@@ -40,7 +40,7 @@ export const keys = {
     ] as const
   },
   claimableDetails: (rest: PoolSignerBase) => {
-    return ['claimableDetails', ...keys.signerBase(rest)] as const
+    return ['claimableDetails', ...withdrawKeys.signerBase(rest)] as const
   },
   withdrawEstGasApproval: ({
     selected,
@@ -53,7 +53,7 @@ export const keys = {
   }: WithdrawEstGasApproval) => {
     return [
       'withdrawEstGasApproval',
-      ...keys.signerBase(rest),
+      ...withdrawKeys.signerBase(rest),
       selected,
       lpToken,
       lpTokenError,
@@ -63,11 +63,11 @@ export const keys = {
     ] as const
   },
   claimEstGas: ({ claimType, claimableCrv, claimableRewards, ...rest }: Claim) => {
-    return ['claimEstGas', ...keys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
+    return ['claimEstGas', ...withdrawKeys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
   },
   // mutation
   approveWithdraw: ({ selected, lpToken, amounts, ...rest }: ApproveWithdraw) => {
-    return ['approveWithdraw', ...keys.signerBase(rest), selected, lpToken, amounts] as const
+    return ['approveWithdraw', ...withdrawKeys.signerBase(rest), selected, lpToken, amounts] as const
   },
   withdraw: ({
     selected,
@@ -81,7 +81,7 @@ export const keys = {
   }: Withdraw) => {
     return [
       'withdraw',
-      ...keys.signerBase(rest),
+      ...withdrawKeys.signerBase(rest),
       selected,
       lpToken,
       lpTokenError,
@@ -92,12 +92,12 @@ export const keys = {
     ] as const
   },
   unstakeEstGas: ({ gauge, gaugeError, ...rest }: UnstakeEstGas) => {
-    return ['unstakeEstGas', ...keys.signerBase(rest), gauge, gaugeError] as const
+    return ['unstakeEstGas', ...withdrawKeys.signerBase(rest), gauge, gaugeError] as const
   },
   unstake: ({ gauge, ...rest }: Unstake) => {
-    return ['unstake', ...keys.signerBase(rest), gauge] as const
+    return ['unstake', ...withdrawKeys.signerBase(rest), gauge] as const
   },
   claim: ({ claimType, claimableCrv, claimableRewards, ...rest }: Claim) => {
-    return ['claim', ...keys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
+    return ['claim', ...withdrawKeys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
   },
 }

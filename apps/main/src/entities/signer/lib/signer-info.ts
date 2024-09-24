@@ -6,7 +6,7 @@ import { queryOptions } from '@tanstack/react-query'
 
 import { REFRESH_INTERVAL } from '@/constants'
 import { createQueryHook } from '@/shared/lib/queries/factory'
-import { keys } from '@/entities/signer/model'
+import { signerKeys } from '@/entities/signer/model'
 import useStore from '@/store/useStore'
 import * as api from '@/entities/signer/api'
 import * as conditions from '@/entities/signer/model'
@@ -39,7 +39,7 @@ export const useTokensBalances = (
 
 export const useSignerPoolBalances = createQueryHook((params: SignerPoolBalances) =>
   queryOptions({
-    queryKey: keys.signerPoolBalances(params),
+    queryKey: signerKeys.signerPoolBalances(params),
     queryFn: api.querySignerPoolBalances,
     staleTime: REFRESH_INTERVAL['15s'],
     enabled: conditions.enableSignerPoolBase(params),
@@ -48,7 +48,7 @@ export const useSignerPoolBalances = createQueryHook((params: SignerPoolBalances
 
 export const userSignerPoolDetails = createQueryHook((params: SignerPoolDetails) => {
   return queryOptions({
-    queryKey: keys.signerPoolDetails(params),
+    queryKey: signerKeys.signerPoolDetails(params),
     queryFn: api.querySignerPoolDetails,
     staleTime: REFRESH_INTERVAL['15s'],
     enabled: conditions.enableSignerPoolDetails(params),

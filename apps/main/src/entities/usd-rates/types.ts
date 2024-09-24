@@ -1,9 +1,9 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
-import { keys } from '@/entities/usd-rates/model'
+import { usdRatesKeys } from '@/entities/usd-rates/model'
 
 // keys
-export type UsdRatesQueryKeyType<K extends keyof typeof keys> = ExtractQueryKeyType<typeof keys, K>
+export type UsdRatesQueryKeyType<K extends keyof typeof usdRatesKeys> = ExtractQueryKeyType<typeof usdRatesKeys, K>
 
 // query
 export type QueryBase = {

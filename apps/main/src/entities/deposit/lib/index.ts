@@ -1,2 +1,2 @@
-export * from './mutation-hooks'
-export * from './query-hooks'
+export * from './deposit-actions'
+export * from './deposit-info'

@@ -8,8 +8,8 @@ import { useMutation } from '@tanstack/react-query'
 import { REFRESH_INTERVAL } from '@/constants'
 import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
-import * as api from '@/entities/withdraw/api/mutation-api'
-import * as conditions from '@/entities/withdraw/model/mutation-conditions'
+import * as api from '@/entities/withdraw/api/withdraw-mutation'
+import * as conditions from '@/entities/withdraw/model/withdraw-mutation-conditions'
 
 const autoDismissMs = REFRESH_INTERVAL['5s']
 

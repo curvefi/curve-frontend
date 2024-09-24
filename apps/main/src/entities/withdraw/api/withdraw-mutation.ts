@@ -4,7 +4,7 @@ import type { TxHashError } from '@/ui/TxInfoBar'
 
 import { logMutation } from '@/utils'
 import { waitForTxStatuses, type WaitForTxReceiptResp } from '@/shared/curve-lib'
-import { keys } from '@/entities/withdraw'
+import { withdrawKeys } from '@/entities/withdraw'
 import useStore from '@/store/useStore'
 
 const invalidPoolId = 'Missing poolId'
@@ -13,7 +13,7 @@ const invalidProvider = 'Missing signer provider'
 export const mutationApproveWithdraw: MutateFunction<WaitForTxReceiptResp, TxHashError, ApproveWithdraw> = async (
   params
 ) => {
-  logMutation(keys.approveWithdraw(params))
+  logMutation(withdrawKeys.approveWithdraw(params))
   const { poolId, selected, amounts: formAmounts, lpToken } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -39,7 +39,7 @@ export const mutationApproveWithdraw: MutateFunction<WaitForTxReceiptResp, TxHas
 }
 
 export const mutationWithdraw: MutateFunction<WaitForTxReceiptResp, TxHashError, Withdraw> = async (params) => {
-  logMutation(keys.withdraw(params))
+  logMutation(withdrawKeys.withdraw(params))
   const { poolId, isWrapped, lpToken, amounts: formAmounts, selectedTokenAddress, maxSlippage, selected } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -69,7 +69,7 @@ export const mutationWithdraw: MutateFunction<WaitForTxReceiptResp, TxHashError,
 }
 
 export const mutationUnstake: MutateFunction<WaitForTxReceiptResp, TxHashError, Unstake> = async (params) => {
-  logMutation(keys.unstake(params))
+  logMutation(withdrawKeys.unstake(params))
   const { poolId, gauge } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -81,7 +81,7 @@ export const mutationUnstake: MutateFunction<WaitForTxReceiptResp, TxHashError, 
 }
 
 export const mutationClaim: MutateFunction<WaitForTxReceiptResp, TxHashError, Claim> = async (params) => {
-  logMutation(keys.claim(params))
+  logMutation(withdrawKeys.claim(params))
   const { poolId, claimType } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)

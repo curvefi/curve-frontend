@@ -1,1 +1,1 @@
-export * from './query-api'
+export * from './usd-rates-query'

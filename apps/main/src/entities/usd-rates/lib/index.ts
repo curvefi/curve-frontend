@@ -1,1 +1,1 @@
-export * from './query-hooks'
+export * from './usd-rates-info'

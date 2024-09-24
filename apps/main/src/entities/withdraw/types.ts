@@ -1,8 +1,8 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
-import { keys } from '@/entities/withdraw'
+import { withdrawKeys } from '@/entities/withdraw'
 
-export type WithdrawQueryKeyType<K extends keyof typeof keys> = ExtractQueryKeyType<typeof keys, K>
+export type WithdrawQueryKeyType<K extends keyof typeof withdrawKeys> = ExtractQueryKeyType<typeof withdrawKeys, K>
 
 export type FormType = 'APPROVAL' | 'UNSTAKE' | 'WITHDRAW' | 'CLAIM' | 'CLAIM_CRV' | 'CLAIM_REWARDS' | ''
 

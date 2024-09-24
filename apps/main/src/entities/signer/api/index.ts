@@ -1,1 +1,1 @@
-export * from './query-api'
+export * from './signer-query'

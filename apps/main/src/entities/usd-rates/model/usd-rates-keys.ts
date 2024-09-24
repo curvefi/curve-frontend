@@ -1,12 +1,12 @@
 import type { QueryBase, QueryUsdRates } from '@/entities/usd-rates'
 
-export const keys = {
+export const usdRatesKeys = {
   base: ({ chainId }: QueryBase) => {
     return ['usdRatesBase', chainId] as const
   },
 
   // query
   usdRates: ({ addresses, ...rest }: QueryUsdRates) => {
-    return [...keys.base(rest), 'usdRates', addresses] as const
+    return [...usdRatesKeys.base(rest), 'usdRates', addresses] as const
   },
 }

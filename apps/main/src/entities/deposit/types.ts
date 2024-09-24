@@ -1,8 +1,8 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
-import { keys } from '@/entities/deposit/model'
+import { depositKeys } from '@/entities/deposit/model'
 
-export type DepositQueryKeyType<K extends keyof typeof keys> = ExtractQueryKeyType<typeof keys, K>
+export type DepositQueryKeyType<K extends keyof typeof depositKeys> = ExtractQueryKeyType<typeof depositKeys, K>
 
 export type FormType = 'APPROVAL' | 'DEPOSIT' | 'DEPOSIT_STAKE' | 'STAKE' | ''
 

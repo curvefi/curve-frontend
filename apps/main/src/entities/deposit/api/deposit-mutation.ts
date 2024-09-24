@@ -4,7 +4,7 @@ import type { TxHashError } from '@/ui/TxInfoBar'
 import type { WaitForTxReceiptResp } from '@/shared/curve-lib'
 
 import { logMutation } from '@/utils'
-import { keys } from '@/entities/deposit'
+import { depositKeys } from '@/entities/deposit'
 import { waitForTxStatuses } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 
@@ -14,7 +14,7 @@ const invalidProvider = 'Missing signer provider'
 export const mutateApproveDeposit: MutateFunction<WaitForTxReceiptResp, TxHashError, ApproveDeposit> = async (
   params
 ) => {
-  logMutation(keys.approveDeposit(params))
+  logMutation(depositKeys.approveDeposit(params))
   const { poolId, formType, amounts, isWrapped } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -33,7 +33,7 @@ export const mutateApproveDeposit: MutateFunction<WaitForTxReceiptResp, TxHashEr
 }
 
 export const mutateDeposit: MutateFunction<WaitForTxReceiptResp, TxHashError, Deposit> = async (params) => {
-  logMutation(keys.deposit(params))
+  logMutation(depositKeys.deposit(params))
   const { poolId, formType, amounts, maxSlippage, isWrapped } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -52,7 +52,7 @@ export const mutateDeposit: MutateFunction<WaitForTxReceiptResp, TxHashError, De
 }
 
 export const mutateApproveStake: MutateFunction<WaitForTxReceiptResp, TxHashError, Stake> = async (params) => {
-  logMutation(keys.approveStake(params))
+  logMutation(depositKeys.approveStake(params))
   const { poolId, lpToken } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)
@@ -64,7 +64,7 @@ export const mutateApproveStake: MutateFunction<WaitForTxReceiptResp, TxHashErro
 }
 
 export const mutateStake: MutateFunction<WaitForTxReceiptResp, TxHashError, Stake> = async (params) => {
-  logMutation(keys.stake(params))
+  logMutation(depositKeys.stake(params))
   const { poolId, lpToken } = params
   if (!poolId) throw new Error(invalidPoolId)
   const { provider, pool } = getPoolProvider(poolId)

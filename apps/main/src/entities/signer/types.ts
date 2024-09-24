@@ -1,8 +1,8 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
-import { keys } from '@/entities/signer/model'
+import { signerKeys } from '@/entities/signer/model'
 
-export type SignerQueryKeyType<K extends keyof typeof keys> = ExtractQueryKeyType<typeof keys, K>
+export type SignerQueryKeyType<K extends keyof typeof signerKeys> = ExtractQueryKeyType<typeof signerKeys, K>
 
 // query
 export type SignerPoolBase = {

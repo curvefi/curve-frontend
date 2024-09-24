@@ -1,9 +1,9 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
-import { keys } from '@/entities/swap'
+import { swapKeys } from '@/entities/swap'
 
 // keys
-export type SwapQueryKeyType<K extends keyof typeof keys> = ExtractQueryKeyType<typeof keys, K>
+export type SwapQueryKeyType<K extends keyof typeof swapKeys> = ExtractQueryKeyType<typeof swapKeys, K>
 
 // form
 export type SwapFormValues = {
