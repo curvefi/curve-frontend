@@ -14,9 +14,6 @@ export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
       if (wallet) {
         await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
         return curveApi
-      } else if (rpcUrl) {
-        await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
-        return curveApi
       }
     }
   } catch (error) {
