@@ -46,5 +46,11 @@
   },
   {
     "campaign": "Lombard.json"
+  },
+  {
+    "campaign": "TurtleSeeds.json"
+  },
+  {
+    "campaign": "SolvProtocol.json"
   }
 ]

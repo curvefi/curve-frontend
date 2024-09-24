@@ -1,0 +1,21 @@
+{
+  "campaignName": "",
+  "platform": "TurtleSeeds",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "turtle-seeds.png",
+  "dashboardLink": "https://app.turtle.club/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
+      "network": "ethereum",
+      "multiplier": "1.1",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
