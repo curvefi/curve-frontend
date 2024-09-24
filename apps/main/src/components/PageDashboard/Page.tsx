@@ -33,7 +33,7 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={t`Dashboard`} />
       {!provider ? (
-        <Box display="flex" fillWidth>
+        <Box display="flex" fillWidth flexJustifyContent="center">
           <ConnectWalletWrapper>
             <ConnectWallet
               description="Connect wallet to view dashboard"
@@ -69,12 +69,7 @@ const Container = styled.div`
 
 const ConnectWalletWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  align-content: center;
-  justify-content: center;
-  margin: var(--spacing-5) auto auto;
-  background: var(--page--background-color);
-  padding: var(--spacing-4) var(--spacing-4);
+  margin: var(--spacing-3) auto;
 `
 
 export default Page

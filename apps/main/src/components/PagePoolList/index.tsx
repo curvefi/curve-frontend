@@ -430,7 +430,6 @@ const ConnectWalletWrapper = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  padding: var(--spacing-5) var(--spacing-4);
 `
 
 export default PoolList

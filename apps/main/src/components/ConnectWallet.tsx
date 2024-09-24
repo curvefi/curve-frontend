@@ -12,6 +12,7 @@ type ConnectWalletProps = {
 const ConnectWallet: React.FC<ConnectWalletProps> = ({ description, connectText, loadingText }) => {
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const connectState = useStore((state) => state.connectState)
+  const theme = useStore((state) => state.themeType)
 
   const loading = isLoading(connectState)
 
@@ -22,6 +23,7 @@ const ConnectWallet: React.FC<ConnectWalletProps> = ({ description, connectText,
       connectText={connectText}
       loadingText={loadingText}
       isLoading={loading}
+      theme={theme === 'dark' ? 'dark' : 'light'}
     />
   )
 }

@@ -152,9 +152,7 @@ const ConnectWalletWrapper = styled.div`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  margin: var(--spacing-5) auto auto;
-  background: var(--page--background-color);
-  padding: var(--spacing-4) var(--spacing-4);
+  margin: var(--spacing-3) auto;
 `
 
 function _querySymbol(searchPath: string) {
