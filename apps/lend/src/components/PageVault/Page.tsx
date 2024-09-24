@@ -29,6 +29,7 @@ import Tabs, { Tab } from '@/ui/Tab'
 import Vault from '@/components/PageVault/index'
 import Box from '@/ui/Box'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -52,6 +53,7 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { signerAddress } = api ?? {}
   const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
@@ -171,8 +173,15 @@ const Page: NextPage = () => {
             </AppPageInfoTabsWrapper>
 
             <AppPageInfoContentWrapper variant="secondary">
-              {selectedTab === 'market' && <DetailsMarket {...pageProps} type="supply" />}
-              {selectedTab === 'user' && <DetailsUser {...pageProps} type="supply" />}
+              {!provider && (
+                <ConnectWallet
+                  description={t`Connect your wallet to view market`}
+                  connectText={t`Connect`}
+                  loadingText={t`Connecting...`}
+                />
+              )}
+              {selectedTab === 'market' && provider && <DetailsMarket {...pageProps} type="supply" />}
+              {selectedTab === 'user' && provider && <DetailsUser {...pageProps} type="supply" />}
             </AppPageInfoContentWrapper>
           </AppPageInfoWrapper>
         )}

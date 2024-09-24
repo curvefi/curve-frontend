@@ -33,6 +33,7 @@ import {
 } from '@/ui/Chart/styles'
 import Box from '@/ui/Box'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -53,6 +54,7 @@ const Page: NextPage = () => {
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
@@ -181,7 +183,15 @@ const Page: NextPage = () => {
             </Box>
             <AppPageInfoContentWrapper variant="secondary">
               <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
-              <DetailsMarket {...pageProps} type="borrow" />
+              {provider ? (
+                <DetailsMarket {...pageProps} type="borrow" />
+              ) : (
+                <ConnectWallet
+                  description={t`Connect your wallet to view market`}
+                  connectText={t`Connect`}
+                  loadingText={t`Connecting...`}
+                />
+              )}
             </AppPageInfoContentWrapper>
           </AppPageInfoWrapper>
         )}

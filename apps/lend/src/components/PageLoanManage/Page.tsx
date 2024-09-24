@@ -37,6 +37,7 @@ import {
   ExpandIcon,
 } from '@/ui/Chart/styles'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -61,6 +62,7 @@ const Page: NextPage = () => {
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
@@ -209,7 +211,14 @@ const Page: NextPage = () => {
           </AppPageInfoTabsWrapper>
 
           <AppPageInfoContentWrapper variant="secondary">
-            {rChainId && rOwmId && (
+            {!provider && (
+              <ConnectWallet
+                description={t`Connect your wallet to view market`}
+                connectText={t`Connect`}
+                loadingText={t`Connecting...`}
+              />
+            )}
+            {provider && rChainId && rOwmId && (
               <>
                 {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
                 {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
