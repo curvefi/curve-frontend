@@ -54,6 +54,10 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
         </Box>
       )}
       <TooltipParagraph>{getDescription()}</TooltipParagraph>
+      <TooltipDisclaimer>
+        Points are project dependent, please check with the token issuer to make sure you have taken all the necessary
+        actions to earn points.
+      </TooltipDisclaimer>
       <ExternalLink $noStyles href={dashboardLink}>
         Learn more
       </ExternalLink>
@@ -78,6 +82,13 @@ const TooltipTitle = styled.h3`
 const TooltipParagraph = styled.p`
   text-align: left;
   font-weight: normal;
+`
+
+const TooltipDisclaimer = styled.p`
+  text-align: left;
+  font-weight: normal;
+  font-size: var(--font-size-2);
+  font-style: italic;
 `
 
 export default TooltipMessage

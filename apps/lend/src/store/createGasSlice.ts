@@ -96,6 +96,19 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               curve.setCustomFeeData(customFeeData)
             }
           }
+        } else if (chainId === 10) { // Optimism
+          const provider = get().wallet.getProvider('')
+
+          if (provider) {
+            parsedGasInfo = await parseGasInfo(curve, provider)
+
+            if (parsedGasInfo) {
+              curve.setCustomFeeData({
+                maxFeePerGas: 0.2,
+                maxPriorityFeePerGas: 0.001,
+              })
+            }
+          }
         }
 
         if (parsedGasInfo) {

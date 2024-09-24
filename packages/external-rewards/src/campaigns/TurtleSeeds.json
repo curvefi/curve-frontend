@@ -1,9 +1,9 @@
 {
   "campaignName": "",
-  "platform": "Swell",
+  "platform": "TurtleSeeds",
   "description": "Points for providing liquidity.",
-  "platformImageId": "swell-pearls.png",
-  "dashboardLink": "https://app.swellnetwork.io/stake/swbtc/",
+  "platformImageId": "turtle-seeds.png",
+  "dashboardLink": "https://app.turtle.club/",
   "pools": [
     {
       "id": "null",
@@ -11,9 +11,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x73e4bec1a111869f395cbb24f6676826bf86d905",
+      "address": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
       "network": "ethereum",
-      "multiplier": "5",
+      "multiplier": "1.1",
       "tags": ["points"],
       "lock": "false"
     }
