@@ -14,7 +14,7 @@
       "address": "0x19b8524665abac613d82ece5d8347ba44c714bdd",
       "network": "ethereum",
       "multiplier": "1.1",
-      "tags": ["points"]
+      "tags": ["points"],
       "lock": "false"
     }
   ]
