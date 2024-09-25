@@ -202,17 +202,17 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      (!!walletChainId || !!walletSignerAddress || !!curve) &&
+      (!!walletChainId || !!walletChainId || !!curve) &&
       (curve?.chainId !== walletChainId || curve?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (walletSignerAddress && curve?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (curve?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
       } else if (curve?.chainId !== walletChainId) {
         const { id: foundNetwork, isActiveNetwork } = networks[walletChainId as ChainId] ?? {}
         if (foundNetwork && isActiveNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
-        } else if (walletSignerAddress) {
+        } else {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
       }
