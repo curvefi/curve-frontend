@@ -204,10 +204,11 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      (!!walletChainId || !!walletChainId || !!api) &&
-      (api?.chainId !== walletChainId || api?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      !!api &&
+      !!walletChainId &&
+      (api.chainId !== walletChainId || api.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (api?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (api.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
       } else if (api?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
@@ -220,7 +221,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectState.status, walletChainId, walletSignerAddress])
+  }, [walletChainId, walletSignerAddress])
 
   // locale switched
   useEffect(() => {
