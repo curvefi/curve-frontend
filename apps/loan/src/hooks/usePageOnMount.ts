@@ -48,7 +48,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateCurveJs(parsedApi, prevCurveApi, wallet)
           }
 
-          updateConnectState('success', '')
+          updateConnectState(api ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
