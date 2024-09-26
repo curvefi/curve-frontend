@@ -60,7 +60,7 @@ const Wrapper = styled.div`
   align-items: center;
   padding: var(--spacing-4);
   background-color: var(--table--background-color);
-  max-width: 100%;
+  max-width: 50rem;
   width: 100%;
   flex: 1;
 `
