@@ -9,6 +9,7 @@ import { INVALID_ADDRESS } from '@/constants'
 import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
 import { BN, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
+import { USE_API } from '@/shared/config'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -48,7 +49,7 @@ export const helpers = {
     const resp = { marketList: [] as string[], error: '' }
     try {
       log('fetchMarkets', api.chainId)
-      await api.oneWayfactory.fetchMarkets()
+      await api.oneWayfactory.fetchMarkets(, USE_API)
       resp.marketList = api.oneWayfactory.getMarketList()
       return resp
     } catch (error) {
@@ -206,7 +207,7 @@ const market = {
         results[owm.id] = { borrowed: '', collateral: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.ammBalances(useMultiCall)
+        const resp = await owm.stats.ammBalances(useMultiCall, USE_API)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -224,7 +225,7 @@ const market = {
         results[owm.id] = { cap: '', available: '', error }
       })
       .process(async ({ owm }) => {
-        const resp = await owm.stats.capAndAvailable(useMultiCall)
+        const resp = await owm.stats.capAndAvailable(useMultiCall, USE_API)
         results[owm.id] = { ...resp, error: '' }
       })
 
@@ -242,7 +243,7 @@ const market = {
         results[owm.id] = { totalDebt: '', error }
       })
       .process(async ({ owm }) => {
-        const totalDebt = await owm.stats.totalDebt(useMultiCall)
+        const totalDebt = await owm.stats.totalDebt(useMultiCall, USE_API)
         results[owm.id] = { totalDebt, error: '' }
       })
 
@@ -291,7 +292,7 @@ const market = {
         results[owm.id] = { rates: null, error }
       })
       .process(async ({ owm }) => {
-        const rates = await owm.stats.rates(useMultiCall)
+        const rates = await owm.stats.rates(useMultiCall, USE_API)
         results[owm.id] = { rates, error: '' }
       })
 
@@ -341,10 +342,10 @@ const market = {
 
         // isRewardsOnly = both CRV and other comes from same endpoint.
         if (isRewardsOnly) {
-          const rewardsResp = await owm.vault.rewardsApr(useMultiCall)
+          const rewardsResp = await owm.vault.rewardsApr(useMultiCall, USE_API)
           rewards.other = _filterZeroApy(rewardsResp)
         } else {
-          const [others, crv] = await Promise.all([owm.vault.rewardsApr(useMultiCall), owm.vault.crvApr(useMultiCall)])
+          const [others, crv] = await Promise.all([owm.vault.rewardsApr(useMultiCall, USE_API), owm.vault.crvApr(useMultiCall)])
           rewards.other = _filterZeroApy(others)
           rewards.crv = crv
         }
@@ -390,7 +391,7 @@ const market = {
         const { collateral_token, borrowed_token } = owm
 
         const [ammBalance, collateralUsdRate, borrowedUsdRate] = await Promise.all([
-          owm.stats.ammBalances(useMultiCall),
+          owm.stats.ammBalances(useMultiCall, USE_API),
           api.getUsdRate(collateral_token.address),
           api.getUsdRate(borrowed_token.address),
         ])
