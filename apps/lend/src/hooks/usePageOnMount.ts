@@ -47,7 +47,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
             updateApi(apiNew, prevApi, wallet)
           }
 
-          updateConnectState(api ? 'success' : '', '')
+          updateConnectState(apiNew ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
