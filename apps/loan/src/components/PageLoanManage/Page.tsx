@@ -150,81 +150,86 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`${llamma?.collateralSymbol}`} />
-      {chartExpanded && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex>
-            {isMdUp && <TitleComp />}
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
-          {isValidRouterParams && (
-            <LoanMange
-              {...formProps}
-              params={params}
-              rChainId={rChainId}
-              rCollateralId={rCollateralId}
-              rFormType={rFormType as FormType}
-              titleMapper={titleMapper}
-            />
-          )}
-        </AppPageFormsWrapper>
-
-        <AppPageInfoWrapper>
-          {isMdUp && !chartExpanded && <TitleComp />}
-          <AppPageInfoTabsWrapper>
-            <Tabs>
-              {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                <Tab
-                  key={key}
-                  className={selectedTab === key ? 'active' : ''}
-                  variant="secondary"
-                  disabled={typeof loanExists === 'undefined'}
+      {provider ? (
+        <>
+          {chartExpanded && (
+            <PriceAndTradesExpandedContainer>
+              <Box flex>
+                {isMdUp && <TitleComp />}
+                <ExpandButton
+                  variant={'select'}
                   onClick={() => {
-                    if (loanExists) {
-                      setSelectedTab(key)
-                    } else {
-                      resetUserDetailsState(llamma)
-                      navigate(getLoanCreatePathname(params, rCollateralId))
-                    }
+                    setChartExpanded()
                   }}
                 >
-                  {label}
-                </Tab>
-              ))}
-            </Tabs>
-          </AppPageInfoTabsWrapper>
-          <AppPageInfoContentWrapper variant="secondary">
-            {!provider && (
-              <ConnectWallet
-                description={t`Connect your wallet to view market`}
-                connectText={t`Connect`}
-                loadingText={t`Connecting...`}
-              />
-            )}
-            {provider && selectedTab === 'llamma' && isValidRouterParams && (
-              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-            )}
-            {provider && selectedTab === 'user' && isValidRouterParams && (
-              <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </Wrapper>
+                  {chartExpanded ? 'Minimize' : 'Expand'}
+                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+                </ExpandButton>
+              </Box>
+              <PriceAndTradesExpandedWrapper variant="secondary">
+                <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+              </PriceAndTradesExpandedWrapper>
+            </PriceAndTradesExpandedContainer>
+          )}
+          <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+            <AppPageFormsWrapper navHeight={navHeight}>
+              {(!isMdUp || !isAdvanceMode) && !chartExpanded && <TitleComp />}
+              {isValidRouterParams && (
+                <LoanMange
+                  {...formProps}
+                  params={params}
+                  rChainId={rChainId}
+                  rCollateralId={rCollateralId}
+                  rFormType={rFormType as FormType}
+                  titleMapper={titleMapper}
+                />
+              )}
+            </AppPageFormsWrapper>
+
+            <AppPageInfoWrapper>
+              {isMdUp && !chartExpanded && <TitleComp />}
+              <AppPageInfoTabsWrapper>
+                <Tabs>
+                  {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                    <Tab
+                      key={key}
+                      className={selectedTab === key ? 'active' : ''}
+                      variant="secondary"
+                      disabled={typeof loanExists === 'undefined'}
+                      onClick={() => {
+                        if (loanExists) {
+                          setSelectedTab(key)
+                        } else {
+                          resetUserDetailsState(llamma)
+                          navigate(getLoanCreatePathname(params, rCollateralId))
+                        }
+                      }}
+                    >
+                      {label}
+                    </Tab>
+                  ))}
+                </Tabs>
+              </AppPageInfoTabsWrapper>
+              <AppPageInfoContentWrapper variant="secondary">
+                {selectedTab === 'llamma' && isValidRouterParams && (
+                  <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+                )}
+                {selectedTab === 'user' && isValidRouterParams && (
+                  <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+                )}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          </Wrapper>
+        </>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }

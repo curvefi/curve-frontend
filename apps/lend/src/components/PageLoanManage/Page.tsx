@@ -161,72 +161,77 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
 
-      {chartExpanded && networks[rChainId].pricesData && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 var(--spacing-2)">
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-
-      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {!isMdUp && <TitleComp />}
-          {rChainId && rOwmId && <LoanMange {...pageProps} />}
-        </AppPageFormsWrapper>
-
-        <AppPageInfoWrapper>
-          {isMdUp && <TitleComp />}
-          <Box margin="0 0 var(--spacing-2)">
-            <CampaignRewardsBanner
-              borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
-              supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
-            />
-          </Box>
-          <AppPageInfoTabsWrapper>
-            <Tabs>
-              {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                <Tab
-                  key={key}
-                  className={selectedTab === key ? 'active' : ''}
-                  variant="secondary"
-                  disabled={selectedTab === key}
-                  onClick={() => setMarketsStateKey('marketDetailsView', key)}
+      {provider ? (
+        <>
+          {chartExpanded && networks[rChainId].pricesData && (
+            <PriceAndTradesExpandedContainer>
+              <Box flex padding="0 0 var(--spacing-2)">
+                <ExpandButton
+                  variant={'select'}
+                  onClick={() => {
+                    setChartExpanded()
+                  }}
                 >
-                  {label}
-                </Tab>
-              ))}
-            </Tabs>
-          </AppPageInfoTabsWrapper>
+                  {chartExpanded ? 'Minimize' : 'Expand'}
+                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+                </ExpandButton>
+              </Box>
+              <PriceAndTradesExpandedWrapper variant="secondary">
+                <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+              </PriceAndTradesExpandedWrapper>
+            </PriceAndTradesExpandedContainer>
+          )}
 
-          <AppPageInfoContentWrapper variant="secondary">
-            {!provider && (
-              <ConnectWallet
-                description={t`Connect your wallet to view market`}
-                connectText={t`Connect`}
-                loadingText={t`Connecting...`}
-              />
-            )}
-            {provider && rChainId && rOwmId && (
-              <>
-                {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
-                {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
-              </>
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </AppPageFormContainer>
+          <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+            <AppPageFormsWrapper navHeight={navHeight}>
+              {!isMdUp && <TitleComp />}
+              {rChainId && rOwmId && <LoanMange {...pageProps} />}
+            </AppPageFormsWrapper>
+
+            <AppPageInfoWrapper>
+              {isMdUp && <TitleComp />}
+              <Box margin="0 0 var(--spacing-2)">
+                <CampaignRewardsBanner
+                  borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                  supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+                />
+              </Box>
+              <AppPageInfoTabsWrapper>
+                <Tabs>
+                  {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                    <Tab
+                      key={key}
+                      className={selectedTab === key ? 'active' : ''}
+                      variant="secondary"
+                      disabled={selectedTab === key}
+                      onClick={() => setMarketsStateKey('marketDetailsView', key)}
+                    >
+                      {label}
+                    </Tab>
+                  ))}
+                </Tabs>
+              </AppPageInfoTabsWrapper>
+
+              <AppPageInfoContentWrapper variant="secondary">
+                {rChainId && rOwmId && (
+                  <>
+                    {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
+                    {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
+                  </>
+                )}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          </AppPageFormContainer>
+        </>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }

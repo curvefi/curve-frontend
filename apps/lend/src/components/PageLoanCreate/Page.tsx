@@ -147,55 +147,59 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Create Loan`} />
 
-      {chartExpanded && networks[rChainId].pricesData && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 var(--spacing-2)">
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
+      {provider ? (
+        <>
+          {chartExpanded && networks[rChainId].pricesData && (
+            <PriceAndTradesExpandedContainer>
+              <Box flex padding="0 0 var(--spacing-2)">
+                <ExpandButton
+                  variant={'select'}
+                  onClick={() => {
+                    setChartExpanded()
+                  }}
+                >
+                  {chartExpanded ? 'Minimize' : 'Expand'}
+                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+                </ExpandButton>
+              </Box>
+              <PriceAndTradesExpandedWrapper variant="secondary">
+                <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+              </PriceAndTradesExpandedWrapper>
+            </PriceAndTradesExpandedContainer>
+          )}
+
+          <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+            <AppPageFormsWrapper navHeight={navHeight}>
+              {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+              {rChainId && rOwmId && <LoanCreate {...pageProps} />}
+            </AppPageFormsWrapper>
+
+            {isAdvanceMode && rChainId && rOwmId && (
+              <AppPageInfoWrapper>
+                {isMdUp && <TitleComp />}
+                <Box margin="0 0 var(--spacing-2)">
+                  <CampaignRewardsBanner
+                    borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                    supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+                  />
+                </Box>
+                <AppPageInfoContentWrapper variant="secondary">
+                  <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
+                  <DetailsMarket {...pageProps} type="borrow" />
+                </AppPageInfoContentWrapper>
+              </AppPageInfoWrapper>
+            )}
+          </AppPageFormContainer>
+        </>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
       )}
-
-      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
-          {rChainId && rOwmId && <LoanCreate {...pageProps} />}
-        </AppPageFormsWrapper>
-
-        {isAdvanceMode && rChainId && rOwmId && (
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <Box margin="0 0 var(--spacing-2)">
-              <CampaignRewardsBanner
-                borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
-                supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
-              />
-            </Box>
-            <AppPageInfoContentWrapper variant="secondary">
-              <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
-              {provider ? (
-                <DetailsMarket {...pageProps} type="borrow" />
-              ) : (
-                <ConnectWallet
-                  description={t`Connect your wallet to view market`}
-                  connectText={t`Connect`}
-                  loadingText={t`Connecting...`}
-                />
-              )}
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        )}
-      </AppPageFormContainer>
     </>
   )
 }

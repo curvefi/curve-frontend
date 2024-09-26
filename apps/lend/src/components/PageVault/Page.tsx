@@ -141,51 +141,54 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
-      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
-          {rChainId && rOwmId && <Vault {...pageProps} />}
-        </AppPageFormsWrapper>
+      {provider ? (
+        <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+          <AppPageFormsWrapper navHeight={navHeight}>
+            {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+            {rChainId && rOwmId && <Vault {...pageProps} />}
+          </AppPageFormsWrapper>
 
-        {isAdvanceMode && rChainId && rOwmId && (
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <Box margin="0 0 var(--spacing-2)">
-              <CampaignRewardsBanner
-                borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
-                supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
-              />
-            </Box>
-            <AppPageInfoTabsWrapper>
-              <Tabs>
-                {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                  <Tab
-                    key={key}
-                    className={selectedTab === key ? 'active' : ''}
-                    variant="secondary"
-                    disabled={selectedTab === key}
-                    onClick={() => setMarketsStateKey('marketDetailsView', key)}
-                  >
-                    {label}
-                  </Tab>
-                ))}
-              </Tabs>
-            </AppPageInfoTabsWrapper>
-
-            <AppPageInfoContentWrapper variant="secondary">
-              {!provider && (
-                <ConnectWallet
-                  description={t`Connect your wallet to view market`}
-                  connectText={t`Connect`}
-                  loadingText={t`Connecting...`}
+          {isAdvanceMode && rChainId && rOwmId && (
+            <AppPageInfoWrapper>
+              {isMdUp && <TitleComp />}
+              <Box margin="0 0 var(--spacing-2)">
+                <CampaignRewardsBanner
+                  borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                  supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
                 />
-              )}
-              {selectedTab === 'market' && provider && <DetailsMarket {...pageProps} type="supply" />}
-              {selectedTab === 'user' && provider && <DetailsUser {...pageProps} type="supply" />}
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        )}
-      </AppPageFormContainer>
+              </Box>
+              <AppPageInfoTabsWrapper>
+                <Tabs>
+                  {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                    <Tab
+                      key={key}
+                      className={selectedTab === key ? 'active' : ''}
+                      variant="secondary"
+                      disabled={selectedTab === key}
+                      onClick={() => setMarketsStateKey('marketDetailsView', key)}
+                    >
+                      {label}
+                    </Tab>
+                  ))}
+                </Tabs>
+              </AppPageInfoTabsWrapper>
+
+              <AppPageInfoContentWrapper variant="secondary">
+                {selectedTab === 'market' && provider && <DetailsMarket {...pageProps} type="supply" />}
+                {selectedTab === 'user' && provider && <DetailsUser {...pageProps} type="supply" />}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          )}
+        </AppPageFormContainer>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }
