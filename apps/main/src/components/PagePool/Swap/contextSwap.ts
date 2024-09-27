@@ -10,6 +10,7 @@ type SwapContextType = {
 }
 
 export const SwapContext = createContext<SwapContextType | null>(null)
+export const SwapContextProvider = SwapContext.Provider
 
 export const useSwapContext = () => {
   const swapContext = useContext(SwapContext)

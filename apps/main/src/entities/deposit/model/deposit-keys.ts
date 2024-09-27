@@ -1,61 +1,48 @@
+import { poolKeys } from '@/entities/pool'
 import type {
   ApproveDeposit,
   Deposit,
   DepositBalancedAmounts,
   DepositDetails,
-  DepositEstGasApproval,
+  DepositApproval,
+  DepositEstGas,
   DepositSeedAmounts,
-  PoolBase,
-  PoolSignerBase,
-  Stake,
-  StakeEstGasApproval,
-} from '@/entities/deposit/types'
+} from '@/entities/deposit'
 
 export const depositKeys = {
-  base: ({ chainId, poolId }: PoolBase) => {
-    return ['depositBase', chainId, poolId] as const
-  },
-  signerBase: ({ chainId, signerAddress, poolId }: PoolSignerBase) =>
-    ['depositSignerBase', chainId, signerAddress, poolId] as const,
-
   // query
   depositSeedAmounts: ({ isSeed, isCrypto, isMeta, firstAmount, ...rest }: DepositSeedAmounts) => {
-    return ['depositSeedAmounts', ...depositKeys.base(rest), isSeed, isCrypto, isMeta, firstAmount] as const
+    return [...poolKeys.root(rest), 'depositSeedAmounts', isSeed, isCrypto, isMeta, firstAmount] as const
   },
   depositBalancedAmounts: ({ isBalancedAmounts, isWrapped, ...rest }: DepositBalancedAmounts) => {
-    return ['depositBalancedAmounts', ...depositKeys.base(rest), isBalancedAmounts, isWrapped] as const
+    return [...poolKeys.root(rest), 'depositBalancedAmounts', isBalancedAmounts, isWrapped] as const
   },
   depositDetails: ({ formType, isSeed, amounts, isWrapped, maxSlippage, ...rest }: DepositDetails) => {
-    return ['depositDetails', ...depositKeys.base(rest), formType, isSeed, isWrapped, amounts, maxSlippage] as const
+    return [...poolKeys.root(rest), 'depositDetails', formType, isSeed, isWrapped, amounts, maxSlippage] as const
   },
-  depositEstGasApproval: ({ formType, amounts, amountsError, isWrapped, ...rest }: DepositEstGasApproval) => {
+  depositApproval: ({ formType, amounts, amountsError, isWrapped, ...rest }: DepositApproval) => {
+    return [...poolKeys.signerBase(rest), 'depositApproval', formType, amounts, amountsError, isWrapped] as const
+  },
+  depositEstGas: ({ formType, isApproved, amounts, amountsError, isWrapped, ...rest }: DepositEstGas) => {
     return [
-      'depositEstGasApproval',
-      ...depositKeys.signerBase(rest),
+      ...poolKeys.signerBase(rest),
+      'depositEstGas',
+      isApproved,
       formType,
       amounts,
       amountsError,
       isWrapped,
     ] as const
   },
-  stakeEstGasApproval: ({ lpToken, lpTokenError, ...rest }: StakeEstGasApproval) => {
-    return ['stakeEstGasApproval', ...depositKeys.signerBase(rest), lpToken, lpTokenError] as const
-  },
 
   // mutation
   approveDeposit: ({ amounts, isWrapped, ...rest }: ApproveDeposit) => {
-    return ['approveDeposit', ...depositKeys.signerBase(rest), amounts, isWrapped] as const
+    return [...poolKeys.signerBase(rest), 'approveDeposit', amounts, isWrapped] as const
   },
   deposit: ({ amounts, isWrapped, maxSlippage, ...rest }: Deposit) => {
-    return ['deposit', ...depositKeys.signerBase(rest), amounts, isWrapped, maxSlippage] as const
+    return [...poolKeys.signerBase(rest), 'deposit', amounts, isWrapped, maxSlippage] as const
   },
   depositStake: ({ amounts, isWrapped, maxSlippage, ...rest }: Deposit) => {
-    return ['depositStake', ...depositKeys.signerBase(rest), amounts, isWrapped, maxSlippage] as const
-  },
-  approveStake: ({ lpToken, ...rest }: Stake) => {
-    return ['approveStake', ...depositKeys.signerBase(rest), lpToken] as const
-  },
-  stake: ({ lpToken, ...rest }: Stake) => {
-    return ['stake', ...depositKeys.signerBase(rest), lpToken] as const
+    return [...poolKeys.signerBase(rest), 'depositStake', amounts, isWrapped, maxSlippage] as const
   },
 }

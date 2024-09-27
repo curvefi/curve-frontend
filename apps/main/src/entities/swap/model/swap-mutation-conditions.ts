@@ -1,4 +1,5 @@
-import type { MutateBase, ApproveSwap, PoolSignerBase, Swap, SwapFormValues } from '@/entities/swap'
+import type { PoolSignerBase } from '@/entities/pool'
+import type { MutateBase, ApproveSwap, Swap, SwapFormValues } from '@/entities/swap'
 
 import { isAddress } from 'viem'
 

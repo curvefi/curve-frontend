@@ -3,5 +3,5 @@ import * as models from '@/entities/deposit/model/deposit-query-options'
 
 export const useDepositDetails = createQueryHook(models.getDepositDetails)
 export const useDepositBalancedAmounts = createQueryHook(models.getDepositBalancedAmounts)
-export const useDepositEstGasApproval = createQueryHook(models.getDepositEstGasApproval)
-export const useStakeEstGasApproval = createQueryHook(models.getStakeEstGasApproval)
+export const useDepositApproval = createQueryHook(models.getDepositApproval)
+export const useDepositEstGas = createQueryHook(models.getDepositEstGas)

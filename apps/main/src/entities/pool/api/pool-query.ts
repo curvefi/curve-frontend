@@ -68,7 +68,7 @@ export const poolTokensList: QueryFunction<PoolTokenListResp, PoolQueryKeyType<'
 export const poolSeedAmounts: QueryFunction<PoolSeedAmountsResp[], PoolQueryKeyType<'poolSeedAmounts'>> = async ({
   queryKey,
 }) => {
-  const [, , chainId, poolId, isSeed, firstAmount, useUnderlying] = queryKey
+  const [, chainId, , poolId, , isSeed, firstAmount, useUnderlying] = queryKey
 
   if (!chainId || !poolId || !isSeed || useUnderlying === null) return []
 
@@ -82,7 +82,7 @@ export const poolSeedAmounts: QueryFunction<PoolSeedAmountsResp[], PoolQueryKeyT
 }
 
 export const poolDetails: QueryFunction<PoolDetailsResp, PoolQueryKeyType<'poolDetails'>> = async ({ queryKey }) => {
-  const [, , chainId, poolId] = queryKey
+  const [, chainId, , poolId] = queryKey
 
   let resp: PoolDetailsResp = {
     rewardsApy: null,
@@ -123,7 +123,7 @@ export const poolUnderlyingCurrencyReserves: QueryFunction<
   PoolCurrencyReservesResp,
   PoolQueryKeyType<'poolUnderlyingCurrencyReserves'>
 > = async ({ queryKey }) => {
-  const [, , chainId, poolId = ''] = queryKey
+  const [, chainId, , poolId = ''] = queryKey
 
   if (!chainId || !poolId) {
     return {

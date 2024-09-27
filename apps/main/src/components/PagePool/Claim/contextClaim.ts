@@ -13,6 +13,7 @@ type ClaimContextType = Pick<ClaimableDetailsResp, 'claimableCrv' | 'claimableRe
 }
 
 export const ClaimContext = createContext<ClaimContextType | null>(null)
+export const ClaimContextProvider = ClaimContext.Provider
 
 export const useClaimContext = () => {
   const claimContext = useContext(ClaimContext)

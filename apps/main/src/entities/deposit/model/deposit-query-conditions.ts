@@ -1,16 +1,9 @@
-import type {
-  Amount,
-  PoolBase,
-  PoolSignerBase,
-  DepositBalancedAmounts,
-  DepositDetails,
-  DepositEstGasApproval,
-  StakeEstGasApproval,
-} from '@/entities/deposit'
+import type { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
+import type { Amount, DepositApproval, DepositBalancedAmounts, DepositDetails, DepositEstGas } from '@/entities/deposit'
 
 import { isAddress } from 'viem'
 
-export function poolBase({ chainId, poolId }: PoolBase) {
+export function poolBase({ chainId, poolId }: PoolQueryParams) {
   return !!chainId && !!poolId
 }
 
@@ -28,12 +21,12 @@ export const depositDetails = ({ formType, amounts, maxSlippage, isSeed, isInPro
   return poolBase(rest) && !isInProgress && !!formType && isValidSeed && isValidTotal(amounts) && isValidMaxSlippage
 }
 
-export const depositEstGasApproval = ({ isInProgress, amounts, amountsError, ...rest }: DepositEstGasApproval) => {
+export const depositApproval = ({ isInProgress, amounts, amountsError, ...rest }: DepositApproval) => {
   return poolSignerBase(rest) && !isInProgress && isValidTotal(amounts) && !amountsError
 }
 
-export const stakeEstGasApproval = ({ lpToken, lpTokenError, isInProgress, ...rest }: StakeEstGasApproval) => {
-  return poolSignerBase(rest) && !isInProgress && Number(lpToken) > 0 && !lpTokenError
+export const depositEstGas = ({ isInProgress, amounts, amountsError, ...rest }: DepositEstGas) => {
+  return poolSignerBase(rest) && !isInProgress && isValidTotal(amounts) && !amountsError
 }
 
 // helpers

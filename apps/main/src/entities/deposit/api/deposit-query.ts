@@ -1,5 +1,5 @@
 import type { QueryFunction } from '@tanstack/react-query'
-import type { Amount, DepositQueryKeyType, DepositDetailsResp, DepositEstGasApprovalResp } from '@/entities/deposit'
+import type { Amount, DepositDetailsResp, DepositQueryKeyType } from '@/entities/deposit'
 
 import { isBonus, isHighSlippage } from '@/utils'
 import { total } from '@/entities/deposit/model/deposit-query-conditions'
@@ -9,7 +9,7 @@ import useStore from '@/store/useStore'
 export const depositDetails: QueryFunction<DepositDetailsResp, DepositQueryKeyType<'depositDetails'>> = async ({
   queryKey,
 }) => {
-  const [, , , poolId, formType, isSeed, isWrapped, formAmounts, maxSlippage] = queryKey
+  const [, , , poolId, , formType, isSeed, isWrapped, formAmounts, maxSlippage] = queryKey
 
   let resp = {
     expected: '',
@@ -72,16 +72,10 @@ export const depositBalancedAmounts: QueryFunction<string[], DepositQueryKeyType
   return await (isWrapped ? pool.depositWrappedBalancedAmounts() : pool.depositBalancedAmounts())
 }
 
-export const depositEstGasApproval: QueryFunction<
-  DepositEstGasApprovalResp,
-  DepositQueryKeyType<'depositEstGasApproval'>
-> = async ({ queryKey }) => {
-  const [, , chainId, , poolId, formType, formAmounts, , isWrapped] = queryKey
+export const depositApproval: QueryFunction<boolean, DepositQueryKeyType<'depositApproval'>> = async ({ queryKey }) => {
+  const [, chainId, , poolId, , , formType, formAmounts, , isWrapped] = queryKey
 
-  let resp: DepositEstGasApprovalResp = {
-    isApproved: false,
-    estimatedGas: null,
-  }
+  let resp = false
 
   if (!chainId || !poolId) return resp
 
@@ -90,16 +84,31 @@ export const depositEstGasApproval: QueryFunction<
   const isDeposit = formType === 'DEPOSIT'
   const amounts = parseAmountsForAPI(formAmounts)
 
-  resp.isApproved = await (isWrapped
+  return await (isWrapped
     ? isDeposit
       ? pool.depositWrappedIsApproved(amounts)
       : pool.depositAndStakeWrappedIsApproved(amounts)
     : isDeposit
     ? pool.depositIsApproved(amounts)
     : pool.depositAndStakeIsApproved(amounts))
+}
 
-  if (resp.isApproved) {
-    resp.estimatedGas = await (isWrapped
+export const depositEstGas: QueryFunction<EstimatedGas, DepositQueryKeyType<'depositEstGas'>> = async ({
+  queryKey,
+}) => {
+  const [, chainId, poolId, , , , isApproved, formType, formAmounts, , isWrapped] = queryKey
+
+  let resp: EstimatedGas = null
+
+  if (!chainId || !poolId) return resp
+
+  const { curve } = useStore.getState()
+  const pool = curve.getPool(poolId)
+  const isDeposit = formType === 'DEPOSIT'
+  const amounts = parseAmountsForAPI(formAmounts)
+
+  if (isApproved) {
+    resp = await (isWrapped
       ? isDeposit
         ? pool.estimateGas.depositWrapped(amounts)
         : pool.estimateGas.depositAndStakeWrapped(amounts)
@@ -108,8 +117,8 @@ export const depositEstGasApproval: QueryFunction<
       : pool.estimateGas.depositAndStake(amounts))
   }
 
-  if (!resp.isApproved) {
-    resp.estimatedGas = await (isWrapped
+  if (!isApproved) {
+    resp = await (isWrapped
       ? isDeposit
         ? pool.estimateGas.depositWrappedApprove(amounts)
         : pool.estimateGas.depositAndStakeWrappedApprove(amounts)
@@ -117,31 +126,7 @@ export const depositEstGasApproval: QueryFunction<
       ? pool.estimateGas.depositApprove(amounts)
       : pool.estimateGas.depositAndStakeApprove(amounts))
   }
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
-  return resp
-}
-
-export const stakeEstGasApproval: QueryFunction<
-  DepositEstGasApprovalResp,
-  DepositQueryKeyType<'stakeEstGasApproval'>
-> = async ({ queryKey }) => {
-  const [, , chainId, , poolId, lpToken] = queryKey
-
-  let resp: DepositEstGasApprovalResp = {
-    isApproved: false,
-    estimatedGas: null,
-  }
-
-  if (!chainId || !poolId) return resp
-
-  const { curve } = useStore.getState()
-  const pool = curve.getPool(poolId)
-
-  resp.isApproved = await pool.stakeIsApproved(lpToken)
-  resp.estimatedGas = resp.isApproved
-    ? await pool.estimateGas.stake(lpToken)
-    : await pool.estimateGas.stakeApprove(lpToken)
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
+  warnIncorrectEstGas(chainId, resp)
   return resp
 }
 

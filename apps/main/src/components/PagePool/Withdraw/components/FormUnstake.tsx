@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 
 import { useUnstake, useUnstakeEstGas } from '@/entities/withdraw'
-import { UnstakeContext } from '@/components/PagePool/Withdraw/contextUnstake'
+import { UnstakeContextProvider } from '@/components/PagePool/Withdraw/contextUnstake'
 import { getMutationStepLabel, getMutationStepStatus } from '@/components/PagePool/utils'
 import { usePoolContext } from '@/components/PagePool/contextPool'
 
@@ -28,30 +28,36 @@ const FormUnstake = () => {
   const gaugeBalance = signerPoolBalances?.['gauge'] ?? ''
   const isInProgress = useMemo(() => steps.some(({ status }) => status === 'in-progress'), [steps])
 
-  const actionParams = {
-    ...poolBaseSignerKeys,
-    isLoadingDetails: false,
-    isApproved: true,
-    gauge,
-    gaugeError,
-  }
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      isLoadingDetails: false,
+      isApproved: true,
+      gauge,
+      gaugeError,
+    }),
+    [gauge, gaugeError, poolBaseSignerKeys]
+  )
 
-  const { data: { estimatedGas = null } = {}, ...estGasApprovalState } = useUnstakeEstGas({
+  const { data: estimatedGas = null, ...estGasState } = useUnstakeEstGas({
     ...actionParams,
     isInProgress,
   })
 
   const {
     enabled: enabledUnstake,
-    mutation: {
-      mutate: unstake,
-      data: unstakeData,
-      status: unstakeStatus,
-      error: unstakeError,
-      reset: unstakeReset,
-      ...unstakeState
-    },
+    mutation: { mutate: unstake, data: unstakeData, error: unstakeError, reset: unstakeReset, ...unstakeState },
   } = useUnstake(actionParams)
+
+  const unstakeStatus = useMemo(
+    () => ({
+      isIdle: unstakeState.isIdle,
+      isPending: unstakeState.isPending,
+      isError: unstakeState.isError,
+      isSuccess: unstakeState.isSuccess,
+    }),
+    [unstakeState.isError, unstakeState.isIdle, unstakeState.isPending, unstakeState.isSuccess]
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<UnstakeFormValues>) => {
@@ -122,7 +128,7 @@ const FormUnstake = () => {
   ])
 
   return (
-    <UnstakeContext.Provider
+    <UnstakeContextProvider
       value={{
         formValues,
         isLoading: isSeed === null,
@@ -134,16 +140,16 @@ const FormUnstake = () => {
       <DetailsInfoEstGas
         activeStep={1}
         estimatedGas={estimatedGas}
-        estimatedGasIsLoading={estGasApprovalState.isFetching}
+        estimatedGasIsLoading={estGasState.isFetching}
         stepsLength={steps.length}
       />
 
       <TransferActions>
         <Stepper steps={steps} />
-        <AlertFormError errorKey={(enabledUnstake.error || estGasApprovalState.error || unstakeError)?.message ?? ''} />
+        <AlertFormError errorKey={(enabledUnstake.error || estGasState.error || unstakeError)?.message ?? ''} />
         <TxInfoBars data={unstakeData} error={unstakeError} label={t`unstake`} scanTxPath={scanTxPath} />
       </TransferActions>
-    </UnstakeContext.Provider>
+    </UnstakeContextProvider>
   )
 }
 

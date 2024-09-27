@@ -1,5 +1,5 @@
 import type {
-  PoolBase,
+  PoolSignerBase,
   PoolQueryParams,
   PoolSeedAmounts,
   PoolCurrencyReserves,
@@ -12,22 +12,22 @@ export const poolKeys = {
   root: ({ chainId, poolId }: PoolQueryParams) => [...chainKeys.root({ chainId }), 'pool', poolId] as const,
   lists: (params: PoolQueryParams) => [...poolKeys.root(params), 'list'] as const,
   list: (params: PoolQueryParams & { filters?: string }) => [...poolKeys.lists(params), params.filters] as const,
-  poolBase: ({ chainId, poolId }: PoolBase) => {
-    return ['poolBase', chainId, poolId] as const
+  signerBase: ({ chainId, poolId, signerAddress }: PoolSignerBase) => {
+    return [...poolKeys.root({ chainId, poolId }), signerAddress] as const
   },
   poolTokensList: ({ isWrapped, ...params }: PoolTokensList) => {
-    return ['poolTokensList', ...poolKeys.poolBase(params), isWrapped] as const
+    return [...poolKeys.root(params), 'poolTokensList', isWrapped] as const
   },
   poolSeedAmounts: ({ isSeed, firstAmount, useUnderlying, ...params }: PoolSeedAmounts) => {
-    return ['poolSeedAmounts', ...poolKeys.poolBase(params), isSeed, firstAmount, useUnderlying] as const
+    return [...poolKeys.root(params), 'poolSeedAmounts', isSeed, firstAmount, useUnderlying] as const
   },
-  poolUnderlyingCurrencyReserves: (params: PoolBase) => {
-    return ['poolCurrencyReserves', ...poolKeys.poolBase(params)] as const
+  poolUnderlyingCurrencyReserves: (params: PoolQueryParams) => {
+    return [...poolKeys.root(params), 'poolCurrencyReserves'] as const
   },
   poolWrappedCurrencyReserves: ({ isWrapped, ...params }: PoolCurrencyReserves) => {
-    return ['poolWrappedCurrencyReserves', ...poolKeys.poolBase(params), isWrapped] as const
+    return [...poolKeys.root(params), 'poolWrappedCurrencyReserves', isWrapped] as const
   },
-  poolDetails: (params: PoolBase) => {
-    return ['poolDetails', ...poolKeys.poolBase(params)] as const
+  poolDetails: (params: PoolQueryParams) => {
+    return [...poolKeys.root(params), 'poolDetails'] as const
   },
 } as const

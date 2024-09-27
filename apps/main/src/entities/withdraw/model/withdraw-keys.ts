@@ -1,23 +1,18 @@
 import type {
   ApproveWithdraw,
   Claim,
-  PoolBase,
-  PoolSignerBase,
   Withdraw,
-  WithdrawEstGasApproval,
+  WithdrawApproval,
+  WithdrawEstGas,
   WithdrawDetails,
   Unstake,
   UnstakeEstGas,
 } from '@/entities/withdraw'
+import type { PoolSignerBase } from '@/entities/pool'
+
+import { poolKeys } from '@/entities/pool'
 
 export const withdrawKeys = {
-  base: ({ chainId, poolId }: PoolBase) => {
-    return [chainId, poolId] as const
-  },
-  signerBase: ({ chainId, signerAddress, poolId }: PoolSignerBase) => {
-    return [chainId, signerAddress, poolId] as const
-  },
-
   // query
   withdrawDetails: ({
     selected,
@@ -29,8 +24,8 @@ export const withdrawKeys = {
     ...rest
   }: WithdrawDetails) => {
     return [
+      ...poolKeys.root(rest),
       'withdrawDetails',
-      ...withdrawKeys.base(rest),
       selected,
       lpToken,
       amounts,
@@ -40,21 +35,26 @@ export const withdrawKeys = {
     ] as const
   },
   claimableDetails: (rest: PoolSignerBase) => {
-    return ['claimableDetails', ...withdrawKeys.signerBase(rest)] as const
+    return [...poolKeys.signerBase(rest), 'claimableDetails'] as const
   },
-  withdrawEstGasApproval: ({
+  withdrawApproval: ({ selected, lpToken, lpTokenError, amounts, ...rest }: WithdrawApproval) => {
+    return [...poolKeys.signerBase(rest), 'withdrawApproval', selected, lpToken, lpTokenError, amounts] as const
+  },
+  withdrawEstGas: ({
     selected,
+    isApproved,
     lpToken,
     lpTokenError,
     amounts,
     selectedTokenAddress,
     isWrapped,
     ...rest
-  }: WithdrawEstGasApproval) => {
+  }: WithdrawEstGas) => {
     return [
-      'withdrawEstGasApproval',
-      ...withdrawKeys.signerBase(rest),
+      ...poolKeys.signerBase(rest),
+      'withdrawEstGas',
       selected,
+      isApproved,
       lpToken,
       lpTokenError,
       amounts,
@@ -63,11 +63,11 @@ export const withdrawKeys = {
     ] as const
   },
   claimEstGas: ({ claimType, claimableCrv, claimableRewards, ...rest }: Claim) => {
-    return ['claimEstGas', ...withdrawKeys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
+    return [...poolKeys.signerBase(rest), 'claimEstGas', claimType, claimableCrv, claimableRewards] as const
   },
   // mutation
   approveWithdraw: ({ selected, lpToken, amounts, ...rest }: ApproveWithdraw) => {
-    return ['approveWithdraw', ...withdrawKeys.signerBase(rest), selected, lpToken, amounts] as const
+    return [...poolKeys.signerBase(rest), 'approveWithdraw', selected, lpToken, amounts] as const
   },
   withdraw: ({
     selected,
@@ -80,8 +80,8 @@ export const withdrawKeys = {
     ...rest
   }: Withdraw) => {
     return [
+      ...poolKeys.signerBase(rest),
       'withdraw',
-      ...withdrawKeys.signerBase(rest),
       selected,
       lpToken,
       lpTokenError,
@@ -92,12 +92,12 @@ export const withdrawKeys = {
     ] as const
   },
   unstakeEstGas: ({ gauge, gaugeError, ...rest }: UnstakeEstGas) => {
-    return ['unstakeEstGas', ...withdrawKeys.signerBase(rest), gauge, gaugeError] as const
+    return [...poolKeys.signerBase(rest), 'unstakeEstGas', gauge, gaugeError] as const
   },
   unstake: ({ gauge, ...rest }: Unstake) => {
-    return ['unstake', ...withdrawKeys.signerBase(rest), gauge] as const
+    return [...poolKeys.signerBase(rest), 'unstake', gauge] as const
   },
   claim: ({ claimType, claimableCrv, claimableRewards, ...rest }: Claim) => {
-    return ['claim', ...withdrawKeys.signerBase(rest), claimType, claimableCrv, claimableRewards] as const
+    return [...poolKeys.signerBase(rest), 'claim', claimType, claimableCrv, claimableRewards] as const
   },
 }

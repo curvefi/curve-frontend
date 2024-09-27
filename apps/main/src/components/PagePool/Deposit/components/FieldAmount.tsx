@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from 'react'
+import { isAddressEqual, type Address } from 'viem'
 
 import { NETWORK_TOKEN } from '@/constants'
 import { formatNumber } from '@/ui/utils'
@@ -31,7 +32,7 @@ const FieldAmount: React.FC<Props> = ({ idx, estimatedGas, error, tokenObj, valu
   const isDisabled = formIsDisabled || (!!isSeed && idx !== 0)
 
   const handleMaxClick = useCallback(() => {
-    const isChainToken = address.toLowerCase() === NETWORK_TOKEN
+    const isChainToken = isAddressEqual(address as Address, NETWORK_TOKEN)
     let value = ''
 
     // if chain token, subtract some amount for gas

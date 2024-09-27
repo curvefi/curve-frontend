@@ -1,6 +1,7 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
 import { withdrawKeys } from '@/entities/withdraw'
+import { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
 
 export type WithdrawQueryKeyType<K extends keyof typeof withdrawKeys> = ExtractQueryKeyType<typeof withdrawKeys, K>
 
@@ -30,24 +31,22 @@ export type UnstakeFormValues = {
 }
 
 // query
-export type PoolBase = {
-  chainId: ChainId | undefined
-  poolId: string | undefined
-}
-
-export type PoolSignerBase = PoolBase & {
-  signerAddress: string | undefined
-}
-
-export type WithdrawDetails = PoolBase &
+export type WithdrawDetails = PoolQueryParams &
   Pick<WithdrawFormValues, 'selected' | 'selectedTokenAddress' | 'amounts' | 'lpToken'> & {
     isInProgress?: boolean
     isWrapped: boolean
     maxSlippage: string
   }
 
-export type WithdrawEstGasApproval = PoolSignerBase &
+export type WithdrawApproval = PoolSignerBase &
   Pick<WithdrawFormValues, 'selected' | 'selectedTokenAddress' | 'amounts' | 'lpToken' | 'lpTokenError'> & {
+    isInProgress: boolean
+    isWrapped: boolean
+  }
+
+export type WithdrawEstGas = PoolSignerBase &
+  Pick<WithdrawFormValues, 'selected' | 'selectedTokenAddress' | 'amounts' | 'lpToken' | 'lpTokenError'> & {
+    isApproved: boolean
     isInProgress: boolean
     isWrapped: boolean
   }
@@ -58,11 +57,6 @@ export type UnstakeEstGas = PoolSignerBase &
   }
 
 // response
-export type WithdrawEstGasApprovalResp = {
-  isApproved: boolean
-  estimatedGas: number | number[] | null
-}
-
 export type WithdrawDetailsResp = {
   expectedAmounts: string[]
   expected: string
@@ -70,6 +64,7 @@ export type WithdrawDetailsResp = {
   slippage: number | null
   isHighSlippage: boolean
   isBonus: boolean
+  withdrawTotal: number | null
 }
 
 export type ClaimableDetailsResp = {

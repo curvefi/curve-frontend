@@ -10,22 +10,21 @@ export type PoolQueryParams = ChainQueryParams & {
   poolId?: string
 }
 
-export type PoolBase = {
-  chainId: ChainId | undefined
-  poolId: string | undefined
+export type PoolSignerBase = PoolQueryParams & {
+  signerAddress: string | undefined
 }
 
-export type PoolTokensList = PoolBase & {
+export type PoolTokensList = PoolQueryParams & {
   isWrapped: boolean
 }
 
-export type PoolSeedAmounts = PoolBase & {
+export type PoolSeedAmounts = PoolQueryParams & {
   isSeed: boolean | null
   firstAmount: string
   useUnderlying: boolean | null
 }
 
-export type PoolCurrencyReserves = PoolBase & {
+export type PoolCurrencyReserves = PoolQueryParams & {
   isWrapped: boolean
 }
 

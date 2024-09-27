@@ -1,6 +1,5 @@
-import type { StakeFormValues } from '@/entities/deposit'
-
 import { createContext, useContext } from 'react'
+import { StakeFormValues } from '@/entities/stake'
 
 type StakeContextType = {
   formValues: StakeFormValues
@@ -10,6 +9,7 @@ type StakeContextType = {
 }
 
 export const StakeContext = createContext<StakeContextType | null>(null)
+export const StakeContextProvider = StakeContext.Provider
 
 export const useStakeContext = () => {
   const stakeContext = useContext(StakeContext)

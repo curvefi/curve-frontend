@@ -2,7 +2,7 @@ import type { Amount, ApproveWithdraw, Withdraw, Claim, Unstake } from '@/entiti
 import type { MutateFunction } from '@tanstack/react-query/build/modern'
 import type { TxHashError } from '@/ui/TxInfoBar'
 
-import { logMutation } from '@/utils'
+import { logMutation } from '@/shared/lib/logging'
 import { waitForTxStatuses, type WaitForTxReceiptResp } from '@/shared/curve-lib'
 import { withdrawKeys } from '@/entities/withdraw'
 import useStore from '@/store/useStore'
@@ -11,7 +11,7 @@ const invalidPoolId = 'Missing poolId'
 const invalidProvider = 'Missing signer provider'
 
 export const mutationApproveWithdraw: MutateFunction<WaitForTxReceiptResp, TxHashError, ApproveWithdraw> = async (
-  params
+  params,
 ) => {
   logMutation(withdrawKeys.approveWithdraw(params))
   const { poolId, selected, amounts: formAmounts, lpToken } = params

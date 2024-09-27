@@ -1,4 +1,5 @@
 import React from 'react'
+import { Trans } from '@lingui/macro'
 
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
@@ -19,15 +20,17 @@ const AlertCompensation = () => {
   return (
     <>
       {hasCompensations && (
-        <strong>
-          <i>
-            Compensation is now available for this pool, please click{' '}
-            <InternalLink $noStyles href={getPath(params, ROUTE.PAGE_COMPENSATION)}>
-              here
-            </InternalLink>{' '}
-            to claim.
-          </i>
-        </strong>
+        <Trans>
+          <strong>
+            <i>
+              Compensation is now available for this pool, please click{' '}
+              <InternalLink $noStyles href={getPath(params, ROUTE.PAGE_COMPENSATION)}>
+                here
+              </InternalLink>{' '}
+              to claim.
+            </i>
+          </strong>
+        </Trans>
       )}
     </>
   )

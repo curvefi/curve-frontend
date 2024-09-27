@@ -24,7 +24,7 @@ const BtnClaimRewards: React.FC<Props> = ({ claimableRewards, isDisabled, isPend
       size="large"
       onClick={handleClaimClick}
     >
-      {isSuccess ? 'Claimed' : t`Claim Rewards`}
+      {isSuccess ? t`Claimed` : t`Claim Rewards`}
     </Button>
   )
 }

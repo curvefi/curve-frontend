@@ -1,4 +1,5 @@
-import type { Claim, PoolSignerBase, UnstakeEstGas, WithdrawDetails, WithdrawEstGasApproval } from '@/entities/withdraw'
+import type { PoolSignerBase } from '@/entities/pool'
+import type { Claim, UnstakeEstGas, WithdrawDetails, WithdrawApproval, WithdrawEstGas } from '@/entities/withdraw'
 
 import { queryOptions } from '@tanstack/react-query'
 
@@ -33,12 +34,21 @@ export const getWithdrawDetails = (params: WithdrawDetails) =>
     refetchInterval: REFRESH_INTERVAL['1m'],
   })
 
-export const getWithdrawEstGasApproval = (params: WithdrawEstGasApproval) =>
+export const getWithdrawApproval = (params: WithdrawApproval) =>
   queryOptions({
-    queryKey: withdrawKeys.withdrawEstGasApproval(params),
-    queryFn: api.withdrawEstGasApproval,
-    staleTime: REFRESH_INTERVAL['15s'],
-    enabled: conditions.withdrawEstGasApproval(params),
+    queryKey: withdrawKeys.withdrawApproval(params),
+    queryFn: api.withdrawApproval,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.withdrawApproval(params),
+    refetchInterval: REFRESH_INTERVAL['1m'],
+  })
+
+export const getWithdrawEstGas = (params: WithdrawEstGas) =>
+  queryOptions({
+    queryKey: withdrawKeys.withdrawEstGas(params),
+    queryFn: api.withdrawEstGas,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.withdrawEstGas(params),
     refetchInterval: REFRESH_INTERVAL['1m'],
   })
 
@@ -46,7 +56,7 @@ export const getUnstakeEstGas = (params: UnstakeEstGas) =>
   queryOptions({
     queryKey: withdrawKeys.unstakeEstGas(params),
     queryFn: api.unstakeEstGas,
-    staleTime: REFRESH_INTERVAL['15s'],
+    staleTime: REFRESH_INTERVAL['1m'],
     enabled: conditions.unstakeEstGas(params),
     refetchInterval: REFRESH_INTERVAL['1m'],
   })

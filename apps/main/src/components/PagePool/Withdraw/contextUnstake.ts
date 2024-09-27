@@ -10,6 +10,7 @@ type UnstakeContextType = {
 }
 
 export const UnstakeContext = createContext<UnstakeContextType | null>(null)
+export const UnstakeContextProvider = UnstakeContext.Provider
 
 export const useUnstakeContext = () => {
   const unstakeContext = useContext(UnstakeContext)

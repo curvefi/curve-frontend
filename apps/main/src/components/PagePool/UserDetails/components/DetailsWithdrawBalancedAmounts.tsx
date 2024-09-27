@@ -1,6 +1,6 @@
 import type { SignerPoolDetailsResp } from '@/entities/signer'
 
-import React, { useMemo } from 'react'
+import React from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
@@ -20,7 +20,7 @@ type Props = {
 const DetailsWithdrawBalancedAmounts: React.FC<Props> = ({ lpUser = '', userLiquidityUsd }) => {
   const { poolBaseKeys, maxSlippage, isWrapped, pool, tokens } = usePoolContext()
 
-  const { data: withdrawDetails } = useWithdrawDetails({
+  const { data: { expectedAmounts = [], withdrawTotal } = {} } = useWithdrawDetails({
     ...poolBaseKeys,
     selected: 'balanced',
     selectedTokenAddress: '',
@@ -29,17 +29,6 @@ const DetailsWithdrawBalancedAmounts: React.FC<Props> = ({ lpUser = '', userLiqu
     maxSlippage,
     isWrapped,
   })
-
-  const { expectedAmounts = [] } = withdrawDetails ?? {}
-
-  const withdrawTotal = useMemo(() => {
-    if (expectedAmounts.length === 0) return null
-
-    return expectedAmounts.reduce((prev, a) => {
-      prev += Number(a)
-      return prev
-    }, 0)
-  }, [expectedAmounts])
 
   return (
     <TokensBalanceWrapper>

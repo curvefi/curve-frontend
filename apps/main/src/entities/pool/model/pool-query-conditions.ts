@@ -1,6 +1,6 @@
-import { PoolBase, PoolCurrencyReserves, PoolSeedAmounts, PoolTokensList } from '@/entities/pool'
+import { PoolCurrencyReserves, PoolQueryParams, PoolSeedAmounts, PoolTokensList } from '@/entities/pool'
 
-export function enableBase({ chainId, poolId }: PoolBase) {
+export function enableBase({ chainId, poolId }: PoolQueryParams) {
   return !!chainId && !!poolId
 }
 

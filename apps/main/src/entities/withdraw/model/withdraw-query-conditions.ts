@@ -1,16 +1,16 @@
+import type { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
 import type {
   Amount,
   Claim,
-  PoolBase,
-  PoolSignerBase,
   WithdrawDetails,
-  WithdrawEstGasApproval,
+  WithdrawApproval,
+  WithdrawEstGas,
   UnstakeEstGas,
 } from '@/entities/withdraw'
 
 import { isAddress } from 'viem'
 
-export function enableBase({ chainId, poolId }: PoolBase) {
+export function enableBase({ chainId, poolId }: PoolQueryParams) {
   return !!chainId && !!poolId
 }
 
@@ -38,7 +38,7 @@ export const claimableDetails = ({ ...rest }: PoolSignerBase) => {
   return enableSignerBase(rest)
 }
 
-export const withdrawEstGasApproval = ({
+export const withdrawApproval = ({
   selected,
   lpToken,
   lpTokenError,
@@ -47,13 +47,32 @@ export const withdrawEstGasApproval = ({
   isWrapped,
   isInProgress,
   ...rest
-}: WithdrawEstGasApproval) => {
+}: WithdrawApproval) => {
   const validLpToken = Number(lpToken) > 0 && !lpTokenError
   if (selected === 'one-coin') return enableSignerBase(rest) && !isInProgress && validLpToken && !!selectedTokenAddress
   if (selected === 'balanced' || selected === 'custom-lpToken')
     return enableSignerBase(rest) && !isInProgress && validLpToken
   if (selected === 'custom-amounts')
     return enableSignerBase(rest) && !isInProgress && total(amounts) > 0 && validLpToken
+  return false
+}
+
+export const withdrawEstGas = ({
+  selected,
+  isApproved,
+  lpToken,
+  lpTokenError,
+  amounts,
+  selectedTokenAddress,
+  isWrapped,
+  isInProgress,
+  ...rest
+}: WithdrawEstGas) => {
+  const validLpToken = Number(lpToken) > 0 && !lpTokenError
+  const enabledBase = enableSignerBase(rest) && isApproved
+  if (selected === 'one-coin') return enabledBase && !isInProgress && validLpToken && !!selectedTokenAddress
+  if (selected === 'balanced' || selected === 'custom-lpToken') return enabledBase && !isInProgress && validLpToken
+  if (selected === 'custom-amounts') return enabledBase && !isInProgress && total(amounts) > 0 && validLpToken
   return false
 }
 

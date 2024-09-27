@@ -23,7 +23,7 @@ import networks from '@/networks'
 export const swapIgnoreExchangeRateCheck: QueryFunction<boolean, SwapQueryKeyType<'ignoreExchangeRateCheck'>> = async ({
   queryKey,
 }) => {
-  const [, , chainId, poolId] = queryKey
+  const [, chainId, , poolId] = queryKey
 
   if (!chainId || !poolId) return false
 
@@ -59,9 +59,10 @@ export const swapExchangeDetails: QueryFunction<
 > = async ({ queryKey }) => {
   const [
     ,
-    ,
+    chainId,
     ,
     poolId,
+    ,
     isFrom,
     fromAmount,
     fromAddress,
@@ -142,35 +143,44 @@ export const swapExchangeDetails: QueryFunction<
   return resp
 }
 
-export const swapEstGasApproval: QueryFunction<
-  SwapEstGasApprovalResp,
-  SwapQueryKeyType<'swapEstGasApproval'>
-> = async ({ queryKey }) => {
-  const [, , chainId, signerAddress, poolId, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage] = queryKey
+export const swapApproval: QueryFunction<boolean, SwapQueryKeyType<'swapApproval'>> = async ({ queryKey }) => {
+  const [, chainId, , poolId, signerAddress, , isWrapped, fromAddress, toAddress, fromAmount, maxSlippage] = queryKey
 
-  let resp: SwapEstGasApprovalResp = { isApproved: false, estimatedGas: null }
+  let resp = false
 
   if (!chainId || !signerAddress || !poolId) return resp
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
 
-  resp.isApproved = await (isWrapped
+  return await (isWrapped
     ? pool.swapWrappedIsApproved(fromAddress, fromAmount)
     : pool.swapIsApproved(fromAddress, fromAmount))
+}
 
-  if (resp.isApproved) {
-    resp.estimatedGas = await (isWrapped
+export const swapEstGas: QueryFunction<EstimatedGas, SwapQueryKeyType<'swapEstGas'>> = async ({ queryKey }) => {
+  const [, chainId, , poolId, signerAddress, , isApproved, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage] =
+    queryKey
+
+  let resp: EstimatedGas = null
+
+  if (!chainId || !signerAddress || !poolId) return resp
+
+  const curve = useStore.getState().curve
+  const pool = curve.getPool(poolId)
+
+  if (isApproved) {
+    resp = await (isWrapped
       ? pool.estimateGas.swapWrapped(fromAddress, toAddress, fromAmount, +maxSlippage)
       : pool.estimateGas.swap(fromAddress, toAddress, fromAmount, +maxSlippage))
   }
 
-  if (!resp.isApproved) {
-    resp.estimatedGas = await (isWrapped
+  if (!isApproved) {
+    resp = await (isWrapped
       ? pool.estimateGas.swapWrappedApprove(fromAddress, fromAmount)
       : pool.estimateGas.swapApprove(fromAddress, fromAmount))
   }
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
+  warnIncorrectEstGas(chainId, resp)
   return resp
 }
 

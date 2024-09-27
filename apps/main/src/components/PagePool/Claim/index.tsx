@@ -6,7 +6,7 @@ import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { useClaim, useClaimableDetails, useClaimableEstGas } from '@/entities/withdraw'
-import { ClaimContext } from '@/components/PagePool/Claim/contextClaim'
+import { ClaimContextProvider } from '@/components/PagePool/Claim/contextClaim'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getClaimText } from '@/components/PagePool/Withdraw/utils'
 import { getMutationStepStatus } from '@/components/PagePool/utils'
@@ -40,36 +40,38 @@ const FormClaim = () => {
   const haveClaimableRewards = claimableRewards.length > 0
   const haveClaimables = haveClaimableCrv || haveClaimableRewards
   const claimableRewardsTotal = useMemo(
-    () =>
-      claimableRewards.reduce((prev, { amount }) => {
-        prev += Number(amount)
-        return prev
-      }, 0),
+    () => claimableRewards.reduce((prev, { amount }) => prev + Number(amount), 0),
     [claimableRewards]
   )
 
-  const actionParams = {
-    ...poolBaseSignerKeys,
-    isLoadingDetails: claimableState.isFetching,
-    isApproved: true,
-    claimType,
-    claimableCrv,
-    claimableRewards,
-  }
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      isLoadingDetails: claimableState.isFetching,
+      isApproved: true,
+      claimType,
+      claimableCrv,
+      claimableRewards,
+    }),
+    [claimType, claimableCrv, claimableRewards, claimableState.isFetching, poolBaseSignerKeys]
+  )
 
-  const { data: { estimatedGas = null } = {}, ...estGasApprovalState } = useClaimableEstGas(actionParams)
+  const { data: estimatedGas = null, ...estGasState } = useClaimableEstGas(actionParams)
 
   const {
     enabled: enabledClaim,
-    mutation: {
-      mutate: claim,
-      data: claimData,
-      status: claimStatus,
-      error: claimError,
-      reset: claimReset,
-      ...claimState
-    },
+    mutation: { mutate: claim, data: claimData, error: claimError, reset: claimReset, ...claimState },
   } = useClaim(actionParams)
+
+  const claimStatus = useMemo(
+    () => ({
+      isIdle: claimState.isIdle,
+      isPending: claimState.isPending,
+      isError: claimState.isError,
+      isSuccess: claimState.isSuccess,
+    }),
+    [claimState.isError, claimState.isIdle, claimState.isPending, claimState.isSuccess]
+  )
 
   // steps
   useEffect(() => {
@@ -119,7 +121,7 @@ const FormClaim = () => {
   const rewardsNeedNudgingAndHaveGauge = rewardsNeedNudging && !poolData?.gauge.isKilled
 
   return (
-    <ClaimContext.Provider
+    <ClaimContextProvider
       value={{
         claimType,
         claimableCrv,
@@ -152,7 +154,7 @@ const FormClaim = () => {
           <DetailsInfoEstGas
             activeStep={!!signerAddress ? getActiveStep(steps) : null}
             estimatedGas={estimatedGas}
-            estimatedGasIsLoading={estGasApprovalState.isFetching}
+            estimatedGasIsLoading={estGasState.isFetching}
             stepsLength={steps.length}
           />
         </>
@@ -163,9 +165,9 @@ const FormClaim = () => {
           <>
             <Box grid gridAutoFlow="column" gridColumnGap="3">
               <BtnClaimCrv
-                isDisabled={claimStatus === 'pending'}
-                isPending={claimStatus === 'pending' && enabledClaim.enabled && claimType === 'CLAIM_CRV'}
-                isSuccess={claimStatus === 'success' && claimType === 'CLAIM_CRV'}
+                isDisabled={claimState.isPending}
+                isPending={claimState.isPending && enabledClaim.enabled && claimType === 'CLAIM_CRV'}
+                isSuccess={claimState.isSuccess && claimType === 'CLAIM_CRV'}
                 claimableCrv={claimableCrv}
                 claimableRewards={claimableRewards}
                 rewardsNeedNudgingAndHaveGauge={rewardsNeedNudgingAndHaveGauge}
@@ -175,9 +177,9 @@ const FormClaim = () => {
                 }}
               />
               <BtnClaimRewards
-                isDisabled={claimStatus === 'pending'}
-                isPending={claimStatus === 'pending' && enabledClaim.enabled && claimType === 'CLAIM_REWARDS'}
-                isSuccess={claimStatus === 'success' && claimType === 'CLAIM_REWARDS'}
+                isDisabled={claimState.isPending}
+                isPending={claimState.isPending && enabledClaim.enabled && claimType === 'CLAIM_REWARDS'}
+                isSuccess={claimState.isSuccess && claimType === 'CLAIM_REWARDS'}
                 claimableRewards={claimableRewards}
                 handleClaimClick={() => {
                   setClaimType('CLAIM_REWARDS')
@@ -190,14 +192,12 @@ const FormClaim = () => {
           <BtnClaim />
         )}
         <AlertFormError
-          errorKey={
-            (enabledClaim.error || estGasApprovalState.error || claimError || claimableState.error)?.message ?? ''
-          }
+          errorKey={(enabledClaim.error || estGasState.error || claimError || claimableState.error)?.message ?? ''}
         />
         {rewardsNeedNudgingAndHaveGauge && <AlertRewardsNeedNudging />}
         <TxInfoBars data={claimData} error={claimError} label={t`claim`} scanTxPath={scanTxPath} />
       </TransferActions>
-    </ClaimContext.Provider>
+    </ClaimContextProvider>
   )
 }
 

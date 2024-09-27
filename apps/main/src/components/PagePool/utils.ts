@@ -17,21 +17,24 @@ export function tokensDescription(amounts: Amount[]) {
 }
 
 // "current" | "pending" | "in-progress" | "succeeded" | "failed"
-export function getMutationStepStatus(enabled: boolean, status: UseMutationResult['status']) {
-  if ((status === 'idle' || status === 'error') && enabled) return 'current'
-  if (status === 'pending') return 'in-progress'
-  if (status === 'success') return 'succeeded'
+export function getMutationStepStatus(
+  enabled: boolean,
+  status: Pick<UseMutationResult, 'isError' | 'isIdle' | 'isPending' | 'isSuccess'>
+) {
+  if ((status.isIdle || status.isError) && enabled) return 'current'
+  if (status.isPending) return 'in-progress'
+  if (status.isSuccess) return 'succeeded'
   return 'pending'
 }
 
 export function getMutationStepLabel(
   isApproval: boolean,
-  status: UseMutationResult['status'],
+  status: Pick<UseMutationResult, 'isSuccess'>,
   customMessages?: { successMessage: string; failedMessage: string; pendingMessage: string }
 ) {
   const { successMessage, pendingMessage } = customMessages ?? {}
 
-  if (status === 'success') {
+  if (status.isSuccess) {
     if (successMessage) return successMessage
     if (isApproval) return `Spending Approved`
     return `Complete`

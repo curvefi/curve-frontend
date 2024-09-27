@@ -9,9 +9,10 @@ import {
   useDeposit,
   useDepositBalancedAmounts,
   useDepositDetails,
-  useDepositEstGasApproval,
+  useDepositApproval,
+  useDepositEstGas,
 } from '@/entities/deposit'
-import { DepositContext } from '@/components/PagePool/Deposit/contextDeposit'
+import { DepositContextProvider } from '@/components/PagePool/Deposit/contextDeposit'
 import { calcNewCrvApr } from '@/components/PagePool/Deposit/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getMutationStepLabel, getMutationStepStatus, showStepApprove } from '@/components/PagePool/utils'
@@ -106,8 +107,18 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
   }, [crvApr, expected, formType, gaugeTotalSupply])
   const showAprChange = Number(crvApr) > 0 && newCrvApr !== null && newCrvApr.ratio > 1.25
 
-  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useDepositEstGasApproval({
+  const { data: isApproved = false, ...approvalState } = useDepositApproval({
     ...poolBaseSignerKeys,
+    isInProgress,
+    formType,
+    amounts: detailsAmounts,
+    amountsError,
+    isWrapped,
+  })
+
+  const { data: estimatedGas = null, ...estGasState } = useDepositEstGas({
+    ...poolBaseSignerKeys,
+    isApproved,
     isInProgress,
     formType,
     amounts: detailsAmounts,
@@ -121,39 +132,58 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
     isWrapped,
   })
 
-  const actionParams = {
-    ...poolBaseSignerKeys,
-    formType,
-    amounts,
-    amountsError,
-    isWrapped,
-    isLoadingDetails: estGasApprovalState.isFetching || detailsState.isFetching,
-    isApproved,
-  }
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      formType,
+      amounts,
+      amountsError,
+      isWrapped,
+      isLoadingDetails: approvalState.isFetching || estGasState.isFetching || detailsState.isFetching,
+      isApproved,
+    }),
+    [
+      amounts,
+      amountsError,
+      approvalState.isFetching,
+      detailsState.isFetching,
+      estGasState.isFetching,
+      formType,
+      isApproved,
+      isWrapped,
+      poolBaseSignerKeys,
+    ]
+  )
 
   const {
     enabled: enabledApprove,
-    mutation: {
-      mutate: approve,
-      data: approveData,
-      status: approveStatus,
-      error: approveError,
-      reset: approveReset,
-      ...approveState
-    },
+    mutation: { mutate: approve, data: approveData, error: approveError, reset: approveReset, ...approveState },
   } = useApproveDeposit(actionParams)
+
+  const approveStatus = useMemo(
+    () => ({
+      isIdle: approveState.isIdle,
+      isPending: approveState.isPending,
+      isError: approveState.isError,
+      isSuccess: approveState.isSuccess,
+    }),
+    [approveState.isError, approveState.isIdle, approveState.isPending, approveState.isSuccess]
+  )
 
   const {
     enabled: enabledDeposit,
-    mutation: {
-      mutate: deposit,
-      data: depositData,
-      status: depositStatus,
-      error: depositError,
-      reset: depositReset,
-      ...depositState
-    },
+    mutation: { mutate: deposit, data: depositData, error: depositError, reset: depositReset, ...depositState },
   } = useDeposit({ ...actionParams, maxSlippage })
+
+  const depositStatus = useMemo(
+    () => ({
+      isIdle: depositState.isIdle,
+      isPending: depositState.isPending,
+      isError: depositState.isError,
+      isSuccess: depositState.isSuccess,
+    }),
+    [depositState.isError, depositState.isIdle, depositState.isPending, depositState.isSuccess]
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<DepositFormValues>) => {
@@ -344,7 +374,7 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
   ])
 
   return (
-    <DepositContext.Provider
+    <DepositContextProvider
       value={{
         formValues,
         isDisabled:
@@ -372,7 +402,7 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
           isDivider
           activeStep={!!signerAddress ? getActiveStep(steps) : null}
           estimatedGas={estimatedGas}
-          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          estimatedGasIsLoading={estGasState.isFetching}
           stepsLength={steps.length}
         />
         <DetailInfoSlippageTolerance
@@ -388,14 +418,20 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
           errorKey={
             amountsError ||
             apiError ||
-            ((enabledApprove.error || enabledDeposit.error || estGasApprovalState.error || approveError || depositError)
-              ?.message ??
+            ((
+              enabledApprove.error ||
+              enabledDeposit.error ||
+              approvalState.error ||
+              estGasState.error ||
+              approveError ||
+              depositError
+            )?.message ??
               '')
           }
         />
         <AlertPool />
         <AlertSlippage expected={expected} virtualPrice={virtualPrice} />
-        {(!!approveData || !!depositData) && (
+        {!!(approveData || depositData) && (
           <div>
             <TxInfoBars data={approveData} error={approveError} scanTxPath={scanTxPath} />
             <TxInfoBars
@@ -407,7 +443,7 @@ const FormDeposit: React.FC<Props> = ({ formType }) => {
           </div>
         )}
       </TransferActions>
-    </DepositContext.Provider>
+    </DepositContextProvider>
   )
 }
 

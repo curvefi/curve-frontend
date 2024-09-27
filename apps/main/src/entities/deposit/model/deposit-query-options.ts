@@ -1,9 +1,4 @@
-import type {
-  DepositBalancedAmounts,
-  DepositDetails,
-  DepositEstGasApproval,
-  StakeEstGasApproval,
-} from '@/entities/deposit'
+import type { DepositApproval, DepositBalancedAmounts, DepositDetails, DepositEstGas } from '@/entities/deposit'
 
 import { queryOptions } from '@tanstack/react-query'
 
@@ -29,20 +24,20 @@ export const getDepositBalancedAmounts = (params: DepositBalancedAmounts) =>
     enabled: conditions.depositBalancedAmounts(params),
   })
 
-export const getDepositEstGasApproval = (params: DepositEstGasApproval) =>
+export const getDepositApproval = (params: DepositApproval) =>
   queryOptions({
-    queryKey: depositKeys.depositEstGasApproval(params),
-    queryFn: api.depositEstGasApproval,
-    staleTime: REFRESH_INTERVAL['15s'],
-    enabled: conditions.depositEstGasApproval(params),
+    queryKey: depositKeys.depositApproval(params),
+    queryFn: api.depositApproval,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.depositApproval(params),
     refetchInterval: REFRESH_INTERVAL['1m'],
   })
 
-export const getStakeEstGasApproval = (params: StakeEstGasApproval) =>
+export const getDepositEstGas = (params: DepositEstGas) =>
   queryOptions({
-    queryKey: depositKeys.stakeEstGasApproval(params),
-    queryFn: api.stakeEstGasApproval,
-    staleTime: REFRESH_INTERVAL['15s'],
-    enabled: conditions.stakeEstGasApproval(params),
+    queryKey: depositKeys.depositEstGas(params),
+    queryFn: api.depositEstGas,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.depositEstGas(params),
     refetchInterval: REFRESH_INTERVAL['1m'],
   })

@@ -1,8 +1,8 @@
+import type { PoolSignerBase } from '@/entities/pool'
 import type {
   ApproveWithdraw,
   Claim,
   MutateBase,
-  PoolSignerBase,
   Withdraw,
   WithdrawFormValues,
   Unstake,

@@ -1,4 +1,4 @@
-import type { PoolSeedAmounts, PoolCurrencyReserves, PoolBase, PoolTokensList } from '@/entities/pool'
+import type { PoolSeedAmounts, PoolCurrencyReserves, PoolTokensList, PoolQueryParams } from '@/entities/pool'
 
 import { REFRESH_INTERVAL } from '@/constants'
 import { queryOptions } from '@tanstack/react-query'
@@ -22,16 +22,16 @@ export const getPoolSeedAmounts = (params: PoolSeedAmounts) =>
     enabled: conditions.enablePoolSeedAmounts(params),
   })
 
-export const getPoolDetails = (params: PoolBase) =>
+export const getPoolDetails = (params: PoolQueryParams) =>
   queryOptions({
     queryKey: keys.poolDetails(params),
     queryFn: api.poolDetails,
-    staleTime: REFRESH_INTERVAL['3s'],
+    staleTime: REFRESH_INTERVAL['30s'],
     enabled: conditions.enableBase(params),
     refetchInterval: REFRESH_INTERVAL['5m'],
   })
 
-export const getPoolUnderlyingCurrencyReserves = (params: PoolBase) =>
+export const getPoolUnderlyingCurrencyReserves = (params: PoolQueryParams) =>
   queryOptions({
     queryKey: keys.poolUnderlyingCurrencyReserves(params),
     queryFn: api.poolUnderlyingCurrencyReserves,

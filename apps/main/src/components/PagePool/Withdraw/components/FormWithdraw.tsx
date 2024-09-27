@@ -8,7 +8,13 @@ import styled from 'styled-components'
 import { FormWithdrawContext } from '@/components/PagePool/Withdraw/contextWithdraw'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getMutationStepLabel, getMutationStepStatus, showStepApprove } from '@/components/PagePool/utils'
-import { useApproveWithdraw, useWithdraw, useWithdrawDetails, useWithdrawEstGasApproval } from '@/entities/withdraw'
+import {
+  useApproveWithdraw,
+  useWithdraw,
+  useWithdrawDetails,
+  useWithdrawApproval,
+  useWithdrawEstGas,
+} from '@/entities/withdraw'
 import { usePoolContext } from '@/components/PagePool/contextPool'
 
 import { FieldsWrapper } from '@/components/PagePool/styles'
@@ -77,7 +83,7 @@ const FormWithdraw = () => {
     maxSlippage,
   })
 
-  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useWithdrawEstGasApproval({
+  const { data: isApproved = false, ...approvalState } = useWithdrawApproval({
     ...poolBaseSignerKeys,
     isInProgress,
     selected,
@@ -88,40 +94,72 @@ const FormWithdraw = () => {
     isWrapped,
   })
 
-  const actionParams = {
+  const { data: estimatedGas = null, ...estGasState } = useWithdrawEstGas({
     ...poolBaseSignerKeys,
-    isLoadingDetails: detailsState.isFetching || estGasApprovalState.isFetching,
-    isApproved: isApproved,
+    isApproved,
+    isInProgress,
     selected,
+    selectedTokenAddress: tokens.find(({ address }) => selectedTokenAddress === address)?.address ?? '',
     amounts,
     lpToken,
     lpTokenError,
     isWrapped,
-  }
+  })
+
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      isLoadingDetails: detailsState.isFetching || approvalState.isFetching || estGasState.isFetching,
+      isApproved: isApproved,
+      selected,
+      amounts,
+      lpToken,
+      lpTokenError,
+      isWrapped,
+    }),
+    [
+      amounts,
+      approvalState.isFetching,
+      detailsState.isFetching,
+      estGasState.isFetching,
+      isApproved,
+      isWrapped,
+      lpToken,
+      lpTokenError,
+      poolBaseSignerKeys,
+      selected,
+    ]
+  )
 
   const {
     enabled: enabledApprove,
-    mutation: {
-      mutate: approve,
-      data: approveData,
-      status: approveStatus,
-      error: approveError,
-      reset: approveReset,
-      ...approveState
-    },
+    mutation: { mutate: approve, data: approveData, error: approveError, reset: approveReset, ...approveState },
   } = useApproveWithdraw({ ...actionParams, selectedToken })
+
+  const approveStatus = useMemo(
+    () => ({
+      isIdle: approveState.isIdle,
+      isPending: approveState.isPending,
+      isError: approveState.isError,
+      isSuccess: approveState.isSuccess,
+    }),
+    [approveState.isError, approveState.isIdle, approveState.isPending, approveState.isSuccess]
+  )
 
   const {
     enabled: enabledWithdraw,
-    mutation: {
-      mutate: withdraw,
-      data: withdrawData,
-      status: withdrawStatus,
-      error: withdrawError,
-      reset: withdrawReset,
-      ...withdrawState
-    },
+    mutation: { mutate: withdraw, data: withdrawData, error: withdrawError, reset: withdrawReset, ...withdrawState },
   } = useWithdraw({ ...actionParams, selectedTokenAddress, maxSlippage })
+
+  const withdrawStatus = useMemo(
+    () => ({
+      isIdle: withdrawState.isIdle,
+      isPending: withdrawState.isPending,
+      isError: withdrawState.isError,
+      isSuccess: withdrawState.isSuccess,
+    }),
+    [withdrawState.isError, withdrawState.isIdle, withdrawState.isPending, withdrawState.isSuccess]
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<WithdrawFormValues>) => {
@@ -327,7 +365,7 @@ const FormWithdraw = () => {
         <DetailsInfoEstGas
           activeStep={!!signerAddress ? getActiveStep(steps) : null}
           estimatedGas={estimatedGas}
-          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          estimatedGasIsLoading={estGasState.isFetching}
           stepsLength={steps.length}
         />
         <DetailInfoSlippageTolerance
@@ -343,7 +381,7 @@ const FormWithdraw = () => {
           errorKey={
             (
               detailsState.error ||
-              estGasApprovalState.error ||
+              estGasState.error ||
               enabledApprove.error ||
               enabledWithdraw.error ||
               approveError ||

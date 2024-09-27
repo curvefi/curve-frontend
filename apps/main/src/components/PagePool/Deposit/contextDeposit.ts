@@ -10,6 +10,7 @@ type DepositContextType = {
 }
 
 export const DepositContext = createContext<DepositContextType | null>(null)
+export const DepositContextProvider = DepositContext.Provider
 
 export const useDepositContext = () => {
   const depositContext = useContext(DepositContext)

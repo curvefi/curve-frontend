@@ -1,6 +1,7 @@
 import type { ClaimableDetailsResp } from '@/entities/withdraw'
 
 import React from 'react'
+import { t } from '@lingui/macro'
 
 import { getClaimText } from '@/components/PagePool/Withdraw/utils'
 
@@ -36,7 +37,7 @@ const BtnClaimCrv: React.FC<Props> = ({
       onClick={handleClaimClick}
     >
       {isSuccess
-        ? 'Claimed'
+        ? t`Claimed`
         : getClaimText(claimableCrv, claimableRewards, 'CLAIM_CRV', 'claimCrvButton', rewardsNeedNudgingAndHaveGauge)}
     </Button>
   )

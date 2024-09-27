@@ -1,8 +1,9 @@
-import type { PoolBase, PoolSignerBase, SwapEstGasApproval, SwapExchangeDetails } from '@/entities/swap'
+import type { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
+import type { SwapApproval, SwapEstGas, SwapExchangeDetails } from '@/entities/swap'
 
 import { isAddress } from 'viem'
 
-export function poolBaseBase({ chainId, poolId }: PoolBase) {
+export function poolBaseBase({ chainId, poolId }: PoolQueryParams) {
   return !!chainId && !!poolId
 }
 
@@ -30,12 +31,10 @@ export const swapExchangeDetails = ({
   return poolBaseBase(rest) && !isInProgress && validAmount && validFrom && validTo && validIgnoreCheck
 }
 
-export const swapEstGasApproval = ({
-  fromAddress,
-  toAddress,
-  fromAmount,
-  isInProgress,
-  ...rest
-}: SwapEstGasApproval) => {
+export const swapApproval = ({ fromAddress, toAddress, fromAmount, isInProgress, ...rest }: SwapApproval) => {
+  return poolSignerBase(rest) && !isInProgress && Number(fromAmount) > 0 && !!fromAddress && !!toAddress
+}
+
+export const swapEstGas = ({ fromAddress, toAddress, fromAmount, isInProgress, ...rest }: SwapEstGas) => {
   return poolSignerBase(rest) && !isInProgress && Number(fromAmount) > 0 && !!fromAddress && !!toAddress
 }

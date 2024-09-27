@@ -1,18 +1,19 @@
-import type { Amount, ApproveDeposit, Deposit, Stake } from '@/entities/deposit'
+import type { Amount, ApproveDeposit, Deposit } from '@/entities/deposit'
 import type { MutateFunction } from '@tanstack/react-query'
 import type { TxHashError } from '@/ui/TxInfoBar'
 import type { WaitForTxReceiptResp } from '@/shared/curve-lib'
 
-import { logMutation } from '@/utils'
 import { depositKeys } from '@/entities/deposit'
 import { waitForTxStatuses } from '@/shared/curve-lib'
+
+import { logMutation } from '@/shared/lib/logging'
 import useStore from '@/store/useStore'
 
 const invalidPoolId = 'Missing poolId'
 const invalidProvider = 'Missing signer provider'
 
 export const mutateApproveDeposit: MutateFunction<WaitForTxReceiptResp, TxHashError, ApproveDeposit> = async (
-  params
+  params,
 ) => {
   logMutation(depositKeys.approveDeposit(params))
   const { poolId, formType, amounts, isWrapped } = params
@@ -27,8 +28,8 @@ export const mutateApproveDeposit: MutateFunction<WaitForTxReceiptResp, TxHashEr
       ? pool.depositWrappedApprove(parsedAmounts)
       : pool.depositApprove(parsedAmounts)
     : isWrapped
-    ? pool.depositAndStakeWrappedApprove(parsedAmounts)
-    : pool.depositAndStakeApprove(parsedAmounts))
+      ? pool.depositAndStakeWrappedApprove(parsedAmounts)
+      : pool.depositAndStakeApprove(parsedAmounts))
   return await waitForTxStatuses(hashes, provider)
 }
 
@@ -46,32 +47,8 @@ export const mutateDeposit: MutateFunction<WaitForTxReceiptResp, TxHashError, De
       ? pool.depositWrapped(parsedAmounts, +maxSlippage)
       : pool.deposit(parsedAmounts, +maxSlippage)
     : isWrapped
-    ? pool.depositAndStakeWrapped(parsedAmounts, +maxSlippage)
-    : pool.depositAndStake(parsedAmounts, +maxSlippage))
-  return await waitForTxStatuses([hash], provider)
-}
-
-export const mutateApproveStake: MutateFunction<WaitForTxReceiptResp, TxHashError, Stake> = async (params) => {
-  logMutation(depositKeys.approveStake(params))
-  const { poolId, lpToken } = params
-  if (!poolId) throw new Error(invalidPoolId)
-  const { provider, pool } = getPoolProvider(poolId)
-  const { curve, gas } = useStore.getState()
-
-  await gas.fetchGasInfo(curve)
-  const hashes = await pool.stakeApprove(lpToken)
-  return await waitForTxStatuses(hashes, provider)
-}
-
-export const mutateStake: MutateFunction<WaitForTxReceiptResp, TxHashError, Stake> = async (params) => {
-  logMutation(depositKeys.stake(params))
-  const { poolId, lpToken } = params
-  if (!poolId) throw new Error(invalidPoolId)
-  const { provider, pool } = getPoolProvider(poolId)
-  const { curve, gas } = useStore.getState()
-
-  await gas.fetchGasInfo(curve)
-  const hash = await pool.stake(lpToken)
+      ? pool.depositAndStakeWrapped(parsedAmounts, +maxSlippage)
+      : pool.depositAndStake(parsedAmounts, +maxSlippage))
   return await waitForTxStatuses([hash], provider)
 }
 

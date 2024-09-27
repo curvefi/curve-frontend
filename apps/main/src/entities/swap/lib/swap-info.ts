@@ -3,4 +3,5 @@ import * as models from '@/entities/swap/model/swap-query-options'
 
 export const useSwapIgnoreExchangeRateCheck = createQueryHook(models.getSwapIgnoreExchangeRateCheck)
 export const useSwapExchangeDetails = createQueryHook(models.getSwapExchangeDetails)
-export const useSwapEstGasApproval = createQueryHook(models.getSwapEstGasApproval)
+export const useSwapApproval = createQueryHook(models.getSwapApproval)
+export const useSwapEstGas = createQueryHook(models.getSwapEstGas)

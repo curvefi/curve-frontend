@@ -7,12 +7,13 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { SwapContext } from '@/components/PagePool/Swap/contextSwap'
+import { SwapContextProvider } from '@/components/PagePool/Swap/contextSwap'
 import {
   useApproveSwap,
+  useSwapApproval,
   useSwap,
+  useSwapEstGas,
   useSwapExchangeDetails,
-  useSwapEstGasApproval,
   useSwapIgnoreExchangeRateCheck,
 } from '@/entities/swap'
 import { getActiveStep } from '@/ui/Stepper/helpers'
@@ -114,7 +115,7 @@ const Swap = () => {
     tokens,
   })
 
-  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useSwapEstGasApproval({
+  const { data: isApproved = false, ...approvalState } = useSwapApproval({
     ...poolBaseSignerKeys,
     isInProgress,
     fromAddress,
@@ -124,34 +125,73 @@ const Swap = () => {
     maxSlippage,
   })
 
-  const actionParams = {
+  const { data: estimatedGas = null, ...estGasState } = useSwapEstGas({
     ...poolBaseSignerKeys,
-    fromAmount,
+    isApproved,
+    isInProgress,
     fromAddress,
-    fromToken,
-    fromError,
-    toError,
+    toAddress,
+    fromAmount,
     isWrapped,
-    isLoadingDetails: exchangeDetailsState.isFetching || estGasApprovalState.isFetching,
-    isApproved: isApproved,
-  }
+    maxSlippage,
+  })
+
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      fromAmount,
+      fromAddress,
+      fromToken,
+      fromError,
+      toError,
+      isWrapped,
+      isLoadingDetails: exchangeDetailsState.isFetching || approvalState.isFetching || estGasState.isFetching,
+      isApproved: isApproved,
+    }),
+    [
+      approvalState.isFetching,
+      estGasState.isFetching,
+      exchangeDetailsState.isFetching,
+      fromAddress,
+      fromAmount,
+      fromError,
+      fromToken,
+      isApproved,
+      isWrapped,
+      poolBaseSignerKeys,
+      toError,
+    ]
+  )
 
   const {
     enabled: enabledApprove,
-    mutation: {
-      mutate: approve,
-      data: approveData,
-      status: approveStatus,
-      error: approveError,
-      reset: approveReset,
-      ...approveState
-    },
+    mutation: { mutate: approve, data: approveData, error: approveError, reset: approveReset, ...approveState },
   } = useApproveSwap(actionParams)
+
+  const approveStatus = useMemo(
+    () => ({
+      isIdle: approveState.isIdle,
+      isPending: approveState.isPending,
+      isError: approveState.isError,
+      isSuccess: approveState.isSuccess,
+    }),
+    [approveState.isError, approveState.isIdle, approveState.isPending, approveState.isSuccess]
+  )
 
   const {
     enabled: enabledSwap,
-    mutation: { mutate: swap, data: swapData, status: swapStatus, error: swapError, reset: swapReset, ...swapState },
+    mutation: { mutate: swap, data: swapData, error: swapError, reset: swapReset, ...swapState },
   } = useSwap({ ...actionParams, toAddress, toToken, toAmount, maxSlippage })
+
+  const swapStatus = useMemo(
+    () => ({
+      isIdle: swapState.isIdle,
+      isPending: swapState.isPending,
+      isError: swapState.isError,
+      isSuccess: swapState.isSuccess,
+    }),
+    [swapState.isError, swapState.isIdle, swapState.isPending, swapState.isSuccess]
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<SwapFormValues>) => {
@@ -315,7 +355,7 @@ const Swap = () => {
   ])
 
   return (
-    <SwapContext.Provider
+    <SwapContextProvider
       value={{
         formValues,
         isDisabled: approveState.isPending || swapState.isPending || !hasRouter || isSeed === null || isSeed,
@@ -326,7 +366,7 @@ const Swap = () => {
       <StyledFieldsWrapper>
         <FieldFrom
           estimatedGas={estimatedGas}
-          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          estimatedGasIsLoading={estGasState.isFetching}
           usdRatesMapper={usdRatesMapper}
         />
         <BtnSwapTokens />
@@ -347,7 +387,7 @@ const Swap = () => {
         <DetailsInfoEstGas
           activeStep={!!signerAddress ? getActiveStep(steps) : null}
           estimatedGas={estimatedGas}
-          estimatedGasIsLoading={estGasApprovalState.isFetching}
+          estimatedGasIsLoading={estGasState.isFetching}
           stepsLength={steps.length}
         />
         <DetailInfoSlippageTolerance
@@ -364,7 +404,8 @@ const Swap = () => {
             (
               enabledApprove.error ||
               enabledSwap.error ||
-              estGasApprovalState.error ||
+              approvalState.error ||
+              estGasState.error ||
               exchangeDetailsState.error ||
               approveError ||
               swapError
@@ -386,7 +427,7 @@ const Swap = () => {
           </div>
         )}
       </TransferActions>
-    </SwapContext.Provider>
+    </SwapContextProvider>
   )
 }
 

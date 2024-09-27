@@ -1,4 +1,5 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
+import type { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
 
 import { swapKeys } from '@/entities/swap'
 
@@ -19,16 +20,7 @@ export type SwapFormValues = {
 }
 
 // query
-export type PoolBase = {
-  chainId: ChainId | undefined
-  poolId: string | undefined
-}
-
-export type PoolSignerBase = PoolBase & {
-  signerAddress: string | undefined
-}
-
-export type SwapExchangeDetails = PoolBase &
+export type SwapExchangeDetails = PoolQueryParams &
   Pick<SwapFormValues, 'isFrom' | 'fromAddress' | 'fromToken' | 'fromAmount' | 'toAddress' | 'toToken' | 'toAmount'> & {
     isInProgress: boolean
     isWrapped: boolean
@@ -37,8 +29,16 @@ export type SwapExchangeDetails = PoolBase &
     tokens: Token[]
   }
 
-export type SwapEstGasApproval = PoolSignerBase &
+export type SwapApproval = PoolSignerBase &
   Pick<SwapFormValues, 'fromAddress' | 'fromAmount' | 'toAddress'> & {
+    isInProgress: boolean
+    isWrapped: boolean
+    maxSlippage: string
+  }
+
+export type SwapEstGas = PoolSignerBase &
+  Pick<SwapFormValues, 'fromAddress' | 'fromAmount' | 'toAddress'> & {
+    isApproved: boolean
     isInProgress: boolean
     isWrapped: boolean
     maxSlippage: string

@@ -2,6 +2,7 @@ import type { QueryRespUsdRatesMapper } from '@/entities/usd-rates'
 import type { SwapFormValues } from '@/entities/swap'
 
 import React, { useCallback, useState } from 'react'
+import { isAddressEqual, type Address } from 'viem'
 import { t } from '@lingui/macro'
 
 import { NETWORK_TOKEN } from '@/constants'
@@ -50,7 +51,7 @@ const FieldFrom: React.FC<Props> = ({ estimatedGas, estimatedGasIsLoading, usdRa
       const val = value as string
       const updatedFormValues: Partial<SwapFormValues> = {}
 
-      if (val === toAddress) {
+      if (isAddressEqual(val as Address, toAddress as Address)) {
         updatedFormValues.toAddress = fromAddress
         updatedFormValues.toToken = tokensMapper[fromAddress]?.symbol ?? ''
       }
@@ -72,7 +73,7 @@ const FieldFrom: React.FC<Props> = ({ estimatedGas, estimatedGasIsLoading, usdRa
   const handleMaxClick = useCallback(async () => {
     let fromAmount = fromBalance
 
-    if (fromAddress.toLowerCase() === NETWORK_TOKEN && typeof basePlusPriority !== 'undefined') {
+    if (isAddressEqual(fromAddress as Address, NETWORK_TOKEN) && typeof basePlusPriority !== 'undefined') {
       setIsLoadingMax(estimatedGasIsLoading)
       fromAmount = getMaxAmountMinusGas(estimatedGas, basePlusPriority, fromAmount)
       setIsLoadingMax(false)

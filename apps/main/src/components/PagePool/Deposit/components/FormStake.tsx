@@ -1,11 +1,11 @@
-import type { StakeFormValues } from '@/entities/deposit'
 import type { Step } from '@/ui/Stepper/types'
+import type { StakeFormValues } from '@/entities/stake'
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
 
-import { useApproveStake, useStake, useStakeEstGasApproval } from '@/entities/deposit'
-import { StakeContext } from '@/components/PagePool/Deposit/contextStake'
+import { useStakeApproval, useStakeEstGas, useApproveStake, useStake } from '@/entities/stake'
+import { StakeContextProvider } from '@/components/PagePool/Deposit/contextStake'
 import { calcNewCrvApr } from '@/components/PagePool/Deposit/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getMutationStepLabel, getMutationStepStatus, showStepApprove } from '@/components/PagePool/utils'
@@ -42,44 +42,61 @@ const FormStake = () => {
   const showAprChange = Number(crvApr) > 0 && !!newCrvApr && newCrvApr.ratio > 1.25
   const isInProgress = useMemo(() => steps.some(({ status }) => status === 'in-progress'), [steps])
 
-  const { data: { estimatedGas = null, isApproved = false } = {}, ...estGasApprovalState } = useStakeEstGasApproval({
+  const { data: isApproved = false, ...approvalState } = useStakeApproval({
     ...poolBaseSignerKeys,
     isInProgress,
     lpToken,
     lpTokenError,
   })
 
-  const actionParams = {
+  const { data: estimatedGas = null, ...estGasState } = useStakeEstGas({
     ...poolBaseSignerKeys,
+    isApproved,
+    isInProgress,
     lpToken,
     lpTokenError,
-    isLoadingDetails: estGasApprovalState.isFetching,
-    isApproved: isApproved,
-  }
+  })
+
+  const actionParams = useMemo(
+    () => ({
+      ...poolBaseSignerKeys,
+      lpToken,
+      lpTokenError,
+      isLoadingDetails: approvalState.isFetching || estGasState.isFetching,
+      isApproved: isApproved,
+    }),
+    [approvalState.isFetching, estGasState.isFetching, isApproved, lpToken, lpTokenError, poolBaseSignerKeys]
+  )
 
   const {
     enabled: enabledApprove,
-    mutation: {
-      mutate: approve,
-      data: approveData,
-      status: approveStatus,
-      error: approveError,
-      reset: approveReset,
-      ...approveState
-    },
+    mutation: { mutate: approve, data: approveData, error: approveError, reset: approveReset, ...approveState },
   } = useApproveStake(actionParams)
+
+  const approveStatus = useMemo(
+    () => ({
+      isIdle: approveState.isIdle,
+      isPending: approveState.isPending,
+      isError: approveState.isError,
+      isSuccess: approveState.isSuccess,
+    }),
+    [approveState.isError, approveState.isIdle, approveState.isPending, approveState.isSuccess]
+  )
 
   const {
     enabled: enabledStake,
-    mutation: {
-      mutate: stake,
-      data: stakeData,
-      status: stakeStatus,
-      error: stakeError,
-      reset: stakeReset,
-      ...stakeState
-    },
+    mutation: { mutate: stake, data: stakeData, error: stakeError, reset: stakeReset, ...stakeState },
   } = useStake(actionParams)
+
+  const stakeStatus = useMemo(
+    () => ({
+      isIdle: stakeState.isIdle,
+      isPending: stakeState.isPending,
+      isError: stakeState.isError,
+      isSuccess: stakeState.isSuccess,
+    }),
+    [stakeState.isError, stakeState.isIdle, stakeState.isPending, stakeState.isSuccess]
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<StakeFormValues>) => {
@@ -173,7 +190,7 @@ const FormStake = () => {
   ])
 
   return (
-    <StakeContext.Provider
+    <StakeContextProvider
       value={{
         formValues,
         isDisabled: approveState.isPending || stakeState.isPending || isSeed === null,
@@ -193,7 +210,7 @@ const FormStake = () => {
               activeStep={!!signerAddress ? getActiveStep(steps) : null}
               isDivider={showAprChange}
               estimatedGas={estimatedGas}
-              estimatedGasIsLoading={estGasApprovalState.isFetching}
+              estimatedGasIsLoading={estGasState.isFetching}
               stepsLength={steps.length}
             />
           </div>
@@ -206,7 +223,8 @@ const FormStake = () => {
             <Stepper steps={steps} />
             <AlertFormError
               errorKey={
-                (enabledApprove.error || estGasApprovalState.error || approveError || stakeError)?.message ?? ''
+                (enabledApprove.error || approvalState.error || estGasState.error || approveError || stakeError)
+                  ?.message ?? ''
               }
             />
             {(!!approveData || !!stakeData) && (
@@ -218,7 +236,7 @@ const FormStake = () => {
           </>
         )}
       </TransferActions>
-    </StakeContext.Provider>
+    </StakeContextProvider>
   )
 }
 

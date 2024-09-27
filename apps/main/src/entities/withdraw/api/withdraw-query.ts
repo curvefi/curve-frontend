@@ -1,11 +1,5 @@
 import type { QueryFunction } from '@tanstack/react-query'
-import type {
-  Amount,
-  ClaimableDetailsResp,
-  WithdrawDetailsResp,
-  WithdrawEstGasApprovalResp,
-  WithdrawQueryKeyType,
-} from '@/entities/withdraw'
+import type { Amount, ClaimableDetailsResp, WithdrawDetailsResp, WithdrawQueryKeyType } from '@/entities/withdraw'
 
 import { isBonus, isHighSlippage, isValidAddress } from '@/utils'
 import { warnIncorrectEstGas } from '@/lib/curvejs'
@@ -14,7 +8,7 @@ import useStore from '@/store/useStore'
 export const withdrawDetails: QueryFunction<WithdrawDetailsResp, WithdrawQueryKeyType<'withdrawDetails'>> = async ({
   queryKey,
 }) => {
-  const [, , poolId, selected, lpToken, formAmounts, selectedTokenAddress, isWrapped, maxSlippage] = queryKey
+  const [, chainId, , poolId, , selected, lpToken, formAmounts, selectedTokenAddress, isWrapped, maxSlippage] = queryKey
 
   let resp: WithdrawDetailsResp = {
     expectedAmounts: [],
@@ -23,6 +17,7 @@ export const withdrawDetails: QueryFunction<WithdrawDetailsResp, WithdrawQueryKe
     slippage: null,
     isHighSlippage: false,
     isBonus: false,
+    withdrawTotal: null,
   }
 
   if (!poolId) return resp
@@ -64,13 +59,20 @@ export const withdrawDetails: QueryFunction<WithdrawDetailsResp, WithdrawQueryKe
     resp.isBonus = isBonus(+resp.bonus)
   }
 
+  if (resp.expectedAmounts.length > 0) {
+    resp.withdrawTotal = resp.expectedAmounts.reduce((prev, a) => {
+      prev += Number(a)
+      return prev
+    }, 0)
+  }
+
   return resp
 }
 
 export const claimableDetails: QueryFunction<ClaimableDetailsResp, WithdrawQueryKeyType<'claimableDetails'>> = async ({
   queryKey,
 }) => {
-  const [, chainId, signerAddress, poolId] = queryKey
+  const [, chainId, , poolId, signerAddress] = queryKey
 
   let resp: ClaimableDetailsResp = { claimableCrv: '', claimableRewards: [] }
 
@@ -96,13 +98,12 @@ export const claimableDetails: QueryFunction<ClaimableDetailsResp, WithdrawQuery
   return resp
 }
 
-export const withdrawEstGasApproval: QueryFunction<
-  WithdrawEstGasApprovalResp,
-  WithdrawQueryKeyType<'withdrawEstGasApproval'>
-> = async ({ queryKey }) => {
-  const [, chainId, , poolId, selected, lpToken, , formAmounts, selectedTokenAddress, isWrapped] = queryKey
+export const withdrawApproval: QueryFunction<boolean, WithdrawQueryKeyType<'withdrawApproval'>> = async ({
+  queryKey,
+}) => {
+  const [, chainId, , poolId, , , selected, lpToken, , formAmounts] = queryKey
 
-  let resp: WithdrawEstGasApprovalResp = { isApproved: false, estimatedGas: null }
+  let resp = false
 
   if (!chainId || !poolId) return resp
 
@@ -110,89 +111,106 @@ export const withdrawEstGasApproval: QueryFunction<
   const pool = curve.getPool(poolId)
 
   if (selected === 'one-coin') {
-    resp.isApproved = await pool.withdrawOneCoinIsApproved(lpToken)
-    if (resp.isApproved) {
-      resp.estimatedGas = await (isWrapped
+    return await pool.withdrawOneCoinIsApproved(lpToken)
+  }
+
+  if (selected === 'balanced' || selected === 'custom-lpToken') {
+    return await pool.withdrawIsApproved(lpToken)
+  }
+
+  if (selected === 'custom-amounts') {
+    const amounts = parseAmountsForAPI(formAmounts)
+    return await pool.withdrawImbalanceIsApproved(amounts)
+  }
+
+  return resp
+}
+
+export const withdrawEstGas: QueryFunction<EstimatedGas, WithdrawQueryKeyType<'withdrawEstGas'>> = async ({
+  queryKey,
+}) => {
+  const [, chainId, , poolId, , , selected, isApproved, lpToken, , formAmounts, selectedTokenAddress, isWrapped] =
+    queryKey
+
+  let resp: EstimatedGas = null
+
+  if (!chainId || !poolId) return resp
+
+  const curve = useStore.getState().curve
+  const pool = curve.getPool(poolId)
+
+  if (selected === 'one-coin') {
+    if (isApproved) {
+      resp = await (isWrapped
         ? pool.estimateGas.withdrawOneCoinWrapped(lpToken, selectedTokenAddress)
         : pool.estimateGas.withdrawOneCoin(lpToken, selectedTokenAddress))
     } else {
-      resp.estimatedGas = await pool.estimateGas.withdrawOneCoinApprove(lpToken)
+      resp = await pool.estimateGas.withdrawOneCoinApprove(lpToken)
     }
   }
 
   if (selected === 'balanced' || selected === 'custom-lpToken') {
-    resp.isApproved = await pool.withdrawIsApproved(lpToken)
-
-    if (resp.isApproved) {
-      resp.estimatedGas = await (isWrapped
-        ? pool.estimateGas.withdrawWrapped(lpToken)
-        : pool.estimateGas.withdraw(lpToken))
+    if (isApproved) {
+      resp = await (isWrapped ? pool.estimateGas.withdrawWrapped(lpToken) : pool.estimateGas.withdraw(lpToken))
     } else {
-      resp.estimatedGas = await pool.estimateGas.withdrawApprove(lpToken)
+      resp = await pool.estimateGas.withdrawApprove(lpToken)
     }
   }
 
   if (selected === 'custom-amounts') {
     const amounts = parseAmountsForAPI(formAmounts)
-    resp.isApproved = await pool.withdrawImbalanceIsApproved(amounts)
 
-    if (resp.isApproved) {
-      resp.estimatedGas = await (isWrapped
+    if (isApproved) {
+      resp = await (isWrapped
         ? pool.estimateGas.withdrawImbalanceWrapped(amounts)
         : pool.estimateGas.withdrawImbalance(amounts))
     } else {
-      resp.estimatedGas = await pool.estimateGas.withdrawImbalanceApprove(amounts)
+      resp = await pool.estimateGas.withdrawImbalanceApprove(amounts)
     }
   }
-
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
+  warnIncorrectEstGas(chainId, resp)
   return resp
 }
 
-export const unstakeEstGas: QueryFunction<WithdrawEstGasApprovalResp, WithdrawQueryKeyType<'unstakeEstGas'>> = async ({
+export const unstakeEstGas: QueryFunction<EstimatedGas, WithdrawQueryKeyType<'unstakeEstGas'>> = async ({
   queryKey,
 }) => {
-  const [, chainId, signerAddress, poolId, gauge] = queryKey
+  const [, chainId, , poolId, signerAddress, , gauge] = queryKey
 
-  let resp: WithdrawEstGasApprovalResp = { isApproved: true, estimatedGas: null }
+  let resp: EstimatedGas = null
 
   if (!chainId || !signerAddress || !poolId) return resp
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
 
-  resp.estimatedGas = await pool.estimateGas.unstake(gauge)
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
+  resp = await pool.estimateGas.unstake(gauge)
+  warnIncorrectEstGas(chainId, resp)
   return resp
 }
 
-export const claimEstGas: QueryFunction<WithdrawEstGasApprovalResp, WithdrawQueryKeyType<'claimEstGas'>> = async ({
-  queryKey,
-}) => {
-  const [, chainId, signerAddress, poolId, claimType, claimableCrv, claimableRewards] = queryKey
+export const claimEstGas: QueryFunction<EstimatedGas, WithdrawQueryKeyType<'claimEstGas'>> = async ({ queryKey }) => {
+  const [, chainId, , poolId, signerAddress, , claimType, claimableCrv, claimableRewards] = queryKey
 
-  let resp: WithdrawEstGasApprovalResp = { isApproved: true, estimatedGas: null }
+  let resp: EstimatedGas = null
 
   if (!chainId || !signerAddress || !poolId) return resp
 
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
   const haveClaimableCrv = Number(claimableCrv) > 0
-  const haveClaimableRewards = claimableRewards.reduce((prev, { amount }) => {
-    prev += Number(amount)
-    return prev
-  }, 0)
+  const haveClaimableRewards = claimableRewards.reduce((prev, { amount }) => prev + Number(amount), 0)
 
-  resp.estimatedGas = 0
+  resp = 0
   if (claimType === 'CLAIM_CRV' || (!claimType && haveClaimableCrv)) {
-    resp.estimatedGas = await pool.estimateGas.claimCrv()
+    resp = await pool.estimateGas.claimCrv()
   }
 
   if (claimType === 'CLAIM_REWARDS' || (!claimType && haveClaimableRewards)) {
-    resp.estimatedGas = await pool.estimateGas.claimRewards()
+    resp = await pool.estimateGas.claimRewards()
   }
 
-  warnIncorrectEstGas(chainId, resp.estimatedGas)
+  warnIncorrectEstGas(chainId, resp)
   return resp
 }
 

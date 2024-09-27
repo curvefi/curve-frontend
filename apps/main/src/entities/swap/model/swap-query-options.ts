@@ -1,4 +1,5 @@
-import type { PoolBase, SwapEstGasApproval, SwapExchangeDetails } from '@/entities/swap'
+import type { PoolQueryParams } from '@/entities/pool'
+import type { SwapApproval, SwapEstGas, SwapExchangeDetails } from '@/entities/swap'
 
 import { queryOptions } from '@tanstack/react-query'
 
@@ -7,7 +8,7 @@ import { swapKeys } from '@/entities/swap/model'
 import * as api from '@/entities/swap/api'
 import * as conditions from '@/entities/swap/model/swap-query-conditions'
 
-export const getSwapIgnoreExchangeRateCheck = (params: PoolBase) =>
+export const getSwapIgnoreExchangeRateCheck = (params: PoolQueryParams) =>
   queryOptions({
     queryKey: swapKeys.ignoreExchangeRateCheck(params),
     queryFn: api.swapIgnoreExchangeRateCheck,
@@ -24,11 +25,20 @@ export const getSwapExchangeDetails = (params: SwapExchangeDetails) =>
     refetchInterval: REFRESH_INTERVAL['15s'],
   })
 
-export const getSwapEstGasApproval = (params: SwapEstGasApproval) =>
+export const getSwapApproval = (params: SwapApproval) =>
   queryOptions({
-    queryKey: swapKeys.swapEstGasApproval(params),
-    queryFn: api.swapEstGasApproval,
-    staleTime: REFRESH_INTERVAL['15s'],
-    enabled: conditions.swapEstGasApproval(params),
-    refetchInterval: REFRESH_INTERVAL['15s'],
+    queryKey: swapKeys.swapApproval(params),
+    queryFn: api.swapApproval,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.swapApproval(params),
+    refetchInterval: REFRESH_INTERVAL['1m'],
+  })
+
+export const getSwapEstGas = (params: SwapEstGas) =>
+  queryOptions({
+    queryKey: swapKeys.swapEstGas(params),
+    queryFn: api.swapEstGas,
+    staleTime: REFRESH_INTERVAL['1m'],
+    enabled: conditions.swapEstGas(params),
+    refetchInterval: REFRESH_INTERVAL['1m'],
   })

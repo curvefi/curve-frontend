@@ -1,4 +1,5 @@
 import type { ExtractQueryKeyType } from '@/shared/types/api'
+import type { PoolQueryParams, PoolSignerBase } from '@/entities/pool'
 
 import { depositKeys } from '@/entities/deposit/model'
 
@@ -21,34 +22,20 @@ export type DepositFormValues = {
   apiError: string
 }
 
-export type StakeFormValues = {
-  lpToken: string
-  lpTokenError: 'too-much' | ''
-}
-
 // query
-export type PoolBase = {
-  chainId: ChainId | undefined
-  poolId: string | undefined
-}
-
-export type PoolSignerBase = PoolBase & {
-  signerAddress: string | undefined
-}
-
-export type DepositSeedAmounts = PoolBase & {
+export type DepositSeedAmounts = PoolQueryParams & {
   isSeed: boolean | null | undefined
   isCrypto: boolean | undefined
   isMeta: boolean | undefined
   firstAmount: string
 }
 
-export type DepositBalancedAmounts = PoolBase & {
+export type DepositBalancedAmounts = PoolQueryParams & {
   isBalancedAmounts: boolean
   isWrapped: boolean
 }
 
-export type DepositDetails = PoolBase &
+export type DepositDetails = PoolQueryParams &
   Pick<DepositFormValues, 'amounts'> & {
     isInProgress: boolean
     formType: FormType
@@ -57,16 +44,19 @@ export type DepositDetails = PoolBase &
     maxSlippage: string
   }
 
-export type DepositEstGasApproval = PoolSignerBase &
+export type DepositApproval = PoolSignerBase &
   Pick<DepositFormValues, 'amounts' | 'amountsError'> & {
     isInProgress: boolean
     formType: FormType
     isWrapped: boolean
   }
 
-export type StakeEstGasApproval = PoolSignerBase &
-  StakeFormValues & {
+export type DepositEstGas = PoolSignerBase &
+  Pick<DepositFormValues, 'amounts' | 'amountsError'> & {
+    isApproved: boolean
     isInProgress: boolean
+    formType: FormType
+    isWrapped: boolean
   }
 
 // response
@@ -76,11 +66,6 @@ export type DepositDetailsResp = {
   isHighSlippage: boolean
   virtualPrice: string
   slippage: number
-}
-
-export type DepositEstGasApprovalResp = {
-  isApproved: boolean
-  estimatedGas: number | number[] | null
 }
 
 // mutate
@@ -98,5 +83,3 @@ export type ApproveDeposit = MutateBase &
 export type Deposit = ApproveDeposit & {
   maxSlippage: string
 }
-
-export type Stake = MutateBase & StakeFormValues

@@ -1,14 +1,8 @@
-import type {
-  MutateBase,
-  ApproveDeposit,
-  PoolSignerBase,
-  Deposit,
-  Stake,
-  StakeFormValues,
-  DepositFormValues,
-} from '@/entities/deposit'
+import type { ApproveDeposit, Deposit, DepositFormValues, MutateBase } from '@/entities/deposit'
+import type { PoolSignerBase } from '@/entities/pool'
 
 import { isAddress } from 'viem'
+
 import { total } from '@/entities/deposit'
 
 function enableBase({
@@ -44,30 +38,5 @@ export const depositValidity = ({ isApproved, maxSlippage, ...params }: Deposit)
     enabled:
       enableBase(params) && isApproved && Number(maxSlippage) > 0 && amountsValidity.enabled && !amountsValidity.error,
     error: amountsValidity.error,
-  }
-}
-
-function getLpTokenValidity({ lpToken, lpTokenError }: StakeFormValues) {
-  return {
-    enabled: Number(lpToken) > 0,
-    error: lpTokenError ? new Error('Not enough LP Tokens.') : null,
-  }
-}
-
-export const approveStake = ({ isApproved, ...params }: Stake) => {
-  const lpTokenValidity = getLpTokenValidity(params)
-
-  return {
-    enabled: enableBase(params) && !isApproved && lpTokenValidity.enabled && !lpTokenValidity.error,
-    error: lpTokenValidity.error,
-  }
-}
-
-export const stake = ({ isApproved, ...params }: Stake) => {
-  const lpTokenValidity = getLpTokenValidity(params)
-
-  return {
-    enabled: enableBase(params) && isApproved && lpTokenValidity.enabled && !lpTokenValidity.error,
-    error: lpTokenValidity.error,
   }
 }
