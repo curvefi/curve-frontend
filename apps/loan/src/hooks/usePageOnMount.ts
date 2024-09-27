@@ -224,7 +224,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [connectState.status, walletChainId, walletSignerAddress])
+  }, [walletChainId, walletSignerAddress])
 
   // locale switched
   useEffect(() => {
