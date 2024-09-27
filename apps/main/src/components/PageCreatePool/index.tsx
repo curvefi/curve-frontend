@@ -329,13 +329,9 @@ const NotAvailableWrapper = styled.div`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  margin-top: var(--spacing-5);
+  margin: var(--spacing-5) auto auto;
   background: var(--page--background-color);
-  padding: var(--spacing-4) var(--spacing-3);
-  width: 90%;
-  @media (min-width: 46.875rem) {
-    width: 700px;
-  }
+  padding: var(--spacing-4) var(--spacing-4);
 `
 
 const NotAvailableTitle = styled.h4`

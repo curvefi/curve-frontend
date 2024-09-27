@@ -29,6 +29,7 @@ import Tabs, { Tab } from '@/ui/Tab'
 import Vault from '@/components/PageVault/index'
 import Box from '@/ui/Box'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -52,6 +53,7 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { signerAddress } = api ?? {}
   const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
@@ -139,44 +141,54 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
-      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {(!isMdUp || !isAdvanceMode) && <TitleComp />}
-          {rChainId && rOwmId && <Vault {...pageProps} />}
-        </AppPageFormsWrapper>
+      {provider ? (
+        <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+          <AppPageFormsWrapper navHeight={navHeight}>
+            {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+            {rChainId && rOwmId && <Vault {...pageProps} />}
+          </AppPageFormsWrapper>
 
-        {isAdvanceMode && rChainId && rOwmId && (
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <Box margin="0 0 var(--spacing-2)">
-              <CampaignRewardsBanner
-                borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
-                supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
-              />
-            </Box>
-            <AppPageInfoTabsWrapper>
-              <Tabs>
-                {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                  <Tab
-                    key={key}
-                    className={selectedTab === key ? 'active' : ''}
-                    variant="secondary"
-                    disabled={selectedTab === key}
-                    onClick={() => setMarketsStateKey('marketDetailsView', key)}
-                  >
-                    {label}
-                  </Tab>
-                ))}
-              </Tabs>
-            </AppPageInfoTabsWrapper>
+          {isAdvanceMode && rChainId && rOwmId && (
+            <AppPageInfoWrapper>
+              {isMdUp && <TitleComp />}
+              <Box margin="0 0 var(--spacing-2)">
+                <CampaignRewardsBanner
+                  borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
+                  supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
+                />
+              </Box>
+              <AppPageInfoTabsWrapper>
+                <Tabs>
+                  {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                    <Tab
+                      key={key}
+                      className={selectedTab === key ? 'active' : ''}
+                      variant="secondary"
+                      disabled={selectedTab === key}
+                      onClick={() => setMarketsStateKey('marketDetailsView', key)}
+                    >
+                      {label}
+                    </Tab>
+                  ))}
+                </Tabs>
+              </AppPageInfoTabsWrapper>
 
-            <AppPageInfoContentWrapper variant="secondary">
-              {selectedTab === 'market' && <DetailsMarket {...pageProps} type="supply" />}
-              {selectedTab === 'user' && <DetailsUser {...pageProps} type="supply" />}
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        )}
-      </AppPageFormContainer>
+              <AppPageInfoContentWrapper variant="secondary">
+                {selectedTab === 'market' && provider && <DetailsMarket {...pageProps} type="supply" />}
+                {selectedTab === 'user' && provider && <DetailsUser {...pageProps} type="supply" />}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          )}
+        </AppPageFormContainer>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }

@@ -42,9 +42,12 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
           const apiNew = await helpers.initApi(chainId, useWallet ? wallet : null)
-          if (!apiNew) throw new Error()
-          updateApi(apiNew, prevApi, wallet)
-          updateConnectState('success', '')
+
+          if (apiNew) {
+            updateApi(apiNew, prevApi, wallet)
+          }
+
+          updateConnectState(apiNew ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
@@ -204,18 +207,17 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      !!api &&
-      !!walletChainId &&
-      (api.chainId !== walletChainId || api.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!api) &&
+      (api?.chainId !== walletChainId || api?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (api.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && api?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
       } else if (api?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
-        } else {
+        } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
       }

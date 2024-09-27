@@ -42,10 +42,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
           const api = await initCurveJs(chainId, useWallet ? wallet : null)
-          if (!api) throw new Error()
-          const parsedApi: Curve = { ...api, chainId: 1 }
-          updateCurveJs(parsedApi, prevCurveApi, wallet)
-          updateConnectState('success', '')
+
+          if (api) {
+            const parsedApi: Curve = { ...api, chainId: 1 }
+            updateCurveJs(parsedApi, prevCurveApi, wallet)
+          }
+
+          updateConnectState(api ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
@@ -205,18 +208,17 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      !!curve &&
-      !!walletChainId &&
-      (curve.chainId !== walletChainId || curve.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!curve) &&
+      (curve?.chainId !== walletChainId || curve?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (curve.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && curve?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
       } else if (curve?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
-        } else {
+        } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
       }
