@@ -56,7 +56,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
               <StyledInformationIcon name="InformationSquare" size={16} />
             </StyledTooltip>
             <StyledDescriptionChip>
-              <ExternalLink $noStyles href="https://resources.curve.fi/lp/understanding-curve-pools/#base-vapy">
+              <ExternalLink $noStyles href="https://resources.curve.fi/lp/calculating-yield/#base-vapy">
                 {t`Learn more`}
               </ExternalLink>
             </StyledDescriptionChip>
