@@ -64,6 +64,9 @@ const GaugeListItem = ({
           {userGaugeVote && availablePower && userGaugeWeightVoteData && (
             <Box
               margin={'0 0 var(--spacing-3) 0'}
+              flex
+              flexJustifyContent={'center'}
+              flexAlignItems={'center'}
               onClick={(e?: React.MouseEvent) => {
                 e?.stopPropagation()
               }}

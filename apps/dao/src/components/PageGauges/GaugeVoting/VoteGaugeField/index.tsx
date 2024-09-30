@@ -69,7 +69,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
       {!canVote && !loading && userGaugeVoteData.nextVoteTime.timestamp && (
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
-            {t`Next vote available on:`}{' '}
+            {t`Updating vote available on:`}{' '}
             <span>
               {new Date(
                 convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime())
@@ -86,8 +86,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
-  width: 100%;
+  gap: var(--spacing-1);
 `
 
 const ButtonWrapper = styled.div`
@@ -103,11 +102,10 @@ const StyledButton = styled(Button)`
 `
 
 const VoteOnCooldown = styled.p`
-  padding-left: var(--spacing-2);
   font-size: var(--font-size-2);
   align-self: flex-end;
   span {
-    font-weight: var(--semi-bold);
+    font-weight: var(--bold);
   }
 `
 

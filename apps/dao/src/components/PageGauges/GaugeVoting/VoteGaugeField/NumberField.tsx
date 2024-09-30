@@ -45,7 +45,7 @@ const InputWrapper = styled.div<{ isRow: boolean }>`
   flex-direction: column;
   width: ${(props) => (props.isRow ? 'calc(50% - var(--spacing-2))' : '100%')};
   label {
-    margin: var(--spacing-narrow) var(--spacing-1) var(--spacing-2) var(--spacing-2);
+    margin: var(--spacing-narrow) var(--spacing-1) var(--spacing-2) 0;
     font-size: var(--font-size-2);
     color: inherit;
   }
