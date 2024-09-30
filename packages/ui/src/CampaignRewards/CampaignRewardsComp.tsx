@@ -5,6 +5,7 @@ import Image from 'next/image'
 
 import Tooltip from 'ui/src/Tooltip'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
+import Icon from 'ui/src/Icon'
 
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
@@ -21,6 +22,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
         {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
+        {rewardsPool.lock && <StyledIcon size={16} name="Locked" highContrast={highContrast} />}
       </Container>
     </Tooltip>
   )
@@ -43,8 +45,12 @@ const TokenIcon = styled(Image)`
 const Multiplier = styled.p<{ highContrast?: boolean }>`
   text-transform: uppercase;
   font-size: var(--font-size-3);
-  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : '--page--text-color')};
+  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : 'var(--page--text-color)')};
   white-space: nowrap;
+`
+
+const StyledIcon = styled(Icon)<{ highContrast?: boolean }>`
+  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `
 
 export default RewardsCompSmall

@@ -35,12 +35,14 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
 - pools: Array of relevant pools/markets
   - `id`: Internal id for you, or `null`
   - `action`: Action id (found in [`actions.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/actions.json))
+  - `description`: Pool/market specific description or `null` (will overwrite the campaign description in tooltip if set)
   - `campaignStart`: Start of the rewards, as UTC timestamp
   - `campaignEnd`: End of the rewards, as UTC timestamp
   - `address`: Address of the pool/market (use address identified as `controller` for lending markets and action: `borrow`, use address identified as `vault` for action: `supply`)
   - `network`: Network of the pool/market
   - `multiplier`: Multiplier, or `null`
   - `tags`: Array of pool/market specific tags (any of the tags ids listed here: [`rewards-tags.json`](https://github.com/curvefi/curve-frontend/blob/main/packages/external-rewards/src/reward-tags.json))
+  - `lock`: Requires locking position for a specific duration, or `false`
 
 ### Example:
 
@@ -55,12 +57,14 @@ Only Campaigns listed in [`campaign-list.json`](https://github.com/curvefi/curve
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "0",
       "address": "0x0",
       "network": "ethereum",
       "multiplier": "1x",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

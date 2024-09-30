@@ -8,12 +8,14 @@
     {
       "id": "null",
       "action": "lp",
+      "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x2f3bc4c27a4437aeca13de0e37cdf1028f3706f0",
       "network": "ethereum",
       "multiplier": "3",
-      "tags": ["points"]
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

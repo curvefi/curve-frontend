@@ -1,6 +1,8 @@
 import { BigDecimalTypes } from './BigDecimal.d'
 
 class BigDecimal {
+  private static readonly DECIMAL_REGEX = /^(-?)(\d*)(?:\.(\d{1,18}))?$/
+
   private _integerPart: bigint
   private _fractionalPart: bigint
   private _scale: number
@@ -25,13 +27,13 @@ class BigDecimal {
     }
 
     if (typeof value === 'string') {
-      const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(value)
+      const match = BigDecimal.DECIMAL_REGEX.exec(value)
       if (!match) {
-        throw new Error('Invalid string format. Expected "integer.fraction" or "integer"')
+        throw new Error('Invalid string format. Expected "integer", "integer.fraction", or ".fraction" where fraction is 1 to 18 digits')
       }
 
       const [, sign, intPart, fracPart = ''] = match
-      this._integerPart = BigInt(intPart)
+      this._integerPart = BigInt(intPart || '0')
       this._fractionalPart = BigInt(fracPart.padEnd(scale, '0'))
       this._scale = Math.max(fracPart.length, scale)
       this._isNegative = sign === '-'
@@ -76,7 +78,7 @@ class BigDecimal {
     }
 
     if (typeof value === 'string') {
-      return /^-?\d+(\.\d{1,18})?$/.test(value)
+      return BigDecimal.DECIMAL_REGEX.test(value)
     }
 
     if (typeof value === 'number') {

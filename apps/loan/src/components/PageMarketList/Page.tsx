@@ -8,11 +8,14 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
 import DocumentHead from '@/layout/DocumentHead'
 import CollateralList from '@/components/PageMarketList/index'
 import Settings from '@/layout/Settings'
 import TableStats from '@/components/PageMarketList/components/TableStats'
+import ConnectWallet from '@/components/ConnectWallet'
+import Box from '@/ui/Box'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -20,6 +23,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   useEffect(() => {
     scrollToTop()
@@ -28,12 +32,24 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Markets`} />
-      <Container>
-        <Content>
-          {rChainId && <CollateralList pageLoaded={pageLoaded} params={params} rChainId={rChainId} curve={curve} />}
-        </Content>
-        {rChainId && <TableStats />}
-      </Container>
+      {provider ? (
+        <Container>
+          <Content>
+            {rChainId && <CollateralList pageLoaded={pageLoaded} params={params} rChainId={rChainId} curve={curve} />}
+          </Content>
+          {rChainId && <TableStats />}
+        </Container>
+      ) : (
+        <Box display="flex" fillWidth>
+          <ConnectWalletWrapper>
+            <ConnectWallet
+              description="Connect wallet to view markets list"
+              connectText="Connect Wallet"
+              loadingText="Connecting"
+            />
+          </ConnectWalletWrapper>
+        </Box>
+      )}
       <Settings showScrollButton />
     </>
   )
@@ -61,6 +77,14 @@ const Content = styled.div`
   box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
   border: 1px solid var(--box--secondary--border);
   min-height: 288px;
+`
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: var(--spacing-3) auto;
 `
 
 export default Page

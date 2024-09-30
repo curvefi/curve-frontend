@@ -46,9 +46,17 @@ const networks: Record<ChainId, NetworkConfig> = {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['10'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_OPTIMISM_DEV_RPC_URL! : drpcUrl('optimism'),
-    isActiveNetwork: false,
+    showInSelectNetwork: true,
+    pricesData: true,
   },
-  100: {
+   252: {
+    ...DEFAULT_NETWORK_CONFIG,
+    ...baseNetworksConfig['252'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_FRAXTAL_DEV_RPC_URL! : drpcUrl('fraxtal'),
+    showInSelectNetwork: true,
+    pricesData: true,
+  },
+ 100: {
     ...DEFAULT_NETWORK_CONFIG,
     ...baseNetworksConfig['100'],
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_GNOSIS_DEV_RPC_URL! : 'https://rpc.gnosischain.com',
@@ -122,6 +130,18 @@ const networks: Record<ChainId, NetworkConfig> = {
     rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BSC_DEV_RPC_URL! : drpcUrl('bsc'),
     isActiveNetwork: false,
   },
+  196: {
+    ...DEFAULT_NETWORK_CONFIG,
+    ...baseNetworksConfig['196'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : drpcUrl('base'),
+    isActiveNetwork: false,
+  },
+  5000: {
+    ...DEFAULT_NETWORK_CONFIG,
+    ...baseNetworksConfig['5000'],
+    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_BASE_DEV_RPC_URL! : drpcUrl('mantle'),
+    isActiveNetwork: false,
+  }
 }
 
 export const networksIdMapper = Object.keys(networks).reduce((prev, chainId: unknown) => {

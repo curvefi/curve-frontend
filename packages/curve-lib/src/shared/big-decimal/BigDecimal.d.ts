@@ -29,7 +29,7 @@ export declare class BigDecimal {
 export declare namespace BigDecimalTypes {
   type IntegerPart = `${'-' | ''}${bigint}`
   type FractionPart = `${number}`
-  export type StringDecimal = `${IntegerPart}` | `${IntegerPart}.${FractionPart}`
+  export type StringDecimal = `${IntegerPart}` | `${IntegerPart}.${FractionPart}` | `.${FractionPart}`
 
   type Value = StringDecimal | number | bigint | string | BigDecimal
 
