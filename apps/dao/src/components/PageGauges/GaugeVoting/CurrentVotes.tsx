@@ -59,10 +59,10 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
 
   return (
     <Wrapper>
-      <VoteStats>
-        <h3>{t`Current User Gauge Votes`}</h3>
+      <VoteStats selectedGauge={selectedGauge}>
+        <h3>{t`USER GAUGE VOTES`}</h3>
         {userAddress && (
-          <Box flex flexGap="var(--spacing-4)">
+          <Box flex flexGap="var(--spacing-4)" flexAlignItems="end">
             <MetricsComp
               loading={userWeightsLoading}
               title="User"
@@ -77,7 +77,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               title="veCRV"
               data={
                 <MetricsColumnData>
-                  {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })} veCRV
+                  {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })}
                 </MetricsColumnData>
               }
             />
@@ -86,7 +86,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               title="veCRV used"
               data={
                 <MetricsColumnData>
-                  {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })} veCRV
+                  {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
                 </MetricsColumnData>
               }
             />
@@ -126,7 +126,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
               gaugeData={gaugeMapper[gauge.gaugeAddress]}
               userGaugeWeightVoteData={gauge}
               gridTemplateColumns={gridTemplateColumns}
-              availablePower={userData?.data.powerUsed}
+              powerUsed={userData?.data.powerUsed}
               userGaugeVote={true}
             />
           )}
@@ -142,12 +142,12 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-const VoteStats = styled(Box)`
+const VoteStats = styled(Box)<{ selectedGauge: GaugeFormattedData | null }>`
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
-  border-bottom: 1px solid var(--gray-500a20);
+  ${({ selectedGauge }) => selectedGauge && `border-bottom: 1px solid var(--gray-500a20)`}
 `
 
 const StyledInternalLink = styled(InternalLink)`

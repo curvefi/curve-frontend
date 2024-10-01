@@ -3,22 +3,23 @@ import { t } from '@lingui/macro'
 import { useState, useEffect } from 'react'
 
 import useStore from '@/store/useStore'
-import { convertToLocaleTimestamp } from '@/ui/utils'
+import { convertToLocaleTimestamp, formatNumber } from '@/ui/utils'
 
 import Button from '@/ui/Button'
 import NumberField from './NumberField'
+import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
 import { TooltipIcon } from '@/ui/Tooltip'
 
 type VoteGaugeFieldProps = {
-  availablePower: number
+  powerUsed: number
   userGaugeVoteData: UserGaugeVoteWeight
   newVote?: boolean
 }
 
-const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGaugeVoteData, newVote = false }) => {
+const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVoteData, newVote = false }) => {
   const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
-  const maxPower = newVote ? 100 - availablePower : 100 - availablePower + userGaugeVoteData.userPower
+  const maxPower = newVote ? 100 - powerUsed : 100 - powerUsed + userGaugeVoteData.userPower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
   const { castVote, castVoteLoading } = useStore((state) => state.gauges)
@@ -51,17 +52,47 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
 
   return (
     <Wrapper>
-      <Box flex flexGap="var(--spacing-2)">
+      {!newVote && (
+        <Box flex flexColumn flexGap="var(--spacing-1)" margin="var(--spacing-3) 0 0">
+          <GaugeVoteTitle>{t`USER GAUGE VOTE`}</GaugeVoteTitle>
+          <Box flex flexGap="var(--spacing-3)" margin={'var(--spacing-2) 0'}>
+            <MetricsComp
+              loading={false}
+              title="Assigned voting power"
+              data={
+                <MetricsColumnData>
+                  {formatNumber(power * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                </MetricsColumnData>
+              }
+            />
+
+            <MetricsComp
+              loading={false}
+              title="Available voting power"
+              data={
+                <MetricsColumnData>
+                  {formatNumber(100 - powerUsed, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                </MetricsColumnData>
+              }
+            />
+          </Box>
+        </Box>
+      )}
+      <Box flex flexDirection={newVote ? 'row' : 'column'} flexGap="var(--spacing-2)">
         <NumberField
-          row={newVote ? false : true}
-          label={t`Available Power: ${maxPower}%`}
+          aria-label="Voting power input"
+          label={
+            newVote
+              ? t`Available voting power: ${formatNumber(100 - powerUsed, { showDecimalIfSmallNumberOnly: true })}%`
+              : null
+          }
           defaultValue={power}
           onChange={setPower}
           formatOptions={{ style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }}
-          maxValue={maxPower / 100}
+          maxValue={powerUsed / 100}
         />
         <ButtonWrapper>
-          <StyledButton disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>
+          <StyledButton fillWidth disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>
             {newVote ? t`Vote` : t`Update Vote`}
           </StyledButton>
         </ButtonWrapper>
@@ -69,14 +100,14 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ availablePower, userGau
       {!canVote && !loading && userGaugeVoteData.nextVoteTime.timestamp && (
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
-            {t`Updating vote available on:`}{' '}
+            {t`Updating vote available on:`} <br />
             <span>
               {new Date(
                 convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime())
               ).toLocaleString()}
             </span>
+            <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>
-          <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
         </Box>
       )}
     </Wrapper>
@@ -97,15 +128,22 @@ const ButtonWrapper = styled.div`
   align-items: center;
 `
 
+const GaugeVoteTitle = styled.h4`
+  font-size: var(--font-size-3);
+  border-bottom: 1px solid var(--gray-500a20);
+  padding-bottom: var(--spacing-2);
+  padding-top: var(--spacing-1);
+`
+
 const StyledButton = styled(Button)`
   padding: var(--spacing-1) var(--spacing-4);
 `
 
 const VoteOnCooldown = styled.p`
   font-size: var(--font-size-2);
-  align-self: flex-end;
   span {
     font-weight: var(--bold);
+    margin-right: var(--spacing-1);
   }
 `
 

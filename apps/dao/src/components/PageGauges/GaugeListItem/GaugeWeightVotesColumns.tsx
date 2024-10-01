@@ -21,9 +21,13 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
       </BoxColumn>
       <BoxColumn>
         <Tooltip
-          tooltip={t`Updating gauge vote will updated used veCRV from ${formatNumber(userVeCrv)} to ${formatNumber(
-            userFutureVeCrv
-          )}`}
+          minWidth="18rem"
+          tooltip={
+            <p>
+              {t`Updating gauge vote will update used veCRV from`} <strong>{formatNumber(userVeCrv)}</strong> {t`to`}{' '}
+              <strong>{formatNumber(userFutureVeCrv)}</strong>
+            </p>
+          }
         >
           <GaugeData>
             {formatNumber(userVeCrv, { showDecimalIfSmallNumberOnly: true })}

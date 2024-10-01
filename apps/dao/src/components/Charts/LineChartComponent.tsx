@@ -23,7 +23,7 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
         margin={{
           top: 16,
           right: 16,
-          left: 16,
+          left: 24,
           bottom: 16,
         }}
       >

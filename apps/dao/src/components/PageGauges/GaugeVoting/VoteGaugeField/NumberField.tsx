@@ -26,7 +26,7 @@ const NumberField = (props: Props) => {
   return (
     <InputWrapper className={props.className} isRow={!!props.row}>
       <Box flex flexAlignItems="center">
-        <label {...labelProps}>{label}</label>
+        {props.label && <label {...labelProps}>{props.label}</label>}
         {props.description && (
           <StyledIconTooltip customIcon={<StyledIcon name="InformationSquare" size={16} />} placement="bottom">
             {props.description}
