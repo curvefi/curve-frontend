@@ -19,14 +19,13 @@ export type StepProgress = {
 }
 
 const DetailInfoEstGas = ({
-  curve,
   chainId,
   isDivider,
   loading,
   estimatedGas,
   stepProgress,
 }: {
-  curve: CurveApi | null
+  curve?: CurveApi | null
   chainId: ChainId
   isDivider?: boolean
   loading: boolean
@@ -34,6 +33,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
+  const curve = useStore((state) => state.curve)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
   const gasInfo = useStore((state) => state.gas.gasInfo)
