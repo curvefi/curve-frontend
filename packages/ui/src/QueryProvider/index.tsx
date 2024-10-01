@@ -8,7 +8,7 @@ type QueryProviderWrapperProps = {
   queryClient: QueryClient
 }
 
-export function QueryProviderWrapper({ children, persister, queryClient }: QueryProviderWrapperProps) {
+export function QueryProvider({ children, persister, queryClient }: QueryProviderWrapperProps) {
   if (persister) {
     return (
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
