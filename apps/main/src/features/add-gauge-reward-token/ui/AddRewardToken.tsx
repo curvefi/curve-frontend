@@ -15,6 +15,7 @@ import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { zeroAddress } from 'viem'
+import AlertFormError from '@/components/AlertFormError'
 
 export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId }) => {
   const { data: signerAddress } = useSignerAddress()
@@ -74,13 +75,13 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
               <DistributorInput disabled={isFormLoading || isFormDisabled} />
             </FlexContainer>
           </FormFieldsContainer>
-          <FormErrorsDisplay errorKeys={['rewardTokenId', 'distributorId']} />
+          <FormErrorsDisplay errorKeys={['rewardTokenId', 'distributorId']} component={AlertFormError} />
           <EstimatedGasInfo chainId={chainId} poolId={poolId} />
           <FormActions chainId={chainId} poolId={poolId} />
           {isSuccessAddRewardToken && addRewardTokenData && (
             <TxInfoBar description={t`Reward token added`} txHash={networks[chainId].scanTxPath(addRewardTokenData)} />
           )}
-          <FormErrorsDisplay errorKeys={['root.serverError']} />
+          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
         </FormContainer>
       </form>
     </FormProvider>

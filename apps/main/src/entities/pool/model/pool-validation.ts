@@ -1,6 +1,6 @@
 import { chainValidationGroup } from '@/entities/chain'
 import type { PoolQueryParams } from '@/entities/pool/types'
-import { createValidationSuite } from '../../../../../../packages/curve-lib/src/shared/validation'
+import { createValidationSuite } from '@/shared/curve-lib'
 import { enforce, group, test } from 'vest'
 
 export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
