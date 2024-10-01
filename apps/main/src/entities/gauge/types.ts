@@ -12,8 +12,8 @@
 
 import { gaugeKeys } from '@/entities/gauge/model'
 import type { PoolQueryParams } from '@/entities/pool/types'
-import { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
-import type { NestedKeys, NestedProperty } from '@/shared/types/nested'
+import type { NestedKeys, NestedProperty } from '@/shared/curve-lib'
+import { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/curve-lib'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
 
