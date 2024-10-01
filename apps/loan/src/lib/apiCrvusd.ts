@@ -179,7 +179,7 @@ const detailInfo = {
     const balances = fulfilledValue(balancesResult) ?? ['0', '0']
     const bandsBalances = fulfilledValue(bandsBalancesResult) ?? DEFAULT_BAND_BALANCES
     const liquidationBand = fulfilledValue(liquidationBandResult) ?? null
-    const basePrice = fulfilledValue(basePriceResult)
+    const basePrice = fulfilledValue(basePriceResult) ?? undefined
 
     const parsedBandsBalances = await getChartBandBalancesData(sortBands(bandsBalances), liquidationBand, llamma)
 
@@ -479,7 +479,7 @@ const loanCreate = {
         : null,
     ])
 
-    const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
+    const maxRecvs: any = fulfilledValue(maxRecvsResults) ?? null
     const loanPrices = fulfilledValue(loanPricesResults) ?? null
     const loanBands = fulfilledValue(loanBandsResults) ?? null
 
