@@ -522,7 +522,7 @@ declare global {
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
-  type SortByFilterProposals = 'voteId' | 'endingSoon'
+  type SortByFilterProposals = 'timeCreated' | 'endingSoon'
   type SortByFilterGaugesKeys =
     | 'gauge_relative_weight'
     | 'gauge_relative_weight_7d_delta'

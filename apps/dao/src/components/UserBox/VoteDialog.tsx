@@ -48,7 +48,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
           </Box>
         )}
         {executeTx.status === 'ERROR' && (
-          <Box>
+          <Box margin="0 0 var(--spacing-2) 0">
             <StyledAlertBox alertType="error" limitHeight>
               {executeTx.error}
             </StyledAlertBox>

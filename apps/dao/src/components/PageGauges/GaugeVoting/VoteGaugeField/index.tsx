@@ -129,10 +129,10 @@ const ButtonWrapper = styled.div`
 `
 
 const GaugeVoteTitle = styled.h4`
-  font-size: var(--font-size-3);
+  font-size: var(--font-size-2);
   border-bottom: 1px solid var(--gray-500a20);
   padding-bottom: var(--spacing-2);
-  padding-top: var(--spacing-1);
+  padding-top: var(--spacing-2);
 `
 
 const StyledButton = styled(Button)`

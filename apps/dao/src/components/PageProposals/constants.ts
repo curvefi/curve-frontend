@@ -6,6 +6,6 @@ export const PROPOSAL_FILTERS: ProposalListFilterItem[] = [
   { key: 'denied', label: 'Denied' },
 ]
 export const PROPOSAL_SORTING_METHODS = [
-  { key: 'voteId', label: 'Proposal ID' },
+  { key: 'timeCreated', label: 'Time Created' },
   { key: 'endingSoon', label: 'Ending Soon' },
 ]

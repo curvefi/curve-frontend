@@ -476,7 +476,7 @@ const sortProposals = (
       ]
     }
   } else {
-    return orderBy(proposals, [activeSortBy], [activeSortDirection])
+    return orderBy(proposals, [(proposal) => proposal.startDate], [activeSortDirection])
   }
 }
 
