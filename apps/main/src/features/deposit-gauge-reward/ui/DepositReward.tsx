@@ -8,8 +8,8 @@ import {
   GasEstimation,
   HelperFields,
 } from '@/features/deposit-gauge-reward/ui'
-import { formDefaultOptions } from '@/shared/model/form'
-import { FormErrorsDisplay } from 'shared/ui/forms'
+import { formDefaultOptions } from '@/shared/curve-lib'
+import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 import { BlockSkeleton } from '@/shared/ui/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/shared/ui/styled-containers'
 import { vestResolver } from '@hookform/resolvers/vest'

@@ -1,6 +1,6 @@
-import { type ValidatedData } from '@/shared/validation/types'
+import { type ValidatedData } from './types'
 import { create, enforce, only, type Suite } from 'vest'
-import { extendEnforce } from '@/shared/validation/enforce-extension'
+import { extendEnforce } from './enforce-extension'
 
 extendEnforce(enforce)
 

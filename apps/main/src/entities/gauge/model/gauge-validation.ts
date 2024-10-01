@@ -6,7 +6,7 @@ import {
   amountValidationFn,
   createValidationSuite,
   tokenIdValidationFn,
-} from '@/shared/validation'
+} from '../../../../../../packages/curve-lib/src/shared/validation'
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 import { formatNumber } from '@/utils'

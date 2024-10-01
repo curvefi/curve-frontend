@@ -1,9 +1,9 @@
-import AlertFormError from '@/components/AlertFormError'
+import AlertFormError from '../../../../apps/main/src/components/AlertFormError'
 import { ErrorContainer } from '@/shared/ui/styled-containers'
 import { ErrorMessage } from '@hookform/error-message'
 import { useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import type { FormError } from 'shared/ui/forms/error-types'
+import type { FormError } from './error-types'
 
 const getErrorMessage = (error: FormError): string => {
   if (!error) return 'Unknown error'
@@ -23,8 +23,7 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: 
 
   const filteredErrors = useMemo<[string, any][]>(() => {
     const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key) : () => true
-
-    const errorsArray = [
+    return [
       ...Object.entries(errors).filter(([key]) => key !== 'root' && shouldDisplayError(key)),
       ...(errors.root
         ? Object.entries(errors.root)
@@ -32,7 +31,6 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: 
             .map(([key, value]): [string, any] => [`root.${key}`, value])
         : []),
     ]
-    return errorsArray
   }, [errorKeys, errors])
 
   const renderErrorMessage = useCallback(

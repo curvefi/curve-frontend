@@ -6,7 +6,8 @@ import type { ConnectState } from '@/ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
-import { log, setStorageValue } from '@/utils'
+import { log } from '@/shared/curve-lib'
+import { setStorageValue } from '@/utils'
 import networks from '@/networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE

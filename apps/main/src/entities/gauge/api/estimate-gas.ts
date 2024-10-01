@@ -2,7 +2,7 @@ import { assertGaugeValidity } from '@/entities/gauge/lib'
 import type { GaugeQueryKeyType, PoolMethodResult } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
-import { logQuery } from '@/utils'
+import { logQuery } from '@/shared/curve-lib'
 import type { QueryFunction } from '@tanstack/react-query'
 
 export const queryEstimateGasDepositRewardApprove: QueryFunction<

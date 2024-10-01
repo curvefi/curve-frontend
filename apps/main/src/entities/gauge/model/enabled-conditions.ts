@@ -6,7 +6,7 @@ import type {
   DepositRewardParams,
   GaugeQueryParams,
 } from '@/entities/gauge/types'
-import { queryClient } from '@/shared/api/query-client'
+import { queryClient } from '../../../../../../packages/curve-lib/src/shared/api/query-client'
 
 export const enabledGaugeStatus = (data: GaugeQueryParams) => checkGaugeValidity(data)
 export const enabledIsDepositRewardAvailable = (data: GaugeQueryParams) => checkGaugeValidity(data)

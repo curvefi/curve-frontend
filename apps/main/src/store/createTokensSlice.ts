@@ -3,7 +3,7 @@ import type { State } from '@/store/useStore'
 
 import countBy from 'lodash/countBy'
 
-import { log } from '@/utils'
+import { log } from '@/shared/curve-lib'
 import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
 import networks from '@/networks'
 

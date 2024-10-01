@@ -1,4 +1,4 @@
-import { BD } from '@/shared/curve-lib'
+import { BD } from 'index'
 import { isAddress, zeroAddress } from 'viem'
 import isDecimal from 'validator/lib/isDecimal'
 

@@ -1,6 +1,6 @@
 import { gaugeDepositRewardValidationGroup } from '@/entities/gauge'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
-import { createValidationSuite } from '@/shared/validation'
+import { createValidationSuite } from '../../../../../../packages/curve-lib/src/shared/validation'
 import { enforce, test } from 'vest'
 
 const depositRewardValidationGroup = <T extends DepositRewardFormValues>(data: T) => {

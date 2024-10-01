@@ -8,7 +8,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { gweiToWai } from '@/shared/curve-lib'
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { httpFetcher } from '@/utils/helpers'
-import { log } from '@/utils/helpers'
+import { log } from '@/shared/curve-lib'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

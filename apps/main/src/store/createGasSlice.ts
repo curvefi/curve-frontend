@@ -6,7 +6,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { Chain, gweiToWai } from '@/shared/curve-lib'
 import { httpFetcher } from '@/lib/utils'
-import { log } from '@/utils'
+import { log } from '@/shared/curve-lib'
 import api from '@/lib/curvejs'
 import networks from '@/networks'
 
