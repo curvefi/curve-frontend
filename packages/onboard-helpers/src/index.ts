@@ -76,7 +76,7 @@ export function initOnboard(i18n: any, locale: any, themeType: any, networks: an
       },
     },
     connect: {
-      autoConnectLastWallet: true,
+      autoConnectLastWallet: false,
     },
   })
 
