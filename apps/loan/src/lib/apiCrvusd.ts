@@ -1,6 +1,6 @@
 import type { FormValues as SwapFormValues } from '@/components/PageLoanManage/LoanSwap/types'
-import type { LiqRange, Provider } from '@/store/types'
-import type { MaxRecvLeverage } from '@/components/PageLoanCreate/types'
+import type { LiqRange, Provider, MaxRecvLeverage } from '@/store/types'
+import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/components/PageLoanManage/LoanDeleverage/types'
 
 import { ethers } from 'ethers'
@@ -13,7 +13,7 @@ import {
   getLiquidationStatus,
   parseUserLoss,
   reverseBands,
-  sortBands,
+  sortBands
 } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
 
@@ -479,21 +479,20 @@ const loanCreate = {
         : null,
     ])
 
-    const maxRecvs: any = fulfilledValue(maxRecvsResults) ?? null
+    const maxRecvs = fulfilledValue(maxRecvsResults) ?? null
     const loanPrices = fulfilledValue(loanPricesResults) ?? null
     const loanBands = fulfilledValue(loanBandsResults) ?? null
 
     for (const n of bands) {
       const bands = loanBands?.[n]
-      const maxRecv = maxRecvs?.[n]
       const nLoanPrices = loanPrices?.[n]
 
       const detail: LiqRange = {
         n: Number(n),
         collateral,
         debt,
-        maxRecv: isLeverage ? '' : maxRecv || '',
-        maxRecvLeverage: isLeverage ? maxRecv || null : null,
+        maxRecv: !isLeverage && (maxRecvs as Record<number, string>)?.[n] || '',
+        maxRecvLeverage: isLeverage && (maxRecvs as Record<number, MaxRecvLeverage>)?.[n] || null,
         maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
         prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
         bands: bands ? reverseBands(bands) : [0, 0],
@@ -524,7 +523,7 @@ const loanCreate = {
   },
   maxRecvLeverage: async (activeKey: string, llamma: Llamma, collateral: string, n: number) => {
     log('maxRecvLeverage', llamma.collateralSymbol, collateral, n)
-    let resp: MaxRecvLeverage = { maxBorrowable: '', maxCollateral: '', leverage: '', routeIdx: null }
+    let resp: MaxRecvLeverageForm = { maxBorrowable: '', maxCollateral: '', leverage: '', routeIdx: null }
     try {
       resp = await llamma.leverage.createLoanMaxRecv(collateral, n)
       return { activeKey, resp, error: '' }

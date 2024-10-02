@@ -1,6 +1,6 @@
 import { gaugeValidationSuite } from '@/entities/gauge/model'
 import type { CombinedGaugeParams } from '@/entities/gauge/types'
-import { ValidatedData, assertValidity, checkValidity } from '@/shared/curve-lib'
+import { ValidatedData, assertValidity, checkValidity } from '@/shared/lib/validation'
 
 export function checkGaugeValidity<T extends CombinedGaugeParams>(
   data: T,

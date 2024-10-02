@@ -11,6 +11,10 @@
       "@/images/*": ["../../../packages/ui/src/images/*"],
       "@/onboard": ["../../../packages/onboard-helpers/src/index.ts"],
       "@/shared/curve-lib": ["../../../packages/curve-lib/src/index.ts"],
+      "@/shared/api/*": ["../../../packages/curve-lib/src/shared/api/*"],
+      "@/shared/lib/*": ["../../../packages/curve-lib/src/shared/lib/*"],
+      "@/shared/model/*": ["../../../packages/curve-lib/src/shared/model/*"],
+      "@/shared/types/*": ["../../../packages/curve-lib/src/shared/types/*"],
       "@/shared/external-rewards": ["../../../packages/external-rewards/src/index.ts"]
     }
   },

@@ -1,12 +1,7 @@
 import { TIME_FRAMES } from '@/constants'
 import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
-import {
-  addressValidationFn,
-  amountValidationFn,
-  createValidationSuite,
-  tokenIdValidationFn,
-} from '@/shared/curve-lib'
+import { addressValidationFn, amountValidationFn, createValidationSuite, tokenIdValidationFn } from '@/shared/lib/validation'
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 import { formatNumber } from '@/utils'

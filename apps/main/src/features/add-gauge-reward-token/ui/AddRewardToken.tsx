@@ -10,7 +10,7 @@ import TxInfoBar from '@/ui/TxInfoBar'
 
 import { useSignerAddress } from '@/entities/signer'
 import { DistributorInput, EstimatedGasInfo, FormActions, TokenSelector } from '@/features/add-gauge-reward-token/ui'
-import { formDefaultOptions } from '@/shared/curve-lib'
+import { formDefaultOptions } from '@/shared/model/form'
 import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
 import { vestResolver } from '@hookform/resolvers/vest'

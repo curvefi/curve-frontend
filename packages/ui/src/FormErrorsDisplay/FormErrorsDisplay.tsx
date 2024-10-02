@@ -1,4 +1,3 @@
-import AlertFormError from '../../../../apps/main/src/components/AlertFormError'
 import { ErrorContainer } from '@/shared/ui/styled-containers'
 import { ErrorMessage } from '@hookform/error-message'
 import { FunctionComponent, useCallback, useMemo } from 'react'
@@ -49,7 +48,7 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys, co
         }}
       />
     ),
-    [clearErrors]
+    [Component, clearErrors]
   )
 
   if (filteredErrors.length === 0) return null
