@@ -31,7 +31,7 @@ import {
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
-import { log } from '@/shared/curve-lib'
+import { log } from '@/shared/lib/logging'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
 // https://twitter.com/MultichainOrg

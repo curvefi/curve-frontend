@@ -6,7 +6,7 @@ import type { ConnectState } from '@/ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
-import { log } from '@/shared/curve-lib'
+import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils'
 import networks from '@/networks'
 

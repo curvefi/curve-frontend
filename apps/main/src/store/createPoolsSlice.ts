@@ -28,7 +28,7 @@ import pick from 'lodash/pick'
 
 import { INVALID_ADDRESS } from '@/constants'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/utils'
-import { log } from '@/shared/curve-lib'
+import { log } from '@/shared/lib/logging'
 import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'

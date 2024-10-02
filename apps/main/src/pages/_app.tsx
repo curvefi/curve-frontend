@@ -26,7 +26,7 @@ import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/default'
-import { persister, queryClient } from '@/shared/curve-lib'
+import { persister, queryClient } from '@/shared/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
