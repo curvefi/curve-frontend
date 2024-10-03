@@ -59,7 +59,6 @@ const BoxColumn = styled.div`
 
 const GaugeData = styled.p`
   font-size: var(--font-size-2);
-  font-weight: var(--bold);
   text-align: right;
   &.green {
     color: var(--chart-green);

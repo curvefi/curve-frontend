@@ -1,15 +1,17 @@
 import styled from 'styled-components'
-import { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 import { GAUGE_VOTES_TABLE_LABELS } from '../constants'
 
-import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+
+import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import ErrorMessage from '@/components/ErrorMessage'
 import PaginatedTable from '@/components/PaginatedTable'
+import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
 
 const GaugesList = () => {
   const {
@@ -24,8 +26,9 @@ const GaugesList = () => {
   } = useStore((state) => state.gauges)
   const curve = useStore((state) => state.curve)
   const isLoadingCurve = useStore((state) => state.isLoadingCurve)
-  const tableMinWidth = 42.3125
+  const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
+  const smallScreenBreakpoint = 42.3125
 
   useEffect(() => {
     if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
@@ -82,9 +85,17 @@ const GaugesList = () => {
             setSortBy={handleSortChange}
             getData={() => getGauges(true)}
             renderRow={(gauge, index) => (
-              <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
+              <React.Fragment key={index}>
+                <GaugeListItemWrapper>
+                  <GaugeListItem key={index} gaugeData={gauge} gridTemplateColumns={gridTemplateColumns} />
+                </GaugeListItemWrapper>
+                <SmallScreenCardWrapper>
+                  <SmallScreenCard gaugeData={gauge} />
+                </SmallScreenCardWrapper>
+              </React.Fragment>
             )}
             gridTemplateColumns={gridTemplateColumns}
+            smallScreenBreakpoint={smallScreenBreakpoint}
           />
         )}
       </GaugeListWrapper>
@@ -121,6 +132,20 @@ const GaugeListWrapper = styled.div`
   padding: 0 0 var(--spacing-5);
   @media (min-width: 29.0625rem) {
     padding: 0 0 var(--spacing-5);
+  }
+`
+
+const GaugeListItemWrapper = styled.div`
+  @media (max-width: 678px) {
+    display: none;
+  }
+`
+
+const SmallScreenCardWrapper = styled.div`
+  display: none;
+
+  @media (max-width: 678px) {
+    display: block;
   }
 `
 

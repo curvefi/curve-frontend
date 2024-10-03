@@ -26,6 +26,7 @@ interface PaginatedTableProps<T> {
   renderRow: (item: T, index: number) => React.ReactNode
   minWidth: number
   noDataMessage: string
+  smallScreenBreakpoint?: number // rem
   overflowYBreakpoint?: number // rem
   gridTemplateColumns?: string
 }
@@ -42,6 +43,7 @@ const PaginatedTable = <T,>({
   renderRow,
   minWidth,
   noDataMessage,
+  smallScreenBreakpoint,
   overflowYBreakpoint,
   gridTemplateColumns,
 }: PaginatedTableProps<T>) => {
@@ -68,6 +70,7 @@ const PaginatedTable = <T,>({
             sortBy={sortBy}
             setSortBy={setSortBy}
             gridTemplateColumns={gridTemplateColumns}
+            smallScreenBreakpoint={smallScreenBreakpoint}
           />
           <TableBody>
             {fetchingState === 'LOADING' && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
@@ -125,8 +128,6 @@ const ErrorMessageWrapper = styled(Box)<{ height: string }>`
 const TableBody = styled.div`
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-1);
-  padding: var(--spacing-2) var(--spacing-3) var(--spacing-3);
 `
 
 export default PaginatedTable

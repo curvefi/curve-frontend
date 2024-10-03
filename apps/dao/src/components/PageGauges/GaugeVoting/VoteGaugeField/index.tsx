@@ -83,7 +83,10 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVot
           aria-label="Voting power input"
           label={
             newVote
-              ? t`Available voting power: ${formatNumber(100 - powerUsed, { showDecimalIfSmallNumberOnly: true })}%`
+              ? t`Available voting power: ${formatNumber(100 - powerUsed, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}%`
               : null
           }
           defaultValue={power}

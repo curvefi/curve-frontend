@@ -5,37 +5,33 @@ import { useState, useEffect } from 'react'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
 import ErrorMessage from '@/components/ErrorMessage'
 import InternalLinkButton from '@/components/InternalLinkButton'
 
 import LineChartComponent from '@/components/Charts/LineChartComponent'
-import TitleComp from '@/components/PageGauges/GaugeListItem/TitleComp'
-import GaugeListColumns from '@/components/PageGauges/GaugeListItem/GaugeListColumns'
-import GaugeWeightVotesColumns from '@/components/PageGauges/GaugeListItem/GaugeWeightVotesColumns'
-import VoteGaugeField from '@/components/PageGauges/GaugeVoting/VoteGaugeField'
-import GaugeDetails from '@/components/PageGauges/GaugeListItem/GaugeDetails'
+import TitleComp from './TitleComp'
+import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
+import GaugeDetailsSm from './GaugeDetailsSm'
 
 type Props = {
   gaugeData: GaugeFormattedData
-  gridTemplateColumns: string
   userGaugeWeightVoteData?: UserGaugeVoteWeight
   powerUsed?: number
   userGaugeVote?: boolean
   addUserVote?: boolean
 }
 
-const GaugeListItem = ({
+const SmallScreenCard: React.FC<Props> = ({
   gaugeData,
-  gridTemplateColumns,
   userGaugeWeightVoteData,
   powerUsed,
   userGaugeVote = false,
   addUserVote = false,
-}: Props) => {
+}) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
   const [open, setOpen] = useState(false)
 
@@ -53,18 +49,24 @@ const GaugeListItem = ({
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
   return (
-    <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote} open={open}>
-      <DataComp gridTemplateColumns={gridTemplateColumns}>
-        <TitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
+    <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote}>
+      <Box flex flexGap="var(--spacing-2)">
+        <StyledTitleComp gaugeData={gaugeData} imageBaseUrl={imageBaseUrl} />
         {userGaugeWeightVoteData ? (
-          <GaugeWeightVotesColumns userGaugeWeightVoteData={userGaugeWeightVoteData} />
+          <Box flex flexColumn flexGap="var(--spacing-2)" margin="auto 0 auto auto">
+            <GaugeDataTitle>{t`Weight`}</GaugeDataTitle>
+            <GaugeData>{userGaugeWeightVoteData.userPower}%</GaugeData>
+          </Box>
         ) : (
-          <GaugeListColumns gaugeData={gaugeData} />
+          <Box flex flexColumn flexGap="var(--spacing-2)" margin="auto 0 auto auto">
+            <GaugeDataTitle>{t`Weight`}</GaugeDataTitle>
+            <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
+          </Box>
         )}
         <StyledIconButton size="small">
           {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
         </StyledIconButton>
-      </DataComp>
+      </Box>
       {open && (
         <OpenContainer
           onClick={(e?: React.MouseEvent) => {
@@ -98,13 +100,8 @@ const GaugeListItem = ({
                 <LineChartComponent height={400} data={gaugeWeightHistoryMapper[gaugeData.address]?.data} />
               )}
           </ChartWrapper>
-          <GaugeDetails gaugeData={gaugeData} />
-          <Box
-            flex
-            flexGap={'var(--spacing-3)'}
-            flexAlignItems={'center'}
-            margin={'var(--spacing-2) 0 var(--spacing-2) auto'}
-          >
+          <GaugeDetailsSm gaugeData={gaugeData} userGaugeWeightVoteData={userGaugeWeightVoteData} />
+          <Box flex flexGap={'var(--spacing-3)'} flexAlignItems={'center'} margin={'var(--spacing-2) auto'}>
             <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>
@@ -113,7 +110,7 @@ const GaugeListItem = ({
   )
 }
 
-const GaugeBox = styled.div<{ addUserVote: boolean; open: boolean }>`
+const GaugeBox = styled.div<{ addUserVote: boolean }>`
   display: grid;
   padding: calc(var(--spacing-2) + var(--spacing-1)) var(--spacing-3) calc(var(--spacing-2) + var(--spacing-1));
   gap: var(--spacing-1);
@@ -121,19 +118,32 @@ const GaugeBox = styled.div<{ addUserVote: boolean; open: boolean }>`
   ${({ addUserVote }) => addUserVote && 'border: 1px solid inherit;'}
   &:hover {
     cursor: pointer;
-    background-color: var(--table_row--hover--color);
-    ${({ open }) => open && 'background-color: inherit;'}
   }
 `
 
-const DataComp = styled.div<{ gridTemplateColumns: string }>`
+const StyledTitleComp = styled(TitleComp)`
+  margin-right: auto;
+`
+
+const DataComp = styled.div`
   display: grid;
-  grid-template-columns: ${({ gridTemplateColumns }) => gridTemplateColumns};
+  grid-template-columns: 1fr 1fr;
+`
+
+const GaugeDataTitle = styled.p`
+  font-size: var(--font-size-1);
+  text-align: right;
+  opacity: 0.7;
+`
+
+const GaugeData = styled.p`
+  font-size: var(--font-size-2);
+  font-weight: var(--bold);
+  text-align: right;
 `
 
 const StyledIconButton = styled(IconButton)`
-  margin-left: auto;
-  margin-right: 0;
+  margin-left: var(--spacing-2);
 `
 
 const OpenContainer = styled.div`
@@ -141,7 +151,6 @@ const OpenContainer = styled.div`
   flex-direction: column;
   padding: var(--spacing-3) var(--spacing-1) 0;
   gap: var(--spacing-2);
-  cursor: default;
 `
 
 const ChartWrapper = styled.div`
@@ -155,7 +164,6 @@ const ChartWrapper = styled.div`
 `
 
 const VoteGaugeFieldWrapper = styled.div`
-  width: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-2);
@@ -176,4 +184,4 @@ const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   height: 400px;
 `
 
-export default GaugeListItem
+export default SmallScreenCard

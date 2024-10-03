@@ -8,12 +8,20 @@ interface TableHeaderProps<T> {
   title?: string
   sortBy: { key: keyof T; order: 'asc' | 'desc' }
   setSortBy: (key: keyof T) => void
+  smallScreenBreakpoint?: number
   gridTemplateColumns?: string
 }
 
-const TableHeader = <T,>({ columns, title, sortBy, setSortBy, gridTemplateColumns }: TableHeaderProps<T>) => {
+const TableHeader = <T,>({
+  columns,
+  title,
+  sortBy,
+  setSortBy,
+  gridTemplateColumns,
+  smallScreenBreakpoint,
+}: TableHeaderProps<T>) => {
   return (
-    <TableHeaderWrapper noTitle={title === undefined}>
+    <TableHeaderWrapper noTitle={title === undefined} smallScreenBreakpoint={smallScreenBreakpoint}>
       {title && <TableTitle>{title}</TableTitle>}
       <TableContainer columns={columns.length} gridTemplateColumns={gridTemplateColumns}>
         {columns.map((column, index) => (
@@ -35,9 +43,12 @@ const TableHeader = <T,>({ columns, title, sortBy, setSortBy, gridTemplateColumn
   )
 }
 
-const TableHeaderWrapper = styled.div<{ noTitle: boolean }>`
+const TableHeaderWrapper = styled.div<{ noTitle: boolean; smallScreenBreakpoint?: number }>`
   background: var(--box_header--secondary--background-color);
   padding: ${({ noTitle }) => (noTitle ? 'var(--spacing-3)' : '0')} 0 0 0;
+  @media (max-width: ${({ smallScreenBreakpoint }) => `${smallScreenBreakpoint}rem`}) {
+    display: none;
+  }
 `
 
 const TableContainer = styled.div<{ columns: number; gridTemplateColumns?: string }>`

@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -8,13 +9,14 @@ import networks from '@/networks'
 
 import { USER_VOTES_TABLE_LABELS } from './constants'
 
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
-import GaugeListItem from '@/components/PageGauges/GaugeListItem'
-import Box from '@/ui/Box'
-import PaginatedTable from '@/components/PaginatedTable'
 import InternalLink from '@/ui/Link/InternalLink'
+import Box from '@/ui/Box'
+import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
+import PaginatedTable from '@/components/PaginatedTable'
 import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
-import VoteGauge from './VoteGauge'
+import VoteGauge from '@/components/PageGauges/GaugeVoting/VoteGauge'
+import GaugeListItem from '@/components/PageGauges/GaugeListItem'
+import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -33,8 +35,9 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
   const tableLoading = userWeightsLoading || gaugeMapperLoading
 
-  const tableMinWidth = 42.3125
-  const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
+  const tableMinWidth = 0
+  const gridTemplateColumns = '17.5rem 1fr 1fr 0.5fr'
+  const smallScreenBreakpoint = 42.3125
 
   const formattedSelectedGauge: UserGaugeVoteWeight = {
     title: selectedGauge?.title ?? '',
@@ -62,7 +65,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
         {userAddress && (
-          <Box flex flexGap="var(--spacing-4)" flexAlignItems="end">
+          <UserDataWrapper>
             <MetricsComp
               loading={userWeightsLoading}
               title="User"
@@ -71,6 +74,11 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                   <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
                 </StyledInternalLink>
               }
+            />
+            <MetricsComp
+              loading={userWeightsLoading}
+              title="Power used"
+              data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
             />
             <MetricsComp
               loading={userWeightsLoading}
@@ -90,15 +98,8 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
                 </MetricsColumnData>
               }
             />
-            <MetricsComp
-              loading={userWeightsLoading}
-              title="Power used"
-              data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
-            />
-            <Box margin="0 0 0 auto">
-              <ComboBoxSelectGauge title={''} />
-            </Box>
-          </Box>
+            <ComboBoxSelectGauge title={''} />
+          </UserDataWrapper>
         )}
       </VoteStats>
       {selectedGauge && (
@@ -121,16 +122,28 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
           setSortBy={(key) => setUserGaugeVoteWeightsSortBy(userAddress ?? '', key as UserGaugeVoteWeightSortBy)}
           getData={() => getUserGaugeVoteWeights(userAddress ?? '')}
           renderRow={(gauge, index) => (
-            <GaugeListItem
-              key={index}
-              gaugeData={gaugeMapper[gauge.gaugeAddress]}
-              userGaugeWeightVoteData={gauge}
-              gridTemplateColumns={gridTemplateColumns}
-              powerUsed={userData?.data.powerUsed}
-              userGaugeVote={true}
-            />
+            <React.Fragment key={index}>
+              <GaugeListItemWrapper>
+                <GaugeListItem
+                  gaugeData={gaugeMapper[gauge.gaugeAddress]}
+                  userGaugeWeightVoteData={gauge}
+                  gridTemplateColumns={gridTemplateColumns}
+                  powerUsed={userData?.data.powerUsed}
+                  userGaugeVote={true}
+                />
+              </GaugeListItemWrapper>
+              <SmallScreenCardWrapper>
+                <SmallScreenCard
+                  gaugeData={gaugeMapper[gauge.gaugeAddress]}
+                  userGaugeWeightVoteData={gauge}
+                  powerUsed={userData?.data.powerUsed}
+                  userGaugeVote={true}
+                />
+              </SmallScreenCardWrapper>
+            </React.Fragment>
           )}
           gridTemplateColumns={gridTemplateColumns}
+          smallScreenBreakpoint={smallScreenBreakpoint}
         />
       )}
     </Wrapper>
@@ -150,10 +163,31 @@ const VoteStats = styled(Box)<{ selectedGauge: GaugeFormattedData | null }>`
   ${({ selectedGauge }) => selectedGauge && `border-bottom: 1px solid var(--gray-500a20)`}
 `
 
+const UserDataWrapper = styled(Box)`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--spacing-3);
+`
+
 const StyledInternalLink = styled(InternalLink)`
   text-decoration: none;
   color: inherit;
   text-transform: none;
+`
+
+const GaugeListItemWrapper = styled.div`
+  @media (max-width: 678px) {
+    display: none;
+  }
+`
+
+const SmallScreenCardWrapper = styled.div`
+  display: none;
+
+  @media (max-width: 678px) {
+    display: block;
+  }
 `
 
 export default CurrentVotes

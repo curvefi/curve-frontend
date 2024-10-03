@@ -476,6 +476,7 @@ const sortProposals = (
       ]
     }
   } else {
+    // sort by created time
     return orderBy(proposals, [(proposal) => proposal.startDate], [activeSortDirection])
   }
 }
