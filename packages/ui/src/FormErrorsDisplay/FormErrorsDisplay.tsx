@@ -1,9 +1,8 @@
-import AlertFormError from '@/components/AlertFormError'
 import { ErrorContainer } from '@/shared/ui/styled-containers'
 import { ErrorMessage } from '@hookform/error-message'
-import { useCallback, useMemo } from 'react'
+import { FunctionComponent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import type { FormError } from 'shared/ui/forms/error-types'
+import type { FormError } from './error-types'
 
 const getErrorMessage = (error: FormError): string => {
   if (!error) return 'Unknown error'
@@ -15,7 +14,12 @@ const getErrorMessage = (error: FormError): string => {
   return String(error)
 }
 
-export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: { errorKeys?: Array<keyof T> }) => {
+type FormErrorsDisplayProps<T extends Record<string, any>> = {
+  errorKeys?: Array<keyof T>,
+  component: FunctionComponent<{errorKey: string, handleBtnClose: () => void}>
+}
+
+export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys, component: Component }: FormErrorsDisplayProps<T>) => {
   const {
     formState: { errors },
     clearErrors,
@@ -23,8 +27,7 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: 
 
   const filteredErrors = useMemo<[string, any][]>(() => {
     const shouldDisplayError = errorKeys ? (key: string) => errorKeys.includes(key) : () => true
-
-    const errorsArray = [
+    return [
       ...Object.entries(errors).filter(([key]) => key !== 'root' && shouldDisplayError(key)),
       ...(errors.root
         ? Object.entries(errors.root)
@@ -32,7 +35,6 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: 
             .map(([key, value]): [string, any] => [`root.${key}`, value])
         : []),
     ]
-    return errorsArray
   }, [errorKeys, errors])
 
   const renderErrorMessage = useCallback(
@@ -42,11 +44,11 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys }: 
         name={key}
         render={() => {
           const errorMessage = getErrorMessage(error as FormError)
-          return <AlertFormError errorKey={errorMessage} handleBtnClose={() => clearErrors(key as any)} />
+          return <Component errorKey={errorMessage} handleBtnClose={() => clearErrors(key as any)} />
         }}
       />
     ),
-    [clearErrors]
+    [Component, clearErrors]
   )
 
   if (filteredErrors.length === 0) return null

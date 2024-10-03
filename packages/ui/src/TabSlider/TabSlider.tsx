@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { StyledTabSlide } from '@/components/PagePool/styles'
-import { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import { SlideTab, SlideTabs } from '../TabSlide'
+import styled from 'styled-components'
+import TabSlide from '../TabSlide/SlideTabsWrapper'
+
+export const StyledTabSlide = styled(TabSlide)`
+  margin-bottom: var(--spacing-2);
+`
 
 export interface Tab<T> {
   label: string

@@ -6,7 +6,7 @@ import type { Locale } from '@/lib/i18n'
 import produce from 'immer'
 
 import { REFRESH_INTERVAL } from '@/constants'
-import { log } from '@/utils/helpers'
+import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
 

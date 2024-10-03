@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import { PromisePool } from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { log } from '@/utils/helpers'
+import { log } from '@/shared/lib/logging'
 import { helpers } from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
