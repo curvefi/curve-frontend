@@ -31,7 +31,7 @@ export const helpers = {
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
-    oraclePriceBand: number | null | undefined
+    oraclePriceBand: number | null | undefined,
   ) => {
     if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
       return false
@@ -49,7 +49,7 @@ export const helpers = {
     const resp = { marketList: [] as string[], error: '' }
     try {
       log('fetchMarkets', api.chainId)
-      await api.oneWayfactory.fetchMarkets(, USE_API)
+      await api.oneWayfactory.fetchMarkets(USE_API)
       resp.marketList = api.oneWayfactory.getMarketList()
       return resp
     } catch (error) {
@@ -121,7 +121,7 @@ export const helpers = {
   },
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash)
+      async (hash) => await provider.waitForTransaction(hash),
     )
     if (Array.isArray(errors) && errors.length > 0) {
       throw errors
@@ -177,7 +177,7 @@ const market = {
           _sortBands(bandsBalances),
           liquidationBand,
           owmData,
-          true
+          true,
         )
 
         results[owm.id] = {
@@ -342,10 +342,10 @@ const market = {
 
         // isRewardsOnly = both CRV and other comes from same endpoint.
         if (isRewardsOnly) {
-          const rewardsResp = await owm.vault.rewardsApr(useMultiCall, USE_API)
+          const rewardsResp = await owm.vault.rewardsApr(useMultiCall)
           rewards.other = _filterZeroApy(rewardsResp)
         } else {
-          const [others, crv] = await Promise.all([owm.vault.rewardsApr(useMultiCall, USE_API), owm.vault.crvApr(useMultiCall)])
+          const [others, crv] = await Promise.all([owm.vault.rewardsApr(useMultiCall), owm.vault.crvApr(useMultiCall)])
           rewards.other = _filterZeroApy(others)
           rewards.crv = crv
         }
@@ -517,13 +517,13 @@ const user = {
         const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
           reversedUserBands[0],
           liquidationBand,
-          oraclePriceBand
+          oraclePriceBand,
         )
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,
           owmData,
-          false
+          false,
         )
 
         results[userActiveKey] = {
@@ -597,7 +597,7 @@ const loanCreate = {
     userCollateral: string,
     userBorrowed: string,
     n: number,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -656,7 +656,7 @@ const loanCreate = {
     userBorrowed: string,
     debt: string,
     n: number,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -712,7 +712,7 @@ const loanCreate = {
     userCollateral: string,
     userBorrowed: string,
     debt: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     totalCollateral = totalCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -800,7 +800,7 @@ const loanCreate = {
     debt: string,
     n: number,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -817,8 +817,8 @@ const loanCreate = {
           ? await owm.leverage.estimateGas.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
           : await owm.estimateGas.createLoan(userCollateral, debt, n)
         : isLeverage
-        ? await owm.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-        : await owm.estimateGas.createLoanApprove(userCollateral)
+          ? await owm.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          : await owm.estimateGas.createLoanApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -832,7 +832,7 @@ const loanCreate = {
     { owm }: OWMData,
     userCollateral: string,
     userBorrowed: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -852,7 +852,7 @@ const loanCreate = {
     debt: string,
     n: number,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -907,7 +907,7 @@ const loanBorrowMore = {
     { signerAddress }: Api,
     { owm }: OWMData,
     userCollateral: string,
-    debt: string
+    debt: string,
   ) => {
     userCollateral = userCollateral || '0'
     debt = debt || '0'
@@ -947,7 +947,7 @@ const loanBorrowMore = {
     userCollateral: string,
     userBorrowed: string,
     debt: string,
-    slippage: string
+    slippage: string,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1008,7 +1008,7 @@ const loanBorrowMore = {
     userBorrowed: string,
     debt: string,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1025,8 +1025,8 @@ const loanBorrowMore = {
           ? await owm.leverage.estimateGas.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
           : await owm.estimateGas.borrowMore(userCollateral, debt)
         : isLeverage
-        ? await owm.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
-        : await owm.estimateGas.borrowMoreApprove(userCollateral)
+          ? await owm.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
+          : await owm.estimateGas.borrowMoreApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -1044,7 +1044,7 @@ const loanBorrowMore = {
     { owm }: OWMData,
     userCollateral: string,
     userBorrowed: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1063,7 +1063,7 @@ const loanBorrowMore = {
     userBorrowed: string,
     debt: string,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1082,7 +1082,7 @@ const loanRepay = {
     { owm }: OWMData,
     stateCollateral: string,
     userCollateral: string,
-    userBorrowed: string
+    userBorrowed: string,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1105,7 +1105,7 @@ const loanRepay = {
     { owm }: OWMData,
     userBorrowed: string,
     isFullRepay: boolean,
-    userStateDebt: string
+    userStateDebt: string,
   ) => {
     log('detailInfo', userBorrowed)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1144,7 +1144,7 @@ const loanRepay = {
     userCollateral: string,
     userBorrowed: string,
     maxSlippage: string,
-    userStateDebt: string
+    userStateDebt: string,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1229,7 +1229,7 @@ const loanRepay = {
     userBorrowed: string,
     isFullRepay: boolean,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1240,7 +1240,7 @@ const loanRepay = {
       userCollateral,
       userBorrowed,
       isFullRepay,
-      maxSlippage
+      maxSlippage,
     )
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1248,19 +1248,19 @@ const loanRepay = {
       resp.isApproved = isLeverage
         ? await owm.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay
-        ? await owm.fullRepayIsApproved()
-        : await owm.repayIsApproved(userBorrowed)
+          ? await owm.fullRepayIsApproved()
+          : await owm.repayIsApproved(userBorrowed)
       resp.estimatedGas = isLeverage
         ? resp.isApproved
           ? await owm.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
           : await owm.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
         : resp.isApproved
-        ? isFullRepay
-          ? await owm.estimateGas.fullRepay()
-          : await owm.estimateGas.repay(userBorrowed)
-        : isFullRepay
-        ? await owm.estimateGas.fullRepayApprove()
-        : await owm.estimateGas.repayApprove(userBorrowed)
+          ? isFullRepay
+            ? await owm.estimateGas.fullRepay()
+            : await owm.estimateGas.repay(userBorrowed)
+          : isFullRepay
+            ? await owm.estimateGas.fullRepayApprove()
+            : await owm.estimateGas.repayApprove(userBorrowed)
       return resp
     } catch (error) {
       console.error(error)
@@ -1276,7 +1276,7 @@ const loanRepay = {
     userCollateral: string,
     userBorrowed: string,
     isFullRepay: boolean,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1286,8 +1286,8 @@ const loanRepay = {
       isLeverage
         ? await owm.leverage.repayApprove(userCollateral, userBorrowed)
         : isFullRepay
-        ? await owm.fullRepayApprove()
-        : await owm.repayApprove(userBorrowed)
+          ? await owm.fullRepayApprove()
+          : await owm.repayApprove(userBorrowed)
     return await approve(activeKey, fn, provider)
   },
   repay: async (
@@ -1299,7 +1299,7 @@ const loanRepay = {
     userBorrowed: string,
     isFullRepay: boolean,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1309,8 +1309,8 @@ const loanRepay = {
       isLeverage
         ? await owm.leverage.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
         : isFullRepay
-        ? await owm.fullRepay()
-        : await owm.repay(userBorrowed)
+          ? await owm.fullRepay()
+          : await owm.repay(userBorrowed)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -1376,7 +1376,7 @@ const loanCollateralAdd = {
     { signerAddress }: Api,
     { owm }: OWMData,
     collateral: string,
-    address?: string
+    address?: string,
   ) => {
     log('detailInfo', collateral)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1454,7 +1454,7 @@ const loanCollateralRemove = {
     { signerAddress }: Api,
     { owm }: OWMData,
     collateral: string,
-    address?: string
+    address?: string,
   ) => {
     log('loanCollateralRemoveHealthPricesBands', owm.collateral_token.symbol, collateral)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1768,7 +1768,7 @@ const vaultWithdraw = {
     { owm }: OWMData,
     isFullWithdraw: boolean,
     amount: string,
-    vaultShares: string
+    vaultShares: string,
   ) => {
     log('vaultWithdraw', owm.id, amount, 'isFullWithdraw', isFullWithdraw, 'vaultShares', vaultShares)
 
@@ -2007,7 +2007,7 @@ async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   { owm }: OWMData,
-  isMarket: boolean
+  isMarket: boolean,
 ) {
   // filter out bands that doesn't have borrowed or collaterals
   const ns = isMarket
@@ -2094,7 +2094,7 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 
 function _detailInfoRespErrorMessage(
   futureRatesResp: PromiseSettledResult<{ borrowApr: string; lendApr: string; borrowApy: string; lendApy: string }>,
-  bandsResp: PromiseSettledResult<[number, number]>
+  bandsResp: PromiseSettledResult<[number, number]>,
 ) {
   let errorMessage = ''
 
