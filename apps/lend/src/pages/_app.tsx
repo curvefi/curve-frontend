@@ -10,7 +10,7 @@ import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 
-import { persister, queryClient } from '@/shared/curve-lib'
+import { persister, queryClient } from '@/shared/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
