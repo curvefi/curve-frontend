@@ -6,12 +6,12 @@ import useStore from '@/store/useStore'
 
 export const queryTokenUsdRate: QueryFunction<
   number,
-  TokenQueryKeyType<'root'>
+  TokenQueryKeyType<'usdRate'>
 > = async ({ queryKey }) => {
   logQuery(queryKey)
   const [, chainId, , givenAddress] = queryKey
-  const { address } = assertTokenValidity({ chainId, address: givenAddress })
+  const { tokenAddress } = assertTokenValidity({ chainId, tokenAddress: givenAddress })
 
   const {api} = useStore.getState()
-  return await api!.getUsdRate(address)
+  return await api!.getUsdRate(tokenAddress)
 }

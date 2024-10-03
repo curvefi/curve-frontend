@@ -1,14 +1,14 @@
 import type { InpChipUsdRateProps } from '@/ui/InpChipUsdRate/InpChipUsdRate'
 
-import useStore from '@/store/useStore'
-
 import InpChipUsdRateComp from '@/ui/InpChipUsdRate'
+import { useTokenUsdRate } from '@/entities/token'
+import { useChainId } from '@/entities/chain'
 
 const InpChipUsdRate = ({
-  address = '',
+  address: tokenAddress,
   ...props
 }: Omit<InpChipUsdRateProps, 'usdRate'> & { address: string | undefined }) => {
-  const usdRate = useStore((state) => state.usdRates.tokens[address])
+  const { data: usdRate } = useTokenUsdRate({ chainId: useChainId(), tokenAddress })
   return <InpChipUsdRateComp {...props} usdRate={usdRate} />
 }
 

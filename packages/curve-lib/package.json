@@ -9,7 +9,8 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "dependencies": {
-    "ethers": "^6.11.0"
+    "ethers": "^6.11.0",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "eslint-config-custom": "*",

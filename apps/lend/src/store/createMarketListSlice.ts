@@ -3,22 +3,26 @@ import type { State } from '@/store/useStore'
 import type {
   FilterTypeKey,
   FormStatus,
-  MarketListMapper,
   MarketListItemResult,
+  MarketListMapper,
   SearchParams,
-  TableSettings,
+  TableSettings
 } from '@/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
 
-import { DEFAULT_FORM_STATUS, _searchByTokensAddresses, _getMarketList } from '@/components/PageMarketList/utils'
+import { _getMarketList, _searchByTokensAddresses, DEFAULT_FORM_STATUS } from '@/components/PageMarketList/utils'
 import { TITLE } from '@/constants'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
+import { tokenKeys } from '@/entities/token'
+
+import { queryClient } from '@/shared/api/query-client'
+import { getLastTokenUsdRate } from '@/entities/token/lib/last-results'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -86,12 +90,10 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     filterSmallMarkets: (api, owmDatas) => {
       const { chainId } = api
       const capAndAvailableMapper = get().markets.statsCapAndAvailableMapper[chainId] ?? {}
-      const usdRatesMapper = get().usdRates.tokens
       const { smallMarketAmount, marketListShowOnlyInSmallMarkets } = networks[chainId]
       return owmDatas.filter(({ owm }) => {
         const { cap } = capAndAvailableMapper[owm.id] ?? {}
-        const token = owm.borrowed_token
-        const usdRate = usdRatesMapper[token.address]
+        const usdRate = getLastTokenUsdRate(chainId, owm.borrowed_token.address)
         if (typeof usdRate === 'undefined') return true
         if (marketListShowOnlyInSmallMarkets[owm.id]) return false
         return +cap * +usdRate > smallMarketAmount
@@ -231,7 +233,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       }
     },
     setFormValues: async (rChainId, api, shouldRefetch) => {
-      const { markets, storeCache, usdRates, user } = get()
+      const { markets, storeCache, user } = get()
       let {
         activeKey: prevActiveKey,
         initialLoaded,
@@ -244,7 +246,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const storedOwmDatas = markets.owmDatas[rChainId]
       const storedOwmDatasMapper = markets.owmDatasMapper[rChainId]
       const storedMarketListMapper = marketListMapper[rChainId]
-      const storedUsdRatesMapper = usdRates.tokens
 
       // update activeKey, formStatus
       const activeKey = _getActiveKey(rChainId, searchParams)
@@ -276,7 +277,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // allow UI to update paint
       await sleep(100)
 
-      if (!api || !storedOwmDatasMapper || !storedMarketListMapper || !storedUsdRatesMapper) return
+      if (!api || !storedOwmDatasMapper || !storedMarketListMapper) return
 
       const { chainId, signerAddress } = api
       const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = searchParams

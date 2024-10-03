@@ -2,9 +2,10 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
+import { useTokenUsdRate, useTokenUsdRates } from '@/entities/token'
+import { useChainId } from '@/entities/chain'
 
 type Amount = { amount: string; address: string }
 
@@ -17,31 +18,17 @@ const DetailInfoLTV = ({
   debt: Amount | undefined
   collaterals: Amount[] | undefined
 }) => {
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
+  const chainId = useChainId()
+  const { data: debtUsdRate } = useTokenUsdRate({ chainId, tokenAddress: debt?.address })
+  const collateralAddresses = useMemo(() => collaterals?.map(c => c.address), [collaterals])
+  const { data: collateralUsdRates } = useTokenUsdRates({ chainId, tokenAddresses: collateralAddresses })
 
-  const debtUsd = useMemo(() => {
-    if (debt) {
-      const usdRate = usdRatesMapper[debt.address]
-      return +debt.amount * +usdRate
-    }
-  }, [debt, usdRatesMapper])
+  const debtUsd = useMemo(() => debt && debtUsdRate && +debt.amount * +debtUsdRate, [debt, debtUsdRate])
 
   const collateralUsd = useMemo(() => {
-    if (!collaterals) return undefined
-
-    const haveMissingUsdRates = collaterals.some(({ amount, address }) => {
-      typeof usdRatesMapper[address] === 'undefined'
-    })
-
-    if (haveMissingUsdRates) return undefined
-
-    return collaterals.reduce((prev, { amount, address }) => {
-      const usdRate = usdRatesMapper[address]
-      const amountInUsd = +amount * +usdRate
-      prev += amountInUsd
-      return prev
-    }, 0)
-  }, [collaterals, usdRatesMapper])
+    if (!collaterals?.every(c => c.address in collateralUsdRates)) return undefined
+    return collaterals.reduce((prev, { amount, address }) => prev + (+amount * +collateralUsdRates[address]), 0)
+  }, [collaterals, collateralUsdRates])
 
   return (
     <DetailInfo label={t`Loan to value ratio:`} loading={!debt && !collaterals && loading} loadingSkeleton={[90, 20]}>

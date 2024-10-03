@@ -9,7 +9,6 @@ import createAppSlice, { AppSlice } from '@/store/createAppSlice'
 import createLayoutSlice, { AppLayoutSlice } from '@/store/createLayoutSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/store/createUsdRatesSlice'
 import createTokensSlice, { TokensSlice } from '@/store/createTokensSlice'
 import createMarketsSlice, { MarketsSlice } from '@/store/createMarketsSlice'
 import createUserSlice, { UserSlice } from '@/store/createUserSlice'
@@ -36,7 +35,6 @@ export type State = CacheSlice &
   AppLayoutSlice &
   WalletSlice &
   GasSlice &
-  UsdRatesSlice &
   TokensSlice &
   IntegrationsSlice &
   ChartBandsSlice &
@@ -63,7 +61,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createWalletSlice(set, get),
   ...createLayoutSlice(set, get),
   ...createGasSlice(set, get),
-  ...createUsdRatesSlice(set, get),
   ...createTokensSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),

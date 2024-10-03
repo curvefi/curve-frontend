@@ -2,18 +2,19 @@ import { useEffect, useMemo } from 'react'
 import useStore from '@/store/useStore'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { useTokenUsdRate } from '@/entities/token'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const { address = '', symbol = '' } = owmData?.owm?.borrowed_token ?? {}
-  const usdRate = useStore((state) => state.usdRates.tokens[address])
+  const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
   const { borrowedAmount, borrowedAmountUsd } = useMemo<{ borrowedAmount: string; borrowedAmountUsd: string }>(() => {
     const { pricePerShare, error } = pricePerShareResp ?? {}
 
-    if (error || usdRate === 'NaN') {
+    if (error || usdRate == null || isNaN(usdRate)) {
       return { borrowedAmount: '?', borrowedAmountUsd: '?' }
     }
 
@@ -22,7 +23,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
       const borrowedAmtUsd = +pricePerShare * +vaultShares * +usdRate
 
       return {
-        borrowedAmount: `${formatNumber(borrowedAmt, { showDecimalIfSmallNumberOnly: true })}${' '}${symbol}`,
+        borrowedAmount: `${formatNumber(borrowedAmt, { showDecimalIfSmallNumberOnly: true })} ${symbol}`,
         borrowedAmountUsd: formatNumber(borrowedAmtUsd, FORMAT_OPTIONS.USD),
       }
     }
