@@ -165,6 +165,7 @@ const Wrapper = styled.div`
 
 const PoolLabelTokensWrapper = styled.div`
   min-height: 1.5rem; // 24px;
+  max-width: 24.375rem; // 390px
 `
 
 const TokenLabel = styled.span`

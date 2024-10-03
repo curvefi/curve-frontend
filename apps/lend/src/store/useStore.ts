@@ -89,15 +89,13 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
 
 const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'lending-app-store-cache',
-  partialize: ({ storeCache }: State) => ({  storeCache }),
+  partialize: ({ storeCache }: State) => ({ storeCache }),
   // @ts-ignore
   merge: (persistedState, currentState) => merge(persistedState, currentState),
-  version: 3, // update version number to prevent UI from using cache
+  version: 4, // update version number to prevent UI from using cache
 }
 
 const useStore =
-  process.env.NODE_ENV === 'development'
-    ? create(devtools(persist(store, cache)))
-    : create(persist(store, cache))
+  process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
 
 export default useStore
