@@ -27,7 +27,7 @@ import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/default'
 import { persister, queryClient } from '@/shared/api/query-client'
-import { QueryProviderWrapper } from '@/shared/api/query-provider'
+import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -168,14 +168,14 @@ function CurveApp({ Component }: AppProps) {
         <HashRouter>
           <I18nProvider i18n={i18n}>
             <AriaI18nProvider locale={locale}>
-              <QueryProviderWrapper persister={persister} queryClient={queryClient}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
                 <OverlayProvider>
                   <Page>
                     <Component />
                   </Page>
                   <GlobalStyle />
                 </OverlayProvider>
-              </QueryProviderWrapper>
+              </QueryProvider>
             </AriaI18nProvider>
           </I18nProvider>
         </HashRouter>

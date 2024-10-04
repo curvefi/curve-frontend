@@ -23,7 +23,7 @@ import {
 import networks from '@/networks'
 import { BN } from '@/ui/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, isValidAddress, log, shortenTokenAddress } from '@/utils'
+import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
 import { httpFetcher } from '@/lib/utils'
 import {
   excludeLowExchangeRateCheck,
@@ -31,6 +31,7 @@ import {
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
+import { log } from '@/shared/lib/logging'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
 // https://twitter.com/MultichainOrg

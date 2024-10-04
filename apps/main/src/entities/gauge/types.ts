@@ -12,14 +12,14 @@
 
 import { gaugeKeys } from '@/entities/gauge/model'
 import type { PoolQueryParams } from '@/entities/pool/types'
-import { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
-import type { NestedKeys, NestedProperty } from '@/shared/types/nested'
+import type { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
+import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
 
-export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedProperty<PoolTemplate, M>>>
+export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 
-export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedProperty<PoolTemplate, M>>
+export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedFunction<PoolTemplate, M>>
 
 export type GaugeQueryKeys = ExtractQueryKeys<typeof gaugeKeys>
 

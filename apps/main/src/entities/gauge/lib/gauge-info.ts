@@ -12,8 +12,7 @@
 
 import * as models from '@/entities/gauge/model'
 import type { GaugeQueryParams } from '@/entities/gauge/types'
-import { useCombinedQueries } from '@/shared/lib/queries/combine'
-import { createQueryHook } from '@/shared/lib/queries/factory'
+import { createQueryHook, useCombinedQueries } from '@/shared/lib/queries'
 
 export const useGauge = ({ chainId, poolId }: GaugeQueryParams) => {
   return useCombinedQueries([

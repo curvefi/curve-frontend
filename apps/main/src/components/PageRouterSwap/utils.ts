@@ -7,7 +7,7 @@ import orderBy from 'lodash/orderBy'
 import uniq from 'lodash/uniq'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { log } from '@/utils'
+import { log } from '@/shared/lib/logging'
 import { weiToEther } from '@/shared/curve-lib'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {

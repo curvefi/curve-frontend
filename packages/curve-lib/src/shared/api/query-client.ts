@@ -1,4 +1,4 @@
-import { mutationCache, queryCache } from '@/shared/api/cache'
+import { mutationCache, queryCache } from './cache'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { QueryClient } from '@tanstack/react-query'
 
