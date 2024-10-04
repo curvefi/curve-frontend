@@ -11,7 +11,7 @@ import useStore from '@/store/useStore'
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { useTokenUsdRate } from '@/entities/token'
-import { CRVUSD_ADDRESS } from 'loan/src/constants'
+import { NETWORK_TOKEN } from '@/constants'
 
 export type StepProgress = {
   active: number
@@ -28,7 +28,7 @@ interface Props {
 }
 
 const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, stepProgress }: Props) => {
-  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: CRVUSD_ADDRESS })
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: NETWORK_TOKEN })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
   const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)

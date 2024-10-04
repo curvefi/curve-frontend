@@ -195,7 +195,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const owmDatasMapper = markets.owmDatasMapper[chainId]
       const parsedTableRowsSettings: { [tokenAddress: string]: TableSettings } = {}
 
-      const { marketListMapper } = _getMarketList(owmDatas, markets.crvusdAddress[chainId])
+      const { marketListMapper } = _getMarketList(owmDatas)
 
       const marketsResult = sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map((m, idx) => {
         // set table settings for each market

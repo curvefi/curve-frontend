@@ -2,13 +2,17 @@ import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import { useTokenUsdRates } from '@/entities/token'
 import { PartialQueryResult } from '@/shared/lib/queries'
+import { useOneWayMarketNames } from '@/entities/chain'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import networks from '@/networks'
 
-export const useChainId = () => {
-  const api = useStore(state => state.api)
-  return api?.chainId
-}
+export const useApi = (): Api | null => useStore(state => state.api)
+export const useChainId = () => useApi()?.chainId
 
-const getTokenAddresses = (oneWayMarkets?: OWMDatasMapper) => Object.values(oneWayMarkets ?? {}).flatMap(({ owm }) => [owm.borrowed_token, owm.collateral_token]).map(t => t.address)
+const getTokenAddresses = (oneWayMarkets?: OWMDatasMapper) =>
+  Object.values(oneWayMarkets ?? {})
+    .flatMap(({ owm }) => [owm.borrowed_token, owm.collateral_token])
+    .map(t => t.address)
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[chainId])
@@ -52,4 +56,17 @@ export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
       isFetching: false
     }
   }, [isUsdRatesError, owmDatasMapper, marketsCollateralMapper, marketsTotalSupplyMapper, marketsTotalDebtMapper, tokenUsdRates])
+}
+
+export const useMarketMapping = (chainId: ChainId) => {
+  const { data: marketNames = null, ...rest } = useOneWayMarketNames({ chainId })
+  const api = useApi();
+  const data: Record<string, OneWayMarketTemplate> | null = useMemo(() =>
+    marketNames && api && Object.fromEntries(
+      marketNames
+        .filter(name => !networks[chainId].hideMarketsInUI[name])
+        .map(name => [name, api.getOneWayMarket(name)])
+    ), [api, chainId, marketNames]
+  )
+  return { data, ...rest }
 }

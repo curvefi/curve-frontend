@@ -55,7 +55,7 @@ export function _searchByTokensAddresses(parsedSearchText: string, searchText: s
   })
 }
 
-export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
+export function _getMarketList(owmDatas: OWMData[]) {
   let marketListMapper: MarketListMapper = {}
   let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
@@ -75,8 +75,11 @@ export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
   })
 
   // filter crvusd
-  delete marketListMapper[crvusdAddress]
-  delete marketListMapperCache[crvusdAddress]
+  const crvUsdAddress = owmDatas.map(({ owm }) => owm.borrowed_token).find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
+  if (crvUsdAddress) {
+    delete marketListMapper[crvUsdAddress]
+    delete marketListMapperCache[crvUsdAddress]
+  }
 
   const sortedMarketListMapperCache = sortBy(marketListMapperCache, (l) => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }

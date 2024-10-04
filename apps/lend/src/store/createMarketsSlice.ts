@@ -1,19 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
-import pick from 'lodash/pick'
-
-import { _getMarketList } from '@/components/PageMarketList/utils'
 import { getErrorMessage } from '@/utils/helpers'
-import apiLending, { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
+import apiLending from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  crvusdAddress: { [chainId: string]: string }
-  owmDatas: { [chainId: string]: OWMData[] }
-  owmDatasMapper: { [chainId: string]: OWMDatasMapper }
   statsParametersMapper: { [chainId: string]: MarketsStatsParametersMapper }
   statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
   statsTotalsMapper: { [chainId: string]: MarketsStatsTotalsMapper }
@@ -36,7 +28,6 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchMarkets(api: Api): Promise<{ owmDatasMapper: OWMDatasMapper; owmDatas: OWMData[] }>
     fetchDatas(key: string, api: Api, owmDatas: OWMData[], shouldRefetch?: boolean): Promise<void>
 
     // individual
@@ -52,9 +43,6 @@ export type MarketsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  crvusdAddress: {},
-  owmDatas: {},
-  owmDatasMapper: {},
   statsParametersMapper: {},
   statsBandsMapper: {},
   statsTotalsMapper: {},
@@ -74,56 +62,6 @@ const DEFAULT_STATE: SliceState = {
 const createMarketsSlice = (set: SetState<State>, get: GetState<State>): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-
-    fetchMarkets: async (api) => {
-      const { marketList, storeCache } = get()
-      const { ...sliceState } = get()[sliceKey]
-
-      const { chainId } = api
-      sliceState.setStateByKey('error', '')
-      const { marketList: marketListNames, error } = await helpers.fetchMarkets(api)
-
-      const chainIdStr = chainId.toString()
-      let owmDatas: OWMData[] = []
-      let owmDatasMapper: OWMDatasMapper = {}
-      let owmDatasCacheMapper: OWMDatasCacheMapper = {}
-      let crvusdAddress = ''
-
-      if (error) {
-        sliceState.setStateByKey('error', error)
-        sliceState.setStateByActiveKey('owmDatas', chainIdStr, owmDatas)
-        sliceState.setStateByActiveKey('owmDatasMapper', chainIdStr, owmDatasMapper)
-      } else {
-        marketListNames.forEach((owmId) => {
-          if (networks[chainId].hideMarketsInUI[owmId]) return
-
-          const owm = api.getOneWayMarket(owmId)
-          const { owmData, owmDataCache } = getOWMData(owm)
-          const { address: cAddress } = owm.collateral_token
-          const { symbol: bSymbol, address: bAddress } = owm.borrowed_token
-
-          owmDatas.push(owmData)
-          owmDatasMapper[owm.id] = owmData
-          owmDatasCacheMapper[owm.id] = owmDataCache
-
-          if (bSymbol.toLowerCase() === 'crvusd') crvusdAddress = bAddress
-        })
-
-        sliceState.setStateByActiveKey('crvusdAddress', chainIdStr, crvusdAddress)
-        sliceState.setStateByActiveKey('owmDatas', chainIdStr, owmDatas)
-        sliceState.setStateByActiveKey('owmDatasMapper', chainIdStr, owmDatasMapper)
-
-        // update market list
-        const { marketListMapper } = _getMarketList(owmDatas, crvusdAddress)
-        marketList.setStateByKey('marketListMapper', { [chainId]: marketListMapper })
-
-        // add to cache
-        storeCache.setStateByActiveKey('owmDatasMapper', chainIdStr, owmDatasCacheMapper)
-        storeCache.setStateByActiveKey('marketListMapper', chainIdStr, marketListMapper)
-      }
-
-      return { owmDatas, owmDatasMapper }
-    },
     fetchDatas: async (key, api, owmDatas, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
 
@@ -234,24 +172,5 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
     },
   },
 })
-
-function getOWMData(owm: OWM) {
-  const owmData: OWMData = {
-    owm,
-    hasLeverage: owm.leverage.hasLeverage(),
-    displayName: owm.name,
-  }
-
-  const owmDataCache = pick(owmData, [
-    'owm.id',
-    'owm.addresses',
-    'owm.borrowed_token',
-    'owm.collateral_token',
-    'displayName',
-    'hasLeverage',
-  ]) as OWMDataCache
-
-  return { owmData, owmDataCache }
-}
 
 export default createMarketsSlice

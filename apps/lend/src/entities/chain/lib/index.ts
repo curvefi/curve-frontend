@@ -1,2 +1,3 @@
 export * from './validation'
-export * from './chain-data-hooks'
+export * from './data-hooks'
+export * from './query-hooks'
