@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": ">=18.17"
+    "node": ">=20"
   },
   "workspaces": [
     "apps/*",
@@ -15,23 +15,22 @@
     "dev": "turbo dev --parallel",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "is-ci || husky install"
+    "prepare": "is-ci || husky"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.3.0",
-    "@commitlint/config-conventional": "^19.2.2",
-    "@commitlint/load": "19.2.0",
+    "@commitlint/cli": "^19.5.0",
+    "@commitlint/config-conventional": "^19.5.0",
+    "@commitlint/load": "19.5.0",
     "cross-env": "^7.0.3",
     "eslint-config-custom": "*",
-    "husky": "^8.0.3",
+    "husky": "^9.1.6",
     "is-ci": "^3.0.1",
-    "lint-staged": "15.2.4",
+    "lint-staged": "15.2.10",
     "prettier": "latest",
-    "turbo": "1.13.3",
+    "turbo": "^2.1.2",
     "typescript": "^5"
   },
-  "dependencies": {},
-  "packageManager": "yarn@1.22.19",
+  "packageManager": "yarn@4.5.0",
   "lint-staged": {
     "apps/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",

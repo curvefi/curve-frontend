@@ -1,17 +1,8 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**"]
-    },
-    "lint": {},
-    "dev": {
-      "cache": false,
-      "persistent": true
-    }
-  },
-  "globalDependencies": ["**/.env.*local"],
+  "globalDependencies": [
+    "**/.env.*local"
+  ],
   "globalEnv": [
     "NEXT_PUBLIC_MAINTENANCE_MESSAGE",
     "NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL",
@@ -41,5 +32,23 @@
     "HARDHAT_CHAIN_ID",
     "HARDHAT_MNEMONIC",
     "CYPRESS_DAPP"
-  ]
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        "out/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
 }

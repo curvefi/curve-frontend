@@ -184,7 +184,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
             const { totalCollateral, totalStablecoin } = loanDetailsMapper[llamma.id]
             const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
-            return totalCollateralUsd + Number(totalStablecoin) ?? 0
+            return totalCollateralUsd + Number(totalStablecoin ?? 0)  
           },
           [order]
         )

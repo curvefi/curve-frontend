@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=18.17"
+    "node": ">=20"
   },
   "scripts": {
     "dev": "yarn i18n:compile && next dev -p 3003",
@@ -24,6 +24,7 @@
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.0.1",
     "cross-fetch": "^3.1.5",
+    "curve-lib": "*",
     "dayjs": "^1.11.7",
     "ethers": "^6.10.0",
     "external-rewards": "*",
@@ -45,7 +46,6 @@
     "react-router-dom": "^6.3.0",
     "react-stately": "3.18.0",
     "recharts": "2.4.1",
-    "curve-lib": "*",
     "sharp": "^0.32.6",
     "styled-components": "5.3.11",
     "swr": "^1.3.0",
