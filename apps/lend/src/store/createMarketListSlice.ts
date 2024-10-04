@@ -19,9 +19,6 @@ import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
-import { tokenKeys } from '@/entities/token'
-
-import { queryClient } from '@/shared/api/query-client'
 import { getLastTokenUsdRate } from '@/entities/token/lib/last-results'
 
 type StateKey = keyof typeof DEFAULT_STATE
