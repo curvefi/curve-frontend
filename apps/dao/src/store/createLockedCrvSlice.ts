@@ -221,6 +221,10 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
           // re-fetch data
           const fetchedVecrvInfo = await get()[sliceKey].fetchVecrvInfo(curve)
+          const wallet = get().wallet.onboard?.state.get().wallets?.[0]
+          if (wallet) {
+            get().user.updateUserData(curve, wallet)
+          }
           if (fetchedVecrvInfo) {
             const lockedAmt = formatNumber(fetchedVecrvInfo.lockedAmountAndUnlockTime.lockedAmount)
             const lockedDate = dayjs.utc(fetchedVecrvInfo.lockedAmountAndUnlockTime.unlockTime).format('l')
@@ -261,6 +265,10 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
             // re-fetch data
             get()[sliceKey].fetchVecrvInfo(curve)
+            const wallet = get().wallet.onboard?.state.get().wallets?.[0]
+            if (wallet) {
+              get().user.updateUserData(curve, wallet)
+            }
           }
 
           return resp
@@ -299,6 +307,10 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
 
             // re-fetch data
             get()[sliceKey].fetchVecrvInfo(curve)
+            const wallet = get().wallet.onboard?.state.get().wallets?.[0]
+            if (wallet) {
+              get().user.updateUserData(curve, wallet)
+            }
           }
 
           return resp

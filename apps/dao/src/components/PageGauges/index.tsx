@@ -56,6 +56,7 @@ const Wrapper = styled(Box)`
   max-width: 100%;
   flex-grow: 1;
   min-height: 100%;
+  border: none;
   @media (min-width: 36.875rem) {
     max-width: 95%;
   }

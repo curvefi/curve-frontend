@@ -107,7 +107,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
           imageBaseUrl={networks[1].imageBaseUrl}
           gaugeData={gaugeMapper[formattedSelectedGauge.gaugeAddress]}
           userGaugeVoteData={formattedSelectedGauge}
-          availablePower={userData?.data.powerUsed}
+          powerUsed={userData?.data.powerUsed}
         />
       )}
       {userAddress && (
@@ -160,7 +160,11 @@ const VoteStats = styled(Box)<{ selectedGauge: GaugeFormattedData | null }>`
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
-  ${({ selectedGauge }) => selectedGauge && `border-bottom: 1px solid var(--gray-500a20)`}
+  ${({ selectedGauge }) => selectedGauge && `border-bottom: 1px solid var(--gray-500a20);`}
+  @media (max-width: 42.375rem) {
+    padding-bottom: var(--spacing-3);
+    border-bottom: 1px solid var(--gray-500a20);
+  }
 `
 
 const UserDataWrapper = styled(Box)`
@@ -177,7 +181,7 @@ const StyledInternalLink = styled(InternalLink)`
 `
 
 const GaugeListItemWrapper = styled.div`
-  @media (max-width: 678px) {
+  @media (max-width: 42.375rem) {
     display: none;
   }
 `
@@ -185,7 +189,7 @@ const GaugeListItemWrapper = styled.div`
 const SmallScreenCardWrapper = styled.div`
   display: none;
 
-  @media (max-width: 678px) {
+  @media (max-width: 42.375rem) {
     display: block;
   }
 `

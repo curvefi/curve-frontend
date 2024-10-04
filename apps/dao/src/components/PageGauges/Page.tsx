@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 

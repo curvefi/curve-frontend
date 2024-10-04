@@ -37,6 +37,7 @@ const GaugeListItem = ({
   addUserVote = false,
 }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
+  const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const imageBaseUrl = networks[1].imageBaseUrl
@@ -74,7 +75,7 @@ const GaugeListItem = ({
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (

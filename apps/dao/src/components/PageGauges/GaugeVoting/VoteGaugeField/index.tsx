@@ -14,12 +14,20 @@ import { TooltipIcon } from '@/ui/Tooltip'
 type VoteGaugeFieldProps = {
   powerUsed: number
   userGaugeVoteData: UserGaugeVoteWeight
+  userVeCrv: number
   newVote?: boolean
 }
 
-const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVoteData, newVote = false }) => {
+const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
+  powerUsed,
+  userGaugeVoteData,
+  userVeCrv,
+  newVote = false,
+}) => {
   const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
-  const maxPower = newVote ? 100 - powerUsed : 100 - powerUsed + userGaugeVoteData.userPower
+  const assignedPower = 100 - powerUsed
+  const maxPower = newVote ? assignedPower / 100 : (assignedPower + userGaugeVoteData.userPower) / 100
+  const availableVeCrv = userVeCrv * maxPower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
   const { castVote, castVoteLoading } = useStore((state) => state.gauges)
@@ -30,6 +38,14 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVot
     : userGaugeVoteData.nextVoteTime.timestamp && Date.now() > userGaugeVoteData.nextVoteTime.timestamp
 
   const loading = userGaugeVoteData.nextVoteTime.fetchingState === 'LOADING' || castVoteLoading === 'LOADING'
+
+  const handleChangePower = (value: number) => {
+    if (value > maxPower) {
+      setPower(maxPower)
+    } else {
+      setPower(value)
+    }
+  }
 
   const handleCastVote = () => {
     if (!address) return
@@ -56,25 +72,35 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVot
         <Box flex flexColumn flexGap="var(--spacing-1)" margin="var(--spacing-3) 0 0">
           <GaugeVoteTitle>{t`USER GAUGE VOTE`}</GaugeVoteTitle>
           <Box flex flexGap="var(--spacing-3)" margin={'var(--spacing-2) 0'}>
-            <MetricsComp
-              loading={false}
-              title="Assigned voting power"
-              data={
-                <MetricsColumnData>
-                  {formatNumber(power * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
-                </MetricsColumnData>
-              }
-            />
-
-            <MetricsComp
-              loading={false}
-              title="Available voting power"
-              data={
-                <MetricsColumnData>
-                  {formatNumber(100 - powerUsed, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
-                </MetricsColumnData>
-              }
-            />
+            <Box flex flexColumn flexGap="var(--spacing-1)">
+              <MetricsComp
+                loading={false}
+                title="Assigned voting power"
+                data={
+                  <MetricsColumnData>
+                    {formatNumber(power * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                  </MetricsColumnData>
+                }
+              />
+              <AbsoluteData>
+                {formatNumber(userGaugeVoteData.userVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}{' '}
+                veCRV
+              </AbsoluteData>
+            </Box>
+            <Box flex flexColumn flexGap="var(--spacing-1)">
+              <MetricsComp
+                loading={false}
+                title="Available voting power"
+                data={
+                  <MetricsColumnData>
+                    {formatNumber(maxPower * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                  </MetricsColumnData>
+                }
+              />
+              <AbsoluteData>
+                {formatNumber(availableVeCrv, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} veCRV
+              </AbsoluteData>
+            </Box>
           </Box>
         </Box>
       )}
@@ -82,33 +108,65 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({ powerUsed, userGaugeVot
         <NumberField
           aria-label="Voting power input"
           label={
-            newVote
-              ? t`Available voting power: ${formatNumber(100 - powerUsed, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}%`
-              : null
+            newVote ? (
+              <Box flex flexColumn flexGap={'var(--spacing-1)'}>
+                <LabelTitle>{t`Available voting power:`}</LabelTitle>
+                <LabelData>
+                  <strong>
+                    {formatNumber(assignedPower, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    %
+                  </strong>{' '}
+                  (
+                  {formatNumber(availableVeCrv, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}{' '}
+                  veCRV)
+                </LabelData>
+              </Box>
+            ) : null
           }
-          defaultValue={power}
-          onChange={setPower}
+          value={power}
+          onChange={handleChangePower}
           formatOptions={{ style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2 }}
-          maxValue={powerUsed / 100}
+          maxValue={maxPower}
         />
+        {!newVote && (
+          <AbsoluteData>
+            {formatNumber(power * userVeCrv, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}{' '}
+            veCRV
+          </AbsoluteData>
+        )}
         <ButtonWrapper>
           <StyledButton fillWidth disabled={!canVote} variant="filled" onClick={handleCastVote} loading={loading}>
             {newVote ? t`Vote` : t`Update Vote`}
           </StyledButton>
         </ButtonWrapper>
       </Box>
+      {newVote && (
+        <NewVoteAbsoluteData>
+          {formatNumber(power * userVeCrv, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}{' '}
+          veCRV
+        </NewVoteAbsoluteData>
+      )}
       {!canVote && !loading && userGaugeVoteData.nextVoteTime.timestamp && (
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
             {t`Updating vote available on:`} <br />
-            <span>
+            <strong>
               {new Date(
                 convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime())
               ).toLocaleString()}
-            </span>
+            </strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>
         </Box>
@@ -144,10 +202,26 @@ const StyledButton = styled(Button)`
 
 const VoteOnCooldown = styled.p`
   font-size: var(--font-size-2);
-  span {
-    font-weight: var(--bold);
+  strong {
     margin-right: var(--spacing-1);
   }
 `
+
+const AbsoluteData = styled.p`
+  font-size: var(--font-size-1);
+  opacity: 0.7;
+`
+
+const NewVoteAbsoluteData = styled(AbsoluteData)`
+  margin-top: var(--spacing-1);
+`
+
+const LabelTitle = styled.p`
+  font-size: var(--font-size-1);
+  font-weight: var(--bold);
+  opacity: 0.5;
+`
+
+const LabelData = styled.p``
 
 export default VoteGaugeField

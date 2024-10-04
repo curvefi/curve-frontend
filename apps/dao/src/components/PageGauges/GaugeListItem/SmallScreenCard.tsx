@@ -33,7 +33,7 @@ const SmallScreenCard: React.FC<Props> = ({
   addUserVote = false,
 }) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
-  const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
+  const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const imageBaseUrl = networks[1].imageBaseUrl
@@ -99,7 +99,7 @@ const SmallScreenCard: React.FC<Props> = ({
           <ChartWrapper>
             {userGaugeVote && powerUsed && userGaugeWeightVoteData && (
               <VoteGaugeFieldWrapper>
-                <VoteGaugeField powerUsed={powerUsed} userGaugeVoteData={userGaugeWeightVoteData} />
+                <VoteGaugeField powerUsed={powerUsed} userVeCrv={+veCrv} userGaugeVoteData={userGaugeWeightVoteData} />
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
