@@ -11494,6 +11494,7 @@ __metadata:
   dependencies:
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
+    react: "npm:^18.2.0"
     tsconfig: "npm:*"
   languageName: unknown
   linkType: soft
