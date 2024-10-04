@@ -87,7 +87,7 @@ const Page: NextPage = () => {
         fetchUserLoanWalletBalances(curve, llamma)
       }
     },
-    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys]
+    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const Page: NextPage = () => {
       }
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -206,8 +206,8 @@ const Page: NextPage = () => {
                 />
               )}
             </AppPageFormsWrapper>
-            
-             <AppPageInfoWrapper>
+
+            <AppPageInfoWrapper>
               {isMdUp && !chartExpanded && <TitleComp />}
               <AppPageInfoContentWrapper variant="secondary">
                 <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
