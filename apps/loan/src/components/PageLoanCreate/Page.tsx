@@ -87,7 +87,7 @@ const Page: NextPage = () => {
         fetchUserLoanWalletBalances(curve, llamma)
       }
     },
-    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys]
+    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const Page: NextPage = () => {
       }
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -165,7 +165,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${rCollateralId}`} />
+      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
       {provider ? (
         <>
           {chartExpanded && (
