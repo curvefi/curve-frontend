@@ -19,7 +19,7 @@ export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const { data: tokenUsdRates, isError: isUsdRatesError } = useTokenUsdRates({ chainId, tokenAddresses: tokenAddresses })
 
   return useMemo(() => {
-    if (!owmDatasMapper || !marketsCollateralMapper || !marketsTotalSupplyMapper || !marketsTotalDebtMapper || !Object.keys(tokenUsdRates).length) {
+    if (!owmDatasMapper || !marketsCollateralMapper || !marketsTotalSupplyMapper || !marketsTotalDebtMapper || !tokenUsdRates) {
       return {
         isError: isUsdRatesError,
         isLoading: true,

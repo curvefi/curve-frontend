@@ -26,8 +26,8 @@ const DetailInfoLTV = ({
   const debtUsd = useMemo(() => debt && debtUsdRate && +debt.amount * +debtUsdRate, [debt, debtUsdRate])
 
   const collateralUsd = useMemo(() => {
-    if (!collaterals?.every(c => c.address in collateralUsdRates)) return undefined
-    return collaterals.reduce((prev, { amount, address }) => prev + (+amount * +collateralUsdRates[address]), 0)
+    if (!collaterals?.every(c => collateralUsdRates?.[c.address] != null)) return undefined
+    return collaterals.reduce((prev, { amount, address }) => prev + (+amount * +collateralUsdRates![address]), 0)
   }, [collaterals, collateralUsdRates])
 
   return (
