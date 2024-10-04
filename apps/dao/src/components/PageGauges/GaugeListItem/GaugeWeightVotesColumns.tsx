@@ -1,7 +1,9 @@
+import React from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils/'
+import useStore from '@/store/useStore'
 
 import Tooltip from '@/ui/Tooltip'
 
@@ -11,13 +13,14 @@ type GaugeWeightVotesColumnsProps = {
 
 const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
   const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
+  const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
 
   const hasFutureVeCrv = userFutureVeCrv > userVeCrv
 
   return (
     <>
       <BoxColumn>
-        <GaugeData>{userPower}%</GaugeData>
+        <GaugeData className={userGaugeVoteWeightsSortBy.key === 'userPower' ? 'bold' : ''}>{userPower}%</GaugeData>
       </BoxColumn>
       <BoxColumn>
         <Tooltip
@@ -29,7 +32,7 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
             </p>
           }
         >
-          <GaugeData>
+          <GaugeData className={userGaugeVoteWeightsSortBy.key === 'userVeCrv' ? 'bold' : ''}>
             {formatNumber(userVeCrv, { showDecimalIfSmallNumberOnly: true })}
             {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { showDecimalIfSmallNumberOnly: true })}`}
           </GaugeData>
@@ -57,6 +60,9 @@ const BoxColumn = styled.div`
 const GaugeData = styled.p`
   font-size: var(--font-size-2);
   text-align: right;
+  &.bold {
+    font-weight: var(--bold);
+  }
 `
 
 export default GaugeWeightVotesColumns

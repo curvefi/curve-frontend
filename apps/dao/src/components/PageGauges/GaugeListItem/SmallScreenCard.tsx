@@ -32,7 +32,8 @@ const SmallScreenCard: React.FC<Props> = ({
   userGaugeVote = false,
   addUserVote = false,
 }) => {
-  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
+  const { gaugeWeightHistoryMapper, getHistoricGaugeWeights, gaugeListSortBy } = useStore((state) => state.gauges)
+  const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
   const [open, setOpen] = useState(false)
 
   const imageBaseUrl = networks[1].imageBaseUrl
@@ -48,6 +49,28 @@ const SmallScreenCard: React.FC<Props> = ({
     }
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
+  const getGaugeListSortingData = (key: string) => {
+    if (key === 'gauge_relative_weight') {
+      return { title: t`Weight`, value: `${gaugeData.gauge_relative_weight.toFixed(2)}%` }
+    }
+    if (key === 'gauge_relative_weight_7d_delta') {
+      return {
+        title: t`7d Delta`,
+        value: gaugeData.gauge_relative_weight_7d_delta
+          ? `${gaugeData.gauge_relative_weight_7d_delta?.toFixed(2)}%`
+          : 'N/A',
+      }
+    }
+    return {
+      title: t`60d Delta`,
+      value: gaugeData.gauge_relative_weight_60d_delta
+        ? `${gaugeData.gauge_relative_weight_60d_delta?.toFixed(2)}%`
+        : 'N/A',
+    }
+  }
+
+  const gaugeListSortedData = getGaugeListSortingData(gaugeListSortBy.key)
+
   return (
     <GaugeBox onClick={() => setOpen(!open)} addUserVote={addUserVote}>
       <Box flex flexGap="var(--spacing-2)">
@@ -59,8 +82,8 @@ const SmallScreenCard: React.FC<Props> = ({
           </Box>
         ) : (
           <Box flex flexColumn flexGap="var(--spacing-2)" margin="auto 0 auto auto">
-            <GaugeDataTitle>{t`Weight`}</GaugeDataTitle>
-            <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
+            <GaugeDataTitle>{gaugeListSortedData.title}</GaugeDataTitle>
+            <GaugeData>{gaugeListSortedData.value}</GaugeData>
           </Box>
         )}
         <StyledIconButton size="small">

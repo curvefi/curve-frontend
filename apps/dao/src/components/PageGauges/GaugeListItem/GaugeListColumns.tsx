@@ -1,14 +1,21 @@
+import React from 'react'
 import styled from 'styled-components'
+
+import useStore from '@/store/useStore'
 
 type GaugeListColumnsProps = {
   gaugeData: GaugeFormattedData
 }
 
 const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
+  const { gaugeListSortBy } = useStore((state) => state.gauges)
+
   return (
     <>
       <BoxColumn>
-        <GaugeData>{gaugeData.gauge_relative_weight.toFixed(2)}%</GaugeData>
+        <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
+          {gaugeData.gauge_relative_weight.toFixed(2)}%
+        </GaugeData>
       </BoxColumn>
       <BoxColumn>
         <GaugeData
@@ -18,7 +25,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
                 ? 'green'
                 : 'red'
               : ''
-          }`}
+          } ${gaugeListSortBy.key === 'gauge_relative_weight_7d_delta' ? 'bold' : ''}`}
         >
           {gaugeData.gauge_relative_weight_7d_delta ? `${gaugeData.gauge_relative_weight_7d_delta.toFixed(2)}%` : 'N/A'}
         </GaugeData>
@@ -31,7 +38,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
                 ? 'green'
                 : 'red'
               : ''
-          }`}
+          } ${gaugeListSortBy.key === 'gauge_relative_weight_60d_delta' ? 'bold' : ''}`}
         >
           {gaugeData.gauge_relative_weight_60d_delta
             ? `${gaugeData.gauge_relative_weight_60d_delta.toFixed(2)}%`
@@ -68,6 +75,9 @@ const GaugeData = styled.p`
   }
   &.open {
     font-size: var(--font-size-2);
+  }
+  &.bold {
+    font-weight: var(--bold);
   }
 `
 

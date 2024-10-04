@@ -1,3 +1,4 @@
+import React from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -6,7 +7,6 @@ import networks from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
-import CopyIconButton from '@/components/CopyIconButton'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData

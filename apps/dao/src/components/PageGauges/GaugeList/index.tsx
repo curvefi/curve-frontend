@@ -3,11 +3,13 @@ import React, { useEffect, useCallback } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { GAUGE_VOTES_TABLE_LABELS } from '../constants'
+import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Box from '@/ui/Box'
 
+import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import ErrorMessage from '@/components/ErrorMessage'
 import PaginatedTable from '@/components/PaginatedTable'
@@ -37,7 +39,7 @@ const GaugesList = () => {
   }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, gaugeListSortBy])
 
   const handleSortChange = useCallback(
-    (key: keyof GaugeFormattedData) => {
+    (key: React.Key) => {
       setGaugeListSortBy(key as SortByFilterGaugesKeys)
       setGauges(searchValue)
     },
@@ -48,14 +50,22 @@ const GaugesList = () => {
     <>
       <Header>
         <h3>{t`CURVE GAUGES`}</h3>
-        <StyledSearchInput
-          id="inpSearchProposals"
-          placeholder={t`Search`}
-          variant="small"
-          handleInputChange={(val) => setSearchValue(val)}
-          handleSearchClose={() => setSearchValue('')}
-          value={searchValue}
-        />
+        <SortingWrapper>
+          <StyledSearchInput
+            id="inpSearchProposals"
+            placeholder={t`Search`}
+            variant="small"
+            handleInputChange={(val) => setSearchValue(val)}
+            handleSearchClose={() => setSearchValue('')}
+            value={searchValue}
+          />
+          <StyledSelectFilter
+            selectedKey={gaugeListSortBy.key}
+            smallScreenBreakpoint={smallScreenBreakpoint}
+            onSelectionChange={handleSortChange}
+            items={GAUGE_VOTES_SORTING_METHODS}
+          />
+        </SortingWrapper>
       </Header>
       <GaugeListWrapper>
         {searchValue !== '' && (
@@ -110,18 +120,29 @@ const Header = styled.div`
   justify-content: space-between;
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
   width: 100%;
+  gap: var(--spacing-2);
   h3 {
     margin-right: auto;
   }
-  @media (min-width: 29.0625rem) {
+  @media (min-width: 34.375rem) {
     flex-direction: row;
+  }
+`
+
+const SortingWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-2);
+  width: 100%;
+  @media (min-width: 34.375rem) {
+    width: auto;
   }
 `
 
 const StyledSearchInput = styled(SearchInput)`
   width: 100%;
-  margin: var(--spacing-2);
-  @media (min-width: 29.0625rem) {
+  margin: var(--spacing-2) 0;
+  @media (min-width: 34.375rem) {
     width: 15rem;
   }
 `
@@ -170,6 +191,14 @@ const ErrorMessageWrapper = styled.div`
   padding: var(--spacing-5) 0;
   @media (min-width: 25rem) {
     padding: var(--spacing-5) var(--spacing-3);
+  }
+`
+
+const StyledSelectFilter = styled(SelectSortingMethod)<{ smallScreenBreakpoint: number }>`
+  display: none;
+  @media (max-width: ${({ smallScreenBreakpoint }) => smallScreenBreakpoint}rem) {
+    display: block;
+    margin: auto 0;
   }
 `
 
