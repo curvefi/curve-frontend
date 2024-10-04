@@ -90,7 +90,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         return poolDatas.filter(({ pool }) => pool.id.startsWith('factory-crvusd'))
       } else if (key === 'tricrypto') {
         return poolDatas.filter(
-          ({ pool }) => pool.id.startsWith('factory-tricrypto') || pool.id.startsWith('tricrypto')
+          ({ pool }) => pool.id.startsWith('factory-tricrypto') || pool.id.startsWith('tricrypto'),
         )
       } else if (key === 'stableng') {
         return poolDatas.filter(({ pool }) => pool.id.startsWith('factory-stable-ng'))
@@ -131,7 +131,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         {
           tokens: [SEARCH_TERM['pool.underlyingCoinAddresses']],
           other: [SEARCH_TERM['pool.address'], SEARCH_TERM['pool.gauge.address'], SEARCH_TERM['pool.lpToken']],
-        }
+        },
       )
 
       const { tokens: groupedSearchTokens, addresses: groupedSearchAddress } = groupSearchTerms(searchTerm)
@@ -158,7 +158,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       rewardsApyMapper: RewardsApyMapper,
       tvlMapper: TvlMapper,
       volumeMapper: VolumeMapper,
-      campaignRewardsMapper: CampaignRewardsMapper
+      campaignRewardsMapper: CampaignRewardsMapper,
     ) => {
       if (poolDatas.length === 0) {
         return poolDatas
@@ -184,7 +184,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
               return other.length > 0 ? other.reduce((total, { apy }) => total + apy, 0) : 0
             }
           },
-          [order]
+          [order],
         )
       } else if (sortKey === 'tvl') {
         return orderBy(poolDatas, ({ pool }) => Number(tvlMapper[pool.id]?.value ?? 0), [order])
@@ -203,7 +203,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
               return 0
             }
           },
-          [order]
+          [order],
         )
       }
       return poolDatas
@@ -217,7 +217,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       volumeMapper,
       tvlMapper,
       userPoolList,
-      campaignRewardsMapper
+      campaignRewardsMapper,
     ) => {
       let { formValues, formStatus, result, ...sliceState } = get()[sliceKey]
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
@@ -299,7 +299,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
             rewardsApyMapper,
             tvlMapper,
             volumeMapper ?? {},
-            campaignRewardsMapper
+            campaignRewardsMapper,
           )
         }
 
