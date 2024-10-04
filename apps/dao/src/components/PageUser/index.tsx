@@ -1,0 +1,116 @@
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
+import { useEffect, useState } from 'react'
+
+import useStore from '@/store/useStore'
+
+import Box from '@/ui/Box'
+import UserStats from './UserStats'
+import UserHeader from './UserHeader'
+import UserProposalVotesTable from './UserProposalVotesTable'
+import UserLocksTable from './UserLocksTable'
+import UserGaugeVotesTable from './UserGaugeVotesTable'
+import SubNav from '@/components/SubNav'
+
+type UserPageProps = {
+  routerParams: {
+    rUserAddress: string
+  }
+}
+
+const UserPage: React.FC<UserPageProps> = ({ routerParams: { rUserAddress } }) => {
+  const {
+    veCrvHolders: { allHolders, fetchStatus },
+    getVeCrvHolders,
+  } = useStore((state) => state.analytics)
+  const { getUserEns, userMapper } = useStore((state) => state.user)
+  const provider = useStore((state) => state.wallet.getProvider(''))
+  const [activeNavKey, setNavKey] = useState('proposals')
+
+  const navItems = [
+    { key: 'proposals', label: t`User Proposal Votes` },
+    { key: 'gauge_votes', label: t`User Gauge Votes` },
+    { key: 'locks', label: t`User Locks` },
+  ]
+
+  const userAddress = rUserAddress.toLowerCase()
+
+  const tableMinWidth = 41.875
+
+  const holdersLoading = fetchStatus === 'LOADING'
+  const holdersError = fetchStatus === 'ERROR'
+
+  const veCrvHolder: VeCrvHolder = allHolders[userAddress] || {
+    user: rUserAddress,
+    locked: 0,
+    unlock_time: 0,
+    weight: 0,
+    weight_ratio: 0,
+  }
+
+  useEffect(() => {
+    if (Object.keys(allHolders).length === 0 && holdersLoading && !holdersError) {
+      getVeCrvHolders()
+    }
+  }, [getVeCrvHolders, allHolders, holdersLoading, holdersError])
+
+  // Get user ENS
+  useEffect(() => {
+    if (!userMapper[userAddress] && provider) {
+      getUserEns(userAddress)
+    }
+  }, [getUserEns, userAddress, userMapper, provider])
+
+  return (
+    <Wrapper>
+      <UserPageContainer variant="secondary">
+        <UserHeader userAddress={userAddress} userMapper={userMapper} />
+        <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
+      </UserPageContainer>
+      <Box>
+        <SubNav activeKey={activeNavKey} navItems={navItems} setNavChange={setNavKey} />
+        <Container variant="secondary">
+          {activeNavKey === 'proposals' && (
+            <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
+          )}
+          {activeNavKey === 'gauge_votes' && (
+            <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
+          )}
+          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+        </Container>
+      </Box>
+    </Wrapper>
+  )
+}
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: var(--spacing-4) auto var(--spacing-6);
+  width: 65rem;
+  max-width: 100%;
+  flex-grow: 1;
+  min-height: 100%;
+  gap: var(--spacing-3);
+  @media (min-width: 34.375rem) {
+    max-width: 95%;
+  }
+`
+
+const UserPageContainer = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`
+
+const Container = styled(Box)`
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding-top: var(--spacing-1);
+`
+
+export default UserPage

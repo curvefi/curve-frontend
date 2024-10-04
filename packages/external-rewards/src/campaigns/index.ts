@@ -11,11 +11,11 @@ import Symbiotic from './Symbiotic.json'
 import Usual from './Usual.json'
 import YieldNest from './YieldNest.json'
 import Fraxtal from './Fraxtal.json'
-import Swell from './Swell.json';
-import Resolv from './Resolv.json';
-import Lombard from './Lombard.json';
-import TurtleSeeds from './TurtleSeeds.json';
-import SolvProtocol from './SolvProtocol.json';
+import Swell from './Swell.json'
+import Resolv from './Resolv.json'
+import Lombard from './Lombard.json'
+import TurtleSeeds from './TurtleSeeds.json'
+import SolvProtocol from './SolvProtocol.json'
 
 export {
   DLCLink,
@@ -35,5 +35,5 @@ export {
   Resolv,
   Lombard,
   TurtleSeeds,
-  SolvProtocol
+  SolvProtocol,
 }

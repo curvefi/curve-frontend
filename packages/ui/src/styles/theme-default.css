@@ -98,6 +98,7 @@ body.theme-default {
   --box_header--primary--background-color: var(--whitel85);
   --box_header--font-size: var(--font-size-4);
   --box_header--font-weight: var(--bold);
+  --box_header--secondary--background-color: var(--gray-500a20);
   --box--secondary--background-color: var(--layout--home--background-color);
   --box--secondary--border: 1px solid var(--border-600);
   --box--secondary--content--background-color: var(--border-600);
@@ -314,14 +315,17 @@ body.theme-default {
   --tooltip--color: var(--white);
   --tooltip--border-color: var(--border-400);
   --tooltip--background-color: var(--black);
+
   /* Charts */
   --chart-green: #26a69a;
   --chart-red: #ef5350;
-  --chart-label: #9b7dff;
+  --chart-orange: #ea920e;
+  --chart-purple: #9b7dff;
+  --chart-label: var(--chart-purple);
   --chart-volume-green: #26a6997e;
   --chart-volume-red: #ef53507e;
   --chart-oracle-price-line: #3360c9;
-  --chart-liq-range: #ea920e;
+  --chart-liq-range: var(--chart-orange);
   --chart-liq-range-a25: #ea920e25;
   --chart-liq-range-old: #bababa;
   --chart-liq-range-a25-old: #aaaaaa25;
