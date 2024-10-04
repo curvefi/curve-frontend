@@ -6,7 +6,7 @@ Curve-frontend is a NextJs user-interface application designed to connect to Cur
 
 Before you begin, ensure you have met the following requirements:
 
-- [nodejs](https://nodejs.org/) version 18.17
+- [nodejs](https://nodejs.org/) version 20
 - [yarn](https://yarnpkg.com/) version 1.22
 
 ## Installation
