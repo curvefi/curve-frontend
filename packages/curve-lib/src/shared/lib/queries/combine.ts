@@ -1,13 +1,14 @@
-import { useQueries } from '@tanstack/react-query'
+import { useQueries, UseQueryResult } from '@tanstack/react-query'
 import {
   CombinedQueriesResult,
+  CombinedQueryMappingResult,
   ExtractDataType,
-  PartialQueryResult,
   QueryOptionsArray,
   QueryResultsArray
 } from './types'
-import { useMemo } from 'react'
+import { useCallback } from 'react'
 
+/** Combines the metadata of multiple queries into a single object. */
 const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>): Omit<CombinedQueriesResult<T>, 'data'> => ({
   isLoading: results.some((result) => result.isLoading),
   isPending: results.some((result) => result.isPending),
@@ -15,20 +16,36 @@ const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsAr
   isFetching: results.some((result) => result.isFetching),
 })
 
+/** Combines the data and metadata of multiple queries into a single object. */
 const combineQueriesToList = <T extends QueryOptionsArray>(results: QueryResultsArray<T>): CombinedQueriesResult<T> => ({
   data: results.map((result) => result.data),
   ...combineQueriesMeta(results),
 })
 
+/** Combines the data and metadata of multiple queries into a single object. */
+const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>(results: QueryResultsArray<T>, keys: K): CombinedQueryMappingResult<T, K> => ({
+  data: Object.fromEntries((results || []).map((result, index) => [keys[index], result])) as Record<K[number], ExtractDataType<T[number]>>,
+  ...combineQueriesMeta(results),
+})
+
+/**
+ * Combines multiple queries into a single list.
+ * @param queryOptions The query options to combine
+ * @returns The combined queries in a list
+ */
 export const useCombinedQueries = <T extends QueryOptionsArray>(queryOptions: [...T]): CombinedQueriesResult<T> => useQueries({
   queries: queryOptions,
   combine: combineQueriesToList,
 })
 
-export const useQueryMapping = <T extends QueryOptionsArray, K extends string>(queryOptions: [...T], keys: K[]) => {
-  const { data, ...meta } = useCombinedQueries(queryOptions)
-  return useMemo(() => ({
-    ...meta,
-    data: Object.fromEntries((data || []).map((result, index) => [keys[index], result])) as Record<K, ExtractDataType<T[number]>>
-  }), [data, meta, keys])
-}
+/**
+ * Combines multiple queries into a single object with keys for each query
+ * @param queryOptions The query options to combine
+ * @param keys The keys to use for each query
+ * @returns The combined queries in an object
+ */
+export const useQueryMapping = <T extends QueryOptionsArray, K extends string[]>(queryOptions: [...T], keys: [...K]): CombinedQueryMappingResult<T, K> =>
+  useQueries({
+    queries: queryOptions,
+    combine: useCallback((results: UseQueryResult<unknown, Error>[]) => combineQueriesToObject(results, keys), [keys])
+  })

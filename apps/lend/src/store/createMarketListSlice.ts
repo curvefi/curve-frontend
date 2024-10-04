@@ -96,7 +96,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         const usdRate = getLastTokenUsdRate(chainId, owm.borrowed_token.address)
         if (typeof usdRate === 'undefined') return true
         if (marketListShowOnlyInSmallMarkets[owm.id]) return false
-        return +cap * +usdRate > smallMarketAmount
+        return +cap * usdRate > smallMarketAmount
       })
     },
     filterBySearchText: (searchText, owmDatas) => {

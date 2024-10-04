@@ -52,7 +52,7 @@ const Header = () => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const tvl = useTvl(rChainId);
+  const { data: tvl } = useTvl(rChainId);
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -163,7 +163,7 @@ const Header = () => {
         <HeaderSecondary
           advancedMode={appNavAdvancedMode}
           appsLinks={APPS_LINKS}
-          appStats={[{ label: 'TVL', value: tvl ?? '' }]}
+          appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
           locale={appNavLocale}
           theme={appNavTheme}
         />

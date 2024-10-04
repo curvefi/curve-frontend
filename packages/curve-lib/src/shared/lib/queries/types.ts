@@ -13,3 +13,5 @@ export type QueryResultsArray<T extends QueryOptionsArray> = {
 export type PartialQueryResult<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching'>
 
 export type CombinedQueriesResult<T extends QueryOptionsArray> = PartialQueryResult<CombinedDataType<T>>;
+
+export type CombinedQueryMappingResult<T extends QueryOptionsArray, K extends string[]> = PartialQueryResult<Record<K[number], CombinedDataType<T>[number]>>;
