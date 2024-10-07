@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['next', 'turbo', 'prettier'],
+  extends: ['next', 'turbo', 'prettier', "@feature-sliced"],
   plugins: ['@tanstack/query'],
   rules: {
     '@next/next/no-img-element': 'off',
