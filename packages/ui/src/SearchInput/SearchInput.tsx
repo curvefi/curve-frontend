@@ -1,9 +1,9 @@
 import * as React from 'react'
 import styled from 'styled-components'
 
+import { RCEditClear } from 'ui/src/images'
 import Icon from 'ui/src/Icon/Icon'
 import IconButton from 'ui/src/IconButton'
-import { RCEditClear } from 'ui/src/images'
 import InputDebounced from 'ui/src/InputComp/InputDebounced'
 import InputProvider from 'ui/src/InputComp/InputProvider'
 

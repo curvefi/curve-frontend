@@ -1,16 +1,16 @@
-
-
-
-import Box from '@/ui/Box'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
+
+import useStore from '@/store/useStore'
+
+import { checkFormReady } from '@/components/PageCreatePool/utils'
+
 import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
-import ParametersSummary from '@/components/PageCreatePool/Summary/ParametersSummary'
-import PoolInfoSummary from '@/components/PageCreatePool/Summary/PoolInfoSummary'
+import Box from '@/ui/Box'
 import PoolTypeSummary from '@/components/PageCreatePool/Summary/PoolTypeSummary'
 import TokensInPoolSummary from '@/components/PageCreatePool/Summary/TokensInPoolSummary'
-import { checkFormReady } from '@/components/PageCreatePool/utils'
-import useStore from '@/store/useStore'
+import ParametersSummary from '@/components/PageCreatePool/Summary/ParametersSummary'
+import PoolInfoSummary from '@/components/PageCreatePool/Summary/PoolInfoSummary'
 
 type Props = {
   imageBaseUrl: string

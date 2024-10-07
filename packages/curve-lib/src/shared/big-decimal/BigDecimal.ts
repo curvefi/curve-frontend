@@ -1,4 +1,4 @@
-import { BigDecimalTypes } from './BigDecimal'
+import { BigDecimalTypes } from './BigDecimal.d'
 
 class BigDecimal {
   private static readonly STRING_REGEX = /^(-?)(\d*)(?:\.(\d+))?$/

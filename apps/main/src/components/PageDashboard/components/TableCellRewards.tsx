@@ -1,16 +1,16 @@
+import type { SortId } from '@/components/PageDashboard/types'
 
+import styled from 'styled-components'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { haveRewardsApy } from '@/utils/utilsCurvejs'
 
 import { Chip } from '@/ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import styled from 'styled-components'
-import TableCellRewardsTooltip from '@/components/PageDashboard/components/TableCellRewardsTooltip'
 import { DetailText } from '@/components/PageDashboard/components/TableRow'
-import type { SortId } from '@/components/PageDashboard/types'
+import PoolRewardsCrv from '@/components/PoolRewardsCrv'
+import TableCellRewardsTooltip from '@/components/PageDashboard/components/TableCellRewardsTooltip'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolRewardsCrv from '@/components/PoolRewardsCrv'
-import { haveRewardsApy } from '@/utils/utilsCurvejs'
 
 const TableCellRewards = ({
   poolData,

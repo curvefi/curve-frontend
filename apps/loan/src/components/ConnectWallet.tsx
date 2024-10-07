@@ -1,9 +1,9 @@
-import ConnectWalletPrompt from '@/ui/ConnectWalletPrompt'
 import { isLoading } from '@/ui/utils'
-import { CONNECT_STAGE } from '@/constants'
 import useStore from '@/store/useStore'
 
+import { CONNECT_STAGE } from '@/constants'
 
+import ConnectWalletPrompt from '@/ui/ConnectWalletPrompt'
 
 type ConnectWalletProps = {
   description: string

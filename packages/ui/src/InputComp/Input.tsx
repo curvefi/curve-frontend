@@ -1,9 +1,9 @@
+import type { InputProps } from './types'
 
 import * as React from 'react'
 import { forwardRef, useRef } from 'react'
 
 import { StyledInput } from './styles'
-import type { InputProps } from './types'
 
 const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(
   ({ id, globalDisabled, testId, ...inputProps }, ref) => {

@@ -1,17 +1,17 @@
-import Button from '@/ui/Button'
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import TxInfoBar from '@/ui/TxInfoBar'
-import { breakpoints, formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import AlertFormError from '@/components/AlertFormError'
-import LoanFormConnect from '@/components/LoanFormConnect'
+import { breakpoints, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
+import AlertFormError from '@/components/AlertFormError'
+import Button from '@/ui/Button'
+import DetailInfo from '@/ui/DetailInfo'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import LoanFormConnect from '@/components/LoanFormConnect'
+import TxInfoBar from '@/ui/TxInfoBar'
 
 type Props = {
   rChainId: ChainId

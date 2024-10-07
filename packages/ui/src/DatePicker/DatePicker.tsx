@@ -1,7 +1,6 @@
 // @ts-nocheck
-import { createCalendar, getWeeksInMonth } from '@internationalized/date'
-import React, { useEffect } from 'react'
 import type { AriaButtonProps } from 'react-aria'
+import type { DateFieldStateOptions } from 'react-stately'
 
 import {
   useButton,
@@ -13,16 +12,17 @@ import {
   useDatePicker,
   useLocale,
 } from 'react-aria'
-import type { DateFieldStateOptions } from 'react-stately'
+import { createCalendar, getWeeksInMonth } from '@internationalized/date'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 
 import Box from 'ui/src/Box'
-import ModalDialog from 'ui/src/Dialog'
+import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import InputProvider from 'ui/src/InputComp'
-import Chip from 'ui/src/Typography/Chip'
+import ModalDialog from 'ui/src/Dialog'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
 function Button(props: AriaButtonProps) {

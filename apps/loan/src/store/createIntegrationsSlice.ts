@@ -1,15 +1,15 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { FilterKey, FormStatus, FormValues } from '@/components/PageIntegrations/types'
 import type { IntegrationApp, IntegrationsTags } from '@/ui/Integration/types'
 
 import Fuse from 'fuse.js'
-import produce from 'immer'
 import cloneDeep from 'lodash/cloneDeep'
+import produce from 'immer'
 import sortBy from 'lodash/sortBy'
-import type { GetState, SetState } from 'zustand'
-import type { FilterKey, FormStatus, FormValues } from '@/components/PageIntegrations/types'
 
-import networks from '@/networks'
-import type { State } from '@/store/useStore'
 import { fulfilledValue, httpFetcher } from '@/utils/helpers'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

@@ -1,6 +1,6 @@
-import { t } from '@lingui/macro'
 import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
 
+import { t } from '@lingui/macro'
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   amounts: [],

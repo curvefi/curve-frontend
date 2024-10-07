@@ -1,13 +1,13 @@
+import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
+import { getTokenName } from '@/utils/utilsLoan'
+import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React, { useMemo } from 'react'
-import useStore from '@/store/useStore'
-import { getTokenName } from '@/utils/utilsLoan'
 
 const AlertSoftLiquidation = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])

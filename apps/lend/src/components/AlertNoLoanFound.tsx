@@ -1,15 +1,15 @@
-import AlertBox from '@/ui/AlertBox'
 import type { AlertType } from '@/ui/AlertBox/types'
 
-import Button from '@/ui/Button'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
 import { getLoanCreatePathname } from '@/utils/utilsRouter'
+import useStore from '@/store/useStore'
 
+import AlertBox from '@/ui/AlertBox'
+import Button from '@/ui/Button'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
   const params = useParams()

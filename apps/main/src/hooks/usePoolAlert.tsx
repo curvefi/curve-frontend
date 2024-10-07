@@ -1,16 +1,16 @@
-import Box from '@/ui/Box'
-import { RCCrossCurve } from '@/ui/images'
-import { ExternalLink, InternalLink } from '@/ui/Link'
-import { breakpoints } from '@/ui/utils'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import PoolAlertCustomMessage from '@/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/constants'
-import useStore from '@/store/useStore'
-import { shortenTokenAddress } from '@/utils'
+import { breakpoints } from '@/ui/utils'
 import { getPath } from '@/utils/utilsRouter'
+import { shortenTokenAddress } from '@/utils'
+import useStore from '@/store/useStore'
 
+import { RCCrossCurve } from '@/ui/images'
+import { ExternalLink, InternalLink } from '@/ui/Link'
+import Box from '@/ui/Box'
+import PoolAlertCustomMessage from '@/components/PoolAlertCustomMessage'
 
 const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
   const params = useStore((state) => state.routerProps?.params)

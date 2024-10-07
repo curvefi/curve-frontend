@@ -1,3 +1,19 @@
+import type { NextPage } from 'next'
+import type { DetailInfoTypes } from '@/components/PageLoanManage/types'
+
+import { t } from '@lingui/macro'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+
+import { REFRESH_INTERVAL } from '@/constants'
+import { _getSelectedTab } from '@/components/PageLoanManage/utils'
+import { helpers } from '@/lib/apiLending'
+import { scrollToTop } from '@/utils/helpers'
+import networks from '@/networks'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
+
 import {
   AppPageFormContainer,
   AppPageFormTitleWrapper,
@@ -6,38 +22,22 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
+import DocumentHead from '@/layout/DocumentHead'
+import DetailsMarket from 'components/DetailsMarket'
+import DetailsUserLoan from '@/components/DetailsUser/components/DetailsUserLoan'
+import LoanMange from '@/components/PageLoanManage/index'
+import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import Tabs, { Tab } from '@/ui/Tab'
 import Box from '@/ui/Box'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
   ExpandButton,
   ExpandIcon,
 } from '@/ui/Chart/styles'
-import Tabs, { Tab } from '@/ui/Tab'
-import { t } from '@lingui/macro'
-import type { NextPage } from 'next'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
-import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ConnectWallet from '@/components/ConnectWallet'
-import DetailsUserLoan from '@/components/DetailsUser/components/DetailsUserLoan'
-import LoanMange from '@/components/PageLoanManage/index'
-import type { DetailInfoTypes } from '@/components/PageLoanManage/types'
-
-
-import { _getSelectedTab } from '@/components/PageLoanManage/utils'
-import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import { REFRESH_INTERVAL } from '@/constants'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useTitleMapper from '@/hooks/useTitleMapper'
-import DocumentHead from '@/layout/DocumentHead'
-import { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { scrollToTop } from '@/utils/helpers'
-
-import DetailsMarket from 'components/DetailsMarket'
 
 const Page: NextPage = () => {
   const params = useParams()

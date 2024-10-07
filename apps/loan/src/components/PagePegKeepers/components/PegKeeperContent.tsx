@@ -1,16 +1,16 @@
+import React from 'react'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
+import { breakpoints, formatNumber, type NumberFormatOptions } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
-import TextCaption from '@/ui/TextCaption'
-import { breakpoints, formatNumber, type NumberFormatOptions } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React from 'react'
-import styled from 'styled-components'
-import PegKeeperForm from '@/components/PagePegKeepers/components/PegKeeperForm'
 import PegKeeperLabel from '@/components/PagePegKeepers/components/PegKeeperLabel'
-import useStore from '@/store/useStore'
+import PegKeeperForm from '@/components/PagePegKeepers/components/PegKeeperForm'
+import TextCaption from '@/ui/TextCaption'
 
 type Props = {
   rChainId: ChainId

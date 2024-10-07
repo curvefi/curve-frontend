@@ -1,21 +1,16 @@
-import { BN } from '@/ui/utils'
-import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { DateValue } from '@internationalized/date'
-import PromisePool from '@supercharge/promise-pool/dist'
-import chunk from 'lodash/chunk'
+import type { FormType as LockFormType } from '@/components/PageCrvLocker/types'
+import type { IProfit } from '@curvefi/api/lib/interfaces'
+import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
+import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
+
 import countBy from 'lodash/countBy'
+import dayjs from '@/lib/dayjs'
+import chunk from 'lodash/chunk'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
-import type { FormType as LockFormType } from '@/components/PageCrvLocker/types'
-import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
-import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
+import PromisePool from '@supercharge/promise-pool/dist'
 
-import dayjs from '@/lib/dayjs'
-
-import { httpFetcher } from '@/lib/utils'
-import networks from '@/networks'
-import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -25,6 +20,11 @@ import {
   separateCrvReward,
 } from '@/utils/utilsCurvejs'
 
+import networks from '@/networks'
+import { BN } from '@/ui/utils'
+import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
+import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
+import { httpFetcher } from '@/lib/utils'
 import {
   excludeLowExchangeRateCheck,
   getExchangeRates,

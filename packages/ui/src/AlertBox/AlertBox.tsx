@@ -1,8 +1,8 @@
+import type { AlertBoxProps } from 'ui/src/AlertBox/types'
 
 import * as React from 'react'
 import { useState, useRef, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import type { AlertBoxProps } from 'ui/src/AlertBox/types'
 
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'

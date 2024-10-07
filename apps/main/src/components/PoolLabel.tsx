@@ -1,19 +1,19 @@
-
-
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
-import { Chip } from '@/ui/Typography'
 import React from 'react'
 import styled from 'styled-components'
-import ChipPool from '@/components/ChipPool'
-import ChipToken from '@/components/ChipToken'
-import TableCellReferenceAsset from '@/components/PagePoolList/components/TableCellReferenceAsset'
+
 import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PagePoolList/utils'
-import TokenIcons from '@/components/TokenIcons'
+import useStore from '@/store/useStore'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokenAlert from '@/hooks/useTokenAlert'
-import useStore from '@/store/useStore'
+
+import { Chip } from '@/ui/Typography'
+import AlertBox from '@/ui/AlertBox'
+import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
+import Box from '@/ui/Box'
+import ChipPool from '@/components/ChipPool'
+import ChipToken from '@/components/ChipToken'
+import TokenIcons from '@/components/TokenIcons'
+import TableCellReferenceAsset from '@/components/PagePoolList/components/TableCellReferenceAsset'
 
 type PoolListProps = {
   quickViewValue?: string | React.ReactNode | null

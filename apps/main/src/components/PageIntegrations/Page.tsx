@@ -1,19 +1,19 @@
-import { ExternalLink } from '@/ui/Link'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t, Trans } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t, Trans } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import IntegrationsComp from '@/components/PageIntegrations/index'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import DocumentHead from '@/layout/default/DocumentHead'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
+import { ExternalLink } from '@/ui/Link'
+import DocumentHead from '@/layout/default/DocumentHead'
+import IntegrationsComp from '@/components/PageIntegrations/index'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
 const Page: NextPage = () => {
   const params = useParams()

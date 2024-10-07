@@ -1,6 +1,6 @@
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {

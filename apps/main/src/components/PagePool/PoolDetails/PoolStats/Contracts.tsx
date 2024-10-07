@@ -1,14 +1,14 @@
+import type { PageTransferProps } from '@/components/PagePool/types'
 
 import { t } from '@lingui/macro'
-import React from 'react'
 import styled from 'styled-components'
+import React from 'react'
 
+import { isValidAddress } from '@/utils'
 
 import ChipInactive from '@/components/ChipInactive'
 import AddGaugeLink from '@/components/PagePool/components/AddGaugeLink'
 import ContractComp from '@/components/PagePool/components/ContractComp'
-import type { PageTransferProps } from '@/components/PagePool/types'
-import { isValidAddress } from '@/utils'
 
 type ContractsProps = {
   rChainId: ChainId

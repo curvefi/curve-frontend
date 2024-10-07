@@ -1,7 +1,7 @@
+import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanManage/types'
+import type { InpError } from '@/components/PageLoanCreate/types'
 import type { Step } from '@/ui/Stepper/types'
 import React from 'react'
-import type { InpError } from '@/components/PageLoanCreate/types'
-import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanManage/types'
 
 export type FormValues = {
   stateCollateral: string

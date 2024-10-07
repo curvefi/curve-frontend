@@ -1,7 +1,7 @@
-import { formatNumber } from '@/ui/utils'
-import isUndefined from 'lodash/isUndefined'
 import React, { useMemo } from 'react'
+import isUndefined from 'lodash/isUndefined'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 const UserInfoLiquidationRange = ({

@@ -1,8 +1,8 @@
 import type { AnchorHTMLAttributes } from 'react'
-import React from 'react'
-import styled from 'styled-components'
 import type { LinkProps } from 'ui/src/Link/styles'
 
+import styled from 'styled-components'
+import React from 'react'
 
 import { linkStyles } from 'ui/src/Link/styles'
 

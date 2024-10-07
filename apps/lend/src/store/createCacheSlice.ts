@@ -1,10 +1,10 @@
-import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { MarketListItem, MarketListMapper } from '@/components/PageMarketList/types'
 import type { State } from '@/store/useStore'
+import type { MarketListItem, MarketListMapper } from '@/components/PageMarketList/types'
+import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { sleep } from '@/utils/helpers'
+import cloneDeep from 'lodash/cloneDeep'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

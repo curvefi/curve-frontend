@@ -1,8 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Icon from 'ui/src/Icon'
 import { Chip } from 'ui/src/Typography'
+import Icon from 'ui/src/Icon'
 
 const IntegrationAppTag = ({
   integrationTag,

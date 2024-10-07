@@ -1,13 +1,13 @@
-import Box from '@/ui/Box'
-import DetailInfo from '@/ui/DetailInfo'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React from 'react'
-import styled from 'styled-components'
 import type { FormValues } from '@/components/PageLoanManage/LoanDeleverage/types'
 
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+import React from 'react'
 
 import { getTokenName } from '@/utils/utilsLoan'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import Box from '@/ui/Box'
+import DetailInfo from '@/ui/DetailInfo'
 
 // Deleverage full repayment will result in the following changes to user wallet:
 // 1. wallet.collateral = userState.collateral - formValues.collateral

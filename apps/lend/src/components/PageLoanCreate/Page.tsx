@@ -1,3 +1,17 @@
+import type { NextPage } from 'next'
+
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { t } from '@lingui/macro'
+
+import { REFRESH_INTERVAL } from '@/constants'
+import { helpers } from '@/lib/apiLending'
+import { scrollToTop } from '@/utils/helpers'
+import networks from '@/networks'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
+import useTitleMapper from '@/hooks/useTitleMapper'
+
 import {
   AppPageFormContainer,
   AppPageFormTitleWrapper,
@@ -6,34 +20,20 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import Box from '@/ui/Box'
+import DocumentHead from '@/layout/DocumentHead'
+import LoanCreate from '@/components/PageLoanCreate/index'
+import DetailsMarket from 'components/DetailsMarket'
+import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
   ExpandButton,
   ExpandIcon,
 } from '@/ui/Chart/styles'
-import { t } from '@lingui/macro'
-import type { NextPage } from 'next'
-
-import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-
+import Box from '@/ui/Box'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
-import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ConnectWallet from '@/components/ConnectWallet'
-import LoanCreate from '@/components/PageLoanCreate/index'
-import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import { REFRESH_INTERVAL } from '@/constants'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useTitleMapper from '@/hooks/useTitleMapper'
-
-import DocumentHead from '@/layout/DocumentHead'
-import { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { scrollToTop } from '@/utils/helpers'
-import DetailsMarket from 'components/DetailsMarket'
 
 const Page: NextPage = () => {
   const params = useParams()

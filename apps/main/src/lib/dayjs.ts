@@ -1,10 +1,10 @@
+import type { Locale } from '@/lib/i18n'
 
 import dayjs from 'dayjs'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
 import isLeapYear from 'dayjs/plugin/isLeapYear'
-import localizedFormat from 'dayjs/plugin/localizedFormat'
 import utc from 'dayjs/plugin/utc'
-import type { Locale } from '@/lib/i18n'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
 
 dayjs.extend(isLeapYear)
 dayjs.extend(utc)

@@ -1,10 +1,10 @@
-import { formatNumber } from '@/ui/utils'
+import type { UserBaseProfit } from '@/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
-import { Info } from '@/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/components/PageDashboard/types'
 
+import { formatNumber } from '@/ui/utils'
 
-import type { UserBaseProfit } from '@/types'
+import { Info } from '@/components/PageDashboard/components/TableRow'
 
 type Props = {
   baseProfit?: UserBaseProfit

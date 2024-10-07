@@ -1,19 +1,19 @@
-import Icon from '@/ui/Icon'
-import { ExternalLink } from '@/ui/Link'
-import TextEllipsis from '@/ui/TextEllipsis'
-import isUndefined from 'lodash/isUndefined'
-import { useMemo } from 'react'
 import type { Params } from 'react-router'
-
-import { Link } from 'react-router-dom'
-import styled from 'styled-components'
 import type { Route } from '@/components/PageRouterSwap/types'
 
-import { ROUTE } from '@/constants'
-import networks, { networksIdMapper } from '@/networks'
-import { shortenTokenAddress } from '@/utils'
-import { getPath } from '@/utils/utilsRouter'
+import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
+import isUndefined from 'lodash/isUndefined'
+import styled from 'styled-components'
 
+import { ROUTE } from '@/constants'
+import { getPath } from '@/utils/utilsRouter'
+import { shortenTokenAddress } from '@/utils'
+import networks, { networksIdMapper } from '@/networks'
+
+import { ExternalLink } from '@/ui/Link'
+import Icon from '@/ui/Icon'
+import TextEllipsis from '@/ui/TextEllipsis'
 
 const DetailInfoTradeRouteRoute = ({
   params,

@@ -1,18 +1,18 @@
-import ExternalLink from '@/ui/Link/ExternalLink'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import PagePegKeepers from '@/components/PagePegKeepers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import DocumentHead from '@/layout/DocumentHead'
-import Settings from '@/layout/Settings'
+import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils/helpers'
+import usePageOnMount from '@/hooks/usePageOnMount'
 
+import DocumentHead from '@/layout/DocumentHead'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Settings from '@/layout/Settings'
+import PagePegKeepers from '@/components/PagePegKeepers'
 
 const Page: NextPage = () => {
   const params = useParams()

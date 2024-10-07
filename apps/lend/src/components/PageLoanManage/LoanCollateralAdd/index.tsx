@@ -1,32 +1,32 @@
-import AlertBox from '@/ui/AlertBox'
-import Stepper from '@/ui/Stepper'
-import { getActiveStep } from '@/ui/Stepper/helpers'
+import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanCollateralAdd/types'
+import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
-import TxInfoBar from '@/ui/TxInfoBar'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
+
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { t } from '@lingui/macro'
+
+import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import { DEFAULT_FORM_VALUES } from '@/store/createLoanCollateralAddSlice'
+import { NOFITY_MESSAGE } from '@/constants'
+import { _showNoLoanFound } from '@/utils/helpers'
+import { formatNumber } from '@/ui/utils'
+import { getActiveStep } from '@/ui/Stepper/helpers'
+import { helpers } from '@/lib/apiLending'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+
+import { StyledDetailInfoWrapper } from '@/components/PageLoanManage/styles'
+import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
-import AlertSummary from '@/components/AlertLoanSummary'
 import AlertNoLoanFound from '@/components/AlertNoLoanFound'
+import AlertSummary from '@/components/AlertLoanSummary'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import InpToken from '@/components/InpToken'
 import LoanFormConnect from '@/components/LoanFormConnect'
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanCollateralAdd/types'
-import { StyledDetailInfoWrapper } from '@/components/PageLoanManage/styles'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
-
-
-import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
-import { NOFITY_MESSAGE } from '@/constants'
-import { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
-import { DEFAULT_FORM_VALUES } from '@/store/createLoanCollateralAddSlice'
-import useStore from '@/store/useStore'
-import { _showNoLoanFound } from '@/utils/helpers'
-
+import Stepper from '@/ui/Stepper'
+import TxInfoBar from '@/ui/TxInfoBar'
 
 const LoanCollateralAdd = ({
   rChainId,

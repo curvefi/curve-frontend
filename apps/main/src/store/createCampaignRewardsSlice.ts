@@ -1,10 +1,10 @@
-import produce from 'immer'
-import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
-import type { GetState, SetState } from 'zustand'
-import networks from '@/networks'
 import type { State } from '@/store/useStore'
+import type { GetState, SetState } from 'zustand'
+import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
+import produce from 'immer'
 
 import campaigns from '@/shared/external-rewards'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

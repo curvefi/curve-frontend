@@ -1,25 +1,25 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { Amount } from '@/components/PagePool/utils'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/components/PagePool/types'
+import type { FormLpTokenExpected, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
+import type { FormType, FormStatus, FormValues } from '@/components/PagePool/Deposit/types'
 
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
-import type { GetState, SetState } from 'zustand'
-import type { FormType, FormStatus, FormValues } from '@/components/PagePool/Deposit/types'
-import type { FormLpTokenExpected, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
 
+import networks from '@/networks'
 import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/components/PagePool/Deposit/utils'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/components/PagePool/types'
-import type { Amount } from '@/components/PagePool/utils'
-import { getAmountsError, parseAmountsForAPI } from '@/components/PagePool/utils'
-import { NETWORK_TOKEN } from '@/constants'
-import networks from '@/networks'
-import { getUserPoolActiveKey } from '@/store/createUserSlice'
-import type { State } from '@/store/useStore'
-import { isBonus, isHighSlippage } from '@/utils'
-import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from 'components/PagePool'
+import { NETWORK_TOKEN } from '@/constants'
+import { getAmountsError, parseAmountsForAPI } from '@/components/PagePool/utils'
+import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
+import { isBonus, isHighSlippage } from '@/utils'
+import { getUserPoolActiveKey } from '@/store/createUserSlice'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

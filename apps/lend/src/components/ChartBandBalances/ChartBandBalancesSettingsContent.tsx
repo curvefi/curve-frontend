@@ -1,12 +1,12 @@
-import Button from '@/ui/Button'
-import TextCaption from '@/ui/TextCaption'
-import { breakpoints } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Button from '@/ui/Button'
+import TextCaption from '@/ui/TextCaption'
 
 type Props = {
   toggle?: () => void

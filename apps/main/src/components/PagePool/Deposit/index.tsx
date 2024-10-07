@@ -1,21 +1,21 @@
+import type { FormType } from '@/components/PagePool/Deposit/types'
+import type { TransferProps } from '@/components/PagePool/types'
 
-
-
-import AlertBox from '@/ui/AlertBox'
-import { SlideTab, SlideTabs } from '@/ui/TabSlide'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+
+import { isValidAddress } from '@/utils'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+
+import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
+import { StyledTabSlide } from '@/components/PagePool/styles'
+import { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import AlertBox from '@/ui/AlertBox'
 import AlertCompensation from '@/components/PagePool/Deposit/components/AlertCompensation'
 import FormDeposit from '@/components/PagePool/Deposit/components/FormDeposit'
 import FormDepositStake from '@/components/PagePool/Deposit/components/FormDepositStake'
 import FormStake from '@/components/PagePool/Deposit/components/FormStake'
-import type { FormType } from '@/components/PagePool/Deposit/types'
-import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
-import { StyledTabSlide } from '@/components/PagePool/styles'
-import type { TransferProps } from '@/components/PagePool/types'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { isValidAddress } from '@/utils'
 
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const tabsRef = useRef<HTMLDivElement>(null)

@@ -1,14 +1,14 @@
-
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { FormEstGas } from '@/components/PageLoanManage/types'
+import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
+
+import { isGreaterThanOrEqualTo } from '@/shared/curve-lib'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { FormWarning } from '@/components/AlertFormWarning'
-import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import apiLending from '@/lib/apiLending'
-import type { State } from '@/store/useStore'
-import { isGreaterThanOrEqualTo } from '@/shared/curve-lib'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

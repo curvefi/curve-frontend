@@ -1,10 +1,10 @@
-import DetailInfo from '@/ui/DetailInfo'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import DetailInfo from '@/ui/DetailInfo'
 
 const DetailInfoLeverageX = ({
   leverage,

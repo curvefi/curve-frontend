@@ -1,12 +1,12 @@
-import Box from '@/ui/Box'
-import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
 import React from 'react'
 import styled from 'styled-components'
 
-import TokenIcon from '@/components/TokenIcon'
-import useCollateralAlert from '@/hooks/useCollateralAlert'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import useCollateralAlert from '@/hooks/useCollateralAlert'
 
+import AlertTooltipIcon from '@/ui/Tooltip/TooltipAlert'
+import Box from '@/ui/Box'
+import TokenIcon from '@/components/TokenIcon'
 
 type Props = {
   className?: string

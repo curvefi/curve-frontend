@@ -1,14 +1,14 @@
+import type { Step, StepStatus } from 'ui/src/Stepper/types'
 
 import * as React from 'react'
 import styled from 'styled-components'
 
-import Box from 'ui/src/Box/Box'
-import { RCCross, RCCheck } from 'ui/src/images'
 import { statusColorMap } from 'ui/src/Stepper/helpers'
 
+import { RCCross, RCCheck } from 'ui/src/images'
+import Box from 'ui/src/Box/Box'
 import StepAction from 'ui/src/Stepper/StepAction'
 import StepNumberConnector from 'ui/src/Stepper/StepNumberConnector'
-import type { Step, StepStatus } from 'ui/src/Stepper/types'
 
 const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => {
   return (

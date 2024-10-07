@@ -1,6 +1,6 @@
-import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/components/PageCreatePool/types'
 
+import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 
 export const checkSwapType = (swapType: SwapType) => {
   return swapType !== ''

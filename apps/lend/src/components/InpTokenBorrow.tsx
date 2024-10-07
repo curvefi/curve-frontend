@@ -1,15 +1,15 @@
-import Box from '@/ui/Box'
 import type { BoxProps } from '@/ui/Box/types'
 
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
 
-import InpChipUsdRate from '@/components/InpChipUsdRate'
-import { StyledInpChip } from '@/components/PageLoanManage/styles'
 import { FieldsTitle } from '@/components/SharedFormStyles/FieldsWrapper'
+import { StyledInpChip } from '@/components/PageLoanManage/styles'
+import Box from '@/ui/Box'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
 
 const InpTokenBorrow = ({
   id,

@@ -1,8 +1,8 @@
-import React from 'react'
 import type { AppLogoProps } from 'ui/src/Brand/AppLogo'
-import type { ThemeType } from 'ui/src/Select/SelectThemes'
 import type { ConnectState } from 'ui/src/utils'
+import type { ThemeType } from 'ui/src/Select/SelectThemes'
 
+import React from 'react'
 
 export type PageWidth =
   | 'page-wide'

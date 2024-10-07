@@ -1,8 +1,7 @@
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import { t } from '@lingui/macro'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
+import useStore from '@/store/useStore'
 import {
   TOKEN_A,
   TOKEN_B,
@@ -13,8 +12,9 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import useStore from '@/store/useStore'
 
+import Icon from '@/ui/Icon'
+import IconButton from '@/ui/IconButton'
 
 type Props = {
   curve: CurveApi

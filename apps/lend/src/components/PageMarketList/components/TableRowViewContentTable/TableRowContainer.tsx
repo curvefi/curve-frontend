@@ -1,14 +1,14 @@
+import type { TableRowProps } from '@/components/PageMarketList/types'
 
 import React from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/utils/utilsRouter'
+import { helpers } from '@/lib/apiLending'
+import useStore from '@/store/useStore'
 
 import TableRow from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import TableRowMobile from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
-import type { TableRowProps } from '@/components/PageMarketList/types'
-import { helpers } from '@/lib/apiLending'
-import useStore from '@/store/useStore'
-import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/utils/utilsRouter'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'owmDataCachedOrApi' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>

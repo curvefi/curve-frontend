@@ -1,16 +1,16 @@
+import type { ComboBoxSelectTokenProps } from '@/components/ComboBoxSelectToken/types'
 
+import React from 'react'
+import styled from 'styled-components'
 
+import { focusVisible } from '@/ui/utils'
+import { shortenTokenAddress } from '@/utils'
 
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Chip from '@/ui/Typography/Chip'
-import { focusVisible } from '@/ui/utils'
-import React from 'react'
-import styled from 'styled-components'
 import SelectTokenListItemUserBalance from '@/components/ComboBoxSelectToken/ComboBoxTokenUserBalance'
-import type { ComboBoxSelectTokenProps } from '@/components/ComboBoxSelectToken/types'
 import TokenIcon from '@/components/TokenIcon'
-import { shortenTokenAddress } from '@/utils'
 
 const ComboBoxListItem = ({
   imageBaseUrl,

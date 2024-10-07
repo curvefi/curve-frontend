@@ -1,19 +1,19 @@
+import type { Locale } from '@/lib/i18n'
+
+import { t, Trans } from '@lingui/macro'
+import styled, { css } from 'styled-components'
+import Image from 'next/image'
+import React, { useRef } from 'react'
+
+import { breakpoints } from '@/ui/utils/responsive'
+import { sizes } from '@/ui/utils'
+import networks from '@/networks'
+import useLayoutHeight from '@/hooks/useLayoutHeight'
+import useStore from '@/store/useStore'
+
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
 import Box from '@/ui/Box'
 import { ExternalLink, InternalLink } from '@/ui/Link'
-import { sizes } from '@/ui/utils'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t, Trans } from '@lingui/macro'
-
-import Image from 'next/image'
-import React, { useRef } from 'react'
-import styled, { css } from 'styled-components'
-
-import useLayoutHeight from '@/hooks/useLayoutHeight'
-import type { Locale } from '@/lib/i18n'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-
 
 type InnerSectionProps = {
   className?: string

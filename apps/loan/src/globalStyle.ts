@@ -1,5 +1,5 @@
-import { CURVE_ASSETS_URL } from '@/ui/utils'
 import { createGlobalStyle } from 'styled-components'
+import { CURVE_ASSETS_URL } from '@/ui/utils'
 
 const GlobalStyle = createGlobalStyle`
   /* || GENERAL STYLES */

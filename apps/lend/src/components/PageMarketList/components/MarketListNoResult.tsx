@@ -1,17 +1,17 @@
+import type { PageMarketList } from '@/components/PageMarketList/types'
 
+import React from 'react'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
+import { Filter } from '@/components/PageMarketList/utils'
+import { shortenAccount } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import { shortenAccount } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React from 'react'
-import styled from 'styled-components'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import type { PageMarketList } from '@/components/PageMarketList/types'
-import { Filter } from '@/components/PageMarketList/utils'
-import useStore from '@/store/useStore'
 
 const MarketListNoResult = ({
   searchParams,

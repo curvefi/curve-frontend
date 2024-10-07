@@ -1,6 +1,6 @@
-import { useRef } from 'react'
 import type { AriaDialogProps } from 'react-aria'
 import { useDialog } from 'react-aria'
+import { useRef } from 'react'
 
 interface DialogProps extends AriaDialogProps {
   title?: React.ReactNode

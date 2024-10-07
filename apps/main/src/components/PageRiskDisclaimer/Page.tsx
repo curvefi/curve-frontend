@@ -1,17 +1,17 @@
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
 
-import PoolCreation from '@/components/PageRiskDisclaimer/index'
-import usePageOnMount from '@/hooks/usePageOnMount'
 import DocumentHead from '@/layout/default/DocumentHead'
+import PoolCreation from '@/components/PageRiskDisclaimer/index'
 
 import { scrollToTop } from '@/utils'
+import usePageOnMount from '@/hooks/usePageOnMount'
 
 const Page: NextPage = () => {
   const params = useParams()

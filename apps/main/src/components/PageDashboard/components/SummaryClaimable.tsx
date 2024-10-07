@@ -1,8 +1,5 @@
+import type { WalletDashboardData } from '@/components/PageDashboard/types'
 
-import Spinner from '@/ui/Spinner'
-import Stats from '@/ui/Stats'
-import Chip from '@/ui/Typography/Chip'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 
 import {
@@ -13,7 +10,10 @@ import {
   tooltipProps,
 } from '@/components/PageDashboard/components/Summary'
 
-import type { WalletDashboardData } from '@/components/PageDashboard/types'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import Chip from '@/ui/Typography/Chip'
+import Spinner from '@/ui/Spinner'
+import Stats from '@/ui/Stats'
 
 const SummaryClaimable = ({
   title,

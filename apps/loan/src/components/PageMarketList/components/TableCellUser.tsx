@@ -1,9 +1,9 @@
-import { Chip } from '@/ui/Typography'
 import type { ChipProps } from '@/ui/Typography/types'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import { Chip } from '@/ui/Typography'
 
 const TableCellUser = ({
   collateralId,

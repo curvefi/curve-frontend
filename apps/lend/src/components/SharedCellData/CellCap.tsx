@@ -1,9 +1,9 @@
-import TextCaption from '@/ui/TextCaption'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { useMemo } from 'react'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import TextCaption from '@/ui/TextCaption'
 
 const CellCap = ({
   rChainId,

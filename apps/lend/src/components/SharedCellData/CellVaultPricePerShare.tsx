@@ -1,11 +1,11 @@
-import Chip from '@/ui/Typography/Chip'
 import type { ChipProps } from '@/ui/Typography/types'
 
-import { formatNumber } from '@/ui/utils'
 import React from 'react'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Chip from '@/ui/Typography/Chip'
 
 const CellVaultPricePerShare = ({
   rChainId,

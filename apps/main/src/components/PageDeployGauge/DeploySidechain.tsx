@@ -1,9 +1,10 @@
-import Box from '@/ui/Box'
-import { t } from '@lingui/macro'
+import type { PoolType } from '@/components/PageDeployGauge/types'
+
 import { useEffect, useMemo } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
-import DialogSelect from '@/components/PageDeployGauge/components/DialogSelect'
-import TextInput from '@/components/PageDeployGauge/components/TextInput'
+
+import useStore from '@/store/useStore'
 import {
   TWOCOINCRYPTOSWAP,
   THREECOINCRYPTOSWAP,
@@ -11,11 +12,10 @@ import {
   STABLESWAPOLD,
   TWOCOINCRYPTOSWAPNG,
 } from '@/components/PageDeployGauge/constants'
-import type { PoolType } from '@/components/PageDeployGauge/types'
 
-
-import useStore from '@/store/useStore'
-
+import Box from '@/ui/Box'
+import TextInput from '@/components/PageDeployGauge/components/TextInput'
+import DialogSelect from '@/components/PageDeployGauge/components/DialogSelect'
 
 type Props = {
   chainId: ChainId

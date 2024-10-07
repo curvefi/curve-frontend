@@ -1,3 +1,6 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { FormStatus, FormValues, Order, SortKey } from '@/components/PageMarketList/types'
 
 import Fuse from 'fuse.js'
 import chunk from 'lodash/chunk'
@@ -5,11 +8,8 @@ import cloneDeep from 'lodash/cloneDeep'
 import differenceWith from 'lodash/differenceWith'
 import endsWith from 'lodash/endsWith'
 import orderBy from 'lodash/orderBy'
-import type { GetState, SetState } from 'zustand'
-import type { FormStatus, FormValues, Order, SortKey } from '@/components/PageMarketList/types'
 
 import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PageMarketList/utils'
-import type { State } from '@/store/useStore'
 import { sleep } from '@/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE

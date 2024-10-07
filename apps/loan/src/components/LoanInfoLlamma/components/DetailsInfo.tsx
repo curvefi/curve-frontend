@@ -1,11 +1,11 @@
+import { TITLE } from '@/constants'
+import useStore from '@/store/useStore'
 
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import TokenLabel from '@/components/TokenLabel'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
 import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
-import TokenLabel from '@/components/TokenLabel'
-import { TITLE } from '@/constants'
-import useStore from '@/store/useStore'
 
 const DetailsInfo = ({
   rChainId,

@@ -1,13 +1,13 @@
+import type { Slippage } from '@/components/PagePool/types'
 
+import React, { useMemo } from 'react'
+import { t, Trans } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
 
+import { Chip } from '@/ui/Typography'
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { Chip } from '@/ui/Typography'
-import { formatNumber } from '@/ui/utils'
-import { t, Trans } from '@lingui/macro'
-import React, { useMemo } from 'react'
-import type { Slippage } from '@/components/PagePool/types'
 
 interface Props extends Slippage {}
 

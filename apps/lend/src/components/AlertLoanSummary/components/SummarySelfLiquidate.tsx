@@ -1,12 +1,12 @@
+import type { SummaryProps } from '@/components/AlertLoanSummary/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
+import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@/shared/curve-lib'
+import { format } from '@/components/AlertLoanSummary/utils'
 
 import Item from '@/components/AlertLoanSummary/components/Item'
-import type { SummaryProps } from '@/components/AlertLoanSummary/types'
-import { format } from '@/components/AlertLoanSummary/utils'
-import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@/shared/curve-lib'
 
 const SummarySelfLiquidate = ({
   pendingMessage,

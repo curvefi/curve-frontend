@@ -1,6 +1,6 @@
-import isUndefined from 'lodash/isUndefined'
 import startsWith from 'lodash/startsWith'
 import union from 'lodash/union'
+import isUndefined from 'lodash/isUndefined'
 
 export function isStartPartOrEnd(searchString: string, string: string) {
   return startsWith(string, searchString) || string.includes(searchString) || string === searchString

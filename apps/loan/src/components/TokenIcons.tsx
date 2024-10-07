@@ -1,7 +1,7 @@
 import React from 'react'
 
-import TokensIconComp, { type TokensIconProps } from 'ui/src/Token/TokensIcon'
 import TokenIcon from '@/components/TokenIcon'
+import TokensIconComp, { type TokensIconProps } from 'ui/src/Token/TokensIcon'
 
 export type Props = Omit<TokensIconProps, 'childComp'>
 

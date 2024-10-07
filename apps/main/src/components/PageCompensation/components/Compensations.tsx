@@ -1,8 +1,8 @@
+import type { Balances, EtherContract, VestedTotals } from '@/components/PageCompensation/types'
 
 import React from 'react'
 
 import Compensation from '@/components/PageCompensation/components/Compensation'
-import type { Balances, EtherContract, VestedTotals } from '@/components/PageCompensation/types'
 
 const Compensations = ({
   poolId,

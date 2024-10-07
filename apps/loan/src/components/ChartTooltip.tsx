@@ -1,9 +1,9 @@
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import { breakpoints } from '@/ui/utils/responsive'
 import React from 'react'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
+import Box from '@/ui/Box'
+import Icon from '@/ui/Icon'
 
 const ChartTooltip = ({ children }: { children: React.ReactNode }) => {
   return (

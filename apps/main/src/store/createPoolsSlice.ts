@@ -1,3 +1,5 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
 import type {
   FetchingStatus,
   LpLiquidityEventsApiResponse,
@@ -13,25 +15,23 @@ import type {
   PricesApiPoolResponse,
   TimeOptions
 } from '@/ui/Chart/types'
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
-import { PromisePool } from '@supercharge/promise-pool'
-
-import produce from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
-import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
+
+import { PromisePool } from '@supercharge/promise-pool'
 import countBy from 'lodash/countBy'
+import produce from 'immer'
+import cloneDeep from 'lodash/cloneDeep'
+import chunk from 'lodash/chunk'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
 import pick from 'lodash/pick'
-import type { GetState, SetState } from 'zustand'
 
 import { INVALID_ADDRESS } from '@/constants'
-import curvejsApi from '@/lib/curvejs'
-import networks from '@/networks'
-import type { State } from '@/store/useStore'
 import { fulfilledValue, getChainPoolIdActiveKey, getCurvefiUrl } from '@/utils'
 import { log } from '@/shared/lib/logging'
+import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import curvejsApi from '@/lib/curvejs'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

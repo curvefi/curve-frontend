@@ -1,14 +1,14 @@
-import Box from '@/ui/Box'
-import TextCaption from '@/ui/TextCaption'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import Chip from 'ui/src/Typography/Chip'
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Box from '@/ui/Box'
+import Chip from 'ui/src/Typography/Chip'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
+import TextCaption from '@/ui/TextCaption'
 
 const CellLoanState = ({
   userActiveKey,

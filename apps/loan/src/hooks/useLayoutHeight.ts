@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
 import type { LayoutHeight } from '@/store/types'
 
+import React, { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 

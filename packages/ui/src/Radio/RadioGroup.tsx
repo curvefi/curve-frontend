@@ -1,12 +1,12 @@
-import { useRadioGroup } from '@react-aria/radio'
-import { useRadioGroupState } from '@react-stately/radio'
 import type { AriaRadioGroupProps, RadioGroupProps } from '@react-types/radio'
 
 import * as React from 'react'
 import styled, { css } from 'styled-components'
+import { useRadioGroup } from '@react-aria/radio'
+import { useRadioGroupState } from '@react-stately/radio'
 
-import { RadioContext } from 'ui/src/Radio'
 import { mediaQueries } from 'ui/src/utils/responsive'
+import { RadioContext } from 'ui/src/Radio'
 
 const RadioGroup = ({
   children,

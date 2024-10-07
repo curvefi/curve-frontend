@@ -1,8 +1,8 @@
-import Fuse from 'fuse.js'
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
+import Fuse from 'fuse.js'
+import cloneDeep from 'lodash/cloneDeep'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

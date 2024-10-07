@@ -1,22 +1,22 @@
+import type { TransferProps } from '@/components/PagePool/types'
 
-import Box from '@/ui/Box'
-import { Item, Items } from '@/ui/Items'
-import Stats from '@/ui/Stats'
-import { Chip } from '@/ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-
-import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
-import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
-import PoolParametersDaoFees from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees'
-import PoolTotalStaked from '@/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked'
-import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import type { TransferProps } from '@/components/PagePool/types'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+
+import { Chip } from '@/ui/Typography'
+import { Item, Items } from '@/ui/Items'
+import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
+import Box from '@/ui/Box'
+import PoolParametersDaoFees from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees'
+import PoolTotalStaked from '@/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked'
+import Stats from '@/ui/Stats'
+import Contracts from '@/components/PagePool/PoolDetails/PoolStats/Contracts'
+import PoolParametersA from '@/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 
 const PoolParameters: React.FC<
   {

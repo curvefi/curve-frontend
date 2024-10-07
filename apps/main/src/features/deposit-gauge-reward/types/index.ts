@@ -1,5 +1,5 @@
-import { Address } from 'viem'
 import type { CombinedGaugeParams } from '@/entities/gauge'
+import { Address } from 'viem'
 
 export enum DepositRewardStep {
   APPROVAL = 'APPROVAL',

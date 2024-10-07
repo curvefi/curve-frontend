@@ -10,12 +10,12 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { Address } from 'viem'
 import { gaugeKeys } from '@/entities/gauge/model'
 import type { PoolQueryParams } from '@/entities/pool/types'
 import type { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
 import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
+import type { PoolTemplate } from '@curvefi/api/lib/pools'
+import type { Address } from 'viem'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 

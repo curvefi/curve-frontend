@@ -1,12 +1,12 @@
-import groupBy from 'lodash/groupBy'
-import React from 'react'
+import type { AppPage } from 'ui/src/AppNav/types'
 import type { NavigateFunction } from 'react-router-dom'
 
+import React from 'react'
 import { Item } from 'react-stately'
+import groupBy from 'lodash/groupBy'
 import styled from 'styled-components'
 
 import { AppLinkText } from 'ui/src/AppNav/styles'
-import type { AppPage } from 'ui/src/AppNav/types'
 import Box from 'ui/src/Box'
 import DividerHorizontal from 'ui/src/DividerHorizontal'
 import Select from 'ui/src/Select'

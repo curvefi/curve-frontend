@@ -1,10 +1,10 @@
-import DetailInfo from '@/ui/DetailInfo'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import DetailInfo from '@/ui/DetailInfo'
 
 type Amount = { amount: string; address: string }
 

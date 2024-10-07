@@ -1,8 +1,8 @@
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
-import type { ExchangeOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas } from '@/components/PagePool/types'
+import type { ExchangeOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
 
+import sortBy from 'lodash/sortBy'
+import cloneDeep from 'lodash/cloneDeep'
 
 export const DEFAULT_EST_GAS: FormEstGas = {
   estimatedGas: 0,

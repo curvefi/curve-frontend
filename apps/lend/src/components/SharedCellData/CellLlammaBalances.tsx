@@ -1,12 +1,12 @@
-import Box from '@/ui/Box'
-import TextCaption from '@/ui/TextCaption'
-import { formatNumber } from '@/ui/utils'
 import React from 'react'
 import styled from 'styled-components'
 
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Box from '@/ui/Box'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
+import TextCaption from '@/ui/TextCaption'
 
 const CellLlammaBalances = ({
   userActiveKey,

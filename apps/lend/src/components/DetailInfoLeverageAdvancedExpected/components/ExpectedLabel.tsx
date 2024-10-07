@@ -1,13 +1,13 @@
-import Icon from '@/ui/Icon'
-import Loader from '@/ui/Loader'
-import React from 'react'
-import styled from 'styled-components'
-import { DetailsButton } from '@/components/DetailInfoLeverageAdvancedExpected'
 import type { DetailInfoLeverageExpectedProps } from '@/components/DetailInfoLeverageAdvancedExpected/types'
 
+import React from 'react'
+import styled from 'styled-components'
 
 import { format } from '@/components/DetailInfoLeverageAdvancedExpected/utils'
 
+import { DetailsButton } from '@/components/DetailInfoLeverageAdvancedExpected'
+import Icon from '@/ui/Icon'
+import Loader from '@/ui/Loader'
 
 const ExpectedLabel = ({
   loading,

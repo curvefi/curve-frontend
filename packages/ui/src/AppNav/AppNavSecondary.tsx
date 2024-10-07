@@ -1,16 +1,16 @@
+import type { AppNavSecondaryProps } from 'ui/src/AppNav/types'
 
 import React from 'react'
 import styled from 'styled-components'
 
+import { breakpoints } from 'ui/src/utils'
 
 import { AppLinkText } from 'ui/src/AppNav/styles'
-import type { AppNavSecondaryProps } from 'ui/src/AppNav/types'
 import Box from 'ui/src/Box'
 import HeaderStats from 'ui/src/HeaderStats'
 import SelectLocale from 'ui/src/Select/SelectLocale'
 import SelectThemes from 'ui/src/Select/SelectThemes'
 import Switch from 'ui/src/Switch'
-import { breakpoints } from 'ui/src/utils'
 
 const HeaderSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: AppNavSecondaryProps) => {
   return (

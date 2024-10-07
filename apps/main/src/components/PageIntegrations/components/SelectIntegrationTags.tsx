@@ -1,13 +1,13 @@
-import Icon from '@/ui/Icon'
+import type { FormStatus } from '@/components/PageIntegrations/types'
 import type { IntegrationTag } from '@/ui/Integration/types'
 
-import Select from '@/ui/Select'
-import { t } from '@lingui/macro'
 import React from 'react'
 import { Item } from 'react-stately'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import type { FormStatus } from '@/components/PageIntegrations/types'
+import Icon from '@/ui/Icon'
+import Select from '@/ui/Select'
 
 const SelectIntegrationTags = ({
   integrationsTagsList,

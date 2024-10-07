@@ -1,5 +1,5 @@
-import TextCaption from '@/ui/TextCaption'
 import styled from 'styled-components'
+import TextCaption from '@/ui/TextCaption'
 
 export const FieldsWrapper = styled.div<{ $showBorder?: boolean }>`
   display: grid;

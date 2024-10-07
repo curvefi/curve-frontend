@@ -1,3 +1,4 @@
+import type { StepActionModal } from 'ui/src/Stepper/types'
 import type { OverlayTriggerState } from '@react-stately/overlays'
 
 import * as React from 'react'
@@ -6,7 +7,6 @@ import { useButton } from 'react-aria'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
-import type { StepActionModal } from 'ui/src/Stepper/types'
 
 interface StepModalProps extends Pick<StepActionModal, 'modal'> {
   overlayTriggerState: OverlayTriggerState

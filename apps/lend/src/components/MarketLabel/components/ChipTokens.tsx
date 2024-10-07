@@ -1,9 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import ChipToken from '@/components/MarketLabel/components/ChipToken'
 import { _isStartPartOrEnd, _parseSearchTextToList } from '@/components/PageMarketList/utils'
 
+import ChipToken from '@/components/MarketLabel/components/ChipToken'
 
 const ChipTokens = ({
   isMobile,

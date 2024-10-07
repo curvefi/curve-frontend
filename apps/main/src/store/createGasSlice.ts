@@ -1,14 +1,14 @@
-import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import api from '@/lib/curvejs'
-import { httpFetcher } from '@/lib/utils'
-import networks from '@/networks'
 import type { State } from '@/store/useStore'
 
+import cloneDeep from 'lodash/cloneDeep'
 
+import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { Chain, gweiToWai } from '@/shared/curve-lib'
+import { httpFetcher } from '@/lib/utils'
 import { log } from '@/shared/lib/logging'
+import api from '@/lib/curvejs'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

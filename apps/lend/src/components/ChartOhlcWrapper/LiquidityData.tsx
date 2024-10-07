@@ -1,16 +1,16 @@
+import { LiquidityDataProps } from './types'
+
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
+
+import networks from '@/networks'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 
 import Box from '@/ui/Box'
-import Tooltip from '@/ui/Tooltip'
-import { Chip } from '@/ui/Typography'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
-
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 import TokenIcon from '@/components/TokenIcon'
-import networks from '@/networks'
-
-import { LiquidityDataProps } from './types'
+import { Chip } from '@/ui/Typography'
+import Tooltip from '@/ui/Tooltip'
 
 const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chainId, coins }) => {
   const imageBaseUrl = networks[chainId].imageBaseUrl

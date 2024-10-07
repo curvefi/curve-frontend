@@ -1,8 +1,8 @@
+import type { Route } from '@/components/PageRouterSwap/types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 
 import { t } from '@lingui/macro'
 import BigNumber from 'bignumber.js'
-import type { Route } from '@/components/PageRouterSwap/types'
 
 import { parseRouterRoutes } from '@/components/PageRouterSwap/utils'
 

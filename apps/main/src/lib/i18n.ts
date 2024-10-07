@@ -1,9 +1,9 @@
+import type { DefaultStateKeys } from '@/store/createGlobalSlice'
 
 import { I18n, i18n } from '@lingui/core'
 import { en, zh } from 'make-plural/plurals'
-import numbro from 'numbro'
 import { setDayjsLocale } from '@/lib/dayjs'
-import type { DefaultStateKeys } from '@/store/createGlobalSlice'
+import numbro from 'numbro'
 import 'numbro/dist/languages.min.js'
 
 export type Locale = {

@@ -1,5 +1,7 @@
 import { t } from '@lingui/macro'
 
+import useStore from '@/store/useStore'
+import networks from '@/networks'
 
 import { IMPLEMENTATION_IDS } from '@/components/PageCreatePool/constants'
 
@@ -10,8 +12,6 @@ import {
   SummaryDataPlaceholder,
   ExtraMarginRow,
 } from '@/components/PageCreatePool/Summary/styles'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
 
 type Props = {
   chainId: ChainId

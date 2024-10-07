@@ -1,9 +1,9 @@
-import * as React from 'react'
+import type { ButtonProps } from 'ui/src/Button/types'
 import type { AriaButtonProps } from 'react-aria'
 
 import { useButton } from 'react-aria'
+import * as React from 'react'
 import styled from 'styled-components'
-import type { ButtonProps } from 'ui/src/Button/types'
 
 import { StyledBtn } from 'ui/src/Select/styles'
 import Spinner from 'ui/src/Spinner'

@@ -1,10 +1,20 @@
-
-import { t } from '@lingui/macro'
-import { BigNumber } from 'bignumber.js'
+import {
+  CreateToken,
+  TokenState,
+  ImplementationId,
+  SwapType,
+  TokenId,
+  NgAssetType,
+} from '@/components/PageCreatePool/types'
 import type { ContractTransactionResponse } from 'ethers'
-import produce from 'immer'
-import type { GetState, SetState } from 'zustand'
 
+import type { GetState, SetState } from 'zustand'
+import produce from 'immer'
+import { BigNumber } from 'bignumber.js'
+import { t } from '@lingui/macro'
+
+import type { State } from '@/store/useStore'
+import networks from '@/networks'
 
 import {
   POOL_PRESETS,
@@ -19,17 +29,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import {
-  CreateToken,
-  TokenState,
-  ImplementationId,
-  SwapType,
-  TokenId,
-  NgAssetType,
-} from '@/components/PageCreatePool/types'
 import { isTricrypto } from '@/components/PageCreatePool/utils'
-import networks from '@/networks'
-import type { State } from '@/store/useStore'
 
 type SliceState = {
   navigationIndex: number

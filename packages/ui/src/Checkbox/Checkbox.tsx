@@ -1,11 +1,11 @@
-import { useCheckbox } from '@react-aria/checkbox'
-import { useFocusRing } from '@react-aria/focus'
 import type { ToggleProps } from '@react-types/checkbox'
 
 import { useRef } from 'react'
-import { VisuallyHidden } from 'react-aria'
-import { useToggleState } from 'react-stately'
 import styled from 'styled-components'
+import { useCheckbox } from '@react-aria/checkbox'
+import { useToggleState } from 'react-stately'
+import { VisuallyHidden } from 'react-aria'
+import { useFocusRing } from '@react-aria/focus'
 
 interface CheckboxProps extends ToggleProps {
   className?: string

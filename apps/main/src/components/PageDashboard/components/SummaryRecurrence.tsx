@@ -1,8 +1,7 @@
-import Spinner from '@/ui/Spinner'
-import Stats from '@/ui/Stats'
-import Chip from '@/ui/Typography/Chip'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import type { WalletDashboardData } from '@/components/PageDashboard/types'
+
 import { t } from '@lingui/macro'
+
 import {
   StyledStats,
   SummaryInnerContent,
@@ -10,10 +9,11 @@ import {
   SummaryTitle,
   tooltipProps,
 } from '@/components/PageDashboard/components/Summary'
-import type { WalletDashboardData } from '@/components/PageDashboard/types'
 
-
-
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import Chip from '@/ui/Typography/Chip'
+import Stats from '@/ui/Stats'
+import Spinner from '@/ui/Spinner'
 
 const TotalRecurrence = ({
   title,

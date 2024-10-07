@@ -1,6 +1,6 @@
 import type { Tab } from '@/ui/TabSlider/TabSlider'
-import { t } from '@lingui/macro'
 import type { TabValue } from '@/widgets/manage-gauge/types'
+import { t } from '@lingui/macro'
 
 export const sliderTabs: Tab<TabValue>[] = [
   {

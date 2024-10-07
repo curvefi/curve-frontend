@@ -1,10 +1,10 @@
-import Icon from '@/ui/Icon'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Chip from '@/ui/Typography/Chip'
-import { breakpoints } from '@/ui/utils'
 import React from 'react'
+import { breakpoints } from '@/ui/utils'
 import styled from 'styled-components'
 
+import Chip from '@/ui/Typography/Chip'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Icon from '@/ui/Icon'
 
 const PoolAlertCustomMessage = ({
   className = '',

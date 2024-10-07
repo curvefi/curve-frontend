@@ -1,20 +1,20 @@
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-
-
-
-import ChartWrapper from '@/ui/Chart'
 import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
-import Icon from '@/ui/Icon'
-import TextCaption from '@/ui/TextCaption'
-import { t } from '@lingui/macro'
+import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
+
 import { useEffect, useState, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
-import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
+import { t } from '@lingui/macro'
+
 import useStore from '@/store/useStore'
-import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
+
+import Button from '@/ui/Button'
+import ChartWrapper from '@/ui/Chart'
+import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
+import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
+import TextCaption from '@/ui/TextCaption'
+import AlertBox from '@/ui/AlertBox'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)

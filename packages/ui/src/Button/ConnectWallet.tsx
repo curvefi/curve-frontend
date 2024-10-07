@@ -1,12 +1,12 @@
-import * as React from 'react'
-import styled from 'styled-components'
-import Button from 'ui/src/Button/index'
 import type { ButtonProps } from 'ui/src/Button/types'
 import type { ConnectState } from 'ui/src/utils'
 
+import styled from 'styled-components'
+import * as React from 'react'
 
 import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
 
+import Button from 'ui/src/Button/index'
 
 type Status = 'success' | 'loading' | ''
 

@@ -1,8 +1,8 @@
-import { t } from '@lingui/macro'
-import { useMemo } from 'react'
-import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import { SubTitle } from '@/components/DetailsMarket/styles'
+import { t } from '@lingui/macro'
+import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import useStore from '@/store/useStore'
+import { useMemo } from 'react'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)

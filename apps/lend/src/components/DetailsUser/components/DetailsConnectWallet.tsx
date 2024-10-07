@@ -1,10 +1,10 @@
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import { t } from '@lingui/macro'
 import React from 'react'
-import { CONNECT_STAGE } from '@/constants'
+import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 
+import { CONNECT_STAGE } from '@/constants'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
 
 const DetailsConnectWallet = () => {
   const connectState = useStore((state) => state.connectState)

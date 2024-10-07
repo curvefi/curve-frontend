@@ -1,15 +1,15 @@
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import React from 'react'
-import styled from 'styled-components'
 import type { StatsProps } from '@/components/DetailsMarket/styles'
 
+import React from 'react'
+import styled from 'styled-components'
+
+import { copyToClipboard, shortenTokenAddress } from '@/utils/helpers'
+import networks from '@/networks'
 
 import { StyledStats } from '@/components/DetailsMarket/styles'
-import networks from '@/networks'
-import { copyToClipboard, shortenTokenAddress } from '@/utils/helpers'
-
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Icon from '@/ui/Icon'
+import IconButton from '@/ui/IconButton'
 
 interface Props extends StatsProps {
   chainId: ChainId

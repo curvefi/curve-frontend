@@ -1,16 +1,16 @@
-import type { TooltipProps } from '@/ui/Tooltip/types'
-import type lendingApi from '@curvefi/lending-api'
 import type { I1inchRoute, IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import type { Locale } from '@/lib/i18n'
+import type { NavigateFunction, Location, Params } from 'react-router'
+import type { ReactNode } from 'react'
 import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
-import type { ReactNode } from 'react'
+import type lendingApi from '@curvefi/lending-api'
+import type { TooltipProps } from '@/ui/Tooltip/types'
 
 import React from 'react'
-import type { NavigateFunction, Location, Params } from 'react-router'
 
 import { TITLE } from '@/constants'
-import type { Locale } from '@/lib/i18n'
 
 declare global {
   interface Window {

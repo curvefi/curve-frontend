@@ -1,11 +1,11 @@
-import Image from 'next/image'
-import React from 'react'
 import styled from 'styled-components'
+import React from 'react'
+import Image from 'next/image'
 
 import Button from '../Button'
-import { LogoImg } from '../images'
 import Spinner from '../Spinner'
 
+import { LogoImg } from '../images'
 
 type ConnectWalletPromptProps = {
   connectWallet: () => void

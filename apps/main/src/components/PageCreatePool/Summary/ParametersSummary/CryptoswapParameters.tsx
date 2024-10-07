@@ -1,5 +1,11 @@
 import { t } from '@lingui/macro'
 
+import useStore from '@/store/useStore'
+
+import { isTricrypto } from '@/components/PageCreatePool/utils'
+
+import networks from '@/networks'
+
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -7,12 +13,6 @@ import {
   SummaryData,
   SummaryDataPlaceholder,
 } from '@/components/PageCreatePool/Summary/styles'
-import { isTricrypto } from '@/components/PageCreatePool/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-
-
-
 
 type Props = {
   chainId: ChainId

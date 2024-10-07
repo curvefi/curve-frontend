@@ -1,8 +1,8 @@
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { useMemo } from 'react'
-import { INVALID_ADDRESS } from '@/constants'
 import useStore from '@/store/useStore'
 
+import { INVALID_ADDRESS } from '@/constants'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getTotalApr } from '@/utils/utilsRewards'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {

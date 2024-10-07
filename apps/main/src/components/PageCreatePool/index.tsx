@@ -1,20 +1,11 @@
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import Icon from '@/ui/Icon'
-import Spinner from '@/ui/Spinner'
-import { t } from '@lingui/macro'
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
-import InfoBox from '@/components/PageCreatePool/components/InfoBox'
-import Navigation from '@/components/PageCreatePool/components/Navigation'
-import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
-import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-import Parameters from '@/components/PageCreatePool/Parameters'
-import PoolInfo from '@/components/PageCreatePool/PoolInfo'
-import PoolType from '@/components/PageCreatePool/PoolType'
-import Summary from '@/components/PageCreatePool/Summary'
-import TokensInPool from '@/components/PageCreatePool/TokensInPool'
+import { curveProps } from '@/lib/utils'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+
 import {
   checkSwapType,
   checkTokensInPool,
@@ -23,11 +14,20 @@ import {
   oraclesReady,
   checkPoolInfo,
 } from '@/components/PageCreatePool/utils'
-import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
+import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 
-
+import Spinner from '@/ui/Spinner'
+import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
+import Navigation from '@/components/PageCreatePool/components/Navigation'
+import PoolType from '@/components/PageCreatePool/PoolType'
+import TokensInPool from '@/components/PageCreatePool/TokensInPool'
+import PoolInfo from '@/components/PageCreatePool/PoolInfo'
+import Summary from '@/components/PageCreatePool/Summary'
+import Parameters from '@/components/PageCreatePool/Parameters'
+import InfoBox from '@/components/PageCreatePool/components/InfoBox'
 
 type Props = {
   curve: CurveApi

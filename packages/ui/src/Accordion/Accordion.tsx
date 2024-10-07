@@ -1,6 +1,6 @@
-import * as React from 'react'
 import type { AriaButtonProps } from 'react-aria'
 
+import * as React from 'react'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
 

@@ -1,15 +1,15 @@
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
+import type { FormType, PageLoanCreateProps } from '@/components/PageLoanCreate/types'
+
 import { t } from '@lingui/macro'
 import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
-import type { FormType, PageLoanCreateProps } from '@/components/PageLoanCreate/types'
 
-
+import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 import { hasLeverage } from '@/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/hooks/useCollateralAlert'
-import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
+import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
 
 const LoanCreate = ({
   fetchInitial,

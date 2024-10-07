@@ -1,16 +1,16 @@
-import type { TooltipProps } from '@/ui/Tooltip/types'
-import type curveApi from '@curvefi/api'
 import type { IDict, IChainId, INetworkName } from '@curvefi/api/lib/interfaces'
+import type { SearchParams as PoolListSearchParams } from '@/components/PagePoolList/types'
+import type { Location, NavigateFunction, Params } from 'react-router'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
+import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
+import type { Locale } from '@/lib/i18n'
+import type curveApi from '@curvefi/api'
+
 import { ethers } from 'ethers'
 import React from 'react'
-import type { Location, NavigateFunction, Params } from 'react-router'
-import type { SearchParams as PoolListSearchParams } from '@/components/PagePoolList/types'
 import curvejsApi from '@/lib/curvejs'
-import type { Locale } from '@/lib/i18n'
-
+import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {
   interface Window {

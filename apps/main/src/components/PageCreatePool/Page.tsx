@@ -1,19 +1,19 @@
-import Box from '@/ui/Box'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import ConnectWallet from '@/components/ConnectWallet'
-import PoolCreation from '@/components/PageCreatePool/index'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import DocumentHead from '@/layout/default/DocumentHead'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
+import DocumentHead from '@/layout/default/DocumentHead'
+import PoolCreation from '@/components/PageCreatePool/index'
+import Box from '@/ui/Box'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()

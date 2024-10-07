@@ -1,14 +1,14 @@
-import { TheadSortButton } from '@/ui/Table'
+import type { TableLabel, PageMarketList } from '@/components/PageMarketList/types'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+
 import React from 'react'
 import styled from 'styled-components'
-import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
-import type { TableLabel, PageMarketList } from '@/components/PageMarketList/types'
 
-
-import useStore from '@/store/useStore'
 import { _showContent } from '@/utils/helpers'
+import useStore from '@/store/useStore'
 
+import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
+import { TheadSortButton } from '@/ui/Table'
 
 const TableHead = ({
   address,

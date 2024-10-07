@@ -1,18 +1,18 @@
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-
-import { breakpoints } from '@/ui/utils/responsive'
 import React from 'react'
 import styled from 'styled-components'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { TITLE } from '@/constants'
+import { breakpoints } from '@/ui/utils/responsive'
+import useStore from '@/store/useStore'
+
+import { HealthColorText } from '@/components/LoanInfoUser/styles'
 import AlertSoftLiquidation from '@/components/LoanInfoUser/components/AlertSoftLiquidation'
 import UserInfoDebt from '@/components/LoanInfoUser/components/UserInfoDebt'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 import UserInfoLiquidationRange from '@/components/LoanInfoUser/components/UserInfoLiquidationRange'
-import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
 import UserInfoLoss from '@/components/LoanInfoUser/components/UserInfoLoss'
-import { HealthColorText } from '@/components/LoanInfoUser/styles'
-import { TITLE } from '@/constants'
-import useStore from '@/store/useStore'
+import UserInfoLlammaBalances from '@/components/LoanInfoUser/components/UserInfoLlammaBalances'
 
 const UserInfos = ({
   llammaId,

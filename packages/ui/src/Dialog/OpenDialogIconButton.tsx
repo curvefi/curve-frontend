@@ -1,7 +1,7 @@
-import { useButton } from '@react-aria/button'
 import type { OverlayTriggerState } from '@react-stately/overlays'
 
 import React, { useRef } from 'react'
+import { useButton } from '@react-aria/button'
 
 import IconButton from 'ui/src/IconButton'
 

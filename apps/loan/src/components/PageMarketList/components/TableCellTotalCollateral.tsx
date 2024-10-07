@@ -1,15 +1,15 @@
-import Box from '@/ui/Box'
-import TextCaption from '@/ui/TextCaption'
-import { Chip } from '@/ui/Typography'
-import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
+import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
-import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
+import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
 import { getTokenName } from '@/utils/utilsLoan'
+import useStore from '@/store/useStore'
 
+import { Chip } from '@/ui/Typography'
+import Box from '@/ui/Box'
+import TextCaption from '@/ui/TextCaption'
 
 type Props = {
   rChainId: ChainId

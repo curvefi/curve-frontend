@@ -1,9 +1,17 @@
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import Checkbox from '@/ui/Checkbox'
-import Icon from '@/ui/Icon'
-import { t } from '@lingui/macro'
+import {
+  CreateToken,
+  TokenState,
+  TokenId,
+  SelectTokenFormValues,
+  TokensInPoolState,
+} from '@/components/PageCreatePool/types'
+
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
+
+import useStore from '@/store/useStore'
+import networks from '@/networks'
+
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -16,20 +24,12 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
+
 import ComboBoxTokenPicker from '@/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
-import {
-  CreateToken,
-  TokenState,
-  TokenId,
-  SelectTokenFormValues,
-  TokensInPoolState,
-} from '@/components/PageCreatePool/types'
-
-
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-
-
+import Box from '@/ui/Box'
+import Checkbox from '@/ui/Checkbox'
+import Icon from '@/ui/Icon'
+import Button from '@/ui/Button'
 
 type Props = {
   curve: CurveApi

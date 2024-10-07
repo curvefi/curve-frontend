@@ -1,12 +1,12 @@
-import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { Chip } from '@/ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t, Trans } from '@lingui/macro'
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
+import { Chip } from '@/ui/Typography'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import Icon from '@/ui/Icon'
 import ChipInactive from '@/components/ChipInactive'
 
 const PoolRewardsCrv = ({

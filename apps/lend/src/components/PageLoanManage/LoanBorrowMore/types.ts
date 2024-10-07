@@ -1,5 +1,5 @@
-import type { InpError } from '@/components/PageLoanCreate/types'
 import type { FormDetailInfo, FormStatus as Fs } from '@/components/PageLoanManage/types'
+import type { InpError } from '@/components/PageLoanCreate/types'
 
 export type FormValues = {
   userCollateral: string

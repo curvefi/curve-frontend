@@ -1,3 +1,6 @@
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { FilterKey, FormStatus, FormValues, Order, SearchParams, SortKey } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import Fuse from 'fuse.js'
@@ -8,12 +11,9 @@ import endsWith from 'lodash/endsWith'
 import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
-import type { GetState, SetState } from 'zustand'
-import type { FilterKey, FormStatus, FormValues, Order, SearchParams, SortKey } from '@/components/PagePoolList/types'
 
 import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PagePoolList/utils'
 import networks from '@/networks'
-import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

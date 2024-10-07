@@ -1,12 +1,12 @@
+import type { FormLpTokenExpected } from '@/components/PagePool/Deposit/types'
 
+import React, { useMemo } from 'react'
+import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React, { useMemo } from 'react'
-import type { FormLpTokenExpected } from '@/components/PagePool/Deposit/types'
 
 const DetailInfoEstLpTokens = ({
   formLpTokenExpected,

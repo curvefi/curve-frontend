@@ -1,21 +1,21 @@
-import Box from '@/ui/Box'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import ConnectWallet from '@/components/ConnectWallet'
-import TableStats from '@/components/PageMarketList/components/TableStats'
-import CollateralList from '@/components/PageMarketList/index'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import DocumentHead from '@/layout/DocumentHead'
-import Settings from '@/layout/Settings'
-import useStore from '@/store/useStore'
+import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils/helpers'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
+import DocumentHead from '@/layout/DocumentHead'
+import CollateralList from '@/components/PageMarketList/index'
+import Settings from '@/layout/Settings'
+import TableStats from '@/components/PageMarketList/components/TableStats'
+import ConnectWallet from '@/components/ConnectWallet'
+import Box from '@/ui/Box'
 
 const Page: NextPage = () => {
   const params = useParams()

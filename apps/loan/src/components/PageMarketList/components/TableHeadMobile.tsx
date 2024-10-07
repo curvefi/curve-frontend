@@ -1,7 +1,7 @@
-import Th from '@/ui/Table/Th'
-import { breakpoints } from '@/ui/utils/responsive'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
+import Th from '@/ui/Table/Th'
 
 const TableHeadMobile = () => {
   return (

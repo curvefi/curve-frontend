@@ -1,11 +1,13 @@
+import type { TokenState, TokenId } from '@/components/PageCreatePool/types'
 
-
-
-import Box from '@/ui/Box'
+import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { debounce } from 'lodash'
-import styled from 'styled-components'
+
+import useStore from '@/store/useStore'
+
 import TextInput from '@/components/PageCreatePool/components/TextInput'
+import Box from '@/ui/Box'
 import WarningBox from '@/components/PageCreatePool/components/WarningBox'
 import {
   TOKEN_A,
@@ -17,9 +19,7 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import type { TokenState, TokenId } from '@/components/PageCreatePool/types'
 import { validateOracleFunction } from '@/components/PageCreatePool/utils'
-import useStore from '@/store/useStore'
 
 type OracleInputProps = {
   token: TokenState

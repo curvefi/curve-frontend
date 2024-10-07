@@ -1,18 +1,18 @@
+import type { Amount } from '@/components/PagePool/utils'
 
+import * as React from 'react'
+import styled from 'styled-components'
 
+import { shortenTokenAddress } from '@/utils'
+import { formatNumber } from '@/ui/utils'
 
-import Loader from '@/ui/Loader'
+import { Chip } from '@/ui/Typography'
 import { Radio, RadioGroup } from '@/ui/Radio'
+import Loader from '@/ui/Loader'
 import Spacer from '@/ui/Spacer'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import TextEllipsis from '@/ui/TextEllipsis'
-import { Chip } from '@/ui/Typography'
-import { formatNumber } from '@/ui/utils'
-import * as React from 'react'
-import styled from 'styled-components'
-import type { Amount } from '@/components/PagePool/utils'
 import TokenIcon from '@/components/TokenIcon'
-import { shortenTokenAddress } from '@/utils'
 
 const SelectedOneCoinExpected = ({
   amounts,

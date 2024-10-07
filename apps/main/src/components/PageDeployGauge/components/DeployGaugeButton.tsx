@@ -1,11 +1,13 @@
-import AlertBox from '@/ui/AlertBox'
-import Button from '@/ui/Button'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
 
-import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { CONNECT_STAGE } from '@/constants'
+import useStore from '@/store/useStore'
+import { curveProps } from '@/lib/utils'
+import networks from '@/networks'
+import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { shortenTokenAddress } from '@/utils'
 import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
@@ -13,13 +15,11 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/components/PageDeployGauge/constants'
-import { CONNECT_STAGE } from '@/constants'
-import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { shortenTokenAddress } from '@/utils'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
 
+import Button from '@/ui/Button'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import AlertBox from '@/ui/AlertBox'
+import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 
 interface Props {
   disabled: boolean

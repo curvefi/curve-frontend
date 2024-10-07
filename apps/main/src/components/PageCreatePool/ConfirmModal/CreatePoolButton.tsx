@@ -1,13 +1,13 @@
-import AlertBox from '@/ui/AlertBox'
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
+
+import useStore from '@/store/useStore'
+import { curveProps } from '@/lib/utils'
+
 import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
-
+import AlertBox from '@/ui/AlertBox'
 import InfoLinkBar from '@/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
-import { curveProps } from '@/lib/utils'
-import useStore from '@/store/useStore'
-
 
 interface Props {
   disabled: boolean

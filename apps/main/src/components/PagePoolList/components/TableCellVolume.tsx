@@ -1,6 +1,6 @@
-import { Chip } from '@/ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
+import { Chip } from '@/ui/Typography'
 
 type Props = {
   isHighLight: boolean

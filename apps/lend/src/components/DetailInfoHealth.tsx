@@ -1,15 +1,15 @@
-import Box from '@/ui/Box'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import ExternalLink from 'ui/src/Link/ExternalLink'
 import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import { formatNumber } from '@/ui/utils'
 
+import Box from '@/ui/Box'
+import DetailInfo from '@/ui/DetailInfo'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+import Icon from '@/ui/Icon'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { helpers } from '@/lib/apiLending'
 import useStore from '@/store/useStore'
 

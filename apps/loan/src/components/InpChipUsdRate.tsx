@@ -1,8 +1,8 @@
-import InpChipUsdRateComp from '@/ui/InpChipUsdRate'
 import type { InpChipUsdRateProps } from '@/ui/InpChipUsdRate/InpChipUsdRate'
 
 import useStore from '@/store/useStore'
 
+import InpChipUsdRateComp from '@/ui/InpChipUsdRate'
 
 const InpChipUsdRate = ({
   address = '',

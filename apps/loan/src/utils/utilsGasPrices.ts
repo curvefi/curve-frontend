@@ -1,5 +1,5 @@
-import networks from '@/networks'
 import { httpFetcher } from '@/utils/helpers'
+import networks from '@/networks'
 
 export type GasPrices = {
   eip1559Gas: {

@@ -1,11 +1,10 @@
-import PromisePool from '@supercharge/promise-pool'
-import { ethers } from 'ethers'
+import type { FormValues as SwapFormValues } from '@/components/PageLoanManage/LoanSwap/types'
+import type { LiqRange, Provider, MaxRecvLeverage } from '@/store/types'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/components/PageLoanManage/LoanDeleverage/types'
-import type { FormValues as SwapFormValues } from '@/components/PageLoanManage/LoanSwap/types'
-import networks from '@/networks'
-import type { LiqRange, Provider, MaxRecvLeverage } from '@/store/types'
 
+import { ethers } from 'ethers'
+import PromisePool from '@supercharge/promise-pool'
 
 import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
 import {
@@ -16,6 +15,7 @@ import {
   reverseBands,
   sortBands
 } from '@/utils/utilsCurvejs'
+import networks from '@/networks'
 
 export const network = {
   1: {

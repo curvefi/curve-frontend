@@ -1,11 +1,11 @@
-import countBy from 'lodash/countBy'
 import type { GetState, SetState } from 'zustand'
-import networks from '@/networks'
-import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
 import type { State } from '@/store/useStore'
 
+import countBy from 'lodash/countBy'
 
 import { log } from '@/shared/lib/logging'
+import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

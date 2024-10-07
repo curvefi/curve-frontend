@@ -1,23 +1,23 @@
-import Box from '@/ui/Box'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-import { breakpoints } from '@/ui/utils/responsive'
+import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
+import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
+
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
-import CampaignRewardsRow from '@/components/CampaignRewardsRow'
-import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
+
+import { breakpoints } from '@/ui/utils/responsive'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+
+import Box from '@/ui/Box'
+import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
-
-
-
+import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
+import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
+import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellTvl from '@/components/PagePoolList/components/TableCellTvl'
-import TableCellVolume from '@/components/PagePoolList/components/TableCellVolume'
-import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
-import PoolLabel from '@/components/PoolLabel'
+import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 
 export type TableRowProps = {
   index: number

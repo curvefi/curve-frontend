@@ -1,8 +1,8 @@
-import * as React from 'react'
 import type { AriaListBoxOptions } from 'react-aria'
-import { useListBox } from 'react-aria'
 import type { SelectState } from 'react-stately'
 
+import * as React from 'react'
+import { useListBox } from 'react-aria'
 import styled from 'styled-components'
 
 import SelectModalListBoxItem from 'ui/src/Select/SelectModalListBoxItem'

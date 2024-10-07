@@ -1,6 +1,6 @@
+import { type ValidatedData } from './types'
 import { create, enforce, only, type Suite } from 'vest'
 import { extendEnforce } from './enforce-extension'
-import { type ValidatedData } from './types'
 
 extendEnforce(enforce)
 

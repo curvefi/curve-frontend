@@ -1,27 +1,27 @@
-import AlertBox from '@/ui/AlertBox'
-import Stepper from '@/ui/Stepper'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import type { Step } from '@/ui/Stepper/types'
-import TxInfoBar from '@/ui/TxInfoBar'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import BigNumber from 'bignumber.js'
 import type { ReactNode } from 'react'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-
-
-import AlertFormError from '@/components/AlertFormError'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
-import DetailInfoExpectedApy from '@/components/PagePool/components/DetailInfoExpectedApy'
-import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
-import TransferActions from '@/components/PagePool/components/TransferActions'
 import type { FormValues, FormStatus, StepKey } from '@/components/PagePool/Deposit/types'
-import { FieldsWrapper } from '@/components/PagePool/styles'
 import type { TransferProps } from '@/components/PagePool/types'
+import type { Step } from '@/ui/Stepper/types'
+
+import { t } from '@lingui/macro'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import BigNumber from 'bignumber.js'
+
+import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
+import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
+import { formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+
+import { FieldsWrapper } from '@/components/PagePool/styles'
+import AlertFormError from '@/components/AlertFormError'
+import AlertBox from '@/ui/AlertBox'
+import DetailInfoExpectedApy from '@/components/PagePool/components/DetailInfoExpectedApy'
+import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
+import Stepper from '@/ui/Stepper'
+import TransferActions from '@/components/PagePool/components/TransferActions'
+import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

@@ -1,18 +1,18 @@
-import Button from '@/ui/Button'
-import { buttonOutlinedStyles } from '@/ui/Button/styles'
-import Icon from '@/ui/Icon'
-import Chip from '@/ui/Typography/Chip'
 import type { ChipProps } from '@/ui/Typography/types'
 
-import { t } from '@lingui/macro'
 import React, { useState } from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { buttonOutlinedStyles } from '@/ui/Button/styles'
+import useStore from '@/store/useStore'
+import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
 
+import Button from '@/ui/Button'
+import Chip from '@/ui/Typography/Chip'
 import ChipInactive from '@/components/ChipInactive'
 import CellRewardsTooltip from '@/components/SharedCellData/CellRewardsTooltip'
-import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
-import useStore from '@/store/useStore'
+import Icon from '@/ui/Icon'
 
 const CellRewards = ({
   className = '',

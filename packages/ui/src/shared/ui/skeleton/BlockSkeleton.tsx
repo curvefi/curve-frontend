@@ -1,6 +1,6 @@
 import React from 'react'
-import Loader from 'ui/src/Loader'
 import { LoaderWrapper } from '@/shared/ui/skeleton/styled'
+import Loader from 'ui/src/Loader'
 
 export const BlockSkeleton: React.FC<{
   height?: number

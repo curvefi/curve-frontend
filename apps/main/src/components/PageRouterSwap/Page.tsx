@@ -1,25 +1,25 @@
-import Box, { BoxHeader } from '@/ui/Box'
-import IconButton from '@/ui/IconButton'
-import { breakpoints } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
+import { t } from '@lingui/macro'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import AdvancedSettings from '@/components/AdvancedSettings'
-import ConnectWallet from '@/components/ConnectWallet'
-import QuickSwap from '@/components/PageRouterSwap/index'
 import { ROUTE } from '@/constants'
+import { breakpoints } from '@/ui/utils'
+import { getPath } from '@/utils/utilsRouter'
+import { scrollToTop } from '@/utils'
+import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 import useTokensMapper from '@/hooks/useTokensMapper'
 
+import AdvancedSettings from '@/components/AdvancedSettings'
+import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/default/DocumentHead'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-import { scrollToTop } from '@/utils'
-import { getPath } from '@/utils/utilsRouter'
+import IconButton from '@/ui/IconButton'
+import QuickSwap from '@/components/PageRouterSwap/index'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()

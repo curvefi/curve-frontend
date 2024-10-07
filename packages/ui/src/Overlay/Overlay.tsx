@@ -1,7 +1,7 @@
-import { FocusScope } from '@react-aria/focus'
 import { usePreventScroll, OverlayContainer } from '@react-aria/overlays'
-import React from 'react'
+import { FocusScope } from '@react-aria/focus'
 import styled from 'styled-components'
+import React from 'react'
 
 interface Props {
   isOpen: boolean

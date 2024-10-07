@@ -1,9 +1,9 @@
+import type { FormStatus, MarketListMapper } from '@/components/PageMarketList/types'
 
 import differenceWith from 'lodash/differenceWith'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 import startsWith from 'lodash/startsWith'
-import type { FormStatus, MarketListMapper } from '@/components/PageMarketList/types'
 
 export enum Filter {
   all = 'all',

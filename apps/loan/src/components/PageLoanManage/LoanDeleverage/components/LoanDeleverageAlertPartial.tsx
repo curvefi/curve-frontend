@@ -1,15 +1,15 @@
+import type { FormValues } from '@/components/PageLoanManage/LoanDeleverage/types'
 
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+import React from 'react'
 
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { getTokenName } from '@/utils/utilsLoan'
 
 import Box from '@/ui/Box'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React from 'react'
-import styled from 'styled-components'
-import type { FormValues } from '@/components/PageLoanManage/LoanDeleverage/types'
-import { getTokenName } from '@/utils/utilsLoan'
 
 // Deleverage partial payment will only result in state change, user will not receive any tokens to wallet.
 // 1. userState.collateral = old userState.collateral - formValues.collateral

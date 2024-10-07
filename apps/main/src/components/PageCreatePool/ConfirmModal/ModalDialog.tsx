@@ -1,17 +1,17 @@
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import IconButton from '@/ui/IconButton'
-import { breakpoints } from '@/ui/utils/responsive'
 import type { AriaDialogProps } from '@react-types/dialog'
-import React, { useRef } from 'react'
 import type { AriaOverlayProps } from 'react-aria'
-import { Overlay, FocusScope, useButton, useDialog, usePreventScroll, useModalOverlay } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 
+import { Overlay, FocusScope, useButton, useDialog, usePreventScroll, useModalOverlay } from 'react-aria'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
 import useStore from '@/store/useStore'
 
+import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
+import IconButton from '@/ui/IconButton'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
   className?: string

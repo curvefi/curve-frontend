@@ -1,10 +1,10 @@
-import Image from 'next/image'
 import * as React from 'react'
 import { Link } from 'react-router-dom'
+import Image from 'next/image'
 import styled from 'styled-components'
 
-import { LogoImg, RCLogoText } from 'ui/src/images'
 import { breakpoints } from 'ui/src/utils/responsive'
+import { LogoImg, RCLogoText } from 'ui/src/images'
 
 export type AppLogoProps = {
   className?: string

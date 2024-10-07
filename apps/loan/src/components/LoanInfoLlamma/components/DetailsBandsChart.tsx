@@ -1,11 +1,11 @@
-import { t } from '@lingui/macro'
-import React, { useMemo, useState } from 'react'
-import ChartBandBalances from '@/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
 
+import React, { useMemo, useState } from 'react'
+import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 
+import ChartBandBalances from '@/components/ChartBandBalances'
 
 const DEFAULT_BAND_CHART_DATA = {
   collateral: '0',

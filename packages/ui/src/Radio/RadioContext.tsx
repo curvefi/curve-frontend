@@ -1,5 +1,5 @@
-import { RadioGroupState } from '@react-stately/radio'
 import { createContext } from 'react'
+import { RadioGroupState } from '@react-stately/radio'
 
 const RadioContext = createContext<RadioGroupState>(undefined!)
 

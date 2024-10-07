@@ -1,10 +1,10 @@
-import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
 import type { CustomNotification, NotificationType } from '@web3-onboard/core/dist/types'
+import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 
 import { ethers, isError } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

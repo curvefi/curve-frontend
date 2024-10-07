@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import type { ImgHTMLAttributes } from 'react'
 
 import React, { useMemo } from 'react'
+import Image from 'next/image'
 import styled from 'styled-components'
 
 type Size = 'sm' | ''

@@ -1,42 +1,42 @@
-
-
-
-
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import Checkbox from '@/ui/Checkbox'
-import { ExternalLink } from '@/ui/Link'
-import SearchInput from '@/ui/SearchInput'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Table from '@/ui/Table'
-import TableButtonFilters from '@/ui/TableButtonFilters'
-import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
-import TableSortSelect from '@/ui/TableSort/TableSortSelect'
-import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
-import { useFocusRing } from '@react-aria/focus'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
-import ConnectWallet from '@/components/ConnectWallet'
-import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
-import TableHead from '@/components/PagePoolList/components/TableHead'
-import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobile'
 import type { FilterKey, PagePoolList, PoolListFilter, SearchParams } from '@/components/PagePoolList/types'
-import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
-import { REFRESH_INTERVAL } from '@/constants'
-import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import networks from '@/networks'
+
+import { t } from '@lingui/macro'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useFocusRing } from '@react-aria/focus'
+import styled from 'styled-components'
+
 import {
   DEFAULT_FORM_STATUS,
   DEFAULT_SEARCH_PARAMS,
   getPoolDatasCached,
   getPoolListActiveKey,
 } from '@/store/createPoolListSlice'
-import { getUserActiveKey } from '@/store/createUserSlice'
+import { REFRESH_INTERVAL } from '@/constants'
+import { breakpoints } from '@/ui/utils/responsive'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+
 import { getImageBaseUrl, getVolumeTvlStr } from '@/utils/utilsCurvejs'
+import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
+import { getUserActiveKey } from '@/store/createUserSlice'
+import networks from '@/networks'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
+
+import { ExternalLink } from '@/ui/Link'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import Checkbox from '@/ui/Checkbox'
+import SearchInput from '@/ui/SearchInput'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Table from '@/ui/Table'
+import TableHead from '@/components/PagePoolList/components/TableHead'
+import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobile'
+import TableButtonFilters from '@/ui/TableButtonFilters'
+import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
+import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
+import TableSortSelect from '@/ui/TableSort/TableSortSelect'
+import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
   const settingsRef = useRef<HTMLDivElement>(null)

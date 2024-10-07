@@ -1,6 +1,6 @@
-import { breakpoints } from '@/ui/utils/responsive'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
 
 type Props = {
   showInPoolColumn: boolean

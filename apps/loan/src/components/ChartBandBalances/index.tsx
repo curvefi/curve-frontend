@@ -1,8 +1,7 @@
-import Box from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
+import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
+
 import { t } from '@lingui/macro'
-import React, { useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -17,16 +16,17 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
-import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandBalancesSettings'
-import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
 
-
-import useStore from '@/store/useStore'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getTokenName } from '@/utils/utilsLoan'
+import useStore from '@/store/useStore'
 
+import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandBalancesSettings'
+import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
+import Box from '@/ui/Box'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   brushIndex: BrushStartEndIndex

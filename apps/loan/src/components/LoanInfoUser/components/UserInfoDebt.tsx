@@ -1,12 +1,12 @@
-import ListInfoItem from '@/ui/ListInfo'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import InpChipUsdRate from '@/components/InpChipUsdRate'
+import ListInfoItem from '@/ui/ListInfo'
 
 const UserInfoDebt = ({
   llammaId,

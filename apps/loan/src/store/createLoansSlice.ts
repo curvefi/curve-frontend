@@ -1,11 +1,11 @@
-import { PromisePool } from '@supercharge/promise-pool'
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import networks from '@/networks'
 import type { State } from '@/store/useStore'
 
+import { PromisePool } from '@supercharge/promise-pool'
+import cloneDeep from 'lodash/cloneDeep'
 
 import { log } from '@/shared/lib/logging'
+import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

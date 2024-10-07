@@ -1,6 +1,6 @@
-import React from 'react'
 import type { Params } from 'react-router'
 
+import React from 'react'
 
 export type FormStatus = {
   error: string

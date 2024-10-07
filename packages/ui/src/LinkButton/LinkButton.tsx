@@ -1,11 +1,11 @@
-import * as React from 'react'
+import type { ButtonProps } from 'ui/src/Button/types'
 import type { LinkProps } from 'react-router-dom'
 
+import * as React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 
 import { buttonBaseStyles } from 'ui/src/Button/styles'
-import type { ButtonProps } from 'ui/src/Button/types'
 
 interface Props extends ButtonProps, LinkProps {}
 

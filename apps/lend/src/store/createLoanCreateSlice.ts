@@ -1,5 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
+import type { LiqRange, LiqRangesMapper } from '@/store/types'
 import type {
   FormEstGas,
   FormStatus,
@@ -8,13 +9,12 @@ import type {
   DetailInfoLeverage,
 } from '@/components/PageLoanCreate/types'
 
+import cloneDeep from 'lodash/cloneDeep'
 
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/components/PageLoanCreate/utils'
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
-import apiLending, { helpers } from '@/lib/apiLending'
-import type { LiqRange, LiqRangesMapper } from '@/store/types'
-import type { State } from '@/store/useStore'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/components/PageLoanCreate/utils'
 import { _parseActiveKey } from '@/utils/helpers'
+import apiLending, { helpers } from '@/lib/apiLending'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

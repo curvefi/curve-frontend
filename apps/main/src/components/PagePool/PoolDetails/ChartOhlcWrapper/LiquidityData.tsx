@@ -1,19 +1,19 @@
-import Box from '@/ui/Box'
 import type { LpLiquidityEventsData, PricesApiCoin } from '@/ui/Chart/types'
 
-import Tooltip from '@/ui/Tooltip'
-import { Chip } from '@/ui/Typography'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import type React from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
-import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-import TokenIcon from '@/components/TokenIcon'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
+import networks from '@/networks'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 
+import Box from '@/ui/Box'
+import TokenIcon from '@/components/TokenIcon'
+import { Chip } from '@/ui/Typography'
+import Tooltip from '@/ui/Tooltip'
+import type React from 'react'
 
 const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: ChainId; coins: PricesApiCoin[] }> = ({
   lpEventsData,

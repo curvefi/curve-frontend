@@ -1,24 +1,24 @@
+import type { NextPage } from 'next'
+import type { EtherContract } from '@/components/PageCompensation/types'
 
+import { Contract, Interface } from 'ethers'
+import { t } from '@lingui/macro'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import React, { useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
 
+import { scrollToTop } from '@/utils'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
 import Box, { BoxHeader } from '@/ui/Box'
 import Button from '@/ui/Button'
-import IconButton from '@/ui/IconButton'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import { t } from '@lingui/macro'
-import { Contract, Interface } from 'ethers'
-import type { NextPage } from 'next'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
-import FormCompensation from '@/components/PageCompensation/index'
-import type { EtherContract } from '@/components/PageCompensation/types'
-import usePageOnMount from '@/hooks/usePageOnMount'
 import DocumentHead from '@/layout/default/DocumentHead'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import FormCompensation from '@/components/PageCompensation/index'
+import IconButton from '@/ui/IconButton'
 import Settings from '@/layout/default/Settings'
-import useStore from '@/store/useStore'
-import { scrollToTop } from '@/utils'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 
 const Page: NextPage = () => {
   const params = useParams()

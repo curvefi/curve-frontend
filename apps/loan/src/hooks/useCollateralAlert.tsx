@@ -1,7 +1,7 @@
-import { breakpoints } from '@/ui/utils'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils'
 
 const useCollateralAlert = (collateralAddress: string | undefined) => {
   return useMemo(() => {

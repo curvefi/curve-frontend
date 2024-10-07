@@ -1,13 +1,13 @@
+import type { SelectState } from 'react-stately'
 
 import * as React from 'react'
-import type { SelectState } from 'react-stately'
 import styled from 'styled-components'
 
+import { delayAction } from 'ui/src/utils'
 
+import { Radio, RadioGroup } from 'ui/src/Radio'
 import DelayRender from 'ui/src/DelayRender'
 import ModalDialog from 'ui/src/Dialog'
-import { Radio, RadioGroup } from 'ui/src/Radio'
-import { delayAction } from 'ui/src/utils'
 
 function SelectModalFull<T>({
   title,

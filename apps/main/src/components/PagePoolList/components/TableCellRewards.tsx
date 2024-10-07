@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 
+import useStore from '@/store/useStore'
 
+import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
-import PoolRewardsCrv from '@/components/PoolRewardsCrv'
-import useStore from '@/store/useStore'
 
 interface Props {
   isHighlightBase: boolean

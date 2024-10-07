@@ -1,9 +1,9 @@
-import Image from 'next/image'
 import styled from 'styled-components'
 
-import Box from 'ui/src/Box'
 import { CURVE_ASSETS_URL } from 'ui/src/utils'
 import { breakpoints } from 'ui/src/utils/responsive'
+import Box from 'ui/src/Box'
+import Image from 'next/image'
 
 export function Error404() {
   return (

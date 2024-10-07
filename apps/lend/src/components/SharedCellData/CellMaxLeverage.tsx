@@ -1,14 +1,14 @@
-import TextCaption from '@/ui/TextCaption'
-import Chip from '@/ui/Typography/Chip'
 import type { ChipProps } from '@/ui/Typography/types'
 
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Chip from '@/ui/Typography/Chip'
+import TextCaption from '@/ui/TextCaption'
 
 const CellMaxLeverage = ({
   className = '',

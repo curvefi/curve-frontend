@@ -1,16 +1,16 @@
-import { usePageVisibleInterval } from '@/ui/hooks'
-import { breakpoints } from '@/ui/utils/responsive'
-import { providers } from 'ethers'
 import React, { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import PegKeeperContent from '@/components/PagePegKeepers/components/PegKeeperContent'
-import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/constants'
-import networks from '@/networks'
+import { breakpoints } from '@/ui/utils/responsive'
 import useStore from '@/store/useStore'
 
+import { providers } from 'ethers'
 
+import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/constants'
+import { usePageVisibleInterval } from '@/ui/hooks'
+import networks from '@/networks'
 
+import PegKeeperContent from '@/components/PagePegKeepers/components/PegKeeperContent'
 
 const PagePegKeepers = ({ rChainId }: { rChainId: ChainId }) => {
   const isPageVisible = useStore((state) => state.isPageVisible)

@@ -1,19 +1,19 @@
-import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
-import Box from '@/ui/Box'
-import { useHeightResizeObserver } from '@/ui/hooks'
-import { ExternalLink, InternalLink } from '@/ui/Link'
-import { sizes } from '@/ui/utils'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t, Trans } from '@lingui/macro'
-
-import Image from 'next/image'
-import React, { useEffect, useRef } from 'react'
-import styled, { css } from 'styled-components'
 import type { Locale } from '@/lib/i18n'
 
+import { t, Trans } from '@lingui/macro'
+import styled, { css } from 'styled-components'
+import Image from 'next/image'
+import React, { useEffect, useRef } from 'react'
+
+import { breakpoints } from '@/ui/utils/responsive'
+import { sizes } from '@/ui/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
+import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
+import Box from '@/ui/Box'
+import { ExternalLink, InternalLink } from '@/ui/Link'
+import { useHeightResizeObserver } from '@/ui/hooks'
 
 type InnerSectionProps = {
   className?: string

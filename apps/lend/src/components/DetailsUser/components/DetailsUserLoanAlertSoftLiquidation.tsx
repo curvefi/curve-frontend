@@ -1,12 +1,12 @@
+import { useMemo } from 'react'
+import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import { useMemo } from 'react'
-import useStore from '@/store/useStore'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ borrowed_token, collateral_token, userActiveKey }: PageContentProps) => {
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])

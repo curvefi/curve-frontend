@@ -1,5 +1,5 @@
-import dayjs from 'dayjs'
 import merge from 'lodash/merge'
+import dayjs from 'dayjs'
 
 export const APP_STORAGE = {
   APP_CACHE: 'crvusd-app-cache',

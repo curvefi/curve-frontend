@@ -1,11 +1,11 @@
-import Box from '@/ui/Box'
-import ListInfoItem from '@/ui/ListInfo'
-import { formatNumber } from '@/ui/utils'
 import React from 'react'
 
-import InpChipUsdRate from '@/components/InpChipUsdRate'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import Box from '@/ui/Box'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
+import ListInfoItem from '@/ui/ListInfo'
 
 const UserInfoLlammaBalances = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
   const userState = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState)

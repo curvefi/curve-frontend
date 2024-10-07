@@ -1,17 +1,17 @@
+import type { LiqRangeSliderIdx } from '@/store/types'
 
-import Button from '@/ui/Button'
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import { Chip } from '@/ui/Typography'
-import { formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-
-import ChartLiquidationRange from '@/components/ChartLiquidationRange'
-import type { LiqRangeSliderIdx } from '@/store/types'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
+
+import { Chip } from '@/ui/Typography'
+import Button from '@/ui/Button'
+import DetailInfo from '@/ui/DetailInfo'
+import ChartLiquidationRange from '@/components/ChartLiquidationRange'
+import Icon from '@/ui/Icon'
 
 const DetailInfoLiqRange = ({
   bands: newBands,

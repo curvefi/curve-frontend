@@ -1,24 +1,24 @@
+import type { ComboBoxSelectTokenProps } from '@/components/ComboBoxSelectToken/types'
 
+import React, { useEffect, useRef, useState } from 'react'
+import { t } from '@lingui/macro'
+import chunk from 'lodash/chunk'
+import styled from 'styled-components'
 
+import { breakpoints } from '@/ui/utils/responsive'
+import useStore from '@/store/useStore'
 
+import { RCEditClear } from '@/ui/images'
+import { StyledInput } from '@/ui/InputComp/styles'
 import Box from '@/ui/Box/Box'
 import Checkbox from '@/ui/Checkbox'
+import ComboBoxListChunk from '@/components/ComboBoxSelectToken/ComboBoxListChunk'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton/IconButton'
-import { RCEditClear } from '@/ui/images'
 import InputProvider from '@/ui/InputComp/InputProvider'
-import { StyledInput } from '@/ui/InputComp/styles'
 import Popover from '@/ui/Popover/Popover'
 import Spinner from '@/ui/Spinner'
 import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
-import { breakpoints } from '@/ui/utils/responsive'
-import { t } from '@lingui/macro'
-import chunk from 'lodash/chunk'
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import ComboBoxListChunk from '@/components/ComboBoxSelectToken/ComboBoxListChunk'
-import type { ComboBoxSelectTokenProps } from '@/components/ComboBoxSelectToken/types'
-import useStore from '@/store/useStore'
 
 const ComboBox = ({
   testId,

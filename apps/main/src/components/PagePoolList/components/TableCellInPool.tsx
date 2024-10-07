@@ -1,7 +1,7 @@
-import Icon from '@/ui/Icon'
-import { Chip } from '@/ui/Typography'
 import { t } from '@lingui/macro'
 
+import { Chip } from '@/ui/Typography'
+import Icon from '@/ui/Icon'
 
 const TableCellInPool = () => {
   return (

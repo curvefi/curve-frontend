@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 import Box from 'ui/src/Box'
-import TabContentWrapper from 'ui/src/Tab/TabContentWrapper'
 import SlideTab from 'ui/src/TabSlide/SlideTab'
+import TabContentWrapper from 'ui/src/Tab/TabContentWrapper'
 
 export const AppFormContentWrapper = styled(TabContentWrapper)`
   align-items: flex-start;

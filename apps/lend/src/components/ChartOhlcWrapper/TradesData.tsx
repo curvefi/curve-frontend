@@ -1,15 +1,15 @@
+import { TradesDataProps } from './types'
 
-import Box from '@/ui/Box'
-import Tooltip from '@/ui/Tooltip'
-import { Chip } from '@/ui/Typography'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import styled from 'styled-components'
 
+import networks from '@/networks'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/ChartOhlcWrapper/utils'
 
+import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
-import networks from '@/networks'
-import { TradesDataProps } from './types'
+import { Chip } from '@/ui/Typography'
+import Tooltip from '@/ui/Tooltip'
 
 const TradesData: React.FC<TradesDataProps> = ({ lendTradesData, chainId }) => {
   const imageBaseUrl = networks[chainId].imageBaseUrl

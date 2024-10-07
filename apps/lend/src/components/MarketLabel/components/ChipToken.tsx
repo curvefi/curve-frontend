@@ -1,15 +1,15 @@
-import Icon from '@/ui/Icon'
-import Spinner from '@/ui/Spinner'
-import { formatNumberUsdRate } from '@/ui/utils'
-import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 
 import { useButton } from 'react-aria'
+import { useMemo, useRef } from 'react'
 import styled from 'styled-components'
 import useStore from '@/store/useStore'
 
 import { copyToClipboard } from '@/utils/helpers'
+import { formatNumberUsdRate } from '@/ui/utils'
 
+import Icon from '@/ui/Icon'
+import Spinner from '@/ui/Spinner'
 
 const Button = ({
   className = '',

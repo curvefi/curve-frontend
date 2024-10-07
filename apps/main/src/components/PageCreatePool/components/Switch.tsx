@@ -1,8 +1,8 @@
-import { useRef } from 'react'
 import type { AriaSwitchProps } from 'react-aria'
 
-import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
+import { useRef } from 'react'
 import { useToggleState } from 'react-stately'
+import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
 import styled from 'styled-components'
 
 interface Props extends AriaSwitchProps {

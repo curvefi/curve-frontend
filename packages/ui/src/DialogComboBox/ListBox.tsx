@@ -1,12 +1,12 @@
-import { useListBox, useOption } from '@react-aria/listbox'
+import type { AriaListBoxOptions } from 'react-aria'
+import type { Node } from '@react-types/shared'
 import type { ListState } from '@react-stately/list'
 
 import React, { useEffect, useRef, useState } from 'react'
-import type { AriaListBoxOptions } from 'react-aria'
 import styled from 'styled-components'
 
+import { useListBox, useOption } from '@react-aria/listbox'
 import useIntersectionObserver from 'ui/src/hooks/useIntersectionObserver'
-import type { Node } from '@react-types/shared'
 
 function ListBox<T extends object>(
   props: AriaListBoxOptions<T> & {

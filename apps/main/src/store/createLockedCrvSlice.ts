@@ -1,8 +1,9 @@
-import { formatNumber, shortenAccount } from '@/ui/utils'
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
 import type { FormType, FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/components/PageCrvLocker/types'
 
+import networks from '@/networks'
+import cloneDeep from 'lodash/cloneDeep'
 
 import {
   DEFAULT_FORM_VALUES,
@@ -11,9 +12,8 @@ import {
   DEFAULT_FORM_EST_GAS,
 } from '@/components/PageCrvLocker/utils'
 
+import { formatNumber, shortenAccount } from '@/ui/utils'
 import dayjs from '@/lib/dayjs'
-import networks from '@/networks'
-import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

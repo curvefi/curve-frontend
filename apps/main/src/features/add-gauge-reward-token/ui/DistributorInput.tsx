@@ -1,10 +1,10 @@
-import InputProvider, { InputDebounced } from '@/ui/InputComp'
-import { t } from '@lingui/macro'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
-import type { Address } from 'viem'
-import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
+import { t } from '@lingui/macro'
+import InputProvider, { InputDebounced } from '@/ui/InputComp'
 import { FlexItemDistributor, SubTitle } from './styled'
+import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
+import type { Address } from 'viem'
 
 export const DistributorInput: React.FC<{ disabled: boolean }> = ({ disabled }) => {
   const { setValue, formState, trigger, watch } = useFormContext<AddRewardFormValues>()

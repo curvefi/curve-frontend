@@ -1,18 +1,18 @@
-import { useConnectWallet } from '@/onboard'
-import GlobalBanner from '@/ui/Banner'
-import { useHeightResizeObserver } from '@/ui/hooks'
-import { isFailure, isLoading } from '@/ui/utils'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { CONNECT_STAGE } from '@/constants'
-import Footer from '@/layout/Footer'
-import Header from '@/layout/Header'
 import { layoutHeightKeys } from '@/store/createLayoutSlice'
-import { getWalletChainId } from '@/store/createWalletSlice'
-import useStore from '@/store/useStore'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { getWalletChainId } from '@/store/createWalletSlice'
+import { isFailure, isLoading } from '@/ui/utils'
+import { useConnectWallet } from '@/onboard'
+import useStore from '@/store/useStore'
 
+import Header from '@/layout/Header'
+import Footer from '@/layout/Footer'
+import GlobalBanner from '@/ui/Banner'
+import { useHeightResizeObserver } from '@/ui/hooks'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()

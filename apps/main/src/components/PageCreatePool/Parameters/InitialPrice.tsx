@@ -1,13 +1,13 @@
+import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/components/PageCreatePool/constants'
 
+import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
+import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 import NumberField from '@/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
-import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/components/PageCreatePool/constants'
-import useStore from '@/store/useStore'
 
 type Props = {
   curve: CurveApi

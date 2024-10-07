@@ -1,17 +1,17 @@
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { LoadMaxAmount } from '@/components/PagePool/Deposit/types'
-import type { EstimatedGas as FormEstGas, Slippage } from '@/components/PagePool/types'
-import type { Amount } from '@/components/PagePool/utils'
-import { parseAmountsForAPI } from '@/components/PagePool/utils'
-import type { FormStatus, FormType, FormValues } from '@/components/PagePool/Withdraw/types'
-import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PagePool/Withdraw/utils'
-import networks from '@/networks'
 import type { State } from '@/store/useStore'
+import type { Amount } from '@/components/PagePool/utils'
+import type { EstimatedGas as FormEstGas, Slippage } from '@/components/PagePool/types'
+import type { FormStatus, FormType, FormValues } from '@/components/PagePool/Withdraw/types'
+import type { LoadMaxAmount } from '@/components/PagePool/Deposit/types'
 
+import cloneDeep from 'lodash/cloneDeep'
 
-import { isBonus, isHighSlippage, shortenTokenAddress } from '@/utils'
+import networks from '@/networks'
 import { DEFAULT_SLIPPAGE } from 'components/PagePool'
+import { parseAmountsForAPI } from '@/components/PagePool/utils'
+import { isBonus, isHighSlippage, shortenTokenAddress } from '@/utils'
+import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PagePool/Withdraw/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

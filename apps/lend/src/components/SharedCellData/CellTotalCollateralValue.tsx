@@ -1,10 +1,10 @@
-import TextCaption from '@/ui/TextCaption'
-import { formatNumber } from '@/ui/utils'
 import { useEffect } from 'react'
 import styled from 'styled-components'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import TextCaption from '@/ui/TextCaption'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)

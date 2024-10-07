@@ -1,7 +1,6 @@
-import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
+import type { GetState, SetState } from 'zustand'
+import type { State } from '@/store/useStore'
 import { getAddress } from 'ethers'
-import produce from 'immer'
-import type { UTCTimestamp } from 'lightweight-charts'
 import type {
   TimeOptions,
   FetchingStatus,
@@ -15,11 +14,12 @@ import type {
   LlammaTradeEvent,
   LlammaControllerEvent,
 } from 'ui/src/Chart/types'
-import type { GetState, SetState } from 'zustand'
+import type { UTCTimestamp } from 'lightweight-charts'
+
+import produce from 'immer'
+
 import networks from '@/networks'
-import type { State } from '@/store/useStore'
-
-
+import { convertToLocaleTimestamp } from '@/ui/Chart/utils'
 
 type SliceState = {
   chartLlammaOhlc: {

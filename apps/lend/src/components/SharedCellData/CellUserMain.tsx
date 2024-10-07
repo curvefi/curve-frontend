@@ -1,14 +1,14 @@
-import ListInfoItem from '@/ui/ListInfo'
-import Chip from '@/ui/Typography/Chip'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
 import React from 'react'
+import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import InpChipUsdRate from '@/components/InpChipUsdRate'
-import useVaultShares from '@/hooks/useVaultShares'
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import useVaultShares from '@/hooks/useVaultShares'
 
+import Chip from '@/ui/Typography/Chip'
+import InpChipUsdRate from '@/components/InpChipUsdRate'
+import ListInfoItem from '@/ui/ListInfo'
 
 const CellUserMain = ({
   rChainId,

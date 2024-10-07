@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
-import Popover, { Popover2Dialog } from 'ui/src/Popover2'
-import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
 import type { TableSortSelectProps } from 'ui/src/TableSort/types'
 
+import React, { useMemo } from 'react'
 
 import { getLabel } from 'ui/src/TableSort/utils'
 
+import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
+import Popover, { Popover2Dialog } from 'ui/src/Popover2'
 
 const title = 'Sort by'
 

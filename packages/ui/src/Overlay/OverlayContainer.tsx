@@ -1,5 +1,5 @@
-import { OverlayContainer as Container } from 'react-aria'
 import styled from 'styled-components'
+import { OverlayContainer as Container } from 'react-aria'
 
 import { breakpoints } from 'ui/src/utils/responsive'
 

@@ -1,14 +1,14 @@
+import type { AlertSummaryProps } from '@/components/AlertLoanSummary/types'
 
-import Box from '@/ui/Box'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import SummaryChange from '@/components/AlertLoanSummary/components/SummaryChange'
+import Box from '@/ui/Box'
 import SummaryCreate from '@/components/AlertLoanSummary/components/SummaryCreate'
 import SummaryFull from '@/components/AlertLoanSummary/components/SummaryFull'
 import SummaryPartial from '@/components/AlertLoanSummary/components/SummaryPartial'
 import SummarySelfLiquidate from '@/components/AlertLoanSummary/components/SummarySelfLiquidate'
-import type { AlertSummaryProps } from '@/components/AlertLoanSummary/types'
+import SummaryChange from '@/components/AlertLoanSummary/components/SummaryChange'
 
 const AlertLoanSummary = ({ borrowed_token, collateral_token, type, ...props }: AlertSummaryProps) => {
   const { symbol: collateralSymbol = '' } = collateral_token ?? {}

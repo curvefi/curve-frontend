@@ -1,12 +1,12 @@
-import AlertBox from '@/ui/AlertBox'
-import { formatNumber } from '@/ui/utils'
-import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
 import type { Seed } from '@/components/PagePool/types'
 
+import React, { useCallback, useEffect, useState } from 'react'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
+import { formatNumber } from '@/ui/utils'
 
+import AlertBox from '@/ui/AlertBox'
 
 type Props = {
   seed: Seed

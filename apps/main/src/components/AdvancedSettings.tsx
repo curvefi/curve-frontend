@@ -1,21 +1,21 @@
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
-import Icon from '@/ui/Icon'
-import InputProvider, { InputField } from '@/ui/InputComp'
 import type { InputVariant } from '@/ui/InputComp/types'
 
-import { Radio, RadioGroup } from '@/ui/Radio'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
-import { Chip } from '@/ui/Typography'
-import { formatNumber } from '@/ui/utils'
-import { Trans, t } from '@lingui/macro'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import React, { useEffect, useState } from 'react'
+import { useOverlayTriggerState } from '@react-stately/overlays'
+import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
+import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
+import { Chip } from '@/ui/Typography'
+import { Radio, RadioGroup } from '@/ui/Radio'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
+import InputProvider, { InputField } from '@/ui/InputComp'
 
 type FormValues = {
   selected: string

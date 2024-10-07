@@ -1,17 +1,17 @@
-import Box from '@/ui/Box'
-import Icon from '@/ui/Icon'
-import InternalLinkButton from '@/ui/InternalLinkButton'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Spinner from '@/ui/Spinner'
-import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
-import InfoBox from '@/components/PageDeployGauge/InfoBox'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { shortenTokenAddress } from '@/utils'
+import { useNavigate } from 'react-router-dom'
 
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Icon from '@/ui/Icon'
+import Box from '@/ui/Box'
+import InternalLinkButton from '@/ui/InternalLinkButton'
+import InfoBox from '@/components/PageDeployGauge/InfoBox'
+import Spinner from '@/ui/Spinner'
 
 type Props = {
   chainId: ChainId
