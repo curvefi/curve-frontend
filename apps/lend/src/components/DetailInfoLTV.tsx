@@ -18,7 +18,7 @@ const DetailInfoLTV = ({
   debt: Amount | undefined
   collaterals: Amount[] | undefined
 }) => {
-  const chainId = useChainId()
+  const { data: chainId } = useChainId()
   const { data: debtUsdRate } = useTokenUsdRate({ chainId, tokenAddress: debt?.address })
   const collateralAddresses = useMemo(() => collaterals?.map(c => c.address), [collaterals])
   const { data: collateralUsdRates } = useTokenUsdRates({ chainId, tokenAddresses: collateralAddresses })

@@ -9,7 +9,8 @@ export type NestedProperty<T, K extends string> = K extends `${infer P}.${infer 
     ? NestedProperty<T[P], R>
     : never
   : K extends keyof T
-  ? T[K]
-  : never
+    ? T[K]
+    : never
 
-export type NestedFunction<T, K extends string> = NestedProperty<T, K> extends (...args: any) => any ? NestedProperty<T, K> : never
+export type NestedFunction<T, K extends string> =
+  NestedProperty<T, K> extends (...args: any) => any ? NestedProperty<T, K> : never

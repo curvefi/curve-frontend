@@ -19,7 +19,8 @@ import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
-import { getLastTokenUsdRate } from '@/entities/token/lib/last-results'
+import { queryClient } from '@/shared/api/query-client'
+import { tokenKeys } from '@/entities/token/model'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -90,7 +91,12 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { smallMarketAmount, marketListShowOnlyInSmallMarkets } = networks[chainId]
       return owmDatas.filter(({ owm }) => {
         const { cap } = capAndAvailableMapper[owm.id] ?? {}
-        const usdRate = getLastTokenUsdRate(chainId, owm.borrowed_token.address)
+        const usdRate = queryClient.getQueryData<number>(
+          tokenKeys.usdRate({
+            chainId,
+            tokenAddress: owm.borrowed_token.address,
+          }),
+        )
         if (typeof usdRate === 'undefined') return true
         if (marketListShowOnlyInSmallMarkets[owm.id]) return false
         return +cap * usdRate > smallMarketAmount

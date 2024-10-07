@@ -9,7 +9,7 @@ type QueryProviderWrapperProps = {
 }
 
 export function QueryProvider({ children, persister, queryClient }: QueryProviderWrapperProps) {
-  if (persister && !window?.localStorage?.getItem('react-query-no-persist')) {
+  if (persister) {
     return (
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
         {children}

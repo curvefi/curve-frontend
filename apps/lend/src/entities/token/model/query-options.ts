@@ -1,8 +1,9 @@
 import { queryOptions } from '@tanstack/react-query'
-import { tokenKeys, TokenQueryParams } from '@/entities/token'
-import { queryTokenUsdRate } from '@/entities/token/api/query'
+import { TokenQueryParams } from '@/entities/token'
+import { queryTokenUsdRate } from '@/entities/token/api/token-rates'
 import { REFRESH_INTERVAL } from '@/constants'
 import { checkTokenValidity } from '@/entities/token/lib/validation'
+import { tokenKeys } from '@/entities/token/model'
 
 export const getTokenUsdRateQueryOptions = (params: TokenQueryParams) =>
   queryOptions({

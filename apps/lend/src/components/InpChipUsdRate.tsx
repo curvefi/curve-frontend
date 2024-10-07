@@ -8,7 +8,8 @@ const InpChipUsdRate = ({
   address: tokenAddress,
   ...props
 }: Omit<InpChipUsdRateProps, 'usdRate'> & { address: string | undefined }) => {
-  const { data: usdRate } = useTokenUsdRate({ chainId: useChainId(), tokenAddress })
+  const { data: chainId } = useChainId()
+  const { data: usdRate } = useTokenUsdRate({ chainId, tokenAddress })
   return <InpChipUsdRateComp {...props} usdRate={usdRate} />
 }
 
