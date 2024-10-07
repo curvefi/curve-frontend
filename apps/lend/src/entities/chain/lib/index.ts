@@ -1,2 +1,3 @@
 export * from './validation'
-export * from './chain-data-hooks'
+export * from './chain-info'
+export * from './chain-tvl'

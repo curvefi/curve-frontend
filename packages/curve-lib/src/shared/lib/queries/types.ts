@@ -10,8 +10,16 @@ export type QueryResultsArray<T extends QueryOptionsArray> = {
   [K in keyof T]: T[K] extends UseQueryOptions<infer TData, any, any, any> ? UseQueryResult<TData> : never
 }
 
-export type PartialQueryResult<T> = Pick<UseQueryResult<T>, 'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching'>
+export type PartialQueryResult<T> = Pick<
+  UseQueryResult<T>,
+  'data' | 'isLoading' | 'isPending' | 'isError' | 'isFetching'
+>
 
-export type CombinedQueriesResult<T extends QueryOptionsArray> = PartialQueryResult<CombinedDataType<T>>;
+export type CombinedQueriesResult<T extends QueryOptionsArray> = PartialQueryResult<CombinedDataType<T>>
 
-export type CombinedQueryMappingResult<T extends QueryOptionsArray, K extends string[]> = PartialQueryResult<Record<K[number], CombinedDataType<T>[number]>>;
+export type CombinedQueryMappingResult<T extends QueryOptionsArray, K extends string[]> = PartialQueryResult<
+  Record<K[number], CombinedDataType<T>[number]>
+>
+
+export const FETCHING = { isError: false, isLoading: true, isPending: true, isFetching: true, data: undefined } as const
+export const READY = { isError: false, isLoading: false, isPending: false, isFetching: false } as const

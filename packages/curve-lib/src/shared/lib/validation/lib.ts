@@ -6,7 +6,7 @@ extendEnforce(enforce)
 
 function getFieldsList<T extends object, F extends Extract<keyof T, string>[] = Extract<keyof T, string>[]>(
   data: T,
-  fields?: F
+  fields?: F,
 ): F {
   return fields && fields.length > 0 ? fields : (Object.keys(data) as F)
 }
@@ -14,7 +14,7 @@ function getFieldsList<T extends object, F extends Extract<keyof T, string>[] = 
 export function checkValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
   data: D,
-  fields?: Extract<keyof D, string>[]
+  fields?: Extract<keyof D, string>[],
 ): boolean {
   const fieldsList = getFieldsList(data, fields)
   const result = suite(data, fieldsList)
@@ -25,7 +25,7 @@ export function checkValidity<D extends object, S extends Suite<any, any>>(
 export function assertValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
   data: D,
-  fields?: Extract<keyof D, string>[]
+  fields?: Extract<keyof D, string>[],
 ): ValidatedData<D> {
   const fieldsList = getFieldsList(data, fields)
   const result = suite(data, fieldsList)
@@ -38,7 +38,7 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
 
 export function createValidationSuite<
   T extends object,
-  F extends Extract<keyof T, string>[] = Extract<keyof T, string>[]
+  F extends Extract<keyof T, string>[] = Extract<keyof T, string>[],
 >(validationGroup: (data: T) => void) {
   return create((data: T, fieldsList?: F) => {
     only(fieldsList)
