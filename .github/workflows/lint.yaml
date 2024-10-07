@@ -8,5 +8,11 @@ jobs:
         - uses: actions/setup-node@v2
           with:
             node-version: 20
+
+        - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+        # install dependencies for tiny-secp256k1
+        - run: rustup toolchain install stable --target wasm32-unknown-unknown --component clippy --component rustfmt
+
         - run: yarn
         - run: yarn lint
