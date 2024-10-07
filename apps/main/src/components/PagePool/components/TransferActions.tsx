@@ -1,15 +1,15 @@
+import AlertBox from '@/ui/AlertBox'
+import { t } from '@lingui/macro'
+import React from 'react'
+import FormConnectWallet from '@/components/FormConnectWallet'
+import AlertSeedAmounts from '@/components/PagePool/components/AlertSeedAmounts'
 import type { TransferProps } from '@/components/PagePool/types'
 
-import React from 'react'
-import { t } from '@lingui/macro'
 
-import { getChainPoolIdActiveKey } from '@/utils'
-import useStore from '@/store/useStore'
 import useTokenAlert from '@/hooks/useTokenAlert'
+import useStore from '@/store/useStore'
+import { getChainPoolIdActiveKey } from '@/utils'
 
-import AlertBox from '@/ui/AlertBox'
-import AlertSeedAmounts from '@/components/PagePool/components/AlertSeedAmounts'
-import FormConnectWallet from '@/components/FormConnectWallet'
 import { useSignerAddress } from '@/entities/signer'
 
 const TransferActions = ({

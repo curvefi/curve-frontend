@@ -1,8 +1,8 @@
-import type { IconButtonProps } from './types'
 
 import styled from 'styled-components'
 
 import { focusVisible } from 'ui/src/utils/sharedStyles'
+import type { IconButtonProps } from './types'
 
 export const StyledIconButton = styled.button<Omit<IconButtonProps, 'className'>>`
   ${focusVisible};

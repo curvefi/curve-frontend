@@ -1,13 +1,13 @@
-import type { DeploymentType, GaugeType } from '@/components/PageDeployGauge/types'
+import { t } from '@lingui/macro'
 import type { ContractTransactionResponse } from 'ethers'
-import type { PoolType, PoolTypes } from '@/components/PageDeployGauge/types'
+import produce from 'immer'
 import type { GetState, SetState } from 'zustand'
+import type { DeploymentType, GaugeType } from '@/components/PageDeployGauge/types'
+import type { PoolType, PoolTypes } from '@/components/PageDeployGauge/types'
+import networks from '@/networks'
 import type { State } from '@/store/useStore'
 
-import produce from 'immer'
-import { t } from '@lingui/macro'
 
-import networks from '@/networks'
 import { shortenTokenAddress } from '@/utils'
 
 type NetworkWithFactory = {

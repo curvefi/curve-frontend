@@ -1,7 +1,7 @@
-import type { TokenIconProps } from 'ui/src/Token/TokenIcon'
 
 import React from 'react'
 import styled from 'styled-components'
+import type { TokenIconProps } from 'ui/src/Token/TokenIcon'
 
 export type TokensIconProps = {
   className?: string

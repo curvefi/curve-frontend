@@ -1,34 +1,3 @@
-import type {
-  DetailInfoTypes,
-  EstimatedGas,
-  PageTransferProps,
-  PoolInfoTab,
-  Seed,
-  Slippage,
-  TransferFormType,
-} from '@/components/PagePool/types'
-
-import { t } from '@lingui/macro'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-
-import { REFRESH_INTERVAL, ROUTE } from '@/constants'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import usePoolAlert from '@/hooks/usePoolAlert'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import networks from '@/networks'
-import { getUserPoolActiveKey } from '@/store/createUserSlice'
-import useStore from '@/store/useStore'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getChainPoolIdActiveKey } from '@/utils'
-import { getPath } from '@/utils/utilsRouter'
-import { useNavigate } from 'react-router-dom'
-
-import Deposit from '@/components/PagePool/Deposit'
-import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
-import Swap from '@/components/PagePool/Swap'
-import MySharesStats from '@/components/PagePool/UserDetails'
-import Withdraw from '@/components/PagePool/Withdraw'
 import AlertBox from '@/ui/AlertBox'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import {
@@ -46,14 +15,45 @@ import { ExternalLink } from '@/ui/Link'
 import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import { Chip } from '@/ui/Typography'
-
+import { breakpoints } from '@/ui/utils/responsive'
+import { t } from '@lingui/macro'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import { isAddressEqual, type Address } from 'viem'
 import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
+import Deposit from '@/components/PagePool/Deposit'
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
+import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
+import type {
+  DetailInfoTypes,
+  EstimatedGas,
+  PageTransferProps,
+  PoolInfoTab,
+  Seed,
+  Slippage,
+  TransferFormType,
+} from '@/components/PagePool/types'
+
+
+import MySharesStats from '@/components/PagePool/UserDetails'
+import Withdraw from '@/components/PagePool/Withdraw'
+import { REFRESH_INTERVAL, ROUTE } from '@/constants'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import usePoolAlert from '@/hooks/usePoolAlert'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import networks from '@/networks'
+import { getUserPoolActiveKey } from '@/store/createUserSlice'
+import useStore from '@/store/useStore'
+import { getChainPoolIdActiveKey } from '@/utils'
+import { getPath } from '@/utils/utilsRouter'
+
+import Swap from '@/components/PagePool/Swap'
+
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
+import { ManageGauge } from '@/widgets/manage-gauge'
 import { useGaugeManager } from '@/entities/gauge'
 import { BlockSkeleton } from '@/shared/ui/skeleton'
-import { ManageGauge } from '@/widgets/manage-gauge'
-import { isAddressEqual, type Address } from 'viem'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,

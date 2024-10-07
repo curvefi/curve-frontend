@@ -1,20 +1,20 @@
-import React from 'react'
-import { t } from '@lingui/macro'
-import styled, { css } from 'styled-components'
 
-import { handleClickCopy, shortenTokenName } from '@/utils/helpers'
-import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
-import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
 
 import Box from '@/ui/Box'
-import Chip from '@/ui/Typography/Chip'
-import ChipInactive from '@/components/ChipInactive'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import ListInfoItem from '@/ui/ListInfo'
 import TextCaption from '@/ui/TextCaption'
+import Chip from '@/ui/Typography/Chip'
+import { breakpoints, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React from 'react'
+import styled, { css } from 'styled-components'
+import ChipInactive from '@/components/ChipInactive'
+import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
+import networks from '@/networks'
+import { handleClickCopy, shortenTokenName } from '@/utils/helpers'
 
 // TODO: refactor to UI
 const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {

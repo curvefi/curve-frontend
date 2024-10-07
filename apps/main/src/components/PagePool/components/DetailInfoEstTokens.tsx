@@ -1,8 +1,8 @@
-import { useMemo } from 'react'
+import DetailInfo from '@/ui/DetailInfo'
 import { Trans } from '@lingui/macro'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import DetailInfo from '@/ui/DetailInfo'
 
 type Props = {
   tokens: string[]

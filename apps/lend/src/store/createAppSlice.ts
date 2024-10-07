@@ -1,14 +1,14 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@/lib/i18n'
-
 import produce from 'immer'
-
-import { REFRESH_INTERVAL } from '@/constants'
-import { log } from '@/shared/lib/logging'
-import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
+import type { GetState, SetState } from 'zustand'
+import { REFRESH_INTERVAL } from '@/constants'
+import type { Locale } from '@/lib/i18n'
+import type { State } from '@/store/useStore'
+
+
+import { setStorageValue } from '@/utils/utilsStorage'
+import { log } from '@/shared/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

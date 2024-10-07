@@ -1,11 +1,8 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { EstimatedGas as FormEstGas } from '@/components/PagePool/types'
-import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
-import type { RoutesAndOutput, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
 
-import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
+import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
+import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
 
 import {
   DEFAULT_EST_GAS,
@@ -13,11 +10,14 @@ import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/components/PagePool/Swap/utils'
+import type { EstimatedGas as FormEstGas } from '@/components/PagePool/types'
+import type { RoutesAndOutput, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
 import { NETWORK_TOKEN } from '@/constants'
-import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
-import { getSwapActionModalType } from '@/utils/utilsSwap'
 import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
+import type { State } from '@/store/useStore'
+import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
+import { getSwapActionModalType } from '@/utils/utilsSwap'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

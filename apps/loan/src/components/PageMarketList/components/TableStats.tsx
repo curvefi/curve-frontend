@@ -1,12 +1,12 @@
-import React from 'react'
+import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
+import { breakpoints } from '@/ui/utils'
 import { t } from '@lingui/macro'
+import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import CellMarketsTotalDebt from '@/components/PageMarketList/components/TableCellMarketsTotalDebt'
 import useStore from '@/store/useStore'
 
-import CellMarketsTotalDebt from '@/components/PageMarketList/components/TableCellMarketsTotalDebt'
-import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
 
 const TableStats = () => {
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)

@@ -1,8 +1,8 @@
+import * as React from 'react'
 import type { AriaDialogProps } from 'react-aria'
 import { useDialog } from 'react-aria'
-import * as React from 'react'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
 import styled from 'styled-components'
+import { focusVisible } from 'ui/src/utils/sharedStyles'
 
 interface DialogProps extends AriaDialogProps {
   className?: string

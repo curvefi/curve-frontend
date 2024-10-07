@@ -1,24 +1,24 @@
-import type { TableRowProps } from '@/components/PageMarketList/types'
 
-import { t } from '@lingui/macro'
-import React, { useRef } from 'react'
-import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { Item, TCellInPool } from '@/components/PageMarketList/components/TableRow'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import TokenLabel from '@/components/TokenLabel'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
+import { t } from '@lingui/macro'
+import React, { useRef } from 'react'
+import styled from 'styled-components'
 import TableCellInPool from '@/components/PageMarketList/components/TableCellInPool'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
 import TableCellUser from '@/components/PageMarketList/components/TableCellUser'
+import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
+import { Item, TCellInPool } from '@/components/PageMarketList/components/TableRow'
+import type { TableRowProps } from '@/components/PageMarketList/types'
+import TokenLabel from '@/components/TokenLabel'
+import { TITLE } from '@/constants'
 
 const TableRowMobile = ({
   className = '',

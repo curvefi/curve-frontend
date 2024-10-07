@@ -1,8 +1,8 @@
-import styled, { css } from 'styled-components'
 
 import Box from '@/ui/Box'
-import IconButton from '@/ui/IconButton'
 import Icon from '@/ui/Icon'
+import IconButton from '@/ui/IconButton'
+import styled, { css } from 'styled-components'
 
 export const DescriptionChip = styled.p`
   font-size: var(--font-size-2);

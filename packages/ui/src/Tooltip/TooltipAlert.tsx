@@ -1,9 +1,9 @@
-import type { AlertType } from 'ui/src/AlertBox/types'
-import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import * as React from 'react'
+import type { AlertType } from 'ui/src/AlertBox/types'
 import Icon from 'ui/src/Icon'
 import IconTooltip from 'ui/src/Tooltip/TooltipIcon'
+import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 const TooltipAlert = ({
   alertType,

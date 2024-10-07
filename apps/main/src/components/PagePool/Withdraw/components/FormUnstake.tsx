@@ -1,22 +1,22 @@
-import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
-import type { Step } from '@/ui/Stepper/types'
-import type { TransferProps } from '@/components/PagePool/types'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
-
-import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
+import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
+import type { Step } from '@/ui/Stepper/types'
+import TxInfoBar from '@/ui/TxInfoBar'
 import { formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import AlertFormError from '@/components/AlertFormError'
+import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
+import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
+import TransferActions from '@/components/PagePool/components/TransferActions'
+import type { TransferProps } from '@/components/PagePool/types'
+import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
+
+
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import AlertFormError from '@/components/AlertFormError'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
-import TransferActions from '@/components/PagePool/components/TransferActions'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)

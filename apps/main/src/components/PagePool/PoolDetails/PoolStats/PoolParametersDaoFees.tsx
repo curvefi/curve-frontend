@@ -1,10 +1,10 @@
+import { Item } from '@/ui/Items'
+import { Chip } from '@/ui/Typography'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import { Item } from '@/ui/Items'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 
 type AdminFee = string | number | undefined

@@ -1,17 +1,17 @@
+import Button from '@/ui/Button'
+import DatePicker from '@/ui/DatePicker'
+import { Chip } from '@/ui/Typography'
+import { breakpoints } from '@/ui/utils/responsive'
 import type { DateValue } from '@internationalized/date'
-import type { FormType, VecrvInfo } from '@/components/PageCrvLocker/types'
 
 import { t } from '@lingui/macro'
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import type { FormType, VecrvInfo } from '@/components/PageCrvLocker/types'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { formatDisplayDate, toCalendarDate, todayInMilliseconds } from '@/utils/utilsDates'
 import dayjs from '@/lib/dayjs'
+import { formatDisplayDate, toCalendarDate, todayInMilliseconds } from '@/utils/utilsDates'
 
-import { Chip } from '@/ui/Typography'
-import Button from '@/ui/Button'
-import DatePicker from '@/ui/DatePicker'
 
 const QUICK_ACTIONS: { unit: dayjs.ManipulateType; value: number; label: string }[] = [
   { unit: 'week', value: 1, label: t`1 week` },

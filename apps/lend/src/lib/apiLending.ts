@@ -1,14 +1,14 @@
-import type { LiqRange } from '@/store/types'
 import type { StepStatus } from '@/ui/Stepper/types'
 
+import { BN, shortenAccount } from '@/ui/utils'
 import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 
 import { INVALID_ADDRESS } from '@/constants'
-import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
-import { BN, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
+import type { LiqRange } from '@/store/types'
+import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet | null) => {

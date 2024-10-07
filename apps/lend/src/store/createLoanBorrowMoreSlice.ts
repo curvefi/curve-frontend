@@ -1,18 +1,18 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanManage/LoanBorrowMore/types'
 
-import cloneDeep from 'lodash/cloneDeep'
 
-import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   _parseValues,
 } from '@/components/PageLoanManage/LoanBorrowMore/utils'
-import { _parseActiveKey } from '@/utils/helpers'
+import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
+import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import apiLending, { helpers } from '@/lib/apiLending'
+import type { State } from '@/store/useStore'
+import { _parseActiveKey } from '@/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

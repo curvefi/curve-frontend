@@ -1,23 +1,23 @@
-import type { FormValues } from '@/components/PageDashboard/types'
-import type { Params } from 'react-router'
 
-import { t } from '@lingui/macro'
-import { Fragment, useCallback, useEffect, useRef } from 'react'
-import networks from '@/networks'
-import styled from 'styled-components'
 
-import { REFRESH_INTERVAL } from '@/constants'
-import { breakpoints, shortenAccount } from '@/ui/utils'
-import { sleep } from '@/utils'
-import useStore from '@/store/useStore'
 
 import { ExternalLink } from '@/ui/Link'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table from '@/ui/Table'
+import { breakpoints, shortenAccount } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import { Fragment, useCallback, useEffect, useRef } from 'react'
+import type { Params } from 'react-router'
+import styled from 'styled-components'
+import Summary from '@/components/PageDashboard/components/Summary'
 import TableHead from '@/components/PageDashboard/components/TableHead'
 import TableRow from '@/components/PageDashboard/components/TableRow'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Summary from '@/components/PageDashboard/components/Summary'
 import TableSortDialog from '@/components/PageDashboard/components/TableSortDialog'
+import type { FormValues } from '@/components/PageDashboard/types'
+import { REFRESH_INTERVAL } from '@/constants'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+import { sleep } from '@/utils'
 
 const Dashboard = ({
   curve,

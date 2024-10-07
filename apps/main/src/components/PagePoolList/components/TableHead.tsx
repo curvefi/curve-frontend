@@ -1,15 +1,15 @@
-import type { Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
+import Box from '@/ui/Box'
+import { TheadSortButton } from '@/ui/Table'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { breakpoints } from '@/ui/utils/responsive'
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { TheadSortButton } from '@/ui/Table'
-import Box from '@/ui/Box'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TableHeadRewards from '@/components/PagePoolList/components/TableHeadRewards'
+import type { Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
 
 const TableHead = ({
   isReadyRewardsApy,

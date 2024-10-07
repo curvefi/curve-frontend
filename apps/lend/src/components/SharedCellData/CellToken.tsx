@@ -1,11 +1,11 @@
-import React from 'react'
 
-import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
-import Chip from '@/ui/Typography/Chip'
 import Box from '@/ui/Box'
+import Chip from '@/ui/Typography/Chip'
+import React from 'react'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
 import TokenLabel from '@/components/TokenLabel'
+import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
 const CellToken = ({
   hideIcon,

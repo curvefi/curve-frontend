@@ -1,5 +1,5 @@
-import { Item } from 'react-stately'
 import React, { useCallback } from 'react'
+import { Item } from 'react-stately'
 import styled from 'styled-components'
 
 import Button from 'ui/src/Button'

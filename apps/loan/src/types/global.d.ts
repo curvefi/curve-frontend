@@ -1,16 +1,16 @@
+import type { TooltipProps } from '@/ui/Tooltip/types'
+import type stablecoinApi from '@curvefi/stablecoin-api'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
-import type { Locale } from '@/lib/i18n'
-import type { NavigateFunction, Location, Params } from 'react-router'
-import type { ReactNode } from 'react'
-import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
-import type stablecoinApi from '@curvefi/stablecoin-api'
+import type { ReactNode } from 'react'
+import type { NavigateFunction, Location, Params } from 'react-router'
 
-import curvejsApi from '@/lib/apiCrvusd'
 
 import { TITLE } from '@/constants'
+import curvejsApi from '@/lib/apiCrvusd'
+import type { Locale } from '@/lib/i18n'
 
 declare global {
   interface Window {

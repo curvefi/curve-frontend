@@ -1,6 +1,6 @@
+import { Chip } from '@/ui/Typography'
 import { isValidAddress, shortenTokenAddress } from '@/utils'
 
-import { Chip } from '@/ui/Typography'
 
 type Props = {
   address: string | undefined

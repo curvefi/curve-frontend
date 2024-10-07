@@ -1,17 +1,17 @@
-import type { Amount } from '@/components/PagePool/utils'
 
+
+
+import Box from '@/ui/Box'
+import Loader from '@/ui/Loader'
+import Spacer from '@/ui/Spacer'
+import TextEllipsis from '@/ui/TextEllipsis'
+import { Chip } from '@/ui/Typography'
+import { formatNumber } from '@/ui/utils'
 import * as React from 'react'
 import styled from 'styled-components'
-
-import { shortenTokenAddress } from '@/utils'
-import { formatNumber } from '@/ui/utils'
-
-import { Chip } from '@/ui/Typography'
-import Box from '@/ui/Box'
-import Spacer from '@/ui/Spacer'
-import Loader from '@/ui/Loader'
-import TextEllipsis from '@/ui/TextEllipsis'
+import type { Amount } from '@/components/PagePool/utils'
 import TokenIcon from '@/components/TokenIcon'
+import { shortenTokenAddress } from '@/utils'
 
 const SelectedLpTokenExpected = ({
   amounts,

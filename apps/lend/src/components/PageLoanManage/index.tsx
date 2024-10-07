@@ -1,20 +1,20 @@
-import type { CollateralFormType, FormType, LeverageFormType, LoanFormType } from '@/components/PageLoanManage/types'
 
-import { useCallback, useMemo, useRef, useEffect } from 'react'
-import { t } from '@lingui/macro'
-import { useNavigate, useParams } from 'react-router-dom'
 
-import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
-import { useSlideTabState } from '@/ui/hooks'
-import useStore from '@/store/useStore'
 
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@/ui/AppForm'
+import { useSlideTabState } from '@/ui/hooks'
 import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
+import { t } from '@lingui/macro'
+import { useCallback, useMemo, useRef, useEffect } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
 import LoanBorrowMore from '@/components/PageLoanManage/LoanBorrowMore'
-import LoanRepay from '@/components/PageLoanManage/LoanRepay'
-import LoanSelfLiquidation from '@/components/PageLoanManage/LoanSelfLiquidation'
 import LoanCollateralAdd from '@/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/components/PageLoanManage/LoanCollateralRemove'
+import LoanRepay from '@/components/PageLoanManage/LoanRepay'
+import LoanSelfLiquidation from '@/components/PageLoanManage/LoanSelfLiquidation'
+import type { CollateralFormType, FormType, LeverageFormType, LoanFormType } from '@/components/PageLoanManage/types'
+import useStore from '@/store/useStore'
+import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 
 const ManageLoan = (pageProps: PageContentProps) => {
   const { rOwmId, rFormType, userActiveKey, owmDataCachedOrApi, rChainId } = pageProps

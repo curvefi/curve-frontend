@@ -1,24 +1,24 @@
-import type { NextPage } from 'next'
-import type { FilterListProps, SearchParams } from '@/components/PageMarketList/types'
-
+import { AppPageContainer } from '@/ui/AppPage'
+import Box from '@/ui/Box'
 import { t } from '@lingui/macro'
+import type { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
+import ConnectWallet from '@/components/ConnectWallet'
+import MarketList from '@/components/PageMarketList/index'
+import type { FilterListProps, SearchParams } from '@/components/PageMarketList/types'
+
 
 import { ROUTE } from '@/constants'
-import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
 import useTitleMapper from '@/hooks/useTitleMapper'
-
-import { AppPageContainer } from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
-import MarketList from '@/components/PageMarketList/index'
 import Settings from '@/layout/Settings'
-import ConnectWallet from '@/components/ConnectWallet'
-import Box from '@/ui/Box'
+import useStore from '@/store/useStore'
+import { scrollToTop } from '@/utils/helpers'
+import { getPath } from '@/utils/utilsRouter'
+
 
 const Page: NextPage = () => {
   const params = useParams()

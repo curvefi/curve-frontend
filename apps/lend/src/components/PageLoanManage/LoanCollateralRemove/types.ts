@@ -1,5 +1,5 @@
-import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
 import type { InpError } from '@/components/PageLoanCreate/types'
+import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
 
 export type FormValues = {
   collateral: string

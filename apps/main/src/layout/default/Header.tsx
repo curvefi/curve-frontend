@@ -1,21 +1,4 @@
-import type { AppLogoProps } from '@/ui/Brand/AppLogo'
-import type { AppPage } from '@/ui/AppNav/types'
-import type { ThemeType } from '@/ui/Select/SelectThemes'
-
-import React, { useMemo, useRef } from 'react'
-import { t } from '@lingui/macro'
-import { useNavigate, useParams } from 'react-router-dom'
-
-import { CONNECT_STAGE, ROUTE } from '@/constants'
-import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
-import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/onboard'
-import networks, { visibleNetworksList } from '@/networks'
-import useLayoutHeight from '@/hooks/useLayoutHeight'
-import useStore from '@/store/useStore'
-
 import {
   APP_LINK,
   APPS_LINKS,
@@ -25,11 +8,28 @@ import {
   AppNavMenuSection,
   AppSelectNetwork,
 } from '@/ui/AppNav'
-import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
-import AppLogo from '@/ui/Brand'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
+import type { AppPage } from '@/ui/AppNav/types'
+import AppLogo from '@/ui/Brand'
+import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
+import type { ThemeType } from '@/ui/Select/SelectThemes'
+
+import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useMemo, useRef } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+
+import { CONNECT_STAGE, ROUTE } from '@/constants'
+import useLayoutHeight from '@/hooks/useLayoutHeight'
+import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
 import HeaderSecondary from '@/layout/default/HeaderSecondary'
+import { DEFAULT_LOCALES } from '@/lib/i18n'
+import networks, { visibleNetworksList } from '@/networks'
+import { getWalletSignerAddress } from '@/store/createWalletSlice'
+import useStore from '@/store/useStore'
+import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()

@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
+import Chip from '@/ui/Typography/Chip'
+import { formatNumber, formatNumberUsdRate } from '@/ui/utils'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber, formatNumberUsdRate } from '@/ui/utils'
 
-import Chip from '@/ui/Typography/Chip'
 import { BD } from '@/shared/curve-lib'
 
 const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {

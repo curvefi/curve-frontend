@@ -1,21 +1,21 @@
-import type { FormDetailInfo } from '@/components/PageLoanManage/types'
-import type { DetailProps, FormDetailInfoLeverage } from '@/components/PageLoanManage/LoanRepay/types'
 
-import React from 'react'
 import { t } from '@lingui/macro'
+import React from 'react'
 
-import useStore from '@/store/useStore'
-import { _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
 
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoLeverageAdvancedExpected from '@/components/DetailInfoLeverageAdvancedExpected'
 import DetailInfoLeverageAvgPrice from '@/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLeverageExpected from '@/components/DetailInfoLeverageExpected'
+import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
+import type { DetailProps, FormDetailInfoLeverage } from '@/components/PageLoanManage/LoanRepay/types'
+import { _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
+import type { FormDetailInfo } from '@/components/PageLoanManage/types'
+import useStore from '@/store/useStore'
 
 const DetailInfo = ({
   rChainId,

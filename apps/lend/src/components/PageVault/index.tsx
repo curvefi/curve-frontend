@@ -1,20 +1,20 @@
-import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/components/PageVault/types'
 
+
+
+import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@/ui/AppForm'
+import { useSlideTabState } from '@/ui/hooks'
+import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
 import { t } from '@lingui/macro'
 import { useRef, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-
-import { getVaultPathname } from '@/utils/utilsRouter'
-import { useSlideTabState } from '@/ui/hooks'
-import useStore from '@/store/useStore'
-
-import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@/ui/AppForm'
-import SlideTabsWrapper, { SlideTabs } from '@/ui/TabSlide'
+import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/components/PageVault/types'
+import VaultClaim from '@/components/PageVault/VaultClaim'
 import VaultDepositMint from '@/components/PageVault/VaultDepositMint'
-import VaultWithdrawRedeem from '@/components/PageVault/VaultWithdrawRedeem'
 import VaultStake from '@/components/PageVault/VaultStake'
 import VaultUnstake from '@/components/PageVault/VaultUnstake'
-import VaultClaim from '@/components/PageVault/VaultClaim'
+import VaultWithdrawRedeem from '@/components/PageVault/VaultWithdrawRedeem'
+import useStore from '@/store/useStore'
+import { getVaultPathname } from '@/utils/utilsRouter'
 
 const Vault = (pageProps: PageContentProps) => {
   const { rOwmId, rFormType, rChainId } = pageProps

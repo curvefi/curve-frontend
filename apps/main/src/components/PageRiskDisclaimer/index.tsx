@@ -1,6 +1,5 @@
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
-
+import Box from '@/ui/Box'
+import { ExternalLink } from '@/ui/Link'
 import {
   RiskWrapper,
   RiskTitle,
@@ -11,8 +10,9 @@ import {
   RiskParagraph,
   RiskComment,
 } from '@/ui/RiskDisclaimer/styles'
-import { ExternalLink } from '@/ui/Link'
-import Box from '@/ui/Box'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
 
 const RiskDisclaimer = () => {
   return (

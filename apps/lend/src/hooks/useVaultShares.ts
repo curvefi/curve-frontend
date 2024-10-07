@@ -1,7 +1,7 @@
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { useEffect, useMemo } from 'react'
 import useStore from '@/store/useStore'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])

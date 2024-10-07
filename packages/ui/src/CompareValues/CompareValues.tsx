@@ -1,5 +1,5 @@
-import styled, { keyframes } from 'styled-components'
 import React, { useEffect, useState } from 'react'
+import styled, { keyframes } from 'styled-components'
 
 type Props = {
   prevVal: string | number | null | undefined

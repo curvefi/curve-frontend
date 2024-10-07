@@ -1,37 +1,37 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanIncrease/types'
-import type { FormEstGas, PageLoanManageProps } from '@/components/PageLoanManage/types'
-import type { Step } from '@/ui/Stepper/types'
 
+
+
+import AlertBox from '@/ui/AlertBox'
+import Box from '@/ui/Box'
+import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import Stepper from '@/ui/Stepper'
+import { getActiveStep } from '@/ui/Stepper/helpers'
+import type { Step } from '@/ui/Stepper/types'
+import TxInfoBar from '@/ui/TxInfoBar'
+import { formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-
-import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/store/createLoanIncreaseSlice'
+import AlertFormError from '@/components/AlertFormError'
+import DetailInfoBorrowRate from '@/components/DetailInfoBorrowRate'
+import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
+import DialogHealthWarning from '@/components/DialogHealthWarning'
+import LoanFormConnect from '@/components/LoanFormConnect'
+import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanIncrease/types'
+import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanManage/styles'
+import type { FormEstGas, PageLoanManageProps } from '@/components/PageLoanManage/types'
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
   DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/components/PageLoanManage/utils'
-import { curveProps } from '@/utils/helpers'
-import { formatNumber } from '@/ui/utils'
-import { getActiveStep } from '@/ui/Stepper/helpers'
-import { getStepStatus, getTokenName } from '@/utils/utilsLoan'
 import networks from '@/networks'
+import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/store/createLoanIncreaseSlice'
 import useStore from '@/store/useStore'
-
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/components/PageLoanManage/styles'
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import DetailInfoBorrowRate from '@/components/DetailInfoBorrowRate'
-import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
-import DetailInfoHealth from '@/components/DetailInfoHealth'
-import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
-import DialogHealthWarning from '@/components/DialogHealthWarning'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import LoanFormConnect from '@/components/LoanFormConnect'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
-import AlertFormError from '@/components/AlertFormError'
+import { curveProps } from '@/utils/helpers'
+import { getStepStatus, getTokenName } from '@/utils/utilsLoan'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 

@@ -1,10 +1,10 @@
+import { breakpoints } from '@/ui/utils'
 import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import TokenIcons from '@/components/TokenIcons'
 import networks from '@/networks'
 
-import TokenIcons from '@/components/TokenIcons'
 
 type Props = {
   className?: string

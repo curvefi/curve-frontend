@@ -1,12 +1,12 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 
 import pick from 'lodash/pick'
+import type { GetState, SetState } from 'zustand'
 
 import { _getMarketList } from '@/components/PageMarketList/utils'
-import { getErrorMessage } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
 import networks from '@/networks'
+import type { State } from '@/store/useStore'
+import { getErrorMessage } from '@/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

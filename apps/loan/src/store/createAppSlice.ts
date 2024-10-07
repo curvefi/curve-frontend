@@ -1,16 +1,16 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@/lib/i18n'
-
-import produce from 'immer'
-
-import { ethers, Contract } from 'ethers'
 import { Interface } from '@ethersproject/abi'
+import { ethers, Contract } from 'ethers'
+import produce from 'immer'
+import isEqual from 'lodash/isEqual'
+import type { GetState, SetState } from 'zustand'
+import type { Locale } from '@/lib/i18n'
+import networks from '@/networks'
+import type { State } from '@/store/useStore'
+
+
 import { httpFetcher, log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
-import isEqual from 'lodash/isEqual'
-import networks from '@/networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''

@@ -1,17 +1,17 @@
-import type { AriaSelectOptions } from 'react-aria'
-import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 
 import * as React from 'react'
+import type { AriaSelectOptions } from 'react-aria'
 import { HiddenSelect, useSelect } from 'react-aria'
+import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
 import styled from 'styled-components'
 
-import { getIsFullScreen } from 'ui/src/utils'
 import Icon from 'ui/src/Icon/Icon'
 import SelectBtn from 'ui/src/Select/SelectBtn'
 import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 import SelectModal from 'ui/src/Select/SelectModal'
 import SelectModalFull from 'ui/src/Select/SelectModalFull'
+import { getIsFullScreen } from 'ui/src/utils'
 
 export interface SelectProps<T extends object>
   extends Omit<ReactStatelySelectProps<T>, 'children'>,

@@ -1,23 +1,23 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, FormType, StepKey } from '@/components/PageCrvLocker/types'
+import Stepper from '@/ui/Stepper'
+import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
-
+import TxInfoBar from '@/ui/TxInfoBar'
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import AlertFormError from '@/components/AlertFormError'
+import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import FieldLockedAmt from '@/components/PageCrvLocker/components/FieldLockedAmt'
+import FormActions from '@/components/PageCrvLocker/components/FormActions'
+import type { PageVecrv, FormEstGas, FormStatus, FormValues, FormType, StepKey } from '@/components/PageCrvLocker/types'
+
 
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import AlertFormError from '@/components/AlertFormError'
-import FormActions from '@/components/PageCrvLocker/components/FormActions'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldLockedAmt from '@/components/PageCrvLocker/components/FieldLockedAmt'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

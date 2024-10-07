@@ -1,9 +1,9 @@
 import type { NumberFormatOptions } from '@internationalized/number'
+import * as React from 'react'
 import type { AriaSliderProps } from 'react-aria'
+import { mergeProps, useFocusRing, useNumberFormatter, useSlider, useSliderThumb, VisuallyHidden } from 'react-aria'
 import type { SliderState } from 'react-stately'
 
-import * as React from 'react'
-import { mergeProps, useFocusRing, useNumberFormatter, useSlider, useSliderThumb, VisuallyHidden } from 'react-aria'
 import { useSliderState } from 'react-stately'
 import styled from 'styled-components'
 

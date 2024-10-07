@@ -1,12 +1,12 @@
-import React, { useCallback, useMemo } from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
+import { formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useCallback, useMemo } from 'react'
+import styled from 'styled-components'
 
 type PriceImpact = { priceImpact: string; swapFrom: string; swapTo: string }
 

@@ -1,6 +1,6 @@
+import { baseNetworksConfig } from '@/ui/utils'
 import sortBy from 'lodash/sortBy'
 
-import { baseNetworksConfig } from '@/ui/utils'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const drpcUrl = (network: string) =>

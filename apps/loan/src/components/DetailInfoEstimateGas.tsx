@@ -1,15 +1,15 @@
+import DetailInfo from '@/ui/DetailInfo'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 
 import { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { BN, FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 export type StepProgress = {
   active: number

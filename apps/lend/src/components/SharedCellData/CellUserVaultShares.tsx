@@ -1,6 +1,6 @@
+import ChipVaultSharesUsdRate from '@/components/InpChipVaultShareUsdRate'
 import useStore from '@/store/useStore'
 
-import ChipVaultSharesUsdRate from '@/components/InpChipVaultShareUsdRate'
 
 const CellUserVaultShares = ({
   rChainId,

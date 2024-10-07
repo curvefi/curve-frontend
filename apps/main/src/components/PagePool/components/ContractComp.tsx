@@ -1,14 +1,14 @@
+import Box from '@/ui/Box'
+import Icon from '@/ui/Icon'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import React from 'react'
 import styled from 'styled-components'
 
-import { copyToClipboard } from '@/lib/utils'
-import { shortenTokenAddress } from '@/utils'
-import networks from '@/networks'
-
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
-import Icon from '@/ui/Icon'
+import { copyToClipboard } from '@/lib/utils'
+import networks from '@/networks'
+import { shortenTokenAddress } from '@/utils'
+
 
 const ContractComp = ({
   address,

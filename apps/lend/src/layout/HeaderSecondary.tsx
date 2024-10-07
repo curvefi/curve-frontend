@@ -1,12 +1,12 @@
-import type { AppNavSecondaryProps } from '@/ui/AppNav/types'
-
-import React, { useEffect, useRef } from 'react'
-
-import { useHeightResizeObserver } from '@/ui/hooks'
-import useStore from '@/store/useStore'
-
 import { AppNavSecondaryWrapper } from '@/ui/AppNav'
 import AppNavSecondary from '@/ui/AppNav/AppNavSecondary'
+import type { AppNavSecondaryProps } from '@/ui/AppNav/types'
+
+import { useHeightResizeObserver } from '@/ui/hooks'
+import React, { useEffect, useRef } from 'react'
+
+import useStore from '@/store/useStore'
+
 
 const HeaderSecondary = (props: AppNavSecondaryProps) => {
   const secondaryNavRef = useRef<HTMLDivElement>(null)

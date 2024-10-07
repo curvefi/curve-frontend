@@ -1,15 +1,15 @@
-import { useMemo } from 'react'
-import { t } from '@lingui/macro'
-import isUndefined from 'lodash/isUndefined'
-import styled from 'styled-components'
-
-import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
-import { getTokenName } from '@/utils/utilsLoan'
-import useStore from '@/store/useStore'
-
-import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import TextCaption from '@/ui/TextCaption'
+import { Chip } from '@/ui/Typography'
+import { formatNumber, type NumberFormatOptions } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
+import styled from 'styled-components'
+
+import useStore from '@/store/useStore'
+import { getTokenName } from '@/utils/utilsLoan'
+
 
 type Props = {
   rChainId: ChainId

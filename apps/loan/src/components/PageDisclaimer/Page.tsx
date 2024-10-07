@@ -1,14 +1,4 @@
-import type { NextPage } from 'next'
-
-import { t, Trans } from '@lingui/macro'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { useEffect } from 'react'
-import styled from 'styled-components'
-
-import { breakpoints } from '@/ui/utils/responsive'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-
+import ExternalLink from '@/ui/Link/ExternalLink'
 import {
   RiskWrapper,
   RiskTitle,
@@ -22,9 +12,19 @@ import {
   RiskOrderList,
 } from '@/ui/RiskDisclaimer/styles'
 import Chip from '@/ui/Typography/Chip'
+import { breakpoints } from '@/ui/utils/responsive'
+import { t, Trans } from '@lingui/macro'
+import type { NextPage } from 'next'
+
+import { useEffect } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import styled from 'styled-components'
+
+import usePageOnMount from '@/hooks/usePageOnMount'
 import DocumentHead from '@/layout/DocumentHead'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import Settings from '@/layout/Settings'
+import { scrollToTop } from '@/utils/helpers'
+
 
 const Page: NextPage = () => {
   const params = useParams()

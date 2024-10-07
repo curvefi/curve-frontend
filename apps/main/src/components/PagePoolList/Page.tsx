@@ -1,23 +1,23 @@
+import { breakpoints } from '@/ui/utils/responsive'
+import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import styled from 'styled-components'
+import PoolList from '@/components/PagePoolList/index'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
 
-import { t } from '@lingui/macro'
-import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getPoolDatasCached } from '@/store/createPoolListSlice'
-import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/utils'
-import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-
 import DocumentHead from '@/layout/default/DocumentHead'
-import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
+import networks from '@/networks'
+import { getPoolDatasCached } from '@/store/createPoolListSlice'
+import useStore from '@/store/useStore'
+import { scrollToTop } from '@/utils'
+import { getPath } from '@/utils/utilsRouter'
+
 
 const Page: NextPage = () => {
   const params = useParams()

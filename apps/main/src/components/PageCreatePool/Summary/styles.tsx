@@ -1,6 +1,6 @@
-import styled from 'styled-components'
 import Icon from '@/ui/Icon'
 import ExternalLink from '@/ui/Link/ExternalLink'
+import styled from 'styled-components'
 import TokenIcon from '@/components/TokenIcon'
 
 export const CategoryColumn = styled.div`

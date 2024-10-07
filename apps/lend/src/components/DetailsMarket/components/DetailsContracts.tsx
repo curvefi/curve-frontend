@@ -1,14 +1,14 @@
-import React from 'react'
-import { t } from '@lingui/macro'
 
-import { INVALID_ADDRESS } from '@/constants'
 
-import { SubTitle } from '@/components/DetailsMarket/styles'
 import Box from '@/ui/Box'
 import Chip from '@/ui/Typography/Chip'
+import { t } from '@lingui/macro'
+import React from 'react'
 import ChipInactive from '@/components/ChipInactive'
 import DetailInfoAddressLookup from '@/components/DetailsMarket/components/DetailInfoAddressLookup'
+import { SubTitle } from '@/components/DetailsMarket/styles'
 import TokenLabel from '@/components/TokenLabel'
+import { INVALID_ADDRESS } from '@/constants'
 
 type ContractItems = { label: string | React.ReactNode; address: string | undefined; invalidText?: string }[]
 

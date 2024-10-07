@@ -1,8 +1,8 @@
-import type { StepStatus } from './types'
 
 import styled, { css } from 'styled-components'
 
 import { statusColorMap } from './helpers'
+import type { StepStatus } from './types'
 
 type StepNumberConnector = {
   visible: boolean

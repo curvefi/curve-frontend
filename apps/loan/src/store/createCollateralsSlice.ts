@@ -1,10 +1,10 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 
 import cloneDeep from 'lodash/cloneDeep'
 import pick from 'lodash/pick'
+import type { GetState, SetState } from 'zustand'
 
 import networks from '@/networks'
+import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

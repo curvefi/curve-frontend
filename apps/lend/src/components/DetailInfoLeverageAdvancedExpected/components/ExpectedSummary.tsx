@@ -1,12 +1,12 @@
+import Icon from '@/ui/Icon'
+import React from 'react'
+import styled from 'styled-components'
 import type { DetailInfoLeverageExpectedProps } from '@/components/DetailInfoLeverageAdvancedExpected/types'
 import type { BreakdownItem } from '@/components/DetailInfoLeverageAdvancedExpected/types'
 
-import React from 'react'
-import styled from 'styled-components'
 
 import { format } from '@/components/DetailInfoLeverageAdvancedExpected/utils'
 
-import Icon from '@/ui/Icon'
 
 const ExpectedSummary = ({
   label,

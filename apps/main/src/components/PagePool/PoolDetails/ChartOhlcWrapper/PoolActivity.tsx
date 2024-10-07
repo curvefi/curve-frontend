@@ -1,16 +1,16 @@
+import Button from '@/ui/Button/Button'
 import type { LpTradeToken, PricesApiCoin } from '@/ui/Chart/types'
 
-import { useEffect, useState } from 'react'
+import Icon from '@/ui/Icon'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import { t } from '@lingui/macro'
+import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
+import LiquidityData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
+import TradesData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import useStore from '@/store/useStore'
 
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Button from '@/ui/Button/Button'
-import Icon from '@/ui/Icon'
-import TradesData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
-import LiquidityData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 
 const PoolActivity: React.FC<{
   poolAddress: string

@@ -1,23 +1,23 @@
-import styled from 'styled-components'
+import Box, { BoxHeader } from '@/ui/Box'
+import ModalDialog from '@/ui/Dialog/ModalDialog'
+import Icon from '@/ui/Icon/Icon'
+import IconButton from '@/ui/IconButton'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import Switch from '@/ui/Switch/Switch'
 import { t } from '@lingui/macro'
-import { useEffect, useMemo, useRef } from 'react'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import { useButton } from '@react-aria/button'
+import { useOverlayTriggerState } from '@react-stately/overlays'
+import { useEffect, useMemo, useRef } from 'react'
+import styled from 'styled-components'
 
+import DeployGaugeButton from '@/components/PageDeployGauge/components/DeployGaugeButton'
+import DeployMainnet from '@/components/PageDeployGauge/DeployMainnet'
+import DeploySidechain from '@/components/PageDeployGauge/DeploySidechain'
+import ProcessSummary from '@/components/PageDeployGauge/ProcessSummary'
 import { curveProps } from '@/lib/utils'
 import useStore from '@/store/useStore'
 
-import DeploySidechain from '@/components/PageDeployGauge/DeploySidechain'
-import DeployMainnet from '@/components/PageDeployGauge/DeployMainnet'
-import ProcessSummary from '@/components/PageDeployGauge/ProcessSummary'
-import DeployGaugeButton from '@/components/PageDeployGauge/components/DeployGaugeButton'
 
-import Box, { BoxHeader } from '@/ui/Box'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Switch from '@/ui/Switch/Switch'
-import IconButton from '@/ui/IconButton'
-import Icon from '@/ui/Icon/Icon'
-import ModalDialog from '@/ui/Dialog/ModalDialog'
 
 type Props = {
   curve: CurveApi

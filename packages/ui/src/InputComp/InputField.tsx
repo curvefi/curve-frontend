@@ -1,4 +1,3 @@
-import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
 
 import * as React from 'react'
 import styled from 'styled-components'
@@ -7,6 +6,7 @@ import Box from 'ui/src/Box/Box'
 import Input from 'ui/src/InputComp/Input'
 import InputLabel from 'ui/src/InputComp/InputLabel'
 import InputMessage from 'ui/src/InputComp/InputMessage'
+import type { InputLabelProps, InputProps } from 'ui/src/InputComp/types'
 
 const InputField = ({
   className,

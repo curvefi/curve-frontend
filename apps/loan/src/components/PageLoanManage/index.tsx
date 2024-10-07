@@ -1,23 +1,23 @@
-import type { CollateralFormType, FormType, LoanFormType, PageLoanManageProps } from '@/components/PageLoanManage/types'
-
+import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
+import SlideTabsWrapper, { SlideTab, SlideTabs } from '@/ui/TabSlide'
 import { t } from '@lingui/macro'
+
+import isUndefined from 'lodash/isUndefined'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
-import { hasDeleverage } from '@/components/PageLoanManage/utils'
-import useStore from '@/store/useStore'
 
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppForm'
 import CollateralDecrease from '@/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/components/PageLoanManage/LoanDecrease'
 import LoanDeleverage from '@/components/PageLoanManage/LoanDeleverage'
 import LoanIncrease from '@/components/PageLoanManage/LoanIncrease'
 import LoanLiquidate from '@/components/PageLoanManage/LoanLiquidate'
-import SlideTabsWrapper, { SlideTab, SlideTabs } from '@/ui/TabSlide'
+import type { CollateralFormType, FormType, LoanFormType, PageLoanManageProps } from '@/components/PageLoanManage/types'
+import { hasDeleverage } from '@/components/PageLoanManage/utils'
+import useStore from '@/store/useStore'
+import { getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 
 interface Props extends PageLoanManageProps {}
 

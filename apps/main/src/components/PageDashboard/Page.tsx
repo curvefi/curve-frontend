@@ -1,21 +1,21 @@
+import Box from '@/ui/Box'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { breakpoints } from '@/ui/utils/responsive'
+import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
 import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import { scrollToTop } from '@/utils'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-
+import ConnectWallet from '@/components/ConnectWallet'
 import Dashboard from '@/components/PageDashboard/index'
+import usePageOnMount from '@/hooks/usePageOnMount'
 import DocumentHead from '@/layout/default/DocumentHead'
 import Settings from '@/layout/default/Settings'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import ConnectWallet from '@/components/ConnectWallet'
-import Box from '@/ui/Box'
+import useStore from '@/store/useStore'
+import { scrollToTop } from '@/utils'
+
 
 const Page: NextPage = () => {
   const params = useParams()

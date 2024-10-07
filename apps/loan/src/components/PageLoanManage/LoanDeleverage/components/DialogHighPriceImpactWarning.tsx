@@ -1,9 +1,9 @@
-import { t } from '@lingui/macro'
-import React from 'react'
 
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
+import { t } from '@lingui/macro'
+import React from 'react'
 
 function DialogHighPriceImpactWarning({
   priceImpact,

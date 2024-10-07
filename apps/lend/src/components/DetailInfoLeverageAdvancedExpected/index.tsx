@@ -1,14 +1,14 @@
-import type { DetailInfoLeverageExpectedProps } from '@/components/DetailInfoLeverageAdvancedExpected/types'
-
-import React, { useState } from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
 import Button from '@/ui/Button'
+import TextCaption from '@/ui/TextCaption'
+import { t } from '@lingui/macro'
+import React, { useState } from 'react'
+import styled from 'styled-components'
+
 import ExpectedLabel from '@/components/DetailInfoLeverageAdvancedExpected/components/ExpectedLabel'
 import ExpectedSummary from '@/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSummary'
 import ExpectedSwapDetails from '@/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSwapDetails'
-import TextCaption from '@/ui/TextCaption'
+import type { DetailInfoLeverageExpectedProps } from '@/components/DetailInfoLeverageAdvancedExpected/types'
 
 const DetailInfoLeverageAdvancedExpected = ({
   rChainId,

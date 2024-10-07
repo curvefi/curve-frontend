@@ -1,13 +1,10 @@
+import Box from '@/ui/Box'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import useStore from '@/store/useStore'
 
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
 
-import networks from '@/networks'
-
-import Box from '@/ui/Box'
 import {
   CategoryColumn,
   CategoryDataRow,
@@ -17,6 +14,9 @@ import {
   SummaryDataPlaceholder,
   StyledCheckmark,
 } from '@/components/PageCreatePool/Summary/styles'
+import networks from '@/networks'
+
+import useStore from '@/store/useStore'
 
 type Props = {
   chainId: ChainId

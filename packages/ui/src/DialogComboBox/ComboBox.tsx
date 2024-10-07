@@ -1,19 +1,19 @@
-import type { ComboBoxStateOptions } from 'react-stately'
 
+import { useComboBoxState } from '@react-stately/combobox'
 import React, { useRef } from 'react'
 import { useButton, useComboBox, useFocusRing } from 'react-aria'
-import { useComboBoxState } from '@react-stately/combobox'
+import type { ComboBoxStateOptions } from 'react-stately'
 import styled from 'styled-components'
 
-import { breakpoints } from 'ui/src/utils/responsive'
-import { RCEditClear } from 'ui/src/images'
-import { StyledInput } from 'ui/src/InputComp/styles'
 import Box from 'ui/src/Box/Box'
+import ListBox from 'ui/src/DialogComboBox/ListBox'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton/IconButton'
+import { RCEditClear } from 'ui/src/images'
 import InputProvider from 'ui/src/InputComp/InputProvider'
-import ListBox from 'ui/src/DialogComboBox/ListBox'
+import { StyledInput } from 'ui/src/InputComp/styles'
 import Popover from 'ui/src/Popover/Popover'
+import { breakpoints } from 'ui/src/utils/responsive'
 
 function ComboBox<T extends object>({
   listBoxHeight,

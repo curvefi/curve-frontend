@@ -1,21 +1,21 @@
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
 
-import React, { useEffect, useState } from 'react'
+
+
+import Box from '@/ui/Box'
+import { breakpoints } from '@/ui/utils/responsive'
 import { t } from '@lingui/macro'
 import isUndefined from 'lodash/isUndefined'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-
-import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getHealthMode } from '@/components/DetailInfoHealth'
-import useStore from '@/store/useStore'
-
-import { SubTitle } from '@/components/LoanInfoLlamma/styles'
-import Box from '@/ui/Box'
 import PoolInfoData from '@/components/ChartOhlcWrapper'
+import { getHealthMode } from '@/components/DetailInfoHealth'
+import { SubTitle } from '@/components/LoanInfoLlamma/styles'
 import ChartUserBands from '@/components/LoanInfoUser/components/ChartUserBands'
 import ChartUserLiquidationRange from '@/components/LoanInfoUser/components/ChartUserLiquidationRange'
 import UserInfos from '@/components/LoanInfoUser/components/UserInfos'
+import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
+import { DEFAULT_HEALTH_MODE } from '@/components/PageLoanManage/utils'
+import useStore from '@/store/useStore'
 
 interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId

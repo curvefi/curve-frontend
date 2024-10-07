@@ -1,16 +1,16 @@
-import { LlammaLiquidityCoins } from './types'
 
-import { useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
-
-import useStore from '@/store/useStore'
-
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Button from '@/ui/Button/Button'
 import Icon from '@/ui/Icon'
-import TradesData from '@/components/ChartOhlcWrapper/TradesData'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { t } from '@lingui/macro'
+import { useEffect, useState } from 'react'
+import styled from 'styled-components'
+
 import LiquidityData from '@/components/ChartOhlcWrapper/LiquidityData'
+import TradesData from '@/components/ChartOhlcWrapper/TradesData'
+import useStore from '@/store/useStore'
+
+import { LlammaLiquidityCoins } from './types'
 
 interface Props {
   poolAddress: string

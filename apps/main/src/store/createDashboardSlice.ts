@@ -1,6 +1,12 @@
+import { shortenAccount } from '@/ui/utils'
+import { PromisePool } from '@supercharge/promise-pool'
+
+import cloneDeep from 'lodash/cloneDeep'
+import orderBy from 'lodash/orderBy'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 import type { VecrvInfo } from '@/components/PageCrvLocker/types'
+
+import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import type {
   FormStatus,
   FormValues,
@@ -9,21 +15,15 @@ import type {
   WalletDashboardData,
   WalletPoolData,
 } from '@/components/PageDashboard/types'
-
-import { PromisePool } from '@supercharge/promise-pool'
-import cloneDeep from 'lodash/cloneDeep'
-import orderBy from 'lodash/orderBy'
-
 import {
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
   DEFAULT_WALLET_DASHBOARD_DATA,
 } from '@/components/PageDashboard/utils'
-import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue } from '@/utils'
-import { shortenAccount } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
+import type { State } from '@/store/useStore'
+import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue } from '@/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

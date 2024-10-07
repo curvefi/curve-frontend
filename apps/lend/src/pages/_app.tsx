@@ -1,7 +1,6 @@
 import type { AppProps } from 'next/app'
 
 import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -10,20 +9,21 @@ import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 
-import { dynamicActivate, initTranslation } from '@/lib/i18n'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getPageWidthClassName } from '@/store/createLayoutSlice'
-import { getStorageValue } from '@/utils/utilsStorage'
 import { initOnboard } from 'onboard-helpers'
-import { messages as messagesEn } from '@/locales/en/messages.js'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
 import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
+import { HashRouter } from 'react-router-dom'
 
-import Page from '@/layout/index'
 import GlobalStyle from '@/globalStyle'
+import Page from '@/layout/index'
+import { dynamicActivate, initTranslation } from '@/lib/i18n'
+import { messages as messagesEn } from '@/locales/en/messages.js'
+import networks from '@/networks'
+import { getPageWidthClassName } from '@/store/createLayoutSlice'
+import useStore from '@/store/useStore'
+import { isMobile, removeExtraSpaces } from '@/utils/helpers'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { getStorageValue } from '@/utils/utilsStorage'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

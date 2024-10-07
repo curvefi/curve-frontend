@@ -1,5 +1,5 @@
-import MarketLabel from '@/components/MarketLabel'
 import React from 'react'
+import MarketLabel from '@/components/MarketLabel'
 
 const CellMarket = ({
   rChainId,

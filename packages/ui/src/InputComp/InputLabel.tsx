@@ -1,4 +1,3 @@
-import type { InputLabelProps } from './types'
 
 import * as React from 'react'
 import styled from 'styled-components'
@@ -6,6 +5,7 @@ import styled from 'styled-components'
 import { useInputContext } from 'ui/src/InputComp/InputProvider'
 
 import Loader from 'ui/src/Loader'
+import type { InputLabelProps } from './types'
 
 const InputLabel = ({
   className,

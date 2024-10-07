@@ -1,9 +1,9 @@
 import Image from 'next/image'
 import styled from 'styled-components'
 
+import IconButton from 'ui/src/IconButton'
 import { ChadImg, RCMoon, RCSun } from 'ui/src/images'
 import { sizes } from 'ui/src/utils'
-import IconButton from 'ui/src/IconButton'
 
 export type ThemeType = 'default' | 'dark' | 'chad'
 

@@ -1,12 +1,12 @@
+import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import type { Contract } from 'ethers'
 
 import { useCallback, useEffect, useState } from 'react'
 
 import { INVALID_ADDRESS, REFRESH_INTERVAL } from '@/constants'
-import { weiToEther } from '@/shared/curve-lib'
 import useContract from '@/hooks/useContract'
-import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import { weiToEther } from '@/shared/curve-lib'
 
 const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefined) => {
   const contract = useContract(rChainId, false, 'totalSupply', contractAddress)

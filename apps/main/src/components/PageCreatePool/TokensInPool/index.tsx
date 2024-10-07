@@ -1,14 +1,16 @@
-import { CreateToken, TokenId, TokensInPoolState } from '@/components/PageCreatePool/types'
 
-import { useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+
+
+
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import { NATIVE_TOKENS as nativeTokens } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
 import { uniqBy } from 'lodash'
-
-import useStore from '@/store/useStore'
-import networks from '@/networks'
-import useTokensMapper from '@/hooks/useTokensMapper'
-
+import { useMemo, useCallback } from 'react'
+import styled from 'styled-components'
+import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
+import WarningBox from '@/components/PageCreatePool/components/WarningBox'
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -21,16 +23,14 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-import { DEFAULT_CREATE_POOL_STATE } from '@/store/createCreatePoolSlice'
-import { NATIVE_TOKENS as nativeTokens } from '@curvefi/api/lib/curve'
-import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/components/PageCreatePool/utils'
-
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
-import WarningBox from '@/components/PageCreatePool/components/WarningBox'
 import SelectToken from '@/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/components/PageCreatePool/TokensInPool/SetOracle'
+import { CreateToken, TokenId, TokensInPoolState } from '@/components/PageCreatePool/types'
+import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/components/PageCreatePool/utils'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import networks from '@/networks'
+import { DEFAULT_CREATE_POOL_STATE } from '@/store/createCreatePoolSlice'
+import useStore from '@/store/useStore'
 
 type Props = {
   curve: CurveApi

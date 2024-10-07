@@ -1,8 +1,8 @@
-import type { ImplementationId } from '@/components/PageCreatePool/types'
-import BigNumber from 'bignumber.js'
 
 import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
+import BigNumber from 'bignumber.js'
+import type { ImplementationId } from '@/components/PageCreatePool/types'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'

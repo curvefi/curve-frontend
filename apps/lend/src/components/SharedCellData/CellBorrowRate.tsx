@@ -1,6 +1,6 @@
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 const CellBorrowRate = ({

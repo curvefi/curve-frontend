@@ -1,12 +1,12 @@
+import { TheadSortButton } from '@/ui/Table'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import styled from 'styled-components'
 import type { FormValues, Order, SortKey } from '@/components/PageMarketList/types'
 
-import styled from 'styled-components'
 
 import { TITLE } from '@/constants'
 
-import { TheadSortButton } from '@/ui/Table'
-import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
 
 type Content = {
   titleKey: TitleKey

@@ -1,16 +1,16 @@
-import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/components/PageLoanCreate/types'
 
 import React from 'react'
 
-import useStore from '@/store/useStore'
 
-import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoEstGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
 import DetailInfoLTV from '@/components/DetailInfoLTV'
 import DetailInfoN from '@/components/DetailInfoN'
+import DetailInfoRate from '@/components/DetailInfoRate'
+import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/components/PageLoanCreate/types'
+import useStore from '@/store/useStore'
 
 const DetailInfoNonLeverage = ({
   activeStep,

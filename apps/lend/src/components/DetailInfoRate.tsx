@@ -1,11 +1,11 @@
+import DetailInfo from '@/ui/DetailInfo'
+import Icon from '@/ui/Icon'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
 
 const DetailInfoRate = ({
   rChainId,

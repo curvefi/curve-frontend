@@ -1,18 +1,18 @@
+import DetailInfo from '@/ui/DetailInfo'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
-import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
+import { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { Chain, gweiToEther, weiToGwei } from '@/shared/curve-lib'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { useCurve } from '@/entities/curve'
+import { Chain, gweiToEther, weiToGwei } from '@/shared/curve-lib'
 
 export type StepProgress = {
   active: number

@@ -1,13 +1,13 @@
-import type { ButtonProps } from 'ui/src/Button/types'
 import type { OverlayTriggerState } from '@react-stately/overlays'
 
-import { useButton } from 'react-aria'
 import React, { useRef } from 'react'
+import { useButton } from 'react-aria'
 import styled from 'styled-components'
 
-import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
 import Button from 'ui/src/Button'
+import type { ButtonProps } from 'ui/src/Button/types'
 import Icon from 'ui/src/Icon/Icon'
+import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
 
 interface OpenDialogButtonProps extends ButtonProps {
   overlayTriggerState: OverlayTriggerState

@@ -1,7 +1,7 @@
-import styled, { keyframes } from 'styled-components'
-import { ToggleProps, useToggleState } from 'react-stately'
 import { useRef } from 'react'
 import { useFocusRing, useSwitch, VisuallyHidden } from 'react-aria'
+import { ToggleProps, useToggleState } from 'react-stately'
+import styled, { keyframes } from 'styled-components'
 
 interface Props extends ToggleProps {
   className?: string

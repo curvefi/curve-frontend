@@ -1,18 +1,18 @@
-import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
-
+import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import React, { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
+import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
+import MarketListNoResult from '@/components/PageMarketList/components/MarketListNoResult'
+import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
+import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
+
 
 import { FilterType } from '@/components/PageMarketList/utils'
+import { REFRESH_INTERVAL } from '@/constants'
 import { _getActiveKey } from '@/store/createMarketListSlice'
 import useStore from '@/store/useStore'
 
-import { REFRESH_INTERVAL } from '@/constants'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import MarketListNoResult from '@/components/PageMarketList/components/MarketListNoResult'
-import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
-import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
-import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps

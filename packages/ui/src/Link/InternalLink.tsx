@@ -1,9 +1,9 @@
 import type { AnchorHTMLAttributes } from 'react'
-import type { LinkProps } from './styles'
-
+import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import React from 'react'
+import type { LinkProps } from './styles'
+
 
 import { linkStyles } from './styles'
 

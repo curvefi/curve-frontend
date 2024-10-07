@@ -1,10 +1,10 @@
+import styled, { css } from 'styled-components'
 import type { PageWidth } from 'ui/src/AppNav/types'
 
-import styled, { css } from 'styled-components'
-
-import { breakpoints } from 'ui/src/utils'
 
 import SelectNetwork from 'ui/src/Select/SelectNetwork'
+import { breakpoints } from 'ui/src/utils'
+
 
 export const AppNavSecondaryWrapper = styled.nav`
   border-bottom: 1px solid var(--nav--border-color);

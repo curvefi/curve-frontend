@@ -1,18 +1,18 @@
-import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
 
-import React from 'react'
-import { t } from '@lingui/macro'
-import { useFocusRing } from '@react-aria/focus'
-import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
 import SearchInput from '@/ui/SearchInput'
+import { breakpoints } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import { useFocusRing } from '@react-aria/focus'
+import React from 'react'
+import styled from 'styled-components'
 import SelectFilter from '@/components/PageMarketList/components/TableSettings/SelectFilter'
-import SelectFilterType from '@/components/PageMarketList/components/TableSettings/SelectFilterType'
 import SelectFilterBorrowLend from '@/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
+import SelectFilterType from '@/components/PageMarketList/components/TableSettings/SelectFilterType'
+import type { PageMarketList, TableLabel } from '@/components/PageMarketList/types'
 
 const TableSettings = ({
   filterList,

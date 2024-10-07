@@ -1,14 +1,14 @@
-import type { TooltipProps } from 'ui/src/Tooltip/types'
-import type { TooltipTriggerProps } from 'react-stately'
 
 import React, { useCallback, useState } from 'react'
-import { breakpoints, getIsMobile } from 'ui/src/utils'
-import { useTooltipTriggerState } from 'react-stately'
 import { useTooltipTrigger } from 'react-aria'
+import { useTooltipTriggerState } from 'react-stately'
+import type { TooltipTriggerProps } from 'react-stately'
 import styled from 'styled-components'
 
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/Tooltip'
+import type { TooltipProps } from 'ui/src/Tooltip/types'
+import { breakpoints, getIsMobile } from 'ui/src/utils'
 
 export type IconStyles = { $svgTop?: string }
 

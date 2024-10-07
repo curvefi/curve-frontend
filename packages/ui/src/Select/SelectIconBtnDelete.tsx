@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { StyledBtn } from 'ui/src/Select/styles'
 import Icon from 'ui/src/Icon'
+import { StyledBtn } from 'ui/src/Select/styles'
 
 function SelectIconBtnDelete({ loading, onSelectionDelete }: { loading?: boolean; onSelectionDelete?: () => void }) {
   return (

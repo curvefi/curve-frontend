@@ -1,14 +1,14 @@
-import type { FormStatus, FormValues, RoutesAndOutput, SearchedParams } from '@/components/PageRouterSwap/types'
 
-import React, { useMemo } from 'react'
+
+import AlertBox from '@/ui/AlertBox'
 import { t } from '@lingui/macro'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
-import useStore from '@/store/useStore'
-
-import AlertBox from '@/ui/AlertBox'
+import React, { useMemo } from 'react'
 import AlertFormError from '@/components/AlertFormError'
 import AlertSlippage from '@/components/AlertSlippage'
+import type { FormStatus, FormValues, RoutesAndOutput, SearchedParams } from '@/components/PageRouterSwap/types'
+import useStore from '@/store/useStore'
 
 const RouterSwapAlerts = ({
   formStatus,

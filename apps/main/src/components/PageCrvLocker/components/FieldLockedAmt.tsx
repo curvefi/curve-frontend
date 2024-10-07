@@ -1,13 +1,13 @@
-import type { FormType, VecrvInfo } from '@/components/PageCrvLocker/types'
-
+import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { Chip } from '@/ui/Typography'
+import { formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
+
 import React from 'react'
 import styled from 'styled-components'
+import type { FormType, VecrvInfo } from '@/components/PageCrvLocker/types'
 
-import { formatNumber } from '@/ui/utils'
 
-import { Chip } from '@/ui/Typography'
-import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 
 const FieldLockedAmt = ({
   disabled,

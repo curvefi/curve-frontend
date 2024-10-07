@@ -1,18 +1,18 @@
-import type { TableProps } from '@/components/PageMarketList/types'
 
-import React from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
 import Table from '@/ui/Table'
+import TextCaption from '@/ui/TextCaption'
+import { breakpoints } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React from 'react'
+import styled from 'styled-components'
 import TableHead from '@/components/PageMarketList/components/TableRowViewContentTable/TableHead'
 import TableHeadMobile from '@/components/PageMarketList/components/TableRowViewContentTable/TableHeadMobile'
 import TableRowContainer from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
-import TextCaption from '@/ui/TextCaption'
+import type { TableProps } from '@/components/PageMarketList/types'
+import useStore from '@/store/useStore'
 
 const MarketListTable = ({ pageProps, address, markets, tableLabels, tableSettings, ...rest }: TableProps) => {
   const { searchParams, titleMapper } = pageProps

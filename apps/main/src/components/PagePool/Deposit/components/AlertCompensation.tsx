@@ -1,12 +1,12 @@
+import InternalLink from '@/ui/Link/InternalLink'
+import React from 'react'
 import type { Params } from 'react-router'
 
-import React from 'react'
 
 import { ROUTE } from '@/constants'
+import networks from '@/networks'
 import { getPath } from '@/utils/utilsRouter'
 
-import InternalLink from '@/ui/Link/InternalLink'
-import networks from '@/networks'
 
 const AlertCompensation = ({ rChainId, params, poolId }: { rChainId: ChainId; params: Params; poolId: string }) => {
   return networks[rChainId].compensations[poolId] ? (

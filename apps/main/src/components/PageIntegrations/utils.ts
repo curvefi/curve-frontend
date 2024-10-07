@@ -1,5 +1,5 @@
-import type { FilterKey } from '@/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@/ui/Integration/types'
+import type { FilterKey } from '@/components/PageIntegrations/types'
 import { visibleNetworksList } from '@/networks'
 
 export function parseSearchParams(

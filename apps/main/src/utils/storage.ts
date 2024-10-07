@@ -1,7 +1,7 @@
-import type { Theme } from '@/store/createGlobalSlice'
 
 import merge from 'lodash/merge'
 import dayjs from '@/lib/dayjs'
+import type { Theme } from '@/store/createGlobalSlice'
 
 export const APP_STORAGE = {
   APP_CACHE: 'curve-app-cache',

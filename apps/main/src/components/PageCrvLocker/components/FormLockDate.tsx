@@ -1,27 +1,27 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
-import type { DateValue } from '@react-types/calendar'
+import AlertBox from '@/ui/AlertBox'
+import Stepper from '@/ui/Stepper'
+import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
-
+import TxInfoBar from '@/ui/TxInfoBar'
 import { t } from '@lingui/macro'
+import type { DateValue } from '@react-types/calendar'
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
+import AlertFormError from '@/components/AlertFormError'
+import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import FieldDatePicker from '@/components/PageCrvLocker/components/FieldDatePicker'
+import FormActions from '@/components/PageCrvLocker/components/FormActions'
+import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
+
 
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
-import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import dayjs from '@/lib/dayjs'
 import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
+import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
 
-import AlertBox from '@/ui/AlertBox'
-import AlertFormError from '@/components/AlertFormError'
-import FormActions from '@/components/PageCrvLocker/components/FormActions'
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import FieldDatePicker from '@/components/PageCrvLocker/components/FieldDatePicker'
-import Stepper from '@/ui/Stepper'
-import TxInfoBar from '@/ui/TxInfoBar'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)

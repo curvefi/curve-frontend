@@ -1,8 +1,8 @@
-import styled from 'styled-components'
 
 import Box from '@/ui/Box'
-import Chip from '@/ui/Typography/Chip'
 import Icon from '@/ui/Icon'
+import Chip from '@/ui/Typography/Chip'
+import styled from 'styled-components'
 
 const CellInPool = ({ isInMarket }: { isInMarket: boolean }) => {
   return (

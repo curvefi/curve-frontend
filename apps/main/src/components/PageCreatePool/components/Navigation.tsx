@@ -1,12 +1,12 @@
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
-
-import useStore from '@/store/useStore'
-import { checkFormReady } from '@/components/PageCreatePool/utils'
-
-import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
+import Icon from '@/ui/Icon'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
 import ConfirmModal from '@/components/PageCreatePool/ConfirmModal'
+import { checkFormReady } from '@/components/PageCreatePool/utils'
+import useStore from '@/store/useStore'
+
 
 interface Props {
   navigation: number

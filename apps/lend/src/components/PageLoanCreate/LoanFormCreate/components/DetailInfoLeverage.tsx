@@ -1,24 +1,24 @@
-import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/components/PageLoanCreate/types'
 
-import React from 'react'
 import { t } from '@lingui/macro'
+import React from 'react'
 
-import { _parseValue } from '@/components/PageLoanCreate/utils'
-import useStore from '@/store/useStore'
 
 import DetailInfoEstGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
+import DetailInfoLeverageAvgPrice from '@/components/DetailInfoLeverageAvgPrice'
+import DetailInfoLeverageX from '@/components/DetailInfoLeverageX'
 import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
-import DetailInfoN from '@/components/DetailInfoN'
-import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
-import DetailInfoRate from '@/components/DetailInfoRate'
-import DetailInfoLeverageX from '@/components/DetailInfoLeverageX'
-import DetailInfoLeverageExpected from 'components/DetailInfoLeverageExpected'
-import DetailInfoLeverageAdvancedExpected from 'components/DetailInfoLeverageAdvancedExpected'
-import DetailInfoLeverageAvgPrice from '@/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLTV from '@/components/DetailInfoLTV'
+import DetailInfoN from '@/components/DetailInfoN'
 import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
+import DetailInfoRate from '@/components/DetailInfoRate'
+import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
+import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/components/PageLoanCreate/types'
+import { _parseValue } from '@/components/PageLoanCreate/utils'
+import useStore from '@/store/useStore'
+import DetailInfoLeverageAdvancedExpected from 'components/DetailInfoLeverageAdvancedExpected'
+import DetailInfoLeverageExpected from 'components/DetailInfoLeverageExpected'
 
 const DetailInfoLeverage = ({
   activeStep,

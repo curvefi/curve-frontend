@@ -1,13 +1,13 @@
-import React from 'react'
-import { t } from '@lingui/macro'
-
-import { LARGE_APY } from '@/constants'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-
-import { Chip } from '@/ui/Typography'
-import ChipVolatileBaseApy from '@/components/PagePoolList/components/ChipVolatileBaseApy'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { Chip } from '@/ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React from 'react'
+
+import ChipVolatileBaseApy from '@/components/PagePoolList/components/ChipVolatileBaseApy'
 import TooltipBaseApy from '@/components/PagePoolList/components/TooltipBaseApy'
+import { LARGE_APY } from '@/constants'
+
 
 type Props = {
   base: RewardBase | undefined

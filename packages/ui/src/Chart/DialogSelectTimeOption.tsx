@@ -1,9 +1,9 @@
-import type { TimeOptions } from './types'
 
 import styled from 'styled-components'
 
 import DialogSelectContent from 'ui/src/Chart/DialogSelectTimeOptionContent'
 import Popover, { Popover2Dialog } from 'ui/src/Popover2'
+import type { TimeOptions } from './types'
 
 type Props = {
   currentTimeOption: TimeOptions

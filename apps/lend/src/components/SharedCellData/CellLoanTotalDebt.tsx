@@ -1,6 +1,6 @@
+import { formatNumber } from '@/ui/utils'
 import React from 'react'
 
-import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 const CellLoanTotalDebt = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {

@@ -1,6 +1,6 @@
+import { baseNetworksConfig } from '@/ui/utils'
 import sortBy from 'lodash/sortBy'
 
-import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/apiCrvusd'
 
 const isDevelopment = process.env.NODE_ENV === 'development'

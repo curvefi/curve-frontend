@@ -1,11 +1,11 @@
+import Box from '@/ui/Box'
+import { breakpoints } from '@/ui/utils'
 import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils'
+import TokenIcon from '@/components/TokenIcon'
 import networks from '@/networks'
 
-import Box from '@/ui/Box'
-import TokenIcon from '@/components/TokenIcon'
 
 const MarketListItemHeader = ({
   rChainId,

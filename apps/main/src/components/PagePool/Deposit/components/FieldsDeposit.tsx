@@ -1,17 +1,17 @@
-import type { TransferProps } from '@/components/PagePool/types'
-import type { FormValues, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
-
-import { t } from '@lingui/macro'
-import { useMemo } from 'react'
-import cloneDeep from 'lodash/cloneDeep'
-
+import Checkbox from '@/ui/Checkbox'
 import { formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import cloneDeep from 'lodash/cloneDeep'
+import { useMemo } from 'react'
+import FieldToken from '@/components/PagePool/components/FieldToken'
+import type { FormValues, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
+import { FieldsWrapper } from '@/components/PagePool/styles'
+import type { TransferProps } from '@/components/PagePool/types'
+
+
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
-import { FieldsWrapper } from '@/components/PagePool/styles'
-import Checkbox from '@/ui/Checkbox'
-import FieldToken from '@/components/PagePool/components/FieldToken'
 
 const FieldsDeposit = ({
   formProcessing,

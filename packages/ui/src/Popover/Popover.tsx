@@ -1,10 +1,10 @@
+import { FocusScope } from '@react-aria/focus'
+import { useOverlay, DismissButton } from '@react-aria/overlays'
+import * as React from 'react'
 import type { AriaOverlayProps } from 'react-aria'
 
-import * as React from 'react'
 import styled from 'styled-components'
 
-import { useOverlay, DismissButton } from '@react-aria/overlays'
-import { FocusScope } from '@react-aria/focus'
 
 interface Props extends AriaOverlayProps {
   popoverRef: React.RefObject<HTMLDivElement>

@@ -1,14 +1,14 @@
-import type { FormValues, Route } from '@/components/PageRouterSwap/types'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
-import type { FormStatus } from '@/components/PageRouterSwap/types'
 
 import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
 import uniq from 'lodash/uniq'
+import type { FormStatus } from '@/components/PageRouterSwap/types'
+import type { FormValues, Route } from '@/components/PageRouterSwap/types'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { log } from '@/shared/lib/logging'
 import { weiToEther } from '@/shared/curve-lib'
+import { log } from '@/shared/lib/logging'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   isApproved: false,

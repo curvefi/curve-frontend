@@ -1,8 +1,8 @@
 import { t } from '@lingui/macro'
 
+import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
-import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 
 interface CampaignRewardsBannerProps {
   address: string

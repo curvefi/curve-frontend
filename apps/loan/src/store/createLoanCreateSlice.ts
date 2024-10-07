@@ -1,20 +1,20 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanCreate/types'
-import type { LiqRange, LiqRangesMapper } from '@/store/types'
-import type { MaxRecvLeverage } from '@/components/PageLoanCreate/types'
 
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
+import type { MaxRecvLeverage } from '@/components/PageLoanCreate/types'
+import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/components/PageLoanCreate/types'
 
 import {
   DEFAULT_DETAIL_INFO_LEVERAGE,
   DEFAULT_FORM_STATUS,
   DEFAULT_FORM_VALUES,
 } from '@/components/PageLoanCreate/utils'
+import type { FormDetailInfo, FormEstGas } from '@/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
-import { loadingLRPrices } from '@/utils/utilsCurvejs'
 import networks from '@/networks'
+import type { LiqRange, LiqRangesMapper } from '@/store/types'
+import type { State } from '@/store/useStore'
+import { loadingLRPrices } from '@/utils/utilsCurvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

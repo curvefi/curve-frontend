@@ -1,7 +1,7 @@
+import Chip from '@/ui/Typography/Chip'
 import React from 'react'
 import styled from 'styled-components'
 
-import Chip from '@/ui/Typography/Chip'
 
 // TODO: refactor to UI
 const ChipInactive = ({ children }: React.PropsWithChildren<{}>) => {

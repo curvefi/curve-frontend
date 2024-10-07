@@ -1,8 +1,8 @@
+import { BN } from '@/ui/utils'
+import PromisePool from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
-import PromisePool from '@supercharge/promise-pool'
 
-import { BN } from '@/ui/utils'
 import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null): Promise<Curve | undefined> {

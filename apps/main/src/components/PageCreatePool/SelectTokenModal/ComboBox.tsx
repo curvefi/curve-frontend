@@ -1,21 +1,21 @@
-import type { ComboBoxStateOptions } from 'react-stately'
 
-import { useButton, useComboBox, useFocusRing, type AriaComboBoxOptions } from 'react-aria'
-import { useComboBoxState } from '@react-stately/combobox'
-import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react'
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
-import debounce from 'lodash/debounce'
 
-import Icon from '@/ui/Icon'
-import InputWrapper from '@/ui/InputComp'
-import { ListBox } from '@/ui/DialogComboBox'
-import { StyledInput } from '@/ui/InputComp/styles'
 import { ReactComponent as EditClearSymbolic } from '@/images/edit-clear-symbolic.svg'
-import IconButton from '@/ui/IconButton'
 import Box from '@/ui/Box'
+import { ListBox } from '@/ui/DialogComboBox'
+import Icon from '@/ui/Icon'
+import IconButton from '@/ui/IconButton'
+import InputWrapper from '@/ui/InputComp'
+import { StyledInput } from '@/ui/InputComp/styles'
 import Popover from '@/ui/Popover'
+import { t } from '@lingui/macro'
+import { useComboBoxState } from '@react-stately/combobox'
+import debounce from 'lodash/debounce'
+import React, { ChangeEvent, useCallback, useMemo, useRef } from 'react'
+import { useButton, useComboBox, useFocusRing, type AriaComboBoxOptions } from 'react-aria'
+import type { ComboBoxStateOptions } from 'react-stately'
+import styled from 'styled-components'
 
 type Props = {
   activeKey: string

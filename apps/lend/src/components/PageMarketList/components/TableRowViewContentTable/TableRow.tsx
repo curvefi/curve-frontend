@@ -1,26 +1,26 @@
-import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
-
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import { breakpoints } from '@/ui/utils'
 import React, { useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
+import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
+
 
 import { FilterType } from '@/components/PageMarketList/utils'
-import { _showContent } from '@/utils/helpers'
-import { breakpoints } from '@/ui/utils'
-import useStore from '@/store/useStore'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-
-import CellCap from '@/components/SharedCellData/CellCap'
-import CellInPool from '@/components/SharedCellData/CellInPool'
-import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
-import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
-import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellToken from '@/components/SharedCellData/CellToken'
 import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
+import CellCap from '@/components/SharedCellData/CellCap'
+
+import CellInPool from '@/components/SharedCellData/CellInPool'
+import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
+import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
+import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
+import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
-import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
+import CellToken from '@/components/SharedCellData/CellToken'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
-import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
+import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
+import useStore from '@/store/useStore'
+import { _showContent } from '@/utils/helpers'
 
 type Content = {
   className: string

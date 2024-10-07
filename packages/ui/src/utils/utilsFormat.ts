@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
-import isUndefined from 'lodash/isUndefined'
 import isNaN from 'lodash/isNaN'
+import isUndefined from 'lodash/isUndefined'
 
 import { detectLocale } from 'ui/src/utils/utilsLocale'
 

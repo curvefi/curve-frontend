@@ -1,26 +1,26 @@
-import type { FormStatus } from '@/components/PageVault/VaultClaim/types'
-import type { Step } from '@/ui/Stepper/types'
-import type { RewardType } from '@/components/PageVault/VaultClaim/types'
 
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
-import { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
 
 import AlertBox from '@/ui/AlertBox'
-import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import LoanFormConnect from '@/components/LoanFormConnect'
 import Spinner from '@/ui/Spinner'
 import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
 import Stats from '@/ui/Stats'
 import Stepper from '@/ui/Stepper'
+import type { Step } from '@/ui/Stepper/types'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import AlertFormError from '@/components/AlertFormError'
+import LoanFormConnect from '@/components/LoanFormConnect'
+import type { RewardType } from '@/components/PageVault/VaultClaim/types'
+import type { FormStatus } from '@/components/PageVault/VaultClaim/types'
+import { helpers } from '@/lib/apiLending'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
 
 const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)

@@ -1,10 +1,10 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
 
-import { isValidAddress } from '@/utils'
+import dayjs from '@/lib/dayjs'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
-import dayjs from '@/lib/dayjs'
+import { isValidAddress } from '@/utils'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}

@@ -1,17 +1,17 @@
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { breakpoints } from '@/ui/utils'
 import React from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
-import { ContentWrapper } from '@/components/DetailsMarket/styles'
 import AlertNoVaultSharesFound from '@/components/AlertNoVaultSharesFound'
-import CellUserMain from '@/components/SharedCellData/CellUserMain'
-import CellToken from '@/components/SharedCellData/CellToken'
+import { ContentWrapper } from '@/components/DetailsMarket/styles'
 import DetailsConnectWallet from '@/components/DetailsUser/components/DetailsConnectWallet'
 import DetailsUserSupplyStakedUnstaked from '@/components/DetailsUser/components/DetailsUserSupplyStakedUnstaked'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import CellToken from '@/components/SharedCellData/CellToken'
+import CellUserMain from '@/components/SharedCellData/CellUserMain'
+import { TITLE } from '@/constants'
+import useStore from '@/store/useStore'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, owmDataCachedOrApi, titleMapper } = pageProps

@@ -1,12 +1,12 @@
-import type { ButtonProps } from 'ui/src/Button/types'
 
+import { useFocusRing } from '@react-aria/focus'
 import * as React from 'react'
 import styled from 'styled-components'
-import { useFocusRing } from '@react-aria/focus'
 
-import { buttonBaseStyles } from './styles'
 import Box from 'ui/src/Box/Box'
+import type { ButtonProps } from 'ui/src/Button/types'
 import Spinner from 'ui/src/Spinner/Spinner'
+import { buttonBaseStyles } from './styles'
 
 const Button = React.forwardRef<
   HTMLButtonElement,

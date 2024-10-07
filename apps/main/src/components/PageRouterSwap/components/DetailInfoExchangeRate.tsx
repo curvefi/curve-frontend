@@ -1,13 +1,13 @@
-import type { ExchangeRate } from '@/components/PageRouterSwap/types'
 
+import Box from '@/ui/Box'
+import DetailInfo from '@/ui/DetailInfo'
+import Chip from '@/ui/Typography/Chip'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 
-import Box from '@/ui/Box'
-import Chip from '@/ui/Typography/Chip'
-import DetailInfo from '@/ui/DetailInfo'
+import type { ExchangeRate } from '@/components/PageRouterSwap/types'
 
 const DetailInfoExchangeRate = ({
   exchangeRates,

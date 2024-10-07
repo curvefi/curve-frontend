@@ -1,3 +1,7 @@
+import { formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import inRange from 'lodash/inRange'
+import React from 'react'
 import {
   Bar,
   ComposedChart,
@@ -9,12 +13,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { t } from '@lingui/macro'
-import React from 'react'
-import inRange from 'lodash/inRange'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
 
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
 

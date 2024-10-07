@@ -1,15 +1,15 @@
-import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/components/PageLoanCreate/types'
 
-import { t } from '@lingui/macro'
-import React, { useMemo } from 'react'
 
-import { getActiveStep } from '@/ui/Stepper/helpers'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
+import { getActiveStep } from '@/ui/Stepper/helpers'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useMemo } from 'react'
 import DetailInfoLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import DetailInfoNonLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
+import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/components/PageLoanCreate/types'
+import useStore from '@/store/useStore'
 
 const DetailInfoComp = (props: FormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props

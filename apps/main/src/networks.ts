@@ -1,10 +1,10 @@
+import { baseNetworksConfig } from '@/ui/utils'
+import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import sortBy from 'lodash/sortBy'
 
-import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { ROUTE } from '@/constants'
-import { Chain } from '@/shared/curve-lib'
-import { baseNetworksConfig } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
+import { Chain } from '@/shared/curve-lib'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 const drpcUrl = (network: string) =>

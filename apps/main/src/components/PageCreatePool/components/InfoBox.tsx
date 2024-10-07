@@ -1,8 +1,8 @@
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
-
-import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
+import Icon from '@/ui/Icon'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+
 
 interface Props {
   link1?: {

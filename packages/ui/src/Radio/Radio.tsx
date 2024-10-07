@@ -1,13 +1,13 @@
+import { useFocusRing } from '@react-aria/focus'
+import { useRadio } from '@react-aria/radio'
+import { VisuallyHidden } from '@react-aria/visually-hidden'
 import type { AriaRadioProps } from '@react-types/radio'
 
 import * as React from 'react'
 import styled from 'styled-components'
-import { useRadio } from '@react-aria/radio'
-import { VisuallyHidden } from '@react-aria/visually-hidden'
-import { useFocusRing } from '@react-aria/focus'
 
-import { RadioContext } from 'ui/src/Radio'
 import Box from 'ui/src/Box'
+import { RadioContext } from 'ui/src/Radio'
 
 const Radio = ({
   children,

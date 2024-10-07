@@ -1,13 +1,13 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { FormEstGas } from '@/components/PageLoanManage/types'
-import type { FormStatus, RewardType } from '@/components/PageVault/VaultClaim/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 import merge from 'lodash/merge'
+import type { GetState, SetState } from 'zustand'
+import type { FormEstGas } from '@/components/PageLoanManage/types'
+import type { FormStatus, RewardType } from '@/components/PageVault/VaultClaim/types'
 
 import { DEFAULT_FORM_STATUS } from '@/components/PageVault/VaultClaim/utils'
 import apiLending from '@/lib/apiLending'
+import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

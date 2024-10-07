@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 
+import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import useStore from '@/store/useStore'
 
-import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])

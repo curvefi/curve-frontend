@@ -1,7 +1,7 @@
-import React from 'react'
-import { t } from '@lingui/macro'
-
 import Box from '@/ui/Box'
+import { t } from '@lingui/macro'
+import React from 'react'
+
 import ExternalLink from 'ui/src/Link/ExternalLink'
 
 const useTitleMapper = (): TitleMapper => {

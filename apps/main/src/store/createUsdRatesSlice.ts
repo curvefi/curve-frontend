@@ -1,10 +1,10 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 
 import cloneDeep from 'lodash/cloneDeep'
+import type { GetState, SetState } from 'zustand'
 
 import { NETWORK_TOKEN } from '@/constants'
 import curvejsApi from '@/lib/curvejs'
+import type { State } from '@/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

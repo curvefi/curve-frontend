@@ -1,8 +1,8 @@
+import Popover, { Popover2Dialog } from '@/ui/Popover2'
 import React from 'react'
 import styled from 'styled-components'
 
 import DialogSelectContent from '@/components/PageDeployGauge/components/DialogSelectContent'
-import Popover, { Popover2Dialog } from '@/ui/Popover2'
 
 type Props = {
   currentData: string | null

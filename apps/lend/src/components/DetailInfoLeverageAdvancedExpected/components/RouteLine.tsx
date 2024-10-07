@@ -1,7 +1,7 @@
+import { RCCircle } from '@/images'
 import React from 'react'
 import styled from 'styled-components'
 
-import { RCCircle } from '@/images'
 
 const RouteLine = () => {
   return (

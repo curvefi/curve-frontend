@@ -1,8 +1,8 @@
-import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import React from 'react'
 
 import TooltipButton, { IconStyles } from 'ui/src/Tooltip/TooltipButton'
+import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 const TooltipIcon = ({
   children,

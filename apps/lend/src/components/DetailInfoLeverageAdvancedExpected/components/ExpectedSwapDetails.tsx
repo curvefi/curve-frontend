@@ -1,20 +1,20 @@
-import type { DetailInfoLeverageExpectedProps, Hop } from '@/components/DetailInfoLeverageAdvancedExpected/types'
+import Box from '@/ui/Box'
+import ExternalLink from '@/ui/Link/ExternalLink'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import TextCaption from '@/ui/TextCaption'
+import { formatNumber } from '@/ui/utils'
 import type { T1inchRouteStep } from '@curvefi/lending-api/lib/interfaces'
 
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from '@/ui/utils'
-import apiLending from '@/lib/apiLending'
-import networks from '@/networks'
 
-import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import HopSteps from '@/components/DetailInfoLeverageAdvancedExpected/components/HopSteps'
 import RouteLine from '@/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
 import RouteToken from '@/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import type { DetailInfoLeverageExpectedProps, Hop } from '@/components/DetailInfoLeverageAdvancedExpected/types'
+import apiLending from '@/lib/apiLending'
+import networks from '@/networks'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }
 

@@ -1,15 +1,11 @@
-import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/components/PageLoanCreate/types'
 
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
-import React from 'react'
 
-import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/components/PageLoanCreate/utils'
-import { getTokenName } from '@/utils/utilsLoan'
-import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
+import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React from 'react'
+import styled from 'styled-components'
 import DetailInfoBorrowRate from '@/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
@@ -18,6 +14,10 @@ import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
 import DetailInfoN from '@/components/DetailInfoN'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import DetailInfoTradeRoutes from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
+import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/components/PageLoanCreate/types'
+import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/components/PageLoanCreate/utils'
+import useStore from '@/store/useStore'
+import { getTokenName } from '@/utils/utilsLoan'
 
 const DetailInfoLeverage = ({
   activeKey,

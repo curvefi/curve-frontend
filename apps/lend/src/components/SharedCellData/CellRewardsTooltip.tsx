@@ -1,8 +1,8 @@
-import React from 'react'
+import TextCaption from '@/ui/TextCaption'
 import { t } from '@lingui/macro'
+import React from 'react'
 import styled from 'styled-components'
 
-import TextCaption from '@/ui/TextCaption'
 
 const CellRewardsTooltip = ({
   className = '',

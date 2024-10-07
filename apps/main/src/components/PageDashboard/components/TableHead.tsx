@@ -1,12 +1,12 @@
-import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
+import Box from '@/ui/Box'
+import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
-
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { t } from '@lingui/macro'
+import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
+
 import useStore from '@/store/useStore'
 
-import { Th, Thead, TheadSortButton } from '@/ui/Table'
-import Box from '@/ui/Box'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 
 const TableHead = ({
   loading,

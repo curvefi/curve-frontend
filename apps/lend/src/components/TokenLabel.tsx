@@ -1,17 +1,17 @@
-import type { BoxProps } from '@/ui/Box/types'
 
-import styled from 'styled-components'
 
-import { copyToClipboard } from '@/utils/helpers'
-import { helpers } from '@/lib/apiLending'
-import networks from '@/networks'
 
 import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
+import type { BoxProps } from '@/ui/Box/types'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import TextEllipsis from '@/ui/TextEllipsis'
+import styled from 'styled-components'
 import TokenIcon from '@/components/TokenIcon'
+import { helpers } from '@/lib/apiLending'
+import networks from '@/networks'
+import { copyToClipboard } from '@/utils/helpers'
 
 const TokenLabel = ({
   rChainId,

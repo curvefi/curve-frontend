@@ -1,13 +1,13 @@
+
+
+import Box from '@/ui/Box'
+import Chip from '@/ui/Typography/Chip'
 import React from 'react'
 import styled from 'styled-components'
-
-import networks from '@/networks'
-
-import Chip from '@/ui/Typography/Chip'
-import Box from '@/ui/Box'
 import ChipMarket from '@/components/MarketLabel/components/ChipMarket'
 import ChipTokens from '@/components/MarketLabel/components/ChipTokens'
 import TokenIcons from '@/components/TokenIcons'
+import networks from '@/networks'
 
 const MarketLabel = ({
   rChainId,

@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
-import isUndefined from 'lodash/isUndefined'
-
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import isUndefined from 'lodash/isUndefined'
+import React, { useMemo } from 'react'
+
 import useStore from '@/store/useStore'
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'range' | 'band' | 'bandPct' }) => {

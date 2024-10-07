@@ -1,10 +1,10 @@
+import React, { useCallback } from 'react'
 import type { AriaTooltipProps } from 'react-aria'
+import { useTooltip, mergeProps } from 'react-aria'
 import type { TooltipTriggerState } from 'react-stately'
+import styled from 'styled-components'
 import type { IsClosePlacement, TooltipProps } from 'ui/src/Tooltip/types'
 
-import React, { useCallback } from 'react'
-import { useTooltip, mergeProps } from 'react-aria'
-import styled from 'styled-components'
 
 const Tooltip = ({
   buttonNode,

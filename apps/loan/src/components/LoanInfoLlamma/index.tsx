@@ -1,18 +1,18 @@
-import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
-
+import { breakpoints } from '@/ui/utils/responsive'
 import { t } from '@lingui/macro'
+
 import React from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
 
-import { SubTitle } from '@/components/LoanInfoLlamma/styles'
+import PoolInfoData from '@/components/ChartOhlcWrapper'
+import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import DetailsBandsChart from '@/components/LoanInfoLlamma/components/DetailsBandsChart'
 import DetailsInfo from '@/components/LoanInfoLlamma/components/DetailsInfo'
-import DetailInfoAddressLookup from '@/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
-import PoolInfoData from '@/components/ChartOhlcWrapper'
+import { SubTitle } from '@/components/LoanInfoLlamma/styles'
+import type { PageLoanManageProps } from '@/components/PageLoanManage/types'
+import useStore from '@/store/useStore'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId' | 'titleMapper'> {
   className?: string

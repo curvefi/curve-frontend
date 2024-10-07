@@ -1,18 +1,3 @@
-import type { NextPage } from 'next'
-import type { DetailInfoTypes } from '@/components/PageLoanManage/types'
-
-import React, { useCallback, useEffect, useState } from 'react'
-import { t } from '@lingui/macro'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-
-import { REFRESH_INTERVAL } from '@/constants'
-import { _getSelectedTab } from '@/components/PageLoanManage/utils'
-import { helpers } from '@/lib/apiLending'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-import useTitleMapper from '@/hooks/useTitleMapper'
-
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -21,15 +6,30 @@ import {
   AppPageInfoTabsWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import DocumentHead from '@/layout/DocumentHead'
-import DetailsMarket from 'components/DetailsMarket'
-import DetailsUser from 'components/DetailsUser'
-import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
-import Tabs, { Tab } from '@/ui/Tab'
-import Vault from '@/components/PageVault/index'
 import Box from '@/ui/Box'
+import Tabs, { Tab } from '@/ui/Tab'
+import { t } from '@lingui/macro'
+import type { NextPage } from 'next'
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 import ConnectWallet from '@/components/ConnectWallet'
+import type { DetailInfoTypes } from '@/components/PageLoanManage/types'
+
+
+import { _getSelectedTab } from '@/components/PageLoanManage/utils'
+import Vault from '@/components/PageVault/index'
+import PageTitleBorrowSupplyLinks from '@/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
+import { REFRESH_INTERVAL } from '@/constants'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import useTitleMapper from '@/hooks/useTitleMapper'
+import DocumentHead from '@/layout/DocumentHead'
+import { helpers } from '@/lib/apiLending'
+import useStore from '@/store/useStore'
+import { scrollToTop } from '@/utils/helpers'
+
+import DetailsMarket from 'components/DetailsMarket'
+import DetailsUser from 'components/DetailsUser'
 
 const Page: NextPage = () => {
   const params = useParams()

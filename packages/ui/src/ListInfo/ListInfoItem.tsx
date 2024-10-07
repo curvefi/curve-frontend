@@ -1,12 +1,12 @@
-import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import React, { PropsWithChildren } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from 'ui/src/utils'
 
-import Chip from 'ui/src/Typography/Chip'
 import Icon from 'ui/src/Icon'
+import type { TooltipProps } from 'ui/src/Tooltip/types'
+import Chip from 'ui/src/Typography/Chip'
+import { breakpoints } from 'ui/src/utils'
 
 type Props = TooltipProps & {
   className?: string

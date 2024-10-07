@@ -1,12 +1,12 @@
 import type { Step } from '@/ui/Stepper/types'
 
 import React from 'react'
+import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
+import DetailInfoHealth from '@/components/DetailInfoHealth'
+import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
+import DetailInfoRate from '@/components/DetailInfoRate'
 import useStore from '@/store/useStore'
 
-import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
-import DetailInfoHealth from '@/components/DetailInfoHealth'
-import DetailInfoRate from '@/components/DetailInfoRate'
-import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
 
 const DetailInfo = ({
   rChainId,

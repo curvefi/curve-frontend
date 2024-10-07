@@ -1,11 +1,11 @@
-import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 
-import styled from 'styled-components'
 import Image from 'next/image'
+import styled from 'styled-components'
 
-import Tooltip from 'ui/src/Tooltip'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
+import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 import Icon from 'ui/src/Icon'
+import Tooltip from 'ui/src/Tooltip'
 
 const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, highContrast, mobile, banner }) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool

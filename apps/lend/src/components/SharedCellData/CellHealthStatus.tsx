@@ -1,9 +1,9 @@
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import React from 'react'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { HealthColorText } from '@/components/DetailsUser/styles'
 import useStore from '@/store/useStore'
 
-import { HealthColorText } from '@/components/DetailsUser/styles'
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'status' | 'percent' }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])

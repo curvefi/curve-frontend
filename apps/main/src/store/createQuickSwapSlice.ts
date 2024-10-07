@@ -1,5 +1,8 @@
+
+import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
+import orderBy from 'lodash/orderBy'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 import type {
   FormEstGas,
   FormStatus,
@@ -9,16 +12,13 @@ import type {
   SearchedParams,
 } from '@/components/PageRouterSwap/types'
 
-import cloneDeep from 'lodash/cloneDeep'
-import isEqual from 'lodash/isEqual'
-import orderBy from 'lodash/orderBy'
-
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, sortTokensByGasFees } from '@/components/PageRouterSwap/utils'
 import { NETWORK_TOKEN } from '@/constants'
+import curvejsApi from '@/lib/curvejs'
+import type { State } from '@/store/useStore'
+import { getChainSignerActiveKey, sleep } from '@/utils'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
-import { getChainSignerActiveKey, sleep } from '@/utils'
-import curvejsApi from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

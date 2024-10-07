@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import { formatNumber } from 'ui/src/utils'
 import AlertBox from 'ui/src/AlertBox'
 import Box from 'ui/src/Box'
 import DetailInfo from 'ui/src/DetailInfo'
 import TextCaption from 'ui/src/TextCaption'
+import { formatNumber } from 'ui/src/utils'
 
 const AlertInfoSelfLiquidation = ({
   errorMessage,

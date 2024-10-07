@@ -1,23 +1,23 @@
-import React from 'react'
-import { t } from '@lingui/macro'
-
-import { TITLE } from '@/constants'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-
-import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/components/DetailsMarket/styles'
 import Box from '@/ui/Box'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { t } from '@lingui/macro'
+import React from 'react'
+
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
+import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
+import DetailsLoanChartBalances from '@/components/DetailsMarket/components/DetailsLoanChartBalances'
+import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
+import { ContentWrapper, DarkContent, SubTitle, Wrapper } from '@/components/DetailsMarket/styles'
+
 import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import CellRewards from '@/components/SharedCellData/CellRewards'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
-import DetailsLoanChartBalances from '@/components/DetailsMarket/components/DetailsLoanChartBalances'
-import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
-import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
-import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { TITLE } from '@/constants'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper, userActiveKey } =

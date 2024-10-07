@@ -1,5 +1,5 @@
-import merge from 'lodash/merge'
 import dayjs from 'dayjs'
+import merge from 'lodash/merge'
 
 export const APP_STORAGE = {
   APP_CACHE: 'lend-app-cache',

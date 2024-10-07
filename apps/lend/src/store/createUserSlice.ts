@@ -1,9 +1,9 @@
+import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
+import apiLending, { helpers } from '@/lib/apiLending'
 import type { State } from '@/store/useStore'
 
-import cloneDeep from 'lodash/cloneDeep'
 
-import apiLending, { helpers } from '@/lib/apiLending'
 import { log } from '@/shared/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE

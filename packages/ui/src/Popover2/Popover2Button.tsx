@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useButton } from 'react-aria'
 import * as React from 'react'
+import { useButton } from 'react-aria'
 import styled from 'styled-components'
 
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'
-import { focusVisible } from 'ui/src/utils/sharedStyles'
 import DividerHorizontal from 'ui/src/DividerHorizontal'
 import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
+import { focusVisible } from 'ui/src/utils/sharedStyles'
 
 export type ButtonVariant = 'outlined'
 

@@ -1,8 +1,8 @@
 import type { Params } from 'react-router'
+import { MAIN_ROUTE, ROUTE } from '@/constants'
 import type { Locale } from '@/lib/i18n'
 
 import { DEFAULT_LOCALES, parseLocale } from '@/lib/i18n'
-import { MAIN_ROUTE, ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
 
 export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {

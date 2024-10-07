@@ -1,18 +1,18 @@
-import type { TableRowProps } from '@/components/PageMarketList/types'
 
+
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
+import { breakpoints } from '@/ui/utils/responsive'
 import { useRef } from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-
-import TokenLabel from '@/components/TokenLabel'
 import TableCellInPool from '@/components/PageMarketList/components/TableCellInPool'
 import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
 import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
 import TableCellUser from '@/components/PageMarketList/components/TableCellUser'
 import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
+import type { TableRowProps } from '@/components/PageMarketList/types'
+import TokenLabel from '@/components/TokenLabel'
+import { TITLE } from '@/constants'
 
 const TableRow = ({
   className,

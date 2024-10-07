@@ -1,19 +1,19 @@
+import Box from '@/ui/Box'
+import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { breakpoints } from '@/ui/utils'
 import React from 'react'
 import styled from 'styled-components'
 
-import { TITLE } from '@/constants'
-import { breakpoints } from '@/ui/utils'
 
+import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
+import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
+import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 import { ContentWrapper, DarkContent } from '@/components/DetailsMarket/styles'
-import Box from '@/ui/Box'
 import CellCap from '@/components/SharedCellData/CellCap'
 import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
-import CellToken from '@/components/SharedCellData/CellToken'
 import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTotalLiquidity'
-import DetailsSupplyRewards from '@/components/DetailsMarket/components/DetailsSupplyRewards'
-import DetailsContracts from '@/components/DetailsMarket/components/DetailsContracts'
-import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
+import CellToken from '@/components/SharedCellData/CellToken'
+import { TITLE } from '@/constants'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper } = pageProps

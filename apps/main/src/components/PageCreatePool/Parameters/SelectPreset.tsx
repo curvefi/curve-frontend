@@ -1,23 +1,23 @@
-import { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import Box from '@/ui/Box'
+import Button from '@/ui/Button'
+import { ExternalLink } from '@/ui/Link'
+import { breakpoints } from '@/ui/utils/responsive'
 import { t } from '@lingui/macro'
 import { useLingui } from '@lingui/react'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
-import { getPath } from '@/utils/utilsRouter'
+import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
-import useStore from '@/store/useStore'
 
-import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import SelectButton from '@/components/PageCreatePool/components/SelectButton'
-import { ExternalLink } from '@/ui/Link'
+import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
+import { POOL_PRESETS, STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
+import useStore from '@/store/useStore'
+import { getPath } from '@/utils/utilsRouter'
 
 type Props = {
   setStableFeeValue: React.Dispatch<React.SetStateAction<string>>

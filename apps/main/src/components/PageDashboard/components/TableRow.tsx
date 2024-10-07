@@ -1,27 +1,27 @@
-import type { TableLabel, WalletPoolData } from '@/components/PageDashboard/types'
 
-import { t } from '@lingui/macro'
-import { useRef, useState } from 'react'
-import styled from 'styled-components'
-
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { getPath } from '@/utils/utilsRouter'
-import { tooltipProps } from '@/components/PageDashboard/components/Summary'
-import { useNavigate } from 'react-router-dom'
-import networks from '@/networks'
-import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
-import useStore from '@/store/useStore'
-
-import { ROUTE } from '@/constants'
-import { Chip } from '@/ui/Typography'
-import { Tr, Td } from '@/ui/Table'
 import Box from '@/ui/Box'
+import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
-import PoolLabel from '@/components/PoolLabel'
-import TableCellRewards from '@/components/PageDashboard/components/TableCellRewards'
+import { Tr, Td } from '@/ui/Table'
+import { Chip } from '@/ui/Typography'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+
+import { tooltipProps } from '@/components/PageDashboard/components/Summary'
 import TableCellProfit from '@/components/PageDashboard/components/TableCellProfit'
+import TableCellRewards from '@/components/PageDashboard/components/TableCellRewards'
+import type { TableLabel, WalletPoolData } from '@/components/PageDashboard/types'
+import PoolLabel from '@/components/PoolLabel'
+import { ROUTE } from '@/constants'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+
+import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import { getPath } from '@/utils/utilsRouter'
 
 const TableRow = ({
   rChainId,

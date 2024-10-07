@@ -1,18 +1,18 @@
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
-
-import { useEffect, useState, useMemo, useCallback } from 'react'
-import styled from 'styled-components'
-import { t } from '@lingui/macro'
-
-import useStore from '@/store/useStore'
-
-import { combinations } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import ChartWrapper from '@/ui/Chart'
-import Icon from '@/ui/Icon'
-import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
+import type { PricesApiPool, PricesApiCoin, LabelList } from '@/ui/Chart/types'
+
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@/ui/Chart/utils'
-import Box from '@/ui/Box'
+import Icon from '@/ui/Icon'
+import { t } from '@lingui/macro'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import styled from 'styled-components'
+
+import PoolActivity from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
+import { combinations } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
+import useStore from '@/store/useStore'
+
 
 const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPool }> = ({
   rChainId,

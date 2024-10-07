@@ -1,21 +1,21 @@
-import type { CurrencyReservesProps } from '@/components/PagePool/PoolDetails/CurrencyReserves/types'
 
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
 
-import { breakpoints, formatNumber, formatNumberUsdRate } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
-import { shortenTokenAddress } from '@/utils'
 
-import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import Chip from '@/ui/Typography/Chip'
 import Box from '@/ui/Box'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
-import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import TextEllipsis from '@/ui/TextEllipsis'
 import TooltipButton from '@/ui/Tooltip'
+import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import Chip from '@/ui/Typography/Chip'
+import { breakpoints, formatNumber, formatNumberUsdRate } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import styled from 'styled-components'
+import type { CurrencyReservesProps } from '@/components/PagePool/PoolDetails/CurrencyReserves/types'
+import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import TokenIcon from '@/components/TokenIcon'
+import { shortenTokenAddress } from '@/utils'
+import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 
 const CurrencyReservesContent = ({
   cr,

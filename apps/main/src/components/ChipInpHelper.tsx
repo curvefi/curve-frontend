@@ -1,6 +1,6 @@
+import Chip from '@/ui/Typography/Chip'
 import styled from 'styled-components'
 
-import Chip from '@/ui/Typography/Chip'
 
 const ChipInpHelper = styled(Chip)<{ noPadding?: boolean }>`
   padding: ${({ noPadding }) => (noPadding ? '0' : '0 0.3125rem')}; // 5px

@@ -1,11 +1,11 @@
+import { t } from '@lingui/macro'
+import React, { useMemo } from 'react'
+import Item from '@/components/AlertLoanSummary/components/Item'
 import type { SummaryProps } from '@/components/AlertLoanSummary/types'
 
-import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
 
 import { format } from '@/components/AlertLoanSummary/utils'
 
-import Item from '@/components/AlertLoanSummary/components/Item'
 
 const SummaryFull = ({
   title,

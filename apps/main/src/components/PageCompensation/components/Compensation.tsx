@@ -1,22 +1,22 @@
-import type { EtherContract } from '@/components/PageCompensation/types'
 
-import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useState } from 'react'
-import numbro from 'numbro'
-import styled from 'styled-components'
-
-import { copyToClipboard } from '@/lib/utils'
-import { getErrorMessage, shortenTokenAddress } from '@/utils'
-import networks from '@/networks'
-import useStore from '@/store/useStore'
-
-import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
-import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
+import ExternalLink from '@/ui/Link/ExternalLink'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { t } from '@lingui/macro'
+import numbro from 'numbro'
+import React, { useCallback, useEffect, useState } from 'react'
+import styled from 'styled-components'
+
+import AlertFormError from '@/components/AlertFormError'
+import type { EtherContract } from '@/components/PageCompensation/types'
+import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
+import { copyToClipboard } from '@/lib/utils'
+import networks from '@/networks'
+import useStore from '@/store/useStore'
+import { getErrorMessage, shortenTokenAddress } from '@/utils'
+
 
 const Compensation = ({
   rChainId,

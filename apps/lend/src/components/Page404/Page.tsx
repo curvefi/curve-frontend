@@ -1,9 +1,9 @@
+import Error404 from '@/ui/Error404'
+import { t } from '@lingui/macro'
 import type { NextPage } from 'next'
 
-import { t } from '@lingui/macro'
 
 import DocumentHead from '@/layout/DocumentHead'
-import Error404 from '@/ui/Error404'
 
 const Page: NextPage = () => {
   return (

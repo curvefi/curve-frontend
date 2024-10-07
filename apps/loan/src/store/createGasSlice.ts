@@ -1,15 +1,15 @@
-import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
-import type { GasInfo } from '@/store/types'
-
+import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { ethers } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
-
-import { gweiToWai } from '@/shared/curve-lib'
-import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { httpFetcher } from '@/utils/helpers'
-import { log } from '@/shared/lib/logging'
+import type { GetState, SetState } from 'zustand'
 import networks from '@/networks'
+import type { GasInfo } from '@/store/types'
+import type { State } from '@/store/useStore'
+
+
+import { httpFetcher } from '@/utils/helpers'
+import { gweiToWai } from '@/shared/curve-lib'
+import { log } from '@/shared/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

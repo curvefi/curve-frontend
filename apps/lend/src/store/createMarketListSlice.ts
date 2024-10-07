@@ -1,5 +1,8 @@
+
+import chunk from 'lodash/chunk'
+import orderBy from 'lodash/orderBy'
+import sortByFn from 'lodash/sortBy'
 import type { GetState, SetState } from 'zustand'
-import type { State } from '@/store/useStore'
 import type {
   FilterTypeKey,
   FormStatus,
@@ -9,16 +12,13 @@ import type {
   TableSettings,
 } from '@/components/PageMarketList/types'
 
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import sortByFn from 'lodash/sortBy'
-
 import { DEFAULT_FORM_STATUS, _searchByTokensAddresses, _getMarketList } from '@/components/PageMarketList/utils'
 import { TITLE } from '@/constants'
-import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
-import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
+import type { State } from '@/store/useStore'
+import { sleep } from '@/utils/helpers'
+import { getTotalApr } from '@/utils/utilsRewards'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

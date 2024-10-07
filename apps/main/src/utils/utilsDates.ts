@@ -1,6 +1,6 @@
+import { parseDate } from '@internationalized/date'
 import type { Dayjs } from 'dayjs'
 
-import { parseDate } from '@internationalized/date'
 import dayjs from '@/lib/dayjs'
 
 export function todayInMilliseconds() {

@@ -1,9 +1,9 @@
-import type { AppPage } from 'ui/src/AppNav/types'
 
 import React from 'react'
 import styled from 'styled-components'
 
 import { AppLinkText } from 'ui/src/AppNav/styles'
+import type { AppPage } from 'ui/src/AppNav/types'
 import Button from 'ui/src/Button'
 
 const AppNavPagesMobile = ({ appPage, handleClick }: { appPage: AppPage; handleClick(): void }) => {

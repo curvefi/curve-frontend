@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react'
-import { t } from '@lingui/macro'
-
+import Icon from '@/ui/Icon'
+import Chip from '@/ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { t } from '@lingui/macro'
+import React, { useMemo } from 'react'
+
 import useStore from '@/store/useStore'
 
-import Chip from '@/ui/Typography/Chip'
-import Icon from '@/ui/Icon'
 
 const DetailsSupplyRewardsCrv = ({
   rChainId,

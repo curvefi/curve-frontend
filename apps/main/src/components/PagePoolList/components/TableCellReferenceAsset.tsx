@@ -1,7 +1,7 @@
+import { Chip } from '@/ui/Typography'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
 
-import { Chip } from '@/ui/Typography'
 
 type Props = {
   isCrypto: boolean | undefined

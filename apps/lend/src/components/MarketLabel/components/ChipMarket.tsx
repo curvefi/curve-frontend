@@ -1,14 +1,14 @@
+import Icon from '@/ui/Icon'
+import TextEllipsis from '@/ui/TextEllipsis'
+import { breakpoints } from '@/ui/utils/responsive'
+import { useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 
 import { useButton } from 'react-aria'
-import { useRef } from 'react'
 import styled from 'styled-components'
 
-import { breakpoints } from '@/ui/utils/responsive'
 import { copyToClipboard, shortenTokenAddress } from '@/utils/helpers'
 
-import Icon from '@/ui/Icon'
-import TextEllipsis from '@/ui/TextEllipsis'
 
 const CopyButton = ({
   className = '',

@@ -1,6 +1,13 @@
-import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
 
+
+
+import AlertBox from '@/ui/AlertBox'
+import Box from '@/ui/Box'
+import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import TextCaption from '@/ui/TextCaption'
+import { BN, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
+import React, { useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -15,18 +22,11 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
-import { BN, formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
-
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
 import ChartBandBalancesSettings from '@/components/ChartBandBalances/ChartBandBalancesSettings'
+import type { BrushStartEndIndex } from '@/components/ChartBandBalances/types'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import TextCaption from '@/ui/TextCaption'
+import useStore from '@/store/useStore'
 
 const ChartBandBalances = ({
   rChainId,

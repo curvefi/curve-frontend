@@ -1,20 +1,3 @@
-import type { NextPage } from 'next'
-
-import { t } from '@lingui/macro'
-import { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import styled from 'styled-components'
-
-import { REFRESH_INTERVAL } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
-import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
-import { getTokenName } from '@/utils/utilsLoan'
-import { hasLeverage } from '@/components/PageLoanCreate/utils'
-import { scrollToTop } from '@/utils/helpers'
-import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
-import useTitleMapper from '@/hooks/useTitleMapper'
-
 import {
   AppPageFormContainer,
   AppPageFormTitleWrapper,
@@ -23,16 +6,33 @@ import {
   AppPageInfoContentWrapper,
   AppPageInfoWrapper,
 } from '@/ui/AppPage'
-import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import Box from '@/ui/Box'
-import DocumentHead from '@/layout/DocumentHead'
-import LoanCreate from '@/components/PageLoanCreate/index'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import LoanInfoLlamma from '@/components/LoanInfoLlamma'
-import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
+import TextEllipsis from '@/ui/TextEllipsis'
+import { breakpoints } from '@/ui/utils/responsive'
+import { t } from '@lingui/macro'
+import type { NextPage } from 'next'
+
+import { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import styled from 'styled-components'
+
+import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ConnectWallet from '@/components/ConnectWallet'
+import LoanInfoLlamma from '@/components/LoanInfoLlamma'
+import LoanCreate from '@/components/PageLoanCreate/index'
+import { hasLeverage } from '@/components/PageLoanCreate/utils'
+import { REFRESH_INTERVAL } from '@/constants'
+import usePageOnMount from '@/hooks/usePageOnMount'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import useTitleMapper from '@/hooks/useTitleMapper'
+import DocumentHead from '@/layout/DocumentHead'
+import useStore from '@/store/useStore'
+
+import { scrollToTop } from '@/utils/helpers'
+import { getTokenName } from '@/utils/utilsLoan'
+import { getCollateralListPathname, getLoanCreatePathname, getLoanManagePathname } from '@/utils/utilsRouter'
 
 const Page: NextPage = () => {
   const params = useParams()

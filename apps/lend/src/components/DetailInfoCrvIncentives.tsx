@@ -1,17 +1,17 @@
+import DetailInfo from '@/ui/DetailInfo'
+import Icon from '@/ui/Icon'
+import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { t } from '@lingui/macro'
 
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { INVALID_ADDRESS } from '@/constants'
 import useAbiTotalSupply from '@/hooks/useAbiTotalSupply'
-import useStore from '@/store/useStore'
 import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
+import useStore from '@/store/useStore'
 
-import DetailInfo from '@/ui/DetailInfo'
-import Icon from '@/ui/Icon'
-import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
 
 type Data = {
   label: string

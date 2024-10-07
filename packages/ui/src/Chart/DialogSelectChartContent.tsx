@@ -1,8 +1,8 @@
-import type { LabelList } from './types'
 
 import styled from 'styled-components'
 
 import Button from 'ui/src/Button/Button'
+import type { LabelList } from './types'
 
 type Props = {
   data: LabelList[]
