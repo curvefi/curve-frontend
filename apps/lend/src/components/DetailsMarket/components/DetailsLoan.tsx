@@ -20,14 +20,14 @@ import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
-  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper, userActiveKey } =
+  const { rChainId, rOwmId, market, titleMapper, userActiveKey } =
     pageProps
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const cellProps = {
     rChainId,
     rOwmId,
-    owmDataCachedOrApi,
+    market,
     size: 'md' as const,
   }
 
@@ -73,8 +73,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
         <DetailsLoanChartBalances
           rChainId={rChainId}
           rOwmId={rOwmId}
-          borrowed_token={borrowed_token}
-          collateral_token={collateral_token}
+          market={market}
         />
       </ContentWrapper>
 
@@ -82,9 +81,7 @@ const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketLi
         <ContentWrapper paddingTop>
           <DetailsContracts
             rChainId={rChainId}
-            owmDataCachedOrApi={owmDataCachedOrApi}
-            borrowed_token={borrowed_token}
-            collateral_token={collateral_token}
+            market={market}
             type={type}
           />
         </ContentWrapper>

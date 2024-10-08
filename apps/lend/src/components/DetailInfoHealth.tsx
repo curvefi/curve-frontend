@@ -44,7 +44,7 @@ const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
 }) => {
-  const owmData = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId)?.data
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
@@ -58,7 +58,7 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand === 'number' && healthFull) {
       setHealthMode(
         getHealthMode(
-          owmData,
+          market,
           oraclePriceBand,
           amount,
           bands,
@@ -79,7 +79,7 @@ const DetailInfoHealth = ({
     formType,
     healthFull,
     newHealthModeColorKey,
-    owmData,
+    market,
     setHealthMode,
   ])
 
@@ -88,10 +88,10 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand === 'number' && userLoanDetails) {
       const { healthFull, bands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(owmData, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey)
+        getHealthMode(market, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey)
       )
     }
-  }, [oraclePriceBand, amount, formType, newHealthModeColorKey, owmData, userLoanDetails])
+  }, [oraclePriceBand, amount, formType, newHealthModeColorKey, market, userLoanDetails])
 
   const healthPercent = useMemo(() => {
     if (healthMode.percent) {
@@ -153,7 +153,7 @@ export default DetailInfoHealth
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  owmData: OneWayMarketTemplate | undefined,
+  market: OneWayMarketTemplate | undefined,
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
@@ -179,7 +179,7 @@ export function getHealthMode(
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
         const formattedAmount = formatNumber(amount)
-        const borrowedToken = owmData?.borrowed_token?.symbol
+        const borrowedToken = market?.borrowed_token?.symbol
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {

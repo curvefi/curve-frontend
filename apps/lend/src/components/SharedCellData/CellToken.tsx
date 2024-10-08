@@ -20,7 +20,7 @@ const CellToken = ({
   hideIcon?: boolean
   rChainId: ChainId
   isVisible?: boolean
-  market: OneWayMarketTemplate
+  market?: OneWayMarketTemplate
   showLeverageIcon?: boolean
   type: 'collateral' | 'borrowed'
   module: 'borrow' | 'supply'

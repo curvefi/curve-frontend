@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey, FormEstGas } from '@/components/PageLoanCreate/types'
+import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageLoanCreate/types'
 import type { Step } from '@/ui/Stepper/types'
 
 import { t } from '@lingui/macro'
@@ -36,7 +36,7 @@ import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
-  const { rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, borrowed_token, collateral_token } = pageProps
+  const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
   const isSubscribed = useRef(false)
   const params = useParams()
   const navigate = useNavigate()
@@ -70,15 +70,15 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
   const { signerAddress } = api ?? {}
-  const { owm } = owmData ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
+  const { borrowed_token, collateral_token } = market ?? {}
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       setFormValues(
         isLoaded ? api : null,
-        owmData,
+        market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
         maxSlippage,
         isLeverage,
@@ -87,7 +87,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [setFormValues, isLoaded, api, owmData, maxSlippage, isLeverage]
+    [setFormValues, isLoaded, api, market, maxSlippage, isLeverage]
   )
 
   const handleClickCreate = useCallback(
@@ -144,8 +144,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           <AlertBox alertType="info">
             <AlertLoanSummary
               pendingMessage={notifyMessage}
-              borrowed_token={borrowed_token}
-              collateral_token={collateral_token}
+              market={market}
               receive={expectedCollateral?.totalCollateral ?? userCollateral}
               formValueStateDebt={debt}
               userState={userDetails?.state}
@@ -168,7 +167,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const tokensMessage = getStepTokensStr(formValues, market.owm).symbolList
+            const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}.`
             const notify = notifyNotification(notifyMessage, 'pending')
 
@@ -271,11 +270,11 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData) {
+    if (isLoaded && api && market) {
       let updatedSteps = getSteps(
         activeKey,
         api,
-        owmData,
+        market,
         healthMode,
         confirmedWarning,
         formEstGas,
@@ -301,7 +300,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
     isLeverage,
     maxRecv,
     maxSlippage,
-    owmData?.owm?.id,
+    market?.id,
     signerAddress,
     userBalances,
     userDetails?.state,
@@ -369,7 +368,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         maxRecv={maxRecv}
         handleInpChange={(debt) => updateFormValues({ debt })}
         handleMaxClick={async () => {
-          const debt = await refetchMaxRecv(owmData, isLeverage)
+          const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })
         }}
       />
@@ -379,7 +378,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         {...pageProps}
         healthMode={healthMode}
         isLeverage={isLeverage}
-        owm={owmData?.owm ?? null}
+        market={market!}
         steps={steps}
         setHealthMode={setHealthMode}
         updateFormValues={updateFormValues}
@@ -430,8 +429,8 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
             />
           )}
           {steps && <Stepper steps={steps} />}
-          {formStatus.isComplete && owm && (
-            <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, owm.id, 'loan')}>
+          {formStatus.isComplete && market && (
+            <LinkButton variant="filled" size="large" to={getLoanManagePathname(params, market.id, 'loan')}>
               Manage loan
             </LinkButton>
           )}

@@ -29,7 +29,7 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchDatas(key: string, api: Api, owmDatas: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
     fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
@@ -63,7 +63,7 @@ const DEFAULT_STATE: SliceState = {
 const createMarketsSlice = (set: SetState<State>, get: GetState<State>): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
-    fetchDatas: async (key, api, owmDatas, shouldRefetch) => {
+    fetchDatas: async (key, api, markets, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
 
       const { chainId } = api
@@ -85,14 +85,14 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       // stored
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k][chainId] ?? {}
-      const missing = owmDatas.filter(({ id }) => typeof storedMapper[id] === 'undefined')
+      const missing = markets.filter(({ id }) => typeof storedMapper[id] === 'undefined')
 
       if (missing.length === 0 && !shouldRefetch) return
 
       const resp =
         k === 'totalCollateralValuesMapper'
-          ? await fnMapper[k](api, shouldRefetch ? owmDatas : missing)
-          : await fnMapper[k](shouldRefetch ? owmDatas : missing)
+          ? await fnMapper[k](api, shouldRefetch ? markets : missing)
+          : await fnMapper[k](shouldRefetch ? markets : missing)
       const cMapper = { ...storedMapper }
       Object.keys(resp).forEach((owmId) => {
         cMapper[owmId] = resp[owmId]

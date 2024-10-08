@@ -5,19 +5,20 @@ import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import TextCaption from '@/ui/TextCaption'
+import { useOneWayMarket } from '@/entities/chain'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
+  const market = useOneWayMarket(rChainId, rOwmId)?.data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
   const fetchTotalCollateralValue = useStore((state) => state.markets.fetchTotalCollateralValue)
 
   const { total = null, tooltipContent = [], error } = totalCollateralValue ?? {}
 
   useEffect(() => {
-    if (owmData) fetchTotalCollateralValue(rChainId, owmData)
+    if (market) fetchTotalCollateralValue(rChainId, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rChainId, owmData])
+  }, [rChainId, market])
 
   return (
     <>

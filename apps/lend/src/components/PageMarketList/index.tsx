@@ -25,7 +25,6 @@ const MarketList = (pageProps: PageMarketList) => {
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
-  const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
   const setFormValues = useStore((state) => state.marketList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
@@ -64,7 +63,7 @@ const MarketList = (pageProps: PageMarketList) => {
   }
 
   const parsedResult =
-    results[activeKey] ?? resultCached ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
+    results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {

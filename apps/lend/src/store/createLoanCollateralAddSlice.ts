@@ -66,17 +66,17 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetailInfo: async (activeKey, api, owmData) => {
+    fetchDetailInfo: async (activeKey, api, market) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral } = formValues
 
       if (!signerAddress || +collateral <= 0) return
 
-      const resp = await loanCollateralAdd.detailInfo(activeKey, api, owmData, collateral)
+      const resp = await loanCollateralAdd.detailInfo(activeKey, api, market, collateral)
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
-    fetchEstGasApproval: async (activeKey, api, owmData) => {
+    fetchEstGasApproval: async (activeKey, api, market) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -86,7 +86,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
       await gas.fetchGasInfo(api)
-      const resp = await loanCollateralAdd.estGasApproval(activeKey, owmData, collateral)
+      const resp = await loanCollateralAdd.estGasApproval(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus
@@ -123,7 +123,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
     },
 
     // step
-    fetchStepApprove: async (activeKey, api, owmData, formValues) => {
+    fetchStepApprove: async (activeKey, api, market, formValues) => {
       const { gas, wallet } = get()
       const sliceState = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -135,7 +135,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
       // api calls
       await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, owmData, formValues.collateral)
+      const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, market, formValues.collateral)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
@@ -145,7 +145,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
           isApproved: !error,
           isInProgress: !error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market)
         return { ...resp, error }
       }
     },

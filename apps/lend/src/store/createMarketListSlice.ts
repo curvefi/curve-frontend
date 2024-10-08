@@ -116,10 +116,10 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       }
       return results.results
     },
-    sortByUserData: (api, sortKey, owmData) => {
+    sortByUserData: (api, sortKey, market) => {
       const { user } = get()
 
-      const userActiveKey = helpers.getUserActiveKey(api, owmData)
+      const userActiveKey = helpers.getUserActiveKey(api, market)
 
       if (sortKey === 'myHealth') {
         return Number(user.loansHealthsMapper[userActiveKey]?.healthNotFull ?? 0)
@@ -168,7 +168,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       } else if (sortKey === 'totalCollateralValue') {
         return orderBy(markets, (market) => +(totalCollateralValuesMapper[market.id]?.total ?? '0'), [order])
       } else if (sortKey.startsWith('my')) {
-        return orderBy(markets, (owmData) => sliceState.sortByUserData(api, sortKey, owmData), [order])
+        return orderBy(markets, (market) => sliceState.sortByUserData(api, sortKey, market), [order])
       }
 
       return markets

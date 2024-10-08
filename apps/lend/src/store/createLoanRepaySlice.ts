@@ -62,7 +62,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, userState) => {
+    fetchDetailInfo: async (activeKey, api, market, maxSlippage, userState) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { isFullRepay, userBorrowed, userCollateral, stateCollateral } = formValues
@@ -83,7 +83,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         const resp = await loanRepay.detailInfoLeverage(
           activeKey,
           api,
-          owmData,
+          market,
           stateCollateral,
           userCollateral,
           userBorrowed,
@@ -98,7 +98,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           respError = resp.error
         }
       } else {
-        const resp = await loanRepay.detailInfo(activeKey, api, owmData, userBorrowed, isFullRepay, userState.debt)
+        const resp = await loanRepay.detailInfo(activeKey, api, market, userBorrowed, isFullRepay, userState.debt)
         sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
         respError = resp.error
       }
@@ -108,7 +108,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         sliceState.setStateByKey('formStatus', { ...formStatus, error: respError })
       }
     },
-    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage) => {
+    fetchEstGasApproval: async (activeKey, api, market, maxSlippage) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -122,7 +122,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       await gas.fetchGasInfo(api)
       const resp = await loanRepay.estGasApproval(
         activeKey,
-        owmData,
+        market,
         stateCollateral,
         userCollateral,
         userBorrowed,
@@ -190,7 +190,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
     },
 
     // steps
-    fetchStepApprove: async (activeKey, api, owmData, formValues, maxSlippage) => {
+    fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage) => {
       const { gas, wallet } = get()
       const sliceState = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -207,7 +207,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       const { error, ...resp } = await loanRepay.approve(
         activeKey,
         provider,
-        owmData,
+        market,
         stateCollateral,
         userCollateral,
         userBorrowed,
@@ -223,7 +223,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
         return { ...resp, error }
       }
     },

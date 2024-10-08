@@ -31,7 +31,7 @@ export type FormEstGas = {
 
 export type DetailInfoCompProps = {
   healthMode: HealthMode
-  owm: OneWayMarketTemplate | null
+  market: OneWayMarketTemplate | null
   steps: Step[]
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
   updateFormValues: (updatedFormValues: FormValues) => void

@@ -68,13 +68,13 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxRemovable: async (api, owmData) => {
+    fetchMaxRemovable: async (api, market) => {
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
 
       if (!signerAddress) return
 
-      const resp = await loanCollateralRemove.maxRemovable(owmData)
+      const resp = await loanCollateralRemove.maxRemovable(market)
       if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
       sliceState.setStateByKey('maxRemovable', resp.maxRemovable)
 
@@ -82,17 +82,17 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       const collateralError = isTooMuch(formValues.collateral, resp.maxRemovable) ? 'too-much-max' : ''
       sliceState.setStateByKey('formValues', { ...formValues, collateralError })
     },
-    fetchDetailInfo: async (activeKey, api, owmData) => {
+    fetchDetailInfo: async (activeKey, api, market) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
 
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
-      const resp = await loanCollateralRemove.detailInfo(activeKey, api, owmData, collateral)
+      const resp = await loanCollateralRemove.detailInfo(activeKey, api, market, collateral)
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
-    fetchEstGas: async (activeKey, api, owmData) => {
+    fetchEstGas: async (activeKey, api, market) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -102,7 +102,7 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
       await gas.fetchGasInfo(api)
-      const resp = await loanCollateralRemove.estGas(activeKey, owmData, collateral)
+      const resp = await loanCollateralRemove.estGas(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus

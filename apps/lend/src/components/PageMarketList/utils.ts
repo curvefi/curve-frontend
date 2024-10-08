@@ -53,11 +53,11 @@ export function _searchByTokensAddresses(parsedSearchText: string, searchText: s
   ))
 }
 
-export function _getMarketList(owmDatas: OneWayMarketTemplate[]) {
+export function _getMarketList(markets: OneWayMarketTemplate[]) {
   let marketListMapper: MarketListMapper = {}
   let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
-  owmDatas.forEach(({ id, collateral_token, borrowed_token }) => {
+  markets.forEach(({ id, collateral_token, borrowed_token }) => {
     const { address: cAddress, symbol: cSymbol } = collateral_token
     const { address: bAddress, symbol: bSymbol } = borrowed_token
 
@@ -72,7 +72,7 @@ export function _getMarketList(owmDatas: OneWayMarketTemplate[]) {
   })
 
   // filter crvusd
-  const crvUsdAddress = owmDatas.map((m) => m.borrowed_token).find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
+  const crvUsdAddress = markets.map((m) => m.borrowed_token).find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
   if (crvUsdAddress) {
     delete marketListMapper[crvUsdAddress]
     delete marketListMapperCache[crvUsdAddress]

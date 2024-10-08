@@ -69,7 +69,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxRecv: async (activeKeyMax, api, owmData, isLeverage) => {
+    fetchMaxRecv: async (activeKeyMax, api, market, isLeverage) => {
       const { maxRecv, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { userCollateral, userBorrowed } = formValues
@@ -80,11 +80,11 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
 
       if (typeof updatedMaxRecv === 'undefined') {
         if (isLeverage) {
-          const resp = await loanBorrowMore.maxRecvLeverage(owmData, activeKeyMax, userCollateral, userBorrowed)
+          const resp = await loanBorrowMore.maxRecvLeverage(market, activeKeyMax, userCollateral, userBorrowed)
           updatedMaxRecv = resp.maxRecv?.maxDebt ?? ''
           sliceState.setStateByActiveKey('maxRecv', resp.activeKey, updatedMaxRecv)
         } else {
-          const resp = await loanBorrowMore.maxRecv(owmData, activeKeyMax, userCollateral)
+          const resp = await loanBorrowMore.maxRecv(market, activeKeyMax, userCollateral)
           updatedMaxRecv = resp.maxRecv
           sliceState.setStateByActiveKey('maxRecv', resp.activeKey, updatedMaxRecv)
         }
@@ -94,12 +94,12 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       const debtError = isTooMuch(formValues.debt, updatedMaxRecv) ? 'too-much' : formValues.debtError
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
     },
-    refetchMaxRecv: async (owmData, isLeverage) => {
+    refetchMaxRecv: async (market, isLeverage) => {
       const { api } = get()
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed } = formValues
 
-      if (!owmData || !api) return ''
+      if (!market || !api) return ''
 
       const { signerAddress } = api
 
@@ -109,17 +109,17 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
 
       if (isLeverage) {
-        const resp = await loanBorrowMore.maxRecvLeverage(owmData, activeKeyMax, userCollateral, userBorrowed)
+        const resp = await loanBorrowMore.maxRecvLeverage(market, activeKeyMax, userCollateral, userBorrowed)
         const maxDebt = resp.maxRecv?.maxDebt ?? ''
         sliceState.setStateByActiveKey('maxRecv', resp.activeKey, maxDebt)
         return maxDebt
       } else {
-        const resp = await loanBorrowMore.maxRecv(owmData, activeKeyMax, userCollateral)
+        const resp = await loanBorrowMore.maxRecv(market, activeKeyMax, userCollateral)
         sliceState.setStateByActiveKey('maxRecv', resp.activeKey, resp.maxRecv)
         return resp.maxRecv
       }
     },
-    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+    fetchDetailInfo: async (activeKey, api, market, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { userCollateral, userBorrowed, debt } = formValues
@@ -138,7 +138,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         const resp = await loanBorrowMore.detailInfoLeverage(
           activeKey,
           api,
-          owmData,
+          market,
           userCollateral,
           userBorrowed,
           debt,
@@ -146,11 +146,11 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         )
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
       } else {
-        const resp = await loanBorrowMore.detailInfo(activeKey, api, owmData, userCollateral, debt)
+        const resp = await loanBorrowMore.detailInfo(activeKey, api, market, userCollateral, debt)
         sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
       }
     },
-    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+    fetchEstGasApproval: async (activeKey, api, market, maxSlippage, isLeverage) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -163,7 +163,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       await gas.fetchGasInfo(api)
       const resp = await loanBorrowMore.estGasApproval(
         activeKey,
-        owmData,
+        market,
         userCollateral,
         userBorrowed,
         debt,
@@ -232,7 +232,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
     },
 
     // steps
-    fetchStepApprove: async (activeKey, api, owmData, formValues, maxSlippage, isLeverage) => {
+    fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage, isLeverage) => {
       const { gas, wallet } = get()
       const sliceState = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -248,7 +248,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       const { error, ...resp } = await loanBorrowMore.approve(
         activeKey,
         provider,
-        owmData,
+        market,
         userCollateral,
         userBorrowed,
         isLeverage
@@ -262,7 +262,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage, isLeverage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
         return { ...resp, error }
       }
     },

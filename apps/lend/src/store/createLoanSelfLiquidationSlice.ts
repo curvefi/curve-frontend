@@ -105,7 +105,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       // api call
       sliceState.fetchEstGasApproval(api, market, maxSlippage)
     },
-    fetchEstGasApproval: async (api, owmData, maxSlippage) => {
+    fetchEstGasApproval: async (api, market, maxSlippage) => {
       const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -115,7 +115,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, loading: true })
 
       await gas.fetchGasInfo(api)
-      const resp = await loanSelfLiquidation.estGasApproval(owmData, maxSlippage)
+      const resp = await loanSelfLiquidation.estGasApproval(market, maxSlippage)
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, estimatedGas: resp.estimatedGas })
 
       // update formStatus
@@ -127,7 +127,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
     },
 
     // step
-    fetchStepApprove: async (api, owmData, maxSlippage) => {
+    fetchStepApprove: async (api, market, maxSlippage) => {
       const { gas, wallet } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -139,7 +139,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       // api calls
       await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanSelfLiquidation.approve(provider, owmData)
+      const { error, ...resp } = await loanSelfLiquidation.approve(provider, market)
 
       if (resp) {
         // update formStatus
@@ -149,7 +149,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
           isInProgress: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(api, owmData, maxSlippage)
+        if (!error) sliceState.fetchEstGasApproval(api, market, maxSlippage)
         return { ...resp, error }
       }
     },
