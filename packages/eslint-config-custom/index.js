@@ -5,9 +5,9 @@ module.exports = {
     '@next/next/no-img-element': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'react/jsx-key': 'off',
-    'import/no-internal-modules': 'info',
-    'import/order': 'info',
-    'boundaries/element-types': 'info'
+    'import/order': 'off', // feature-sliced/import-order
+    'import/no-internal-modules': 'off', // feature-sliced/public-api
+    'boundaries/element-types': 'off' // feature-sliced/layers-slices
   },
   parser: '@typescript-eslint/parser',
   settings: {
