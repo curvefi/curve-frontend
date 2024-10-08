@@ -12,6 +12,8 @@ import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { helpers } from '@/lib/apiLending'
 import useStore from '@/store/useStore'
+import { useOneWayMarket } from '@/entities/chain'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type FormType = 'create-loan' | 'collateral-decrease' | ''
 
@@ -42,7 +44,7 @@ const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
 }) => {
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
+  const owmData = useOneWayMarket(rChainId, rOwmId)?.data
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
@@ -151,7 +153,7 @@ export default DetailInfoHealth
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  owmData: OWMData | undefined,
+  owmData: OneWayMarketTemplate | undefined,
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
@@ -177,7 +179,7 @@ export function getHealthMode(
         message = t`You are still close to soft liquidation.`
       } else if (newColorKey === 'close_to_liquidation') {
         const formattedAmount = formatNumber(amount)
-        const borrowedToken = owmData?.owm?.borrowed_token?.symbol
+        const borrowedToken = owmData?.borrowed_token?.symbol
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {

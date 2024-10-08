@@ -8,4 +8,5 @@ export type TokenQueryParams = ChainQueryParams & {
 
 export type CombinedTokenParams = TokenQueryParams
 
-export type TokenQueryKeyType<K extends keyof typeof tokenKeys> = ExtractQueryKeyType<typeof tokenKeys, K>
+export type TokenKey = keyof typeof tokenKeys
+export type TokenQueryKeyType<K extends TokenKey = TokenKey> = ExtractQueryKeyType<typeof tokenKeys, K>

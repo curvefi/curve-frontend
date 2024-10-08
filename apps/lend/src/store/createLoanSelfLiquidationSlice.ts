@@ -9,6 +9,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { FormWarning } from '@/components/AlertFormWarning'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import apiLending from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,12 +25,12 @@ const sliceKey = 'loanSelfLiquidation'
 // prettier-ignore
 export type LoanSelfLiquidationSlice = {
   [sliceKey]: SliceState & {
-    fetchDetails(api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
-    fetchEstGasApproval(api: Api, owmData: OWMData, maxSlippage: string): Promise<void>
+    fetchDetails(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
+    fetchEstGasApproval(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<void>
 
     // step
-    fetchStepApprove(api: Api, owmData: OWMData, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
-    fetchStepLiquidate(api: Api, owmData: OWMData, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(api: Api, market: OneWayMarketTemplate, maxSlippage: string): Promise<{ hashes: string[]; error: string } | undefined>
+    fetchStepLiquidate(api: Api, market: OneWayMarketTemplate, liquidationAmt: string, maxSlippage: string): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -59,25 +60,25 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetails: async (api, owmData, maxSlippage) => {
+    fetchDetails: async (api, market, maxSlippage) => {
       const { user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
 
-      if (!signerAddress || !api || !owmData || !maxSlippage) return
+      if (!signerAddress || !api || !market || !maxSlippage) return
 
       // loading
       sliceState.setStateByKey('formStatus', { ...formStatus, loading: true })
 
-      const { userLoanDetailsResp, userLoanBalancesResp } = await user.fetchAll(api, owmData, true)
+      const { userLoanDetailsResp, userLoanBalancesResp } = await user.fetchAll(api, market, true)
 
-      const borrowedTokenDecimals = owmData.owm.borrowed_token.decimals
+      const borrowedTokenDecimals = market.borrowed_token.decimals
 
       if (userLoanDetailsResp && userLoanBalancesResp) {
         const walletBorrowed = userLoanBalancesResp.borrowed
         const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
 
-        const resp = await loanSelfLiquidation.detailInfo(api, owmData, maxSlippage)
+        const resp = await loanSelfLiquidation.detailInfo(api, market, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp
         const liquidationAmt = isGreaterThanOrEqualTo(stateBorrowed, tokensToLiquidate, borrowedTokenDecimals)
           ? '0'
@@ -102,7 +103,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       sliceState.setStateByKey('formStatus', { ...get()[sliceKey].formStatus, loading: false })
 
       // api call
-      sliceState.fetchEstGasApproval(api, owmData, maxSlippage)
+      sliceState.fetchEstGasApproval(api, market, maxSlippage)
     },
     fetchEstGasApproval: async (api, owmData, maxSlippage) => {
       const { gas } = get()
@@ -152,7 +153,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
         return { ...resp, error }
       }
     },
-    fetchStepLiquidate: async (api, owmData, liquidationAmt, maxSlippage) => {
+    fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
       const { gas, markets, wallet, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -169,10 +170,10 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       // api calls
       await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, owmData, maxSlippage)
+      const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
 
       if (resp) {
-        const loanExists = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
+        const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
 
         if (error) {
           sliceState.setStateByKey('formStatus', {
@@ -183,8 +184,8 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
           return { ...resp, error, loanExists }
         } else {
           // api calls
-          if (loanExists) user.fetchAll(api, owmData, true)
-          markets.fetchAll(api, owmData, true)
+          if (loanExists) user.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true)
 
           // update state
           sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true })

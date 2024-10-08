@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import { getErrorMessage } from '@/utils/helpers'
 import apiLending from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,12 +29,12 @@ const sliceKey = 'markets'
 export type MarketsSlice = {
   [sliceKey]: SliceState & {
     // grouped
-    fetchDatas(key: string, api: Api, owmDatas: OWMData[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: Api, owmDatas: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchAll(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<void>
-    fetchVaultPricePerShare(chainId: ChainId, owmData: OWMData, shouldRefetch?: boolean): Promise<void>
-    fetchTotalCollateralValue(chainId: ChainId, owmData: OWMData, shouldRefetch?: boolean): Promise<void>
+    fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchVaultPricePerShare(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
+    fetchTotalCollateralValue(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -84,9 +85,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       // stored
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k][chainId] ?? {}
-      const missing = owmDatas.filter(({ owm }) => {
-        return typeof storedMapper[owm.id] === 'undefined'
-      })
+      const missing = owmDatas.filter(({ id }) => typeof storedMapper[id] === 'undefined')
 
       if (missing.length === 0 && !shouldRefetch) return
 
@@ -101,7 +100,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       sliceState.setStateByActiveKey(k, chainId.toString(), cMapper)
     },
 
-    fetchAll: async (api, owmData, shouldRefetch) => {
+    fetchAll: async (api, OneWayMarketTemplate, shouldRefetch) => {
       const { ...sliceState } = get()[sliceKey]
 
       const keys = [
@@ -116,9 +115,9 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         'totalLiquidityMapper',
       ] as const
 
-      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [owmData], shouldRefetch)))
+      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
     },
-    fetchVaultPricePerShare: async (chainId, { owm }, shouldRefetch) => {
+    fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]
       let resp = { pricePerShare: '', error: '' }
 
@@ -139,21 +138,19 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         })
       }
     },
-    fetchTotalCollateralValue: async (chainId, owmData, shouldRefetch) => {
+    fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
       const { api } = get()
       const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
 
-      const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[owmData.owm.id]
+      const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]
 
       if (!api || (typeof totalCollateralValue !== 'undefined' && !shouldRefetch)) return
 
-      const { owm } = owmData
-
-      const resp = (await apiLending.market.fetchMarketsTotalCollateralValue(api, [owmData]))[owm.id]
+      const resp = (await apiLending.market.fetchMarketsTotalCollateralValue(api, [market]))[market.id]
 
       sliceState.setStateByActiveKey('totalCollateralValuesMapper', `${chainId}`, {
         ...(get()[sliceKey].totalCollateralValuesMapper[chainId] ?? {}),
-        [owm.id]: resp,
+        [market.id]: resp,
       })
     },
 

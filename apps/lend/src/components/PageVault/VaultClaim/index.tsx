@@ -21,8 +21,9 @@ import SpinnerWrapper from '@/ui/Spinner/SpinnerWrapper'
 import Stats from '@/ui/Stats'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps) => {
+const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const formStatus = useStore((state) => state.vaultClaim.formStatus)
@@ -42,8 +43,8 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
   const haveClaimableRewards = rewards.some((r) => +r.amount > 0)
 
   const updateFormValues = useCallback(() => {
-    setFormValues(userActiveKey, isLoaded ? api : null, owmData)
-  }, [api, isLoaded, owmData, setFormValues, userActiveKey])
+    setFormValues(userActiveKey, isLoaded ? api : null, market)
+  }, [api, isLoaded, market, setFormValues, userActiveKey])
 
   const reset = useCallback(() => {
     setTxInfoBar(null)
@@ -51,7 +52,7 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
   }, [updateFormValues])
 
   const handleBtnClickClaim = useCallback(
-    async (payloadActiveKey: string, claimable: MarketClaimable, api: Api, owmData: OWMData, type: RewardType) => {
+    async (payloadActiveKey: string, claimable: MarketClaimable, api: Api, market: OneWayMarketTemplate, type: RewardType) => {
       const { chainId } = api
       const { crv, rewards } = claimable.claimable ?? {}
 
@@ -60,7 +61,7 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
       const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
-      const resp = await fetchStepClaim(payloadActiveKey, api, owmData, type)
+      const resp = await fetchStepClaim(payloadActiveKey, api, market, type)
 
       if (isSubscribed.current && resp && resp.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -75,7 +76,7 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
   )
 
   const getSteps = useCallback(
-    (payloadActiveKey: string, api: Api, owmData: OWMData, claimable: MarketClaimable, formStatus: FormStatus) => {
+    (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, claimable: MarketClaimable, formStatus: FormStatus) => {
       const { signerAddress } = api
       const { isComplete, step } = formStatus
       const { crv, rewards } = claimable.claimable ?? {}
@@ -92,14 +93,14 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim CRV`,
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, owmData, 'crv'),
+          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'crv'),
         },
         CLAIM_REWARDS: {
           key: 'CLAIM_REWARDS',
           status: helpers.getStepStatus(isComplete, step === stepKey, isValid),
           type: 'action',
           content: isComplete ? t`Claimed` : t`Claim Rewards`,
-          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, owmData, 'rewards'),
+          onClick: async () => handleBtnClickClaim(payloadActiveKey, claimable, api, market, 'rewards'),
         },
       }
 
@@ -127,8 +128,8 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && (haveClaimableCrv || haveClaimableRewards)) {
-      const updatedSteps = getSteps(userActiveKey, api, owmData, claimable, formStatus)
+    if (isLoaded && api && market && (haveClaimableCrv || haveClaimableRewards)) {
+      const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,14 +175,14 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
         {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset()} /> : null}
         {txInfoBar}
 
-        {!!api && !!owmData && (
+        {api && market && (
           <Box grid gridGap={2}>
             {haveClaimableCrv && formStatus.step !== 'CLAIM_CRV' ? (
               <Button
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, owmData, 'crv')}
+                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'crv')}
               >
                 Claim CRV
               </Button>
@@ -194,7 +195,7 @@ const VaultClaim = ({ isLoaded, api, owmData, userActiveKey }: PageContentProps)
                 variant="filled"
                 size="large"
                 disabled={!!formStatus.step}
-                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, owmData, 'rewards')}
+                onClick={() => handleBtnClickClaim(userActiveKey, claimable, api, market, 'rewards')}
               >
                 Claim Rewards
               </Button>

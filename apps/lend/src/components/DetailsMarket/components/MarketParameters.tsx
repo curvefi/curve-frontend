@@ -9,6 +9,7 @@ import Box from '@/ui/Box'
 import Chip from '@/ui/Typography/Chip'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
+import { useOneWayMarket } from '@/entities/chain'
 
 const MarketParameters = ({
   rChainId,
@@ -19,8 +20,8 @@ const MarketParameters = ({
   rOwmId: string
   type: 'borrow' | 'supply'
 }) => {
+  const owm = useOneWayMarket(rChainId, rOwmId)?.data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
@@ -52,48 +53,45 @@ const MarketParameters = ({
     ]
 
   useEffect(() => {
-    if (type === 'supply' && owmData) fetchVaultPricePerShare(rChainId, owmData)
+    if (type === 'supply' && owm) fetchVaultPricePerShare(rChainId, owm)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, owmData])
+  }, [type, owm])
 
   return (
     <Box grid gridRowGap={4}>
-      {marketDetails.map((details, idx) => {
-        const isError = (idx === 0 && !!parametersError) || (idx === 1 && pricesError)
-        return (
-          <div key={`details-${idx}`}>
-            {details.map(({ label, value, formatOptions, title, isError, isRow, isAdvance, tooltip }) => {
-              const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvanceMode)
-              return (
-                <React.Fragment key={label}>
-                  {show ? (
-                    <>
-                      {title && <SubTitle>{title}</SubTitle>}
-                      {isRow ? (
-                        <Box grid>
-                          <Chip isBold>{label}:</Chip>
-                          <strong>{formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}</strong>
-                        </Box>
-                      ) : (
-                        <DetailInfo key={label} label={label}>
-                          {isError ? (
-                            '?'
-                          ) : (
-                            <Chip {...(tooltip ? { tooltip, tooltipProps: { noWrap: true } } : {})} isBold>
-                              {formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
-                              {tooltip && <Icon className="svg-tooltip" name="InformationSquare" size={16} />}
-                            </Chip>
-                          )}
-                        </DetailInfo>
-                      )}
-                    </>
-                  ) : null}
-                </React.Fragment>
-              )
-            })}
-          </div>
-        )
-      })}
+      {marketDetails.map((details, idx) => (
+        <div key={`details-${idx}`}>
+          {details.map(({ label, value, formatOptions, title, isError, isRow, isAdvance, tooltip }) => {
+            const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvanceMode)
+            return (
+              <React.Fragment key={label}>
+                {show ? (
+                  <>
+                    {title && <SubTitle>{title}</SubTitle>}
+                    {isRow ? (
+                      <Box grid>
+                        <Chip isBold>{label}:</Chip>
+                        <strong>{formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}</strong>
+                      </Box>
+                    ) : (
+                      <DetailInfo key={label} label={label}>
+                        {isError ? (
+                          '?'
+                        ) : (
+                          <Chip {...(tooltip ? { tooltip, tooltipProps: { noWrap: true } } : {})} isBold>
+                            {formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
+                            {tooltip && <Icon className="svg-tooltip" name="InformationSquare" size={16} />}
+                          </Chip>
+                        )}
+                      </DetailInfo>
+                    )}
+                  </>
+                ) : null}
+              </React.Fragment>
+            )
+          })}
+        </div>
+      ))}
     </Box>
   )
 }

@@ -21,8 +21,9 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import InpChipVaultSharesUsdRate from '@/components/InpChipVaultShareUsdRate'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userActiveKey }: PageContentProps) => {
+const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultStake.activeKey)
@@ -43,9 +44,9 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, rFormType, isLoaded ? api : null, owmData, updatedFormValues)
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, owmData, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues]
   )
 
   const reset = useCallback(
@@ -61,7 +62,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
   }
 
   const handleBtnClickStake = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (payloadActiveKey: string, rFormType: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
       const { amount } = formValues
 
@@ -69,7 +70,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
       const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
-      const resp = await fetchStepStake(payloadActiveKey, rFormType, api, owmData, formValues)
+      const resp = await fetchStepStake(payloadActiveKey, rFormType, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -87,7 +88,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[]
@@ -108,7 +109,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
             const notifyMessage = t`Please approve spending of vault shares`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, rFormType, api, owmData, formValues)
+            await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -117,7 +118,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
           status: helpers.getStepStatus(isComplete, step === 'STAKE', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Staked` : t`Stake`,
-          onClick: async () => handleBtnClickStake(payloadActiveKey, rFormType, api, owmData, formValues),
+          onClick: async () => handleBtnClickStake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -151,8 +152,8 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userA
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && rFormType) {
-      const updatedSteps = getSteps(activeKey, rFormType, api, owmData, formStatus, formValues, steps)
+    if (isLoaded && api && market && rFormType) {
+      const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -5,6 +5,7 @@ import cloneDeep from 'lodash/cloneDeep'
 
 import apiLending, { helpers } from '@/lib/apiLending'
 import { log } from '@/shared/lib/logging'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,16 +25,16 @@ const sliceKey = 'user'
 export type UserSlice = {
   [sliceKey]: SliceState & {
     // groups
-    fetchDatas(key: string, api: Api, owmDatas: OWMData[], shouldRefetch?: boolean): Promise<void>
-    fetchLoanDatas(key: string, api: Api, owmDatas: OWMData[], shouldRefetch?: boolean): Promise<void>
-    fetchUsersLoansExists(api: Api, owmDatas: OWMData[], shouldRefetch?: boolean): Promise<void>
+    fetchDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchLoanDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
+    fetchUsersLoansExists(api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchUserLoanExists(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<UserLoanExists>
-    fetchUserLoanDetails(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<UserLoanDetails>
-    fetchUserMarketBalances(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<UserMarketBalances>
-    fetchUserLoanState(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<UserLoanState>
-    fetchAll(api: Api, owmData: OWMData, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
+    fetchUserLoanExists(api: Api, owmData: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanExists>
+    fetchUserLoanDetails(api: Api, owmData: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
+    fetchUserMarketBalances(api: Api, owmData: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
+    fetchUserLoanState(api: Api, owmData: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanState>
+    fetchAll(api: Api, owmData: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -58,7 +59,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     ...DEFAULT_STATE,
 
     // groups
-    fetchDatas: async (key, api, owmDatas, shouldRefetch) => {
+    fetchDatas: async (key, api, markets, shouldRefetch) => {
       if (!api.signerAddress) return
 
       const fnMapper = {
@@ -68,7 +69,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       // stored
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k] ?? {}
-      const missing = owmDatas.filter((owmData) => {
+      const missing = markets.filter((owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
         return typeof storedMapper[userActiveKey] === 'undefined'
       })
@@ -76,14 +77,14 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       if (missing.length === 0 && !shouldRefetch) return
 
       if (typeof fnMapper[k] !== 'function') log('missing function', k)
-      const resp = await fnMapper[k](api, shouldRefetch ? owmDatas : missing)
+      const resp = await fnMapper[k](api, shouldRefetch ? markets : missing)
       const cMapper = cloneDeep(storedMapper)
       Object.keys(resp).forEach((userActiveKey) => {
         cMapper[userActiveKey] = resp[userActiveKey]
       })
       get()[sliceKey].setStateByKey(k, cMapper)
     },
-    fetchLoanDatas: async (key, api, owmDatas, shouldRefetch) => {
+    fetchLoanDatas: async (key, api, markets, shouldRefetch) => {
       if (!api.signerAddress) return
 
       const fnMapper = {
@@ -98,7 +99,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const loansExistsMapper = get()[sliceKey].loansExistsMapper ?? {}
       const storedMapper = get()[sliceKey][k] ?? {}
 
-      const missing = owmDatas.filter((owmData) => {
+      const missing = markets.filter((owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
         const { loanExists } = loansExistsMapper[userActiveKey] ?? {}
         return loanExists && typeof storedMapper[userActiveKey] === 'undefined'
@@ -108,9 +109,9 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       let parsedOwmDatas = missing
 
-      // get only owmDatas with loans
+      // get only markets with loans
       if (shouldRefetch) {
-        parsedOwmDatas = owmDatas.filter((owmData) => {
+        parsedOwmDatas = markets.filter((owmData) => {
           const userActiveKey = helpers.getUserActiveKey(api, owmData)
           return loansExistsMapper[userActiveKey]?.loanExists
         })
@@ -126,17 +127,17 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       })
       get()[sliceKey].setStateByKey(k, cMapper)
     },
-    fetchUsersLoansExists: async (api, owmDatas, shouldRefetch) => {
+    fetchUsersLoansExists: async (api, markets, shouldRefetch) => {
       const storedLoanExistsMapper = get()[sliceKey].loansExistsMapper
 
-      const missing = owmDatas.filter((owmData) => {
+      const missing = markets.filter((owmData) => {
         const userActiveKey = helpers.getUserActiveKey(api, owmData)
         return typeof storedLoanExistsMapper[userActiveKey] === 'undefined'
       })
 
       if (missing.length === 0 && !shouldRefetch) return
 
-      const parsedOwmDatas = shouldRefetch ? owmDatas : missing
+      const parsedOwmDatas = shouldRefetch ? markets : missing
       const loansExists = await apiLending.user.fetchLoansExists(api, parsedOwmDatas)
       const cLoanExistsMapper = cloneDeep(storedLoanExistsMapper)
       Object.keys(loansExists).forEach((owmId) => {

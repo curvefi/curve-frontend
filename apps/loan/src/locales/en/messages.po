@@ -17,14 +17,14 @@ msgstr ""
 msgid "(Soft liquidation)"
 msgstr "(Soft liquidation)"
 
-#: src/components/PageLoanManage/Page.tsx:131
+#: src/components/PageLoanManage/Page.tsx:152
 msgid "{0}"
 msgstr "{0}"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:286
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:242
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:228
-#: src/components/PageLoanManage/LoanIncrease/index.tsx:301
+#: src/components/PageLoanManage/LoanIncrease/index.tsx:299
 msgid "{0} Avail."
 msgstr "{0} Avail."
 
@@ -45,19 +45,51 @@ msgstr "{0} Avail. ${userStablecoinBalance}"
 msgid "{0} borrow amount"
 msgstr "{0} borrow amount"
 
-#: src/components/PageLoanCreate/Page.tsx:153
+#: src/components/PageLoanCreate/Page.tsx:168
 msgid "{rCollateralId}"
 msgstr "{rCollateralId}"
 
-#: src/components/LoanInfoUser/index.tsx:237
+#: src/components/LoanInfoUser/components/UserInfoLoss.tsx:62
+msgid "*current balance minus losses"
+msgstr "*current balance minus losses"
+
+#: src/hooks/useTitleMapper.tsx:54
 msgid "% lost"
 msgstr "% lost"
+
+#: src/components/PageDisclaimer/Page.tsx:317
+msgid "<0>Anonymity</0>: The degree of anonymity provided by blockchain technology can complicate the tracing of funds and the identification of parties in transactions."
+msgstr "<0>Anonymity</0>: The degree of anonymity provided by blockchain technology can complicate the tracing of funds and the identification of parties in transactions."
+
+#: src/components/PageDisclaimer/Page.tsx:331
+msgid "<0>Cybersecurity Incidents</0>: The digital nature of crypto assets makes them a target for hackers, malicious actors, and other cybersecurity threats. Failures, hacks, exploits, protocol errors, and unforeseen vulnerabilities can compromise the security of assets, resulting in theft, loss, or unauthorized access."
+msgstr "<0>Cybersecurity Incidents</0>: The digital nature of crypto assets makes them a target for hackers, malicious actors, and other cybersecurity threats. Failures, hacks, exploits, protocol errors, and unforeseen vulnerabilities can compromise the security of assets, resulting in theft, loss, or unauthorized access."
+
+#: src/components/PageDisclaimer/Page.tsx:310
+msgid "<0>Irreversibility of Transactions</0>: Once executed, transactions in crypto assets cannot be reversed. Errors or accidental transactions cannot be easily rectified, potentially leading to permanent loss of assets."
+msgstr "<0>Irreversibility of Transactions</0>: Once executed, transactions in crypto assets cannot be reversed. Errors or accidental transactions cannot be easily rectified, potentially leading to permanent loss of assets."
+
+#: src/components/PageDisclaimer/Page.tsx:339
+msgid "<0>Operational Challenges</0>: The process of recording and settling transactions on a blockchain depends on the network's stability and performance. Disruptions, high transaction volumes, or network congestion can delay settlement times, affecting the liquidity and availability of assets."
+msgstr "<0>Operational Challenges</0>: The process of recording and settling transactions on a blockchain depends on the network's stability and performance. Disruptions, high transaction volumes, or network congestion can delay settlement times, affecting the liquidity and availability of assets."
+
+#: src/components/PageDisclaimer/Page.tsx:323
+msgid "<0>Software Dependencies</0>: Crypto asset operations rely heavily on the flawless functioning of complex software, including wallets, smart contracts, and blockchain networks. Any defects, bugs, or vulnerabilities in software can impair access to or use of crypto assets, leading to potential losses."
+msgstr "<0>Software Dependencies</0>: Crypto asset operations rely heavily on the flawless functioning of complex software, including wallets, smart contracts, and blockchain networks. Any defects, bugs, or vulnerabilities in software can impair access to or use of crypto assets, leading to potential losses."
 
 #: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:21
 msgid "A"
 msgstr "A"
 
-#: src/components/PageLoanManage/index.tsx:50
+#: src/components/PageDisclaimer/Page.tsx:354
+msgid "Access Control"
+msgstr "Access Control"
+
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:73
+msgid "Action"
+msgstr "Action"
+
+#: src/components/PageLoanManage/index.tsx:54
 msgid "Add"
 msgstr "Add"
 
@@ -73,11 +105,13 @@ msgstr "Add Collateral"
 msgid "Adjust N:"
 msgstr "Adjust N:"
 
-#: src/components/AdvancedSettings.tsx:130
+#: src/components/AdvancedSettings.tsx:134
 msgid "Advanced Settings"
 msgstr "Advanced Settings"
 
-#: src/components/LoanInfoLlamma/index.tsx:94
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:50
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:57
+#: src/components/LoanInfoLlamma/index.tsx:50
 msgid "AMM"
 msgstr "AMM"
 
@@ -93,22 +127,30 @@ msgstr "Amount must be <= {0}"
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:140
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:159
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:160
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:97
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:101
 #: src/components/PageLoanManage/LoanSwap/index.tsx:161
 msgid "Approve Spending"
 msgstr "Approve Spending"
 
-#: src/components/PageMarketList/components/DialogSortContent.tsx:71
+#: src/layout/Header.tsx:193
+msgid "Apps"
+msgstr "Apps"
+
+#: src/components/PageMarketList/components/DialogSortContent.tsx:74
 msgid "Asc"
 msgstr "Asc"
 
-#: src/layout/Footer.tsx:86
+#: src/layout/Footer.tsx:109
 msgid "Audits"
 msgstr "Audits"
 
+#: src/hooks/useTitleMapper.tsx:20
+msgid "Available"
+msgstr "Available"
+
 #: src/components/PageMarketList/index.tsx:73
-msgid "Available to borrow"
-msgstr "Available to borrow"
+#~ msgid "Available to borrow"
+#~ msgstr "Available to borrow"
 
 #: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:37
 msgid "band"
@@ -119,16 +161,16 @@ msgstr "band"
 msgid "Band {n}"
 msgstr "Band {n}"
 
-#: src/components/LoanInfoUser/index.tsx:208
+#: src/hooks/useTitleMapper.tsx:41
 msgid "Band range"
 msgstr "Band range"
 
-#: src/components/DetailInfoLiqRange.tsx:136
+#: src/components/DetailInfoLiqRange.tsx:137
 msgid "Band range:"
 msgstr "Band range:"
 
-#: src/components/LoanInfoLlamma/index.tsx:86
-#: src/components/LoanInfoUser/index.tsx:260
+#: src/components/LoanInfoLlamma/components/DetailsBandsChart.tsx:73
+#: src/components/LoanInfoUser/components/ChartUserBands.tsx:80
 msgid "Bands"
 msgstr "Bands"
 
@@ -145,10 +187,11 @@ msgstr "Be careful, if the collateral price dips, you would need to repay the en
 #~ msgstr "BETA"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:173
+#: src/hooks/useTitleMapper.tsx:12
 msgid "Borrow"
 msgstr "Borrow"
 
-#: src/components/PageLoanManage/index.tsx:44
+#: src/components/PageLoanManage/index.tsx:48
 msgid "Borrow more"
 msgstr "Borrow more"
 
@@ -156,10 +199,8 @@ msgstr "Borrow more"
 msgid "Borrow more anyway"
 msgstr "Borrow more anyway"
 
-#: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:48
-#: src/components/LoanInfoUser/index.tsx:196
-#: src/components/LoanInfoUser/index.tsx:215
-#: src/components/PageMarketList/index.tsx:66
+#: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:46
+#: src/hooks/useTitleMapper.tsx:16
 msgid "Borrow rate"
 msgstr "Borrow rate"
 
@@ -168,18 +209,27 @@ msgid "Borrow rate:"
 msgstr "Borrow rate:"
 
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:173
+#: src/hooks/useTitleMapper.tsx:21
 msgid "Borrowed"
 msgstr "Borrowed"
+
+#: src/components/PageDisclaimer/Page.tsx:96
+msgid "Borrowers in the crvUSD ecosystem are subject to specific risks associated with the liquidation process. It is crucial to understand that if the User’s collateral is placed into soft-liquidation mode, they are prohibited from withdrawing the collateral or augmenting their position with additional collateral. Entering soft-liquidation mode locks the collateral, removing the option to withdraw or add to it. In case market conditions suggest a strategic adjustment to the User’s position, they may face exacerbated risk due to such restrictions."
+msgstr "Borrowers in the crvUSD ecosystem are subject to specific risks associated with the liquidation process. It is crucial to understand that if the User’s collateral is placed into soft-liquidation mode, they are prohibited from withdrawing the collateral or augmenting their position with additional collateral. Entering soft-liquidation mode locks the collateral, removing the option to withdraw or add to it. In case market conditions suggest a strategic adjustment to the User’s position, they may face exacerbated risk due to such restrictions."
 
 #: src/domain/components/DetailInfoHealth.tsx:180
 #~ msgid "Borrowing {0} will put you close to soft liquidation."
 #~ msgstr "Borrowing {0} will put you close to soft liquidation."
 
-#: src/components/DetailInfoHealth.tsx:184
+#: src/components/DetailInfoHealth.tsx:194
 msgid "Borrowing {formattedAmount} will put you close to soft liquidation."
 msgstr "Borrowing {formattedAmount} will put you close to soft liquidation."
 
-#: src/layout/Footer.tsx:92
+#: src/layout/Footer.tsx:100
+msgid "Branding"
+msgstr "Branding"
+
+#: src/layout/Footer.tsx:115
 msgid "Bug Bounty"
 msgstr "Bug Bounty"
 
@@ -191,20 +241,28 @@ msgstr "Bug Bounty"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/components/PageMarketList/index.tsx:72
+#: src/hooks/useTitleMapper.tsx:22
 msgid "Cap"
 msgstr "Cap"
 
-#: src/components/DetailInfoHealth.tsx:196
+#: src/components/ChartOhlcWrapper/index.tsx:252
+#: src/components/ChartOhlcWrapper/index.tsx:279
+#: src/components/ChartOhlcWrapper/index.tsx:308
+msgid "Chart"
+msgstr "Chart"
+
+#: src/components/DetailInfoHealth.tsx:206
 msgid "Close to liquidation range!"
 msgstr "Close to liquidation range!"
 
-#: src/layout/Footer.tsx:32
-#: src/layout/Footer.tsx:50
+#: src/layout/Footer.tsx:37
+#: src/layout/Footer.tsx:55
 msgid "CN"
 msgstr "CN"
 
-#: src/components/PageLoanManage/index.tsx:38
+#: src/components/PageLoanManage/index.tsx:36
+#: src/hooks/useTitleMapper.tsx:11
+#: src/hooks/useTitleMapper.tsx:46
 msgid "Collateral"
 msgstr "Collateral"
 
@@ -220,11 +278,19 @@ msgstr "collateral median price"
 msgid "Collateral Removed"
 msgstr "Collateral Removed"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:39
+#: src/hooks/useTitleMapper.tsx:23
+msgid "Collateral value"
+msgstr "Collateral value"
+
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:41
 msgid "Collateral:"
 msgstr "Collateral:"
 
-#: src/layout/HeaderMobile.tsx:140
+#: src/components/PageDisclaimer/Page.tsx:79
+msgid "Collateralized debt positions are managed passively through arbitrage opportunities: if the collateral's price decreases, the system automatically sells off collateral to arbitrageurs in a ‘soft-liquidation mode’. If the collateral's price increases, the system recovers the collateral. This algorithm is designed to dynamically adjust the collateral backing each crvUSD in real-time, responding to fluctuating market conditions. While this approach is intended to mitigate the severity of traditional liquidations—a process where collateral becomes insufficient, leading to irreversible sales at potentially undervalued prices—it does not eliminate the inherent risk of collateral volatility. Additional information can be found on <0>LLAMMA Overview</0>."
+msgstr "Collateralized debt positions are managed passively through arbitrage opportunities: if the collateral's price decreases, the system automatically sells off collateral to arbitrageurs in a ‘soft-liquidation mode’. If the collateral's price increases, the system recovers the collateral. This algorithm is designed to dynamically adjust the collateral backing each crvUSD in real-time, responding to fluctuating market conditions. While this approach is intended to mitigate the severity of traditional liquidations—a process where collateral becomes insufficient, leading to irreversible sales at potentially undervalued prices—it does not eliminate the inherent risk of collateral volatility. Additional information can be found on <0>LLAMMA Overview</0>."
+
+#: src/layout/Header.tsx:194
 msgid "Community"
 msgstr "Community"
 
@@ -234,31 +300,51 @@ msgstr "Community"
 msgid "Confirm warning to proceed."
 msgstr "Confirm warning to proceed."
 
+#: src/components/PageLoanCreate/Page.tsx:225
+#: src/components/PageLoanManage/Page.tsx:228
+msgid "Connect"
+msgstr "Connect"
+
 #: src/domain/layout/index.tsx:68
 #~ msgid "Connect wallet"
 #~ msgstr "Connect wallet"
 
-#: src/components/ConnectWallet.tsx:51
-#: src/components/LoanFormConnect.tsx:25
+#: src/components/LoanFormConnect.tsx:30
 msgid "Connect Wallet"
 msgstr "Connect Wallet"
 
-#: src/components/LoanInfoLlamma/index.tsx:93
-#: src/layout/Footer.tsx:89
+#: src/components/PageLoanCreate/Page.tsx:224
+#: src/components/PageLoanManage/Page.tsx:227
+msgid "Connect your wallet to view market"
+msgstr "Connect your wallet to view market"
+
+#: src/components/PageLoanCreate/Page.tsx:226
+#: src/components/PageLoanManage/Page.tsx:229
+msgid "Connecting"
+msgstr "Connecting"
+
+#: src/components/LoanInfoLlamma/index.tsx:46
+#: src/layout/Footer.tsx:112
 msgid "Contracts"
 msgstr "Contracts"
 
-#: src/components/LoanInfoLlamma/index.tsx:98
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:50
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:64
+#: src/components/LoanInfoLlamma/index.tsx:56
 msgid "Controller"
 msgstr "Controller"
 
-#: src/components/PageLoanCreate/Page.tsx:153
+#: src/components/PageDisclaimer/Page.tsx:351
+msgid "Counterparty Risks"
+msgstr "Counterparty Risks"
+
+#: src/components/PageLoanCreate/Page.tsx:168
 msgid "Create"
 msgstr "Create"
 
-#: src/components/PageLoanCreate/index.tsx:30
+#: src/components/PageLoanCreate/index.tsx:26
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:174
-#: src/components/PageMarketList/components/TableRowMobile.tsx:135
+#: src/components/PageMarketList/components/TableRowMobile.tsx:114
 msgid "Create Loan"
 msgstr "Create Loan"
 
@@ -266,78 +352,184 @@ msgstr "Create Loan"
 msgid "Creating a leverage loan means you will not receive any crvUSD to your address and will instead assume a significantly larger debt position."
 msgstr "Creating a leverage loan means you will not receive any crvUSD to your address and will instead assume a significantly larger debt position."
 
+#: src/layout/Footer.tsx:72
+msgid "Crvhub"
+msgstr "Crvhub"
+
 #: src/layout/HeaderMobile.tsx:189
 #: src/layout/HeaderSecondary.tsx:49
-msgid "crvUSD"
-msgstr "crvUSD"
+#~ msgid "crvUSD"
+#~ msgstr "crvUSD"
+
+#: src/components/PageDisclaimer/Page.tsx:288
+msgid "crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets."
+msgstr "crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets."
+
+#: src/components/PageDisclaimer/Page.tsx:67
+msgid "crvUSD Design Risks"
+msgstr "crvUSD Design Risks"
+
+#: src/components/PageDisclaimer/Page.tsx:376
+msgid "crvUSD functions in a decentralized way, with its issuance and operational mechanics governed exclusively by smart contracts, without reliance on any intermediaries. While the adjustment of stablecoin critical parameters is subject to Curve DAO approvals, Users must understand that Curve DAO does not act as a broker, agent, advisor, or in any fiduciary capacity towards crvUSD users. Consequently, Curve DAO bears no obligation to ensure that the use of crvUSD aligns with each one’s financial objectives, strategies, or risk tolerance levels."
+msgstr "crvUSD functions in a decentralized way, with its issuance and operational mechanics governed exclusively by smart contracts, without reliance on any intermediaries. While the adjustment of stablecoin critical parameters is subject to Curve DAO approvals, Users must understand that Curve DAO does not act as a broker, agent, advisor, or in any fiduciary capacity towards crvUSD users. Consequently, Curve DAO bears no obligation to ensure that the use of crvUSD aligns with each one’s financial objectives, strategies, or risk tolerance levels."
+
+#: src/components/PageDisclaimer/Page.tsx:69
+msgid "crvUSD has unique design features that Users should fully understand before interacting with the protocol."
+msgstr "crvUSD has unique design features that Users should fully understand before interacting with the protocol."
+
+#: src/components/PageDisclaimer/Page.tsx:406
+msgid "crvUSD is not recognized as a legal tender by any government authority, central bank, or legal jurisdiction. Users should be aware that the lack of legal tender status means that no statutory, governmental, or corporate entity is obligated to accept the stablecoin as payment for goods, services, debts, or other obligations. The regulatory environment around crypto assets and stablecoins remains fluid and subject to change across jurisdictions. This poses a risk that the legal status of the stablecoin could be altered, potentially affecting its use, transfer, holding, and value."
+msgstr "crvUSD is not recognized as a legal tender by any government authority, central bank, or legal jurisdiction. Users should be aware that the lack of legal tender status means that no statutory, governmental, or corporate entity is obligated to accept the stablecoin as payment for goods, services, debts, or other obligations. The regulatory environment around crypto assets and stablecoins remains fluid and subject to change across jurisdictions. This poses a risk that the legal status of the stablecoin could be altered, potentially affecting its use, transfer, holding, and value."
+
+#: src/components/PageDisclaimer/Page.tsx:154
+msgid "crvUSD makes use of Pegkeepers, contracts authorized to deposit and withdraw crvUSD from a whitelisted Curve crvUSD stableswap pool up to a predefined debt cap. These contracts reference a subset of whitelisted stablecoins as a proxy for the intended USD price. Instability affecting any counterparty Pegkeeper assets (e.g. USDT, USDC), which are also used to aggregate a USD price for crvUSD, may cause the Pegkeeper to deposit all of its crvUSD into the pool in an attempt to rebalance. This creates a dependency on the Pegkeeper counterparty assets that determines the stability of the crvUSD peg. An upgraded PegkeeperV2 design promises to alleviate this risk."
+msgstr "crvUSD makes use of Pegkeepers, contracts authorized to deposit and withdraw crvUSD from a whitelisted Curve crvUSD stableswap pool up to a predefined debt cap. These contracts reference a subset of whitelisted stablecoins as a proxy for the intended USD price. Instability affecting any counterparty Pegkeeper assets (e.g. USDT, USDC), which are also used to aggregate a USD price for crvUSD, may cause the Pegkeeper to deposit all of its crvUSD into the pool in an attempt to rebalance. This creates a dependency on the Pegkeeper counterparty assets that determines the stability of the crvUSD peg. An upgraded PegkeeperV2 design promises to alleviate this risk."
+
+#: src/components/PageDisclaimer/Page.tsx:356
+msgid "crvUSD markets (Controller smart contracts) are intentionally designed to be immutable and noncustodial, meaning they cannot be upgraded and minters always retain full control and responsibility over their funds. While this characteristic may limit protective actions in case of emergencies, it significantly strengthens user assurances about custody of their funds."
+msgstr "crvUSD markets (Controller smart contracts) are intentionally designed to be immutable and noncustodial, meaning they cannot be upgraded and minters always retain full control and responsibility over their funds. While this characteristic may limit protective actions in case of emergencies, it significantly strengthens user assurances about custody of their funds."
 
 #: src/layout/Header.tsx:78
 #: src/layout/HeaderMobile.tsx:135
-msgid "crvUSD Pools"
-msgstr "crvUSD Pools"
+#~ msgid "crvUSD Pools"
+#~ msgstr "crvUSD Pools"
+
+#: src/components/PageDisclaimer/Page.tsx:224
+msgid "crvUSD relies on liquidity concentrated within particular Pegkeeper pools, which serve a dual purpose as both a source of liquidity and price feeds for crvUSD oracles. If the incentives for depositing crvUSD into these pools are insufficient, the liquidity shortfalls can result in missed liquidations or deflationary price spirals (cascading liquidations). This phenomenon occurs when initial liquidations fail to be executed effectively, leading to a domino effect of further liquidations and potentially rapid, significant decreases in asset prices."
+msgstr "crvUSD relies on liquidity concentrated within particular Pegkeeper pools, which serve a dual purpose as both a source of liquidity and price feeds for crvUSD oracles. If the incentives for depositing crvUSD into these pools are insufficient, the liquidity shortfalls can result in missed liquidations or deflationary price spirals (cascading liquidations). This phenomenon occurs when initial liquidations fail to be executed effectively, leading to a domino effect of further liquidations and potentially rapid, significant decreases in asset prices."
+
+#: src/components/PageDisclaimer/Page.tsx:267
+msgid "crvUSD relies on smart contracts, which are self-executing pieces of code. While these contracts are designed to be secure, there is a risk that they may contain vulnerabilities or bugs. Malicious actors could exploit these vulnerabilities, resulting in the loss of funds or other adverse consequences. Users need to conduct due diligence and review the smart contracts and security audit reports to assess the inherent risks."
+msgstr "crvUSD relies on smart contracts, which are self-executing pieces of code. While these contracts are designed to be secure, there is a risk that they may contain vulnerabilities or bugs. Malicious actors could exploit these vulnerabilities, resulting in the loss of funds or other adverse consequences. Users need to conduct due diligence and review the smart contracts and security audit reports to assess the inherent risks."
+
+#: src/components/PageDisclaimer/Page.tsx:61
+msgid "crvUSD smart contract Audits"
+msgstr "crvUSD smart contract Audits"
 
 #: src/layout/HeaderMobile.tsx:180
 #: src/layout/HeaderSecondary.tsx:41
-msgid "crvUSD Total Supply"
-msgstr "crvUSD Total Supply"
+#~ msgid "crvUSD Total Supply"
+#~ msgstr "crvUSD Total Supply"
 
-#: src/components/LoanInfoUser/index.tsx:225
+#: src/components/PageDisclaimer/Page.tsx:57
+msgid "crvUSD Whitepaper"
+msgstr "crvUSD Whitepaper"
+
+#: src/hooks/useTitleMapper.tsx:48
 msgid "Current balance (est.) / Deposited"
 msgstr "Current balance (est.) / Deposited"
 
-#: src/layout/Footer.tsx:64
+#: src/components/PageDisclaimer/Page.tsx:132
+msgid "Curve incorporates specialized on-chain Exponential Moving Average (EMA) oracles built into stabelswap-ng, tricrypto-ng, and twocrypto-ng Curve pool implementations. crvUSD markets derive price information from a select number of high TVL Curve pools. By utilizing the EMA smoothing methodology, oracles mitigate the impact of transient price fluctuations, aiming to reduce unnecessary losses caused by short-term market volatility or attempts to manipulate the oracle. Despite the manipulation-resistant design specification, Curve pool oracles may exhibit price distortions in certain scenarios that have the potential to result in missed or excessive liquidations. This may be a result of liquidity and volume migration to alternate venues that increase the risk of oracle manipulation. A detailed explanation of the aforementioned terms can be found in the <0>crvUSD Oracle</0> documentation."
+msgstr "Curve incorporates specialized on-chain Exponential Moving Average (EMA) oracles built into stabelswap-ng, tricrypto-ng, and twocrypto-ng Curve pool implementations. crvUSD markets derive price information from a select number of high TVL Curve pools. By utilizing the EMA smoothing methodology, oracles mitigate the impact of transient price fluctuations, aiming to reduce unnecessary losses caused by short-term market volatility or attempts to manipulate the oracle. Despite the manipulation-resistant design specification, Curve pool oracles may exhibit price distortions in certain scenarios that have the potential to result in missed or excessive liquidations. This may be a result of liquidity and volume migration to alternate venues that increase the risk of oracle manipulation. A detailed explanation of the aforementioned terms can be found in the <0>crvUSD Oracle</0> documentation."
+
+#: src/layout/Footer.tsx:69
 msgid "Curve Monitor"
 msgstr "Curve Monitor"
 
-#: src/components/AdvancedSettings.tsx:185
+#: src/components/PageDisclaimer/Page.tsx:130
+msgid "Curve Pool EMA Oracles"
+msgstr "Curve Pool EMA Oracles"
+
+#: src/components/PageDisclaimer/Page.tsx:276
+msgid "Curve smart contracts have undergone multiple audits by reputable firms, including MixBytes and ChainSecurity, to enhance protocol security. While smart contract audits play an important role in good security practices to mitigate user risks, they don't eliminate all risks. Users should always exercise caution regardless of Curve's commitment to protocol security."
+msgstr "Curve smart contracts have undergone multiple audits by reputable firms, including MixBytes and ChainSecurity, to enhance protocol security. While smart contract audits play an important role in good security practices to mitigate user risks, they don't eliminate all risks. Users should always exercise caution regardless of Curve's commitment to protocol security."
+
+#: src/components/PageDisclaimer/Page.tsx:47
+msgid "Curve stablecoin infrastructure enables users to mint crvUSD using a selection of crypto-tokenized collaterals (adding new ones is subject to DAO approval). Interacting with crvUSD doesn't come without risks. Before minting or taking exposure of crvUSD, it is best to research and understand the risks involved."
+msgstr "Curve stablecoin infrastructure enables users to mint crvUSD using a selection of crypto-tokenized collaterals (adding new ones is subject to DAO approval). Interacting with crvUSD doesn't come without risks. Before minting or taking exposure of crvUSD, it is best to research and understand the risks involved."
+
+#: src/components/AdvancedSettings.tsx:189
 msgid "Custom"
 msgstr "Custom"
 
+#: src/layout/Header.tsx:97
+msgid "Daily volume"
+msgstr "Daily volume"
+
+#: src/components/LoanInfoUser/components/UserInfoDebt.tsx:25
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:258
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:308
+#: src/components/PagePegKeepers/components/PegKeeperContent.tsx:40
 msgid "Debt"
 msgstr "Debt"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:39
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:43
+#: src/components/PagePegKeepers/components/PegKeeperContent.tsx:41
+msgid "Debt Ceiling"
+msgstr "Debt Ceiling"
+
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:40
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:44
 msgid "Debt:"
 msgstr "Debt:"
 
-#: src/components/PageLoanManage/index.tsx:39
+#: src/components/PageLoanManage/index.tsx:37
 msgid "Deleverage"
 msgstr "Deleverage"
 
-#: src/components/PageMarketList/components/DialogSortContent.tsx:71
+#: src/components/PageDisclaimer/Page.tsx:249
+msgid "Depegging Risk"
+msgstr "Depegging Risk"
+
+#: src/components/ChartOhlcWrapper/LiquidityData.tsx:31
+msgid "Deposit"
+msgstr "Deposit"
+
+#: src/components/PageMarketList/components/DialogSortContent.tsx:74
 msgid "Desc"
 msgstr "Desc"
 
-#: src/layout/Footer.tsx:103
+#: src/components/PageDisclaimer/Page.tsx:388
+msgid "Developer Dependency"
+msgstr "Developer Dependency"
+
+#: src/layout/Footer.tsx:97
 msgid "Developer Docs"
 msgstr "Developer Docs"
 
-#: src/components/PageMarketList/index.tsx:165
+#: src/components/PageMarketList/index.tsx:152
 msgid "Didn't find what you're looking for?"
 msgstr "Didn't find what you're looking for?"
 
-#: src/components/AdvancedSettings.tsx:135
+#: src/components/AdvancedSettings.tsx:139
 msgid "Discard"
 msgstr "Discard"
 
-#: src/layout/Footer.tsx:42
+#: src/components/PageDisclaimer/Page.tsx:435
+msgid "Disclaimer: The information provided within this context does not constitute financial, legal, or tax advice personalized to your specific circumstances. The content presented is for informational purposes only and should not be relied upon as a substitute for professional advice tailored to your individual needs. It is recommended that you seek the advice of qualified professionals regarding financial, legal, and tax matters before engaging in any activities on Curve."
+msgstr "Disclaimer: The information provided within this context does not constitute financial, legal, or tax advice personalized to your specific circumstances. The content presented is for informational purposes only and should not be relied upon as a substitute for professional advice tailored to your individual needs. It is recommended that you seek the advice of qualified professionals regarding financial, legal, and tax matters before engaging in any activities on Curve."
+
+#: src/layout/Footer.tsx:47
 msgid "Discord"
 msgstr "Discord"
 
-#: src/layout/Footer.tsx:38
+#: src/layout/Footer.tsx:43
 msgid "Dodo"
 msgstr "Dodo"
 
-#: src/layout/Footer.tsx:61
+#: src/layout/Footer.tsx:66
 msgid "Dune Analytics"
 msgstr "Dune Analytics"
 
+#: src/components/PageDisclaimer/Page.tsx:167
+msgid "Dynamic Interest Rates"
+msgstr "Dynamic Interest Rates"
+
+#: src/components/PageDisclaimer/Page.tsx:302
+msgid "Engaging with crypto assets involves exposure to a range of technological risks inherent to the use of new and evolving technologies. Users must be aware of key risk factors (as outlined below) and consider their implications for crypto asset transactions."
+msgstr "Engaging with crypto assets involves exposure to a range of technological risks inherent to the use of new and evolving technologies. Users must be aware of key risk factors (as outlined below) and consider their implications for crypto asset transactions."
+
 #: src/components/Page404/Page.tsx:11
-msgid "Error 404"
-msgstr "Error 404"
+#~ msgid "Error 404"
+#~ msgstr "Error 404"
+
+#: src/components/PageDisclaimer/Page.tsx:186
+msgid "Essentially, the borrow rate increases when the price of crvUSD goes lower and/or the proportion of Pegkeeper debt to total debt reduces. This process is intended to dynamically regulate market behavior such that it reinforces the crvUSD peg. Changes to the Monetary Policy are authorized only by the Curve DAO. A <0>crvUSD rate tool</0> by 0xReviews allows Users to visualize the influence of these factors on the borrowing rate."
+msgstr "Essentially, the borrow rate increases when the price of crvUSD goes lower and/or the proportion of Pegkeeper debt to total debt reduces. This process is intended to dynamically regulate market behavior such that it reinforces the crvUSD peg. Changes to the Monetary Policy are authorized only by the Curve DAO. A <0>crvUSD rate tool</0> by 0xReviews allows Users to visualize the influence of these factors on the borrowing rate."
+
+#: src/components/PagePegKeepers/components/PegKeeperForm.tsx:69
+msgid "Est. update profit:"
+msgstr "Est. update profit:"
 
 #: src/components/DetailInfoEstimateGas.tsx:61
 msgid "Estimated TX cost"
@@ -347,46 +539,75 @@ msgstr "Estimated TX cost"
 msgid "Estimated TX cost:"
 msgstr "Estimated TX cost:"
 
-#: src/layout/Footer.tsx:95
-msgid "FAQ"
-msgstr "FAQ"
+#: src/components/ChartOhlcWrapper/index.tsx:291
+#: src/components/PageLoanCreate/Page.tsx:182
+#: src/components/PageLoanManage/Page.tsx:166
+msgid "Expand chart"
+msgstr "Expand chart"
 
-#: src/layout/Footer.tsx:114
+#: src/layout/Footer.tsx:95
+#~ msgid "FAQ"
+#~ msgstr "FAQ"
+
+#: src/components/PageDisclaimer/Page.tsx:300
+msgid "General Blockchain Technology Risks"
+msgstr "General Blockchain Technology Risks"
+
+#: src/layout/Footer.tsx:94
 msgid "Github"
 msgstr "Github"
 
-#: src/components/LoanInfoUser/index.tsx:185
-msgid "Health"
-msgstr "Health"
+#: src/components/DetailInfoHealth.tsx:121
+#: src/components/LoanInfoUser/components/AlertSoftLiquidation.tsx:34
+#: src/hooks/useTitleMapper.tsx:30
+msgid "Hard liquidation is triggered when health is 0 or below."
+msgstr "Hard liquidation is triggered when health is 0 or below."
 
-#: src/components/DetailInfoHealth.tsx:113
+#: src/components/LoanInfoUser/index.tsx:185
+#~ msgid "Health"
+#~ msgstr "Health"
+
+#: src/hooks/useTitleMapper.tsx:39
+msgid "Health %"
+msgstr "Health %"
+
+#: src/hooks/useTitleMapper.tsx:25
+msgid "Health status"
+msgstr "Health status"
+
+#: src/components/DetailInfoHealth.tsx:115
 msgid "Health:"
 msgstr "Health:"
 
-#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:60
+#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:64
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:269
 msgid "High price impact:"
 msgstr "High price impact:"
+
+#: src/components/PageDisclaimer/Page.tsx:119
+msgid "If the health of the loan falls to zero, the position is subject to hard liquidation, which is an irreversible process resulting in the loss of the collateral with no possibility of recovery or de-liquidation. This scenario underscores the critical need for risk management when using leverage. Leverage and collateral management should be approached with caution, reflecting a balanced assessment of potential gains against the risk of significant financial loss."
+msgstr "If the health of the loan falls to zero, the position is subject to hard liquidation, which is an irreversible process resulting in the loss of the collateral with no possibility of recovery or de-liquidation. This scenario underscores the critical need for risk management when using leverage. Leverage and collateral management should be approached with caution, reflecting a balanced assessment of potential gains against the risk of significant financial loss."
 
 #: src/domain/components/DetailInfoHealth.tsx:182
 #~ msgid "Increasing your borrowed amount by {0} will put you close to soft liquidation."
 #~ msgstr "Increasing your borrowed amount by {0} will put you close to soft liquidation."
 
-#: src/components/DetailInfoHealth.tsx:186
+#: src/components/DetailInfoHealth.tsx:196
 msgid "Increasing your borrowed amount by {formattedAmount} will put you close to soft liquidation."
 msgstr "Increasing your borrowed amount by {formattedAmount} will put you close to soft liquidation."
 
-#: src/components/PageIntegrations/Page.tsx:38
-#: src/layout/Footer.tsx:99
-#: src/layout/Header.tsx:42
+#: src/components/PageIntegrations/Page.tsx:37
+#: src/layout/Footer.tsx:103
+#: src/layout/Header.tsx:74
+#: src/layout/Header.tsx:80
 msgid "Integrations"
 msgstr "Integrations"
 
-#: src/components/PageMarketList/index.tsx:167
+#: src/components/PageMarketList/index.tsx:154
 msgid "Join the Telegram"
 msgstr "Join the Telegram"
 
-#: src/components/PageLoanCreate/index.tsx:31
+#: src/components/PageLoanCreate/index.tsx:27
 msgid "Leverage"
 msgstr "Leverage"
 
@@ -399,22 +620,25 @@ msgstr "Leverage:"
 #~ msgstr "Liquidation price range is the range of prices at which your collateral will get liquidated over time. Soft liquidation begins when the oracle price of your collateral hits the top of the range.  Hard liquidation occurs when the oracle price drops to the bottom of the range, and your collateral is converted entirely to stablecoins."
 
 #: src/components/ChartLiquidationRange/index.tsx:92
-#: src/components/LoanInfoUser/index.tsx:164
-#: src/components/LoanInfoUser/index.tsx:205
+#: src/hooks/useTitleMapper.tsx:40
 msgid "Liquidation range"
 msgstr "Liquidation range"
 
-#: src/components/LoanInfoUser/index.tsx:266
+#: src/components/LoanInfoUser/index.tsx:72
 msgid "Liquidation Range"
 msgstr "Liquidation Range"
 
-#: src/components/DetailInfoLiqRange.tsx:100
+#: src/components/DetailInfoLiqRange.tsx:101
 msgid "Liquidation range:"
 msgstr "Liquidation range:"
 
 #: src/components/ChartLiquidationRange/index.tsx:101
 msgid "Liquidation range{0}"
 msgstr "Liquidation range{0}"
+
+#: src/components/PageDisclaimer/Page.tsx:214
+msgid "Liquidity Risk"
+msgstr "Liquidity Risk"
 
 #: src/domain/layout/Footer.tsx:62
 #~ msgid "Llama Airforce"
@@ -424,19 +648,23 @@ msgstr "Liquidation range{0}"
 msgid "LLAMMA {collateralName} Avail."
 msgstr "LLAMMA {collateralName} Avail."
 
-#: src/components/LoanInfoUser/index.tsx:281
+#: src/components/ChartOhlcWrapper/index.tsx:286
+msgid "LLAMMA Activity"
+msgstr "LLAMMA Activity"
+
+#: src/hooks/useTitleMapper.tsx:58
 msgid "LLAMMA Balances"
 msgstr "LLAMMA Balances"
 
-#: src/components/PageLoanManage/Page.tsx:58
+#: src/components/PageLoanManage/Page.tsx:72
 msgid "LLAMMA Details"
 msgstr "LLAMMA Details"
 
-#: src/components/LoanFormConnect.tsx:29
+#: src/components/LoanFormConnect.tsx:34
 msgid "Loading"
 msgstr "Loading"
 
-#: src/components/PageLoanManage/index.tsx:37
+#: src/components/PageLoanManage/index.tsx:35
 msgid "Loan"
 msgstr "Loan"
 
@@ -444,7 +672,7 @@ msgstr "Loan"
 msgid "Loan Created"
 msgstr "Loan Created"
 
-#: src/components/LoanInfoLlamma/index.tsx:109
+#: src/components/LoanInfoLlamma/index.tsx:67
 msgid "Loan parameters"
 msgstr "Loan parameters"
 
@@ -456,21 +684,26 @@ msgstr "Loan Parameters"
 msgid "Loan to Value ratio:"
 msgstr "Loan to Value ratio:"
 
-#: src/components/LoanInfoUser/index.tsx:233
+#: src/hooks/useTitleMapper.tsx:52
 msgid "Loss amount"
 msgstr "Loss amount"
 
-#: src/components/PageLoanManage/Page.tsx:131
+#: src/components/PageLoanManage/Page.tsx:152
 msgid "Manage"
 msgstr "Manage"
 
-#: src/components/PageMarketList/components/TableRowMobile.tsx:135
+#: src/components/PageMarketList/components/TableRowMobile.tsx:114
 msgid "Manage Loan"
 msgstr "Manage Loan"
 
-#: src/components/PageMarketList/index.tsx:60
-#: src/components/PageMarketList/Page.tsx:33
-#: src/layout/Header.tsx:40
+#: src/components/PageDisclaimer/Page.tsx:212
+msgid "Market Risks"
+msgstr "Market Risks"
+
+#: src/components/PageMarketList/Page.tsx:34
+#: src/hooks/useTitleMapper.tsx:10
+#: src/layout/Header.tsx:72
+#: src/layout/Header.tsx:79
 msgid "Markets"
 msgstr "Markets"
 
@@ -478,53 +711,77 @@ msgstr "Markets"
 msgid "Max borrow amount"
 msgstr "Max borrow amount"
 
-#: src/components/AdvancedSettings.tsx:155
+#: src/components/AdvancedSettings.tsx:159
 msgid "Max Slippage"
 msgstr "Max Slippage"
 
-#: src/components/AdvancedSettings.tsx:157
+#: src/components/AdvancedSettings.tsx:161
 msgid "Maximum difference between expected price of the trade, versus the price when the trade is executed."
 msgstr "Maximum difference between expected price of the trade, versus the price when the trade is executed."
 
-#: src/components/AdvancedSettings.tsx:115
+#: src/components/AdvancedSettings.tsx:116
 msgid "Min. slippage is 0.01%"
 msgstr "Min. slippage is 0.01%"
 
 #: src/layout/HeaderMobile.tsx:164
-msgid "Mode"
-msgstr "Mode"
+#~ msgid "Mode"
+#~ msgstr "Mode"
 
-#: src/components/LoanInfoLlamma/index.tsx:103
+#: src/components/LoanInfoLlamma/index.tsx:61
 msgid "Monetary Policy"
 msgstr "Monetary Policy"
 
-#: src/components/PageMarketList/index.tsx:62
+#: src/hooks/useTitleMapper.tsx:13
 msgid "My debt"
 msgstr "My debt"
 
-#: src/components/PageMarketList/index.tsx:61
+#: src/hooks/useTitleMapper.tsx:14
 msgid "My health"
 msgstr "My health"
 
-#: src/components/DetailInfoN.tsx:10
+#: src/components/DetailInfoN.tsx:13
 msgid "N:"
 msgstr "N:"
 
-#: src/layout/Footer.tsx:106
+#: src/layout/Footer.tsx:118
 msgid "News"
 msgstr "News"
 
-#: src/components/PageMarketList/index.tsx:172
+#: src/components/PageMarketList/index.tsx:159
 msgid "No collateral found for \"{0}\". Feel free to search other tabs, or"
 msgstr "No collateral found for \"{0}\". Feel free to search other tabs, or"
 
-#: src/components/PageMarketList/index.tsx:179
+#: src/components/PageMarketList/index.tsx:166
 msgid "No collateral found in this category"
 msgstr "No collateral found in this category"
+
+#: src/components/PageDisclaimer/Page.tsx:374
+msgid "No Control"
+msgstr "No Control"
+
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:87
+msgid "No controller data found."
+msgstr "No controller data found."
+
+#: src/components/PageDisclaimer/Page.tsx:236
+msgid "No Guarantee of Price Stability"
+msgstr "No Guarantee of Price Stability"
 
 #: src/components/PageIntegrations/index.tsx:115
 msgid "No integration apps found with for {0} {1}{2}"
 msgstr "No integration apps found with for {0} {1}{2}"
+
+#: src/components/PageDisclaimer/Page.tsx:417
+msgid "No Investment and Legal Advice"
+msgstr "No Investment and Legal Advice"
+
+#: src/components/PageDisclaimer/Page.tsx:286
+msgid "No Loss Prevention"
+msgstr "No Loss Prevention"
+
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:80
+msgid "No trades data found."
+msgstr "No trades data found."
 
 #: src/components/LoanFormAlertError.tsx:45
 msgid "Not eligible for liquidation"
@@ -536,13 +793,13 @@ msgstr "Note: maDAI, maUSDC and maUSDT are LP tokens from the Morpho protocol, a
 
 #: src/layout/HeaderMobile.tsx:172
 #: src/layout/HeaderSecondary.tsx:61
-msgid "off"
-msgstr "off"
+#~ msgid "off"
+#~ msgstr "off"
 
 #: src/layout/HeaderMobile.tsx:172
 #: src/layout/HeaderSecondary.tsx:61
-msgid "on"
-msgstr "on"
+#~ msgid "on"
+#~ msgstr "on"
 
 #: src/components/AlertFormWarning.tsx:30
 msgid "Once the loan is paid off, you will no longer be able to manage this loan."
@@ -563,13 +820,29 @@ msgstr "Oracle"
 msgid "Oracle price"
 msgstr "Oracle price"
 
-#: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:36
+#: src/components/LoanInfoLlamma/LoanInfoParameters.tsx:35
 msgid "Oracle Price"
 msgstr "Oracle Price"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:35
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertPartial.tsx:37
 msgid "Partial repayment LLAMMA changes:"
 msgstr "Partial repayment LLAMMA changes:"
+
+#: src/components/PagePegKeepers/Page.tsx:33
+msgid "Peg Keepers"
+msgstr "Peg Keepers"
+
+#: src/components/PageDisclaimer/Page.tsx:152
+msgid "Pegkeepers"
+msgstr "Pegkeepers"
+
+#: src/components/PagePegKeepers/Page.tsx:30
+msgid "PegKeepers"
+msgstr "PegKeepers"
+
+#: src/components/PageMarketList/components/TableStats.tsx:14
+msgid "PegKeepers Debt"
+msgstr "PegKeepers Debt"
 
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:111
 msgid "Please approve a repayment of {debt} {0}."
@@ -585,7 +858,7 @@ msgstr "Please approve full repay."
 
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:142
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:162
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:99
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:103
 msgid "Please approve spending of {0}"
 msgstr "Please approve spending of {0}"
 
@@ -601,7 +874,7 @@ msgstr "Please approve spending your {0}."
 msgid "Please approve spending your {item1Name}."
 msgstr "Please approve spending your {item1Name}."
 
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:113
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:117
 msgid "Please confirm {stablecoinName} self-liquidation at max {maxSlippage}% slippage."
 msgstr "Please confirm {stablecoinName} self-liquidation at max {maxSlippage}% slippage."
 
@@ -629,6 +902,10 @@ msgstr "Please confirm removal of {0} {1}"
 msgid "Please confirm swapping {swapAmount} {item1Name} at max {maxSlippage} slippage."
 msgstr "Please confirm swapping {swapAmount} {item1Name} at max {maxSlippage} slippage."
 
+#: src/components/PagePegKeepers/components/PegKeeperForm.tsx:39
+msgid "Please confirm update {poolName} pool"
+msgstr "Please confirm update {poolName} pool"
+
 #: src/domain/layout/index.tsx:66
 #~ msgid "Please connect wallet to view loan details"
 #~ msgstr "Please connect wallet to view loan details"
@@ -637,21 +914,34 @@ msgstr "Please confirm swapping {swapAmount} {item1Name} at max {maxSlippage} sl
 #~ msgid "Please switch your wallet's network to <0>{0}</0>to use Curve on <1>{1}</1>."
 #~ msgstr "Please switch your wallet's network to <0>{0}</0>to use Curve on <1>{1}</1>."
 
-#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:60
+#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:64
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:269
 #: src/components/PageLoanManage/LoanSwap/index.tsx:296
 msgid "Price impact:"
 msgstr "Price impact:"
 
-#: src/components/LoanInfoUser/index.tsx:211
+#: src/components/PagePegKeepers/components/PegKeeperForm.tsx:75
+msgid "Profit is denominated in {poolName} LP Tokens"
+msgstr "Profit is denominated in {poolName} LP Tokens"
+
+#: src/hooks/useTitleMapper.tsx:42
 msgid "Range %"
 msgstr "Range %"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:43
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:44
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:227
 msgid "Receive:"
 msgstr "Receive:"
 
-#: src/components/PageLoanManage/index.tsx:51
+#: src/components/PageDisclaimer/Page.tsx:402
+msgid "Regulatory Risks"
+msgstr "Regulatory Risks"
+
+#: src/components/PageDisclaimer/Page.tsx:404
+msgid "Regulatory Uncertainty"
+msgstr "Regulatory Uncertainty"
+
+#: src/components/PageLoanManage/index.tsx:55
 msgid "Remove"
 msgstr "Remove"
 
@@ -663,7 +953,7 @@ msgstr "Remove Collateral"
 #~ msgid "Removing {0} collateral, will put you close to soft liquidation."
 #~ msgstr "Removing {0} collateral, will put you close to soft liquidation."
 
-#: src/components/DetailInfoHealth.tsx:182
+#: src/components/DetailInfoHealth.tsx:192
 msgid "Removing {formattedAmount} collateral, will put you close to soft liquidation."
 msgstr "Removing {formattedAmount} collateral, will put you close to soft liquidation."
 
@@ -672,7 +962,7 @@ msgstr "Removing {formattedAmount} collateral, will put you close to soft liquid
 msgid "Repaid"
 msgstr "Repaid"
 
-#: src/components/PageLoanManage/index.tsx:45
+#: src/components/PageLoanManage/index.tsx:49
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:172
 #: src/components/PageLoanManage/LoanDeleverage/index.tsx:155
 msgid "Repay"
@@ -682,47 +972,64 @@ msgstr "Repay"
 msgid "Repay anyway"
 msgstr "Repay anyway"
 
-#: src/components/PageLoanManage/LoanDecrease/index.tsx:268
+#: src/components/PageLoanManage/LoanDecrease/index.tsx:273
 msgid "Repay in full and close loan"
 msgstr "Repay in full and close loan"
 
-#: src/layout/Footer.tsx:109
-#: src/layout/HeaderMobile.tsx:152
+#: src/layout/Footer.tsx:91
+#: src/layout/Header.tsx:195
 msgid "Resources"
 msgstr "Resources"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:56
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:57
 msgid "Return to wallet:"
 msgstr "Return to wallet:"
 
-#: src/components/PageDisclaimer/Page.tsx:28
-#: src/components/PageDisclaimer/Page.tsx:30
-#: src/layout/Header.tsx:41
+#: src/components/PageDisclaimer/Page.tsx:41
+#: src/components/PageDisclaimer/Page.tsx:44
+#: src/layout/Header.tsx:73
+#: src/layout/Header.tsx:81
 msgid "Risk Disclaimer"
 msgstr "Risk Disclaimer"
 
-#: src/components/AdvancedSettings.tsx:147
+#: src/components/AdvancedSettings.tsx:151
 msgid "Save"
 msgstr "Save"
 
-#: src/components/PageLoanManage/index.tsx:46
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:110
+#: src/components/PageLoanManage/index.tsx:50
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:114
 msgid "Self-liquidate"
 msgstr "Self-liquidate"
 
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:110
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:114
 msgid "Self-liquidated"
 msgstr "Self-liquidated"
 
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:203
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:207
 msgid "Self-liquidation amount"
 msgstr "Self-liquidation amount"
 
-#: src/components/DetailInfoSlippageTolerance.tsx:14
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:226
+msgid "Self-liquidation amount:"
+msgstr "Self-liquidation amount:"
+
+#: src/components/PageDisclaimer/Page.tsx:181
+msgid "several variables set by the Monetary Policy admin"
+msgstr "several variables set by the Monetary Policy admin"
+
+#: src/components/DetailInfoSlippageTolerance.tsx:16
 msgid "Slippage tolerance:"
 msgstr "Slippage tolerance:"
 
-#: src/components/PageMarketList/components/DialogSortContent.tsx:65
+#: src/components/PageDisclaimer/Page.tsx:265
+msgid "Smart Contract Risk"
+msgstr "Smart Contract Risk"
+
+#: src/components/PageDisclaimer/Page.tsx:77
+msgid "Soft-Liquidation and Hard-Liquidation"
+msgstr "Soft-Liquidation and Hard-Liquidation"
+
+#: src/components/PageMarketList/components/DialogSortContent.tsx:68
 msgid "Sort By"
 msgstr "Sort By"
 
@@ -730,19 +1037,20 @@ msgstr "Sort By"
 #: src/components/PageLoanManage/CollateralIncrease/index.tsx:140
 #: src/components/PageLoanManage/LoanDecrease/index.tsx:159
 #: src/components/PageLoanManage/LoanIncrease/index.tsx:160
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:97
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:101
 #: src/components/PageLoanManage/LoanSwap/index.tsx:161
 msgid "Spending Approved"
 msgstr "Spending Approved"
 
 #: src/components/LoanInfoUser/index.tsx:178
-msgid "Status"
-msgstr "Status"
+#~ msgid "Status"
+#~ msgstr "Status"
 
 #: src/components/DetailInfoEstimateGas.tsx:62
 msgid "Step {0} of {1}"
 msgstr "Step {0} of {1}"
 
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:73
 #: src/components/PageLoanManage/LoanSwap/index.tsx:176
 msgid "Swap"
 msgstr "Swap"
@@ -755,53 +1063,106 @@ msgstr "Swap"
 msgid "Swapped"
 msgstr "Swapped"
 
-#: src/layout/Footer.tsx:28
+#: src/components/PageDisclaimer/Page.tsx:263
+msgid "Technology Risk"
+msgstr "Technology Risk"
+
+#: src/layout/Footer.tsx:33
 msgid "Telegram"
 msgstr "Telegram"
 
-#: src/components/PageMarketList/index.tsx:67
+#: src/components/PageDisclaimer/Page.tsx:251
+msgid "The blockchain ecosystem has witnessed instances where stablecoins experienced significant and prolonged periods of depegging from their intended value. Despite the innovative measures designed to uphold price stability, crvUSD is not exempt from the risk of depegging. Market volatility, shifts in regulatory landscapes, sudden and substantial changes in the value of collateral assets, or unforeseen technical issues can precipitate a departure from its pegged value."
+msgstr "The blockchain ecosystem has witnessed instances where stablecoins experienced significant and prolonged periods of depegging from their intended value. Despite the innovative measures designed to uphold price stability, crvUSD is not exempt from the risk of depegging. Market volatility, shifts in regulatory landscapes, sudden and substantial changes in the value of collateral assets, or unforeseen technical issues can precipitate a departure from its pegged value."
+
+#: src/hooks/useTitleMapper.tsx:17
 msgid "The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing."
 msgstr "The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing."
 
-#: src/components/PageIntegrations/Page.tsx:43
+#: src/components/PageDisclaimer/Page.tsx:169
+msgid "The borrowing rate is algorithmically determined based on several factors, including"
+msgstr "The borrowing rate is algorithmically determined based on several factors, including"
+
+#: src/components/PageDisclaimer/Page.tsx:175
+msgid "the crvUSD price as reported by an on-chain price aggregator contract,"
+msgstr "the crvUSD price as reported by an on-chain price aggregator contract,"
+
+#: src/components/PageDisclaimer/Page.tsx:364
+msgid "The crvUSD protocol is governed by a Decentralized Autonomous Organization (DAO) comprised of veCRV tokenholders that requires a 1-week vote period with 51% approval and a sufficient voter quorum to execute any actions. It controls critical system functions, including deploying new crvUSD markets, setting implementation contracts, and setting parameters that influence market behavior."
+msgstr "The crvUSD protocol is governed by a Decentralized Autonomous Organization (DAO) comprised of veCRV tokenholders that requires a 1-week vote period with 51% approval and a sufficient voter quorum to execute any actions. It controls critical system functions, including deploying new crvUSD markets, setting implementation contracts, and setting parameters that influence market behavior."
+
+#: src/components/PageDisclaimer/Page.tsx:419
+msgid "The data and communications made available on the crvUSD platform, including but not limited to its front-end interfaces, are intended purely for informational purposes and should not under any circumstances be interpreted as constituting investment, financial, trading, legal, or any form of professional advice. The content provided through the crvUSD front-end interface(s) is designed to support users' understanding of the stablecoin, the protocol, and its functionalities, not to guide or influence decision-making regarding investments or financial strategies. Users must be aware that they are the only entity capable of adequately assessing whether an action taken aligns with their financial objectives and circumstances."
+msgstr "The data and communications made available on the crvUSD platform, including but not limited to its front-end interfaces, are intended purely for informational purposes and should not under any circumstances be interpreted as constituting investment, financial, trading, legal, or any form of professional advice. The content provided through the crvUSD front-end interface(s) is designed to support users' understanding of the stablecoin, the protocol, and its functionalities, not to guide or influence decision-making regarding investments or financial strategies. Users must be aware that they are the only entity capable of adequately assessing whether an action taken aligns with their financial objectives and circumstances."
+
+#: src/components/PageIntegrations/Page.tsx:42
 msgid "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
 msgstr "The following application all allege they are building atop the Curve ecosystem. Please note that no guarantee is made as to the authenticity, veracity or safety of any of these protocols. You assume all risks for using any links, so please conduct your own research and exercise caution. If you observe any issues with any link or would like to add to this list, please create a PR in the following Github repository <0>https://github.com/curvefi/curve-external-integrations</0>."
 
-#: src/components/DetailInfoHealth.tsx:116
+#: src/components/DetailInfoHealth.tsx:119
+#: src/hooks/useTitleMapper.tsx:28
 msgid "The loan metric indicates the current health of your position."
 msgstr "The loan metric indicates the current health of your position."
 
-#: src/components/DetailInfoLiqRange.tsx:94
+#: src/components/PageDisclaimer/Page.tsx:390
+msgid "The ongoing development, maintenance, and scalability of the crvUSD protocol is dependent on developers' contributions. While numerous developers are currently engaged in the project, there is no assurance that this level of contribution will persist indefinitely. The future involvement of developers is subject to change due to a variety of factors that could influence their capacity or willingness to contribute."
+msgstr "The ongoing development, maintenance, and scalability of the crvUSD protocol is dependent on developers' contributions. While numerous developers are currently engaged in the project, there is no assurance that this level of contribution will persist indefinitely. The future involvement of developers is subject to change due to a variety of factors that could influence their capacity or willingness to contribute."
+
+#: src/components/DetailInfoLiqRange.tsx:95
 msgid "The range of prices where collateral is managed by the market-maker.  Collateral begins to be sold off when its price enters your liquidation range (\"soft liquidation\").  If the market-maker cannot keep the position sufficiently collateralized, an externally triggered \"hard\" liquidation may take place."
 msgstr "The range of prices where collateral is managed by the market-maker.  Collateral begins to be sold off when its price enters your liquidation range (\"soft liquidation\").  If the market-maker cannot keep the position sufficiently collateralized, an externally triggered \"hard\" liquidation may take place."
+
+#: src/components/PageDisclaimer/Page.tsx:178
+msgid "the ratio of Pegkeeper debt to total outstanding debt,"
+msgstr "the ratio of Pegkeeper debt to total outstanding debt,"
 
 #: src/hooks/useTokenAlert.tsx:34
 msgid "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown. This is out of our control, but we will do everything in our power to make sure the peg of Ren assets is maintained."
 msgstr "The Ren network is currently operational but is expected to go offline in the near future. The exact date is currently unknown. This is out of our control, but we will do everything in our power to make sure the peg of Ren assets is maintained."
 
-#: src/components/LoanInfoUser/index.tsx:238
+#: src/components/PageDisclaimer/Page.tsx:238
+msgid "The value of the crypto assets used as collateral for crvUSD is subject to high levels of volatility and unpredictability. The pricing of these assets may be extremely speculative and prone to rapid fluctuations. Such market characteristics can impact the stability of crvUSD’s value. While the LLAMMA algorithm aims to adjust collateral levels to support crvUSD’s value, there is no guarantee that these adjustments will always preserve stability, especially during periods of extreme market volatility."
+msgstr "The value of the crypto assets used as collateral for crvUSD is subject to high levels of volatility and unpredictability. The pricing of these assets may be extremely speculative and prone to rapid fluctuations. Such market characteristics can impact the stability of crvUSD’s value. While the LLAMMA algorithm aims to adjust collateral levels to support crvUSD’s value, there is no guarantee that these adjustments will always preserve stability, especially during periods of extreme market volatility."
+
+#: src/components/PageDisclaimer/Page.tsx:199
+msgid "There may be assumptions in the Monetary Policy design that, in some circumstances, cause interest rates to produce undesired outcomes, and which may cause a sub-optimal experience for borrowers. In general, interest rates on borrowing may change dramatically in response to changing market circumstances, and may not reflect a borrower's expectations when they had opened their position."
+msgstr "There may be assumptions in the Monetary Policy design that, in some circumstances, cause interest rates to produce undesired outcomes, and which may cause a sub-optimal experience for borrowers. In general, interest rates on borrowing may change dramatically in response to changing market circumstances, and may not reflect a borrower's expectations when they had opened their position."
+
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:102
+msgid "There was an error fetching the pool activity data."
+msgstr "There was an error fetching the pool activity data."
+
+#: src/hooks/useTitleMapper.tsx:55
 msgid "This metric measures the loss in collateral value caused by LLAMMA's soft liquidation process, which is activated when the oracle price falls within a user’s liquidation range."
 msgstr "This metric measures the loss in collateral value caused by LLAMMA's soft liquidation process, which is activated when the oracle price falls within a user’s liquidation range."
+
+#: src/components/ChartOhlcWrapper/PoolActivity.tsx:74
+msgid "Time"
+msgstr "Time"
 
 #: src/domain/components/loan-collateral-list/index.tsx:56
 #~ msgid "Total borrowed"
 #~ msgstr "Total borrowed"
 
 #: src/components/PageMarketList/index.tsx:74
-msgid "Total collateral value"
-msgstr "Total collateral value"
+#~ msgid "Total collateral value"
+#~ msgstr "Total collateral value"
 
 #: src/components/PageMarketList/index.tsx:71
-msgid "Total debt"
-msgstr "Total debt"
+#~ msgid "Total debt"
+#~ msgstr "Total debt"
 
 #: src/components/LoanInfoUser/index.tsx:296
-msgid "Total debt:"
-msgstr "Total debt:"
+#~ msgid "Total debt:"
+#~ msgstr "Total debt:"
 
-#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:138
+#: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage.tsx:146
 msgid "Total position collateral:"
 msgstr "Total position collateral:"
+
+#: src/layout/Header.tsx:98
+msgid "Total Supply"
+msgstr "Total Supply"
 
 #: src/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes.tsx:42
 msgid "Trade routed through:"
@@ -817,6 +1178,7 @@ msgid "Transaction complete"
 msgstr "Transaction complete"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:126
+#: src/components/PagePegKeepers/components/PegKeeperForm.tsx:45
 msgid "Transaction complete."
 msgstr "Transaction complete."
 
@@ -828,11 +1190,11 @@ msgstr "Transaction complete. This loan is paid-off and will no longer be manage
 msgid "Transaction complete. This loan is payoff and will no longer be manageable."
 msgstr "Transaction complete. This loan is payoff and will no longer be manageable."
 
-#: src/components/PageLoanManage/LoanLiquidate/index.tsx:121
+#: src/components/PageLoanManage/LoanLiquidate/index.tsx:125
 msgid "Transaction complete. This loan will no longer exist. Click <0>here</0> to go back to collateral list."
 msgstr "Transaction complete. This loan will no longer exist. Click <0>here</0> to go back to collateral list."
 
-#: src/layout/Footer.tsx:25
+#: src/layout/Footer.tsx:30
 msgid "Twitter"
 msgstr "Twitter"
 
@@ -880,7 +1242,7 @@ msgid "Unable to get total supply"
 msgstr "Unable to get total supply"
 
 #: src/components/DetailInfoEstimateGas.tsx:78
-#: src/components/PageMarketList/components/TableCellTotalCollateral.tsx:26
+#: src/components/PageMarketList/components/TableCellTotalCollateral.tsx:47
 msgid "Unable to get USD rate"
 msgstr "Unable to get USD rate"
 
@@ -901,17 +1263,33 @@ msgstr "Unable to self liquidate"
 msgid "Unable to swap"
 msgstr "Unable to swap"
 
-#: src/components/PageMarketList/index.tsx:174
+#: src/components/PageDisclaimer/Page.tsx:216
+msgid "Users should be aware that ample crvUSD liquidity on exchange is necessary for facilitating liquidations. Circumstances leading to a reduction in the available crvUSD liquidity for liquidators are plausible. Such scenarios can significantly impact the proper functioning of the stablecoin market, particularly concerning the process of liquidation."
+msgstr "Users should be aware that ample crvUSD liquidity on exchange is necessary for facilitating liquidations. Circumstances leading to a reduction in the available crvUSD liquidity for liquidators are plausible. Such scenarios can significantly impact the proper functioning of the stablecoin market, particularly concerning the process of liquidation."
+
+#: src/components/PageDisclaimer/Page.tsx:107
+msgid "Users should be cautious about collateral management, as a sharp decline in the price of the collateral within a brief period can escalate losses, further deteriorating the health of the loan. Respectively, an increase in the collateral's value while in soft-liquidation can also cause “de-liquidation losses” - a situation where an appreciating market price for the collateral may negatively impact the loan’s health. During periods of high volatility and/or high Ethereum gas prices, arbitrage may be less efficient, causing losses incurred from soft liquidation to be exacerbated."
+msgstr "Users should be cautious about collateral management, as a sharp decline in the price of the collateral within a brief period can escalate losses, further deteriorating the health of the loan. Respectively, an increase in the collateral's value while in soft-liquidation can also cause “de-liquidation losses” - a situation where an appreciating market price for the collateral may negatively impact the loan’s health. During periods of high volatility and/or high Ethereum gas prices, arbitrage may be less efficient, causing losses incurred from soft liquidation to be exacerbated."
+
+#: src/components/PageMarketList/index.tsx:161
 msgid "view all collateral."
 msgstr "view all collateral."
 
+#: src/components/PageMarketList/components/TableCellMarketsTotalDebt.tsx:31
+msgid "View details"
+msgstr "View details"
+
+#: src/components/PagePegKeepers/components/PegKeeperContent.tsx:45
+msgid "View:"
+msgstr "View:"
+
 #: src/layout/HeaderMobile.tsx:136
-msgid "Visit Curve.fi"
-msgstr "Visit Curve.fi"
+#~ msgid "Visit Curve.fi"
+#~ msgstr "Visit Curve.fi"
 
 #: src/components/LoanInfoUser/index.tsx:307
-msgid "Wallet Balances"
-msgstr "Wallet Balances"
+#~ msgid "Wallet Balances"
+#~ msgstr "Wallet Balances"
 
 #: src/components/PageLoanCreate/LoanFormCreate/index.tsx:362
 msgid "WARNING: The corresponding deleverage button is also not yet available."
@@ -929,13 +1307,17 @@ msgstr "Warning!"
 msgid "Warning! Exchange rate is too low!"
 msgstr "Warning! Exchange rate is too low!"
 
-#: src/layout/Footer.tsx:83
+#: src/layout/Footer.tsx:106
 msgid "Whitepaper"
 msgstr "Whitepaper"
 
-#: src/layout/Footer.tsx:57
+#: src/layout/Footer.tsx:62
 msgid "Wiki CN"
 msgstr "Wiki CN"
+
+#: src/components/ChartOhlcWrapper/LiquidityData.tsx:54
+msgid "Withdrawal"
+msgstr "Withdrawal"
 
 #: src/components/ChartBandBalances/ChartBandBalancesSettingsContent.tsx:29
 msgid "x-axis display"
@@ -945,7 +1327,7 @@ msgstr "x-axis display"
 #~ msgid "You are in soft-liquidation mode. The amount currently at risk is {0} {1}. In this mode, you cannot withdraw collateral or add more to your position.  To exit self-liquidation mode you can repay or self-liquidate."
 #~ msgstr "You are in soft-liquidation mode. The amount currently at risk is {0} {1}. In this mode, you cannot withdraw collateral or add more to your position.  To exit self-liquidation mode you can repay or self-liquidate."
 
-#: src/components/LoanInfoUser/index.tsx:174
+#: src/components/LoanInfoUser/components/AlertSoftLiquidation.tsx:32
 msgid "You are in soft-liquidation mode. The amount currently at risk is {softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate)."
 msgstr "You are in soft-liquidation mode. The amount currently at risk is {softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate)."
 
@@ -953,7 +1335,7 @@ msgstr "You are in soft-liquidation mode. The amount currently at risk is {softL
 msgid "You are not in liquidation mode."
 msgstr "You are not in liquidation mode."
 
-#: src/components/DetailInfoHealth.tsx:178
+#: src/components/DetailInfoHealth.tsx:188
 msgid "You are still close to soft liquidation."
 msgstr "You are still close to soft liquidation."
 
@@ -977,15 +1359,15 @@ msgstr "You have a balance in this pool"
 msgid "You have a high price impact {priceImpact}%!"
 msgstr "You have a high price impact {priceImpact}%!"
 
-#: src/components/PageLoanManage/Page.tsx:57
-#: src/components/PageLoanManage/Page.tsx:60
+#: src/components/PageLoanManage/Page.tsx:73
+#: src/components/PageLoanManage/Page.tsx:75
 msgid "Your Loan Details"
 msgstr "Your Loan Details"
 
-#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:38
+#: src/components/PageLoanManage/LoanDeleverage/components/LoanDeleverageAlertFull.tsx:39
 msgid "Your loan will be paid off"
 msgstr "Your loan will be paid off"
 
-#: src/layout/Footer.tsx:45
+#: src/layout/Footer.tsx:50
 msgid "YouTube"
 msgstr "YouTube"

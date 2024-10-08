@@ -7,3 +7,5 @@ export const chainKeys = {
 } as const
 
 export type ChainQueryKeyType<K extends keyof typeof chainKeys> = ExtractQueryKeyType<typeof chainKeys, K>
+
+export type ChainKey = keyof typeof chainKeys

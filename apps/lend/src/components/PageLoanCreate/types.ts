@@ -2,6 +2,7 @@ import React from 'react'
 import type { LiqRangeSliderIdx } from '@/store/types'
 import type { FormStatus as Fs } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export type FormType = 'create' | 'vault' | 'leverage'
 export type StepKey = 'APPROVAL' | 'CREATE' | ''
@@ -30,7 +31,7 @@ export type FormEstGas = {
 
 export type DetailInfoCompProps = {
   healthMode: HealthMode
-  owm: OWM | null
+  owm: OneWayMarketTemplate | null
   steps: Step[]
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
   updateFormValues: (updatedFormValues: FormValues) => void

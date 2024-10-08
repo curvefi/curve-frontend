@@ -33,6 +33,7 @@ import MarketParameters from '@/components/DetailsMarket/components/MarketParame
 import Stepper from '@/ui/Stepper'
 import TextCaption from '@/ui/TextCaption'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
   const { rChainId, rOwmId, isLoaded, api, owmData, userActiveKey, borrowed_token, collateral_token } = pageProps
@@ -94,12 +95,12 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       payloadActiveKey: string,
       api: Api,
       formValues: FormValues,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       maxSlippage: string,
       isLeverage: boolean
     ) => {
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-      const resp = await fetchStepCreate(payloadActiveKey, api, owmData, maxSlippage, formValues, isLeverage)
+      const resp = await fetchStepCreate(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
@@ -115,7 +116,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
     (
       payloadActiveKey: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       healthMode: HealthMode,
       confirmedWarning: boolean,
       formEstGas: FormEstGas,
@@ -127,14 +128,14 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       priceImpact: string
     ) => {
       const { signerAddress } = api
-      const { collateral_token, borrowed_token } = owmData.owm
+      const { collateral_token, borrowed_token } = market
       const { n, debt, userCollateral } = formValues
       const { isApproved, isApprovedCompleted, isComplete, isInProgress, error, step } = formStatus
       const { swapRequired, haveValues, haveDebt, haveFormErrors, getStepTokensStr } = _parseValue(formValues)
 
       if (haveDebt) {
         const debtStr = `${debt} ${borrowed_token.symbol}`
-        const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolAndAmountList
+        const tokensMessage = getStepTokensStr(formValues, market).symbolAndAmountList
         const notifyMessage = swapRequired
           ? t`Deposit ${tokensMessage}, borrowing ${debtStr} at max slippage ${maxSlippage}%.`
           : t`Deposit ${tokensMessage}, borrowing ${debtStr}.`
@@ -167,11 +168,11 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolList
+            const tokensMessage = getStepTokensStr(formValues, market.owm).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}.`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, api, owmData, maxSlippage, formValues, isLeverage)
+            await fetchStepApprove(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -206,7 +207,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
                   },
                   primaryBtnProps: {
                     onClick: () =>
-                      handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
+                      handleClickCreate(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
                     disabled: !confirmedWarning,
                     testId: 'createAnyway',
                   },
@@ -216,7 +217,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
               }
             : {
                 onClick: async () =>
-                  handleClickCreate(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
+                  handleClickCreate(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
               }),
         },
       }

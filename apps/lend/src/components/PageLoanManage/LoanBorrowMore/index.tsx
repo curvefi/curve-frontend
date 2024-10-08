@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanBorrowMore/types'
+import type { FormStatus, FormValues, StepKey } from '@/components/PageLoanManage/LoanBorrowMore/types'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 
@@ -15,7 +15,7 @@ import networks from '@/networks'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
-import { DEFAULT_FORM_VALUES, _parseValues } from '@/components/PageLoanManage/LoanBorrowMore/utils'
+import { _parseValues, DEFAULT_FORM_VALUES } from '@/components/PageLoanManage/LoanBorrowMore/utils'
 import { FieldsWrapper } from '@/components/SharedFormStyles/FieldsWrapper'
 import { StyledDetailInfoWrapper } from '@/components/PageLoanManage/styles'
 import AlertBox from '@/ui/AlertBox'
@@ -30,6 +30,7 @@ import InpTokenBorrow from '@/components/InpTokenBorrow'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -37,10 +38,8 @@ const LoanBorrowMore = ({
   isLeverage = false,
   isLoaded,
   api,
-  owmData,
+  market,
   userActiveKey,
-  borrowed_token,
-  collateral_token,
 }: PageContentProps & { isLeverage?: boolean }) => {
   const isSubscribed = useRef(false)
 
@@ -81,7 +80,7 @@ const LoanBorrowMore = ({
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       setFormValues(
         isLoaded ? api : null,
-        owmData,
+        market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
         updatedMaxSlippage ?? maxSlippage,
         isLeverage,
@@ -90,7 +89,7 @@ const LoanBorrowMore = ({
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLeverage, isLoaded, maxSlippage, owmData, setFormValues]
+    [api, isLeverage, isLoaded, maxSlippage, market, setFormValues]
   )
 
   const handleBtnClickBorrow = useCallback(
@@ -98,14 +97,14 @@ const LoanBorrowMore = ({
       payloadActiveKey: string,
       api: Api,
       formValues: FormValues,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       maxSlippage: string,
       isLeverage: boolean
     ) => {
       const { chainId } = api
 
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-      const resp = await fetchStepIncrease(payloadActiveKey, api, owmData, formValues, maxSlippage, isLeverage)
+      const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -127,7 +126,7 @@ const LoanBorrowMore = ({
     (
       payloadActiveKey: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       healthMode: HealthMode,
       confirmedWarning: boolean,
       formEstGas: FormEstGas,
@@ -139,8 +138,7 @@ const LoanBorrowMore = ({
       steps: Step[]
     ) => {
       const { signerAddress } = api
-      const { owm } = owmData
-      const { collateral_token, borrowed_token } = owmData.owm
+      const { collateral_token, borrowed_token } = market
       const { debt, userCollateral } = formValues
       const { error, isApproved, isApprovedCompleted, isComplete, isInProgress, step } = formStatus
       const { haveValues, haveDebt, haveFormErrors, getStepTokensStr } = _parseValues(formValues)
@@ -148,8 +146,8 @@ const LoanBorrowMore = ({
       const isValid = !!signerAddress && !haveFormErrors && !formEstGas?.loading && !error && !!healthMode.percent
 
       if (haveDebt) {
-        const debtStr = `${debt} ${owm.borrowed_token.symbol}`
-        const tokensMessage = getStepTokensStr(formValues, owm).symbolAndAmountList
+        const debtStr = `${debt} ${market.borrowed_token.symbol}`
+        const tokensMessage = getStepTokensStr(formValues, market).symbolAndAmountList
         const notifyMessage = isLeverage
           ? haveValues
             ? t`Borrow additional ${debtStr}, deposit ${tokensMessage} at max slippage ${maxSlippage}%.`
@@ -162,8 +160,7 @@ const LoanBorrowMore = ({
           <AlertBox alertType="info">
             <AlertLoanSummary
               pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
+              market={market}
               receive={expectedCollateral?.totalCollateral ?? userCollateral}
               formValueStateDebt={debt}
               userState={userLoanDetails?.state}
@@ -183,11 +180,11 @@ const LoanBorrowMore = ({
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolList
+            const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending of ${tokensMessage}`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, api, owmData, formValues, maxSlippage, isLeverage)
+            await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage, isLeverage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -226,7 +223,7 @@ const LoanBorrowMore = ({
                   },
                   primaryBtnProps: {
                     onClick: () =>
-                      handleBtnClickBorrow(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
+                      handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Borrow more anyway`,
@@ -234,7 +231,7 @@ const LoanBorrowMore = ({
               }
             : {
                 onClick: async () =>
-                  handleBtnClickBorrow(payloadActiveKey, api, formValues, owmData, maxSlippage, isLeverage),
+                  handleBtnClickBorrow(payloadActiveKey, api, formValues, market, maxSlippage, isLeverage),
               }),
         },
       }
@@ -301,11 +298,11 @@ const LoanBorrowMore = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData) {
+    if (isLoaded && api && market) {
       const updatedSteps = getSteps(
         activeKey,
         api,
-        owmData,
+        market,
         healthMode,
         confirmedWarning,
         formEstGas,
@@ -346,7 +343,7 @@ const LoanBorrowMore = ({
     rChainId,
     rOwmId,
     api,
-    owmData,
+    market,
     activeKey,
     activeStep,
     healthMode,
@@ -367,8 +364,8 @@ const LoanBorrowMore = ({
           inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
           inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.userCollateral}
-          tokenAddress={collateral_token?.address}
-          tokenSymbol={collateral_token?.symbol}
+          tokenAddress={market?.collateral_token?.address}
+          tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
           handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
@@ -382,8 +379,8 @@ const LoanBorrowMore = ({
             inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
             inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
-            tokenAddress={borrowed_token?.address}
-            tokenSymbol={borrowed_token?.symbol}
+            tokenAddress={market?.borrowed_token?.address}
+            tokenSymbol={market?.borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
             handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
@@ -397,12 +394,12 @@ const LoanBorrowMore = ({
         inpError={formValues.debtError}
         inpDisabled={disabled}
         inpValue={formValues.debt}
-        tokenAddress={borrowed_token?.address}
-        tokenSymbol={borrowed_token?.symbol}
+        tokenAddress={market?.borrowed_token?.address}
+        tokenSymbol={market?.borrowed_token?.symbol}
         maxRecv={maxRecv}
         handleInpChange={(debt) => updateFormValues({ debt })}
         handleMaxClick={async () => {
-          const debt = await refetchMaxRecv(owmData, isLeverage)
+          const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })
         }}
       />
