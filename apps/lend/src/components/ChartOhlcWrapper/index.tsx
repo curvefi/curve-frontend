@@ -15,11 +15,12 @@ import Box from '@/ui/Box'
 import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 import TextCaption from '@/ui/TextCaption'
 import AlertBox from '@/ui/AlertBox'
+import { useOneWayMarket } from '@/entities/chain'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
+  const market = useOneWayMarket(rChainId, rOwmId)?.data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const themeType = useStore((state) => state.themeType)
-  const owm = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId]?.owm)
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -174,26 +175,26 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   ])
 
   const coins: LendingMarketTokens = useMemo(() => {
-    return owm
+    return market
       ? {
           borrowedToken: {
-            symbol: owm?.borrowed_token.symbol,
-            address: owm?.borrowed_token.address,
+            symbol: market?.borrowed_token.symbol,
+            address: market?.borrowed_token.address,
           },
           collateralToken: {
-            symbol: owm?.collateral_token.symbol,
-            address: owm?.collateral_token.address,
+            symbol: market?.collateral_token.symbol,
+            address: market?.collateral_token.address,
           },
         }
       : null
-  }, [owm])
+  }, [market])
 
   const selectChartList = useCallback(() => {
     if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {
       return [{ label: t`Loading` }, { label: t`Loading` }]
     }
 
-    if (owm) {
+    if (market) {
       if (chartOraclePoolOhlc.dataDisabled) {
         return [{ label: t`${coins?.collateralToken.symbol} / ${coins?.borrowedToken.symbol} (LLAMMA)` }]
       }
@@ -216,7 +217,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     chartOraclePoolOhlc.fetchStatus,
     coins?.borrowedToken.symbol,
     coins?.collateralToken.symbol,
-    owm,
+    market,
   ])
 
   // set chart selected index to llamma if oracle pool is disabled due to no oracle pools being found for market on the api
@@ -265,31 +266,35 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   }, [timeOption])
 
   const refetchPricesData = useCallback(() => {
-    fetchOraclePoolOhlcData(
-      rChainId,
-      owm?.addresses.controller,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.start,
-      chartTimeSettings.end
-    )
-    fetchLlammaOhlcData(
-      rChainId,
-      rOwmId,
-      owm?.addresses.amm,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.start,
-      chartTimeSettings.end
-    )
+    if (market?.addresses.controller) {
+      fetchOraclePoolOhlcData(
+        rChainId,
+        market.addresses.controller,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end
+      )
+    }
+    if (market?.addresses.amm) {
+      fetchLlammaOhlcData(
+        rChainId,
+        rOwmId,
+        market.addresses.amm,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end
+      )
+    }
   }, [
     chartInterval,
     chartTimeSettings.end,
     chartTimeSettings.start,
     fetchLlammaOhlcData,
     fetchOraclePoolOhlcData,
-    owm?.addresses.amm,
-    owm?.addresses.controller,
+    market?.addresses.amm,
+    market?.addresses.controller,
     rChainId,
     rOwmId,
     timeUnit,
@@ -297,11 +302,11 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
 
   // initial fetch
   useEffect(() => {
-    if (owm !== undefined) {
+    if (market !== undefined) {
       fetchLlammaOhlcData(
         rChainId,
         rOwmId,
-        owm?.addresses.amm,
+        market.addresses.amm,
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
@@ -309,7 +314,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
       )
       fetchOraclePoolOhlcData(
         rChainId,
-        owm?.addresses.controller,
+        market.addresses.controller,
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
@@ -325,7 +330,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     timeUnit,
     fetchLlammaOhlcData,
     fetchOraclePoolOhlcData,
-    owm,
+    market,
     rOwmId,
   ])
 
@@ -334,17 +339,19 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      fetchMoreData(
-        rChainId,
-        owm?.addresses.controller,
-        owm?.addresses.amm,
-        chartInterval,
-        timeUnit,
-        startTime,
-        endTime
-      )
+      if (market?.addresses.controller && market?.addresses.amm) {
+        fetchMoreData(
+          rChainId,
+          market?.addresses.controller,
+          market?.addresses.amm,
+          chartInterval,
+          timeUnit,
+          startTime,
+          endTime
+        )
+      }
     },
-    [timeOption, fetchMoreData, rChainId, owm?.addresses.amm, owm?.addresses.controller, chartInterval, timeUnit]
+    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit]
   )
 
   if (ohlcDataUnavailable) {
@@ -391,7 +398,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         />
       </Wrapper>
       <LpEventsWrapperExpanded>
-        <PoolActivity poolAddress={owm?.addresses.amm} chainId={rChainId} coins={coins} />
+        {market && <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />}
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
@@ -418,8 +425,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           </ExpandButton>
         )}
       </SelectorRow>
-      {poolInfo === 'poolActivity' && (
-        <PoolActivity poolAddress={owm?.addresses.amm} chainId={rChainId} coins={coins} />
+      {poolInfo === 'poolActivity' && market && (
+        <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />
       )}
       {poolInfo === 'chart' && (
         <ChartWrapper

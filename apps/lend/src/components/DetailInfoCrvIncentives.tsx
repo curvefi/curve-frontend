@@ -6,12 +6,12 @@ import styled from 'styled-components'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { INVALID_ADDRESS } from '@/constants'
 import useAbiTotalSupply from '@/hooks/useAbiTotalSupply'
-import useStore from '@/store/useStore'
 import useSupplyTotalApr from '@/hooks/useSupplyTotalApr'
 
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import TooltipIcon from '@/ui/Tooltip/TooltipIcon'
+import { useOneWayMarket } from '@/entities/chain'
 
 type Data = {
   label: string
@@ -32,8 +32,7 @@ const DetailInfoCrvIncentives = ({
   lpTokenAmount: string
 }) => {
   const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
-  const { gauge: gaugeAddress } = owmData?.owm?.addresses ?? {}
+  const gaugeAddress = useOneWayMarket(rChainId, rOwmId)?.data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === INVALID_ADDRESS
 

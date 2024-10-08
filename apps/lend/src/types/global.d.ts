@@ -1,14 +1,12 @@
 import type { I1inchRoute, IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import type { Locale } from '@/lib/i18n'
-import type { NavigateFunction, Location, Params } from 'react-router'
+import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ReactNode } from 'react'
-import type { WalletState } from '@web3-onboard/core'
-import type { Eip1193Provider } from '@web3-onboard/core'
+import React from 'react'
+import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
-
-import React from 'react'
 
 import { TITLE } from '@/constants'
 
@@ -163,30 +161,9 @@ declare global {
     userActiveKey: string
     isLoaded: boolean
     api: Api | null
-    owmData: OWMData | undefined
-    owmDataCachedOrApi: OWMDataCacheOrApi
-    borrowed_token: OWM['borrowed_token'] | undefined
-    collateral_token: OWM['collateral_token'] | undefined
+    market: OneWayMarketTemplate | undefined
     titleMapper: TitleMapper
   }
-
-  // MARKET PROPERTIES
-  type OWM = OneWayMarketTemplate
-
-  interface OWMData {
-    owm: OWM
-    hasLeverage: boolean
-    displayName: string
-  }
-  type OWMDatasMapper = { [owmId: string]: OWMData }
-
-  type OWMDataCache = {
-    owm: Pick<OWM, 'id' | 'addresses' | 'borrowed_token' | 'collateral_token'>
-    hasLeverage: boolean
-    displayName: string
-  }
-  type OWMDatasCacheMapper = { [owmId: string]: OWMDataCache }
-  type OWMDataCacheOrApi = OWMDataCache | OWMData | undefined
 
   type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 

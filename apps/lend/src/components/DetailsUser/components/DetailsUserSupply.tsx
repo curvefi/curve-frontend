@@ -14,7 +14,7 @@ import DetailsUserSupplyStakedUnstaked from '@/components/DetailsUser/components
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsUserSupply = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, api, userActiveKey, owmDataCachedOrApi, titleMapper } = pageProps
+  const { rChainId, rOwmId, api, userActiveKey, market, titleMapper } = pageProps
 
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
 
@@ -28,7 +28,7 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
     rChainId,
     rOwmId,
     isBold: true,
-    owmDataCachedOrApi,
+    market,
     userActiveKey,
     size: 'md' as const,
   }
@@ -50,7 +50,7 @@ const DetailsUserSupply = (pageProps: PageContentProps) => {
       ) : foundVaultShares ? (
         <ContentWrapper paddingTop>
           <Wrapper>
-            <CellUserMain {...pageProps} type="supply" />
+            <CellUserMain {...pageProps} market={market!} type="supply" />
 
             {/* stats */}
             <ListInfoItemsWrapper>

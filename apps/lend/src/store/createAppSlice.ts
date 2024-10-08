@@ -108,8 +108,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     // update network settings from api
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
-
-    await state.markets.fetchMarkets(api)
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {

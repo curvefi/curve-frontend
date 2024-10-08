@@ -25,12 +25,12 @@ const DetailInfo = ({
   api,
   healthMode,
   isFullRepay,
-  borrowed_token,
-  collateral_token,
+  market,
   steps,
   userActiveKey,
   setHealthMode,
-}: DetailProps & Pick<PageContentProps, 'collateral_token' | 'borrowed_token'>) => {
+}: DetailProps & Pick<PageContentProps, 'market'>) => {
+  const { borrowed_token, collateral_token } = market ?? {};
   const detailInfoNonLeverage = useStore((state) => state.loanRepay.detailInfo[activeKey])
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
