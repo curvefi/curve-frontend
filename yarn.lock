@@ -11492,6 +11492,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "curve-lib@workspace:packages/curve-lib"
   dependencies:
+    eslint: "npm:^8.57.1"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
     react: "npm:^18.2.0"
@@ -13723,6 +13724,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "external-rewards@workspace:packages/external-rewards"
   dependencies:
+    eslint: "npm:^8.57.1"
     eslint-config-custom: "npm:*"
     tsconfig: "npm:*"
   languageName: unknown
@@ -21408,6 +21410,7 @@ __metadata:
     "@types/react-dom": "npm:^18.2.0"
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.0.1"
+    eslint: "npm:^8.57.1"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
     lodash: "npm:4.17.21"

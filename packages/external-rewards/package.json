@@ -9,6 +9,7 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "devDependencies": {
+    "eslint": "^8.57.1",
     "eslint-config-custom": "*",
     "tsconfig": "*"
   }
