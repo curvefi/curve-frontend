@@ -8,8 +8,5 @@ export const assertTokenValidity = <T extends CombinedTokenParams>(data: T, fiel
 export const checkTokenValidity = <T extends CombinedTokenParams>(data: T, fields?: Extract<keyof T, string>[]) =>
   checkValidity(tokenValidationSuite, data, fields)
 
-export const extractTokenParams = ([, chainId, , givenAddress]: TokenQueryKeyType<'usdRate'>) =>
-  assertTokenValidity({
-    chainId,
-    tokenAddress: givenAddress,
-  })
+export const assertTokenParams = <T extends TokenQueryKeyType>([, chainId, , tokenAddress]: T) =>
+  assertTokenValidity({ chainId, tokenAddress })
