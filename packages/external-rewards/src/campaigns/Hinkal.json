@@ -1,1 +1,21 @@
-
+{
+  "campaignName": "",
+  "platform": "Hinkal",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "hinkal.png",
+  "dashboardLink": "https://app.hinkal.pro/anonymity-staking/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1f7e9321ce32af1f9ea1185fd10d31fea31ffd95",
+      "network": "ethereum",
+      "multiplier": "2",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
