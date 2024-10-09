@@ -48,7 +48,7 @@ const NavButton = styled(Button)`
   font-weight: var(--bold);
   line-break: break-spaces;
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  background-color: var(--box_header--secondary--background-color);
+  background-color: var(--box--secondary--content--background-color);
   &.active {
     border-top: 2px solid var(--primary-400);
     padding-top: calc(var(--spacing-3) - 2px);

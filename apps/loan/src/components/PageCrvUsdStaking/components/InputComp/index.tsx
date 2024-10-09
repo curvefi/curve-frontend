@@ -16,7 +16,7 @@ const InputComp: React.FC<InputCompProps> = ({ className, readOnly = false }) =>
   return (
     <InputCompWrapper className={className}>
       <Box flex flexColumn fillWidth>
-        <NumberField defaultValue={0} isDisabled={readOnly} />
+        <NumberField defaultValue={0} isDisabled={readOnly} aria-label="Input" />
         <WalletBalanceWrapper>
           <StyledIcon name="Wallet" size={16} />
           <WalletBalance>1000 ETH</WalletBalance>
@@ -31,7 +31,7 @@ const InputComp: React.FC<InputCompProps> = ({ className, readOnly = false }) =>
 const InputCompWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  background-color: var(--input--background-color);
+  background-color: var(--summary_header--loading--background-color);
   padding: var(--spacing-1);
 `
 

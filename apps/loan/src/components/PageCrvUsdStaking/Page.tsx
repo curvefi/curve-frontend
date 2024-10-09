@@ -36,7 +36,7 @@ const Page: NextPage = () => {
           <Image height={55} src={crvLogo} alt="Curve logo" />
           <Box flex flexColumn>
             <Title>{t`LLAMA SAVINGS VAULT`}</Title>
-            <Description>{t`Let your idle crvUSD to more for you.`}</Description>
+            <Description>{t`Let your idle crvUSD do more for you.`}</Description>
           </Box>
         </HeaderContainer>
         <CrvUsdStaking />

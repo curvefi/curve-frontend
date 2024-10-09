@@ -2,6 +2,7 @@ import type { CarbonIconProps } from '@carbon/icons-react'
 
 import {
   ArrowUp,
+  ArrowUpRight,
   ArrowDown,
   ArrowsHorizontal,
   ArrowRight,
@@ -50,6 +51,7 @@ import { useMemo } from 'react'
 
 const icon = {
   ArrowUp,
+  ArrowUpRight,
   ArrowDown,
   ArrowsHorizontal,
   ArrowRight,
