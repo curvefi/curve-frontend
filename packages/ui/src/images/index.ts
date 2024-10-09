@@ -1,5 +1,3 @@
-export * from './network'
-
 // LOGO
 export { default as LogoImg } from './curve-logo.png'
 export { ReactComponent as RCLogoWhite } from './curve-white.svg'
