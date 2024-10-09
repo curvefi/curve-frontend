@@ -4,6 +4,7 @@ import type { NavigateFunction, Params } from 'react-router'
 
 import { useFocusRing } from '@react-aria/focus'
 import { Trans } from '@lingui/macro'
+import Image from 'next/image'
 import styled from 'styled-components'
 import React, { useCallback, useEffect, useMemo } from 'react'
 
@@ -146,20 +147,11 @@ const IntegrationsComp = ({
                 integrationsAppNetworks={
                   !rChainId && (
                     <Box margin="0.25rem 0 0 0">
-                      {Object.keys(app.networks).map((network) => {
-                        const networkName = network as NetworkEnum
-                        if (networkName in networksIdMapper) {
-                          const chainId = networksIdMapper[networkName]
-                          const Icon = networks[chainId].icon
-                          return (
-                            <Icon
-                              key={networkName}
-                              aria-label={networkName}
-                              title={networkName}
-                              width="18"
-                              height="18"
-                            />
-                          )
+                      {Object.keys(app.networks).map((networkId) => {
+                        if (networkId in networksIdMapper) {
+                          const chainId = networksIdMapper[networkId as NetworkEnum]
+                          const { name, logoSrc } = networks[chainId]
+                          return <Image alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
                         }
                         return null
                       })}
