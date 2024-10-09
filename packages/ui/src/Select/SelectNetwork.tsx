@@ -2,52 +2,62 @@ import type { ConnectState } from 'ui/src/utils'
 import type { SelectProps } from 'ui/src/Select/Select'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { Item } from 'react-stately'
 import styled from 'styled-components'
 
 import Select from 'ui/src/Select'
 
-type ItemObj = {
-  icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
-  iconDarkTheme?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>
-  chainId: number
+export type SelectNetworkItem = {
   label: string
+  chainId: number
+  src: string
+  srcDark: string
 }
 
-export function SelectNetwork<T extends object>({
+type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
+  connectState: ConnectState
+  hideIcon?: boolean
+  isDarkTheme?: boolean
+}
+
+export const SelectNetwork: React.FC<SelectNetworkProps> = ({
+  className = '',
   connectState,
   hideIcon,
   isDarkTheme,
   items,
   ...props
-}: Omit<SelectProps<T>, 'children'> & { connectState: ConnectState; hideIcon?: boolean; isDarkTheme?: boolean }) {
-  const parsedItems = Object.entries(items ?? []).map(([_, item]) => {
-    const { icon, iconDarkTheme, ...rest } = item as ItemObj
-    return { ...rest, icon: isDarkTheme && typeof iconDarkTheme !== 'undefined' ? iconDarkTheme : icon }
-  })
+}) => {
+  const handleOnError = (evt: React.SyntheticEvent<HTMLImageElement, Event>, defaultSrc: string) => {
+    ;(evt.target as HTMLImageElement).src = defaultSrc
+  }
+
+  console.log(props)
 
   return (
-    <Select {...props} items={parsedItems} aria-label="Select network" label="">
-      {(item) => {
-        const { icon: Icon, chainId, label } = item as ItemObj
+    <Select {...props} className={className} items={items} aria-label="Select network" label="">
+      {({ chainId, src, srcDark, label }) => {
         return (
           <Item key={chainId} textValue={chainId.toString()}>
-            {!hideIcon ? (
+            {!hideIcon && (
               <IconWrapper>
-                <Icon aria-label={label} width="18" height="18" />
+                <Image
+                  alt={label}
+                  onError={(evt) => setTimeout(() => handleOnError(evt, src), 0)}
+                  src={isDarkTheme ? srcDark : src}
+                  loading="lazy"
+                  width="18"
+                  height="18"
+                />
               </IconWrapper>
-            ) : null}
+            )}
             <strong>{label}</strong>
           </Item>
         )
       }}
     </Select>
   )
-}
-
-SelectNetwork.displayName = 'SelectNetwork'
-SelectNetwork.defaultProps = {
-  className: '',
 }
 
 const IconWrapper = styled.span`
