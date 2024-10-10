@@ -1,6 +1,6 @@
-import { mutationCache, queryCache } from './cache'
 import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister'
 import { QueryClient } from '@tanstack/react-query'
+import { mutationCache, queryCache } from './cache'
 
 export const queryClient = new QueryClient({
   defaultOptions: {},

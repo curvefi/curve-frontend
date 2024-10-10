@@ -1,5 +1,5 @@
-import { isAddress, zeroAddress } from 'viem'
 import isDecimal from 'validator/lib/isDecimal'
+import { isAddress, zeroAddress } from 'viem'
 
 export const extendEnforce = (enforce: typeof import('vest').enforce) =>
   enforce.extend({
