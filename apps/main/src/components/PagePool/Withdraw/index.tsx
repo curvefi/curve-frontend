@@ -1,27 +1,21 @@
-import type { FormType } from '@/components/PagePool/Withdraw/types'
-import type { TransferProps } from '@/components/PagePool/types'
+import type { FormType } from '@/components/PagePool/contextPool'
 
-import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { t } from '@lingui/macro'
 
 import { isValidAddress } from '@/utils'
-import useStore from '@/store/useStore'
+import { usePoolContext } from '@/components/PagePool/contextPool'
 
 import { SlideTabs, SlideTab } from '@/ui/TabSlide'
 import { StyledTabSlide } from '@/components/PagePool/styles'
-import FormClaim from '@/components/PagePool/Withdraw/components/FormClaim'
+import FormClaim from '@/components/PagePool/Claim'
 import FormWithdraw from '@/components/PagePool/Withdraw/components/FormWithdraw'
 import FormUnstake from '@/components/PagePool/Withdraw/components/FormUnstake'
 
-const Withdraw: React.FC<TransferProps> = (transferProps) => {
+const Withdraw: React.FC = () => {
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const { curve, poolData, poolDataCacheOrApi } = transferProps
-  const { signerAddress } = curve ?? {}
-
-  const formType = useStore((state) => state.poolWithdraw.formType)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
+  const { formType, signerAddress, poolDataCacheOrApi, setFormType } = usePoolContext()
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
@@ -55,19 +49,16 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
 
   const handleTabChange = useCallback(
     (idx: number) => {
-      setStateByKey('formType', TABS[idx].formType)
+      setFormType(TABS[idx].formType)
       setSelectedTabIdx(idx)
     },
-    [TABS, setStateByKey]
+    [TABS, setFormType]
   )
 
   useEffect(() => {
-    if (poolData) {
-      handleTabChange(0)
-      resetState(poolData, 'WITHDRAW')
-    }
+    handleTabChange(0)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poolData?.pool?.id])
+  }, [])
 
   return (
     <>
@@ -75,7 +66,7 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ label, formType }, idx) => {
-              if (formType === 'CLAIM' && !signerAddress) return null
+              if (formType.startsWith('CLAIM') && !signerAddress) return null
 
               return (
                 <SlideTab
@@ -93,13 +84,9 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
         </StyledTabSlide>
       )}
 
-      {formType === 'WITHDRAW' ? (
-        <FormWithdraw {...transferProps} />
-      ) : formType === 'UNSTAKE' ? (
-        <FormUnstake {...transferProps} />
-      ) : formType === 'CLAIM' ? (
-        <FormClaim {...transferProps} />
-      ) : null}
+      {formType === 'WITHDRAW' && <FormWithdraw />}
+      {formType === 'UNSTAKE' && <FormUnstake />}
+      {formType.startsWith('CLAIM') && <FormClaim />}
     </>
   )
 }

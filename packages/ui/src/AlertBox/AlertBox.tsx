@@ -31,8 +31,8 @@ const AlertBox = ({
   const alertContentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (typeof children === 'string' && children.length > 200) {
-      setEnabledHeightToggle(true)
+    if (typeof children === 'string') {
+      setEnabledHeightToggle(children.length > 200)
     }
   }, [children])
 

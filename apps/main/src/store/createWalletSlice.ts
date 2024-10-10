@@ -21,7 +21,7 @@ export type WalletSlice = {
   [sliceKey]: SliceState & {
     notifyNotification(message: string, type: NotificationType, autoDismiss?: number): ({ dismiss: () => void; update: UpdateNotification | undefined })
     updateConnectWalletStateKeys(): void
-    getProvider(sliceKey: 'quickSwap' | 'poolDeposit' | 'poolWithdraw' | 'poolSwap' | 'dashboard' | 'lockedCrv' | ''): Provider | null
+    getProvider(sliceKey: 'quickSwap' | 'dashboard' | 'lockedCrv' | ''): Provider | null
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void

@@ -1,24 +1,10 @@
-import { FormLpTokenExpected, FormStatus, FormValues } from '@/components/PagePool/Deposit/types'
+import { weiToEther } from '@/shared/curve-lib'
 
-export const DEFAULT_FORM_VALUES: FormValues = {
-  amounts: [],
-  isWrapped: false,
-  isBalancedAmounts: false,
-  lpToken: '',
-}
+export function calcNewCrvApr(crvApr: number, lpToken: string, gaugeTotalSupply: string | number) {
+  if (!crvApr && !gaugeTotalSupply && Number(gaugeTotalSupply) === 0 && Number(lpToken) === 0) return null
 
-export const DEFAULT_FORM_STATUS: FormStatus = {
-  isApproved: false,
-  formProcessing: false,
-  formTypeCompleted: '',
-  step: '',
-  error: '',
-  warning: '',
-}
-
-export const DEFAULT_FORM_LP_TOKEN_EXPECTED: FormLpTokenExpected = {
-  expected: '',
-  virtualPrice: '',
-  loading: false,
-  error: '',
+  const gaugeTotalSupplyInEther = weiToEther(Number(gaugeTotalSupply))
+  const newGaugeTotalLocked = Number(lpToken) + gaugeTotalSupplyInEther
+  const newCrvApr = (gaugeTotalSupplyInEther / newGaugeTotalLocked) * crvApr
+  return { ratio: crvApr / newCrvApr, apr: newCrvApr }
 }

@@ -11,12 +11,11 @@ export const AppFormContentWrapper = styled(TabContentWrapper)`
   padding: var(--spacing-3);
   padding-top: 0.5rem;
   position: relative;
-  min-height: 14rem; // 224px;
 `
 
 export const AppFormContent = styled(Box)`
   position: relative;
-  min-height: 17.125rem;
+  min-height: 12.5rem; // 200px;
 `
 
 export const AppFormSlideTab = styled(SlideTab)<{ moreSpace?: true }>`

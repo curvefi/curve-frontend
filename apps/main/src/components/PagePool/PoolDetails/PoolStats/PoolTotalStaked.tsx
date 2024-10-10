@@ -1,3 +1,4 @@
+import React from 'react'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils'
@@ -7,11 +8,11 @@ import Item from '@/ui/Items/Item'
 import Items from '@/ui/Items/Items'
 
 interface PoolTotalStakedProps {
-  poolDataCacheOrApi: PoolDataCacheOrApi
+  pool: Pool | undefined
 }
 
-const PoolTotalStaked: React.FC<PoolTotalStakedProps> = ({ poolDataCacheOrApi }) => {
-  const staked = usePoolTotalStaked(poolDataCacheOrApi)
+const PoolTotalStaked: React.FC<PoolTotalStakedProps> = ({ pool }) => {
+  const staked = usePoolTotalStaked(pool)
 
   return (
     <article>
