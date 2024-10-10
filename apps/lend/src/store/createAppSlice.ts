@@ -91,7 +91,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (
           stateKey.startsWith('loan') ||
           stateKey.startsWith('user') ||
-          stateKey === 'usdRates' ||
           stateKey === 'tokens' ||
           stateKey === 'chartBands' ||
           stateKey === 'campaigns'
@@ -111,7 +110,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
     await state.markets.fetchMarkets(api)
-    await state.usdRates.fetchAllStoredUsdRates(api)
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
@@ -129,7 +127,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         state[key] = value
-      })
+      }),
     )
   },
   getTvl: (api: Api) => {
@@ -158,7 +156,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             state[sliceKey][key] = parsedValue
           }
         }
-      })
+      }),
     )
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
@@ -171,7 +169,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           }
           state[sliceKey][key] = value
         }
-      })
+      }),
     )
   },
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
@@ -186,7 +184,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             }
             state[sliceKey][key] = value
           }
-        })
+        }),
       )
     }
   },
@@ -197,7 +195,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           ...state[sliceKey],
           ...defaultState,
         }
-      })
+      }),
     )
   },
 })

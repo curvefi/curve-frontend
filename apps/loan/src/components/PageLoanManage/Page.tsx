@@ -149,7 +149,7 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${llamma?.collateralSymbol}`} />
+      <DocumentHead title={llamma?.collateralSymbol ? t`${llamma?.collateralSymbol}` : t`Manage`} />
       {provider ? (
         <>
           {chartExpanded && (

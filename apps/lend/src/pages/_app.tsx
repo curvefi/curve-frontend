@@ -10,6 +10,8 @@ import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProvider } from '@/ui/QueryProvider'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
@@ -110,12 +112,14 @@ function CurveApp({ Component }: AppProps) {
       {typeof window === 'undefined' || !appLoaded ? null : (
         <HashRouter>
           <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <OverlayProvider>
+                <Page>
+                  <Component />
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </QueryProvider>
           </I18nProvider>
         </HashRouter>
       )}

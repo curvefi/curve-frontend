@@ -1,6 +1,6 @@
-import { type QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import { type Persister, PersistQueryClientProvider } from "@tanstack/react-query-persist-client"
-import type { ReactNode } from "react"
+import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import type { ReactNode } from 'react'
 
 type QueryProviderWrapperProps = {
   children: ReactNode

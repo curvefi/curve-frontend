@@ -1,4 +1,5 @@
 import type { AppLogoProps } from '@/ui/Brand/AppLogo'
+import AppLogo from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 
 import React, { useEffect, useMemo, useRef } from 'react'
@@ -7,30 +8,29 @@ import { useNavigate, useParams } from 'react-router-dom'
 
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
-import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
+import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
 import { useHeightResizeObserver } from '@/ui/hooks'
-import { visibleNetworksList } from '@/networks'
-import networks from '@/networks'
+import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 
 import {
   APP_LINK,
-  APPS_LINKS,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
   AppNavMobile,
-  AppSelectNetwork,
+  APPS_LINKS,
+  AppSelectNetwork
 } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
-import AppLogo from '@/ui/Brand/AppLogo'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
 import HeaderSecondary from '@/layout/HeaderSecondary'
+import { useTvl } from '@/entities/chain'
+
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
@@ -41,11 +41,6 @@ const Header = () => {
 
   const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
-  const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
-  const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[rChainId])
-  const marketsTotalSupplyMapper = useStore((state) => state.markets.totalLiquidityMapper[rChainId])
-  const marketsTotalDebtMapper = useStore((state) => state.markets.statsTotalsMapper[rChainId])
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const connectState = useStore((state) => state.connectState)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -57,6 +52,7 @@ const Header = () => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
+  const { data: tvl } = useTvl(rChainId);
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -86,18 +82,6 @@ const Header = () => {
 
     return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
   }, [isLgUp, rLocalePathname, routerNetwork, routerPathname])
-
-  const tvl = useMemo(() => {
-    return _getTvl(
-      owmDatasMapper,
-      marketsCollateralMapper,
-      marketsTotalSupplyMapper,
-      marketsTotalDebtMapper,
-      usdRatesMapper
-    )
-  }, [owmDatasMapper, marketsCollateralMapper, marketsTotalSupplyMapper, marketsTotalDebtMapper, usdRatesMapper])
-
-  const appStats = [{ label: 'TVL', value: tvl }] as { label: string; value: string }[]
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -179,7 +163,7 @@ const Header = () => {
         <HeaderSecondary
           advancedMode={appNavAdvancedMode}
           appsLinks={APPS_LINKS}
-          appStats={appStats}
+          appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
           locale={appNavLocale}
           theme={appNavTheme}
         />
@@ -229,42 +213,6 @@ const Header = () => {
       </AppNavBar>
     </>
   )
-}
-
-function _getTvl(
-  owmDatasMapper: OWMDatasMapper | undefined,
-  marketsCollateralMapper: MarketsStatsAMMBalancesMapper | undefined,
-  marketsTotalSupplyMapper: MarketsTotalLiquidityMapper | undefined,
-  marketsTotalDebtMapper: MarketsStatsTotalsMapper | undefined,
-  usdRatesMapper: { [tokenAddress: string]: string | number }
-) {
-  if (
-    owmDatasMapper &&
-    marketsCollateralMapper &&
-    marketsTotalSupplyMapper &&
-    marketsTotalDebtMapper &&
-    Object.keys(usdRatesMapper)
-  ) {
-    let totalCollateral = 0
-    let totalLiquidity = 0
-    let totalDebt = 0
-
-    Object.values(owmDatasMapper).map(({ owm }) => {
-      const { id, collateral_token } = owm
-
-      const ammBalance = marketsCollateralMapper[id] ?? {}
-      const collateralUsdRate = usdRatesMapper[collateral_token.address]
-      const marketTotalCollateralUsd = +(ammBalance?.collateral ?? '0') * +(collateralUsdRate ?? '0')
-
-      totalCollateral += marketTotalCollateralUsd
-      totalDebt += +marketsTotalDebtMapper[id]?.totalDebt
-      totalLiquidity += +marketsTotalSupplyMapper[id]?.totalLiquidity
-    })
-
-    const tvl = totalCollateral + totalLiquidity - totalDebt
-
-    return tvl > 0 ? formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) : '-'
-  }
 }
 
 export default Header

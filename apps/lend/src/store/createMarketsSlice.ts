@@ -76,7 +76,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
     ...DEFAULT_STATE,
 
     fetchMarkets: async (api) => {
-      const { marketList, usdRates, storeCache } = get()
+      const { marketList, storeCache } = get()
       const { ...sliceState } = get()[sliceKey]
 
       const { chainId } = api
@@ -84,7 +84,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       const { marketList: marketListNames, error } = await helpers.fetchMarkets(api)
 
       const chainIdStr = chainId.toString()
-      let cTokens = { ...usdRates.tokens }
       let owmDatas: OWMData[] = []
       let owmDatasMapper: OWMDatasMapper = {}
       let owmDatasCacheMapper: OWMDatasCacheMapper = {}
@@ -103,8 +102,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
           const { address: cAddress } = owm.collateral_token
           const { symbol: bSymbol, address: bAddress } = owm.borrowed_token
 
-          if (typeof cTokens[cAddress] === 'undefined') cTokens[cAddress] = ''
-          if (typeof cTokens[bAddress] === 'undefined') cTokens[bAddress] = ''
           owmDatas.push(owmData)
           owmDatasMapper[owm.id] = owmData
           owmDatasCacheMapper[owm.id] = owmDataCache
@@ -115,7 +112,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         sliceState.setStateByActiveKey('crvusdAddress', chainIdStr, crvusdAddress)
         sliceState.setStateByActiveKey('owmDatas', chainIdStr, owmDatas)
         sliceState.setStateByActiveKey('owmDatasMapper', chainIdStr, owmDatasMapper)
-        usdRates.setStateByKey('tokens', cTokens)
 
         // update market list
         const { marketListMapper } = _getMarketList(owmDatas, crvusdAddress)

@@ -1,5 +1,4 @@
 import DLCLink from './DLCLink.json'
-import Eigenlayer from './Eigenlayer.json'
 import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
@@ -19,7 +18,6 @@ import SolvProtocol from './SolvProtocol.json';
 
 export {
   DLCLink,
-  Eigenlayer,
   Elixir,
   Ethena,
   Etherfi,

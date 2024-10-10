@@ -1,6 +1,5 @@
-import { logError, logMutation, logSuccess } from '@/shared/lib/logging';
+import { logError, logMutation, logSuccess } from '@/shared/lib/logging'
 import { MutationCache, QueryCache, type Mutation } from '@tanstack/react-query'
-
 
 export const queryCache = new QueryCache({
   onError: (error: Error, query) => {
@@ -14,8 +13,8 @@ export const queryCache = new QueryCache({
 const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, variables: unknown) => {
   const queryKeyFn = mutation.options.meta?.queryKeyFn
   return typeof queryKeyFn === 'function'
-      ? queryKeyFn(variables)
-      : mutation.options.mutationKey ?? String(mutation.mutationId)
+    ? queryKeyFn(variables)
+    : (mutation.options.mutationKey ?? String(mutation.mutationId))
 }
 
 export const mutationCache = new MutationCache({

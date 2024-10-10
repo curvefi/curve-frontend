@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3",
       "network": "ethereum",
-      "multiplier": "4",
+      "multiplier": "3",
       "tags": ["points"],
       "lock": "false"
     },
