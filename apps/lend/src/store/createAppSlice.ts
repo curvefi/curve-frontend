@@ -129,7 +129,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         state[key] = value
-      })
+      }),
     )
   },
   getTvl: (api: Api) => {
@@ -158,7 +158,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             state[sliceKey][key] = parsedValue
           }
         }
-      })
+      }),
     )
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
@@ -171,7 +171,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           }
           state[sliceKey][key] = value
         }
-      })
+      }),
     )
   },
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
@@ -186,7 +186,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             }
             state[sliceKey][key] = value
           }
-        })
+        }),
       )
     }
   },
@@ -197,7 +197,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           ...state[sliceKey],
           ...defaultState,
         }
-      })
+      }),
     )
   },
 })
