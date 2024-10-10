@@ -94,6 +94,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Optimism]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Optimism],
     swap: {
       fromAddress: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
       toAddress: '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
@@ -114,6 +115,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Gnosis]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Gnosis],
     poolFilters: ['all', 'usd', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d',
@@ -135,6 +137,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Moonbeam]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Moonbeam],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0xffffffff1fcacbd218edc0eba20fc2308c778080',
@@ -144,6 +147,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Polygon]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Polygon],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     missingPools: [
       { name: 'atricrypto', url: 'https://polygon.curve.fi/atricrypto/withdraw' },
@@ -170,6 +174,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Kava]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Kava],
     poolFilters: ['all', 'usd', 'btc', 'kava', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     poolListFormValuesDefault: { hideSmallPools: false }, // remove if Kava have > 10 pools
     swap: {
@@ -183,6 +188,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Fantom]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Fantom],
     excludePoolsMapper: {
       'factory-v2-137': true, // old eywa pool
       'factory-v2-140': true, // old eywa pool
@@ -226,6 +232,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Avalanche]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Avalanche],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0x49d5c2bdffac6ce2bfdb6640f4f80f226bc10bab',
@@ -238,6 +245,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Celo]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Celo],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0x37f750b7cc259a2f741af45294f6a16572cf5cad',
@@ -249,6 +257,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Aurora]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Aurora],
     poolFilters: ['all', 'usd', 'btc', 'crypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0xb12bfca5a55806aaf64e99521918a4bf0fc40802',
@@ -259,11 +268,13 @@ const networksConfig = {
     // hasFactory: true,
   },
   [Chain.ZkSync]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.ZkSync],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'stableng', 'others', 'user'],
     showInSelectNetwork: false,
     stableswapFactory: true,
   },
   [Chain.Base]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Base],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     excludePoolsMapper: {
       'factory-v2-4': true,
@@ -290,6 +301,7 @@ const networksConfig = {
     pricesApi: true,
   },
   [Chain.Bsc]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Bsc],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'tricrypto', 'stableng', 'others', 'user'],
     swap: {
       fromAddress: '0xe9c803f48dffe50180bd5b01dc04da939e3445fc',
@@ -310,6 +322,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Fraxtal]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Fraxtal],
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],
     // TODO: use correct address once there is a pool
     swap: {
@@ -330,6 +343,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.XLayer]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.XLayer],
     swap: {
       fromAddress: '0x1e4a5963abfd975d8c9021ce480b42188849d41d',
       toAddress: '0x74b7f16337b8972027f6196a17a631ac6de26d22',
@@ -340,6 +354,7 @@ const networksConfig = {
     hasFactory: true,
   },
   [Chain.Mantle]: {
+    // nativeTokens: NATIVE_TOKENS[Chain.Mantle],
     swap: {
       fromAddress: '0x201eba5cc46d216ce6dc03f6a759e8e766e956ae', // USDT
       toAddress: '0x09bc4e0d864854c6afb6eb9a9cdf58ac190d0df9', // USDC
