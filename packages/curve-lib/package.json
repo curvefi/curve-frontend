@@ -15,5 +15,8 @@
     "eslint": "^8.57.1",
     "eslint-config-custom": "*",
     "tsconfig": "*"
+  },
+  "peerDependencies": {
+    "fuse.js": "^6.6.2"
   }
 }

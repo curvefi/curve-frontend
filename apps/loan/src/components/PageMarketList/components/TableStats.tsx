@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import CellMarketsTotalDebt from '@/components/PageMarketList/components/TableCellMarketsTotalDebt'
+import CellMarketsTotalDebt from '@/components/SharedCells/TableCellMarketsTotalDebt'
 import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
 
 const TableStats = () => {

@@ -1,6 +1,7 @@
 import type { Params } from 'react-router'
 
 import React from 'react'
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 
 export type FormStatus = {
   error: string
@@ -8,6 +9,9 @@ export type FormStatus = {
   noResult: boolean
 }
 
+export type SearchTermKey = keyof typeof SEARCH_TERM
+export type SearchTermMapper = Record<SearchTermKey, { label?: string; isTokenAddress?: boolean }>
+export type SearchTermsResult = { [poolId: string]: { [key: string]: { value: string } } }
 export type Order = 'desc' | 'asc'
 export type FilterKey =
   | 'all'
@@ -33,6 +37,7 @@ export type SortKey =
   | 'tvl'
   | 'volume'
   | 'points'
+  | ''
 
 export type FormValues = {
   searchTextByTokensAndAddresses: { [address: string]: boolean }
@@ -62,6 +67,8 @@ export type PagePoolList = {
   params: Params
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
+  sortSearchTextLast: boolean
+  searchTermMapper: SearchTermMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
 
