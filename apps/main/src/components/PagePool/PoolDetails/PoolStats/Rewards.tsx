@@ -35,6 +35,8 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
 
+  const { isLite } = networks[chainId]
+
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
     { label: t`Weekly`, value: base?.week ?? '' },
@@ -44,11 +46,11 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
     copyToClipboard(address)
   }
 
-  if (!haveBase && !poolData?.failedFetching24hOldVprice && !haveCrv && !haveOther) return null
+  if ((isLite ? true : !haveBase) && !poolData?.failedFetching24hOldVprice && !haveCrv && !haveOther) return null
 
   return (
     <RewardsWrapper>
-      {(haveBase || poolData?.failedFetching24hOldVprice) && (
+      {!isLite && (haveBase || poolData?.failedFetching24hOldVprice) && (
         <RewardsContainer>
           <Box flex fillWidth>
             <RewardsTitle>{t`Base vAPY`}</RewardsTitle>
@@ -134,11 +136,13 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
                 )
               })}
           </Box>
-          <BoostingLink>
-            <ExternalLink $noStyles href="https://resources.curve.fi/reward-gauges/boosting-your-crv-rewards/">
-              {t`Learn more about Boosting your CRV rewards`}
-            </ExternalLink>
-          </BoostingLink>
+          {!isLite && (
+            <BoostingLink>
+              <ExternalLink $noStyles href="https://resources.curve.fi/reward-gauges/boosting-your-crv-rewards/">
+                {t`Learn more about Boosting your CRV rewards`}
+              </ExternalLink>
+            </BoostingLink>
+          )}
         </RewardsContainer>
       )}
       {campaignRewardsPool && (

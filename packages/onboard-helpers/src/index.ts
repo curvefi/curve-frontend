@@ -31,7 +31,7 @@ export function initOnboard(i18n: any, locale: any, themeType: any, networks: an
       id: network.hex,
       token: network.symbol,
       label: network.name,
-      rpcUrl: network.rpcUrlConnectWallet,
+      rpcUrl: network.rpcUrl,
     }
   })
 

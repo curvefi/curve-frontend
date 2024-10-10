@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import { DEFAULT_FORM_STATUS } from '@/components/PageDashboard/utils'
 import { breakpoints } from '@/ui/utils/responsive'
 import { formatNumber } from '@/ui/utils'
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 import useStore from '@/store/useStore'
 
 import AlertFormError from '@/components/AlertFormError'
@@ -18,15 +19,13 @@ export enum claimButtonsKey {
   crvUSD = 'crvUSD',
 }
 
-const FormClaimFees = ({
-  activeKey,
-  loading,
-  walletAddress,
-}: {
-  activeKey: string
-  loading: boolean
-  walletAddress: string
-}) => {
+const FormClaimFees: React.FC = () => {
+  const {
+    activeKey,
+    isLoading,
+    formValues: { walletAddress },
+  } = useDashboardContext()
+
   const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
   const formStatus = useStore((state) => state.dashboard.formStatus)
 
@@ -47,13 +46,11 @@ const FormClaimFees = ({
           <strong>{formatNumber(claimFeesAmounts?.[claimButtonsKey.crvUSD], { defaultValue: '-' })}</strong> crvUSD
         </div>
       </div>
-      {parsedFormStatus.error && (
-        <AlertFormError errorKey={parsedFormStatus.error} handleBtnClose={() => setTxInfoBar(null)} />
-      )}
+      {parsedFormStatus.error && <AlertFormError errorKey={parsedFormStatus.error} />}
       {txInfoBar}
       <FormClaimFeesButtons
         activeKey={activeKey}
-        loading={loading}
+        loading={isLoading}
         walletAddress={walletAddress}
         steps={steps}
         setSteps={setSteps}

@@ -33,8 +33,6 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
     ;(evt.target as HTMLImageElement).src = defaultSrc
   }
 
-  console.log(props)
-
   return (
     <Select {...props} className={className} items={items} aria-label="Select network" label="">
       {({ chainId, src, srcDark, label }) => {

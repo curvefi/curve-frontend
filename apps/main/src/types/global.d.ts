@@ -5,6 +5,7 @@ import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
 import type { Locale } from '@/lib/i18n'
+import type { BaseConfig } from '@/ui/utils'
 import type curveApi from '@curvefi/api'
 
 import { ethers } from 'ethers'
@@ -32,58 +33,26 @@ declare global {
     hasRouter: boolean | undefined
   }
 
-  type NetworkConfig = {
-    name: string
-    id: NetworkEnum
-    networkId: ChainId
+  interface NetworkConfig extends BaseConfig {
+    isLite: boolean
     nativeTokens: { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
     api: typeof curvejsApi
     useApi: boolean
-    blocknativeSupport: boolean
-    compensations: { [poolId: string]: boolean }
-    ethTokenAddress: { [key: string]: string }
+    excludePoolsMapper: { [key: string]: boolean } // remove pool from list and pool page
+    excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }
     poolCustomTVL: { [poolAddress: string]: string }
     poolIsWrappedOnly: { [poolAddress: string]: boolean }
     poolFilters: string[]
-    excludeRoutes: string[]
-    excludeGetUserBalancesTokens: string[] // tokens that cause issues when getting wallet balances
-    forms: string[]
-    gasL2: boolean
-    gasPricesUnit: string
-    gasPricesUrl: string
-    gasPricesDefault: number
-    hex: string
-    hidePoolRewards: { [poolId: string]: boolean }
     hideSmallPoolsTvl: number
-    icon: FunctionComponent<SVGProps<SVGSVGElement>>
-    iconDarkTheme?: FunctionComponent<SVGProps<SVGSVGElement>> // optional icon for dark theme
-    imageBaseUrl: string
-    integrations: {
-      imageBaseurl: string
-      listUrl: string
-      tagsUrl: string
-    }
-    rewards: {
-      baseUrl: string
-      imageBaseUrl: string
-      campaignsUrl: string
-      tagsUrl: string
-    }
     isActiveNetwork: boolean // show UI for this network default true
     missingPools: { name: string; url: string }[]
-    orgUIPath: string
     poolListFormValuesDefault: Partial<PoolListSearchParams>
-    rpcUrlConnectWallet: string // for wallet connect
-    rpcUrl: string // for curvejs & curve-stablecoin api
     swap: { [key: string]: string }
-    customPoolIds: { [key: string]: boolean }
-    showHideSmallPoolsCheckbox: boolean
     showInSelectNetwork: boolean
     showRouterSwap: boolean
     swapCustomRouteRedirect: {
       [key: string]: string
     }
-    symbol: string
     createQuickList: {
       address: string
       haveSameTokenName: boolean
@@ -97,9 +66,6 @@ declare global {
     tricryptoFactory: boolean
     hasFactory: boolean
     pricesApi: boolean
-    scanAddressPath: (hash: string) => string
-    scanTxPath: (hash: string) => string
-    scanTokenPath: (hash: string) => string
   }
 
   type CurrencyReservesToken = {

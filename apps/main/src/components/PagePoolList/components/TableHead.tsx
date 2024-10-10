@@ -1,4 +1,4 @@
-import type { Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
+import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 import { t } from '@lingui/macro'
@@ -11,25 +11,28 @@ import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TableHeadRewards from '@/components/PagePoolList/components/TableHeadRewards'
+import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 
-const TableHead = ({
-  isReadyRewardsApy,
-  isReadyTvl,
-  isReadyVolume,
-  isMdUp,
-  searchParams,
-  showInPoolColumn,
-  tableLabels,
-  updatePath,
-}: {
+type Props = {
+  isLite: boolean
   isReadyRewardsApy: boolean
   isReadyTvl: boolean
   isReadyVolume: boolean
-  isMdUp: boolean
+  columnKeys: ColumnKeys[]
   searchParams: SearchParams
-  showInPoolColumn: boolean
   tableLabels: PoolListTableLabel
   updatePath(searchParams: Partial<SearchParams>): void
+}
+
+const TableHead: React.FC<Props> = ({
+  isLite,
+  isReadyRewardsApy,
+  isReadyTvl,
+  isReadyVolume,
+  columnKeys,
+  searchParams,
+  tableLabels,
+  updatePath,
 }) => {
   const handleBtnClickSort = useCallback(
     (sortBy: string, sortByOrder: Order) => {
@@ -44,85 +47,124 @@ const TableHead = ({
     handleBtnClickSort,
   }
 
+  const REWARDS_OTHER_TOOLTIP = t`Token APR based on current prices of tokens and reward rates`
+  const REWARDS_BASE_TOOLTIP = t`Variable APY based on today's trading activity`
+
   return (
     <>
       <colgroup>
-        {showInPoolColumn && <ColInPool className="row-in-pool" />}
-        <Col className="left pool" />
-        {isMdUp ? (
-          <>
-            <Col className="right base" />
-            <Col className="right rewards" />
-          </>
-        ) : (
-          <Col className="right rewards" />
-        )}
-        <col className="right" />
-        <col className="right" />
+        {columnKeys.map((columnKey, idx) => {
+          return (
+            <React.Fragment key={`col${columnKey}${idx}`}>
+              {columnKey === COLUMN_KEYS.inPool && <ColInPool className="row-in-pool" />}
+              {columnKey === COLUMN_KEYS.poolName && <Col className="left pool" />}
+              {columnKey === COLUMN_KEYS.rewardsLite && <Col className="right" />}
+              {columnKey === COLUMN_KEYS.rewardsDesktop && (
+                <>
+                  <Col className="right base" />
+                  <Col className="right rewards" />
+                </>
+              )}
+              {columnKey === COLUMN_KEYS.rewardsMobile && <Col className="right rewards" />}
+              {columnKey === COLUMN_KEYS.volume && <col className="right" />}
+              {columnKey === COLUMN_KEYS.tvl && <Col className={`right ${isLite ? 'tvl' : ''}`} />}
+            </React.Fragment>
+          )
+        })}
       </colgroup>
       <StyledThead>
         <tr>
-          {showInPoolColumn && <th className="in-pool"> </th>}
-
-          <Th $first={!showInPoolColumn}>
-            <StyledTheadSortButton
-              className="left"
-              sortIdKey="name"
-              {...props}
-              loading={false}
-              indicatorPlacement="right"
-            >
-              {tableLabels.name.name}
-            </StyledTheadSortButton>
-          </Th>
-          {isMdUp ? (
-            <>
-              <Th>
-                <StyledTheadSortButton
-                  className="right"
-                  sortIdKey="rewardsBase"
-                  {...props}
-                  loading={!isReadyRewardsApy}
-                >
-                  {tableLabels.rewardsBase.name}
-                  <IconTooltip placement="top">{t`Variable APY based on today's trading activity`}</IconTooltip>
-                </StyledTheadSortButton>
-              </Th>
-              <Th className="right">
-                <Box grid gridRowGap={1}>
-                  <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
-                </Box>
-              </Th>
-            </>
-          ) : (
-            <Th className="right">
-              <Box grid gridRowGap={2} flexJustifyContent="flex-end">
-                <TheadSortButton sortIdKey="rewardsBase" {...props} loading={!isReadyRewardsApy}>
-                  {tableLabels.rewardsBase.name}
-                  <IconTooltip placement="top">{t`Variable APY based on today's trading activity`}</IconTooltip>
-                </TheadSortButton>
-                <Box flex flexJustifyContent="flex-end">
-                  <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
-                </Box>
-              </Box>
-            </Th>
-          )}
-          <Th>
-            <StyledTheadSortButton className="right" sortIdKey="volume" {...props} loading={!isReadyVolume}>
-              {tableLabels.volume.name}
-            </StyledTheadSortButton>
-          </Th>
-          <Th $last>
-            <StyledTheadSortButton
-              className="right"
-              sortIdKey="tvl"
-              {...props}
-              loading={!isReadyTvl}
-              indicatorPlacement="left"
-            >
-              {tableLabels.tvl.name}
-            </StyledTheadSortButton>
-          </Th>
+          {columnKeys.map((columnKey, idx) => {
+            return (
+              <React.Fragment key={`thead${columnKey}${idx}`}>
+                {columnKey === COLUMN_KEYS.inPool && (
+                  <th key={columnKey} className="in-pool">
+                    {' '}
+                  </th>
+                )}
+                {columnKey === COLUMN_KEYS.poolName && (
+                  <Th key={columnKey} $first={idx === 0}>
+                    <StyledTheadSortButton
+                      className="left"
+                      sortIdKey="name"
+                      {...props}
+                      loading={false}
+                      indicatorPlacement="right"
+                    >
+                      {tableLabels.name.name}
+                    </StyledTheadSortButton>
+                  </Th>
+                )}
+                {columnKey === COLUMN_KEYS.rewardsLite && (
+                  <Th className="right">
+                    <TheadSortButton
+                      className="right"
+                      sortIdKey="rewardsOther"
+                      nowrap
+                      {...props}
+                      loading={!isReadyRewardsApy}
+                    >
+                      {tableLabels.rewardsOtherLite.name} tAPR
+                      <IconTooltip placement="top">{REWARDS_OTHER_TOOLTIP}</IconTooltip>
+                    </TheadSortButton>
+                  </Th>
+                )}
+                {columnKey === COLUMN_KEYS.rewardsDesktop && (
+                  <>
+                    <Th>
+                      <StyledTheadSortButton
+                        className="right"
+                        sortIdKey="rewardsBase"
+                        {...props}
+                        loading={!isReadyRewardsApy}
+                      >
+                        {tableLabels.rewardsBase.name}
+                        <IconTooltip placement="top">{REWARDS_BASE_TOOLTIP}</IconTooltip>
+                      </StyledTheadSortButton>
+                    </Th>
+                    <Th className="right">
+                      <Box grid gridRowGap={1}>
+                        <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
+                      </Box>
+                    </Th>
+                  </>
+                )}
+                {columnKey === COLUMN_KEYS.rewardsMobile && (
+                  <Th className="right">
+                    <Box grid gridRowGap={2} flexJustifyContent="flex-end">
+                      <TheadSortButton sortIdKey="rewardsBase" {...props} loading={!isReadyRewardsApy}>
+                        {tableLabels.rewardsBase.name}
+                        <IconTooltip placement="top">{REWARDS_BASE_TOOLTIP}</IconTooltip>
+                      </TheadSortButton>
+                      <Box flex flexJustifyContent="flex-end">
+                        <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
+                      </Box>
+                    </Box>
+                  </Th>
+                )}
+                {columnKey === COLUMN_KEYS.volume && (
+                  <Th>
+                    <StyledTheadSortButton className="right" sortIdKey="volume" {...props} loading={!isReadyVolume}>
+                      {tableLabels.volume.name}
+                    </StyledTheadSortButton>
+                  </Th>
+                )}
+                {columnKey === COLUMN_KEYS.tvl && (
+                  <Th $last>
+                    <StyledTheadSortButton
+                      className="right"
+                      sortIdKey="tvl"
+                      {...props}
+                      loading={!isReadyTvl}
+                      indicatorPlacement="left"
+                    >
+                      {tableLabels.tvl.name}
+                    </StyledTheadSortButton>
+                  </Th>
+                )}
+              </React.Fragment>
+            )
+          })}
         </tr>
       </StyledThead>
     </>
@@ -141,6 +183,9 @@ const Col = styled.col`
     }
     &.rewards {
       min-width: 300px;
+    }
+    &.tvl {
+      min-width: 150px;
     }
   }
 `

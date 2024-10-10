@@ -38,7 +38,7 @@ function CurveApp({ Component }: AppProps) {
   const isPageVisible = useStore((state) => state.isPageVisible)
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
-  const poolDatas = useStore((state) => state.pools.pools[chainId])
+  const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
   const themeType = useStore((state) => state.themeType)
   const setPageWidth = useStore((state) => state.setPageWidth)
   const fetchPools = useStore((state) => state.pools.fetchPools)
@@ -61,11 +61,12 @@ function CurveApp({ Component }: AppProps) {
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
-      const chainId = curve.chainId
+      const { chainId } = curve
+      const poolDatas = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolDatas), fetchPoolsTvl(curve, poolDatas)])
       setTokensMapper(chainId, poolDatas)
     },
-    [fetchPoolsTvl, fetchPoolsVolume, poolDatas, setTokensMapper]
+    [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
   useEffect(() => {
@@ -102,7 +103,7 @@ function CurveApp({ Component }: AppProps) {
       },
       locale,
       themeType,
-      networks
+      networks,
     )
     updateWalletStoreByKey('onboard', onboardInstance)
 
@@ -133,7 +134,7 @@ function CurveApp({ Component }: AppProps) {
       const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curve)
       fetchPools(curve, poolIds, null)
     },
-    [fetchPools]
+    [fetchPools],
   )
 
   usePageVisibleInterval(
@@ -149,7 +150,7 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   usePageVisibleInterval(
@@ -159,7 +160,7 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['11m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (
