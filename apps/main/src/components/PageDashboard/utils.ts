@@ -6,19 +6,18 @@ export function getIsLockExpired(lockedAmount: string, unlockTime: number) {
   return unlockTime && unlockTime < todayInMilliseconds() && +lockedAmount > 0
 }
 
-export const DEFAULT_WALLET_DASHBOARD_DATA = {
-  totalLiquidityUsd: 0,
-  totalBaseProfit: 0,
-  totalCrvProfit: { total: 0, price: 0 },
-  totalOtherProfit: {},
-  totalProfitUsd: 0,
-  totalClaimableCrv: { total: 0, price: 0 },
-  totalClaimableOther: {},
-  totalClaimableUsd: 0,
+export enum SORT_ID {
+  'poolName' = 'poolName',
+  'userCrvApy' = 'userCrvApy',
+  'rewardBase' = 'rewardBase',
+  'rewardOthers' = 'rewardOthers',
+  'liquidityUsd' = 'liquidityUsd',
+  'profits' = 'profits',
+  'claimables' = 'claimables',
 }
 
 export const DEFAULT_FORM_VALUES: FormValues = {
-  sortBy: 'liquidityUsd',
+  sortBy: SORT_ID.liquidityUsd,
   sortByOrder: 'desc',
   walletAddress: '',
 }

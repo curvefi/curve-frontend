@@ -12,8 +12,6 @@ import type {
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
-import isUndefined from 'lodash/isUndefined'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
 
@@ -48,14 +46,20 @@ type SliceState = {
   showHideSmallPools: boolean
 }
 
+type PartialPoolData = Pick<PoolDataCache, 'gauge'> & {
+  pool: Pick<Pool, 'id' | 'address' | 'name' | 'isFactory' | 'referenceAsset'>
+}
+
 // prettier-ignore
 export type PoolListSlice = {
   poolList: SliceState & {
-    filterByKey(key: FilterKey, poolDatas: (PoolDataCache | PoolData)[], userPoolList: { [p: string]: boolean } | undefined): (PoolDataCache | PoolData)[]
-    filterBySearchText(searchText: string, poolDatas: (PoolDataCache | PoolData)[], highlightResult?: boolean): (PoolDataCache | PoolData)[]
-    filterSmallTvl(poolDatas: (PoolDataCache | PoolData)[], tvlMapper: TvlMapper, chainId: ChainId): (PoolDataCache | PoolData)[]
-    sortFn(sortKey: SortKey, order: Order, poolDatas: (PoolDataCache | PoolData)[], rewardsApyMapper: RewardsApyMapper, tvlMapper: TvlMapper, volumeMapper: VolumeMapper, campaignRewardsMapper: CampaignRewardsMapper): (PoolDataCache | PoolData)[]
-    setFormValues(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatasCachedOrApi: (PoolDataCache | PoolData)[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
+    filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
+    filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
+    filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper, chainId: ChainId): P[]
+    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper): P[]
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
+    setFormValues(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapper: TvlMapper, tvlMapperCached: { [poolId:string]: { value: string } }, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -145,21 +149,13 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
       return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
     },
-    filterSmallTvl: (poolDatas: (PoolDataCache | PoolData)[], tvlMapper: TvlMapper, chainId: ChainId) => {
-      const hideSmallPoolsTvl = networks[chainId].hideSmallPoolsTvl
+    filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
+      const { hideSmallPoolsTvl } = networks[chainId]
       return poolDatas.filter(({ pool }) => {
         return +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl
       })
     },
-    sortFn: (
-      sortKey: SortKey,
-      order: Order,
-      poolDatas: (PoolDataCache | PoolData)[],
-      rewardsApyMapper: RewardsApyMapper,
-      tvlMapper: TvlMapper,
-      volumeMapper: VolumeMapper,
-      campaignRewardsMapper: CampaignRewardsMapper,
-    ) => {
+    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, campaignRewardsMapper) => {
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
@@ -208,22 +204,148 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       }
       return poolDatas
     },
-    setFormValues: (
+    setSortAndFilterData: async (
       rChainId,
       searchParams,
       sortSearchTextLast,
-      poolDatasCachedOrApi,
+      poolDatas,
       rewardsApyMapper,
       volumeMapper,
       tvlMapper,
       userPoolList,
       campaignRewardsMapper,
     ) => {
-      let { formValues, formStatus, result, ...sliceState } = get()[sliceKey]
+      const {
+        pools,
+        [sliceKey]: { activeKey, formStatus, result: storedResults, ...sliceState },
+      } = get()
+      const { hideSmallPools, searchText, filterKey, sortBy, sortByOrder } = searchParams
+
+      let tablePoolDatas: PoolData[] = [...poolDatas]
+
+      if (filterKey !== 'user' && hideSmallPools && poolDatas.length > 10) {
+        tablePoolDatas = sliceState.filterSmallTvl(tablePoolDatas, tvlMapper, rChainId)
+      }
+
+      // filter by 'all | usd | btc | etch...'
+      if (filterKey) {
+        if (
+          filterKey === 'all' ||
+          filterKey === 'crypto' ||
+          filterKey === 'tricrypto' ||
+          filterKey === 'others' ||
+          filterKey === 'stableng' ||
+          filterKey === 'user' ||
+          filterKey === 'cross-chain'
+        ) {
+          tablePoolDatas = sliceState.filterByKey(filterKey, tablePoolDatas, userPoolList)
+        } else {
+          tablePoolDatas = sliceState.filterBySearchText(filterKey, tablePoolDatas, false)
+        }
+      }
+
+      // searchText (show before sortBy if it does not exist in updated search params)
+      if (searchText && !sortSearchTextLast) {
+        tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
+      }
+
+      // sort by table labels 'pool | factory | type | rewards...'
+      if (sortBy && !sortSearchTextLast) {
+        if (sortBy.startsWith('rewards')) await pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)
+        tablePoolDatas = sliceState.sortFn(
+          sortBy,
+          sortByOrder,
+          tablePoolDatas,
+          rewardsApyMapper,
+          tvlMapper,
+          volumeMapper,
+          campaignRewardsMapper,
+        )
+      }
+
+      // searchText
+      if (searchText && sortSearchTextLast) {
+        tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
+      }
+
+      // set result
+      const result = tablePoolDatas.map(({ pool }) => pool.id)
+      sliceState.setStateByActiveKey('result', activeKey, result)
+
+      sliceState.setStateByActiveKey('formStatus', activeKey, {
+        ...(formStatus[activeKey] ?? DEFAULT_FORM_STATUS),
+        noResult: result.length === 0,
+        isLoading: false,
+      })
+
+      // get rest of pool list data
+      Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
+    },
+
+    // use local storage data till actual data returns
+    setSortAndFilterCachedData: (rChainId, searchParams, poolDatasCached, volumeMapperCached, tvlMapperCached) => {
+      let { activeKey, formStatus, ...sliceState } = get()[sliceKey]
+
+      const { sortBy, sortByOrder } = searchParams
+
+      const haveVolumeCachedMapper = sortBy === 'volume' && Object.keys(volumeMapperCached ?? {}).length > 0
+      const haveTvlCachedMapper = sortBy === 'tvl' && Object.keys(tvlMapperCached ?? {}).length > 0
+
+      let poolList: PoolDataCache[] = []
+
+      if (haveVolumeCachedMapper || haveTvlCachedMapper) {
+        poolList = [...poolDatasCached]
+
+        if (haveTvlCachedMapper) {
+          poolList = orderBy(poolList, ({ pool }) => Number(tvlMapperCached[pool.id]?.value ?? 0), [sortByOrder])
+        } else if (haveVolumeCachedMapper) {
+          poolList = orderBy(poolList, ({ pool }) => Number(volumeMapperCached[pool.id]?.value ?? 0), [sortByOrder])
+        }
+      }
+
+      // set result
+      const result = poolList.map(({ pool }) => pool.id)
+      sliceState.setStateByActiveKey('result', activeKey, result)
+
+      console.log('---- 1 form status isLoading true')
+      sliceState.setStateByActiveKey('formStatus', activeKey, {
+        ...(formStatus[activeKey] ?? DEFAULT_FORM_STATUS),
+        noResult: result.length === 0,
+        isLoading: true,
+      })
+    },
+    setFormValues: async (
+      rChainId,
+      searchParams,
+      sortSearchTextLast,
+      poolDatas,
+      poolDatasCached,
+      rewardsApyMapper = {},
+      volumeMapper = {},
+      volumeMapperCached = {},
+      tvlMapper = {},
+      tvlMapperCached = {},
+      userPoolList = {},
+      campaignRewardsMapper,
+    ) => {
+      let { formValues, result: storedResults, ...sliceState } = get()[sliceKey]
+      const { isLite } = networks[rChainId]
+
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
-      const storedResults = result[activeKey]
+
+      sliceState.setStateByActiveKey('formStatus', activeKey, {
+        ...DEFAULT_FORM_STATUS,
+        isLoading: typeof storedResults[activeKey] === 'undefined',
+      })
 
       const { hideSmallPools, searchText, filterKey, sortBy, sortByOrder } = searchParams
+
+      const isDefaultSearchParams =
+        hideSmallPools &&
+        searchText === '' &&
+        filterKey === 'all' &&
+        sortBy === (isLite ? 'tvl' : 'volume') &&
+        sortByOrder === 'desc'
 
       // update form values
       formValues = {
@@ -240,94 +362,133 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         searchedByTokens: {},
       })
 
-      if (
-        (filterKey === 'user' && isUndefined(userPoolList)) ||
-        (sortBy.startsWith('rewards') && isUndefined(rewardsApyMapper)) ||
-        (sortBy === 'volume' && isUndefined(volumeMapper)) ||
-        (sortBy === 'tvl' && isUndefined(tvlMapper)) ||
-        (sortBy === 'points' && isUndefined(campaignRewardsMapper))
-      ) {
-        sliceState.setStateByActiveKey('formStatus', activeKey, {
-          ...DEFAULT_FORM_STATUS,
-          isLoading: true,
-        })
-      } else {
-        sliceState.setStateByActiveKey('formStatus', activeKey, {
-          ...DEFAULT_FORM_STATUS,
-          isLoading: !storedResults,
-        })
-        sliceState.setStateByKeys({ activeKey, formValues })
+      const havePoolDatas = typeof poolDatas !== 'undefined' && Object.keys(poolDatas).length >= 0
 
-        let tablePoolDatas = [...poolDatasCachedOrApi]
-
-        if (
-          filterKey !== 'user' &&
-          hideSmallPools &&
-          (networks[rChainId].showHideSmallPoolsCheckbox || poolDatasCachedOrApi.length > 10)
-        ) {
-          tablePoolDatas = sliceState.filterSmallTvl(tablePoolDatas, tvlMapper, rChainId)
+      if (havePoolDatas) {
+        if (poolDatas.length === 0) {
+          // network have no pools
+          sliceState.setStateByKey('result', { [activeKey]: [] })
+          sliceState.setStateByActiveKey('formStatus', activeKey, {
+            ...DEFAULT_FORM_STATUS,
+            isLoading: false,
+            noResult: true,
+          })
+          return
         }
 
-        // filter by 'all | usd | btc | etch...'
-        if (filterKey) {
-          if (
-            filterKey === 'all' ||
-            filterKey === 'crypto' ||
-            filterKey === 'tricrypto' ||
-            filterKey === 'others' ||
-            filterKey === 'stableng' ||
-            filterKey === 'user' ||
-            filterKey === 'cross-chain'
-          ) {
-            tablePoolDatas = sliceState.filterByKey(filterKey, tablePoolDatas, userPoolList)
-          } else {
-            tablePoolDatas = sliceState.filterBySearchText(filterKey, tablePoolDatas, false)
-          }
-        }
-
-        // searchText (show before sortBy if it does not exist in updated search params)
-        if (searchText && !sortSearchTextLast) {
-          tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
-        }
-
-        // sort by table labels 'pool | factory | type | rewards...'
-        if (sortBy && !sortSearchTextLast) {
-          tablePoolDatas = sliceState.sortFn(
-            sortBy,
-            sortByOrder,
-            tablePoolDatas,
-            rewardsApyMapper,
-            tvlMapper,
-            volumeMapper ?? {},
-            campaignRewardsMapper,
-          )
-        }
-
-        // searchText
-        if (searchText && sortSearchTextLast) {
-          tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
-        }
-
-        // get pool ids
-        const result: string[] = []
-        const hidePoolsMapper = networks[rChainId].customPoolIds
-
-        for (const idx in tablePoolDatas) {
-          const poolData = tablePoolDatas[idx]
-          if (!hidePoolsMapper[poolData.pool.id]) {
-            result.push(poolData.pool.id)
-          }
-        }
-
-        // set result
-        sliceState.setStateByActiveKey('result', activeKey, result)
-
-        sliceState.setStateByActiveKey('formStatus', activeKey, {
-          ...(formStatus[activeKey] ?? DEFAULT_FORM_STATUS),
-          noResult: poolDatasCachedOrApi.length === 0 ? false : result.length === 0,
-          isLoading: poolDatasCachedOrApi.length === 0,
-        })
+        sliceState.setSortAndFilterData(
+          rChainId,
+          searchParams,
+          sortSearchTextLast,
+          poolDatas,
+          rewardsApyMapper,
+          volumeMapper,
+          tvlMapper,
+          userPoolList,
+          campaignRewardsMapper,
+        )
+        return
       }
+
+      if (!havePoolDatas && isDefaultSearchParams && poolDatasCached.length > 0) {
+        sliceState.setSortAndFilterCachedData(
+          rChainId,
+          searchParams,
+          poolDatasCached,
+          volumeMapperCached,
+          tvlMapperCached,
+        )
+        return
+      }
+
+      // set loading
+      sliceState.setStateByActiveKey('formStatus', activeKey, { ...DEFAULT_FORM_STATUS })
+
+      // if (
+      //   (filterKey === 'user' && isUndefined(userPoolList)) ||
+      //   (sortBy.startsWith('rewards') && isUndefined(rewardsApyMapper)) ||
+      //   (sortBy === 'volume' && isUndefined(volumeMapper)) ||
+      //   (sortBy === 'tvl' && isUndefined(tvlMapper)) ||
+      //   (sortBy === 'points' && isUndefined(campaignRewardsMapper))
+      // ) {
+      //   sliceState.setStateByActiveKey('formStatus', activeKey, {
+      //     ...DEFAULT_FORM_STATUS,
+      //     isLoading: true,
+      //   })
+      // } else {
+      //   sliceState.setStateByActiveKey('formStatus', activeKey, {
+      //     ...DEFAULT_FORM_STATUS,
+      //     isLoading: !storedResults,
+      //   })
+      //   sliceState.setStateByKeys({ activeKey, formValues })
+      //
+      //   const { excludePoolsMapper } = networks[rChainId]
+      //   let tablePoolDatas = [...poolDatasCachedOrApi.filter(({ pool }) => !excludePoolsMapper[pool.id])]
+      //
+      //   if (
+      //     filterKey !== 'user' &&
+      //     hideSmallPools &&
+      //     (networks[rChainId].showHideSmallPoolsCheckbox || poolDatasCachedOrApi.length > 10)
+      //   ) {
+      //     tablePoolDatas = sliceState.filterSmallTvl(tablePoolDatas, tvlMapper, rChainId)
+      //   }
+      //
+      //   // filter by 'all | usd | btc | etch...'
+      //   if (filterKey) {
+      //     if (
+      //       filterKey === 'all' ||
+      //       filterKey === 'crypto' ||
+      //       filterKey === 'tricrypto' ||
+      //       filterKey === 'others' ||
+      //       filterKey === 'stableng' ||
+      //       filterKey === 'user' ||
+      //       filterKey === 'cross-chain'
+      //     ) {
+      //       tablePoolDatas = sliceState.filterByKey(filterKey, tablePoolDatas, userPoolList)
+      //     } else {
+      //       tablePoolDatas = sliceState.filterBySearchText(filterKey, tablePoolDatas)
+      //     }
+      //   }
+      //
+      //   // searchText (show before sortBy if it does not exist in updated search params)
+      //   if (searchText && !sortSearchTextLast) {
+      //     tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
+      //   }
+      //
+      //   // sort by table labels 'pool | factory | type | rewards...'
+      //   if (sortBy && !sortSearchTextLast) {
+      //     if (sortBy.startsWith('rewards')) await pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)
+      //     tablePoolDatas = sliceState.sortFn(
+      //       sortBy,
+      //       sortByOrder,
+      //       tablePoolDatas,
+      //       rewardsApyMapper,
+      //       tvlMapper,
+      //       volumeMapper ?? {},
+      //       campaignRewardsMapper
+      //     )
+      //   }
+      //
+      //   // searchText
+      //   if (searchText && sortSearchTextLast) {
+      //     tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
+      //   }
+      //
+      //   // get pool ids
+      //   const result = tablePoolDatas.map(({ pool }) => pool.id)
+      //
+      //   // set result
+      //   sliceState.setStateByActiveKey('result', activeKey, result)
+      //
+      //   sliceState.setStateByActiveKey('formStatus', activeKey, {
+      //     ...(formStatus[activeKey] ?? DEFAULT_FORM_STATUS),
+      //     noResult: poolDatasCachedOrApi.length === 0 ? false : result.length === 0,
+      //     isLoading: poolDatasCachedOrApi.length === 0,
+      //   })
+      //
+      //   // get rest of table data
+      //   Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
+      // }
     },
 
     // slice helpers
@@ -345,7 +506,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, { ...DEFAULT_STATE })
     },
   },
 })

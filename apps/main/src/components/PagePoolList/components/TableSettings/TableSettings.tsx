@@ -20,6 +20,7 @@ type Props = {
   isReady: boolean
   activeKey: string
   rChainId: ChainId
+  isLite: boolean
   poolDatasCachedOrApi: PoolData[]
   result: string[] | undefined
   signerAddress: string
@@ -32,6 +33,7 @@ const TableSettings = ({
   isReady,
   activeKey,
   rChainId,
+  isLite,
   poolDatasCachedOrApi,
   result,
   signerAddress,
@@ -56,7 +58,7 @@ const TableSettings = ({
       { key: 'cross-chain', label: t`Cross-chain` },
       { key: 'user', label: t`My Pools` },
     ],
-    []
+    [],
   )
 
   const parsedFilters = useMemo(() => {
@@ -88,8 +90,8 @@ const TableSettings = ({
         />
       </div>
 
-      <FiltersWrapper>
-        {isLgUp ? (
+      <FiltersWrapper $isLite={isLite}>
+        {isLgUp && !isLite ? (
           <>
             <TableButtonFilters
               disabled={false}
@@ -102,7 +104,6 @@ const TableSettings = ({
             <Box flex gridGap={2}>
               <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               <TableCheckboxHideSmallPools
-                rChainId={rChainId}
                 searchParams={searchParams}
                 poolDatasCachedOrApi={poolDatasCachedOrApi}
                 updatePath={updatePath}
@@ -118,7 +119,6 @@ const TableSettings = ({
             />
             <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
             <TableCheckboxHideSmallPools
-              rChainId={rChainId}
               searchParams={searchParams}
               poolDatasCachedOrApi={poolDatasCachedOrApi}
               updatePath={updatePath}
@@ -143,7 +143,7 @@ const Wrapper = styled.div`
   }
 `
 
-const FiltersWrapper = styled(Box)`
+const FiltersWrapper = styled(Box)<{ $isLite: boolean }>`
   align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
@@ -155,7 +155,7 @@ const FiltersWrapper = styled(Box)`
   }
 
   @media (min-width: ${breakpoints.lg}rem) {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: ${({ $isLite }) => ($isLite ? 'auto 1fr auto' : '1fr auto auto')};
   }
 `
 

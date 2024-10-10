@@ -50,7 +50,7 @@ const IntegrationsComp = ({
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues({ ...formValues, ...updatedFormValues })
     },
-    [formValues, setFormValues]
+    [formValues, setFormValues],
   )
 
   const updatePath = useCallback(
@@ -70,7 +70,7 @@ const IntegrationsComp = ({
 
       navigate(pathname)
     },
-    [integrationsTags, navigate, params, rChainId, searchParams]
+    [integrationsTags, navigate, params, rChainId, searchParams],
   )
 
   const filterKeyLabel = useMemo(() => {

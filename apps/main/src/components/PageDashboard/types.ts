@@ -1,43 +1,28 @@
-import React from 'react'
-import { UserBaseProfit, UserClaimableToken, UserTokenProfit } from '@/types'
+import type { UserBaseProfit, UserClaimableToken, UserTokenProfit } from '@/types'
+import { SORT_ID } from '@/components/PageDashboard/utils'
 
 export type Order = 'asc' | 'desc'
 
-export type SortId =
-  | 'poolName'
-  | 'baseApy'
-  | 'userCrvApy'
-  | 'incentivesRewardsApy'
-  | 'liquidityUsd'
-  | 'baseProfit'
-  | 'crvProfit'
-  | 'claimableCrv'
-
-export type WalletDashboardData = {
-  totalLiquidityUsd: number
-  totalBaseProfit: number
-  totalCrvProfit: { total: number; price: number }
-  totalOtherProfit: { [tokenAddress: string]: { symbol: string; total: number; price: number } }
-  totalProfitUsd: number
-  totalClaimableCrv: { total: number; price: number }
-  totalClaimableOther: { [tokenAddress: string]: { symbol: string; total: number; price: number } }
-  totalClaimableUsd: number
-}
+export type SortId = keyof typeof SORT_ID
 
 export type WalletPoolData = {
   poolAddress: string
   poolId: string
   poolName: string
-  poolRewardsApy: RewardsApy | undefined
   userCrvApy: number
   liquidityUsd: string
-  baseProfit: UserBaseProfit | undefined
-  crvProfit: UserTokenProfit | undefined
-  tokensProfit: UserTokenProfit[] | undefined
+  profitBase: UserBaseProfit | undefined
+  profitCrv: UserTokenProfit | undefined
+  profitOthers: UserTokenProfit[]
+  profitsTotalUsd: number
   claimableCrv: UserClaimableToken[] | undefined
-  claimableOther: UserClaimableToken[]
+  claimableOthers: UserClaimableToken[]
+  claimablesTotalUsd: number
   percentStaked: string
 }
+
+export type DashboardDataMapper = { [poolId: string]: WalletPoolData }
+export type DashboardDatasMapper = { [searchedAddress: string]: DashboardDataMapper }
 
 export type FormValues = {
   sortBy: SortId
@@ -45,16 +30,7 @@ export type FormValues = {
   walletAddress: string
 }
 
-export type TableLabel = {
-  poolName: { name: string; mobile: string }
-  baseApy: { name: string; mobile: string }
-  userCrvApy: { name: React.ReactNode; mobile: string }
-  incentivesRewardsApy: { name: string; mobile: string }
-  liquidityUsd: { name: string; mobile: string }
-  baseProfit: { name: string; mobile: string }
-  crvProfit: { name: string; mobile: string }
-  claimableCrv: { name: string; mobile: string }
-}
+export type TableLabel = Record<SortId, { name: string; mobile: string }>
 
 export type StepKey = 'WITHDRAW' | 'CLAIM' | ''
 
@@ -65,4 +41,17 @@ export type FormStatus = {
   formTypeCompleted: StepKey
   step: StepKey
   error: string
+}
+
+export type DashboardTableRowProps = {
+  rChainId: ChainId
+  isLite: boolean
+  imageBaseUrl: string
+  tableLabel: TableLabel
+  formValues: FormValues
+  poolData: PoolData
+  poolRewardsApy: RewardsApy | undefined
+  dashboardData: WalletPoolData
+  fetchBoost: { fetchUserPoolBoost: (() => Promise<string>) | null }
+  updatePath: (poolId: string) => void
 }

@@ -22,8 +22,6 @@ const TableRowNoResult = ({
     return { noResultKey: '', value: '' }
   }, [searchText, updatePath])
 
-  console.log('props', props)
-
   return (
     <Tr>
       <Td colSpan={colSpan}>

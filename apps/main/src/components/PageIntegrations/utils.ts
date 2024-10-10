@@ -5,7 +5,7 @@ import { visibleNetworksList } from '@/networks'
 export function parseSearchParams(
   searchParams: URLSearchParams | undefined,
   rChainId: ChainId | '',
-  integrationsTags: IntegrationsTags | null
+  integrationsTags: IntegrationsTags | null,
 ) {
   const pFilterKey = searchParams?.get('filter')
   const pNetworkId = searchParams?.get('networkId')
@@ -21,7 +21,9 @@ export function parseSearchParams(
 
   if (pNetworkId) {
     parsed.filterNetworkId =
-      visibleNetworksList.find(({ chainId }) => Number(pNetworkId) === chainId)?.chainId?.toString() ?? ''
+      Array.from(visibleNetworksList)
+        .find(({ chainId }) => Number(pNetworkId) === chainId)
+        ?.chainId?.toString() ?? ''
   }
 
   return parsed

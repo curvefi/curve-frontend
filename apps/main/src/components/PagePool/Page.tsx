@@ -31,7 +31,6 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const hidePoolsMapper = rChainId ? networks[rChainId].customPoolIds : null
   const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
@@ -43,32 +42,22 @@ const Page: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (hidePoolsMapper) {
-      const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
-      if (!rFormType || !rPoolId || (rPoolId && hidePoolsMapper[rPoolId])) {
-        navigate(reRoutePathname)
-      } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
-        ;(async () => {
-          const foundPoolData = await fetchNewPool(curve, rPoolId)
-          if (!foundPoolData) {
-            navigate(reRoutePathname)
-          }
-        })()
-      }
+    if (!rChainId) return
+
+    const { excludePoolsMapper } = networks[rChainId]
+    const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
+    if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
+      navigate(reRoutePathname)
+    } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
+      ;(async () => {
+        const foundPoolData = await fetchNewPool(curve, rPoolId)
+        if (!foundPoolData) {
+          navigate(reRoutePathname)
+        }
+      })()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    curve?.chainId,
-    fetchNewPool,
-    haveAllPools,
-    isLoadingApi,
-    pageLoaded,
-    poolData,
-    rChainId,
-    rFormType,
-    rPoolId,
-    hidePoolsMapper,
-  ])
+  }, [curve?.chainId, fetchNewPool, haveAllPools, isLoadingApi, pageLoaded, poolData, rChainId, rFormType, rPoolId])
 
   return (
     <>

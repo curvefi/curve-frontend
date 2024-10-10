@@ -2,6 +2,7 @@ import type { SortId } from '@/components/PageDashboard/types'
 
 import styled from 'styled-components'
 
+import { SORT_ID } from '@/components/PageDashboard/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { haveRewardsApy } from '@/utils/utilsCurvejs'
 
@@ -61,13 +62,13 @@ const TableCellRewards = ({
               : {})}
             size="md"
           >
-            {sortBy === 'userCrvApy' ? <strong>{parsedUserCrvApy}</strong> : parsedUserCrvApy}{' '}
+            {sortBy === SORT_ID.userCrvApy ? <strong>{parsedUserCrvApy}</strong> : parsedUserCrvApy}{' '}
             {!!boostedCrvApy ? (
               <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText>
             ) : null}
           </Chip>
         ) : null}
-        <TableCellRewardsOthers isHighlight={sortBy === 'incentivesRewardsApy'} rewardsApy={rewardsApy} />
+        <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />
       </>
     )
   }
@@ -75,7 +76,7 @@ const TableCellRewards = ({
   if (rewardsApyKey === 'baseApy') {
     return (
       <RewardsWrapper>
-        <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === 'baseApy'} poolData={poolData} />
+        <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === SORT_ID.rewardBase} poolData={poolData} />
       </RewardsWrapper>
     )
   } else if (rewardsApyKey === 'rewardsApy') {
@@ -85,7 +86,11 @@ const TableCellRewards = ({
       <RewardsWrapper>
         {typeof base?.day !== 'undefined' ? (
           <div>
-            <TableCellRewardsBase base={rewardsApy?.base} isHighlight={sortBy === 'baseApy'} poolData={poolData} />
+            <TableCellRewardsBase
+              base={rewardsApy?.base}
+              isHighlight={sortBy === SORT_ID.rewardBase}
+              poolData={poolData}
+            />
           </div>
         ) : (
           '-'
