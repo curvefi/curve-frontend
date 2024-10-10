@@ -6,6 +6,7 @@ import merge from 'lodash/merge'
 import debounce from 'lodash/debounce'
 
 import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
+import createNetworksSlice, { NetworksSlice } from '@/store/createNetworksSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
 import createPoolsSlice, { PoolsSlice } from '@/store/createPoolsSlice'
@@ -28,6 +29,7 @@ import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/store/createPoolWi
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
 
 export type State = GlobalSlice &
+  NetworksSlice &
   GasSlice &
   WalletSlice &
   CacheSlice &
@@ -51,6 +53,7 @@ export type State = GlobalSlice &
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
+  ...createNetworksSlice(set, get),
   ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
   ...createWalletSlice(set, get),
@@ -76,6 +79,11 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
 // the storage crashes in some browsers if the size of the object is too big
 const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
 
+// TODO: DELETE, only for testing
+const sixDaysFromNow = new Date()
+sixDaysFromNow.setDate(sixDaysFromNow.getDate() + 6)
+const timestamp = sixDaysFromNow.getTime()
+
 // cache all items in CacheSlice store
 const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'curve-app-store-cache',
@@ -94,7 +102,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
     }, 1000),
     removeItem: (name) => localStorage.removeItem(name),
   },
-  version: 19, // update version number to prevent UI from using cache
+  version: timestamp, // update version number to prevent UI from using cache
 }
 
 const useStore =

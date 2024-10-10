@@ -7,6 +7,7 @@ import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
 import type stablecoinApi from '@curvefi/stablecoin-api'
+import type { BaseConfig } from '@/ui/utils'
 
 import curvejsApi from '@/lib/apiCrvusd'
 
@@ -51,31 +52,10 @@ declare global {
     curve: Curve | null
   }
 
-  interface NetworkConfig {
+  interface NetworkConfig extends BaseConfig {
     api: typeof curvejsApi
-    blocknativeSupport: boolean
-    gasPricesUnit: string
-    gasPricesUrl: string
-    gasPricesDefault: number
-    hex: string
-    icon: FunctionComponent<SVGProps<SVGSVGElement>>
-    id: NetworkEnum
-    imageBaseUrl: string
-    integrations: {
-      imageBaseurl: string
-      listUrl: string
-      tagsUrl: string
-    }
-    isActiveNetwork: boolean // show UI for this network default true
-    name: string
-    networkId: ChainId
-    orgUIPath: string
-    rpcUrlConnectWallet: string
-    rpcUrl: string
-    scanAddressPath: (hash: string) => string
-    scanTxPath: (hash: string) => string
-    showInSelectNetwork: boolean
-    symbol: string
+    isActiveNetwork: boolean // show network in UI's select dropdown list (ready for public)
+    showInSelectNetwork: boolean // show network in UI
   }
 
   type PageWidthClassName = 'page-wide' | 'page-large' | 'page-medium' | 'page-small' | 'page-small-x' | 'page-small-xx'

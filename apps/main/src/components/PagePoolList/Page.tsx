@@ -25,42 +25,39 @@ const Page: NextPage = () => {
   const location = useLocation()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const { routerParams, curve } = usePageOnMount(params, location, navigate)
   const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
-  const { chainId } = curve ?? {}
 
-  const isLoadingApi = useStore((state) => state.isLoadingApi)
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
+  const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
-
-  const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
-  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
-  const poolDatasLength = (poolDatasCachedOrApi ?? []).length
 
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
+
+  const { isLite } = networks[rChainId]
+  const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
+  const defaultSortBy = isLite ? 'tvl' : 'volume'
 
   useEffect(() => {
     scrollToTop()
   }, [])
 
-  useEffect(() => {
-    if (pageLoaded && !isLoadingApi && chainId) {
-      fetchMissingPoolsRewardsApy(chainId, poolDatas)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingApi, pageLoaded])
-
-  const TABLE_LABEL: PoolListTableLabel = {
-    name: { name: t`Pool` },
-    rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
-    rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
-    rewardsOther: { name: t`Incentives`, mobile: t`Rewards Incentives` },
-    tvl: { name: t`TVL` },
-    volume: { name: t`Volume` },
-    points: { name: t`Points` },
-  }
+  const TABLE_LABEL: PoolListTableLabel = useMemo(
+    () => ({
+      name: { name: t`Pool` },
+      ...(isLite
+        ? { rewardsOtherLite: { name: t`Rewards`, mobile: t`Rewards` } }
+        : {
+            rewardsBase: { name: t`Base vAPY`, mobile: t`Rewards Base` },
+            rewardsCrv: { name: 'CRV', mobile: t`Rewards CRV` },
+            rewardsOther: { name: t`Incentives`, mobile: t`Rewards Incentives` },
+          }),
+      tvl: { name: t`TVL` },
+      volume: { name: t`Volume` },
+      points: { name: t`Points` },
+    }),
+    [isLite],
+  )
 
   const updatePath = useCallback(
     (updatedSearchParams: Partial<SearchParams>) => {
@@ -76,7 +73,7 @@ const Page: NextPage = () => {
       if (hideSmallPools === false && !('hideSmallPools' in updatedSearchParams)) {
         searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
       }
-      if (sortBy && sortBy !== 'volume' && !('sortBy' in updatedSearchParams)) {
+      if (sortBy && sortBy !== defaultSortBy && !('sortBy' in updatedSearchParams)) {
         searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
       }
       if (sortByOrder && sortByOrder !== 'desc' && !('sortByOrder' in updatedSearchParams)) {
@@ -96,13 +93,13 @@ const Page: NextPage = () => {
       const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
       navigate(pathname)
     },
-    [navigate, params, parsedSearchParams]
+    [defaultSortBy, navigate, params, parsedSearchParams],
   )
 
   useEffect(() => {
     if (rChainId) {
       const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get('sortBy') || 'volume').toLowerCase()
+      const paramSortBy = (searchParams.get('sortBy') || defaultSortBy).toLowerCase()
       const paramOrder = (searchParams.get('order') || 'desc').toLowerCase()
       const paramHideSmallPools = searchParams.get('hideSmallPools') || 'true'
       const searchText = decodeURIComponent(searchParams.get('search') || '')
@@ -122,13 +119,13 @@ const Page: NextPage = () => {
           filterKey: paramFilterKey as FilterKey,
           hideSmallPools: paramHideSmallPools === 'true',
           searchText,
-          sortBy: (Object.keys(TABLE_LABEL).find((k) => k.toLowerCase() === paramSortBy) ?? 'volume') as SortKey,
+          sortBy: (Object.keys(TABLE_LABEL).find((k) => k.toLowerCase() === paramSortBy) ?? defaultSortBy) as SortKey,
           sortByOrder: (['desc', 'asc'].find((k) => k.toLowerCase() === paramOrder) ?? 'desc') as Order,
         })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams])
+  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy])
 
   const sortSearchTextLast = useMemo(() => {
     const searchParamsOrder: { key: string; value: string }[] = []
@@ -143,12 +140,13 @@ const Page: NextPage = () => {
   return (
     <>
       <DocumentHead title={t`Pools`} />
-      <Container>
+      <Container $isLite={isLite}>
         {rChainId && parsedSearchParams && (
           <PoolList
             rChainId={rChainId}
             curve={curve}
             params={params}
+            isLite={isLite}
             tableLabels={TABLE_LABEL}
             searchParams={parsedSearchParams}
             sortSearchTextLast={sortSearchTextLast}
@@ -162,15 +160,15 @@ const Page: NextPage = () => {
   )
 }
 
-const Container = styled.div`
+const Container = styled.div<{ $isLite: boolean }>`
   margin: 0 auto;
-  max-width: var(--width);
+  max-width: ${({ $isLite }) => ($isLite ? '870px' : `var(--width)`)};
   min-height: 50vh;
   background-color: var(--table--background-color);
   border: 1px solid var(--box--secondary--border);
 
   @media (min-width: ${breakpoints.lg}rem) {
-    margin: 1.5rem;
+    margin: 1.5rem auto;
   }
 `
 
