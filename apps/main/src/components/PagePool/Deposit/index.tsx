@@ -12,7 +12,6 @@ import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
 import { StyledTabSlide } from '@/components/PagePool/styles'
 import { SlideTab, SlideTabs } from '@/ui/TabSlide'
 import AlertBox from '@/ui/AlertBox'
-import AlertCompensation from '@/components/PagePool/Deposit/components/AlertCompensation'
 import FormDeposit from '@/components/PagePool/Deposit/components/FormDeposit'
 import FormDepositStake from '@/components/PagePool/Deposit/components/FormDepositStake'
 import FormStake from '@/components/PagePool/Deposit/components/FormStake'
@@ -84,10 +83,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ formType, label }, idx) => {
-              if (
-                (formType === 'DEPOSIT_STAKE' && !hasDepositAndStake) ||
-                networks[rChainId].forms.indexOf(formType) === -1
-              ) {
+              if (formType === 'DEPOSIT_STAKE' && !hasDepositAndStake) {
                 return <React.Fragment key={label}></React.Fragment>
               }
 
@@ -108,10 +104,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
       )}
 
       {poolAlert && poolAlert.isDisableDeposit ? (
-        <>
-          <AlertCompensation rChainId={rChainId} params={params} poolId={poolDataCacheOrApi.pool.id} />
-          <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-        </>
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       ) : (
         <>
           {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}

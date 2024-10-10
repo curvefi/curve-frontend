@@ -113,7 +113,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const imageBaseUrl = networks[rChainId].imageBaseUrl
+  const { isLite, imageBaseUrl } = networks[rChainId]
   const poolAddress = poolData?.pool.address
 
   const pricesApi = networks[rChainId].pricesApi
@@ -242,7 +242,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   return (
     <>
-      {pricesApiPoolData && pricesApi && chartExpanded && (
+      {!isLite && pricesApiPoolData && pricesApi && chartExpanded && (
         <PriceAndTradesExpandedContainer>
           <Box flex>
             <TitleComp />
@@ -330,7 +330,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               <CampaignRewardsBanner address={poolAddress} />
             </Box>
           )}
-          {pricesApiPoolData && pricesApi && !chartExpanded && (
+          {!isLite && pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
             </PriceAndTradesWrapper>

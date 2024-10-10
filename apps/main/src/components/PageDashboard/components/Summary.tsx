@@ -1,27 +1,24 @@
-import type { Params } from 'react-router'
-import type { FormValues } from '@/components/PageDashboard/types'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 
+import React, { useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
 import { Item, Section } from 'react-stately'
-import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_WALLET_DASHBOARD_DATA } from '@/components/PageDashboard/utils'
 import { breakpoints } from '@/ui/utils/responsive'
-import { formatNumber, shortenAccount } from '@/ui/utils'
-import networks from '@/networks'
+import { shortenAccount } from '@/ui/utils'
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 import useStore from '@/store/useStore'
 
-import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import ComboBoxAddress from '@/components/PageDashboard/components/ComboBoxAddress'
 import FormClaimFees from '@/components/PageDashboard/components/FormClaimFees'
 import FormVecrv from '@/components/PageDashboard/components/FormVecrv'
-import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
+import { SpinnerWrapper } from '@/ui/Spinner'
 import Stats from '@/ui/Stats'
 import SummaryClaimable from '@/components/PageDashboard/components/SummaryClaimable'
 import SummaryRecurrence from '@/components/PageDashboard/components/SummaryRecurrence'
+import SummaryTotal from '@/components/PageDashboard/components/SummaryTotal'
 import TabSlide, { SlideTab, SlideTabs } from '@/ui/TabSlide'
 
 type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
@@ -32,32 +29,16 @@ export const tooltipProps: TooltipProps = {
   noWrap: true,
 }
 
-const Summary = ({
-  activeKey,
-  curve,
-  rChainId,
-  params,
-  updateFormValues,
-}: {
-  activeKey: string
-  curve: CurveApi | null
-  rChainId: ChainId
-  params: Readonly<Params<string>>
-  updateFormValues: (updatedFormValues: Partial<FormValues>) => void
-}) => {
+const Summary: React.FC = () => {
+  const { rChainId, formValues, updateFormValues } = useDashboardContext()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const isMdUp = useStore((state) => state.isMdUp)
-  const formValues = useStore((state) => state.dashboard.formValues)
-  const dashboardLoading = useStore((state) => state.dashboard.loading)
   const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
-  const walletDashboardData = useStore(
-    (state) => state.dashboard.walletDashboardData[activeKey] ?? DEFAULT_WALLET_DASHBOARD_DATA
-  )
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabSlideIdx, setSelectedTabSlideIdx] = useState(0)
-  const networkHaveLockedCrv = networks[rChainId].forms.indexOf('BOOSTING') !== -1
+  const networkHaveLockedCrv = rChainId === 1
 
   const TABS: { label: string; key: SlideKey }[] = [
     { label: t`Daily Profits`, key: 'DAY_PROFITS' },
@@ -82,34 +63,16 @@ const Summary = ({
     setTabPositions(updatedTabPositions)
   }, [])
 
-  const haveTotalLiquidityUsd =
-    formValues.walletAddress && typeof walletDashboardData?.totalLiquidityUsd !== 'undefined'
-  const loadingTotalBalances = dashboardLoading && !haveTotalLiquidityUsd
-  const totalBalanceValue = !loadingTotalBalances && haveTotalLiquidityUsd ? walletDashboardData.totalLiquidityUsd : ''
-
   return (
     <div>
       <TitleWrapper className={`grid-total main ${networkHaveLockedCrv ? 'networkHaveLockedCrv' : ''}`}>
-        {/* total balance */}
-        <StyledTotalBalanceWrapper style={{ gridArea: 'grid-summary-total-balance' }}>
-          <H2>{t`Total Balances`}</H2>
-          <SummaryInnerContent>
-            {loadingTotalBalances && (
-              <SummarySpinnerWrapper isMain>
-                <Spinner />
-              </SummarySpinnerWrapper>
-            )}
-            <TotalBalancesValue tooltip={formatNumber(totalBalanceValue)} tooltipProps={{ noWrap: true }}>
-              {formatNumber(totalBalanceValue, { notation: 'compact', defaultValue: '0' })}
-            </TotalBalancesValue>
-          </SummaryInnerContent>
-        </StyledTotalBalanceWrapper>
+        <SummaryTotal />
 
         {/* veCrv */}
         {networkHaveLockedCrv && (
           <div style={{ gridArea: 'grid-summary-vecrv' }}>
-            <FormVecrv activeKey={activeKey} params={params} curve={curve} walletAddress={formValues.walletAddress} />
-            <FormClaimFees activeKey={activeKey} loading={dashboardLoading} walletAddress={formValues.walletAddress} />
+            <FormVecrv />
+            <FormClaimFees />
           </div>
         )}
 
@@ -140,18 +103,8 @@ const Summary = ({
       <ContentWrapper>
         {isMdUp ? (
           <>
-            <SummaryRecurrence
-              title="Daily"
-              dashboardLoading={dashboardLoading}
-              walletAddress={formValues.walletAddress}
-              walletDashboardData={walletDashboardData}
-            />
-            <SummaryClaimable
-              title={TABS[1].label}
-              dashboardLoading={dashboardLoading}
-              walletAddress={formValues.walletAddress}
-              walletDashboardData={walletDashboardData}
-            />
+            <SummaryRecurrence title="Daily" />
+            <SummaryClaimable title={TABS[1].label} />
           </>
         ) : (
           <>
@@ -175,20 +128,8 @@ const Summary = ({
                 </SlideTabs>
               </StyledTabSlide>
               <div>
-                {selectedTabSlideIdx === 0 && (
-                  <SummaryRecurrence
-                    dashboardLoading={dashboardLoading}
-                    walletAddress={formValues.walletAddress}
-                    walletDashboardData={walletDashboardData}
-                  />
-                )}
-                {selectedTabSlideIdx === 1 && (
-                  <SummaryClaimable
-                    dashboardLoading={dashboardLoading}
-                    walletAddress={formValues.walletAddress}
-                    walletDashboardData={walletDashboardData}
-                  />
-                )}
+                {selectedTabSlideIdx === 0 && <SummaryRecurrence />}
+                {selectedTabSlideIdx === 1 && <SummaryClaimable />}
               </div>
             </TabContentWrapper>
           </>
@@ -244,18 +185,7 @@ export const SummaryTitle = styled.h3`
   }
 `
 
-const TotalBalancesValue = styled(Chip)`
-  font-size: var(--font-size-7);
-  font-weight: bold;
-`
-
-const H2 = styled.h2`
-  font-family: var(--button--font);
-  font-size: var(--font-size-3);
-  margin-bottom: 0.25rem;
-`
-
-const StyledTotalBalanceWrapper = styled.div`
+export const StyledTotalBalanceWrapper = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
 `

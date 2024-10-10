@@ -33,8 +33,6 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
     ;(evt.target as HTMLImageElement).src = defaultSrc
   }
 
-  console.log(props)
-
   return (
     <Select {...props} className={className} items={items} aria-label="Select network" label="">
       {({ chainId, src, srcDark, label }) => {
@@ -44,7 +42,7 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
               <IconWrapper>
                 <Image
                   alt={label}
-                  onError={(evt) => setTimeout(() => handleOnError(evt, src), 0)}
+                  // onError={(evt) => setTimeout(() => handleOnError(evt, src), 0)}
                   src={isDarkTheme ? srcDark : src}
                   loading="lazy"
                   width="18"

@@ -38,7 +38,7 @@ const MySharesStats = ({
   const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
   const userWithdrawAmounts = useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey] ?? [])
 
-  const haveBoosting = networks[rChainId].forms.indexOf('BOOSTING') !== -1
+  const haveBoosting = rChainId === 1
   const haveCrvRewards = rewardsApy?.crv?.[0] !== 0
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 

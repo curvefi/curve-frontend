@@ -1,16 +1,16 @@
-import type { PagePoolList, SearchParams } from '@/components/PagePoolList/types'
+import type { ColumnKeys, PagePoolList, SearchParams } from '@/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import { DEFAULT_FORM_STATUS, getPoolDatasCached, getPoolListActiveKey } from '@/store/createPoolListSlice'
+import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
+import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
-import { getImageBaseUrl, getVolumeTvlStr } from '@/utils/utilsCurvejs'
-import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
+import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
@@ -26,6 +26,7 @@ import ConnectWallet from '@/components/ConnectWallet'
 const PoolList = ({
   rChainId,
   curve,
+  isLite,
   searchParams,
   sortSearchTextLast,
   searchTermMapper,
@@ -40,7 +41,7 @@ const PoolList = ({
   const isXSmDown = useStore((state) => state.isXSmDown)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const poolDatas = useStore((state) => state.pools.pools[rChainId])
+  const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const results = useStore((state) => state.poolList.result)
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
@@ -58,28 +59,47 @@ const PoolList = ({
 
   const [showDetail, setShowDetail] = useState('')
 
-  const result =
-    results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
-
-  const { signerAddress = '' } = curve ?? {}
-  const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
-  const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
-  const poolDatasLength = (poolDatasCachedOrApi ?? []).length
-  const tvlMapperCachedOrApi = useMemo(() => tvlMapper ?? tvlMapperCached ?? {}, [tvlMapper, tvlMapperCached])
-  const volumeMapperCachedOrApi = useMemo(
-    () => volumeMapper ?? volumeMapperCached ?? {},
-    [volumeMapper, volumeMapperCached]
+  const result = useMemo(
+    () =>
+      (results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0])
+        ? results[prevActiveKey]
+        : undefined,
+    [activeKey, prevActiveKey, results],
   )
 
-  const rewardsApyMapperStr = useMemo(() => getRewardsApyStr(rewardsApyMapper, {}), [rewardsApyMapper])
-
-  const userPoolListStr = useMemo(() => getUserPoolListStr(userPoolList), [userPoolList])
-  const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapper), [volumeMapper])
+  const { chainId, signerAddress = '' } = curve ?? {}
   const imageBaseUrl = getImageBaseUrl(rChainId)
-  const isReady = (poolDatasLength > 0 && volumeMapperStr !== '') || (poolDatasLength === 0 && formStatus.noResult)
-  const haveMapperStr = useMemo(() => {
-    return Object.keys(tvlMapperCachedOrApi ?? {}).length > 0 && !!`${volumeMapperStr}${rewardsApyMapperStr}`
-  }, [rewardsApyMapperStr, tvlMapperCachedOrApi, volumeMapperStr])
+  const showInPoolColumn = !!signerAddress
+
+  const poolDatas = useMemo(() => Object.values(poolDataMapper ?? {}), [poolDataMapper])
+  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
+
+  const isReady = useMemo(() => {
+    // volume
+    const haveVolumeMapper = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
+    const volumeCacheOrApi = volumeMapper || volumeMapper || {}
+    const haveVolume = haveVolumeMapper || Object.keys(volumeCacheOrApi).length > 0
+
+    // tvl
+    const haveTvlMapper = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
+    const tvlCacheOrApi = tvlMapper || tvlMapperCached || {}
+    const haveTvl = haveTvlMapper || Object.keys(tvlCacheOrApi).length > 0
+
+    return isLite ? haveTvl : haveVolume
+  }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
+
+  const columnKeys = useMemo(() => {
+    let keys: ColumnKeys[] = []
+    if (showInPoolColumn) keys.push(COLUMN_KEYS.inPool)
+    keys.push(COLUMN_KEYS.poolName)
+
+    if (isLite) {
+      return keys.concat([COLUMN_KEYS.rewardsLite, COLUMN_KEYS.tvl])
+    }
+
+    isMdUp ? keys.push(COLUMN_KEYS.rewardsDesktop) : keys.push(COLUMN_KEYS.rewardsMobile)
+    return keys.concat([COLUMN_KEYS.volume, COLUMN_KEYS.tvl])
+  }, [isLite, isMdUp, showInPoolColumn])
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
@@ -87,25 +107,32 @@ const PoolList = ({
         rChainId,
         searchParams,
         sortSearchTextLast,
-        poolDatasCachedOrApi,
-        rewardsApyMapper,
-        volumeMapperCachedOrApi,
-        tvlMapperCachedOrApi,
-        userPoolList,
-        campaignRewardsMapper
+        typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
+        poolDatasCached,
+        rewardsApyMapper ?? {},
+        volumeMapper ?? {},
+        volumeMapperCached ?? {},
+        tvlMapper ?? {},
+        tvlMapperCached ?? {},
+        userPoolList ?? {},
+        campaignRewardsMapper,
       )
     },
     [
+      campaignRewardsMapper,
+      poolDataMapper,
+      poolDatas,
+      poolDatasCached,
       rChainId,
-      poolDatasCachedOrApi,
       rewardsApyMapper,
       setFormValues,
       sortSearchTextLast,
-      tvlMapperCachedOrApi,
-      volumeMapperCachedOrApi,
+      tvlMapper,
+      tvlMapperCached,
       userPoolList,
-      campaignRewardsMapper,
-    ]
+      volumeMapper,
+      volumeMapperCached,
+    ],
   )
 
   usePageVisibleInterval(
@@ -115,16 +142,16 @@ const PoolList = ({
       }
     }, [curve, fetchPoolsRewardsApy, poolDatas, rChainId, rewardsApyMapper]),
     REFRESH_INTERVAL['11m'],
-    isPageVisible
+    isPageVisible,
   )
 
   // init
   useEffect(() => {
-    if (!haveMapperStr || !searchParams) return
+    if (!isReady || !searchParams) return
 
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [haveMapperStr, userPoolListStr, searchParams, curve?.signerAddress])
+  }, [isReady, chainId, signerAddress, searchParams])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -133,7 +160,6 @@ const PoolList = ({
     }
   }, [initCampaignRewards, rChainId, initiated])
 
-  const showInPoolColumn = !!curve?.signerAddress
   let colSpan = isMdUp ? 7 : 4
   if (showHideSmallPools) {
     colSpan++
@@ -145,7 +171,8 @@ const PoolList = ({
         isReady={isReady}
         activeKey={activeKey}
         rChainId={rChainId}
-        poolDatasCachedOrApi={poolDatasCachedOrApi}
+        isLite={isLite}
+        poolDatasCachedOrApi={poolDatas ?? poolDatasCached}
         result={result}
         signerAddress={signerAddress}
         searchParams={searchParams}
@@ -167,32 +194,32 @@ const PoolList = ({
             <TableHeadMobile showInPoolColumn={showInPoolColumn} />
           ) : (
             <TableHead
-              isMdUp={isMdUp}
+              columnKeys={columnKeys}
+              isLite={isLite}
               isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
               isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
               isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
               searchParams={sortSearchTextLast ? { ...searchParams, sortBy: '' } : searchParams}
-              showInPoolColumn={showInPoolColumn}
               tableLabels={tableLabels}
               updatePath={updatePath}
             />
           )}
           <Tbody $borderBottom>
-            {formStatus.noResult ? (
+            {isReady && formStatus.noResult ? (
               <TableRowNoResult
                 colSpan={colSpan}
                 searchParams={searchParams}
                 signerAddress={signerAddress}
                 updatePath={updatePath}
               />
-            ) : Array.isArray(result) &&
-              Object.keys(poolDataMapperCached ?? {}).length &&
-              Object.keys(tvlMapperCached ?? {}).length ? (
+            ) : isReady && Array.isArray(result) ? (
               <>
                 {result.map((poolId: string, index: number) => (
                   <PoolRow
                     key={poolId}
                     index={index}
+                    columnKeys={columnKeys}
+                    isLite={isLite}
                     poolId={poolId}
                     rChainId={rChainId}
                     searchParams={searchParams}

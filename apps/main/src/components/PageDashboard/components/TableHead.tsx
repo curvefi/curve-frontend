@@ -1,53 +1,39 @@
 import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
+import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
-import useStore from '@/store/useStore'
+
+import { SORT_ID } from '@/components/PageDashboard/utils'
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 
 import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { breakpoints } from '@/ui/utils'
+import styled from 'styled-components'
 
-const TableHead = ({
-  loading,
-  resultRewardsCrvCount,
-  resultRewardsOtherCount,
-  tableLabel,
-  updateFormValues,
-}: {
-  loading: boolean
-  resultRewardsCrvCount: number
-  resultRewardsOtherCount: number
-  tableLabel: TableLabel
-  updateFormValues: (updatedFormValues: Partial<FormValues>) => void
-}) => {
-  const isXSmDown = useStore((state) => state.isXSmDown)
-  const formValues = useStore((state) => state.dashboard.formValues)
+const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
+  const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()
 
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
-    updateFormValues({ sortBy: sortBy as SortId, sortByOrder: sortByOrder as Order })
+    updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder: sortByOrder as Order })
   }
 
   const props: Omit<TheadSortButtonProps<SortId>, 'sortIdKey'> = {
-    loading,
+    loading: isLoading,
     sortBy: formValues.sortBy,
     sortByOrder: formValues.sortByOrder,
     handleBtnClickSort,
   }
 
-  return isXSmDown ? (
+  const BASE_TOOLTIP = t`Variable APY based on today's trading activity`
+  const OTHERS_TOOLTIP = t`Token APR based on current prices of tokens and reward rates`
+
+  return (
     <>
       <colgroup>
-        <col className="left" />
-      </colgroup>
-      <Thead>
-        <tr></tr>
-      </Thead>
-    </>
-  ) : (
-    <>
-      <colgroup>
-        <col className="poolName left" />
+        <Col className="poolName left" />
         <col className="right" />
         <col className="right" />
         <col className="right" />
@@ -56,57 +42,54 @@ const TableHead = ({
       <Thead>
         <tr>
           <Th className="left">
-            <TheadSortButton sortIdKey="poolName" {...props} indicatorPlacement="right">
+            <TheadSortButton sortIdKey={SORT_ID.poolName} {...props} indicatorPlacement="right">
               {tableLabel.poolName.name}
             </TheadSortButton>
           </Th>
-          <Th className="right">
-            <Box grid gridRowGap={2}>
-              <TheadSortButton sortIdKey="baseApy" {...props}>
-                {tableLabel.baseApy.name}{' '}
-                <IconTooltip placement="top">{t`Variable APY based on today's trading activity`}</IconTooltip>
-              </TheadSortButton>
 
-              <Box grid gridRowGap={1}>
-                <div>
-                  {t`Rewards tAPR`}{' '}
-                  <IconTooltip placement="top">{t`Token APR based on current prices of tokens and reward rates`}</IconTooltip>
-                </div>
-                <Box grid gridAutoFlow="column" flexAlignItems="center" gridColumnGap={2}>
-                  <TheadSortButton disabled={resultRewardsCrvCount === 0} sortIdKey="userCrvApy" nowrap {...props}>
-                    {tableLabel.userCrvApy.name}
-                  </TheadSortButton>
-                  +
-                  <TheadSortButton
-                    disabled={resultRewardsOtherCount === 0}
-                    sortIdKey="incentivesRewardsApy"
-                    nowrap
-                    {...props}
-                  >
-                    {tableLabel.incentivesRewardsApy.name}
-                  </TheadSortButton>
+          <Th className="right">
+            {isLite ? (
+              <TheadSortButton sortIdKey={SORT_ID.rewardOthers} nowrap {...props}>
+                {t`Rewards tAPR`} <IconTooltip placement="top">{OTHERS_TOOLTIP}</IconTooltip>
+              </TheadSortButton>
+            ) : (
+              <Box grid gridRowGap={2}>
+                <TheadSortButton sortIdKey={SORT_ID.rewardBase} {...props}>
+                  {tableLabel.rewardBase.name} <IconTooltip placement="top">{BASE_TOOLTIP}</IconTooltip>
+                </TheadSortButton>
+                <Box grid gridRowGap={1}>
+                  <div>
+                    {t`Rewards tAPR`} <IconTooltip placement="top">{OTHERS_TOOLTIP}</IconTooltip>
+                  </div>
+                  <Box grid gridAutoFlow="column" flexAlignItems="center" gridColumnGap={2}>
+                    <TheadSortButton sortIdKey={SORT_ID.userCrvApy} nowrap {...props}>
+                      {tableLabel.userCrvApy.name}
+                    </TheadSortButton>
+                    +
+                    <TheadSortButton sortIdKey={SORT_ID.rewardOthers} nowrap {...props}>
+                      {tableLabel.rewardOthers.name}
+                    </TheadSortButton>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
+            )}
           </Th>
+
           <Th className="right">
-            <TheadSortButton sortIdKey="liquidityUsd" {...props} indicatorPlacement="left">
+            <TheadSortButton sortIdKey={SORT_ID.liquidityUsd} {...props} indicatorPlacement="left">
               {tableLabel.liquidityUsd.name}
             </TheadSortButton>
           </Th>
+
           <Th className="right">
-            <Box grid gridRowGap={1}>
-              <TheadSortButton sortIdKey="baseProfit" {...props}>
-                {tableLabel.baseProfit.name}
-              </TheadSortButton>
-              <TheadSortButton sortIdKey="crvProfit" {...props}>
-                {tableLabel.crvProfit.name}
-              </TheadSortButton>
-            </Box>
+            <TheadSortButton sortIdKey={SORT_ID.profits} {...props}>
+              {tableLabel.profits.name}
+            </TheadSortButton>
           </Th>
+
           <Th className="right">
-            <TheadSortButton sortIdKey="claimableCrv" {...props}>
-              {tableLabel.claimableCrv.name}
+            <TheadSortButton sortIdKey={SORT_ID.claimables} {...props}>
+              {tableLabel.claimables.name}
             </TheadSortButton>
           </Th>
         </tr>
@@ -115,6 +98,14 @@ const TableHead = ({
   )
 }
 
-TableHead.displayName = 'TableHead'
+const Col = styled.col`
+  @media (min-width: ${breakpoints.lg}rem) {
+    min-width: 200px;
+
+    &.poolName {
+      min-width: 400px;
+    }
+  }
+`
 
 export default TableHead

@@ -12,7 +12,6 @@ import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from 
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/onboard'
-import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
@@ -44,6 +43,8 @@ const Header = () => {
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
+  const networks = useStore((state) => state.networks.networks)
+  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
   const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
   const themeType = useStore((state) => state.themeType)
@@ -91,12 +92,12 @@ const Header = () => {
         ]
 
     if (hasRouter && networks[rChainId].showRouterSwap) {
-      const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
+      const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks)
       links.unshift({ route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' })
     }
 
     return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
+  }, [hasRouter, isLgUp, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -208,7 +209,8 @@ const Header = () => {
 function _parseSwapRoute(
   rChainId: ChainId,
   route: string,
-  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined
+  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
+  networks: Networks,
 ) {
   const routerDefault = rChainId ? networks[rChainId].swap : {}
   const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''
