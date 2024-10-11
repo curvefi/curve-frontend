@@ -10,6 +10,7 @@ import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
 import { BN, shortenAccount } from '@/ui/utils'
 import networks from '@/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { USE_API } from '@/shared/config'
 
 export const helpers = {
   initApi: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -31,7 +32,7 @@ export const helpers = {
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
-    oraclePriceBand: number | null | undefined
+    oraclePriceBand: number | null | undefined,
   ) => {
     if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
       return false
@@ -49,7 +50,7 @@ export const helpers = {
     const resp = { marketList: [] as string[], error: '' }
     try {
       log('fetchMarkets', api.chainId)
-      await api.oneWayfactory.fetchMarkets()
+      await api.oneWayfactory.fetchMarkets(USE_API)
       resp.marketList = api.oneWayfactory.getMarketList()
       return resp
     } catch (error) {
@@ -120,7 +121,7 @@ export const helpers = {
   },
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash)
+      async (hash) => await provider.waitForTransaction(hash),
     )
     if (Array.isArray(errors) && errors.length > 0) {
       throw errors
@@ -175,7 +176,7 @@ const market = {
           _sortBands(bandsBalances),
           liquidationBand,
           market,
-          true
+          true,
         )
 
         results[market.id] = {
@@ -205,7 +206,7 @@ const market = {
         results[market.id] = { borrowed: '', collateral: '', error }
       })
       .process(async (market) => {
-        const resp = await market.stats.ammBalances(useMultiCall)
+        const resp = await market.stats.ammBalances(useMultiCall, USE_API)
         results[market.id] = { ...resp, error: '' }
       })
 
@@ -223,7 +224,7 @@ const market = {
         results[market.id] = { cap: '', available: '', error }
       })
       .process(async (market) => {
-        const resp = await market.stats.capAndAvailable(useMultiCall)
+        const resp = await market.stats.capAndAvailable(useMultiCall, USE_API)
         results[market.id] = { ...resp, error: '' }
       })
 
@@ -241,7 +242,7 @@ const market = {
         results[market.id] = { totalDebt: '', error }
       })
       .process(async (market) => {
-        const totalDebt = await market.stats.totalDebt(useMultiCall)
+        const totalDebt = await market.stats.totalDebt(useMultiCall, USE_API)
         results[market.id] = { totalDebt, error: '' }
       })
 
@@ -290,7 +291,7 @@ const market = {
         results[market.id] = { rates: null, error }
       })
       .process(async (market) => {
-        const rates = await market.stats.rates(useMultiCall)
+        const rates = await market.stats.rates(useMultiCall, USE_API)
         results[market.id] = { rates, error: '' }
       })
 
@@ -388,7 +389,7 @@ const market = {
         const { collateral_token, borrowed_token } = market
 
         const [ammBalance, collateralUsdRate, borrowedUsdRate] = await Promise.all([
-          market.stats.ammBalances(useMultiCall),
+          market.stats.ammBalances(useMultiCall, USE_API),
           api.getUsdRate(collateral_token.address),
           api.getUsdRate(borrowed_token.address),
         ])
@@ -511,13 +512,13 @@ const user = {
         const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
           reversedUserBands[0],
           liquidationBand,
-          oraclePriceBand
+          oraclePriceBand,
         )
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,
           market,
-          false
+          false,
         )
 
         results[userActiveKey] = {
@@ -591,7 +592,7 @@ const loanCreate = {
     userCollateral: string,
     userBorrowed: string,
     n: number,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -650,7 +651,7 @@ const loanCreate = {
     userBorrowed: string,
     debt: string,
     n: number,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -706,7 +707,7 @@ const loanCreate = {
     userCollateral: string,
     userBorrowed: string,
     debt: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     totalCollateral = totalCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -794,7 +795,7 @@ const loanCreate = {
     debt: string,
     n: number,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -811,8 +812,8 @@ const loanCreate = {
           ? await market.leverage.estimateGas.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
           : await market.estimateGas.createLoan(userCollateral, debt, n)
         : isLeverage
-        ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-        : await market.estimateGas.createLoanApprove(userCollateral)
+          ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          : await market.estimateGas.createLoanApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -826,7 +827,7 @@ const loanCreate = {
     market: OneWayMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -846,7 +847,7 @@ const loanCreate = {
     debt: string,
     n: number,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -901,7 +902,7 @@ const loanBorrowMore = {
     { signerAddress }: Api,
     market: OneWayMarketTemplate,
     userCollateral: string,
-    debt: string
+    debt: string,
   ) => {
     userCollateral = userCollateral || '0'
     debt = debt || '0'
@@ -941,7 +942,7 @@ const loanBorrowMore = {
     userCollateral: string,
     userBorrowed: string,
     debt: string,
-    slippage: string
+    slippage: string,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1002,7 +1003,7 @@ const loanBorrowMore = {
     userBorrowed: string,
     debt: string,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1019,8 +1020,8 @@ const loanBorrowMore = {
           ? await market.leverage.estimateGas.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
           : await market.estimateGas.borrowMore(userCollateral, debt)
         : isLeverage
-        ? await market.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
-        : await market.estimateGas.borrowMoreApprove(userCollateral)
+          ? await market.leverage.estimateGas.borrowMoreApprove(userCollateral, userBorrowed)
+          : await market.estimateGas.borrowMoreApprove(userCollateral)
       return resp
     } catch (error) {
       console.error(error)
@@ -1038,7 +1039,7 @@ const loanBorrowMore = {
     market: OneWayMarketTemplate,
     userCollateral: string,
     userBorrowed: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1057,7 +1058,7 @@ const loanBorrowMore = {
     userBorrowed: string,
     debt: string,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1076,7 +1077,7 @@ const loanRepay = {
     market: OneWayMarketTemplate,
     stateCollateral: string,
     userCollateral: string,
-    userBorrowed: string
+    userBorrowed: string,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1099,7 +1100,7 @@ const loanRepay = {
     market: OneWayMarketTemplate,
     userBorrowed: string,
     isFullRepay: boolean,
-    userStateDebt: string
+    userStateDebt: string,
   ) => {
     log('detailInfo', userBorrowed)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1138,7 +1139,7 @@ const loanRepay = {
     userCollateral: string,
     userBorrowed: string,
     maxSlippage: string,
-    userStateDebt: string
+    userStateDebt: string,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1223,7 +1224,7 @@ const loanRepay = {
     userBorrowed: string,
     isFullRepay: boolean,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1234,7 +1235,7 @@ const loanRepay = {
       userCollateral,
       userBorrowed,
       isFullRepay,
-      maxSlippage
+      maxSlippage,
     )
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
 
@@ -1242,19 +1243,19 @@ const loanRepay = {
       resp.isApproved = isLeverage
         ? await market.leverage.repayIsApproved(userCollateral, userBorrowed)
         : isFullRepay
-        ? await market.fullRepayIsApproved()
-        : await market.repayIsApproved(userBorrowed)
+          ? await market.fullRepayIsApproved()
+          : await market.repayIsApproved(userBorrowed)
       resp.estimatedGas = isLeverage
         ? resp.isApproved
           ? await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
           : await market.leverage.estimateGas.repayApprove(userCollateral, userBorrowed)
         : resp.isApproved
-        ? isFullRepay
-          ? await market.estimateGas.fullRepay()
-          : await market.estimateGas.repay(userBorrowed)
-        : isFullRepay
-        ? await market.estimateGas.fullRepayApprove()
-        : await market.estimateGas.repayApprove(userBorrowed)
+          ? isFullRepay
+            ? await market.estimateGas.fullRepay()
+            : await market.estimateGas.repay(userBorrowed)
+          : isFullRepay
+            ? await market.estimateGas.fullRepayApprove()
+            : await market.estimateGas.repayApprove(userBorrowed)
       return resp
     } catch (error) {
       console.error(error)
@@ -1270,7 +1271,7 @@ const loanRepay = {
     userCollateral: string,
     userBorrowed: string,
     isFullRepay: boolean,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1280,8 +1281,8 @@ const loanRepay = {
       isLeverage
         ? await market.leverage.repayApprove(userCollateral, userBorrowed)
         : isFullRepay
-        ? await market.fullRepayApprove()
-        : await market.repayApprove(userBorrowed)
+          ? await market.fullRepayApprove()
+          : await market.repayApprove(userBorrowed)
     return await approve(activeKey, fn, provider)
   },
   repay: async (
@@ -1293,7 +1294,7 @@ const loanRepay = {
     userBorrowed: string,
     isFullRepay: boolean,
     maxSlippage: string,
-    isLeverage: boolean
+    isLeverage: boolean,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1303,8 +1304,8 @@ const loanRepay = {
       isLeverage
         ? await market.leverage.repay(stateCollateral, userCollateral, userBorrowed, +maxSlippage)
         : isFullRepay
-        ? await market.fullRepay()
-        : await market.repay(userBorrowed)
+          ? await market.fullRepay()
+          : await market.repay(userBorrowed)
     return await submit(activeKey, fn, provider)
   },
 }
@@ -1369,7 +1370,7 @@ const loanCollateralAdd = {
     { signerAddress }: Api,
     market: OneWayMarketTemplate,
     collateral: string,
-    address?: string
+    address?: string,
   ) => {
     log('detailInfo', collateral)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1447,7 +1448,7 @@ const loanCollateralRemove = {
     { signerAddress }: Api,
     market: OneWayMarketTemplate,
     collateral: string,
-    address?: string
+    address?: string,
   ) => {
     log('loanCollateralRemoveHealthPricesBands', market.collateral_token.symbol, collateral)
     let resp: { activeKey: string; resp: DetailInfoResp | null; error: string } = { activeKey, resp: null, error: '' }
@@ -1761,7 +1762,7 @@ const vaultWithdraw = {
     market: OneWayMarketTemplate,
     isFullWithdraw: boolean,
     amount: string,
-    vaultShares: string
+    vaultShares: string,
   ) => {
     log('vaultWithdraw', market.id, amount, 'isFullWithdraw', isFullWithdraw, 'vaultShares', vaultShares)
 
@@ -2000,7 +2001,7 @@ async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,
-  isMarket: boolean
+  isMarket: boolean,
 ) {
   // filter out bands that doesn't have borrowed or collaterals
   const ns = isMarket
@@ -2087,7 +2088,7 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 
 function _detailInfoRespErrorMessage(
   futureRatesResp: PromiseSettledResult<{ borrowApr: string; lendApr: string; borrowApy: string; lendApy: string }>,
-  bandsResp: PromiseSettledResult<[number, number]>
+  bandsResp: PromiseSettledResult<[number, number]>,
 ) {
   let errorMessage = ''
 

@@ -2115,16 +2115,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/lending-api@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "@curvefi/lending-api@npm:2.2.1"
+"@curvefi/lending-api@npm:^2.3.3":
+  version: 2.3.3
+  resolution: "@curvefi/lending-api@npm:2.3.3"
   dependencies:
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethcall: "npm:^6.0.2"
     ethers: "npm:^6.10.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/6a25cab08458acae8d595b2d43f651059d8d0d649c804d933bbf450323334da673a151cc84f0e7592c51c1b159f08971791e89a50f2549c9fad743d31e86eb64
+  checksum: 10c0/88d112d0cbac5c79c9163166c5a8da3745f3044400838c906b006965348db69eedfbc21aff5ce36468739acd72a9fe7f831c573bc5cecfe7468bd6463d4c166a
   languageName: node
   linkType: hard
 
@@ -16205,7 +16205,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lend@workspace:apps/lend"
   dependencies:
-    "@curvefi/lending-api": "npm:^2.2.1"
+    "@curvefi/lending-api": "npm:^2.3.3"
     "@lingui/cli": "npm:^4.6.0"
     "@lingui/detect-locale": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
