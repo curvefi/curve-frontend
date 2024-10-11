@@ -30,7 +30,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   initialLoaded: boolean
   activeKey: string
-  marketListMapper: { [chainId: string]: MarketListMapper }
   tableRowsSettings: { [tokenAddress: string]: TableSettings }
   formStatus: FormStatus
   searchParams: SearchParams
@@ -51,9 +50,9 @@ export type MarketListSlice = {
     filterLeverageMarkets(markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
     sortByUserData(api: Api, sortKey: TitleKey, market: OneWayMarketTemplate): number
     sortFn(api: Api, sortKey: TitleKey, order: Order, markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
-    sortByCollateral(api: Api, markets: OneWayMarketTemplate[]): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
+    sortByCollateral(api: Api, markets: OneWayMarketTemplate[], marketMapping: IDict<OneWayMarketTemplate>): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
     sortByAll(api: Api, markets: OneWayMarketTemplate[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
-    setFormValues(rChainId: ChainId, api: Api | null, shouldRefetch?: boolean): Promise<void>
+    setFormValues(rChainId: ChainId, api: Api | null, marketMapping?: IDict<OneWayMarketTemplate>, shouldRefetch?: boolean): Promise<void>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -66,7 +65,6 @@ export type MarketListSlice = {
 const DEFAULT_STATE: SliceState = {
   initialLoaded: false,
   activeKey: '',
-  marketListMapper: {},
   tableRowsSettings: {},
   formStatus: DEFAULT_FORM_STATUS,
   searchParams: {
@@ -190,11 +188,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
     filterLeverageMarkets: (markets) => {
       return markets.filter((m) => m.leverage.hasLeverage())
     },
-    sortByCollateral: (api, markets) => {
+    sortByCollateral: (api, markets, marketMapping) => {
       let { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
 
-      const { chainId } = api
-      const marketMapping = getChainQueryData<IDict<OneWayMarketTemplate>>('markets', { chainId })!
       const parsedTableRowsSettings: { [tokenAddress: string]: TableSettings } = {}
 
       const { marketListMapper } = _getMarketList(markets)
@@ -222,7 +218,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       return { result: marketsResult, tableRowsSettings: parsedTableRowsSettings }
     },
     sortByAll: (api, markets, sortBy, sortByOrder) => {
-      const { marketListMapper, searchParams, ...sliceState } = get()[sliceKey]
+      const { searchParams, ...sliceState } = get()[sliceKey]
 
       const marketResult = sliceState.sortFn(api, sortBy, sortByOrder, markets).map((d) => d.id)
 
@@ -231,18 +227,16 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         tableRowsSettings: { all: { isNotSortable: false, sortBy, sortByOrder } },
       }
     },
-    setFormValues: async (rChainId, api, shouldRefetch) => {
+    setFormValues: async (rChainId, api, marketMapping, shouldRefetch) => {
       const { markets, user } = get()
       let {
         activeKey: prevActiveKey,
         initialLoaded,
-        marketListMapper,
         searchParams,
         tableRowsSettings,
         result,
         ...sliceState
       } = get()[sliceKey]
-      const storedMarketListMapper = marketListMapper[rChainId]
 
       // update activeKey, formStatus
       const activeKey = _getActiveKey(rChainId, searchParams)
@@ -274,14 +268,13 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // allow UI to update paint
       await sleep(100)
 
-      const marketMapping = getChainQueryData<IDict<OneWayMarketTemplate>>('markets', { chainId: rChainId })!
-      if (!api || !marketMapping || !storedMarketListMapper) return
+      if (!api || !marketMapping) return
 
       const { signerAddress } = api
       const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = searchParams
 
       // get market list for table
-      let cMarkets = _getOwmDatasFromMarketList(storedMarketListMapper, marketMapping)
+      let cMarkets = Object.values(marketMapping)
 
       if (signerAddress) {
         if (filterTypeKey === 'borrow') {
@@ -352,7 +345,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       const sorted = sortBy
         ? sliceState.sortByAll(api, cMarkets, sortBy, sortByOrder)
-        : sliceState.sortByCollateral(api, cMarkets)
+        : sliceState.sortByCollateral(api, cMarkets, marketMapping)
 
       // set result
       sliceState.setStateByKeys({

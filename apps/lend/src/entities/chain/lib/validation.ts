@@ -1,5 +1,5 @@
-import { CombinedChainParams } from '@/entities/chain'
-import { chainValidationSuite } from '@/entities/chain/model'
+import { CombinedChainParams } from '../types'
+import { chainValidationSuite } from '../model/validation'
 import { assertValidity, checkValidity } from '@/shared/lib/validation'
 
 export const assertChainValidity = <T extends CombinedChainParams>(data: T, fields?: Extract<keyof T, string>[]) =>

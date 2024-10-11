@@ -1,8 +1,9 @@
 import { queryOptions } from '@tanstack/react-query'
 import { REFRESH_INTERVAL } from '@/constants'
-import { ChainQueryParams, checkChainValidity } from '@/entities/chain'
-import { queryOneWayMarketNames } from '@/entities/chain/api/markets-api'
-import { chainKeys } from '@/entities/chain/model/query-keys'
+import { checkChainValidity } from '../lib/validation'
+import { queryOneWayMarketNames } from '../api/markets-api'
+import { chainKeys } from './query-keys'
+import { ChainQueryParams } from '../types'
 
 export const getOneWayMarketNames = (params: ChainQueryParams) =>
   queryOptions({

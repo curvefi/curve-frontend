@@ -13,11 +13,13 @@ import MarketListNoResult from '@/components/PageMarketList/components/MarketLis
 import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
 import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
+import { useOneWayMarketMapping } from '@/entities/chain'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
+  const {data: marketMapping} = useOneWayMarketMapping(rChainId)
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
@@ -67,9 +69,9 @@ const MarketList = (pageProps: PageMarketList) => {
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, isLoaded ? api : null, shouldRefetch)
+      setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
     },
-    [isLoaded, rChainId, api, setFormValues]
+    [setFormValues, rChainId, isLoaded, api, marketMapping]
   )
 
   useEffect(() => {

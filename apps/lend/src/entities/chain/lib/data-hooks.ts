@@ -1,7 +1,8 @@
-import { useApi, useOneWayMarketNames } from '@/entities/chain'
+import { useOneWayMarketNames } from './query-hooks'
 import networks from '@/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useMemo } from 'react'
+import { useApi } from './chain-info'
 
 export const useOneWayMarketMapping = (chainId: ChainId) => {
   const { data: marketNames, ...rest } = useOneWayMarketNames({ chainId })

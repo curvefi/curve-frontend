@@ -1,4 +1,4 @@
-import type { ChainQueryParams } from '@/entities/chain/types'
+import type { ChainQueryParams } from '../types'
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 
 export const chainKeys = {
