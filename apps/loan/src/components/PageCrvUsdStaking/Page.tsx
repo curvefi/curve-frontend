@@ -8,8 +8,9 @@ import styled from 'styled-components'
 
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
-import crvLogo from 'ui/src/images/curve-logo.png'
+import { RCScrvUSDLogoSM } from 'ui/src/images'
 
 import DocumentHead from '@/layout/DocumentHead'
 import ExternalLink from '@/ui/Link/ExternalLink'
@@ -30,12 +31,12 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Llama Savings Vault`} />
+      <DocumentHead title={t`crvUSD Savings Vault`} />
       <Container>
         <HeaderContainer>
-          <Image height={55} src={crvLogo} alt="Curve logo" />
+          <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
           <Box flex flexColumn>
-            <Title>{t`LLAMA SAVINGS VAULT`}</Title>
+            <Title>{t`crvUSD SAVINGS VAULT`}</Title>
             <Description>{t`Let your idle crvUSD do more for you.`}</Description>
           </Box>
         </HeaderContainer>
