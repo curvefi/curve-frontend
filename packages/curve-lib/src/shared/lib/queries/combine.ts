@@ -1,4 +1,5 @@
 import { useQueries, UseQueryResult } from '@tanstack/react-query'
+import { useCallback } from 'react'
 import {
   CombinedQueriesResult,
   CombinedQueryMappingResult,
@@ -6,7 +7,6 @@ import {
   QueryOptionsArray,
   QueryResultsArray,
 } from './types'
-import { useCallback } from 'react'
 
 /** Combines the metadata of multiple queries into a single object. */
 const combineQueriesMeta = <T extends QueryOptionsArray>(
