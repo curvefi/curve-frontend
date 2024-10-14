@@ -1,6 +1,6 @@
 import React from 'react'
 
-export type AlertSummaryProps = Pick<PageContentProps, 'borrowed_token' | 'collateral_token'> & {
+export type AlertSummaryProps = Pick<PageContentProps, 'market'> & {
   pendingMessage: React.ReactNode
   receive: string | undefined
   formValueStateDebt?: string | undefined
@@ -12,7 +12,7 @@ export type AlertSummaryProps = Pick<PageContentProps, 'borrowed_token' | 'colla
   type: 'create' | 'full' | 'partial' | 'self' | 'change'
 }
 
-export type SummaryProps = Omit<AlertSummaryProps, 'borrowed_token' | 'collateral_token' | 'type'> & {
+export type SummaryProps = Omit<AlertSummaryProps, 'market' | 'type'> & {
   title: React.ReactNode
   borrowedSymbol: string
   collateralSymbol: string

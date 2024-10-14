@@ -13,11 +13,13 @@ import MarketListNoResult from '@/components/PageMarketList/components/MarketLis
 import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
 import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
+import { useOneWayMarketMapping } from '@/entities/chain'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
+  const {data: marketMapping} = useOneWayMarketMapping(rChainId)
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
@@ -25,7 +27,6 @@ const MarketList = (pageProps: PageMarketList) => {
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
-  const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
   const setFormValues = useStore((state) => state.marketList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
@@ -64,13 +65,13 @@ const MarketList = (pageProps: PageMarketList) => {
   }
 
   const parsedResult =
-    results[activeKey] ?? resultCached ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
+    results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, isLoaded ? api : null, shouldRefetch)
+      setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
     },
-    [isLoaded, rChainId, api, setFormValues]
+    [setFormValues, rChainId, isLoaded, api, marketMapping]
   )
 
   useEffect(() => {

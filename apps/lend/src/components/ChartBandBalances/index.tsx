@@ -38,9 +38,8 @@ const ChartBandBalances = ({
   showLiquidationIndicator,
   title,
   setBrushIndex,
-  borrowed_token,
-  collateral_token,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'borrowed_token' | 'collateral_token'> & {
+  market,
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'> & {
   brushIndex: BrushStartEndIndex
   data: ParsedBandsBalances[]
   oraclePrice: string | undefined
@@ -49,6 +48,7 @@ const ChartBandBalances = ({
   title: string
   setBrushIndex: React.Dispatch<BrushStartEndIndex>
 }) => {
+  const { borrowed_token, collateral_token } = market ?? {};
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
   const statsCapAndAvailable = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
 

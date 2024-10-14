@@ -17,11 +17,9 @@ const DetailInfoNonLeverage = ({
   rChainId,
   rOwmId,
   api,
-  borrowed_token,
-  collateral_token,
   healthMode,
   isLoaded,
-  owm,
+  market,
   steps,
   userActiveKey,
   handleSelLiqRange,
@@ -39,6 +37,7 @@ const DetailInfoNonLeverage = ({
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
 
   const { signerAddress } = api ?? {}
+  const { borrowed_token, collateral_token } = market ?? {}
 
   const loading = !isLoaded || typeof detailInfo === 'undefined'
 
@@ -60,8 +59,8 @@ const DetailInfoNonLeverage = ({
           <DetailInfoLiqRangeEdit
             {...detailInfo}
             liqRanges={liqRanges}
-            maxBands={owm?.maxBands}
-            minBands={owm?.minBands}
+            maxBands={market?.maxBands}
+            minBands={market?.minBands}
             selectedLiqRange={selectedLiqRange}
             showEditLiqRange={isEditLiqRange}
             handleSelLiqRange={handleSelLiqRange}
@@ -79,7 +78,7 @@ const DetailInfoNonLeverage = ({
         setHealthMode={setHealthMode}
         userActiveKey={userActiveKey}
       />
-      <DetailInfoRate isBorrow rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+      <DetailInfoRate isBorrow={true} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
       {isAdvanceMode && (
         <DetailInfoLTV
           loading={loading}
