@@ -111,7 +111,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     await api.oneWayfactory.fetchMarkets();
     state.updateGlobalStoreByKey('isLoadingApi', false)
-    console.log({fetching: 'markets done'})
 
     if (!prevApi || isNetworkSwitched) {
       // fetch markets TVL (remove once ready from api)
