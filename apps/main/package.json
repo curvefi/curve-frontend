@@ -18,14 +18,11 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "^2.63.5",
+    "@curvefi/api": "^2.63.10",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
-    "@tanstack/query-sync-storage-persister": "^5.53.1",
-    "@tanstack/react-query": "^5.53.1",
-    "@tanstack/react-query-persist-client": "^5.53.1",
     "bignumber.js": "^9.0.1",
     "cross-fetch": "^3.1.5",
     "curve-lib": "*",
