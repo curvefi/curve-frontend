@@ -68,7 +68,7 @@ export const POOL_PRESETS: PRESETS = {
     defaultParams: {
       ...fillerParams,
       stableSwapFee: '0.01',
-      stableA: '200',
+      stableA: '1000',
       maExpTime: '600',
       offpegFeeMultiplier: '2',
     },
