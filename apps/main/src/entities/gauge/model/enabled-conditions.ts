@@ -8,7 +8,6 @@ import type {
 } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
 
-export const enabledGaugeStatus = (data: GaugeQueryParams) => checkGaugeValidity(data)
 export const enabledIsDepositRewardAvailable = (data: GaugeQueryParams) => checkGaugeValidity(data)
 export const enabledGaugeManager = (data: GaugeQueryParams) => checkGaugeValidity(data)
 export const enabledGaugeDistributors = (data: GaugeQueryParams) => checkGaugeValidity(data)

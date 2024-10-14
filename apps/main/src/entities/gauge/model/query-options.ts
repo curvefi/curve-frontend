@@ -10,20 +10,22 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import { REFRESH_INTERVAL } from '@/constants'
-import * as api from '@/entities/gauge/api'
-import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import { gaugeKeys as keys } from '@/entities/gauge/model'
-import type { DepositRewardApproveParams, GaugeQueryParams } from '@/entities/gauge/types'
 import { queryOptions } from '@tanstack/react-query'
+import * as api from '@/entities/gauge/api'
+import { gaugeKeys as keys, gaugeValidationSuite } from '@/entities/gauge/model'
+import * as conditions from '@/entities/gauge/model/enabled-conditions'
+import type { DepositRewardApproveParams, GaugeQueryParams } from '@/entities/gauge/types'
+import { queryFactory } from '@/shared/model/factory'
+import { REFRESH_INTERVAL } from '@/constants'
 
-export const getGaugeStatusQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.status(params),
-    queryFn: api.queryGaugeStatus,
-    staleTime: REFRESH_INTERVAL['5m'],
-    enabled: conditions.enabledGaugeStatus(params),
-  })
+
+export const gaugeStatus = queryFactory({
+  createKey: keys.status,
+  query: api.queryGaugeStatus,
+  staleTime: '5m',
+  recoverKey: ([, chainId, , poolId, ,]) => ({ chainId, poolId }),
+  validationSuite: gaugeValidationSuite,
+})
 
 export const getIsDepositRewardAvailableQueryOptions = (params: GaugeQueryParams) =>
   queryOptions({

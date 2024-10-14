@@ -11,12 +11,13 @@
  */
 
 import * as models from '@/entities/gauge/model'
+import { gaugeStatus } from '@/entities/gauge/model'
 import type { GaugeQueryParams } from '@/entities/gauge/types'
 import { createQueryHook, useCombinedQueries } from '@/shared/lib/queries'
 
 export const useGauge = ({ chainId, poolId }: GaugeQueryParams) => {
   return useCombinedQueries([
-    models.getGaugeStatusQueryOptions({ chainId, poolId }),
+    gaugeStatus.getQueryOptions({ chainId, poolId }),
     models.getIsDepositRewardAvailableQueryOptions({ chainId, poolId }),
   ])
 }

@@ -9,23 +9,18 @@
  * business logic and data fetching.
  */
 
-import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
-import { BD } from '@/shared/curve-lib'
-import useStore from '@/store/useStore'
-import { logQuery } from '@/shared/lib/logging'
 import { QueryFunction } from '@tanstack/react-query'
-import { zeroAddress, type Address } from 'viem'
+import { type Address, zeroAddress } from 'viem'
+import { assertGaugeValidity } from '@/entities/gauge/lib'
+import { GaugeQueryKeyType, type GaugeQueryParams, type PoolMethodResult } from '@/entities/gauge/types'
+import { BD } from '@/shared/curve-lib'
+import { logQuery } from '@/shared/lib/logging'
+import { ValidatedData } from '@/shared/lib/validation'
+import useStore from '@/store/useStore'
 
-export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, GaugeQueryKeyType<'status'>> = async ({
-  queryKey,
-}) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
+export const queryGaugeStatus = async ({ poolId }: ValidatedData<GaugeQueryParams>) => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
+  const pool = curve.getPool(poolId)
   return pool.gaugeStatus()
 }
 
