@@ -13,26 +13,26 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/PageDashboard/index.tsx:199
+#: src/components/PageDashboard/index.tsx:205
 msgid ". Please click on the pool name to view them on"
 msgstr ". 请点击流动性池的名称到旧UI查看"
 
-#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:26
+#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:27
 msgid "(incl. fees):"
 msgstr "（包含手续费）:"
 
-#: src/components/PageCreatePool/constants.ts:217
-#: src/components/PageCreatePool/constants.ts:223
+#: src/components/PageCreatePool/constants.ts:185
+#: src/components/PageCreatePool/constants.ts:191
 msgid "(only available for pools with pegged assets)"
 msgstr "(仅适用于挂钩资产池)"
 
-#: src/components/PageCreatePool/TokensInPool/index.tsx:763
+#: src/components/PageCreatePool/TokensInPool/index.tsx:595
 msgid "(Switch)"
 msgstr ""
 
 #: src/components/PageCreatePool/components/InfoBox.tsx:27
 #: src/components/PageCreatePool/components/InfoBox.tsx:33
-#: src/components/PageCreatePool/constants.ts:216
+#: src/components/PageCreatePool/constants.ts:184
 msgid "{0}"
 msgstr "{0}"
 
@@ -68,22 +68,18 @@ msgstr "{0}"
 #~ msgid "{0} deposited and staked approved"
 #~ msgstr "{0} 存款和质押已通过"
 
-#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:69
-msgid "{0} is a Cryptoswap pool"
-msgstr ""
-
 #: src/components/PagePool/PoolDetails/PoolStats/index.tsx:78
-#~ msgid "{0} is a v2 pool"
-#~ msgstr "{0} 是 v2池"
+msgid "{0} is a v2 pool"
+msgstr "{0} 是 v2池"
 
 #: src/domain/create-pool/parameters/initial-price.tsx:33
 #: src/domain/create-pool/parameters/initial-price.tsx:42
 #~ msgid "{0} price"
 #~ msgstr "{0} 价格"
 
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:34
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:45
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:57
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:32
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:43
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:55
 msgid "{0} price in USD"
 msgstr ""
 
@@ -115,27 +111,19 @@ msgstr ""
 #~ msgid "{0} withdraw approved"
 #~ msgstr "{0} 提款已批准"
 
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:291
-msgid "{filterValue} is a disabled token in Pool Creation"
-msgstr ""
-
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:293
-msgid "{filterValue} is a disabled token in this pool configuration."
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:68
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:71
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:54
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:47
 msgid "{title} {0} Oracle"
 msgstr ""
 
-#: src/components/PageDashboard/index.tsx:188
+#: src/components/PageDashboard/index.tsx:194
 msgid "*This UI does not support the following pools:"
 msgstr "当前 UI 不支持以下池"
 
 #: src/components/PageDashboard/index.tsx:66
 #: src/components/PagePoolList/Page.tsx:68
-#~ msgid "+ Incentives)"
-#~ msgstr "+ 其他奖励)"
+msgid "+ Incentives)"
+msgstr "+ 其他奖励)"
 
 #: src/components/PageCrvLocker/components/FieldDatePicker.tsx:18
 msgid "1 month"
@@ -149,7 +137,7 @@ msgstr "一周"
 msgid "1 year"
 msgstr "一年"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:67
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:76
 msgid "24h Volume/Liquidity ratio"
 msgstr "24小时 交易量/流动池存款"
 
@@ -157,17 +145,9 @@ msgstr "24小时 交易量/流动池存款"
 msgid "3 months"
 msgstr "三个月"
 
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:92
-msgid "3CRV have been claimed and sent to 3pool."
-msgstr ""
-
 #: src/components/PageCrvLocker/components/FieldDatePicker.tsx:22
 msgid "4 years"
 msgstr "四年"
-
-#: src/components/PageRiskDisclaimer/index.tsx:72
-msgid "5-of-9 multisig"
-msgstr ""
 
 #: src/components/PageCrvLocker/components/FieldDatePicker.tsx:20
 msgid "6 months"
@@ -177,30 +157,26 @@ msgstr "六个月"
 #~ msgid "A"
 #~ msgstr "放大系数"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:301
-#: src/components/PageCreatePool/Parameters/index.tsx:334
+#: src/components/PageCreatePool/Parameters/index.tsx:296
+#: src/components/PageCreatePool/Parameters/index.tsx:329
 msgid "A ({0} - {1})"
 msgstr "放大系数（{0} - {1}）"
 
-#: src/components/PageCreatePool/constants.ts:224
+#: src/components/PageCreatePool/constants.ts:192
 msgid "A more gas-efficient implementation that can be used when every token in the pool has 18 decimals and returns True on success / reverts on error"
 msgstr "如果池中的每个代币都有18位小数，并在成功时返回True/错误时返回revert，则可以使用更高效的实现方式。"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:75
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:193
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersA.tsx:28
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:83
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:65
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:169
 msgid "A:"
 msgstr "放大系数:"
 
-#: src/components/PageRiskDisclaimer/index.tsx:61
-msgid "Access Control:"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:70
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:71
 msgid "Action"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData.tsx:41
+#: src/components/PagePool/PoolDetails/PoolInfo/LiquidityData.tsx:42
 msgid "Add"
 msgstr ""
 
@@ -208,33 +184,28 @@ msgstr ""
 msgid "Add all coins in a balanced proportion"
 msgstr "以平衡的比例添加所有代币"
 
-#: src/components/PagePool/components/AddGaugeLink.tsx:58
+#: src/components/PagePool/components/AddGaugeLink.tsx:50
 msgid "Add Gauge"
 msgstr ""
 
-#: src/components/PageCreatePool/TokensInPool/index.tsx:796
+#: src/components/PageCreatePool/TokensInPool/index.tsx:639
 msgid "Add token"
 msgstr "添加代币"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:146
-#: src/components/PagePoolList/components/TableRowMobile.tsx:149
-msgid "Additional external rewards"
-msgstr ""
-
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:291
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:280
 msgid "Additional slippage tolerance"
 msgstr "额外的滑点容差"
 
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:291
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:476
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:288
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:475
 msgid "Additional slippage tolerance:"
 msgstr "额外的滑点容差"
 
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:77
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:53
 msgid "Address (e.g 0x123...)"
 msgstr ""
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:71
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:57
 msgid "Address:"
 msgstr ""
 
@@ -242,12 +213,12 @@ msgstr ""
 msgid "Adjust veCrv"
 msgstr "调整 veCRV"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:380
+#: src/components/PageCreatePool/Parameters/index.tsx:375
 msgid "Adjustment Step ({0} - {1})"
 msgstr "调整步骤 ({0} - {1})"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:107
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:280
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:115
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:118
 msgid "Adjustment Step:"
 msgstr "调整步骤："
 
@@ -255,42 +226,33 @@ msgstr "调整步骤："
 #~ msgid "Admin fee"
 #~ msgstr "管理费用"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:289
-#: src/components/PageCreatePool/Summary/index.tsx:28
-#: src/components/PagePool/index.tsx:129
+#: src/components/PageCreatePool/Parameters/index.tsx:284
+#: src/components/PageCreatePool/Summary/index.tsx:41
+#: src/components/PagePool/index.tsx:106
+#: src/components/PagePool/index.tsx:115
 msgid "Advanced"
 msgstr "高级"
 
-#: src/components/AdvancedSettings.tsx:140
+#: src/components/AdvancedSettings.tsx:131
 msgid "Advanced Settings"
 msgstr "高级设置"
 
-#: src/components/PagePoolList/index.tsx:96
+#: src/components/PagePoolList/index.tsx:102
 msgid "ALL"
 msgstr "全部"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:358
+#: src/components/PageCreatePool/Parameters/index.tsx:353
 msgid "Allowed Extra Profit ({0} - {1})"
 msgstr "允许的额外利润 ({0} - {1})"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:91
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:268
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:99
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:106
 msgid "Allowed Extra Profit:"
 msgstr "允许的额外利润"
 
-#: src/components/PagePool/Swap/index.tsx:402
-#: src/components/PageRouterSwap/index.tsx:431
-msgid "Amount > wallet balance {0}"
-msgstr ""
-
 #: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:173
-#~ msgid "Amplification coefficient chosen from fluctuation of prices around 1"
-#~ msgstr "从1的价格波动中选择出的放大系数"
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:200
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersA.tsx:34
-msgid "Amplification coefficient chosen from fluctuation of prices around 1."
-msgstr ""
+msgid "Amplification coefficient chosen from fluctuation of prices around 1"
+msgstr "从1的价格波动中选择出的放大系数"
 
 #: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:311
 #~ msgid "Approve Remove Liquidity"
@@ -298,12 +260,12 @@ msgstr ""
 
 #: src/components/PageCrvLocker/components/FormLockCreate.tsx:149
 #: src/components/PageCrvLocker/components/FormLockCrv.tsx:92
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:136
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:139
-#: src/components/PagePool/Deposit/components/FormStake.tsx:100
-#: src/components/PagePool/Swap/index.tsx:181
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:149
-#: src/components/PageRouterSwap/index.tsx:209
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:133
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:134
+#: src/components/PagePool/Deposit/components/FormStake.tsx:98
+#: src/components/PagePool/Swap/index.tsx:177
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:148
+#: src/components/PageRouterSwap/index.tsx:204
 msgid "Approve Spending"
 msgstr "授权交易"
 
@@ -311,31 +273,11 @@ msgstr "授权交易"
 #~ msgid "Approving"
 #~ msgstr "授权中"
 
-#: src/layout/default/Header.tsx:193
-msgid "Apps"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:99
-msgid "are designed to mitigate impermanent loss by pairing assets that are expected to exhibit mean-reverting behavior. This assumption may not hold true in every case, requiring diligent assessment when interacting with these pools."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:105
-msgid "are designed with an internal oracle to concentrate liquidity around the current market price. The algorithm attempts to offset the effects of impermanent loss by calculating fees generated by the pool and ensuring the pool is in profit before re-pegging. Impermanent loss may still occur in CryptoSwap V2 pools, particularly when the earned fees are insufficient to counterbalance the impact of re-pegging. This underscores the need for users to be attentive about the dynamics of these pools when making decisions about liquidity provision."
-msgstr ""
-
-#: src/components/PagePool/components/DetailInfoExpectedApy.tsx:48
-msgid "As the number of staked LP Tokens increases, the CRV tAPR will decrease."
-msgstr ""
-
 #: src/components/PagePoolList/components/DialogSort/DialogSortContent.tsx:27
-#~ msgid "Asc"
-#~ msgstr "上升"
+msgid "Asc"
+msgstr "上升"
 
-#: src/components/PageRiskDisclaimer/index.tsx:79
-msgid "Asset Risk"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:54
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:76
 msgid "Asset Type:"
 msgstr "资产类别"
 
@@ -347,15 +289,15 @@ msgstr "资产类别"
 #~ msgid "Audit"
 #~ msgstr "审计报告"
 
-#: src/layout/default/Footer.tsx:136
+#: src/layout/default/Footer.tsx:102
 msgid "Audits"
 msgstr "审计报告"
 
 #: src/components/PagePool/components/FieldToken.tsx:69
-#: src/components/PagePool/Swap/index.tsx:352
-#: src/components/PagePool/Swap/index.tsx:443
-#: src/components/PageRouterSwap/index.tsx:391
-#: src/components/PageRouterSwap/index.tsx:457
+#: src/components/PagePool/Swap/index.tsx:347
+#: src/components/PagePool/Swap/index.tsx:438
+#: src/components/PageRouterSwap/index.tsx:370
+#: src/components/PageRouterSwap/index.tsx:427
 msgid "Avail."
 msgstr "可用的"
 
@@ -367,8 +309,8 @@ msgstr "可用的"
 #~ msgid "Average value of pool token"
 #~ msgstr "流动性池中代币的平均价值"
 
-#: src/components/PageDashboard/components/TableRow.tsx:181
-#: src/components/PageDashboard/index.tsx:56
+#: src/components/PageDashboard/components/TableRow.tsx:179
+#: src/components/PageDashboard/index.tsx:67
 msgid "Balance"
 msgstr "余额"
 
@@ -380,7 +322,7 @@ msgstr "投票托管余额"
 #~ msgid "Balance minus estimated gas"
 #~ msgstr "余额减去预计的gas费用"
 
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:354
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:353
 msgid "Balanced"
 msgstr ""
 
@@ -388,47 +330,35 @@ msgstr ""
 #~ msgid "Balanced amounts"
 #~ msgstr "余额"
 
-#: src/components/PagePool/UserDetails/index.tsx:140
+#: src/components/PagePool/UserDetails/index.tsx:139
 msgid "Balanced withdraw amounts"
 msgstr "平均提款金额"
 
-#: src/components/PageCreatePool/constants.ts:210
+#: src/components/PageCreatePool/constants.ts:178
 msgid "Balances"
 msgstr "余额"
 
-#: src/components/PageDashboard/components/SummaryRecurrence.tsx:39
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:40
 msgid "Base"
 msgstr "基础"
 
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:169
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:243
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:205
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:129
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:201
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:126
 msgid "BASE"
 msgstr ""
 
-#: src/components/PageDashboard/index.tsx:53
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:54
-#: src/components/PagePoolList/Page.tsx:55
+#: src/components/PageDashboard/index.tsx:55
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:48
+#: src/components/PagePoolList/Page.tsx:57
 msgid "Base vAPY"
 msgstr "基础 vAPY"
 
-#: src/components/PagePoolList/components/TableRowMobile.tsx:123
-msgid "BASE vAPY"
-msgstr ""
-
-#: src/components/PagePoolList/components/TooltipBaseApy.tsx:42
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:41
 msgid "Base vAPY can temporarily be negative when A parameter is ramped down, or crypto pools spend profit to rebalance."
 msgstr "当放大系数下降或crypto池花费利润在再平衡时，基本 vAPY 可能暂时会显示为负数。"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:100
-msgid "Basepool"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:105
-msgid "Basepool:"
-msgstr ""
-
-#: src/components/PageCreatePool/constants.ts:204
+#: src/components/PageCreatePool/constants.ts:172
 #: src/components/PageCreatePool/Parameters/SelectPoolImplementation.tsx:34
 msgid "Basic"
 msgstr "基础"
@@ -437,11 +367,11 @@ msgstr "基础"
 #~ msgid "Beta"
 #~ msgstr "Beta"
 
-#: src/components/PageCreatePool/PoolType/index.tsx:32
+#: src/components/PageCreatePool/PoolType/index.tsx:30
 msgid "Bonding Curve specialising in pegged assets."
 msgstr "专用于挂钩资产之间的算法做市曲线"
 
-#: src/components/PageCreatePool/PoolType/index.tsx:45
+#: src/components/PageCreatePool/PoolType/index.tsx:43
 msgid "Bonding Curve specialising in unpegged assets."
 msgstr "专用于非挂钩资产之间的算法做市曲线"
 
@@ -449,7 +379,7 @@ msgstr "专用于非挂钩资产之间的算法做市曲线"
 msgid "Bonus comes as an advantage from current coin prices which usually appears for coins which are low in balance"
 msgstr "奖金來自当前币价的优势，通常出现在余额低的代币上"
 
-#: src/layout/default/Footer.tsx:141
+#: src/layout/default/Footer.tsx:119
 msgid "Bug Bounty"
 msgstr "漏洞赏金计划"
 
@@ -457,15 +387,11 @@ msgstr "漏洞赏金计划"
 #~ msgid "Calc"
 #~ msgstr "计算"
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:228
-msgid "Can't find the pool preset you want? Check out"
-msgstr ""
-
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:159
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:162
-#: src/components/PagePool/Swap/index.tsx:204
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:172
-#: src/components/PageRouterSwap/index.tsx:237
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:156
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:157
+#: src/components/PagePool/Swap/index.tsx:200
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:171
+#: src/components/PageRouterSwap/index.tsx:232
 msgid "Cancel"
 msgstr "取消"
 
@@ -481,35 +407,35 @@ msgstr "取消"
 #~ msgid "Change network"
 #~ msgstr "切换网络"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/index.tsx:249
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:209
 msgid "Chart"
 msgstr ""
 
-#: src/components/PageCreatePool/components/Navigation.tsx:27
-#: src/components/PageCreatePool/components/Navigation.tsx:39
-#: src/components/PageCreatePool/components/Navigation.tsx:52
-#: src/components/PageCreatePool/components/Navigation.tsx:65
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:130
-#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:24
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:32
-#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:27
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:59
-#: src/components/PageDeployGauge/ProcessSummary.tsx:46
-#: src/components/PageDeployGauge/ProcessSummary.tsx:78
+#: src/components/PageCreatePool/components/Navigation.tsx:38
+#: src/components/PageCreatePool/components/Navigation.tsx:62
+#: src/components/PageCreatePool/components/Navigation.tsx:105
+#: src/components/PageCreatePool/components/Navigation.tsx:156
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:236
+#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:46
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:55
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:26
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:57
+#: src/components/PageDeployGauge/ProcessSummary.tsx:39
+#: src/components/PageDeployGauge/ProcessSummary.tsx:60
 msgid "Checkmark filled"
 msgstr "勾选完成"
 
-#: src/components/PageCreatePool/index.tsx:242
-#: src/components/PageCreatePool/index.tsx:277
+#: src/components/PageCreatePool/index.tsx:181
+#: src/components/PageCreatePool/index.tsx:228
 msgid "Chevron left"
 msgstr "« 左尖括号"
 
-#: src/components/PageCreatePool/components/Navigation.tsx:29
-#: src/components/PageCreatePool/components/Navigation.tsx:42
-#: src/components/PageCreatePool/components/Navigation.tsx:55
-#: src/components/PageCreatePool/components/Navigation.tsx:68
-#: src/components/PageCreatePool/index.tsx:252
-#: src/components/PageCreatePool/index.tsx:287
+#: src/components/PageCreatePool/components/Navigation.tsx:41
+#: src/components/PageCreatePool/components/Navigation.tsx:64
+#: src/components/PageCreatePool/components/Navigation.tsx:107
+#: src/components/PageCreatePool/components/Navigation.tsx:158
+#: src/components/PageCreatePool/index.tsx:191
+#: src/components/PageCreatePool/index.tsx:238
 msgid "Chevron right"
 msgstr "» 右尖括号"
 
@@ -517,10 +443,6 @@ msgstr "» 右尖括号"
 #: src/domain/transfer/withdraw/form-claim/claim-actions.tsx:245
 #~ msgid "Claim"
 #~ msgstr "领取"
-
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:56
-msgid "Claim 3CRV"
-msgstr ""
 
 #: src/components/PagePool/Withdraw/utils.ts:87
 msgid "Claim CRV"
@@ -530,20 +452,16 @@ msgstr "领取 CRV 领取"
 msgid "Claim CRV Complete"
 msgstr "奖励 CRV 领取 完成"
 
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:57
-msgid "Claim crvUSD"
-msgstr ""
-
 #: src/domain/transfer/withdraw/form-claim/index.tsx:149
 #~ msgid "Claim Failed"
 #~ msgstr "奖励领取 失敗"
 
 #: src/components/PageDashboard/components/FormClaimFees.tsx:119
-#~ msgid "Claim LP rewards"
-#~ msgstr "领取LP奖励"
+msgid "Claim LP rewards"
+msgstr "领取LP奖励"
 
 #: src/components/PagePool/Withdraw/components/FormClaim.tsx:110
-#: src/components/PagePool/Withdraw/components/FormClaim.tsx:246
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:247
 #: src/components/PagePool/Withdraw/index.tsx:33
 msgid "Claim Rewards"
 msgstr "领取奖励"
@@ -556,18 +474,14 @@ msgstr "奖励领取 完成"
 #~ msgid "Claim Rewards Failed"
 #~ msgstr "奖励领取 失敗"
 
-#: src/components/PageDashboard/components/Summary.tsx:64
-#: src/components/PageDashboard/components/TableRow.tsx:176
-#: src/components/PageDashboard/index.tsx:59
+#: src/components/PageDashboard/components/Summary.tsx:65
+#: src/components/PageDashboard/components/TableRow.tsx:174
+#: src/components/PageDashboard/index.tsx:70
 msgid "Claimable Tokens"
 msgstr "未领取奖励"
 
 #: src/components/PageCompensation/components/Compensation.tsx:68
 msgid "Claimed {balance}"
-msgstr ""
-
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:85
-msgid "Claimed {key}"
 msgstr ""
 
 #: src/components/PagePool/Withdraw/utils.ts:82
@@ -584,13 +498,7 @@ msgstr "领取中"
 
 #: src/layout/default/HeaderMobile.tsx:162
 #: src/layout/default/HeaderSecondary.tsx:79
-#~ msgid "Classic UI"
-#~ msgstr ""
-
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:74
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:81
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:100
-msgid "Clear"
+msgid "Classic UI"
 msgstr ""
 
 #: src/domain/transfer/pool-stats/rewards.tsx:45
@@ -601,45 +509,29 @@ msgstr ""
 #~ msgid "Click here to learn more about Boosting your CRV rewards."
 #~ msgstr "点击这里了解更多有关如何提升CRV奖励的资料。"
 
-#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:72
-msgid "Click here to learn more about Cryptoswap pools"
-msgstr ""
-
 #: src/components/PagePool/PoolDetails/PoolStats/index.tsx:81
-#~ msgid "Click here to learn more about v2 pools"
-#~ msgstr "点击这里了解有关v2池的资料"
+msgid "Click here to learn more about v2 pools"
+msgstr "点击这里了解有关v2池的资料"
 
-#: src/layout/default/Footer.tsx:44
-#: src/layout/default/Footer.tsx:65
+#: src/layout/default/Footer.tsx:39
+#: src/layout/default/Footer.tsx:60
 msgid "CN"
 msgstr "中文"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:125
-msgid "Coins:"
-msgstr ""
-
-#: src/layout/default/Header.tsx:194
+#: src/layout/default/HeaderMobile.tsx:172
 msgid "Community"
 msgstr "社区"
 
-#: src/components/PageCompensation/Page.tsx:67
-#: src/components/PageCompensation/Page.tsx:71
+#: src/components/PageCompensation/Page.tsx:60
+#: src/components/PageCompensation/Page.tsx:64
 msgid "Compensation"
 msgstr ""
 
-#: src/components/PageRiskDisclaimer/index.tsx:74
-msgid "composed of Curve community members. It has restricted rights to undertake actions that do not directly impact users' funds, including canceling parameter changes authorized by the DAO and halting CRV emissions to a pool. Early pool implementations included a timelimited function to freeze swaps and deposits in case of emergency, but this precautionary function has since been deprecated in current pool implementations."
-msgstr ""
-
 #: src/components/PageCreatePool/ConfirmModal/index.tsx:253
-#~ msgid "Confirm pool setup"
-#~ msgstr "确定流动池设定"
+msgid "Confirm pool setup"
+msgstr "确定流动池设定"
 
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:71
-msgid "Confirm Pool Setup"
-msgstr ""
-
-#: src/components/PagePool/components/WarningModal.tsx:89
+#: src/components/PagePool/components/WarningModal.tsx:82
 msgid "Confirm warning to proceed."
 msgstr "确认警告以继续。"
 
@@ -647,75 +539,58 @@ msgstr "确认警告以继续。"
 #~ msgid "Connect"
 #~ msgstr "连接"
 
-#: src/components/PageDeployGauge/DeploySidechain.tsx:88
+#: src/components/PageDeployGauge/DeploySidechain.tsx:79
 msgid "Connect to a sidechain in order to complete the first step and deploy a sidechain gauge."
 msgstr ""
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:87
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:168
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:560
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:625
 msgid "Connect to Ethereum"
 msgstr ""
 
-#: src/components/PageDeployGauge/DeployMainnet.tsx:73
+#: src/components/PageDeployGauge/DeployMainnet.tsx:64
 msgid "Connect to Ethereum in order to deploy gauge."
 msgstr ""
 
-#: src/components/PageDeployGauge/DeploySidechain.tsx:84
+#: src/components/PageDeployGauge/DeploySidechain.tsx:75
 msgid "Connect to Ethereum in order to deploy mirror gauge."
 msgstr ""
 
-#: src/components/FormConnectWallet.tsx:25
-#: src/components/PageCompensation/Page.tsx:90
-#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:30
+#: src/components/ConnectWallet.tsx:46
+#: src/components/PageCompensation/Page.tsx:77
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:375
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:78
 #: src/components/PageCrvLocker/components/FormActions.tsx:23
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:97
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:178
-#: src/components/PagePool/Page.tsx:81
-#: src/components/PagePoolList/index.tsx:245
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:570
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:635
+#: src/components/PagePool/components/TransferActions.tsx:62
+#: src/components/PageRouterSwap/components/RouterSwapActions.tsx:29
 msgid "Connect Wallet"
 msgstr "连接钱包"
 
-#: src/components/PagePool/Page.tsx:80
-msgid "Connect wallet to view pool"
-msgstr ""
-
-#: src/components/PagePoolList/index.tsx:244
-msgid "Connect wallet to view pool list"
-msgstr ""
-
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:91
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:172
-#: src/components/PagePool/Page.tsx:82
-#: src/components/PagePoolList/index.tsx:246
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:564
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:629
 msgid "Connecting"
 msgstr ""
 
-#: src/components/PageCreatePool/index.tsx:174
+#: src/components/PageCreatePool/index.tsx:113
 msgid "Connecting to network"
 msgstr "正在连接到网络"
 
 #: src/components/PageCreatePool/Parameters/index.tsx:268
 #: src/components/PageCreatePool/TokensInPool/index.tsx:621
-#~ msgid "Consider choosing the token with the higher unit price as the first token for a more performant AMM"
-#~ msgstr "建议选择单位价格更高的代币作为第一个代币，以获得更高的 AMM 性能。"
+msgid "Consider choosing the token with the higher unit price as the first token for a more performant AMM"
+msgstr "建议选择单位价格更高的代币作为第一个代币，以获得更高的 AMM 性能。"
 
 #: src/domain/create-pool/confirm-modal/index.tsx:318
 #: src/domain/create-pool/summary/index.tsx:146
 #~ msgid "Contains rebasing tokens:"
 #~ msgstr "包含重新定基代币"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:25
-#: src/layout/default/Footer.tsx:118
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:23
+#: src/layout/default/Footer.tsx:114
 msgid "Contracts"
 msgstr "智能合约"
-
-#: src/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent.tsx:53
-msgid "Copy address"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:59
-msgid "Counterparty Risk"
-msgstr ""
 
 #: src/domain/create-pool/index.tsx:82
 #~ msgid "CREATE CURVE POOL"
@@ -729,17 +604,13 @@ msgstr "创建锁仓"
 #~ msgid "Create lock spending approved"
 #~ msgstr "创建锁仓所需余额已被授权"
 
-#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:42
-#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:47
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:121
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:145
-#: src/components/PageCreatePool/Page.tsx:31
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:383
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:388
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:218
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:248
+#: src/components/PageCreatePool/Page.tsx:28
 msgid "Create Pool"
 msgstr "创建流动池"
-
-#: src/components/PagePoolList/index.tsx:105
-msgid "Cross-chain"
-msgstr ""
 
 #: src/domain/crv-locker/form-lock-crv/index.tsx:122
 #~ msgid "CRV approved"
@@ -761,7 +632,7 @@ msgstr "CRV 可用的"
 #~ msgid "CRV locked {0}"
 #~ msgstr "已被锁定的CRV {0}"
 
-#: src/components/PageDashboard/components/FormVecrv.tsx:188
+#: src/components/PageDashboard/components/FormVecrv.tsx:181
 msgid "CRV locked:"
 msgstr "已被锁定的CRV："
 
@@ -769,32 +640,30 @@ msgstr "已被锁定的CRV："
 msgid "CRV Locked: {0}"
 msgstr "已被锁定的CRV："
 
-#: src/components/PageCrvLocker/Page.tsx:74
-#: src/components/PageCrvLocker/Page.tsx:78
+#: src/components/PageCrvLocker/Page.tsx:75
+#: src/components/PageCrvLocker/Page.tsx:79
 msgid "CRV Locker"
 msgstr "锁定CRV"
 
 #~ msgid "CRV LP reward annualized (max APY can be reached with max boost of 2.50)"
 #~ msgstr "CRV LP奖励年化（APY最大可以提升2.50倍）"
 
-#: src/components/PoolRewardsCrv.tsx:96
+#: src/components/PoolRewardsCrv.tsx:73
 msgid "CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)"
 msgstr "CRV LP奖励年化（tAPR最大可以提升2.50倍）"
 
-#: src/components/PageDashboard/index.tsx:58
+#: src/components/PageDashboard/index.tsx:69
 msgid "CRV Profits"
 msgstr "CRV 利润"
 
-#: src/components/PagePoolList/index.tsx:101
+#: src/components/PagePoolList/index.tsx:107
+#: src/layout/default/Header.tsx:120
+#: src/layout/default/HeaderMobile.tsx:143
 msgid "crvUSD"
 msgstr "crvUSD"
 
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:93
-msgid "crvUSD has been claimed and sent to your wallet."
-msgstr ""
-
-#: src/components/PageCreatePool/constants.ts:103
-#: src/components/PagePoolList/index.tsx:103
+#: src/components/PageCreatePool/constants.ts:87
+#: src/components/PagePoolList/index.tsx:109
 msgid "Crypto"
 msgstr "加密货币"
 
@@ -806,7 +675,7 @@ msgstr "加密货币"
 #~ msgid "Crypto collateralized stablecoin"
 #~ msgstr "加密货币抵押稳定币"
 
-#: src/components/PageCreatePool/constants.ts:78
+#: src/components/PageCreatePool/constants.ts:74
 msgid "Crypto Collateralized Stablecoins"
 msgstr "加密货币抵押稳定币"
 
@@ -815,37 +684,26 @@ msgstr "加密货币抵押稳定币"
 #~ msgid "Crypto Share"
 #~ msgstr "加密货币池份额"
 
-#: src/components/PagePool/index.tsx:219
-#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:13
+#: src/components/PagePool/index.tsx:201
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:11
 msgid "CRYPTO V2"
 msgstr "加密货币 V2"
 
-#: src/layout/default/Header.tsx:71
+#: src/layout/default/HeaderMobile.tsx:225
+#: src/layout/default/HeaderSecondary.tsx:66
 msgid "Crypto Volume Share"
 msgstr "加密货币池交易份额"
 
-#: src/components/PageRiskDisclaimer/index.tsx:110
-msgid "Cryptocurrencies and ERC20 tokens have historically exhibited significant price volatility. They can experience rapid and substantial fluctuations in value, which may occur within short periods of time. The market value of any token may rise or fall, and there is no guarantee of any specific price stability."
-msgstr ""
-
-#: src/components/PageCreatePool/PoolType/index.tsx:44
-#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:35
+#: src/components/PageCreatePool/PoolType/index.tsx:42
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:34
 msgid "Cryptoswap"
 msgstr "加密货币兑换"
 
-#: src/components/PageCreatePool/PoolType/index.tsx:50
+#: src/components/PageCreatePool/PoolType/index.tsx:48
 msgid "Cryptoswap pools are currently unavailable on this chain"
 msgstr "此链上暂未开通加密货币兑换池"
 
-#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:70
-msgid "Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:103
-msgid "CryptoSwap V2 pools"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:38
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:40
 msgid "Currency reserves"
 msgstr "储备"
 
@@ -853,7 +711,7 @@ msgstr "储备"
 #~ msgid "Current"
 #~ msgstr "当前的"
 
-#: src/components/PagePool/UserDetails/index.tsx:124
+#: src/components/PagePool/UserDetails/index.tsx:127
 msgid "Current Boost:"
 msgstr "当前加速倍数"
 
@@ -865,36 +723,16 @@ msgstr ""
 #~ msgid "Current unlocked date"
 #~ msgstr "当前解锁时间"
 
-#: src/components/PageRiskDisclaimer/index.tsx:20
-msgid "Curve Pool Risk Disclosures for Liquidity Providers"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:63
-msgid "Curve pool smart contracts are intentionally designed to be immutable and noncustodial, meaning they cannot be upgraded and liquidity providers always retain full control of their funds. While this characteristic may limit protective actions in case of emergencies, it significantly strengthens user assurances about custody of their funds."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:44
-msgid "Curve relies on smart contracts, which are self-executing pieces of code. While these contracts are designed to be secure, there is a risk that they may contain vulnerabilities or bugs. Malicious actors could exploit these vulnerabilities, resulting in the loss of funds or other adverse consequences. It is essential for users to conduct due diligence and review the smart contracts and security audit reports to assess the inherent risks."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:48
-msgid "Curve smart contracts have undergone multiple audits by reputable firms including Trail of Bits, MixBytes, QuantStamp, and ChainSecurity to enhance protocol security. While smart contract audits play an important role in good security practices to mitigate user risks, they don't eliminate all risks. Users should always exercise caution regardless of Curve's commitment to protocol security."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:31
-msgid "Curve Whitepapers"
-msgstr ""
-
-#: src/components/AdvancedSettings.tsx:204
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:358
+#: src/components/AdvancedSettings.tsx:195
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:357
 msgid "Custom"
 msgstr "自定义"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:39
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:33
 msgid "Daily"
 msgstr "每日"
 
-#: src/components/PageDashboard/components/Summary.tsx:63
+#: src/components/PageDashboard/components/Summary.tsx:64
 msgid "Daily Profits"
 msgstr "每日利润"
 
@@ -902,26 +740,26 @@ msgstr "每日利润"
 #~ msgid "Daily USD volume"
 #~ msgstr "每日美元交易量"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:57
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:69
 msgid "Daily USD volume:"
 msgstr "每日美元交易量:"
 
-#: src/layout/default/Header.tsx:70
+#: src/layout/default/HeaderMobile.tsx:216
+#: src/layout/default/HeaderSecondary.tsx:58
 msgid "Daily Volume"
 msgstr "每日交易量"
 
 #: src/layout/default/HeaderMobile.tsx:163
 #: src/layout/default/HeaderSecondary.tsx:82
-#~ msgid "DAO"
-#~ msgstr ""
+msgid "DAO"
+msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:24
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:20
 msgid "DAO fee:"
 msgstr "DAO 费用:"
 
-#: src/components/PageDashboard/Page.tsx:34
-#: src/layout/default/Header.tsx:79
-#: src/layout/default/Header.tsx:86
+#: src/components/PageDashboard/Page.tsx:32
+#: src/layout/default/Header.tsx:34
 msgid "Dashboard"
 msgstr "我的"
 
@@ -929,102 +767,59 @@ msgstr "我的"
 #~ msgid "days"
 #~ msgstr "天"
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:200
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:86
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:646
 #: src/components/PageDeployGauge/Page.tsx:28
 msgid "Deploy Gauge"
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:36
+#: src/components/PageDeployGauge/ProcessSummary.tsx:35
 msgid "Deploy gauge on sidechain"
 msgstr ""
 
-#: src/components/PageDeployGauge/index.tsx:80
+#: src/components/PageDeployGauge/index.tsx:79
 msgid "Deploy Mainnet Gauge"
 msgstr ""
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:146
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:603
 msgid "Deploy Mirror Gauge"
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:67
+#: src/components/PageDeployGauge/ProcessSummary.tsx:55
 msgid "Deploy mirror gauge on Ethereum using the same sidechain LP token address"
 msgstr ""
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:140
-#: src/components/PageDeployGauge/index.tsx:80
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:598
+#: src/components/PageDeployGauge/index.tsx:79
 msgid "Deploy Sidechain Gauge"
 msgstr ""
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:205
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:91
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:651
 msgid "Deploying Gauge"
 msgstr ""
 
-#: src/store/createDeployGaugeSlice.ts:215
-#: src/store/createDeployGaugeSlice.ts:252
-#: src/store/createDeployGaugeSlice.ts:289
-#: src/store/createDeployGaugeSlice.ts:326
-#: src/store/createDeployGaugeSlice.ts:362
-msgid "Deploying gauge for {shortenAddress}..."
-msgstr ""
-
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:158
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:615
 msgid "Deploying Mirror Gauge"
 msgstr ""
 
-#: src/store/createDeployGaugeSlice.ts:611
-#: src/store/createDeployGaugeSlice.ts:650
-#: src/store/createDeployGaugeSlice.ts:689
-#: src/store/createDeployGaugeSlice.ts:728
-#: src/store/createDeployGaugeSlice.ts:764
-msgid "Deploying mirror gauge for {shortenAddress}..."
-msgstr ""
-
-#: src/components/PageDeployGauge/ProcessSummary.tsx:72
-msgid "Deploying mirror gauge..."
-msgstr ""
-
-#: src/store/createCreatePoolSlice.ts:836
-#: src/store/createCreatePoolSlice.ts:917
-#: src/store/createCreatePoolSlice.ts:1015
-#: src/store/createCreatePoolSlice.ts:1086
-#: src/store/createCreatePoolSlice.ts:1175
-#: src/store/createCreatePoolSlice.ts:1254
-msgid "Deploying pool {poolName}..."
-msgstr ""
-
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:201
-msgid "Deploying Pool {poolName}..."
-msgstr ""
-
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:152
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:609
 msgid "Deploying Sidechain Gauge"
 msgstr ""
 
-#: src/store/createDeployGaugeSlice.ts:408
-#: src/store/createDeployGaugeSlice.ts:446
-#: src/store/createDeployGaugeSlice.ts:484
-#: src/store/createDeployGaugeSlice.ts:522
-#: src/store/createDeployGaugeSlice.ts:560
-msgid "Deploying sidechain gauge for {shortenAddress}..."
-msgstr ""
-
-#: src/components/PageDeployGauge/ProcessSummary.tsx:40
-msgid "Deploying sidechain gauge..."
-msgstr ""
-
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:143
-#: src/components/PagePool/Deposit/index.tsx:35
-#: src/components/PagePool/index.tsx:196
-#: src/components/PagePoolList/components/TableRowMobile.tsx:159
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:140
+#: src/components/PagePool/Deposit/index.tsx:34
+#: src/components/PagePool/index.tsx:189
+#: src/components/PagePoolList/components/TableRowMobile.tsx:165
 msgid "Deposit"
 msgstr "存入"
 
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:146
-#: src/components/PagePool/Deposit/index.tsx:37
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:141
+#: src/components/PagePool/Deposit/index.tsx:36
 msgid "Deposit & Stake"
 msgstr "存入和质押"
 
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:146
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:141
 msgid "Deposit & Stake Complete"
 msgstr "存入和质押 完成"
 
@@ -1032,11 +827,11 @@ msgstr "存入和质押 完成"
 #~ msgid "Deposit & Stake Failed"
 #~ msgstr "存入和质押 失败"
 
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:109
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:104
 msgid "Deposit and staked {tokenText}"
 msgstr ""
 
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:143
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:140
 msgid "Deposit Complete"
 msgstr "存入 成功"
 
@@ -1056,35 +851,31 @@ msgstr "存入 封装代币"
 #~ msgid "Deposited {tokenText}, received {receivedLpTokens} LP Tokens"
 #~ msgstr "存入 {tokenText}，收到 {receivedLpTokens} 個 LP 代币"
 
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:106
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:103
 msgid "Deposited {tokenText}."
 msgstr "存入 {tokenText}。"
 
 #: src/components/PagePoolList/components/DialogSort/DialogSortContent.tsx:27
-#~ msgid "Desc"
-#~ msgstr "下降"
+msgid "Desc"
+msgstr "下降"
 
-#: src/layout/default/Footer.tsx:113
+#: src/layout/default/Footer.tsx:137
 msgid "Developer Docs"
 msgstr "开发文档"
 
-#: src/components/PagePoolList/index.tsx:276
+#: src/components/PagePoolList/index.tsx:261
 msgid "Didn't find what you're looking for?"
 msgstr "沒有找到您要查找的内容？"
 
-#: src/components/AdvancedSettings.tsx:145
+#: src/components/AdvancedSettings.tsx:136
 msgid "Discard"
 msgstr "丢弃"
 
-#: src/components/PageRiskDisclaimer/index.tsx:142
-msgid "Disclaimer: The information provided within this context does not constitute financial, legal, or tax advice personalized to your specific circumstances. The content presented is for informational purposes only and should not be relied upon as a substitute for professional advice tailored to your individual needs. It is recommended that you seek the advice of qualified professionals regarding financial, legal, and tax matters before engaging in any activities on Curve."
-msgstr ""
-
-#: src/layout/default/Footer.tsx:52
+#: src/layout/default/Footer.tsx:47
 msgid "Dodo"
 msgstr ""
 
-#: src/components/PageCreatePool/Parameters/index.tsx:272
+#: src/components/PageCreatePool/Parameters/index.tsx:261
 msgid "Dollar prices are fetched from coingecko."
 msgstr ""
 
@@ -1093,16 +884,8 @@ msgstr ""
 #~ msgstr "美元价格来源于CoinGecko"
 
 #: src/layout/default/Footer.tsx:132
-#~ msgid "Donate"
-#~ msgstr "捐款"
-
-#: src/components/PageRiskDisclaimer/index.tsx:128
-msgid "Due to composability within DeFi, it is possible for assets in Curve pools to be receipt tokens for deposits in third party lending platforms. Composability of this sort can amplify yields for liquidity providers, but it also exposes users to additional risks associated with the underlying lending protocol. Users interacting with pools that involve lending assets should be mindful of this additional risk and conduct due diligence on the associated lending protocol."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:119
-msgid "Due to the permissionless pool factory and the absence of strict onboarding criteria, not every token included in Curve pools undergoes a detailed independent risk assessment. Curve pools may contain unvetted tokens that have uncertain value or potential fraudulent characteristics. The presence of unvetted tokens introduces potential risks, including exchange rate volatility, smart contract vulnerabilities, liquidity risks, and other unforeseen circumstances that could result in the loss of funds or other adverse consequences."
-msgstr ""
+msgid "Donate"
+msgstr "捐款"
 
 #: src/domain/dialogs/dialog-waves-provider.tsx:21
 #~ msgid "Email"
@@ -1112,16 +895,15 @@ msgstr ""
 #~ msgid "Enable to process transaction."
 #~ msgstr "启动以处理交易。"
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:212
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:140
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:87
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:134
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:101
 msgid "ERC4626"
 msgstr ""
 
 #: src/components/Page404/Page.tsx:11
 #: src/pages/404.tsx:11
-#~ msgid "Error 404"
-#~ msgstr "错误 404"
+msgid "Error 404"
+msgstr "错误 404"
 
 #: src/components/PagePool/components/DetailInfoEstTokens.tsx:18
 msgid "Estimated Received:"
@@ -1131,15 +913,15 @@ msgstr "预计收到："
 #~ msgid "Estimated TX cost"
 #~ msgstr "预计交易成本"
 
-#: src/components/DetailInfoEstGas.tsx:84
+#: src/components/DetailInfoEstGas.tsx:78
 msgid "Estimated TX cost:"
 msgstr "预计交易成本："
 
 #: src/layout/default/Footer.tsx:109
-#~ msgid "Events"
-#~ msgstr "事件"
+msgid "Events"
+msgstr "事件"
 
-#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:26
+#: src/components/PageRouterSwap/components/DetailInfoExchangeRate.tsx:27
 msgid "Exchange rate"
 msgstr "兑换比例"
 
@@ -1147,38 +929,30 @@ msgstr "兑换比例"
 #~ msgid "Exchange rate is too low!"
 #~ msgstr "汇率过低！"
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:231
-msgid "existing pools"
-msgstr ""
-
-#: src/components/PagePool/index.tsx:251
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/index.tsx:261
+#: src/components/PagePool/index.tsx:227
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:221
 msgid "Expand chart"
 msgstr ""
 
-#: src/components/PagePool/components/DetailInfoExpectedApy.tsx:46
-msgid "Expected CRV tAPR:"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:53
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:47
 msgid "EYWA fee:"
 msgstr ""
 
 #: src/hooks/usePoolAlert.tsx:91
-#~ msgid "EYWA Links:"
-#~ msgstr ""
+msgid "EYWA Links:"
+msgstr ""
 
 #: src/components/PagePoolList/components/TableCellFactory.tsx:15
-#~ msgid "Factory"
-#~ msgstr "工厂池"
+msgid "Factory"
+msgstr "工厂池"
 
 #: src/components/PagePool/index.tsx:210
-#~ msgid "FACTORY"
-#~ msgstr "工厂池"
+msgid "FACTORY"
+msgstr "工厂池"
 
 #: src/components/PagePoolList/components/TableCellFactory.tsx:14
-#~ msgid "Factory pools are permissionless, deployed by anyone."
-#~ msgstr "工厂池是无需许可的，任何人都可以部署。"
+msgid "Factory pools are permissionless, deployed by anyone."
+msgstr "工厂池是无需许可的，任何人都可以部署。"
 
 #: src/layout/default/Footer.tsx:134
 #~ msgid "FAQ"
@@ -1188,20 +962,20 @@ msgstr ""
 #~ msgid "Fee"
 #~ msgstr "费用"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:369
+#: src/components/PageCreatePool/Parameters/index.tsx:364
 msgid "Fee Gamma ({0} - {1})"
 msgstr "费用 Gamma ({0} - {1})"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:99
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:274
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:107
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:112
 msgid "Fee Gamma:"
 msgstr "费用 Gamma ({0} - {1})"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:84
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:91
 msgid "Fee:"
 msgstr "费用:"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:218
+#: src/components/PageCreatePool/Parameters/index.tsx:207
 msgid "Fees"
 msgstr "费用"
 
@@ -1209,7 +983,7 @@ msgstr "费用"
 #~ msgid "Fiat Redeemable Stablecoin"
 #~ msgstr "可兑换为法定货币的稳定币"
 
-#: src/components/PageCreatePool/constants.ts:66
+#: src/components/PageCreatePool/constants.ts:62
 msgid "Fiat Redeemable Stablecoins"
 msgstr "可兑换为法定货币的稳定币"
 
@@ -1217,32 +991,27 @@ msgstr "可兑换为法定货币的稳定币"
 #~ msgid "Filter by"
 #~ msgstr "过滤"
 
-#: src/components/PageCreatePool/constants.ts:218
+#: src/components/PageCreatePool/constants.ts:186
 msgid "For pools containing native {0} (represented as 0xEE…EE)"
 msgstr "对于包含原生{0}（表示为0xEE...EE）的池"
 
-#: src/components/PageCreatePool/constants.ts:206
+#: src/components/PageCreatePool/constants.ts:174
 msgid "For pools that supports any major ERC20 return implementation (”return True / revert”, “return None / revert”, “return True / return False”), and any number of decimal places up to 18"
 msgstr "对于支持任何主要 ERC20 返回实现（“return True / revert”，“return None / revert”，“return True / return False”）和任意小数位数最多为18的池。"
 
-#: src/components/PageCreatePool/constants.ts:212
+#: src/components/PageCreatePool/constants.ts:180
 msgid "For pools with rebase tokens like aTokens, or where there's a fee-on-transfer."
 msgstr "对于具有重新定基代币（如 aTokens）或存在转移费用的池。"
 
-#: src/components/PageCreatePool/constants.ts:119
+#: src/components/PageCreatePool/constants.ts:103
 msgid "Forex"
 msgstr "外汇"
 
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:90
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:66
 msgid "Function (e.g exchangeRate())"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:168
-msgid "Function ID:"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:90
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:163
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:76
 msgid "Function:"
 msgstr ""
 
@@ -1250,15 +1019,16 @@ msgstr ""
 #~ msgid "Future"
 #~ msgstr "未來"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:44
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:42
 msgid "Gauge"
 msgstr "权重"
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:196
+#: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:95
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:642
 msgid "Gauge Deployed Successfully"
 msgstr ""
 
-#: src/components/PageDeployGauge/index.tsx:131
+#: src/components/PageDeployGauge/index.tsx:136
 msgid "Gauge deployment is not supported on this network."
 msgstr ""
 
@@ -1267,27 +1037,27 @@ msgstr ""
 #~ msgstr "权重仪表"
 
 #: src/components/PageCreatePool/ConfirmModal/index.tsx:290
-#~ msgid "Go to deploy sidechain gauge"
-#~ msgstr ""
+msgid "Go to deploy sidechain gauge"
+msgstr ""
 
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:173
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:297
 msgid "Go to pool"
 msgstr "前往流动池"
 
 #: src/layout/default/HeaderMobile.tsx:164
 #: src/layout/default/HeaderSecondary.tsx:83
-#~ msgid "Governance"
-#~ msgstr "Gov.治理"
+msgid "Governance"
+msgstr "Gov.治理"
 
 #: src/components/layout/default/footer.tsx:46
 #~ msgid "Help"
 #~ msgstr "帮助"
 
-#: src/components/ComboBoxSelectToken/ComboBox.tsx:123
+#: src/components/ComboBoxSelectToken/index.tsx:136
 msgid "Hide tokens from very small pools"
 msgstr "隐藏小池的代币"
 
-#: src/components/PagePoolList/index.tsx:224
+#: src/components/PagePoolList/index.tsx:220
 msgid "Hide very small pools"
 msgstr "隐藏小池"
 
@@ -1307,7 +1077,7 @@ msgstr "隐藏小池"
 #~ msgid "High price impact warning!<0/>Swap will have {0}% price impact."
 #~ msgstr "注意：高滑点警告！<0/>交易将会产生 {0}% 的滑点。"
 
-#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:23
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:21
 msgid "High price impact:"
 msgstr "注意：高滑点警告！"
 
@@ -1315,26 +1085,9 @@ msgstr "注意：高滑点警告！"
 #~ msgid "High price impact!"
 #~ msgstr "注意：高滑点警告！"
 
-#: src/components/PagePool/components/WarningModal.tsx:65
+#: src/components/PagePool/components/WarningModal.tsx:56
 msgid "High slippage!<0/>{0} will have {1}% loss."
 msgstr "注意：高滑点！<0/>{0} 将会损失 {1}%。"
-
-#: src/components/PageRiskDisclaimer/index.tsx:87
-msgid "If the token fails to regain its peg, liquidity providers will encounter losses proportional to the severity of the depeg. The potential permanent loss highlights the importance of thorough consideration and caution when participating in activities involving stablecoins and/or derivative assets."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:51
-msgid "Immutability and Irreversibility of Transactions:"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:90
-msgid "Impermanent Loss:"
-msgstr ""
-
-#: src/components/PageDashboard/index.tsx:55
-#: src/components/PagePoolList/Page.tsx:57
-msgid "Incentives"
-msgstr ""
 
 #: src/components/PageCrvLocker/index.tsx:28
 msgid "Increase Amount"
@@ -1349,30 +1102,29 @@ msgstr "增加锁仓"
 msgid "Increase Lock Amount"
 msgstr "增加锁仓金额"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:266
+#: src/components/PageCreatePool/Parameters/index.tsx:255
 msgid "Initial Liquidity Concentration Price"
 msgstr "初始流动性集中价格。"
 
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:77
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:75
 msgid "Initial Price {0}"
 msgstr "初始价格 {0}"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:63
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:71
 msgid "Initial Price B:"
 msgstr "初始价格B:"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:278
+#: src/components/PageCreatePool/Parameters/index.tsx:273
 msgid "Initial price can't be 0. The price fetch didn't return a price. Please enter the token dollar price manually in the input."
 msgstr "初始价格不能为0。价格检索未返回价格。请手动输入价格。"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:38
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:46
 msgid "Initial Price{0}:"
 msgstr "初始价格{0}:"
 
 #: src/components/PageIntegrations/Page.tsx:38
-#: src/layout/default/Footer.tsx:126
-#: src/layout/default/Header.tsx:80
-#: src/layout/default/Header.tsx:88
+#: src/layout/default/Footer.tsx:127
+#: src/layout/default/Header.tsx:35
 msgid "Integrations"
 msgstr "集成"
 
@@ -1380,21 +1132,16 @@ msgstr "集成"
 msgid "Invalid date"
 msgstr ""
 
-#: src/components/PagePoolList/index.tsx:278
+#: src/components/PagePoolList/index.tsx:263
 msgid "Join the Telegram"
 msgstr "加入电报群"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:204
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersA.tsx:38
-msgid "Last change occurred between {0} and {1}, when A ramped from {initial_A} to {future_A}."
-msgstr ""
-
-#: src/components/PageDeployGauge/InfoBox.tsx:25
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:60
+#: src/components/PageDeployGauge/InfoBox.tsx:26
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:54
 msgid "Learn more"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:139
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:136
 msgid "Learn more about Boosting your CRV rewards"
 msgstr ""
 
@@ -1410,60 +1157,47 @@ msgstr ""
 #~ msgid "Learn more about V2 pools"
 #~ msgstr "了解有关 V2 池的更多信息"
 
-#: src/components/PageCreatePool/index.tsx:213
+#: src/components/PageCreatePool/index.tsx:152
 msgid "Learn more: Creating Cryptoswap pools"
 msgstr ""
 
-#: src/components/PageCreatePool/index.tsx:209
+#: src/components/PageCreatePool/index.tsx:148
 msgid "Learn more: Creating Stableswap pools"
 msgstr ""
 
-#: src/components/PageCreatePool/index.tsx:225
+#: src/components/PageCreatePool/index.tsx:164
 msgid "Learn more: Read about Cryptoswap parameters"
 msgstr ""
 
-#: src/components/PageCreatePool/index.tsx:221
+#: src/components/PageCreatePool/index.tsx:160
 msgid "Learn more: Understanding Cryptoswap"
 msgstr ""
 
-#: src/components/PageCreatePool/index.tsx:233
+#: src/components/PageCreatePool/index.tsx:172
 msgid "Learn more: Understanding Stableswap"
 msgstr ""
 
 #: src/components/PageCreatePool/components/InfoBox.tsx:28
 #: src/components/PageCreatePool/components/InfoBox.tsx:34
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:79
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:218
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:65
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:140
 msgid "Link to address"
 msgstr "地址链接"
 
-#: src/components/PageCreatePool/constants.ts:90
-#: src/components/PageCreatePool/constants.ts:151
-msgid "Liquid Restaking Tokens"
-msgstr ""
-
-#: src/components/PageCreatePool/constants.ts:135
+#: src/components/PageCreatePool/constants.ts:119
 msgid "Liquid Staking Derivatives"
 msgstr "流动性质押衍生品"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:47
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:61
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:48
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:62
 msgid "Liquidity"
-msgstr ""
-
-#: src/components/PagePool/components/CampaignRewardsBanner.tsx:20
-msgid "Liquidity providers in this pool also earn additional tokens!"
-msgstr ""
-
-#: src/components/PagePool/components/CampaignRewardsBanner.tsx:19
-msgid "Liquidity providers in this pool also earn points!"
 msgstr ""
 
 #: src/domain/transfer/pool-stats/pool-parameters.tsx:142
 #~ msgid "Liquidity utilization"
 #~ msgstr "流动性利用率"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:63
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:72
 msgid "Liquidity utilization:"
 msgstr "流动性利用率:"
 
@@ -1471,8 +1205,9 @@ msgstr "流动性利用率:"
 #~ msgid "Llama Airforce"
 #~ msgstr "Llama Airforce"
 
-#: src/components/FormConnectWallet.tsx:29
 #: src/components/PageCrvLocker/components/FormActions.tsx:27
+#: src/components/PagePool/components/TransferActions.tsx:66
+#: src/components/PageRouterSwap/components/RouterSwapActions.tsx:35
 msgid "Loading"
 msgstr "正在加载"
 
@@ -1520,7 +1255,7 @@ msgstr "锁仓到期日已更新"
 #~ msgid "Locked until"
 #~ msgstr "锁仓到期日"
 
-#: src/components/PageDashboard/components/FormVecrv.tsx:191
+#: src/components/PageDashboard/components/FormVecrv.tsx:184
 msgid "Locked until:"
 msgstr "锁仓到期日："
 
@@ -1528,34 +1263,26 @@ msgstr "锁仓到期日："
 #~ msgid "Low Exchange Rate!"
 #~ msgstr "注意：低汇率！"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/index.tsx:178
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:139
 msgid "LP Token ({0})"
 msgstr "LP代币 ({0})"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/index.tsx:175
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:142
 msgid "LP Token (USD)"
 msgstr "LP代币 (USD)"
 
-#: src/components/PageDeployGauge/DeploySidechain.tsx:118
+#: src/components/PageDeployGauge/DeploySidechain.tsx:109
 msgid "LP Token Address"
 msgstr ""
 
 #: src/components/PagePool/components/FieldLpToken.tsx:42
-#: src/components/PagePool/UserDetails/index.tsx:99
+#: src/components/PagePool/UserDetails/index.tsx:102
 msgid "LP Tokens"
 msgstr "LP代币"
 
 #: src/components/PagePool/components/FieldLpToken.tsx:42
 msgid "LP Tokens Avail."
 msgstr "LP代币可用的"
-
-#: src/store/createDeployGaugeSlice.ts:227
-#: src/store/createDeployGaugeSlice.ts:264
-#: src/store/createDeployGaugeSlice.ts:301
-#: src/store/createDeployGaugeSlice.ts:338
-#: src/store/createDeployGaugeSlice.ts:374
-msgid "Mainnet gauge deployment successful."
-msgstr ""
 
 #: src/components/input-comp/input-max-button.tsx:35
 #~ msgid "MAX"
@@ -1565,7 +1292,7 @@ msgstr ""
 #~ msgid "Max amount"
 #~ msgstr "最大数量"
 
-#: src/components/AdvancedSettings.tsx:166
+#: src/components/AdvancedSettings.tsx:157
 msgid "Max Slippage"
 msgstr "最大滑点"
 
@@ -1573,11 +1300,11 @@ msgstr "最大滑点"
 #~ msgid "MAX*"
 #~ msgstr "最大值*"
 
-#: src/components/AdvancedSettings.tsx:168
+#: src/components/AdvancedSettings.tsx:159
 msgid "Maximum difference between expected price of the trade, versus the price when the trade is executed."
 msgstr "交易的预期价格与交易执行时的价格之间的最大差异。"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:100
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:107
 msgid "Measures pool growth; this is not a dollar value"
 msgstr "衡量池增长； 这不是以美元计价"
 
@@ -1585,16 +1312,12 @@ msgstr "衡量池增长； 这不是以美元计价"
 #~ msgid "MetaMask"
 #~ msgstr "MetaMask"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:99
-msgid "Metapool"
-msgstr ""
-
-#: src/components/PageCreatePool/Parameters/index.tsx:250
+#: src/components/PageCreatePool/Parameters/index.tsx:239
 msgid "Mid fee governs fees charged during low volatility."
 msgstr "Mid Fee管理低波动期间收取的费用"
 
 #: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:30
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:181
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:53
 msgid "Mid Fee:"
 msgstr "中间费用:"
 
@@ -1603,14 +1326,10 @@ msgstr "中间费用:"
 #~ msgstr "中间费用: ({0} - {1}%)"
 
 #: src/components/PageCreatePool/Parameters/index.tsx:230
-#~ msgid "Mid Fee: ({0} - {1}%)"
-#~ msgstr ""
-
-#: src/components/PageCreatePool/Parameters/index.tsx:241
-msgid "Mid Fee: ({0}% - {1}%)"
+msgid "Mid Fee: ({0} - {1}%)"
 msgstr ""
 
-#: src/components/PagePool/UserDetails/index.tsx:72
+#: src/components/PagePool/UserDetails/index.tsx:75
 msgid "min. CRV tAPR %"
 msgstr "基础 CRV 年化 tAPR %"
 
@@ -1618,7 +1337,7 @@ msgstr "基础 CRV 年化 tAPR %"
 #~ msgid "Min. Curve {0} LP Tokens:"
 #~ msgstr "最低限度 Curve {0} LP 代币："
 
-#: src/components/AdvancedSettings.tsx:117
+#: src/components/AdvancedSettings.tsx:111
 msgid "Min. slippage is {MIN_SLIPPAGE}%"
 msgstr "最小滑点为 {MIN_SLIPPAGE}%"
 
@@ -1626,7 +1345,7 @@ msgstr "最小滑点为 {MIN_SLIPPAGE}%"
 #~ msgid "Min. slippage is 0.01%"
 #~ msgstr "最小滑点为 0.01%"
 
-#: src/components/PagePool/components/DetailInfoEstLpTokens.tsx:40
+#: src/components/PagePool/components/DetailInfoEstLpTokens.tsx:42
 msgid "Minimum LP Tokens:"
 msgstr "最少LP代币："
 
@@ -1634,56 +1353,48 @@ msgstr "最少LP代币："
 #~ msgid "Minter"
 #~ msgstr "铸币厂"
 
-#: src/store/createDeployGaugeSlice.ts:623
-#: src/store/createDeployGaugeSlice.ts:662
-#: src/store/createDeployGaugeSlice.ts:701
-#: src/store/createDeployGaugeSlice.ts:740
-#: src/store/createDeployGaugeSlice.ts:776
-msgid "Mirror gauge deployment successful."
-msgstr ""
-
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:125
-#: src/components/PageDeployGauge/ProcessSummary.tsx:79
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:584
+#: src/components/PageDeployGauge/ProcessSummary.tsx:61
 msgid "Mirror gauge successfully deployed"
 msgstr ""
 
 #: src/layout/default/HeaderMobile.tsx:146
-#~ msgid "Mode"
-#~ msgstr "模式"
+msgid "Mode"
+msgstr "模式"
 
 #: src/layout/default/HeaderMobile.tsx:154
-#~ msgid "More"
-#~ msgstr ""
+msgid "More"
+msgstr ""
 
-#: src/components/PageCreatePool/Parameters/index.tsx:318
-#: src/components/PageCreatePool/Parameters/index.tsx:391
+#: src/components/PageCreatePool/Parameters/index.tsx:313
+#: src/components/PageCreatePool/Parameters/index.tsx:386
 msgid "Moving Average Time ({0} - {1}) seconds"
 msgstr "移动平均时间 ({0} - {1}) 秒"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:115
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:123
 #: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:57
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:286
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:124
 msgid "Moving Average Time:"
 msgstr "移动平均时间："
 
-#: src/components/PagePoolList/index.tsx:106
+#: src/components/PagePoolList/index.tsx:111
 msgid "My Pools"
 msgstr "我的池子"
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:37
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:59
 msgid "Name:"
 msgstr "名称："
 
-#: src/components/PageDeployGauge/DeploySidechain.tsx:93
+#: src/components/PageDeployGauge/DeploySidechain.tsx:84
 msgid "Network:"
 msgstr ""
 
-#: src/layout/default/Footer.tsx:146
+#: src/layout/default/Footer.tsx:142
 msgid "News"
 msgstr "新闻"
 
-#: src/components/PageCreatePool/index.tsx:252
-#: src/components/PageCreatePool/index.tsx:287
+#: src/components/PageCreatePool/index.tsx:191
+#: src/components/PageCreatePool/index.tsx:238
 msgid "Next"
 msgstr "下一个"
 
@@ -1697,7 +1408,7 @@ msgstr "下一个"
 #~ msgid "No A value set"
 #~ msgstr "未设置 放大系数 值"
 
-#: src/components/PageDashboard/index.tsx:161
+#: src/components/PageDashboard/index.tsx:166
 msgid "No active pool found for"
 msgstr "找不到活跃的池子"
 
@@ -1705,23 +1416,19 @@ msgstr "找不到活跃的池子"
 #~ msgid "No active pool found."
 #~ msgstr "未找到活动的池子。"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:73
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:59
 msgid "No address set"
 msgstr ""
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:56
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:78
 msgid "No asset type set"
 msgstr "未设置 资产类别 值"
 
-#: src/components/PagePool/Withdraw/components/FormClaim.tsx:212
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:213
 msgid "No claimable rewards"
 msgstr "没有可以领取的奖励"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:84
-msgid "No controller data found."
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:92
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:78
 msgid "No function set"
 msgstr ""
 
@@ -1732,19 +1439,19 @@ msgstr ""
 #~ msgid "No initial price set"
 #~ msgstr "未设置 初始价格 值"
 
-#: src/components/PageIntegrations/index.tsx:130
+#: src/components/PageIntegrations/index.tsx:115
 msgid "No integration apps found with for {0} {1}{2}"
 msgstr ""
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:39
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:61
 msgid "No name set"
 msgstr "未设置 名称 值"
 
-#: src/components/PagePoolList/index.tsx:283
+#: src/components/PagePoolList/index.tsx:268
 msgid "No pool found for \"{0}\". Feel free to search other tabs, or"
 msgstr "未找到 \"{0}\" 的池。 搜索其他标签，或"
 
-#: src/components/PagePoolList/index.tsx:290
+#: src/components/PagePoolList/index.tsx:275
 msgid "No pool found in this category"
 msgstr "在这个类别中没有找到流动性池"
 
@@ -1763,39 +1470,32 @@ msgstr "未设置 预设"
 #~ msgid "No swap fee set"
 #~ msgstr "未设置 手续费 值"
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:47
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:69
 msgid "No symbol set"
 msgstr "未设置 symbol 值"
 
-#: src/components/ComboBoxSelectToken/ComboBox.tsx:148
-msgid "No token found for \"{filterValue}\""
-msgstr ""
-
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:278
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:235
 msgid "No token found for address {0}"
 msgstr "未找到地址{0}的代币"
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:76
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:69
 msgid "No tokens selected"
 msgstr "未选择代币"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:77
-msgid "No trades data found."
-msgstr ""
-
-#: src/components/PageDashboard/components/TableRow.tsx:89
+#: src/components/PageDashboard/components/TableRow.tsx:92
 msgid "None"
 msgstr "无"
 
 #: src/components/PagePool/Swap/index.tsx:396
-#~ msgid "Not enough balance for {0}"
-#~ msgstr ""
+msgid "Not enough balance for {0}"
+msgstr ""
 
-#: src/store/createPoolDepositSlice.ts:279
-msgid "Not enough balance for {amountsError}."
-msgstr "{amountsError} 余额不足。书签"
+#: src/domain/transfer/deposit/form-deposit/index.tsx:95
+#: src/domain/transfer/deposit/form-deposit-stake/index.tsx:96
+#~ msgid "Not enough balance for {amountsError}."
+#~ msgstr "{amountsError} 余额不足。书签"
 
-#: src/components/PagePool/Deposit/components/FormStake.tsx:206
+#: src/components/PagePool/Deposit/components/FormStake.tsx:198
 msgid "Not enough LP Tokens balances."
 msgstr ""
 
@@ -1859,15 +1559,15 @@ msgstr "推送中"
 msgid "Nudging and Claiming"
 msgstr "推送和领取中"
 
-#: src/components/PagePool/UserDetails/index.tsx:94
+#: src/components/PagePool/UserDetails/index.tsx:97
 msgid "of pool"
 msgstr "这些池"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:256
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:94
 msgid "Off Peg Multiplier:"
 msgstr ""
 
-#: src/components/PageCreatePool/Parameters/index.tsx:310
+#: src/components/PageCreatePool/Parameters/index.tsx:305
 msgid "Offpeg Fee Multiplier ({0} - {1})"
 msgstr ""
 
@@ -1879,47 +1579,34 @@ msgstr ""
 #~ msgid "On March 15th, all protocol owned dex liquidity will be removed. You must remove your own dex liquidity before March 15th. After the new STG token is airdropped, the old STG will be worthless. If you continue to provide LP at this point, the old STG token will be sold into your LP removing the other asset you are providing and you will lose funds!!. It is recommended you withdraw and unwrap the LP and (if you wish) re-add the LP with the new STG token after you receive it."
 #~ msgstr "3月15日，所有协议拥有的流动性将被移除。您必须在3月15日之前移除自己的dex流动性。在新的STG代币空投后，旧的STG代币将一文不值。如果你仍继续为这个池提供流动性，旧的STG代币将会被出售给您，并换取您提供的其他资产，您将会失去资金！！建议您从流动池中提取资金，并在收到新的STG后，使用新币重新添加流动性（如果你愿意的话）。"
 
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:351
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:350
 msgid "One coin"
 msgstr "一个代币"
 
-#: src/components/PageDeployGauge/InfoBox.tsx:17
+#: src/components/PageDeployGauge/InfoBox.tsx:18
 msgid "Only admin/manager can set reward token, set reward token distributor address."
 msgstr ""
 
-#: src/components/PageCreatePool/constants.ts:222
+#: src/components/PageCreatePool/constants.ts:190
 #: src/components/PageCreatePool/Parameters/SelectPoolImplementation.tsx:44
 msgid "Optimised"
 msgstr "优化"
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:210
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:130
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:85
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:132
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:91
 msgid "Oracle"
 msgstr ""
 
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:83
-msgid "Oracle address needs to be 42 characters long."
-msgstr ""
-
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:80
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:56
 msgid "Oracle address needs to start with '0x'."
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:154
-msgid "Oracle Address:"
-msgstr ""
-
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:93
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:69
 msgid "Oracle function name needs to end with '()'."
 msgstr ""
 
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:95
-msgid "Oracle must have a precision of 18 decimals."
-msgstr ""
-
-#: src/components/PagePool/index.tsx:220
-#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:14
+#: src/components/PagePool/index.tsx:202
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:12
 msgid "OTHER"
 msgstr "其他"
 
@@ -1927,22 +1614,18 @@ msgstr "其他"
 #~ msgid "Others"
 #~ msgstr "其他"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:263
+#: src/components/PageCreatePool/Parameters/index.tsx:252
 msgid "Out fee governs fees charged during high volatility."
 msgstr "Out Fee费用管理高波动期间收取的费用"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:34
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:187
+#: src/components/PageCreatePool/Summary/ParametersSummary/CryptoswapParameters.tsx:38
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:59
 msgid "Out Fee:"
 msgstr "区间外费用"
 
 #: src/components/PageCreatePool/Parameters/index.tsx:242
-#~ msgid "Out fee: ({midFee} - {0}%)"
-#~ msgstr "区间外费用: ({midFee} - {0}%)"
-
-#: src/components/PageCreatePool/Parameters/index.tsx:253
-msgid "Out fee: ({midFee}% - {0}%)"
-msgstr ""
+msgid "Out fee: ({midFee} - {0}%)"
+msgstr "区间外费用: ({midFee} - {0}%)"
 
 #: src/domain/page404.tsx:44
 #~ msgid "Page not found"
@@ -1955,11 +1638,11 @@ msgstr ""
 #~ msgid "Parameters"
 #~ msgstr "参数"
 
-#: src/components/PageCreatePool/components/Navigation.tsx:54
+#: src/components/PageCreatePool/components/Navigation.tsx:106
 msgid "PARAMETERS"
 msgstr "参数"
 
-#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:26
+#: src/components/PageCreatePool/Summary/ParametersSummary/index.tsx:47
 msgid "Parameters:"
 msgstr ""
 
@@ -1967,31 +1650,29 @@ msgstr ""
 #~ msgid "Percent share in pool"
 #~ msgstr "池中的百分比份額"
 
-#: src/components/PageRiskDisclaimer/index.tsx:81
-msgid "Permanent Loss of a Peg:"
-msgstr ""
-
-#: src/components/PageDashboard/components/FormClaimFeesButtons.tsx:64
+#: src/components/PageDashboard/components/FormClaimFees.tsx:57
 msgid "Please approve claim veCRV rewards."
 msgstr ""
 
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:90
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:93
-#: src/components/PagePool/Swap/index.tsx:183
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:87
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:88
+#: src/components/PagePool/Swap/index.tsx:179
+#: src/components/PageRouterSwap/index.tsx:206
 msgid "Please approve spending your {0}."
 msgstr "请授权支付您的 {0}。"
 
-#: src/components/PageRouterSwap/index.tsx:211
-msgid "Please approve spending your {fromToken}."
-msgstr "请授权支付您的 {fromToken}。"
+#: src/domain/quick-swap/index.tsx:278
+#: src/domain/transfer/swap/index.tsx:278
+#~ msgid "Please approve spending your {fromToken}."
+#~ msgstr "请授权支付您的 {fromToken}。"
 
 #: src/components/PageCrvLocker/components/FormLockCreate.tsx:101
 #: src/components/PageCrvLocker/components/FormLockCrv.tsx:52
 msgid "Please approve spending your CRV."
 msgstr "请授权支付您的 CRV。"
 
-#: src/components/PagePool/Deposit/components/FormStake.tsx:59
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:95
+#: src/components/PagePool/Deposit/components/FormStake.tsx:57
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:94
 msgid "Please approve spending your LP Tokens."
 msgstr "请授权使用您的 LP 代币。"
 
@@ -2011,7 +1692,7 @@ msgstr ""
 msgid "Please confirm claim of {tokensMessage}"
 msgstr "请确认 {tokensMessage} 的领取"
 
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:104
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:99
 msgid "Please confirm deposit and staking of {tokenText} LP Tokens at max {maxSlippage}% slippage."
 msgstr "请确认以最大 {maxSlippage}% 的滑点存入和质押 {tokenText} LP 代币。"
 
@@ -2019,7 +1700,7 @@ msgstr "请确认以最大 {maxSlippage}% 的滑点存入和质押 {tokenText} L
 #~ msgid "Please confirm deposit and staking of {tokenText} LP Tokens."
 #~ msgstr "请确认 {tokenText} LP 代幣的存款和質押。"
 
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:101
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:98
 msgid "Please confirm deposit of {tokenText} at max {maxSlippage}% slippage."
 msgstr "请确认以最大 {maxSlippage}% 的滑点存入 {tokenText}。"
 
@@ -2055,11 +1736,12 @@ msgstr "请确认 {tokensMessage} 的推送和領取"
 msgid "Please confirm nudge rewards"
 msgstr "请确认推送奖励"
 
-#: src/components/PagePool/Deposit/components/FormStake.tsx:69
+#: src/components/PagePool/Deposit/components/FormStake.tsx:67
 msgid "Please confirm staking of {0} LP Tokens"
 msgstr "请确认 {0} 个 LP 代币的抵押"
 
-#: src/components/PagePool/Swap/index.tsx:130
+#: src/components/PagePool/Swap/index.tsx:126
+#: src/components/PageRouterSwap/index.tsx:155
 msgid "Please confirm swap {fromAmount} {fromToken} for {toToken} at max slippage {maxSlippage}%."
 msgstr "请确认将 {fromAmount} {fromToken} 换成 {fromToken}，最大滑点 {maxSlippage}%."
 
@@ -2071,21 +1753,17 @@ msgstr "请确认将 {fromAmount} {fromToken} 换成 {fromToken}，最大滑点 
 #~ msgid "Please confirm swapping {0} {1}"
 #~ msgstr "请确认交换 {0} {1}"
 
-#: src/store/createCreatePoolSlice.ts:793
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:80
 msgid "Please confirm to create pool {poolName}."
 msgstr "请确认创建 {poolName} 流动池"
 
 #: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:116
-#~ msgid "Please confirm to deploy gauge for {0}."
-#~ msgstr ""
-
-#: src/store/createDeployGaugeSlice.ts:189
-msgid "Please confirm to deploy gauge for {shortenAddress}."
+msgid "Please confirm to deploy gauge for {0}."
 msgstr ""
 
 #: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:46
-#~ msgid "Please confirm to deploy gauge."
-#~ msgstr ""
+msgid "Please confirm to deploy gauge."
+msgstr ""
 
 #: src/components/PagePool/Withdraw/components/FormUnstake.tsx:51
 msgid "Please confirm unstaking of {0} LP Tokens"
@@ -2099,7 +1777,7 @@ msgstr ""
 msgid "Please confirm withdraw of {lockedAmount} CRV."
 msgstr "请确认提取 {lockedAmount} CRV。"
 
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:106
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:105
 msgid "Please confirm withdrawal of {0} LP Tokens at max {maxSlippage}% slippage."
 msgstr ""
 
@@ -2111,11 +1789,11 @@ msgstr ""
 #~ msgid "Please confirm withdrawal of {lpTokenPayload} LP Tokens."
 #~ msgstr "请确认提取 {lpTokenPayload} LP代币。#～ 书签"
 
-#: src/components/PageCreatePool/TokensInPool/index.tsx:751
+#: src/components/PageCreatePool/TokensInPool/index.tsx:583
 msgid "Please connect a wallet to select tokens"
 msgstr "请连接钱包以选择代币。"
 
-#: src/components/PageDashboard/index.tsx:148
+#: src/components/PageDashboard/index.tsx:153
 msgid "Please connect wallet or enter a wallet address to view active pools."
 msgstr "请连接钱包或输入钱包地址查看活跃的池。"
 
@@ -2123,7 +1801,7 @@ msgstr "请连接钱包或输入钱包地址查看活跃的池。"
 #~ msgid "Please connect wallet to view active pools."
 #~ msgstr "请连接钱包以查看各池详情。"
 
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:28
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:26
 msgid "Please select tokens to be able to set initial price"
 msgstr "请选择代币以设置初始价格"
 
@@ -2135,54 +1813,41 @@ msgstr "请选择代币以设置初始价格"
 #~ msgid "Please switch your wallet's network to"
 #~ msgstr "请将您的钱包网络切换到"
 
-#: src/components/PagePoolList/Page.tsx:60
-msgid "Points"
-msgstr ""
-
-#: src/components/PageDashboard/index.tsx:52
-#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:31
-#: src/components/PagePoolList/Page.tsx:54
+#: src/components/PageDashboard/index.tsx:54
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:29
+#: src/components/PagePoolList/Page.tsx:56
 msgid "Pool"
 msgstr "池"
 
-#: src/store/createCreatePoolSlice.ts:853
-#: src/store/createCreatePoolSlice.ts:934
-#: src/store/createCreatePoolSlice.ts:1033
-#: src/store/createCreatePoolSlice.ts:1103
-#: src/store/createCreatePoolSlice.ts:1192
-#: src/store/createCreatePoolSlice.ts:1272
-msgid "Pool {poolName} deployment successful."
-msgstr ""
-
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:163
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:265
 msgid "Pool {poolName} was successfully created!"
 msgstr "池 {poolName} 已创建成功"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:31
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:29
 msgid "Pool / Token"
 msgstr "池/代币"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/index.tsx:256
+#: src/components/PagePool/PoolDetails/PoolInfo/index.tsx:216
 msgid "Pool Activity"
 msgstr ""
 
-#: src/components/PageDeployGauge/DeployMainnet.tsx:70
+#: src/components/PageDeployGauge/DeployMainnet.tsx:61
 msgid "Pool Address"
 msgstr ""
 
-#: src/components/PagePoolList/components/TooltipBaseApy.tsx:16
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:15
 msgid "Pool APY"
 msgstr ""
 
-#: src/components/PagePoolList/components/TooltipBaseApy.tsx:27
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:26
 msgid "Pool APY + Interest APY"
 msgstr ""
 
-#: src/components/PagePoolList/components/TooltipBaseApy.tsx:19
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:18
 msgid "Pool APY + Lending APY"
 msgstr "池APY + 借贷APY"
 
-#: src/components/PagePoolList/components/TooltipBaseApy.tsx:22
+#: src/components/PagePoolList/components/TooltipBaseApy.tsx:21
 msgid "Pool APY + Staking APY"
 msgstr "池APY + 质押APY"
 
@@ -2190,22 +1855,23 @@ msgstr "池APY + 质押APY"
 #~ msgid "Pool contains rebasing tokens"
 #~ msgstr "流动性池包含重新定基（rebase）的代币"
 
-#: src/components/PageCreatePool/index.tsx:180
-#: src/layout/default/Header.tsx:78
-#: src/layout/default/Header.tsx:87
+#: src/components/PageCreatePool/index.tsx:119
+#: src/layout/default/Header.tsx:33
 msgid "Pool Creation"
 msgstr "创建流动性池"
 
-#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:51
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:70
+#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:392
 msgid "Pool Creation Complete"
 msgstr "流动性创建成功"
 
-#: src/components/PageCreatePool/index.tsx:305
+#: src/components/PageCreatePool/index.tsx:256
 msgid "Pool creation is not yet available on this network."
 msgstr ""
 
-#: src/components/PagePool/index.tsx:123
+#: src/components/PagePool/index.tsx:104
+#: src/components/PagePool/index.tsx:109
+#: src/components/PagePool/index.tsx:114
+#: src/components/PagePool/index.tsx:117
 msgid "Pool Details"
 msgstr ""
 
@@ -2217,12 +1883,11 @@ msgstr "实现流动性池"
 msgid "Pool Implementation:"
 msgstr "实现流动性池："
 
-#: src/components/PageCreatePool/components/Navigation.tsx:67
+#: src/components/PageCreatePool/components/Navigation.tsx:157
 msgid "POOL INFO"
 msgstr "流动池信息"
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:34
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:94
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:56
 msgid "Pool Info:"
 msgstr "池信息"
 
@@ -2231,24 +1896,17 @@ msgstr "池信息"
 #~ msgstr "池名称（例如：CRV/ETH）"
 
 #: src/components/PageCreatePool/PoolInfo/index.tsx:30
-#~ msgid "Pool Name (e.g. CRV/ETH)"
-#~ msgstr ""
-
-#: src/components/PageCreatePool/PoolInfo/index.tsx:30
-msgid "Pool Name (e.g. stETH/ETH)"
+msgid "Pool Name (e.g. CRV/ETH)"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:152
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:50
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:159
 msgid "Pool Parameters"
 msgstr "池参数"
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:58
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:45
 msgid "Pool Parameters Presets"
 msgstr "初始池参数"
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:178
-msgid "Pool Parameters:"
-msgstr ""
 
 #: src/domain/create-pool/components/navigation.tsx:59
 #~ msgid "POOL PRESETS"
@@ -2263,7 +1921,7 @@ msgstr ""
 #~ msgid "POOL SETUP"
 #~ msgstr "流动池设置"
 
-#: src/components/PageCreatePool/Summary/index.tsx:27
+#: src/components/PageCreatePool/Summary/index.tsx:40
 msgid "Pool Summary"
 msgstr ""
 
@@ -2272,18 +1930,14 @@ msgstr ""
 #~ msgstr "池符号（例如：CRVETH）"
 
 #: src/components/PageCreatePool/PoolInfo/index.tsx:35
-#~ msgid "Pool Symbol (e.g. CRVETH)"
-#~ msgstr ""
-
-#: src/components/PageCreatePool/PoolInfo/index.tsx:35
-msgid "Pool Symbol (e.g. stETHETH)"
+msgid "Pool Symbol (e.g. CRVETH)"
 msgstr ""
 
-#: src/components/PageCreatePool/PoolType/index.tsx:26
+#: src/components/PageCreatePool/PoolType/index.tsx:24
 msgid "Pool Type"
 msgstr "流动池类别"
 
-#: src/components/PageCreatePool/components/Navigation.tsx:28
+#: src/components/PageCreatePool/components/Navigation.tsx:40
 msgid "POOL TYPE"
 msgstr "流动池类别"
 
@@ -2293,89 +1947,63 @@ msgstr "流动池类别"
 #~ msgstr "在调整中间费用之前需要设置流动性池类型"
 
 #: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:29
-#: src/components/PageDeployGauge/DeployMainnet.tsx:60
-#: src/components/PageDeployGauge/DeploySidechain.tsx:107
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:96
+#: src/components/PageDeployGauge/DeployMainnet.tsx:51
+#: src/components/PageDeployGauge/DeploySidechain.tsx:98
 msgid "Pool Type:"
 msgstr ""
 
-#: src/components/PagePoolList/Page.tsx:114
-#: src/layout/default/Header.tsx:77
-#: src/layout/default/Header.tsx:85
+#: src/components/PagePoolList/Page.tsx:122
+#: src/layout/default/Header.tsx:32
 msgid "Pools"
 msgstr "池子"
 
 #: src/components/PageCreatePool/TokensInPool/index.tsx:602
-#~ msgid "Pools with basepools ({0}) allow a maximum of 2 tokens"
-#~ msgstr ""
+msgid "Pools with basepools ({0}) allow a maximum of 2 tokens"
+msgstr ""
 
 #: src/domain/create-pool/tokens-in-pool/index.tsx:757
 #~ msgid "Pools with basepools (3Crv, FRAXBP, sbtc2Crv) allow a maximum of 2 tokens"
 #~ msgstr "具有基础池（3Crv、FRAXBP、sbtc2Crv）的流动性池最多允许两种代币"
-
-#: src/components/PageCreatePool/TokensInPool/index.tsx:770
-msgid "Pools with basepools allow a maximum of 2 tokens"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:126
-msgid "Pools with Lending Assets:"
-msgstr ""
 
 #: src/components/PageCreatePool/Summary/PoolPresetSummary.tsx:22
 #: src/components/PageCreatePool/Summary/PoolPresetSummary.tsx:27
 msgid "Preset:"
 msgstr "预设"
 
-#: src/components/PageCreatePool/index.tsx:242
-#: src/components/PageCreatePool/index.tsx:277
+#: src/components/PageCreatePool/index.tsx:181
+#: src/components/PageCreatePool/index.tsx:228
 msgid "Previous"
 msgstr "上一个"
 
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:82
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:80
 msgid "Price A ({0})"
 msgstr ""
 
-#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:87
+#: src/components/PageCreatePool/Parameters/InitialPrice.tsx:85
 msgid "Price B ({0})"
 msgstr ""
 
-#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:26
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:24
 msgid "Price change in the market that happens when a trader buys or sells an asset."
 msgstr "交易者买卖资产时发生的市场价格变化。"
 
-#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:23
+#: src/components/PageRouterSwap/components/DetailInfoPriceImpact.tsx:21
 msgid "Price impact:"
 msgstr "价格影响："
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:298
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:118
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:135
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:125
 msgid "Price Oracle:"
 msgstr "指的是LP的预言机价格："
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:317
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:136
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:154
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:143
 msgid "Price Scale:"
 msgstr "指的是当前浮动的预言机价格："
-
-#: src/components/PageRiskDisclaimer/index.tsx:108
-msgid "Price Volatility:"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:23
-msgid "Providing liquidity on Curve doesn't come without risks. Before making a deposit, it is best to research and understand the risks involved."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:92
-msgid "Providing liquidity to Curve pools may expose users to the risk of impermanent loss. Fluctuations in asset prices after supplying to a pool can result in losses when users remove liquidity. Before engaging in liquidity provision activities, users are advised to carefully evaluate the potential for impermanent loss and consider their own risk tolerance."
-msgstr ""
 
 #: src/components/layout/default/header.tsx:26
 #~ msgid "Quick Swap"
 #~ msgstr "快速兑换"
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:246
-msgid "Ramp {0} A ends on:"
-msgstr ""
 
 #: src/domain/transfer/pool-stats/pool-parameters.tsx:134
 #~ msgid "Ramp up A ends on"
@@ -2383,16 +2011,8 @@ msgstr ""
 
 #: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:87
 #: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:202
-#~ msgid "Ramp up A ends on:"
-#~ msgstr "调整放大系数在:"
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:224
-msgid "Ramping {0} A:"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersA.tsx:55
-msgid "Ramping A:"
-msgstr ""
+msgid "Ramp up A ends on:"
+msgstr "调整放大系数在:"
 
 #: src/domain/transfer/pool-stats/pool-parameters.tsx:124
 #~ msgid "Ramping up A"
@@ -2400,40 +2020,27 @@ msgstr ""
 
 #: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:72
 #: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:186
-#~ msgid "Ramping up A:"
-#~ msgstr "目标放大系数:"
+msgid "Ramping up A:"
+msgstr "目标放大系数:"
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:211
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:135
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:86
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:133
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:96
 msgid "Rebasing"
 msgstr ""
 
-#: src/components/PageCreatePool/TokensInPool/index.tsx:778
+#: src/components/PageCreatePool/TokensInPool/index.tsx:622
 msgid "Rebasing tokens are not supported in {CRYPTOSWAP} pools"
 msgstr ""
 
-#: src/components/PageCreatePool/TokensInPool/index.tsx:771
+#: src/components/PageCreatePool/TokensInPool/index.tsx:613
 msgid "Rebasing tokens are not supported in this version of Stableswap"
 msgstr ""
 
-#: src/components/PageDashboard/components/Summary.tsx:130
+#: src/components/PageDashboard/components/Summary.tsx:136
 msgid "Recently viewed addresses"
 msgstr "最近查看的地址"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:116
-msgid "Registry:"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:134
-msgid "Regulatory Risk"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:136
-msgid "Regulatory Uncertainty:"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData.tsx:69
+#: src/components/PagePool/PoolDetails/PoolInfo/LiquidityData.tsx:68
 msgid "Remove"
 msgstr "移除"
 
@@ -2441,21 +2048,21 @@ msgstr "移除"
 #~ msgid "Remove Liquidity Approved"
 #~ msgstr "移除流动性 授权"
 
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:85
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:102
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:57
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:66
 msgid "Remove token"
 msgstr "移除代币"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:294
+#: src/components/PageCreatePool/Parameters/index.tsx:289
 msgid "Reset advanced"
 msgstr "重置高级设置"
 
-#: src/components/PageCreatePool/Parameters/index.tsx:220
+#: src/components/PageCreatePool/Parameters/index.tsx:209
 msgid "Reset Fees"
 msgstr "重置手续费"
 
-#: src/layout/default/Footer.tsx:105
-#: src/layout/default/Header.tsx:195
+#: src/layout/default/Footer.tsx:147
+#: src/layout/default/HeaderMobile.tsx:189
 msgid "Resources"
 msgstr "资源"
 
@@ -2471,45 +2078,29 @@ msgstr "资源"
 #~ msgid "Retry Claim Rewards"
 #~ msgstr "重试领取奖励"
 
-#: src/components/PagePoolList/Page.tsx:55
-msgid "Rewards Base"
-msgstr ""
-
 #: src/components/PagePoolList/Page.tsx:57
-#~ msgid "Rewards Base vAPY"
-#~ msgstr "奖励 tAPR"
-
-#: src/components/PagePoolList/Page.tsx:56
-msgid "Rewards CRV"
-msgstr ""
+msgid "Rewards Base vAPY"
+msgstr "奖励 tAPR"
 
 #: src/components/PagePoolList/Page.tsx:66
-#~ msgid "Rewards CRV tAPR"
-#~ msgstr "奖励 tAPR (CRV)"
-
-#: src/components/PagePoolList/Page.tsx:57
-msgid "Rewards Incentives"
-msgstr ""
+msgid "Rewards CRV tAPR"
+msgstr "奖励 tAPR (CRV)"
 
 #: src/components/PagePoolList/Page.tsx:68
-#~ msgid "Rewards Incentives tAPR"
-#~ msgstr "奖励 tAPR（更多奖励）"
+msgid "Rewards Incentives tAPR"
+msgstr "奖励 tAPR（更多奖励）"
 
-#: src/components/PageDashboard/components/TableHead.tsx:72
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:97
-#: src/components/PagePoolList/components/TableHeadRewards.tsx:26
+#: src/components/PageDashboard/index.tsx:59
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:94
+#: src/components/PagePoolList/Page.tsx:61
 msgid "Rewards tAPR"
 msgstr "奖励 tAPR"
 
-#: src/components/PagePoolList/components/TableRowMobile.tsx:134
-msgid "REWARDS tAPR"
-msgstr ""
-
-#: src/components/PageDashboard/index.tsx:54
+#: src/components/PageDashboard/index.tsx:64
 msgid "Rewards tAPR (CRV)"
 msgstr "奖励 tAPR (CRV)"
 
-#: src/components/PageDashboard/index.tsx:55
+#: src/components/PageDashboard/index.tsx:66
 msgid "Rewards tAPR (Incentives)"
 msgstr "奖励 tAPR（更多奖励）"
 
@@ -2517,33 +2108,29 @@ msgstr "奖励 tAPR（更多奖励）"
 #~ msgid "Risk"
 #~ msgstr "风险"
 
-#: src/components/PageRiskDisclaimer/Page.tsx:28
-msgid "Risk Disclaimer"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:79
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:89
 msgid "Risks of using {0}"
 msgstr "{0}池 使用风险"
 
-#: src/components/AdvancedSettings.tsx:158
+#: src/components/AdvancedSettings.tsx:149
 msgid "Save"
 msgstr "保存"
 
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:191
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:151
 msgid "Search by name or paste address"
 msgstr "按名称或粘贴地址以搜素"
 
-#: src/components/PagePoolList/index.tsx:189
+#: src/components/PagePoolList/index.tsx:185
 msgid "Search by pool name, pool address, token name or token address"
 msgstr "按流动池名称、流动池地址、代币名称或代币地址搜索"
 
-#: src/components/ComboBoxSelectToken/ComboBox.tsx:83
-#: src/components/ComboBoxSelectToken/ComboBox.tsx:84
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:203
+#: src/components/ComboBoxSelectToken/index.tsx:117
+#: src/components/ComboBoxSelectToken/index.tsx:129
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:163
 msgid "Search by token name or address"
 msgstr "按代币名称或地址搜索"
 
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:261
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:219
 msgid "Search generated no results"
 msgstr "搜素未产生任何结果"
 
@@ -2555,12 +2142,12 @@ msgstr "搜素未产生任何结果"
 #~ msgid "Select"
 #~ msgstr "选择"
 
-#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:176
+#: src/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker.tsx:136
 msgid "Select a token"
 msgstr "选择一种代币"
 
-#: src/components/PagePool/Swap/index.tsx:371
-#: src/components/PagePool/Swap/index.tsx:454
+#: src/components/PagePool/Swap/index.tsx:366
+#: src/components/PagePool/Swap/index.tsx:449
 msgid "Select a Token"
 msgstr "选择一种代币"
 
@@ -2568,7 +2155,7 @@ msgstr "选择一种代币"
 #~ msgid "Select date"
 #~ msgstr "选择到期日"
 
-#: src/components/PageDeployGauge/DeploySidechain.tsx:96
+#: src/components/PageDeployGauge/DeploySidechain.tsx:87
 msgid "Select Network"
 msgstr ""
 
@@ -2576,13 +2163,9 @@ msgstr ""
 #~ msgid "Select pool asset type tag"
 #~ msgstr "按池类型标签选择"
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:68
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:74
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:55
+#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:61
 msgid "Select preset"
-msgstr ""
-
-#: src/components/PageIntegrations/components/SelectIntegrationTags.tsx:25
-msgid "Select tag"
 msgstr ""
 
 #: src/components/PageCrvLocker/components/FieldDatePicker.tsx:91
@@ -2593,25 +2176,17 @@ msgstr "选择到期日"
 msgid "Set pool asset type tag:"
 msgstr ""
 
-#: src/components/PageDeployGauge/DeployMainnet.tsx:62
-#: src/components/PageDeployGauge/DeploySidechain.tsx:109
+#: src/components/PageDeployGauge/DeployMainnet.tsx:53
+#: src/components/PageDeployGauge/DeploySidechain.tsx:100
 msgid "Set Pool Type"
 msgstr ""
 
-#: src/components/PageDashboard/components/FormVecrv.tsx:181
+#: src/components/PageDashboard/components/FormVecrv.tsx:174
 msgid "share of total"
 msgstr "占总体的份额"
 
-#: src/store/createDeployGaugeSlice.ts:422
-#: src/store/createDeployGaugeSlice.ts:460
-#: src/store/createDeployGaugeSlice.ts:498
-#: src/store/createDeployGaugeSlice.ts:536
-#: src/store/createDeployGaugeSlice.ts:574
-msgid "Sidechain gauge deployment successful."
-msgstr ""
-
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:122
-#: src/components/PageDeployGauge/ProcessSummary.tsx:47
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:581
+#: src/components/PageDeployGauge/ProcessSummary.tsx:40
 msgid "Sidechain gauge successfully deployed"
 msgstr ""
 
@@ -2631,89 +2206,58 @@ msgstr "滑点来自于存入太多不平衡的代币，并且当前的代币价
 msgid "Slippage Loss"
 msgstr "滑点损失"
 
-#: src/components/PagePool/components/DetailInfoSlippageTolerance.tsx:14
+#: src/components/PagePool/components/DetailInfoSlippageTolerance.tsx:18
 msgid "Slippage tolerance:"
 msgstr "滑点宽限"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:229
-msgid "Slowly changing {0} A so that it doesn't negatively change virtual price growth of shares"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersA.tsx:59
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:77
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:190
 msgid "Slowly changing up A so that it doesn't negatively change virtual price growth of shares"
 msgstr "缓慢调整放大系数，以免因流动性池代币的虚拟价格波动而产生负面影响"
 
-#: src/components/PageRiskDisclaimer/index.tsx:35
-msgid "Smart Contract Audits"
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:42
-msgid "Smart Contract Risk:"
-msgstr ""
-
-#: src/components/PagePoolList/index.tsx:272
+#: src/components/PagePoolList/index.tsx:257
 msgid "Sorry, we are unable to load your pools."
 msgstr "抱歉，我们无法加载您的池。"
 
 #: src/components/PagePoolList/components/DialogSort/DialogSortDesktop.tsx:40
 #: src/components/PagePoolList/components/DialogSort/DialogSortDesktop.tsx:47
-#~ msgid "Sort by"
-#~ msgstr ""
+msgid "Sort by"
+msgstr ""
 
 #: src/components/PagePoolList/components/DialogSort/DialogSortMobile.tsx:57
-#~ msgid "Sort By"
-#~ msgstr "排序方式"
+msgid "Sort By"
+msgstr "排序方式"
 
 #: src/components/PageCrvLocker/components/FormLockCreate.tsx:149
 #: src/components/PageCrvLocker/components/FormLockCrv.tsx:92
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:136
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:139
-#: src/components/PagePool/Deposit/components/FormStake.tsx:100
-#: src/components/PagePool/Swap/index.tsx:181
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:149
-#: src/components/PageRouterSwap/index.tsx:209
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:133
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:134
+#: src/components/PagePool/Deposit/components/FormStake.tsx:98
+#: src/components/PagePool/Swap/index.tsx:177
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:148
+#: src/components/PageRouterSwap/index.tsx:204
 msgid "Spending Approved"
 msgstr "支出已授权"
 
-#: src/components/PagePoolList/index.tsx:104
+#: src/components/PagePoolList/index.tsx:110
 msgid "Stable NG"
 msgstr ""
 
-#: src/components/PageRiskDisclaimer/index.tsx:83
-msgid "Stablecoins and other derivative assets are designed to maintain a peg to a reference asset. If one of the pool assets drops below its peg, it effectively means that liquidity providers in the pool hold almost all their liquidity in that token. The depegged token may never recover as a result of a technical failure, insolvency, or other adverse situations."
-msgstr ""
-
-#: src/components/PageCreatePool/PoolType/index.tsx:31
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:75
+#: src/components/PageCreatePool/PoolType/index.tsx:29
+#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:34
 msgid "Stableswap"
 msgstr "挂钩资产兑换"
 
-#: src/components/PageRiskDisclaimer/index.tsx:97
-msgid "StableSwap pools"
-msgstr ""
-
-#: src/components/PageCreatePool/TokensInPool/index.tsx:769
-msgid "Stableswap pools allow up to 8 tokens"
-msgstr ""
-
-#: src/components/PageCreatePool/PoolType/index.tsx:37
+#: src/components/PageCreatePool/PoolType/index.tsx:35
 msgid "Stableswap pools are currently unavailable on this chain"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:76
-msgid "Stableswap-NG"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/PoolTypeSummary.tsx:35
-msgid "Stableswap{0}"
-msgstr ""
-
-#: src/components/PagePool/Deposit/components/FormStake.tsx:107
-#: src/components/PagePool/Deposit/index.tsx:36
+#: src/components/PagePool/Deposit/components/FormStake.tsx:105
+#: src/components/PagePool/Deposit/index.tsx:35
 msgid "Stake"
 msgstr "质押"
 
-#: src/components/PagePool/Deposit/components/FormStake.tsx:107
+#: src/components/PagePool/Deposit/components/FormStake.tsx:105
 msgid "Stake Complete"
 msgstr "质押完成"
 
@@ -2725,26 +2269,21 @@ msgstr "质押完成"
 #~ msgid "Staked LP Tokens"
 #~ msgstr "质押LP代币"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked.tsx:31
-msgid "Staked percent"
-msgstr ""
-
-#: src/components/PagePool/UserDetails/index.tsx:94
+#: src/components/PagePool/UserDetails/index.tsx:97
 msgid "Staked share:"
 msgstr "质押份额："
 
-#: src/components/PagePool/UserDetails/index.tsx:101
+#: src/components/PagePool/UserDetails/index.tsx:104
 msgid "Staked:"
 msgstr "质押中:"
 
-#: src/components/PagePool/Deposit/index.tsx:121
-#: src/components/PagePool/Deposit/index.tsx:130
+#: src/components/PagePool/Deposit/index.tsx:119
+#: src/components/PagePool/Deposit/index.tsx:128
 msgid "Staking is disabled due to inactive Gauge."
 msgstr ""
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:209
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:125
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:84
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:131
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:86
 msgid "Standard"
 msgstr ""
 
@@ -2752,27 +2291,27 @@ msgstr ""
 #~ msgid "Stats"
 #~ msgstr "统计数据"
 
-#: src/components/DetailInfoEstGas.tsx:88
+#: src/components/DetailInfoEstGas.tsx:82
 msgid "Step {0} of {1}"
 msgstr "{1} 的第 {0} 步"
 
-#: src/components/PageDeployGauge/index.tsx:94
+#: src/components/PageDeployGauge/index.tsx:93
 msgid "Step 1"
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:93
+#: src/components/PageDeployGauge/ProcessSummary.tsx:72
 msgid "Step 1 and Step 2 must be completed using the same wallet"
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:32
+#: src/components/PageDeployGauge/ProcessSummary.tsx:33
 msgid "Step 1:"
 msgstr ""
 
-#: src/components/PageDeployGauge/index.tsx:106
+#: src/components/PageDeployGauge/index.tsx:105
 msgid "Step 2"
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:62
+#: src/components/PageDeployGauge/ProcessSummary.tsx:52
 msgid "Step 2:"
 msgstr ""
 
@@ -2808,60 +2347,51 @@ msgstr ""
 #~ msgid "Successfully locked additional {0} CRV."
 #~ msgstr "成功添加锁仓{0}CRV"
 
-#: src/components/PageCreatePool/constants.ts:120
+#: src/components/PageCreatePool/constants.ts:104
 msgid "Suitable for forex pairs with low relative volatility"
 msgstr "适用于相对波动性较低的外汇货币对"
 
-#: src/components/PageCreatePool/constants.ts:136
+#: src/components/PageCreatePool/constants.ts:120
 msgid "Suitable for liquid staking derivatives soft-pegged to its underlying asset."
 msgstr "适用于与其基础资产软锚定的流动权益衍生品"
 
-#: src/components/PageCreatePool/constants.ts:91
-#: src/components/PageCreatePool/constants.ts:152
-msgid "Suitable for LRTs"
-msgstr ""
-
-#: src/components/PageCreatePool/constants.ts:104
+#: src/components/PageCreatePool/constants.ts:88
 msgid "Suitable for most volatile pairs such as LDO <> ETH"
 msgstr "适用于最具波动性的交易对，例如 LDO <> ETH"
 
-#: src/components/PageCreatePool/constants.ts:79
+#: src/components/PageCreatePool/constants.ts:75
 msgid "Suitable for stablecoins that are crypto-backed"
 msgstr "适用于以加密货币为支持的稳定币"
 
-#: src/components/PageCreatePool/constants.ts:67
+#: src/components/PageCreatePool/constants.ts:63
 msgid "Suitable for stablecoins that are fiat-redeemable"
 msgstr "适用于可兑换法定货币的稳定币"
 
-#: src/components/PageCreatePool/constants.ts:169
+#: src/components/PageCreatePool/constants.ts:137
 msgid "Suitable for USD stablecoin <> BTC stablecoin <> ETH."
 msgstr ""
 
-#: src/components/PageCreatePool/constants.ts:185
+#: src/components/PageCreatePool/constants.ts:153
 msgid "Suitable for volatile tokens paired against ETH and USD stablecoins"
 msgstr ""
 
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:104
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:167
 msgid "Summary"
 msgstr ""
 
-#: src/components/PagePool/index.tsx:198
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:70
-#: src/components/PagePool/Swap/index.tsx:193
-#: src/components/PagePoolList/components/TableRowMobile.tsx:165
-#: src/components/PageRouterSwap/index.tsx:221
+#: src/components/PagePool/index.tsx:191
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:71
+#: src/components/PagePool/Swap/index.tsx:189
+#: src/components/PagePoolList/components/TableRowMobile.tsx:171
+#: src/components/PageRouterSwap/index.tsx:216
+#: src/components/PageRouterSwap/Page.tsx:112
 #: src/components/PageRouterSwap/Page.tsx:116
-#: src/components/PageRouterSwap/Page.tsx:127
-#: src/layout/default/Header.tsx:95
+#: src/layout/default/Header.tsx:31
 msgid "Swap"
 msgstr "兑换"
 
-#: src/components/PageRouterSwap/index.tsx:159
-msgid "swap {fromAmount} {fromToken} for {0} {toToken} at max slippage {maxSlippage}%."
-msgstr ""
-
-#: src/components/PagePool/Swap/index.tsx:193
-#: src/components/PageRouterSwap/index.tsx:221
+#: src/components/PagePool/Swap/index.tsx:189
+#: src/components/PageRouterSwap/index.tsx:216
 msgid "Swap Complete"
 msgstr "兑换完成"
 
@@ -2870,12 +2400,8 @@ msgstr "兑换完成"
 #~ msgstr "兑换费用 ({0} - {1}%)"
 
 #: src/components/PageCreatePool/Parameters/index.tsx:215
-#~ msgid "Swap Fee ({0} - {1}%)"
-#~ msgstr "兑换费用 ({0} - {1}%)"
-
-#: src/components/PageCreatePool/Parameters/index.tsx:226
-msgid "Swap Fee ({0}% - {1}%)"
-msgstr ""
+msgid "Swap Fee ({0} - {1}%)"
+msgstr "兑换费用 ({0} - {1}%)"
 
 #: src/components/PageCreatePool/Summary/ParametersSummary/StableswapParameters.tsx:32
 msgid "Swap Fee:"
@@ -2889,7 +2415,7 @@ msgstr "暂时无法交换"
 #~ msgid "Swap type:"
 #~ msgstr "兑换类型"
 
-#: src/components/PagePool/Swap/index.tsx:511
+#: src/components/PagePool/Swap/index.tsx:512
 msgid "Swap Wrapped"
 msgstr "交换封装代币"
 
@@ -2898,19 +2424,19 @@ msgstr "交换封装代币"
 #~ msgstr "将 {0} 交換為 {1}"
 
 #: src/components/PageRouterSwap/index.tsx:162
-#~ msgid "Swapped {fromAmount} {fromToken} for {0} {toToken}"
-#~ msgstr "已将 {fromAmount} {fromToken} 兑换为 {0} {toToken}"
+msgid "Swapped {fromAmount} {fromToken} for {0} {toToken}"
+msgstr "已将 {fromAmount} {fromToken} 兑换为 {0} {toToken}"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:47
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:54
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:48
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:55
 msgid "Swaps"
 msgstr ""
 
-#: src/components/PageCreatePool/components/SwitchTokensButton.tsx:75
+#: src/components/PageCreatePool/components/SwitchTokensButton.tsx:37
 msgid "Switch tokens"
 msgstr ""
 
-#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:45
+#: src/components/PageCreatePool/Summary/PoolInfoSummary.tsx:67
 msgid "Symbol:"
 msgstr "代币符号"
 
@@ -2922,11 +2448,7 @@ msgstr ""
 #~ msgid "Technical Docs"
 #~ msgstr "技術文檔"
 
-#: src/components/PageRiskDisclaimer/index.tsx:40
-msgid "Technology Risk"
-msgstr ""
-
-#: src/layout/default/Footer.tsx:38
+#: src/layout/default/Footer.tsx:33
 msgid "Telegram"
 msgstr "电报"
 
@@ -2939,31 +2461,19 @@ msgstr "电报"
 #~ msgstr "中文电报"
 
 #: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:59
-#~ msgid "The address needs to be 42 characters long."
-#~ msgstr ""
-
-#: src/components/PageDeployGauge/InfoBox.tsx:12
-msgid "The address that deploys a gauge is set as the gauge admin/manager."
+msgid "The address needs to be 42 characters long."
 msgstr ""
 
-#: src/components/PageRiskDisclaimer/index.tsx:70
-msgid "The Curve Emergency Admin is a"
+#: src/components/PageDeployGauge/InfoBox.tsx:13
+msgid "The address that deploys a gauge is set as the gauge admin/manager."
 msgstr ""
 
 #: src/domain/create-pool/index.tsx:204
 #~ msgid "The Curve pool creation factory is not yet available on this network."
 #~ msgstr "此网络上尚未提供 Curve 流动性池创建工厂"
 
-#: src/components/PageRiskDisclaimer/index.tsx:67
-msgid "The Curve protocol is governed by a Decentralized Autonomous Organization (DAO) comprised of veCRV tokenholders that requires a 1-week vote period with 51% approval and a sufficient voter quorum to execute any actions. It controls critical system functions, including the implementation of new system contracts and the adjustment of system parameters."
-msgstr ""
-
-#: src/components/PagePool/Swap/index.tsx:558
+#: src/components/PagePool/Swap/index.tsx:478
 msgid "The entered amount exceeds the available currency reserves."
-msgstr ""
-
-#: src/components/PageRouterSwap/components/RouterSwapAlerts.tsx:50
-msgid "The expected amount you would like to receive, {0}, will actually be {toAmountOutput}."
 msgstr ""
 
 #: src/components/PageIntegrations/Page.tsx:43
@@ -2975,15 +2485,7 @@ msgstr ""
 #~ msgstr "下一步是存入流动性"
 
 #: src/components/PageCreatePool/ConfirmModal/index.tsx:268
-#~ msgid "The next step is to deploy a gauge."
-#~ msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:114
-msgid "The overall market dynamics, including price volatility, liquidity fluctuations, and broader economic factors, can impact the value of user funds when providing liquidity. Sudden market movements or unexpected events can result in losses that may be difficult to anticipate or mitigate."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:138
-msgid "The regulatory landscape surrounding blockchain technology, DeFi protocols, tokens, cryptocurrencies, and related activities is constantly evolving, resulting in regulatory uncertainty. The lack of clear and consistent regulations may impact legal obligations, compliance requirements, and potential risks associated with the protocol activities."
+msgid "The next step is to deploy a gauge."
 msgstr ""
 
 #: src/hooks/useTokenAlert.tsx:27
@@ -2995,26 +2497,22 @@ msgstr "Ren 桥目前正在运行，但会在不久的将来下线。我们不�
 #~ msgstr "Ren 桥目前正在运行，但会在不久的将来下线。我们不知道确切的日期，这不在我们的控制范围之内，但我们将会尽一切努力以确保Ren资产的挂钩得以维持。谢谢。"
 
 #: src/components/PageDashboard/components/FormClaimFees.tsx:68
-#~ msgid "The rewards you claimed are viewable in 3pool."
-#~ msgstr "您领取的奖励可在 3pool 中查看。"
+msgid "The rewards you claimed are viewable in 3pool."
+msgstr "您领取的奖励可在 3pool 中查看。"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:29
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees.tsx:25
 msgid "The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)"
 msgstr "每笔交易的总费用分为两部分：一部分分配给池的流动性提供商，另一部分分配给DAO（即veCRV持有者）"
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:99
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:90
 msgid "There was an error fetching the pool activity data."
 msgstr ""
 
-#: src/components/PagePoolList/components/ChipVolatileBaseApy.tsx:15
-msgid "This is a volatile number that will very likely not persist."
-msgstr ""
-
-#: src/components/PoolRewardsCrv.tsx:48
+#: src/components/PoolRewardsCrv.tsx:43
 msgid "This pool has CRV rewards that aren’t currently being distributed.<0/>This pool has a very small amount of rewards waiting to be distributed to it; but since the amount of rewards is very small, the bridge used to send these CRV tokens over is holding onto those tokens until they grow to an amount big enough to be bridged. If this pool continues receiving votes, the amount of tokens to be distributed will grow every Thursday, and eventually unlock and be distributed then."
 msgstr "该池有CRV奖励，目前尚未分配。<0/>该池有极少量的奖励等待分配给它； 但是由于奖励的數量非常少，用于发送这些CRV代币的跨链桥将会一直持有这些代币，直到它们增长到足以被桥接的数量。 如果这个池子继续接受投票，每个星期四分配的代币數量就会增加，最终解锁并分配。"
 
-#: src/components/PagePool/Withdraw/components/FormClaim.tsx:218
+#: src/components/PagePool/Withdraw/components/FormClaim.tsx:219
 msgid "This pool has CRV rewards that aren’t streaming yet. Click ‘Claim CRV’ to resume reward streaming for you and everyone else!"
 msgstr "这个池的CRV奖励尚未传输，点击“领取 CRV”按钮，可为您和其他所有人恢复奖励流通！"
 
@@ -3022,151 +2520,88 @@ msgstr "这个池的CRV奖励尚未传输，点击“领取 CRV”按钮，可�
 #~ msgid "This pool has CRV rewards that aren’t streaming yet. Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
 #~ msgstr "该池有尚未被分发的 CRV 獎勵。 前往该池的“提款/領取”頁面，然后点击“推送CRV奖励”按鈕，为您和其他所有人恢复奖励分发流！"
 
-#: src/components/PoolRewardsCrv.tsx:30
+#: src/components/PoolRewardsCrv.tsx:28
 msgid "This pool has CRV rewards that aren’t streaming yet.<0/>Head to this pool’s “Withdraw/Claim” page and click on the “Nudge CRV rewards” button to resume reward streaming for you and everyone else!"
 msgstr "该池有尚未分发的 CRV 奖励。 前往该池的“提款/领取”页面，然后单击“推送CRV奖励”按钮，为您和其他所有人恢复奖励分发流！"
 
-#: src/components/PagePool/components/AlertSeedAmounts.tsx:52
-msgid "This pool is empty. Assuming you are adding {0}, the equivalent amount of the other token should be {1}."
-msgstr ""
-
-#: src/components/PagePool/components/AlertSeedAmounts.tsx:54
-msgid "This pool is empty. Assuming you are adding {0}, the equivalent amounts of the other tokens should be:"
-msgstr ""
-
 #: src/components/PagePool/components/TransferActions.tsx:47
-#~ msgid "This pool is still empty, it should be seeded with the following rate {0}"
-#~ msgstr "这个池是空的，将从接下来的汇率开始交易{0}"
+msgid "This pool is still empty, it should be seeded with the following rate {0}"
+msgstr "这个池是空的，将从接下来的汇率开始交易{0}"
 
 #: src/components/PagePool/components/TransferActions.tsx:48
-#~ msgid "This pool is still empty. Assuming an exchange rate of 1:1, it should be seeded with {0}."
-#~ msgstr "这个池是空的，假定汇率为1:1，将会从接下来的{0}开始交易"
+msgid "This pool is still empty. Assuming an exchange rate of 1:1, it should be seeded with {0}."
+msgstr "这个池是空的，假定汇率为1:1，将会从接下来的{0}开始交易"
 
 #: src/domain/transfer/components/transfer-actions.tsx:49
 #~ msgid "This pool is still empty. It needs to be seeded with an initial deposit in order to enable swaps."
 #~ msgstr "这个池还是空的。 为了启动交换，它需要初始存款。"
 
 #: src/components/PagePool/components/WarningModal.tsx:71
-#~ msgid "This swap has a high price impact ({0}%) and low exchange rate ({1}%)."
-#~ msgstr ""
-
-#: src/components/PagePool/components/WarningModal.tsx:69
-#~ msgid "This swap has a high price impact ({0}%)."
-#~ msgstr ""
-
-#: src/components/PagePool/components/WarningModal.tsx:80
-msgid "This swap has a high price impact ({formattedValue}) and low exchange rate ({formattedExchangeRate})."
+msgid "This swap has a high price impact ({0}%) and low exchange rate ({1}%)."
 msgstr ""
 
-#: src/components/PagePool/components/WarningModal.tsx:78
-msgid "This swap has a high price impact ({formattedValue})."
+#: src/components/PagePool/components/WarningModal.tsx:69
+msgid "This swap has a high price impact ({0}%)."
 msgstr ""
 
 #: src/components/PagePool/components/WarningModal.tsx:67
-#~ msgid "This swap has a low exchange rate ({0}%)."
-#~ msgstr ""
-
-#: src/components/PagePool/components/WarningModal.tsx:76
-msgid "This swap has a low exchange rate ({formattedExchangeRate})."
+msgid "This swap has a low exchange rate ({0}%)."
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:80
-msgid "Three Coin Cryptoswap-NG"
-msgstr ""
-
-#: src/components/PageCreatePool/constants.ts:184
+#: src/components/PageCreatePool/constants.ts:152
 msgid "Three Coin Volatile"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity.tsx:71
+#: src/components/PagePool/PoolDetails/PoolInfo/PoolActivity.tsx:72
 msgid "Time"
 msgstr ""
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:234
-msgid "to sim)."
-msgstr ""
-
-#: src/components/PageDeployGauge/index.tsx:84
+#: src/components/PageDeployGauge/index.tsx:83
 msgid "Toggle between mainnet and sidechain gauge deployment"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:36
+#: src/components/PagePool/PoolDetails/PoolStats/Contracts.tsx:34
 msgid "Token"
 msgstr "代币"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:38
-#: src/components/PageCreatePool/TokensInPool/index.tsx:602
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:38
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:36
+#: src/components/PageCreatePool/TokensInPool/index.tsx:510
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:26
 msgid "Token A"
 msgstr "代币 A"
 
-#: src/components/PageDashboard/components/TableHead.tsx:73
-#: src/components/PagePoolList/components/TableHeadRewards.tsx:27
-#: src/components/PagePoolList/components/TableRowMobile.tsx:137
+#: src/components/PageDashboard/index.tsx:60
+#: src/components/PagePoolList/Page.tsx:62
 msgid "Token APR based on current prices of tokens and reward rates"
 msgstr "代币的APR年化率是由当前代币价格和奖励代币的数量决定"
 
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:100
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:97
 msgid "Token APR based on current prices of tokens and reward rates."
 msgstr "代币的APR年化率是基于当前代币价格和奖励代币的数量决定。"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:41
-#: src/components/PageCreatePool/TokensInPool/index.tsx:621
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:41
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:39
+#: src/components/PageCreatePool/TokensInPool/index.tsx:529
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:29
 msgid "Token B"
 msgstr "代币 B"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:44
-#: src/components/PageCreatePool/TokensInPool/index.tsx:642
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:79
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:44
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:42
+#: src/components/PageCreatePool/TokensInPool/index.tsx:550
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:53
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:32
 msgid "Token C"
 msgstr "代币 C"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:47
-#: src/components/PageCreatePool/TokensInPool/index.tsx:662
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:62
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:47
+#: src/components/PageCreatePool/Summary/OracleSummary.tsx:45
+#: src/components/PageCreatePool/TokensInPool/index.tsx:574
+#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:64
+#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:35
 msgid "Token D"
 msgstr "代币 D"
 
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:50
-#: src/components/PageCreatePool/TokensInPool/index.tsx:682
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:63
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:50
-msgid "Token E"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:53
-#: src/components/PageCreatePool/TokensInPool/index.tsx:702
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:64
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:53
-msgid "Token F"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:56
-#: src/components/PageCreatePool/TokensInPool/index.tsx:722
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:65
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:56
-msgid "Token G"
-msgstr ""
-
-#: src/components/PageCreatePool/Summary/OracleSummary.tsx:59
-#: src/components/PageCreatePool/TokensInPool/index.tsx:742
-#: src/components/PageCreatePool/TokensInPool/SelectToken.tsx:66
-#: src/components/PageCreatePool/TokensInPool/SetOracle.tsx:59
-msgid "Token H"
-msgstr ""
-
 #: src/components/PageCreatePool/TokensInPool/index.tsx:589
-#~ msgid ""
-#~ "Tokens appear to be unpegged (>5% deviation from 1:1).\n"
-#~ "Consider using Cryptoswap instead."
-#~ msgstr ""
-
-#: src/components/PageCreatePool/TokensInPool/index.tsx:757
 msgid ""
-"Tokens appear to be unpegged (above 5% deviation from 1:1).\n"
+"Tokens appear to be unpegged (>5% deviation from 1:1).\n"
 "Consider using Cryptoswap instead."
 msgstr ""
 
@@ -3178,31 +2613,28 @@ msgstr ""
 #~ msgid "Tokens Approval Failed"
 #~ msgstr "代币授权失败"
 
-#: src/components/PageCreatePool/components/Navigation.tsx:41
+#: src/components/PageCreatePool/components/Navigation.tsx:63
 msgid "TOKENS IN POOL"
 msgstr "流动性池中的代币"
 
-#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:61
+#: src/components/PageCreatePool/Summary/TokensInPoolSummary.tsx:58
 msgid "Tokens In Pool:"
 msgstr "流动性池中的代币"
 
-#: src/components/PageDashboard/components/Summary.tsx:95
+#: src/components/PageDashboard/components/Summary.tsx:96
 msgid "Total Balances"
 msgstr "总余额"
 
-#: src/components/PageDashboard/components/SummaryRecurrence.tsx:31
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:32
 msgid "Total Daily Profits"
 msgstr "每日总利润"
 
-#: src/layout/default/Header.tsx:69
+#: src/layout/default/HeaderMobile.tsx:207
+#: src/layout/default/HeaderSecondary.tsx:50
 msgid "Total Deposits"
 msgstr "总存款"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked.tsx:20
-msgid "Total LP Tokens staked:"
-msgstr ""
-
-#: src/components/PageDashboard/components/Summary.tsx:159
+#: src/components/PageDashboard/components/Summary.tsx:165
 msgid "Total Summary"
 msgstr "总摘要"
 
@@ -3218,27 +2650,21 @@ msgstr "交易路由："
 #~ msgid "trading fees distributed to CRV lockers"
 #~ msgstr "分配給CRV锁仓者的交易费用"
 
-#: src/components/PageDashboard/components/FormClaimFees.tsx:43
+#: src/components/PageDashboard/components/FormClaimFees.tsx:93
 msgid "Trading fees distributed to CRV lockers"
 msgstr ""
 
-#: src/components/PageRouterSwap/index.tsx:168
-msgid "Transaction complete. Received {0} {toToken}."
-msgstr ""
-
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:204
-#: src/components/PageDeployGauge/ProcessSummary.tsx:53
-#: src/components/PageDeployGauge/ProcessSummary.tsx:85
+#: src/components/PageDeployGauge/ProcessSummary.tsx:43
+#: src/components/PageDeployGauge/ProcessSummary.tsx:64
 msgid "Transaction:"
 msgstr ""
 
-#: src/components/PageCreatePool/constants.ts:168
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:78
-#: src/components/PagePoolList/index.tsx:102
+#: src/components/PageCreatePool/constants.ts:136
+#: src/components/PagePoolList/index.tsx:108
 msgid "Tricrypto"
 msgstr ""
 
-#: src/components/PagePoolList/Page.tsx:58
+#: src/components/PagePoolList/Page.tsx:69
 msgid "TVL"
 msgstr "总锁定价值"
 
@@ -3246,34 +2672,31 @@ msgstr "总锁定价值"
 #~ msgid "Twitter"
 #~ msgstr "推特"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:77
-msgid "Two Coin Cryptoswap"
-msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:79
-msgid "Two Coin Cryptoswap-NG"
-msgstr ""
-
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:122
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:165
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:227
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:262
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:301
 #: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:351
-#~ msgid "Tx: {0} created"
-#~ msgstr "交易: {0} 已创建"
-
-#: src/components/PageCreatePool/ConfirmModal/CreatePoolButton.tsx:34
-msgid "Tx: {poolId} created"
-msgstr ""
+msgid "Tx: {0} created"
+msgstr "交易: {0} 已创建"
 
 #: src/components/PageCreatePool/ConfirmModal/DeployGaugeButton.tsx:64
-#~ msgid "Tx: Gauge deployed"
-#~ msgstr ""
+msgid "Tx: Gauge deployed"
+msgstr ""
 
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:106
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:115
-#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:185
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:148
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:184
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:220
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:256
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:294
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:328
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:362
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:396
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:434
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:467
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:500
+#: src/components/PageDeployGauge/components/DeployGaugeButton.tsx:533
 msgid "Tx: Gauge for {0} deployed"
 msgstr ""
 
@@ -3392,32 +2815,28 @@ msgid "Unable to get locked CRV info"
 msgstr ""
 
 #: src/components/AlertFormError.tsx:61
-#: src/components/PageDashboard/index.tsx:154
+#: src/components/PageDashboard/index.tsx:159
 msgid "Unable to get pool list"
 msgstr "无法获取各池列表"
-
-#: src/store/createUserSlice.ts:90
-msgid "Unable to get pools"
-msgstr ""
 
 #: src/domain/transfer/withdraw/form-claim/index.tsx:122
 #~ msgid "Unable to get rewards"
 #~ msgstr "无法获得奖励"
 
 #: src/components/PagePool/index.tsx:151
-#~ msgid "Unable to get seed initial rate"
-#~ msgstr "无法获得初始汇率"
+msgid "Unable to get seed initial rate"
+msgstr "无法获得初始汇率"
 
 #: src/domain/transfer/deposit/form-deposit/index.tsx:191
 #: src/domain/transfer/deposit/form-deposit-stake/index.tsx:189
 #~ msgid "Unable to get slippage"
 #~ msgstr "无法获得滑点数据"
 
-#: src/components/DetailInfoEstGas.tsx:105
+#: src/components/DetailInfoEstGas.tsx:98
 msgid "Unable to get USD rate"
 msgstr "无法获取美元汇率"
 
-#: src/components/PagePool/components/TransferActions.tsx:46
+#: src/components/PagePool/components/TransferActions.tsx:58
 msgid "Unable to get wallet balances"
 msgstr "无法读取钱包余额"
 
@@ -3507,7 +2926,7 @@ msgstr ""
 #~ msgid "Unstaked {lpTokenPayload} LP Tokens"
 #~ msgstr "解除质押 {lpTokenPayload} LP 代币"
 
-#: src/components/PagePool/UserDetails/index.tsx:104
+#: src/components/PagePool/UserDetails/index.tsx:107
 msgid "Unstaked:"
 msgstr "未质押:"
 
@@ -3515,11 +2934,7 @@ msgstr "未质押:"
 #~ msgid "Unstaking"
 #~ msgstr "解除质押中"
 
-#: src/components/PageRiskDisclaimer/index.tsx:117
-msgid "Unvetted Tokens:"
-msgstr ""
-
-#: src/components/PageCreatePool/Parameters/index.tsx:268
+#: src/components/PageCreatePool/Parameters/index.tsx:257
 msgid "Update Quote"
 msgstr ""
 
@@ -3527,24 +2942,24 @@ msgstr ""
 #~ msgid "Update Unlock Date"
 #~ msgstr "更新解锁到期日"
 
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:190
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:304
 msgid "Upload an icon for a new token"
 msgstr ""
 
-#: src/components/PagePool/UserDetails/index.tsx:175
+#: src/components/PagePool/UserDetails/index.tsx:174
 msgid "USD balance"
 msgstr "美元余额"
 
-#: src/components/PageDashboard/index.tsx:57
+#: src/components/PageDashboard/index.tsx:68
 msgid "USD Profits"
 msgstr "美元利润"
 
-#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:58
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:60
 msgid "USD total"
 msgstr "美元总额"
 
-#: src/components/PageDashboard/components/SummaryClaimable.tsx:65
-#: src/components/PageDashboard/components/SummaryRecurrence.tsx:71
+#: src/components/PageDashboard/components/SummaryClaimable.tsx:59
+#: src/components/PageDashboard/components/SummaryRecurrence.tsx:65
 msgid "USD Total"
 msgstr "美元总计"
 
@@ -3552,7 +2967,7 @@ msgstr "美元总计"
 #~ msgid "USD total balance updates every ~1 minute"
 #~ msgstr "美元总余额每约1分钟更新一次"
 
-#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:61
+#: src/components/PagePool/PoolDetails/CurrencyReserves/index.tsx:64
 msgid "USD total balance updates every ~5 minute"
 msgstr "美元总余额每~5分钟更新一次"
 
@@ -3560,31 +2975,32 @@ msgstr "美元总余额每~5分钟更新一次"
 msgid "User rejected action"
 msgstr ""
 
-#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:18
+#: src/components/PagePool/PoolDetails/PoolStats/index.tsx:79
+#: src/components/PagePoolList/components/TableCellReferenceAsset.tsx:16
 msgid "V2 pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools."
 msgstr "V2 池包含非挂钩资产。 流动性提供者需要承担该池内所有资产的风险。"
 
-#: src/components/PageDashboard/components/TableHead.tsx:67
-#: src/components/PagePoolList/components/TableHead.tsx:80
-#: src/components/PagePoolList/components/TableHead.tsx:100
+#: src/components/PageDashboard/components/TableHead.tsx:85
+#: src/components/PagePoolList/components/TableHead.tsx:91
+#: src/components/PagePoolList/components/TableHead.tsx:113
 msgid "Variable APY based on today's trading activity"
 msgstr "动态APY是基于今天的交易量 "
 
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:55
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:49
 msgid "Variable APY based on today's trading activity."
 msgstr "动态APY是基于今天的交易量。"
 
-#: src/components/PageDashboard/components/FormClaimFees.tsx:42
-msgid "veCRV rewards"
-msgstr "veCRV 獎勵"
+#: src/domain/user-dashboard/summary.tsx:215
+#~ msgid "veCRV rewards"
+#~ msgstr "veCRV 獎勵"
 
 #: src/domain/user-dashboard/summary.tsx:215
 #~ msgid "veCRV rewards:"
 #~ msgstr "veCRV 奖励:"
 
 #: src/components/PageDashboard/components/FormClaimFees.tsx:89
-#~ msgid "veCRV rewards: <0>{0}</0> 3CRV"
-#~ msgstr "veCRV 奖励: <0>{0}</0> 3CRV"
+msgid "veCRV rewards: <0>{0}</0> 3CRV"
+msgstr "veCRV 奖励: <0>{0}</0> 3CRV"
 
 #: src/domain/user-dashboard/components/form-claim-lp-rewards.tsx:95
 #~ msgid "veCRV rewards: <0>{claimFeesAmount}</0> 3CRV"
@@ -3594,11 +3010,11 @@ msgstr "veCRV 獎勵"
 #~ msgid "Vesting"
 #~ msgstr "vesting解锁"
 
-#: src/components/PageDashboard/components/Summary.tsx:122
+#: src/components/PageDashboard/components/Summary.tsx:128
 msgid "View address"
 msgstr "查看地址"
 
-#: src/components/PagePoolList/index.tsx:285
+#: src/components/PagePoolList/index.tsx:270
 msgid "view all pools."
 msgstr "查看所有池。"
 
@@ -3606,7 +3022,7 @@ msgstr "查看所有池。"
 #~ msgid "Virtual price"
 #~ msgstr "虚拟价格"
 
-#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:96
+#: src/components/PagePool/PoolDetails/PoolStats/PoolParameters.tsx:103
 msgid "Virtual price:"
 msgstr "虚拟价格:"
 
@@ -3627,95 +3043,66 @@ msgstr "虚拟价格:"
 #~ msgid "Visit old UI"
 #~ msgstr "访问旧 UI"
 
-#: src/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent.tsx:59
-msgid "Visit pool"
-msgstr ""
-
-#: src/components/PageCreatePool/ConfirmModal/index.tsx:166
+#: src/components/PageCreatePool/ConfirmModal/index.tsx:295
 msgid "Visit the new pool to deposit liquidity."
 msgstr ""
 
-#: src/components/PageDeployGauge/ProcessSummary.tsx:97
+#: src/components/PageDeployGauge/ProcessSummary.tsx:76
 msgid "Visit the pool"
 msgstr ""
 
-#: src/components/PagePoolList/Page.tsx:59
+#: src/components/PagePoolList/Page.tsx:70
 msgid "Volume"
 msgstr "交易量"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:112
-msgid "Vyper Version:"
-msgstr ""
-
-#: src/components/PagePool/Deposit/components/FormDeposit.tsx:147
-#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:150
-#: src/components/PagePool/Swap/index.tsx:197
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:160
-#: src/components/PageRouterSwap/index.tsx:226
+#: src/components/PagePool/Deposit/components/FormDeposit.tsx:144
+#: src/components/PagePool/Deposit/components/FormDepositStake.tsx:145
+#: src/components/PagePool/Swap/index.tsx:193
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:159
+#: src/components/PageRouterSwap/index.tsx:221
 msgid "Warning!"
 msgstr "警告！"
 
 #: src/components/PageRouterSwap/index.tsx:500
-#~ msgid "Warning! Due to slippage, the expected amount you would like to receive ({0}) will actually be {1}"
-#~ msgstr ""
+msgid "Warning! Due to slippage, the expected amount you would like to receive ({0}) will actually be {1}"
+msgstr ""
 
 #: src/components/AlertFormWarning.tsx:22
-#: src/components/PageRouterSwap/components/RouterSwapAlerts.tsx:48
 msgid "Warning! Exchange rate is too low!"
 msgstr "警告！ 汇率太低了！"
 
-#: src/components/PageRouterSwap/components/RouterSwapAlerts.tsx:47
-msgid "Warning! High price impact!"
+#: src/components/PageRouterSwap/index.tsx:496
+msgid "Warning! The exchange rate is too low, and due to slippage, the expected amount you would like to receive ({0}) will actually be {1}."
 msgstr ""
 
-#: src/components/PageRouterSwap/index.tsx:496
-#~ msgid "Warning! The exchange rate is too low, and due to slippage, the expected amount you would like to receive ({0}) will actually be {1}."
-#~ msgstr ""
-
-#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:40
+#: src/components/PagePool/PoolDetails/PoolStats/Rewards.tsx:34
 msgid "Weekly"
 msgstr "每周"
 
-#: src/components/PageRiskDisclaimer/index.tsx:123
-msgid "When participating as a liquidity provider in any pool, users should carefully assess the tokens' functionality, security audits, team credibility, community feedback, and other relevant factors to make informed decisions and mitigate potential risks associated with the pool assets."
-msgstr ""
-
-#: src/components/PageRiskDisclaimer/index.tsx:53
-msgid "When you engage in transactions on Ethereum or EVM-compatible blockchains, it is important to understand that these transactions are immutable and irreversible. Once a transaction is confirmed and recorded on the blockchain, it cannot be modified, reversed, or deleted. This means that if a user sends funds to an incorrect address or engage in a fraudulent transaction, it may not be possible to recover the funds. It is crucial to exercise caution, verify transaction details, and use secure wallets to minimize the risk of irreversible transactions."
-msgstr ""
-
-#: src/layout/default/Footer.tsx:131
+#: src/layout/default/Footer.tsx:97
 msgid "Whitepaper"
 msgstr "白皮书"
 
-#: src/layout/default/Footer.tsx:73
+#: src/layout/default/Footer.tsx:68
 msgid "Wiki CN"
 msgstr "中文百科"
 
-#: src/components/PageCreatePool/Parameters/SelectPreset.tsx:232
-msgid "with similar assets for inspiration (or use"
-msgstr ""
-
 #: src/components/AlertSlippage.tsx:24
-msgid "With your current slippage tolerance setting ({0}), the expected output displayed above might incur up to <0>{1} worth of slippage</0> (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above."
-msgstr ""
+msgid "With your current slippage tolerance setting ({maxSlippage}%), the expected output displayed above might incur up to <0>${0} worth of slippage</0> (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above."
+msgstr "使用您当前的最大滑点设置 ({maxSlippage}%)，上面显示预计可能将会产生高达 <0>${0} 的滑点</0>（不包括价格影响）。 我们建议您降低上面的最大滑点设置。"
 
-#: src/components/AlertSlippage.tsx:24
-#~ msgid "With your current slippage tolerance setting ({maxSlippage}%), the expected output displayed above might incur up to <0>${0} worth of slippage</0> (in addition to the price impact). We recommend that you reduce your slippage tolerance setting just above."
-#~ msgstr "使用您当前的最大滑点设置 ({maxSlippage}%)，上面显示预计可能将会产生高达 <0>${0} 的滑点</0>（不包括价格影响）。 我们建议您降低上面的最大滑点设置。"
-
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:156
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:155
 #: src/components/PagePool/Withdraw/index.tsx:31
-#: src/components/PagePoolList/components/TableRowMobile.tsx:162
+#: src/components/PagePoolList/components/TableRowMobile.tsx:168
 msgid "Withdraw"
 msgstr "提款"
 
-#: src/components/PagePool/index.tsx:197
+#: src/components/PagePool/index.tsx:190
 msgid "Withdraw Claim"
 msgstr ""
 
 #: src/components/PageDashboard/components/FormVecrv.tsx:72
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:156
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:155
 msgid "Withdraw Complete"
 msgstr "提款完成"
 
@@ -3737,7 +3124,7 @@ msgstr "提款 CRV 完成"
 #~ msgid "Withdraw Liquidity Approval Failed"
 #~ msgstr "提款授权失败"
 
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:460
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:459
 msgid "Withdraw Wrapped"
 msgstr "提款封裝代币"
 
@@ -3745,7 +3132,7 @@ msgstr "提款封裝代币"
 #~ msgid "Withdraw/ Claim"
 #~ msgstr "提款/領取"
 
-#: src/components/PagePool/index.tsx:197
+#: src/components/PagePool/index.tsx:190
 msgid "Withdraw/Claim"
 msgstr "提款/領取"
 
@@ -3753,7 +3140,7 @@ msgstr "提款/領取"
 #~ msgid "Withdrawing"
 #~ msgstr "提款中"
 
-#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:111
+#: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:110
 msgid "Withdrew {0} LP Tokens for {tokenText}"
 msgstr ""
 
@@ -3761,11 +3148,11 @@ msgstr ""
 #~ msgid "Withdrew {lpTokenPayload} LP Tokens, received {0}"
 #~ msgstr "撤回 {lpTokenPayload} 个LP代币，收到 {0}"
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:341
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:178
 msgid "Xcp Profit A:"
 msgstr ""
 
-#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:335
+#: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:172
 msgid "Xcp Profit:"
 msgstr ""
 
@@ -3778,20 +3165,21 @@ msgstr ""
 msgid "You have a balance in this pool"
 msgstr "您在这个池中有些余额"
 
-#: src/components/PageCrvLocker/components/FormLockDate.tsx:214
+#: src/components/PageCrvLocker/components/FormLockDate.tsx:215
 msgid "You have reached the maximum locked date."
 msgstr ""
 
-#: src/components/PagePool/UserDetails/index.tsx:76
+#: src/components/PagePool/UserDetails/index.tsx:79
 msgid "your boost"
 msgstr "你的加速倍数"
 
-#: src/components/PagePool/UserDetails/index.tsx:111
-#: src/components/PagePool/UserDetails/index.tsx:116
+#: src/components/PagePool/UserDetails/index.tsx:114
+#: src/components/PagePool/UserDetails/index.tsx:119
 msgid "Your CRV Rewards tAPR:"
 msgstr "你的CRV奖励年化tAPR"
 
-#: src/components/PagePool/index.tsx:126
+#: src/components/PagePool/index.tsx:105
+#: src/components/PagePool/index.tsx:110
 msgid "Your Details"
 msgstr ""
 
@@ -3799,6 +3187,6 @@ msgstr ""
 msgid "Your lock has expired, claim your <0>{lockedAmountDisplay}</0> CRV"
 msgstr "您的投票锁定已到期，请提取您的<0>{lockedAmountDisplay}</0> CRV"
 
-#: src/components/PagePool/UserDetails/index.tsx:92
+#: src/components/PagePool/UserDetails/index.tsx:95
 msgid "Your position"
 msgstr "你的头村"

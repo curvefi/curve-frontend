@@ -83,7 +83,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
 
           <ContentWrapper paddingTop isBorderBottom>
             <StatsWrapper>
-              <CellUserMain {...pageProps} market={market!} type="borrow" />
+              <CellUserMain {...pageProps} market={cellProps.market} type="borrow" />
 
               {/* stats */}
               <ListInfoItemsWrapper>

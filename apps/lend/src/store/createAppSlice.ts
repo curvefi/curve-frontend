@@ -105,10 +105,11 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       state.user.resetState()
     }
 
-    await api.oneWayfactory.fetchMarkets();
     // update network settings from api
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
+
+    await api.oneWayfactory.fetchMarkets();
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {

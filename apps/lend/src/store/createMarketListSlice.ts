@@ -22,7 +22,6 @@ import networks from '@/networks'
 import { getTokenQueryData } from '@/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { getChainQueryData } from '@/entities/chain/lib/query-data'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
