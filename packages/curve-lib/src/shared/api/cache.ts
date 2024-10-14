@@ -1,5 +1,5 @@
 import { logError, logMutation, logSuccess } from '@/shared/lib/logging'
-import { MutationCache, QueryCache, type Mutation } from '@tanstack/react-query'
+import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
 
 export const queryCache = new QueryCache({
   onError: (error: Error, query) => {
