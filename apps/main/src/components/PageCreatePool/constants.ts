@@ -67,7 +67,7 @@ export const POOL_PRESETS: PRESETS = {
     description: t`Suitable for stablecoins that are fiat-redeemable`,
     defaultParams: {
       ...fillerParams,
-      stableSwapFee: '0.04',
+      stableSwapFee: '0.01',
       stableA: '200',
       maExpTime: '600',
       offpegFeeMultiplier: '2',
