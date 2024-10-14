@@ -13,6 +13,7 @@ export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const tokenAddresses = useMemo(
     () =>
       Object.values(marketMapping ?? {})
+        // note: include the borrowed tokens here, to be used in `filterSmallMarkets`
         .flatMap((market) => [market.borrowed_token, market.collateral_token])
         .map((t) => t.address),
     [marketMapping],

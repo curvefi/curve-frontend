@@ -13,6 +13,5 @@ export const queryOneWayMarketNames: QueryFunction<
   assertChainValidity({ chainId })
 
   const {api} = useStore.getState()
-  await api!.oneWayfactory.fetchMarkets()
   return api!.oneWayfactory.getMarketList()
 }

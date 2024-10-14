@@ -46,19 +46,6 @@ export const helpers = {
     val2 = val2 || '0'
     return BN(val1).isGreaterThan(val2)
   },
-  fetchMarkets: async (api: Api) => {
-    const resp = { marketList: [] as string[], error: '' }
-    try {
-      log('fetchMarkets', api.chainId)
-      await api.oneWayfactory.fetchMarkets(USE_API)
-      resp.marketList = api.oneWayfactory.getMarketList()
-      return resp
-    } catch (error) {
-      resp.error = 'error-api'
-      console.error(error)
-      return resp
-    }
-  },
   fetchCustomGasFees: async (curve: Api) => {
     let resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
     try {
@@ -96,18 +83,6 @@ export const helpers = {
       return resp
     }
   },
-  fetchUsdRate: async (api: Api, tokenAddress: string) => {
-    let resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }
-    try {
-      resp.usdRate = await api.getUsdRate(tokenAddress)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-usd-rate')
-      resp.usdRate = 'NaN'
-      return resp
-    }
-  },
   getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus => {
     return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'
   },
@@ -132,9 +107,6 @@ export const helpers = {
 }
 
 const market = {
-  hasLeverage: async (market: OneWayMarketTemplate) => {
-    return market.leverage.hasLeverage()
-  },
   fetchStatsParameters: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsParameters', markets.length)
     let results: { [id: string]: MarketStatParameters } = {}

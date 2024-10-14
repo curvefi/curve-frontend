@@ -3,16 +3,19 @@ import networks from '@/networks'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useMemo } from 'react'
 import { useApi } from './chain-info'
+import { checkChainValidity } from '@/entities/chain'
 
 export const useOneWayMarketMapping = (chainId: ChainId) => {
+  const chainValid = checkChainValidity({ chainId }) // extra check to make sure the API is loaded before we use stale market names
+
   const { data: marketNames, ...rest } = useOneWayMarketNames({ chainId })
   const { data: api } = useApi();
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(() =>
-    marketNames && api && Object.fromEntries(
+    chainValid && marketNames && api ? Object.fromEntries(
       marketNames
         .filter(marketName => !networks[chainId].hideMarketsInUI[marketName])
         .map(name => [name, api.getOneWayMarket(name)])
-    ), [api, chainId, marketNames]
+    ) : undefined, [api, chainId, chainValid, marketNames]
   )
   return { data, ...rest }
 }

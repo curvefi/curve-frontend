@@ -5,10 +5,10 @@ import { queryOneWayMarketNames } from '../api/markets-api'
 import { chainKeys } from './query-keys'
 import { ChainQueryParams } from '../types'
 
-export const getOneWayMarketNames = (params: ChainQueryParams) =>
+export const getOneWayMarketNames = (params: ChainQueryParams, condition = true) =>
   queryOptions({
     queryKey: chainKeys.markets(params),
     queryFn: queryOneWayMarketNames,
     staleTime: REFRESH_INTERVAL['5m'],
-    enabled: checkChainValidity(params),
+    enabled: condition && checkChainValidity(params),
   })
