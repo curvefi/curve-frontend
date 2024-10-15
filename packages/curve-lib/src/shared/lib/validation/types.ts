@@ -5,3 +5,5 @@ export type ValidatedData<T extends object> = {
 export type ValidatedFields<T> = {
   [K in keyof T]: NonNullable<T[K]>
 }
+
+export type FieldName<T> = Extract<keyof T, string>

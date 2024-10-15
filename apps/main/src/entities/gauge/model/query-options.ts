@@ -11,20 +11,25 @@
  */
 
 import { queryOptions } from '@tanstack/react-query'
+import { CB } from 'vest-utils'
 import * as api from '@/entities/gauge/api'
-import { gaugeKeys as keys, gaugeValidationSuite } from '@/entities/gauge/model'
+import { gaugeKeys, gaugeKeys as keys } from '@/entities/gauge/model'
 import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import type { DepositRewardApproveParams, GaugeQueryParams } from '@/entities/gauge/types'
+import { DepositRewardApproveParams, GaugeQueryKeyType, GaugeQueryParams } from '@/entities/gauge/types'
+import { poolValidationGroup } from '@/entities/pool'
+import { createValidationSuite, FieldName } from '@/shared/lib/validation'
 import { queryFactory } from '@/shared/model/factory'
 import { REFRESH_INTERVAL } from '@/constants'
 
+type TField = FieldName<GaugeQueryParams>
+type TCB = CB<GaugeQueryParams, TField[]>
 
-export const gaugeStatus = queryFactory({
-  createKey: keys.status,
+export const gaugeStatus = queryFactory<GaugeQueryParams, GaugeQueryKeyType<'status'>, ReturnType<typeof api.queryGaugeStatus>, TField, string, TCB>({
+  queryKey: gaugeKeys.status,
+  queryParams: ([, chainId, , poolId, ,]) => ({ chainId, poolId }),
   query: api.queryGaugeStatus,
   staleTime: '5m',
-  recoverKey: ([, chainId, , poolId, ,]) => ({ chainId, poolId }),
-  validationSuite: gaugeValidationSuite,
+  validationSuite: createValidationSuite(poolValidationGroup),
 })
 
 export const getIsDepositRewardAvailableQueryOptions = (params: GaugeQueryParams) =>
