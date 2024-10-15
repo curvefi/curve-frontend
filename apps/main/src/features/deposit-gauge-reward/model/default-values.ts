@@ -1,6 +1,6 @@
 import { zeroAddress } from 'viem'
-import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import { TIME_FRAMES } from '@/constants'
+import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 
 export const DepositRewardDefaultValues: DepositRewardFormValues = {
   rewardTokenId: zeroAddress,
