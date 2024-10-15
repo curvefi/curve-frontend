@@ -1,6 +1,3 @@
-import type { AppProps } from 'next/app'
-import type { Locale } from '@/lib/i18n'
-
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -8,25 +5,25 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-
 import { initOnboard } from 'onboard-helpers'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import useStore from '@/store/useStore'
 import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import { REFRESH_INTERVAL } from '@/constants'
-
 import GlobalStyle from '@/globalStyle'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/index'
+import type { Locale } from '@/lib/i18n'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
+import useStore from '@/store/useStore'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import type { AppProps } from 'next/app'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')

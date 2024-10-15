@@ -1,19 +1,15 @@
-import type { AppProps } from 'next/app'
-
-import { useCallback, useEffect, useState } from 'react'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import 'intersection-observer'
-import 'focus-visible'
-import '@/globals.css'
-
 import { initOnboard } from 'onboard-helpers'
 import zhHans from 'onboard-helpers/src/locales/zh-Hans'
 import zhHant from 'onboard-helpers/src/locales/zh-Hant'
+import { useCallback, useEffect, useState } from 'react'
+import 'intersection-observer'
+import 'focus-visible'
+import '@/globals.css'
 import { HashRouter } from 'react-router-dom'
-
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
@@ -24,6 +20,7 @@ import useStore from '@/store/useStore'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
+import type { AppProps } from 'next/app'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
