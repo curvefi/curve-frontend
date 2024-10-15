@@ -1,20 +1,22 @@
 import type { TableRowProps } from '@/components/PageMarketList/types'
 
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/utils/utilsRouter'
 import { helpers } from '@/lib/apiLending'
+import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
+import networks from '@/networks'
 import useStore from '@/store/useStore'
 
+import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
 import TableRowMobile from '@/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'owmDataCachedOrApi' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>
 ) => {
-  const { rChainId, api, owmId, filterTypeKey } = props
-
+  const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
   const params = useParams()
   const navigate = useNavigate()
 
@@ -23,6 +25,7 @@ const TableRowContainer = (
   const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
   const owmDatasCachedMapper = useStore((state) => state.storeCache.owmDatasMapper[rChainId])
   const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[rChainId])
+  const searchedByAddresses = useStore((state) => state.marketList.searchedByAddresses[owmId])
   const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
 
   const owmDataCached = owmDatasCachedMapper?.[owmId]
@@ -30,6 +33,11 @@ const TableRowContainer = (
   const owmDataCachedOrApi = owmData ?? owmDataCached
   const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
   const loanExists = loansExistsMapper[userActiveKey]?.loanExists ?? false
+
+  const parsedSearchTermMapper = useMemo(
+    () => parseSearchTermMapper(owmDataCachedOrApi, searchedByAddresses, searchTermMapper),
+    [owmDataCachedOrApi, searchTermMapper, searchedByAddresses]
+  )
 
   const handleCellClick = (target?: EventTarget) => {
     if (target && (target as HTMLElement).nodeName === 'BUTTON') return
@@ -60,7 +68,21 @@ const TableRowContainer = (
     handleCellClick,
   }
 
-  return isMdUp ? <TableRow key={owmId} {...tableRowProps} /> : <TableRowMobile key={owmId} {...tableRowProps} />
+  return (
+    <>
+      {isMdUp ? <TableRow key={owmId} {...tableRowProps} /> : <TableRowMobile key={owmId} {...tableRowProps} />}
+      {searchedByAddresses && Object.keys(searchedByAddresses).length > 0 && (
+        <TrSearchedTextResult
+          colSpan={10}
+          id={owmId}
+          isMobile={!isMdUp}
+          result={searchedByAddresses}
+          searchTermMapper={parsedSearchTermMapper}
+          scanAddressPath={networks[rChainId].scanAddressPath}
+        />
+      )}
+    </>
+  )
 }
 
 export default TableRowContainer

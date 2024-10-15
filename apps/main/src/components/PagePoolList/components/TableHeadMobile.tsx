@@ -1,6 +1,8 @@
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
+import { t } from '@lingui/macro'
+import { Th, Tr } from '@/ui/Table'
 
 type Props = {
   showInPoolColumn: boolean
@@ -10,11 +12,13 @@ const TableHeadMobile = ({ showInPoolColumn }: Props) => {
   return (
     <>
       <colgroup>
-        {showInPoolColumn && <ColInPool className="row-in-pool" />}
+        {showInPoolColumn && <ColInPool />}
         <Col className="left pool" />
       </colgroup>
       <thead>
-        <tr></tr>
+        <Tr>
+          <Th $first className="left">{t`Pools`}</Th>
+        </Tr>
       </thead>
     </>
   )

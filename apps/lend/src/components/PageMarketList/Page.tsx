@@ -10,6 +10,7 @@ import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useSearchTermMapper from '@/hooks/useSearchTermMapper'
 import useStore from '@/store/useStore'
 import useTitleMapper from '@/hooks/useTitleMapper'
 
@@ -26,6 +27,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { pageLoaded, routerParams, api } = usePageOnMount(params, location, navigate)
+  const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()
   const { rChainId } = routerParams
 
@@ -111,9 +113,10 @@ const Page: NextPage = () => {
               rChainId={rChainId}
               isLoaded={loaded}
               api={api}
-              searchParams={parsedSearchParams}
               filterList={filterList}
               filterTypeMapper={FILTER_TYPE_MAPPER}
+              searchParams={parsedSearchParams}
+              searchTermMapper={searchTermMapper}
               titleMapper={titleMapper}
               updatePath={updatePath}
             />

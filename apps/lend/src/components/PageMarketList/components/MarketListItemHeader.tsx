@@ -9,17 +9,19 @@ import TokenIcon from '@/components/TokenIcon'
 
 const MarketListItemHeader = ({
   rChainId,
+  idx,
   address,
   symbol,
 }: {
   rChainId: ChainId
+  idx: number
   address: string
   symbol: string
 }) => {
   const { imageBaseUrl } = networks[rChainId]
 
   return (
-    <TableTokenWrapper>
+    <TableTokenWrapper $isFirst={idx === 0}>
       <Wrapper flex flexAlignItems="center">
         {<StyledTokenIcon imageBaseUrl={imageBaseUrl} token={symbol} address={address} />}
         <strong>{symbol}</strong>
@@ -28,11 +30,11 @@ const MarketListItemHeader = ({
   )
 }
 
-const TableTokenWrapper = styled.div`
+const TableTokenWrapper = styled.div<{ $isFirst?: boolean }>`
   display: flex;
   justify-content: space-between;
   padding: var(--spacing-1) var(--spacing-narrow);
-  padding-top: var(--spacing-wide);
+  ${({ $isFirst }) => !$isFirst && `padding-top: var(--spacing-wide);`};
 
   @media (min-width: ${breakpoints.sm}rem) {
     padding-left: var(--spacing-normal);

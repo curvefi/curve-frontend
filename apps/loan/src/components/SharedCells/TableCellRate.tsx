@@ -24,7 +24,7 @@ const TableCellRate = ({ collateralId, ...props }: Props) => {
   }
 
   return (
-    <Box flex flexAlignItems="center">
+    <Box grid gridAutoFlow="column" flexAlignItems="center" flexJustifyContent="flex-end">
       <Chip
         {...props}
         size="md"

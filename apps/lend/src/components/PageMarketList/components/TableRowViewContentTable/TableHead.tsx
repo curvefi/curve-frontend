@@ -1,4 +1,4 @@
-import type { TableLabel, PageMarketList } from '@/components/PageMarketList/types'
+import type { TableLabel, PageMarketList, FilterTypeKey } from '@/components/PageMarketList/types'
 import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
 
 import React from 'react'
@@ -7,17 +7,22 @@ import styled from 'styled-components'
 import { _showContent } from '@/utils/helpers'
 import useStore from '@/store/useStore'
 
-import { cellCss } from '@/components/PageMarketList/components/TableRowViewContentTable/TableRow'
-import { TheadSortButton } from '@/ui/Table'
+import { Thead, Th, TheadSortButton } from '@/ui/Table'
 
 const TableHead = ({
   address,
+  filterTypeKey,
   searchParams,
+  showBorrowSignerCell,
+  showSupplySignerCell,
   tableLabels,
   titleMapper,
   updatePath,
 }: Pick<PageMarketList, 'searchParams' | 'titleMapper' | 'updatePath'> & {
+  filterTypeKey: FilterTypeKey
   address: string
+  showBorrowSignerCell: boolean
+  showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
   const formStatus = useStore((state) => state.marketList.formStatus)
@@ -41,46 +46,56 @@ const TableHead = ({
           return <col key={`${sortIdKey}-${idx}`} className={className} {...(width ? { style: { width } } : {})} />
         })}
       </colgroup>
-      <thead>
+      <Thead>
         <tr>
-          {tableLabels.map(({ sortIdKey, className, show, isNotSortable = true, ...props }, idx) => {
-            if (!_showContent(show)) return null
-
+          {tableLabels.map(({ sortIdKey, className, show, isNotSortable = true }, idx) => {
             const label = titleMapper[sortIdKey].title
             const key = `${sortIdKey}-${idx}`
             const parsedIsNotSortable = tableSetting?.isNotSortable && isNotSortable
-
-            if (!label) return <Th key={key}></Th>
+            const isFirst =
+              idx === 1 ? (filterTypeKey === 'borrow' ? !showBorrowSignerCell : !showSupplySignerCell) : false
+            const isLast = idx === tableLabels.length - 1
+            const isVisible = _showContent(show)
 
             return (
-              <Th key={key} className={className}>
-                {parsedIsNotSortable && label}
-
-                {!parsedIsNotSortable && (
-                  <StyledTheadSortButton
-                    {...theadSortButtonProps}
-                    {...props}
-                    indicatorPlacement={className.startsWith('left') ? 'right' : 'left'}
-                    className={className}
-                    sortIdKey={sortIdKey}
-                  >
-                    {label}
-                  </StyledTheadSortButton>
+              <React.Fragment key={key}>
+                {!isVisible && null}
+                {isVisible && !label && <Th></Th>}
+                {isVisible && label && (
+                  <Th className={className} $first={isFirst} $last={isLast}>
+                    {parsedIsNotSortable && <Label>{label}</Label>}
+                    {!parsedIsNotSortable && (
+                      <StyledTheadSortButton
+                        {...theadSortButtonProps}
+                        indicatorPlacement={className.startsWith('left') ? 'right' : 'left'}
+                        className={className}
+                        sortIdKey={sortIdKey}
+                      >
+                        {label}
+                      </StyledTheadSortButton>
+                    )}
+                  </Th>
                 )}
-              </Th>
+              </React.Fragment>
             )
           })}
         </tr>
-      </thead>
+      </Thead>
     </>
   )
 }
 
-const Th = styled.th`
-  ${cellCss};
+const Label = styled.span`
+  align-items: center;
+  color: inherit;
+  display: inline-flex;
+  font-family: var(--table_head--font);
+  font-weight: var(--table_head--font-weight);
+  font-size: 13.3333px; // keep same as button font size
 `
 
 const StyledTheadSortButton = styled(TheadSortButton)`
+  min-height: var(--height-medium);
   width: 100%;
   white-space: nowrap;
 `
