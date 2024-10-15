@@ -44,6 +44,7 @@ type GlobalState = {
   maxSlippage: { [key: string]: string }
   routerProps: RouterProps | null
   showScrollButton: boolean
+  showWrapped: { [poolId: string]: boolean }
   themeType: Theme
 }
 
@@ -93,6 +94,7 @@ const DEFAULT_STATE = {
   maxSlippage: {},
   routerProps: null,
   showScrollButton: false,
+  showWrapped: {},
   themeType: 'default',
 }
 
