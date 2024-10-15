@@ -11,21 +11,17 @@
  */
 
 import { queryOptions } from '@tanstack/react-query'
-import { CB } from 'vest-utils'
 import * as api from '@/entities/gauge/api'
-import { gaugeKeys, gaugeKeys as keys } from '@/entities/gauge/model'
+import { gaugeKeys as keys } from '@/entities/gauge/model'
 import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import { DepositRewardApproveParams, GaugeQueryKeyType, GaugeQueryParams } from '@/entities/gauge/types'
+import { DepositRewardApproveParams, GaugeQueryParams, GaugeStatusQueryParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
-import { createValidationSuite, FieldName } from '@/shared/lib/validation'
+import { createValidationSuite, NonValidatedFields } from '@/shared/lib/validation'
 import { queryFactory } from '@/shared/model/factory'
 import { REFRESH_INTERVAL } from '@/constants'
 
-type TField = FieldName<GaugeQueryParams>
-type TCB = CB<GaugeQueryParams, TField[]>
-
-export const gaugeStatus = queryFactory<GaugeQueryParams, GaugeQueryKeyType<'status'>, ReturnType<typeof api.queryGaugeStatus>, TField, string, TCB>({
-  queryKey: gaugeKeys.status,
+export const gaugeStatus = queryFactory({
+  queryKey: ({ chainId, poolId }: NonValidatedFields<GaugeStatusQueryParams>) => ['chain', chainId, 'pool', poolId, 'gauge', 'status'] as const,
   queryParams: ([, chainId, , poolId, ,]) => ({ chainId, poolId }),
   query: api.queryGaugeStatus,
   staleTime: '5m',

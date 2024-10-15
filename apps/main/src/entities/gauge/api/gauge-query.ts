@@ -12,13 +12,12 @@
 import { QueryFunction } from '@tanstack/react-query'
 import { type Address, zeroAddress } from 'viem'
 import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType, type GaugeQueryParams, type PoolMethodResult } from '@/entities/gauge/types'
+import { GaugeQueryKeyType, GaugeStatusQueryParams, type PoolMethodResult } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
 import { logQuery } from '@/shared/lib/logging'
-import { ValidatedData } from '@/shared/lib/validation'
 import useStore from '@/store/useStore'
 
-export const queryGaugeStatus = async ({ poolId }: ValidatedData<GaugeQueryParams>) => {
+export const queryGaugeStatus = async ({ poolId }: GaugeStatusQueryParams) => {
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
   return pool.gaugeStatus()
