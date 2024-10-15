@@ -15,8 +15,8 @@ import type { Address } from 'viem'
 import { gaugeKeys } from '@/entities/gauge/model'
 import type { PoolQueryParams } from '@/entities/pool/types'
 import { ValidatedData } from '@/shared/lib/validation'
-import type { ExtractQueryKeyType } from '@/shared/types/api'
-import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
+import type { ExtractQueryKeyType } from '@/shared/types'
+import type { NestedFunction, NestedKeys } from '@/shared/types'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 

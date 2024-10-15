@@ -10,7 +10,7 @@ import {
   NonValidatedFields
 } from '@/shared/lib/validation'
 import { REFRESH_INTERVAL } from '@/shared/model/time'
-import { QueryFactoryInput, QueryFactoryOutput } from '@/shared/types/factory'
+import { QueryFactoryInput, QueryFactoryOutput } from '../types'
 
 export function queryFactory<
   TValidParams extends object,
