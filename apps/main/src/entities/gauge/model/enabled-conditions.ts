@@ -1,22 +1,18 @@
 import { checkGaugeValidity } from '@/entities/gauge/lib'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
-import type {
-  AddRewardParams,
-  DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
-} from '@/entities/gauge/types'
+import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
+import { GaugeParams } from '@/shared/model/root-keys'
 
-export const enabledIsDepositRewardAvailable = (data: GaugeQueryParams) => checkGaugeValidity(data)
-export const enabledGaugeManager = (data: GaugeQueryParams) => checkGaugeValidity(data)
-export const enabledGaugeDistributors = (data: GaugeQueryParams) => checkGaugeValidity(data)
-export const enabledGaugeVersion = (data: GaugeQueryParams) => checkGaugeValidity(data)
-export const enabledDepositRewardIsApproved = (data: DepositRewardApproveParams & GaugeQueryParams) =>
+export const enabledIsDepositRewardAvailable = (data: GaugeParams) => checkGaugeValidity(data)
+export const enabledGaugeManager = (data: GaugeParams) => checkGaugeValidity(data)
+export const enabledGaugeDistributors = (data: GaugeParams) => checkGaugeValidity(data)
+export const enabledGaugeVersion = (data: GaugeParams) => checkGaugeValidity(data)
+export const enabledDepositRewardIsApproved = (data: DepositRewardApproveParams & GaugeParams) =>
   checkGaugeValidity(data)
-export const enabledEstimateGasDepositRewardApprove = (data: DepositRewardApproveParams & GaugeQueryParams) =>
+export const enabledEstimateGasDepositRewardApprove = (data: DepositRewardApproveParams & GaugeParams) =>
   checkGaugeValidity(data)
-export const enabledEstimateGasAddRewardToken = (data: AddRewardParams & GaugeQueryParams) =>
+export const enabledEstimateGasAddRewardToken = (data: AddRewardParams & GaugeParams) =>
   checkGaugeValidity(data) && !!queryClient.getQueryData(keys.isDepositRewardAvailable(data))
-export const enabledEstimateGasDepositReward = (data: DepositRewardParams & GaugeQueryParams) =>
+export const enabledEstimateGasDepositReward = (data: DepositRewardParams & GaugeParams) =>
   checkGaugeValidity(data) && !!queryClient.getQueryData(keys.depositRewardIsApproved(data))

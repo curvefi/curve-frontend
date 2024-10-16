@@ -16,19 +16,19 @@ import type {
   AddRewardParams,
   DepositRewardApproveParams,
   DepositRewardParams,
-  GaugeQueryParams,
-  PoolMethodResult,
+  PoolMethodResult
 } from '@/entities/gauge/types'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
 import { t } from '@lingui/macro'
 import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
+import { GaugeParams } from '@/shared/model/root-keys'
 
 export const useAddRewardToken = ({
   chainId,
   poolId,
-}: GaugeQueryParams): UseMutationResult<PoolMethodResult<'gauge.addReward'>, Error, AddRewardParams> => {
+}: GaugeParams): UseMutationResult<PoolMethodResult<'gauge.addReward'>, Error, AddRewardParams> => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -55,7 +55,7 @@ export const useAddRewardTokenIsMutating = ({
   poolId,
   rewardTokenId,
   distributorId,
-}: GaugeQueryParams & AddRewardParams): boolean => {
+}: GaugeParams & AddRewardParams): boolean => {
   return Boolean(
     useIsMutating({
       mutationKey: keys.addRewardToken({ chainId, poolId }),
@@ -68,7 +68,7 @@ export const useAddRewardTokenIsMutating = ({
 export const useDepositRewardApprove = ({
   chainId,
   poolId,
-}: GaugeQueryParams): UseMutationResult<
+}: GaugeParams): UseMutationResult<
   PoolMethodResult<'gauge.depositRewardApprove'>,
   Error,
   DepositRewardApproveParams
@@ -99,7 +99,7 @@ export const useDepositRewardApproveIsMutating = ({
   poolId,
   rewardTokenId,
   amount,
-}: GaugeQueryParams & DepositRewardApproveParams): boolean => {
+}: GaugeParams & DepositRewardApproveParams): boolean => {
   return Boolean(
     useIsMutating({
       mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
@@ -111,7 +111,7 @@ export const useDepositRewardApproveIsMutating = ({
 export const useDepositReward = ({
   chainId,
   poolId,
-}: GaugeQueryParams): UseMutationResult<PoolMethodResult<'gauge.depositReward'>, Error, DepositRewardParams> => {
+}: GaugeParams): UseMutationResult<PoolMethodResult<'gauge.depositReward'>, Error, DepositRewardParams> => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -137,7 +137,7 @@ export const useDepositRewardIsMutating = ({
   rewardTokenId,
   amount,
   epoch,
-}: GaugeQueryParams & DepositRewardParams): boolean => {
+}: GaugeParams & DepositRewardParams): boolean => {
   return Boolean(
     useIsMutating({
       mutationKey: keys.depositReward({ chainId, poolId }),

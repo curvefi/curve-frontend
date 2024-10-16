@@ -13,21 +13,15 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
 import { gaugeKeys } from '@/entities/gauge/model'
-import type { PoolQueryParams } from '@/entities/pool/types'
-import { ValidatedData } from '@/shared/lib/validation'
-import type { ExtractQueryKeyType } from '@/shared/types'
-import type { NestedFunction, NestedKeys } from '@/shared/types'
+import { GaugeParams, GaugeQuery } from '@/shared/model/root-keys'
+import type { ExtractQueryKeyType } from '@/shared/types/api'
+import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 
 export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedFunction<PoolTemplate, M>>
 
 export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ExtractQueryKeyType<typeof gaugeKeys, K>
-
-export type GaugeQueryParams = PoolQueryParams & {}
-
-// todo: this is repeated, get rid of ValidatedData when possible
-export type GaugeStatusQueryParams = ValidatedData<GaugeQueryParams>
 
 export type AddRewardParams = {
   rewardTokenId?: Address //T[0]
@@ -45,4 +39,5 @@ export type DepositRewardParams<T extends Array<any> = PoolMethodParameters<'gau
   epoch?: T[2]
 }
 
-export type CombinedGaugeParams = GaugeQueryParams & AddRewardParams & DepositRewardApproveParams & DepositRewardParams
+type Nullable<T> = {[K in keyof T]?: T[K] | null} // todo: get rid of this after implementing query factory
+export type CombinedGaugeParams = Nullable<GaugeQuery> & AddRewardParams & DepositRewardApproveParams & DepositRewardParams

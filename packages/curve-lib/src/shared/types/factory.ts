@@ -1,16 +1,16 @@
 import type { DefaultError } from '@tanstack/query-core'
-import { QueryFunction, QueryKey } from '@tanstack/react-query'
+import { QueryKey } from '@tanstack/react-query'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query/src/types'
 import { Suite } from 'vest'
 import { CB } from 'vest-utils'
-import { FieldName, NonValidatedFields } from '@/shared/lib/validation'
+import { FieldName, FieldsOf } from '@/shared/lib/validation'
 import { REFRESH_INTERVAL } from '@/shared/model/time'
 
 export type QueryFactoryInput<
   TValidParams extends object,
   TKey extends QueryKey,
   TData,
-  TParams extends NonValidatedFields<TValidParams> = NonValidatedFields<TValidParams>,
+  TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
   TField extends string = FieldName<TValidParams>,
   TGroup extends string = string,
   TCallback extends CB = CB<TValidParams, TField[]>
@@ -27,7 +27,7 @@ export type QueryFactoryOutput<
   TValidParams extends object,
   TKey extends QueryKey,
   TData,
-  TParams extends NonValidatedFields<TValidParams> = NonValidatedFields<TValidParams>,
+  TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
   TError = DefaultError
 > = {
   getQueryOptions: (params: TParams) => UseQueryOptions<TData, TError, TData, TKey>

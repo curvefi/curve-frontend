@@ -12,14 +12,10 @@
 
 import * as api from '@/entities/gauge/api'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
-import type {
-  AddRewardParams,
-  DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
-} from '@/entities/gauge/types'
+import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
+import { GaugeParams } from '@/shared/model/root-keys'
 
-export const getAddRewardTokenMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
+export const getAddRewardTokenMutation = ({ chainId, poolId }: GaugeParams) => ({
   mutationFn: async ({ rewardTokenId, distributorId }: AddRewardParams) =>
     api.mutateAddRewardToken(keys.addRewardToken({ chainId, poolId, rewardTokenId, distributorId })),
   mutationKey: keys.addRewardToken({ chainId, poolId }),
@@ -34,7 +30,7 @@ export const getAddRewardTokenMutation = ({ chainId, poolId }: GaugeQueryParams)
   },
 })
 
-export const getDepositRewardApproveMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
+export const getDepositRewardApproveMutation = ({ chainId, poolId }: GaugeParams) => ({
   mutationFn: async ({ rewardTokenId, amount }: DepositRewardApproveParams) =>
     api.mutateDepositRewardApprove(keys.depositRewardApprove({ chainId, poolId, rewardTokenId, amount })),
   mutationKey: keys.depositRewardApprove({ chainId, poolId }),
@@ -44,7 +40,7 @@ export const getDepositRewardApproveMutation = ({ chainId, poolId }: GaugeQueryP
   },
 })
 
-export const getDepositRewardMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
+export const getDepositRewardMutation = ({ chainId, poolId }: GaugeParams) => ({
   mutationFn: async ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
     api.mutateDepositReward(keys.depositReward({ chainId, poolId, rewardTokenId, amount, epoch })),
   mutationKey: keys.depositReward({ chainId, poolId }),
