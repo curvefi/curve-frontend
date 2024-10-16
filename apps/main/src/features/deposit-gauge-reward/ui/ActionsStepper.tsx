@@ -1,8 +1,3 @@
-import { REFRESH_INTERVAL } from '@/constants'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
-import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
-import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
-import networks from '@/networks'
 import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
@@ -10,6 +5,11 @@ import TxInfoBar from '@/ui/TxInfoBar'
 import { t } from '@lingui/macro'
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { REFRESH_INTERVAL } from '@/constants'
+import networks from '@/networks'
+import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
+import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
+import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
 
 type TxInfo = {
   description: string

@@ -1,5 +1,5 @@
-import { useCurve } from '@/entities/curve'
 import networks from '@/networks'
+import { useCurve } from '@/entities/curve'
 
 export const useChainId = () => {
   const { data: curve } = useCurve()

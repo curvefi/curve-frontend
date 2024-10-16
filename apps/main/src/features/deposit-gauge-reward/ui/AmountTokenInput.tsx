@@ -1,12 +1,12 @@
+import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { t } from '@lingui/macro'
+import { useCallback, useMemo, type Key } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { Address, isAddressEqual } from 'viem'
 import { NETWORK_TOKEN } from '@/constants'
-import { useImageBaseUrl } from '@/entities/chain'
-import {
-  useDepositRewardApproveIsMutating,
-  useDepositRewardIsMutating,
-  useGaugeRewardsDistributors,
-} from '@/entities/gauge'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
-import { useTokens } from '@/entities/token'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import useStore from '@/store/useStore'
+import { formatNumber } from '@/utils'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -15,15 +15,15 @@ import {
   StyledInputProvider,
   StyledTokenComboBox,
 } from '@/features/deposit-gauge-reward/ui/styled'
-import useTokensMapper from '@/hooks/useTokensMapper'
+import { useImageBaseUrl } from '@/entities/chain'
+import {
+  useDepositRewardApproveIsMutating,
+  useDepositRewardIsMutating,
+  useGaugeRewardsDistributors,
+} from '@/entities/gauge'
+import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
+import { useTokens } from '@/entities/token'
 import { FlexContainer } from '@/shared/ui/styled-containers'
-import useStore from '@/store/useStore'
-import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import { formatNumber } from '@/utils'
-import { t } from '@lingui/macro'
-import { useCallback, useMemo, type Key } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { Address, isAddressEqual } from 'viem'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
