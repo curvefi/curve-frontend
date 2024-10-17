@@ -10,6 +10,8 @@
  * allowing components to easily access and manipulate gauge-related data.
  */
 
+import { t } from '@lingui/macro'
+import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import * as models from '@/entities/gauge/model'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type {
@@ -18,12 +20,10 @@ import type {
   DepositRewardParams,
   PoolMethodResult
 } from '@/entities/gauge/types'
-import useTokensMapper from '@/hooks/useTokensMapper'
 import { queryClient } from '@/shared/api/query-client'
-import useStore from '@/store/useStore'
-import { t } from '@lingui/macro'
-import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
 import { GaugeParams } from '@/shared/model/query'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import useStore from '@/store/useStore'
 
 export const useAddRewardToken = ({
   chainId,

@@ -14,11 +14,11 @@ import { queryOptions } from '@tanstack/react-query'
 import * as api from '@/entities/gauge/api'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import { DepositRewardApproveParams } from '@/entities/gauge/types'
+import type { DepositRewardApproveParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
 import { createValidationSuite } from '@/shared/lib/validation'
-import { queryFactory } from '@/shared/model/query/factory'
 import { GaugeParams } from '@/shared/model/query'
+import { queryFactory } from '@/shared/model/query/factory'
 import { REFRESH_INTERVAL } from '@/constants'
 
 export const gaugeStatus = queryFactory({
