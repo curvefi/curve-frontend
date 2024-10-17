@@ -1,12 +1,12 @@
-import { TIME_FRAMES } from '@/constants'
-import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
-import { poolValidationGroup } from '@/entities/pool'
-import { addressValidationFn, amountValidationFn, createValidationSuite, tokenIdValidationFn } from '@/shared/lib/validation'
-import { BD } from '@/shared/curve-lib'
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/utils'
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
+import { TIME_FRAMES } from '@/constants'
+import useStore from '@/store/useStore'
+import { formatNumber } from '@/utils'
+import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
+import { poolValidationGroup } from '@/entities/pool'
+import { BD } from '@/shared/curve-lib'
+import { addressValidationFn, amountValidationFn, createValidationSuite, tokenIdValidationFn } from '@/shared/lib/validation'
 
 export const gaugeAddRewardTokenValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardTokenValidationGroup', () => {

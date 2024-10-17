@@ -17,8 +17,14 @@
     "react": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react": "*",
+    "@types/react-dom": "*",
     "eslint": "^8.57.1",
     "eslint-config-custom": "*",
     "tsconfig": "*"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
   }
 }

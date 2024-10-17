@@ -1,14 +1,14 @@
-import { NETWORK_TOKEN } from '@/constants'
-import { useGaugeRewardsDistributors } from '@/entities/gauge'
-import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
-import { FlexItemToken, StyledTokenComboBox, SubTitle } from '@/features/add-gauge-reward-token/ui'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { NETWORK_CONSTANTS } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
 import React, { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { isAddressEqual, zeroAddress, type Address } from 'viem'
+import { NETWORK_TOKEN } from '@/constants'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import { getImageBaseUrl } from '@/utils/utilsCurvejs'
+import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
+import { FlexItemToken, StyledTokenComboBox, SubTitle } from '@/features/add-gauge-reward-token/ui'
+import { useGaugeRewardsDistributors } from '@/entities/gauge'
 
 export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disabled: boolean }> = ({
   chainId,

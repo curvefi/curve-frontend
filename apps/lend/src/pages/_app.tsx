@@ -1,31 +1,28 @@
-import type { AppProps } from 'next/app'
-
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
+import { initOnboard } from 'onboard-helpers'
+import zhHans from 'onboard-helpers/src/locales/zh-Hans'
+import zhHant from 'onboard-helpers/src/locales/zh-Hant'
+import { useCallback, useEffect, useState } from 'react'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-
+import { HashRouter } from 'react-router-dom'
+import GlobalStyle from '@/globalStyle'
+import Page from '@/layout/index'
 import { persister, queryClient } from '@/shared/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getPageWidthClassName } from '@/store/createLayoutSlice'
-import { getStorageValue } from '@/utils/utilsStorage'
-import { initOnboard } from 'onboard-helpers'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
+import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
-
-import Page from '@/layout/index'
-import GlobalStyle from '@/globalStyle'
+import { isMobile, removeExtraSpaces } from '@/utils/helpers'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { getStorageValue } from '@/utils/utilsStorage'
+import type { AppProps } from 'next/app'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -83,7 +80,7 @@ function CurveApp({ Component }: AppProps) {
       },
       locale,
       themeType,
-      networks
+      networks,
     )
     updateWalletStateByKey('onboard', onboardInstance)
 

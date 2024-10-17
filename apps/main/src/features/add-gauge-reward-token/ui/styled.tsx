@@ -1,6 +1,6 @@
-import TokenComboBox from '@/components/ComboBoxSelectToken'
 import Button from '@/ui/Button'
 import styled from 'styled-components'
+import TokenComboBox from '@/components/ComboBoxSelectToken'
 
 export const FlexItemToken = styled.div`
   flex: 0 0 auto;
