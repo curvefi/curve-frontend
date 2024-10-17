@@ -41,9 +41,9 @@
     "next-images": "^1.8.5",
     "numbro": "^2.4.0",
     "onboard-helpers": "*",
-    "react": "^18.2.0",
+    "react": "*",
     "react-aria": "3.22.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "*",
     "react-hook-form": "^7.53.0",
     "react-is": "16.13.1",
     "react-router-dom": "^6.3.0",
@@ -66,8 +66,8 @@
     "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.14.182",
     "@types/node": "17.0.24",
-    "@types/react": "^18.2.0",
-    "@types/react-dom": "^18.2.0",
+    "@types/react": "*",
+    "@types/react-dom": "*",
     "@types/styled-components": "5.1.14",
     "@types/validator": "^13.12.1",
     "eslint-config-custom": "*",
@@ -76,8 +76,6 @@
     "webpack": "^5.83.1"
   },
   "resolutions": {
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
     "styled-components": "^5"
   }
 }

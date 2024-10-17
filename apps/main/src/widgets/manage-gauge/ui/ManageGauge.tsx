@@ -1,12 +1,12 @@
-import { useGaugeManager, useGaugeRewardsDistributors } from '@/entities/gauge'
-import { useSignerAddress } from '@/entities/signer'
-import AddRewardToken from '@/features/add-gauge-reward-token'
-import DepositReward from '@/features/deposit-gauge-reward'
 import TabSlider, { Tab } from '@/ui/TabSlider/TabSlider'
-import type { TabValue } from '@/widgets/manage-gauge/types'
 import { useCallback, useMemo, useState } from 'react'
 import { isAddressEqual, type Address } from 'viem'
 import { sliderTabs } from '@/widgets/manage-gauge/model'
+import type { TabValue } from '@/widgets/manage-gauge/types'
+import AddRewardToken from '@/features/add-gauge-reward-token'
+import DepositReward from '@/features/deposit-gauge-reward'
+import { useGaugeManager, useGaugeRewardsDistributors } from '@/entities/gauge'
+import { useSignerAddress } from '@/entities/signer'
 
 const ManageGauge: React.FC<{ poolId: string; chainId: ChainId }> = ({ poolId, chainId }) => {
   const [activeTab, setActiveTab] = useState<TabValue>('add_reward')
