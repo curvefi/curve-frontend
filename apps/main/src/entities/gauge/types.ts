@@ -13,7 +13,7 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
 import { gaugeKeys } from '@/entities/gauge/model'
-import { GaugeParams, GaugeQuery } from '@/shared/model/root-keys'
+import { GaugeParams, GaugeQuery } from '@/shared/model/query'
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 

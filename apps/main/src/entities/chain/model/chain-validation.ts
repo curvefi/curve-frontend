@@ -1,6 +1,6 @@
-import { createValidationSuite } from '@/shared/lib/validation'
 import { enforce, group, test } from 'vest'
-import { ChainParams } from '@/shared/model/root-keys'
+import { createValidationSuite } from '@/shared/lib/validation'
+import { ChainParams } from '@/shared/model/query'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>
   group('chainValidation', () => {

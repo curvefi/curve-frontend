@@ -13,7 +13,7 @@
 import * as models from '@/entities/gauge/model'
 import { gaugeStatus } from '@/entities/gauge/model'
 import { createQueryHook, useCombinedQueries } from '@/shared/lib/queries'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { GaugeParams } from '@/shared/model/query'
 
 export const useGauge = ({ chainId, poolId }: GaugeParams) => {
   return useCombinedQueries([

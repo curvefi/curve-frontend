@@ -23,7 +23,7 @@ import { queryClient } from '@/shared/api/query-client'
 import useStore from '@/store/useStore'
 import { t } from '@lingui/macro'
 import { useIsMutating, useMutation, UseMutationResult } from '@tanstack/react-query'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { GaugeParams } from '@/shared/model/query'
 
 export const useAddRewardToken = ({
   chainId,

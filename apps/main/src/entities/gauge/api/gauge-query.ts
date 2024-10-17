@@ -16,7 +16,7 @@ import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types
 import { BD } from '@/shared/curve-lib'
 import { logQuery } from '@/shared/lib/logging'
 import useStore from '@/store/useStore'
-import { GaugeQuery } from '@/shared/model/root-keys'
+import { GaugeQuery } from '@/shared/model/query'
 
 export const queryGaugeStatus = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve

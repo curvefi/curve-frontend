@@ -5,7 +5,7 @@ import { logQuery } from '@/shared/lib/logging'
 import { createQueryHook } from '@/shared/lib/queries'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@/shared/lib/validation'
 import { REFRESH_INTERVAL } from '@/shared/model/time'
-import { QueryFactoryInput, QueryFactoryOutput } from '../types'
+import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
 
 export function queryFactory<
   TQuery extends object,
@@ -22,7 +22,7 @@ export function queryFactory<
   // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
   const assertValidity = (data: TParams, fields?: TField[]) => (sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery)
 
-  const isEnabled = (params: TParams) => checkValidity(validationSuite, params) && !dependencies?.(params).find(key => !queryClient.getQueryData(key))
+  const isEnabled = (params: TParams) => checkValidity(validationSuite, params) && !dependencies?.(params).some(key => !queryClient.getQueryData(key))
 
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({

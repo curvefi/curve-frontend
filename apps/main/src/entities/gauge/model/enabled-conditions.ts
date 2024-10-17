@@ -2,7 +2,7 @@ import { checkGaugeValidity } from '@/entities/gauge/lib'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { GaugeParams } from '@/shared/model/query'
 
 export const enabledIsDepositRewardAvailable = (data: GaugeParams) => checkGaugeValidity(data)
 export const enabledGaugeManager = (data: GaugeParams) => checkGaugeValidity(data)

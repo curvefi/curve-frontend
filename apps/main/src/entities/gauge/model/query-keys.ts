@@ -12,7 +12,7 @@
  */
 
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
-import { GaugeParams, rootKeys } from '@/shared/model/root-keys'
+import { GaugeParams, rootKeys } from '@/shared/model/query'
 
 export const gaugeKeys = {
   root: (params: GaugeParams) => [...rootKeys.pool(params), 'gauge'] as const,

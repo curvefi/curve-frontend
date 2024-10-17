@@ -17,8 +17,8 @@ import * as conditions from '@/entities/gauge/model/enabled-conditions'
 import { DepositRewardApproveParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
 import { createValidationSuite } from '@/shared/lib/validation'
-import { queryFactory } from '@/shared/model/factory'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { queryFactory } from '@/shared/model/query/factory'
+import { GaugeParams } from '@/shared/model/query'
 import { REFRESH_INTERVAL } from '@/constants'
 
 export const gaugeStatus = queryFactory({

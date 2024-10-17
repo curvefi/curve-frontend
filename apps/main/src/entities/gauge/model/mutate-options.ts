@@ -13,7 +13,7 @@
 import * as api from '@/entities/gauge/api'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { GaugeParams } from '@/shared/model/query'
 
 export const getAddRewardTokenMutation = ({ chainId, poolId }: GaugeParams) => ({
   mutationFn: async ({ rewardTokenId, distributorId }: AddRewardParams) =>

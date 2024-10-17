@@ -16,7 +16,7 @@ import * as conditions from '@/entities/gauge/model/enabled-conditions'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
 import { queryOptions } from '@tanstack/react-query'
-import { GaugeParams } from '@/shared/model/root-keys'
+import { GaugeParams } from '@/shared/model/query'
 
 export const getEstimateGasDepositRewardApproveQueryOptions = (
   params: DepositRewardApproveParams & GaugeParams,
