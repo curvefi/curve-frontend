@@ -11,19 +11,15 @@
  */
 
 import { queryOptions } from '@tanstack/react-query'
-import { REFRESH_INTERVAL } from '@/constants'
 import * as api from '@/entities/gauge/api'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
 import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import type {
-  AddRewardParams,
-  DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
-} from '@/entities/gauge/types'
+import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
+import { GaugeParams } from '@/shared/model/query'
+import { REFRESH_INTERVAL } from '@/constants'
 
 export const getEstimateGasDepositRewardApproveQueryOptions = (
-  params: DepositRewardApproveParams & GaugeQueryParams,
+  params: DepositRewardApproveParams & GaugeParams,
   condition: boolean = true
 ) =>
   queryOptions({
@@ -36,7 +32,7 @@ export const getEstimateGasDepositRewardApproveQueryOptions = (
   })
 
 export const getEstimateGasAddRewardTokenQueryOptions = (
-  params: AddRewardParams & GaugeQueryParams,
+  params: AddRewardParams & GaugeParams,
   condition: boolean = true
 ) =>
   queryOptions({
@@ -49,7 +45,7 @@ export const getEstimateGasAddRewardTokenQueryOptions = (
   })
 
 export const getEstimateGasDepositRewardQueryOptions = (
-  params: DepositRewardParams & GaugeQueryParams,
+  params: DepositRewardParams & GaugeParams,
   condition: boolean = true
 ) =>
   queryOptions({

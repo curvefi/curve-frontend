@@ -1,12 +1,17 @@
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
-import { TIME_FRAMES } from '@/constants'
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/utils'
 import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
 import { poolValidationGroup } from '@/entities/pool'
 import { BD } from '@/shared/curve-lib'
-import { addressValidationFn, amountValidationFn, createValidationSuite, tokenIdValidationFn } from '@/shared/lib/validation'
+import {
+  addressValidationFn,
+  amountValidationFn,
+  createValidationSuite,
+  tokenIdValidationFn
+} from '@/shared/lib/validation'
+import { TIME_FRAMES } from '@/constants'
+import useStore from '@/store/useStore'
+import { formatNumber } from '@/utils'
 
 export const gaugeAddRewardTokenValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
   group('gaugeAddRewardTokenValidationGroup', () => {
@@ -51,11 +56,9 @@ export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch
     })
   })
 
-export const gaugeValidationGroup = (data: CombinedGaugeParams) => {
+export const gaugeValidationSuite = createValidationSuite((data: CombinedGaugeParams) => {
   poolValidationGroup(data)
 
   gaugeAddRewardTokenValidationGroup(data)
   gaugeDepositRewardValidationGroup(data)
-}
-
-export const gaugeValidationSuite = createValidationSuite(gaugeValidationGroup)
+})
