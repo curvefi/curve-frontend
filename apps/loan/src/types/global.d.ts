@@ -212,4 +212,6 @@ declare global {
     TITLE,
     { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
   >
+
+  type FetchStatus = '' | 'loading' | 'success' | 'error'
 }

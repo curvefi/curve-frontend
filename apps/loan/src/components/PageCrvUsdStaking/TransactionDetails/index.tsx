@@ -5,6 +5,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import useEstimateGasConversion from '@/hooks/useEstimateGasConversion'
 import { formatNumber, FORMAT_OPTIONS } from '@/ui/utils'
+import { isReady } from '@/components/PageCrvUsdStaking/utils'
 
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -20,7 +21,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   const [isOpen, setIsOpen] = useState(false)
   const maxSlippage = useStore((state) => state.maxSlippage)
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
-  const { gas, loading } = useStore((state) => state.scrvusd.estGas)
+  const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(gas)
@@ -40,7 +41,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
             <ToggleValue>
               <Tooltip tooltip={tooltip} noWrap>
                 <Icon name="Fire" size={16} />
-                {loading ? '-' : formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}
+                {isReady(fetchStatus) ? formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD) : '-'}
               </Tooltip>
             </ToggleValue>
           )}
@@ -62,7 +63,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
             <TransactionFieldValue>
               <Tooltip tooltip={tooltip} noWrap>
                 <Icon name="Fire" size={16} />
-                {loading ? '-' : formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}
+                {isReady(fetchStatus) ? formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD) : '-'}
               </Tooltip>
             </TransactionFieldValue>
           </TransactionField>

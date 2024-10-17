@@ -3,24 +3,42 @@ import { t } from '@lingui/macro'
 
 import Icon from 'ui/src/Icon'
 import Box from 'ui/src/Box'
+import Loader from '@/ui/Loader'
 
 import NumberField from '@/components/PageCrvUsdStaking/components/InputComp/NumberField'
 import Button from 'ui/src/Button'
 
 type InputCompProps = {
+  walletBalance: string
+  walletBalanceUSD: string
+  walletBalanceSymbol: string
+  isLoading: boolean
   className?: string
   readOnly?: boolean
 }
 
-const InputComp: React.FC<InputCompProps> = ({ className, readOnly = false }) => {
+const InputComp: React.FC<InputCompProps> = ({
+  className,
+  readOnly = false,
+  walletBalance,
+  walletBalanceUSD,
+  walletBalanceSymbol,
+  isLoading,
+}) => {
   return (
     <InputCompWrapper className={className}>
       <Box flex flexColumn fillWidth>
         <NumberField defaultValue={0} isDisabled={readOnly} aria-label="Input" />
         <WalletBalanceWrapper>
           <StyledIcon name="Wallet" size={16} />
-          <WalletBalance>1000 ETH</WalletBalance>
-          <WalletBalanceUSD>$1000</WalletBalanceUSD>
+          {isLoading ? (
+            <Loader skeleton={[36, 12]} />
+          ) : (
+            <WalletBalance>
+              {walletBalance} {walletBalanceSymbol}
+            </WalletBalance>
+          )}
+          <WalletBalanceUSD>${walletBalanceUSD}</WalletBalanceUSD>
         </WalletBalanceWrapper>
       </Box>
       {!readOnly && <StyledButton variant="filled">{t`Max`}</StyledButton>}
