@@ -10,7 +10,7 @@ const DepositModule: React.FC = () => {
   return (
     <Box flex flexColumn>
       <div>
-        <InputLabel>{t`To Vault`}</InputLabel>
+        <InputLabel>{t`From Vault`}</InputLabel>
         <InputWrapper>
           <Box flex>
             <SelectorBox>
@@ -23,7 +23,7 @@ const DepositModule: React.FC = () => {
       </div>
       <StyledIcon name="ArrowDown" size={16} />
       <div>
-        <InputLabel>{t`From Wallet`}</InputLabel>
+        <InputLabel>{t`To Wallet`}</InputLabel>
         <InputWrapper>
           <Box flex>
             <SelectorBox>

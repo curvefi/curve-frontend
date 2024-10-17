@@ -12,7 +12,12 @@ import SubNav from '@/components/PageCrvUsdStaking/components/SubNav'
 import TransactionDetails from '@/components/PageCrvUsdStaking/TransactionDetails'
 import DepositModule from '@/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'
 import WithdrawModule from '@/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
-const DepositWithdraw = () => {
+
+type DepositWithdrawProps = {
+  className?: string
+}
+
+const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const [activeKey, setActiveKey] = useState<SubNavItem['key']>('deposit')
 
   const setNavChange = (key: SubNavItem['key']) => {
@@ -20,7 +25,7 @@ const DepositWithdraw = () => {
   }
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <SubNav activeKey={activeKey} navItems={SUB_NAV_ITEMS} setNavChange={setNavChange} />
       <ModuleContainer>
         {activeKey === 'deposit' ? <DepositModule /> : <WithdrawModule />}
