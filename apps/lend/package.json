@@ -17,6 +17,12 @@
     "i18n:compile": "lingui compile",
     "analyze": "ANALYZE=true next build"
   },
+  "peerDependencies": {
+    "eslint-config-custom": "*",
+    "react": "*",
+    "react-dom": "*",
+    "tsconfig": "*"
+  },
   "dependencies": {
     "@curvefi/lending-api": "^2.3.3",
     "@lingui/detect-locale": "^4.6.0",
