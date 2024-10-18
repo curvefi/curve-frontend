@@ -11498,6 +11498,7 @@ __metadata:
     "@types/react": "npm:^18.3.1"
     "@types/react-dom": "npm:^18.3.1"
     cross-env: "npm:^7.0.3"
+    eslint: "npm:^8.57.1"
     eslint-config-custom: "npm:*"
     husky: "npm:^9.1.6"
     is-ci: "npm:^3.0.1"
