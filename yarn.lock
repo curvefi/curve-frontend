@@ -2404,13 +2404,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:8.57.0":
-  version: 8.57.0
-  resolution: "@eslint/js@npm:8.57.0"
-  checksum: 10c0/9a518bb8625ba3350613903a6d8c622352ab0c6557a59fe6ff6178bf882bf57123f9d92aa826ee8ac3ee74b9c6203fe630e9ee00efb03d753962dcf65ee4bd94
-  languageName: node
-  linkType: hard
-
 "@eslint/js@npm:8.57.1":
   version: 8.57.1
   resolution: "@eslint/js@npm:8.57.1"
@@ -3850,17 +3843,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/config-array@npm:^0.11.14":
-  version: 0.11.14
-  resolution: "@humanwhocodes/config-array@npm:0.11.14"
-  dependencies:
-    "@humanwhocodes/object-schema": "npm:^2.0.2"
-    debug: "npm:^4.3.1"
-    minimatch: "npm:^3.0.5"
-  checksum: 10c0/66f725b4ee5fdd8322c737cb5013e19fac72d4d69c8bf4b7feb192fcb83442b035b92186f8e9497c220e58b2d51a080f28a73f7899bc1ab288c3be172c467541
-  languageName: node
-  linkType: hard
-
 "@humanwhocodes/config-array@npm:^0.13.0":
   version: 0.13.0
   resolution: "@humanwhocodes/config-array@npm:0.13.0"
@@ -3879,7 +3861,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@humanwhocodes/object-schema@npm:^2.0.2, @humanwhocodes/object-schema@npm:^2.0.3":
+"@humanwhocodes/object-schema@npm:^2.0.3":
   version: 2.0.3
   resolution: "@humanwhocodes/object-schema@npm:2.0.3"
   checksum: 10c0/80520eabbfc2d32fe195a93557cef50dfe8c8905de447f022675aaf66abc33ae54098f5ea78548d925aa671cd4ab7c7daa5ad704fe42358c9b5e7db60f80696c
@@ -7941,22 +7923,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.2.0":
-  version: 18.3.0
-  resolution: "@types/react-dom@npm:18.3.0"
+"@types/react-dom@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "@types/react-dom@npm:18.3.1"
   dependencies:
     "@types/react": "npm:*"
-  checksum: 10c0/6c90d2ed72c5a0e440d2c75d99287e4b5df3e7b011838cdc03ae5cd518ab52164d86990e73246b9d812eaf02ec351d74e3b4f5bd325bf341e13bf980392fd53b
+  checksum: 10c0/8b416551c60bb6bd8ec10e198c957910cfb271bc3922463040b0d57cf4739cdcd24b13224f8d68f10318926e1ec3cd69af0af79f0291b599a992f8c80d47f1eb
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:^18.2.0":
-  version: 18.3.5
-  resolution: "@types/react@npm:18.3.5"
+"@types/react@npm:^18.3.1":
+  version: 18.3.11
+  resolution: "@types/react@npm:18.3.11"
   dependencies:
     "@types/prop-types": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: 10c0/548b1d3d7c2f0242fbfdbbd658731b4ce69a134be072fa83e6ab516f2840402a3f20e3e7f72e95133b23d4880ef24a6d864050dc8e1f7c68f39fa87ca8445917
+  checksum: 10c0/ce80512246ca5bda69db85b9f4f1835189334acfb6b2c4f3eda8cabff1ff1a3ea9ce4f3b895bdbc18c94140aa45592331aa3fdeb557f525c1b048de7ce84fc0e
   languageName: node
   linkType: hard
 
@@ -11513,12 +11495,17 @@ __metadata:
     "@commitlint/cli": "npm:^19.5.0"
     "@commitlint/config-conventional": "npm:^19.5.0"
     "@commitlint/load": "npm:19.5.0"
+    "@types/react": "npm:^18.3.1"
+    "@types/react-dom": "npm:^18.3.1"
     cross-env: "npm:^7.0.3"
+    eslint: "npm:^8.57.1"
     eslint-config-custom: "npm:*"
     husky: "npm:^9.1.6"
     is-ci: "npm:^3.0.1"
     lint-staged: "npm:15.2.10"
     prettier: "npm:latest"
+    react: "npm:^18.3.1"
+    react-dom: "npm:^18.3.1"
     turbo: "npm:^2.1.2"
     typescript: "npm:^5"
   languageName: unknown
@@ -11532,10 +11519,17 @@ __metadata:
     "@tanstack/react-query": "npm:^5.59.0"
     "@tanstack/react-query-devtools": "npm:^5.59.0"
     "@tanstack/react-query-persist-client": "npm:^5.59.0"
-    eslint: "npm:^8.57.1"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
     tsconfig: "npm:*"
+  peerDependencies:
+    eslint: "*"
+    eslint-config-custom: "*"
+    react: "*"
+    react-dom: "*"
+    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -12791,7 +12785,7 @@ __metadata:
     "@tanstack/eslint-plugin-query": "npm:^5.59.1"
     "@typescript-eslint/eslint-plugin": "npm:^8.6.0"
     "@typescript-eslint/parser": "npm:^8.6.0"
-    eslint: "npm:^8.57.1"
+    eslint: "npm:*"
     eslint-config-next: "npm:^14.2.11"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-config-turbo: "npm:^2.1.2"
@@ -12800,6 +12794,10 @@ __metadata:
     eslint-plugin-import: "npm:^2.31.0"
     eslint-plugin-react: "npm:7.36.1"
     prettier-eslint: "npm:^16.3.0"
+  peerDependencies:
+    eslint: "*"
+    react: "*"
+    react-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -13200,54 +13198,6 @@ __metadata:
   bin:
     eslint: bin/eslint.js
   checksum: 10c0/1fd31533086c1b72f86770a4d9d7058ee8b4643fd1cfd10c7aac1ecb8725698e88352a87805cf4b2ce890aa35947df4b4da9655fb7fdfa60dbb448a43f6ebcf1
-  languageName: node
-  linkType: hard
-
-"eslint@npm:^8.7.0":
-  version: 8.57.0
-  resolution: "eslint@npm:8.57.0"
-  dependencies:
-    "@eslint-community/eslint-utils": "npm:^4.2.0"
-    "@eslint-community/regexpp": "npm:^4.6.1"
-    "@eslint/eslintrc": "npm:^2.1.4"
-    "@eslint/js": "npm:8.57.0"
-    "@humanwhocodes/config-array": "npm:^0.11.14"
-    "@humanwhocodes/module-importer": "npm:^1.0.1"
-    "@nodelib/fs.walk": "npm:^1.2.8"
-    "@ungap/structured-clone": "npm:^1.2.0"
-    ajv: "npm:^6.12.4"
-    chalk: "npm:^4.0.0"
-    cross-spawn: "npm:^7.0.2"
-    debug: "npm:^4.3.2"
-    doctrine: "npm:^3.0.0"
-    escape-string-regexp: "npm:^4.0.0"
-    eslint-scope: "npm:^7.2.2"
-    eslint-visitor-keys: "npm:^3.4.3"
-    espree: "npm:^9.6.1"
-    esquery: "npm:^1.4.2"
-    esutils: "npm:^2.0.2"
-    fast-deep-equal: "npm:^3.1.3"
-    file-entry-cache: "npm:^6.0.1"
-    find-up: "npm:^5.0.0"
-    glob-parent: "npm:^6.0.2"
-    globals: "npm:^13.19.0"
-    graphemer: "npm:^1.4.0"
-    ignore: "npm:^5.2.0"
-    imurmurhash: "npm:^0.1.4"
-    is-glob: "npm:^4.0.0"
-    is-path-inside: "npm:^3.0.3"
-    js-yaml: "npm:^4.1.0"
-    json-stable-stringify-without-jsonify: "npm:^1.0.1"
-    levn: "npm:^0.4.1"
-    lodash.merge: "npm:^4.6.2"
-    minimatch: "npm:^3.1.2"
-    natural-compare: "npm:^1.4.0"
-    optionator: "npm:^0.9.3"
-    strip-ansi: "npm:^6.0.1"
-    text-table: "npm:^0.2.0"
-  bin:
-    eslint: bin/eslint.js
-  checksum: 10c0/00bb96fd2471039a312435a6776fe1fd557c056755eaa2b96093ef3a8508c92c8775d5f754768be6b1dddd09fdd3379ddb231eeb9b6c579ee17ea7d68000a529
   languageName: node
   linkType: hard
 
@@ -13821,9 +13771,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "external-rewards@workspace:packages/external-rewards"
   dependencies:
-    eslint: "npm:^8.57.1"
+    eslint: "npm:*"
     eslint-config-custom: "npm:*"
     tsconfig: "npm:*"
+  peerDependencies:
+    eslint: "*"
+    eslint-config-custom: "*"
+    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -16323,8 +16277,8 @@ __metadata:
     "@svgr/webpack": "npm:^8.1.0"
     "@types/lodash": "npm:^4.14.182"
     "@types/node": "npm:17.0.24"
-    "@types/react": "npm:^18.2.0"
-    "@types/react-dom": "npm:^18.2.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.0.1"
     cross-fetch: "npm:^3.1.5"
@@ -16346,9 +16300,9 @@ __metadata:
     onboard-helpers: "npm:*"
     pinst: "npm:^2.1.4"
     prop-types: "npm:^15.6.0"
-    react: "npm:^18.2.0"
+    react: "npm:*"
     react-aria: "npm:3.22.0"
-    react-dom: "npm:^18.2.0"
+    react-dom: "npm:*"
     react-is: "npm:16.13.1"
     react-router-dom: "npm:^6.3.0"
     react-stately: "npm:3.18.0"
@@ -16360,6 +16314,11 @@ __metadata:
     ui: "npm:*"
     webpack: "npm:^5.83.1"
     zustand: "npm:^4.5.5"
+  peerDependencies:
+    eslint-config-custom: "*"
+    react: "*"
+    react-dom: "*"
+    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -16571,8 +16530,8 @@ __metadata:
     "@svgr/webpack": "npm:^8.1.0"
     "@types/lodash": "npm:^4.14.182"
     "@types/node": "npm:17.0.24"
-    "@types/react": "npm:^18.2.0"
-    "@types/react-dom": "npm:^18.2.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.0.1"
     cross-fetch: "npm:^3.1.5"
@@ -16593,9 +16552,9 @@ __metadata:
     onboard-helpers: "npm:*"
     pinst: "npm:^2.1.4"
     prop-types: "npm:^15.6.0"
-    react: "npm:^18.2.0"
+    react: "npm:*"
     react-aria: "npm:3.22.0"
-    react-dom: "npm:^18.2.0"
+    react-dom: "npm:*"
     react-is: "npm:16.13.1"
     react-router-dom: "npm:^6.3.0"
     react-stately: "npm:3.18.0"
@@ -16607,6 +16566,11 @@ __metadata:
     ui: "npm:*"
     webpack: "npm:^5.83.1"
     zustand: "npm:^4.5.5"
+  peerDependencies:
+    eslint-config-custom: "*"
+    react: "*"
+    react-dom: "*"
+    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -16971,8 +16935,8 @@ __metadata:
     "@svgr/webpack": "npm:^8.1.0"
     "@types/lodash": "npm:^4.14.182"
     "@types/node": "npm:17.0.24"
-    "@types/react": "npm:^18.2.0"
-    "@types/react-dom": "npm:^18.2.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     "@types/styled-components": "npm:5.1.14"
     "@types/validator": "npm:^13.12.1"
     bignumber.js: "npm:^9.0.1"
@@ -16995,9 +16959,9 @@ __metadata:
     numbro: "npm:^2.4.0"
     onboard-helpers: "npm:*"
     pinst: "npm:^2.1.4"
-    react: "npm:^18.2.0"
+    react: "npm:*"
     react-aria: "npm:3.22.0"
-    react-dom: "npm:^18.2.0"
+    react-dom: "npm:*"
     react-hook-form: "npm:^7.53.0"
     react-is: "npm:16.13.1"
     react-router-dom: "npm:^6.3.0"
@@ -17012,6 +16976,11 @@ __metadata:
     viem: "npm:^2.21.1"
     webpack: "npm:^5.83.1"
     zustand: "npm:^4.5.5"
+  peerDependencies:
+    eslint-config-custom: "*"
+    react: "*"
+    react-dom: "*"
+    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -18060,6 +18029,8 @@ __metadata:
     "@babel/runtime": "npm:^7.25.6"
     "@safe-global/safe-apps-provider": "npm:^0.18.3"
     "@safe-global/safe-apps-sdk": "npm:^9.1.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     "@web3-onboard/bitget": "npm:^2.1.1"
     "@web3-onboard/coinbase": "npm:^2.4.1"
     "@web3-onboard/core": "npm:^2.22.3"
@@ -18076,8 +18047,8 @@ __metadata:
     "@web3-onboard/trust": "npm:^2.1.2"
     "@web3-onboard/walletconnect": "npm:^2.6.1"
   peerDependencies:
-    react: ^18
-    react-dom: ^18
+    react: "*"
+    react-dom: "*"
   languageName: unknown
   linkType: soft
 
@@ -19009,15 +18980,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react-dom@npm:18.2.0"
+"react-dom@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react-dom@npm:18.3.1"
   dependencies:
     loose-envify: "npm:^1.1.0"
-    scheduler: "npm:^0.23.0"
+    scheduler: "npm:^0.23.2"
   peerDependencies:
-    react: ^18.2.0
-  checksum: 10c0/66dfc5f93e13d0674e78ef41f92ed21dfb80f9c4ac4ac25a4b51046d41d4d2186abc915b897f69d3d0ebbffe6184e7c5876f2af26bfa956f179225d921be713a
+    react: ^18.3.1
+  checksum: 10c0/a752496c1941f958f2e8ac56239172296fcddce1365ce45222d04a1947e0cc5547df3e8447f855a81d6d39f008d7c32eab43db3712077f09e3f67c4874973e85
   languageName: node
   linkType: hard
 
@@ -19160,12 +19131,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
+"react@npm:^18.3.1":
+  version: 18.3.1
+  resolution: "react@npm:18.3.1"
   dependencies:
     loose-envify: "npm:^1.1.0"
-  checksum: 10c0/b562d9b569b0cb315e44b48099f7712283d93df36b19a39a67c254c6686479d3980b7f013dc931f4a5a3ae7645eae6386b4aa5eea933baa54ecd0f9acb0902b8
+  checksum: 10c0/283e8c5efcf37802c9d1ce767f302dd569dd97a70d9bb8c7be79a789b9902451e0d16334b05d73299b20f048cbc3c7d288bbbde10b701fa194e2089c237dbea3
   languageName: node
   linkType: hard
 
@@ -19873,12 +19844,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"scheduler@npm:^0.23.0":
-  version: 0.23.0
-  resolution: "scheduler@npm:0.23.0"
+"scheduler@npm:^0.23.2":
+  version: 0.23.2
+  resolution: "scheduler@npm:0.23.2"
   dependencies:
     loose-envify: "npm:^1.1.0"
-  checksum: 10c0/b777f7ca0115e6d93e126ac490dbd82642d14983b3079f58f35519d992fa46260be7d6e6cede433a92db70306310c6f5f06e144f0e40c484199e09c1f7be53dd
+  checksum: 10c0/26383305e249651d4c58e6705d5f8425f153211aef95f15161c151f7b8de885f24751b377e4a0b3dd42cce09aad3f87a61dab7636859c0d89b7daf1a1e2a5c78
   languageName: node
   linkType: hard
 
@@ -21519,11 +21490,11 @@ __metadata:
     "@carbon/icons-react": "npm:11.17.0"
     "@lingui/detect-locale": "npm:^4.6.0"
     "@types/carbon__icons-react": "npm:11.16.0"
-    "@types/react": "npm:^18.2.0"
-    "@types/react-dom": "npm:^18.2.0"
+    "@types/react": "npm:*"
+    "@types/react-dom": "npm:*"
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.0.1"
-    eslint: "npm:^8.57.1"
+    eslint: "npm:*"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
     lodash: "npm:4.17.21"
@@ -21532,8 +21503,9 @@ __metadata:
     tsconfig: "npm:*"
   peerDependencies:
     curve-lib: "*"
-    react: ^18
-    react-dom: ^18
+    eslint: "*"
+    react: "*"
+    react-dom: "*"
     react-router-dom: ^6
     styled-components: ^5
   languageName: unknown

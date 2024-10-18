@@ -16,8 +16,16 @@
     "ethers": "^6.11.0"
   },
   "devDependencies": {
-    "eslint": "^8.57.1",
+    "@types/react": "*",
+    "@types/react-dom": "*",
     "eslint-config-custom": "*",
+    "tsconfig": "*"
+  },
+  "peerDependencies": {
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "react": "*",
+    "react-dom": "*",
     "tsconfig": "*"
   }
 }
