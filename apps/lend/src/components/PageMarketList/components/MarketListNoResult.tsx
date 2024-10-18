@@ -12,17 +12,19 @@ import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'
+import { useChainId, useOneWayMarketMapping } from '@/entities/chain'
 
 const MarketListNoResult = ({
   searchParams,
   signerAddress,
   updatePath,
 }: Pick<PageMarketList, 'searchParams' | 'updatePath'> & { signerAddress: string | undefined }) => {
-  const owmDatasError = useStore((state) => state.markets.error)
+  const chainId = useChainId()?.data!
+  const marketMappingError = useOneWayMarketMapping(chainId)?.error
 
   return (
     <TableRowNotFound>
-      {owmDatasError ? (
+      {marketMappingError ? (
         <Box flex flexJustifyContent="center">
           <AlertBox alertType="error">{t`Unable to retrieve markets`}</AlertBox>
         </Box>

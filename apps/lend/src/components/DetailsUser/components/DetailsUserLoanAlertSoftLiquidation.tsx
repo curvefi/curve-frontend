@@ -8,7 +8,8 @@ import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 
-const DetailsUserLoanAlertSoftLiquidation = ({ borrowed_token, collateral_token, userActiveKey }: PageContentProps) => {
+const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
+  const {borrowed_token, collateral_token} = market ?? {}
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   // TODO handle error

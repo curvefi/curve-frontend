@@ -9,9 +9,6 @@ import cloneDeep from 'lodash/cloneDeep'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  owmDatasMapper: { [chainId: string]: OWMDatasCacheMapper }
-  marketListMapper: { [chainId: string]: MarketListMapper }
-  marketListResult: { [chainId: string]: MarketListItem[] }
   campaignRewardsMapper: { [chainId: string]: CampaignRewardsMapper }
 }
 
@@ -27,9 +24,6 @@ export type CacheSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  owmDatasMapper: {},
-  marketListMapper: {},
-  marketListResult: {},
   campaignRewardsMapper: {},
 }
 
