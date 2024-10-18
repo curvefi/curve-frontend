@@ -1,0 +1,1939 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "#/definitions/CurveFigmaTokens",
+  "definitions": {
+    "0": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/0_Type"
+        },
+        "value": {
+          "$ref": "#/definitions/0_Value"
+        }
+      },
+      "required": ["type", "value"],
+      "title": "0"
+    },
+    "1": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "outline": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill", "outline"],
+      "title": "1"
+    },
+    "CurveFigmaTokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "00_grid": {
+          "$ref": "#/definitions/00_Grid"
+        },
+        "02_font": {
+          "$ref": "#/definitions/02_Font"
+        },
+        "00_effect": {
+          "$ref": "#/definitions/00_Effect"
+        },
+        "02_theme": {
+          "$ref": "#/definitions/02_Theme"
+        },
+        "00_primitives": {
+          "$ref": "#/definitions/00_Primitives"
+        },
+        "01_mapped_sizes&spaces": {
+          "$ref": "#/definitions/01_MappedSizesSpaces"
+        },
+        "01_surfaces&text": {
+          "$ref": "#/definitions/01_SurfacesText"
+        },
+        "typography": {
+          "$ref": "#/definitions/CurveFigmaTokensTypography"
+        }
+      },
+      "required": [
+        "00_effect",
+        "00_grid",
+        "00_primitives",
+        "01_mapped_sizes&spaces",
+        "01_surfaces&text",
+        "02_font",
+        "02_theme",
+        "typography"
+      ],
+      "title": "CurveFigmaTokens"
+    },
+    "00_Effect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "activetabshadow": {
+          "$ref": "#/definitions/Activetabshadow"
+        },
+        "elevation": {
+          "$ref": "#/definitions/Elevation"
+        }
+      },
+      "required": ["activetabshadow", "elevation"],
+      "title": "00_Effect"
+    },
+    "Activetabshadow": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "0": {
+          "$ref": "#/definitions/0"
+        },
+        "1": {
+          "$ref": "#/definitions/0"
+        },
+        "2": {
+          "$ref": "#/definitions/0"
+        },
+        "3": {
+          "$ref": "#/definitions/0"
+        },
+        "4": {
+          "$ref": "#/definitions/0"
+        },
+        "5": {
+          "$ref": "#/definitions/0"
+        },
+        "6": {
+          "$ref": "#/definitions/0"
+        },
+        "description": {
+          "type": "null"
+        }
+      },
+      "required": ["0", "1", "2", "3", "4", "description"],
+      "title": "Activetabshadow"
+    },
+    "0_Value": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "shadowType": {
+          "$ref": "#/definitions/ShadowType"
+        },
+        "radius": {
+          "type": "integer"
+        },
+        "color": {
+          "type": "string"
+        },
+        "offsetX": {
+          "type": "integer"
+        },
+        "offsetY": {
+          "type": "integer"
+        },
+        "spread": {
+          "type": "number"
+        }
+      },
+      "required": ["color", "offsetX", "offsetY", "radius", "shadowType", "spread"],
+      "title": "0_Value"
+    },
+    "Elevation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "level 3": {
+          "$ref": "#/definitions/Activetabshadow"
+        },
+        "level 2": {
+          "$ref": "#/definitions/Activetabshadow"
+        },
+        "level 1": {
+          "$ref": "#/definitions/Activetabshadow"
+        },
+        "level -1": {
+          "$ref": "#/definitions/Level"
+        },
+        "level -2": {
+          "$ref": "#/definitions/Level"
+        }
+      },
+      "required": ["level -1", "level -2", "level 1", "level 2", "level 3"],
+      "title": "Elevation"
+    },
+    "Level": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "null"
+        },
+        "type": {
+          "$ref": "#/definitions/0_Type"
+        },
+        "value": {
+          "$ref": "#/definitions/0_Value"
+        }
+      },
+      "required": ["description", "type", "value"],
+      "title": "Level"
+    },
+    "00_Grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "12-col_main": {
+          "$ref": "#/definitions/12-_ColCards"
+        },
+        "12-col_cards": {
+          "$ref": "#/definitions/12-_ColCards"
+        },
+        "no margin": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/12-_ColCards"
+          }
+        }
+      },
+      "required": ["12-col_cards", "12-col_main", "no margin"],
+      "title": "00_Grid"
+    },
+    "12-ColCardsValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pattern": {
+          "$ref": "#/definitions/Pattern"
+        },
+        "gutterSize": {
+          "type": "integer"
+        },
+        "alignment": {
+          "$ref": "#/definitions/Alignment"
+        },
+        "count": {
+          "type": "integer"
+        },
+        "offset": {
+          "type": "integer"
+        }
+      },
+      "required": ["alignment", "count", "gutterSize", "offset", "pattern"],
+      "title": "12-ColCardsValue"
+    },
+    "12-_ColCards": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "null"
+        },
+        "type": {
+          "$ref": "#/definitions/12-ColCardsType"
+        },
+        "value": {
+          "$ref": "#/definitions/12-ColCardsValue"
+        }
+      },
+      "required": ["description", "type", "value"],
+      "title": "12-_ColCards"
+    },
+    "00_Primitives": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "grays": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Blue"
+          }
+        },
+        "greens": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Blue"
+          }
+        },
+        "reds": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Blue"
+          }
+        },
+        "blues": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Blue"
+          }
+        },
+        "violet": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Blue"
+          }
+        },
+        "spacing": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Sizing"
+          }
+        },
+        "sizing": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/Sizing"
+          }
+        }
+      },
+      "required": ["blues", "grays", "greens", "reds", "sizing", "spacing", "violet"],
+      "title": "00_Primitives"
+    },
+    "Blue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/BlueType"
+        },
+        "value": {
+          "type": "string"
+        },
+        "blendMode": {
+          "$ref": "#/definitions/BlendMode"
+        }
+      },
+      "required": ["blendMode", "type", "value"],
+      "title": "Blue"
+    },
+    "Sizing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/RoundType"
+        },
+        "value": {
+          "type": "number"
+        }
+      },
+      "required": ["type", "value"],
+      "title": "Sizing"
+    },
+    "01_MappedSizesSpaces": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "desktop": {
+          "$ref": "#/definitions/Desktop"
+        },
+        "mobile": {
+          "$ref": "#/definitions/Desktop"
+        }
+      },
+      "required": ["desktop", "mobile"],
+      "title": "01_MappedSizesSpaces"
+    },
+    "Desktop": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "radius": {
+          "$ref": "#/definitions/DesktopRadius"
+        },
+        "typography": {
+          "$ref": "#/definitions/DesktopTypography"
+        },
+        "spacing": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "sizing": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "iconsize": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "grid": {
+          "$ref": "#/definitions/Grid"
+        }
+      },
+      "required": ["grid", "iconsize", "radius", "sizing", "spacing", "typography"],
+      "title": "Desktop"
+    },
+    "Grid": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "column spacing": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "row spacing": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["column spacing", "row spacing"],
+      "title": "Grid"
+    },
+    "ColumnSpacing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/BlueType"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "required": ["type", "value"],
+      "title": "ColumnSpacing"
+    },
+    "DesktopRadius": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "round": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xs": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "sm": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "md": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "lg": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xl": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xxl": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["lg", "md", "sm", "xl", "xs"],
+      "title": "DesktopRadius"
+    },
+    "DesktopTypography": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lineheight": {
+          "$ref": "#/definitions/Lineheight"
+        },
+        "fontweight": {
+          "$ref": "#/definitions/Fontweight"
+        },
+        "fontsize": {
+          "$ref": "#/definitions/Fontsize"
+        }
+      },
+      "required": ["fontsize", "fontweight", "lineheight"],
+      "title": "DesktopTypography"
+    },
+    "Fontsize": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xs": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "sm": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "md": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "lg": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xl": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xxl": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["lg", "md", "sm", "xl", "xs", "xxl"],
+      "title": "Fontsize"
+    },
+    "Fontweight": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "extra light": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "light": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "normal": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "medium": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "semi bold": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "bold": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "extra bold": {
+          "$ref": "#/definitions/Sizing"
+        }
+      },
+      "required": ["bold", "extra bold", "extra light", "light", "medium", "normal", "semi bold"],
+      "title": "Fontweight"
+    },
+    "Lineheight": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xs": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "sm": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "md": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "lg": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xl": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xxl": {
+          "$ref": "#/definitions/Sizing"
+        }
+      },
+      "required": ["lg", "md", "sm", "xl", "xs", "xxl"],
+      "title": "Lineheight"
+    },
+    "01_SurfacesText": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/InvertedClass"
+        },
+        "inverted": {
+          "$ref": "#/definitions/InvertedClass"
+        }
+      },
+      "required": ["default", "inverted"],
+      "title": "01_SurfacesText"
+    },
+    "InvertedClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "light": {
+          "$ref": "#/definitions/DarkClass"
+        },
+        "dark": {
+          "$ref": "#/definitions/DarkClass"
+        },
+        "chad": {
+          "$ref": "#/definitions/DarkClass"
+        }
+      },
+      "required": ["chad", "dark", "light"],
+      "title": "InvertedClass"
+    },
+    "DarkClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "text": {
+          "$ref": "#/definitions/PurpleText"
+        },
+        "layer": {
+          "$ref": "#/definitions/PurpleLayer"
+        },
+        "tables": {
+          "$ref": "#/definitions/TablesClass"
+        }
+      },
+      "required": ["layer", "tables", "text"],
+      "title": "DarkClass"
+    },
+    "PurpleLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "1": {
+          "$ref": "#/definitions/1"
+        },
+        "2": {
+          "$ref": "#/definitions/1"
+        },
+        "3": {
+          "$ref": "#/definitions/1"
+        },
+        "highlight": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["1", "2", "3", "highlight"],
+      "title": "PurpleLayer"
+    },
+    "TablesClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "header fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["header fill"],
+      "title": "TablesClass"
+    },
+    "PurpleText": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "secondary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "tertiary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "highlight": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "disabled": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["disabled", "highlight", "primary", "secondary", "tertiary"],
+      "title": "PurpleText"
+    },
+    "02_Font": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/02_FontHeading"
+        },
+        "body": {
+          "$ref": "#/definitions/02_FontBody"
+        },
+        "button-label": {
+          "$ref": "#/definitions/ButtonLabel"
+        },
+        "table": {
+          "$ref": "#/definitions/02_FontTable"
+        },
+        "highlighted": {
+          "$ref": "#/definitions/02_FontHighlighted"
+        }
+      },
+      "required": ["body", "button-label", "heading", "highlighted", "table"],
+      "title": "02_Font"
+    },
+    "02_FontBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mregular": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "mbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "sregular": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "sbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xsregular": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xsbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        }
+      },
+      "required": ["mbold", "mregular", "sbold", "sregular", "xsbold", "xsregular"],
+      "title": "02_FontBody"
+    },
+    "ButtonLabelMbold": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "type": {
+          "$ref": "#/definitions/MboldType"
+        },
+        "value": {
+          "$ref": "#/definitions/MboldValue"
+        }
+      },
+      "required": ["description", "type", "value"],
+      "title": "ButtonLabelMbold"
+    },
+    "MboldValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fontSize": {
+          "type": "integer"
+        },
+        "textDecoration": {
+          "$ref": "#/definitions/Text"
+        },
+        "fontFamily": {
+          "$ref": "#/definitions/FontFamily"
+        },
+        "fontWeight": {
+          "type": "integer"
+        },
+        "fontStyle": {
+          "$ref": "#/definitions/BlendMode"
+        },
+        "fontStretch": {
+          "$ref": "#/definitions/BlendMode"
+        },
+        "letterSpacing": {
+          "type": "number"
+        },
+        "lineHeight": {
+          "type": "integer"
+        },
+        "paragraphIndent": {
+          "type": "integer"
+        },
+        "paragraphSpacing": {
+          "type": "integer"
+        },
+        "textCase": {
+          "$ref": "#/definitions/Text"
+        }
+      },
+      "required": [
+        "fontFamily",
+        "fontSize",
+        "fontStretch",
+        "fontStyle",
+        "fontWeight",
+        "letterSpacing",
+        "lineHeight",
+        "paragraphIndent",
+        "paragraphSpacing",
+        "textCase",
+        "textDecoration"
+      ],
+      "title": "MboldValue"
+    },
+    "ButtonLabel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xs": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "s": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "m": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        }
+      },
+      "required": ["m", "s", "xs"],
+      "title": "ButtonLabel"
+    },
+    "02_FontHeading": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xxl": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "mbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "mlight": {
+          "$ref": "#/definitions/Mlight"
+        },
+        "sbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xsbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xsmedium": {
+          "$ref": "#/definitions/Mlight"
+        }
+      },
+      "required": ["mbold", "mlight", "sbold", "xsbold", "xsmedium", "xxl"],
+      "title": "02_FontHeading"
+    },
+    "Mlight": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/definitions/MboldType"
+        },
+        "value": {
+          "$ref": "#/definitions/MboldValue"
+        }
+      },
+      "required": ["type", "value"],
+      "title": "Mlight"
+    },
+    "02_FontHighlighted": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xsnotional": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xs": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "s": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "m": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "l": {
+          "$ref": "#/definitions/Mlight"
+        },
+        "xl": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "xxl": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        }
+      },
+      "required": ["l", "m", "s", "xl", "xs", "xsnotional", "xxl"],
+      "title": "02_FontHighlighted"
+    },
+    "02_FontTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "$ref": "#/definitions/PurpleHeader"
+        },
+        "cell": {
+          "$ref": "#/definitions/PurpleCell"
+        }
+      },
+      "required": ["cell", "header"],
+      "title": "02_FontTable"
+    },
+    "PurpleCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "l": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "mregular": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "mbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "sregular": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        },
+        "sbold": {
+          "$ref": "#/definitions/ButtonLabelMbold"
+        }
+      },
+      "required": ["l", "mbold", "mregular", "sbold", "sregular"],
+      "title": "PurpleCell"
+    },
+    "PurpleHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "m": {
+          "$ref": "#/definitions/Mlight"
+        },
+        "s": {
+          "$ref": "#/definitions/Mlight"
+        }
+      },
+      "required": ["m", "s"],
+      "title": "PurpleHeader"
+    },
+    "02_Theme": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "light": {
+          "$ref": "#/definitions/Dark"
+        },
+        "dark": {
+          "$ref": "#/definitions/Dark"
+        },
+        "chad": {
+          "$ref": "#/definitions/02_ThemeChad"
+        }
+      },
+      "required": ["chad", "dark", "light"],
+      "title": "02_Theme"
+    },
+    "02_ThemeChad": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layer": {
+          "$ref": "#/definitions/FluffyLayer"
+        },
+        "text": {
+          "$ref": "#/definitions/FluffyText"
+        },
+        "feedback": {
+          "$ref": "#/definitions/Feedback"
+        },
+        "color": {
+          "$ref": "#/definitions/Color"
+        },
+        "button": {
+          "$ref": "#/definitions/Button"
+        },
+        "tabs": {
+          "$ref": "#/definitions/Tabs"
+        },
+        "toggles": {
+          "$ref": "#/definitions/Toggles"
+        },
+        "radius": {
+          "$ref": "#/definitions/ChadRadius"
+        },
+        "chips": {
+          "$ref": "#/definitions/Chips"
+        },
+        "table": {
+          "$ref": "#/definitions/TablesClass"
+        },
+        "input & select": {
+          "$ref": "#/definitions/InputSelect"
+        }
+      },
+      "required": [
+        "button",
+        "chips",
+        "color",
+        "feedback",
+        "input & select",
+        "layer",
+        "radius",
+        "table",
+        "tabs",
+        "text",
+        "toggles"
+      ],
+      "title": "02_ThemeChad"
+    },
+    "Button": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/Alert"
+        },
+        "focus outline width": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "focus outline": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "secondary": {
+          "$ref": "#/definitions/Alert"
+        },
+        "ghost": {
+          "$ref": "#/definitions/Ghost"
+        },
+        "radius": {
+          "$ref": "#/definitions/ButtonRadius"
+        },
+        "success": {
+          "$ref": "#/definitions/Alert"
+        },
+        "alert": {
+          "$ref": "#/definitions/Alert"
+        },
+        "navigation": {
+          "$ref": "#/definitions/Navigation"
+        },
+        "outlined": {
+          "$ref": "#/definitions/Outlined"
+        }
+      },
+      "required": [
+        "alert",
+        "focus outline",
+        "focus outline width",
+        "ghost",
+        "navigation",
+        "outlined",
+        "primary",
+        "radius",
+        "secondary",
+        "success"
+      ],
+      "title": "Button"
+    },
+    "Alert": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "hover": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "disabled": {
+          "$ref": "#/definitions/CurrentClass"
+        }
+      },
+      "required": ["default", "disabled", "hover"],
+      "title": "Alert"
+    },
+    "CurrentClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill", "label & icon"],
+      "title": "CurrentClass"
+    },
+    "Ghost": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/GhostDefault"
+        },
+        "hover": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "disabled": {
+          "$ref": "#/definitions/CurrentClass"
+        }
+      },
+      "required": ["default", "disabled", "hover"],
+      "title": "Ghost"
+    },
+    "GhostDefault": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["label & icon"],
+      "title": "GhostDefault"
+    },
+    "Navigation": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/GhostDefault"
+        },
+        "hover": {
+          "$ref": "#/definitions/PurpleHover"
+        },
+        "current": {
+          "$ref": "#/definitions/CurrentClass"
+        }
+      },
+      "required": ["current", "default", "hover"],
+      "title": "Navigation"
+    },
+    "PurpleHover": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "label & icon 2": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill", "label & icon", "label & icon 2"],
+      "title": "PurpleHover"
+    },
+    "Outlined": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "hover": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "disabled": {
+          "$ref": "#/definitions/DisabledClass"
+        }
+      },
+      "required": ["default", "disabled", "hover"],
+      "title": "Outlined"
+    },
+    "DisabledClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "outline": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["label & icon", "outline"],
+      "title": "DisabledClass"
+    },
+    "ButtonRadius": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "md": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xs": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "sm": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "lg": {
+          "$ref": "#/definitions/Sizing"
+        }
+      },
+      "required": ["lg", "md", "sm", "xs"],
+      "title": "ButtonRadius"
+    },
+    "Chips": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/ChipsDefault"
+        },
+        "hover": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "current": {
+          "$ref": "#/definitions/Current"
+        }
+      },
+      "required": ["current", "default", "hover"],
+      "title": "Chips"
+    },
+    "Current": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "outline": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill", "label & icon", "outline"],
+      "title": "Current"
+    },
+    "ChipsDefault": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label & icon": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "stroke": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill", "label & icon", "stroke"],
+      "title": "ChipsDefault"
+    },
+    "Color": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "neutral": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "primary": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "secondary": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        },
+        "tertiary": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ColumnSpacing"
+          }
+        }
+      },
+      "required": ["neutral", "primary", "secondary", "tertiary"],
+      "title": "Color"
+    },
+    "Feedback": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "warning": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "success": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "alert": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["alert", "success", "warning"],
+      "title": "Feedback"
+    },
+    "InputSelect": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "base": {
+          "$ref": "#/definitions/Base"
+        },
+        "large": {
+          "$ref": "#/definitions/Large"
+        }
+      },
+      "required": ["base", "large"],
+      "title": "InputSelect"
+    },
+    "Base": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/BaseDefault"
+        },
+        "nested": {
+          "$ref": "#/definitions/Nested"
+        }
+      },
+      "required": ["default", "nested"],
+      "title": "Base"
+    },
+    "BaseDefault": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "border": {
+          "$ref": "#/definitions/Border"
+        }
+      },
+      "required": ["border", "fill"],
+      "title": "BaseDefault"
+    },
+    "Border": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "error": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "active": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "filled": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["active", "default", "error", "filled"],
+      "title": "Border"
+    },
+    "Nested": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nested": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "border": {
+          "$ref": "#/definitions/Border"
+        }
+      },
+      "required": ["border", "fill", "nested"],
+      "title": "Nested"
+    },
+    "Large": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/LargeDefault"
+        }
+      },
+      "required": ["default"],
+      "title": "Large"
+    },
+    "LargeDefault": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fill": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["fill"],
+      "title": "LargeDefault"
+    },
+    "FluffyLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "1": {
+          "$ref": "#/definitions/1"
+        },
+        "2": {
+          "$ref": "#/definitions/1"
+        },
+        "3": {
+          "$ref": "#/definitions/1"
+        },
+        "highlight": {
+          "$ref": "#/definitions/1"
+        },
+        "app": {
+          "$ref": "#/definitions/App"
+        }
+      },
+      "required": ["1", "2", "3", "app", "highlight"],
+      "title": "FluffyLayer"
+    },
+    "App": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "background": {
+          "$ref": "#/definitions/Blue"
+        }
+      },
+      "required": ["background"],
+      "title": "App"
+    },
+    "ChadRadius": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "md": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xl": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "sm": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "xs": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "square": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "rounded": {
+          "$ref": "#/definitions/Sizing"
+        }
+      },
+      "required": ["md", "rounded", "sm", "square", "xl", "xs"],
+      "title": "ChadRadius"
+    },
+    "Tabs": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contained": {
+          "$ref": "#/definitions/Contained"
+        },
+        "underlined": {
+          "$ref": "#/definitions/Underlined"
+        },
+        "overlined": {
+          "$ref": "#/definitions/Overlined"
+        }
+      },
+      "required": ["contained", "overlined", "underlined"],
+      "title": "Tabs"
+    },
+    "Contained": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "hover": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "current": {
+          "$ref": "#/definitions/Current"
+        },
+        "active": {
+          "$ref": "#/definitions/Current"
+        }
+      },
+      "required": ["active", "current", "default", "hover"],
+      "title": "Contained"
+    },
+    "Overlined": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "hover": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "current": {
+          "$ref": "#/definitions/Current"
+        },
+        "active": {
+          "$ref": "#/definitions/DisabledClass"
+        }
+      },
+      "required": ["active", "current", "default", "hover"],
+      "title": "Overlined"
+    },
+    "Underlined": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "hover": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "current": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "active": {
+          "$ref": "#/definitions/DisabledClass"
+        },
+        "container border": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["active", "container border", "current", "default", "hover"],
+      "title": "Underlined"
+    },
+    "FluffyText": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "textcolors": {
+          "$ref": "#/definitions/Textcolors"
+        },
+        "fontfamily": {
+          "$ref": "#/definitions/Fontfamily"
+        }
+      },
+      "required": ["fontfamily", "textcolors"],
+      "title": "FluffyText"
+    },
+    "Fontfamily": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "body": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "mono": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "button": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["body", "button", "heading", "mono"],
+      "title": "Fontfamily"
+    },
+    "Textcolors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "secondary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "tertiary": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "highlight": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "disabled": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "success": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "alert": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "warning": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["alert", "disabled", "highlight", "primary", "secondary", "success", "tertiary", "warning"],
+      "title": "Textcolors"
+    },
+    "Toggles": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/GhostDefault"
+        },
+        "hover": {
+          "$ref": "#/definitions/CurrentClass"
+        },
+        "current": {
+          "$ref": "#/definitions/CurrentClass"
+        }
+      },
+      "required": ["current", "default", "hover"],
+      "title": "Toggles"
+    },
+    "Dark": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layer": {
+          "$ref": "#/definitions/FluffyLayer"
+        },
+        "text": {
+          "$ref": "#/definitions/FluffyText"
+        },
+        "feedback": {
+          "$ref": "#/definitions/Feedback"
+        },
+        "color": {
+          "$ref": "#/definitions/Color"
+        },
+        "button": {
+          "$ref": "#/definitions/Button"
+        },
+        "tabs": {
+          "$ref": "#/definitions/Tabs"
+        },
+        "toggles": {
+          "$ref": "#/definitions/Toggles"
+        },
+        "radius": {
+          "$ref": "#/definitions/DarkRadius"
+        },
+        "chips": {
+          "$ref": "#/definitions/Chips"
+        },
+        "table": {
+          "$ref": "#/definitions/TablesClass"
+        },
+        "input & select": {
+          "$ref": "#/definitions/InputSelect"
+        }
+      },
+      "required": [
+        "button",
+        "chips",
+        "color",
+        "feedback",
+        "input & select",
+        "layer",
+        "radius",
+        "table",
+        "tabs",
+        "text",
+        "toggles"
+      ],
+      "title": "Dark"
+    },
+    "DarkRadius": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "md": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xl": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "sm": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "xs": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "square": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "rounded": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": ["md", "rounded", "sm", "square", "xl", "xs"],
+      "title": "DarkRadius"
+    },
+    "CurveFigmaTokensTypography": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "heading": {
+          "$ref": "#/definitions/TypographyHeading"
+        },
+        "body": {
+          "$ref": "#/definitions/TypographyBody"
+        },
+        "buttonlabel": {
+          "$ref": "#/definitions/Buttonlabel"
+        },
+        "table": {
+          "$ref": "#/definitions/TypographyTable"
+        },
+        "highlighted": {
+          "$ref": "#/definitions/TypographyHighlighted"
+        }
+      },
+      "required": ["body", "buttonlabel", "heading", "highlighted", "table"],
+      "title": "CurveFigmaTokensTypography"
+    },
+    "TypographyBody": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mregular": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "mbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "sregular": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "sbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xsregular": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xsbold": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["mbold", "mregular", "sbold", "sregular", "xsbold", "xsregular"],
+      "title": "TypographyBody"
+    },
+    "MlightClass": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "description": {
+          "type": "string"
+        },
+        "fontSize": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "textDecoration": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fontFamily": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fontWeight": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "fontStyle": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "fontStretch": {
+          "$ref": "#/definitions/ColumnSpacing"
+        },
+        "letterSpacing": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "lineHeight": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "paragraphIndent": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "paragraphSpacing": {
+          "$ref": "#/definitions/Sizing"
+        },
+        "textCase": {
+          "$ref": "#/definitions/ColumnSpacing"
+        }
+      },
+      "required": [
+        "fontFamily",
+        "fontSize",
+        "fontStretch",
+        "fontStyle",
+        "fontWeight",
+        "letterSpacing",
+        "lineHeight",
+        "paragraphIndent",
+        "paragraphSpacing",
+        "textCase",
+        "textDecoration"
+      ],
+      "title": "MlightClass"
+    },
+    "Buttonlabel": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xs": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "s": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "m": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["m", "s", "xs"],
+      "title": "Buttonlabel"
+    },
+    "TypographyHeading": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xxl": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "mbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "mlight": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "sbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xsbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xsmedium": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["mbold", "mlight", "sbold", "xsbold", "xsmedium", "xxl"],
+      "title": "TypographyHeading"
+    },
+    "TypographyHighlighted": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "xsnotional": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xs": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "s": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "m": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "l": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xl": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "xxl": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["l", "m", "s", "xl", "xs", "xsnotional", "xxl"],
+      "title": "TypographyHighlighted"
+    },
+    "TypographyTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "header": {
+          "$ref": "#/definitions/FluffyHeader"
+        },
+        "cell": {
+          "$ref": "#/definitions/FluffyCell"
+        }
+      },
+      "required": ["cell", "header"],
+      "title": "TypographyTable"
+    },
+    "FluffyCell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "l": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "mregular": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "mbold": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "sregular": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "sbold": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["l", "mbold", "mregular", "sbold", "sregular"],
+      "title": "FluffyCell"
+    },
+    "FluffyHeader": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "m": {
+          "$ref": "#/definitions/MlightClass"
+        },
+        "s": {
+          "$ref": "#/definitions/MlightClass"
+        }
+      },
+      "required": ["m", "s"],
+      "title": "FluffyHeader"
+    },
+    "0_Type": {
+      "type": "string",
+      "enum": ["custom-shadow"],
+      "title": "0_Type"
+    },
+    "ShadowType": {
+      "type": "string",
+      "enum": ["dropShadow", "innerShadow"],
+      "title": "ShadowType"
+    },
+    "12-ColCardsType": {
+      "type": "string",
+      "enum": ["custom-grid"],
+      "title": "12-ColCardsType"
+    },
+    "Alignment": {
+      "type": "string",
+      "enum": ["stretch"],
+      "title": "Alignment"
+    },
+    "Pattern": {
+      "type": "string",
+      "enum": ["columns"],
+      "title": "Pattern"
+    },
+    "BlendMode": {
+      "type": "string",
+      "enum": ["normal"],
+      "title": "BlendMode"
+    },
+    "BlueType": {
+      "type": "string",
+      "enum": ["color", "dimension", "string"],
+      "title": "BlueType"
+    },
+    "RoundType": {
+      "type": "string",
+      "enum": ["dimension", "number"],
+      "title": "RoundType"
+    },
+    "MboldType": {
+      "type": "string",
+      "enum": ["custom-fontStyle"],
+      "title": "MboldType"
+    },
+    "FontFamily": {
+      "type": "string",
+      "enum": ["Mona Sans"],
+      "title": "FontFamily"
+    },
+    "Text": {
+      "type": "string",
+      "enum": ["none", "uppercase", "capitalize"],
+      "title": "Text"
+    }
+  }
+}
