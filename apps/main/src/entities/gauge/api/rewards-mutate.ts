@@ -10,16 +10,16 @@
  */
 
 import { type MutateFunction } from '@tanstack/react-query'
-import useStore from '@/store/useStore'
 import { assertGaugeValidity } from '@/entities/gauge/lib'
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
+import useStore from '@/store/useStore'
 
 export const mutateAddRewardToken: MutateFunction<
   PoolMethodResult<'gauge.addReward'>,
   Error,
   GaugeQueryKeyType<'addRewardToken'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, distributorId] = queryKey
+  const [, { chainId }, , { poolId }, , , rewardTokenId, distributorId] = queryKey
   const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, distributorId })
 
   const curve = useStore.getState().curve
@@ -32,7 +32,7 @@ export const mutateDepositRewardApprove: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositRewardApprove'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, amount] = queryKey
+  const [, { chainId }, , { poolId }, , , rewardTokenId, amount] = queryKey
   const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount })
 
   const curve = useStore.getState().curve
@@ -45,7 +45,7 @@ export const mutateDepositReward: MutateFunction<
   Error,
   GaugeQueryKeyType<'depositReward'>
 > = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, amount, epoch] = queryKey
+  const [, { chainId }, , { poolId }, , , rewardTokenId, amount, epoch] = queryKey
   const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount, epoch })
 
   const curve = useStore.getState().curve

@@ -11,21 +11,20 @@
  */
 
 import * as models from '@/entities/gauge/model'
-import type { GaugeQueryParams } from '@/entities/gauge/types'
-import { createQueryHook, useCombinedQueries } from '@/shared/lib/queries'
+import { useCombinedQueries } from '@/shared/lib/queries'
+import { GaugeParams } from '@/shared/model/query'
 
-export const useGauge = ({ chainId, poolId }: GaugeQueryParams) => {
-  return useCombinedQueries([
-    models.getGaugeStatusQueryOptions({ chainId, poolId }),
-    models.getIsDepositRewardAvailableQueryOptions({ chainId, poolId }),
+export const useGauge = ({ chainId, poolId }: GaugeParams) =>
+  useCombinedQueries([
+    models.gaugeStatus.getQueryOptions({ chainId, poolId }),
+    models.depositRewardAvailable.getQueryOptions({ chainId, poolId })
   ])
-}
 
-export const useGaugeVersion = createQueryHook(models.getGaugeVersionQueryOptions)
-export const useIsDepositRewardAvailable = createQueryHook(models.getIsDepositRewardAvailableQueryOptions)
-export const useGaugeManager = createQueryHook(models.getGaugeManagerQueryOptions)
-export const useGaugeRewardsDistributors = createQueryHook(models.getGaugeDistributorsQueryOptions)
-export const useGaugeDepositRewardIsApproved = createQueryHook(models.getDepositRewardIsApprovedQueryOptions)
-export const useEstimateGasAddRewardToken = createQueryHook(models.getEstimateGasAddRewardTokenQueryOptions)
-export const useEstimateGasDepositRewardApprove = createQueryHook(models.getEstimateGasDepositRewardApproveQueryOptions)
-export const useEstimateGasDepositReward = createQueryHook(models.getEstimateGasDepositRewardQueryOptions)
+export const { useQuery: useGaugeVersion } = models.gaugeVersion
+export const { useQuery: useIsDepositRewardAvailable } = models.depositRewardAvailable
+export const { useQuery: useGaugeManager } = models.gaugeManager
+export const { useQuery: useGaugeRewardsDistributors } = models.gaugeDistributors
+export const { useQuery: useGaugeDepositRewardIsApproved } = models.depositRewardIsApproved
+export const { useQuery: useEstimateGasAddRewardToken } = models.estimateGasAddRewardToken
+export const { useQuery: useEstimateGasDepositRewardApprove } = models.estimateGasDepositRewardApprove
+export const { useQuery: useEstimateGasDepositReward } = models.estimateGasDepositReward
