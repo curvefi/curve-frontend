@@ -9,10 +9,10 @@
  * business logic and data fetching.
  */
 
+import { type MutateFunction } from '@tanstack/react-query'
+import useStore from '@/store/useStore'
 import { assertGaugeValidity } from '@/entities/gauge/lib'
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
-import useStore from '@/store/useStore'
-import { type MutateFunction } from '@tanstack/react-query'
 
 export const mutateAddRewardToken: MutateFunction<
   PoolMethodResult<'gauge.addReward'>,

@@ -10,17 +10,17 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
+import { queryOptions } from '@tanstack/react-query'
 import { REFRESH_INTERVAL } from '@/constants'
 import * as api from '@/entities/gauge/api'
-import * as conditions from '@/entities/gauge/model/enabled-conditions'
 import { gaugeKeys as keys } from '@/entities/gauge/model'
+import * as conditions from '@/entities/gauge/model/enabled-conditions'
 import type {
   AddRewardParams,
   DepositRewardApproveParams,
   DepositRewardParams,
   GaugeQueryParams,
 } from '@/entities/gauge/types'
-import { queryOptions } from '@tanstack/react-query'
 
 export const getEstimateGasDepositRewardApproveQueryOptions = (
   params: DepositRewardApproveParams & GaugeQueryParams,

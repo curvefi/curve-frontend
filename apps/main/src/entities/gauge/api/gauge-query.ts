@@ -9,13 +9,13 @@
  * business logic and data fetching.
  */
 
+import { QueryFunction } from '@tanstack/react-query'
+import { zeroAddress, type Address } from 'viem'
+import useStore from '@/store/useStore'
 import { assertGaugeValidity } from '@/entities/gauge/lib'
 import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
-import useStore from '@/store/useStore'
 import { logQuery } from '@/shared/lib/logging'
-import { QueryFunction } from '@tanstack/react-query'
-import { zeroAddress, type Address } from 'viem'
 
 export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, GaugeQueryKeyType<'status'>> = async ({
   queryKey,

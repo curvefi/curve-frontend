@@ -100,8 +100,42 @@
       "multiplier": "6.875",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x6e9b6660b94fa74a8087d7ee14dc28698249d242",
+      "network": "fraxtal",
+      "multiplier": "1.875",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xf2f426fe123de7b769b2d4f8c911512f065225d3",
+      "network": "fraxtal",
+      "multiplier": "2.3125",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x8fd56bcfba75718dd1b920c854256b0c5f4a7401",
+      "network": "fraxtal",
+      "multiplier": "1.875",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
-
-
