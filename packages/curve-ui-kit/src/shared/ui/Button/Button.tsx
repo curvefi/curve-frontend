@@ -1,9 +1,7 @@
 import { Button as MuiButton, ButtonProps as MuiButtonProps } from '@mui/material'
 
-export interface ButtonProps extends MuiButtonProps {
-  label: string
-}
+export interface ButtonProps extends MuiButtonProps {}
 
-export const Button = ({ label, ...props }: ButtonProps) => {
-  return <MuiButton {...props}>{label}</MuiButton>
+export const Button = ({ children, ...props }: ButtonProps) => {
+  return <MuiButton {...props}>{children}</MuiButton>
 }

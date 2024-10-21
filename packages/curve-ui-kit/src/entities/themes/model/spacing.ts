@@ -3,7 +3,7 @@ import { type ThemeOptions } from '@mui/material/styles'
 import { figmaTokens, extractNumber } from '@/shared/api/figma-tokens'
 import { type ThemeKey } from '@/shared/lib/basic-theme'
 
-export const createSpacing = (mode: ThemeKey) => {
+export const createSpacing = (mode: ThemeKey): ThemeOptions => {
   const { xxs, xs, sm, md, lg, xl, xxl } = figmaTokens.mappedSizesAndSpaces.desktop.spacing
   const {
     xxs: mXxs,
@@ -16,7 +16,7 @@ export const createSpacing = (mode: ThemeKey) => {
   } = figmaTokens.mappedSizesAndSpaces.mobile.spacing
   const theme = figmaTokens.themes.desktop[mode]
 
-  const spaces: ThemeOptions = {
+  return {
     spacing: [0, xxs, xs, sm, md, lg, xl, xxl],
 
     // TODO: realize mobile spacing
@@ -27,6 +27,4 @@ export const createSpacing = (mode: ThemeKey) => {
       borderRadius: extractNumber(theme.radius.md),
     },
   }
-
-  return spaces
 }

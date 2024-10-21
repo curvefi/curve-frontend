@@ -4,7 +4,7 @@ import { basicMuiTheme, ThemeFontFamily, type ThemeKey } from '@/shared/lib/basi
 import { omitProperty } from '@/shared/lib/object-properties'
 import { disabledTypographyKeys } from '@/shared/ui/Typography'
 
-export const createTypography = (mode: ThemeKey) => {
+export const createTypography = (mode: ThemeKey): TypographyOptions => {
   const typographyVariants = Object.entries(figmaTokens.typography).reduce((acc, [key, value]) => {
     acc[key as keyof typeof figmaTokens.typography] = omitProperty(value, 'description')
     return acc
@@ -15,7 +15,7 @@ export const createTypography = (mode: ThemeKey) => {
     return acc
   }, {} as TypographyOptions)
 
-  const typography: TypographyOptions = {
+  return {
     fontFamily: ThemeFontFamily[mode],
     fontWeightBold: 700,
     fontWeightMedium: 600,
@@ -29,6 +29,4 @@ export const createTypography = (mode: ThemeKey) => {
     ...disabledTypographyVariants,
     ...typographyVariants,
   }
-
-  return typography
 }

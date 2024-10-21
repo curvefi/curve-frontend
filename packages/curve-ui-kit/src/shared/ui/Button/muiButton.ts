@@ -3,7 +3,7 @@ import { type FigmaTokens, extractNumber } from '@/shared/api/figma-tokens'
 import { basicMuiTheme, type ThemeKey } from '@/shared/lib/basic-theme'
 import { omitProperty } from '@/shared/lib/object-properties'
 
-export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey) => {
+export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const buttonDesktop = figmaTokens.themes.desktop[mode].button
   const buttonMobile = figmaTokens.themes.mobile[mode].button
   const spacingDesktop = figmaTokens.mappedSizesAndSpaces.desktop.spacing
@@ -69,7 +69,7 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey) => {
     }
   }
 
-  const muiButton: Components['MuiButton'] = {
+  return {
     styleOverrides: {
       root: {
         variants: [
@@ -131,6 +131,4 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey) => {
       },
     },
   }
-
-  return muiButton
 }

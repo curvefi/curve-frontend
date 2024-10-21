@@ -1,7 +1,7 @@
 import type { Components } from '@mui/material/styles'
 
-export const defineMuiCssBaseline = () => {
-  const component: Components['MuiCssBaseline'] = {
+export const defineMuiCssBaseline = (): Components['MuiCssBaseline'] => {
+  return {
     styleOverrides: `
       @font-face {
         font-family: 'Mona Sans';
@@ -21,5 +21,4 @@ export const defineMuiCssBaseline = () => {
       }
     `,
   }
-  return component
 }

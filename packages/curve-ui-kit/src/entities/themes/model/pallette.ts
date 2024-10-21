@@ -2,10 +2,10 @@ import type { ThemeOptions } from '@mui/material'
 import { extractPairs, figmaTokens } from '@/shared/api/figma-tokens'
 import type { ThemeKey } from '@/shared/lib/basic-theme'
 
-export const createPalette = (mode: ThemeKey) => {
+export const createPalette = (mode: ThemeKey): ThemeOptions['palette'] => {
   const theme = figmaTokens.themes.desktop[mode]
 
-  const palette: ThemeOptions['palette'] = {
+  return {
     mode: mode === 'dark' ? 'dark' : 'light',
     neutral: {
       ...extractPairs(theme.color.neutral),
@@ -64,6 +64,4 @@ export const createPalette = (mode: ThemeKey) => {
     blue: extractPairs(figmaTokens.primitives.blues),
     violet: extractPairs(figmaTokens.primitives.violet),
   }
-
-  return palette
 }

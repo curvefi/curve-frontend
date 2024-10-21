@@ -1,7 +1,7 @@
 import type { Components } from '@mui/material/styles'
 
-export const defineMuiTypography = () => {
-  const component: Components['MuiTypography'] = {
+export const defineMuiTypography = (): Components['MuiTypography'] => {
+  return {
     defaultProps: {
       variant: 'bodyMRegular',
       variantMapping: {
@@ -21,6 +21,4 @@ export const defineMuiTypography = () => {
       },
     },
   }
-
-  return component
 }

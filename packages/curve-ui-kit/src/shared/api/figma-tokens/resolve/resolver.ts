@@ -1,5 +1,11 @@
 import type { CurveFigmaDesignTokens, ScreenType } from '../tokens'
 
+/**
+ * Resolves nested token values in a Figma design token tree.
+ * This type recursively unwraps token objects and resolves referenced values.
+ *
+ * @template T - The type of the token tree
+ */
 export type ResolvedValue<T> = T extends { type: string; value: infer V }
   ? V extends string
     ? V extends `{${string}}`
@@ -10,6 +16,13 @@ export type ResolvedValue<T> = T extends { type: string; value: infer V }
     ? { [K in keyof T]: ResolvedValue<T[K]> }
     : T
 
+/**
+ * Resolves a token value given a token path.
+ * This type navigates through the token tree to find and resolve the referenced value.
+ *
+ * @template TokenTree - The type of the entire token tree
+ * @template TokenPath - A string representing the path to a token value
+ */
 export type ResolvedTokenValue<TokenTree, TokenPath extends string> = TokenPath extends `{${infer Path}}`
   ? Path extends keyof TokenTree
     ? TokenTree[Path] extends { value: infer V }
@@ -22,6 +35,15 @@ export type ResolvedTokenValue<TokenTree, TokenPath extends string> = TokenPath 
       : never
   : never
 
+/**
+ * Resolves all token references in a Figma design token tree.
+ * This function traverses the entire token tree, resolving any referenced values
+ * and handling screen type-specific tokens.
+ *
+ * @param tokenTree - The original Figma design token tree
+ * @param screenType - The target screen type for resolution (default: 'desktop')
+ * @returns A new token tree with all references resolved
+ */
 export function resolveFigmaTokens<T extends CurveFigmaDesignTokens>(
   tokenTree: T,
   screenType: ScreenType = 'desktop',

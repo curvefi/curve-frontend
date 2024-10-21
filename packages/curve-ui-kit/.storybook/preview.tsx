@@ -4,7 +4,6 @@ import type { Decorator, Preview, ReactRenderer } from '@storybook/react'
 
 import { chadTheme, darkTheme, lightTheme } from '../src/entities/themes'
 
-console.log('lightTheme', lightTheme)
 export const decorators: Decorator[] = [
   withThemeFromJSXProvider<ReactRenderer>({
     themes: {
@@ -34,7 +33,17 @@ const preview: Preview = {
       },
     },
     docs: {
-      // TODO: fix docs container theme
+      // TODO: Fix docs container theme application
+      // The current issue is that the theme is only applied to individual components
+      // within the docs, but not to the root level of the documentation container.
+      // This results in inconsistent styling, where component examples may have the
+      // correct theme, but the surrounding documentation does not.
+      //
+      // Potential solution:
+      // Implement a custom docs container that applies the theme at the root level.
+      // This may involve creating a wrapper component that uses the current theme
+      // from the Storybook context and applies it to the entire docs container.
+      //
       // container: ({ children, context }) => {
       //   const theme = context.store.userGlobals.globals.theme
       //   return (

@@ -5,12 +5,8 @@ import { defineMuiButton } from '@/shared/ui/Button'
 import { defineMuiCssBaseline } from '@/shared/ui/CssBaseline'
 import { defineMuiTypography } from '@/shared/ui/Typography'
 
-export const createComponents = (mode: ThemeKey) => {
-  const components: ThemeOptions['components'] = {
-    MuiTypography: defineMuiTypography(),
-    MuiCssBaseline: defineMuiCssBaseline(),
-    MuiButton: defineMuiButton(figmaTokens, mode),
-  }
-
-  return components
-}
+export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => ({
+  MuiTypography: defineMuiTypography(),
+  MuiCssBaseline: defineMuiCssBaseline(),
+  MuiButton: defineMuiButton(figmaTokens, mode),
+})

@@ -16,7 +16,7 @@ const meta: Meta<typeof Button> = {
       options: ['primary', 'secondary', 'success', 'alert', 'navigation', undefined],
       description: 'The color of the component',
     },
-    label: {
+    children: {
       control: 'text',
       description: 'The label of the component',
     },
@@ -51,14 +51,14 @@ export const Primary: Story = {
   args: {
     variant: 'contained',
     color: 'primary',
-    label: 'Primary',
+    children: 'Primary',
   },
 }
 export const Secondary: Story = {
   args: {
     variant: 'contained',
     color: 'secondary',
-    label: 'Secondary',
+    children: 'Secondary',
   },
 }
 
@@ -66,7 +66,7 @@ export const Outlined: Story = {
   args: {
     variant: 'outlined',
     color: undefined,
-    label: 'Outlined',
+    children: 'Outlined',
   },
 }
 
@@ -74,7 +74,7 @@ export const Ghost: Story = {
   args: {
     variant: 'ghost',
     color: undefined,
-    label: 'Ghost',
+    children: 'Ghost',
   },
 }
 
@@ -82,7 +82,7 @@ export const Success: Story = {
   args: {
     variant: 'contained',
     color: 'success',
-    label: 'Success',
+    children: 'Success',
   },
 }
 
@@ -90,7 +90,7 @@ export const Alert: Story = {
   args: {
     variant: 'contained',
     color: 'alert',
-    label: 'Alert',
+    children: 'Alert',
   },
 }
 
@@ -98,7 +98,7 @@ export const Navigation: Story = {
   args: {
     variant: 'contained',
     color: 'navigation',
-    label: 'Navigation',
+    children: 'Navigation',
   },
 }
 
