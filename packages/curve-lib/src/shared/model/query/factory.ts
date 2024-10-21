@@ -5,18 +5,18 @@ import { logQuery } from '@/shared/lib/logging'
 import { createQueryHook } from '@/shared/lib/queries'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@/shared/lib/validation'
 import { REFRESH_INTERVAL } from '@/shared/model/time'
-import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
+import { QueryFactoryInput, QueryFactoryOutput, QueryKeyTuple } from '../../types'
 
 export function queryFactory<
   TQuery extends object,
-  TKey extends QueryKey,
+  TKey extends readonly unknown[],
   TData,
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
   TField extends FieldName<TParams> = FieldName<TParams>,
   TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>
 >({
-    query, queryParams, queryKey, staleTime, validationSuite, dependencies
+    query, queryKey, staleTime, validationSuite, dependencies
   }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<TQuery, TKey, TData, TParams> {
 
   // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
@@ -29,7 +29,8 @@ export function queryFactory<
       queryKey: queryKey(params),
       queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
         logQuery(queryKey)
-        const params = assertValidity(queryParams(queryKey))
+        const queryParams = Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : [])) as TParams
+        const params = assertValidity(queryParams)
         return query(params)
       },
       staleTime: REFRESH_INTERVAL[staleTime],

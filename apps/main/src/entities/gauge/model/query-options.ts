@@ -22,8 +22,7 @@ import { queryFactory } from '@/shared/model/query/factory'
 import { REFRESH_INTERVAL } from '@/constants'
 
 export const gaugeStatus = queryFactory({
-  queryKey: ({ chainId, poolId }: GaugeParams) => ['chain', chainId, 'pool', poolId, 'gauge', 'status'] as const,
-  queryParams: ([, chainId, , poolId, ,]) => ({ chainId, poolId }),
+  queryKey: ({ chainId, poolId }: GaugeParams) => ['chain', { chainId }, 'pool', { poolId }, 'gauge', 'status'] as const,
   query: api.queryGaugeStatus,
   staleTime: '5m',
   validationSuite: createValidationSuite(poolValidationGroup),
