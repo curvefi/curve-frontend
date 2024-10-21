@@ -19,12 +19,14 @@
   "devDependencies": {
     "@types/react": "*",
     "@types/react-dom": "*",
-    "eslint": "^8.57.1",
     "eslint-config-custom": "*",
     "tsconfig": "*"
   },
   "peerDependencies": {
+    "eslint": "*",
+    "eslint-config-custom": "*",
     "react": "*",
-    "react-dom": "*"
+    "react-dom": "*",
+    "tsconfig": "*"
   }
 }

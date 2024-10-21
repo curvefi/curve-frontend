@@ -22,12 +22,13 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/styled-components": "5.1.14",
-    "eslint": "^8.57.1",
+    "eslint": "*",
     "eslint-config-custom": "*",
     "tsconfig": "*"
   },
   "peerDependencies": {
     "curve-lib": "*",
+    "eslint": "*",
     "react": "*",
     "react-dom": "*",
     "react-router-dom": "^6",
