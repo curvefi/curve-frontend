@@ -15,7 +15,7 @@ type IsLiteralOrSingleKeyObject<T> =
         ? true
         : false
 
-// Recursively checks each element in the array
+// Recursively checks each element in the tuple
 type AreAllElementsLiteralOrSinglePropertyObject<T extends readonly unknown[]> = T extends readonly [
     infer First,
     ...infer Rest,

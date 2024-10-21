@@ -7,15 +7,17 @@ import { assertValidity as sharedAssertValidity, checkValidity, FieldName, Field
 import { REFRESH_INTERVAL } from '@/shared/model/time'
 import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
 
-const extractQueryParams = (queryKey: readonly unknown[]) =>
-  (Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : [])))
+export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey, assertValidity: (data: TParams, fields?: TField[]) => TQuery) {
+  const queryParams = (Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+  return assertValidity(queryParams)
+}
 
 export function queryFactory<
   TQuery extends object,
   TKey extends readonly unknown[],
   TData,
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
-  TField extends FieldName<TParams> = FieldName<TParams>,
+  TField extends FieldName<TQuery> = FieldName<TQuery>,
   TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>
 >({
@@ -32,8 +34,7 @@ export function queryFactory<
       queryKey: queryKey(params),
       queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
         logQuery(queryKey)
-        const queryParams = extractQueryParams(queryKey) as TParams
-        const params = assertValidity(queryParams)
+        const params = getParamsFromQueryKey(queryKey, assertValidity)
         return queryFn(params)
       },
       staleTime: staleTime ? REFRESH_INTERVAL[staleTime] : undefined,

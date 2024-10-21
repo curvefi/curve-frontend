@@ -40,8 +40,10 @@ export const useAddRewardToken = ({
         notifyNotification(txDescription, 'success')
       }
 
-      queryClient.invalidateQueries({ queryKey: keys.distributors({ chainId, poolId }) })
-      queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: keys.distributors({ chainId, poolId }) }),
+        queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) }),
+      ])
     },
     onError: (error) => {
       console.error('Error adding reward:', error)
@@ -83,7 +85,7 @@ export const useDepositRewardApprove = ({
         const notifyMessage = t`Approve spending ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
         notifyNotification(notifyMessage, 'success', 15000)
       }
-      queryClient.invalidateQueries({
+      return queryClient.invalidateQueries({
         queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
       })
     },
@@ -117,12 +119,12 @@ export const useDepositReward = ({
 
   return useMutation({
     ...models.getDepositRewardMutation({ chainId, poolId }),
-    onSuccess: (resp, { rewardTokenId, amount, epoch }) => {
+    onSuccess: (resp, { rewardTokenId }) => {
       if (resp) {
         const txDescription = t`Deposited reward token ${rewardTokenId ? tokensMapper[rewardTokenId]?.symbol : ''}`
         notifyNotification(txDescription, 'success', 15000)
       }
-      queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
+      return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
     },
     onError: (error) => {
       console.error('Error depositing reward:', error)
