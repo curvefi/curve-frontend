@@ -1,8 +1,6 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
+  "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "NEXT_PUBLIC_MAINTENANCE_MESSAGE",
     "NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL",
@@ -35,20 +33,16 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "out/**",
-        ".next/**",
-        "!.next/cache/**"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
+      "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
     },
     "lint": {},
     "dev": {
       "cache": false,
       "persistent": true
-    }
+    },
+    "build:storybook": {},
+    "storybook": { "cache": false, "persistent": true }
   }
 }
