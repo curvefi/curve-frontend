@@ -15,10 +15,7 @@ import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams }
 import { GaugeParams, rootKeys } from '@/shared/model/query'
 
 export const gaugeKeys = {
-  root: rootKeys.gauge,
   estimateGas: () => ['estimateGas'] as const,
-  gauge: (params: GaugeParams) => [...rootKeys.gauge(params)] as const,
-  status: (params: GaugeParams) => [...rootKeys.gauge(params), 'status'] as const,
   distributors: (params: GaugeParams) => [...rootKeys.gauge(params), 'distributors'] as const,
   isDepositRewardAvailable: (params: GaugeParams) =>
     [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
@@ -30,40 +27,4 @@ export const gaugeKeys = {
     [...rootKeys.gauge({ chainId, poolId }), 'depositRewardApprove', rewardTokenId, amount] as const,
   depositReward: ({ chainId, poolId, rewardTokenId, amount, epoch }: DepositRewardParams & GaugeParams) =>
     [...rootKeys.gauge({ chainId, poolId }), 'depositReward', rewardTokenId, amount, epoch] as const,
-  estimateGasDepositRewardApprove: ({
-    chainId,
-    poolId,
-    rewardTokenId,
-    amount,
-  }: DepositRewardApproveParams & GaugeParams) =>
-    [
-      ...rootKeys.gauge({ chainId, poolId }),
-      ...gaugeKeys.estimateGas(),
-      'depositRewardApprove',
-      rewardTokenId,
-      amount,
-    ] as const,
-  estimateGasAddRewardToken: ({ chainId, poolId, rewardTokenId, distributorId }: AddRewardParams & GaugeParams) =>
-    [
-      ...rootKeys.gauge({ chainId, poolId }),
-      ...gaugeKeys.estimateGas(),
-      'addRewardToken',
-      rewardTokenId,
-      distributorId,
-    ] as const,
-  estimateGasDepositReward: ({
-    chainId,
-    poolId,
-    rewardTokenId,
-    amount,
-    epoch,
-  }: DepositRewardParams & GaugeParams) =>
-    [
-      ...rootKeys.gauge({ chainId, poolId }),
-      ...gaugeKeys.estimateGas(),
-      'depositReward',
-      rewardTokenId,
-      amount,
-      epoch,
-    ] as const,
 } as const
