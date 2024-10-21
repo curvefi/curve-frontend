@@ -12,6 +12,7 @@ import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import TextEllipsis from '@/ui/TextEllipsis'
 import TokenIcon from '@/components/TokenIcon'
+import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const TokenLabel = ({
   rChainId,
@@ -22,7 +23,7 @@ const TokenLabel = ({
   ...boxProps
 }: BoxProps & {
   rChainId: ChainId
-  token: OWM['borrowed_token'] | OWM['collateral_token'] | undefined
+  token: OneWayMarketTemplate['borrowed_token'] | OneWayMarketTemplate['collateral_token'] | undefined
   isDisplayOnly?: boolean
   isVisible?: boolean
   showLeverageIcon?: boolean

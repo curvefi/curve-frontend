@@ -4,6 +4,7 @@ import differenceWith from 'lodash/differenceWith'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 import startsWith from 'lodash/startsWith'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export enum Filter {
   all = 'all',
@@ -35,32 +36,28 @@ export function _parseSearchTextToList(searchText: string) {
 }
 
 // search by tokens or token addresses
-export function _searchByTokensAddresses(parsedSearchText: string, searchText: string, datas: OWMData[]) {
+export function _searchByTokensAddresses(parsedSearchText: string, searchText: string, datas: OneWayMarketTemplate[]) {
   const searchTextByList = _parseSearchTextToList(parsedSearchText)
 
-  return datas.filter(({ owm }) => {
-    const { borrowed_token, collateral_token } = owm
-    return (
-      differenceWith(
-        searchTextByList,
-        [borrowed_token.symbol.toLowerCase(), collateral_token.symbol.toLowerCase()],
-        isEqual
-      ).length === 0 ||
-      differenceWith(
-        searchTextByList,
-        [borrowed_token.address, collateral_token.address],
-        (parsedSearchText, tokenAddress) => _isStartPartOrEnd(parsedSearchText, tokenAddress)
-      ).length === 0
-    )
-  })
+  return datas.filter(({ borrowed_token, collateral_token }) => (
+    differenceWith(
+      searchTextByList,
+      [borrowed_token.symbol.toLowerCase(), collateral_token.symbol.toLowerCase()],
+      isEqual
+    ).length === 0 ||
+    differenceWith(
+      searchTextByList,
+      [borrowed_token.address, collateral_token.address],
+      (parsedSearchText, tokenAddress) => _isStartPartOrEnd(parsedSearchText, tokenAddress)
+    ).length === 0
+  ))
 }
 
-export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
+export function _getMarketList(markets: OneWayMarketTemplate[]) {
   let marketListMapper: MarketListMapper = {}
   let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
-  owmDatas.forEach((d) => {
-    const { id, collateral_token, borrowed_token } = d.owm
+  markets.forEach(({ id, collateral_token, borrowed_token }) => {
     const { address: cAddress, symbol: cSymbol } = collateral_token
     const { address: bAddress, symbol: bSymbol } = borrowed_token
 
@@ -75,8 +72,11 @@ export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
   })
 
   // filter crvusd
-  delete marketListMapper[crvusdAddress]
-  delete marketListMapperCache[crvusdAddress]
+  const crvUsdAddress = markets.map((m) => m.borrowed_token).find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
+  if (crvUsdAddress) {
+    delete marketListMapper[crvUsdAddress]
+    delete marketListMapperCache[crvUsdAddress]
+  }
 
   const sortedMarketListMapperCache = sortBy(marketListMapperCache, (l) => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }

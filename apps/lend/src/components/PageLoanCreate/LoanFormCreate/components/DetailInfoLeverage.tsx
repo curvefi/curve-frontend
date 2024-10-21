@@ -27,10 +27,8 @@ const DetailInfoLeverage = ({
   api,
   healthMode,
   isLoaded,
-  owm,
+  market,
   steps,
-  borrowed_token,
-  collateral_token,
   userActiveKey,
   handleSelLiqRange,
   selectedLiqRange,
@@ -49,7 +47,7 @@ const DetailInfoLeverage = ({
   const maxSlippage = useStore((state) => state.maxSlippage)
 
   const { signerAddress } = api ?? {}
-  const { minBands, maxBands } = owm ?? {}
+  const { minBands, maxBands, borrowed_token, collateral_token } = market ?? {}
   const { expectedCollateral, routes } = detailInfo ?? {}
   const { userBorrowed, debt } = formValues
   const { symbol: collateralSymbol = '' } = collateral_token ?? {}

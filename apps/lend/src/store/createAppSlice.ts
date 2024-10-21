@@ -109,7 +109,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    await state.markets.fetchMarkets(api)
+    await api.oneWayfactory.fetchMarkets();
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
