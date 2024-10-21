@@ -13,31 +13,33 @@
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
 import { gaugeKeys } from '@/entities/gauge/model'
-import { GaugeQuery } from '@/shared/model/query'
+import { FieldsOf } from '@/shared/lib/validation'
+import { GaugeParams, GaugeQuery, PoolQuery } from '@/shared/model/query'
 import type { ExtractQueryKeyType } from '@/shared/types/api'
 import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 
-export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedFunction<PoolTemplate, M>>
-
 export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ExtractQueryKeyType<typeof gaugeKeys, K>
 
-export type AddRewardParams = {
-  rewardTokenId?: Address //T[0]
-  distributorId?: Address //T[1]
+export type AddRewardQuery = PoolQuery & {
+  rewardTokenId: Address
+  distributorId: Address
 }
+export type AddRewardParams = FieldsOf<AddRewardQuery>
 
-export type DepositRewardApproveParams<T extends Array<any> = PoolMethodParameters<'gauge.depositRewardApprove'>> = {
-  rewardTokenId?: Address //T[0]
-  amount?: T[1]
+export type DepositRewardApproveQuery = PoolQuery & {
+  rewardTokenId: Address
+  amount: number | string
 }
+export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
 
-export type DepositRewardParams<T extends Array<any> = PoolMethodParameters<'gauge.depositReward'>> = {
-  rewardTokenId?: Address //T[0]
-  amount?: T[1]
-  epoch?: T[2]
+export type DepositRewardQuery = PoolQuery & {
+  rewardTokenId: Address
+  amount: number | string
+  epoch: number | string
 }
+export type DepositRewardParams = FieldsOf<DepositRewardQuery>
 
 type Nullable<T> = {[K in keyof T]?: T[K] | null} // todo: get rid of this after implementing query factory
 export type CombinedGaugeParams = Nullable<GaugeQuery> & AddRewardParams & DepositRewardApproveParams & DepositRewardParams

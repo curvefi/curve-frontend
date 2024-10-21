@@ -9,7 +9,7 @@ export type PoolParams = FieldsOf<PoolQuery>;
 export type GaugeParams = FieldsOf<GaugeQuery>;
 
 export const rootKeys = {
-  chain: ({ chainId }: ChainParams) => ['chain', chainId] as const,
-  pool: ({ chainId, poolId }: PoolParams) => [...rootKeys.chain({ chainId }), 'pool', poolId] as const,
+  chain: ({ chainId }: ChainParams) => ['chain', { chainId }] as const,
+  pool: ({ chainId, poolId }: PoolParams) => [...rootKeys.chain({ chainId }), 'pool', { poolId }] as const,
   gauge: ({ chainId, poolId }: GaugeParams) => [...rootKeys.pool({ chainId, poolId }), 'gauge'] as const,
 } as const

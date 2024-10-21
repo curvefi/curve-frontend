@@ -1,18 +1,28 @@
 import type { DefaultError } from '@tanstack/query-core'
 import type { QueryKey } from '@tanstack/react-query'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query/src/types'
-import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
+import type { IsStringLiteral } from 'type-fest'
 import type { Suite } from 'vest'
 import type { CB } from 'vest-utils'
 import type { FieldName, FieldsOf } from '@/shared/lib/validation'
 import type { REFRESH_INTERVAL } from '@/shared/model/time'
+
+// Helper type to determine if a type is a union
+type IsUnion<T, U = T> = T extends any ? ([U] extends [T] ? false : true) : never
+
+// Checks if an object has exactly one property
+type HasOnlyOneProperty<T> = [keyof T] extends [never]
+  ? false // No properties
+  : IsUnion<keyof T> extends true
+    ? false // Multiple properties
+    : true // Exactly one property
 
 // Checks if T is a string literal or an object with one property
 type IsLiteralOrSinglePropertyObject<T> =
   IsStringLiteral<T> extends true
     ? true
     : T extends object
-      ? SingleKeyObject<T> extends true
+      ? HasOnlyOneProperty<T> extends true
         ? true
         : false
       : false
@@ -46,11 +56,14 @@ export type QueryFactoryInput<
   TGroup extends string = string,
   TCallback extends CB = CB<TValidParams, TField[]>
 > = {
-  queryKey: (params: TParams, enabled?: boolean) => QueryKeyTuple<TKey>
+  queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, TGroup, TCallback>
-  query: (params: TValidParams) => Promise<TData>
-  staleTime: keyof typeof REFRESH_INTERVAL
+  queryFn: (params: TValidParams) => Promise<TData>
+  staleTime?: keyof typeof REFRESH_INTERVAL
+  refetchInterval?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
+  refetchOnWindowFocus?: 'always'
+  refetchOnMount?: 'always'
 }
 
 export type QueryFactoryOutput<
@@ -60,12 +73,12 @@ export type QueryFactoryOutput<
   TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
   TError = DefaultError
 > = {
-  getQueryOptions: (params: TParams) => UseQueryOptions<TData, TError, TData, TKey>
+  getQueryOptions: (params: TParams, enabled?: boolean) => UseQueryOptions<TData, TError, TData, TKey>
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   checkValidity: (data: TParams) => boolean
   isEnabled: (data: TParams) => boolean
   assertValidity: (data: TParams) => TValidParams
-  useQuery: (params: TParams) => UseQueryResult<TData, TError>
+  useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData, TError>
   getQueryData: (params: TParams) => TData | undefined
   invalidate: (params: TParams) => void
 }

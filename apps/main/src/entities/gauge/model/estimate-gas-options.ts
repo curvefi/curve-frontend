@@ -10,49 +10,72 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import { queryOptions } from '@tanstack/react-query'
 import * as api from '@/entities/gauge/api'
-import { gaugeKeys as keys } from '@/entities/gauge/model'
-import * as conditions from '@/entities/gauge/model/enabled-conditions'
+import {
+    depositRewardAvailable,
+    depositRewardIsApproved,
+    gaugeAddRewardTokenValidationGroup,
+    gaugeDepositRewardValidationGroup,
+    gaugeKeys
+} from '@/entities/gauge/model'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
-import { GaugeParams } from '@/shared/model/query'
-import { REFRESH_INTERVAL } from '@/constants'
+import { poolValidationGroup } from '@/entities/pool'
+import { createValidationSuite } from '@/shared/lib/validation'
+import { queryFactory, rootKeys } from '@/shared/model/query'
 
-export const getEstimateGasDepositRewardApproveQueryOptions = (
-  params: DepositRewardApproveParams & GaugeParams,
-  condition: boolean = true
-) =>
-  queryOptions({
-    queryKey: keys.estimateGasDepositRewardApprove(params),
+export const estimateGasDepositRewardApprove = queryFactory({
+    queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) => [
+        ...rootKeys.gauge({ ...gaugeParams }),
+        ...gaugeKeys.estimateGas(),
+        'depositRewardApprove',
+        { rewardTokenId },
+        { amount }
+    ] as const,
     queryFn: api.queryEstimateGasDepositRewardApprove,
-    refetchInterval: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasDepositRewardApprove(params) && condition,
+    refetchInterval: '1m',
+    validationSuite: createValidationSuite((data: DepositRewardApproveParams) => {
+        poolValidationGroup(data)
+        gaugeDepositRewardValidationGroup(data)
+    }),
     refetchOnWindowFocus: 'always',
     refetchOnMount: 'always',
   })
 
-export const getEstimateGasAddRewardTokenQueryOptions = (
-  params: AddRewardParams & GaugeParams,
-  condition: boolean = true
-) =>
-  queryOptions({
-    queryKey: keys.estimateGasAddRewardToken(params),
+export const estimateGasAddRewardToken = queryFactory({
+    queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) => [
+        ...rootKeys.gauge({ ...gaugeParams }),
+        ...gaugeKeys.estimateGas(),
+        'addRewardToken',
+        { rewardTokenId },
+        { distributorId }
+    ] as const,
     queryFn: api.queryEstimateGasAddRewardToken,
-    refetchInterval: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasAddRewardToken(params) && condition,
+    refetchInterval: '1m',
+    validationSuite: createValidationSuite((data: AddRewardParams) => {
+        poolValidationGroup(data)
+        gaugeAddRewardTokenValidationGroup(data)
+    }),
+    dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
     refetchOnWindowFocus: 'always',
     refetchOnMount: 'always',
   })
 
-export const getEstimateGasDepositRewardQueryOptions = (
-  params: DepositRewardParams & GaugeParams,
-  condition: boolean = true
-) =>
-  queryOptions({
-    queryKey: keys.estimateGasDepositReward(params),
+export const estimateGasDepositReward = queryFactory({
+    queryKey: ({ rewardTokenId, amount, epoch, ...gaugeParams }: DepositRewardParams) => [
+        ...rootKeys.gauge({ ...gaugeParams }),
+        ...gaugeKeys.estimateGas(),
+        'depositReward',
+        { rewardTokenId },
+        { amount },
+        { epoch }
+    ] as const,
     queryFn: api.queryEstimateGasDepositReward,
-    refetchInterval: REFRESH_INTERVAL['1m'],
-    enabled: conditions.enabledEstimateGasDepositReward(params) && condition,
+    refetchInterval: '1m',
+    validationSuite: createValidationSuite((data: DepositRewardParams) => {
+        poolValidationGroup(data)
+        gaugeDepositRewardValidationGroup(data)
+    }),
+    dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
     refetchOnWindowFocus: 'always',
     refetchOnMount: 'always',
   })

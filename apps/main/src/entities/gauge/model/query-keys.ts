@@ -15,12 +15,10 @@ import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams }
 import { GaugeParams, rootKeys } from '@/shared/model/query'
 
 export const gaugeKeys = {
-  root: (params: GaugeParams) => [...rootKeys.pool(params), 'gauge'] as const,
+  root: rootKeys.gauge,
   estimateGas: () => ['estimateGas'] as const,
   gauge: (params: GaugeParams) => [...rootKeys.gauge(params)] as const,
-  version: (params: GaugeParams) => [...rootKeys.gauge(params), 'version'] as const,
   status: (params: GaugeParams) => [...rootKeys.gauge(params), 'status'] as const,
-  manager: (params: GaugeParams) => [...rootKeys.gauge(params), 'manager'] as const,
   distributors: (params: GaugeParams) => [...rootKeys.gauge(params), 'distributors'] as const,
   isDepositRewardAvailable: (params: GaugeParams) =>
     [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,

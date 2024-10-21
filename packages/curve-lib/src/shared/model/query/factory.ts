@@ -1,11 +1,14 @@
-import { QueryFunctionContext, QueryKey, queryOptions } from '@tanstack/react-query'
+import { QueryFunctionContext, queryOptions } from '@tanstack/react-query'
 import { CB } from 'vest-utils'
 import { queryClient } from '@/shared/api/query-client'
 import { logQuery } from '@/shared/lib/logging'
 import { createQueryHook } from '@/shared/lib/queries'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@/shared/lib/validation'
 import { REFRESH_INTERVAL } from '@/shared/model/time'
-import { QueryFactoryInput, QueryFactoryOutput, QueryKeyTuple } from '../../types'
+import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
+
+const extractQueryParams = (queryKey: readonly unknown[]) =>
+  (Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : [])))
 
 export function queryFactory<
   TQuery extends object,
@@ -16,7 +19,7 @@ export function queryFactory<
   TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>
 >({
-    query, queryKey, staleTime, validationSuite, dependencies
+    queryFn, queryKey, staleTime, refetchInterval, validationSuite, dependencies, refetchOnWindowFocus, refetchOnMount
   }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<TQuery, TKey, TData, TParams> {
 
   // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
@@ -29,12 +32,15 @@ export function queryFactory<
       queryKey: queryKey(params),
       queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
         logQuery(queryKey)
-        const queryParams = Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : [])) as TParams
+        const queryParams = extractQueryParams(queryKey) as TParams
         const params = assertValidity(queryParams)
-        return query(params)
+        return queryFn(params)
       },
-      staleTime: REFRESH_INTERVAL[staleTime],
-      enabled: enabled && isEnabled(params)
+      staleTime: staleTime ? REFRESH_INTERVAL[staleTime] : undefined,
+      refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
+      enabled: enabled && isEnabled(params),
+      refetchOnWindowFocus,
+      refetchOnMount,
     })
 
   return {
