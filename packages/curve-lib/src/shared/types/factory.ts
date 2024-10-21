@@ -1,38 +1,26 @@
 import type { DefaultError } from '@tanstack/query-core'
 import type { QueryKey } from '@tanstack/react-query'
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query/src/types'
-import type { IsStringLiteral } from 'type-fest'
+import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
 import type { Suite } from 'vest'
 import type { CB } from 'vest-utils'
 import type { FieldName, FieldsOf } from '@/shared/lib/validation'
 import type { REFRESH_INTERVAL } from '@/shared/model/time'
 
-// Helper type to determine if a type is a union
-type IsUnion<T, U = T> = T extends any ? ([U] extends [T] ? false : true) : never
-
-// Checks if an object has exactly one property
-type HasOnlyOneProperty<T> = [keyof T] extends [never]
-  ? false // No properties
-  : IsUnion<keyof T> extends true
-    ? false // Multiple properties
-    : true // Exactly one property
-
 // Checks if T is a string literal or an object with one property
-type IsLiteralOrSinglePropertyObject<T> =
+type IsLiteralOrSingleKeyObject<T> =
   IsStringLiteral<T> extends true
     ? true
-    : T extends object
-      ? HasOnlyOneProperty<T> extends true
+    : T extends SingleKeyObject<T>
         ? true
         : false
-      : false
 
 // Recursively checks each element in the array
 type AreAllElementsLiteralOrSinglePropertyObject<T extends readonly unknown[]> = T extends readonly [
     infer First,
     ...infer Rest,
   ]
-  ? IsLiteralOrSinglePropertyObject<First> extends true
+  ? IsLiteralOrSingleKeyObject<First> extends true
     ? AreAllElementsLiteralOrSinglePropertyObject<Rest>
     : false
   : true
