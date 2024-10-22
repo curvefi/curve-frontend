@@ -33,7 +33,33 @@ const config: StorybookConfig = {
   docs: {},
   typescript: {},
 
-  // TODO: wait for fix https://github.com/storybookjs/storybook/issues/12129
+  /**
+   * TODO: Temporary workaround for Storybook issue #12129
+   *
+   * There's currently a bug in Storybook that affects the TypeScript configuration
+   * and causes issues with react-docgen-typescript. The configuration below is commented out
+   * due to these issues.
+   *
+   * Instead, we're currently using a solution proposed in a comment on the GitHub issue:
+   * https://github.com/storybookjs/storybook/issues/12129#issuecomment-1486722918
+   *
+   * This solution involves manually defining `argTypes` in each story file. While this
+   * requires more work, it allows us to have proper typing and avoid build errors.
+   *
+   * Example usage in a story file:
+   * ```
+   * export default {
+   *   component: MyComponent,
+   *   argTypes: {
+   *     prop1: { control: 'text' },
+   *     prop2: { control: 'boolean' },
+   *   },
+   * } as Meta<typeof MyComponent>;
+   * ```
+   *
+   * Once the Storybook issue is resolved, we can revisit this configuration and potentially
+   * switch back to using react-docgen-typescript for automatic prop type inference.
+   */
   // typescript: {
   //   reactDocgen: react-docgen-typescript,
   //   reactDocgenTypescriptOptions: {

@@ -9,65 +9,57 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
   const spacingDesktop = figmaTokens.mappedSizesAndSpaces.desktop.spacing
   const spacingMobile = figmaTokens.mappedSizesAndSpaces.mobile.spacing
 
-  const getColorButtonStyle = (color: 'primary' | 'secondary' | 'success' | 'alert'): CSSObject => {
-    return {
-      backgroundColor: buttonDesktop[color].default?.fill,
-      color: buttonDesktop[color].default['label & icon'],
-      '&:hover': {
-        backgroundColor: buttonDesktop[color].hover.fill,
-        color: buttonDesktop[color].hover['label & icon'],
-      },
-      '&:disabled': {
-        backgroundColor: buttonDesktop[color].disabled.fill,
-        color: buttonDesktop[color].disabled['label & icon'],
-      },
-    }
-  }
+  const getColorButtonStyle = (color: 'primary' | 'secondary' | 'success' | 'alert'): CSSObject => ({
+    backgroundColor: buttonDesktop[color].default?.fill,
+    color: buttonDesktop[color].default['label & icon'],
+    '&:hover': {
+      backgroundColor: buttonDesktop[color].hover.fill,
+      color: buttonDesktop[color].hover['label & icon'],
+    },
+    '&:disabled': {
+      backgroundColor: buttonDesktop[color].disabled.fill,
+      color: buttonDesktop[color].disabled['label & icon'],
+    },
+  })
 
-  const getNavigationButtonStyle = (): CSSObject => {
-    return {
-      color: buttonDesktop.navigation.default['label & icon'],
-      '&:hover': {
-        backgroundColor: buttonDesktop.navigation.hover.fill,
-        color: buttonDesktop.navigation.hover['label & icon'],
-      },
-      '&:current': {
-        backgroundColor: buttonDesktop.navigation.current.fill,
-        color: buttonDesktop.navigation.current['label & icon'],
-      },
-    }
-  }
+  const getNavigationButtonStyle = (): CSSObject => ({
+    color: buttonDesktop.navigation.default['label & icon'],
+    '&:hover': {
+      backgroundColor: buttonDesktop.navigation.hover.fill,
+      color: buttonDesktop.navigation.hover['label & icon'],
+    },
+    '&:current': {
+      backgroundColor: buttonDesktop.navigation.current.fill,
+      color: buttonDesktop.navigation.current['label & icon'],
+    },
+  })
 
-  const getVariantButtonStyle = (variant: 'outlined'): CSSObject => {
-    return {
-      backgroundColor: 'transparent',
-      borderColor: buttonDesktop[variant].default.outline,
-      color: buttonDesktop[variant].default['label & icon'],
-      '&:hover': {
-        borderColor: buttonDesktop[variant].hover.outline,
-        color: buttonDesktop[variant].hover['label & icon'],
-      },
-      '&:disabled': {
-        borderColor: buttonDesktop[variant].disabled.outline,
-        color: buttonDesktop[variant].disabled['label & icon'],
-      },
-    }
-  }
+  const getVariantButtonStyle = (variant: 'outlined'): CSSObject => ({
+    backgroundColor: 'transparent',
+    borderColor: buttonDesktop[variant].default.outline,
+    color: buttonDesktop[variant].default['label & icon'],
+    '&:hover': {
+      borderColor: buttonDesktop[variant].hover.outline,
+      color: buttonDesktop[variant].hover['label & icon'],
+    },
+    '&:disabled': {
+      borderColor: buttonDesktop[variant].disabled.outline,
+      color: buttonDesktop[variant].disabled['label & icon'],
+    },
+  })
 
-  const getGhostButtonStyle = (): CSSObject => {
-    return {
-      backgroundColor: 'transparent',
-      color: buttonDesktop.ghost.default['label & icon'],
-      '&:hover': {
-        backgroundColor: buttonDesktop.ghost.hover.fill,
-        color: buttonDesktop.ghost.hover['label & icon'],
-      },
-      '&:disabled': {
-        backgroundColor: buttonDesktop.ghost.disabled.fill,
-        color: buttonDesktop.ghost.disabled['label & icon'],
-      },
-    }
-  }
+  const getGhostButtonStyle = (): CSSObject => ({
+    backgroundColor: 'transparent',
+    color: buttonDesktop.ghost.default['label & icon'],
+    '&:hover': {
+      backgroundColor: buttonDesktop.ghost.hover.fill,
+      color: buttonDesktop.ghost.hover['label & icon'],
+    },
+    '&:disabled': {
+      backgroundColor: buttonDesktop.ghost.disabled.fill,
+      color: buttonDesktop.ghost.disabled['label & icon'],
+    },
+  })
 
   return {
     styleOverrides: {
