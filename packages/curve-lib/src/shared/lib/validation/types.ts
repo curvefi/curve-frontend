@@ -1,7 +1,5 @@
-export type ValidatedData<T extends object> = {
-  [K in keyof T]-?: NonNullable<T[K]>
-}
+export type FieldName<T> = Extract<keyof T, string>
 
-export type ValidatedFields<T> = {
-  [K in keyof T]: NonNullable<T[K]>
+export type FieldsOf<T> = {
+  [K in FieldName<T>]?: T[K] | null | undefined
 }
