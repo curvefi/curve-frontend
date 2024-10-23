@@ -20,7 +20,7 @@ const MarketParameters = ({
   rOwmId: string
   type: 'borrow' | 'supply'
 }) => {
-  const owm = useOneWayMarket(rChainId, rOwmId)?.data
+  const owm = useOneWayMarket(rChainId, rOwmId).data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])

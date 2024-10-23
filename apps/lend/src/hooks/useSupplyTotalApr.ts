@@ -7,7 +7,7 @@ import { getTotalApr } from '@/utils/utilsRewards'
 import { useOneWayMarket } from '@/entities/chain'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
 

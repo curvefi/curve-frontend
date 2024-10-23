@@ -32,7 +32,7 @@ const DetailInfoCrvIncentives = ({
   lpTokenAmount: string
 }) => {
   const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const gaugeAddress = useOneWayMarket(rChainId, rOwmId)?.data?.addresses?.gauge
+  const gaugeAddress = useOneWayMarket(rChainId, rOwmId).data?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === INVALID_ADDRESS
 

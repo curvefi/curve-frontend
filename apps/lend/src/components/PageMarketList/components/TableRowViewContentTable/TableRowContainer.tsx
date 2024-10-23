@@ -24,7 +24,7 @@ const TableRowContainer = (
   const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
   const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
 
-  const market = useOneWayMarket(rChainId, owmId)?.data!
+  const market = useOneWayMarket(rChainId, owmId).data!
   const userActiveKey = helpers.getUserActiveKey(api, market)
   const loanExists = loansExistsMapper[userActiveKey]?.loanExists ?? false
 

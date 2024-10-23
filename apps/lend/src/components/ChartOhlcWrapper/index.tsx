@@ -18,7 +18,7 @@ import AlertBox from '@/ui/AlertBox'
 import { useOneWayMarket } from '@/entities/chain'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const themeType = useStore((state) => state.themeType)
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)

@@ -45,7 +45,7 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)

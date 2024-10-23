@@ -44,7 +44,7 @@ const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: React.Dispatch<React.SetStateAction<HealthMode>>
 }) => {
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 

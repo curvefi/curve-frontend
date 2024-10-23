@@ -6,7 +6,7 @@ import { useTokenUsdRate } from '@/entities/token'
 import { useOneWayMarket } from '@/entities/chain'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })

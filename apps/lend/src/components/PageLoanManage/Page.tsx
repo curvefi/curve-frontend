@@ -49,7 +49,7 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)

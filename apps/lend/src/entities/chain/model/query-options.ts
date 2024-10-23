@@ -1,4 +1,4 @@
-import { queryOneWayMarketNames } from '@/entities/chain/api/markets-api'
+import { queryOneWayMarketNames } from '@/entities/chain/api/markets-query'
 import { chainValidationSuite } from '@/entities/chain/model/validation'
 import { ChainParams, queryFactory } from '@/shared/model/query'
 

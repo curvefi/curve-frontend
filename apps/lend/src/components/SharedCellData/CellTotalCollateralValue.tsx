@@ -8,7 +8,7 @@ import TextCaption from '@/ui/TextCaption'
 import { useOneWayMarket } from '@/entities/chain'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
-  const market = useOneWayMarket(rChainId, rOwmId)?.data
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
   const fetchTotalCollateralValue = useStore((state) => state.markets.fetchTotalCollateralValue)
