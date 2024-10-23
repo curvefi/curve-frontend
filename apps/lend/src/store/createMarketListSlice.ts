@@ -4,7 +4,6 @@ import type {
   FilterTypeKey,
   FormStatus,
   MarketListItemResult,
-  MarketListMapper,
   SearchParams,
   TableSettings
 } from '@/components/PageMarketList/types'
@@ -19,7 +18,7 @@ import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
-import { getTokenQueryData } from '@/entities/token'
+import { getTokenUsdRateQueryData } from '@/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
@@ -90,7 +89,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { smallMarketAmount, marketListShowOnlyInSmallMarkets } = networks[chainId]
       return markets.filter((market) => {
         const { cap } = capAndAvailableMapper[market.id] ?? {}
-        const usdRate = getTokenQueryData<number>('usdRate', { chainId, tokenAddress: market.borrowed_token.address })
+        const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress: market.borrowed_token.address })
         if (typeof usdRate === 'undefined') return true
         if (marketListShowOnlyInSmallMarkets[market.id]) return false
         return +cap * usdRate > smallMarketAmount
@@ -418,19 +417,6 @@ export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   }
   const sortByStr = sortBy ? `-${sortBy}-${sortByOrder}` : ''
   return `${chainId}-${filterTypeKey}-${filterKey}-${parsedSearchText}${sortByStr}`
-}
-
-function _getOwmDatasFromMarketList(marketListMapper: MarketListMapper, marketMapping: IDict<OneWayMarketTemplate>) {
-  let result: { [owmId: string]: OneWayMarketTemplate } = {}
-
-  // get all owmIds
-  Object.keys(marketListMapper).forEach((tokenAddress) => {
-    const { markets } = marketListMapper[tokenAddress]
-    Object.keys(markets).forEach((owmId) => {
-      result[owmId] = marketMapping[owmId]
-    })
-  })
-  return Object.values(result) ?? []
 }
 
 function sortByRewards(market: OneWayMarketTemplate, rewardsMapper: MarketsRewardsMapper, ratesMapper: MarketsRatesMapper) {

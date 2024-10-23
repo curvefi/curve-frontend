@@ -1,4 +1,3 @@
-import { createQueryHook } from '@/shared/lib/queries'
-import { getOneWayMarketNames } from '../model/query-options'
+import { oneWayMarketNames } from '../model'
 
-export const useOneWayMarketNames = createQueryHook(getOneWayMarketNames);
+export const { useQuery: useOneWayMarketNames } = oneWayMarketNames;

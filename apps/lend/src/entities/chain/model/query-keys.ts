@@ -1,9 +1,9 @@
-import type { ChainQueryParams } from '../types'
 import type { ExtractQueryKeyType } from '@/shared/types/api'
+import { ChainParams } from '@/shared/model/query'
 
 export const chainKeys = {
-  root: ({ chainId }: ChainQueryParams) => ['chain', chainId] as const,
-  markets: ({ chainId }: ChainQueryParams) => ['chain', chainId, 'markets'] as const,
+  root: ({ chainId }: ChainParams) => ['chain', chainId] as const,
+
 } as const
 
 export type ChainQueryKeyType<K extends keyof typeof chainKeys> = ExtractQueryKeyType<typeof chainKeys, K>
