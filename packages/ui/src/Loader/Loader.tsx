@@ -11,11 +11,6 @@ const Loader = ({ className, ...props }: Props) => {
   return <TextSkeleton className={className} {...props} />
 }
 
-Loader.defaultProps = {
-  isLightBg: false,
-  skeleton: [12, 12],
-}
-
 const AnimateShimmer = keyframes`
   100% { transform: translateX(100%); }
 `

@@ -80,11 +80,6 @@ const ModalDialog = ({
   )
 }
 
-ModalDialog.defaultProps = {
-  className: '',
-  noContentPadding: false,
-}
-
 const Header = styled.h2<{ showCloseButton?: boolean }>`
   align-items: center;
   display: flex;

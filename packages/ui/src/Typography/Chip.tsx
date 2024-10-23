@@ -28,11 +28,6 @@ const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: strin
   return <LabelComp />
 }
 
-Chip.defaultProps = {
-  className: '',
-  tooltipProps: {},
-}
-
 interface LabelProps
   extends Pick<ChipProps, 'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'> {}
 

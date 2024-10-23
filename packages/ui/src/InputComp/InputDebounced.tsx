@@ -43,11 +43,6 @@ const InputDebounced = ({
   )
 }
 
-InputDebounced.defaultProps = {
-  className: '',
-  delay: 700,
-}
-
 InputDebounced.displayName = 'InputDebounced'
 
 export default InputDebounced

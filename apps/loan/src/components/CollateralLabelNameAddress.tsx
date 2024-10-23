@@ -37,10 +37,6 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipPoolProps extends AriaButtonProps {
   className?: string
   displayName: string

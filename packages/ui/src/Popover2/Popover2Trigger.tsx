@@ -41,10 +41,6 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
   )
 }
 
-Popover2Trigger.defaultProps = {
-  showExpandIcon: false, // show open or close svg after label
-}
-
 const ButtonWrapper = styled.span`
   display: inline-flex;
   align-items: center;

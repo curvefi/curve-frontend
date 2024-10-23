@@ -27,10 +27,6 @@ function Popover2Dialog({ title, children, ...props }: DialogProps) {
   )
 }
 
-Popover2Dialog.defaultProps = {
-  className: '',
-}
-
 const Wrapper = styled.div`
   ${focusVisible};
 

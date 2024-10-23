@@ -17,10 +17,6 @@ const InputReadyOnly = ({ children, size, title }: React.PropsWithChildren<Props
   )
 }
 
-InputReadyOnly.defaultProps = {
-  size: 'md',
-}
-
 const Wrapper = styled.div<{ size?: Size }>`
   display: grid;
 

@@ -39,10 +39,6 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipPoolProps extends AriaButtonProps {
   className?: string
   isHighlightPoolName?: boolean // highlight name if it is part of pool list search result

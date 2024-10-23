@@ -63,9 +63,6 @@ const Radio = ({
 }
 
 Radio.displayName = 'Radio'
-Radio.defaultProps = {
-  className: '',
-}
 
 const Label = styled(Box)`
   font-weight: 500;

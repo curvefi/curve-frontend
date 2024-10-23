@@ -32,9 +32,6 @@ const SelectBtn = ({
 }
 
 SelectBtn.displayName = 'SelectBtn'
-SelectBtn.defaultProps = {
-  style: {},
-}
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   padding: 0;

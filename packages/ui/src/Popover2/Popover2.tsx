@@ -55,8 +55,4 @@ const Popover = styled.div`
   box-shadow: var(--popover--box-shadow);
 `
 
-Popover2.defaultProps = {
-  offset: 8,
-}
-
 export default Popover2

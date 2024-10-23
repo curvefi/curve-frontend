@@ -146,11 +146,6 @@ const PoolLabel = ({
   )
 }
 
-PoolLabel.defaultProps = {
-  className: '',
-  isVisible: true,
-}
-
 const IconsWrapper = styled.div`
   min-width: 3.3125rem; // 53px
 `

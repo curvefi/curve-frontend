@@ -60,11 +60,6 @@ const DetailInfo = ({
   )
 }
 
-DetailInfo.defaultProps = {
-  className: '',
-  size: 'sm',
-}
-
 export const DetailLabel = styled.span`
   display: inline-block;
   font-weight: bold;
