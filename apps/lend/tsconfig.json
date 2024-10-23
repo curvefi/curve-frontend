@@ -8,7 +8,7 @@
       "@/ui/*": ["../../../packages/ui/src/*"],
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
-      "@/common/shared/features/*": ["../../../packages/curve-common/src/*"],
+      "@/common/shared/features/*": ["../../../packages/curve-common/src/features/*"],
       "@/shared/curve-lib": ["../../../packages/curve-lib/src/index.ts"],
       "@/shared/api/*": ["../../../packages/curve-lib/src/shared/api/*"],
       "@/shared/lib/*": ["../../../packages/curve-lib/src/shared/lib/*"],
