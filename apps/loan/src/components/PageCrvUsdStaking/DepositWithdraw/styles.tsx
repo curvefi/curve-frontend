@@ -19,6 +19,7 @@ export const StyledIcon = styled(Icon)`
 
 export const StyledInputComp = styled(InputComp)`
   width: 100%;
+  height: 100%;
 `
 
 export const InputWrapper = styled.div`
@@ -34,4 +35,10 @@ export const InputSelectorText = styled.p`
 export const InputLabel = styled.p`
   font-size: var(--font-size-2);
   margin-bottom: var(--spacing-1);
+`
+
+export const ErrorText = styled.p`
+  font-size: var(--font-size-1);
+  color: var(--chart-red);
+  margin: var(--spacing-1) var(--spacing-1) 0 auto;
 `

@@ -22,15 +22,16 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   const maxSlippage = useStore((state) => state.maxSlippage)
   const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
+  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(gas)
 
   useEffect(() => {
-    if (lendApi && curve) {
-      estimateGasDepositApprove(1000)
+    if (lendApi && curve && inputAmount !== 0) {
+      estimateGasDepositApprove(inputAmount)
     }
-  }, [lendApi, estimateGasDepositApprove, chainId, curve])
+  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount])
 
   return (
     <TransactionDetailsWrapper className={className}>
@@ -39,7 +40,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
         <Box flex>
           {!isOpen && (
             <ToggleValue>
-              <Tooltip tooltip={tooltip} noWrap>
+              <Tooltip tooltip={tooltip} noWrap onClick={() => setIsOpen(!isOpen)}>
                 <Icon name="Fire" size={16} />
                 {isReady(fetchStatus) ? formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD) : '-'}
               </Tooltip>
@@ -59,7 +60,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
             <TransactionFieldValue>{t`Exchange rate`}</TransactionFieldValue>
           </TransactionField>
           <TransactionField>
-            <TransactionFieldLabel>{t`Estimated tx cost`}</TransactionFieldLabel>
+            <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>
             <TransactionFieldValue>
               <Tooltip tooltip={tooltip} noWrap>
                 <Icon name="Fire" size={16} />

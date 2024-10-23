@@ -1,25 +1,21 @@
 import type { AriaNumberFieldProps } from 'react-aria'
 
-import { useRef } from 'react'
 import styled from 'styled-components'
-import { useNumberFieldState } from 'react-stately'
-import { useLocale, useNumberField } from 'react-aria'
 
 interface Props extends AriaNumberFieldProps {
   className?: string
 }
 
 const NumberField = (props: Props) => {
-  const { label, minValue = 0, maxValue = Infinity, defaultValue = 0 } = props
-  const { locale } = useLocale()
-  const state = useNumberFieldState({ ...props, locale, minValue, maxValue, defaultValue })
-  const inputRef = useRef(null)
-  const { labelProps, groupProps, inputProps } = useNumberField(props, state, inputRef)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseFloat(e.target.value)
+    props.onChange && props.onChange(isNaN(value) ? 0 : value)
+  }
 
-  return <StyledInput {...inputProps} ref={inputRef} />
+  return <StyledInput value={props.value} isDisabled={props.isDisabled} onChange={handleChange} />
 }
 
-const StyledInput = styled.input`
+const StyledInput = styled.input<{ isDisabled?: boolean }>`
   padding: var(--spacing-1) var(--spacing-1);
   width: 100%;
   display: flex;
@@ -28,13 +24,15 @@ const StyledInput = styled.input`
   font-weight: var(--semi-bold);
   font-size: var(--font-size-3);
   color: var(--page--text-color);
-  cursor: pointer;
+  cursor: ${({ isDisabled }) => (isDisabled ? 'cursor' : 'pointer')};
+  pointer-events: ${({ isDisabled }) => (isDisabled ? 'pointer' : 'auto')};
   background-color: transparent;
+  caret-color: ${({ isDisabled }) => (isDisabled ? 'transparent' : 'var(--page--text-color)')};
   transition:
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   :focus-visible {
-    outline: var(--button_text--hover--color) auto 2px;
+    outline: ${({ isDisabled }) => (isDisabled ? 'none' : 'var(--button_text--hover--color) auto 2px;')};
   }
 `
 

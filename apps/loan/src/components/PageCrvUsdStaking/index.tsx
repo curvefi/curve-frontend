@@ -3,15 +3,17 @@ import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
+import { useChainId } from '@/entities/chain'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 
 const CrvUsdStaking = () => {
-  const { fetchUserBalances } = useStore((state) => state.scrvusd)
+  const { fetchUserBalances, checkApproval, inputAmount } = useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
   const { data: signerAddress } = useSignerAddress()
+  const chainId = useChainId().data
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,6 +24,12 @@ const CrvUsdStaking = () => {
 
     fetchData()
   }, [fetchUserBalances, lendApi, signerAddress])
+
+  useEffect(() => {
+    if (!lendApi || !chainId || !signerAddress || inputAmount === 0) return
+
+    checkApproval.depositApprove(inputAmount)
+  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount])
 
   return (
     <Wrapper>
