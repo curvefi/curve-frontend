@@ -6,7 +6,7 @@ import { layoutHeightKeys } from '@/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { isFailure, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '../../../../packages/curve-common/src/features/connect-wallet'
+import { useConnectWallet } from '@/common/shared/features/connect-wallet'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 

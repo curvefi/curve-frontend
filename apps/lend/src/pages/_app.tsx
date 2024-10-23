@@ -21,7 +21,7 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
-import { initOnboard } from '../../../../packages/curve-common/src/features/connect-wallet'
+import { initOnboard } from '@/common/shared/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
