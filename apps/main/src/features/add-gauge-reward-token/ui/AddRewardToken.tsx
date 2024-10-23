@@ -52,7 +52,6 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
 
   const onSubmit = useCallback(
     ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
-      console.log('onSubmit', { rewardTokenId, distributorId, chainId, poolId })
       addRewardToken(
         { rewardTokenId, distributorId },
         {

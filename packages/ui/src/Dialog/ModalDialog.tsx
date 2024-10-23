@@ -17,7 +17,7 @@ const ModalDialog = ({
   className,
   footerContent,
   maxWidth,
-  noContentPadding,
+  noContentPadding = false,
   state,
   title,
   testId,
@@ -78,11 +78,6 @@ const ModalDialog = ({
       </Underlay>
     </Overlay>
   )
-}
-
-ModalDialog.defaultProps = {
-  className: '',
-  noContentPadding: false,
 }
 
 const Header = styled.h2<{ showCloseButton?: boolean }>`
