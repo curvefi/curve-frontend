@@ -9,7 +9,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/common/shared/features/features/connect-wallet/lib'
+import { connectWalletLocales } from '@/common/shared/features/connect-wallet'
 import { persister, queryClient } from '@/shared/api/query-client'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
@@ -23,7 +23,7 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { getPageWidthClassName } from '@/ui/utils'
 import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { initOnboard } from '@/common/shared/features/features/connect-wallet/lib/init'
+import { initOnboard } from '@/common/shared/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
