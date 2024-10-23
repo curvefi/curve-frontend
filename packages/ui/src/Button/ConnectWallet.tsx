@@ -45,10 +45,6 @@ function ConnectWallet({
 }
 
 ConnectWallet.displayName = 'ConnectWallet'
-ConnectWallet.defaultProps = {
-  className: '',
-}
-
 const ConnectButton = styled(Button)<{
   status: Status
 }>`

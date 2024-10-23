@@ -73,10 +73,6 @@ export const SelectLocale = ({
 }
 
 SelectLocale.displayName = 'SelectLocale'
-SelectLocale.defaultProps = {
-  className: '',
-}
-
 const MobileButton = styled(Button)`
   align-items: center;
   display: flex;

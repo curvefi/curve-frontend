@@ -137,8 +137,4 @@ const CopyButtonIcon = styled(Icon)`
   top: 2px;
 `
 
-ChipMarket.defaultProps = {
-  className: '',
-}
-
 export default ChipMarket

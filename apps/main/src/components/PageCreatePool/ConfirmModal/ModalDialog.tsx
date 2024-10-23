@@ -14,7 +14,6 @@ import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 
 interface Props extends AriaOverlayProps, AriaDialogProps {
-  className?: string
   footerContent?: React.ReactNode
   maxWidth?: string
   noContentPadding?: boolean
@@ -24,10 +23,9 @@ interface Props extends AriaOverlayProps, AriaDialogProps {
 
 const ModalDialog = ({
   children,
-  className,
   footerContent,
   maxWidth,
-  noContentPadding,
+  noContentPadding = false,
   state,
   title,
   ...props
@@ -84,11 +82,6 @@ const ModalDialog = ({
       </Underlay>
     </Overlay>
   )
-}
-
-ModalDialog.defaultProps = {
-  className: '',
-  noContentPadding: false,
 }
 
 const Header = styled.h3<{ showCloseButton?: boolean }>`

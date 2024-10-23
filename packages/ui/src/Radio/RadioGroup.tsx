@@ -30,10 +30,6 @@ const RadioGroup = ({
   )
 }
 
-RadioGroup.defaultProps = {
-  className: '',
-}
-
 const RadioGroupContainer = styled.div`
   display: flex;
   flex-direction: column;

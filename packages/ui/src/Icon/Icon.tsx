@@ -109,8 +109,4 @@ const Icon = ({ className, name, size, ...props }: IconProps) => {
   return IconSvg ? <IconSvg className={className} size={size} {...props} /> : <></>
 }
 
-Icon.defaultProps = {
-  className: '',
-}
-
 export default Icon

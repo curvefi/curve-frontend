@@ -20,8 +20,6 @@ const Overlay = ({ children, isOpen, ...rest }: React.PropsWithChildren<Props>) 
   )
 }
 
-Overlay.defaultProps = {}
-
 type StyledOverlayProps = {
   isOpen: boolean
 }
