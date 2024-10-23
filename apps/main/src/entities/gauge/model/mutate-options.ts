@@ -29,10 +29,8 @@ import {
 import { gaugeKeys as keys } from './query-keys'
 
 export const getAddRewardTokenMutation = (gauge: GaugeParams) => ({
-  mutationFn: async (params: AddRewardMutation) => {
-    console.log('AddRewardToken', params);
-    return api.mutateAddRewardToken(assertValidity(gaugeAddRewardValidationSuite, { ...gauge, ...params }))
-  },
+  mutationFn: async (params: AddRewardMutation) =>
+    api.mutateAddRewardToken(assertValidity(gaugeAddRewardValidationSuite, { ...gauge, ...params })),
   mutationKey: keys.addRewardToken(gauge),
   meta: {
     queryKeyFn: ({ rewardTokenId, distributorId }: AddRewardParams) =>
