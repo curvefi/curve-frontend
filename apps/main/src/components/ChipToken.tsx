@@ -39,10 +39,6 @@ const ChipTokenCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipTokenProps extends AriaButtonProps {
   className?: string
   isHighlight?: boolean // highlight name if it is part of pool list search result
@@ -128,9 +124,5 @@ const ChipTokenCopyButtonIcon = styled(Icon)`
   top: 1px;
   margin: 0 2px;
 `
-
-ChipToken.defaultProps = {
-  className: '',
-}
 
 export default ChipToken
