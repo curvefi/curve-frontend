@@ -4,9 +4,9 @@ import { getTokensMapperStr } from '@/store/createTokensSlice'
 import useStore from '@/store/useStore'
 import { useChainId } from '@/entities/chain'
 
-const useTokensMapper = (rChainId?: ChainId) => {
+const useTokensMapper = (rChainId?: ChainId | number | null) => {
   const { data: chainId } = useChainId()
-  const _rChainId = rChainId ?? chainId
+  const _rChainId = (rChainId ?? chainId) as ChainId
   const tokensMapper = useStore((state) => state.tokens.tokensMapper[_rChainId] ?? {})
   const tokensMapperStr = useMemo(() => getTokensMapperStr(tokensMapper), [tokensMapper])
   return { tokensMapper, tokensMapperStr }

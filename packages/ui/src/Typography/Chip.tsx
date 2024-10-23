@@ -28,11 +28,6 @@ const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: strin
   return <LabelComp />
 }
 
-Chip.defaultProps = {
-  className: '',
-  tooltipProps: {},
-}
-
 interface LabelProps
   extends Pick<ChipProps, 'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'> {}
 
@@ -79,7 +74,7 @@ const Label = styled.span<LabelProps>`
     }
   }}
 
-  ${({ size }) => {
+  ${({ size = 'sm' }) => {
     if (size === 'xs') {
       return `font-size: var(--font-size-1);`
     } else if (size === 'sm') {
@@ -101,9 +96,5 @@ const Label = styled.span<LabelProps>`
     }
   }
 `
-
-Label.defaultProps = {
-  size: 'sm',
-}
 
 export default Chip

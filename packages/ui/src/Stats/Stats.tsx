@@ -37,10 +37,6 @@ const Stats = ({
   )
 }
 
-Stats.defaultProps = {
-  className: '',
-}
-
 export const Description = styled.p`
   font-size: var(--font-size-2);
   font-weight: 500;

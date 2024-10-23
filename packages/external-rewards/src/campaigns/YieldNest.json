@@ -40,6 +40,54 @@
       "multiplier": "2.5",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "borrow",
+      "description": "null",
+      "campaignStart": "1728993600",
+      "campaignEnd": "1730203199",
+      "address": "0x143985860efaeacb92db23e4b0c4d66be51b08d2",
+      "network": "ethereum",
+      "multiplier": "6",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "borrow",
+      "description": "null",
+      "campaignStart": "1730203200",
+      "campaignEnd": "1770000000",
+      "address": "0x143985860efaeacb92db23e4b0c4d66be51b08d2",
+      "network": "ethereum",
+      "multiplier": "2.5",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "supply",
+      "description": "null",
+      "campaignStart": "1728993600",
+      "campaignEnd": "1730203199",
+      "address": "0x52036c9046247c3358c987a2389ffde6ef8564c9",
+      "network": "ethereum",
+      "multiplier": "6",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "supply",
+      "description": "null",
+      "campaignStart": "1730203200",
+      "campaignEnd": "1770000000",
+      "address": "0x52036c9046247c3358c987a2389ffde6ef8564c9",
+      "network": "ethereum",
+      "multiplier": "2.5",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

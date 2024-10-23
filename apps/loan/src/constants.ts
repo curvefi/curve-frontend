@@ -118,6 +118,20 @@ export const PEG_KEEPERS = {
       ],
     },
   },
+  '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
+    address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
+    token: 'USDM',
+    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-stable-ng-154/deposit',
+    pool: {
+      id: 'factory-stable-ng-154',
+      name: 'crvUSD/USDM',
+      underlyingCoins: ['USDM', 'crvUSD'],
+      underlyingCoinAddresses: [
+        '0x59d9356e565ab3a36dd77763fc0d87feaf85508c',
+        '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
+      ],
+    },
+  },
 }
 
 export const PEG_KEEPERS_ADDRESSES = Object.keys(PEG_KEEPERS)

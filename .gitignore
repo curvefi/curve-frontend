@@ -46,9 +46,6 @@ yarn-error.log*
 # husky
 .husky
 
-# vercel
-.vercel
-
 # lingui compiled translation files
 src/locales/_build/
 src/locales/**/*.js
