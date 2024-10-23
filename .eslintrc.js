@@ -4,7 +4,7 @@ module.exports = {
   extends: ['custom'],
   settings: {
     next: {
-      rootDir: ['apps/*/', 'packages/ui/*/', 'packages/curve-features/*/']
+      rootDir: ['apps/*/', 'packages/ui/*/', 'packages/curve-common/*/']
     }
   },
   overrides: [

@@ -8,7 +8,7 @@ import 'focus-visible'
 import '@/globals.css'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/shared/features/connect-wallet/lib'
+import { connectWalletLocales } from '@/common/shared/features/connect-wallet/lib'
 import { persister, queryClient } from '@/shared/api/query-client'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
@@ -21,7 +21,7 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
-import { initOnboard } from '@/shared/features/connect-wallet'
+import { initOnboard } from '@/common/shared/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
