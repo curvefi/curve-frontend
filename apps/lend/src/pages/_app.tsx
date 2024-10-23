@@ -2,14 +2,14 @@ import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import { initOnboard } from 'onboard-helpers'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { useCallback, useEffect, useState } from 'react'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
 import { HashRouter } from 'react-router-dom'
+import type { AppProps } from 'next/app'
+import { connectWalletLocales } from '@/shared/features/connect-wallet/lib'
+import { persister, queryClient } from '@/shared/api/query-client'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
@@ -17,10 +17,11 @@ import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
+import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
-import type { AppProps } from 'next/app'
+import { initOnboard } from '@/shared/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -72,10 +73,7 @@ function CurveApp({ Component }: AppProps) {
 
     // init onboard
     const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
+      connectWalletLocales,
       locale,
       themeType,
       networks

@@ -5,9 +5,7 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-import { initOnboard } from 'onboard-helpers'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
+import { connectWalletLocales } from '@/shared/features/connect-wallet/lib'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import { REFRESH_INTERVAL } from '@/constants'
@@ -24,6 +22,7 @@ import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import type { AppProps } from 'next/app'
+import { initOnboard } from '@/shared/features/connect-wallet/lib/init'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -57,15 +56,7 @@ function CurveApp({ Component }: AppProps) {
         theme = 'dark'
       }
 
-      const onboardInstance = initOnboard(
-        {
-          'zh-Hans': zhHans,
-          'zh-Hant': zhHant,
-        },
-        locale,
-        theme,
-        networks
-      )
+      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
       updateWalletStateByKey('onboard', onboardInstance)
     },
     [updateWalletStateByKey]
@@ -102,15 +93,7 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
