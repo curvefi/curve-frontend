@@ -1,17 +1,12 @@
 import type { PageMarketList } from '@/components/PageMarketList/types'
 
-import React from 'react'
-import { t } from '@lingui/macro'
-import styled from 'styled-components'
+import React, { useMemo } from 'react'
 
 import { Filter } from '@/components/PageMarketList/utils'
-import { shortenAccount } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import AlertBox from '@/ui/AlertBox'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import ExternalLink from 'ui/src/Link/ExternalLink'
+import { shortenAccount } from '@/ui/utils'
+import TrNoResult, { type TrNoResultProps } from '@/ui/Table/TrNoResult'
 
 const MarketListNoResult = ({
   searchParams,
@@ -20,42 +15,26 @@ const MarketListNoResult = ({
 }: Pick<PageMarketList, 'searchParams' | 'updatePath'> & { signerAddress: string | undefined }) => {
   const owmDatasError = useStore((state) => state.markets.error)
 
-  return (
-    <TableRowNotFound>
-      {owmDatasError ? (
-        <Box flex flexJustifyContent="center">
-          <AlertBox alertType="error">{t`Unable to retrieve markets`}</AlertBox>
-        </Box>
-      ) : searchParams.searchText.length > 0 ? (
-        <>
-          {t`No market found for "${searchParams.searchText}". Feel free to search other tabs, or`}{' '}
-          <Button variant="text" onClick={() => updatePath({ searchText: '' })}>
-            {t`view all markets.`}
-          </Button>
-        </>
-      ) : searchParams.filterKey === 'user' && signerAddress ? (
-        <>
-          {t`No market found for "${shortenAccount(signerAddress)}".`}
-          <br />{' '}
-          <Button variant="text" onClick={() => updatePath({ filterKey: Filter.all })}>
-            {t`view all markets`}
-          </Button>
-        </>
-      ) : (
-        <>
-          {t`Didn't find what you're looking for?`}{' '}
-          <ExternalLink $noStyles href="https://t.me/curvefi">
-            {t`Join the Telegram`}
-          </ExternalLink>
-        </>
-      )}
-    </TableRowNotFound>
-  )
-}
+  const { searchText, filterKey } = searchParams
 
-const TableRowNotFound = styled.div`
-  padding: var(--spacing-5);
-  text-align: center;
-`
+  const props = useMemo<Pick<TrNoResultProps, 'noResultKey' | 'value' | 'action'>>(() => {
+    if (searchText) return { noResultKey: 'search', value: searchText, action: () => updatePath({ searchText: '' }) }
+    if (owmDatasError) return { noResultKey: 'api', value: '' }
+
+    if (filterKey === 'user' && !!signerAddress)
+      return {
+        noResultKey: 'filter',
+        value: shortenAccount(signerAddress),
+        action: () => updatePath({ filterKey: Filter.all }),
+      }
+
+    if (filterKey)
+      return { noResultKey: 'filter', value: filterKey, action: () => updatePath({ filterKey: Filter.all }) }
+
+    return { noResultKey: '', value: '' }
+  }, [filterKey, owmDatasError, searchText, signerAddress, updatePath])
+
+  return <TrNoResult type="market" {...props} />
+}
 
 export default MarketListNoResult

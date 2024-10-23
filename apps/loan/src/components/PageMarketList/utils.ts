@@ -1,13 +1,20 @@
-import startsWith from 'lodash/startsWith'
+import type { SearchParams, SearchTermsResult } from '@/components/PageMarketList/types'
+import type { SearchTermsFuseResult } from '@/shared/curve-lib'
 
-export function isStartPartOrEnd(searchString: string, string: string) {
-  return startsWith(string, searchString) || string.includes(searchString) || string === searchString
+export const DEFAULT_SEARCH_PARAMS: SearchParams = {
+  sortBy: 'totalBorrowed',
+  sortByOrder: 'desc',
+  searchText: '',
 }
 
-export function parsedSearchTextToList(searchText: string) {
-  return searchText
-    .toLowerCase()
-    .split(searchText.indexOf(',') !== -1 ? ',' : ' ')
-    .filter((st) => st !== '')
-    .map((st) => st.trim())
+export function parseSearchTermResults(searchedTermsResults: SearchTermsFuseResult<CollateralData>) {
+  return searchedTermsResults.reduce((prev, r) => {
+    if (!r.matches) return prev
+    prev[r.item.llamma.id] = r.matches.reduce((prev, { key, value = '' }) => {
+      if (!key || !value) return prev
+      prev[key] = { value }
+      return prev
+    }, {} as { [k: string]: { value: string } })
+    return prev
+  }, {} as SearchTermsResult)
 }

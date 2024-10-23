@@ -1,4 +1,5 @@
 import { Filter, FilterType } from '@/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 
 export type FormStatus = {
   error: string
@@ -9,6 +10,9 @@ export type FormStatus = {
 export type FilterKey = keyof typeof Filter
 export type FilterTypeKey = keyof typeof FilterType
 export type FilterListProps = { id: string; displayName: string }
+export type SearchTermKey = keyof typeof SEARCH_TERM
+export type SearchTermMapper = Record<SearchTermKey, { label?: string; isTokenAddress?: boolean }>
+export type SearchTermResult = { [id: string]: { [key: string]: { value: string } } }
 export interface FilterTypeMapper extends Record<FilterType, FilterListProps> {}
 
 export type PageMarketList = {
@@ -18,6 +22,7 @@ export type PageMarketList = {
   searchParams: SearchParams
   filterList: FilterListProps[]
   filterTypeMapper: FilterTypeMapper
+  searchTermMapper: SearchTermMapper
   titleMapper: TitleMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
@@ -54,6 +59,7 @@ export type TableSettings = {
 }
 
 export type TableProps = MarketListItemResult & {
+  className?: string
   pageProps: PageMarketList
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
@@ -70,11 +76,12 @@ export type TableLabel = {
   show?: boolean
 }
 
-export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'titleMapper'> & {
+export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchTermMapper' | 'titleMapper'> & {
   owmId: string
   owmDataCachedOrApi: OWMDataCacheOrApi
   filterTypeKey: FilterTypeKey
   loanExists: boolean
+  searchParams: SearchParams
   showBorrowSignerCell: boolean
   showSupplySignerCell: boolean
   userActiveKey: string

@@ -7,9 +7,9 @@ import TableButtonFiltersMobileItemIcon from './TableButtonFiltersMobileItemIcon
 const TableButtonFiltersMobileItem = ({ item }: { item: { id: string; displayName: string; color?: string } }) => {
   const { id, displayName, color } = item
   return (
-    <StyledRadio key={id} aria-label={`filter pool list by ${displayName}`} value={id}>
+    <StyledRadio key={id} aria-label={`filter by ${displayName}`} value={id}>
       {color && <TableButtonFiltersMobileItemIcon color={color} />}
-      {displayName}
+      <strong>{displayName}</strong>
     </StyledRadio>
   )
 }
