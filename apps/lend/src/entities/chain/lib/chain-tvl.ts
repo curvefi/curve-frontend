@@ -1,9 +1,9 @@
-import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
-import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import { useTokenUsdRates } from '@/entities/token/lib'
+import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
 import { calculateChainTvl } from '../model'
 import { useOneWayMarketMapping } from './data-hooks'
+import useStore from '@/store/useStore'
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
   const marketMapping = useOneWayMarketMapping(chainId).data

@@ -1,7 +1,7 @@
 import { TokenParams } from '@/entities/token'
 import { queryTokenUsdRate } from '@/entities/token/api'
-import { tokenValidationSuite } from '@/entities/token/model'
 import { queryFactory, rootKeys } from '@/shared/model/query'
+import { tokenValidationSuite } from './validation'
 
 const root = ({ chainId, tokenAddress }: TokenParams) => [...rootKeys.chain({chainId}), 'token', { tokenAddress }] as const
 
