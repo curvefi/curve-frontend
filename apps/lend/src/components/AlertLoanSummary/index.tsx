@@ -10,9 +10,9 @@ import SummaryPartial from '@/components/AlertLoanSummary/components/SummaryPart
 import SummarySelfLiquidate from '@/components/AlertLoanSummary/components/SummarySelfLiquidate'
 import SummaryChange from '@/components/AlertLoanSummary/components/SummaryChange'
 
-const AlertLoanSummary = ({ borrowed_token, collateral_token, type, ...props }: AlertSummaryProps) => {
-  const { symbol: collateralSymbol = '' } = collateral_token ?? {}
-  const { symbol: borrowedSymbol = '' } = borrowed_token ?? {}
+const AlertLoanSummary = ({ market, type, ...props }: AlertSummaryProps) => {
+  const { symbol: collateralSymbol = '' } = market?.collateral_token ?? {}
+  const { symbol: borrowedSymbol = '' } = market?.borrowed_token ?? {}
 
   const message = {
     repayAndClose: t`Repay and Close Loan Details:`,

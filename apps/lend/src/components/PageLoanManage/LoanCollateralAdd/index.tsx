@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanCollateralAdd/types'
+import type { FormStatus, FormValues, StepKey } from '@/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 
@@ -27,15 +27,15 @@ import InpToken from '@/components/InpToken'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanCollateralAdd = ({
   rChainId,
   rOwmId,
   api,
   isLoaded,
-  owmData,
+  market,
   userActiveKey,
-  collateral_token,
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
@@ -62,17 +62,17 @@ const LoanCollateralAdd = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
-      setFormValues(isLoaded ? api : null, owmData, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
+      setFormValues(isLoaded ? api : null, market, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
     },
-    [api, isLoaded, owmData, setFormValues]
+    [api, isLoaded, market, setFormValues]
   )
 
   const handleBtnClickAdd = useCallback(
-    async (payloadActiveKey: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const { chainId } = api
 
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-      const resp = await fetchStepIncrease(payloadActiveKey, api, owmData, formValues)
+      const resp = await fetchStepIncrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -89,27 +89,25 @@ const LoanCollateralAdd = ({
     (
       payloadActiveKey: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
       steps: Step[]
     ) => {
       const { signerAddress } = api
-      const { owm } = owmData
       const { collateral, collateralError } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
 
       const isValid = !!signerAddress && !formEstGas?.loading && +collateral > 0 && !collateralError && !error
 
       if (+collateral > 0) {
-        const notifyMessage = t`deposit ${formValues.collateral} ${owm.collateral_token.symbol}.`
+        const notifyMessage = t`deposit ${formValues.collateral} ${market.collateral_token.symbol}.`
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
               pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
+              market={market}
               receive={formValues.collateral}
               userState={userDetails?.state}
               userWallet={userBalances}
@@ -128,10 +126,10 @@ const LoanCollateralAdd = ({
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const notifyMessage = t`Please approve spending of ${owm.collateral_token.symbol}`
+            const notifyMessage = t`Please approve spending of ${market.collateral_token.symbol}`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, api, owmData, formValues)
+            await fetchStepApprove(payloadActiveKey, api, market, formValues)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -140,7 +138,7 @@ const LoanCollateralAdd = ({
           status: helpers.getStepStatus(isComplete, step === 'ADD', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Collateral Added` : t`Add Collateral`,
-          onClick: async () => handleBtnClickAdd(payloadActiveKey, api, owmData, formValues),
+          onClick: async () => handleBtnClickAdd(payloadActiveKey, api, market, formValues),
         },
       }
 
@@ -176,8 +174,8 @@ const LoanCollateralAdd = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData) {
-      const updatedSteps = getSteps(activeKey, api, owmData, formEstGas, formStatus, formValues, steps)
+    if (isLoaded && api && market) {
+      const updatedSteps = getSteps(activeKey, api, market, formEstGas, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -196,8 +194,8 @@ const LoanCollateralAdd = ({
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
           inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.collateral}
-          tokenAddress={collateral_token?.address}
-          tokenSymbol={collateral_token?.symbol}
+          tokenAddress={market?.collateral_token?.address}
+          tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
           handleInpChange={(collateral) => updateFormValues({ collateral })}
           handleMaxClick={() => updateFormValues({ collateral: userBalances?.collateral ?? '' })}

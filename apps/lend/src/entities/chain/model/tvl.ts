@@ -1,7 +1,10 @@
+import { IDict } from '@curvefi/lending-api/lib/interfaces'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+
 export function calculateChainTvl(
-  owmDatasMapper: OWMDatasMapper,
+  marketMapping: IDict<OneWayMarketTemplate>,
   marketsCollateralMapper: MarketsStatsAMMBalancesMapper,
-  tokenUsdRates: Record<string, number>,
+  tokenUsdRates: IDict<number>,
   marketsTotalDebtMapper: MarketsStatsTotalsMapper,
   marketsTotalSupplyMapper: MarketsTotalLiquidityMapper,
 ) {
@@ -9,9 +12,7 @@ export function calculateChainTvl(
   let totalLiquidity = 0
   let totalDebt = 0
 
-  Object.values(owmDatasMapper).forEach(({ owm }) => {
-    const { id, collateral_token } = owm
-
+  Object.values(marketMapping).forEach(({ id, collateral_token }) => {
     const ammBalance = marketsCollateralMapper[id] ?? {}
     const collateralUsdRate = tokenUsdRates[collateral_token.address] ?? 0
     const marketTotalCollateralUsd = +(ammBalance?.collateral ?? '0') * collateralUsdRate

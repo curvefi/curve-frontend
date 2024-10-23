@@ -1,12 +1,5 @@
-import { ChainQueryParams } from '@/entities/chain/types'
-import type { ExtractQueryKeyType } from '@/shared/types/api'
-import { tokenKeys } from '@/entities/token/model'
+import { FieldsOf } from '@/shared/lib/validation'
+import { ChainQuery } from '@/shared/model/query'
 
-export type TokenQueryParams = ChainQueryParams & {
-  tokenAddress?: string
-}
-
-export type CombinedTokenParams = TokenQueryParams
-
-export type TokenKey = keyof typeof tokenKeys
-export type TokenQueryKeyType<K extends TokenKey = TokenKey> = ExtractQueryKeyType<typeof tokenKeys, K>
+export type TokenQuery = ChainQuery & { tokenAddress: string };
+export type TokenParams = FieldsOf<TokenQuery>;

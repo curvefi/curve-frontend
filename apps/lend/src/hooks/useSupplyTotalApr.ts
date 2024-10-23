@@ -4,13 +4,14 @@ import useStore from '@/store/useStore'
 import { INVALID_ADDRESS } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { getTotalApr } from '@/utils/utilsRewards'
+import { useOneWayMarket } from '@/entities/chain'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
-  const { gauge } = owmData?.owm?.addresses ?? {}
+  const { gauge } = market?.addresses ?? {}
   const { error: rewardsError } = marketRewardsResp ?? {}
   const { error: ratesError } = marketRatesResp ?? {}
 

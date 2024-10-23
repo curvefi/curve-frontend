@@ -33,17 +33,15 @@ import InpToken from '@/components/InpToken'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanRepay = ({
   rChainId,
   rOwmId,
   isLoaded,
   api,
-  owmData,
-  owmDataCachedOrApi,
+  market,
   userActiveKey,
-  borrowed_token,
-  collateral_token,
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const params = useParams()
@@ -73,6 +71,7 @@ const LoanRepay = ({
 
   const { signerAddress } = api ?? {}
   const { state } = userLoanDetails || {}
+  const { borrowed_token, collateral_token } = market ?? {}
   const { decimals: borrowedTokenDecimals } = borrowed_token ?? {}
   const { expectedBorrowed } = detailInfoLeverage ?? {}
 
@@ -84,17 +83,17 @@ const LoanRepay = ({
       shouldRefetch?: boolean
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      setFormValues(isLoaded ? api : null, owmData, updatedFormValues, updatedMaxSlippage || maxSlippage, shouldRefetch)
+      setFormValues(isLoaded ? api : null, market, updatedFormValues, updatedMaxSlippage || maxSlippage, shouldRefetch)
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLoaded, maxSlippage, owmData, setFormValues]
+    [api, isLoaded, maxSlippage, market, setFormValues]
   )
 
   const handleBtnClickPay = useCallback(
-    async (payloadActiveKey: string, api: Api, owmData: OWMData, formValues: FormValues, maxSlippage: string) => {
+    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string) => {
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-      const resp = await fetchStepRepay(payloadActiveKey, api, owmData, formValues, maxSlippage)
+      const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -123,7 +122,7 @@ const LoanRepay = ({
     (
       payloadActiveKey: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       healthMode: HealthMode,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
@@ -133,8 +132,7 @@ const LoanRepay = ({
       priceImpact: string
     ) => {
       const { signerAddress } = api
-      const { owm } = owmData
-      const { borrowed_token, collateral_token } = owm
+      const { borrowed_token, collateral_token } = market
       const { isFullRepay, stateCollateral, userBorrowed } = formValues
       const { error, isApproved, isApprovedCompleted, isComplete, isInProgress, step } = formStatus
       const { haveValues, haveFormErrors, swapRequired, getStepTokensStr } = _parseValues(formValues)
@@ -148,7 +146,7 @@ const LoanRepay = ({
         !error
 
       if (haveValues) {
-        const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolAndAmountList
+        const tokensMessage = getStepTokensStr(formValues, market).symbolAndAmountList
         const notifyMessage = swapRequired
           ? t`Repay with ${tokensMessage} at max slippage ${maxSlippage}%.`
           : isFullRepay
@@ -164,8 +162,7 @@ const LoanRepay = ({
               formValueUserBorrowed={userBorrowed}
               userState={state}
               userWallet={userBalances}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
+              market={market}
               type={detailInfoLeverage?.repayIsFull || isFullRepay ? 'full' : 'partial'}
             />
           </AlertBox>
@@ -181,11 +178,11 @@ const LoanRepay = ({
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const tokensMessage = getStepTokensStr(formValues, owmData.owm).symbolList
+            const tokensMessage = getStepTokensStr(formValues, market).symbolList
             const notifyMessage = t`Please approve spending your ${tokensMessage}`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, api, owmData, formValues, maxSlippage)
+            await fetchStepApprove(payloadActiveKey, api, market, formValues, maxSlippage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -218,14 +215,14 @@ const LoanRepay = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickPay(payloadActiveKey, api, owmData, formValues, maxSlippage),
+                    onClick: () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
                     disabled: !confirmedWarning,
                   },
                   primaryBtnLabel: t`Repay anyway`,
                 },
               }
             : {
-                onClick: async () => handleBtnClickPay(payloadActiveKey, api, owmData, formValues, maxSlippage),
+                onClick: async () => handleBtnClickPay(payloadActiveKey, api, market, formValues, maxSlippage),
               }),
         },
       }
@@ -295,11 +292,11 @@ const LoanRepay = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData) {
+    if (isLoaded && api && market) {
       const updatedSteps = getSteps(
         activeKey,
         api,
-        owmData,
+        market,
         healthMode,
         formEstGas,
         formStatus,
@@ -327,7 +324,7 @@ const LoanRepay = ({
     userBalances,
   ])
 
-  const hasLeverage = owmDataCachedOrApi?.hasLeverage
+  const hasLeverage = market?.leverage?.hasLeverage()
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disable = formStatus.isInProgress
   const isFullRepay = formValues.isFullRepay || (detailInfoLeverage?.repayIsFull ?? false)
@@ -429,8 +426,8 @@ const LoanRepay = ({
                 return
               }
 
-              if (api && owmData && userBalances && state?.debt && borrowedTokenDecimals) {
-                const { userLoanDetailsResp } = await fetchAllUserDetails(api, owmData, true)
+              if (api && market && userBalances && state?.debt && borrowedTokenDecimals) {
+                const { userLoanDetailsResp } = await fetchAllUserDetails(api, market, true)
                 const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
                   userLoanDetailsResp?.details?.state ?? {}
 
@@ -480,8 +477,7 @@ const LoanRepay = ({
           isFullRepay={isFullRepay}
           steps={steps}
           userActiveKey={userActiveKey}
-          borrowed_token={borrowed_token}
-          collateral_token={collateral_token}
+          market={market}
           setHealthMode={setHealthMode}
         />
       </StyledDetailInfoWrapper>

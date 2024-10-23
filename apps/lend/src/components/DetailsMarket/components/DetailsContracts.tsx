@@ -14,14 +14,12 @@ type ContractItems = { label: string | React.ReactNode; address: string | undefi
 
 const DetailsContracts = ({
   rChainId,
-  owmDataCachedOrApi,
-  borrowed_token,
-  collateral_token,
+  market,
   type,
-}: Pick<PageContentProps, 'rChainId' | 'owmDataCachedOrApi' | 'borrowed_token' | 'collateral_token'> & {
+}: Pick<PageContentProps, 'rChainId' | 'market'> & {
   type: 'borrow' | 'supply'
 }) => {
-  const { addresses } = owmDataCachedOrApi?.owm ?? {}
+  const { addresses, borrowed_token, collateral_token } = market ?? {};
 
   // prettier-ignore
   let contracts: { borrow: ContractItems[], supply: ContractItems[] } = {
