@@ -12,34 +12,32 @@
 
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
-import { gaugeKeys } from '@/entities/gauge/model'
 import { FieldsOf } from '@/shared/lib/validation'
-import { GaugeParams, GaugeQuery, PoolQuery } from '@/shared/model/query'
-import type { ExtractQueryKeyType } from '@/shared/types/api'
+import { GaugeParams, GaugeQuery } from '@/shared/model/query'
 import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 
-export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ExtractQueryKeyType<typeof gaugeKeys, K>
-
-export type AddRewardQuery = PoolQuery & {
+export type AddReward = {
   rewardTokenId: Address
   distributorId: Address
 }
+export type AddRewardQuery = GaugeQuery & AddReward
 export type AddRewardParams = FieldsOf<AddRewardQuery>
+export type AddRewardMutation = FieldsOf<AddReward>
 
-export type DepositRewardApproveQuery = PoolQuery & {
+export type DepositRewardApprove = {
   rewardTokenId: Address
   amount: number | string
 }
+export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
 export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
+export type DepositRewardApproveMutation = FieldsOf<DepositRewardApprove>
 
-export type DepositRewardQuery = PoolQuery & {
-  rewardTokenId: Address
-  amount: number | string
+export type DepositReward = DepositRewardApprove & {
   epoch: number | string
 }
+export type DepositRewardQuery = GaugeQuery & DepositReward
 export type DepositRewardParams = FieldsOf<DepositRewardQuery>
+export type DepositRewardMutation = FieldsOf<DepositReward>
 
-type Nullable<T> = {[K in keyof T]?: T[K] | null} // todo: get rid of this after implementing query factory
-export type CombinedGaugeParams = Nullable<GaugeQuery> & AddRewardParams & DepositRewardApproveParams & DepositRewardParams
