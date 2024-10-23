@@ -11,51 +11,51 @@
  */
 
 import * as api from '@/entities/gauge/api'
-import { gaugeKeys as keys } from '@/entities/gauge/model'
 import type {
+  AddRewardMutation,
   AddRewardParams,
+  DepositRewardApproveMutation,
   DepositRewardApproveParams,
-  DepositRewardParams,
-  GaugeQueryParams,
+  DepositRewardMutation,
+  DepositRewardParams
 } from '@/entities/gauge/types'
+import { assertValidity } from '@/shared/lib/validation'
+import { GaugeParams } from '@/shared/model/query'
+import {
+  gaugeAddRewardValidationSuite,
+  gaugeDepositRewardApproveValidationSuite,
+  gaugeDepositRewardValidationSuite,
+} from './gauge-validation'
+import { gaugeKeys as keys } from './query-keys'
 
-export const getAddRewardTokenMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
-  mutationFn: async ({ rewardTokenId, distributorId }: AddRewardParams) =>
-    api.mutateAddRewardToken(keys.addRewardToken({ chainId, poolId, rewardTokenId, distributorId })),
-  mutationKey: keys.addRewardToken({ chainId, poolId }),
+export const getAddRewardTokenMutation = (gauge: GaugeParams) => ({
+  mutationFn: async (params: AddRewardMutation) => {
+    console.log('AddRewardToken', params);
+    return api.mutateAddRewardToken(assertValidity(gaugeAddRewardValidationSuite, { ...gauge, ...params }))
+  },
+  mutationKey: keys.addRewardToken(gauge),
   meta: {
     queryKeyFn: ({ rewardTokenId, distributorId }: AddRewardParams) =>
-      keys.addRewardToken({
-        chainId,
-        poolId,
-        rewardTokenId,
-        distributorId,
-      }),
-  },
+      keys.addRewardToken({ rewardTokenId, distributorId, ...gauge })
+  }
 })
 
-export const getDepositRewardApproveMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
-  mutationFn: async ({ rewardTokenId, amount }: DepositRewardApproveParams) =>
-    api.mutateDepositRewardApprove(keys.depositRewardApprove({ chainId, poolId, rewardTokenId, amount })),
-  mutationKey: keys.depositRewardApprove({ chainId, poolId }),
+export const getDepositRewardApproveMutation = (gauge: GaugeParams) => ({
+  mutationFn: async (params: DepositRewardApproveMutation) =>
+    api.mutateDepositRewardApprove(assertValidity(gaugeDepositRewardApproveValidationSuite, { ...gauge, ...params })),
+  mutationKey: keys.depositRewardApprove(gauge),
   meta: {
-    queryKeyFn: ({ rewardTokenId, amount }: DepositRewardApproveParams) =>
-      keys.depositRewardApprove({ chainId, poolId, rewardTokenId, amount }),
-  },
+    queryKeyFn: (params: DepositRewardApproveParams) =>
+      keys.depositRewardApprove({ ...gauge, ...params })
+  }
 })
 
-export const getDepositRewardMutation = ({ chainId, poolId }: GaugeQueryParams) => ({
-  mutationFn: async ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
-    api.mutateDepositReward(keys.depositReward({ chainId, poolId, rewardTokenId, amount, epoch })),
-  mutationKey: keys.depositReward({ chainId, poolId }),
+export const getDepositRewardMutation = (gauge: GaugeParams) => ({
+  mutationFn: async (params: DepositRewardMutation) =>
+    api.mutateDepositReward(assertValidity(gaugeDepositRewardValidationSuite, { ...gauge, ...params })),
+  mutationKey: keys.depositReward(gauge),
   meta: {
     queryKeyFn: ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
-      keys.depositReward({
-        chainId,
-        poolId,
-        rewardTokenId,
-        amount,
-        epoch,
-      }),
-  },
+      keys.depositReward({ rewardTokenId, amount, epoch, ...gauge })
+  }
 })

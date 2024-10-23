@@ -1,29 +1,28 @@
+import { t } from '@lingui/macro'
+import { FunctionComponent, useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
+import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
+import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
+import { REFRESH_INTERVAL } from '@/constants'
+import networks from '@/networks'
 import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
 import TxInfoBar from '@/ui/TxInfoBar'
-import { t } from '@lingui/macro'
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { REFRESH_INTERVAL } from '@/constants'
-import networks from '@/networks'
-import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
-import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
 
 type TxInfo = {
   description: string
   txHash: string
 }
 
-export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const {
     formState: { isValid, isSubmitting },
     watch,
     setValue,
     getValues,
     setError,
-    reset,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
 
@@ -34,15 +33,11 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
   const {
     mutate: depositRewardApprove,
     isPending: isPendingDepositRewardApprove,
-    isSuccess: isSuccessDepositRewardApprove,
-    data: depositRewardApproveData,
   } = useDepositRewardApprove({ chainId, poolId })
 
   const {
     mutate: depositReward,
     isPending: isPendingDepositReward,
-    isSuccess: isSuccessDepositReward,
-    data: depositRewardData,
   } = useDepositReward({ chainId, poolId })
 
   const [latestTxInfo, setLatestTxInfo] = useState<TxInfo | null>(null)

@@ -15066,6 +15066,7 @@ __metadata:
     ethers: "npm:^6.11.0"
     react: "npm:^18.2.0"
     tsconfig: "npm:*"
+    type-fest: "npm:^4.26.1"
   peerDependencies:
     eslint: "*"
     eslint-config-custom: "*"
