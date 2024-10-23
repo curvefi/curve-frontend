@@ -55,7 +55,7 @@ This repository is organized as follows:
 - `/tests`: DApp tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@/shared/ui`
 - `/packages/curve-lib`: Shared logic for the DApps, mapped as `@/shared/lib`
-- `/packages/curve-common`: List of features for the DApps, mapped as `@/common/shared/features`
+- `/packages/curve-common`: List of features for the DApps, mapped as `@/common`
 
 ## Development Guide
 
