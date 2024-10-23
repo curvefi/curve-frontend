@@ -2,15 +2,15 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useMemo } from 'react'
 import { chainValidationSuite } from '@/entities/chain/model'
 import { checkValidity } from '@/shared/lib/validation'
-import { useApi } from './chain-info'
 import { useOneWayMarketNames } from './query-hooks'
 import networks from '@/networks'
+import useStore from '@/store/useStore'
 
 export const useOneWayMarketMapping = (chainId: ChainId) => {
   const chainValid = checkValidity(chainValidationSuite, { chainId }); // extra check to make sure the API is loaded before we use stale market names
 
   const { data: marketNames, ...rest } = useOneWayMarketNames({ chainId })
-  const { data: api } = useApi();
+  const api = useStore((state) => state.api)
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(() =>
     chainValid && marketNames && api ? Object.fromEntries(
       marketNames
