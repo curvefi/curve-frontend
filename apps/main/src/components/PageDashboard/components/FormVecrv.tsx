@@ -197,10 +197,6 @@ const FormVecrv = ({
   )
 }
 
-FormVecrv.defaultProps = {
-  className: '',
-}
-
 const AdjustVecrvLink = styled(InternalLink)`
   color: inherit;
   font-weight: bold;

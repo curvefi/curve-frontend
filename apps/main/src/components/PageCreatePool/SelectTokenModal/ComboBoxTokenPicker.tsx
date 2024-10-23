@@ -45,7 +45,7 @@ const ComboBoxTokenPicker = ({
   chainId,
   imageBaseUrl,
   selectedAddress,
-  tokens,
+  tokens = [],
   onSelectionChange,
 }: Props) => {
   const visibleTokens = useRef<{ [k: string]: boolean }>({})
@@ -305,11 +305,6 @@ const ComboBoxTokenPicker = ({
       <Spinner size={15} />
     </StyledSpinnerWrapper>
   )
-}
-
-ComboBoxTokenPicker.defaultProps = {
-  tokens: [],
-  tokensMapper: {},
 }
 
 const ItemWrapper = styled(LazyItem)`

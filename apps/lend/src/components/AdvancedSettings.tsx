@@ -205,10 +205,6 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: React.P
   )
 }
 
-AdvancedSettings.defaultProps = {
-  className: '',
-}
-
 const StyledFooter = styled(Box)`
   margin-top: 1rem;
 `

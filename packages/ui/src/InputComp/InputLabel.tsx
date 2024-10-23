@@ -49,10 +49,6 @@ const InputLabel = ({
   )
 }
 
-InputLabel.defaultProps = {
-  className: '',
-}
-
 const StyledLabel = styled.label<{ descriptionLoading: boolean }>`
   display: inline-block;
   font-size: var(--font-size-1);

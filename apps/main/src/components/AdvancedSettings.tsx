@@ -221,10 +221,6 @@ export const AdvancedSettings = ({
   )
 }
 
-AdvancedSettings.defaultProps = {
-  className: '',
-}
-
 const StyledFooter = styled(Box)`
   margin-top: 1rem;
 `

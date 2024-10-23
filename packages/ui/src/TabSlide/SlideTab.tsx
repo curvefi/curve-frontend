@@ -41,10 +41,6 @@ export const SlideTab = ({ className, disabled, label, tabIdx, tabLeft, tabWidth
   )
 }
 
-SlideTab.defaultProps = {
-  className: '',
-}
-
 const Label = styled.label`
   display: inline-block;
   padding: 0 var(--spacing-2);
