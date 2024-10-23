@@ -1,0 +1,24 @@
+{
+  "extends": "tsconfig/ui.json",
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
+  },
+  "exclude": ["node_modules"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "vite.config.mts",
+    "**/*.d.ts",
+    "src/shared/api/figma-tokens/validation/validate-figma-tokens.js"
+  ]
+}
