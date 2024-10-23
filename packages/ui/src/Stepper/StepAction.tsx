@@ -74,10 +74,6 @@ const StepAction = ({ className, step }: { className?: string; step: Step }) => 
   )
 }
 
-StepAction.defaultProps = {
-  className: '',
-}
-
 const StepBox = styled.div`
   padding: var(--spacing-1) var(--spacing-2);
   min-height: var(--height-large);

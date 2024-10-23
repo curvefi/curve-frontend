@@ -26,7 +26,7 @@ type PoolListProps = {
 const PoolLabel = ({
   className,
   imageBaseUrl,
-  isVisible,
+  isVisible = true,
   poolData,
   poolListProps,
 }: {
@@ -144,11 +144,6 @@ const PoolLabel = ({
       )}
     </div>
   )
-}
-
-PoolLabel.defaultProps = {
-  className: '',
-  isVisible: true,
 }
 
 const IconsWrapper = styled.div`

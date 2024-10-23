@@ -183,10 +183,6 @@ const MySharesStats = ({
   )
 }
 
-MySharesStats.defaultProps = {
-  className: '',
-}
-
 const StyledStats = styled(Stats)`
   margin: 0;
 `

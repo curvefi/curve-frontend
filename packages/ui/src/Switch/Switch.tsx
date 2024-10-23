@@ -35,10 +35,6 @@ function Switch(props: Props) {
   )
 }
 
-Switch.defaultProps = {
-  className: '',
-}
-
 const FocusRing = styled.rect`
   stroke: var(--focus);
   stroke-width: 2;

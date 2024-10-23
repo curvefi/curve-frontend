@@ -51,10 +51,6 @@ const SelectThemes = ({
   )
 }
 
-SelectThemes.defaultProps = {
-  className: '',
-}
-
 type StyledIconButtonProps = {
   hasTitle?: boolean
 }

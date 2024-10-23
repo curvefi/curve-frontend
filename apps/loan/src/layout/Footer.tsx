@@ -74,10 +74,6 @@ export const CommunitySection = ({
   </CommunityWrapper>
 )
 
-CommunitySection.defaultProps = {
-  className: '',
-}
-
 interface ResourcesSectionProps extends InnerSectionProps {
   chainId: ChainId | null
 }
@@ -119,10 +115,6 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
       </SectionItem>
     </ResourcesWrapper>
   )
-}
-
-ResourcesSection.defaultProps = {
-  className: '',
 }
 
 const Footer = ({ chainId }: { chainId: ChainId }) => {
