@@ -46,10 +46,6 @@ export function SelectNetwork<T extends object>({
 }
 
 SelectNetwork.displayName = 'SelectNetwork'
-SelectNetwork.defaultProps = {
-  className: '',
-}
-
 const IconWrapper = styled.span`
   align-items: center;
   display: flex;

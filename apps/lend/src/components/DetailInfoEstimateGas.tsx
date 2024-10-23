@@ -27,7 +27,7 @@ interface Props {
   stepProgress?: StepProgress | null
 }
 
-const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, stepProgress }: Props) => {
+const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: CRVUSD_ADDRESS })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
@@ -86,10 +86,6 @@ const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, step
       )}
     </DetailInfo>
   )
-}
-
-DetailInfoEstimateGas.defaultProps = {
-  isDivider: false,
 }
 
 const StepProgressWrapper = styled.span`

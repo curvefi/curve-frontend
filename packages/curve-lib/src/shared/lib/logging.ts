@@ -54,7 +54,7 @@ export function log(
     }
   }
 
-  const formatKeyArray = (keyArray: string[]): [string, string[]] => {
+  const formatKeyArray = (keyArray: unknown[]): [string, string[]] => {
     let formattedString = ''
     const styles: string[] = []
 
@@ -63,7 +63,7 @@ export function log(
         formattedString += '%c → '
         styles.push('color: #666; font-size: 0.75em;')
       }
-      formattedString += `%c${part}`
+      formattedString += `%c${typeof part === 'string' ? part : JSON.stringify(part)}`
       styles.push('color: #4CAF50; font-weight: bold;')
     })
 

@@ -7,7 +7,7 @@ import { useFocusRing } from '@react-aria/focus'
 import { StyledIconButton } from './styles'
 
 const IconButton = forwardRef<HTMLButtonElement, IconButtonProps & { className?: string; testId?: string }>(
-  ({ className, children, testId, ...props }, ref) => {
+  ({ className, children, testId, size='large', ...props }, ref) => {
     const buttonRef = useRef<HTMLButtonElement>(null)
     const { isFocusVisible } = useFocusRing()
 
@@ -17,17 +17,13 @@ const IconButton = forwardRef<HTMLButtonElement, IconButtonProps & { className?:
         data-testid={`btn-${testId}`}
         ref={ref || buttonRef}
         className={`${className || ''} ${isFocusVisible ? 'focus-visible' : ''}`}
+        size={size}
       >
         {children}
       </StyledIconButton>
     )
   }
 )
-
-IconButton.defaultProps = {
-  className: '',
-  size: 'large',
-}
 
 IconButton.displayName = 'IconButton'
 

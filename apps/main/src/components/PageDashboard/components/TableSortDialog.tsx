@@ -93,10 +93,6 @@ const TableSortDialog = ({
   )
 }
 
-TableSortDialog.defaultProps = {
-  className: '',
-}
-
 const SortHeader = styled.header`
   display: flex;
   justify-content: flex-end;

@@ -1,21 +1,25 @@
-import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
-import TxInfoBar from '@/ui/TxInfoBar'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 
 import { zeroAddress } from 'viem'
-import AlertFormError from '@/components/AlertFormError'
-import networks from '@/networks'
 import { addGaugeRewardTokenValidationSuite } from '@/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/features/add-gauge-reward-token/types'
 import { DistributorInput, EstimatedGasInfo, FormActions, TokenSelector } from '@/features/add-gauge-reward-token/ui'
-import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/entities/gauge'
+import {
+  useAddRewardToken,
+  useGaugeRewardsDistributors,
+  useIsDepositRewardAvailable
+} from '@/entities/gauge'
 
 import { useSignerAddress } from '@/entities/signer'
 import { formDefaultOptions } from '@/shared/model/form'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
+import AlertFormError from '@/components/AlertFormError'
+import networks from '@/networks'
+import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
+import TxInfoBar from '@/ui/TxInfoBar'
 
 export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId }) => {
   const { data: signerAddress } = useSignerAddress()

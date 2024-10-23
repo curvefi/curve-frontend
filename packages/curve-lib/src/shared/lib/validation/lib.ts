@@ -1,47 +1,33 @@
 import { create, enforce, only, type Suite } from 'vest'
 import { extendEnforce } from './enforce-extension'
-import { type ValidatedData } from './types'
+import { FieldName, FieldsOf } from './types'
 
 extendEnforce(enforce)
 
-function getFieldsList<T extends object, F extends Extract<keyof T, string>[] = Extract<keyof T, string>[]>(
-  data: T,
-  fields?: F,
-): F {
-  return fields && fields.length > 0 ? fields : (Object.keys(data) as F)
-}
-
-export function checkValidity<D extends object, S extends Suite<any, any>>(
+export const checkValidity = <D extends object, S extends Suite<any, any>>(
   suite: S,
-  data: D,
-  fields?: Extract<keyof D, string>[],
-): boolean {
-  const fieldsList = getFieldsList(data, fields)
-  const result = suite(data, fieldsList)
-  const errors = fieldsList.map((field) => result.getErrors(field)).flat()
-  return errors.length === 0
-}
+  data: FieldsOf<D>,
+  fields?: FieldName<D>[],
+): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
 
 export function assertValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
-  data: D,
-  fields?: Extract<keyof D, string>[],
-): ValidatedData<D> {
-  const fieldsList = getFieldsList(data, fields)
-  const result = suite(data, fieldsList)
-  const errors = fieldsList.map((field) => result.getErrors(field)).flat()
-  if (errors.length > 0) {
-    throw new Error('Validation failed: ' + errors.join(', '))
+  data: FieldsOf<D>,
+  fields?: FieldName<D>[],
+): D {
+  const result = suite(data, fields)
+  const entries = Object.entries(result.getErrors())
+  if (entries.length > 0) {
+    throw new Error(`Validation failed: ${entries.map(([field, error]) => `${field}: ${error}`).join(', ')}`)
   }
-  return data as ValidatedData<D>
+  return data as D
 }
 
-export function createValidationSuite<
+export const createValidationSuite = <
   T extends object,
-  F extends Extract<keyof T, string>[] = Extract<keyof T, string>[],
->(validationGroup: (data: T) => void) {
-  return create((data: T, fieldsList?: F) => {
+  TGroupName extends string = string,
+>(validationGroup: (data: T) => void): Suite<FieldName<T>, TGroupName> =>
+  create<FieldName<T>, TGroupName>((data: T, fieldsList?: FieldName<T>[]) => {
     only(fieldsList)
     validationGroup(data)
   })
-}
