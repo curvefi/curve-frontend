@@ -8,10 +8,7 @@ export const checkValidity = <D extends object, S extends Suite<any, any>>(
   suite: S,
   data: FieldsOf<D>,
   fields?: FieldName<D>[]
-): boolean => {
-  if (!suite) debugger;
-  return Object.keys(suite(data, fields).getErrors()).length === 0
-}
+): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
 
 export function assertValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
