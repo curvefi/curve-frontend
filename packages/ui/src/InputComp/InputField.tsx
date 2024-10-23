@@ -37,10 +37,6 @@ const StyledInput = styled(Input)`
   height: 100%;
 `
 
-InputField.defaultProps = {
-  className: '',
-}
-
 InputField.displayName = 'InputField'
 
 export default InputField

@@ -86,10 +86,6 @@ const AlertBox = ({
   )
 }
 
-AlertBox.defaultProps = {
-  className: '',
-}
-
 const ContentWrapper = styled(Box)`
   font-weight: 500;
 `

@@ -223,11 +223,6 @@ export const DetailText = styled.span`
   opacity: 0.8;
 `
 
-TableRow.defaultProps = {
-  poolData: {},
-  tableData: {},
-}
-
 export const Info = styled.div`
   white-space: nowrap;
 `

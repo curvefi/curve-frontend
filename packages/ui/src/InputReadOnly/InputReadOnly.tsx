@@ -8,17 +8,13 @@ type Props = {
   size?: Size
 }
 
-const InputReadyOnly = ({ children, size, title }: React.PropsWithChildren<Props>) => {
+const InputReadyOnly = ({ children, size = 'md', title }: React.PropsWithChildren<Props>) => {
   return (
     <Wrapper size={size}>
       <Title>{title}</Title>
       <Content>{children}</Content>
     </Wrapper>
   )
-}
-
-InputReadyOnly.defaultProps = {
-  size: 'md',
 }
 
 const Wrapper = styled.div<{ size?: Size }>`

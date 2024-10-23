@@ -14,7 +14,6 @@ import useStore from '@/store/useStore'
 
 export const mutateAddRewardToken = async ({ poolId, rewardTokenId, distributorId }: AddRewardQuery): Promise<string> => {
   const { curve } = useStore.getState()
-  console.log('mutateAddRewardToken', poolId, rewardTokenId, distributorId)
   const pool = curve.getPool(poolId)
   return pool.gauge.addReward(rewardTokenId, distributorId)
 }
