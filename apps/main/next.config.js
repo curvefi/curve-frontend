@@ -27,7 +27,7 @@ const nextConfiguration = {
     unoptimized: true,
   },
   trailingSlash: true,
-  transpilePackages: ['onboard-helpers', 'ui'],
+  transpilePackages: ['curve-common', 'curve-ui-kit'],
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,

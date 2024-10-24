@@ -1,18 +1,16 @@
 import '@/globals.css'
 import 'focus-visible'
 import 'intersection-observer'
-import { QueryProvider } from '@/ui/QueryProvider'
-import { getPageWidthClassName } from '@/ui/utils'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
-import { initOnboard } from 'onboard-helpers'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
+import type { AppProps } from 'next/app'
+import { connectWalletLocales } from '@/common/features/connect-wallet'
+import { persister, queryClient } from '@/shared/api/query-client'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -21,10 +19,11 @@ import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
+import { QueryProvider } from '@/ui/QueryProvider'
+import { getPageWidthClassName } from '@/ui/utils'
 import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import type { AppProps } from 'next/app'
-import { persister, queryClient } from '@/shared/api/query-client'
+import { initOnboard } from '@/common/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -92,15 +91,7 @@ function CurveApp({ Component }: AppProps) {
     updateAppLocale(parsedLocale, updateGlobalStoreByKey)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStoreByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
