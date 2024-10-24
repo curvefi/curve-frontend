@@ -4,24 +4,17 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils/responsive'
 import useStore from '@/store/useStore'
 
-import { providers } from 'ethers'
-
 import { PEG_KEEPERS, REFRESH_INTERVAL } from '@/constants'
 import { usePageVisibleInterval } from '@/ui/hooks'
-import networks from '@/networks'
 
 import PegKeeperContent from '@/components/PagePegKeepers/components/PegKeeperContent'
 
-const PagePegKeepers = ({ rChainId }: { rChainId: ChainId }) => {
+const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
   const isPageVisible = useStore((state) => state.isPageVisible)
   const fetchDetails = useStore((state) => state.pegKeepers.fetchDetails)
-  const getProvider = useStore((state) => state.wallet.getProvider)
   const resetState = useStore((state) => state.pegKeepers.resetState)
 
   const [loaded, setLoaded] = useState(false)
-
-  const { rpcUrl } = networks[rChainId]
-  const provider = useMemo(() => getProvider('') || new providers.JsonRpcProvider(rpcUrl), [getProvider, rpcUrl])
 
   useEffect(() => {
     if (provider) {
@@ -38,7 +31,7 @@ const PagePegKeepers = ({ rChainId }: { rChainId: ChainId }) => {
       if (provider) fetchDetails(provider)
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (
