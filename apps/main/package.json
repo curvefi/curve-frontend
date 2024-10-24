@@ -19,6 +19,7 @@
   },
   "peerDependencies": {
     "eslint-config-custom": "*",
+    "next": "*",
     "react": "*",
     "react-dom": "*",
     "tsconfig": "*"
