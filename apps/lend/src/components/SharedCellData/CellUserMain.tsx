@@ -9,21 +9,22 @@ import useVaultShares from '@/hooks/useVaultShares'
 import Chip from '@/ui/Typography/Chip'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
 import ListInfoItem from '@/ui/ListInfo'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const CellUserMain = ({
   rChainId,
   rOwmId,
   userActiveKey,
-  owmDataCachedOrApi,
+  market,
   type,
 }: {
   rChainId: ChainId
   rOwmId: string
   userActiveKey: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
   type: 'borrow' | 'supply'
 }) => {
-  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { borrowed_token } = market ?? {}
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 

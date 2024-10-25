@@ -3,11 +3,12 @@ import useStore from '@/store/useStore'
 
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { useTokenUsdRate } from '@/entities/token'
+import { useOneWayMarket } from '@/entities/chain'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
-  const { address = '', symbol = '' } = owmData?.owm?.borrowed_token ?? {}
+  const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
@@ -32,9 +33,9 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
   }, [pricePerShareResp, usdRate, symbol, vaultShares])
 
   useEffect(() => {
-    if (owmData && +vaultShares > 0) fetchVaultPricePerShare(rChainId, owmData)
+    if (market && +vaultShares > 0) fetchVaultPricePerShare(rChainId, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [owmData?.owm?.id, vaultShares])
+  }, [market?.id, vaultShares])
 
   return {
     isLoading: borrowedAmount === '' && borrowedAmountUsd === '',

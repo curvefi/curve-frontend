@@ -1,4 +1,5 @@
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
+export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const LARGE_APY = 5000000
 
 export const MAIN_ROUTE = {

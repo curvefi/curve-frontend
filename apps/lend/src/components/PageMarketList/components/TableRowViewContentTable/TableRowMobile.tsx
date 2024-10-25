@@ -39,7 +39,7 @@ const TableRowContent = ({
   rChainId,
   api,
   owmId,
-  owmDataCachedOrApi,
+  market,
   filterTypeKey,
   loanExists,
   userActiveKey,
@@ -51,7 +51,7 @@ const TableRowContent = ({
   const [showDetail, setShowDetail] = useState<string>('')
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { borrowed_token } = market ?? {}
 
   const isHideDetail = showDetail === owmId
   const showMyVaultCell = !!signerAddress && typeof userVaultShares !== 'undefined' && +userVaultShares > 0
@@ -60,7 +60,7 @@ const TableRowContent = ({
     rChainId,
     rOwmId: owmId,
     owmId,
-    owmDataCachedOrApi,
+    market,
     userActiveKey,
     filterTypeKey,
     isBold: false,
