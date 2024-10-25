@@ -1,26 +1,28 @@
-import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
-import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import { useTokenUsdRates } from '@/entities/token/lib'
-import { calculateChainTvl } from '@/entities/chain/model'
+import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
+import { calculateChainTvl } from '../model'
+import { useOneWayMarketMapping } from './data-hooks'
+import useStore from '@/store/useStore'
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
-  const owmDatasMapper = useStore((state) => state.markets.owmDatasMapper[chainId])
+  const marketMapping = useOneWayMarketMapping(chainId).data
   const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[chainId])
   const marketsTotalSupplyMapper = useStore((state) => state.markets.totalLiquidityMapper[chainId])
   const marketsTotalDebtMapper = useStore((state) => state.markets.statsTotalsMapper[chainId])
   const tokenAddresses = useMemo(
     () =>
-      Object.values(owmDatasMapper ?? {})
-        .flatMap(({ owm }) => [owm.borrowed_token, owm.collateral_token])
+      Object.values(marketMapping ?? {})
+        // note: include the borrowed tokens here, to be used in `filterSmallMarkets`
+        .flatMap((market) => [market.borrowed_token, market.collateral_token])
         .map((t) => t.address),
-    [owmDatasMapper],
+    [marketMapping],
   )
   const { data: tokenUsdRates, isError: isUsdRatesError } = useTokenUsdRates({ chainId, tokenAddresses })
 
   return useMemo(() => {
     if (
-      !owmDatasMapper ||
+      !marketMapping ||
       !marketsCollateralMapper ||
       !marketsTotalSupplyMapper ||
       !marketsTotalDebtMapper ||
@@ -29,7 +31,7 @@ export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
       return { ...FETCHING, isError: isUsdRatesError }
     }
     const data = calculateChainTvl(
-      owmDatasMapper,
+      marketMapping,
       marketsCollateralMapper,
       tokenUsdRates,
       marketsTotalDebtMapper,
@@ -38,7 +40,7 @@ export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
     return { ...READY, data }
   }, [
     isUsdRatesError,
-    owmDatasMapper,
+    marketMapping,
     marketsCollateralMapper,
     marketsTotalSupplyMapper,
     marketsTotalDebtMapper,

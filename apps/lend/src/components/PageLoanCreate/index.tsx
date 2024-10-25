@@ -11,7 +11,7 @@ import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@/ui/AppFo
 import LoanFormCreate from '@/components/PageLoanCreate/LoanFormCreate'
 
 const LoanCreate = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, rFormType, api, owmData, owmDataCachedOrApi } = pageProps
+  const { rChainId, rOwmId, rFormType, market } = pageProps
   const params = useParams()
   const navigate = useNavigate()
 
@@ -22,11 +22,11 @@ const LoanCreate = (pageProps: PageContentProps) => {
   const FORM_TYPES = useMemo(() => {
     let forms: { key: FormType; label: string }[] = [{ label: t`Create Loan`, key: 'create' }]
 
-    if (owmDataCachedOrApi?.hasLeverage) {
+    if (market?.leverage.hasLeverage()) {
       forms.push({ label: t`Leverage`, key: 'leverage' })
     }
     return forms
-  }, [owmDataCachedOrApi?.hasLeverage])
+  }, [market?.leverage])
 
   // init campaignRewardsMapper
   useEffect(() => {

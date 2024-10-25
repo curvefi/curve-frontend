@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageLoanManage/LoanCollateralRemove/types'
+import type { FormStatus, FormValues, StepKey } from '@/components/PageLoanManage/LoanCollateralRemove/types'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { Step } from '@/ui/Stepper/types'
 
@@ -28,15 +28,15 @@ import InpTokenRemove from '@/components/InpTokenRemove'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const LoanCollateralRemove = ({
   rChainId,
   rOwmId,
   isLoaded,
   api,
-  owmData,
+  market,
   userActiveKey,
-  collateral_token,
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
@@ -67,17 +67,17 @@ const LoanCollateralRemove = ({
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      setFormValues(isLoaded ? api : null, owmData, updatedFormValues)
+      setFormValues(isLoaded ? api : null, market, updatedFormValues)
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLoaded, owmData, setFormValues]
+    [api, isLoaded, market, setFormValues]
   )
 
   const handleBtnClickRemove = useCallback(
-    async (payloadActiveKey: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-      const resp = await fetchStepDecrease(payloadActiveKey, api, owmData, formValues)
+      const resp = await fetchStepDecrease(payloadActiveKey, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -100,7 +100,7 @@ const LoanCollateralRemove = ({
     (
       payloadActiveKey: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       healthMode: HealthMode,
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,
@@ -108,7 +108,6 @@ const LoanCollateralRemove = ({
       formValues: FormValues
     ) => {
       const { signerAddress } = api
-      const { owm } = owmData
       const { collateral, collateralError } = formValues
       const { error, isComplete, step } = formStatus
 
@@ -116,13 +115,12 @@ const LoanCollateralRemove = ({
         !!signerAddress && !formEstGas?.loading && +collateral > 0 && !collateralError && !error && !!healthMode.percent
 
       if (+collateral > 0) {
-        const notifyMessage = t`Removal of ${collateral} ${owm.collateral_token.symbol}.`
+        const notifyMessage = t`Removal of ${collateral} ${market.collateral_token.symbol}.`
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
               pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
+              market={market}
               receive={`-${formValues.collateral}`}
               userState={userDetails?.state}
               userWallet={userBalances}
@@ -160,13 +158,13 @@ const LoanCollateralRemove = ({
                     onClick: () => setConfirmWarning(DEFAULT_CONFIRM_WARNING),
                   },
                   primaryBtnProps: {
-                    onClick: () => handleBtnClickRemove(payloadActiveKey, api, owmData, formValues),
+                    onClick: () => handleBtnClickRemove(payloadActiveKey, api, market, formValues),
                     disabled: !confirmedHealthWarning,
                   },
                   primaryBtnLabel: 'Remove anyway',
                 },
               }
-            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, api, owmData, formValues) }),
+            : { onClick: async () => handleBtnClickRemove(payloadActiveKey, api, market, formValues) }),
         },
       }
 
@@ -197,11 +195,11 @@ const LoanCollateralRemove = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && owmData && api) {
+    if (isLoaded && market && api) {
       const updatedSteps = stepsObj(
         activeKey,
         api,
-        owmData,
+        market,
         healthMode,
         confirmedWarning,
         formEstGas,
@@ -236,8 +234,8 @@ const LoanCollateralRemove = ({
         inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
         inpValue={formValues.collateral}
         maxRemovable={maxRemovable}
-        tokenAddress={collateral_token?.address}
-        tokenSymbol={collateral_token?.symbol}
+        tokenAddress={market?.collateral_token?.address}
+        tokenSymbol={market?.collateral_token?.symbol}
         tokenBalance={userBalances?.collateral}
         handleInpChange={(collateral) => updateFormValues({ collateral })}
         handleMaxClick={() => updateFormValues({ collateral: maxRemovable ?? '' })}

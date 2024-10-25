@@ -15,6 +15,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, _parseValue } from '@/components/PageLoanCreate/utils'
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -39,17 +40,17 @@ type SliceState = {
 // prettier-ignore
 export type LoanCreateSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxLeverage(owmData: OWMData): Promise<void>
-    fetchMaxRecv(activeKey: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
-    refetchMaxRecv(owmData: OWMData | undefined, isLeverage: boolean): Promise<string>
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
-    fetchLiqRanges(activeKeyLiqRange: string, api: Api, owmData: OWMData, isLeverage: boolean): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, isLeverage: boolean): Promise<void>
-    setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
+    fetchMaxLeverage(market: OneWayMarketTemplate): Promise<void>
+    fetchMaxRecv(activeKey: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
+    refetchMaxRecv(market: OneWayMarketTemplate | undefined, isLeverage: boolean): Promise<string>
+    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    fetchLiqRanges(activeKeyLiqRange: string, api: Api, market: OneWayMarketTemplate, isLeverage: boolean): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, isLeverage: boolean): Promise<void>
+    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, maxSlippage: string, isLeverage: boolean, shouldRefetch?: boolean): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepCreate(activeKey: string, api: Api, owmData: OWMData, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepCreate(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -82,16 +83,16 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxLeverage: async (owmData) => {
+    fetchMaxLeverage: async (market) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { n } = formValues
 
       if (n === null) return
 
-      const resp = await loanCreate.maxLeverage(owmData, n)
+      const resp = await loanCreate.maxLeverage(market, n)
       sliceState.setStateByActiveKey('maxLeverage', n.toString(), resp.maxLeverage)
     },
-    fetchMaxRecv: async (activeKey, api, owmData, isLeverage) => {
+    fetchMaxRecv: async (activeKey, api, market, isLeverage) => {
       const { maxRecv, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { userCollateral, userBorrowed, n } = formValues
@@ -102,7 +103,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       if (n === null || !haveValues) return
 
       if (typeof updatedMaxRecv === 'undefined') {
-        const resp = await loanCreate.maxRecv(activeKey, owmData, userCollateral, userBorrowed, n, isLeverage)
+        const resp = await loanCreate.maxRecv(activeKey, market, userCollateral, userBorrowed, n, isLeverage)
         updatedMaxRecv = resp.maxRecv
         sliceState.setStateByActiveKey('maxRecv', resp.activeKey, resp.maxRecv)
       }
@@ -113,18 +114,18 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         sliceState.setStateByKey('formValues', { ...formValues, debtError })
       }
     },
-    refetchMaxRecv: async (owmData, isLeverage) => {
+    refetchMaxRecv: async (market, isLeverage) => {
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, n } = formValues
 
-      if (n === null || typeof owmData === 'undefined') return ''
+      if (n === null || typeof market === 'undefined') return ''
 
       sliceState.setStateByActiveKey('maxRecv', activeKeyMax, '')
-      const { maxRecv } = await loanCreate.maxRecv(activeKeyMax, owmData, userCollateral, userBorrowed, n, isLeverage)
+      const { maxRecv } = await loanCreate.maxRecv(activeKeyMax, market, userCollateral, userBorrowed, n, isLeverage)
       sliceState.setStateByActiveKey('maxRecv', activeKeyMax, maxRecv)
       return maxRecv
     },
-    fetchDetailInfo: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+    fetchDetailInfo: async (activeKey, api, market, maxSlippage, isLeverage) => {
       const { detailInfo, detailInfoLeverage, formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
       const { haveValues, haveDebt } = _parseValue(formValues)
@@ -141,7 +142,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       if (isLeverage) {
         const resp = await loanCreate.detailInfoLeverage(
           activeKey,
-          owmData,
+          market,
           userCollateral,
           userBorrowed,
           debt,
@@ -151,12 +152,12 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
         if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
       } else {
-        const resp = await loanCreate.detailInfo(activeKey, owmData, userCollateral, debt, n)
+        const resp = await loanCreate.detailInfo(activeKey, market, userCollateral, debt, n)
         sliceState.setStateByActiveKey('detailInfo', resp.activeKey, { ...resp.resp, error: resp.error })
         if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
       }
     },
-    fetchLiqRanges: async (activeKeyLiqRange, api, owmData, isLeverage) => {
+    fetchLiqRanges: async (activeKeyLiqRange, api, market, isLeverage) => {
       const { detailInfoLeverage, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt } = formValues
       const { totalCollateral } = detailInfoLeverage[activeKeyLiqRange]?.expectedCollateral ?? {}
@@ -166,7 +167,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 
       const resp = await loanCreate.liqRanges(
         activeKeyLiqRange,
-        owmData,
+        market,
         totalCollateral,
         userCollateral,
         userBorrowed,
@@ -176,7 +177,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       sliceState.setStateByKey('liqRanges', { [activeKeyLiqRange]: resp.liqRanges })
       sliceState.setStateByKey('liqRangesMapper', { [activeKeyLiqRange]: resp.liqRangesMapper })
     },
-    fetchEstGasApproval: async (activeKey, api, owmData, maxSlippage, isLeverage) => {
+    fetchEstGasApproval: async (activeKey, api, market, maxSlippage, isLeverage) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -189,7 +190,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       await gas.fetchGasInfo(api)
       const resp = await loanCreate.estGasApproval(
         activeKey,
-        owmData,
+        market,
         userCollateral,
         userBorrowed,
         debt,
@@ -206,7 +207,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         error: formStatus.error || resp.error,
       })
     },
-    setFormValues: async (api, owmData, partialFormValues, maxSlippage, isLeverage, shouldRefetch) => {
+    setFormValues: async (api, market, partialFormValues, maxSlippage, isLeverage, shouldRefetch) => {
       const { user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
@@ -223,22 +224,21 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         isApproved: formStatus.isApproved,
         isApprovedCompleted: formStatus.isApprovedCompleted,
       }
-      let activeKeys = _getActiveKey(api, owmData, cFormValues, maxSlippage)
+      let activeKeys = _getActiveKey(api, market, cFormValues, maxSlippage)
       sliceState.setStateByKeys({ ...activeKeys, formValues: { ...cFormValues }, formStatus: cFormStatus })
 
-      if (!api || !owmData) return
+      if (!api || !market) return
 
       const { signerAddress } = api
-      const { owm } = owmData
 
       // set default N
-      cFormValues.n = cFormValues.n || owm.defaultBands
-      activeKeys = _getActiveKey(api, owmData, cFormValues, maxSlippage)
+      cFormValues.n = cFormValues.n || market.defaultBands
+      activeKeys = _getActiveKey(api, market, cFormValues, maxSlippage)
       sliceState.setStateByKeys({ ...activeKeys, formValues: { ...cFormValues } })
 
       if (signerAddress) {
         // validation
-        const userBalances = await user.fetchUserMarketBalances(api, owmData, shouldRefetch)
+        const userBalances = await user.fetchUserMarketBalances(api, market, shouldRefetch)
         const userCollateralError = isTooMuch(cFormValues.userCollateral, userBalances?.collateral) ? 'too-much' : ''
         const userBorrowedError = isTooMuch(cFormValues.userBorrowed, userBalances?.borrowed) ? 'too-much' : ''
         sliceState.setStateByKeys({
@@ -248,15 +248,15 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       }
 
       // api calls
-      if (isLeverage) sliceState.fetchMaxLeverage(owmData)
-      await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, owmData, isLeverage)
-      await sliceState.fetchDetailInfo(activeKeys.activeKey, api, owmData, maxSlippage, isLeverage)
-      sliceState.fetchEstGasApproval(activeKeys.activeKey, api, owmData, maxSlippage, isLeverage)
-      sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, owmData, isLeverage)
+      if (isLeverage) sliceState.fetchMaxLeverage(market)
+      await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage)
+      await sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
+      sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
+      sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage)
     },
 
     // steps
-    fetchStepApprove: async (activeKey, api, owmData, maxSlippage, formValues, isLeverage) => {
+    fetchStepApprove: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
       const { gas, wallet } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -272,7 +272,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       const { error, ...resp } = await loanCreate.approve(
         activeKey,
         provider,
-        owmData,
+        market,
         userCollateral,
         userBorrowed,
         isLeverage
@@ -286,11 +286,11 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData, maxSlippage, isLeverage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
         return { ...resp, error }
       }
     },
-    fetchStepCreate: async (activeKey, api, owmData, maxSlippage, formValues, isLeverage) => {
+    fetchStepCreate: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
       const { gas, markets, wallet, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
@@ -311,7 +311,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       const { error, ...resp } = await loanCreate.create(
         activeKey,
         provider,
-        owmData,
+        market,
         userCollateral,
         userBorrowed,
         debt,
@@ -325,11 +325,11 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           sliceState.setStateByKey('formStatus', { ...formStatus, isInProgress: false, step: '', stepError: error })
           return { ...resp, error }
         } else {
-          const loanExits = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
+          const loanExits = (await user.fetchUserLoanExists(api, market, true))?.loanExists
           if (loanExits) {
             // api calls
-            await user.fetchAll(api, owmData, true)
-            markets.fetchAll(api, owmData, true)
+            await user.fetchAll(api, market, true)
+            markets.fetchAll(api, market, true)
             markets.setStateByKey('marketDetailsView', 'user')
 
             // update formStatus
@@ -365,11 +365,11 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 
 export function _getActiveKey(
   api: Api | null,
-  owmData: OWMData | undefined,
+  market: OneWayMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt, n }: FormValues,
   maxSlippage: string
 ) {
-  let activeKey = `${_parseActiveKey(api, owmData)}${n}`
+  let activeKey = `${_parseActiveKey(api, market)}${n}`
   return {
     activeKey: `${activeKey}-${userCollateral}-${userBorrowed}-${debt}-${maxSlippage}`,
     activeKeyMax: `${activeKey}-${userCollateral}-${userBorrowed}`,

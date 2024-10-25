@@ -1,9 +1,9 @@
-import type { TokenQueryParams } from '@/entities/token/types'
-import { createValidationSuite } from '@/shared/lib/validation'
 import { enforce, group, test } from 'vest'
 import { chainValidationGroup } from '@/entities/chain/model'
+import type { TokenParams } from '@/entities/token/types'
+import { createValidationSuite } from '@/shared/lib/validation'
 
-export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenQueryParams) =>
+export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenParams) =>
   group('tokenValidation', () => {
     chainValidationGroup({ chainId })
     test('tokenAddress', () => {

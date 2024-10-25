@@ -8,6 +8,7 @@ import merge from 'lodash/merge'
 
 import { DEFAULT_FORM_STATUS } from '@/components/PageVault/VaultClaim/utils'
 import apiLending from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -22,11 +23,11 @@ type SliceState = {
 // prettier-ignore
 export type VaultClaimSlice = {
   [sliceKey]: SliceState & {
-    fetchClaimable(userActiveKey: string, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(userActiveKey: string, api: Api | null, owmData: OWMData | undefined): Promise<void>
+    fetchClaimable(userActiveKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(userActiveKey: string, api: Api | null, market: OneWayMarketTemplate | undefined): Promise<void>
 
     // steps
-    fetchStepClaim(userActiveKey: string, api: Api, owmData: OWMData, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
+    fetchStepClaim(userActiveKey: string, api: Api, market: OneWayMarketTemplate, type: RewardType): Promise<{ userActiveKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, userActiveKey: string, value: T): void
@@ -46,31 +47,31 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchClaimable: async (userActiveKey, api, owmData) => {
+    fetchClaimable: async (userActiveKey, api, market) => {
       const { signerAddress } = api
 
       if (!signerAddress) return
 
-      const resp = await apiLending.vaultClaim.claimable(userActiveKey, owmData)
+      const resp = await apiLending.vaultClaim.claimable(userActiveKey, market)
       get()[sliceKey].setStateByKey('claimable', { [resp.userActiveKey]: { claimable: resp.claimable } })
     },
-    setFormValues: async (userActiveKey, api, owmData) => {
+    setFormValues: async (userActiveKey, api, market) => {
       // update userActiveKey, formValues
       const cFormStatus: FormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       get()[sliceKey].setStateByKeys({ formStatus: cFormStatus })
 
-      if (!userActiveKey || !api || !owmData) return
+      if (!userActiveKey || !api || !market) return
 
       const { signerAddress } = api
 
       // api calls
       if (signerAddress) {
-        get()[sliceKey].fetchClaimable(userActiveKey, api, owmData)
+        get()[sliceKey].fetchClaimable(userActiveKey, api, market)
       }
     },
 
     // steps
-    fetchStepClaim: async (userActiveKey, api, owmData, type) => {
+    fetchStepClaim: async (userActiveKey, api, market, type) => {
       const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
@@ -83,13 +84,13 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
       // api calls
       await get().gas.fetchGasInfo(api)
       const fn = type === 'crv' ? apiLending.vaultClaim.claimCrv : apiLending.vaultClaim.claimRewards
-      const resp = await fn(userActiveKey, provider, owmData)
+      const resp = await fn(userActiveKey, provider, market)
 
       if (resp.userActiveKey === userActiveKey) {
         // re-fetch api
-        get()[sliceKey].fetchClaimable(resp.userActiveKey, api, owmData)
-        get().user.fetchUserMarketBalances(api, owmData, true)
-        get().markets.fetchAll(api, owmData, true)
+        get()[sliceKey].fetchClaimable(resp.userActiveKey, api, market)
+        get().user.fetchUserMarketBalances(api, market, true)
+        get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {
