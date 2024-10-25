@@ -104,7 +104,7 @@ export function log(
       ...keyStyles,
       ...(args.length > 0 ? ['color: 666;'] : []),
       'color: inherit;',
-      ...args
+      ...args,
     )
   } else {
     const [formattedKeyString, keyStyles] = formatKeyArray(keyArray)
@@ -116,7 +116,7 @@ export function log(
       'color: #666;',
       ...keyStyles,
       'color: inherit;',
-      ...args
+      ...args,
     )
   }
 }

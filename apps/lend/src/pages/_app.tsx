@@ -12,6 +12,8 @@ import { connectWalletLocales } from '@/common/features/connect-wallet'
 import { persister, queryClient } from '@/shared/api/query-client'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProvider } from '@/ui/QueryProvider'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
@@ -76,7 +78,7 @@ function CurveApp({ Component }: AppProps) {
       connectWalletLocales,
       locale,
       themeType,
-      networks
+      networks,
     )
     updateWalletStateByKey('onboard', onboardInstance)
 
@@ -105,12 +107,14 @@ function CurveApp({ Component }: AppProps) {
       {typeof window === 'undefined' || !appLoaded ? null : (
         <HashRouter>
           <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <OverlayProvider>
+                <Page>
+                  <Component />
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </QueryProvider>
           </I18nProvider>
         </HashRouter>
       )}

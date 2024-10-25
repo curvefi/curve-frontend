@@ -91,7 +91,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (
           stateKey.startsWith('loan') ||
           stateKey.startsWith('user') ||
-          stateKey === 'usdRates' ||
           stateKey === 'tokens' ||
           stateKey === 'chartBands' ||
           stateKey === 'campaigns'
@@ -111,7 +110,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
     await state.markets.fetchMarkets(api)
-    await state.usdRates.fetchAllStoredUsdRates(api)
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {
