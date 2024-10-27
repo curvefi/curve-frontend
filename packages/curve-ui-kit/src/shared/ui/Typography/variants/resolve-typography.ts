@@ -1,6 +1,5 @@
-import type { FigmaTypography, FigmaTypographyToken } from '@/shared/api/figma-tokens'
-import { ThemeFontFamily, type ThemeKey } from '@/shared/lib/basic-theme'
-import { capitalizeFirstLetter, capitalizeSpecificWords } from '@/shared/lib/capitalize'
+import type { FigmaTypography, FigmaTypographyToken } from '../../../api/figma-tokens'
+import { capitalizeFirstLetter, capitalizeSpecificWords } from '../../../lib/capitalize'
 import type { NonTableTypographyVariantKey, TableTypographyVariantKey, TypographyVariantKey } from './config'
 
 /**

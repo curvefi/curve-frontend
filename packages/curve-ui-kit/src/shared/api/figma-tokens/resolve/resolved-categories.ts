@@ -2,7 +2,7 @@ import {
   resolveTableTypographyVariants,
   resolveTypographyVariants,
   type ResolvedTypography,
-} from '@/shared/ui/Typography'
+} from '../../../ui/Typography'
 import { curveFigmaDesignTokens, type CurveFigmaDesignTokens, type ScreenType } from '../tokens'
 import { resolveFigmaTokens, type ResolvedValue } from './resolver'
 

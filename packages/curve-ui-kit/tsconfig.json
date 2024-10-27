@@ -4,12 +4,14 @@
     "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
+    "esModuleInterop": true,
     "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"]
+      "@/*": ["*"],
+      "@/common/*": ["../../../packages/curve-common/src/*"]
     }
   },
   "exclude": ["node_modules"],

@@ -23,7 +23,7 @@ import {
 } from '@/entities/gauge'
 import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
 import { useTokens } from '@/entities/token'
-import { FlexContainer } from '@/shared/ui/styled-containers'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
