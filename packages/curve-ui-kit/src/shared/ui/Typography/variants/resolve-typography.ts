@@ -1,4 +1,4 @@
-import type { FigmaTypography, FigmaTypographyToken } from '../../../api/figma-tokens'
+import type { FigmaTypography, FigmaTypographyToken } from '../../../api'
 import { capitalizeFirstLetter, capitalizeSpecificWords } from '../../../lib/capitalize'
 import type { NonTableTypographyVariantKey, TableTypographyVariantKey, TypographyVariantKey } from './config'
 

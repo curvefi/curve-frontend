@@ -6,6 +6,6 @@
       "@/*": ["*"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "../curve-ui-kit/**/*.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

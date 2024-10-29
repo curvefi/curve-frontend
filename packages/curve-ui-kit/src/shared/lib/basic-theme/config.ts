@@ -1,4 +1,4 @@
-import { FontFamilyBasic, FontFamilyChad } from '../../ui/Typography/variants/config'
+import { FontFamilyBasic, FontFamilyChad } from '../../ui/Typography'
 import type { ThemeKey } from './theme.types'
 
 export const ThemeFontFamily: Record<ThemeKey, typeof FontFamilyBasic | typeof FontFamilyChad> = {

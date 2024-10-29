@@ -1,6 +1,6 @@
 import { Divider, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { figmaTokens } from '../../../api/figma-tokens'
+import { figmaTokens } from '../../../api'
 import { Typography } from '../Typography'
 import { typographyVariantsKeys, TypographyVariantKey } from '../variants'
 

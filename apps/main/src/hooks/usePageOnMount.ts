@@ -4,13 +4,13 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
+import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@/common/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
+import { getWalletChainId } from '@/store/createWalletSlice'
 import { initCurveJs } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import networks, { networksIdMapper } from '@/networks'
@@ -59,7 +59,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     async (options: ConnectState['options']) => {
       if (options) {
         const [walletName] = options
-        let walletState: Wallet | null = null
+        let walletState: Wallet | null
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal

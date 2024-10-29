@@ -1,3 +1,3 @@
 export * from './ConnectWalletButton'
-export * from './ConnectWallet'
+export * from './ConnectWalletIndicator'
 export * from './ConnectedWalletLabel'

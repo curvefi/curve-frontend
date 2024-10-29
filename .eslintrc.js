@@ -13,7 +13,6 @@ module.exports = {
       files: [
         'apps/loan/src/{app,widgets,features,entities,shared}/**/*.{ts,tsx}',
         'packages/curve-lib/src/shared/**/*.ts',
-        'packages/curve-ui-kit/src/**/*.{ts,tsx}',
       ],
       rules: {
         'import/order': 'error', // feature-sliced/import-order
@@ -26,6 +25,7 @@ module.exports = {
       files: [
         'apps/{main,lend}/src/{app,pages,widgets,features,entities,shared}/**/*.{ts,tsx}',
         'apps/loan/src/pages/**/*.{ts,tsx}',
+        'packages/curve-ui-kit/src/**/*.{ts,tsx}',
       ],
       rules: {
         'import/order': 'warn', // feature-sliced/import-order

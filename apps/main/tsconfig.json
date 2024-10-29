@@ -19,5 +19,5 @@
     }
   },
   "exclude": ["node_modules", "cypress"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../packages/curve-ui-kit/**/*.d.ts"]
 }

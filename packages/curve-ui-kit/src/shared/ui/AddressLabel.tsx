@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import { Box } from './Box'
 
-type Address = `0x${string}`
+export type Address = `0x${string}`
 
 export type AddressLabelProps = {
   value: Address;

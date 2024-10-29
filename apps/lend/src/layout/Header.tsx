@@ -9,9 +9,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
-import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { ConnectWallet, useConnectWallet } from '@/common/features/connect-wallet'
+import { ConnectWalletIndicator, getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
@@ -178,7 +177,7 @@ const Header = () => {
 
               <AppNavMenuSection>
                 {SelectNetworkComp}
-                <ConnectWallet
+                <ConnectWalletIndicator
                   onConnectWallet={appNavConnect.handleClick}
                   onDisconnectWallet={appNavConnect.handleClick}
                   walletAddress={appNavConnect.walletSignerAddress}

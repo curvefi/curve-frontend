@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react'
 import { Button } from 'curve-ui-kit/src/shared/ui/Button'
-import { AddressLabel } from 'curve-ui-kit/src/shared/ui/AddressLabel'
+import { Address, AddressLabel } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 
 interface ConnectedWalletLabelProps {
-  walletAddress: string,
+  walletAddress: Address,
   onDisconnectWallet: () => void
 }
 

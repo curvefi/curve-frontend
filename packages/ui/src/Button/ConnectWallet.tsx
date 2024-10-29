@@ -7,6 +7,7 @@ import * as React from 'react'
 import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
 
 import Button from 'ui/src/Button/index'
+import { Address } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 
 type Status = 'success' | 'loading' | ''
 
@@ -21,7 +22,7 @@ function ConnectWallet({
     className?: string
     testId?: string
     connectState: ConnectState
-    walletSignerAddress: string
+    walletSignerAddress: Address | undefined
     handleClick: () => void
   }) {
   const loading =
