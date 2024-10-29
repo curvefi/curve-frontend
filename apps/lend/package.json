@@ -33,7 +33,7 @@
     "curve-common": "*",
     "curve-lib": "*",
     "dayjs": "^1.11.7",
-    "ethers": "^6.10.0",
+    "ethers": "^6.11.0",
     "external-rewards": "*",
     "focus-visible": "5.2.0",
     "fuse.js": "^6.6.2",

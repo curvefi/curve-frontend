@@ -15,7 +15,7 @@ import {
 
 import { useSignerAddress } from '@/entities/signer'
 import { formDefaultOptions } from '@/shared/model/form'
-import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
+import { FlexContainer, FormContainer, FormFieldsContainer } from '@/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'
 import networks from '@/networks'
 import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'

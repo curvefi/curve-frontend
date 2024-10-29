@@ -3,6 +3,7 @@ import type { ConnectState } from 'ui/src/utils'
 import type { ThemeType } from 'ui/src/Select/SelectThemes'
 
 import React from 'react'
+import { Address } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 
 export type PageWidth =
   | 'page-wide'
@@ -22,7 +23,7 @@ export type AppNavAdvancedMode = {
 
 export type AppNavConnect = {
   connectState: ConnectState
-  walletSignerAddress: string
+  walletSignerAddress: Address | undefined
   handleClick: () => void
 }
 

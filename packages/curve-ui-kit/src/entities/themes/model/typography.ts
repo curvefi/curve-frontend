@@ -1,8 +1,8 @@
 import { type TypographyOptions } from '@mui/material/styles/createTypography'
-import { figmaTokens } from '@/shared/api/figma-tokens'
-import { basicMuiTheme, ThemeFontFamily, type ThemeKey } from '@/shared/lib/basic-theme'
-import { omitProperty } from '@/shared/lib/object-properties'
-import { disabledTypographyKeys } from '@/shared/ui/Typography'
+import { figmaTokens } from '../../../shared/api/figma-tokens'
+import { basicMuiTheme, ThemeFontFamily, type ThemeKey } from '../../../shared/lib/basic-theme'
+import { omitProperty } from '../../../shared/lib/object-properties'
+import { disabledTypographyKeys } from '../../../shared/ui/Typography'
 
 export const createTypography = (mode: ThemeKey): TypographyOptions => {
   const typographyVariants = Object.entries(figmaTokens.typography).reduce((acc, [key, value]) => {

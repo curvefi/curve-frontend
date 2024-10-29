@@ -10,20 +10,19 @@ import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
-import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { useConnectWallet } from '@/common/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import {
   APP_LINK,
-  APPS_LINKS,
-  AppNavMobile,
-  AppNavBarContent,
   AppNavBar,
+  AppNavBarContent,
   AppNavMenuSection,
-  AppSelectNetwork,
+  AppNavMobile,
+  APPS_LINKS,
+  AppSelectNetwork
 } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/default/Footer'
 import AppLogo from '@/ui/Brand'

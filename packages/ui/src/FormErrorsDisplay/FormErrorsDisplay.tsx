@@ -1,4 +1,4 @@
-import { ErrorContainer } from '@/shared/ui/styled-containers'
+import { ErrorContainer } from '../styled-containers'
 import { ErrorMessage } from '@hookform/error-message'
 import { FunctionComponent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'

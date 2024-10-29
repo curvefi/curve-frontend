@@ -1,7 +1,6 @@
 import type { Components, CSSObject } from '@mui/material/styles'
-import { type FigmaTokens, extractNumber } from '@/shared/api/figma-tokens'
-import { basicMuiTheme, type ThemeKey } from '@/shared/lib/basic-theme'
-import { omitProperty } from '@/shared/lib/object-properties'
+import { extractNumber, type FigmaTokens } from '../../api'
+import { basicMuiTheme, omitProperty, type ThemeKey } from '../../lib'
 
 export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const buttonDesktop = figmaTokens.themes.desktop[mode].button

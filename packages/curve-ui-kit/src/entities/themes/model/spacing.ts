@@ -1,7 +1,7 @@
 import { type ThemeOptions } from '@mui/material/styles'
 
-import { figmaTokens, extractNumber } from '@/shared/api/figma-tokens'
-import { type ThemeKey } from '@/shared/lib/basic-theme'
+import { figmaTokens, extractNumber } from '../../../shared/api/figma-tokens'
+import { type ThemeKey } from '../../../shared/lib/basic-theme'
 
 export const createSpacing = (mode: ThemeKey): ThemeOptions => {
   const { xxs, xs, sm, md, lg, xl, xxl } = figmaTokens.mappedSizesAndSpaces.desktop.spacing
