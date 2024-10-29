@@ -1,4 +1,5 @@
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { hubotSans, monaSans } from './fonts'
 
 const headingVariantKeys = [
   'headingXxl',
@@ -82,9 +83,9 @@ export type TableTypographyVariantKey = Extract<TypographyVariantKey, `table${st
 
 export type ResolvedTypography = Record<TypographyVariantKey, React.CSSProperties & { description?: string }>
 
-export const FontFamilyBasic = ['"Mona Sans"', '"Helvetica Neue"', 'sans-serif'].join(',')
+export const FontFamilyBasic = [monaSans.style.fontFamily, '"Helvetica Neue"', 'sans-serif'].join(',')
 export const FontFamilyChad = [
-  '"Hubot Sans"',
+  hubotSans.style.fontFamily,
   '"Helvetica Neue"',
   'sans-serif',
   'Minecraft',

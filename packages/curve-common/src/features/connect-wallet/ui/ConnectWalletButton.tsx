@@ -6,4 +6,4 @@ interface ConnectWalletButtonProps {
 }
 
 export const ConnectWalletButton = ({ onConnectWallet }: ConnectWalletButtonProps) =>
-  <Button variant="contained" color="primary" onClick={onConnectWallet}>{t`Connect Wallet`}</Button>
+  <Button size="small" variant="contained" color="primary" onClick={onConnectWallet}>{t`Connect Wallet`}</Button>

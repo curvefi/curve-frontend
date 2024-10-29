@@ -21,6 +21,7 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -102,18 +103,20 @@ function CurveApp({ Component }: AppProps) {
   return (
     <div suppressHydrationWarning>
       {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <OverlayProvider>
-                <Page>
-                  <Component />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
-            </QueryProvider>
-          </I18nProvider>
-        </HashRouter>
+        <ThemeProvider theme={themeType === 'default' ? 'chad' : themeType}>
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
+            </I18nProvider>
+          </HashRouter>
+        </ThemeProvider>
       )}
     </div>
   )

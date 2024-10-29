@@ -1,6 +1,11 @@
 import type { FigmaTypography, FigmaTypographyToken } from '../../../api'
 import { capitalizeFirstLetter, capitalizeSpecificWords } from '../../../lib/capitalize'
-import type { NonTableTypographyVariantKey, TableTypographyVariantKey, TypographyVariantKey } from './config'
+import {
+  NonTableTypographyVariantKey,
+  TableTypographyVariantKey,
+  TypographyVariantKey
+} from './config'
+import { hubotSans, monaSans } from './fonts'
 
 /**
  * List of words that should be capitalized in typography variant keys.
@@ -30,6 +35,7 @@ function transformTypographyToken(token: FigmaTypographyToken): React.CSSPropert
     description,
   } = token
 
+  const fontFamily1 = { 'Mona Sans': monaSans, 'Hubot Sans': hubotSans}[fontFamily]!.style.fontFamily
   return {
     description,
     fontSize: `${fontSize}px`,
@@ -39,7 +45,7 @@ function transformTypographyToken(token: FigmaTypographyToken): React.CSSPropert
     letterSpacing: `${letterSpacing}px`,
     lineHeight: `${lineHeight}px`,
     textDecoration,
-    fontFamily,
+    fontFamily: `${fontFamily1}`,
     textIndent: paragraphIndent,
     textTransform: textCase,
     // We're not using paragraphSpacing here, as it's not a valid CSS property.

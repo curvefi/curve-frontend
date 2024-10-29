@@ -11,7 +11,7 @@ export const ConnectedWalletLabel: FunctionComponent<ConnectedWalletLabelProps> 
  walletAddress,
  onDisconnectWallet
 }) => (
-  <Button variant="ghost" color="primary" onClick={onDisconnectWallet}>
+  <Button variant="ghost" onClick={onDisconnectWallet}>
     <AddressLabel value={walletAddress} />
   </Button>
 )

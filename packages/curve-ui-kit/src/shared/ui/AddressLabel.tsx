@@ -9,6 +9,6 @@ export type AddressLabelProps = {
 
 export const AddressLabel: FunctionComponent<AddressLabelProps> = ({value}) => (
   <Box maxWidth={200} title={value}>
-    {value.substring(0, 7)}...{value.substring(38)}
+    {value.substring(0, 6)}...{value.substring(38)}
   </Box>
 )
