@@ -24,6 +24,7 @@ import SelectLocale from 'ui/src/Select/SelectLocale'
 import SelectThemes from 'ui/src/Select/SelectThemes'
 import Spacer from 'ui/src/Spacer'
 import Switch from 'ui/src/Switch'
+import { ConnectWalletIndicator } from 'curve-common/src/features/connect-wallet'
 
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
@@ -212,13 +213,10 @@ const AppNavMobile = ({
 
           {/* MODAL FOOTER */}
           <ModalFooter>
-            <StyledConnectWallet
-              connectState={connect.connectState}
-              walletSignerAddress={connect.walletSignerAddress}
-              handleClick={() => {
-                connect.handleClick()
-                closeMenu([menuWidth, 0])
-              }}
+            <ConnectWalletIndicator
+              onConnectWallet={connect.handleClick}
+              onDisconnectWallet={connect.handleClick}
+              walletAddress={connect.walletSignerAddress}
             />
           </ModalFooter>
         </ModalWrapper>

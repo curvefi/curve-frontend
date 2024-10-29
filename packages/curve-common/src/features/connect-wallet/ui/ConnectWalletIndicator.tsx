@@ -7,11 +7,12 @@ export type ConnectWalletIndicatorProps = {
   walletAddress?: Address
   onConnectWallet: () => void
   onDisconnectWallet: () => void
+  disabled?: boolean
 }
 
-export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({ walletAddress, onConnectWallet, onDisconnectWallet }) =>
+export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({ walletAddress, onConnectWallet, onDisconnectWallet, disabled }) =>
   walletAddress ? (
-    <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} />
+    <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} disabled={disabled} />
   ) : (
-    <ConnectWalletButton onConnectWallet={onConnectWallet} />
+    <ConnectWalletButton onConnectWallet={onConnectWallet} disabled={disabled} />
   )

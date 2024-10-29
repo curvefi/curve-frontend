@@ -1,42 +1,54 @@
-import { InputLabel } from '@/common/shared/ui/InputLabel'
-import { Select } from '@/common/shared/ui/Select'
-import { FormControl } from '@/common/shared/ui/FormControl'
-import { MenuItem } from '@/common/shared/ui/MenuItem'
-import { useCallback } from 'react'
+import { Select } from '@ui-kit/shared/ui/Select'
+import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
+import { FunctionComponent, SVGProps, useCallback, useMemo } from 'react'
 import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+
+export type IconType = FunctionComponent<SVGProps<SVGSVGElement>>
 
 export type ChainOption<TChainId> = {
-  id: TChainId
-  name: string
-  icon: string
+  chainId: TChainId
+  label: string
+  icon: IconType
 }
 
 export type ChainSwitcherProps<TChainId> = {
   chainId: TChainId;
-  chainOptions: ChainOption<TChainId>[]
+  options: ChainOption<TChainId>[]
   onChange: (chainId: TChainId) => void
+  disabled?: boolean
 }
 
-export const ChainSwitcher = <TChainId extends number>({ chainOptions, chainId, onChange }: ChainSwitcherProps<TChainId>) =>
-  (
-    <FormControl fullWidth>
-      <InputLabel id="chain-switcher-label">Chain</InputLabel>
+export const ChainSwitcher = <TChainId extends number>({ options, chainId, onChange, disabled }: ChainSwitcherProps<TChainId>) => {
+  const networkIcons = useMemo(() => options.reduce((acc, option) => ({ ...acc, [option.chainId]: option.icon }), {} as Record<TChainId, IconType>), [options])
+
+  const renderChainIcon = useCallback((value: TChainId) => {
+    const Icon = networkIcons[value]
+    return <Icon width={28} />
+  }, [networkIcons])
+
+  const onValueChange = useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])
+
+  return (
       <Select<TChainId>
-        labelId="chain-switcher-label"
-        id="chain-switcher"
-        value={chainId}
-        label="Chain"
-        onChange={useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])}
+        value={[-1, 0].includes(chainId) ? 1 : chainId}
+        onChange={onValueChange}
         variant="standard"
+        disabled={disabled}
+        renderValue={renderChainIcon}
+        size="small"
+        sx={{padding:0}}
       >
         {
-          chainOptions.map((chainOption) => (
-            <MenuItem key={chainOption.id} value={chainOption.id}>
-              {chainOption.icon}
-              {chainOption.name}
+          options.map(({ chainId: id, icon: Icon, label }) => (
+            <MenuItem key={id} value={id}>
+              <Icon width={28} />
+              <Typography sx={{ marginLeft: 4 }}>
+                {label}
+              </Typography>
             </MenuItem>
           ))
         }
       </Select>
-    </FormControl>
   )
+}

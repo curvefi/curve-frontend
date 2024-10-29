@@ -15,19 +15,14 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 
-import {
-  APP_LINK,
-  AppNavBar,
-  AppNavBarContent,
-  AppNavMenuSection,
-  AppNavMobile,
-  APPS_LINKS,
-  AppSelectNetwork
-} from '@/ui/AppNav'
+import { APP_LINK, AppNavBar, AppNavBarContent, AppNavMenuSection, AppNavMobile, APPS_LINKS } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import HeaderSecondary from '@/layout/HeaderSecondary'
 import { useTvl } from '@/entities/chain'
+import { ChainSwitcher } from '@/common/features/switch-chain'
+import { LanguageSwitcher } from '@/common/features/switch-language'
+import { Box } from '@ui-kit/shared/ui/Box'
 
 
 const Header = () => {
@@ -37,7 +32,7 @@ const Header = () => {
   const params = useParams()
   const elHeight = useHeightResizeObserver(mainNavRef)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rLocalePathname } = getParamsFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
@@ -86,7 +81,7 @@ const Header = () => {
     return `#${rLocalePathname}/${networkName}${route}`
   }
 
-  const handleNetworkChange = (selectedChainId: React.Key) => {
+  const handleNetworkChange = (selectedChainId: ChainId) => {
     if (rChainId !== selectedChainId) {
       const network = networks[selectedChainId as ChainId].id
       const [currPath] = window.location.hash.split('?')
@@ -107,16 +102,12 @@ const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elHeight])
 
-  const SelectNetworkComp = (
-    <AppSelectNetwork
-      connectState={connectState}
-      buttonStyles={{ textTransform: 'uppercase' }}
-      items={visibleNetworksList}
-      loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
-      minWidth="9rem"
-      mobileRightAlign
-      selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
-      onSelectionChange={handleNetworkChange}
+  const selectNetworkComp = (
+    <ChainSwitcher
+      options={visibleNetworksList}
+      disabled={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
+      chainId={rChainId}
+      onChange={handleNetworkChange}
     />
   )
 
@@ -138,7 +129,7 @@ const Header = () => {
   }
 
   const appNavLocale =
-    process.env.NODE_ENV === 'development'
+    DEFAULT_LOCALES.length > 1
       ? {
           locale,
           locales: DEFAULT_LOCALES,
@@ -162,7 +153,6 @@ const Header = () => {
           advancedMode={appNavAdvancedMode}
           appsLinks={APPS_LINKS}
           appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
-          locale={appNavLocale}
           theme={appNavTheme}
         />
       )}
@@ -176,11 +166,15 @@ const Header = () => {
               </AppNavMenuSection>
 
               <AppNavMenuSection>
-                {SelectNetworkComp}
+                {appNavLocale && (
+                  <LanguageSwitcher languageCode={appNavLocale.locale} languageOptions={DEFAULT_LOCALES} onChange={appNavLocale.handleChange} />
+                )}
+                {selectNetworkComp}
                 <ConnectWalletIndicator
                   onConnectWallet={appNavConnect.handleClick}
                   onDisconnectWallet={appNavConnect.handleClick}
                   walletAddress={appNavConnect.walletSignerAddress}
+                  disabled={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
                 />
               </AppNavMenuSection>
             </>
@@ -206,7 +200,7 @@ const Header = () => {
                 { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
                 { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
               ]}
-              selectNetwork={SelectNetworkComp}
+              selectNetwork={selectNetworkComp}
               stats={[]}
               theme={appNavTheme}
             />

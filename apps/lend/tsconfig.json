@@ -4,6 +4,7 @@
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
+      "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],
       "@/ui": ["../../../packages/ui/src/index.ts"],
       "@/shared/ui/*": ["../../../packages/ui/src/shared/ui/*"],
       "@/ui/*": ["../../../packages/ui/src/*"],
