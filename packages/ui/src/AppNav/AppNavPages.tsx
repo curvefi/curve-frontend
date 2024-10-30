@@ -8,7 +8,6 @@ import styled from 'styled-components'
 
 import { AppLinkText } from 'ui/src/AppNav/styles'
 import Box from 'ui/src/Box'
-import DividerHorizontal from 'ui/src/DividerHorizontal'
 import Select from 'ui/src/Select'
 
 const Page = ({ route, isActive, target, label }: AppPage) => (
@@ -67,20 +66,14 @@ const PageGroup: FunctionComponent<{ grouped: AppPage[] }> = ({ grouped }) => {
   )
 }
 
-const AppNavPages = ({ pages, apps }: { pages: AppPage[]; apps: AppPage[] }) => {
+const AppNavPages = ({ pages }: { pages: AppPage[];}) => {
   const groupedPages = useMemo(() => Object.values(groupBy(pages, (p) => p.groupedTitle)), [pages])
   return (
     <Box flexAlignItems="center" grid gridAutoFlow="column" gridGap={1}>
       {groupedPages.map((grouped) => <PageGroup key={grouped[0].route} grouped={grouped} />)}
-      <StyledDividerHorizontal />
-      {apps.map((app) => <Page key={app.route} {...app} />)}
     </Box>
   )
 }
-
-const StyledDividerHorizontal = styled(DividerHorizontal)`
-  max-height: 16px;
-`
 
 const StyledAppLinkText = styled(AppLinkText)`
   min-height: var(--height-medium);

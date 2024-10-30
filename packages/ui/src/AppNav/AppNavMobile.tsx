@@ -1,12 +1,10 @@
-import type { AppNavMobileProps, AppNavPages, AppPage } from 'ui/src/AppNav/types'
-
+import { AppNames, AppNavMobileProps, AppPage } from 'ui/src/AppNav/types'
 import React, { FunctionComponent, useMemo, useRef, useState } from 'react'
 import { useOverlay } from '@react-aria/overlays'
 import { useOverlayTriggerState } from 'react-stately'
 import Image from 'next/image'
 import delay from 'lodash/delay'
 import styled from 'styled-components'
-
 import { AppLinkText } from 'ui/src/AppNav/styles'
 import { LlamaImg } from 'ui/src/images'
 import AppNavMobileExternalLinks from 'ui/src/AppNav/AppNavMobileExternalLinks'
@@ -24,12 +22,13 @@ import SelectThemes from 'ui/src/Select/SelectThemes'
 import Spacer from 'ui/src/Spacer'
 import Switch from 'ui/src/Switch'
 import { ConnectWalletIndicator } from 'curve-common/src/features/connect-wallet'
+import { APP_LINK } from './constants'
 
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
 const AppLink: FunctionComponent<{
-  page: AppPage, pages: AppNavPages, closeMenu: (currentMenusWidth: number[]) => void, menuWidth: number
-}> = ({ page: { route, label, target, isActive }, pages, closeMenu, menuWidth }) =>
+  page: AppPage, onClick: (route:string)=>void, closeMenu: (currentMenusWidth: number[]) => void, menuWidth: number
+}> = ({ page: { route, label, target, isActive }, onClick, closeMenu, menuWidth }) =>
   route.startsWith('http') ? (
     <AppLinkText
       key={route}
@@ -43,7 +42,7 @@ const AppLink: FunctionComponent<{
     <MobileButton
       key={route}
       onClick={() => {
-        pages.handleClick(route)
+        onClick(route)
         closeMenu([menuWidth, 0])
       }}
     >
@@ -57,6 +56,7 @@ const AppNavMobile = ({
   locale,
   pageWidth,
   pages,
+  currentApp,
   sections,
   selectNetwork: SelectNetwork,
   stats,
@@ -132,11 +132,9 @@ const AppNavMobile = ({
             padding="var(--spacing-normal) var(--spacing-3) 0 var(--spacing-3)"
           >
             <Box grid gridRowGap={3}>
-              {pages.pages.map((page) => <AppLink key={page.label} page={page} pages={pages} closeMenu={closeMenu} menuWidth={menuWidth} />)}
-              {pages.apps?.length && (
-                <Box grid margin="var(--spacing-1) 0 0 0"></Box>
-              )}
-              {pages.apps.map((page) => <AppLink key={page.label} page={page} pages={pages} closeMenu={closeMenu} menuWidth={menuWidth} />)}
+              {pages.pages.map((page) => <AppLink key={page.label} page={page} onClick={pages.handleClick} closeMenu={closeMenu} menuWidth={menuWidth} />)}
+              <Box grid margin="var(--spacing-1) 0 0 0"></Box>
+              {AppNames.map((appName) => <AppLink key={appName} page={APP_LINK[appName]} onClick={pages.handleClick} closeMenu={closeMenu} menuWidth={menuWidth} />)}
               {/* MORE */}
               <div>
                 {sections.map(({ id, title, links, comp }, idx) =>

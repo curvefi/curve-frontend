@@ -16,6 +16,7 @@ import useStore from '@/store/useStore'
 
 import {
   APP_LINK,
+  AppButtonLinks,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
@@ -88,12 +89,6 @@ const Header = () => {
     return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
   }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
 
-  const apps: AppPage[] = useMemo(() =>
-    _parseRouteAndIsActive([
-      APP_LINK.crvusd,
-      APP_LINK.lend,
-    ], rLocalePathname, routerPathname, routerNetwork), [rLocalePathname, routerNetwork, routerPathname])
-
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
     return `#${rLocalePathname}/${networkName}${route}`
@@ -159,7 +154,8 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo />
-                <AppNavPages pages={pages} apps={apps} />
+                <AppButtonLinks currentApp="main" />
+                <AppNavPages pages={pages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -169,6 +165,7 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
+              currentApp="main"
               connect={appNavConnect}
               locale={{
                 locale,
@@ -182,7 +179,6 @@ const Header = () => {
               pageWidth={pageWidth}
               pages={{
                 pages,
-                apps,
                 getPath,
                 handleClick: (route: string) => {
                   if (navigate && params) {

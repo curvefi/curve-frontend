@@ -14,7 +14,14 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 
-import { APP_LINK, AppNavBar, AppNavBarContent, AppNavMenuSection, AppNavMobile, APPS_LINKS } from '@/ui/AppNav'
+import {
+  AppButtonLinks,
+  AppNavBar,
+  AppNavBarContent,
+  AppNavMenuSection,
+  AppNavMobile,
+  APPS_LINKS
+} from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import HeaderSecondary from '@/layout/HeaderSecondary'
@@ -59,10 +66,6 @@ const Header = () => {
       },
       { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'More' }
     ], rLocalePathname, routerPathname, routerNetwork), [isLgUp, rLocalePathname, routerNetwork, routerPathname])
-
-  const apps: AppPage[] = useMemo(() =>
-    _parseRouteAndIsActive([APP_LINK.main, APP_LINK.lend, APP_LINK.crvusd],
-      rLocalePathname, routerPathname, routerNetwork), [rLocalePathname, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -150,7 +153,8 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo />
-                <AppNavPages pages={pages} apps={apps} />
+                <AppButtonLinks currentApp="lend" />
+                <AppNavPages pages={pages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -168,13 +172,13 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
+              currentApp="lend"
               advancedMode={appNavAdvancedMode}
               connect={appNavConnect}
               locale={appNavLocale}
               pageWidth={pageWidth}
               pages={{
                 pages,
-                apps,
                 getPath,
                 handleClick: (route: string) => {
                   if (navigate && params) {

@@ -32,6 +32,9 @@ export type AppNavLocale = {
   handleChange: (selectedLocale: React.Key) => void
 }
 
+export const AppNames = ['main', 'lend', 'crvusd'] as const
+export type AppName = typeof AppNames[number]
+
 export type AppPage = {
   route: string
   label: string
@@ -42,7 +45,6 @@ export type AppPage = {
 }
 
 export type AppNavPages = {
-  apps: AppPage[]
   pages: AppPage[]
   getPath: (route: string) => string
   handleClick: (route: string) => void
@@ -68,6 +70,7 @@ export type AppNavMobileProps = {
   locale?: AppNavLocale
   pageWidth: PageWidth
   pages: AppNavPages
+  currentApp: AppName
   sections: AppNavSections
   selectNetwork: React.ReactNode
   stats: AppNavStats

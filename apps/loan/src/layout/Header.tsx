@@ -15,7 +15,7 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import {
-  APP_LINK,
+  AppButtonLinks,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
@@ -78,9 +78,6 @@ const Header = () => {
 
     return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, routerNetwork)
   }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])
-
-  const apps: AppPage[] = useMemo(() => _parseRouteAndIsActive([APP_LINK.main, APP_LINK.lend], rLocale.rLocalePathname, routerPathname, routerNetwork),
-    [rLocale.rLocalePathname, routerNetwork, routerPathname])
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
@@ -157,7 +154,8 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <AppNavPages pages={pages} apps={apps} />
+                <AppButtonLinks currentApp="crvusd" />
+                <AppNavPages pages={pages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -167,13 +165,13 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
+              currentApp="crvusd"
               advancedMode={appNavAdvancedMode}
               connect={appNavConnect}
               locale={appNavLocale}
               pageWidth={pageWidth}
               pages={{
                 pages,
-                apps,
                 getPath: (route: string) => getPath(params, route),
                 handleClick: (route: string) => {
                   if (navigate && params) {
