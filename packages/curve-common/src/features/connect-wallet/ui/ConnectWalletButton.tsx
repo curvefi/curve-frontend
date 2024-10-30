@@ -1,4 +1,4 @@
-import { Button } from '../../../../../curve-ui-kit/src/shared/ui/Button'
+import { Button } from 'curve-ui-kit/src/shared/ui/Button'
 import { t } from '@lingui/macro'
 
 interface ConnectWalletButtonProps {

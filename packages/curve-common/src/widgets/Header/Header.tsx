@@ -11,6 +11,7 @@ import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { Theme } from '@mui/system'
+import { ThemeSwitcher } from '../../features/switch-theme/ThemeSwitcher'
 
 interface HeaderProps<TChainId> {
   currentApp: AppName
@@ -38,7 +39,7 @@ const toolbarColors = {
 } as const
 
 
-export const Header = <TChainId extends number>({ currentApp, chains, languages, wallet, pages, appStats, themes, sections, advancedMode, isMdUp }: HeaderProps<TChainId>) => {
+export const Header = <TChainId extends number>({ currentApp, chains, languages, wallet, pages, appStats, themes: [theme, setTheme], sections, advancedMode: [isAdvancedMode, setAdvancedMode], isMdUp }: HeaderProps<TChainId>) => {
   return (
     <AppBar color="transparent" position={"relative"}>
       <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
@@ -63,6 +64,7 @@ export const Header = <TChainId extends number>({ currentApp, chains, languages,
         <Box sx={{ flexGrow: 1 }} />
 
         <Box sx={{ marginLeft: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <ThemeSwitcher theme={theme} onChange={setTheme} />
           <LanguageSwitcher {...languages} />
           <ChainSwitcher {...chains} />
           <ConnectWalletIndicator {...wallet} />

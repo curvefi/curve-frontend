@@ -11,7 +11,6 @@ export const AppButtonLinks = ({ currentApp }: AppNavAppsProps) => (
     {AppNames.map((appName) => {
       const app = APP_LINK[appName]
       const isActive = currentApp === appName
-      console.log(app)
       return (
         <Button
           key={appName}
