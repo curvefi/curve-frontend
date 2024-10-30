@@ -16,12 +16,12 @@ import useStore from '@/store/useStore'
 
 import {
   APP_LINK,
-  APPS_LINKS,
-  AppNavMobile,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
-  AppSelectNetwork,
+  AppNavMobile,
+  APPS_LINKS,
+  AppSelectNetwork
 } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import AppLogo from '@/ui/Brand'
@@ -36,7 +36,7 @@ const Header = () => {
   const params = useParams()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetwork, rNetworkIdx } = getNetworkFromUrl()
+  const { rChainId, rNetworkIdx } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -61,29 +61,26 @@ const Header = () => {
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
 
-  const appLogoProps: AppLogoProps = {
-    appName: 'Crvusd',
-  }
+  const appLogoProps: AppLogoProps = {}
 
   const pages: AppPage[] = useMemo(() => {
     const links = isLgUp
       ? [
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
-          { ...APP_LINK.main, isDivider: true },
-          APP_LINK.lend,
-        ]
+        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
+      ]
       : [
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
-          { ...APP_LINK.main, isDivider: true },
-          APP_LINK.lend,
-        ]
+        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
+        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
+      ]
 
     return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, routerNetwork)
   }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])
+
+  const apps: AppPage[] = useMemo(() => _parseRouteAndIsActive([APP_LINK.main, APP_LINK.lend], rLocale.rLocalePathname, routerPathname, routerNetwork),
+    [rLocale.rLocalePathname, routerNetwork, routerPathname])
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
@@ -128,18 +125,15 @@ const Header = () => {
     },
   }
 
-  const appNavLocale =
-    process.env.NODE_ENV === 'development'
-      ? {
-          locale,
-          locales: DEFAULT_LOCALES,
-          handleChange: (selectedLocale: React.Key) => {
-            const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-            const { rNetwork } = getNetworkFromUrl()
-            navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
-          },
-        }
-      : undefined
+  const appNavLocale = {
+    locale,
+    locales: DEFAULT_LOCALES,
+    handleChange: (selectedLocale: React.Key) => {
+      const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+      const { rNetwork } = getNetworkFromUrl()
+      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+    },
+  }
 
   const appNavTheme = {
     themeType,
@@ -163,7 +157,7 @@ const Header = () => {
             <>
               <AppNavMenuSection>
                 <AppLogo {...appLogoProps} />
-                <AppNavPages pages={pages} navigate={navigate} />
+                <AppNavPages pages={pages} apps={apps} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -173,13 +167,13 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
-              appLogoProps={appLogoProps}
               advancedMode={appNavAdvancedMode}
               connect={appNavConnect}
               locale={appNavLocale}
               pageWidth={pageWidth}
               pages={{
                 pages,
+                apps,
                 getPath: (route: string) => getPath(params, route),
                 handleClick: (route: string) => {
                   if (navigate && params) {

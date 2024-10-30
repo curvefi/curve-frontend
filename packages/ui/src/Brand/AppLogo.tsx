@@ -8,22 +8,16 @@ import { LogoImg, RCLogoText } from 'ui/src/images'
 
 export type AppLogoProps = {
   className?: string
-  appName: string
-  showBeta?: boolean
+  appName?: string
 }
 
-const AppLogo = ({ className = '', appName, showBeta }: AppLogoProps) => {
+const AppLogo = ({ className = '', appName }: AppLogoProps) => {
   return (
     <Wrapper className={className}>
       <StyledInternalLink to="/" $haveAppName={!!appName}>
         <CurveLogo src={LogoImg} alt="Curve" /> <StyledCurveLogoText />
         <AppName>{appName}</AppName>
       </StyledInternalLink>
-      {showBeta && (
-        <div>
-          <Beta>Beta</Beta>
-        </div>
-      )}
     </Wrapper>
   )
 }
@@ -36,16 +30,6 @@ const Wrapper = styled.div`
     transform: none;
     width: auto;
   }
-`
-
-const Beta = styled.span`
-  background-color: var(--warning-400);
-  color: var(--black);
-  font-size: var(--font-size-1);
-  font-weight: bold;
-  padding: var(--spacing-1) var(--spacing-2);
-  margin-left: var(--spacing-1);
-  margin-top: 2px;
 `
 
 const AppName = styled.span`

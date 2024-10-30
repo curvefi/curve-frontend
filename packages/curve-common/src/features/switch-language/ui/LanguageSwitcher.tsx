@@ -19,8 +19,6 @@ export type LanguageSwitcherProps = {
 
 export const LanguageSwitcher = ({ languageOptions, languageCode, onChange }: LanguageSwitcherProps) => (
   <Select
-    labelId="language-switcher-label"
-    id="language-switcher"
     value={languageCode}
     onChange={useCallback((v: SelectChangeEvent) => onChange(v.target.value), [onChange])}
     variant="standard"

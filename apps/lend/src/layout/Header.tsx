@@ -1,4 +1,3 @@
-import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import AppLogo from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 
@@ -22,7 +21,6 @@ import HeaderSecondary from '@/layout/HeaderSecondary'
 import { useTvl } from '@/entities/chain'
 import { ChainSwitcher } from '@/common/features/switch-chain'
 import { LanguageSwitcher } from '@/common/features/switch-language'
-import { Box } from '@ui-kit/shared/ui/Box'
 
 
 const Header = () => {
@@ -51,30 +49,20 @@ const Header = () => {
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
-  const appLogoProps: AppLogoProps = {
-    showBeta: true,
-    appName: 'LlamaLend',
-  }
+  const pages: AppPage[] = useMemo(() =>
+    _parseRouteAndIsActive([
+      { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+      {
+        route: ROUTE.PAGE_INTEGRATIONS,
+        label: t`Integrations`,
+        groupedTitle: isLgUp ? 'Others' : 'More', ...!isLgUp && { minWidth: '10rem' }
+      },
+      { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'More' }
+    ], rLocalePathname, routerPathname, routerNetwork), [isLgUp, rLocalePathname, routerNetwork, routerPathname])
 
-  const pages: AppPage[] = useMemo(() => {
-    const links = isLgUp
-      ? [
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Others' },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
-          { ...APP_LINK.main, isDivider: true },
-          APP_LINK.crvusd,
-        ]
-      : [
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
-          { ...APP_LINK.main, isDivider: true },
-          APP_LINK.crvusd,
-        ]
-
-    return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [isLgUp, rLocalePathname, routerNetwork, routerPathname])
+  const apps: AppPage[] = useMemo(() =>
+    _parseRouteAndIsActive([APP_LINK.main, APP_LINK.lend, APP_LINK.crvusd],
+      rLocalePathname, routerPathname, routerNetwork), [rLocalePathname, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -161,8 +149,8 @@ const Header = () => {
           {isMdUp ? (
             <>
               <AppNavMenuSection>
-                <AppLogo showBeta {...appLogoProps} />
-                <AppNavPages pages={pages} navigate={navigate} />
+                <AppLogo />
+                <AppNavPages pages={pages} apps={apps} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -180,13 +168,13 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
-              appLogoProps={appLogoProps}
               advancedMode={appNavAdvancedMode}
               connect={appNavConnect}
               locale={appNavLocale}
               pageWidth={pageWidth}
               pages={{
                 pages,
+                apps,
                 getPath,
                 handleClick: (route: string) => {
                   if (navigate && params) {

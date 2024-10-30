@@ -1,4 +1,3 @@
-import type { AppLogoProps } from 'ui/src/Brand/AppLogo'
 import type { ConnectState } from 'ui/src/utils'
 import type { ThemeType } from 'ui/src/Select/SelectThemes'
 
@@ -38,12 +37,12 @@ export type AppPage = {
   label: string
   isActive?: boolean
   target?: '_self' | '_blank'
-  isDivider?: boolean
   groupedTitle?: string
   minWidth?: string
 }
 
 export type AppNavPages = {
+  apps: AppPage[]
   pages: AppPage[]
   getPath: (route: string) => string
   handleClick: (route: string) => void
@@ -64,7 +63,6 @@ export type AppNavTheme = {
 }
 
 export type AppNavMobileProps = {
-  appLogoProps: AppLogoProps
   connect: AppNavConnect
   advancedMode?: AppNavAdvancedMode
   locale?: AppNavLocale
