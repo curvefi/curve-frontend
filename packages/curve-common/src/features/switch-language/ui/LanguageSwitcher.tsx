@@ -1,36 +1,26 @@
-import { Select } from '@ui-kit/shared/ui/Select'
-import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
-
-import { useCallback } from 'react'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
-export type LanguageOption = {
-  value: string
-  lang: string
+export type LocaleValue = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
+export type LocaleOption = {
   name: string
+  value: LocaleValue
+  lang: string
 }
 
 export type LanguageSwitcherProps = {
-  languageCode: string
-  languageOptions: LanguageOption[]
-  onChange: (languageCode: string) => void
+  locale: LocaleValue
+  locales: LocaleOption[]
+  onChange: (value: LocaleValue) => void
 }
 
-export const LanguageSwitcher = ({ languageOptions, languageCode, onChange }: LanguageSwitcherProps) => (
-  <Select
-    value={languageCode}
-    onChange={useCallback((v: SelectChangeEvent) => onChange(v.target.value), [onChange])}
-    variant="standard"
-    size="small"
-    sx={{paddingTop: 3}}
-  >
-    {
-      languageOptions.map((languageOption) => (
-        <MenuItem key={languageOption.value} value={languageOption.value}>
-          <Typography fontWeight="bold">{languageOption.name}</Typography>
-        </MenuItem>
-      ))
-    }
-  </Select>
+export const LanguageSwitcher = ({ locales, locale, onChange }: LanguageSwitcherProps) => (
+  <CompactDropDown<LocaleValue> value={locale} onChange={onChange}>
+    {locales.map((languageOption) => (
+      <MenuItem key={languageOption.value} value={languageOption.value}>
+        <Typography fontWeight="bold">{languageOption.name}</Typography>
+      </MenuItem>
+    ))}
+  </CompactDropDown>
 )

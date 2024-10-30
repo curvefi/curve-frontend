@@ -1,6 +1,4 @@
-import type { Locale } from '@/lib/i18n'
-
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/macro'
 import styled, { css } from 'styled-components'
 import Image from 'next/image'
 import React, { useEffect, useRef } from 'react'
@@ -14,6 +12,7 @@ import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/im
 import Box from '@/ui/Box'
 import { ExternalLink, InternalLink } from '@/ui/Link'
 import { useHeightResizeObserver } from '@/ui/hooks'
+import { LocaleValue } from '@/common/features/switch-language'
 
 type InnerSectionProps = {
   className?: string
@@ -24,7 +23,7 @@ export const CommunitySection = ({
   className,
   columnCount,
   locale,
-}: { locale: Locale['value'] } & InnerSectionProps) => (
+}: { locale: LocaleValue } & InnerSectionProps) => (
   <CommunityWrapper className={className} $columnCount={columnCount}>
     <SectionItem>
       <StyledExternalLink href="https://twitter.com/curvefinance">{t`Twitter`}</StyledExternalLink>

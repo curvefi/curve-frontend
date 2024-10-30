@@ -103,7 +103,7 @@ function CurveApp({ Component }: AppProps) {
   return (
     <div suppressHydrationWarning>
       {typeof window === 'undefined' || !appLoaded ? null : (
-        <ThemeProvider theme={themeType === 'default' ? 'chad' : themeType}>
+        <ThemeProvider theme={themeType as string === 'default' ? 'chad' : themeType}>
           <HashRouter>
             <I18nProvider i18n={i18n}>
               <QueryProvider persister={persister} queryClient={queryClient}>

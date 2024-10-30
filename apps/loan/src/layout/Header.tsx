@@ -14,20 +14,13 @@ import { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
-import {
-  AppButtonLinks,
-  AppNavBar,
-  AppNavBarContent,
-  AppNavMenuSection,
-  AppNavMobile,
-  APPS_LINKS,
-  AppSelectNetwork
-} from '@/ui/AppNav'
+import { AppNavBar, AppNavBarContent, AppNavMenuSection, AppNavMobile, APPS_LINKS, AppSelectNetwork } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import AppLogo from '@/ui/Brand'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
 import HeaderSecondary from '@/layout/HeaderSecondary'
+import { AppButtonLinks } from '@/common/widgets/Header/AppButtonLinks'
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
@@ -60,8 +53,6 @@ const Header = () => {
 
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
-
-  const appLogoProps: AppLogoProps = {}
 
   const pages: AppPage[] = useMemo(() => {
     const links = isLgUp
@@ -153,7 +144,7 @@ const Header = () => {
           {isMdUp ? (
             <>
               <AppNavMenuSection>
-                <AppLogo {...appLogoProps} />
+                <AppLogo />
                 <AppButtonLinks currentApp="crvusd" />
                 <AppNavPages pages={pages} />
               </AppNavMenuSection>

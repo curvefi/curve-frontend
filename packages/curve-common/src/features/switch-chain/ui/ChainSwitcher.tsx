@@ -1,8 +1,7 @@
-import { Select } from '@ui-kit/shared/ui/Select'
-import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
+import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
 import { FunctionComponent, SVGProps, useCallback, useMemo } from 'react'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
 export type IconType = FunctionComponent<SVGProps<SVGSVGElement>>
 
@@ -23,21 +22,17 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
   const networkIcons = useMemo(() => options.reduce((acc, option) => ({ ...acc, [option.chainId]: option.icon }), {} as Record<TChainId, IconType>), [options])
 
   const renderChainIcon = useCallback((value: TChainId) => {
-    const Icon = networkIcons[value]
+    const Icon: IconType = networkIcons[value]
     return <Icon width={28} />
   }, [networkIcons])
 
-  const onValueChange = useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])
-
   return (
-      <Select<TChainId>
-        value={[-1, 0].includes(chainId) ? 1 : chainId}
-        onChange={onValueChange}
+      <CompactDropDown<TChainId>
+        value={chainId}
+        onChange={onChange}
         variant="standard"
         disabled={disabled}
         renderValue={renderChainIcon}
-        size="small"
-        sx={{padding:0}}
       >
         {
           options.map(({ chainId: id, icon: Icon, label }) => (
@@ -49,6 +44,6 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
             </MenuItem>
           ))
         }
-      </Select>
+      </CompactDropDown>
   )
 }

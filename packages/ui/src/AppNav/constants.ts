@@ -1,11 +1,11 @@
-import type { AppPage } from '@/AppNav/types'
+import type { AppPage } from './types'
 
 const isDevelopment = process.env.NODE_ENV === 'development'
 
 // prettier-ignore
 export const APP_LINK: {[key: string]: AppPage} = {
   classicMain: { route: 'https://classic.curve.fi/', label: 'Classic UI', groupedTitle: 'classicMain' },
-  main: { route: isDevelopment ? 'http://localhost:3000' : _getRoute('curve.fi'), label: 'Curve.fi', target: '_self', groupedTitle: 'main' },
+  main: { route: isDevelopment ? 'http://localhost:3000' : _getRoute('curve.fi'), label: 'DEX', target: '_self', groupedTitle: 'main' },
   crvusd: { route: isDevelopment ? 'http://localhost:3001' : _getRoute('crvusd.curve.fi'), label: 'crvUSD', target: '_self', groupedTitle: 'crvusd' },
   lend: { route: isDevelopment ? 'http://localhost:3003' : _getRoute('lend.curve.fi'), label: 'Lend', target: '_self', groupedTitle: 'lend' },
 }

@@ -16,7 +16,6 @@ import useStore from '@/store/useStore'
 
 import {
   APP_LINK,
-  AppButtonLinks,
   AppNavBar,
   AppNavBarContent,
   AppNavMenuSection,
@@ -29,6 +28,7 @@ import AppLogo from '@/ui/Brand'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
 import HeaderSecondary from '@/layout/default/HeaderSecondary'
+import { AppButtonLinks } from '@/common/widgets/Header/AppButtonLinks'
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()

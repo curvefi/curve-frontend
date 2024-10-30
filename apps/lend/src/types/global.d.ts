@@ -1,6 +1,6 @@
 import type { I1inchRoute, IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import type { Locale } from '@/lib/i18n'
+import type { LocaleOption } from '@/lib/i18n'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import React from 'react'
@@ -9,6 +9,7 @@ import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 
 import { TITLE } from '@/constants'
+import { ThemeKey } from '@ui-kit/shared/lib'
 
 declare global {
   interface Window {
@@ -364,8 +365,6 @@ declare global {
     navigate: NavigateFunction
   }
 
-  type Theme = 'default' | 'dark' | 'chad'
-  type UsdRate = { [tokenAddress: string]: string | number }
   type Wallet = WalletState
   type MarketDetailsView = 'user' | 'market' | ''
   type TitleKey = keyof typeof TITLE

@@ -5861,6 +5861,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lingui/core@npm:2.9.2":
+  version: 2.9.2
+  resolution: "@lingui/core@npm:2.9.2"
+  dependencies:
+    babel-runtime: "npm:^6.26.0"
+    make-plural: "npm:^4.1.1"
+    messageformat-parser: "npm:^2.0.0"
+  checksum: 10c0/ab54e9f1c286ba8301216fa8956ef155022bb456a2daa19886b6c7b71df74aa8ebd1c39f1663d4ef5ee2eed1687e1047e75595d063e4365f119242420ce358bb
+  languageName: node
+  linkType: hard
+
 "@lingui/core@npm:4.6.0":
   version: 4.6.0
   resolution: "@lingui/core@npm:4.6.0"
@@ -5927,6 +5938,21 @@ __metadata:
     "@messageformat/parser": "npm:^5.0.0"
     js-sha256: "npm:^0.10.1"
   checksum: 10c0/ca7fb59a882835ba20018fe0ef9a0b2a97512fabb8ac8aae35c507574214cb42412ad39b0df0ab051db97c67cc51b49af6c918788ae29783cfa1cd4d1924ede0
+  languageName: node
+  linkType: hard
+
+"@lingui/react@npm:^2.8.3":
+  version: 2.9.2
+  resolution: "@lingui/react@npm:2.9.2"
+  dependencies:
+    "@lingui/core": "npm:2.9.2"
+    babel-runtime: "npm:^6.26.0"
+    hash-sum: "npm:^1.0.2"
+    hoist-non-react-statics: "npm:3.3.0"
+    prop-types: "npm:^15.7.2"
+  peerDependencies:
+    react: ^15.0.0 || ^16.0.0
+  checksum: 10c0/d8b0241e3dece61230354501143f2ae808d7fa1b8f4cd023fd9c6891e5ae76968edf465b92e3a1800b66ac72cd242252d72fd6ec7d256a386df8d7432627b981
   languageName: node
   linkType: hard
 
@@ -13182,6 +13208,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"babel-runtime@npm:^6.26.0":
+  version: 6.26.0
+  resolution: "babel-runtime@npm:6.26.0"
+  dependencies:
+    core-js: "npm:^2.4.0"
+    regenerator-runtime: "npm:^0.11.0"
+  checksum: 10c0/caa752004936b1463765ed3199c52f6a55d0613b9bed108743d6f13ca532b821d4ea9decc4be1b583193164462b1e3e7eefdfa36b15c72e7daac58dd72c1772f
+  languageName: node
+  linkType: hard
+
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2"
@@ -14673,6 +14709,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:^2.4.0":
+  version: 2.6.12
+  resolution: "core-js@npm:2.6.12"
+  checksum: 10c0/00128efe427789120a06b819adc94cc72b96955acb331cb71d09287baf9bd37bebd191d91f1ee4939c893a050307ead4faea08876f09115112612b6a05684b63
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:1.0.2":
   version: 1.0.2
   resolution: "core-util-is@npm:1.0.2"
@@ -15132,6 +15175,7 @@ __metadata:
     prop-types: "npm:^15.8.1"
     react-docgen-typescript: "npm:^2.2.2"
     storybook: "npm:^8.3.5"
+    storybook-addon-linguijs: "npm:^1.0.10"
     tsconfig: "npm:*"
     type-fest: "npm:^4.26.1"
   peerDependencies:
@@ -18987,6 +19031,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"hash-sum@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "hash-sum@npm:1.0.2"
+  checksum: 10c0/311b2d7ea317b128860a88c7fd3ae46aef010b7fd7418a44afd2787cd889f24d635fa1e22a51bd5a5d8e338597c1da917d81f572e0de2f375e52e96c9fb63a66
+  languageName: node
+  linkType: hard
+
 "hash.js@npm:1.1.7, hash.js@npm:^1.0.0, hash.js@npm:^1.0.3, hash.js@npm:^1.1.7":
   version: 1.1.7
   resolution: "hash.js@npm:1.1.7"
@@ -19068,6 +19119,15 @@ __metadata:
     minimalistic-assert: "npm:^1.0.0"
     minimalistic-crypto-utils: "npm:^1.0.1"
   checksum: 10c0/f3d9ba31b40257a573f162176ac5930109816036c59a09f901eb2ffd7e5e705c6832bedfff507957125f2086a0ab8f853c0df225642a88bf1fcaea945f20600d
+  languageName: node
+  linkType: hard
+
+"hoist-non-react-statics@npm:3.3.0":
+  version: 3.3.0
+  resolution: "hoist-non-react-statics@npm:3.3.0"
+  dependencies:
+    react-is: "npm:^16.7.0"
+  checksum: 10c0/6057333b39f84da2d76b93d6d144de4060e4377815d2ed106a721f1789c52859c16ae409f5207a17dd7e9a4e6723c275cccac00b35ac19ae50a230acac78e353
   languageName: node
   linkType: hard
 
@@ -21351,6 +21411,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"make-plural@npm:^4.1.1":
+  version: 4.3.0
+  resolution: "make-plural@npm:4.3.0"
+  dependencies:
+    minimist: "npm:^1.2.0"
+  dependenciesMeta:
+    minimist:
+      optional: true
+  bin:
+    make-plural: ./bin/make-plural
+  checksum: 10c0/3b6acef92ec1adace048d7bb13ac2a888568e129f6dc7455e0fcbff162d7a7812698ff859122f408e64da74f10b6080d5e57f0a3734b66e2f792574418eb57f1
+  languageName: node
+  linkType: hard
+
 "make-plural@npm:^7.1.0":
   version: 7.1.0
   resolution: "make-plural@npm:7.1.0"
@@ -21472,6 +21546,13 @@ __metadata:
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
   checksum: 10c0/254a8a4605b58f450308fc474c82ac9a094848081bf4c06778200207820e5193726dc563a0d2c16468810516a5c97d9d3ea0ca6585d23c58ccfff2403e8dbbeb
+  languageName: node
+  linkType: hard
+
+"messageformat-parser@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "messageformat-parser@npm:2.0.0"
+  checksum: 10c0/2a13a02d7189443d1058ae7708399b55df329df623a32fe38b84b7b9fda746567ccbeaf80a198c74f95f5d3fdb809ea323c952678861f1c8e6b98efb3d04e7cb
   languageName: node
   linkType: hard
 
@@ -24210,6 +24291,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"regenerator-runtime@npm:^0.11.0":
+  version: 0.11.1
+  resolution: "regenerator-runtime@npm:0.11.1"
+  checksum: 10c0/69cfa839efcf2d627fe358bf302ab8b24e5f182cb69f13e66f0612d3640d7838aad1e55662135e3ef2c1cc4322315b757626094fab13a48f9a64ab4bdeb8795b
+  languageName: node
+  linkType: hard
+
 "regenerator-runtime@npm:^0.13.4":
   version: 0.13.11
   resolution: "regenerator-runtime@npm:0.13.11"
@@ -25609,6 +25697,21 @@ __metadata:
   version: 3.6.0
   resolution: "std-env@npm:3.6.0"
   checksum: 10c0/a540b8cb011bef4bf5905e1e28f24ce37124f9d001c69224ee0025d3600144e6847bac62cd38fbd98148ab4d26ab0682b9b4d42bc863cd1cca0b9807f18aadba
+  languageName: node
+  linkType: hard
+
+"storybook-addon-linguijs@npm:^1.0.10":
+  version: 1.0.10
+  resolution: "storybook-addon-linguijs@npm:1.0.10"
+  dependencies:
+    "@lingui/react": "npm:^2.8.3"
+    react: "npm:^16.8.6"
+  peerDependencies:
+    "@lingui/react": ">=2.8.0"
+    "@storybook/addons": ">= 3.2.16"
+    "@storybook/react": ">= 3.2.16"
+    react: ">= 15.4.0"
+  checksum: 10c0/d1b85dd9ef62797a2eb7f231985b524dd89f6fc98b2961fed4fdae6270c01c9d518ff260431e276d8d091becd2a7f0268599cef960e134202f242bbf3de7ba2b
   languageName: node
   linkType: hard
 
