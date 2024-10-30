@@ -23,7 +23,7 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
 
   const renderChainIcon = useCallback((value: TChainId) => {
     const Icon: IconType = networkIcons[value]
-    return <Icon width={28} />
+    return <Icon width={24} />
   }, [networkIcons])
 
   return (
@@ -33,6 +33,7 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
         variant="standard"
         disabled={disabled}
         renderValue={renderChainIcon}
+        sx={{marginTop: 2}}
       >
         {
           options.map(({ chainId: id, icon: Icon, label }) => (

@@ -12,6 +12,7 @@ import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { Theme } from '@mui/system'
 import { ThemeSwitcher } from '../../features/switch-theme/ThemeSwitcher'
+import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode/AdvancedModeSwitcher'
 
 interface HeaderProps<TChainId> {
   currentApp: AppName
@@ -63,9 +64,10 @@ export const Header = <TChainId extends number>({ currentApp, chains, languages,
 
         <Box sx={{ flexGrow: 1 }} />
 
-        <Box sx={{ marginLeft: 2, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <ThemeSwitcher theme={theme} onChange={setTheme} />
+        <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3}>
+          <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} />
           <LanguageSwitcher {...languages} />
+          <ThemeSwitcher theme={theme} onChange={setTheme} />
           <ChainSwitcher {...chains} />
           <ConnectWalletIndicator {...wallet} />
         </Box>
