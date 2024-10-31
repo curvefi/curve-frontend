@@ -22,7 +22,7 @@ import {
 const DepositModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
-  const { inputAmount, outputAmount, setInputAmount, setMax } = useStore((state) => state.scrvusd)
+  const { inputAmount, outputAmount, setInputAmount, setMax, previewAction } = useStore((state) => state.scrvusd)
   const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
 
   const isError = inputAmount > +userBalances?.crvUSD

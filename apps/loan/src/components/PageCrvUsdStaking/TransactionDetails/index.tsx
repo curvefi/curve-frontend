@@ -10,8 +10,10 @@ import { isReady } from '@/components/PageCrvUsdStaking/utils'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import Tooltip from '@/ui/Tooltip'
+import Loader from '@/ui/Loader'
 
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
+import FieldValue from '@/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 
 type TransactionDetailsProps = {
   className?: string
@@ -20,7 +22,8 @@ type TransactionDetailsProps = {
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
   const maxSlippage = useStore((state) => state.maxSlippage)
-  const estimateGasDepositApprove = useStore((state) => state.scrvusd.estimateGas.depositApprove)
+  const { depositApprove: estimateGasDepositApprove } = useStore((state) => state.scrvusd.estimateGas)
+  const { previewAction, preview, module } = useStore((state) => state.scrvusd)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
   const inputAmount = useStore((state) => state.scrvusd.inputAmount)
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
@@ -30,8 +33,14 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   useEffect(() => {
     if (lendApi && curve && inputAmount !== 0) {
       estimateGasDepositApprove(inputAmount)
+
+      if (module === 'deposit') {
+        previewAction('deposit', inputAmount)
+      } else {
+        previewAction('withdraw', inputAmount)
+      }
     }
-  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount])
+  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount, module, previewAction])
 
   return (
     <TransactionDetailsWrapper className={className}>
@@ -39,12 +48,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
         <ToggleTitle>{t`1 crvUSD = 0.82 scrvUSD`}</ToggleTitle>
         <Box flex>
           {!isOpen && (
-            <ToggleValue>
-              <Tooltip tooltip={tooltip} noWrap onClick={() => setIsOpen(!isOpen)}>
-                <Icon name="Fire" size={16} />
-                {isReady(fetchStatus) ? formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD) : '-'}
-              </Tooltip>
-            </ToggleValue>
+            <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />
           )}
           <StyledIcon name={isOpen ? 'ChevronUp' : 'ChevronDown'} size={16} />
         </Box>
@@ -53,20 +57,15 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
         <>
           <TransactionField>
             <TransactionFieldLabel>{t`You recieve`}</TransactionFieldLabel>
-            <TransactionFieldValue>{t`Exchange rate`}</TransactionFieldValue>
+            <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
           </TransactionField>
           <TransactionField>
             <TransactionFieldLabel>{t`Your scrvUSD share`}</TransactionFieldLabel>
-            <TransactionFieldValue>{t`Exchange rate`}</TransactionFieldValue>
+            <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
           </TransactionField>
           <TransactionField>
             <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>
-            <TransactionFieldValue>
-              <Tooltip tooltip={tooltip} noWrap>
-                <Icon name="Fire" size={16} />
-                {isReady(fetchStatus) ? formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD) : '-'}
-              </Tooltip>
-            </TransactionFieldValue>
+            <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />
           </TransactionField>
           <TransactionField>
             <TransactionFieldLabel>{t`Additional slippage tolerance`}</TransactionFieldLabel>

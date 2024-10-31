@@ -20,12 +20,19 @@ type SliceState = {
   }
   depositApproval: {
     approval: boolean
+    allowance: string
     fetchStatus: FetchStatus
   }
+  preview: {
+    fetchStatus: FetchStatus
+    value: string
+  }
+  module: DepositWithdrawModule
   inputAmount: number
   outputAmount: number
-  module: DepositWithdrawModule
 }
+
+type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
 
 const sliceKey = 'scrvusd'
 
@@ -38,6 +45,7 @@ export type ScrvUsdSlice = {
     estimateGas: {
       depositApprove: (amount: number) => void
     }
+    previewAction: (flag: PreviewFlag, amount: number) => void
     deploy: {
       deposit: (amount: number) => void
       withdraw: (amount: number) => void
@@ -63,11 +71,16 @@ const DEFAULT_STATE: SliceState = {
   userBalances: {},
   depositApproval: {
     approval: false,
+    allowance: '',
     fetchStatus: '',
   },
   module: 'deposit',
   inputAmount: 0,
   outputAmount: 0,
+  preview: {
+    fetchStatus: '',
+    value: '',
+  },
 }
 
 const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -79,15 +92,24 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         if (!lendApi) return
 
-        get()[sliceKey].setStateByKey('depositApproval', { approval: false, fetchStatus: 'loading' })
+        get()[sliceKey].setStateByKey('depositApproval', { approval: false, allowance: '', fetchStatus: 'loading' })
 
         try {
-          const response = await lendApi.st_crvUSD.depositIsApproved(amount)
+          const [approvedResponse, allowanceResponse] = await Promise.all([
+            lendApi.st_crvUSD.depositIsApproved(amount),
+            lendApi.st_crvUSD.depositAllowance(),
+          ])
 
-          get()[sliceKey].setStateByKey('depositApproval', { approval: response, fetchStatus: 'success' })
+          console.log(approvedResponse, allowanceResponse)
+
+          get()[sliceKey].setStateByKey('depositApproval', {
+            approval: approvedResponse,
+            allowance: allowanceResponse[0],
+            fetchStatus: 'success',
+          })
         } catch (error) {
           console.error(error)
-          get()[sliceKey].setStateByKey('depositApproval', { approval: false, fetchStatus: 'error' })
+          get()[sliceKey].setStateByKey('depositApproval', { approval: false, allowance: '', fetchStatus: 'error' })
         }
       },
     },
@@ -134,6 +156,30 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'error' })
         }
       },
+    },
+    previewAction: async (flag: PreviewFlag, amount: number) => {
+      get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '' })
+
+      const lendApi = get().lendApi
+
+      if (!lendApi) return
+
+      try {
+        let response = ''
+
+        if (flag === 'deposit') {
+          response = await lendApi.st_crvUSD.previewDeposit(amount)
+        } else if (flag === 'withdraw') {
+          response = await lendApi.st_crvUSD.previewWithdraw(amount)
+        } else {
+          response = await lendApi.st_crvUSD.previewRedeem(amount)
+        }
+
+        get()[sliceKey].setStateByKey('preview', { fetchStatus: 'success', value: response })
+      } catch (error) {
+        console.error(error)
+        get()[sliceKey].setStateByKey('preview', { fetchStatus: 'error', value: '' })
+      }
     },
     fetchUserBalances: async (address: string) => {
       const lendApi = get().lendApi
