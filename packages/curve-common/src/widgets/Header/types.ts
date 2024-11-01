@@ -1,4 +1,4 @@
-import type { AppName, AppPage } from 'ui/src/AppNav/types'
+import type { AppName, AppPage, Locale } from 'ui/src/AppNav/types'
 import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
@@ -20,6 +20,7 @@ export type BaseHeaderProps<TChainId> = {
   themes: [ThemeKey, Dispatch<ThemeKey>]
   appStats: { label: string, value: string }[]
   advancedMode: [boolean, Dispatch<boolean>]
+  locale: Locale
   translations: {
     advancedMode: string
     themeSwitcher: string

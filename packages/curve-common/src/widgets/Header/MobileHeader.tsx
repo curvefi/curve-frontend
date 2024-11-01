@@ -8,7 +8,6 @@ import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import { useLocation } from 'react-router'
 import Box from '@mui/material/Box'
-import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { ThemeSwitcherButton } from '../../features/switch-theme'
 import { LanguageSwitcher } from '../../features/switch-language'
 import { ChainSwitcher } from '../../features/switch-chain'
@@ -31,7 +30,7 @@ export const MobileHeader = <TChainId extends number>({
   appStats,
   themes: [theme, setTheme],
   sections,
-  advancedMode: [isAdvancedMode, setAdvancedMode],
+  locale,
   translations: t,
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -89,11 +88,10 @@ export const MobileHeader = <TChainId extends number>({
 
           {sections.map(({ title, links }) => <SidebarSection key={title} title={title} pages={links} currentPath={currentPath} />)}
 
-          <SocialSidebarSection currentPath={currentPath} title={t.socialMedia} />
+          <SocialSidebarSection currentPath={currentPath} title={t.socialMedia} locale={locale} />
 
           <SidebarSection title={t.options} currentPath={currentPath}>
             <Box display="flex" flexDirection="column" marginLeft={2} justifyContent="flex-end" gap={3} flexGrow={1}>
-              <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advancedMode} />
               <LanguageSwitcher {...languages} />
               <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.themeSwitcher} />
             </Box>
