@@ -1,15 +1,14 @@
 import styled from 'styled-components'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 import useEstimateGasConversion from '@/hooks/useEstimateGasConversion'
-import { formatNumber, FORMAT_OPTIONS } from '@/ui/utils'
-import { isReady } from '@/components/PageCrvUsdStaking/utils'
+import { formatNumber } from '@/ui/utils'
+import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
-import Tooltip from '@/ui/Tooltip'
 import Loader from '@/ui/Loader'
 
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
@@ -22,30 +21,23 @@ type TransactionDetailsProps = {
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
   const maxSlippage = useStore((state) => state.maxSlippage)
-  const { depositApprove: estimateGasDepositApprove } = useStore((state) => state.scrvusd.estimateGas)
-  const { previewAction, preview, module } = useStore((state) => state.scrvusd)
+  const { preview, crvUsdExchangeRate } = useStore((state) => state.scrvusd)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(gas)
-
-  useEffect(() => {
-    if (lendApi && curve && inputAmount !== 0) {
-      estimateGasDepositApprove(inputAmount)
-
-      if (module === 'deposit') {
-        previewAction('deposit', inputAmount)
-      } else {
-        previewAction('withdraw', inputAmount)
-      }
-    }
-  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount, module, previewAction])
+  const exchangeRateLoading = isLoading(crvUsdExchangeRate.fetchStatus)
 
   return (
     <TransactionDetailsWrapper className={className}>
       <ToggleField isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
-        <ToggleTitle>{t`1 crvUSD = 0.82 scrvUSD`}</ToggleTitle>
+        <ToggleTitle>
+          {exchangeRateLoading ? (
+            <Loader skeleton={[72, 12]} />
+          ) : (
+            t`1 crvUSD = ${formatNumber(crvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          scrvUSD`
+          )}
+        </ToggleTitle>
         <Box flex>
           {!isOpen && (
             <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />

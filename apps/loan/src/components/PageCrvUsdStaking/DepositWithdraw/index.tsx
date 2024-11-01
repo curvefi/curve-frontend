@@ -1,6 +1,6 @@
 import { SubNavItem } from '@/components/PageCrvUsdStaking/components/SubNav/types'
 import { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -18,11 +18,29 @@ type DepositWithdrawProps = {
 }
 
 const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
-  const { module, setModule } = useStore((state) => state.scrvusd)
+  const { module, setModule, previewAction, inputAmount, setPreviewReset } = useStore((state) => state.scrvusd)
+  const { depositApprove: estimateGasDepositApprove } = useStore((state) => state.scrvusd.estimateGas)
+  const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const setNavChange = (key: SubNavItem['key']) => {
     setModule(key as DepositWithdrawModule)
   }
+
+  useEffect(() => {
+    if (lendApi && curve && inputAmount !== 0) {
+      estimateGasDepositApprove(inputAmount)
+
+      if (module === 'deposit') {
+        previewAction('deposit', inputAmount)
+      } else {
+        previewAction('withdraw', inputAmount)
+      }
+    }
+
+    if (inputAmount === 0) {
+      setPreviewReset()
+    }
+  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount, module, previewAction, setPreviewReset])
 
   return (
     <Wrapper className={className}>

@@ -29,7 +29,10 @@ type SliceState = {
   }
   module: DepositWithdrawModule
   inputAmount: number
-  outputAmount: number
+  crvUsdExchangeRate: {
+    fetchStatus: FetchStatus
+    value: string
+  }
 }
 
 type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
@@ -51,10 +54,13 @@ export type ScrvUsdSlice = {
       withdraw: (amount: number) => void
     }
     fetchUserBalances: (address: string) => void
+    getExchangeRate: () => void
     setMax: (userAddress: string, module: DepositWithdrawModule) => void
     setModule: (module: DepositWithdrawModule) => void
     setInputAmount: (amount: number) => void
     setOutputAmount: (amount: number) => void
+    setPreviewReset: () => void
+    setModuleChangeReset: () => void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -76,9 +82,12 @@ const DEFAULT_STATE: SliceState = {
   },
   module: 'deposit',
   inputAmount: 0,
-  outputAmount: 0,
   preview: {
     fetchStatus: '',
+    value: '',
+  },
+  crvUsdExchangeRate: {
+    fetchStatus: 'loading',
     value: '',
   },
 }
@@ -157,6 +166,22 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
     },
+    getExchangeRate: async () => {
+      const lendApi = get().lendApi
+
+      if (!lendApi) return
+
+      get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
+
+      try {
+        const response = await lendApi.st_crvUSD.convertToShares(1)
+
+        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'success', value: response })
+      } catch (error) {
+        console.error(error)
+        get()[sliceKey].setStateByKey('crvUsdExchangeRate', { fetchStatus: 'error', value: '' })
+      }
+    },
     previewAction: async (flag: PreviewFlag, amount: number) => {
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '' })
 
@@ -207,7 +232,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     setModule: (module: DepositWithdrawModule) => {
       get()[sliceKey].setStateByKey('module', module)
-      get()[sliceKey].setStateByKey('inputAmount', 0)
+      get()[sliceKey].setModuleChangeReset()
     },
     setMax: (userAddress: string, module: DepositWithdrawModule) => {
       if (module === 'deposit') {
@@ -228,14 +253,14 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       get()[sliceKey].setStateByKey('inputAmount', amount)
     },
-    setOutputAmount: (amount: number) => {
-      if (!amount) {
-        get()[sliceKey].setStateByKey('outputAmount', 0)
-        return
-      }
-
-      get()[sliceKey].setStateByKey('outputAmount', amount)
+    setPreviewReset: () => {
+      get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '' })
     },
+    setModuleChangeReset: () => {
+      get()[sliceKey].setStateByKey('inputAmount', 0)
+      get()[sliceKey].setPreviewReset()
+    },
+
     // slice helpers
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
       get().setAppStateByActiveKey(sliceKey, key, activeKey, value)

@@ -15,7 +15,8 @@ type InputCompProps = {
   walletBalanceUSD: string
   walletBalanceSymbol: string
   value: number
-  isLoading: boolean
+  isLoadingInput: boolean
+  isLoadingBalances: boolean
   setValue?: (value: number) => void
   setMax?: () => void
   className?: string
@@ -28,7 +29,8 @@ const InputComp: React.FC<InputCompProps> = ({
   walletBalance,
   walletBalanceUSD,
   walletBalanceSymbol,
-  isLoading,
+  isLoadingInput,
+  isLoadingBalances,
   value,
   setValue,
   setMax,
@@ -36,11 +38,17 @@ const InputComp: React.FC<InputCompProps> = ({
   return (
     <InputCompWrapper className={className}>
       <Box flex flexColumn fillWidth>
-        <NumberField value={value} isDisabled={readOnly} aria-label="Input" onChange={setValue} />
+        {isLoadingInput ? (
+          <InputLoaderWrapper>
+            <Loader skeleton={[36, 12]} />
+          </InputLoaderWrapper>
+        ) : (
+          <NumberField value={value} isDisabled={readOnly} aria-label="Input" onChange={setValue} />
+        )}
         <WalletBalanceWrapper>
           <StyledIcon name="Wallet" size={16} />
           <BalancesWrapper flex flexWrap="wrap">
-            {isLoading ? (
+            {isLoadingBalances ? (
               <Loader skeleton={[36, 12]} />
             ) : (
               <WalletBalance>
@@ -60,6 +68,10 @@ const InputCompWrapper = styled.div`
   display: flex;
   flex-direction: row;
   background-color: var(--summary_header--loading--background-color);
+  padding: var(--spacing-1);
+`
+
+const InputLoaderWrapper = styled.div`
   padding: var(--spacing-1);
 `
 

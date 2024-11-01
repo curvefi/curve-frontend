@@ -5,6 +5,7 @@ import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
+import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import Box from '@/ui/Box'
 import {
@@ -20,9 +21,10 @@ import {
 const WithdrawModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
-  const { inputAmount, outputAmount, setInputAmount } = useStore((state) => state.scrvusd)
-  const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
+  const { inputAmount, preview, setInputAmount } = useStore((state) => state.scrvusd)
 
+  const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
+  const isLoadingPreview = isLoading(preview.fetchStatus)
   const isError = inputAmount > +userBalances?.scrvUSD
 
   return (
@@ -41,7 +43,8 @@ const WithdrawModule: React.FC = () => {
             walletBalance={userBalances?.scrvUSD ?? '0'}
             walletBalanceUSD={userBalances?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
-            isLoading={isLoadingBalances}
+            isLoadingBalances={isLoadingBalances}
+            isLoadingInput={false}
             setValue={setInputAmount}
           />
         </InputWrapper>
@@ -58,11 +61,12 @@ const WithdrawModule: React.FC = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            value={outputAmount}
+            value={+preview.value}
             walletBalance={userBalances?.crvUSD ?? '0'}
             walletBalanceUSD={userBalances?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"
-            isLoading={isLoadingBalances}
+            isLoadingBalances={isLoadingBalances}
+            isLoadingInput={isLoadingPreview}
             readOnly
           />
         </InputWrapper>

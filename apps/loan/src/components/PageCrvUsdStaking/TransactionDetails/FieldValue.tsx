@@ -31,7 +31,7 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null 
     )
   }
 
-  if (status === 'loading') {
+  if (fetchStatus === 'loading') {
     return (
       <TransactionFieldValue>
         <Loader skeleton={[36, 12]} />
@@ -39,11 +39,11 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null 
     )
   }
 
-  if (status === '') {
+  if (fetchStatus === '') {
     return <TransactionFieldValue>-</TransactionFieldValue>
   }
 
-  return <TransactionFieldValue>{value}</TransactionFieldValue>
+  return <TransactionFieldValue>{formatNumber(value)}</TransactionFieldValue>
 }
 
 const TransactionFieldValue = styled.div`

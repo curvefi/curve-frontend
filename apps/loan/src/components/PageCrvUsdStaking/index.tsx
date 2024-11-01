@@ -10,7 +10,7 @@ import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 
 const CrvUsdStaking = () => {
-  const { fetchUserBalances, checkApproval, inputAmount } = useStore((state) => state.scrvusd)
+  const { fetchUserBalances, checkApproval, inputAmount, getExchangeRate } = useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
   const { data: signerAddress } = useSignerAddress()
   const chainId = useChainId().data
@@ -20,10 +20,11 @@ const CrvUsdStaking = () => {
       if (!lendApi || !signerAddress) return
 
       fetchUserBalances(signerAddress)
+      getExchangeRate()
     }
 
     fetchData()
-  }, [fetchUserBalances, lendApi, signerAddress])
+  }, [fetchUserBalances, lendApi, signerAddress, getExchangeRate])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === 0) return

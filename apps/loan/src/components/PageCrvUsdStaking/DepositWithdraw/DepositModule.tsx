@@ -22,9 +22,10 @@ import {
 const DepositModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
-  const { inputAmount, outputAmount, setInputAmount, setMax, previewAction } = useStore((state) => state.scrvusd)
-  const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
+  const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 
+  const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
+  const isLoadingPreview = preview.fetchStatus === 'loading'
   const isError = inputAmount > +userBalances?.crvUSD
 
   return (
@@ -44,7 +45,8 @@ const DepositModule: React.FC = () => {
               walletBalanceUSD={userBalances?.crvUSD ?? '0'}
               walletBalanceSymbol="crvUSD"
               value={inputAmount}
-              isLoading={isLoadingBalances}
+              isLoadingBalances={isLoadingBalances}
+              isLoadingInput={false}
               setValue={setInputAmount}
               setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'deposit')}
             />
@@ -66,9 +68,10 @@ const DepositModule: React.FC = () => {
             walletBalance={userBalances?.scrvUSD ?? '0'}
             walletBalanceUSD={userBalances?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
-            value={outputAmount}
+            value={+preview.value}
             readOnly
-            isLoading={isLoadingBalances}
+            isLoadingInput={isLoadingPreview}
+            isLoadingBalances={isLoadingBalances}
           />
         </InputWrapper>
       </div>
