@@ -5,10 +5,11 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils/responsive'
 import { LogoImg, RCLogoText } from 'ui/src/images'
+import { AppName } from '../AppNav/types'
 
 export type AppLogoProps = {
   className?: string
-  appName?: string
+  appName?: AppName
 }
 
 const AppLogo = ({ className = '', appName }: AppLogoProps) => {
@@ -16,7 +17,7 @@ const AppLogo = ({ className = '', appName }: AppLogoProps) => {
     <Wrapper className={className}>
       <StyledInternalLink to="/" $haveAppName={!!appName}>
         <CurveLogo src={LogoImg} alt="Curve" /> <StyledCurveLogoText />
-        <AppName>{appName}</AppName>
+        <AppNameBox>{appName}</AppNameBox>
       </StyledInternalLink>
     </Wrapper>
   )
@@ -32,7 +33,7 @@ const Wrapper = styled.div`
   }
 `
 
-const AppName = styled.span`
+const AppNameBox = styled.span`
   color: inherit;
   font-size: var(--font-size-1);
   font-weight: bold;

@@ -1,6 +1,7 @@
 import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
 import { FunctionComponent, SVGProps, useCallback, useMemo } from 'react'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import { Box } from 'curve-ui-kit/src/shared/ui/Box'
 import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
 export type IconType = FunctionComponent<SVGProps<SVGSVGElement>>
@@ -19,12 +20,12 @@ export type ChainSwitcherProps<TChainId> = {
 }
 
 export const ChainSwitcher = <TChainId extends number>({ options, chainId, onChange, disabled }: ChainSwitcherProps<TChainId>) => {
-  const networkIcons = useMemo(() => options.reduce((acc, option) => ({ ...acc, [option.chainId]: option.icon }), {} as Record<TChainId, IconType>), [options])
+  const networkMapping = useMemo(() => options.reduce((acc, option) => ({ ...acc, [option.chainId]: option }), {} as Record<TChainId, ChainOption<TChainId>>), [options])
 
   const renderChainIcon = useCallback((value: TChainId) => {
-    const Icon: IconType = networkIcons[value]
-    return <Icon width={24} />
-  }, [networkIcons])
+    const { icon: Icon } = networkMapping[value]
+    return (<Icon width={24} />)
+  }, [networkMapping])
 
   return (
       <CompactDropDown<TChainId>

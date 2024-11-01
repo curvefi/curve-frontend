@@ -45,13 +45,13 @@ const Header = () => {
 
   const pages: AppPage[] = useMemo(() =>
     _parseRouteAndIsActive([
-      { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+      { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
       {
         route: ROUTE.PAGE_INTEGRATIONS,
         label: t`Integrations`,
-        groupedTitle: isMdUp ? 'Others' : 'More', ...!isMdUp && { minWidth: '10rem' }
+        groupedTitle: isMdUp ? 'Others' : 'Llamalend', ...!isMdUp && { minWidth: '10rem' }
       },
-      { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isMdUp ? 'risk' : 'More' }
+      { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isMdUp ? 'risk' : 'Llamalend' }
     ], rLocalePathname, routerPathname, routerNetwork), [isMdUp, rLocalePathname, routerNetwork, routerPathname])
 
   const handleNetworkChange = useCallback((selectedChainId: ChainId) => {

@@ -2,13 +2,16 @@ import type { Components, CSSObject } from '@mui/material/styles'
 import { extractNumber, type FigmaTokens } from '../../api'
 import { basicMuiTheme, omitProperty, type ThemeKey } from '../../lib'
 
+const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
+type Color = typeof COLORS[number]
+
 export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const buttonDesktop = figmaTokens.themes.desktop[mode].button
   const buttonMobile = figmaTokens.themes.mobile[mode].button
   const spacingDesktop = figmaTokens.mappedSizesAndSpaces.desktop.spacing
   const spacingMobile = figmaTokens.mappedSizesAndSpaces.mobile.spacing
 
-  const getColorButtonStyle = (color: 'primary' | 'secondary' | 'success' | 'alert'): CSSObject => ({
+  const getColorButtonStyle = (color: Color): CSSObject => ({
     backgroundColor: buttonDesktop[color].default?.fill,
     color: buttonDesktop[color].default['label & icon'],
     '&:hover': {
@@ -33,64 +36,27 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
     },
   })
 
-  const getVariantButtonStyle = (variant: 'outlined'): CSSObject => ({
-    backgroundColor: 'transparent',
-    borderColor: buttonDesktop[variant].default.outline,
-    color: buttonDesktop[variant].default['label & icon'],
-    '&:hover': {
-      borderColor: buttonDesktop[variant].hover.outline,
-      color: buttonDesktop[variant].hover['label & icon'],
-    },
-    '&:disabled': {
-      borderColor: buttonDesktop[variant].disabled.outline,
-      color: buttonDesktop[variant].disabled['label & icon'],
-    },
+  const getOutlinedButtonStyle = (color: Color): CSSObject => ({
+    ...getGhostButtonStyle(color),
+    border: `1px solid ${buttonDesktop[color].default?.fill}`,
   })
 
-  const getGhostButtonStyle = (): CSSObject => ({
+  const getGhostButtonStyle = (color: Color): CSSObject => ({
+    ...getColorButtonStyle(color),
     backgroundColor: 'transparent',
-    color: buttonDesktop.ghost.default['label & icon'],
-    '&:hover': {
-      backgroundColor: buttonDesktop.ghost.hover.fill,
-      color: buttonDesktop.ghost.hover['label & icon'],
-    },
-    '&:disabled': {
-      backgroundColor: buttonDesktop.ghost.disabled.fill,
-      color: buttonDesktop.ghost.disabled['label & icon'],
-    },
+    color: buttonDesktop[color].default?.fill
   })
 
   return {
     styleOverrides: {
       root: {
         variants: [
-          {
-            props: { color: 'primary' },
-            style: getColorButtonStyle('primary'),
-          },
-          {
-            props: { color: 'secondary' },
-            style: getColorButtonStyle('secondary'),
-          },
-          {
-            props: { color: 'success' },
-            style: getColorButtonStyle('success'),
-          },
-          {
-            props: { color: 'alert' },
-            style: getColorButtonStyle('alert'),
-          },
+          ...COLORS.map((color) => ({ props: { color }, style: getColorButtonStyle(color) })),
+          ...COLORS.map((color) => ({ props: { variant: 'ghost', color }, style: getGhostButtonStyle(color) })),
+          ...COLORS.map((color) => ({ props: { variant: 'outlined', color }, style: getOutlinedButtonStyle(color) })),
           {
             props: { color: 'navigation' },
             style: getNavigationButtonStyle(),
-          },
-          {
-            props: { variant: 'outlined' },
-            style: getVariantButtonStyle('outlined'),
-          },
-          {
-            props: { variant: 'ghost' },
-            style: getGhostButtonStyle(),
           },
         ],
         borderRadius: extractNumber(buttonDesktop.radius.md),
