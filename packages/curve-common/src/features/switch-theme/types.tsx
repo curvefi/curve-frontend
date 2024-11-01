@@ -11,4 +11,5 @@ export const themes = [
 export type ThemeSwitcherProps = {
   theme: ThemeKey
   onChange(themeType: ThemeKey): void
+  label: string
 }

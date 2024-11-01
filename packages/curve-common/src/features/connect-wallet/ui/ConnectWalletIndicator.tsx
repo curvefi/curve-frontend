@@ -1,18 +1,13 @@
 import React, { FunctionComponent } from 'react'
-import { ConnectWalletButton } from './ConnectWalletButton'
-import { ConnectedWalletLabel } from './ConnectedWalletLabel'
-import { Address } from 'curve-ui-kit/src/shared/ui/AddressLabel'
+import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletButton'
+import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
+import type { SetOptional } from 'type-fest'
 
-export type ConnectWalletIndicatorProps = {
-  walletAddress?: Address
-  onConnectWallet: () => void
-  onDisconnectWallet: () => void
-  disabled?: boolean
-}
+export type ConnectWalletIndicatorProps = ConnectWalletButtonProps & SetOptional<ConnectedWalletLabelProps, 'walletAddress'>
 
-export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({ walletAddress, onConnectWallet, onDisconnectWallet, disabled }) =>
+export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({ walletAddress, label, onConnectWallet, onDisconnectWallet, ...props }) =>
   walletAddress ? (
-    <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} disabled={disabled} />
+    <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} {...props} />
   ) : (
-    <ConnectWalletButton onConnectWallet={onConnectWallet} disabled={disabled} />
+    <ConnectWalletButton label={label} onConnectWallet={onConnectWallet} {...props} />
   )

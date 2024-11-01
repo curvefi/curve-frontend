@@ -12,7 +12,17 @@ import { ThemeSwitcherIconButton } from '../../features/switch-theme'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { BaseHeaderProps, toolbarColors } from './types'
 
-export const DesktopHeader = <TChainId extends number>({ currentApp, chains, languages, wallet, pages, appStats, themes: [theme, setTheme], sections, advancedMode: [isAdvancedMode, setAdvancedMode] }: BaseHeaderProps<TChainId>) => (
+export const DesktopHeader = <TChainId extends number>({
+  currentApp,
+  chains,
+  languages,
+  wallet,
+  pages,
+  appStats,
+  themes: [theme, setTheme],
+  advancedMode: [isAdvancedMode, setAdvancedMode],
+  translations: t
+}: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
     <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
       <HeaderLogo appName={currentApp} />
@@ -21,9 +31,9 @@ export const DesktopHeader = <TChainId extends number>({ currentApp, chains, lan
       <Box sx={{ flexGrow: 1 }} />
 
       <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3}>
-        <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} />
+        <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advancedMode} />
         <LanguageSwitcher {...languages} />
-        <ThemeSwitcherIconButton theme={theme} onChange={setTheme} />
+        <ThemeSwitcherIconButton theme={theme} onChange={setTheme} label={t.themeSwitcher} />
         <ChainSwitcher {...chains} />
         <ConnectWalletIndicator {...wallet} />
       </Box>
@@ -34,4 +44,4 @@ export const DesktopHeader = <TChainId extends number>({ currentApp, chains, lan
       <HeaderStats appStats={appStats} />
     </Toolbar>
   </AppBar>
-);
+)

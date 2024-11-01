@@ -61,6 +61,7 @@ const AppNavMobile = ({
   selectNetwork: SelectNetwork,
   stats,
   theme,
+  connectWalletLabel,
 }: AppNavMobileProps) => {
   const leftMenuRef = useRef<HTMLDivElement | null>(null)
   const leftButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -213,6 +214,7 @@ const AppNavMobile = ({
               onConnectWallet={connect.handleClick}
               onDisconnectWallet={connect.handleClick}
               walletAddress={connect.walletSignerAddress}
+              label={connectWalletLabel}
             />
           </ModalFooter>
         </ModalWrapper>

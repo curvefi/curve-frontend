@@ -25,10 +25,10 @@ const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
   </IconButton>
 )
 
-type SocialSidebarSectionProps = { currentPath: string }
+type SocialSidebarSectionProps = { currentPath: string, title: string }
 
-export const SocialSidebarSection = (props: SocialSidebarSectionProps) => (
-  <SidebarSection title={t`Socials`} currentPath={props.currentPath}>
+export const SocialSidebarSection = ({ currentPath, title }: SocialSidebarSectionProps) => (
+  <SidebarSection title={title} currentPath={currentPath}>
     <Box display="flex" justifyContent="space-around">
       <SocialButton label="Discord" href="https://discord.gg/rgrfS7W" icon={DiscordIcon} />
       <SocialButton label="Telegram" href="https://t.me/curvefi" icon={TelegramIcon} />

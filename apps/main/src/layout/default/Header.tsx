@@ -165,6 +165,7 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
+              connectWalletLabel={t`Connect Wallet`}
               currentApp="main"
               connect={appNavConnect}
               locale={{

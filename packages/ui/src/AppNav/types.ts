@@ -75,6 +75,7 @@ export type AppNavMobileProps = {
   selectNetwork: React.ReactNode
   stats: AppNavStats
   theme: AppNavTheme
+  connectWalletLabel: string
 }
 
 export type AppNavSecondaryProps = {

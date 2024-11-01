@@ -14,14 +14,14 @@ interface SidebarSectionProps {
 export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, currentPath, children }) => (
   <List
     subheader={
-      <ListSubheader sx={{ textTransform: 'uppercase', backgroundColor: 'inherit' }}>
+      <ListSubheader sx={{ textTransform: 'uppercase' }} disableSticky>
         {title}
         <Divider />
       </ListSubheader>
     }
     sx={{ marginTop: 2 }}
   >
-    {pages?.map((page) => <SidebarItem key={page.route} page={page} currentPath={currentPath} depth={1} />)}
+    {pages?.map((page) => <SidebarItem child key={page.route} page={page} currentPath={currentPath} />)}
     {children}
   </List>
 )

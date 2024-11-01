@@ -1,7 +1,7 @@
 import { themes, ThemeSwitcherProps } from './types'
 import { useCallback } from 'react'
 
-export function useThemeToggle({theme, onChange}: ThemeSwitcherProps) {
+export function useThemeToggle({theme, onChange}: Omit<ThemeSwitcherProps, 'label'>) {
   const i = themes.findIndex((t) => t.type === theme)
   const themeIndex = i === -1 ? 0 : i
   const onClick = useCallback(() => {

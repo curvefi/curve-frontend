@@ -1,9 +1,14 @@
-import type { AppName, AppNavSections, AppPage } from 'ui/src/AppNav/types'
+import type { AppName, AppPage } from 'ui/src/AppNav/types'
 import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
 import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
 import { Dispatch } from 'react'
+
+export type NavigationSection = {
+  title: string
+  links: AppPage[]
+}
 
 export type BaseHeaderProps<TChainId> = {
   currentApp: AppName
@@ -11,10 +16,17 @@ export type BaseHeaderProps<TChainId> = {
   chains: ChainSwitcherProps<TChainId>
   wallet: ConnectWalletIndicatorProps
   pages: AppPage[]
+  sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
   appStats: { label: string, value: string }[]
-  sections: AppNavSections
   advancedMode: [boolean, Dispatch<boolean>]
+  translations: {
+    advancedMode: string
+    themeSwitcher: string
+    otherApps: string
+    options: string
+    socialMedia: string
+  }
 }
 
 export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {

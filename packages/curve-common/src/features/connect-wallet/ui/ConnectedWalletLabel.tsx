@@ -2,18 +2,21 @@ import { FunctionComponent } from 'react'
 import { Button } from 'curve-ui-kit/src/shared/ui/Button'
 import { Address, AddressLabel } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 
-interface ConnectedWalletLabelProps {
+import type { SxProps, Theme } from '@mui/system'
+
+export type ConnectedWalletLabelProps = {
   walletAddress: Address,
   onDisconnectWallet: () => void
   disabled?: boolean
+  sx?: SxProps<Theme>
 }
 
 export const ConnectedWalletLabel: FunctionComponent<ConnectedWalletLabelProps> = ({
   walletAddress,
   onDisconnectWallet,
-  disabled
+  ...props
 }) => (
-  <Button variant="ghost" onClick={onDisconnectWallet} disabled={disabled}>
+  <Button variant="ghost" onClick={onDisconnectWallet} {...props}>
     <AddressLabel value={walletAddress} />
   </Button>
 )
