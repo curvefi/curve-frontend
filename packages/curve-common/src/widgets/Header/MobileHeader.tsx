@@ -1,10 +1,8 @@
 import { AppBar, Toolbar } from '@mui/material'
-import { HeaderLogo } from './HeaderLogo'
 import { Theme } from '@mui/system'
 import { BaseHeaderProps, toolbarColors } from './types'
 import IconButton from '@mui/material/IconButton'
 import React, { useCallback, useMemo, useState } from 'react'
-import { MenuIcon } from 'curve-ui-kit/src/shared/ui/MenuIcon'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
@@ -16,19 +14,12 @@ import { LanguageSwitcher } from '../../features/switch-language'
 import { ChainSwitcher } from '../../features/switch-chain'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
 import { APP_LINK } from 'ui'
-import { AppName, AppNames } from 'ui/src/AppNav/types'
-import { CloseIcon } from 'curve-ui-kit/src/shared/ui/CloseIcon'
+import { AppNames } from 'ui/src/AppNav/types'
+import CloseIcon from '@mui/icons-material/Close'
 import { t } from '@lingui/macro'
 import { HeaderStats } from './HeaderStats'
-
-const HeaderLogoWithMenu = (props: { onClick: () => void, appName: AppName }) => (
-  <>
-    <IconButton onClick={props.onClick} sx={{ display: 'inline-flex' }}>
-      <MenuIcon fontSize="small" />
-    </IconButton>
-    <HeaderLogo appName={props.appName} />
-  </>
-)
+import { HeaderLogoWithMenu } from './HeaderLogoWithMenu'
+import { SocialSidebarSection } from './SocialSidebarSection'
 
 
 export const MobileHeader = <TChainId extends number>({
@@ -48,6 +39,12 @@ export const MobileHeader = <TChainId extends number>({
 
   const openSidebar = useCallback(() => setSidebarOpen(true), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const onConnectWallet = wallet.onConnectWallet
+  const onConnect = useCallback(() => {
+    closeSidebar()
+    onConnectWallet()
+  }, [onConnectWallet, closeSidebar])
+
   return (
     <AppBar color="transparent" position="relative">
       <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
@@ -87,14 +84,14 @@ export const MobileHeader = <TChainId extends number>({
             currentPath={currentPath}
           />
 
-          {/* TODO: <SidebarSection title={t`Socials`} currentPath={currentPath} />*/}
+          <SocialSidebarSection currentPath={currentPath} />
 
           <SidebarSection title={t`Options`} currentPath={currentPath}>
             <Box display="flex" flexDirection="column" marginLeft={2} justifyContent="flex-end" gap={3}>
               <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} />
               <LanguageSwitcher {...languages} />
               <ThemeSwitcherButton theme={theme} onChange={setTheme} />
-              <ConnectWalletIndicator {...wallet} />
+              <ConnectWalletIndicator {...wallet} onConnectWallet={onConnect} />
             </Box>
           </SidebarSection>
         </Drawer>

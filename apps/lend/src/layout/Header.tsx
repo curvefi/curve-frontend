@@ -16,7 +16,7 @@ import useStore from '@/store/useStore'
 import { APPS_LINKS } from '@/ui/AppNav'
 import { CommunitySection, ResourcesSection } from '@/layout/Footer'
 import { useTvl } from '@/entities/chain'
-import { Header as NewHeader } from '@/common/widgets/Header/Header'
+import { Header as NewHeader } from '@/common/widgets/Header'
 import { ThemeKey } from '@ui-kit/shared/lib'
 
 
