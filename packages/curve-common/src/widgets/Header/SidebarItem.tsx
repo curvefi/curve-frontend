@@ -7,11 +7,10 @@ import Link from '@mui/material/Link'
 
 type SidebarItemProps = {
   page: AppPage;
-  currentPath: string;
   child?: boolean
 }
 
-export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, currentPath, child }) => (
+export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
   <ListItem
     disableGutters
     sx={{ display: 'flex', marginBottom: 1, paddingY: 0, paddingRight: 2, paddingLeft: child ? 4 : 0 }}

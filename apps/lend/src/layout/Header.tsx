@@ -70,7 +70,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
         themeType,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
       ]}
-      languages={{
+      LanguageProps={{
         locale,
         locales: DEFAULT_LOCALES,
         onChange: useCallback((selectedLocale: React.Key) => {
@@ -79,7 +79,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
           navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
         }, [updateGlobalStoreByKey, navigate]),
       }}
-      chains={{
+      ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
@@ -99,7 +99,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
           }
         }, [chainId, rLocalePathname, updateConnectState, navigate]),
       }}
-      wallet={{
+      WalletProps={{
         onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
         onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
         walletAddress: getWalletSignerAddress(wallet),
@@ -112,7 +112,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
         advancedMode: t`Advanced`,
         themeSwitcher: t`Mode`,
         otherApps: t`Other Apps`,
-        options: t`Options`,
+        settings: t`Settings`,
         socialMedia: t`Community`,
       }}
     />

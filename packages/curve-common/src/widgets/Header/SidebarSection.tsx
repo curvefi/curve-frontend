@@ -7,11 +7,10 @@ import Divider from '@mui/material/Divider'
 interface SidebarSectionProps {
   title: string
   pages?: AppPage[]
-  currentPath: string
   children?: ReactNode
 }
 
-export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, currentPath, children }) => (
+export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, children }) => (
   <List
     subheader={
       <ListSubheader sx={{ textTransform: 'uppercase' }} disableSticky>
@@ -21,7 +20,7 @@ export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, 
     }
     sx={{ marginTop: 2 }}
   >
-    {pages?.map((page) => <SidebarItem child key={page.route} page={page} currentPath={currentPath} />)}
+    {pages?.map((page) => <SidebarItem child key={page.route} page={page}  />)}
     {children}
   </List>
 )

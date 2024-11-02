@@ -1,7 +1,6 @@
 import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
 import { FunctionComponent, SVGProps, useCallback, useMemo } from 'react'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
-import { Box } from 'curve-ui-kit/src/shared/ui/Box'
 import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
 export type IconType = FunctionComponent<SVGProps<SVGSVGElement>>

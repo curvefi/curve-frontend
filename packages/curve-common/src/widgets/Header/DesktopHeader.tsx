@@ -14,9 +14,9 @@ import { BaseHeaderProps, toolbarColors } from './types'
 
 export const DesktopHeader = <TChainId extends number>({
   currentApp,
-  chains,
-  languages,
-  wallet,
+  ChainProps,
+  LanguageProps,
+  WalletProps,
   pages,
   appStats,
   themes: [theme, setTheme],
@@ -32,10 +32,10 @@ export const DesktopHeader = <TChainId extends number>({
 
       <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3}>
         <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advancedMode} />
-        <LanguageSwitcher {...languages} />
+        <LanguageSwitcher {...LanguageProps} />
         <ThemeSwitcherIconButton theme={theme} onChange={setTheme} label={t.themeSwitcher} />
-        <ChainSwitcher {...chains} />
-        <ConnectWalletIndicator {...wallet} />
+        <ChainSwitcher {...ChainProps} />
+        <ConnectWalletIndicator {...WalletProps} />
       </Box>
     </Toolbar>
     <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1] }}>

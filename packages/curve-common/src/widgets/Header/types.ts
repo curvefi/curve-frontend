@@ -10,11 +10,11 @@ export type NavigationSection = {
   links: AppPage[]
 }
 
-export type BaseHeaderProps<TChainId> = {
+export type BaseHeaderProps<TChainId = number> = {
   currentApp: AppName
-  languages: LanguageSwitcherProps
-  chains: ChainSwitcherProps<TChainId>
-  wallet: ConnectWalletIndicatorProps
+  LanguageProps: LanguageSwitcherProps
+  ChainProps: ChainSwitcherProps<TChainId>
+  WalletProps: ConnectWalletIndicatorProps
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
@@ -25,7 +25,7 @@ export type BaseHeaderProps<TChainId> = {
     advancedMode: string
     themeSwitcher: string
     otherApps: string
-    options: string
+    settings: string
     socialMedia: string
   }
 }
