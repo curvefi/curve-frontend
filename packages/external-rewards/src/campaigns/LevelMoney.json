@@ -1,1 +1,21 @@
-
+{
+  "campaignName": "",
+  "platform": "LevelMoney",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "levelmoney.png",
+  "dashboardLink": "https://www.level.money/dashboard/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1725109200",
+      "campaignEnd": "1770000000",
+      "address": "0x1220868672d5b10f3e1cb9ab519e4d0b08545ea4",
+      "network": "ethereum",
+      "multiplier": "20XP ",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
