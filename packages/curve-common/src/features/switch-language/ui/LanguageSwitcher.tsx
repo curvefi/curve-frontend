@@ -15,8 +15,9 @@ export type LanguageSwitcherProps = {
   onChange: (value: LocaleValue) => void
 }
 
-export const LanguageSwitcher = ({ locales, locale, onChange }: LanguageSwitcherProps) => (
-  <CompactDropDown<LocaleValue> value={locale} onChange={onChange}>
+export const LanguageSwitcher = ({ locales, locale, onChange }: LanguageSwitcherProps) => locales.length > 1 && (
+  <CompactDropDown<LocaleValue> value={locale} onChange={onChange} //inputProps
+                                >
     {locales.map((languageOption) => (
       <MenuItem key={languageOption.value} value={languageOption.value}>
         <Typography fontWeight="bold">{languageOption.name}</Typography>

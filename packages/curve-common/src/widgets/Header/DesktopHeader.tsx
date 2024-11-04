@@ -8,7 +8,7 @@ import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { Theme } from '@mui/system'
-import { ThemeSwitcherIconButton } from '../../features/switch-theme'
+import { ThemeSwitcherButton } from '../../features/switch-theme'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { BaseHeaderProps, toolbarColors } from './types'
 
@@ -30,10 +30,10 @@ export const DesktopHeader = <TChainId extends number>({
 
       <Box sx={{ flexGrow: 1 }} />
 
-      <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3}>
-        <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advancedMode} />
+      <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+        <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advanced} />
         <LanguageSwitcher {...LanguageProps} />
-        <ThemeSwitcherIconButton theme={theme} onChange={setTheme} label={t.themeSwitcher} />
+        <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
         <ChainSwitcher {...ChainProps} />
         <ConnectWalletIndicator {...WalletProps} />
       </Box>

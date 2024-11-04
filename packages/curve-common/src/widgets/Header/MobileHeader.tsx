@@ -28,6 +28,7 @@ export const MobileHeader = <TChainId extends number>({
   locale,
   translations: t,
   ChainProps,
+  advancedMode,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -72,7 +73,7 @@ export const MobileHeader = <TChainId extends number>({
 
           <HeaderStats appStats={appStats} />
 
-          {Object.entries(groupedPages).map(([title, pages]) =><SidebarSection title={title} key={title} pages={pages} />)}
+          {Object.entries(groupedPages).map(([title, pages]) => <SidebarSection title={title} key={title} pages={pages} />)}
 
           <SidebarSection
             title={t.otherApps}
@@ -83,7 +84,14 @@ export const MobileHeader = <TChainId extends number>({
 
           <SocialSidebarSection title={t.socialMedia} locale={locale} />
 
-          <SideBarFooter translations={t} LanguageProps={LanguageProps} themes={themes} WalletProps={{ ...WalletProps, onConnectWallet: onConnect }} sx={SIDEBAR_WIDTH} />
+          <SideBarFooter
+            translations={t}
+            LanguageProps={LanguageProps}
+            themes={themes}
+            advancedMode={advancedMode}
+            WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
+            sx={SIDEBAR_WIDTH}
+          />
         </Drawer>
 
       </Toolbar>

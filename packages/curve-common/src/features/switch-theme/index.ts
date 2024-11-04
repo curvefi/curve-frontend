@@ -1,3 +1,3 @@
 export * from './types'
+export * from './ThemeSwitcherButtons'
 export * from './ThemeSwitcherButton'
-export * from './ThemeSwitcherIconButton'

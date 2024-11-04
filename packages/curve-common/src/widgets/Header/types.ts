@@ -22,8 +22,10 @@ export type BaseHeaderProps<TChainId = number> = {
   advancedMode: [boolean, Dispatch<boolean>]
   locale: Locale
   translations: {
+    advanced: string
     advancedMode: string
-    themeSwitcher: string
+    theme: string
+    language: string
     otherApps: string
     settings: string
     socialMedia: string

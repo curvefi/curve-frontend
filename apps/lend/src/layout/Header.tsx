@@ -109,8 +109,10 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
       appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
       sections={sections}
       translations={{
+        advanced: t`Advanced Mode`,
         advancedMode: t`Advanced`,
-        themeSwitcher: t`Mode`,
+        theme: t`Mode`,
+        language: t`Language`,
         otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,
