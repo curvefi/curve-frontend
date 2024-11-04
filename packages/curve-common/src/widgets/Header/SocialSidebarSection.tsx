@@ -25,10 +25,10 @@ const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
   </IconButton>
 )
 
-type SocialSidebarSectionProps = { currentPath: string, title: string, locale: Locale }
+type SocialSidebarSectionProps = { title: string, locale: Locale }
 
-export const SocialSidebarSection = ({ currentPath, title, locale }: SocialSidebarSectionProps) => (
-  <SidebarSection title={title} currentPath={currentPath}>
+export const SocialSidebarSection = ({ title, locale }: SocialSidebarSectionProps) => (
+  <SidebarSection title={title}>
     <Box display="flex" justifyContent="space-around">
       <SocialButton label="Discord" href="https://discord.gg/rgrfS7W" icon={DiscordIcon} />
       <SocialButton label="Telegram" href={locale.startsWith('zh') ? 'https://t.me/curveficn' : 'https://t.me/curvefi'} icon={TelegramIcon} />

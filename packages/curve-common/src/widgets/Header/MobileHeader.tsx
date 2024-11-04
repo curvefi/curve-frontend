@@ -6,7 +6,6 @@ import React, { useCallback, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
-import { useLocation } from 'react-router'
 import Box from '@mui/material/Box'
 import { ChainSwitcher } from '../../features/switch-chain'
 import { APP_LINK } from 'ui'
@@ -33,8 +32,6 @@ export const MobileHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
-  const { pathname: currentPath } = useLocation()
-
   const openSidebar = useCallback(() => setSidebarOpen(true), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
 
@@ -84,7 +81,7 @@ export const MobileHeader = <TChainId extends number>({
 
           {sections.map(({ title, links }) => <SidebarSection key={title} title={title} pages={links} />)}
 
-          <SocialSidebarSection currentPath={currentPath} title={t.socialMedia} locale={locale} />
+          <SocialSidebarSection title={t.socialMedia} locale={locale} />
 
           <SideBarFooter translations={t} LanguageProps={LanguageProps} themes={themes} WalletProps={{ ...WalletProps, onConnectWallet: onConnect }} sx={SIDEBAR_WIDTH} />
         </Drawer>
