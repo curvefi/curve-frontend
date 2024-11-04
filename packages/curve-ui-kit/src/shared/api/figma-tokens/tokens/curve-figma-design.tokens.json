@@ -149,7 +149,7 @@
   "02_font": {
     "heading": {
       "xxl": {
-        "description": "To be used only in Hero Banners",
+        "description": "to be used only for most important content.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 64,
@@ -165,8 +165,8 @@
           "textCase": "none"
         }
       },
-      "mbold": {
-        "description": "To be used for large items, such as page titles, large navigation items",
+      "m-regular": {
+        "description": "to be used only for most important content.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 32,
@@ -182,13 +182,13 @@
           "textCase": "uppercase"
         }
       },
-      "mlight": {
+      "m-light": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 32,
           "textDecoration": "none",
           "fontFamily": "Mona Sans",
-          "fontWeight": 500,
+          "fontWeight": 400,
           "fontStyle": "normal",
           "fontStretch": "normal",
           "letterSpacing": -1.28,
@@ -198,8 +198,8 @@
           "textCase": "uppercase"
         }
       },
-      "sbold": {
-        "description": "To be used for medium items, such as section titles, small card titles, chart titles",
+      "s-light": {
+        "description": "to be used only for most important content.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 24,
@@ -215,8 +215,7 @@
           "textCase": "uppercase"
         }
       },
-      "xsbold": {
-        "description": "To be used for the smallest highlighted items, such as small section titles, etc",
+      "xs": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -232,7 +231,7 @@
           "textCase": "uppercase"
         }
       },
-      "xsmedium": {
+      "xs - light lc": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -250,8 +249,8 @@
       }
     },
     "body": {
-      "mregular": {
-        "description": "For all the body of the app",
+      "m-regular": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 16,
@@ -267,8 +266,8 @@
           "textCase": "none"
         }
       },
-      "mbold": {
-        "description": "For all the highlighted items of body of the app",
+      "m-bold": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 16,
@@ -284,8 +283,8 @@
           "textCase": "none"
         }
       },
-      "sregular": {
-        "description": "For all the smaller informational items in the body of the app",
+      "s-regular": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -301,8 +300,8 @@
           "textCase": "none"
         }
       },
-      "sbold": {
-        "description": "For all the smaller informational items that need to be highlighted in the body of the app",
+      "s-bold": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -318,8 +317,8 @@
           "textCase": "none"
         }
       },
-      "xsregular": {
-        "description": "For the very fine details in the body of the app",
+      "xs-regular": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 12,
@@ -335,8 +334,8 @@
           "textCase": "none"
         }
       },
-      "xsbold": {
-        "description": "For the very fine details in the body of the app that need to be highlighted",
+      "xs-bold": {
+        "description": "For little labels that organise the interface",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 12,
@@ -353,9 +352,8 @@
         }
       }
     },
-    "button-label": {
-      "xs": {
-        "description": "To be used ONLY on button labels.",
+    "button": {
+      "label-xs": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -371,8 +369,7 @@
           "textCase": "none"
         }
       },
-      "s": {
-        "description": "To be used ONLY on button labels.",
+      "label-s": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -388,8 +385,7 @@
           "textCase": "uppercase"
         }
       },
-      "m": {
-        "description": "To be used ONLY on button labels.",
+      "label-m": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 16,
@@ -407,131 +403,121 @@
       }
     },
     "table": {
-      "header": {
-        "m": {
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 16,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 500,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 16,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 16,
-            "textCase": "none"
-          }
-        },
-        "s": {
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 14,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 500,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 14,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 14,
-            "textCase": "none"
-          }
+      "header-m": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 16,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 16,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 16,
+          "textCase": "none"
         }
       },
-      "cell": {
-        "l": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to the larger labels of items in the first row.",
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 20,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 700,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 20,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 0,
-            "textCase": "none"
-          }
-        },
-        "mregular": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to the Default labels of items of the first line of a cell.",
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 16,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 500,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 16,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 0,
-            "textCase": "none"
-          }
-        },
-        "mbold": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to highlighted items of the first line of a cell.",
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 16,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 600,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 16,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 0,
-            "textCase": "none"
-          }
-        },
-        "sregular": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to default item of the second line of a cell.",
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 14,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 500,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 14,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 0,
-            "textCase": "none"
-          }
-        },
-        "sbold": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to highlighted items of the second line of a cell.",
-          "type": "custom-fontStyle",
-          "value": {
-            "fontSize": 14,
-            "textDecoration": "none",
-            "fontFamily": "Mona Sans",
-            "fontWeight": 500,
-            "fontStyle": "normal",
-            "fontStretch": "normal",
-            "letterSpacing": 0,
-            "lineHeight": 14,
-            "paragraphIndent": 0,
-            "paragraphSpacing": 0,
-            "textCase": "none"
-          }
+      "header-s": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 14,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 14,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 14,
+          "textCase": "none"
+        }
+      },
+      "cell-l": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 20,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 700,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 20,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        }
+      },
+      "cells-m-regular": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 16,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 16,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        }
+      },
+      "cells-m-bold": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 16,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 600,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 16,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        }
+      },
+      "cells-s-regular": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 14,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 14,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
+        }
+      },
+      "cells-s-bold": {
+        "type": "custom-fontStyle",
+        "value": {
+          "fontSize": 14,
+          "textDecoration": "none",
+          "fontFamily": "Mona Sans",
+          "fontWeight": 500,
+          "fontStyle": "normal",
+          "fontStretch": "normal",
+          "letterSpacing": 0,
+          "lineHeight": 14,
+          "paragraphIndent": 0,
+          "paragraphSpacing": 0,
+          "textCase": "none"
         }
       }
     },
-    "highlighted": {
-      "xsnotional": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
+    "value": {
+      "xs-notional": {
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 12,
@@ -548,7 +534,6 @@
         }
       },
       "xs": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 12,
@@ -565,7 +550,6 @@
         }
       },
       "s": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 14,
@@ -582,7 +566,6 @@
         }
       },
       "m": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 16,
@@ -615,7 +598,6 @@
         }
       },
       "xl": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 32,
@@ -632,7 +614,6 @@
         }
       },
       "xxl": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "type": "custom-fontStyle",
         "value": {
           "fontSize": 64,
@@ -1430,7 +1411,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.light.text.textcolors.secondary}"
+              "value": "{02_theme.light.text.textcolors.tertiary}"
             }
           },
           "hover": {
@@ -1546,7 +1527,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.light.text.textcolors.secondary}"
+              "value": "{02_theme.light.text.textcolors.primary}"
             },
             "outline": {
               "type": "color",
@@ -1592,7 +1573,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.light.text.textcolors.secondary}"
+              "value": "{02_theme.light.text.textcolors.tertiary}"
             },
             "outline": {
               "type": "color",
@@ -2275,7 +2256,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.dark.text.textcolors.secondary}"
+              "value": "{02_theme.dark.text.textcolors.tertiary}"
             }
           },
           "hover": {
@@ -2391,7 +2372,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.dark.text.textcolors.secondary}"
+              "value": "{02_theme.dark.text.textcolors.primary}"
             },
             "outline": {
               "type": "color",
@@ -2437,7 +2418,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.dark.text.textcolors.secondary}"
+              "value": "{02_theme.dark.text.textcolors.tertiary}"
             },
             "outline": {
               "type": "color",
@@ -3120,7 +3101,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.chad.text.textcolors.secondary}"
+              "value": "{02_theme.chad.text.textcolors.tertiary}"
             }
           },
           "hover": {
@@ -3236,7 +3217,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.chad.text.textcolors.secondary}"
+              "value": "{02_theme.chad.text.textcolors.primary}"
             },
             "outline": {
               "type": "color",
@@ -3282,7 +3263,7 @@
           "default": {
             "label & icon": {
               "type": "color",
-              "value": "{02_theme.chad.text.textcolors.secondary}"
+              "value": "{02_theme.chad.text.textcolors.tertiary}"
             },
             "outline": {
               "type": "color",
@@ -4729,7 +4710,7 @@
   "typography": {
     "heading": {
       "xxl": {
-        "description": "To be used only in Hero Banners",
+        "description": "to be used only for most important content.",
         "fontSize": {
           "type": "dimension",
           "value": 64
@@ -4775,8 +4756,8 @@
           "value": "none"
         }
       },
-      "mbold": {
-        "description": "To be used for large items, such as page titles, large navigation items",
+      "m-regular": {
+        "description": "to be used only for most important content.",
         "fontSize": {
           "type": "dimension",
           "value": 32
@@ -4822,7 +4803,7 @@
           "value": "uppercase"
         }
       },
-      "mlight": {
+      "m-light": {
         "fontSize": {
           "type": "dimension",
           "value": 32
@@ -4837,7 +4818,7 @@
         },
         "fontWeight": {
           "type": "number",
-          "value": 500
+          "value": 400
         },
         "fontStyle": {
           "type": "string",
@@ -4868,8 +4849,8 @@
           "value": "uppercase"
         }
       },
-      "sbold": {
-        "description": "To be used for medium items, such as section titles, small card titles, chart titles",
+      "s-light": {
+        "description": "to be used only for most important content.",
         "fontSize": {
           "type": "dimension",
           "value": 24
@@ -4915,8 +4896,7 @@
           "value": "uppercase"
         }
       },
-      "xsbold": {
-        "description": "To be used for the smallest highlighted items, such as small section titles, etc",
+      "xs": {
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -4962,7 +4942,7 @@
           "value": "uppercase"
         }
       },
-      "xsmedium": {
+      "xs - light lc": {
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5010,8 +4990,8 @@
       }
     },
     "body": {
-      "mregular": {
-        "description": "For all the body of the app",
+      "m-regular": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 16
@@ -5057,8 +5037,8 @@
           "value": "none"
         }
       },
-      "mbold": {
-        "description": "For all the highlighted items of body of the app",
+      "m-bold": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 16
@@ -5104,8 +5084,8 @@
           "value": "none"
         }
       },
-      "sregular": {
-        "description": "For all the smaller informational items in the body of the app",
+      "s-regular": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5151,8 +5131,8 @@
           "value": "none"
         }
       },
-      "sbold": {
-        "description": "For all the smaller informational items that need to be highlighted in the body of the app",
+      "s-bold": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5198,8 +5178,8 @@
           "value": "none"
         }
       },
-      "xsregular": {
-        "description": "For the very fine details in the body of the app",
+      "xs-regular": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 12
@@ -5245,8 +5225,8 @@
           "value": "none"
         }
       },
-      "xsbold": {
-        "description": "For the very fine details in the body of the app that need to be highlighted",
+      "xs-bold": {
+        "description": "For little labels that organise the interface",
         "fontSize": {
           "type": "dimension",
           "value": 12
@@ -5293,9 +5273,8 @@
         }
       }
     },
-    "buttonlabel": {
-      "xs": {
-        "description": "To be used ONLY on button labels.",
+    "button": {
+      "label-xs": {
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5341,8 +5320,7 @@
           "value": "none"
         }
       },
-      "s": {
-        "description": "To be used ONLY on button labels.",
+      "label-s": {
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5388,8 +5366,7 @@
           "value": "uppercase"
         }
       },
-      "m": {
-        "description": "To be used ONLY on button labels.",
+      "label-m": {
         "fontSize": {
           "type": "dimension",
           "value": 16
@@ -5437,341 +5414,331 @@
       }
     },
     "table": {
-      "header": {
-        "m": {
-          "fontSize": {
-            "type": "dimension",
-            "value": 16
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 500
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 16
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 16
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+      "header-m": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 16
         },
-        "s": {
-          "fontSize": {
-            "type": "dimension",
-            "value": 14
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 500
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 14
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 14
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 500
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 16
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 16
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
         }
       },
-      "cell": {
-        "l": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to the larger labels of items in the first row.",
-          "fontSize": {
-            "type": "dimension",
-            "value": 20
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 700
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 20
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+      "header-s": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 14
         },
-        "mregular": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to the Default labels of items of the first line of a cell.",
-          "fontSize": {
-            "type": "dimension",
-            "value": 16
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 500
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 16
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
         },
-        "mbold": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to highlighted items of the first line of a cell.",
-          "fontSize": {
-            "type": "dimension",
-            "value": 16
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 600
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 16
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
         },
-        "sregular": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to default item of the second line of a cell.",
-          "fontSize": {
-            "type": "dimension",
-            "value": 14
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 500
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 14
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+        "fontWeight": {
+          "type": "number",
+          "value": 500
         },
-        "sbold": {
-          "description": "This style should never be used outside of a table cell.\nIt applies to highlighted items of the second line of a cell.",
-          "fontSize": {
-            "type": "dimension",
-            "value": 14
-          },
-          "textDecoration": {
-            "type": "string",
-            "value": "none"
-          },
-          "fontFamily": {
-            "type": "string",
-            "value": "Mona Sans"
-          },
-          "fontWeight": {
-            "type": "number",
-            "value": 500
-          },
-          "fontStyle": {
-            "type": "string",
-            "value": "normal"
-          },
-          "fontStretch": {
-            "type": "string",
-            "value": "normal"
-          },
-          "letterSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "lineHeight": {
-            "type": "dimension",
-            "value": 14
-          },
-          "paragraphIndent": {
-            "type": "dimension",
-            "value": 0
-          },
-          "paragraphSpacing": {
-            "type": "dimension",
-            "value": 0
-          },
-          "textCase": {
-            "type": "string",
-            "value": "none"
-          }
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 14
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 14
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
+        }
+      },
+      "cell-l": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 20
+        },
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 700
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 20
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
+        }
+      },
+      "cells-m-regular": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 16
+        },
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 500
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 16
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
+        }
+      },
+      "cells-m-bold": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 16
+        },
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 600
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 16
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
+        }
+      },
+      "cells-s-regular": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 14
+        },
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 500
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 14
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
+        }
+      },
+      "cells-s-bold": {
+        "fontSize": {
+          "type": "dimension",
+          "value": 14
+        },
+        "textDecoration": {
+          "type": "string",
+          "value": "none"
+        },
+        "fontFamily": {
+          "type": "string",
+          "value": "Mona Sans"
+        },
+        "fontWeight": {
+          "type": "number",
+          "value": 500
+        },
+        "fontStyle": {
+          "type": "string",
+          "value": "normal"
+        },
+        "fontStretch": {
+          "type": "string",
+          "value": "normal"
+        },
+        "letterSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "lineHeight": {
+          "type": "dimension",
+          "value": 14
+        },
+        "paragraphIndent": {
+          "type": "dimension",
+          "value": 0
+        },
+        "paragraphSpacing": {
+          "type": "dimension",
+          "value": 0
+        },
+        "textCase": {
+          "type": "string",
+          "value": "none"
         }
       }
     },
-    "highlighted": {
-      "xsnotional": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
+    "value": {
+      "xs-notional": {
         "fontSize": {
           "type": "dimension",
           "value": 12
@@ -5818,7 +5785,6 @@
         }
       },
       "xs": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "fontSize": {
           "type": "dimension",
           "value": 12
@@ -5865,7 +5831,6 @@
         }
       },
       "s": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "fontSize": {
           "type": "dimension",
           "value": 14
@@ -5912,7 +5877,6 @@
         }
       },
       "m": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "fontSize": {
           "type": "dimension",
           "value": 16
@@ -6005,7 +5969,6 @@
         }
       },
       "xl": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "fontSize": {
           "type": "dimension",
           "value": 32
@@ -6052,7 +6015,6 @@
         }
       },
       "xxl": {
-        "description": "To be used on indvidual numbers and values that need to be highlighted. Not to be used in tables.",
         "fontSize": {
           "type": "dimension",
           "value": 64
