@@ -15,7 +15,7 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { HeaderLogo } from './HeaderLogo'
-import MenuIcon from '@mui/icons-material/Menu'
+import { MenuToggleButton } from './MenuToggleButton'
 
 const SIDEBAR_WIDTH = {width: '80%', minWidth: 320, maxWidth: 400} as const
 const HIDE_SCROLLBAR = {
@@ -43,8 +43,8 @@ export const MobileHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
-  const openSidebar = useCallback(() => setSidebarOpen(true), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
 
   const onConnect = useCallback(() => {
     closeSidebar()
@@ -54,9 +54,7 @@ export const MobileHeader = <TChainId extends number>({
   return (
     <AppBar color="transparent" position="relative">
       <Toolbar sx={MAIN_BACKGROUND}>
-        <IconButton onClick={openSidebar} sx={{ display: 'inline-flex' }}>
-          <MenuIcon fontSize="small" />
-        </IconButton>
+        <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
         <HeaderLogo appName={currentApp} />
 
         <Drawer
@@ -103,10 +101,10 @@ const DrawerHeader = <TChainId extends number>({ ChainProps, currentApp, closeSi
   <Box
     display="flex"
     flexDirection="row"
-    paddingY={2}
+    paddingX={2}
     sx={MAIN_BACKGROUND}
   >
-    <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex' }}>
+    <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex', visibility: 'hidden' }}>
       <CloseIcon fontSize="small" />
     </IconButton>
     <HeaderLogo appName={currentApp} />
