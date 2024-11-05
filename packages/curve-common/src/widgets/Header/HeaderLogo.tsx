@@ -19,12 +19,15 @@ export type HeaderLogoProps = {
 }
 
 export const HeaderLogo = ({ appName }: HeaderLogoProps) => (
-  <RouterLink href="/">
+  <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column" sx={{ verticalAlign: 'top' }}>
-        <Typography variant="headingSBold" sx={{ textTransform: 'uppercase', textDecoration: 'none' }}
-                    color="textPrimary">
+        <Typography
+          variant="headingSBold"
+          sx={{ textTransform: 'uppercase' }}
+          color="textPrimary"
+        >
           {APP_NAMES[appName]}
         </Typography>
         <Typography variant="bodyXsRegular" color="grey.600">
