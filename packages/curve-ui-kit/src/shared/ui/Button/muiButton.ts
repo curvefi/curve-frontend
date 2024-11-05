@@ -5,6 +5,8 @@ import { basicMuiTheme, omitProperty, type ThemeKey } from '../../lib'
 const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
 type Color = typeof COLORS[number]
 
+export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
+
 export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const buttonDesktop = figmaTokens.themes.desktop[mode].button
   const buttonMobile = figmaTokens.themes.mobile[mode].button
@@ -47,10 +49,13 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
     color: buttonDesktop[color].default?.fill
   })
 
+  const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
+
   return {
     styleOverrides: {
       root: {
         variants: [
+          // todo: variants shouldn't have colors
           ...COLORS.map((color) => ({ props: { color }, style: getColorButtonStyle(color) })),
           ...COLORS.map((color) => ({ props: { variant: 'ghost', color }, style: getGhostButtonStyle(color) })),
           ...COLORS.map((color) => ({ props: { variant: 'outlined', color }, style: getOutlinedButtonStyle(color) })),
@@ -63,27 +68,21 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
       },
 
       sizeLarge: {
-        height: '56px',
-        padding: `${spacingDesktop.md}px ${spacingDesktop.sm}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: {
-          padding: `${spacingMobile.md}0px ${spacingMobile.sm}0px`,
-        },
+        height: largeHeight,
+        padding: `0 ${spacingDesktop.sm}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}0px` },
         ...omitProperty(figmaTokens.typography.buttonLabelM, 'description'),
       },
       sizeMedium: {
-        height: '48px',
-        padding: `${spacingDesktop.xs}px ${spacingDesktop.sm}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: {
-          padding: `${spacingMobile.xs}px ${spacingMobile.sm}px`,
-        },
+        height: mediumHeight,
+        padding: `0 ${spacingDesktop.sm}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}px` },
         ...omitProperty(figmaTokens.typography.buttonLabelS, 'description'),
       },
       sizeSmall: {
-        height: '40px',
-        padding: `${spacingDesktop.xs}px ${spacingDesktop.md}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: {
-          padding: `${spacingMobile.xs}px ${spacingMobile.md}px`,
-        },
+        height: smallHeight,
+        padding: `0 ${spacingDesktop.md}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.md}px` },
         ...omitProperty(figmaTokens.typography.buttonLabelS, 'description'),
       },
     },

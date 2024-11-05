@@ -7,9 +7,9 @@ import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
-import { ChainSwitcher } from '../../features/switch-chain'
+import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
 import { APP_LINK } from 'ui'
-import { AppNames } from 'ui/src/AppNav/types'
+import { AppName, AppNames } from 'ui/src/AppNav/types'
 import CloseIcon from '@mui/icons-material/Close'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
@@ -18,6 +18,15 @@ import { HeaderLogo } from './HeaderLogo'
 import MenuIcon from '@mui/icons-material/Menu'
 
 const SIDEBAR_WIDTH = {width: '80%', minWidth: 320, maxWidth: 400} as const
+const HIDE_SCROLLBAR = {
+  // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
+  '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
+  msOverflowStyle: 'none', // IE and Edge
+  scrollbarWidth: 'none', // Firefox
+}
+
+const MAIN_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0]}
+const SECONDARY_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1]}
 
 export const MobileHeader = <TChainId extends number>({
   currentApp,
@@ -44,7 +53,7 @@ export const MobileHeader = <TChainId extends number>({
 
   return (
     <AppBar color="transparent" position="relative">
-      <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
+      <Toolbar sx={MAIN_BACKGROUND}>
         <IconButton onClick={openSidebar} sx={{ display: 'inline-flex' }}>
           <MenuIcon fontSize="small" />
         </IconButton>
@@ -54,34 +63,17 @@ export const MobileHeader = <TChainId extends number>({
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          PaperProps={{
-            sx: {
-              backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1],
-              ...SIDEBAR_WIDTH,
-              '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
-              msOverflowStyle: 'none', // IE and Edge
-              scrollbarWidth: 'none', // Firefox
-            }
-          }}
+          PaperProps={{ sx: { ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
         >
-          <Box
-            display="flex"
-            flexDirection="row"
-            paddingY={2}
-            sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}
-          >
-            <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex' }}>
-              <CloseIcon fontSize="small" />
-            </IconButton>
-            <HeaderLogo appName={currentApp} />
-            <Box flexGrow={1} />
-            <ChainSwitcher {...ChainProps} />
-          </Box>
+          <DrawerHeader closeSidebar={closeSidebar} currentApp={currentApp} ChainProps={ChainProps} />
 
+          {/*todo: test header stats*/}
           <HeaderStats appStats={appStats} />
 
-          {Object.entries(groupedPages).map(([title, pages]) => <SidebarSection title={title} key={title} pages={pages} />)}
+          {Object.entries(groupedPages).map(([title, pages]) => (
+            <SidebarSection title={title} key={title} pages={pages} />
+          ))}
 
           <SidebarSection
             title={t.otherApps}
@@ -106,3 +98,19 @@ export const MobileHeader = <TChainId extends number>({
     </AppBar>
   )
 }
+
+const DrawerHeader = <TChainId extends number>({ ChainProps, currentApp, closeSidebar }: {closeSidebar: () => void, currentApp: AppName, ChainProps: ChainSwitcherProps<TChainId>}) =>(
+  <Box
+    display="flex"
+    flexDirection="row"
+    paddingY={2}
+    sx={MAIN_BACKGROUND}
+  >
+    <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex' }}>
+      <CloseIcon fontSize="small" />
+    </IconButton>
+    <HeaderLogo appName={currentApp} />
+    <Box flexGrow={1} />
+    <ChainSwitcher {...ChainProps} />
+  </Box>
+)

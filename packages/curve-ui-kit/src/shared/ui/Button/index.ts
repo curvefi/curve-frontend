@@ -1,2 +1,2 @@
 export { Button } from './Button'
-export { defineMuiButton } from './muiButton'
+export { defineMuiButton, BUTTONS_HEIGHTS } from './muiButton'

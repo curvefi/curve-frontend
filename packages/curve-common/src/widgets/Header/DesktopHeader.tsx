@@ -1,5 +1,6 @@
 import { AppBar, Toolbar } from '@mui/material'
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
 import { LanguageSwitcher } from '../../features/switch-language'
 import { ChainSwitcher } from '../../features/switch-chain'
@@ -11,9 +12,6 @@ import { Theme } from '@mui/system'
 import { ThemeSwitcherButton } from '../../features/switch-theme'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { BaseHeaderProps, toolbarColors } from './types'
-
-const minHeightSecondary = 40 // todo: add test that height==var(--header-height), primary=56, secondary=40, total=96
-const maxWidth = 'var(--width)'
 
 export const DesktopHeader = <TChainId extends number>({
   currentApp,
@@ -27,8 +25,8 @@ export const DesktopHeader = <TChainId extends number>({
   translations: t
 }: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0], paddingX: 3, justifyContent: 'space-around' }}>
-      <Box display="flex" flexGrow={1} maxWidth={maxWidth}>
+    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0], justifyContent: 'space-around' }}>
+      <Container>
         <HeaderLogo appName={currentApp} />
         <AppButtonLinks currentApp="lend" />
 
@@ -41,14 +39,14 @@ export const DesktopHeader = <TChainId extends number>({
           <ChainSwitcher {...ChainProps} />
           <ConnectWalletIndicator {...WalletProps} />
         </Box>
-      </Box>
+      </Container>
     </Toolbar>
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1], minHeight: minHeightSecondary, justifyContent: 'space-around' }}>
-      <Box display="flex" flexGrow={1} maxWidth={maxWidth}>
-        <PageTabs pages={pages} minHeight={minHeightSecondary} />
+    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1], justifyContent: 'space-around' }}>
+      <Container>
+        <PageTabs pages={pages} />
         <Box flexGrow={1} />
         <HeaderStats appStats={appStats} />
-      </Box>
+      </Container>
     </Toolbar>
   </AppBar>
 )
