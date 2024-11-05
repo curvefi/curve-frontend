@@ -15,18 +15,49 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
     (state) => state.scrvusd.depositApproval,
   )
-  const { inputAmount, module, userBalances } = useStore((state) => state.scrvusd)
+  const { depositApprove } = useStore((state) => state.scrvusd.deploy)
+  const { inputAmount, stakingModule, userBalances } = useStore((state) => state.scrvusd)
 
-  const buttonTitle = depositApproved ? t`Deposit` : t`Approve`
+  const userBalance = userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: 0, scrvUSD: 0 }
+
+  const getButtonTitle = () => {
+    if (stakingModule === 'deposit' && depositApproved) {
+      return t`Deposit`
+    }
+    if (stakingModule === 'deposit' && !depositApproved) {
+      return t`Approve`
+    }
+    if (stakingModule === 'withdraw' && depositApproved) {
+      return t`Withdraw`
+    }
+    if (stakingModule === 'withdraw' && !depositApproved) {
+      return t`Approve`
+    }
+  }
+
+  const buttonTitle = getButtonTitle()
   const approvalLoading = depositFetchStatus === 'loading'
-
   const isError =
-    module === 'deposit'
-      ? inputAmount > +userBalances[signerAddress?.toLowerCase() ?? '']?.crvUSD
-      : inputAmount > +userBalances[signerAddress?.toLowerCase() ?? '']?.scrvUSD
+    stakingModule === 'deposit'
+      ? depositApproved && inputAmount > +userBalance.crvUSD
+      : depositApproved && inputAmount > +userBalance.scrvUSD
+
+  const handleClick = () => {
+    if (stakingModule === 'deposit') {
+      if (!depositApproved) {
+        depositApprove(inputAmount)
+      }
+    }
+  }
 
   return (
-    <Button variant="filled" loading={approvalLoading} className={className} disabled={isError || inputAmount === 0}>
+    <Button
+      variant="filled"
+      loading={approvalLoading}
+      className={className}
+      disabled={isError || inputAmount === 0}
+      onClick={handleClick}
+    >
       {buttonTitle}
     </Button>
   )

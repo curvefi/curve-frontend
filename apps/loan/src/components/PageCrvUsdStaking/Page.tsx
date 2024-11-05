@@ -8,7 +8,6 @@ import styled from 'styled-components'
 
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
-import useStore from '@/store/useStore'
 
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 

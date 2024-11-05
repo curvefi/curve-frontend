@@ -8,15 +8,7 @@ import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import Box from '@/ui/Box'
-import {
-  ErrorText,
-  InputLabel,
-  InputWrapper,
-  SelectorBox,
-  StyledIcon,
-  StyledInputComp,
-  InputSelectorText,
-} from './styles'
+import { InputLabel, InputWrapper, SelectorBox, StyledIcon, StyledInputComp, InputSelectorText } from './styles'
 
 const WithdrawModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
@@ -25,7 +17,6 @@ const WithdrawModule: React.FC = () => {
 
   const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
   const isLoadingPreview = isLoading(preview.fetchStatus)
-  const isError = inputAmount > +userBalances?.scrvUSD
 
   return (
     <Box flex flexColumn>
@@ -48,7 +39,6 @@ const WithdrawModule: React.FC = () => {
             setValue={setInputAmount}
           />
         </InputWrapper>
-        {isError && <ErrorText>{t`You don't have enough scrvUSD to withdraw`}</ErrorText>}
       </Box>
       <StyledIcon name="ArrowDown" size={16} />
       <div>

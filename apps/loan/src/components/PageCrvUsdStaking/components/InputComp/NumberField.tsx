@@ -1,18 +1,20 @@
-import type { AriaNumberFieldProps } from 'react-aria'
-
 import styled from 'styled-components'
 
-interface Props extends AriaNumberFieldProps {
+interface NumberFieldProps {
   className?: string
+  delay?: number
+  value: number
+  isDisabled?: boolean
+  onChange?: (value: number) => void
 }
 
-const NumberField = (props: Props) => {
+const NumberField = ({ value, isDisabled = false, delay = 500, onChange }: NumberFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value)
-    props.onChange && props.onChange(isNaN(value) ? 0 : value)
+    onChange?.(isNaN(value) ? 0 : value)
   }
 
-  return <StyledInput value={props.value} isDisabled={props.isDisabled} onChange={handleChange} />
+  return <StyledInput value={value} isDisabled={isDisabled} onChange={handleChange} />
 }
 
 const StyledInput = styled.input<{ isDisabled?: boolean }>`

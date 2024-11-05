@@ -1,6 +1,9 @@
+import type { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
+
+import { t } from '@lingui/macro'
+import { SCRVUSD_GAS_ESTIMATE } from '@/constants'
 
 import cloneDeep from 'lodash/cloneDeep'
 
@@ -27,15 +30,22 @@ type SliceState = {
     fetchStatus: FetchStatus
     value: string
   }
-  module: DepositWithdrawModule
+  stakingModule: DepositWithdrawModule
   inputAmount: number
   crvUsdExchangeRate: {
     fetchStatus: FetchStatus
     value: string
   }
+  transaction: {
+    variant: TransactionVariant
+    status: TransactionStatus
+    transaction: string | null
+    errorMessage: string
+  }
 }
 
 type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
+type TransactionVariant = 'revoke' | 'approve' | 'deposit' | 'withdraw' | ''
 
 const sliceKey = 'scrvusd'
 
@@ -47,20 +57,24 @@ export type ScrvUsdSlice = {
     }
     estimateGas: {
       depositApprove: (amount: number) => void
+      deposit: (amount: number) => void
     }
     previewAction: (flag: PreviewFlag, amount: number) => void
     deploy: {
+      depositApprove: (amount: number) => void
       deposit: (amount: number) => void
+      withdrawApprove: (amount: number) => void
       withdraw: (amount: number) => void
     }
     fetchUserBalances: (address: string) => void
     getExchangeRate: () => void
-    setMax: (userAddress: string, module: DepositWithdrawModule) => void
-    setModule: (module: DepositWithdrawModule) => void
+    setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
+    setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setInputAmount: (amount: number) => void
     setOutputAmount: (amount: number) => void
     setPreviewReset: () => void
-    setModuleChangeReset: () => void
+    setStakingModuleChangeReset: () => void
+    setEstimateGas: (userAddress: string) => number
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -80,7 +94,7 @@ const DEFAULT_STATE: SliceState = {
     allowance: '',
     fetchStatus: '',
   },
-  module: 'deposit',
+  stakingModule: 'deposit',
   inputAmount: 0,
   preview: {
     fetchStatus: '',
@@ -90,6 +104,12 @@ const DEFAULT_STATE: SliceState = {
     fetchStatus: 'loading',
     value: '',
   },
+  transaction: {
+    variant: '',
+    status: '',
+    transaction: null,
+    errorMessage: '',
+  },
 }
 
 const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -98,7 +118,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     checkApproval: {
       depositApprove: async (amount: number) => {
         const lendApi = get().lendApi
-
         if (!lendApi) return
 
         get()[sliceKey].setStateByKey('depositApproval', { approval: false, allowance: '', fetchStatus: 'loading' })
@@ -108,8 +127,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
             lendApi.st_crvUSD.depositIsApproved(amount),
             lendApi.st_crvUSD.depositAllowance(),
           ])
-
-          console.log(approvedResponse, allowanceResponse)
 
           get()[sliceKey].setStateByKey('depositApproval', {
             approval: approvedResponse,
@@ -163,6 +180,69 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         } catch (error) {
           console.error(error)
           get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'error' })
+        }
+      },
+    },
+    deploy: {
+      depositApprove: async (amount: number) => {
+        const lendApi = get().lendApi
+        const curve = get().curve
+        const provider = get().wallet.provider
+
+        // TODO: check so curve always is set when approving
+        if (!lendApi || !curve || !provider) return
+
+        const fetchGasInfo = get().gas.fetchGasInfo
+        const notifyNotification = get().wallet.notifyNotification
+        let dismissNotificationHandler
+
+        const notifyPendingMessage = t`Please confirm to approve ${amount} crvUSD.`
+        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+        dismissNotificationHandler = dismissConfirm
+        await fetchGasInfo(curve)
+
+        get()[sliceKey].setStateByKey('transaction', {
+          variant: 'approve',
+          status: 'confirming',
+          transaction: null,
+          errorMessage: '',
+        })
+
+        try {
+          const transactionHash = await lendApi.st_crvUSD.depositApprove(amount, false)
+
+          get()[sliceKey].setStateByKey('transaction', {
+            variant: 'approve',
+            status: 'loading',
+            transaction: transactionHash,
+            errorMessage: '',
+          })
+          dismissConfirm()
+
+          const deployingNotificationMessage = t`Approving ${amount} crvUSD...`
+          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          const receipt = await provider.waitForTransaction(transactionHash[0])
+          get()[sliceKey].setStateByKey('transaction', {
+            variant: '',
+            status: '',
+            transaction: null,
+            errorMessage: '',
+          })
+          dismissDeploying()
+
+          const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
+          notifyNotification(successNotificationMessage, 'success', 15000)
+        } catch (error) {
+          dismissNotificationHandler()
+          get()[sliceKey].setStateByKey('transaction', {
+            variant: 'approve',
+            status: 'error',
+            transaction: null,
+            errorMessage: error.message,
+          })
+          console.log(error)
         }
       },
     },
@@ -230,12 +310,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
       }
     },
-    setModule: (module: DepositWithdrawModule) => {
-      get()[sliceKey].setStateByKey('module', module)
-      get()[sliceKey].setModuleChangeReset()
+    setStakingModule: (stakingModule: DepositWithdrawModule) => {
+      get()[sliceKey].setStateByKey('stakingModule', stakingModule)
+      get()[sliceKey].setStakingModuleChangeReset()
     },
-    setMax: (userAddress: string, module: DepositWithdrawModule) => {
-      if (module === 'deposit') {
+    setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => {
+      if (stakingModule === 'deposit') {
         const crvUsdBalance = get()[sliceKey].userBalances[userAddress].crvUSD
 
         get()[sliceKey].setStateByKey('inputAmount', +crvUsdBalance)
@@ -256,9 +336,28 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     setPreviewReset: () => {
       get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '' })
     },
-    setModuleChangeReset: () => {
+    setStakingModuleChangeReset: () => {
       get()[sliceKey].setStateByKey('inputAmount', 0)
       get()[sliceKey].setPreviewReset()
+    },
+    setEstimateGas: (userAddress: string) => {
+      const stakingModule = get()[sliceKey].stakingModule
+      const depositApproval = get()[sliceKey].depositApproval
+      const inputAmount = get()[sliceKey].inputAmount
+      const approvedAmount = +depositApproval.allowance
+      const gas = get()[sliceKey].estGas.gas
+      const userBalance = get()[sliceKey].userBalances[userAddress]?.scrvUSD ?? 0
+
+      const approved = depositApproval && approvedAmount > inputAmount
+
+      if (!approved && stakingModule === 'deposit') {
+        if (+userBalance > 0) {
+          return gas + SCRVUSD_GAS_ESTIMATE.FIRST_DEPOSIT
+        }
+        return gas + SCRVUSD_GAS_ESTIMATE.FOLLOWING_DEPOSIT
+      }
+
+      return gas
     },
 
     // slice helpers

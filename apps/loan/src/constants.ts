@@ -38,6 +38,12 @@ export const CONNECT_STAGE = {
   SWITCH_NETWORK: 'switch-network',
 } as const
 
+export const SCRVUSD_GAS_ESTIMATE = {
+  FIRST_DEPOSIT: 95500,
+  FOLLOWING_DEPOSIT: 78500,
+  WITHDRAW: 73500,
+}
+
 export enum TITLE {
   isInMarket = 'isInMarket',
   name = 'name',

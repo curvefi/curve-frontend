@@ -2,7 +2,6 @@ import { SubNavItem } from '@/components/PageCrvUsdStaking/components/SubNav/typ
 import { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
 import { useEffect } from 'react'
 import styled from 'styled-components'
-import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 import { SUB_NAV_ITEMS } from '@/components/PageCrvUsdStaking/DepositWithdraw/constants'
@@ -18,35 +17,54 @@ type DepositWithdrawProps = {
 }
 
 const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
-  const { module, setModule, previewAction, inputAmount, setPreviewReset } = useStore((state) => state.scrvusd)
-  const { depositApprove: estimateGasDepositApprove } = useStore((state) => state.scrvusd.estimateGas)
+  const { stakingModule, setStakingModule, previewAction, inputAmount, setPreviewReset } = useStore(
+    (state) => state.scrvusd,
+  )
+  const { depositApprove: estimateGasDepositApprove, deposit: estimateGasDeposit } = useStore(
+    (state) => state.scrvusd.estimateGas,
+  )
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const setNavChange = (key: SubNavItem['key']) => {
-    setModule(key as DepositWithdrawModule)
+    setStakingModule(key as DepositWithdrawModule)
   }
 
   useEffect(() => {
-    if (lendApi && curve && inputAmount !== 0) {
-      estimateGasDepositApprove(inputAmount)
+    const timer = setTimeout(() => {
+      if (lendApi && curve && inputAmount !== 0) {
+        estimateGasDepositApprove(inputAmount)
+        estimateGasDeposit(inputAmount)
 
-      if (module === 'deposit') {
-        previewAction('deposit', inputAmount)
-      } else {
-        previewAction('withdraw', inputAmount)
+        if (stakingModule === 'deposit') {
+          previewAction('deposit', inputAmount)
+        } else {
+          previewAction('withdraw', inputAmount)
+        }
       }
-    }
 
-    if (inputAmount === 0) {
-      setPreviewReset()
-    }
-  }, [lendApi, estimateGasDepositApprove, chainId, curve, inputAmount, module, previewAction, setPreviewReset])
+      if (inputAmount === 0) {
+        setPreviewReset()
+      }
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [
+    lendApi,
+    estimateGasDepositApprove,
+    chainId,
+    curve,
+    inputAmount,
+    stakingModule,
+    previewAction,
+    setPreviewReset,
+    estimateGasDeposit,
+  ])
 
   return (
     <Wrapper className={className}>
-      <SubNav activeKey={module} navItems={SUB_NAV_ITEMS} setNavChange={setNavChange} />
+      <SubNav activeKey={stakingModule} navItems={SUB_NAV_ITEMS} setNavChange={setNavChange} />
       <ModuleContainer>
-        {module === 'deposit' ? <DepositModule /> : <WithdrawModule />}
+        {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}
         <StyledDeployButton />
       </ModuleContainer>
       <TransactionDetailsWrapper>

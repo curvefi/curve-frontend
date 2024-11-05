@@ -1,6 +1,5 @@
 import { t } from '@lingui/macro'
 import Image from 'next/image'
-import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
@@ -9,15 +8,7 @@ import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
 import Box from '@/ui/Box'
 
-import {
-  ErrorText,
-  InputLabel,
-  InputWrapper,
-  SelectorBox,
-  StyledIcon,
-  StyledInputComp,
-  InputSelectorText,
-} from './styles'
+import { InputLabel, InputWrapper, SelectorBox, StyledIcon, StyledInputComp, InputSelectorText } from './styles'
 
 const DepositModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
@@ -26,7 +17,6 @@ const DepositModule: React.FC = () => {
 
   const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
   const isLoadingPreview = preview.fetchStatus === 'loading'
-  const isError = inputAmount > +userBalances?.crvUSD
 
   return (
     <Box flex flexColumn>
@@ -52,7 +42,6 @@ const DepositModule: React.FC = () => {
             />
           </Box>
         </InputWrapper>
-        {isError && <ErrorText>{t`You don't have enough crvUSD to deposit`}</ErrorText>}
       </Box>
       <StyledIcon name="ArrowDown" size={16} />
       <div>

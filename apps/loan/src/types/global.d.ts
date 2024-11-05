@@ -214,4 +214,5 @@ declare global {
   >
 
   type FetchStatus = '' | 'loading' | 'success' | 'error'
+  type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'
 }

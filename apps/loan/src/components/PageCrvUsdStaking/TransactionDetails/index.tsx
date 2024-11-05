@@ -6,6 +6,7 @@ import useStore from '@/store/useStore'
 import useEstimateGasConversion from '@/hooks/useEstimateGasConversion'
 import { formatNumber } from '@/ui/utils'
 import { isLoading } from '@/components/PageCrvUsdStaking/utils'
+import { useSignerAddress } from '@/entities/signer'
 
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -20,11 +21,13 @@ type TransactionDetailsProps = {
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const maxSlippage = useStore((state) => state.maxSlippage)
+  const { data: signerAddress } = useSignerAddress()
+  // const maxSlippage = useStore((state) => state.maxSlippage)
   const { preview, crvUsdExchangeRate } = useStore((state) => state.scrvusd)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
+  const estimateGas = useStore((state) => state.scrvusd.setEstimateGas(signerAddress ?? ''))
 
-  const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(gas)
+  const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
   const exchangeRateLoading = isLoading(crvUsdExchangeRate.fetchStatus)
 
   return (
@@ -59,12 +62,12 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
             <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>
             <FieldValue value={estGasCostUsd} fetchStatus={fetchStatus} gas={{ estGasCostUsd, estGasCost, tooltip }} />
           </TransactionField>
-          <TransactionField>
+          {/* <TransactionField>
             <TransactionFieldLabel>{t`Additional slippage tolerance`}</TransactionFieldLabel>
             <TransactionFieldValue>
               <StyledDetailInfoSlippageTolerance noLabel maxSlippage={maxSlippage} />
             </TransactionFieldValue>
-          </TransactionField>
+          </TransactionField> */}
         </>
       )}
     </TransactionDetailsWrapper>
