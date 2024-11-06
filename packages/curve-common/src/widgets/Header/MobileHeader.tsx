@@ -1,23 +1,20 @@
 import { AppBar, Toolbar } from '@mui/material'
 import { Theme } from '@mui/system'
 import { BaseHeaderProps, toolbarColors } from './types'
-import IconButton from '@mui/material/IconButton'
 import React, { useCallback, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
-import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
 import { APP_LINK } from 'ui'
-import { AppName, AppNames } from 'ui/src/AppNav/types'
-import CloseIcon from '@mui/icons-material/Close'
+import { AppNames } from 'ui/src/AppNav/types'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
-import { HeaderLogo } from './HeaderLogo'
-import { MenuToggleButton } from './MenuToggleButton'
+import { MobileTopBar } from './MobileTopBar'
+import Container from '@mui/material/Container'
 
-const SIDEBAR_WIDTH = {width: '80%', minWidth: 320, maxWidth: 400} as const
+const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
   '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
@@ -52,11 +49,18 @@ export const MobileHeader = <TChainId extends number>({
     startWalletConnection()
   }, [startWalletConnection, closeSidebar])
 
+  const TopBarProps = {
+    ChainProps,
+    currentApp,
+    isSidebarOpen,
+    toggleSidebar,
+    sx: SECONDARY_BACKGROUND,
+  }
+
   return (
     <AppBar color="transparent" position="relative">
       <Toolbar sx={MAIN_BACKGROUND}>
-        <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} sx={{zIndex}}/>
-        <HeaderLogo appName={currentApp} sx={{zIndex}} />
+        <MobileTopBar {...TopBarProps} zIndex={zIndex} />
 
         <Drawer
           anchor="left"
@@ -65,23 +69,27 @@ export const MobileHeader = <TChainId extends number>({
           PaperProps={{ sx: { ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
         >
-          <DrawerHeader closeSidebar={closeSidebar} currentApp={currentApp} ChainProps={ChainProps} />
+          <Toolbar>
+            <MobileTopBar {...TopBarProps} />
+          </Toolbar>
 
-          {/*todo: test header stats*/}
-          <HeaderStats appStats={appStats} />
+          <Box>
+            {/*todo: test header stats*/}
+            <HeaderStats appStats={appStats} />
 
-          {Object.entries(groupedPages).map(([title, pages]) => (
-            <SidebarSection title={title} key={title} pages={pages} />
-          ))}
+            {Object.entries(groupedPages).map(([title, pages]) => (
+              <SidebarSection title={title} key={title} pages={pages} />
+            ))}
 
-          <SidebarSection
-            title={t.otherApps}
-            pages={AppNames.filter((appName) => appName != currentApp).map((appName) => APP_LINK[appName])}
-          />
+            <SidebarSection
+              title={t.otherApps}
+              pages={AppNames.filter((appName) => appName != currentApp).map((appName) => APP_LINK[appName])}
+            />
 
-          {sections.map(({ title, links }) => <SidebarSection key={title} title={title} pages={links} />)}
+            {sections.map(({ title, links }) => <SidebarSection key={title} title={title} pages={links} />)}
 
-          <SocialSidebarSection title={t.socialMedia} locale={locale} />
+            <SocialSidebarSection title={t.socialMedia} locale={locale} />
+          </Box>
 
           <SideBarFooter
             translations={t}
@@ -98,18 +106,3 @@ export const MobileHeader = <TChainId extends number>({
   )
 }
 
-const DrawerHeader = <TChainId extends number>({ ChainProps, currentApp, closeSidebar }: {closeSidebar: () => void, currentApp: AppName, ChainProps: ChainSwitcherProps<TChainId>}) =>(
-  <Box
-    display="flex"
-    flexDirection="row"
-    paddingX={2}
-    sx={MAIN_BACKGROUND}
-  >
-    <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex', visibility: 'hidden' }}>
-      <CloseIcon fontSize="small" />
-    </IconButton>
-    <HeaderLogo appName={currentApp} sx={{ visibility: 'hidden' }} />
-    <Box flexGrow={1} />
-    <ChainSwitcher {...ChainProps} />
-  </Box>
-)

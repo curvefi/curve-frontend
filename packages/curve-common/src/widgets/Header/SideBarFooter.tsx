@@ -57,7 +57,7 @@ export const SideBarFooter = ({
       </Accordion>
 
     </Box>
-    <Box minHeight={50} /> {/* To avoid the last item to be hidden by the connect indicator */}
+    <Box minHeight={100} /> {/* To avoid the last item to be hidden by the connect indicator */}
   </>
 )
 
