@@ -12,7 +12,7 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import Container from '@mui/material/Container'
+import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/entities/themes/model'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
@@ -22,7 +22,6 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const MAIN_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0]}
 const SECONDARY_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1]}
 const zIndex = 1300
 
@@ -49,30 +48,25 @@ export const MobileHeader = <TChainId extends number>({
     startWalletConnection()
   }, [startWalletConnection, closeSidebar])
 
-  const TopBarProps = {
-    ChainProps,
-    currentApp,
-    isSidebarOpen,
-    toggleSidebar,
-    sx: SECONDARY_BACKGROUND,
-  }
-
   return (
     <AppBar color="transparent" position="relative">
-      <Toolbar sx={MAIN_BACKGROUND}>
-        <MobileTopBar {...TopBarProps} zIndex={zIndex} />
+      <Toolbar sx={SECONDARY_BACKGROUND}>
+        <MobileTopBar
+          ChainProps={ChainProps}
+          currentApp={currentApp}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+          sx={{zIndex}}
+        />
 
         <Drawer
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          PaperProps={{ sx: { ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
+          PaperProps={{ sx: { top: DEFAULT_BAR_SIZE, ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
+          hideBackdrop
         >
-          <Toolbar>
-            <MobileTopBar {...TopBarProps} />
-          </Toolbar>
-
           <Box>
             {/*todo: test header stats*/}
             <HeaderStats appStats={appStats} />
