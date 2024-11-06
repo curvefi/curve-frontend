@@ -49,7 +49,7 @@ export const MobileHeader = <TChainId extends number>({
   }, [startWalletConnection, closeSidebar])
 
   return (
-    <AppBar color="transparent" position="relative">
+    <AppBar color="transparent" position="relative" sx={{ width: '100vw'}}>
       <Toolbar sx={SECONDARY_BACKGROUND}>
         <MobileTopBar
           ChainProps={ChainProps}
@@ -68,8 +68,9 @@ export const MobileHeader = <TChainId extends number>({
           hideBackdrop
         >
           <Box>
-            {/*todo: test header stats*/}
-            <HeaderStats appStats={appStats} />
+            <Box sx={{ padding: 4 }}>
+              <HeaderStats appStats={appStats} />
+            </Box>
 
             {Object.entries(groupedPages).map(([title, pages]) => (
               <SidebarSection title={title} key={title} pages={pages} />
