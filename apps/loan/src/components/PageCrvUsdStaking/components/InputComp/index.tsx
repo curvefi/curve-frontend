@@ -55,7 +55,9 @@ const InputComp: React.FC<InputCompProps> = ({
                 {formatNumber(walletBalance)} {walletBalanceSymbol}
               </WalletBalance>
             )}
-            <WalletBalanceUSD>${Number(walletBalanceUSD).toFixed(2)}</WalletBalanceUSD>
+            <WalletBalanceUSD>
+              ${formatNumber(walletBalanceUSD, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </WalletBalanceUSD>
           </BalancesWrapper>
         </WalletBalanceWrapper>
       </Box>

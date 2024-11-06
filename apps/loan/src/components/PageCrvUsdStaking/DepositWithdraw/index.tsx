@@ -11,33 +11,55 @@ import TransactionDetails from '@/components/PageCrvUsdStaking/TransactionDetail
 import DepositModule from '@/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'
 import WithdrawModule from '@/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
 import DeployButton from '@/components/PageCrvUsdStaking/DepositWithdraw/DeployButton'
+import TransactionTracking from '@/components/PageCrvUsdStaking/DepositWithdraw/TransactionTracking'
 
 type DepositWithdrawProps = {
   className?: string
 }
 
 const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
-  const { stakingModule, setStakingModule, previewAction, inputAmount, setPreviewReset } = useStore(
-    (state) => state.scrvusd,
-  )
-  const { depositApprove: estimateGasDepositApprove, deposit: estimateGasDeposit } = useStore(
-    (state) => state.scrvusd.estimateGas,
-  )
+  const {
+    stakingModule,
+    setStakingModule,
+    previewAction,
+    inputAmount,
+    setPreviewReset,
+    approveDepositTransaction,
+    depositTransaction,
+    depositApproval,
+    withdrawTransaction,
+  } = useStore((state) => state.scrvusd)
+  const {
+    depositApprove: estimateGasDepositApprove,
+    deposit: estimateGasDeposit,
+    withdraw: estimateGasWithdraw,
+    redeem: estimateGasRedeem,
+  } = useStore((state) => state.scrvusd.estimateGas)
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
   const setNavChange = (key: SubNavItem['key']) => {
     setStakingModule(key as DepositWithdrawModule)
   }
 
+  const transactionInProgress =
+    (approveDepositTransaction.transactionStatus !== '' && approveDepositTransaction.transactionStatus !== 'error') ||
+    (depositTransaction.transactionStatus !== '' && depositTransaction.transactionStatus !== 'error') ||
+    (withdrawTransaction.transactionStatus !== '' && withdrawTransaction.transactionStatus !== 'error')
+  const transactionSuccess =
+    depositTransaction.transactionStatus === 'success' || withdrawTransaction.transactionStatus === 'success'
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (lendApi && curve && inputAmount !== 0) {
-        estimateGasDepositApprove(inputAmount)
-        estimateGasDeposit(inputAmount)
-
         if (stakingModule === 'deposit') {
+          if (depositApproval.approval) {
+            estimateGasDeposit(inputAmount)
+          } else {
+            estimateGasDepositApprove(inputAmount)
+          }
           previewAction('deposit', inputAmount)
         } else {
+          estimateGasWithdraw(inputAmount)
           previewAction('withdraw', inputAmount)
         }
       }
@@ -58,6 +80,8 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     previewAction,
     setPreviewReset,
     estimateGasDeposit,
+    depositApproval.approval,
+    estimateGasWithdraw,
   ])
 
   return (
@@ -65,7 +89,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
       <SubNav activeKey={stakingModule} navItems={SUB_NAV_ITEMS} setNavChange={setNavChange} />
       <ModuleContainer>
         {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}
-        <StyledDeployButton />
+        {transactionInProgress || transactionSuccess ? <StyledTransactionTracking /> : <StyledDeployButton />}
       </ModuleContainer>
       <TransactionDetailsWrapper>
         <TransactionDetails />
@@ -97,6 +121,10 @@ const TransactionDetailsWrapper = styled.div`
 
 const StyledDeployButton = styled(DeployButton)`
   margin: var(--spacing-3) 0 0;
+`
+
+const StyledTransactionTracking = styled(TransactionTracking)`
+  margin-top: var(--spacing-3);
 `
 
 export default DepositWithdraw

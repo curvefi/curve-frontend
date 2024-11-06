@@ -25,7 +25,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   // const maxSlippage = useStore((state) => state.maxSlippage)
   const { preview, crvUsdExchangeRate } = useStore((state) => state.scrvusd)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
-  const estimateGas = useStore((state) => state.scrvusd.setEstimateGas(signerAddress ?? ''))
+  const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
 
   const { estGasCost, estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
   const exchangeRateLoading = isLoading(crvUsdExchangeRate.fetchStatus)

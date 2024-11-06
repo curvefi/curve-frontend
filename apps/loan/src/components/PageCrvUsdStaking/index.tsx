@@ -10,7 +10,8 @@ import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 
 const CrvUsdStaking = () => {
-  const { fetchUserBalances, checkApproval, inputAmount, getExchangeRate } = useStore((state) => state.scrvusd)
+  const { fetchUserBalances, checkApproval, inputAmount, fetchExchangeRate, fetchCrvUsdSupplies, stakingModule } =
+    useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
   const { data: signerAddress } = useSignerAddress()
   const chainId = useChainId().data
@@ -19,18 +20,21 @@ const CrvUsdStaking = () => {
     const fetchData = async () => {
       if (!lendApi || !signerAddress) return
 
-      fetchUserBalances(signerAddress)
-      getExchangeRate()
+      fetchUserBalances()
+      fetchExchangeRate()
+      fetchCrvUsdSupplies()
     }
 
     fetchData()
-  }, [fetchUserBalances, lendApi, signerAddress, getExchangeRate])
+  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === 0) return
 
-    checkApproval.depositApprove(inputAmount)
-  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount])
+    if (stakingModule === 'deposit') {
+      checkApproval.depositApprove(inputAmount)
+    }
+  }, [checkApproval, lendApi, chainId, signerAddress, inputAmount, stakingModule])
 
   return (
     <Wrapper>

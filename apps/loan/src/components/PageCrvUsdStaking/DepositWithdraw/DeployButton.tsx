@@ -1,4 +1,5 @@
 import { t } from '@lingui/macro'
+import { useCallback } from 'react'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
@@ -15,23 +16,21 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
     (state) => state.scrvusd.depositApproval,
   )
-  const { depositApprove } = useStore((state) => state.scrvusd.deploy)
-  const { inputAmount, stakingModule, userBalances } = useStore((state) => state.scrvusd)
+  const { depositApprove, deposit } = useStore((state) => state.scrvusd.deploy)
+  const { inputAmount, stakingModule, userBalances, getInputAmountApproved } = useStore((state) => state.scrvusd)
 
   const userBalance = userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: 0, scrvUSD: 0 }
+  const inputAmountApproved = getInputAmountApproved()
 
   const getButtonTitle = () => {
-    if (stakingModule === 'deposit' && depositApproved) {
+    if ((stakingModule === 'deposit' && inputAmountApproved) || inputAmount === 0) {
       return t`Deposit`
     }
     if (stakingModule === 'deposit' && !depositApproved) {
-      return t`Approve`
+      return t`Approve & Deposit`
     }
-    if (stakingModule === 'withdraw' && depositApproved) {
+    if (stakingModule === 'withdraw') {
       return t`Withdraw`
-    }
-    if (stakingModule === 'withdraw' && !depositApproved) {
-      return t`Approve`
     }
   }
 
@@ -40,15 +39,21 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const isError =
     stakingModule === 'deposit'
       ? depositApproved && inputAmount > +userBalance.crvUSD
-      : depositApproved && inputAmount > +userBalance.scrvUSD
+      : inputAmount > +userBalance.scrvUSD
 
-  const handleClick = () => {
+  const handleClick = useCallback(async () => {
     if (stakingModule === 'deposit') {
-      if (!depositApproved) {
-        depositApprove(inputAmount)
+      if (inputAmountApproved) {
+        deposit(inputAmount)
+      }
+      if (!inputAmountApproved) {
+        const approved = await depositApprove(inputAmount)
+        if (approved) {
+          deposit(inputAmount)
+        }
       }
     }
-  }
+  }, [stakingModule, inputAmountApproved, deposit, inputAmount, depositApprove])
 
   return (
     <Button

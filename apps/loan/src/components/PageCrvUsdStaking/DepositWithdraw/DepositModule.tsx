@@ -10,7 +10,7 @@ import Box from '@/ui/Box'
 
 import { InputLabel, InputWrapper, SelectorBox, StyledIcon, StyledInputComp, InputSelectorText } from './styles'
 
-const DepositModule: React.FC = () => {
+const DepositModule = () => {
   const { data: signerAddress } = useSignerAddress()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)

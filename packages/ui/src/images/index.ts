@@ -20,6 +20,7 @@ export { ReactComponent as RCTwitterLogo } from './twitter.svg'
 
 // ICON
 export { ReactComponent as RCPointsIcon } from './points-icon.svg'
+export { ReactComponent as RCPinBottom } from './pin-bottom.svg'
 
 // THEME
 export { default as ChadImg } from './chad.png'
