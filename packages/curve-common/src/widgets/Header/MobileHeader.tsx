@@ -27,6 +27,7 @@ const HIDE_SCROLLBAR = {
 
 const MAIN_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0]}
 const SECONDARY_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1]}
+const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
   currentApp,
@@ -54,8 +55,8 @@ export const MobileHeader = <TChainId extends number>({
   return (
     <AppBar color="transparent" position="relative">
       <Toolbar sx={MAIN_BACKGROUND}>
-        <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
-        <HeaderLogo appName={currentApp} />
+        <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} sx={{zIndex}}/>
+        <HeaderLogo appName={currentApp} sx={{zIndex}} />
 
         <Drawer
           anchor="left"
@@ -88,7 +89,7 @@ export const MobileHeader = <TChainId extends number>({
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
-            sx={SIDEBAR_WIDTH}
+            sx={{ ...SIDEBAR_WIDTH, zIndex }}
           />
         </Drawer>
 
@@ -107,7 +108,7 @@ const DrawerHeader = <TChainId extends number>({ ChainProps, currentApp, closeSi
     <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex', visibility: 'hidden' }}>
       <CloseIcon fontSize="small" />
     </IconButton>
-    <HeaderLogo appName={currentApp} />
+    <HeaderLogo appName={currentApp} sx={{ visibility: 'hidden' }} />
     <Box flexGrow={1} />
     <ChainSwitcher {...ChainProps} />
   </Box>

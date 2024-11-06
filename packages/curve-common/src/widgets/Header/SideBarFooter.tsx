@@ -30,7 +30,7 @@ export const SideBarFooter = ({
 }: SideBarFooterProps) => (
   <>
     <Box position="fixed" bottom={0}
-         sx={{ ...sx, zIndex: 1300, backgroundColor }}>
+         sx={{ ...sx, backgroundColor }}>
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
       </Box>
