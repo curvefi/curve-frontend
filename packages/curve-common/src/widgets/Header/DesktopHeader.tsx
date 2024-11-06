@@ -1,5 +1,6 @@
 import { AppBar, Toolbar } from '@mui/material'
 import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
 import { LanguageSwitcher } from '../../features/switch-language'
 import { ChainSwitcher } from '../../features/switch-chain'
@@ -24,24 +25,28 @@ export const DesktopHeader = <TChainId extends number>({
   translations: t
 }: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
-      <HeaderLogo appName={currentApp} />
-      <AppButtonLinks currentApp="lend" />
+    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0], justifyContent: 'space-around' }}>
+      <Container>
+        <HeaderLogo appName={currentApp} />
+        <AppButtonLinks currentApp="lend" />
 
-      <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ flexGrow: 1 }} />
 
-      <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-        <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advanced} />
-        <LanguageSwitcher {...LanguageProps} />
-        <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
-        <ChainSwitcher {...ChainProps} />
-        <ConnectWalletIndicator {...WalletProps} />
-      </Box>
+        <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+          <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advanced} />
+          <LanguageSwitcher {...LanguageProps} />
+          <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
+          <ChainSwitcher {...ChainProps} />
+          <ConnectWalletIndicator {...WalletProps} />
+        </Box>
+      </Container>
     </Toolbar>
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1] }}>
-      <PageTabs pages={pages} />
-      <Box flexGrow={1} />
-      <HeaderStats appStats={appStats} />
+    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1], justifyContent: 'space-around' }}>
+      <Container>
+        <PageTabs pages={pages} />
+        <Box flexGrow={1} />
+        <HeaderStats appStats={appStats} />
+      </Container>
     </Toolbar>
   </AppBar>
 )

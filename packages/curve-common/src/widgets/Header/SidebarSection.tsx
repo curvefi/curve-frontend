@@ -3,6 +3,7 @@ import { List, ListSubheader } from '@mui/material'
 import { SidebarItem } from './SidebarItem'
 import type { AppPage } from 'ui/src/AppNav/types'
 import Divider from '@mui/material/Divider'
+import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
 
 interface SidebarSectionProps {
   title: string
@@ -13,12 +14,14 @@ interface SidebarSectionProps {
 export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, children }) => (
   <List
     subheader={
-      <ListSubheader sx={{ textTransform: 'uppercase' }} disableSticky>
-        {title}
+      <ListSubheader disableSticky>
+        <Typography variant="bodyMBold" color="text.primary" sx={{ textTransform: 'uppercase' }}>
+          {title}
+        </Typography>
         <Divider />
       </ListSubheader>
     }
-    sx={{ marginTop: 2 }}
+    sx={{ marginTop: 3 }}
   >
     {pages?.map((page) => <SidebarItem child key={page.route} page={page}  />)}
     {children}

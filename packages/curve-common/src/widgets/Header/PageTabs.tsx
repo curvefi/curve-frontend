@@ -13,7 +13,7 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages }) => (
     {pages.map((page) => (
       <Tab
         key={page.label}
-        label={<Typography variant="headingXsBold" sx={{ textTransform: 'uppercase' }}>{page.label}</Typography>}
+        label={<Typography variant="headingXsBold">{page.label}</Typography>}
         href={page.route}
         value={page.route}
       />

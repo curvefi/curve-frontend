@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles'
-import { SxProps } from '@mui/system'
+import { SxProps, Theme } from '@mui/system'
 import { forwardRef } from 'react'
 import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps, To } from 'react-router-dom'
 
@@ -9,7 +9,7 @@ const StyledRouterLink = styled(ReactRouterLink)``
 
 export interface RouterLinkProps extends Omit<ReactRouterLinkProps, 'to'> {
   href: Href;
-  sx?: SxProps;
+  sx?: SxProps<Theme>;
 }
 
 export const RouterLink = forwardRef<HTMLAnchorElement, RouterLinkProps>((props, ref) => {

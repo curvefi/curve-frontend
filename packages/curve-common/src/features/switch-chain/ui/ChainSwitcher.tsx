@@ -34,12 +34,13 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
         disabled={disabled}
         renderValue={renderChainIcon}
         sx={{marginTop: 2}}
+        disableUnderline
       >
         {
           options.map(({ chainId: id, icon: Icon, label }) => (
             <MenuItem key={id} value={id}>
               <Icon width={28} />
-              <Typography sx={{ marginLeft: 4 }}>
+              <Typography sx={{ marginLeft: 4 }} variant="bodySRegular">
                 {label}
               </Typography>
             </MenuItem>

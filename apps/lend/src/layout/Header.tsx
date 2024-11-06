@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useEffect, useMemo, useRef } from 'react'
+import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
@@ -7,7 +7,6 @@ import { DEFAULT_LOCALES, updateAppLocale } from '@/lib/i18n'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
-import { useHeightResizeObserver } from '@/ui/hooks'
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
@@ -20,9 +19,7 @@ type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
 
 const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
   const [{ wallet }] = useConnectWallet()
-  const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
-  const elHeight = useHeightResizeObserver(mainNavRef)
 
   const { rLocalePathname } = getParamsFromUrl()
 
@@ -33,7 +30,6 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
-  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const { data: tvl } = useTvl(chainId);
@@ -41,11 +37,6 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
-
-  useEffect(() => {
-    setLayoutHeight('mainNav', elHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elHeight])
 
   return (
     <NewHeader

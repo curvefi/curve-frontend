@@ -7,16 +7,27 @@ import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
-import { ChainSwitcher } from '../../features/switch-chain'
+import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
 import { APP_LINK } from 'ui'
-import { AppNames } from 'ui/src/AppNav/types'
+import { AppName, AppNames } from 'ui/src/AppNav/types'
 import CloseIcon from '@mui/icons-material/Close'
 import { HeaderStats } from './HeaderStats'
-import { HeaderLogoWithMenu } from './HeaderLogoWithMenu'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
+import { HeaderLogo } from './HeaderLogo'
+import { MenuToggleButton } from './MenuToggleButton'
 
 const SIDEBAR_WIDTH = {width: '80%', minWidth: 320, maxWidth: 400} as const
+const HIDE_SCROLLBAR = {
+  // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
+  '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
+  msOverflowStyle: 'none', // IE and Edge
+  scrollbarWidth: 'none', // Firefox
+}
+
+const MAIN_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0]}
+const SECONDARY_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1]}
+const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
   currentApp,
@@ -33,8 +44,8 @@ export const MobileHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
-  const openSidebar = useCallback(() => setSidebarOpen(true), [])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
+  const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
 
   const onConnect = useCallback(() => {
     closeSidebar()
@@ -43,37 +54,25 @@ export const MobileHeader = <TChainId extends number>({
 
   return (
     <AppBar color="transparent" position="relative">
-      <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
-        <HeaderLogoWithMenu onClick={openSidebar} appName={currentApp} />
+      <Toolbar sx={MAIN_BACKGROUND}>
+        <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} sx={{zIndex}}/>
+        <HeaderLogo appName={currentApp} sx={{zIndex}} />
 
         <Drawer
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          PaperProps={{
-            sx: {
-              backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1],
-              ...SIDEBAR_WIDTH,
-              '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
-              msOverflowStyle: 'none', // IE and Edge
-              scrollbarWidth: 'none', // Firefox
-            }
-          }}
+          PaperProps={{ sx: { ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
         >
-          <Box display="flex" flexDirection="row" marginTop={2}
-               sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0] }}>
-            <HeaderLogoWithMenu onClick={closeSidebar} appName={currentApp} />
-            <Box flexGrow={1} />
-            <ChainSwitcher {...ChainProps} />
-            <IconButton onClick={closeSidebar} size="small">
-              <CloseIcon />
-            </IconButton>
-          </Box>
+          <DrawerHeader closeSidebar={closeSidebar} currentApp={currentApp} ChainProps={ChainProps} />
 
+          {/*todo: test header stats*/}
           <HeaderStats appStats={appStats} />
 
-          {Object.entries(groupedPages).map(([title, pages]) => <SidebarSection title={title} key={title} pages={pages} />)}
+          {Object.entries(groupedPages).map(([title, pages]) => (
+            <SidebarSection title={title} key={title} pages={pages} />
+          ))}
 
           <SidebarSection
             title={t.otherApps}
@@ -90,7 +89,7 @@ export const MobileHeader = <TChainId extends number>({
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
-            sx={SIDEBAR_WIDTH}
+            sx={{ ...SIDEBAR_WIDTH, zIndex }}
           />
         </Drawer>
 
@@ -98,3 +97,19 @@ export const MobileHeader = <TChainId extends number>({
     </AppBar>
   )
 }
+
+const DrawerHeader = <TChainId extends number>({ ChainProps, currentApp, closeSidebar }: {closeSidebar: () => void, currentApp: AppName, ChainProps: ChainSwitcherProps<TChainId>}) =>(
+  <Box
+    display="flex"
+    flexDirection="row"
+    paddingX={2}
+    sx={MAIN_BACKGROUND}
+  >
+    <IconButton onClick={closeSidebar} sx={{ display: 'inline-flex', visibility: 'hidden' }}>
+      <CloseIcon fontSize="small" />
+    </IconButton>
+    <HeaderLogo appName={currentApp} sx={{ visibility: 'hidden' }} />
+    <Box flexGrow={1} />
+    <ChainSwitcher {...ChainProps} />
+  </Box>
+)
