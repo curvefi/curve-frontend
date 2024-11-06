@@ -1,6 +1,6 @@
 import type { ThemeOptions } from '@mui/material'
 import type { ThemeKey } from '../basic-theme'
-import { FIGMA_TOKENS } from './figma-tokens'
+import { FIGMA_TOKENS } from './figma-tokens.generated'
 
 
 export const createPalette = (mode: ThemeKey): ThemeOptions['palette'] => {

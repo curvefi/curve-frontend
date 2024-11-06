@@ -1,6 +1,6 @@
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { hubotSans, monaSans } from './fonts'
-import { FIGMA_TOKENS, FigmaTokens } from '../model/figma-tokens'
+import { FIGMA_TOKENS, FigmaTokens } from '../model/figma-tokens.generated'
 
 type HasPrefix<TPrefix extends string, TKey extends string> = TKey extends `${TPrefix}${string}` ? TKey : never
 

@@ -1,6 +1,6 @@
 import { type ThemeOptions } from '@mui/material/styles'
 
-import { FIGMA_TOKENS } from './figma-tokens'
+import { FIGMA_TOKENS } from './figma-tokens.generated'
 import { type ThemeKey } from '../basic-theme'
 
 export const createSpacing = (mode: ThemeKey): ThemeOptions => {

@@ -2,7 +2,7 @@ import { type ThemeOptions } from '@mui/material/styles'
 import { BUTTONS_HEIGHTS, defineMuiButton } from '../../themes/button'
 import { defineMuiTypography } from '../../themes/typography'
 import { ThemeKey } from '../basic-theme'
-import { FIGMA_TOKENS } from './figma-tokens'
+import { FIGMA_TOKENS } from './figma-tokens.generated'
 
 const BUTTON_SIZE = BUTTONS_HEIGHTS[1] // medium
 
