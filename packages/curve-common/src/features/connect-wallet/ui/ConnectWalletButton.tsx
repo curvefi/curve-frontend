@@ -1,4 +1,4 @@
-import { Button } from 'curve-ui-kit/src/shared/ui/Button'
+import Button from '@mui/material/Button'
 import type { SxProps, Theme } from '@mui/system'
 
 export type ConnectWalletButtonProps = {

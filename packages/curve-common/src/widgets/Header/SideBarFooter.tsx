@@ -9,7 +9,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Typography from '@mui/material/Typography'
 import { CSSProperties } from '@mui/material/styles/createTypography'
 import { FunctionComponent, ReactNode } from 'react'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
@@ -57,7 +57,7 @@ export const SideBarFooter = ({
       </Accordion>
 
     </Box>
-    <Box minHeight={50} /> {/* To avoid the last item to be hidden by the connect indicator */}
+    <Box minHeight={90} /> {/* To avoid the last item to be hidden by the connect indicator */}
   </>
 )
 

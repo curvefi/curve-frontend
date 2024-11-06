@@ -1,5 +1,5 @@
-import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import MenuItem from '@mui/material/MenuItem'
+import Typography from '@mui/material/Typography'
 import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
 export type LocaleValue = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'

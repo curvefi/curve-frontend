@@ -2,8 +2,8 @@ import type { AppName, AppPage, Locale } from 'ui/src/AppNav/types'
 import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
-import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
 import { Dispatch } from 'react'
+import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 export type NavigationSection = {
   title: string

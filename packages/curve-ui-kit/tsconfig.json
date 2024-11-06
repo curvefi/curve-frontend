@@ -21,6 +21,6 @@
     "**/*.tsx",
     "vite.config.mts",
     "**/*.d.ts",
-    "src/shared/api/figma-tokens/validation/validate-figma-tokens.js"
+    "scripts/figma-tokens/validation/validate-figma-tokens.js"
   ]
 }

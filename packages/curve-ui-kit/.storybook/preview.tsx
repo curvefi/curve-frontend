@@ -1,8 +1,8 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react'
-import { chadTheme, darkTheme, lightTheme } from '../src/entities/themes'
-import { hubotSans, monaSans } from '../src/shared/ui/Typography'
+import { chadTheme, darkTheme, lightTheme } from '../src/themes'
+import { monaSans, hubotSans } from '../src/themes/typography'
 
 export const decorators: Decorator[] = [
   withThemeFromJSXProvider<ReactRenderer>({

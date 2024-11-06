@@ -8,9 +8,10 @@
   "private": true,
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "validate:figma-tokens": "node src/shared/api/figma-tokens/validation/validate-figma-tokens.js",
+    "validate:figma-tokens": "node scripts/figma-tokens/validation/validate-figma-tokens.js",
     "storybook": "yarn validate:figma-tokens && storybook dev -p 6006 --no-open",
-    "build:storybook": "yarn validate:figma-tokens && storybook build"
+    "build:storybook": "yarn validate:figma-tokens && storybook build",
+    "extract-figma-tokens": "npx tsx scripts/figma-tokens/main.ts --project tsconfig.json"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
