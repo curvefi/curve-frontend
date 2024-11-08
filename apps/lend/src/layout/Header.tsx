@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useCallback, useMemo } from 'react'
+import { Key, useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 
@@ -17,7 +17,7 @@ import { Locale } from '@/ui/AppNav/types'
 
 type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
 
-const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
+const Header = ({ chainId, sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
 
@@ -64,7 +64,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
       LanguageProps={{
         locale,
         locales: DEFAULT_LOCALES,
-        onChange: useCallback((selectedLocale: React.Key) => {
+        onChange: useCallback((selectedLocale: Key) => {
           const { rNetwork } = getNetworkFromUrl()
           updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
           navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)

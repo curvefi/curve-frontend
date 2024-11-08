@@ -1,4 +1,3 @@
-import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 
 import React, { useMemo, useRef } from 'react'
