@@ -1,42 +1,51 @@
-import { InputLabel } from '@/common/shared/ui/InputLabel'
-import { Select } from '@/common/shared/ui/Select'
-import { FormControl } from '@/common/shared/ui/FormControl'
-import { MenuItem } from '@/common/shared/ui/MenuItem'
-import { useCallback } from 'react'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
+import { FunctionComponent, SVGProps, useCallback, useMemo } from 'react'
+import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
+
+export type IconType = FunctionComponent<SVGProps<SVGSVGElement>>
 
 export type ChainOption<TChainId> = {
-  id: TChainId
-  name: string
-  icon: string
+  chainId: TChainId
+  label: string
+  icon: IconType
 }
 
 export type ChainSwitcherProps<TChainId> = {
   chainId: TChainId;
-  chainOptions: ChainOption<TChainId>[]
+  options: ChainOption<TChainId>[]
   onChange: (chainId: TChainId) => void
+  disabled?: boolean
 }
 
-export const ChainSwitcher = <TChainId extends number>({ chainOptions, chainId, onChange }: ChainSwitcherProps<TChainId>) =>
-  (
-    <FormControl fullWidth>
-      <InputLabel id="chain-switcher-label">Chain</InputLabel>
-      <Select<TChainId>
-        labelId="chain-switcher-label"
-        id="chain-switcher"
+export const ChainSwitcher = <TChainId extends number>({ options, chainId, onChange, disabled }: ChainSwitcherProps<TChainId>) => {
+  const networkMapping = useMemo(() => options.reduce((acc, option) => ({ ...acc, [option.chainId]: option }), {} as Record<TChainId, ChainOption<TChainId>>), [options])
+
+  const renderChainIcon = useCallback((value: TChainId) => {
+    const { icon: Icon } = networkMapping[value]
+    return (<Icon width={24} />)
+  }, [networkMapping])
+
+  return (
+      <CompactDropDown<TChainId>
         value={chainId}
-        label="Chain"
-        onChange={useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])}
+        onChange={onChange}
         variant="standard"
+        disabled={disabled}
+        renderValue={renderChainIcon}
+        sx={{marginTop: 2}}
+        disableUnderline
       >
         {
-          chainOptions.map((chainOption) => (
-            <MenuItem key={chainOption.id} value={chainOption.id}>
-              {chainOption.icon}
-              {chainOption.name}
+          options.map(({ chainId: id, icon: Icon, label }) => (
+            <MenuItem key={id} value={id}>
+              <Icon width={28} />
+              <Typography sx={{ marginLeft: 4 }} variant="bodySRegular">
+                {label}
+              </Typography>
             </MenuItem>
           ))
         }
-      </Select>
-    </FormControl>
+      </CompactDropDown>
   )
+}

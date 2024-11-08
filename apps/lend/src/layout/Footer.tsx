@@ -1,123 +1,20 @@
-import type { Locale } from '@/lib/i18n'
-
-import { t, Trans } from '@lingui/macro'
 import styled, { css } from 'styled-components'
 import Image from 'next/image'
-import React, { useEffect, useRef } from 'react'
+import React, { FunctionComponent, useEffect, useRef } from 'react'
 
 import { breakpoints } from '@/ui/utils/responsive'
 import { sizes } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
 
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
 import Box from '@/ui/Box'
-import { ExternalLink, InternalLink } from '@/ui/Link'
+import { ExternalLink } from '@/ui/Link'
 import { useHeightResizeObserver } from '@/ui/hooks'
+import { NavigationSection } from '@/common/widgets/Header/types'
 
-type InnerSectionProps = {
-  className?: string
-  columnCount?: number
-}
+type FooterProps = { sections: NavigationSection[] }
 
-export const CommunitySection = ({
-  className,
-  columnCount,
-  locale,
-}: { locale: Locale['value'] } & InnerSectionProps) => (
-  <CommunityWrapper className={className} $columnCount={columnCount}>
-    <SectionItem>
-      <StyledExternalLink href="https://twitter.com/curvefinance">{t`Twitter`}</StyledExternalLink>
-    </SectionItem>
-    <SectionItem>
-      <StyledExternalLink href="https://t.me/curvefi">{t`Telegram`}</StyledExternalLink>
-      {locale !== 'en' && (
-        <>
-          {` EN | `}
-          <StyledExternalLink href="https://t.me/curveficn">{t`CN`}</StyledExternalLink>
-        </>
-      )}
-    </SectionItem>
-    {(locale === 'zh-Hans' || locale === 'zh-Hant') && (
-      <SectionItem>
-        <StyledExternalLink href="https://imdodo.com/s/147186?inv=7J46">{t`Dodo`}</StyledExternalLink>
-      </SectionItem>
-    )}
-    <SectionItem>
-      <StyledExternalLink href="https://discord.gg/rgrfS7W">{t`Discord`}</StyledExternalLink>
-    </SectionItem>
-    <SectionItem>
-      <StyledExternalLink href="https://www.youtube.com/c/CurveFinance">{t`YouTube`}</StyledExternalLink>
-      {locale !== 'en' && (
-        <>
-          {` EN | `}
-          <StyledExternalLink href="https://www.youtube.com/watch?v=FtzDlWdcou8&list=PLh7yM-DPEDYgP-vyEOCIboD3xg_TgJmkj">
-            {t`CN`}
-          </StyledExternalLink>
-        </>
-      )}
-    </SectionItem>
-    {(locale === 'zh-Hans' || locale === 'zh-Hant') && (
-      <SectionItem>
-        <StyledExternalLink href="https://www.curve.wiki/">{t`Wiki CN`}</StyledExternalLink>
-      </SectionItem>
-    )}
-    <SectionItem>
-      <StyledExternalLink href="https://dune.com/mrblock_buidl/Curve.fi">{t`Dune Analytics`}</StyledExternalLink>
-    </SectionItem>
-    <SectionItem>
-      <StyledExternalLink href="https://curvemonitor.com">{t`Curve Monitor`}</StyledExternalLink>
-    </SectionItem>
-    <SectionItem>
-      <StyledExternalLink href="https://crvhub.com/">{t`Crvhub`}</StyledExternalLink>
-    </SectionItem>
-  </CommunityWrapper>
-)
-
-interface ResourcesSectionProps extends InnerSectionProps {
-  chainId: ChainId | null
-}
-
-export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesSectionProps) => {
-  const orgUIPath = networks[chainId ?? '1']?.orgUIPath
-
-  return (
-    <ResourcesWrapper className={className} $columnCount={columnCount}>
-      {/*<SectionItem>*/}
-      {/*  <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin/blob/master/doc/curve-stablecoin.pdf">{t`Whitepaper`}</StyledExternalLink>*/}
-      {/*</SectionItem>*/}
-      <SectionItem>
-        <StyledExternalLink href="https://resources.curve.fi/lending/understanding-lending/">{t`Resources`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://github.com/curvefi/curve-stablecoin">{t`Github`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi">{t`Developer Docs`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">{t`Branding`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/integration/overview/">{t`Integrations`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/audits/">{t`Audits`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/deployed-contracts/">{t`Contracts`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/bugbounty`}>{t`Bug Bounty`}</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://news.curve.fi/">{t`News`}</StyledExternalLink>
-      </SectionItem>
-    </ResourcesWrapper>
-  )
-}
-
-const Footer = ({ chainId }: { chainId: ChainId }) => {
+const Footer: FunctionComponent<FooterProps> = ({ sections }) => {
   const footerRef = useRef<HTMLDivElement>(null)
   const elHeight = useHeightResizeObserver(footerRef)
 
@@ -127,8 +24,6 @@ const Footer = ({ chainId }: { chainId: ChainId }) => {
     setLayoutHeight('footer', elHeight)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elHeight])
-
-  const locale = useStore((state) => state.locale)
 
   return (
     <FooterWrapper ref={footerRef}>
@@ -155,52 +50,37 @@ const Footer = ({ chainId }: { chainId: ChainId }) => {
         </div>
 
         <InfoBox grid gridAutoFlow="column">
-          <Section title="Community">
-            <CommunitySection locale={locale} />
-          </Section>
-          <Section title="Resources">
-            <ResourcesSection chainId={chainId} />
-          </Section>
+          {sections.map((section) => (
+            <Section key={section.title} title={section.title}>
+              {section.links.map(({ label, route }) => (
+                <SectionItem key={route}>
+                  <StyledExternalLink href={route}>{label}</StyledExternalLink>
+                </SectionItem>
+              ))}
+            </Section>
+          ))}
         </InfoBox>
       </FooterInnerWrapper>
     </FooterWrapper>
   )
 }
 
-interface SectionProps extends InnerSectionProps {
+interface SectionProps {
+  className?: string
+  columnCount?: number
   title: React.ReactNode
 }
 
-const Section = ({ className, title, children }: React.PropsWithChildren<SectionProps>) => {
-  return (
-    <SectionWrapper className={className} as="article">
-      <Header>{title}</Header>
-      {children}
-    </SectionWrapper>
-  )
-}
+const Section = ({ className, title, children }: React.PropsWithChildren<SectionProps>) => (
+  <SectionWrapper className={className} as="article">
+    <Header>{title}</Header>
+    <SectionChildrenWrapper>{children}</SectionChildrenWrapper>
+  </SectionWrapper>
+)
 
-const ResourcesWrapper = styled.ul<{ $columnCount?: number }>`
-  @media (min-width: ${breakpoints.md}rem) {
-    column-count: ${({ $columnCount }) => $columnCount || 3};
-  }
-`
-
-const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
-  @media (min-width: ${breakpoints.md}rem) {
-    ${({ $columnCount }) => {
-      if ($columnCount) {
-        return `
-          column-count: ${$columnCount};
-        `
-      } else {
-        return `
-          min-width: 15rem; //240px
-          column-count: 2;
-        `
-      }
-    }}
-  }
+const SectionChildrenWrapper = styled.ul`
+  @media (min-width: ${breakpoints.md}rem) { column-count: 2 }
+  @media (min-width: ${breakpoints.lg}rem) { column-count: 3 }
 `
 
 const FooterLogoWrapper = styled.div`
@@ -285,12 +165,6 @@ const linkStyles = css`
 
 const ExternalLinkButton = styled(ExternalLink)`
   ${linkStyles};
-`
-
-const StyledInternalLink = styled(InternalLink)`
-  ${linkStyles};
-  text-transform: inherit;
-  text-decoration: none;
 `
 
 const CurveLogo = styled(Image)`

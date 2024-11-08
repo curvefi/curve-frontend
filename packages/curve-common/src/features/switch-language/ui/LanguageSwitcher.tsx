@@ -1,40 +1,27 @@
-import { InputLabel } from '@/common/shared/ui/InputLabel'
-import { Select } from '@/common/shared/ui/Select'
-import { FormControl } from '@/common/shared/ui/FormControl'
-import { MenuItem } from '@/common/shared/ui/MenuItem'
-import { useCallback } from 'react'
-import { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { MenuItem } from 'curve-ui-kit/src/shared/ui/MenuItem'
+import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 
-export type LanguageOption = {
-  code: string
+export type LocaleValue = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
+export type LocaleOption = {
   name: string
+  value: LocaleValue
+  lang: string
 }
 
 export type LanguageSwitcherProps = {
-  languageCode: string
-  languageOptions: LanguageOption[]
-  onChange: (languageCode: string) => void
+  locale: LocaleValue
+  locales: LocaleOption[]
+  onChange: (value: LocaleValue) => void
 }
 
-export const LanguageSwitcher = ({ languageOptions, languageCode, onChange }: LanguageSwitcherProps) =>
-  (
-    <FormControl fullWidth>
-      <InputLabel id="language-switcher-label">Language</InputLabel>
-      <Select
-        labelId="language-switcher-label"
-        id="language-switcher"
-        value={languageCode}
-        label="Language"
-        onChange={useCallback((v: SelectChangeEvent) => onChange(v.target.value), [onChange])}
-        variant="standard"
-      >
-        {
-          languageOptions.map((languageOption) => (
-            <MenuItem key={languageOption.code} value={languageOption.code}>
-              {languageOption.name}
-            </MenuItem>
-          ))
-        }
-      </Select>
-    </FormControl>
-  )
+export const LanguageSwitcher = ({ locales, locale, onChange }: LanguageSwitcherProps) => locales.length > 1 && (
+  <CompactDropDown<LocaleValue> value={locale} onChange={onChange} //inputProps
+                                >
+    {locales.map((languageOption) => (
+      <MenuItem key={languageOption.value} value={languageOption.value}>
+        <Typography fontWeight="bold">{languageOption.name}</Typography>
+      </MenuItem>
+    ))}
+  </CompactDropDown>
+)

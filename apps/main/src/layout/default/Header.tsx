@@ -1,4 +1,3 @@
-import type { AppLogoProps } from '@/ui/Brand/AppLogo'
 import type { AppPage } from '@/ui/AppNav/types'
 import type { ThemeType } from '@/ui/Select/SelectThemes'
 
@@ -29,6 +28,7 @@ import AppLogo from '@/ui/Brand'
 import AppNavPages from '@/ui/AppNav/AppNavPages'
 import ConnectWallet from '@/ui/Button/ConnectWallet'
 import HeaderSecondary from '@/layout/default/HeaderSecondary'
+import { AppButtonLinks } from '@/common/widgets/Header/AppButtonLinks'
 
 const Header = () => {
   const [{ wallet }] = useConnectWallet()
@@ -59,10 +59,6 @@ const Header = () => {
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
-  const appLogoProps: AppLogoProps = {
-    appName: '',
-  }
-
   // prettier-ignore
   const appStats = [
     { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
@@ -73,21 +69,17 @@ const Header = () => {
   const pages: AppPage[] = useMemo(() => {
     const links = isLgUp
       ? [
-          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
-          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
-          { ...APP_LINK.crvusd, isDivider: true },
-          APP_LINK.lend,
-        ]
+        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
+        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
+      ]
       : [
-          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
-          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
-          { ...APP_LINK.crvusd, isDivider: true },
-          APP_LINK.lend,
-        ]
+        { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
+        { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
+        { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
+        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
+      ]
 
     if (hasRouter && networks[rChainId].showRouterSwap) {
       const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
@@ -136,16 +128,6 @@ const Header = () => {
     />
   )
 
-  const appNavLocale = {
-    locale,
-    locales: DEFAULT_LOCALES,
-    handleChange: (selectedLocale: React.Key) => {
-      const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-      const { rNetwork } = getNetworkFromUrl()
-      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
-    },
-  }
-
   const appNavTheme = {
     themeType,
     handleClick: (selectedThemeType: ThemeType) => setThemeType(selectedThemeType),
@@ -156,15 +138,24 @@ const Header = () => {
   return (
     <>
       {isMdUp && (
-        <HeaderSecondary appsLinks={appsLinks} appStats={appStats} locale={appNavLocale} theme={appNavTheme} />
+        <HeaderSecondary appsLinks={appsLinks} appStats={appStats} locale={{
+          locale,
+          locales: DEFAULT_LOCALES,
+          handleChange: (selectedLocale: React.Key) => {
+            const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+            const { rNetwork } = getNetworkFromUrl()
+            navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+          },
+        }} theme={appNavTheme} />
       )}
       <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isMdUp}>
         <AppNavBarContent pageWidth={pageWidth} className="nav-content">
           {isMdUp ? (
             <>
               <AppNavMenuSection>
-                <AppLogo {...appLogoProps} />
-                <AppNavPages pages={pages} navigate={navigate} />
+                <AppLogo />
+                <AppButtonLinks currentApp="main" />
+                <AppNavPages pages={pages} />
               </AppNavMenuSection>
 
               <AppNavMenuSection>
@@ -174,9 +165,18 @@ const Header = () => {
             </>
           ) : (
             <AppNavMobile
-              appLogoProps={appLogoProps}
+              connectWalletLabel={t`Connect Wallet`}
+              currentApp="main"
               connect={appNavConnect}
-              locale={appNavLocale}
+              locale={{
+                locale,
+                locales: DEFAULT_LOCALES,
+                handleChange: (selectedLocale: React.Key) => {
+                  const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
+                  const { rNetwork } = getNetworkFromUrl()
+                  navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+                },
+              }}
               pageWidth={pageWidth}
               pages={{
                 pages,

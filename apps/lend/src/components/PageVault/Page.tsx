@@ -47,7 +47,6 @@ const Page: NextPage = () => {
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
-  const navHeight = useStore((state) => state.layout.navHeight)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
@@ -134,7 +133,7 @@ const Page: NextPage = () => {
       <DocumentHead title={`${borrowed_token?.symbol ?? ''} | Supply`} />
       {provider ? (
         <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-          <AppPageFormsWrapper navHeight={navHeight}>
+          <AppPageFormsWrapper navHeight="var(--nav-height)">
             {(!isMdUp || !isAdvanceMode) && <TitleComp />}
             {rChainId && rOwmId && <Vault {...pageProps} />}
           </AppPageFormsWrapper>

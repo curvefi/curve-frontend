@@ -50,7 +50,6 @@ const Page: NextPage = () => {
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const navHeight = useStore((state) => state.layout.navHeight)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
@@ -160,7 +159,7 @@ const Page: NextPage = () => {
           )}
 
           <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-            <AppPageFormsWrapper navHeight={navHeight}>
+            <AppPageFormsWrapper navHeight="var(--header-height)">
               {(!isMdUp || !isAdvanceMode) && <TitleComp />}
               {rChainId && rOwmId && <LoanCreate {...pageProps} />}
             </AppPageFormsWrapper>

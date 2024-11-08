@@ -1,12 +1,10 @@
-import type { AppNavMobileProps } from 'ui/src/AppNav/types'
-
-import React, { useMemo, useRef, useState } from 'react'
+import { AppNames, AppNavMobileProps, AppPage } from 'ui/src/AppNav/types'
+import React, { FunctionComponent, useMemo, useRef, useState } from 'react'
 import { useOverlay } from '@react-aria/overlays'
 import { useOverlayTriggerState } from 'react-stately'
 import Image from 'next/image'
 import delay from 'lodash/delay'
 import styled from 'styled-components'
-
 import { AppLinkText } from 'ui/src/AppNav/styles'
 import { LlamaImg } from 'ui/src/images'
 import AppNavMobileExternalLinks from 'ui/src/AppNav/AppNavMobileExternalLinks'
@@ -16,7 +14,6 @@ import AppNavPagesMobile from 'ui/src/AppNav/AppNavPagesMobile'
 import AppLogo from 'ui/src/Brand'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
-import ConnectWallet from 'ui/src/Button/ConnectWallet'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import Overlay from 'ui/src/Overlay'
@@ -24,20 +21,47 @@ import SelectLocale from 'ui/src/Select/SelectLocale'
 import SelectThemes from 'ui/src/Select/SelectThemes'
 import Spacer from 'ui/src/Spacer'
 import Switch from 'ui/src/Switch'
+import { ConnectWalletIndicator } from 'curve-common/src/features/connect-wallet'
+import { APP_LINK } from './constants'
 
 const DEFAULT_MENUS_WIDTH = [0, 0]
 
+const AppLink: FunctionComponent<{
+  page: AppPage, onClick: (route:string)=>void, closeMenu: (currentMenusWidth: number[]) => void, menuWidth: number
+}> = ({ page: { route, label, target, isActive }, onClick, closeMenu, menuWidth }) =>
+  route.startsWith('http') ? (
+    <AppLinkText
+      key={route}
+      className={isActive ? 'active' : ''}
+      {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
+      href={route}
+    >
+      {label}
+    </AppLinkText>
+  ) : (
+    <MobileButton
+      key={route}
+      onClick={() => {
+        onClick(route)
+        closeMenu([menuWidth, 0])
+      }}
+    >
+      {label}
+    </MobileButton>
+  )
+
 const AppNavMobile = ({
-  appLogoProps,
   connect,
   advancedMode,
   locale,
   pageWidth,
   pages,
+  currentApp,
   sections,
   selectNetwork: SelectNetwork,
   stats,
   theme,
+  connectWalletLabel,
 }: AppNavMobileProps) => {
   const leftMenuRef = useRef<HTMLDivElement | null>(null)
   const leftButtonRef = useRef<HTMLButtonElement | null>(null)
@@ -84,7 +108,7 @@ const AppNavMobile = ({
         <IconButton ref={leftButtonRef} onClick={() => openMenu([menuWidth, 0])}>
           <Icon name="Menu" size={24} aria-label="menu icon" />
         </IconButton>
-        <StyledAppLogo {...appLogoProps} />
+        <StyledAppLogo />
       </Box>
 
       <Spacer />
@@ -95,7 +119,7 @@ const AppNavMobile = ({
         <ModalWrapper ref={leftMenuRef} placement="left" width={menusWidth[0]} {...leftOverlay.overlayProps}>
           {/* MODAL HEADER */}
           <ModalHeader>
-            <AppLogo {...appLogoProps} />
+            <AppLogo />
             <IconButton ref={leftButtonCloseRef} onClick={() => closeMenu([menuWidth, 0])}>
               <Icon name="Close" size={24} aria-label="close icon" />
             </IconButton>
@@ -109,39 +133,14 @@ const AppNavMobile = ({
             padding="var(--spacing-normal) var(--spacing-3) 0 var(--spacing-3)"
           >
             <Box grid gridRowGap={3}>
-              {pages.pages.map(({ route, label, target, isActive, isDivider }) => {
-                return (
-                  <React.Fragment key={label}>
-                    {isDivider && <Box grid margin="var(--spacing-1) 0 0 0"></Box>}
-                    {route.startsWith('http') ? (
-                      <AppLinkText
-                        key={route}
-                        className={isActive ? 'active' : ''}
-                        {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
-                        href={route}
-                      >
-                        {label}
-                      </AppLinkText>
-                    ) : (
-                      <MobileButton
-                        key={route}
-                        onClick={() => {
-                          pages.handleClick(route)
-                          closeMenu([menuWidth, 0])
-                        }}
-                      >
-                        {label}
-                      </MobileButton>
-                    )}
-                  </React.Fragment>
-                )
-              })}
-
+              {pages.pages.map((page) => <AppLink key={page.label} page={page} onClick={pages.handleClick} closeMenu={closeMenu} menuWidth={menuWidth} />)}
+              <Box grid margin="var(--spacing-1) 0 0 0"></Box>
+              {AppNames.map((appName) => <AppLink key={appName} page={APP_LINK[appName]} onClick={pages.handleClick} closeMenu={closeMenu} menuWidth={menuWidth} />)}
               {/* MORE */}
               <div>
-                {sections.map(({ id, title, links, comp }, idx) => {
-                  return Array.isArray(links) ? (
-                    <Box key={title} grid gridGap={3} margin="0 0 var(--spacing-3) 0">
+                {sections.map(({ id, title, links, comp }, idx) =>
+                  Array.isArray(links) ? (
+                    <Box key={id} grid gridGap={3} margin="0 0 var(--spacing-3) 0">
                       {links.map((l) => (
                         <AppNavPagesMobile
                           key={l.route}
@@ -163,8 +162,7 @@ const AppNavMobile = ({
                     >
                       <AppNavMobileExternalLinks links={links} comp={comp} />
                     </AppNavMobileShowMore>
-                  )
-                })}
+                  ))}
               </div>
             </Box>
 
@@ -212,13 +210,11 @@ const AppNavMobile = ({
 
           {/* MODAL FOOTER */}
           <ModalFooter>
-            <StyledConnectWallet
-              connectState={connect.connectState}
-              walletSignerAddress={connect.walletSignerAddress}
-              handleClick={() => {
-                connect.handleClick()
-                closeMenu([menuWidth, 0])
-              }}
+            <ConnectWalletIndicator
+              onConnectWallet={connect.handleClick}
+              onDisconnectWallet={connect.handleClick}
+              walletAddress={connect.walletSignerAddress}
+              label={connectWalletLabel}
             />
           </ModalFooter>
         </ModalWrapper>
@@ -249,12 +245,6 @@ const StyledSelectThemes = styled(SelectThemes)`
   svg {
     margin: 0 var(--spacing-2);
   }
-`
-
-const StyledConnectWallet = styled(ConnectWallet)`
-  justify-content: center;
-  width: 100%;
-  min-height: var(--height-large);
 `
 
 /*
