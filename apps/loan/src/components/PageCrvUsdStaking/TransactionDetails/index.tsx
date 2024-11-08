@@ -12,6 +12,7 @@ import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import Loader from '@/ui/Loader'
 
+import Switch from '@/components/PageCrvUsdStaking/components/Switch'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import FieldValue from '@/components/PageCrvUsdStaking/TransactionDetails/FieldValue'
 
@@ -23,7 +24,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   const [isOpen, setIsOpen] = useState(false)
   const { data: signerAddress } = useSignerAddress()
   // const maxSlippage = useStore((state) => state.maxSlippage)
-  const { preview, crvUsdExchangeRate } = useStore((state) => state.scrvusd)
+  const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite } = useStore((state) => state.scrvusd)
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
   const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
 
@@ -37,7 +38,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
           {exchangeRateLoading ? (
             <Loader skeleton={[72, 12]} />
           ) : (
-            t`1 crvUSD = ${formatNumber(crvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            t`1 crvUSD = ${formatNumber(crvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
           scrvUSD`
           )}
         </ToggleTitle>
@@ -57,6 +58,10 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
           <TransactionField>
             <TransactionFieldLabel>{t`Your scrvUSD share`}</TransactionFieldLabel>
             <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
+          </TransactionField>
+          <TransactionField>
+            <TransactionFieldLabel>{t`Infinite allowance`}</TransactionFieldLabel>
+            <Switch isActive={approveInfinite} onChange={setApproveInfinite} />
           </TransactionField>
           <TransactionField>
             <TransactionFieldLabel>{t`Estimated TX cost`}</TransactionFieldLabel>

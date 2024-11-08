@@ -11,7 +11,7 @@ import TransactionDetails from '@/components/PageCrvUsdStaking/TransactionDetail
 import DepositModule from '@/components/PageCrvUsdStaking/DepositWithdraw/DepositModule'
 import WithdrawModule from '@/components/PageCrvUsdStaking/DepositWithdraw/WithdrawModule'
 import DeployButton from '@/components/PageCrvUsdStaking/DepositWithdraw/DeployButton'
-import TransactionTracking from '@/components/PageCrvUsdStaking/DepositWithdraw/TransactionTracking'
+import TransactionTracking from '@/components/PageCrvUsdStaking/TransactionTracking'
 
 type DepositWithdrawProps = {
   className?: string
@@ -27,6 +27,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     approveDepositTransaction,
     depositTransaction,
     depositApproval,
+    getInputAmountApproved,
     withdrawTransaction,
   } = useStore((state) => state.scrvusd)
   const {
@@ -48,11 +49,13 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const transactionSuccess =
     depositTransaction.transactionStatus === 'success' || withdrawTransaction.transactionStatus === 'success'
 
+  const isDepositApprovalReady = getInputAmountApproved()
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (lendApi && curve && inputAmount !== 0) {
         if (stakingModule === 'deposit') {
-          if (depositApproval.approval) {
+          if (isDepositApprovalReady) {
             estimateGasDeposit(inputAmount)
           } else {
             estimateGasDepositApprove(inputAmount)
@@ -82,6 +85,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     estimateGasDeposit,
     depositApproval.approval,
     estimateGasWithdraw,
+    isDepositApprovalReady,
   ])
 
   return (

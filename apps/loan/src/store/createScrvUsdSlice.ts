@@ -42,6 +42,7 @@ type SliceState = {
     crvUSD: string
     scrvUSD: string
   }
+  approveInfinite: boolean
   approveDepositTransaction: {
     transactionStatus: TransactionStatus
     transaction: string | null
@@ -67,7 +68,6 @@ export type ScrvUsdSlice = {
   [sliceKey]: SliceState & {
     checkApproval: {
       depositApprove: (amount: number) => void
-      deposit: (amount: number) => void
     }
     estimateGas: {
       depositApprove: (amount: number) => void
@@ -79,8 +79,8 @@ export type ScrvUsdSlice = {
     deploy: {
       depositApprove: (amount: number) => Promise<boolean>
       deposit: (amount: number) => void
-      withdrawApprove: (amount: number) => boolean
       withdraw: (amount: number) => void
+      redeem: (amount: number) => void
     }
     fetchUserBalances: () => void
     fetchExchangeRate: () => void
@@ -88,7 +88,7 @@ export type ScrvUsdSlice = {
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setInputAmount: (amount: number) => void
-    setOutputAmount: (amount: number) => void
+    setApproveInfinite: () => void
     setPreviewReset: () => void
     setStakingModuleChangeReset: () => void
     setTransactionsReset: () => void
@@ -128,6 +128,7 @@ const DEFAULT_STATE: SliceState = {
     crvUSD: '',
     scrvUSD: '',
   },
+  approveInfinite: false,
   approveDepositTransaction: {
     transactionStatus: '',
     transaction: null,
@@ -248,11 +249,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         await fetchGasInfo(curve)
 
         try {
-          console.log('deploy gas')
           // only returns number[] on base or optimism
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.redeem(amount)) as number
 
-          console.log('estimatedGas', estimatedGas)
           get()[sliceKey].setStateByKey('estGas', { gas: estimatedGas, fetchStatus: 'success' })
         } catch (error) {
           console.error(error)
@@ -265,6 +264,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const lendApi = get().lendApi
         const curve = get().curve
         const provider = get().wallet.provider
+        const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
         if (!lendApi || !curve || !provider) return
@@ -287,7 +287,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
 
         try {
-          const transactionHash = await lendApi.st_crvUSD.depositApprove(amount, false)
+          const transactionHash = await lendApi.st_crvUSD.depositApprove(amount, approveInfinite)
 
           get()[sliceKey].setStateByKey('approveDepositTransaction', {
             transactionStatus: 'loading',
@@ -494,6 +494,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
 
       get()[sliceKey].setStateByKey('inputAmount', amount)
+    },
+    setApproveInfinite: () => {
+      get()[sliceKey].setStateByKey('approveInfinite', !get()[sliceKey].approveInfinite)
     },
     setPreviewReset: () => {
       get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '' })

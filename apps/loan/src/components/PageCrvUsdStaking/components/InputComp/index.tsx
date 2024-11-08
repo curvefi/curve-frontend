@@ -40,16 +40,16 @@ const InputComp: React.FC<InputCompProps> = ({
       <Box flex flexColumn fillWidth>
         {isLoadingInput ? (
           <InputLoaderWrapper>
-            <Loader skeleton={[36, 12]} />
+            <Loader skeleton={[36, 14]} />
           </InputLoaderWrapper>
         ) : (
           <NumberField value={value} isDisabled={readOnly} aria-label="Input" onChange={setValue} />
         )}
         <WalletBalanceWrapper>
           <StyledIcon name="Wallet" size={16} />
-          <BalancesWrapper flex flexWrap="wrap">
+          <BalancesWrapper flex flexColumn>
             {isLoadingBalances ? (
-              <Loader skeleton={[36, 12]} />
+              <Loader skeleton={[36, 14]} />
             ) : (
               <WalletBalance>
                 {formatNumber(walletBalance)} {walletBalanceSymbol}
