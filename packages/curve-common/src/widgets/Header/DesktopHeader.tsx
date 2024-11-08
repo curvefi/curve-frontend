@@ -45,7 +45,9 @@ export const DesktopHeader = <TChainId extends number>({
       <Container>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />
-        <HeaderStats appStats={appStats} />
+        <Box display="flex" gap={3} alignItems="center">
+          <HeaderStats appStats={appStats} />
+        </Box>
       </Container>
     </Toolbar>
   </AppBar>

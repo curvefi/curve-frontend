@@ -29,8 +29,7 @@ export const SideBarFooter = ({
   sx
 }: SideBarFooterProps) => (
   <>
-    <Box position="fixed" bottom={0}
-         sx={{ ...sx, backgroundColor }}>
+    <Box position="fixed" bottom={0} sx={{ ...sx, backgroundColor }}>
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
       </Box>
@@ -57,7 +56,7 @@ export const SideBarFooter = ({
       </Accordion>
 
     </Box>
-    <Box minHeight={90} /> {/* To avoid the last item to be hidden by the connect indicator */}
+    <Box minHeight={150} /> {/* To avoid the last item to be hidden by the connect indicator */}
   </>
 )
 

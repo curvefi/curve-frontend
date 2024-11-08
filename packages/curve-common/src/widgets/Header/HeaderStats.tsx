@@ -7,12 +7,11 @@ export type HeaderStatsProps = {
 }
 
 export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) => (
-  <Box display="flex" gap={2}>
-    {appStats.map(({ label, value }) => value && (
-      <Box key={value}>
-        <Typography variant="bodyMBold" color="grey.600">{label}</Typography>:{' '}
-        <Typography variant="bodyMRegular" color="primary">{value}</Typography>
-      </Box>
-    ))}
-  </Box>
+  appStats.map(({ label, value }) => (
+    <Box key={label} display="inline-flex">
+      <Typography variant="bodyMRegular" color="grey.600">{label}:</Typography>
+      &nbsp;
+      <Typography variant="bodyMBold" color="text.primary">{value || '-'}</Typography>
+    </Box>
+  ))
 )

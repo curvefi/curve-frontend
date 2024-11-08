@@ -1,7 +1,6 @@
 import IconButton from '@mui/material/IconButton'
 import React from 'react'
 import { styled } from '@mui/material/styles'
-import { SxProps, Theme } from '@mui/system'
 
 const Svg = styled('svg')({
   fill: 'currentColor',
@@ -14,11 +13,10 @@ const Path = styled('path')``
 type MenuToggleButtonProps = {
   isOpen: boolean
   toggle: () => void
-  sx?: SxProps<Theme>
 }
 
-export const MenuToggleButton = ({ toggle, isOpen, sx }: MenuToggleButtonProps) => (
-  <IconButton onClick={toggle} sx={{ display: 'inline-flex', ...sx }}>
+export const MenuToggleButton = ({ toggle, isOpen }: MenuToggleButtonProps) => (
+  <IconButton onClick={toggle} sx={{ display: 'inline-flex' }}>
     <Svg
       // className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-36mik4-MuiSvgIcon-root"
       focusable="false"
