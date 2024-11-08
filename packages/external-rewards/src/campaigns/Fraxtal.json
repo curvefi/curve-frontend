@@ -157,7 +157,7 @@
       "campaignEnd": "1770000000",
       "address": "0x279a23349fa48ea5215d31666aff359dbbec1404",
       "network": "fraxtal",
-      "multiplier": "1.25",
+      "multiplier": "12.5",
       "tags": ["points"],
       "lock": "false"
     },
@@ -181,7 +181,7 @@
       "campaignEnd": "1770000000",
       "address": "0xa7573cbd8738ed268b931b038079f993e78d4216",
       "network": "fraxtal",
-      "multiplier": "1.25",
+      "multiplier": "12.5",
       "tags": ["points"],
       "lock": "false"
     },
@@ -205,7 +205,7 @@
       "campaignEnd": "1770000000",
       "address": "0x0edf4a3762deb5329ecdbdeda98d287ae41fbb7e",
       "network": "fraxtal",
-      "multiplier": "1.25",
+      "multiplier": "12.5",
       "tags": ["points"],
       "lock": "false"
     },
@@ -229,7 +229,55 @@
       "campaignEnd": "1770000000",
       "address": "0x040efc9a141d7fa47745751c253e02d065c90bdb",
       "network": "fraxtal",
-      "multiplier": "1.25",
+      "multiplier": "12.5",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x385540fda649a114ffeb943fd73ae82ce7908da3",
+      "network": "fraxtal",
+      "multiplier": "1.875",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xcaef324bea3ff5c7a08710081294f3344ffadc54",
+      "network": "fraxtal",
+      "multiplier": "1.875",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x35c6c59277f8fa9ae98dea29b0546d79957acdd8",
+      "network": "fraxtal",
+      "multiplier": "1.875",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x63eb7846642630456707c3efbb50a03c79b89d81",
+      "network": "fraxtal",
+      "multiplier": "1.875",
       "tags": ["points"],
       "lock": "false"
     }
