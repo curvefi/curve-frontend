@@ -7,14 +7,13 @@ import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { isFailure, isLoading } from '@/ui/utils'
 import { getWalletChainId, useConnectWallet } from '@/common/features/connect-wallet'
 import useStore from '@/store/useStore'
-
 import Header from '@/layout/Header'
 import Footer from '@/ui/Footer'
 import GlobalBanner from '@/ui/Banner'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { t } from '@lingui/macro'
 import networks from '@/networks'
-import { Locale } from '@/ui/AppNav/types'
+import { Locale } from '@/common/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()

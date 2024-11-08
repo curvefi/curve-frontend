@@ -1,7 +1,7 @@
 import type { FunctionComponent } from 'react'
 import { ListItem } from '@mui/material'
 import { RouterLink } from 'curve-ui-kit/src/shared/ui/RouterLink'
-import type { AppPage } from 'ui/src/AppNav/types'
+import type { AppPage } from 'curve-common/src/widgets/Header/types'
 import Link from '@mui/material/Link'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
 

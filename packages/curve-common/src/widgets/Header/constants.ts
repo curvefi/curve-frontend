@@ -20,3 +20,5 @@ function _getRoute(host: string) {
   const isStaging = windowHost.startsWith('staging')
   return isStaging ? `https://staging${host === 'curve.fi' ? `.${host}` : `-${host}`}/` : `https://${host}/`
 }
+
+export const AppNames = ['main', 'lend', 'crvusd'] as const

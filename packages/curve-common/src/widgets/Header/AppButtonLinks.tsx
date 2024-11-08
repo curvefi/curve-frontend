@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import { APP_LINK } from 'ui/src/AppNav/constants'
-import { AppName, AppNames } from 'ui/src/AppNav/types'
+import { APP_LINK, AppNames } from 'curve-common/src/widgets/Header/constants'
+import type { AppName } from 'curve-common/src/widgets/Header/types'
 
 export type AppNavAppsProps = { currentApp: AppName }
 

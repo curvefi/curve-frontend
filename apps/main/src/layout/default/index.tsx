@@ -11,7 +11,7 @@ import useStore from '@/store/useStore'
 
 import Header from '@/layout/default/Header'
 import GlobalBanner from '@/ui/Banner'
-import { Locale } from '@/ui/AppNav/types'
+import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
 import Footer from '@/ui/Footer'
 import networks from '@/networks'

@@ -1,7 +1,6 @@
 import { Key, useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES, updateAppLocale } from '@/lib/i18n'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
@@ -12,8 +11,7 @@ import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { ThemeKey } from '@ui-kit/shared/lib'
-import { NavigationSection } from '@/common/widgets/Header/types'
-import { Locale } from '@/ui/AppNav/types'
+import type { Locale, NavigationSection } from '@/common/widgets/Header/types'
 
 type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
 

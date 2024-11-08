@@ -6,13 +6,12 @@ import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
-import { APP_LINK } from 'ui'
-import { AppNames } from 'ui/src/AppNav/types'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/entities/themes/model'
+import { APP_LINK, AppNames } from './constants'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {

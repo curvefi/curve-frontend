@@ -4,9 +4,9 @@ import { Box } from 'curve-ui-kit/src/shared/ui/Box'
 import { LogoImg, RCLogoText } from 'ui/src/images'
 import { styled } from '@mui/material/styles'
 import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import type { AppName } from './types'
 import { APP_NAMES } from './types'
-import { AppName } from 'ui/src/AppNav/types'
-import { SxProps, Theme } from '@mui/system'
+import type { SxProps, Theme } from '@mui/system'
 
 const Image = styled('img')({
   width: 30,

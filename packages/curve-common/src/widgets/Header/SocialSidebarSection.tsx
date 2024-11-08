@@ -9,7 +9,7 @@ import { DiscordIcon } from 'curve-ui-kit/src/shared/ui/DiscordIcon'
 import { DodoIcon } from 'curve-ui-kit/src/shared/ui/DodoIcon'
 import { Box } from 'curve-ui-kit/src/shared/ui/Box'
 import SvgIcon from '@mui/material/SvgIcon'
-import { Locale } from 'ui/src/AppNav/types'
+import type { Locale } from 'curve-common/src/widgets/Header/types'
 
 type SocialButtonProps = {
   label: string,
