@@ -14,8 +14,8 @@ import Header from '@/layout/Header'
 import GlobalBanner from '@/ui/Banner'
 import { Locale } from '@/ui/AppNav/types'
 import { t } from '@lingui/macro'
-import networks from 'lend/src/networks'
 import Footer from '@/ui/Footer'
+import networks from '@/networks'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()

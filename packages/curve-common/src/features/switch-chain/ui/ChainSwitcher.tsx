@@ -26,6 +26,10 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
     return (<Icon width={24} />)
   }, [networkMapping])
 
+  if (options.length <= 1) {
+    return null
+  }
+
   return (
       <CompactDropDown<TChainId>
         value={chainId}

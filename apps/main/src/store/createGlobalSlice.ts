@@ -21,6 +21,7 @@ export type LayoutHeight = {
   secondaryNav: number
   footer: number
 }
+export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
 
 type GlobalState = {
   connectState: ConnectState

@@ -11,7 +11,6 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
-import { getRestPartialPathname } from 'main/src/utils/utilsRouter'
 import { NavigationSection } from '@/common/widgets/Header/types'
 
 type HeaderProps = { sections: NavigationSection[] }
@@ -52,13 +51,12 @@ export const Header = ({ sections }: HeaderProps) => {
       isMdUp={isMdUp}
       advancedMode={[isAdvanceMode, useCallback(() => setAppCache('isAdvanceMode', !isAdvanceMode), [isAdvanceMode, setAppCache])]}
       currentApp="crvusd"
-      pages={useMemo(() => {
-        return _parseRouteAndIsActive([
+      pages={useMemo(() =>
+        _parseRouteAndIsActive([
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'crvUSD' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'integrations' : 'crvUSD' }
-        ], rLocale.rLocalePathname, routerPathname, routerNetwork)
-      }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])}
+        ], rLocale.rLocalePathname, routerPathname, routerNetwork), [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])}
       themes={[
         themeType == 'default' ? 'light' : themeType as ThemeKey,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType), [setAppCache])
@@ -79,7 +77,7 @@ export const Header = ({ sections }: HeaderProps) => {
         onChange: useCallback((selectedChainId: ChainId) => {
           if (rChainId !== selectedChainId) {
             const network = networks[selectedChainId as ChainId].id
-            navigate(`${locale}/${network}/${getRestPartialPathname()}`)
+            navigate(`${locale}/${network}/${getRestFullPathname()}`)
             updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
           }
         }, [rChainId, navigate, locale, updateConnectState])
