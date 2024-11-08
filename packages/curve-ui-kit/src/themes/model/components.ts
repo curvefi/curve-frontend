@@ -8,6 +8,14 @@ export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 
 export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => ({
   MuiTypography: defineMuiTypography(),
+  MuiButtonBase: {
+    defaultProps: {
+      disableRipple: true
+    },
+    styleOverrides: {
+      root: { borderRadius: 0 }
+    }
+  },
   MuiButton: defineMuiButton(FIGMA_TOKENS, mode),
   MuiIconButton: {
     styleOverrides: {
@@ -40,8 +48,8 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
   },
   MuiSwitch: {
     styleOverrides: {
-      root: { padding: '0', alignItems: 'center', width: '44px' },
-      switchBase: { padding: '11px 4px' },
+      root: { padding: 0, alignItems: 'center', height: '30px', width: '44px' },
+      switchBase: { padding: '7px 4px', borderRadius: 0 },
       track: { borderRadius: 0, width: '44px', height: '24px' },
       thumb: { borderRadius: 0, width: '16px', height: '16px' }
     }

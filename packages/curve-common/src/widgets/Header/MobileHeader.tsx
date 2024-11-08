@@ -12,7 +12,7 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/entities/themes/model'
+import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/model'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
