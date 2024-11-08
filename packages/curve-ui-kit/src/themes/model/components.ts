@@ -11,22 +11,9 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
   MuiButtonBase: {
     defaultProps: {
       disableRipple: true
-    },
-    styleOverrides: {
-      root: { borderRadius: 0 }
     }
   },
   MuiButton: defineMuiButton(FIGMA_TOKENS, mode),
-  MuiIconButton: {
-    styleOverrides: {
-      root: { borderRadius: 0 }
-    }
-  },
-  MuiPaper: {
-    styleOverrides: {
-      root: { borderRadius: 0 }
-    }
-  },
   MuiTabs: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE },

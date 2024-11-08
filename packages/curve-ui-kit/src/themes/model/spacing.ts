@@ -1,7 +1,6 @@
 import { type ThemeOptions } from '@mui/material/styles'
-
-import { FIGMA_TOKENS } from './figma-tokens.generated'
 import { type ThemeKey } from '../basic-theme'
+import { FIGMA_TOKENS } from './figma-tokens.generated'
 
 export const createSpacing = (mode: ThemeKey): ThemeOptions => {
   const { xxs, xs, sm, md, lg, xl, xxl } = FIGMA_TOKENS.mappedSizesAndSpaces.desktop.spacing
@@ -24,7 +23,7 @@ export const createSpacing = (mode: ThemeKey): ThemeOptions => {
     //   spacing: [0, mXxs, mXs, mSm, mMd, mLg, mXl, mXxl],
     // },
     shape: {
-      borderRadius: theme.radius.md,
+      borderRadius: theme.radius.square,
     },
   }
 }

@@ -17,7 +17,6 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/system'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
-
 type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
 
 const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet');

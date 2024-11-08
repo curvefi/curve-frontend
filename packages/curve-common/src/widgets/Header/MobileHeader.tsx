@@ -100,4 +100,3 @@ export const MobileHeader = <TChainId extends number>({
     </AppBar>
   )
 }
-
