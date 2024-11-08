@@ -44,13 +44,6 @@ export const Header = ({ sections }: HeaderProps) => {
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
-  // prettier-ignore
-  const appStats = [
-    { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`Daily Volume`, value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
-  ]
-
   return (
     <NewHeader
       locale={locale}
@@ -104,7 +97,17 @@ export const Header = ({ sections }: HeaderProps) => {
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
-      appStats={appStats}
+      appStats={[
+        {
+          label: t`Total Deposits`,
+          value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+        },
+        {
+          label: t`Daily Volume`,
+          value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+        },
+        { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
+      ]}
       sections={sections}
       translations={{
         advanced: t`Advanced Mode`,

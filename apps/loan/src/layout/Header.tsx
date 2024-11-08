@@ -1,34 +1,28 @@
-import type { AppPage } from '@/ui/AppNav/types'
-
-import React, { useMemo, useRef } from 'react'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate, useParams } from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
-import { getLocaleFromUrl, getNetworkFromUrl, getPath, getRestFullPathname } from '@/utils/utilsRouter'
+import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
-import { visibleNetworksList } from '@/networks'
+import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
+import { Header as NewHeader } from '@/common/widgets/Header'
+import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
+import { getRestPartialPathname } from 'main/src/utils/utilsRouter'
+import { NavigationSection } from '@/common/widgets/Header/types'
 
-import { AppNavBar, AppNavBarContent, AppNavMenuSection, AppNavMobile, APPS_LINKS, AppSelectNetwork } from '@/ui/AppNav'
-import { CommunitySection, ResourcesSection } from '@/layout/Footer'
-import AppLogo from '@/ui/Brand'
-import AppNavPages from '@/ui/AppNav/AppNavPages'
-import ConnectWallet from '@/ui/Button/ConnectWallet'
-import HeaderSecondary from '@/layout/HeaderSecondary'
-import { AppButtonLinks } from '@/common/widgets/Header/AppButtonLinks'
+type HeaderProps = { sections: NavigationSection[] }
 
-const Header = () => {
+export const Header = ({ sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
-  const params = useParams()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId, rNetworkIdx } = getNetworkFromUrl()
+  const { rChainId } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -40,7 +34,6 @@ const Header = () => {
   const isLgUp = useStore((state) => state.layout.isLgUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const locale = useStore((state) => state.locale)
-  const pageWidth = useStore((state) => state.layout.pageWidth)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
@@ -53,137 +46,79 @@ const Header = () => {
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
 
-  const pages: AppPage[] = useMemo(() => {
-    const links = isLgUp
-      ? [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
-      ]
-      : [
-        { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
-      ]
-
-    return _parseRouteAndIsActive(links, rLocale.rLocalePathname, routerPathname, routerNetwork)
-  }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])
-
-  const formattedTvl = useMemo(
-    () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
-    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
-  )
-
-  // prettier-ignore
-  const appStats = [
-    { label: 'TVL', value: formattedTvl },
-    { label: t`Daily volume`, value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: t`Total Supply`, value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
-    { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
-  ]
-
-  const SelectNetworkComp = (
-    <AppSelectNetwork
-      connectState={connectState}
-      buttonStyles={{ textTransform: 'uppercase' }}
-      items={visibleNetworksList}
-      loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
-      minWidth="9rem"
-      mobileRightAlign
-      selectedKey={(rNetworkIdx === -1 ? '' : rChainId).toString()}
-      onSelectionChange={() => {}}
-    />
-  )
-
-  const appNavAdvancedMode = {
-    isAdvanceMode,
-    handleClick: () => setAppCache('isAdvanceMode', !isAdvanceMode),
-  }
-
-  const appNavConnect = {
-    connectState,
-    walletSignerAddress: getWalletSignerAddress(wallet),
-    handleClick: () => {
-      if (wallet) {
-        updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET)
-      } else {
-        updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [''])
-      }
-    },
-  }
-
-  const appNavLocale = {
-    locale,
-    locales: DEFAULT_LOCALES,
-    handleChange: (selectedLocale: React.Key) => {
-      const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-      const { rNetwork } = getNetworkFromUrl()
-      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
-    },
-  }
-
-  const appNavTheme = {
-    themeType,
-    handleClick: (selectedThemeType: Theme) => setAppCache('themeType', selectedThemeType),
-  }
-
   return (
-    <>
-      {isMdUp && (
-        <HeaderSecondary
-          advancedMode={appNavAdvancedMode}
-          appsLinks={APPS_LINKS}
-          appStats={appStats}
-          locale={appNavLocale}
-          theme={appNavTheme}
-        />
-      )}
-      <AppNavBar ref={mainNavRef} aria-label="Main menu" isMdUp={isMdUp}>
-        <AppNavBarContent pageWidth={pageWidth} className="nav-content">
-          {isMdUp ? (
-            <>
-              <AppNavMenuSection>
-                <AppLogo />
-                <AppButtonLinks currentApp="crvusd" />
-                <AppNavPages pages={pages} />
-              </AppNavMenuSection>
-
-              <AppNavMenuSection>
-                {SelectNetworkComp}
-                <ConnectWallet {...appNavConnect} />
-              </AppNavMenuSection>
-            </>
-          ) : (
-            <AppNavMobile
-              currentApp="crvusd"
-              connectWalletLabel={t`Connect Wallet`}
-              advancedMode={appNavAdvancedMode}
-              connect={appNavConnect}
-              locale={appNavLocale}
-              pageWidth={pageWidth}
-              pages={{
-                pages,
-                getPath: (route: string) => getPath(params, route),
-                handleClick: (route: string) => {
-                  if (navigate && params) {
-                    let parsedRoute = route.charAt(0) === '#' ? route.substring(2) : route
-                    navigate(parsedRoute)
-                  }
-                },
-              }}
-              sections={[
-                { id: 'apps', title: t`Apps`, links: APPS_LINKS },
-                { id: 'community', title: t`Community`, comp: <CommunitySection locale={locale} columnCount={1} /> },
-                { id: 'resources', title: t`Resources`, comp: <ResourcesSection chainId={rChainId} columnCount={1} /> },
-              ]}
-              selectNetwork={SelectNetworkComp}
-              stats={appStats}
-              theme={appNavTheme}
-            />
-          )}
-        </AppNavBarContent>
-      </AppNavBar>
-    </>
+    <NewHeader
+      locale={locale}
+      isMdUp={isMdUp}
+      advancedMode={[isAdvanceMode, useCallback(() => setAppCache('isAdvanceMode', !isAdvanceMode), [isAdvanceMode, setAppCache])]}
+      currentApp="crvusd"
+      pages={useMemo(() => {
+        return _parseRouteAndIsActive([
+          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'crvUSD' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'integrations' : 'crvUSD' }
+        ], rLocale.rLocalePathname, routerPathname, routerNetwork)
+      }, [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])}
+      themes={[
+        themeType == 'default' ? 'light' : themeType as ThemeKey,
+        useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType), [setAppCache])
+      ]}
+      LanguageProps={{
+        locale,
+        locales: DEFAULT_LOCALES,
+        onChange: useCallback((selectedLocale: React.Key) => {
+          const locale = selectedLocale === 'en' ? '' : `/${selectedLocale}`
+          const { rNetwork } = getNetworkFromUrl()
+          navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+        }, [navigate])
+      }}
+      ChainProps={{
+        options: visibleNetworksList,
+        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
+        chainId: rChainId,
+        onChange: useCallback((selectedChainId: ChainId) => {
+          if (rChainId !== selectedChainId) {
+            const network = networks[selectedChainId as ChainId].id
+            navigate(`${locale}/${network}/${getRestPartialPathname()}`)
+            updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+          }
+        }, [rChainId, navigate, locale, updateConnectState])
+      }}
+      WalletProps={{
+        onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
+        onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
+        walletAddress: getWalletSignerAddress(wallet),
+        disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
+        label: t`Connect Wallet`
+      }}
+      appStats={[
+        {
+          label: 'TVL', value: useMemo(
+            () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
+            [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
+          )
+        },
+        {
+          label: t`Daily volume`,
+          value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+        },
+        {
+          label: t`Total Supply`,
+          value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+        },
+        { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' }
+      ]}
+      sections={sections}
+      translations={{
+        advanced: t`Advanced Mode`,
+        advancedMode: t`Advanced`,
+        theme: t`Mode`,
+        language: t`Language`,
+        otherApps: t`Other Apps`,
+        settings: t`Settings`,
+        socialMedia: t`Community`
+      }}
+    />
   )
 }
 

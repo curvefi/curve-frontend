@@ -38,7 +38,7 @@ export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
 
 export const APP_NAMES = {
   main: 'Curve',
-  lend: 'Llamalend',
+  lend: 'LLAMALEND',
   crvusd: 'crvUSD'
 } as const
 

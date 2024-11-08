@@ -25,11 +25,7 @@ export const HeaderLogo = ({ appName, sx }: HeaderLogoProps) => (
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
-        <Typography
-          variant="headingSBold"
-          sx={{ textTransform: appName === 'main' ? 'none' : 'uppercase', lineHeight: '1.2rem' }}
-          color="textPrimary"
-        >
+        <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary" >
           {APP_NAMES[appName]}
         </Typography>
         {appName !== 'main' && (

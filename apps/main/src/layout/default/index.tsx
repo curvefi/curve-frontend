@@ -15,6 +15,7 @@ import { Locale } from '@/ui/AppNav/types'
 import { t } from '@lingui/macro'
 import networks from 'lend/src/networks'
 import Footer from '@/ui/Footer'
+import { layoutHeightKeys } from 'lend/src/store/createLayoutSlice'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -47,15 +48,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
   }
 
-  const minHeight = useMemo(() => {
-    let total = 0
-
-    Object.entries(layoutHeight).forEach(([_, height]) => {
-      total += height
-    })
-
-    return total
-  }, [layoutHeight])
+  const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
     <>
