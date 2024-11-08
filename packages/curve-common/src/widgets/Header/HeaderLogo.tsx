@@ -27,14 +27,16 @@ export const HeaderLogo = ({ appName, sx }: HeaderLogoProps) => (
       <Box display="inline-flex" flexDirection="column">
         <Typography
           variant="headingSBold"
-          sx={{ textTransform: 'uppercase', lineHeight: '1.2rem' }}
+          sx={{ textTransform: appName === 'main' ? 'none' : 'uppercase', lineHeight: '1.2rem' }}
           color="textPrimary"
         >
           {APP_NAMES[appName]}
         </Typography>
-        <Typography variant="bodyXsRegular" color="grey.600">
-          powered by Curve
-        </Typography>
+        {appName !== 'main' && (
+          <Typography variant="bodyXsRegular" color="grey.600">
+            powered by Curve
+          </Typography>
+        )}
       </Box>
     ) : (
       <RCLogoText />

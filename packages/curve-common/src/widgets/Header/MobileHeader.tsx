@@ -68,7 +68,7 @@ export const MobileHeader = <TChainId extends number>({
           hideBackdrop
         >
           <Box>
-            <Box sx={{ padding: 4 }}>
+            <Box padding={4} display="flex" flexDirection="column">
               <HeaderStats appStats={appStats} />
             </Box>
 

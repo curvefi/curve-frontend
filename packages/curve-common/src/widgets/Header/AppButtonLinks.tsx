@@ -7,7 +7,7 @@ import { AppName, AppNames } from 'ui/src/AppNav/types'
 export type AppNavAppsProps = { currentApp: AppName }
 
 export const AppButtonLinks = ({ currentApp }: AppNavAppsProps) => (
-  <Box display="flex" alignItems="center">
+  <Box display="flex" alignItems="center" marginX={[2,3,4]}>
     {AppNames.map((appName) => {
       const app = APP_LINK[appName]
       const isActive = currentApp === appName

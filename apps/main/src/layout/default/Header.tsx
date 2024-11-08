@@ -56,28 +56,21 @@ export const Header = ({ sections }: HeaderProps) => {
       locale={locale}
       isMdUp={isMdUp}
       advancedMode={[ advanced, updateAdvanced ]}
-      currentApp="lend"
+      currentApp="main"
       pages={useMemo(() => {
-        const links = isLgUp
-          ? [
-            { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-            { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'Pool Creation' },
-            { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'Dashboard' },
-            { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'Integrations' },
-          ]
-          : [
-            { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: 'Pools' },
-            { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: 'More' },
-            { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: 'More' },
-            { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More' },
-          ]
-
-        if (hasRouter && networks[rChainId].showRouterSwap) {
-          const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
-          links.unshift({ route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' })
-        }
-
-        return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
+        return _parseRouteAndIsActive([
+          ...(hasRouter && networks[rChainId].showRouterSwap) ? [
+            {
+              route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached),
+              label: t`Quickswap`,
+              groupedTitle: isLgUp ? 'Quickswap' : 'DEX'
+            }
+          ] : [],
+          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
+          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: isLgUp ? 'Pool Creation' : 'DEX' },
+          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
+        ], rLocalePathname, routerPathname, routerNetwork)
       }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])}
       themes={[
         themeType == 'default' ? 'light' : themeType as ThemeKey,
