@@ -40,5 +40,5 @@ export const InputLabel = styled.p`
 export const ErrorText = styled.p`
   font-size: var(--font-size-1);
   color: var(--chart-red);
-  margin: var(--spacing-1) var(--spacing-1) 0 auto;
+  margin-top: var(--spacing-1);
 `

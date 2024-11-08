@@ -8,7 +8,15 @@ import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
 import Box from '@/ui/Box'
 
-import { InputLabel, InputWrapper, SelectorBox, StyledIcon, StyledInputComp, InputSelectorText } from './styles'
+import {
+  InputLabel,
+  InputWrapper,
+  SelectorBox,
+  StyledIcon,
+  StyledInputComp,
+  InputSelectorText,
+  ErrorText,
+} from './styles'
 
 const DepositModule = () => {
   const { data: signerAddress } = useSignerAddress()
@@ -17,6 +25,8 @@ const DepositModule = () => {
 
   const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
   const isLoadingPreview = preview.fetchStatus === 'loading'
+
+  const validationError = userBalances?.crvUSD ? inputAmount > +userBalances.crvUSD : false
 
   return (
     <Box flex flexColumn>
@@ -43,6 +53,9 @@ const DepositModule = () => {
           </Box>
         </InputWrapper>
       </Box>
+      {validationError && (
+        <ErrorText>{t`Input amount exceeds your balance, click max to use all your balance`}</ErrorText>
+      )}
       <StyledIcon name="ArrowDown" size={16} />
       <div>
         <InputLabel>{t`To Vault`}</InputLabel>
