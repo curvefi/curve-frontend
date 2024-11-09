@@ -1,5 +1,6 @@
 import { t } from '@lingui/macro'
 import Image from 'next/image'
+import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
@@ -8,7 +9,15 @@ import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import Box from '@/ui/Box'
-import { InputLabel, InputWrapper, SelectorBox, StyledIcon, StyledInputComp, InputSelectorText } from './styles'
+import {
+  InputLabel,
+  InputWrapper,
+  SelectorBox,
+  StyledIcon,
+  StyledInputComp,
+  InputSelectorText,
+  ErrorText,
+} from './styles'
 
 const WithdrawModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
@@ -17,6 +26,8 @@ const WithdrawModule: React.FC = () => {
 
   const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
   const isLoadingPreview = isLoading(preview.fetchStatus)
+
+  const validationError = userBalances?.scrvUSD ? BigNumber(inputAmount).gt(BigNumber(userBalances.scrvUSD)) : false
 
   return (
     <Box flex flexColumn>
@@ -40,6 +51,9 @@ const WithdrawModule: React.FC = () => {
           />
         </InputWrapper>
       </Box>
+      {validationError && (
+        <ErrorText>{t`Input amount exceeds your balance, click max to use all your balance`}</ErrorText>
+      )}
       <StyledIcon name="ArrowDown" size={16} />
       <div>
         <InputLabel>{t`To Wallet`}</InputLabel>
@@ -51,7 +65,7 @@ const WithdrawModule: React.FC = () => {
             </SelectorBox>
           </Box>
           <StyledInputComp
-            value={+preview.value}
+            value={preview.value}
             walletBalance={userBalances?.crvUSD ?? '0'}
             walletBalanceUSD={userBalances?.crvUSD ?? '0'}
             walletBalanceSymbol="crvUSD"

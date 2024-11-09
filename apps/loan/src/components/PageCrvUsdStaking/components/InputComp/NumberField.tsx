@@ -3,18 +3,27 @@ import styled from 'styled-components'
 interface NumberFieldProps {
   className?: string
   delay?: number
-  value: number
+  value: string // changed to string
   isDisabled?: boolean
-  onChange?: (value: number) => void
+  onChange?: (value: string) => void
+  maxDecimals?: number
 }
 
-const NumberField = ({ value, isDisabled = false, delay = 500, onChange }: NumberFieldProps) => {
+const NumberField = ({ value, isDisabled = false, delay = 500, onChange, maxDecimals = 18 }: NumberFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value)
-    onChange?.(isNaN(value) ? 0 : value)
+    const value = e.target.value
+
+    // Allow only numbers and one decimal point
+    if (!/^\d*\.?\d*$/.test(value)) return
+
+    // Prevent more than maxDecimals decimal places
+    const [whole, decimal] = value.split('.')
+    if (decimal && decimal.length > maxDecimals) return
+
+    onChange?.(value === '' ? '0' : value)
   }
 
-  return <StyledInput value={value} isDisabled={isDisabled} onChange={handleChange} />
+  return <StyledInput type="text" inputMode="decimal" value={value} isDisabled={isDisabled} onChange={handleChange} />
 }
 
 const StyledInput = styled.input<{ isDisabled?: boolean }>`

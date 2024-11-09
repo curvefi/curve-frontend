@@ -2,7 +2,9 @@ import type { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
+import BigNumber from 'bignumber.js'
 import { t } from '@lingui/macro'
+
 import { SCRVUSD_GAS_ESTIMATE } from '@/constants'
 import networks from '@/networks'
 
@@ -32,7 +34,7 @@ type SliceState = {
     value: string
   }
   stakingModule: DepositWithdrawModule
-  inputAmount: number
+  inputAmount: string
   crvUsdExchangeRate: {
     fetchStatus: FetchStatus
     value: string
@@ -67,27 +69,27 @@ const sliceKey = 'scrvusd'
 export type ScrvUsdSlice = {
   [sliceKey]: SliceState & {
     checkApproval: {
-      depositApprove: (amount: number) => void
+      depositApprove: (amount: string) => void
     }
     estimateGas: {
-      depositApprove: (amount: number) => void
-      deposit: (amount: number) => void
-      withdraw: (amount: number) => void
-      redeem: (amount: number) => void
+      depositApprove: (amount: string) => void
+      deposit: (amount: string) => void
+      withdraw: (amount: string) => void
+      redeem: (amount: string) => void
     }
-    previewAction: (flag: PreviewFlag, amount: number) => void
+    previewAction: (flag: PreviewFlag, amount: string) => void
     deploy: {
-      depositApprove: (amount: number) => Promise<boolean>
-      deposit: (amount: number) => void
-      withdraw: (amount: number) => void
-      redeem: (amount: number) => void
+      depositApprove: (amount: string) => Promise<boolean>
+      deposit: (amount: string) => void
+      withdraw: (amount: string) => void
+      redeem: (amount: string) => void
     }
     fetchUserBalances: () => void
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
-    setInputAmount: (amount: number) => void
+    setInputAmount: (amount: string) => void
     setApproveInfinite: () => void
     setPreviewReset: () => void
     setStakingModuleChangeReset: () => void
@@ -114,7 +116,7 @@ const DEFAULT_STATE: SliceState = {
     fetchStatus: '',
   },
   stakingModule: 'deposit',
-  inputAmount: 0,
+  inputAmount: '0',
   preview: {
     fetchStatus: '',
     value: '',
@@ -150,7 +152,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     checkApproval: {
-      depositApprove: async (amount: number) => {
+      depositApprove: async (amount: string) => {
         const lendApi = get().lendApi
         if (!lendApi) return
 
@@ -174,7 +176,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
     },
     estimateGas: {
-      depositApprove: async (amount: number) => {
+      depositApprove: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = get().lendApi
@@ -195,7 +197,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'error' })
         }
       },
-      deposit: async (amount: number) => {
+      deposit: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = get().lendApi
@@ -216,7 +218,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'error' })
         }
       },
-      withdraw: async (amount: number) => {
+      withdraw: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = get().lendApi
@@ -237,7 +239,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'error' })
         }
       },
-      redeem: async (amount: number) => {
+      redeem: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
         const lendApi = get().lendApi
@@ -260,7 +262,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
     },
     deploy: {
-      depositApprove: async (amount: number) => {
+      depositApprove: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
         const provider = get().wallet.provider
@@ -325,7 +327,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           return false
         }
       },
-      deposit: async (amount: number) => {
+      deposit: async (amount: string) => {
         const lendApi = get().lendApi
         const curve = get().curve
         const provider = get().wallet.provider
@@ -423,7 +425,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'error', crvUSD: '', scrvUSD: '' })
       }
     },
-    previewAction: async (flag: PreviewFlag, amount: number) => {
+    previewAction: async (flag: PreviewFlag, amount: string) => {
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '' })
 
       const lendApi = get().lendApi
@@ -487,9 +489,9 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByKey('inputAmount', +scrvUsdBalance)
       }
     },
-    setInputAmount: (amount: number) => {
+    setInputAmount: (amount: string) => {
       if (!amount) {
-        get()[sliceKey].setStateByKey('inputAmount', 0)
+        get()[sliceKey].setStateByKey('inputAmount', '0')
         return
       }
 
@@ -502,7 +504,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '' })
     },
     setStakingModuleChangeReset: () => {
-      get()[sliceKey].setStateByKey('inputAmount', 0)
+      get()[sliceKey].setStateByKey('inputAmount', '0')
       get()[sliceKey].setPreviewReset()
     },
     setTransactionsReset: () => {
@@ -526,16 +528,16 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       const allowance = get()[sliceKey].depositApproval.allowance ?? '0'
       const inputAmount = get()[sliceKey].inputAmount
 
-      return +allowance >= inputAmount
+      return new BigNumber(allowance).isGreaterThanOrEqualTo(inputAmount)
     },
     getEstimateGas: (userAddress: string) => {
       const stakingModule = get()[sliceKey].stakingModule
       const getInputAmountApproved = get()[sliceKey].getInputAmountApproved()
       const gas = get()[sliceKey].estGas.gas
-      const userBalance = get()[sliceKey].userBalances[userAddress]?.scrvUSD ?? 0
+      const userBalance = get()[sliceKey].userBalances[userAddress]?.crvUSD ?? '0'
 
       if (!getInputAmountApproved && stakingModule === 'deposit') {
-        if (+userBalance > 0) {
+        if (new BigNumber(userBalance).isGreaterThan('0')) {
           return gas + SCRVUSD_GAS_ESTIMATE.FIRST_DEPOSIT
         }
         return gas + SCRVUSD_GAS_ESTIMATE.FOLLOWING_DEPOSIT

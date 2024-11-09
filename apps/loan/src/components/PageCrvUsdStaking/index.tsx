@@ -29,7 +29,7 @@ const CrvUsdStaking = () => {
   }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies])
 
   useEffect(() => {
-    if (!lendApi || !chainId || !signerAddress || inputAmount === 0) return
+    if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
 
     if (stakingModule === 'deposit') {
       checkApproval.depositApprove(inputAmount)

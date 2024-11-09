@@ -1,5 +1,6 @@
 import { t } from '@lingui/macro'
 import Image from 'next/image'
+import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
@@ -26,7 +27,7 @@ const DepositModule = () => {
   const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
   const isLoadingPreview = preview.fetchStatus === 'loading'
 
-  const validationError = userBalances?.crvUSD ? inputAmount > +userBalances.crvUSD : false
+  const validationError = userBalances?.crvUSD ? BigNumber(inputAmount).gt(BigNumber(userBalances.crvUSD)) : false
 
   return (
     <Box flex flexColumn>
@@ -70,7 +71,7 @@ const DepositModule = () => {
             walletBalance={userBalances?.scrvUSD ?? '0'}
             walletBalanceUSD={userBalances?.scrvUSD ?? '0'}
             walletBalanceSymbol="scrvUSD"
-            value={+preview.value}
+            value={preview.value}
             readOnly
             isLoadingInput={isLoadingPreview}
             isLoadingBalances={isLoadingBalances}

@@ -53,7 +53,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (lendApi && curve && inputAmount !== 0) {
+      if (lendApi && curve && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
             estimateGasDeposit(inputAmount)
@@ -67,7 +67,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
         }
       }
 
-      if (inputAmount === 0) {
+      if (inputAmount === '0') {
         setPreviewReset()
       }
     }, 500)

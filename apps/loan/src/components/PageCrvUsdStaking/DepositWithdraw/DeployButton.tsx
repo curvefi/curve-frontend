@@ -1,5 +1,6 @@
 import { t } from '@lingui/macro'
 import { useCallback } from 'react'
+import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
 import { useSignerAddress } from '@/entities/signer'
@@ -19,11 +20,11 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const { depositApprove, deposit } = useStore((state) => state.scrvusd.deploy)
   const { inputAmount, stakingModule, userBalances, getInputAmountApproved } = useStore((state) => state.scrvusd)
 
-  const userBalance = userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: 0, scrvUSD: 0 }
+  const userBalance = userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: '0', scrvUSD: '0' }
   const isInputAmountApproved = getInputAmountApproved()
 
   const getButtonTitle = () => {
-    if ((stakingModule === 'deposit' && isInputAmountApproved) || inputAmount === 0) {
+    if ((stakingModule === 'deposit' && isInputAmountApproved) || inputAmount === '0') {
       return t`Deposit`
     }
     if (stakingModule === 'deposit' && !depositApproved) {
@@ -36,7 +37,10 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
 
   const buttonTitle = getButtonTitle()
   const approvalLoading = depositFetchStatus === 'loading'
-  const isError = stakingModule === 'deposit' ? inputAmount > +userBalance.crvUSD : inputAmount > +userBalance.scrvUSD
+  const isError =
+    stakingModule === 'deposit'
+      ? BigNumber(inputAmount).gt(BigNumber(userBalance.crvUSD))
+      : BigNumber(inputAmount).gt(BigNumber(userBalance.scrvUSD))
 
   const handleClick = useCallback(async () => {
     if (stakingModule === 'deposit') {
@@ -57,7 +61,7 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
       variant="filled"
       loading={approvalLoading}
       className={className}
-      disabled={isError || inputAmount === 0}
+      disabled={isError || inputAmount === '0'}
       onClick={handleClick}
     >
       {buttonTitle}

@@ -14,10 +14,10 @@ type InputCompProps = {
   walletBalance: string
   walletBalanceUSD: string
   walletBalanceSymbol: string
-  value: number
+  value: string
   isLoadingInput: boolean
   isLoadingBalances: boolean
-  setValue?: (value: number) => void
+  setValue?: (value: string) => void
   setMax?: () => void
   className?: string
   readOnly?: boolean
