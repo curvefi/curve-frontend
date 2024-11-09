@@ -22,7 +22,7 @@ import {
 const WithdrawModule: React.FC = () => {
   const { data: signerAddress } = useSignerAddress()
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
-  const { inputAmount, preview, setInputAmount } = useStore((state) => state.scrvusd)
+  const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 
   const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
   const isLoadingPreview = isLoading(preview.fetchStatus)
@@ -48,6 +48,7 @@ const WithdrawModule: React.FC = () => {
             isLoadingBalances={isLoadingBalances}
             isLoadingInput={false}
             setValue={setInputAmount}
+            setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'withdraw')}
           />
         </InputWrapper>
       </Box>

@@ -9,6 +9,7 @@ import Icon from '@/ui/Icon'
 
 type FieldValueProps = {
   value: string | number
+  symbol?: string | null
   fetchStatus: FetchStatus
   gas?: {
     estGasCostUsd: string | number
@@ -17,7 +18,7 @@ type FieldValueProps = {
   }
 }
 
-const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null }) => {
+const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null, symbol = null }) => {
   if (gas) {
     return (
       <TransactionFieldValue>
@@ -43,7 +44,11 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null 
     return <TransactionFieldValue>-</TransactionFieldValue>
   }
 
-  return <TransactionFieldValue>{formatNumber(value)}</TransactionFieldValue>
+  return (
+    <TransactionFieldValue>
+      {formatNumber(value)} {symbol && symbol}
+    </TransactionFieldValue>
+  )
 }
 
 const TransactionFieldValue = styled.div`

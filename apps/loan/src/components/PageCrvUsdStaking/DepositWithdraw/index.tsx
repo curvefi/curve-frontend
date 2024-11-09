@@ -43,11 +43,19 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   }
 
   const transactionInProgress =
-    (approveDepositTransaction.transactionStatus !== '' && approveDepositTransaction.transactionStatus !== 'error') ||
-    (depositTransaction.transactionStatus !== '' && depositTransaction.transactionStatus !== 'error') ||
-    (withdrawTransaction.transactionStatus !== '' && withdrawTransaction.transactionStatus !== 'error')
+    (stakingModule === 'deposit' &&
+      approveDepositTransaction.transactionStatus !== '' &&
+      approveDepositTransaction.transactionStatus !== 'error') ||
+    (stakingModule === 'deposit' &&
+      depositTransaction.transactionStatus !== '' &&
+      depositTransaction.transactionStatus !== 'error') ||
+    (stakingModule === 'withdraw' &&
+      withdrawTransaction.transactionStatus !== '' &&
+      withdrawTransaction.transactionStatus !== 'error')
   const transactionSuccess =
-    depositTransaction.transactionStatus === 'success' || withdrawTransaction.transactionStatus === 'success'
+    (stakingModule === 'deposit' &&
+      (depositTransaction.transactionStatus === 'success' || withdrawTransaction.transactionStatus === 'success')) ||
+    (stakingModule === 'withdraw' && withdrawTransaction.transactionStatus === 'success')
 
   const isDepositApprovalReady = getInputAmountApproved()
 

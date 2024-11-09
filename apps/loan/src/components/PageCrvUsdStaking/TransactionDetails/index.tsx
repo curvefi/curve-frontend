@@ -5,7 +5,7 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import useEstimateGasConversion from '@/hooks/useEstimateGasConversion'
 import { formatNumber } from '@/ui/utils'
-import { isLoading } from '@/components/PageCrvUsdStaking/utils'
+import { isLoading, isReady } from '@/components/PageCrvUsdStaking/utils'
 import { useSignerAddress } from '@/entities/signer'
 
 import Icon from '@/ui/Icon'
@@ -24,7 +24,9 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
   const [isOpen, setIsOpen] = useState(false)
   const { data: signerAddress } = useSignerAddress()
   // const maxSlippage = useStore((state) => state.maxSlippage)
-  const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite } = useStore((state) => state.scrvusd)
+  const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
+    (state) => state.scrvusd,
+  )
   const { gas, fetchStatus } = useStore((state) => state.scrvusd.estGas)
   const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(signerAddress ?? ''))
 
@@ -53,12 +55,16 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
         <>
           <TransactionField>
             <TransactionFieldLabel>{t`You recieve`}</TransactionFieldLabel>
-            <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
+            <FieldValue
+              value={preview.value}
+              fetchStatus={preview.fetchStatus}
+              symbol={isReady(preview.fetchStatus) ? (stakingModule === 'deposit' ? t`scrvUSD` : t`crvUSD`) : null}
+            />
           </TransactionField>
-          <TransactionField>
+          {/* <TransactionField>
             <TransactionFieldLabel>{t`Your scrvUSD share`}</TransactionFieldLabel>
             <FieldValue value={preview.value} fetchStatus={preview.fetchStatus} />
-          </TransactionField>
+          </TransactionField> */}
           <TransactionField>
             <TransactionFieldLabel>{t`Infinite allowance`}</TransactionFieldLabel>
             <Switch isActive={approveInfinite} onChange={setApproveInfinite} />

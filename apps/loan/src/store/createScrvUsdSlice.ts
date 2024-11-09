@@ -119,7 +119,7 @@ const DEFAULT_STATE: SliceState = {
   inputAmount: '0',
   preview: {
     fetchStatus: '',
-    value: '',
+    value: '0',
   },
   crvUsdExchangeRate: {
     fetchStatus: 'loading',
@@ -388,6 +388,130 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           console.log(error)
         }
       },
+      withdraw: async (amount: string) => {
+        const lendApi = get().lendApi
+        const curve = get().curve
+        const provider = get().wallet.provider
+
+        if (!lendApi || !curve || !provider) return
+
+        const chainId = curve.chainId
+
+        const fetchGasInfo = get().gas.fetchGasInfo
+        const notifyNotification = get().wallet.notifyNotification
+        let dismissNotificationHandler
+
+        const notifyPendingMessage = t`Please confirm to withdraw ${amount} scrvUSD.`
+        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+        dismissNotificationHandler = dismissConfirm
+        await fetchGasInfo(curve)
+
+        get()[sliceKey].setStateByKey('withdrawTransaction', {
+          transactionStatus: 'confirming',
+          transaction: null,
+          errorMessage: '',
+        })
+
+        try {
+          const transactionHash = await lendApi.st_crvUSD.withdraw(amount)
+
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'loading',
+            transaction: networks[chainId].scanTxPath(transactionHash),
+            errorMessage: '',
+          })
+          dismissConfirm()
+
+          const deployingNotificationMessage = t`Withdrawing ${amount} scrvUSD...`
+          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          await provider.waitForTransaction(transactionHash)
+
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'success',
+            transaction: networks[chainId].scanTxPath(transactionHash),
+            errorMessage: '',
+          })
+          dismissDeploying()
+          get()[sliceKey].fetchUserBalances()
+          get()[sliceKey].setStakingModuleChangeReset()
+
+          const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
+          notifyNotification(successNotificationMessage, 'success', 15000)
+        } catch (error) {
+          dismissNotificationHandler()
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'error',
+            transaction: null,
+            errorMessage: error.message,
+          })
+          console.log(error)
+        }
+      },
+      redeem: async (amount: string) => {
+        const lendApi = get().lendApi
+        const curve = get().curve
+        const provider = get().wallet.provider
+
+        if (!lendApi || !curve || !provider) return
+
+        const chainId = curve.chainId
+
+        const fetchGasInfo = get().gas.fetchGasInfo
+        const notifyNotification = get().wallet.notifyNotification
+        let dismissNotificationHandler
+
+        const notifyPendingMessage = t`Please confirm to withdraw ${amount} scrvUSD.`
+        const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+        dismissNotificationHandler = dismissConfirm
+        await fetchGasInfo(curve)
+
+        get()[sliceKey].setStateByKey('withdrawTransaction', {
+          transactionStatus: 'confirming',
+          transaction: null,
+          errorMessage: '',
+        })
+
+        try {
+          console.log('redeem', amount)
+
+          const transactionHash = await lendApi.st_crvUSD.redeem(amount)
+
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'loading',
+            transaction: networks[chainId].scanTxPath(transactionHash),
+            errorMessage: '',
+          })
+          dismissConfirm()
+
+          const deployingNotificationMessage = t`Withdrawing ${amount} scrvUSD...`
+          const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          await provider.waitForTransaction(transactionHash)
+
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'success',
+            transaction: networks[chainId].scanTxPath(transactionHash),
+            errorMessage: '',
+          })
+          dismissDeploying()
+          get()[sliceKey].fetchUserBalances()
+          get()[sliceKey].setStakingModuleChangeReset()
+
+          const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
+          notifyNotification(successNotificationMessage, 'success', 15000)
+        } catch (error) {
+          dismissNotificationHandler()
+          get()[sliceKey].setStateByKey('withdrawTransaction', {
+            transactionStatus: 'error',
+            transaction: null,
+            errorMessage: error.message,
+          })
+          console.log(error)
+        }
+      },
     },
     fetchExchangeRate: async () => {
       const lendApi = get().lendApi
@@ -426,27 +550,31 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
-      get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '' })
+      const onboardInstance = get().wallet.onboard
+      const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address.toLowerCase()
+      get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
       const lendApi = get().lendApi
 
-      if (!lendApi) return
+      if (!lendApi || !signerAddress) return
+
+      const userBalance = get()[sliceKey].userBalances[signerAddress] ?? { crvUSD: '0', scrvUSD: '0' }
 
       try {
         let response = ''
 
         if (flag === 'deposit') {
           response = await lendApi.st_crvUSD.previewDeposit(amount)
-        } else if (flag === 'withdraw') {
-          response = await lendApi.st_crvUSD.previewWithdraw(amount)
-        } else {
+        } else if (amount === userBalance.scrvUSD) {
           response = await lendApi.st_crvUSD.previewRedeem(amount)
+        } else {
+          response = await lendApi.st_crvUSD.previewWithdraw(amount)
         }
 
         get()[sliceKey].setStateByKey('preview', { fetchStatus: 'success', value: response })
       } catch (error) {
         console.error(error)
-        get()[sliceKey].setStateByKey('preview', { fetchStatus: 'error', value: '' })
+        get()[sliceKey].setStateByKey('preview', { fetchStatus: 'error', value: '0' })
       }
     },
     fetchUserBalances: async () => {
@@ -482,11 +610,11 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       if (stakingModule === 'deposit') {
         const crvUsdBalance = get()[sliceKey].userBalances[userAddress].crvUSD
 
-        get()[sliceKey].setStateByKey('inputAmount', +crvUsdBalance)
+        get()[sliceKey].setStateByKey('inputAmount', crvUsdBalance)
       } else {
         const scrvUsdBalance = get()[sliceKey].userBalances[userAddress].scrvUSD
 
-        get()[sliceKey].setStateByKey('inputAmount', +scrvUsdBalance)
+        get()[sliceKey].setStateByKey('inputAmount', scrvUsdBalance)
       }
     },
     setInputAmount: (amount: string) => {
@@ -501,7 +629,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('approveInfinite', !get()[sliceKey].approveInfinite)
     },
     setPreviewReset: () => {
-      get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '' })
+      get()[sliceKey].setStateByKey('preview', { fetchStatus: '', value: '0' })
     },
     setStakingModuleChangeReset: () => {
       get()[sliceKey].setStateByKey('inputAmount', '0')

@@ -1,5 +1,5 @@
 import { t } from '@lingui/macro'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
@@ -17,14 +17,21 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
     (state) => state.scrvusd.depositApproval,
   )
-  const { depositApprove, deposit } = useStore((state) => state.scrvusd.deploy)
+  const { depositApprove, deposit, withdraw, redeem } = useStore((state) => state.scrvusd.deploy)
   const { inputAmount, stakingModule, userBalances, getInputAmountApproved } = useStore((state) => state.scrvusd)
 
-  const userBalance = userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: '0', scrvUSD: '0' }
+  const userBalance = useMemo(
+    () => userBalances[signerAddress?.toLowerCase() ?? ''] ?? { crvUSD: '0', scrvUSD: '0' },
+    [userBalances, signerAddress],
+  )
+
   const isInputAmountApproved = getInputAmountApproved()
 
-  const getButtonTitle = () => {
-    if ((stakingModule === 'deposit' && isInputAmountApproved) || inputAmount === '0') {
+  const buttonTitle = useMemo(() => {
+    if (
+      (stakingModule === 'deposit' && isInputAmountApproved) ||
+      (stakingModule === 'deposit' && inputAmount === '0')
+    ) {
       return t`Deposit`
     }
     if (stakingModule === 'deposit' && !depositApproved) {
@@ -33,9 +40,8 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
     if (stakingModule === 'withdraw') {
       return t`Withdraw`
     }
-  }
+  }, [stakingModule, isInputAmountApproved, inputAmount, depositApproved])
 
-  const buttonTitle = getButtonTitle()
   const approvalLoading = depositFetchStatus === 'loading'
   const isError =
     stakingModule === 'deposit'
@@ -54,7 +60,15 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
         }
       }
     }
-  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove])
+
+    if (stakingModule === 'withdraw') {
+      if (inputAmount === userBalance.scrvUSD) {
+        redeem(inputAmount)
+      } else {
+        withdraw(inputAmount)
+      }
+    }
+  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, withdraw, redeem, userBalance])
 
   return (
     <Button
