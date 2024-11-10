@@ -34,7 +34,6 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     depositApprove: estimateGasDepositApprove,
     deposit: estimateGasDeposit,
     withdraw: estimateGasWithdraw,
-    redeem: estimateGasRedeem,
   } = useStore((state) => state.scrvusd.estimateGas)
   const { lendApi, curve, curve: chainId } = useStore((state) => state)
 
