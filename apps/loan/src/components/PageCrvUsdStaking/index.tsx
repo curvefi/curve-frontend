@@ -2,8 +2,6 @@ import styled from 'styled-components'
 import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
-import { useSignerAddress } from '@/entities/signer'
-import { useChainId } from '@/entities/chain'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
@@ -13,8 +11,9 @@ const CrvUsdStaking = () => {
   const { fetchUserBalances, checkApproval, inputAmount, fetchExchangeRate, fetchCrvUsdSupplies, stakingModule } =
     useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
-  const { data: signerAddress } = useSignerAddress()
-  const chainId = useChainId().data
+  const onboardInstance = useStore((state) => state.wallet.onboard)
+  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
+  const chainId = useStore((state) => state.curve?.chainId)
 
   useEffect(() => {
     const fetchData = async () => {

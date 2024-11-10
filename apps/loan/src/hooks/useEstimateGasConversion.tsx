@@ -5,12 +5,10 @@ import { BN, formatNumber } from '@/ui/utils'
 import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
 
 import useStore from '@/store/useStore'
-import { useCurve } from '@/entities/curve'
-import { useChainId } from '@/entities/chain'
 
 const useEstimateGasConversion = (gas: number) => {
-  const curve = useCurve().data
-  const chainId = useChainId().data
+  const curve = useStore((state) => state.curve)
+  const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority

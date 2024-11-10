@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
-import { useSignerAddress } from '@/entities/signer'
 
 import Button from '@/ui/Button'
 import React from 'react'
@@ -13,7 +12,8 @@ type DeployButtonProps = {
 }
 
 const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
-  const { data: signerAddress } = useSignerAddress()
+  const onboardInstance = useStore((state) => state.wallet.onboard)
+  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   const { approval: depositApproved, fetchStatus: depositFetchStatus } = useStore(
     (state) => state.scrvusd.depositApproval,
   )

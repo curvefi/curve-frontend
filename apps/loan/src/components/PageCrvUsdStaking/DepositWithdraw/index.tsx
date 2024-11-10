@@ -52,8 +52,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
       withdrawTransaction.transactionStatus !== '' &&
       withdrawTransaction.transactionStatus !== 'error')
   const transactionSuccess =
-    (stakingModule === 'deposit' &&
-      (depositTransaction.transactionStatus === 'success' || withdrawTransaction.transactionStatus === 'success')) ||
+    (stakingModule === 'deposit' && depositTransaction.transactionStatus === 'success') ||
     (stakingModule === 'withdraw' && withdrawTransaction.transactionStatus === 'success')
 
   const isDepositApprovalReady = getInputAmountApproved()

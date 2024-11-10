@@ -3,7 +3,6 @@ import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
-import { useSignerAddress } from '@/entities/signer'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
@@ -20,7 +19,8 @@ import {
 } from './styles'
 
 const DepositModule = () => {
-  const { data: signerAddress } = useSignerAddress()
+  const onboardInstance = useStore((state) => state.wallet.onboard)
+  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 

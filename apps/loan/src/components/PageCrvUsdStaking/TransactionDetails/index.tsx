@@ -6,7 +6,6 @@ import useStore from '@/store/useStore'
 import useEstimateGasConversion from '@/hooks/useEstimateGasConversion'
 import { formatNumber } from '@/ui/utils'
 import { isLoading, isReady } from '@/components/PageCrvUsdStaking/utils'
-import { useSignerAddress } from '@/entities/signer'
 
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -22,7 +21,8 @@ type TransactionDetailsProps = {
 
 const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const { data: signerAddress } = useSignerAddress()
+  const onboardInstance = useStore((state) => state.wallet.onboard)
+  const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   // const maxSlippage = useStore((state) => state.maxSlippage)
   const { preview, crvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
     (state) => state.scrvusd,
