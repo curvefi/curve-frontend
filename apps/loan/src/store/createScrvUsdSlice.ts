@@ -69,20 +69,20 @@ const sliceKey = 'scrvusd'
 export type ScrvUsdSlice = {
   [sliceKey]: SliceState & {
     checkApproval: {
-      depositApprove: (amount: string) => void
+      depositApprove: (amount: string) => Promise<void>
     }
     estimateGas: {
-      depositApprove: (amount: string) => void
-      deposit: (amount: string) => void
-      withdraw: (amount: string) => void
-      redeem: (amount: string) => void
+      depositApprove: (amount: string) => Promise<void>
+      deposit: (amount: string) => Promise<void>
+      withdraw: (amount: string) => Promise<void>
+      redeem: (amount: string) => Promise<void>
     }
     previewAction: (flag: PreviewFlag, amount: string) => void
     deploy: {
-      depositApprove: (amount: string) => Promise<boolean>
-      deposit: (amount: string) => void
-      withdraw: (amount: string) => void
-      redeem: (amount: string) => void
+      depositApprove: (amount: string) => Promise<boolean | undefined>
+      deposit: (amount: string) => Promise<void>
+      withdraw: (amount: string) => Promise<void>
+      redeem: (amount: string) => Promise<void>
     }
     fetchUserBalances: () => void
     fetchExchangeRate: () => void
