@@ -1,7 +1,7 @@
 import { Divider, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { typographyVariantsKeys, TypographyVariantKey } from '../typography'
 import { FIGMA_TOKENS } from '../model'
+import { TypographyVariantKey, typographyVariantsKeys } from '../typography'
 import { TypographyVariant } from '../typography/create-typography'
 
 const meta: Meta<typeof Typography> = {
@@ -27,13 +27,15 @@ interface TypographyDisplayProps {
   [key: string]: any
 }
 
-const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, ...args }) => {
+const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
   const typography = FIGMA_TOKENS.typography[variant] as TypographyVariant
+  console.log('typography', typography)
+  console.log('children', children)
 
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
-        {args.children}
+        {children}
       </Typography>
       <Divider />
       <Typography variant="bodyXsRegular">
@@ -49,12 +51,11 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, ...args 
 const createStory = (categoryKey: keyof typeof typographyVariantsKeys): Story => ({
   decorators: [
     (Story, { args }) => {
-      const variants = typographyVariantsKeys[categoryKey]
-
+      const variants = Object.keys(typographyVariantsKeys[categoryKey]) as TypographyVariantKey[]
       return (
         <Stack spacing={5}>
-          {(Array.isArray(variants) ? variants : Object.values(variants).flat()).map((variant) => (
-            <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
+          {variants.map((variant) => (
+            <TypographyDisplay {...args} key={variant} variant={variant} />
           ))}
         </Stack>
       )

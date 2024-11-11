@@ -1,0 +1,30 @@
+# workflow based off https://storybook.js.org/docs/8.5/sharing/publish-storybook#github-pages
+name: Publish Storybook to GitHub Pages
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - figma-tokens
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+        working-directory: ./packages/curve-ui-kit
+        with:
+          install_command: yarn install
+          build_command: yarn build:storybook
+          checkout: false

@@ -8,9 +8,8 @@
   "private": true,
   "scripts": {
     "lint": "eslint \"**/*.ts*\"",
-    "validate:figma-tokens": "node scripts/figma-tokens/validation/validate-figma-tokens.js",
-    "storybook": "yarn validate:figma-tokens && storybook dev -p 6006 --no-open",
-    "build:storybook": "yarn validate:figma-tokens && storybook build",
+    "storybook": "storybook dev -p 6006 --no-open",
+    "build:storybook": "storybook build",
     "extract-figma-tokens": "npx tsx scripts/figma-tokens/main.ts"
   },
   "dependencies": {

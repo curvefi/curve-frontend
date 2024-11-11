@@ -16,6 +16,7 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       onChange={() => onChange(!advancedMode)}
       color="primary"
       inputProps={{ ...label && { 'aria-label': label } }}
+      size="small"
     />
     {label && (
       <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 3, marginRight: 4, textTransform: 'uppercase', lineHeight: '37px' }}>

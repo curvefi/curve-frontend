@@ -35,10 +35,10 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
   },
   MuiSwitch: {
     styleOverrides: {
-      root: { padding: 0, alignItems: 'center', height: '30px', width: '44px' },
-      switchBase: { padding: '7px 4px', borderRadius: 0 },
-      track: { borderRadius: 0, width: '44px', height: '24px' },
-      thumb: { borderRadius: 0, width: '16px', height: '16px' }
+      root: { padding: 0 },
+      switchBase: { borderRadius: 0 },
+      track: { borderRadius: 0 },
+      thumb: { borderRadius: 0 },
     }
   }
 })

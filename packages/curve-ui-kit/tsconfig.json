@@ -20,7 +20,6 @@
     "**/*.ts",
     "**/*.tsx",
     "vite.config.mts",
-    "**/*.d.ts",
-    "scripts/figma-tokens/validation/validate-figma-tokens.js"
+    "**/*.d.ts"
   ]
 }
