@@ -12,7 +12,7 @@ export const ROUTE = {
   ...MAIN_ROUTE,
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
-  PAGE_CRVUSD_STAKING: '/crvusd-staking',
+  PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_404: '/404',
   PAGE_PEGKEEPERS: '/pegkeepers',
 }
