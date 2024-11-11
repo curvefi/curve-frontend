@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import Image from 'next/image'
 
-import { RCCrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
+import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
 
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
@@ -11,21 +11,46 @@ type UserInformationProps = {
   className?: string
 }
 
-const UserInformation: React.FC<UserInformationProps> = ({ className }) => {
+const UserInformation = ({ className }: UserInformationProps) => {
   return (
     <UserInformationWrapper className={className}>
       <Title>{t`How to use the crvUSD Savings vault?`}</Title>
       <TextContainerRow>
         <InformationContainer>
           <Image src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
-          <InformationTitle>{t`Deposit crvUSD in the crvUSD Savings vault (CSV)`}</InformationTitle>
-          <InformationParagraph>{t`Borrow crvUSD, swap it from the market or use our convenient zap to deposit in the CSV. When Zapping, your tokens will be automatically converted to crvUSD before being deposited in the vault.`}</InformationParagraph>
+          <InformationTitle>{t`Get crvUSD`}</InformationTitle>
+          <InformationParagraph>{t`To access the yield of the Curve Savings Vault, you need to acquire crvUSD on the open markets or borrow it in the LLAMALEND markets.`}</InformationParagraph>
+          <InformationParagraph>
+            {t`We recommend using Curve's`}{' '}
+            <StyledExternalLinkInline href="https://curve.fi/#/ethereum/swap">QuickSwap</StyledExternalLinkInline>
+            {t`, or alternatively an aggregator like`}{' '}
+            <StyledExternalLinkInline href="https://swap.cow.fi/#/1/swap/WETH/crvUSD">Cowswap</StyledExternalLinkInline>
+            {t`.`}
+          </InformationParagraph>
+        </InformationContainer>
+        <InformationContainer>
+          <Image src={RCScrvUSDLogoSM} alt="scrvUSD logo" width={48} height={48} />
+          <InformationTitle>{t`Deposit crvUSD in the Curve Savings Vault (CSV)`}</InformationTitle>
+          <InformationParagraph>
+            {t`By depositing crvUSD in the Curve Savings Vault, you get`}{' '}
+            <StyledExternalLinkInline href="https://curve-resources-git-stcrvusd-curvedocs.vercel.app/crvusd/scrvusd/?h=scrvusd#how-much-interest-will-i-earn-with-scrvusd">
+              scrvUSD
+            </StyledExternalLinkInline>
+            {t`.`}
+          </InformationParagraph>
+          <InformationParagraph>{t`This token  represents your share of the crvUSD deposited in the vault. It is a yield bearing stablecoin you can use further in DeFi.`}</InformationParagraph>
         </InformationContainer>
         <InformationContainer>
           <StyledRCYieldGrowth />
           <InformationTitle>{t`Watch your yield grow`}</InformationTitle>
-          <InformationParagraph>{t`Your crvUSD is instantly generating yield according to your share of the CSV.  Your rewards get automatically compounded.`}</InformationParagraph>
-          <InformationParagraph>{t`The more crvUSD market grows, the more revenue it generates and the more yield the CSV gives to its depositors.`}</InformationParagraph>
+          <InformationParagraph>
+            {t`Your crvUSD is instantly generating yield according to your share of the CSV. Your rewards get `}{' '}
+            <StyledExternalLinkInline href="https://docs.curve.fi/scrvusd/overview/">
+              {t`automatically compounded`}
+            </StyledExternalLinkInline>
+            {t`.`}
+          </InformationParagraph>
+          <InformationParagraph>{t`The more crvUSD market grows, the more revenue it generates and the more yield the Curve Savings Vault distributes to its depositors.`}</InformationParagraph>
         </InformationContainer>
       </TextContainerRow>
       <StyledExternalLink href="https://docs.curve.fi/scrvusd/overview/">
@@ -57,7 +82,7 @@ const TextContainerRow = styled.div`
   gap: var(--spacing-3);
   @media (min-width: 41.875rem) {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     grid-gap: var(--spacing-4);
   }
 `
@@ -89,6 +114,11 @@ const StyledExternalLink = styled(ExternalLink)`
   text-transform: uppercase;
   margin: 0 auto;
   color: var(--primary-400);
+`
+
+const StyledExternalLinkInline = styled(ExternalLink)`
+  text-transform: none;
+  margin: 0;
 `
 
 const StyledRCYieldGrowth = styled(RCYieldGrowth)`
