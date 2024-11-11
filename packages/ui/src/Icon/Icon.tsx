@@ -2,6 +2,7 @@ import type { CarbonIconProps } from '@carbon/icons-react'
 
 import {
   ArrowUp,
+  ArrowUpRight,
   ArrowDown,
   ArrowsHorizontal,
   ArrowRight,
@@ -23,6 +24,7 @@ import {
   Favorite,
   FavoriteFilled,
   FavoriteHalf,
+  Fire,
   InformationSquare,
   InformationSquareFilled,
   Locked,
@@ -41,6 +43,7 @@ import {
   Stop,
   StopFilledAlt,
   UpToTop,
+  Wallet,
   WarningSquareFilled,
   StoragePool,
   OverflowMenuVertical,
@@ -49,6 +52,7 @@ import { useMemo } from 'react'
 
 const icon = {
   ArrowUp,
+  ArrowUpRight,
   ArrowDown,
   ArrowsHorizontal,
   ArrowRight,
@@ -70,6 +74,7 @@ const icon = {
   Favorite,
   FavoriteFilled,
   FavoriteHalf,
+  Fire,
   InformationSquare,
   InformationSquareFilled,
   Locked,
@@ -88,6 +93,7 @@ const icon = {
   Stop,
   StopFilledAlt,
   UpToTop,
+  Wallet,
   WarningSquareFilled,
   StoragePool,
   OverflowMenuVertical,

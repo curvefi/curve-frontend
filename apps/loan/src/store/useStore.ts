@@ -26,6 +26,7 @@ import createIntegrationsSlice, { IntegrationsSlice } from '@/store/createIntegr
 import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/store/createLoanDeleverageSlice'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/store/createOhlcChartSlice'
 import createPegKeepersSlice, { PegKeepersSlice } from '@/store/createPegKeepersSlice'
+import createScrvUsdSlice, { ScrvUsdSlice } from '@/store/createScrvUsdSlice'
 import type { PersistOptions } from 'zustand/middleware/persist'
 
 export type State = CacheSlice &
@@ -49,7 +50,8 @@ export type State = CacheSlice &
   LoanLiquidateSlice &
   IntegrationsSlice &
   OhlcChartSlice &
-  PegKeepersSlice
+  PegKeepersSlice &
+  ScrvUsdSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
@@ -74,6 +76,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),
   ...createPegKeepersSlice(set, get),
+  ...createScrvUsdSlice(set, get),
 })
 
 // cache all items in CacheSlice store
