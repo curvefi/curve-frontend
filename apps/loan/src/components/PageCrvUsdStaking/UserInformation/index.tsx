@@ -3,6 +3,7 @@ import { t } from '@lingui/macro'
 import Image from 'next/image'
 
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
+import { APP_LINK } from '@/ui/AppNav'
 
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
@@ -22,7 +23,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           <InformationParagraph>{t`To access the yield of the Curve Savings Vault, you need to acquire crvUSD on the open markets or borrow it in the LLAMALEND markets.`}</InformationParagraph>
           <InformationParagraph>
             {t`We recommend using Curve's`}{' '}
-            <StyledExternalLinkInline href="https://curve.fi/#/ethereum/swap">QuickSwap</StyledExternalLinkInline>
+            <StyledExternalLinkInline href={APP_LINK.main.route}>QuickSwap</StyledExternalLinkInline>
             {t`, or alternatively an aggregator like`}{' '}
             <StyledExternalLinkInline href="https://swap.cow.fi/#/1/swap/WETH/crvUSD">Cowswap</StyledExternalLinkInline>
             {t`.`}
@@ -33,7 +34,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           <InformationTitle>{t`Deposit crvUSD in the Curve Savings Vault (CSV)`}</InformationTitle>
           <InformationParagraph>
             {t`By depositing crvUSD in the Curve Savings Vault, you get`}{' '}
-            <StyledExternalLinkInline href="https://curve-resources-git-stcrvusd-curvedocs.vercel.app/crvusd/scrvusd/?h=scrvusd#how-much-interest-will-i-earn-with-scrvusd">
+            <StyledExternalLinkInline href="https://resources.curve.fi/crvusd/scrvusd/#how-to-deposit-and-withdraw-crvusd">
               scrvUSD
             </StyledExternalLinkInline>
             {t`.`}
@@ -45,7 +46,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           <InformationTitle>{t`Watch your yield grow`}</InformationTitle>
           <InformationParagraph>
             {t`Your crvUSD is instantly generating yield according to your share of the CSV. Your rewards get `}{' '}
-            <StyledExternalLinkInline href="https://docs.curve.fi/scrvusd/overview/">
+            <StyledExternalLinkInline href="https://resources.curve.fi/crvusd/scrvusd/#how-does-the-interest-accrue">
               {t`automatically compounded`}
             </StyledExternalLinkInline>
             {t`.`}
@@ -53,7 +54,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           <InformationParagraph>{t`The more crvUSD market grows, the more revenue it generates and the more yield the Curve Savings Vault distributes to its depositors.`}</InformationParagraph>
         </InformationContainer>
       </TextContainerRow>
-      <StyledExternalLink href="https://docs.curve.fi/scrvusd/overview/">
+      <StyledExternalLink href="https://resources.curve.fi/crvusd/scrvusd/">
         {t`TELL ME MORE`}
         <Icon name="ArrowUpRight" size={20} />
       </StyledExternalLink>
