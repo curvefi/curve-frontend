@@ -38,7 +38,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
       <ToggleField isOpen={isOpen} onClick={() => setIsOpen(!isOpen)}>
         <ToggleTitle>
           {exchangeRateLoading ? (
-            <Loader skeleton={[72, 12]} />
+            <Loader isLightBg skeleton={[72, 12]} />
           ) : (
             t`1 crvUSD = ${formatNumber(crvUsdExchangeRate.value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
           scrvUSD`

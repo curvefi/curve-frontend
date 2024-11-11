@@ -111,20 +111,22 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 29rem;
+  width: 100%;
 `
 
 const ModuleContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: var(--box--secondary--background-color);
-  max-width: 27.5rem;
+  min-width: 100%;
   padding: var(--spacing-3);
 `
 
 const TransactionDetailsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 27.5rem;
+  min-width: 100%;
   padding: var(--spacing-3);
   background-color: var(--page--background-color);
 `

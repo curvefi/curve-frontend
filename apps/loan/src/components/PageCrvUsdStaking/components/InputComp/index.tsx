@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useState } from 'react'
 
 import { formatNumber } from '@/ui/utils'
 
@@ -35,29 +36,36 @@ const InputComp: React.FC<InputCompProps> = ({
   setValue,
   setMax,
 }) => {
+  const [isFocused, setIsFocused] = useState(false)
+
   return (
-    <InputCompWrapper className={className}>
+    <InputCompWrapper className={className} isFocused={isFocused}>
       <Box flex flexColumn fillWidth>
         {isLoadingInput ? (
           <InputLoaderWrapper>
-            <Loader skeleton={[36, 14]} />
+            <Loader isLightBg skeleton={[36, 14]} />
           </InputLoaderWrapper>
         ) : (
-          <NumberField value={value} isDisabled={readOnly} aria-label="Input" onChange={setValue} />
+          <NumberField
+            value={value}
+            isDisabled={readOnly}
+            aria-label="Input"
+            onChange={setValue}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
         )}
         <WalletBalanceWrapper>
           <StyledIcon name="Wallet" size={16} />
           <BalancesWrapper flex flexColumn>
             {isLoadingBalances ? (
-              <Loader skeleton={[36, 14]} />
+              <Loader isLightBg skeleton={[36, 14]} />
             ) : (
               <WalletBalance>
-                {formatNumber(walletBalance)} {walletBalanceSymbol}
+                {formatNumber(walletBalance, { minimumFractionDigits: 2, maximumFractionDigits: 4 })}{' '}
+                {walletBalanceSymbol}
               </WalletBalance>
             )}
-            <WalletBalanceUSD>
-              ${formatNumber(walletBalanceUSD, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </WalletBalanceUSD>
           </BalancesWrapper>
         </WalletBalanceWrapper>
       </Box>
@@ -66,11 +74,13 @@ const InputComp: React.FC<InputCompProps> = ({
   )
 }
 
-const InputCompWrapper = styled.div`
+const InputCompWrapper = styled.div<{ isFocused: boolean }>`
   display: flex;
   flex-direction: row;
   background-color: var(--summary_header--loading--background-color);
   padding: var(--spacing-1);
+  box-sizing: border-box;
+  ${({ isFocused }) => isFocused && 'outline: 2px solid var(--primary-400);'}
 `
 
 const InputLoaderWrapper = styled.div`

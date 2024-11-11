@@ -3,11 +3,11 @@ import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
+import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 
 import Box from '@/ui/Box'
-
 import {
   InputLabel,
   InputWrapper,
@@ -24,8 +24,8 @@ const DepositModule = () => {
   const userBalances = useStore((state) => state.scrvusd.userBalances[signerAddress?.toLowerCase() ?? ''])
   const { inputAmount, preview, setInputAmount, setMax } = useStore((state) => state.scrvusd)
 
-  const isLoadingBalances = !userBalances || userBalances.fetchStatus === 'loading'
-  const isLoadingPreview = preview.fetchStatus === 'loading'
+  const isLoadingBalances = !userBalances || isLoading(userBalances.fetchStatus)
+  const isLoadingPreview = isLoading(preview.fetchStatus)
 
   const validationError = userBalances?.crvUSD ? BigNumber(inputAmount).gt(BigNumber(userBalances.crvUSD)) : false
 
@@ -40,18 +40,16 @@ const DepositModule = () => {
               <InputSelectorText>crvUSD</InputSelectorText>
             </SelectorBox>
           </Box>
-          <Box flex flexColumn>
-            <StyledInputComp
-              walletBalance={userBalances?.crvUSD ?? '0'}
-              walletBalanceUSD={userBalances?.crvUSD ?? '0'}
-              walletBalanceSymbol="crvUSD"
-              value={inputAmount}
-              isLoadingBalances={isLoadingBalances}
-              isLoadingInput={false}
-              setValue={setInputAmount}
-              setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'deposit')}
-            />
-          </Box>
+          <StyledInputComp
+            walletBalance={userBalances?.crvUSD ?? '0'}
+            walletBalanceUSD={userBalances?.crvUSD ?? '0'}
+            walletBalanceSymbol="crvUSD"
+            value={inputAmount}
+            isLoadingBalances={isLoadingBalances}
+            isLoadingInput={false}
+            setValue={setInputAmount}
+            setMax={() => setMax(signerAddress?.toLowerCase() ?? '', 'deposit')}
+          />
         </InputWrapper>
       </Box>
       {validationError && (

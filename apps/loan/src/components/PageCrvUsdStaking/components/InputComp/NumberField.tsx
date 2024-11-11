@@ -3,19 +3,19 @@ import styled from 'styled-components'
 interface NumberFieldProps {
   className?: string
   delay?: number
-  value: string // changed to string
+  value: string
   isDisabled?: boolean
   onChange?: (value: string) => void
+  onFocus?: () => void
+  onBlur?: () => void
   maxDecimals?: number
 }
 
-const NumberField = ({ value, isDisabled = false, delay = 500, onChange, maxDecimals = 18 }: NumberFieldProps) => {
+const NumberField = ({ value, isDisabled = false, onChange, maxDecimals = 18, onFocus, onBlur }: NumberFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-
     // Allow only numbers and one decimal point
     if (!/^\d*\.?\d*$/.test(value)) return
-
     // Prevent more than maxDecimals decimal places
     const [whole, decimal] = value.split('.')
     if (decimal && decimal.length > maxDecimals) return
@@ -23,7 +23,17 @@ const NumberField = ({ value, isDisabled = false, delay = 500, onChange, maxDeci
     onChange?.(value === '' ? '0' : value)
   }
 
-  return <StyledInput type="text" inputMode="decimal" value={value} isDisabled={isDisabled} onChange={handleChange} />
+  return (
+    <StyledInput
+      type="text"
+      inputMode="decimal"
+      value={value}
+      isDisabled={isDisabled}
+      onChange={handleChange}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  )
 }
 
 const StyledInput = styled.input<{ isDisabled?: boolean }>`
@@ -42,8 +52,11 @@ const StyledInput = styled.input<{ isDisabled?: boolean }>`
   transition:
     background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-  :focus-visible {
-    outline: ${({ isDisabled }) => (isDisabled ? 'none' : 'var(--button_text--hover--color) auto 2px;')};
+  &:focus {
+    outline: none;
+  }
+  &:focus-visible {
+    outline: none;
   }
 `
 

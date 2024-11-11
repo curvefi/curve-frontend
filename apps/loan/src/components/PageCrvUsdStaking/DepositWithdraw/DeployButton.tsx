@@ -1,6 +1,7 @@
 import { t } from '@lingui/macro'
 import { useCallback, useMemo } from 'react'
 import BigNumber from 'bignumber.js'
+import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 
@@ -71,7 +72,7 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
   }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, withdraw, redeem, userBalance])
 
   return (
-    <Button
+    <StyledButton
       variant="filled"
       loading={approvalLoading}
       className={className}
@@ -79,8 +80,12 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
       onClick={handleClick}
     >
       {buttonTitle}
-    </Button>
+    </StyledButton>
   )
 }
+
+const StyledButton = styled(Button)`
+  height: 2.5rem;
+`
 
 export default DeployButton

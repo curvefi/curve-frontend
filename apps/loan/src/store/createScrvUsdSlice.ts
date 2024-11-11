@@ -620,8 +620,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const response = await lendApi.st_crvUSD.userBalances(signerAddress)
 
         const balances = {
-          crvUSD: response.crvUSD,
-          scrvUSD: response.st_crvUSD,
+          crvUSD: response.crvUSD === '0.0' ? '0' : response.crvUSD,
+          scrvUSD: response.st_crvUSD === '0.0' ? '0' : response.st_crvUSD,
         }
 
         get()[sliceKey].setStateByKey('userBalances', { [signerAddress]: { fetchStatus: 'success', ...balances } })

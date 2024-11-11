@@ -3,9 +3,9 @@ import Image from 'next/image'
 import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
+import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
-import { isLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import Box from '@/ui/Box'
 import {

@@ -46,7 +46,7 @@ const FieldValue: React.FC<FieldValueProps> = ({ value, fetchStatus, gas = null,
 
   return (
     <TransactionFieldValue>
-      {formatNumber(value)} {symbol && symbol}
+      {formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 4 })} {symbol && symbol}
     </TransactionFieldValue>
   )
 }
