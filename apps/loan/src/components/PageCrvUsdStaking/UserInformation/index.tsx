@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import Image from 'next/image'
 
-import { RCCrvUSDLogoSM } from 'ui/src/images'
+import { RCCrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
 
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
@@ -22,7 +22,7 @@ const UserInformation: React.FC<UserInformationProps> = ({ className }) => {
           <InformationParagraph>{t`Borrow crvUSD, swap it from the market or use our convenient zap to deposit in the CSV. When Zapping, your tokens will be automatically converted to crvUSD before being deposited in the vault.`}</InformationParagraph>
         </InformationContainer>
         <InformationContainer>
-          <Image src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
+          <StyledRCYieldGrowth />
           <InformationTitle>{t`Watch your yield grow`}</InformationTitle>
           <InformationParagraph>{t`Your crvUSD is instantly generating yield according to your share of the CSV.  Your rewards get automatically compounded.`}</InformationParagraph>
           <InformationParagraph>{t`The more crvUSD market grows, the more revenue it generates and the more yield the CSV gives to its depositors.`}</InformationParagraph>
@@ -89,6 +89,12 @@ const StyledExternalLink = styled(ExternalLink)`
   text-transform: uppercase;
   margin: 0 auto;
   color: var(--primary-400);
+`
+
+const StyledRCYieldGrowth = styled(RCYieldGrowth)`
+  stroke: var(--page--text-color);
+  width: 48px;
+  height: 48px;
 `
 
 export default UserInformation
