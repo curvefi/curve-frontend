@@ -73,7 +73,7 @@ const Wrapper = styled.div`
 const StyledStatsBanner = styled(StatsBanner)``
 
 const StyledDepositWithdraw = styled(DepositWithdraw)`
-  margin: 0 auto;
+  margin: var(--spacing-3) auto;
 `
 
 export default CrvUsdStaking

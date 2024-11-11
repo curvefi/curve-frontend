@@ -3,6 +3,7 @@ import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
+import { txIsConfirming, txIsSuccess, txIsLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import {
   Wrapper,
@@ -32,9 +33,9 @@ const DepositTracking = ({ className }: DepositTrackingProps) => {
 
   const inputApprovedAmount = depositApproval.approval
 
-  const approvalConfirmed = approveDepositTransaction.transactionStatus === 'success'
-  const approvalConfirming = approveDepositTransaction.transactionStatus === 'confirming'
-  const approvalLoading = approveDepositTransaction.transactionStatus === 'loading'
+  const approvalConfirmed = txIsSuccess(approveDepositTransaction.transactionStatus)
+  const approvalConfirming = txIsConfirming(approveDepositTransaction.transactionStatus)
+  const approvalLoading = txIsLoading(approveDepositTransaction.transactionStatus)
   const getApprovalTitle = () => {
     if (approvalConfirming) {
       return t`Approve in wallet`
@@ -47,9 +48,9 @@ const DepositTracking = ({ className }: DepositTrackingProps) => {
   const approvalTitle = getApprovalTitle()
 
   const approvalReady = !approvalConfirmed || depositApproval.approval
-  const depositConfirmed = depositTransaction.transactionStatus === 'success'
-  const depositConfirming = depositTransaction.transactionStatus === 'confirming'
-  const depositLoading = depositTransaction.transactionStatus === 'loading'
+  const depositConfirmed = txIsSuccess(depositTransaction.transactionStatus)
+  const depositConfirming = txIsConfirming(depositTransaction.transactionStatus)
+  const depositLoading = txIsLoading(depositTransaction.transactionStatus)
   const getDepositTitle = () => {
     if (depositConfirming) {
       return t`Confirm Deposit`

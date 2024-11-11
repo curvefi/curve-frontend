@@ -8,15 +8,12 @@ type TransactionTrackingProps = {
   approved?: boolean
 }
 
+const components = { deposit: DepositTracking, withdraw: WithdrawTracking }
+
 const TransactionTracking = ({ className }: TransactionTrackingProps) => {
   const { stakingModule } = useStore((state) => state.scrvusd)
-
-  return (
-    <>
-      {stakingModule === 'deposit' && <DepositTracking className={className} />}
-      {stakingModule === 'withdraw' && <WithdrawTracking className={className} />}
-    </>
-  )
+  const Component = components[stakingModule]
+  return <Component className={className} />
 }
 
 export default TransactionTracking
