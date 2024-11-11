@@ -9,7 +9,8 @@ const generateTheme = (mode: ThemeKey): Theme =>
     typography: createTypography(mode),
     components: createComponents(mode),
     ...createSpacing(mode),
-  })
+      cssVariables: true
+})
 
 export const lightTheme = generateTheme('light')
 export const darkTheme = generateTheme('dark')

@@ -1,9 +1,14 @@
-import { Button } from '../../../../../curve-ui-kit/src/shared/ui/Button'
-import { t } from '@lingui/macro'
+import { Button } from 'curve-ui-kit/src/shared/ui/Button'
+import type { SxProps, Theme } from '@mui/system'
 
-interface ConnectWalletButtonProps {
-  onConnectWallet?: () => void
+export type ConnectWalletButtonProps = {
+  onConnectWallet: () => void
+  label: string
+  disabled?: boolean
+  sx?: SxProps<Theme>
 }
 
-export const ConnectWalletButton = ({ onConnectWallet }: ConnectWalletButtonProps) =>
-  <Button size="small" variant="contained" color="primary" onClick={onConnectWallet}>{t`Connect Wallet`}</Button>
+export const ConnectWalletButton = ({ onConnectWallet, label, ...props }: ConnectWalletButtonProps) =>
+  <Button size="small" variant="contained" color="primary" onClick={onConnectWallet} {...props}>
+    {label}
+  </Button>

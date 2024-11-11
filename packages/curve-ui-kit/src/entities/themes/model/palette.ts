@@ -4,7 +4,6 @@ import type { ThemeKey } from '../../../shared/lib/basic-theme'
 
 export const createPalette = (mode: ThemeKey): ThemeOptions['palette'] => {
   const theme = figmaTokens.themes.desktop[mode]
-
   return {
     mode: mode === 'dark' ? 'dark' : 'light',
     neutral: {

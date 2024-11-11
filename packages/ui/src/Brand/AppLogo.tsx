@@ -5,25 +5,20 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils/responsive'
 import { LogoImg, RCLogoText } from 'ui/src/images'
+import { AppName } from '../AppNav/types'
 
 export type AppLogoProps = {
   className?: string
-  appName: string
-  showBeta?: boolean
+  appName?: AppName
 }
 
-const AppLogo = ({ className = '', appName, showBeta }: AppLogoProps) => {
+const AppLogo = ({ className = '', appName }: AppLogoProps) => {
   return (
     <Wrapper className={className}>
       <StyledInternalLink to="/" $haveAppName={!!appName}>
         <CurveLogo src={LogoImg} alt="Curve" /> <StyledCurveLogoText />
-        <AppName>{appName}</AppName>
+        <AppNameBox>{appName}</AppNameBox>
       </StyledInternalLink>
-      {showBeta && (
-        <div>
-          <Beta>Beta</Beta>
-        </div>
-      )}
     </Wrapper>
   )
 }
@@ -38,17 +33,7 @@ const Wrapper = styled.div`
   }
 `
 
-const Beta = styled.span`
-  background-color: var(--warning-400);
-  color: var(--black);
-  font-size: var(--font-size-1);
-  font-weight: bold;
-  padding: var(--spacing-1) var(--spacing-2);
-  margin-left: var(--spacing-1);
-  margin-top: 2px;
-`
-
-const AppName = styled.span`
+const AppNameBox = styled.span`
   color: inherit;
   font-size: var(--font-size-1);
   font-weight: bold;

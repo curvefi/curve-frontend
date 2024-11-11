@@ -1,7 +1,6 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@/lib/i18n'
 
 import produce from 'immer'
 
@@ -9,6 +8,8 @@ import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
+import { ThemeKey } from '@ui-kit/shared/lib'
+import { LocaleValue } from '@/common/features/switch-language'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -24,11 +25,11 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  locale: Locale['value']
+  locale: LocaleValue
   maxSlippage: string
   routerProps: RouterProps | null
   scrollY: number
-  themeType: Theme
+  themeType: ThemeKey
 }
 
 // prettier-ignore
@@ -57,7 +58,7 @@ const DEFAULT_STATE: SliceState = {
   maxSlippage: '0.1',
   routerProps: null,
   scrollY: 0,
-  themeType: 'default',
+  themeType: 'light',
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({

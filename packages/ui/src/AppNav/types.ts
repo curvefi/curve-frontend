@@ -1,4 +1,3 @@
-import type { AppLogoProps } from 'ui/src/Brand/AppLogo'
 import type { ConnectState } from 'ui/src/utils'
 import type { ThemeType } from 'ui/src/Select/SelectThemes'
 
@@ -33,12 +32,14 @@ export type AppNavLocale = {
   handleChange: (selectedLocale: React.Key) => void
 }
 
+export const AppNames = ['main', 'lend', 'crvusd'] as const
+export type AppName = typeof AppNames[number]
+
 export type AppPage = {
   route: string
   label: string
   isActive?: boolean
   target?: '_self' | '_blank'
-  isDivider?: boolean
   groupedTitle?: string
   minWidth?: string
 }
@@ -64,16 +65,17 @@ export type AppNavTheme = {
 }
 
 export type AppNavMobileProps = {
-  appLogoProps: AppLogoProps
   connect: AppNavConnect
   advancedMode?: AppNavAdvancedMode
   locale?: AppNavLocale
   pageWidth: PageWidth
   pages: AppNavPages
+  currentApp: AppName
   sections: AppNavSections
   selectNetwork: React.ReactNode
   stats: AppNavStats
   theme: AppNavTheme
+  connectWalletLabel: string
 }
 
 export type AppNavSecondaryProps = {

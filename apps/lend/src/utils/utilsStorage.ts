@@ -1,5 +1,6 @@
 import merge from 'lodash/merge'
 import dayjs from 'dayjs'
+import { ThemeKey } from '@ui-kit/shared/lib'
 
 export const APP_STORAGE = {
   APP_CACHE: 'lend-app-cache',
@@ -31,8 +32,8 @@ export function getStorageValue(key: Key) {
 
 function getTheme(svThemeType: string | undefined) {
   if (svThemeType) {
-    const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as Theme
-    return (foundThemeType || 'default') as Theme
+    const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as ThemeKey
+    return (foundThemeType || 'default') as ThemeKey
   }
 }
 

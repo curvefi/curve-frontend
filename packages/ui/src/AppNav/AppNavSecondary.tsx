@@ -12,55 +12,53 @@ import SelectLocale from 'ui/src/Select/SelectLocale'
 import SelectThemes from 'ui/src/Select/SelectThemes'
 import Switch from 'ui/src/Switch'
 
-const HeaderSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: AppNavSecondaryProps) => {
-  return (
-    <StyledInnerWrapper className="nav-content" grid gridColumnGap={3} flexAlignItems="stretch">
-      <MenuStats>
-        {appStats.map(({ label, value }) => {
-          return (
-            <HeaderStatsContent key={label}>
-              <HeaderStats title={label} valueCached={value} value={value} parsedVal={value} />
-            </HeaderStatsContent>
-          )
-        })}
-      </MenuStats>
+const AppNavSecondary = ({ advancedMode, appsLinks, appStats, locale, theme }: AppNavSecondaryProps) => (
+  <StyledInnerWrapper className="nav-content" grid gridColumnGap={3} flexAlignItems="stretch">
+    <MenuStats>
+      {appStats.map(({ label, value }) => {
+        return (
+          <HeaderStatsContent key={label}>
+            <HeaderStats title={label} valueCached={value} value={value} parsedVal={value} />
+          </HeaderStatsContent>
+        )
+      })}
+    </MenuStats>
 
-      <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
-        {appsLinks.map(({ route, label, target }, idx) => {
-          const isLast = appsLinks.length - 1 === idx
-          return (
-            <React.Fragment key={route}>
-              <AppLinkText
-                key={route}
-                {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
-                href={route}
-              >
-                {label}
-              </AppLinkText>{' '}
-              {!isLast && <Divider>|</Divider>}
-            </React.Fragment>
-          )
-        })}
-        {/* THEME */}
-        <StyledSelectThemes themeType={theme.themeType} handleThemeChange={theme.handleClick} />
-        {/* LOCALE */}
-        {typeof locale !== 'undefined' && (
-          <SelectLocale
-            locales={locale.locales}
-            selectedLocale={locale.locale}
-            handleLocaleChange={locale.handleChange}
-          />
-        )}
-        {/* ADVANCE MODE */}
-        {typeof advancedMode !== 'undefined' && (
-          <Switch isSelected={advancedMode.isAdvanceMode} onChange={advancedMode.handleClick}>
-            Advanced {advancedMode.isAdvanceMode ? 'on' : 'off'}
-          </Switch>
-        )}
-      </Menu>
-    </StyledInnerWrapper>
-  )
-}
+    <Menu grid gridAutoFlow="column" gridColumnGap={2} flexAlignItems="center">
+      {appsLinks.map(({ route, label, target }, idx) => {
+        const isLast = appsLinks.length - 1 === idx
+        return (
+          <React.Fragment key={route}>
+            <AppLinkText
+              key={route}
+              {...(target === '_blank' ? { target, rel: 'noreferrer noopener' } : {})}
+              href={route}
+            >
+              {label}
+            </AppLinkText>{' '}
+            {!isLast && <Divider>|</Divider>}
+          </React.Fragment>
+        )
+      })}
+      {/* THEME */}
+      <StyledSelectThemes themeType={theme.themeType} handleThemeChange={theme.handleClick} />
+      {/* LOCALE */}
+      {typeof locale !== 'undefined' && (
+        <SelectLocale
+          locales={locale.locales}
+          selectedLocale={locale.locale}
+          handleLocaleChange={locale.handleChange}
+        />
+      )}
+      {/* ADVANCE MODE */}
+      {typeof advancedMode !== 'undefined' && (
+        <Switch isSelected={advancedMode.isAdvanceMode} onChange={advancedMode.handleClick}>
+          Advanced {advancedMode.isAdvanceMode ? 'on' : 'off'}
+        </Switch>
+      )}
+    </Menu>
+  </StyledInnerWrapper>
+)
 
 const Divider = styled.p`
   color: var(--page--text-color);
@@ -114,4 +112,4 @@ const MenuStats = styled.div`
   display: flex;
 `
 
-export default HeaderSecondary
+export default AppNavSecondary

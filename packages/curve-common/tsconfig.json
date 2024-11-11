@@ -11,6 +11,7 @@
     "strict": true,
     "paths": {
       "@/*": ["*"],
+      "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],
       "@/common/*": ["../../../packages/curve-common/src/*"]
     }
   },

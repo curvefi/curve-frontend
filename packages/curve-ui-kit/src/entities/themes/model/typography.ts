@@ -5,15 +5,12 @@ import { omitProperty } from '../../../shared/lib/object-properties'
 import { disabledTypographyKeys } from '../../../shared/ui/Typography'
 
 export const createTypography = (mode: ThemeKey): TypographyOptions => {
-  const typographyVariants = Object.entries(figmaTokens.typography).reduce((acc, [key, value]) => {
-    acc[key as keyof typeof figmaTokens.typography] = omitProperty(value, 'description')
-    return acc
-  }, {} as TypographyOptions)
+  const typographyVariants = Object.entries(figmaTokens.typography).reduce((acc, [key, value]) => ({
+    ...acc,
+    [key]: omitProperty(value, 'description')
+  }), {} as TypographyOptions)
 
-  const disabledTypographyVariants = disabledTypographyKeys.reduce((acc, variant) => {
-    acc[variant] = undefined
-    return acc
-  }, {} as TypographyOptions)
+  const disabledTypographyVariants = disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions)
 
   return {
     fontFamily: ThemeFontFamily[mode],
@@ -28,5 +25,5 @@ export const createTypography = (mode: ThemeKey): TypographyOptions => {
 
     ...disabledTypographyVariants,
     ...typographyVariants,
-  }
+  } as TypographyOptions
 }
