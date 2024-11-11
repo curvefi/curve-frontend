@@ -8,10 +8,9 @@ import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
-import { Theme } from '@mui/system'
 import { ThemeSwitcherButton } from '../../features/switch-theme'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
-import { BaseHeaderProps, toolbarColors } from './types'
+import { BaseHeaderProps } from './types'
 
 export const DesktopHeader = <TChainId extends number>({
   currentApp,
@@ -25,7 +24,7 @@ export const DesktopHeader = <TChainId extends number>({
   translations: t
 }: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][0], justifyContent: 'space-around' }}>
+    <Toolbar sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around' }}>
       <Container>
         <HeaderLogo appName={currentApp} />
         <AppButtonLinks currentApp="lend" />
@@ -41,7 +40,7 @@ export const DesktopHeader = <TChainId extends number>({
         </Box>
       </Container>
     </Toolbar>
-    <Toolbar sx={{ backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1], justifyContent: 'space-around' }}>
+    <Toolbar sx={{ backgroundColor: 'background.default', justifyContent: 'space-around' }}>
       <Container>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />

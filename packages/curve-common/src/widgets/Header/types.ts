@@ -41,10 +41,3 @@ export const APP_NAMES = {
   lend: 'Llamalend',
   crvusd: 'crvUSD'
 } as const
-
-
-// TODO: Color should be in theme
-export const toolbarColors = {
-  light: ['#eeeceb', '#f4f3f0'],
-  dark: ['#1f1f1f', '#2f2f2f'] // todo
-} as const

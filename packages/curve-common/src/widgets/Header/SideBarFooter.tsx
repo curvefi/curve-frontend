@@ -1,4 +1,4 @@
-import { BaseHeaderProps, toolbarColors } from './types'
+import { BaseHeaderProps } from './types'
 import Box from '@mui/material/Box'
 import { LanguageSwitcher } from '../../features/switch-language'
 import { ThemeSwitcherButtons } from '../../features/switch-theme'
@@ -10,7 +10,6 @@ import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
-import { CSSProperties } from '@mui/material/styles/createTypography'
 import { FunctionComponent, ReactNode } from 'react'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 
@@ -18,7 +17,7 @@ type SideBarFooterProps = Pick<BaseHeaderProps, 'translations' | 'advancedMode' 
   sx: SxProps<Theme>
 }
 
-const backgroundColor =  (t: Theme) => toolbarColors[t.palette.mode][0]
+const backgroundColor =  'background.paper'
 
 export const SideBarFooter = ({
   themes: [theme, setTheme],

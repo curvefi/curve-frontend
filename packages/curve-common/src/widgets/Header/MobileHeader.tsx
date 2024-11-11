@@ -1,6 +1,5 @@
 import { AppBar, Toolbar } from '@mui/material'
-import { Theme } from '@mui/system'
-import { BaseHeaderProps, toolbarColors } from './types'
+import { BaseHeaderProps } from './types'
 import React, { useCallback, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
@@ -22,7 +21,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = {backgroundColor: (t: Theme) => toolbarColors[t.palette.mode][1]}
+const SECONDARY_BACKGROUND = {backgroundColor: 'background.default'}
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
