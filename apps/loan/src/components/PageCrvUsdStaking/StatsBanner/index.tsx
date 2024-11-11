@@ -33,17 +33,29 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
       <StatsRow>
         <StatsItem>
           <StatsItemTitle>{t`30 Days Projection`}</StatsItemTitle>
-          <StatsItemValue>~${oneMonthProjYield}</StatsItemValue>
+          {isLoadingPricesYieldData ? (
+            <Loader isLightBg skeleton={[120, 26]} />
+          ) : (
+            <StatsItemValue>~${oneMonthProjYield}</StatsItemValue>
+          )}
         </StatsItem>
         <StatsItem>
           <StatsItemTitle>{t`1 Year Projection`}</StatsItemTitle>
-          <StatsItemValue>~${oneYearProjYield}</StatsItemValue>
+          {isLoadingPricesYieldData ? (
+            <Loader isLightBg skeleton={[120, 26]} />
+          ) : (
+            <StatsItemValue>~${oneYearProjYield}</StatsItemValue>
+          )}
         </StatsItem>
         <StatsItem>
           <StatsItemTitle>{t`scrvUSD APY`}</StatsItemTitle>
-          <StatsItemValue>
-            ~{formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
-          </StatsItemValue>
+          {isLoadingPricesYieldData ? (
+            <Loader isLightBg skeleton={[120, 26]} />
+          ) : (
+            <StatsItemValue>
+              ~{formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+            </StatsItemValue>
+          )}
         </StatsItem>
       </StatsRow>
     </Wrapper>
@@ -73,13 +85,16 @@ const Description = styled.p`
 const StatsRow = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   width: 100%;
+  gap: var(--spacing-4);
+  flex-wrap: wrap;
 `
 
 const StatsItem = styled.div`
   display: flex;
+  margin-right: auto;
   flex-direction: column;
-  width: 100%;
 `
 
 const StatsItemTitle = styled.h5`

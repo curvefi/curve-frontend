@@ -56,8 +56,14 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 0 var(--spacing-4);
+  padding: 0 var(--spacing-2);
   gap: var(--spacing-4);
+  @media (min-width: 29.375rem) {
+    padding: 0 var(--spacing-3);
+  }
+  @media (min-width: 43.75rem) {
+    padding: 0 var(--spacing-4);
+  }
   // 79.5rem === var(--width)
   @media (min-width: 79.5rem) {
     padding: 0;

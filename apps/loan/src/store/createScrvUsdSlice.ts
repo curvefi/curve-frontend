@@ -154,7 +154,7 @@ const DEFAULT_STATE: SliceState = {
     errorMessage: '',
   },
   pricesYieldData: {
-    fetchStatus: '',
+    fetchStatus: 'loading',
     data: [],
   },
 }
