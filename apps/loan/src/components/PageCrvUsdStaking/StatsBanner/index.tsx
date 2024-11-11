@@ -73,11 +73,12 @@ const Wrapper = styled.div`
 
 const Title = styled.h3`
   font-size: var(--font-size-5);
+  color: var(--black-100);
 `
 
 const Description = styled.p`
+  color: var(--black-100);
   span {
-    color: var(--primary-400);
     font-weight: bold;
   }
 `
@@ -89,6 +90,7 @@ const StatsRow = styled.div`
   width: 100%;
   gap: var(--spacing-4);
   flex-wrap: wrap;
+  color: var(--black-100);
 `
 
 const StatsItem = styled.div`
