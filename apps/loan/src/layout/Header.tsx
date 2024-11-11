@@ -58,12 +58,14 @@ const Header = () => {
     const links = isLgUp
       ? [
         { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
+        { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`crvUSD Staking`, groupedTitle: 'staking' },
+          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
         { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
       ]
       : [
         { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-        { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
+        { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`crvUSD Staking`, groupedTitle: 'staking' },
+          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
         { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
       ]
 
@@ -72,7 +74,7 @@ const Header = () => {
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
-    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
+    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper],
   )
 
   // prettier-ignore
@@ -191,7 +193,7 @@ const Header = () => {
 function _getTvl(
   collateralDatasMapper: CollateralDatasMapper | undefined,
   loansDetailsMapper: LoanDetailsMapper | undefined,
-  usdRatesMapper: UsdRate | undefined
+  usdRatesMapper: UsdRate | undefined,
 ) {
   let formattedTvl = '-'
   let sum = 0

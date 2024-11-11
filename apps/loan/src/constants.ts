@@ -12,6 +12,7 @@ export const ROUTE = {
   ...MAIN_ROUTE,
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
+  PAGE_CRVUSD_STAKING: '/crvusd-staking',
   PAGE_404: '/404',
   PAGE_PEGKEEPERS: '/pegkeepers',
 }
@@ -36,6 +37,12 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export const SCRVUSD_GAS_ESTIMATE = {
+  FIRST_DEPOSIT: 95500,
+  FOLLOWING_DEPOSIT: 78500,
+  WITHDRAW: 73500,
+}
 
 export enum TITLE {
   isInMarket = 'isInMarket',
