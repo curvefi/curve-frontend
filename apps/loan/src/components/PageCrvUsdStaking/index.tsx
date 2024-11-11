@@ -8,8 +8,15 @@ import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 
 const CrvUsdStaking = () => {
-  const { fetchUserBalances, checkApproval, inputAmount, fetchExchangeRate, fetchCrvUsdSupplies, stakingModule } =
-    useStore((state) => state.scrvusd)
+  const {
+    fetchUserBalances,
+    checkApproval,
+    inputAmount,
+    fetchExchangeRate,
+    fetchCrvUsdSupplies,
+    fetchSavingsYield,
+    stakingModule,
+  } = useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
   const onboardInstance = useStore((state) => state.wallet.onboard)
   const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
@@ -22,10 +29,11 @@ const CrvUsdStaking = () => {
       fetchUserBalances()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
+      fetchSavingsYield()
     }
 
     fetchData()
-  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies])
+  }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, fetchSavingsYield])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
@@ -50,6 +58,10 @@ const Wrapper = styled.div`
   width: 100%;
   padding: 0 var(--spacing-4);
   gap: var(--spacing-4);
+  // 79.5rem === var(--width)
+  @media (min-width: 79.5rem) {
+    padding: 0;
+  }
 `
 
 const StyledStatsBanner = styled(StatsBanner)``

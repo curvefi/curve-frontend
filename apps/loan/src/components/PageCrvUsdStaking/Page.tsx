@@ -50,7 +50,6 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  max-width: var(--width);
   gap: var(--spacing-4);
   margin-bottom: var(--spacing-4);
 `
@@ -58,6 +57,7 @@ const Container = styled.div`
 const HeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
+  width: 100%;
   background-color: var(--table--background-color);
   align-items: center;
   padding: var(--spacing-3);

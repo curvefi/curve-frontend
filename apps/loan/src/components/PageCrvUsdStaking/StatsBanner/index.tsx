@@ -1,33 +1,49 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import useStore from '@/store/useStore'
+import { isLoading, isReady } from '@/components/PageCrvUsdStaking/utils'
+import { formatNumber } from '@/ui/utils'
+
 import Box from '@/ui/Box'
+import Loader from '@/ui/Loader'
 
 type StatsBannerProps = {
   className?: string
 }
 
 const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
+  const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
+
+  const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
+  const isReadyPricesYieldData = isReady(pricesYieldData.fetchStatus)
+  const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
+  const oneMonthProjYield = formatNumber((scrvUsdApy / 12) * 100000, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
+  const oneYearProjYield = formatNumber(scrvUsdApy * 100000, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
   return (
     <Wrapper className={className}>
       <Box>
-        <Title>{t`YOUR STABLECOINS COULD DO MORE.`}</Title>
-        <Description>
-          {t`You have `} <span>~$1.42M</span> {t` worth of stablecoin in your wallet. Earn while you hold it!`}
-        </Description>
+        <Title>{t`SCRVUSD IS CURVE’S YIELD-BEARING STABLECOIN`}</Title>
+        <Description>{t`With $100k of scrvUSD held you could get.`}</Description>
       </Box>
       <StatsRow>
         <StatsItem>
           <StatsItemTitle>{t`30 Days Projection`}</StatsItemTitle>
-          <StatsItemValue>+$8.4k</StatsItemValue>
+          <StatsItemValue>~${oneMonthProjYield}</StatsItemValue>
         </StatsItem>
         <StatsItem>
           <StatsItemTitle>{t`1 Year Projection`}</StatsItemTitle>
-          <StatsItemValue>+$100.08k</StatsItemValue>
+          <StatsItemValue>~${oneYearProjYield}</StatsItemValue>
         </StatsItem>
         <StatsItem>
           <StatsItemTitle>{t`scrvUSD APY`}</StatsItemTitle>
-          <StatsItemValue>12.14%</StatsItemValue>
+          <StatsItemValue>
+            ~{formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+          </StatsItemValue>
         </StatsItem>
       </StatsRow>
     </Wrapper>

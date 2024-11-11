@@ -1,4 +1,6 @@
 import type { DepositWithdrawModule } from '@/components/PageCrvUsdStaking/types'
+import type { PricesYieldDataResponse, PricesYieldData } from '@/store/types'
+
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
@@ -60,6 +62,10 @@ type SliceState = {
     transaction: string | null
     errorMessage: string
   }
+  pricesYieldData: {
+    fetchStatus: FetchStatus
+    data: PricesYieldData[]
+  }
 }
 
 type PreviewFlag = 'deposit' | 'withdraw' | 'redeem'
@@ -87,6 +93,7 @@ export type ScrvUsdSlice = {
     fetchUserBalances: () => void
     fetchExchangeRate: () => void
     fetchCrvUsdSupplies: () => void
+    fetchSavingsYield: () => void
     setMax: (userAddress: string, stakingModule: DepositWithdrawModule) => void
     setStakingModule: (stakingModule: DepositWithdrawModule) => void
     setInputAmount: (amount: string) => void
@@ -145,6 +152,10 @@ const DEFAULT_STATE: SliceState = {
     transactionStatus: '',
     transaction: null,
     errorMessage: '',
+  },
+  pricesYieldData: {
+    fetchStatus: '',
+    data: [],
   },
 }
 
@@ -547,6 +558,25 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       } catch (error) {
         console.error(error)
         get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'error', crvUSD: '', scrvUSD: '' })
+      }
+    },
+    fetchSavingsYield: async () => {
+      const currentTimestamp = Math.floor(Date.now() / 1000)
+      const oneYearAgoTimestamp = currentTimestamp - 31536000
+
+      get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'loading', data: [] })
+
+      try {
+        const response = await fetch(
+          `https://prices.curve.fi/v1/crvusd/savings/yield?interval=day&start=${oneYearAgoTimestamp}&end=${currentTimestamp}`,
+        )
+
+        const data: PricesYieldDataResponse = await response.json()
+
+        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'success', data: data.data })
+      } catch (error) {
+        console.error(error)
+        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'error', data: [] })
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
