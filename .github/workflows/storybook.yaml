@@ -1,5 +1,5 @@
-# workflow based off https://storybook.js.org/docs/8.5/sharing/publish-storybook#github-pages
-name: Publish Storybook to GitHub Pages
+name: Storybook
+description: Builds and deploys Storybook to GitHub Pages
 
 on:
   push:
@@ -22,10 +22,21 @@ jobs:
         with:
           node-version: 20
           cache: yarn
-      - run: cd packages/curve-ui-kit
-      - uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
+
+      - name: 'Build'
+        working-directory: packages/curve-ui-kit
+        run: |
+          yarn install
+          yarn build:storybook
+
+      - name: 'upload'
+        uses: actions/upload-pages-artifact@v3
         with:
-          install_command: yarn install
-          build_command: yarn build:storybook
-          path: storybook-static
-          checkout: false
+          path: packages/curve-ui-kit/storybook-static
+          name: 'github-pages'
+
+      - id: deploy
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ github.token }}
