@@ -3,17 +3,16 @@ import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
 
-import { formatNumber, formatNumberUsdRate } from '@/ui/utils'
+import { BN, formatNumber, formatNumberUsdRate } from '@/ui/utils'
 
 import Chip from '@/ui/Typography/Chip'
-import { BD } from '@/shared/curve-lib'
 
 const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {
   const usdRateTotal = useMemo(() => {
     let total = ''
 
     if (!isUndefined(usdRate) && !isNaN(usdRate) && +usdRate > 0 && +amount > 0) {
-      total = BD.from(usdRate).times(BD.from(amount)).toString()
+      total = BN(usdRate).multipliedBy(amount).toString()
     }
     return total
   }, [usdRate, amount])

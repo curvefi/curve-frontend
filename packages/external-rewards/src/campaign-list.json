@@ -58,5 +58,8 @@
   },
   {
     "campaign": "TurtleTotems.json"
+  },
+  {
+    "campaign": "LevelMoney.json"
   }
 ]
