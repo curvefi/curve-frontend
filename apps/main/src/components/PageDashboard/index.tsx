@@ -1,13 +1,10 @@
 import type { FormValues, DashboardTableRowProps, TableLabel } from '@/components/PageDashboard/types'
 import type { Params } from 'react-router'
 import type { Address } from 'viem'
-
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import networks from '@/networks'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/constants'
 import { DashboardContextProvider } from '@/components/PageDashboard/dashboardContext'
 import { breakpoints } from '@/ui/utils'
@@ -16,7 +13,6 @@ import { getPath } from '@/utils/utilsRouter'
 import { isAddress } from 'viem'
 import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
-
 import ClassicPoolsOnlyDescription from '@/components/PageDashboard/components/ClassicPoolsOnlyDescription'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Summary from '@/components/PageDashboard/components/Summary'
@@ -58,7 +54,7 @@ const Dashboard = ({
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
-  const { isLite } = networks[rChainId]
+  const { isLite } = useStore((state) => state.networks.networks[rChainId])
   const { userPoolBoost } = curvejsApi.wallet
 
   const imageBaseUrl = useMemo(() => getImageBaseUrl(rChainId), [rChainId])

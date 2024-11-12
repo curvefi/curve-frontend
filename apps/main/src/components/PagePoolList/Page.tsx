@@ -1,21 +1,16 @@
 import type { NextPage } from 'next'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
-
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
-import { getPoolDatasCached } from '@/store/createPoolListSlice'
 import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
-import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useSearchTermMapper from '@/hooks/useSearchTermMapper'
 import useStore from '@/store/useStore'
-
 import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
@@ -34,7 +29,8 @@ const Page: NextPage = () => {
 
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
 
-  const { isLite } = networks[rChainId]
+  const network = useStore((state) => state.networks.networks[rChainId])
+  const { isLite } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
 
@@ -105,7 +101,7 @@ const Page: NextPage = () => {
       const searchText = decodeURIComponent(searchParams.get('search') || '')
 
       // validate filter key
-      const foundFilterKey = networks[rChainId].poolFilters.find((f) => f === paramFilterKey)
+      const foundFilterKey = network.poolFilters.find((f) => f === paramFilterKey)
       if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
@@ -125,7 +121,7 @@ const Page: NextPage = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy])
+  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, network])
 
   const sortSearchTextLast = useMemo(() => {
     const searchParamsOrder: { key: string; value: string }[] = []

@@ -1,16 +1,12 @@
 import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
 import type { Step } from '@/ui/Stepper/types'
 import type { TransferProps } from '@/components/PagePool/types'
-
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import AlertFormError from '@/components/AlertFormError'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import FieldLpToken from '@/components/PagePool/components/FieldLpToken'
@@ -31,6 +27,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
@@ -52,13 +49,13 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepUnstake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Unstaked ${formValues.stakedLpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepUnstake, notifyNotification]
+    [fetchStepUnstake, notifyNotification, network]
   )
 
   const getSteps = useCallback(

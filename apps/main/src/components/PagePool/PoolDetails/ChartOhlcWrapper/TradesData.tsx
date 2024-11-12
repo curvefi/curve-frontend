@@ -1,22 +1,20 @@
 import type { LpTradesData, LpTradeToken } from '@/ui/Chart/types'
-
 import styled from 'styled-components'
-
-import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
+import useStore from '@/store/useStore'
 
 const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tradesTokens: LpTradeToken[] }> = ({
   lpTradesData,
   chainId,
   tradesTokens,
 }) => {
+  const network = useStore((state) => state.networks.networks[chainId])
   return (
     <>
       {lpTradesData.map((transaction, index) => {
@@ -25,7 +23,7 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
 
         return (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
-            <Event href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
+            <Event href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
               <TradeFrom>
                 <StyledTokenIcon
                   size="sm"

@@ -1,15 +1,11 @@
 import type { ButtonProps } from '@/ui/Button/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import React, { useCallback, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { DEFAULT_FORM_STATUS } from '@/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import Button from '@/ui/Button'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -37,6 +33,7 @@ const FormClaimFeesButtons = ({
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {
@@ -60,10 +57,9 @@ const FormClaimFeesButtons = ({
 
   const handleBtnClickClaimFees = useCallback(
     async (key: claimButtonsKey) => {
-      if (!curve) return
+      if (!network || !curve) return
 
-      const { chainId } = curve
-      const { scanTxPath } = networks[chainId]
+      const { scanTxPath } = network
       const notifyMessage = t`Please approve claim veCRV rewards.`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
 
@@ -107,7 +103,7 @@ const FormClaimFeesButtons = ({
         />,
       )
     },
-    [activeKey, curve, fetchStepClaimFees, notifyNotification, setFormStatus, setSteps, setTxInfoBar, walletAddress],
+    [activeKey, curve, fetchStepClaimFees, notifyNotification, setFormStatus, setSteps, setTxInfoBar, walletAddress, network],
   )
 
   return (

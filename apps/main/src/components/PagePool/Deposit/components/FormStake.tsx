@@ -2,17 +2,13 @@ import type { ReactNode } from 'react'
 import type { FormValues, FormStatus, StepKey } from '@/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import BigNumber from 'bignumber.js'
-
 import { DEFAULT_ESTIMATED_GAS } from '@/components/PagePool'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import AlertFormError from '@/components/AlertFormError'
 import AlertBox from '@/ui/AlertBox'
@@ -39,6 +35,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -70,9 +67,9 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepStake(activeKey, curve, poolData, formValues)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

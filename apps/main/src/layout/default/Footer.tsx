@@ -1,16 +1,12 @@
 import type { Locale } from '@/lib/i18n'
-
 import { Trans } from '@lingui/macro'
 import styled, { css } from 'styled-components'
 import Image from 'next/image'
 import React, { useRef } from 'react'
-
 import { breakpoints } from '@/ui/utils/responsive'
 import { isLocaleInChinese } from '@/lib/i18n'
-import networks from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
-
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
 import { sizes } from '@/ui/utils'
 import Box from '@/ui/Box'
@@ -92,7 +88,8 @@ interface ResourcesSectionProps extends InnerSectionProps {
 }
 
 export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesSectionProps) => {
-  const orgUIPath = networks[chainId ?? '1'].orgUIPath
+  const networks = useStore((state) => state.networks.networks)
+  const orgUIPath = networks[chainId ?? 1].orgUIPath
 
   return (
     <ResourcesWrapper className={className} $columnCount={columnCount}>

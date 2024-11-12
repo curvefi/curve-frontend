@@ -1,13 +1,9 @@
 import type { FormType } from '@/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { isValidAddress } from '@/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
 import { StyledTabSlide } from '@/components/PagePool/styles'
 import { SlideTab, SlideTabs } from '@/ui/TabSlide'
@@ -19,7 +15,7 @@ import FormStake from '@/components/PagePool/Deposit/components/FormStake'
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const { params, poolAlert, poolData, poolDataCacheOrApi } = transferProps
+  const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const { rChainId } = transferProps.routerParams
   const formType = useStore((state) => state.poolDeposit.formType)
   const resetState = useStore((state) => state.poolDeposit.resetState)

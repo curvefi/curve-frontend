@@ -7,7 +7,6 @@ import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-import networks from '@/networks'
 import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 
@@ -63,6 +62,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const themeType = useStore((state) => state.themeType)
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
+  const network = useStore((state) => state.networks.networks[rChainId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
 
   const poolDataCachedOrApi = poolData ?? poolDataCached
@@ -125,7 +125,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
           isMobile={isXSmDown}
           result={searchedByAddresses}
           searchTermMapper={parsedSearchTermMapper}
-          scanAddressPath={networks[rChainId].scanAddressPath}
+          scanAddressPath={network.scanAddressPath}
         />
       )}
     </>

@@ -1,15 +1,12 @@
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
-
 import { copyToClipboard } from '@/lib/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { haveRewardsApy } from '@/utils/utilsCurvejs'
 import { shortenTokenName } from '@/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-
 import { LARGE_APY } from '@/constants'
 import { Chip } from '@/ui/Typography'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
@@ -34,8 +31,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
-
-  const { isLite } = networks[chainId]
+  const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
@@ -119,7 +115,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
                 return (
                   <StyledStyledStats key={symbol} flex flexJustifyContent="space-between" padding>
                     <Box flex flexAlignItems="center">
-                      <StyledExternalLink href={chainId ? networks[chainId].scanTokenPath(tokenAddress) : ''}>
+                      <StyledExternalLink href={chainId ? scanTokenPath(tokenAddress) : ''}>
                         <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
                           {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
                         </TokenWrapper>

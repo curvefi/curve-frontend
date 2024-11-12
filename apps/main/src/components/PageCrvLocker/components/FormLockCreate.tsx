@@ -1,11 +1,9 @@
 import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
@@ -14,9 +12,7 @@ import { formatNumber } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import dayjs from '@/lib/dayjs'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import AlertFormError from '@/components/AlertFormError'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
 import FormActions from '@/components/PageCrvLocker/components/FormActions'
@@ -38,6 +34,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const fetchStepCreate = useStore((state) => state.lockedCrv.fetchStepCreate)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -115,7 +112,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
           const txDescription = t`Successfully locked ${resp.lockedAmt} CRV until ${resp.lockedDate}`
-          setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+          setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
         }
         if (typeof dismiss === 'function') dismiss()
       }

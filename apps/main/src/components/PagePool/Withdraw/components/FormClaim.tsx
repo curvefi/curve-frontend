@@ -1,18 +1,14 @@
 import type { FormStatus, FormValues } from '@/components/PagePool/Withdraw/types'
 import type { Step } from '@/ui/Stepper/types'
 import type { TransferProps } from '@/components/PagePool/types'
-
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { t, Trans } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/components/PagePool/Withdraw/utils'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
@@ -35,6 +31,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -65,12 +62,12 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepClaim(activeKey, curve, poolData)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const claimedLabel = formStatus.isClaimCrv
           ? 'CRV'
           : `${formValues.claimableRewards.map((r) => r.symbol).join(', ')} rewards`
         const TxDescription = `Claimed ${claimedLabel}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

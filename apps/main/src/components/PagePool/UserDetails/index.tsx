@@ -1,15 +1,11 @@
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import { shortenTokenAddress } from '@/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'

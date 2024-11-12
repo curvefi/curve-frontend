@@ -251,7 +251,8 @@ async function calcBasePlusPriority(
     basePlusPriority: [] as number[],
   }
 
-  if (networks[curve.chainId].gasL2) {
+  const network = networks[curve.chainId]
+  if (network.gasL2) {
     const url = networks['1'].gasPricesUrl
     const fetchedData = await httpFetcher(url)
     const { eip1559Gas: gasInfo } = fetchedData?.data ?? {}
@@ -259,7 +260,7 @@ async function calcBasePlusPriority(
     result.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
     result.basePlusPriorityL1 = [gasInfo.base * 6000]
 
-    const { l2GasPriceWei, l1GasPriceWei } = await api.helpers.fetchL1AndL2GasPrice(curve)
+    const { l2GasPriceWei, l1GasPriceWei } = await api.helpers.fetchL1AndL2GasPrice(curve, network)
     result.l1GasPriceWei = l1GasPriceWei
     result.l2GasPriceWei = l2GasPriceWei
   } else if (gasFeeDataWei.gasPrice) {

@@ -5,13 +5,9 @@ import {
   SelectTokenFormValues,
   TokensInPoolState,
 } from '@/components/PageCreatePool/types'
-
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
-import networks from '@/networks'
-
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -24,12 +20,12 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-
 import ComboBoxTokenPicker from '@/components/PageCreatePool/SelectTokenModal/ComboBoxTokenPicker'
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
 import Icon from '@/ui/Icon'
 import Button from '@/ui/Button'
+import { Key } from 'react'
 
 type Props = {
   curve: CurveApi
@@ -57,6 +53,7 @@ const SelectToken = ({
   removeToken,
 }: Props) => {
   const { updateNgAssetType, swapType, clearToken, tokensInPool } = useStore((state) => state.createPool)
+  const network = useStore((state) => state.networks.networks[chainId])
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`
@@ -79,7 +76,7 @@ const SelectToken = ({
           <p>{t`Token C`}</p>
           <Box flex>
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-            {((swapType === CRYPTOSWAP && networks[chainId].twocryptoFactory) || swapType === STABLESWAP) &&
+            {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) &&
               removeToken && (
                 <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C, tokensInPool)}>
                   <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
@@ -109,13 +106,13 @@ const SelectToken = ({
         haveSigner={haveSigner}
         disabledKeys={disabledTokens}
         chainId={chainId}
-        imageBaseUrl={networks[chainId]?.imageBaseUrl || ''}
+        imageBaseUrl={network?.imageBaseUrl || ''}
         tokens={selTokens}
         selectedAddress={token.address}
-        onSelectionChange={(value: React.Key) => handleInpChange(tokenId, value as string, tokensInPool)}
+        onSelectionChange={(value: Key) => handleInpChange(tokenId, value as string, tokensInPool)}
       />
       {swapType === STABLESWAP &&
-        (networks[chainId].stableswapFactory || networks[chainId].stableswapFactoryOld) &&
+        (network.stableswapFactory || network.stableswapFactoryOld) &&
         !token.basePool && (
           <StableSwapTogglesRow>
             <StyledCheckbox

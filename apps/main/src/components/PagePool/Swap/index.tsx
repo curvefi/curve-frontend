@@ -1,22 +1,18 @@
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_EXCHANGE_OUTPUT, DEFAULT_EST_GAS, getSwapTokens } from '@/components/PagePool/Swap/utils'
 import { NETWORK_TOKEN, REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import cloneDeep from 'lodash/cloneDeep'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
-
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
@@ -83,6 +79,7 @@ const Swap = ({
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -131,11 +128,11 @@ const Swap = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepSwap(actionActiveKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={networks[curve.chainId].scanTxPath(resp.hash)}
+            txHash={network.scanTxPath(resp.hash)}
             onClose={() => {
               updateFormValues({}, null, null)
             }}
@@ -144,7 +141,7 @@ const Swap = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues]
+    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network]
   )
 
   const getSteps = useCallback(
@@ -484,7 +481,7 @@ const Swap = ({
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <div>
             <Checkbox
-              isDisabled={isDisabled || !poolData || networks[rChainId].poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
+              isDisabled={isDisabled || !poolData || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
               isSelected={formValues.isWrapped}
               onChange={(isWrapped) => {
                 if (poolData) {

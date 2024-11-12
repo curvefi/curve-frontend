@@ -2,7 +2,6 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import { t } from '@lingui/macro'
 import React, { useCallback } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-
 import { zeroAddress } from 'viem'
 import { addGaugeRewardTokenValidationSuite } from '@/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/features/add-gauge-reward-token/types'
@@ -12,12 +11,11 @@ import {
   useGaugeRewardsDistributors,
   useIsDepositRewardAvailable
 } from '@/entities/gauge'
-
 import { useSignerAddress } from '@/entities/signer'
 import { formDefaultOptions } from '@/shared/model/form'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/shared/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'
-import networks from '@/networks'
+import useStore from '@/store/useStore'
 import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 import TxInfoBar from '@/ui/TxInfoBar'
 
@@ -49,6 +47,8 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
     isSuccess: isSuccessAddRewardToken,
     data: addRewardTokenData,
   } = useAddRewardToken({ chainId, poolId })
+
+  const network = useStore((state) => state.networks.networks[chainId])
 
   const onSubmit = useCallback(
     ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
@@ -83,7 +83,7 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
           <EstimatedGasInfo chainId={chainId} poolId={poolId} />
           <FormActions chainId={chainId} poolId={poolId} />
           {isSuccessAddRewardToken && addRewardTokenData && (
-            <TxInfoBar description={t`Reward token added`} txHash={networks[chainId].scanTxPath(addRewardTokenData)} />
+            <TxInfoBar description={t`Reward token added`} txHash={network.scanTxPath(addRewardTokenData)} />
           )}
           <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
         </FormContainer>

@@ -7,23 +7,19 @@ import type {
   Slippage,
   TransferFormType,
 } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { REFRESH_INTERVAL, ROUTE } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokensMapper from '@/hooks/useTokensMapper'
-import networks from '@/networks'
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getChainPoolIdActiveKey } from '@/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { useNavigate } from 'react-router-dom'
-
 import Deposit from '@/components/PagePool/Deposit'
 import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/components/PagePool/Swap'
@@ -46,7 +42,6 @@ import { ExternalLink } from '@/ui/Link'
 import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import { Chip } from '@/ui/Typography'
-
 import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
@@ -74,7 +69,7 @@ const DEFAULT_SEED: Seed = {
   loaded: false,
 }
 
-const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
+const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
@@ -113,10 +108,9 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const { isLite, imageBaseUrl } = networks[rChainId]
+  const { imageBaseUrl, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
   const poolAddress = poolData?.pool.address
 
-  const pricesApi = networks[rChainId].pricesApi
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
 
   const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
@@ -221,7 +215,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     }
     return (
       <AppPageFormTitleWrapper>
-        <StyledExternalLink href={networks[rChainId].scanAddressPath(pool.address)}>
+        <StyledExternalLink href={scanAddressPath(pool.address)}>
           <Title as="h1">{pool?.name || ''}</Title>
         </StyledExternalLink>
         {pool?.referenceAsset && <StyledChip>{referenceAsset[pool.referenceAsset] ?? pool.referenceAsset}</StyledChip>}
@@ -257,7 +251,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
         </PriceAndTradesExpandedContainer>
       )}
 
-      <Wrapper isAdvanceMode chartExpanded={chartExpanded}>
+      <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper navHeight={navHeight} className="grid-transfer">
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
@@ -384,7 +378,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
               poolData &&
               snapshotsMapper[poolData.pool.address] !== undefined &&
               !basePoolsLoading && (
-                <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
+                <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />
               )}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
@@ -431,7 +425,7 @@ const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
   margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
-    margin-top: none;
+    margin-top: 0;
     margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {

@@ -1,11 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
-import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { shortenTokenAddress } from '@/utils'
 import { useNavigate } from 'react-router-dom'
-
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -19,6 +16,7 @@ type Props = {
 
 const ProcessSummary = ({ chainId }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
+  const networks = useStore((state) => state.networks.networks)
 
   const navigate = useNavigate()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
