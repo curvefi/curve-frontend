@@ -22,10 +22,10 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
   const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
+  const setNetworkNativeTokens = useStore((state) => state.networks.setNetworkNativeTokens)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateNetworkNativeTokens = useStore((state) => state.networks.updateNetworkNativeTokens)
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const { rChainId } = useNetworkFromUrl()
@@ -46,7 +46,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
           if (api) {
             updateCurveJs(api, prevCurveApi, wallet)
-            updateNetworkNativeTokens(api)
+            setNetworkNativeTokens(api)
           }
 
           updateConnectState(api ? 'success' : '', '')
@@ -56,7 +56,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateNetworkNativeTokens, wallet],
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, setNetworkNativeTokens, wallet],
   )
 
   const handleConnectWallet = useCallback(
