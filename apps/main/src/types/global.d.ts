@@ -10,7 +10,6 @@ import type curveApi from '@curvefi/api'
 
 import { ethers } from 'ethers'
 import React from 'react'
-import curvejsApi from '@/lib/curvejs'
 import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {
@@ -67,6 +66,9 @@ declare global {
     hasFactory: boolean
     pricesApi: boolean
   }
+
+  type NetworkAliases = { crv: string }
+  type NativeToken = { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
 
   type Networks = Record<ChainId, NetworkConfig>
 
@@ -167,13 +169,6 @@ declare global {
   type TokensMapper = { [tokenAddress: string]: Token | undefined }
   type TokensNameMapper = { [tokenAddress: string]: string }
   type UserBalancesMapper = { [tokenAddress: string]: string | undefined }
-  type UserToken = {
-    address: string
-    userBalance: string
-    userBalanceUsd: number
-    usdRate: number | undefined
-  }
-  type UserTokensMapper = { [tokenAddress: string]: UserToken }
 
   type GaugeStatus = { rewardsNeedNudging: boolean; areCrvRewardsStuckInBridge: boolean }
 
@@ -238,8 +233,6 @@ declare global {
       referenceAsset: string
     }
   }
-
-  type PricesApiPoolDataMapper = { [poolAddress: string]: PricesApiPoolData }
 
   type PricesApiPoolData = {
     name: string

@@ -1,4 +1,4 @@
-import type { PageVecrv, FormEstGas, FormStatus, FormValues, FormType, StepKey } from '@/components/PageCrvLocker/types'
+import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
 import type { Step } from '@/ui/Stepper/types'
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
@@ -28,7 +28,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -41,7 +41,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues]
+    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
 
   const handleBtnClickApproval = useCallback(
@@ -51,7 +51,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType]
+    [fetchStepApprove, notifyNotification, rFormType],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -66,7 +66,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepIncreaseCrv, notifyNotification]
+    [fetchStepIncreaseCrv, network, notifyNotification],
   )
 
   const getSteps = useCallback(
@@ -76,7 +76,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       formEstGas: FormEstGas,
       formValues: FormValues,
       formStatus: FormStatus,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const isValid =
         +formValues.lockedAmt > 0 && formValues.lockedAmtError === '' && !formStatus.error && !formEstGas.loading
@@ -94,7 +94,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           status: getStepStatus(
             formStatus.formTypeCompleted === 'INCREASE_CRV',
             formStatus.step === 'INCREASE_CRV',
-            isValid && formStatus.isApproved
+            isValid && formStatus.isApproved,
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_CRV' ? t`Lock Amount Increased` : t`Increase Lock Amount`,
@@ -112,7 +112,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleBtnClickApproval, handleBtnClickIncrease]
+    [handleBtnClickApproval, handleBtnClickIncrease],
   )
 
   // onMount

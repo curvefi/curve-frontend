@@ -22,7 +22,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
   const curve = useStore((state) => state.curve)
   const connectState = useStore((state) => state.connectState)
-  const setNetworkNativeTokens = useStore((state) => state.networks.setNetworkNativeTokens)
+  const setNetworkConfigs = useStore((state) => state.networks.setNetworkConfigs)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
@@ -45,8 +45,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           const api = await initCurveJs(chainId, useWallet ? wallet : null)
 
           if (api) {
+            setNetworkConfigs(api)
             updateCurveJs(api, prevCurveApi, wallet)
-            setNetworkNativeTokens(api)
           }
 
           updateConnectState(api ? 'success' : '', '')
@@ -56,7 +56,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, setNetworkNativeTokens, wallet],
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, setNetworkConfigs, wallet],
   )
 
   const handleConnectWallet = useCallback(
@@ -121,7 +121,16 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, networks, parsedParams.rChainId, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState]
+    [
+      connect,
+      navigate,
+      networks,
+      parsedParams.rChainId,
+      parsedParams.rLocalePathname,
+      parsedParams.restFullPathname,
+      setChain,
+      updateConnectState,
+    ],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -162,7 +171,15 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, networks, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState, wallet]
+    [
+      navigate,
+      networks,
+      parsedParams.rLocalePathname,
+      parsedParams.restFullPathname,
+      setChain,
+      updateConnectState,
+      wallet,
+    ],
   )
 
   // onMount

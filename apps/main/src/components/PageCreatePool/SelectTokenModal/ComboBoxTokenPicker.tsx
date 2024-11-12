@@ -11,7 +11,6 @@ import { breakpoints } from '@/ui/utils/responsive'
 import { delayAction, shortenTokenAddress } from '@/utils'
 import useStore from '@/store/useStore'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
-import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import ComboBox from '@/components/PageCreatePool/SelectTokenModal/ComboBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
@@ -53,6 +52,7 @@ const ComboBoxTokenPicker = ({
 
   const isMobile = useStore((state) => state.isMobile)
   const isMdUp = useStore((state) => state.isMdUp)
+  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
   const { loading } = useStore((state) => state.tokens)
   const { basePools, basePoolsLoading } = useStore((state) => state.pools)
@@ -64,9 +64,9 @@ const ComboBoxTokenPicker = ({
 
   const quickList = [
     {
-      address: NATIVE_TOKENS[chainId].wrappedAddress,
+      address: nativeToken?.wrappedAddress ?? '',
       haveSameTokenName: false,
-      symbol: NATIVE_TOKENS[chainId].wrappedSymbol,
+      symbol: nativeToken?.wrappedSymbol ?? '',
     },
     ...networks[chainId].createQuickList,
   ]
@@ -86,7 +86,7 @@ const ComboBoxTokenPicker = ({
     try {
       const token = await curve.getCoinsData([filterValue])
       const isBasePool = basePools[chainId].some(
-        (basepool) => basepool.token.toLowerCase() === filterValue.toLowerCase()
+        (basepool) => basepool.token.toLowerCase() === filterValue.toLowerCase(),
       )
       updateUserAddedTokens(filterValue, token[0].symbol, false, isBasePool)
     } catch (error) {
@@ -99,12 +99,12 @@ const ComboBoxTokenPicker = ({
   const items = useMemo(() => {
     const basePoolsFilteredTokens = filterBasepools
       ? tokens.filter((item) =>
-          basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase())
+          basePools[chainId].some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
     const filteredTokens = disabledKeys
       ? basePoolsFilteredTokens.filter(
-          (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase())
+          (item) => !disabledKeys.some((i) => i.toLowerCase() === item.address.toLowerCase()),
         )
       : basePoolsFilteredTokens
     const fuse = new Fuse<CreateToken>(filteredTokens, {
@@ -119,8 +119,8 @@ const ComboBoxTokenPicker = ({
       filterValue.length !== 42
         ? result
         : result.length !== 0 && result[0].item.address.toLowerCase() === filterValue.toLowerCase()
-        ? result
-        : []
+          ? result
+          : []
 
     settokenQueryStatus('')
     if (filterValue.length === 42 && checkedResult.length === 0) {
@@ -283,7 +283,7 @@ const ComboBoxTokenPicker = ({
                 <ItemWrapper defaultHeight="50px">
                   <LabelTextWrapper>
                     {networks[chainId].createDisabledTokens.some(
-                      (token) => token.toLowerCase() === filterValue.toLowerCase()
+                      (token) => token.toLowerCase() === filterValue.toLowerCase(),
                     ) ? (
                       <ErrorText>{t`${filterValue} is a disabled token in Pool Creation`}</ErrorText>
                     ) : (
@@ -434,7 +434,9 @@ const ComboBoxButton = styled(Button)`
 
   grid-template-columns: auto 1fr auto;
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :hover {
     color: var(--button--color);

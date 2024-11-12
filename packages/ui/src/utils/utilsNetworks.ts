@@ -19,10 +19,6 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
     campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaign-list.json',
     tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/reward-tags.json',
   },
-  layer: 2,
-  native_currency_coingecko_id: '',
-  platform_coingecko_id: '',
-  wrapped_native_token: '',
   orgUIPath: '',
 }
 
@@ -32,8 +28,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Ethereum,
     gasPricesUrl: 'https://api.curve.fi/api/getGas',
     gasPricesDefault: 1,
-    layer: 1,
-    native_currency_symbol: 'ETH',
+    nativeCurrencySymbol: 'ETH',
     rpcUrl: `https://eth.drpc.org`,
     explorerUrl: 'https://etherscan.io/',
     orgUIPath: 'https://classic.curve.fi',
@@ -43,7 +38,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Optimism,
     gasL2: true,
     rpcUrl: 'https://optimism.drpc.org',
-    native_currency_symbol: 'ETH',
+    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://optimistic.etherscan.io/',
   },
   [Chain.Gnosis]: {
@@ -51,7 +46,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     name: 'Gnosis',
     chainId: Chain.Gnosis,
     rpcUrl: 'https://rpc.gnosischain.com',
-    native_currency_symbol: 'XDAI',
+    nativeCurrencySymbol: 'XDAI',
     explorerUrl: 'https://gnosisscan.io/',
     orgUIPath: 'https://xdai.curve.fi',
   },
@@ -59,7 +54,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'moonbeam',
     chainId: Chain.Moonbeam,
     rpcUrl: 'https://moonbeam.public.blastapi.io',
-    native_currency_symbol: 'GLMR',
+    nativeCurrencySymbol: 'GLMR',
     explorerUrl: 'https://moonscan.io/',
     orgUIPath: 'https://moonbeam.curve.fi',
   },
@@ -69,7 +64,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
     rpcUrl: 'https://polygon-rpc.com',
-    native_currency_symbol: 'MATIC',
+    nativeCurrencySymbol: 'MATIC',
     explorerUrl: 'https://polygonscan.com/',
     orgUIPath: 'https://polygon.curve.fi',
   },
@@ -78,7 +73,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Kava,
     gasPricesUnit: 'UKAVA',
     rpcUrl: 'https://evm.kava.io',
-    native_currency_symbol: 'KAVA',
+    nativeCurrencySymbol: 'KAVA',
     explorerUrl: 'https://explorer.kava.io/',
     orgUIPath: 'https://kava.curve.fi',
   },
@@ -86,7 +81,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'fantom',
     chainId: Chain.Fantom,
     rpcUrl: 'https://rpc.ftm.tools/',
-    native_currency_symbol: 'FTM',
+    nativeCurrencySymbol: 'FTM',
     explorerUrl: 'https://ftmscan.com/',
     orgUIPath: 'https://ftm.curve.fi',
   },
@@ -94,7 +89,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'arbitrum',
     chainId: Chain.Arbitrum,
     rpcUrl: 'https://arb1.arbitrum.io/rpc',
-    native_currency_symbol: 'ETH',
+    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://arbiscan.io/',
     orgUIPath: 'https://arbitrum.curve.fi',
   },
@@ -105,7 +100,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     gasPricesUrl: 'https://api.avax.network/ext/bc/C/rpc',
     gasPricesDefault: 0,
     rpcUrl: 'https://api.avax.network/ext/bc/C/rpc',
-    native_currency_symbol: 'AVAX',
+    nativeCurrencySymbol: 'AVAX',
     explorerUrl: 'https://snowscan.xyz/',
     orgUIPath: 'https://avax.curve.fi',
   },
@@ -113,7 +108,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'celo',
     chainId: Chain.Celo,
     rpcUrl: 'https://forno.celo.org',
-    native_currency_symbol: 'CELO',
+    nativeCurrencySymbol: 'CELO',
     explorerUrl: 'https://celoscan.io/',
     orgUIPath: 'https://celo.curve.fi',
   },
@@ -121,7 +116,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     id: 'aurora',
     chainId: Chain.Aurora,
     rpcUrl: 'https://mainnet.aurora.dev',
-    native_currency_symbol: 'aETH',
+    nativeCurrencySymbol: 'aETH',
     explorerUrl: 'https://aurorascan.dev/',
     orgUIPath: 'https://aurora.curve.fi',
   },
@@ -130,7 +125,7 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     name: 'zkSync Era',
     chainId: Chain.ZkSync,
     rpcUrl: 'https://mainnet.era.zksync.io',
-    native_currency_symbol: 'ETH',
+    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://era.zksync.network/',
   },
   [Chain.Base]: {
@@ -138,35 +133,35 @@ export const NETWORK_BASE_CONFIG: Record<number, any> = {
     chainId: Chain.Base,
     gasL2: true,
     rpcUrl: 'https://base.drpc.org',
-    native_currency_symbol: 'ETH',
+    nativeCurrencySymbol: 'ETH',
     explorerUrl: 'https://basescan.org/',
   },
   [Chain.Bsc]: {
     id: 'bsc',
     chainId: Chain.Bsc,
     rpcUrl: 'https://bsc-dataseed1.binance.org/',
-    native_currency_symbol: 'BNB',
+    nativeCurrencySymbol: 'BNB',
     explorerUrl: 'https://bscscan.com/',
   },
   [Chain.Fraxtal]: {
     id: 'fraxtal',
     chainId: Chain.Fraxtal,
     rpcUrl: `https://rpc.frax.com`,
-    native_currency_symbol: 'frxETH',
+    nativeCurrencySymbol: 'frxETH',
     explorerUrl: 'https://fraxscan.com/',
   },
   [Chain.XLayer]: {
     id: 'x-layer',
     chainId: Chain.XLayer,
     rpcUrl: `https://rpc.xlayer.tech`,
-    native_currency_symbol: 'OKB',
+    nativeCurrencySymbol: 'OKB',
     explorerUrl: 'https://www.okx.com/web3/explorer/xlayer/',
   },
   [Chain.Mantle]: {
     id: 'mantle',
     chainId: Chain.Mantle,
     rpcUrl: `https://rpc.mantle.xyz`,
-    native_currency_symbol: 'MNT',
+    nativeCurrencySymbol: 'MNT',
     explorerUrl: 'https://mantlescan.xyz/',
   },
 }
@@ -189,7 +184,6 @@ export type BaseConfig = {
   rewards: { baseUrl: string; imageBaseUrl: string; campaignsUrl: string; tagsUrl: string }
   rpcUrl: string
   imageBaseUrl: string
-  wrappedAddress: string
   scanAddressPath: (hash: string) => string
   scanTxPath: (hash: string) => string
   scanTokenPath: (hash: string) => string
@@ -198,13 +192,13 @@ export type BaseConfig = {
 
 export function getBaseNetworksConfig(chainId: number, networkConfig: any): BaseConfig {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  const { name, explorerUrl, id, native_currency_symbol, rpcUrl, wrapped_native_token, ...rest } = config
+  const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, ...rest } = config
 
   return {
     ...rest,
     name: formatNetworkName(name || id),
     chainId,
-    symbol: native_currency_symbol,
+    symbol: nativeCurrencySymbol,
     id: id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
@@ -214,8 +208,7 @@ export function getBaseNetworksConfig(chainId: number, networkConfig: any): Base
         : `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/images/assets-${id}/`,
     logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
-    rpcUrl: rpcUrl,
-    wrappedAddress: wrapped_native_token,
+    rpcUrl,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
     scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}`,

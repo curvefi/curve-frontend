@@ -19,9 +19,10 @@ const StableswapParameters = ({ chainId }: Props) => {
     advanced,
     implementation,
   } = useStore((state) => state.createPool)
+  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
 
-  const implementations = IMPLEMENTATION_IDS(chainId)
+  const implementations = IMPLEMENTATION_IDS(nativeToken)
 
   return (
     <>

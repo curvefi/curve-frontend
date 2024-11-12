@@ -139,7 +139,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       try {
         // Get user pool list
         const { poolList } = await wallet.getUserPoolList(curve, walletAddress)
-        console.log('---user pool list', poolList, walletAddress)
 
         // no staked pools
         if (poolList.length === 0) return { dashboardDataMapper: {}, error: '' }

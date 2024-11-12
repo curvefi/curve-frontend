@@ -31,14 +31,15 @@ const Page: NextPage = () => {
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const provider = useStore((state) => state.wallet.getProvider(''))
+  const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
 
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
-  const paramsFromAddress = searchParams.get('from')?.toLowerCase() || ''
-  const paramsToAddress = searchParams.get('to')?.toLowerCase() || ''
+  const paramsFromAddress = searchParams.get('from')?.toLowerCase() || nativeToken?.address || ''
+  const paramsToAddress = searchParams.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams.get('slippage')
 
   const redirect = useCallback(
@@ -55,7 +56,7 @@ const Page: NextPage = () => {
         navigate(getPath(params, `${ROUTE.PAGE_SWAP}${pathname}`))
       }
     },
-    [location.search, navigate, params]
+    [location.search, navigate, params],
   )
 
   useEffect(() => {

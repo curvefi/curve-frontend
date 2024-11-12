@@ -53,15 +53,15 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
     },
     setTokensMapper: async (chainId, poolDatas) => {
-      const { pools, networks: {networks} } = get()
+      const { pools, networks } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
-      const { hideSmallPoolsTvl: chainTvl } = networks[chainId]
+      const { hideSmallPoolsTvl: chainTvl } = networks.networks[chainId]
       const tvlMapper = pools.tvlMapper[chainId] ?? {}
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
-      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks[chainId])
+      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let partialTokensMapper: TokensMapper = {}
@@ -145,9 +145,9 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
   }, '')
 }
 
-export function _getDefaultTokenMapper(network: NetworkConfig) {
-  if (!network.nativeTokens) return {}
-  const { address, symbol, wrappedAddress, wrappedSymbol } = network.nativeTokens
+export function _getDefaultTokenMapper(nativeToken: NativeToken | undefined) {
+  if (!nativeToken) return {}
+  const { address, symbol, wrappedAddress, wrappedSymbol } = nativeToken
   return {
     [address]: { ...DEFAULT_TOKEN, symbol: symbol, address: address },
     [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },

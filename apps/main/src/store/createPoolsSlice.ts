@@ -218,11 +218,12 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         userBalances,
         tokens,
         [sliceKey]: { poolsMapper: storedPoolsMapper },
-        networks: { networks },
+        networks,
       } = get()
 
       const { chainId } = curve
-      const { isLite, nativeTokens } = networks[chainId]
+      const { isLite } = networks.networks[chainId]
+      const nativeToken = networks.nativeToken[chainId]
 
       try {
         set(
@@ -235,7 +236,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
-          networks,
+          networks.networks[chainId],
           storedPoolsMapper[chainId] ?? {},
           storeCache.poolsMapper[chainId] ?? {},
           failedFetching24hOldVprice,
@@ -247,10 +248,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           produce((state: State) => {
             state.pools.poolsMapper[chainId] = poolsMapper
             state.tokens.tokensNameMapper[chainId] = {
-              ...nativeTokens && {
-                [nativeTokens.address]: nativeTokens.symbol,
-                [nativeTokens.wrappedAddress]: nativeTokens.wrappedSymbol,
-              },
+              ...(nativeToken && {
+                [nativeToken.address]: nativeToken.symbol,
+                [nativeToken.wrappedAddress]: nativeToken.wrappedSymbol,
+              }),
               ...parsedTokensNameMapper(poolDatas),
             }
             state.pools.haveAllPools[chainId] = true
@@ -448,8 +449,6 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           poolParameters(pool),
         ])
 
-        console.log('volume', volume)
-
         set(
           produce((state: State) => {
             state.pools.poolsMapper[chainId][pool.id].parameters = parameters
@@ -575,7 +574,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         }),
       )
 
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       const network = networks[chainId].id.toLowerCase()
 
       if (selectedChartIndex === 0 || selectedChartIndex === 1) {
@@ -679,7 +680,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       chartCombinations: PricesApiCoin[][],
       isFlipped: boolean[],
     ) => {
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       const network = networks[chainId].id.toLowerCase()
 
       if (selectedChartIndex === 0 || selectedChartIndex === 1) {
@@ -769,7 +772,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         }),
       )
 
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       const network = networks[chainId].id.toLowerCase()
 
       try {
@@ -907,14 +912,13 @@ export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
 async function getPools(
   curve: CurveApi,
   poolList: string[],
-  networks: Record<number, NetworkConfig>,
+  network: NetworkConfig,
   poolsMapper: PoolDataMapper,
   poolsMapperCached: PoolDataCacheMapper,
   failedFetching24hOldVprice: { [poolAddress: string]: boolean } | null,
 ) {
-  const { chainId, getPool } = curve
+  const { getPool } = curve
   const { getPoolData } = curvejsApi.pool
-  const network = networks[chainId]
   const { orgUIPath } = network
 
   const resp = poolList.reduce(

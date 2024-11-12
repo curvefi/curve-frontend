@@ -1,4 +1,3 @@
-import { NETWORK_CONSTANTS } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
 import React, { useEffect, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
@@ -16,6 +15,7 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
   disabled,
 }) => {
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
+  const aliasesCrv = useStore((state) => state.networks.aliases[chainId]?.crv)
   const network = useStore((state) => state.networks.networks[chainId])
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
@@ -30,11 +30,12 @@ export const TokenSelector: React.FC<{ chainId: ChainId; poolId: string; disable
       (token): token is Token =>
         token !== undefined &&
         token.decimals === 18 &&
-        ![...gaugeRewardTokens, zeroAddress, NETWORK_TOKEN, NETWORK_CONSTANTS[chainId].ALIASES.crv].some(
-          (rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address),
+        !aliasesCrv &&
+        ![...gaugeRewardTokens, zeroAddress, NETWORK_TOKEN, aliasesCrv].some((rewardToken) =>
+          isAddressEqual(rewardToken as Address, token.address as Address),
         ),
     )
-  }, [gaugeRewardsDistributors, tokensMapper, chainId])
+  }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv])
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
