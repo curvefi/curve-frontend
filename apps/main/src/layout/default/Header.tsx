@@ -9,7 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { useNetworkFromUrl, useParamsFromUrl, useRestFullPathname, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/onboard'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -53,9 +53,12 @@ const Header = () => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+  const { rNetwork } = useNetworkFromUrl()
+  const restFullPathname = useRestFullPathname()
+  const restPartialPathname = useRestPartialPathname()
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -107,7 +110,7 @@ const Header = () => {
   const handleNetworkChange = (selectedChainId: React.Key) => {
     if (rChainId !== selectedChainId) {
       const network = networks[selectedChainId as ChainId].id
-      navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+      navigate(`${rLocalePathname}/${network}/${restPartialPathname}`)
       updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
     }
   }
@@ -143,8 +146,7 @@ const Header = () => {
     locales: DEFAULT_LOCALES,
     handleChange: (selectedLocale: React.Key) => {
       const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-      const { rNetwork } = getNetworkFromUrl()
-      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+      navigate(`${locale}/${rNetwork}/${restFullPathname}`)
     },
   }
 

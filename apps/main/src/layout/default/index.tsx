@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { CONNECT_STAGE } from '@/constants'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { useNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { isFailure, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/onboard'
@@ -28,7 +28,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
 
   const [networkSwitch, setNetworkSwitch] = useState('')
 
-  const { rChainId, rNetwork } = getNetworkFromUrl()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
 
   const showSwitchNetworkMessage =
     isFailure(connectState, CONNECT_STAGE.SWITCH_NETWORK) || (!!networkSwitch && isLoading(connectState, networkSwitch))

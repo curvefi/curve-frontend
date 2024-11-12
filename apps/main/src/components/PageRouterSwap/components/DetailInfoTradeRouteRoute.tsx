@@ -9,11 +9,12 @@ import styled from 'styled-components'
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
-import networks, { networksIdMapper } from '@/networks'
 
 import { ExternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
 import TextEllipsis from '@/ui/TextEllipsis'
+import { useNetworkIdsMapper } from '@/networks'
+import useStore from '@/store/useStore'
 
 const DetailInfoTradeRouteRoute = ({
   params,
@@ -28,6 +29,8 @@ const DetailInfoTradeRouteRoute = ({
 }) => {
   const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenTokenAddress(route.inputCoinAddress) ?? ''
   const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenTokenAddress(route.outputCoinAddress) ?? ''
+  const networks = useStore((state) => state.networks.networks)
+  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const networkId = params?.network ? networksIdMapper[params.network.toLowerCase() as NetworkEnum] : null
   const network = networkId ? networks[networkId as ChainId] : null
   const { swapCustomRouteRedirect } = network || {}

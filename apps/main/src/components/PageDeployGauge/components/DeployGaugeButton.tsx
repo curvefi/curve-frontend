@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/constants'
 import useStore from '@/store/useStore'
 import { curveProps } from '@/lib/utils'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { useNetworkFromUrl } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
 import {
   TWOCOINCRYPTOSWAP,
@@ -24,16 +24,11 @@ interface Props {
   curve: CurveApi
 }
 
-type InfoLinkBar = {
-  mainnetGaugeLinkBar: React.ReactNode | null
-  sidechainGaugeLinkBar: React.ReactNode | null
-  mirrorGaugeLinkBar: React.ReactNode | null
-}
-
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const navigate = useNavigate()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
 
   const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
     useStore((state) => state.deployGauge)
@@ -43,7 +38,6 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const isLoadingApi = useStore((state) => state.isLoadingApi)
 
   const handleConnectEth = () => {
-    const { rChainId, rNetwork } = getNetworkFromUrl()
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
     updateGlobalStoreByKey('isLoadingApi', true)
     navigate(`/${window.location.hash.substring(2).replace(rNetwork, networks[1].id)}`)
