@@ -4,7 +4,6 @@ import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { shortenTokenAddress } from '@/utils'
 import { copyToClipboard } from '@/lib/utils'
 import dayjs from '@/lib/dayjs'
@@ -127,7 +126,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       <ExternalLinkTokenWrapper>
                         <StyledTokenIcon
                           size="sm"
-                          imageBaseUrl={getImageBaseUrl(rChainId)}
+                          imageBaseUrl={network?.imageBaseUrl ?? ''}
                           token={token}
                           address={poolData.tokenAddresses[idx]}
                         />

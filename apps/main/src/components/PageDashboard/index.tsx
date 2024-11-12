@@ -1,6 +1,7 @@
-import type { FormValues, DashboardTableRowProps, TableLabel } from '@/components/PageDashboard/types'
+import type { DashboardTableRowProps, FormValues, TableLabel } from '@/components/PageDashboard/types'
 import type { Params } from 'react-router'
 import type { Address } from 'viem'
+import { isAddress } from 'viem'
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -8,9 +9,7 @@ import styled from 'styled-components'
 import { ROUTE } from '@/constants'
 import { DashboardContextProvider } from '@/components/PageDashboard/dashboardContext'
 import { breakpoints } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { getPath } from '@/utils/utilsRouter'
-import { isAddress } from 'viem'
 import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 import ClassicPoolsOnlyDescription from '@/components/PageDashboard/components/ClassicPoolsOnlyDescription'
@@ -54,10 +53,9 @@ const Dashboard = ({
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
-  const { isLite } = useStore((state) => state.networks.networks[rChainId])
+  const { isLite, imageBaseUrl } = useStore((state) => state.networks.networks[rChainId])
   const { userPoolBoost } = curvejsApi.wallet
 
-  const imageBaseUrl = useMemo(() => getImageBaseUrl(rChainId), [rChainId])
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])
 
   const TABLE_LABEL: TableLabel = {

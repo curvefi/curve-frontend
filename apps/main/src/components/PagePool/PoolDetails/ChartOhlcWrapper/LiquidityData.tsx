@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import useStore from '@/store/useStore'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
@@ -37,8 +36,8 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                 <>
                   <LpEventType>{t`Add`}</LpEventType>
                   <Box flex flexColumn>
-                    {transaction.token_amounts.map((tx, index) => {
-                      return (
+                    {transaction.token_amounts.map(
+                      (tx, index) =>
                         tx !== 0 && (
                           <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
                             <Chip isBold isNumber>
@@ -49,44 +48,41 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                             <LpSymbol>{coins[index].symbol}</LpSymbol>
                             <StyledTokenIcon
                               size="sm"
-                              imageBaseUrl={getImageBaseUrl(chainId)}
+                              imageBaseUrl={network?.imageBaseUrl ?? ''}
                               token={coins[index].address}
                               address={
                                 tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
                               }
                             />
                           </LpAssetRow>
-                        )
-                      )
-                    })}
+                        ),
+                    )}
                   </Box>
                 </>
               ) : (
                 <>
                   <LpEventType className="remove">{t`Remove`}</LpEventType>
                   <LpTokensContainer>
-                    {transaction.token_amounts.map((tx, index) => {
-                      return (
-                        tx !== 0 && (
-                          <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
-                            <Chip isBold isNumber>
-                              {formatNumber(transaction.token_amounts[index], {
-                                ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
-                              })}
-                            </Chip>
-                            <LpSymbol>{coins[index].symbol}</LpSymbol>
-                            <StyledTokenIcon
-                              size="sm"
-                              imageBaseUrl={getImageBaseUrl(chainId)}
-                              token={coins[index].address}
-                              address={
-                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
-                              }
-                            />
-                          </LpAssetRow>
-                        )
-                      )
-                    })}
+                    {transaction.token_amounts.map(
+                      (tx, index) => tx !== 0 && (
+                        <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
+                          <Chip isBold isNumber>
+                            {formatNumber(transaction.token_amounts[index], {
+                              ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
+                            })}
+                          </Chip>
+                          <LpSymbol>{coins[index].symbol}</LpSymbol>
+                          <StyledTokenIcon
+                            size="sm"
+                            imageBaseUrl={network?.imageBaseUrl ?? ''}
+                            token={coins[index].address}
+                            address={
+                              tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
+                            }
+                          />
+                        </LpAssetRow>
+                      ),
+                    )}
                   </LpTokensContainer>
                 </>
               )}

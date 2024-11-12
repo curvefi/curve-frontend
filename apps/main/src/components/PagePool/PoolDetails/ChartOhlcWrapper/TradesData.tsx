@@ -1,7 +1,6 @@
 import type { LpTradesData, LpTradeToken } from '@/ui/Chart/types'
 import styled from 'styled-components'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
@@ -15,64 +14,60 @@ const TradesData: React.FC<{ lpTradesData: LpTradesData[]; chainId: ChainId; tra
   tradesTokens,
 }) => {
   const network = useStore((state) => state.networks.networks[chainId])
-  return (
-    <>
-      {lpTradesData.map((transaction, index) => {
-        const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
-        const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
+  return lpTradesData.map((transaction, index) => {
+    const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
+    const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
 
-        return (
-          <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
-            <Event href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
-              <TradeFrom>
-                <StyledTokenIcon
-                  size="sm"
-                  imageBaseUrl={getImageBaseUrl(chainId)}
-                  token={soldToken?.address ?? transaction.token_sold}
-                  address={soldToken?.address ?? transaction.token_sold}
-                />
-                <Box flex flexColumn>
-                  <TradeFromSymbol>{soldToken?.symbol ?? transaction.token_sold_symbol}</TradeFromSymbol>
-                  <TradeFromAmount>
-                    <Chip isBold isNumber>
-                      {formatNumber(transaction.tokens_sold, {
-                        ...getFractionDigitsOptions(transaction.tokens_sold, 2),
-                      })}
-                    </Chip>
-                  </TradeFromAmount>
-                </Box>
-              </TradeFrom>
-              <Arrow>→</Arrow>
-              <TradeTo>
-                <Box flex flexColumn>
-                  <TradeToSymbol>{boughtToken?.symbol ?? transaction.token_bought_symbol}</TradeToSymbol>
-                  <TradeToAmount>
-                    <Chip isBold isNumber>
-                      {formatNumber(transaction.tokens_bought, {
-                        ...getFractionDigitsOptions(transaction.tokens_bought, 2),
-                      })}
-                    </Chip>
-                  </TradeToAmount>
-                </Box>
-                <StyledTokenIcon
-                  className="bought"
-                  size="sm"
-                  imageBaseUrl={getImageBaseUrl(chainId)}
-                  token={boughtToken?.address ?? transaction.token_bought}
-                  address={boughtToken?.address ?? transaction.token_bought}
-                />
-              </TradeTo>
-            </Event>
-            <TimestampColumn>
-              <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
-                {convertTimeAgo(transaction.time)}
-              </Tooltip>
-            </TimestampColumn>
-          </TransactionRow>
-        )
-      })}
-    </>
-  )
+    return (
+      <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
+        <Event href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
+          <TradeFrom>
+            <StyledTokenIcon
+              size="sm"
+              imageBaseUrl={network?.imageBaseUrl ?? ''}
+              token={soldToken?.address ?? transaction.token_sold}
+              address={soldToken?.address ?? transaction.token_sold}
+            />
+            <Box flex flexColumn>
+              <TradeFromSymbol>{soldToken?.symbol ?? transaction.token_sold_symbol}</TradeFromSymbol>
+              <TradeFromAmount>
+                <Chip isBold isNumber>
+                  {formatNumber(transaction.tokens_sold, {
+                    ...getFractionDigitsOptions(transaction.tokens_sold, 2),
+                  })}
+                </Chip>
+              </TradeFromAmount>
+            </Box>
+          </TradeFrom>
+          <Arrow>→</Arrow>
+          <TradeTo>
+            <Box flex flexColumn>
+              <TradeToSymbol>{boughtToken?.symbol ?? transaction.token_bought_symbol}</TradeToSymbol>
+              <TradeToAmount>
+                <Chip isBold isNumber>
+                  {formatNumber(transaction.tokens_bought, {
+                    ...getFractionDigitsOptions(transaction.tokens_bought, 2),
+                  })}
+                </Chip>
+              </TradeToAmount>
+            </Box>
+            <StyledTokenIcon
+              className="bought"
+              size="sm"
+              imageBaseUrl={network?.imageBaseUrl ?? ''}
+              token={boughtToken?.address ?? transaction.token_bought}
+              address={boughtToken?.address ?? transaction.token_bought}
+            />
+          </TradeTo>
+        </Event>
+        <TimestampColumn>
+          <Tooltip tooltip={`${convertTime(transaction.time)} ${convertFullTime(transaction.time)}`}>
+            {convertTimeAgo(transaction.time)}
+          </Tooltip>
+        </TimestampColumn>
+      </TransactionRow>
+    )
+  })
 }
 
 const TransactionRow = styled.div`
