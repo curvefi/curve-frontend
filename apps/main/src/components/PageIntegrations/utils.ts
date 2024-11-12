@@ -1,10 +1,11 @@
 import type { FilterKey } from '@/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@/ui/Integration/types'
-import { visibleNetworksList } from '@/networks'
+import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
 
 export function parseSearchParams(
   searchParams: URLSearchParams | undefined,
   rChainId: ChainId | '',
+  visibleNetworksList: Iterable<SelectNetworkItem>,
   integrationsTags: IntegrationsTags | null,
 ) {
   const pFilterKey = searchParams?.get('filter')

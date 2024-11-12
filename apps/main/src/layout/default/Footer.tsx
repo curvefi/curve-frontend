@@ -89,7 +89,7 @@ interface ResourcesSectionProps extends InnerSectionProps {
 
 export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesSectionProps) => {
   const networks = useStore((state) => state.networks.networks)
-  const orgUIPath = networks[chainId ?? 1].orgUIPath
+  const orgUIPath = networks[chainId ?? 1]?.orgUIPath
 
   return (
     <ResourcesWrapper className={className} $columnCount={columnCount}>

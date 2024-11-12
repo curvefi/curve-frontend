@@ -2,9 +2,10 @@ import type { Params } from 'react-router'
 
 import { MAIN_ROUTE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES, Locale, parseLocale } from '@/lib/i18n'
-import networks, { networksIdMapper } from '@/networks'
+import useStore from '@/store/useStore'
+import { useMemo } from 'react'
 
-export function getPath({ locale, network, ...rest }: Params, rerouteRoute: string) {
+export function getPath({ locale, network }: Params, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)
   const parsedNetwork = network ? `/${network}` : ''
   return parsedLocale && parsedLocale !== 'en'
@@ -12,12 +13,12 @@ export function getPath({ locale, network, ...rest }: Params, rerouteRoute: stri
     : `${parsedNetwork}${rerouteRoute}`
 }
 
-export function parseParams(params: Params, chainIdNotRequired?: boolean) {
+export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
   const { pool, transfer, lockedCrvFormType } = params
   const paths = window.location.hash.substring(2).split('/')
 
   const locale = getLocaleFromUrl()
-  const network = getNetworkFromUrl()
+  const network = useNetworkFromUrl()
 
   // subdirectory
   let rSubdirectory = ROUTE.PAGE_SWAP.substring(1)
@@ -81,7 +82,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
     rPoolId,
     rFormType,
     redirectPathname,
-    restFullPathname: getRestFullPathname(),
+    restFullPathname: useRestFullPathname(),
   } as RouterParams
 }
 
@@ -101,47 +102,52 @@ export function getLocaleFromUrl() {
   return resp
 }
 
-export function getNetworkFromUrl() {
-  const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
-  const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
+export function useNetworkFromUrl() {
+  const networks = useStore((state) => state.networks.networks)
+  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
+  const hash = window.location.hash
+  return useMemo(() =>{
+    const restPathnames = hash?.substring(2)?.split('/') ?? []
+    const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
+    const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum
 
-  if (networksIdMapper[firstPath]) {
-    const rChainId = networksIdMapper[firstPath]
-    return {
-      rNetworkIdx: 0,
-      rNetwork: networks[rChainId].id,
-      rChainId,
+    if (networksIdMapper[firstPath]) {
+      const rChainId = networksIdMapper[firstPath]
+      return {
+        rNetworkIdx: 0,
+        rNetwork: networks[rChainId].id,
+        rChainId,
+      }
+    } else if (networksIdMapper[secondPath]) {
+      const rChainId = networksIdMapper[secondPath]
+      return {
+        rNetworkIdx: 1,
+        rNetwork: networks[rChainId].id,
+        rChainId,
+      }
+    } else {
+      return {
+        rNetworkIdx: -1,
+        rNetwork: networks[1].id,
+        rChainId: 1 as const,
+      }
     }
-  } else if (networksIdMapper[secondPath]) {
-    const rChainId = networksIdMapper[secondPath]
-    return {
-      rNetworkIdx: 1,
-      rNetwork: networks[rChainId].id,
-      rChainId,
-    }
-  } else {
-    return {
-      rNetworkIdx: -1,
-      rNetwork: networks[1].id,
-      rChainId: 1 as const,
-    }
-  }
+  }, [networks, networksIdMapper, hash])
 }
 
-export function getRestFullPathname() {
+export function useRestFullPathname() {
   const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  const { rNetworkIdx } = getNetworkFromUrl()
+  const { rNetworkIdx } = useNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
 }
 
-export function getRestPartialPathname() {
+export function useRestPartialPathname() {
   let restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
   const lastIdx = restPathnames.length - 1
   if (restPathnames[lastIdx] && restPathnames[lastIdx].includes('?')) {
     restPathnames[lastIdx] = restPathnames[lastIdx].split('?')[0]
   }
-  const { rNetworkIdx } = getNetworkFromUrl()
+  const { rNetworkIdx } = useNetworkFromUrl()
   let endIdx = restPathnames.length
   let found = false
   ;['pools', 'swap'].forEach((p) => {
@@ -153,6 +159,6 @@ export function getRestPartialPathname() {
   return restPathnames.slice(rNetworkIdx + 1, endIdx).join('/')
 }
 
-export function getParamsFromUrl() {
-  return { ...getNetworkFromUrl(), ...getLocaleFromUrl() }
+export function useParamsFromUrl() {
+  return { ...useNetworkFromUrl(), ...getLocaleFromUrl() }
 }

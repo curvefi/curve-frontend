@@ -2,6 +2,7 @@ import { Chain } from '@/shared/curve-lib'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
 import sortBy from 'lodash/sortBy'
+import useStore from '@/store/useStore'
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
@@ -366,8 +367,7 @@ const networksConfig = {
   },
 }
 
-// TODO: how to call `curve.getCurveLiteNetworks()` here?
-export const networks = Object.entries(networksConfig).reduce(
+export const defaultNetworks = Object.entries(networksConfig).reduce(
   (prev, [key, config]) => {
     const chainId = Number(key) as ChainId
 
@@ -381,23 +381,13 @@ export const networks = Object.entries(networksConfig).reduce(
   {} as Record<ChainId, NetworkConfig>,
 )
 
-export const networksIdMapper = Object.entries(networks).reduce(
-  (prev, [chainId, { networkId }]) => {
-    prev[networkId] = Number(chainId)
-    return prev
-  },
-  {} as Record<string, number>,
-)
-
-const selectNetworkList = Object.values(networks)
-  .filter(({ showInSelectNetwork }) => showInSelectNetwork)
-  .map((networkConfig) => ({
-    label: networkConfig.name,
-    chainId: networkConfig.chainId,
-    src: networkConfig.logoSrc,
-    srcDark: networkConfig.logoSrcDark,
-  }))
-
-export const visibleNetworksList: Iterable<SelectNetworkItem> = sortBy(selectNetworkList, (n) => n.label)
-
-export default networks
+export const useNetworkIdsMapper = () => {
+  const networks = useStore((state) => state.networks.networks)
+  return Object.entries(networks).reduce(
+    (prev, [chainId, { networkId }]) => {
+      prev[networkId] = Number(chainId)
+      return prev
+    },
+    {} as Record<string, number>,
+  )
+}

@@ -9,11 +9,10 @@ import { useConnectWallet, useSetChain, useSetLocale } from '@/onboard'
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
-import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
+import { useNetworkFromUrl, useParsedParams } from '@/utils/utilsRouter'
 import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
 import { initCurveJs } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
-import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
@@ -27,10 +26,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const networks = useStore((state) => state.networks.networks)
+  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
+  const { rChainId } = useNetworkFromUrl()
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
-  const parsedParams = parseParams(params, chainIdNotRequired)
+  const parsedParams = useParsedParams(params, chainIdNotRequired)
 
   const handleConnectCurveApi = useCallback(
     async (options: ConnectState['options']) => {
@@ -61,7 +63,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     async (options: ConnectState['options']) => {
       if (options) {
         const [walletName] = options
-        let walletState: Wallet | null = null
+        let walletState: Wallet | null
 
         if (walletName) {
           // If found label in localstorage, after 30s if not connected, reconnect with modal
@@ -119,7 +121,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState],
+    [connect, navigate, networks, parsedParams.rChainId, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState]
   )
 
   const handleDisconnectWallet = useCallback(
@@ -160,7 +162,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet],
+    [navigate, networks, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState, wallet]
   )
 
   // onMount
@@ -179,7 +181,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         if (walletName) {
           updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, [walletName])
         } else {
-          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [getNetworkFromUrl().rChainId, false])
+          updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [rChainId, false])
         }
       }
     }

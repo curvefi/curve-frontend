@@ -12,7 +12,6 @@ import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { parseSearchParams } from '@/components/PageIntegrations/utils'
-import networks, { networksIdMapper, visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 
 import Box from '@/ui/Box'
@@ -43,8 +42,11 @@ const IntegrationsComp = ({
   const integrationsList = useStore((state) => state.integrations.integrationsList)
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
+  const networks = useStore((state) => state.networks.networks)
+  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
+  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
-  const { filterKey, filterNetworkId } = parseSearchParams(searchParams, rChainId, integrationsTags)
+  const { filterKey, filterNetworkId } = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
@@ -55,7 +57,7 @@ const IntegrationsComp = ({
 
   const updatePath = useCallback(
     ({ filterKey, filterNetworkId }: { filterKey?: React.Key; filterNetworkId?: React.Key }) => {
-      const pSearchParams = parseSearchParams(searchParams, rChainId, integrationsTags)
+      const pSearchParams = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
       let pathname = getPath(params, `${ROUTE.PAGE_INTEGRATIONS}`)
 
       // get filter Key
@@ -70,7 +72,7 @@ const IntegrationsComp = ({
 
       navigate(pathname)
     },
-    [integrationsTags, navigate, params, rChainId, searchParams],
+    [integrationsTags, navigate, params, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {

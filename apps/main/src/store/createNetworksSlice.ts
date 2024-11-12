@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import { getBaseNetworksConfig } from '@/ui/utils'
 import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
 import curve from '@curvefi/api'
-import defaultNetworks, { DEFAULT_NETWORK_CONFIG } from '@/networks'
+import { defaultNetworks, DEFAULT_NETWORK_CONFIG } from '@/networks'
 import sortBy from 'lodash/sortBy'
 
 type StateKey = keyof typeof DEFAULT_STATE
