@@ -246,7 +246,7 @@ async function calcBasePlusPriority(
     gasPrice: number | null
     max: number[] | null
     priority: number[] | null
-  }
+  },
 ) {
   let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],
@@ -260,7 +260,7 @@ async function calcBasePlusPriority(
     result.basePlusPriority = gasFeeDataWei.gasPrice ? [gasFeeDataWei.gasPrice] : []
     result.basePlusPriorityL1 = [gasInfo.base * 6000]
 
-    const { l2GasPriceWei, l1GasPriceWei } = await networks[curve.chainId].api.helpers.fetchL1AndL2GasPrice(curve)
+    const { l2GasPriceWei, l1GasPriceWei } = await api.helpers.fetchL1AndL2GasPrice(curve)
     result.l1GasPriceWei = l1GasPriceWei
     result.l2GasPriceWei = l2GasPriceWei
   } else if (gasFeeDataWei.gasPrice) {

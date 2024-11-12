@@ -7,6 +7,7 @@ import styled from 'styled-components'
 
 import { copyToClipboard } from '@/lib/utils'
 import { getErrorMessage, shortenTokenAddress } from '@/utils'
+import curvejsApi from '@/lib/curvejs'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -63,7 +64,7 @@ const Compensation = ({
         setStep('claiming')
         await fetchGasInfo(curve)
         const hash = await contract.claim()
-        await networks[curve.chainId].api.helpers.waitForTransaction(hash, provider)
+        await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
         const txHash = networks[curve.chainId].scanTxPath(hash)
@@ -76,7 +77,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchGasInfo, curve, provider]
+    [notifyNotification, fetchGasInfo, curve, provider],
   )
 
   // reset

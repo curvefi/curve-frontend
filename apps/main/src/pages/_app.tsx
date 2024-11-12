@@ -19,7 +19,7 @@ import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/default'
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
-import networks from '@/networks'
+import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
@@ -125,8 +125,7 @@ function CurveApp({ Component }: AppProps) {
 
   const refetchPools = useCallback(
     async (curve: CurveApi) => {
-      const chainId = curve.chainId
-      const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curve)
+      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve)
       fetchPools(curve, poolIds, null)
     },
     [fetchPools],

@@ -117,7 +117,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         pool,
         formValues,
         maxSlippage,
-        ignoreExchangeRateCheck
+        ignoreExchangeRateCheck,
       )
 
       const cFormStatus = cloneDeep(sliceState.formStatus)
@@ -169,7 +169,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
         // TODO: add feature to also check router swap
         // const poolsMapper = get().pools.poolsMapper[curve.chainId]
-        // const routesAndOutputFn = networks[curve.chainId].api.router.routesAndOutput
+        // const routesAndOutputFn = curvejsApi.router.routesAndOutput
         // const {
         //   activeKey: routerSwapRespActiveKey,
         //   exchangeRates: routerSwapRespExchangeRates,
@@ -179,7 +179,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         // if (+routerSwapResp.toAmount > +cFormValues.toAmount) {
         //   let isApproved = null
         //   if (curve.signerAddress) {
-        //     const estGasApprovalFn = networks[curve.chainId].api.router.estGasApproval
+        //     const estGasApprovalFn = curvejsApi.router.estGasApproval
         //     const resp = await estGasApprovalFn(
         //       activeKey,
         //       curve,
@@ -208,7 +208,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       curve: CurveApi,
       pool: Pool,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       // stored values
       const userPoolBalances = await get()[sliceKey].fetchTokenWalletBalance(curve, pool.id, formValues.fromAddress)
@@ -224,8 +224,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         +fromAmount > 0
       ) {
         get()[sliceKey].setStateByKey('isMaxLoading', true)
-        const estGasApprovalFn = networks[curve.chainId].api.poolSwap.estGasApproval
-        const resp = await estGasApprovalFn(
+        const resp = await curvejsApi.poolSwap.estGasApproval(
           activeKey,
           curve.chainId,
           pool,
@@ -233,7 +232,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           formValues.toAddress,
           formValues.fromAddress,
           fromAmount,
-          maxSlippage
+          maxSlippage,
         )
 
         if (resp.estimatedGas) {
@@ -274,7 +273,6 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       )
         return
 
-      const chainId = curve.chainId
       const pool = poolData.pool
 
       // get max fromAmount
@@ -303,7 +301,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       get()[sliceKey].setStateByActiveKey(
         'exchangeOutput',
         activeKey,
-        cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true })
+        cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
       get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
     },
@@ -311,8 +309,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
     // steps
     fetchEstGasApproval: async (activeKey, chainId, pool, formValues, maxSlippage) => {
       const { fromAddress, toAddress, fromAmount, isWrapped } = formValues
-      const estGasApprovalFn = networks[chainId].api.poolSwap.estGasApproval
-      const resp = await estGasApprovalFn(
+      const resp = await curvejsApi.poolSwap.estGasApproval(
         activeKey,
         chainId,
         pool,
@@ -320,7 +317,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         fromAddress,
         toAddress,
         fromAmount,
-        maxSlippage
+        maxSlippage,
       )
 
       // set estimate gas state
@@ -351,8 +348,14 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
         await get().gas.fetchGasInfo(curve)
         const { fromAddress, fromAmount, isWrapped } = formValues
-        const swapApproveFn = networks[curve.chainId].api.poolSwap.swapApprove
-        const resp = await swapApproveFn(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
+        const resp = await curvejsApi.poolSwap.swapApprove(
+          activeKey,
+          provider,
+          pool,
+          isWrapped,
+          fromAddress,
+          fromAmount,
+        )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -389,8 +392,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
         await get().gas.fetchGasInfo(curve)
         const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
-        const swapFn = networks[curve.chainId].api.poolSwap.swap
-        const resp = await swapFn(
+        const resp = await curvejsApi.poolSwap.swap(
           activeKey,
           provider,
           poolData.pool,
@@ -398,7 +400,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           fromAddress,
           toAddress,
           fromAmount,
-          maxSlippage
+          maxSlippage,
         )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -482,7 +484,7 @@ function getRouterWarningModal(
     toAmount,
     fromAmount,
   }: Pick<RoutesAndOutput, 'isHighImpact' | 'isExchangeRateLow' | 'priceImpact' | 'toAmount' | 'fromAmount'>,
-  { toToken }: FormValues
+  { toToken }: FormValues,
 ) {
   const swapModalProps = getSwapActionModalType(isHighImpact, isExchangeRateLow)
   const exchangeRate = (+toAmount / +fromAmount).toString()
