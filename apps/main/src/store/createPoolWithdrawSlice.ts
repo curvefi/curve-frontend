@@ -7,7 +7,7 @@ import type { LoadMaxAmount } from '@/components/PagePool/Deposit/types'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import networks from '@/networks'
+import curvejsApi from '@/lib/curvejs'
 import { DEFAULT_SLIPPAGE } from 'components/PagePool'
 import { parseAmountsForAPI } from '@/components/PagePool/utils'
 import { isBonus, isHighSlippage, shortenTokenAddress } from '@/utils'
@@ -79,7 +79,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       let activeKey = props.activeKey
       let cFormValues = cloneDeep(formValues)
       const { pool } = poolData
-      const { chainId, signerAddress } = curve
+      const { signerAddress } = curve
 
       //  get slippage and expected
       if (+cFormValues.lpToken > 0) {
@@ -94,12 +94,12 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         // update amounts in form value
-        const resp = await networks[chainId].api.poolWithdraw.withdrawOneCoinBonusAndExpected(
+        const resp = await curvejsApi.poolWithdraw.withdrawOneCoinBonusAndExpected(
           activeKey,
           pool,
           cFormValues.isWrapped,
           cFormValues.lpToken,
-          cFormValues.selectedTokenAddress
+          cFormValues.selectedTokenAddress,
         )
         if (resp.activeKey === activeKey) {
           if (resp.error) {
@@ -138,7 +138,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
       let cFormValues = cloneDeep(formValues)
-      const { chainId, signerAddress } = curve
+      const { signerAddress } = curve
       const { pool } = poolData
 
       if (+cFormValues.lpToken > 0) {
@@ -151,11 +151,11 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         // get expected
-        const resp = await networks[chainId].api.poolWithdraw.withdrawExpected(
+        const resp = await curvejsApi.poolWithdraw.withdrawExpected(
           activeKey,
           pool,
           cFormValues.isWrapped,
-          cFormValues.lpToken
+          cFormValues.lpToken,
         )
         if (resp.error) {
           get()[sliceKey].setStateByKeys({
@@ -188,7 +188,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       let activeKey = props.activeKey
       let cFormValues = cloneDeep(formValues)
       const { pool } = poolData
-      const { chainId, signerAddress } = curve
+      const { signerAddress } = curve
 
       //  get slippage and expected
       if (cFormValues.amounts.some((a) => +a.value > 0)) {
@@ -201,11 +201,11 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         // update amounts in form value
-        const resp = await networks[chainId].api.poolWithdraw.withdrawImbalanceBonusAndExpected(
+        const resp = await curvejsApi.poolWithdraw.withdrawImbalanceBonusAndExpected(
           activeKey,
           pool,
           cFormValues.isWrapped,
-          parseAmountsForAPI(cFormValues.amounts)
+          parseAmountsForAPI(cFormValues.amounts),
         )
 
         if (resp.activeKey === activeKey) {
@@ -241,11 +241,11 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         // update amounts in form value
-        const resp = await networks[chainId].api.poolWithdraw.withdrawExpected(
+        const resp = await curvejsApi.poolWithdraw.withdrawExpected(
           activeKey,
           pool,
           cFormValues.isWrapped,
-          cFormValues.lpToken
+          cFormValues.lpToken,
         )
 
         if (resp.activeKey === activeKey) {
@@ -274,7 +274,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
     },
     fetchClaimable: async (activeKey, chainId, pool) => {
-      const resp = await networks[chainId].api.poolWithdraw.claimableTokens(activeKey, pool, chainId)
+      const resp = await curvejsApi.poolWithdraw.claimableTokens(activeKey, pool, chainId)
       const storedFormStatus = get()[sliceKey].formStatus
 
       if (get()[sliceKey].activeKey === resp.activeKey) {
@@ -360,32 +360,32 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         if (+formValues.lpToken > 0 && +walletBalances.lpToken > 0 && +walletBalances.lpToken >= +formValues.lpToken) {
           resp =
             formValues.selected === 'lpToken'
-              ? await networks[chainId].api.poolWithdraw.withdrawEstGasApproval(
-                  activeKey,
-                  chainId,
-                  pool,
-                  formValues.isWrapped,
-                  formValues.lpToken
-                )
-              : formValues.selected === 'imbalance'
-              ? await networks[chainId].api.poolWithdraw.withdrawImbalanceEstGasApproval(
-                  activeKey,
-                  chainId,
-                  pool,
-                  formValues.isWrapped,
-                  parseAmountsForAPI(formValues.amounts)
-                )
-              : await networks[chainId].api.poolWithdraw.withdrawOneCoinEstGasApproval(
+              ? await curvejsApi.poolWithdraw.withdrawEstGasApproval(
                   activeKey,
                   chainId,
                   pool,
                   formValues.isWrapped,
                   formValues.lpToken,
-                  formValues.selectedTokenAddress
                 )
+              : formValues.selected === 'imbalance'
+                ? await curvejsApi.poolWithdraw.withdrawImbalanceEstGasApproval(
+                    activeKey,
+                    chainId,
+                    pool,
+                    formValues.isWrapped,
+                    parseAmountsForAPI(formValues.amounts),
+                  )
+                : await curvejsApi.poolWithdraw.withdrawOneCoinEstGasApproval(
+                    activeKey,
+                    chainId,
+                    pool,
+                    formValues.isWrapped,
+                    formValues.lpToken,
+                    formValues.selectedTokenAddress,
+                  )
         }
       } else if (formType === 'UNSTAKE') {
-        const fn = networks[chainId].api.poolWithdraw.unstakeEstGas
+        const fn = curvejsApi.poolWithdraw.unstakeEstGas
         resp = await fn(activeKey, chainId, pool, formValues.stakedLpToken)
       }
 
@@ -418,18 +418,17 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { amounts, lpToken, selected } = formValues
         let resp
 
         if (selected === 'token' || selected === 'lpToken') {
           const fn =
             selected === 'token'
-              ? networks[chainId].api.poolWithdraw.withdrawOneCoinApprove
-              : networks[chainId].api.poolWithdraw.withdrawApprove
+              ? curvejsApi.poolWithdraw.withdrawOneCoinApprove
+              : curvejsApi.poolWithdraw.withdrawApprove
           resp = await fn(activeKey, provider, pool, lpToken)
         } else if (formValues.selected === 'imbalance') {
-          const fn = networks[chainId].api.poolWithdraw.withdrawImbalanceApprove
+          const fn = curvejsApi.poolWithdraw.withdrawImbalanceApprove
           resp = await fn(activeKey, provider, pool, parseAmountsForAPI(amounts))
         }
 
@@ -465,12 +464,11 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { pool } = poolData
         let resp
 
         if (formValues.selected === 'token') {
-          const fn = networks[chainId].api.poolWithdraw.withdrawOneCoin
+          const fn = curvejsApi.poolWithdraw.withdrawOneCoin
           resp = await fn(
             activeKey,
             provider,
@@ -478,14 +476,14 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
             formValues.isWrapped,
             formValues.lpToken,
             formValues.selectedTokenAddress,
-            maxSlippage
+            maxSlippage,
           )
         } else if (formValues.selected === 'lpToken') {
-          const fn = networks[chainId].api.poolWithdraw.withdraw
+          const fn = curvejsApi.poolWithdraw.withdraw
           resp = await fn(activeKey, provider, pool, formValues.isWrapped, formValues.lpToken, maxSlippage)
         } else if (formValues.selected === 'imbalance') {
           const amounts = parseAmountsForAPI(formValues.amounts)
-          const fn = networks[chainId].api.poolWithdraw.withdrawImbalance
+          const fn = curvejsApi.poolWithdraw.withdrawImbalance
           resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
         }
 
@@ -528,8 +526,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
         await get().gas.fetchGasInfo(curve)
         const { pool } = poolData
-        const fn = networks[curve.chainId].api.poolWithdraw.unstake
-        const resp = await fn(activeKey, provider, pool, formValues.stakedLpToken)
+        const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -569,12 +566,11 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { pool } = poolData
         const { isClaimCrv } = get()[sliceKey].formStatus
         const resp = isClaimCrv
-          ? await networks[chainId].api.poolWithdraw.claimCrv(activeKey, provider, pool)
-          : await networks[chainId].api.poolWithdraw.claimRewards(activeKey, provider, pool)
+          ? await curvejsApi.poolWithdraw.claimCrv(activeKey, provider, pool)
+          : await curvejsApi.poolWithdraw.claimRewards(activeKey, provider, pool)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -650,7 +646,7 @@ export function getActiveKey(
     selectedToken,
     selectedTokenAddress,
   }: FormValues,
-  maxSlippage: string
+  maxSlippage: string,
 ) {
   let activeKey = `${formType}-${poolId}-`
 

@@ -2,12 +2,12 @@
 // import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { Chain } from '@/shared/curve-lib'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
-import curvejsApi from '@/lib/curvejs'
+// import curvejsApi from '@/lib/curvejs'
 import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
 import sortBy from 'lodash/sortBy'
 
 export const DEFAULT_NETWORK_CONFIG = {
-  api: curvejsApi,
+  // api: curvejsApi,
   useApi: true, // default to true when calling fetchPools
   excludeTokensBalancesMapper: {}, // tokens that cause issues when getting wallet balances
   excludePoolsMapper: {}, // remove pool from pool list and pool page
