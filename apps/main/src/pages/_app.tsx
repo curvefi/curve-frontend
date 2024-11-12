@@ -49,6 +49,7 @@ function CurveApp({ Component }: AppProps) {
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
+  const network = useStore((state) => state.networks.networks[chainId])
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -125,10 +126,10 @@ function CurveApp({ Component }: AppProps) {
 
   const refetchPools = useCallback(
     async (curve: CurveApi) => {
-      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve)
+      const poolIds = await curvejsApi.network.fetchAllPoolsList(curve, network)
       fetchPools(curve, poolIds, null)
     },
-    [fetchPools],
+    [fetchPools, network],
   )
 
   usePageVisibleInterval(
