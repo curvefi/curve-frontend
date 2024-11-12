@@ -2,13 +2,10 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { Locale } from '@/lib/i18n'
 import type { ConnectState } from '@/ui/utils'
-
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils'
-import networks from '@/networks'
 import curvejsApi from '@/lib/curvejs'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -196,7 +193,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     state.updateGlobalStoreByKey('curve', curveApi)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    const { excludePoolsMapper } = networks[chainId]
+    const { excludePoolsMapper } = state.networks.networks[chainId]
 
     // get poolList
     const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi)).filter(

@@ -1,11 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import countBy from 'lodash/countBy'
-
 import { log } from '@/shared/lib/logging'
 import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -56,15 +53,15 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
     },
     setTokensMapper: async (chainId, poolDatas) => {
-      const { pools } = get()
+      const { pools, networks: {networks} } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
-      const { hideSmallPoolsTvl: chainTvl, nativeTokens } = networks[chainId]
+      const { hideSmallPoolsTvl: chainTvl } = networks[chainId]
       const tvlMapper = pools.tvlMapper[chainId] ?? {}
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
-      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(chainId)
+      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let partialTokensMapper: TokensMapper = {}
@@ -148,8 +145,9 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
   }, '')
 }
 
-export function _getDefaultTokenMapper(chainId: ChainId) {
-  const { address, symbol, wrappedAddress, wrappedSymbol } = networks[chainId].nativeTokens
+export function _getDefaultTokenMapper(network: NetworkConfig) {
+  if (!network.nativeTokens) return {}
+  const { address, symbol, wrappedAddress, wrappedSymbol } = network.nativeTokens
   return {
     [address]: { ...DEFAULT_TOKEN, symbol: symbol, address: address },
     [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },

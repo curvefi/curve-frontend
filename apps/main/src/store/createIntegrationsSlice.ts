@@ -2,14 +2,11 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { FilterKey, FormStatus, FormValues } from '@/components/PageIntegrations/types'
 import type { IntegrationApp, IntegrationsTags } from '@/ui/Integration/types'
-
 import Fuse from 'fuse.js'
 import cloneDeep from 'lodash/cloneDeep'
 import produce from 'immer'
 import sortBy from 'lodash/sortBy'
-
 import { httpFetcher } from '@/lib/utils'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -61,8 +58,9 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
   [sliceKey]: {
     ...DEFAULT_STATE,
     init: async (chainId: ChainId) => {
-      const storedTags = get()[sliceKey].integrationsTags
-      const storedList = get()[sliceKey].integrationsList
+      const state = get()
+      const { networks: { networks } } = state
+      const { integrationsList: storedList, integrationsTags: storedTags, setStateByKey } = state[sliceKey]
 
       const parsedChainId = chainId || 1
 
@@ -70,20 +68,20 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
         try {
           const integrationsList = await httpFetcher(networks[parsedChainId]?.integrations.listUrl)
           const parsedIntegrationsList = parseIntegrationsList(integrationsList)
-          get()[sliceKey].setStateByKey('integrationsList', parsedIntegrationsList)
+          setStateByKey('integrationsList', parsedIntegrationsList)
         } catch (error) {
           console.error(error)
-          get()[sliceKey].setStateByKey('integrationsList', [])
+          setStateByKey('integrationsList', [])
         }
       }
 
       if (storedTags === null) {
         try {
           const integrationsTags = await httpFetcher(networks[parsedChainId]?.integrations.tagsUrl)
-          get()[sliceKey].setStateByKey('integrationsTags', parseIntegrationsTags(integrationsTags))
+          setStateByKey('integrationsTags', parseIntegrationsTags(integrationsTags))
         } catch (error) {
           console.error(error)
-          get()[sliceKey].setStateByKey('integrationsTags', [])
+          setStateByKey('integrationsTags', [])
         }
       }
     },
@@ -94,6 +92,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       return integrationApps
     },
     filterByNetwork: (filterNetworkId: string, integrationApps: IntegrationApp[]) => {
+      const { networks: { networks } } = get()
       const networkId = networks[+filterNetworkId as ChainId]?.id
 
       if (networkId) {
@@ -149,7 +148,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

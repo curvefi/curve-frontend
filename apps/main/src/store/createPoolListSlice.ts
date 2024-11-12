@@ -10,15 +10,12 @@ import type {
   SortKey,
 } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
-
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
-
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/components/PagePoolList/utils'
 import { groupSearchTerms, searchByText } from '@/shared/curve-lib'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -150,6 +147,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
     },
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
+      const { networks: { networks } } = get()
       const { hideSmallPoolsTvl } = networks[chainId]
       return poolDatas.filter(({ pool }) => {
         return +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl
@@ -328,7 +326,9 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       userPoolList = {},
       campaignRewardsMapper,
     ) => {
-      let { formValues, result: storedResults, ...sliceState } = get()[sliceKey]
+      const state = get()
+      let { formValues, result: storedResults, ...sliceState } = state[sliceKey]
+      const { networks: { networks } } = state
       const { isLite } = networks[rChainId]
 
       const activeKey = getPoolListActiveKey(rChainId, searchParams)

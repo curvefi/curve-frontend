@@ -1,14 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import cloneDeep from 'lodash/cloneDeep'
-
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { Chain, gweiToWai } from '@/shared/curve-lib'
 import { httpFetcher } from '@/lib/utils'
 import { log } from '@/shared/lib/logging'
 import api from '@/lib/curvejs'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -47,7 +44,8 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       if (!curve) return
 
       const { chainId } = curve
-      const provider = get().wallet.getProvider('')
+      const { wallet, networks: { networks } } = get()
+      const provider = wallet.getProvider('')
       log('fetchGasInfo', chainId)
 
       try {
@@ -85,7 +83,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           if (!provider) return
 
           const { l2GasPrice } = await api.helpers.fetchL2GasPrice(curve)
-          parsedGasInfo = await parseGasInfo(curve, provider)
+          parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
           if (parsedGasInfo) {
             parsedGasInfo.gasInfo.l2GasPriceWei = gweiToWai(l2GasPrice)
@@ -104,7 +102,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           if (!provider) return
 
           const { customFeeData } = await api.helpers.fetchCustomGasFees(curve)
-          parsedGasInfo = await parseGasInfo(curve, provider)
+          parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
           if (!parsedGasInfo || !customFeeData?.maxFeePerGas || !customFeeData?.maxPriorityFeePerGas) return
 
@@ -116,7 +114,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           const provider = get().wallet.getProvider('')
 
           if (provider) {
-            parsedGasInfo = await parseGasInfo(curve, provider)
+            parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
             if (parsedGasInfo) {
               curve.setCustomFeeData({
@@ -130,7 +128,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
           const provider = get().wallet.getProvider('')
 
           if (provider) {
-            parsedGasInfo = await parseGasInfo(curve, provider)
+            parsedGasInfo = await parseGasInfo(curve, provider, networks)
 
             if (parsedGasInfo) {
               curve.setCustomFeeData({
@@ -146,7 +144,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
         } else {
           const provider = get().wallet.getProvider('')
           if (provider && chainId) {
-            const parsedGasInfo = await parseGasInfo(curve, provider)
+            const parsedGasInfo = await parseGasInfo(curve, provider, networks)
             if (parsedGasInfo) {
               get()[sliceKey].setStateByKeys(parsedGasInfo)
             }
@@ -216,7 +214,7 @@ function parsePolygonGasInfo(gasInfo: {
   }
 }
 
-async function parseGasInfo(curve: CurveApi, provider: Provider) {
+async function parseGasInfo(curve: CurveApi, provider: Provider, networks: Record<number, NetworkConfig>) {
   if (provider) {
     // Returns the current recommended FeeData to use in a transaction.
     // For an EIP-1559 transaction, the maxFeePerGas and maxPriorityFeePerGas should be used.
@@ -233,7 +231,7 @@ async function parseGasInfo(curve: CurveApi, provider: Provider) {
     return {
       gasInfo: {
         ...gasFeeDataWei,
-        ...(await calcBasePlusPriority(curve, gasFeeDataWei)),
+        ...(await calcBasePlusPriority(curve, gasFeeDataWei, networks)),
       },
       label: ['fast'],
     }
@@ -247,6 +245,7 @@ async function calcBasePlusPriority(
     max: number[] | null
     priority: number[] | null
   },
+  networks: Record<number, NetworkConfig>
 ) {
   let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],
