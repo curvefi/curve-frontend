@@ -16,14 +16,19 @@ type StatsBannerProps = {
 const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
   const pricesYieldData = useStore((state) => state.scrvusd.pricesYieldData)
 
+  const exampleBalance = 100000
+
   const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
   const isReadyPricesYieldData = isReady(pricesYieldData.fetchStatus)
   const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
-  const oneMonthProjYield = formatNumber((scrvUsdApy / 12) * 100000, {
+  const oneMonthProjYield = formatNumber((scrvUsdApy / 12) * exampleBalance, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const oneYearProjYield = formatNumber(scrvUsdApy * 100000, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const oneYearProjYield = formatNumber(scrvUsdApy * exampleBalance, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })
 
   return (
     <Wrapper className={className}>

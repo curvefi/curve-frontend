@@ -1,11 +1,15 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
+import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
+
+import Box from '@/ui/Box'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
+import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
 
 const CrvUsdStaking = () => {
   const {
@@ -21,6 +25,10 @@ const CrvUsdStaking = () => {
   const onboardInstance = useStore((state) => state.wallet.onboard)
   const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   const chainId = useStore((state) => state.curve?.chainId)
+  const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
+
+  const mobileBreakpoint = '47.5rem'
+  const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,9 +53,12 @@ const CrvUsdStaking = () => {
 
   return (
     <Wrapper>
-      <StyledStatsBanner />
-      <StyledDepositWithdraw />
-      <UserInformation />
+      {isUserScrvUsdBalanceZero && <StyledStatsBanner />}
+      <MainContainer mobileBreakpoint={mobileBreakpoint}>
+        <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
+        {!isUserScrvUsdBalanceZero && <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
+      </MainContainer>
+      <StyledUserInformation />
     </Wrapper>
   )
 }
@@ -70,10 +81,35 @@ const Wrapper = styled.div`
   }
 `
 
+const MainContainer = styled.div<{ mobileBreakpoint: string }>`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    flex-direction: column;
+  }
+`
+
 const StyledStatsBanner = styled(StatsBanner)``
 
-const StyledDepositWithdraw = styled(DepositWithdraw)`
-  margin: var(--spacing-3) auto;
+const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
+  margin: var(--spacing-3) 0 auto var(--spacing-3);
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    margin-left: 0;
+    order: 1;
+  }
+`
+
+const StyledDepositWithdraw = styled(DepositWithdraw)<{ mobileBreakpoint: string }>`
+  margin: var(--spacing-3) 0 auto;
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    order: 2;
+    margin: var(--spacing-3) auto auto;
+  }
+`
+
+const StyledUserInformation = styled(UserInformation)`
+  order: 3;
 `
 
 export default CrvUsdStaking
