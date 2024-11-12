@@ -3,10 +3,8 @@ import type { State } from '@/store/useStore'
 import type { EstimatedGas as FormEstGas } from '@/components/PagePool/types'
 import type { ExchangeOutput, RouterSwapOutput, FormStatus, FormValues } from '@/components/PagePool/Swap/types'
 import type { RoutesAndOutput, RoutesAndOutputModal } from '@/components/PageRouterSwap/types'
-
 import cloneDeep from 'lodash/cloneDeep'
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
-
 import {
   DEFAULT_EST_GAS,
   DEFAULT_EXCHANGE_OUTPUT,
@@ -17,7 +15,6 @@ import { NETWORK_TOKEN } from '@/constants'
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { getSwapActionModalType } from '@/utils/utilsSwap'
 import curvejsApi from '@/lib/curvejs'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -73,6 +70,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
     fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
       const state = get()
       const sliceState = state[sliceKey]
+      const { networks: { networks } } = state
 
       const { chainId } = curve
 

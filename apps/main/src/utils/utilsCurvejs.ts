@@ -1,5 +1,4 @@
 import cloneDeep from 'lodash/cloneDeep'
-
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import networks from '@/networks'
 

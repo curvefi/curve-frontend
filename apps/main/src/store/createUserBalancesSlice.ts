@@ -1,11 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import cloneDeep from 'lodash/cloneDeep'
-import filter from 'lodash/filter'
-
 import curvejsApi from '@/lib/curvejs'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -42,6 +38,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
     fetchUserBalancesByTokens: async (curve, tokensAddresses) => {
       const state = get()
       const sliceState = state[sliceKey]
+      const { networks: { networks } } = state
 
       const storedUserBalancesMapper = sliceState.userBalancesMapper
 
