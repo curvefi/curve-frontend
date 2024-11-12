@@ -7,13 +7,11 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils'
 
-import SelectSearchList from 'ui/src/Select/SelectSearchList'
 import SelectModalListBox from 'ui/src/Select/SelectModalListBox'
 
 function SelectModal<T>({
   menuProps,
   state,
-  selectSearchOptions,
   ...props
 }: React.PropsWithChildren<
   AriaOverlayProps & {
@@ -21,10 +19,6 @@ function SelectModal<T>({
     minWidth?: string
     mobileRightAlign?: boolean
     popoverRef?: React.RefObject<HTMLDivElement>
-    selectSearchOptions?: {
-      onSelectionChange: (key: React.Key) => void
-      searchFilterKeys: string[]
-    }
     state: SelectState<T>
   }
 >) {
@@ -50,11 +44,7 @@ function SelectModal<T>({
         ref={popoverRef}
         minWidth={minWidth}
       >
-        {!!selectSearchOptions && state.collection.size > 5 ? (
-          <SelectSearchList {...menuProps} {...selectSearchOptions} state={state} />
-        ) : (
-          <SelectModalListBox {...menuProps} state={state} />
-        )}
+        <SelectModalListBox {...menuProps} state={state} />
         <DismissButton onDismiss={state.close} />
       </StyledPopover>
     </FocusScope>
