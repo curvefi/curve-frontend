@@ -13,7 +13,6 @@ import { shortenTokenAddress } from '@/utils'
 import { ExternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
 import TextEllipsis from '@/ui/TextEllipsis'
-import { useNetworkIdsMapper } from '@/networks'
 import useStore from '@/store/useStore'
 
 const DetailInfoTradeRouteRoute = ({

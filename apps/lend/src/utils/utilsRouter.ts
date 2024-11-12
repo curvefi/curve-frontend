@@ -4,7 +4,6 @@ import type { Locale } from '@/lib/i18n'
 import { DEFAULT_LOCALES, parseLocale } from '@/lib/i18n'
 import { MAIN_ROUTE, ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
-import { defaultNetworks } from 'main/src/networks'
 
 export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)
@@ -117,19 +116,19 @@ export function getNetworkFromUrl() {
       rNetwork: networks[rChainId].id,
       rChainId,
     }
-  }
-  if (networksIdMapper[secondPath]) {
+  } else if (networksIdMapper[secondPath]) {
     const rChainId = networksIdMapper[secondPath]
     return {
       rNetworkIdx: 1,
       rNetwork: networks[rChainId].id,
       rChainId,
     }
-  }
-  return {
-    rNetworkIdx: -1,
-    rNetwork: defaultNetworks[1].id,
-    rChainId: 1 as const,
+  } else {
+    return {
+      rNetworkIdx: -1,
+      rNetwork: networks[1].id,
+      rChainId: 1 as const,
+    }
   }
 }
 
