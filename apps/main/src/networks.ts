@@ -1,8 +1,5 @@
 import { Chain } from '@/shared/curve-lib'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
-import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
-import sortBy from 'lodash/sortBy'
-import useStore from '@/store/useStore'
 
 export const DEFAULT_NETWORK_CONFIG = {
   useApi: true, // default to true when calling fetchPools
@@ -380,14 +377,3 @@ export const defaultNetworks = Object.entries(networksConfig).reduce(
   },
   {} as Record<ChainId, NetworkConfig>,
 )
-
-export const useNetworkIdsMapper = () => {
-  const networks = useStore((state) => state.networks.networks)
-  return Object.entries(networks).reduce(
-    (prev, [chainId, { networkId }]) => {
-      prev[networkId] = Number(chainId)
-      return prev
-    },
-    {} as Record<string, number>,
-  )
-}
