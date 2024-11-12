@@ -363,7 +363,7 @@ const QuickSwap = ({
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const imageBaseUrl = network.imageBaseUrl
+  const imageBaseUrl = network?.imageBaseUrl ?? ''
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading = !pageLoaded || _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
 
