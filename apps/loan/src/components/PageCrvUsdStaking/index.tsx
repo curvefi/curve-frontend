@@ -4,8 +4,6 @@ import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
 
-import Box from '@/ui/Box'
-
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
@@ -37,11 +35,21 @@ const CrvUsdStaking = () => {
       fetchUserBalances()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
-      fetchSavingsYield()
     }
 
     fetchData()
   }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, fetchSavingsYield])
+
+  // none library fetches
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!signerAddress) return
+
+      fetchSavingsYield()
+    }
+
+    fetchData()
+  }, [fetchSavingsYield, signerAddress])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
