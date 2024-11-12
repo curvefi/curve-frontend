@@ -163,7 +163,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     ...DEFAULT_STATE,
 
     fetchPoolsTvl: async (curve, poolDatas) => {
-      const { storeCache } = get()
+      const { storeCache, networks: {networks} } = get()
       const { tvlMapper: sTvlMapper } = get()[sliceKey]
 
       log('fetchPoolsTvl', curve.chainId, poolDatas.length)
@@ -172,7 +172,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
-          const item = await curvejsApi.pool.getTvl(poolData.pool, chainId)
+          const item = await curvejsApi.pool.getTvl(poolData.pool, networks[chainId])
           return [item.poolId, item]
         })
 
@@ -200,7 +200,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async ({ pool }) => {
-          const item = await getVolume(pool, chainId)
+          const item = await getVolume(pool, networks[chainId])
           return [item.poolId, item]
         })
 
@@ -389,7 +389,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       sliceState.setStateByActiveKey('currencyReserves', getChainPoolIdActiveKey(chainId, pool.id), result)
     },
     fetchPoolsRewardsApy: async (chainId, poolIds) => {
-      const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = get()[sliceKey]
+      const state = get()
+      const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
+      const network = state.networks.networks[chainId]
       const { poolAllRewardsApy } = curvejsApi.pool
 
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
@@ -397,7 +399,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       // retrieve data in chunks so that the data can already be displayed in the UI
       for (const part of chunk(poolIds, 200)) {
-        const { results } = await PromisePool.for(part).process((poolData) => poolAllRewardsApy(chainId, poolData.pool))
+        const { results } = await PromisePool.for(part).process((poolData) => poolAllRewardsApy(network, poolData.pool))
         rewardsApyMapper = {
           ...rewardsApyMapper,
           ...Object.fromEntries(results.map((rewardsApy) => [rewardsApy.poolId, rewardsApy])),
@@ -433,7 +435,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { pools, networks: {networks} } = get()
       const { chainId } = curve
       const { pool } = poolData
-      const { isLite } = networks[chainId]
+      const network = networks[chainId]
+      const { isLite } = network
       const { getVolume, poolParameters } = curvejsApi.pool
       log('fetchPoolStats', chainId, pool.id)
 
@@ -441,7 +444,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const [, , volume, { parameters }] = await Promise.all([
           pools.fetchPoolCurrenciesReserves(curve, poolData),
           pools.fetchPoolsRewardsApy(chainId, [poolData]),
-          isLite ? getVolume(pool, chainId) : null,
+          isLite ? getVolume(pool, network) : null,
           poolParameters(pool),
         ])
 
@@ -911,12 +914,13 @@ async function getPools(
 ) {
   const { chainId, getPool } = curve
   const { getPoolData } = curvejsApi.pool
-  const { orgUIPath } = networks[chainId]
+  const network = networks[chainId]
+  const { orgUIPath } = network
 
   const resp = poolList.reduce(
     (prev, poolId) => {
       const pool = getPool(poolId)
-      const poolData = getPoolData(pool, chainId, poolsMapper[poolId])
+      const poolData = getPoolData(pool, network, poolsMapper[poolId])
 
       poolData.failedFetching24hOldVprice = failedFetching24hOldVprice?.[pool.address] ?? false
       poolData.curvefiUrl = getCurvefiUrl(poolId, orgUIPath)

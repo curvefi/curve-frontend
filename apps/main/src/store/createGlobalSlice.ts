@@ -193,10 +193,11 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     state.updateGlobalStoreByKey('curve', curveApi)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    const { excludePoolsMapper } = state.networks.networks[chainId]
+    const network = state.networks.networks[chainId]
+    const { excludePoolsMapper } = network
 
     // get poolList
-    const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi)).filter(
+    const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
       (poolId) => !excludePoolsMapper[poolId],
     )
 

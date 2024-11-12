@@ -28,6 +28,7 @@ import {
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
 import { log } from '@/shared/lib/logging'
+import useStore from '@/store/useStore'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
 // https://twitter.com/MultichainOrg
@@ -111,11 +112,10 @@ const helpers = {
 
 // curve
 const network = {
-  fetchAllPoolsList: async (curve: CurveApi) => {
-    const { chainId } = curve
-    log('fetchAllPoolsList', curve.chainId)
+  fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
+    log('fetchAllPoolsList', curve.chainId, network)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
-    const useApi = networks[chainId].useApi
+    const useApi = network.useApi
     await Promise.allSettled([
       curve.factory.fetchPools(useApi),
       curve.cryptoFactory.fetchPools(useApi),
@@ -168,8 +168,22 @@ const network = {
 }
 
 const pool = {
-  getPoolData: (p: Pool, chainId: ChainId, storedPoolData: PoolData | undefined) => {
-    const isWrappedOnly = networks[chainId].poolIsWrappedOnly[p.id]
+  getTvl: async (p: Pool, network: NetworkConfig) => {
+    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+
+    try {
+      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
+      return resp
+    } catch (error) {
+      console.error(error)
+      if (p.inApi) {
+        resp.errorMessage = 'Unable to get tvl'
+      }
+      return resp
+    }
+  },
+  getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
+    const isWrappedOnly = network.poolIsWrappedOnly[p.id]
     const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
     const tokens = isWrappedOnly
       ? tokensWrapped
@@ -185,7 +199,7 @@ const pool = {
 
     const poolData: PoolData = {
       pool: p,
-      chainId,
+      chainId: network.chainId,
       curvefiUrl: '',
 
       // stats
@@ -223,24 +237,10 @@ const pool = {
 
     return poolData
   },
-  getTvl: async (p: Pool, chainId: ChainId) => {
+  getVolume: async (p: Pool, network: NetworkConfig) => {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }
 
-    try {
-      resp.value = networks[chainId].poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
-  getVolume: async (p: Pool, chainId: ChainId) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    if (networks[chainId].isLite) return resp
+    if (network.isLite) return resp
 
     try {
       resp.value = await p.stats.volume()
@@ -275,7 +275,7 @@ const pool = {
       return resp
     }
   },
-  poolAllRewardsApy: async (chainId: ChainId, p: Pool) => {
+  poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {
     let resp: RewardsApy = {
       poolId: p.id,
       base: { day: '0', week: '0' },
@@ -284,7 +284,7 @@ const pool = {
       error: {},
     }
 
-    const { isLite } = networks[chainId]
+    const { isLite, chainId } = network
 
     // get base vAPY
     if (!isLite) {
@@ -1689,7 +1689,8 @@ const lockCrv = {
 }
 
 function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
-  const isGasL2 = networks[chainId]?.gasL2
+  const network = useStore.getState().networks.networks[chainId]
+  const isGasL2 = network?.gasL2
   if (isGasL2 && !Array.isArray(estimatedGas) && estimatedGas !== null) {
     console.warn('Incorrect estimated gas returned for L2', estimatedGas)
   }
