@@ -10,6 +10,7 @@ import type curveApi from '@curvefi/api'
 
 import { ethers } from 'ethers'
 import React from 'react'
+import curvejsApi from '@/lib/curvejs'
 import type { IGaugePool } from '@curvefi/api/lib/pools/gaugePool'
 
 declare global {

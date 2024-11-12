@@ -113,7 +113,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
   },
   setNetworkConfigFromApi: (curve: CurveApi) => {
     const { chainId } = curve
-    const { hasDepositAndStake, hasRouter } = networks[chainId].api.network.fetchNetworkConfig(curve)
+    const { hasDepositAndStake, hasRouter } = curvejsApi.network.fetchNetworkConfig(curve)
     set(
       produce((state: State) => {
         state.hasDepositAndStake[chainId] = hasDepositAndStake
@@ -218,7 +218,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-      chainId === 2222 ? await networks[chainId].api.network.getFailedFetching24hOldVprice() : {}
+      chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 

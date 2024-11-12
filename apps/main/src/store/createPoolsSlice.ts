@@ -475,8 +475,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const curve = get().curve
       const chainId = curve.chainId
 
-      const tokens = networks[chainId].api.pool.poolTokens(poolData.pool, isWrapped)
-      const tokenAddresses = networks[chainId].api.pool.poolTokenAddresses(poolData.pool, isWrapped)
+      const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
+      const tokenAddresses = curvejsApi.pool.poolTokenAddresses(poolData.pool, isWrapped)
       const cPoolData = cloneDeep(poolData)
       cPoolData.isWrapped = isWrapped
       cPoolData.tokens = tokens
