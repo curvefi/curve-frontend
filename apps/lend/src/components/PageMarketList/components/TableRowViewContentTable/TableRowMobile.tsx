@@ -1,7 +1,6 @@
 import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
 
 import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
@@ -54,7 +53,7 @@ const TableRowMobile = (props: TableRowProps) => {
   return (
     <Tr ref={ref} {...(!isVisible ? (height > 53 ? { height: `${height}px` } : { className: 'pending' }) : {})}>
       {isVisible && (
-        <Td>
+        <td>
           <TableRowMobileHead
             {...props}
             cellProps={cellProps}
@@ -68,14 +67,10 @@ const TableRowMobile = (props: TableRowProps) => {
             isHideDetail={isHideDetail}
             showMyVaultCell={showMyVaultCell}
           />
-        </Td>
+        </td>
       )}
     </Tr>
   )
 }
-
-const Td = styled.td`
-  //border-bottom: 1px solid var(--border-400);
-`
 
 export default TableRowMobile

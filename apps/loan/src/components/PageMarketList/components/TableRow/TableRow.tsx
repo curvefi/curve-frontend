@@ -54,7 +54,6 @@ const TableRow = ({
 
         return (
           <React.Fragment key={`td${idx}`}>
-            {!isVisible && null}
             {isVisible && isInMarket && content}
             {isVisible && !isInMarket && (
               <Td $first={isFirst} $last={isLast} className={className}>

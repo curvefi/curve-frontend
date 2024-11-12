@@ -82,7 +82,6 @@ const TableRowMobileContent = ({
 
                 return (
                   <React.Fragment key={key}>
-                    {!isVisible && null}
                     {isVisible && (
                       <>
                         <ListInfoItems>
@@ -91,7 +90,6 @@ const TableRowMobileContent = ({
 
                             return (
                               <React.Fragment key={`${key}info${idx}`}>
-                                {!visible && null}
                                 {visible && <ListInfoItem {...titleMapper[tableKey]}>{content}</ListInfoItem>}
                               </React.Fragment>
                             )

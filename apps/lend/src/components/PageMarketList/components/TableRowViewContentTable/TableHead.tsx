@@ -52,14 +52,12 @@ const TableHead = ({
             const label = titleMapper[sortIdKey].title
             const key = `${sortIdKey}-${idx}`
             const parsedIsNotSortable = tableSetting?.isNotSortable && isNotSortable
-            const isFirst =
-              idx === 1 ? (filterTypeKey === 'borrow' ? !showBorrowSignerCell : !showSupplySignerCell) : false
+            const isFirst = idx === 1 && (filterTypeKey === 'borrow' ? !showBorrowSignerCell : !showSupplySignerCell)
             const isLast = idx === tableLabels.length - 1
             const isVisible = _showContent(show)
 
             return (
               <React.Fragment key={key}>
-                {!isVisible && null}
                 {isVisible && !label && <Th></Th>}
                 {isVisible && label && (
                   <Th className={className} $first={isFirst} $last={isLast}>

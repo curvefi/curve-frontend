@@ -27,6 +27,8 @@ type Content = {
   title?: TitleKey
 }
 
+const MIN_ROW_HEIGHT = 53
+
 const TableRowContent = ({
   rChainId,
   api,
@@ -90,7 +92,6 @@ const TableRowContent = ({
 
     return (
       <React.Fragment key={`content${idx}`}>
-        {!visible && null}
         {visible && isInMarketCell && content}
         {visible && !isInMarketCell && (
           <Td key={idx} className={className} $first={isFirst} $last={isLast}>
@@ -113,14 +114,14 @@ const TableRow = (props: TableRowProps) => {
   useEffect(() => {
     if (!isVisible || !ref.current || height !== 0) return
     const refHeight = ref.current.getBoundingClientRect().height
-    setHeight(refHeight > 53 ? refHeight : 53)
+    setHeight(Math.max(refHeight, MIN_ROW_HEIGHT))
   }, [height, isVisible])
 
   return (
     <Tr
       ref={ref}
       onClick={(evt) => props.handleCellClick(evt.target)}
-      {...(!isVisible ? (height > 53 ? { height: `${height}px` } : { className: 'pending' }) : {})}
+      {...(!isVisible ? (height > MIN_ROW_HEIGHT ? { height: `${height}px` } : { className: 'pending' }) : {})}
     >
       {isVisible && <TableRowContent {...props} />}
     </Tr>

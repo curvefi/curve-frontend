@@ -30,7 +30,7 @@ const TrNoResult = ({ type, noResultKey, value, action }: TrNoResultProps) => {
         </Box>
       ) : noResultKey === ERROR.search || noResultKey === ERROR.filter ? (
         <>
-          No market found for &ldquo;{value}&rdquo;.
+          No market found for “{value}”.
           {typeof action === 'function' && (
             <>
               <br />{' '}

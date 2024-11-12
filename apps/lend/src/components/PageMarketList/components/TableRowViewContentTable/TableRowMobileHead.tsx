@@ -59,7 +59,7 @@ const TableRowMobileHead = ({
           <CellMaxLeverage {...cellProps} showTitle size="sm" />
         </Box>
         <IconButton onClick={() => setShowDetail((prevState) => (prevState === owmId ? '' : owmId))}>
-          {isHideDetail ? <Icon name="ChevronDown" size={16} /> : <Icon name="ChevronUp" size={16} />}
+          <Icon name={isHideDetail ? 'ChevronDown' : 'ChevronUp'} size={16} />
         </IconButton>
       </Box>
     </Box>
