@@ -1,17 +1,13 @@
 import type { PageVecrv, FormEstGas, FormStatus, FormValues, FormType, StepKey } from '@/components/PageCrvLocker/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
-
 import AlertFormError from '@/components/AlertFormError'
 import FormActions from '@/components/PageCrvLocker/components/FormActions'
 import DetailInfoEstGas from '@/components/DetailInfoEstGas'
@@ -32,6 +28,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const network = useStore((state) => state.networks.networks[chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -65,7 +62,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

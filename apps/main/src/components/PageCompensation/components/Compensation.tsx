@@ -1,16 +1,12 @@
 import type { EtherContract } from '@/components/PageCompensation/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useState } from 'react'
 import numbro from 'numbro'
 import styled from 'styled-components'
-
 import { copyToClipboard } from '@/lib/utils'
 import { getErrorMessage, shortenTokenAddress } from '@/utils'
 import curvejsApi from '@/lib/curvejs'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import AlertFormError from '@/components/AlertFormError'
 import Box from '@/ui/Box'
@@ -44,6 +40,7 @@ const Compensation = ({
 }) => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
+  const networks = useStore((state) => state.networks.networks)
 
   const [error, setError] = useState('')
   const [step, setStep] = useState('')
@@ -67,7 +64,8 @@ const Compensation = ({
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
         const txDescription = t`Claimed ${balance}`
-        const txHash = networks[curve.chainId].scanTxPath(hash)
+        const network = networks[curve.chainId]
+        const txHash = network.scanTxPath(hash)
         setTxInfoBar(<TxInfoBar description={txDescription} txHash={txHash} />)
         if (typeof dismiss === 'function') dismiss()
       } catch (error) {
@@ -77,7 +75,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchGasInfo, curve, provider],
+    [curve, notifyNotification, fetchGasInfo, provider, networks],
   )
 
   // reset

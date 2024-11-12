@@ -1,22 +1,18 @@
 import type { FormStatus, FormValues, StepKey } from '@/components/PagePool/Withdraw/types'
 import type { Slippage, TransferProps } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled, { css } from 'styled-components'
-
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { amountsDescription } from '@/components/PagePool/utils'
 import { mediaQueries } from '@/ui/utils/responsive'
 import { resetFormAmounts } from '@/components/PagePool/Withdraw/utils'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/components/PagePool'
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import { Radio, RadioGroup } from '@/ui/Radio'
@@ -64,6 +60,7 @@ const FormWithdraw = ({
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -107,13 +104,13 @@ const FormWithdraw = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification]
+    [fetchStepWithdraw, notifyNotification, network]
   )
 
   const getSteps = useCallback(
@@ -440,7 +437,7 @@ const FormWithdraw = ({
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || networks[rChainId].poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
+            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
             onChange={(isWrapped) => {
               if (poolData) {

@@ -1,21 +1,17 @@
 import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
 import curvejsApi from '@/lib/curvejs'
 import dayjs from '@/lib/dayjs'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
-
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import FormActions from '@/components/PageCrvLocker/components/FormActions'
@@ -36,6 +32,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -106,7 +103,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
     },
-    [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues],
+    [currUnlockTime, currUnlockUtcTime, rFormType, updateFormValues],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -119,12 +116,12 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
-          setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+          setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
         }
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime],
+    [notifyNotification, fetchStepIncreaseTime, network],
   )
 
   const getSteps = useCallback(

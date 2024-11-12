@@ -1,14 +1,10 @@
 import { CreateToken, TokenId, TokensInPoolState } from '@/components/PageCreatePool/types'
-
 import { useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { uniqBy } from 'lodash'
-
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import useTokensMapper from '@/hooks/useTokensMapper'
-
 import {
   STABLESWAP,
   CRYPTOSWAP,
@@ -24,7 +20,6 @@ import {
 import { DEFAULT_CREATE_POOL_STATE } from '@/store/createCreatePoolSlice'
 import { NATIVE_TOKENS as nativeTokens } from '@curvefi/api/lib/curve'
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/components/PageCreatePool/utils'
-
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import SwitchTokensButton from '@/components/PageCreatePool/components/SwitchTokensButton'
@@ -54,9 +49,14 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
-  const { stableswapFactory, tricryptoFactory, twocryptoFactory } = networks[chainId]
+  const {
+    createDisabledTokens,
+    stableswapFactory,
+    tricryptoFactory,
+    twocryptoFactory
+  } = useStore((state) => state.networks.networks[chainId])
 
-  const NATIVE_TOKENS = [nativeTokens[chainId].address, ...networks[chainId].createDisabledTokens]
+  const NATIVE_TOKENS = [nativeTokens[chainId].address, ...createDisabledTokens]
 
   // prepares list of tokens
   const selTokens: CreateToken[] = useMemo(() => {

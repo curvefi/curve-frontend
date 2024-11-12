@@ -1,8 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
-import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
@@ -10,28 +8,26 @@ import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { shortenTokenAddress } from '@/utils'
 import { copyToClipboard } from '@/lib/utils'
 import dayjs from '@/lib/dayjs'
-
 import Box from '@/ui/Box'
-import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
+import { StyledIconButton, StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import { Chip } from '@/ui/Typography'
 import { ExternalLink } from '@/ui/Link'
 import TokenIcon from '@/components/TokenIcon'
 import Icon from '@/ui/Icon'
-import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import TextEllipsis from '@/ui/TextEllipsis'
 
 type PoolParametersProps = {
   pricesApi: boolean
   poolData: PoolData
   rChainId: ChainId
-  rPoolId: string
 }
 
-const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rChainId, rPoolId }) => {
+const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) => {
   const poolAddress = poolData.pool.address
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const basePools = useStore((state) => state.pools.basePools)
   const pricesApiPoolDataMapper = useStore((state) => state.pools.pricesApiPoolDataMapper)
+  const network = useStore((state) => state.networks.networks[rChainId])
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
 
@@ -103,7 +99,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
           {pricesData.base_pool && (
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink href={networks[rChainId].scanTokenPath(pricesData.base_pool)}>
+              <DataAddressLink href={network.scanTokenPath(pricesData.base_pool)}>
                 {shortenTokenAddress(pricesData.base_pool)}
               </DataAddressLink>
             </PoolParameter>
@@ -114,7 +110,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
           </PoolParameter>
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
-            <PoolParameterLink href={networks[rChainId].scanTokenPath(pricesData.registry)}>
+            <PoolParameterLink href={network.scanTokenPath(pricesData.registry)}>
               {shortenTokenAddress(pricesData.registry)}
             </PoolParameterLink>
           </PoolParameter>
@@ -127,7 +123,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
               <Coin key={`${token}-${idx}`}>
                 <Box flex>
                   <>
-                    <StyledExternalLink href={networks[rChainId].scanTokenPath(poolData.tokenAddresses[idx])}>
+                    <StyledExternalLink href={network.scanTokenPath(poolData.tokenAddresses[idx])}>
                       <ExternalLinkTokenWrapper>
                         <StyledTokenIcon
                           size="sm"
@@ -152,9 +148,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      <IndentDataAddressLink
-                        href={networks[rChainId].scanTokenPath(pricesData.oracles[idx].oracle_address)}
-                      >
+                      <IndentDataAddressLink href={network.scanTokenPath(pricesData.oracles[idx].oracle_address)}>
                         {shortenTokenAddress(pricesData.oracles[idx].oracle_address)}
                       </IndentDataAddressLink>
                     </Box>
@@ -202,7 +196,7 @@ const PoolParameters: React.FC<PoolParametersProps> = ({ pricesApi, poolData, rC
                         <>
                           <br />{' '}
                           {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
-                            future_A_time
+                            future_A_time,
                           ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
                         </>
                       )}

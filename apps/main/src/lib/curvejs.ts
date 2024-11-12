@@ -3,14 +3,12 @@ import type { FormType as LockFormType } from '@/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
 import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
-
 import countBy from 'lodash/countBy'
 import dayjs from '@/lib/dayjs'
 import chunk from 'lodash/chunk'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
 import PromisePool from '@supercharge/promise-pool/dist'
-
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -19,8 +17,6 @@ import {
   separateCrvProfit,
   separateCrvReward,
 } from '@/utils/utilsCurvejs'
-
-import networks from '@/networks'
 import { BN } from '@/ui/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
@@ -68,10 +64,10 @@ const helpers = {
       return resp
     }
   },
-  fetchL1AndL2GasPrice: async (curve: CurveApi) => {
+  fetchL1AndL2GasPrice: async (curve: CurveApi, network: NetworkConfig) => {
     let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
-      if (networks[curve.chainId].gasL2) {
+      if (network.gasL2) {
         const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
         resp.l2GasPriceWei = l2GasPriceWei
         resp.l1GasPriceWei = l1GasPriceWei

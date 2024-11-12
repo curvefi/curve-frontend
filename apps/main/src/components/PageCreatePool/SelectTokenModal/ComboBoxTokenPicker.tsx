@@ -1,5 +1,4 @@
 import { CreateToken, CreateQuickListToken } from '@/components/PageCreatePool/types'
-
 import { t } from '@lingui/macro'
 import { useButton } from '@react-aria/button'
 import { useFilter } from '@react-aria/i18n'
@@ -8,14 +7,11 @@ import { useOverlayTriggerState } from '@react-stately/overlays'
 import { Item } from '@react-stately/collections'
 import styled from 'styled-components'
 import Fuse from 'fuse.js'
-
 import { breakpoints } from '@/ui/utils/responsive'
 import { delayAction, shortenTokenAddress } from '@/utils'
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
 import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
-
 import ComboBox from '@/components/PageCreatePool/SelectTokenModal/ComboBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
@@ -48,6 +44,7 @@ const ComboBoxTokenPicker = ({
   tokens = [],
   onSelectionChange,
 }: Props) => {
+  const networks = useStore((state) => state.networks.networks)
   const visibleTokens = useRef<{ [k: string]: boolean }>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)

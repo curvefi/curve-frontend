@@ -1,17 +1,13 @@
 import type { FormValues, FormStatus, StepKey, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/components/PagePool/Deposit/utils'
 import { amountsDescription, tokensDescription } from '@/components/PagePool/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import AlertSlippage from '@/components/AlertSlippage'
@@ -55,6 +51,7 @@ const FormDeposit = ({
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
+  const network = useStore((state) => chainId && state.networks.networks[chainId])
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -102,13 +99,13 @@ const FormDeposit = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDeposit, notifyNotification]
+    [fetchStepDeposit, notifyNotification, network]
   )
 
   const getSteps = useCallback(

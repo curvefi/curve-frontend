@@ -1,16 +1,12 @@
 import type { NextPage } from 'next'
-
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
-import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
-
 import { scrollToTop } from '@/utils'
 import DocumentHead from '@/layout/default/DocumentHead'
 import Transfer from '@/components/PagePool/index'
@@ -32,6 +28,7 @@ const Page: NextPage = () => {
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
   const provider = useStore((state) => state.wallet.getProvider(''))
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
 
@@ -44,7 +41,7 @@ const Page: NextPage = () => {
   useEffect(() => {
     if (!rChainId) return
 
-    const { excludePoolsMapper } = networks[rChainId]
+    const { excludePoolsMapper } = network
     const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
     if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
       navigate(reRoutePathname)

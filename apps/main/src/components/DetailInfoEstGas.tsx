@@ -3,13 +3,10 @@ import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { NETWORK_TOKEN } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { Chain, gweiToEther, weiToGwei } from '@/shared/curve-lib'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { useCurve } from '@/entities/curve'
@@ -34,6 +31,7 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { data: curve } = useCurve()
+  const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
   const gasInfo = useStore((state) => state.gas.gasInfo)

@@ -1,14 +1,10 @@
 import type { LpLiquidityEventsData, PricesApiCoin } from '@/ui/Chart/types'
-
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import { formatNumber, getFractionDigitsOptions } from '@/ui/utils'
 import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { convertFullTime, convertTime, convertTimeAgo } from '@/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
-
 import Box from '@/ui/Box'
 import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
@@ -21,6 +17,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
   coins,
 }) => {
   const tokensMapper = useStore((state) => state.tokens.tokensMapper)
+  const network = useStore((state) => state.networks.networks[chainId])
 
   return (
     <>
@@ -35,7 +32,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
         })
         .map((transaction, index) => (
           <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-            <LpEvent href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
+            <LpEvent href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
               {transaction.liquidity_event_type === 'AddLiquidity' ? (
                 <>
                   <LpEventType>{t`Add`}</LpEventType>

@@ -1,13 +1,9 @@
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import { Item, Items } from '@/ui/Items'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
@@ -24,7 +20,7 @@ const PoolParameters: React.FC<
   } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 > = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
-  const pricesApi = networks[rChainId].pricesApi
+  const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
 

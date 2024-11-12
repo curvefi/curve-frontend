@@ -1,11 +1,9 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-
 import { CONNECT_STAGE } from '@/constants'
 import useStore from '@/store/useStore'
 import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
 import {
@@ -15,7 +13,6 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/components/PageDeployGauge/constants'
-
 import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import AlertBox from '@/ui/AlertBox'
@@ -34,10 +31,11 @@ type InfoLinkBar = {
 }
 
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
-  const { haveSigner } = curveProps(curve)
+  const networks = useStore((state) => state.networks.networks)
+  const { haveSigner } = curveProps(curve, networks)
   const navigate = useNavigate()
 
-  const { resetState, lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
+  const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
     useStore((state) => state.deployGauge)
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
