@@ -1,9 +1,7 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/components/PagePoolList/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
@@ -11,7 +9,6 @@ import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import Table, { Tbody } from '@/ui/Table'
 import TableHead from '@/components/PagePoolList/components/TableHead'

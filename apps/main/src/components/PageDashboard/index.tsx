@@ -1,7 +1,5 @@
 import type { DashboardTableRowProps, FormValues, TableLabel } from '@/components/PageDashboard/types'
 import type { Params } from 'react-router'
-import type { Address } from 'viem'
-import { isAddress } from 'viem'
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -10,7 +8,6 @@ import { ROUTE } from '@/constants'
 import { DashboardContextProvider } from '@/components/PageDashboard/dashboardContext'
 import { breakpoints } from '@/ui/utils'
 import { getPath } from '@/utils/utilsRouter'
-import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 import ClassicPoolsOnlyDescription from '@/components/PageDashboard/components/ClassicPoolsOnlyDescription'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
@@ -23,6 +20,8 @@ import TableRowMobile from '@/components/PageDashboard/components/TableRowMobile
 import TableRowNoResult from '@/components/PageDashboard/components/TableRowNoResult'
 import TableSortDialog from '@/components/PageDashboard/components/TableSortDialog'
 import { getDashboardDataActiveKey } from '@/store/createDashboardSlice'
+import curvejsApi from '@/lib/curvejs'
+import { Address, isAddress } from 'viem'
 
 const Dashboard = ({
   curve,

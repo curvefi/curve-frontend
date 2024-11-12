@@ -25,6 +25,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+  const updateNetworkNativeTokens = useStore((state) => state.networks.updateNetworkNativeTokens)
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const { rChainId } = useNetworkFromUrl()
@@ -45,6 +46,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
 
           if (api) {
             updateCurveJs(api, prevCurveApi, wallet)
+            updateNetworkNativeTokens(api)
           }
 
           updateConnectState(api ? 'success' : '', '')
@@ -54,7 +56,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet]
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateNetworkNativeTokens, wallet],
   )
 
   const handleConnectWallet = useCallback(
@@ -70,7 +72,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const walletStates = await Promise.race([
                 connect({ autoSelect: { label: walletName, disableModals: true } }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s'])
+                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
               ])
               resolve(walletStates)
@@ -119,7 +121,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, networks, parsedParams.rChainId, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState]
+    [connect, navigate, networks, parsedParams.rChainId, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -132,7 +134,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState]
+    [disconnect, parsedParams.rChainId, updateConnectState],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -160,7 +162,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, networks, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState, wallet]
+    [navigate, networks, parsedParams.rLocalePathname, parsedParams.restFullPathname, setChain, updateConnectState, wallet],
   )
 
   // onMount
@@ -168,7 +170,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (connectState.status === '' && connectState.stage === '') {
       const routerNetwork = params.network?.toLowerCase()
       const routerNetworkId = routerNetwork ? networksIdMapper[routerNetwork as INetworkName] : null
-      const isActiveNetwork = routerNetworkId ? networks[routerNetworkId]?.isActiveNetwork ?? false : false
+      const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false
 
       if (!isActiveNetwork) {
         // network in router is not good, redirect to default network

@@ -35,8 +35,7 @@ declare global {
 
   interface NetworkConfig extends BaseConfig {
     isLite: boolean
-    // nativeTokens: { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
-    // api: typeof curvejsApi
+    nativeTokens: { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string } | null
     useApi: boolean
     excludePoolsMapper: { [key: string]: boolean } // remove pool from list and pool page
     excludeTokensBalancesMapper: { [tokenAddress: string]: boolean }

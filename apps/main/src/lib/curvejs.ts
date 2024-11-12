@@ -168,20 +168,6 @@ const network = {
 }
 
 const pool = {
-  getTvl: async (p: Pool, network: NetworkConfig) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
-
-    try {
-      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
   getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
     const isWrappedOnly = network.poolIsWrappedOnly[p.id]
     const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
@@ -236,6 +222,20 @@ const pool = {
     }
 
     return poolData
+  },
+  getTvl: async (p: Pool, network: NetworkConfig) => {
+    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+
+    try {
+      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
+      return resp
+    } catch (error) {
+      console.error(error)
+      if (p.inApi) {
+        resp.errorMessage = 'Unable to get tvl'
+      }
+      return resp
+    }
   },
   getVolume: async (p: Pool, network: NetworkConfig) => {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }

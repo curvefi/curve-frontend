@@ -28,7 +28,7 @@ const Page: NextPage = () => {
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
   const provider = useStore((state) => state.wallet.getProvider(''))
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { excludePoolsMapper } = useStore((state) => state.networks.networks[rChainId])
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
 
@@ -41,7 +41,6 @@ const Page: NextPage = () => {
   useEffect(() => {
     if (!rChainId) return
 
-    const { excludePoolsMapper } = network
     const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
     if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
       navigate(reRoutePathname)
@@ -53,8 +52,7 @@ const Page: NextPage = () => {
         }
       })()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.chainId, fetchNewPool, haveAllPools, isLoadingApi, pageLoaded, poolData, rChainId, rFormType, rPoolId])
+  }, [curve, curve?.chainId, excludePoolsMapper, fetchNewPool, haveAllPools, isLoadingApi, navigate, pageLoaded, params, poolData, rChainId, rFormType, rPoolId])
 
   return (
     <>

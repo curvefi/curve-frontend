@@ -21,6 +21,7 @@ export type NetworksSlice = {
     fetchNetworks(): Promise<Record<number, NetworkConfig>>
     setNetworksIdMapper(networks: Networks): void
     setVisibleNetworksList(networks: Networks): void
+    updateNetworkNativeTokens(curve: CurveApi): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -100,6 +101,19 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
         'visibleNetworksList',
         sortBy(visibleNetworksList, (n) => n.label),
       )
+    },
+    updateNetworkNativeTokens: (curve: CurveApi) => {
+      const { networks, ...sliceState } = get()[sliceKey]
+
+      sliceState.setStateByKey('networks', {
+        ...networks,
+        [curve.chainId]: {
+          ...networks[curve.chainId],
+          nativeTokens: curve.constants.NATIVE_TOKEN,
+        },
+      })
+
+      console.log('native tokens', get()[sliceKey].networks[curve.chainId], { curve })
     },
 
     // slice helpers
