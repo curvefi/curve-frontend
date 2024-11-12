@@ -9,8 +9,6 @@ import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/store/createPoolLis
 import { REFRESH_INTERVAL } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
-
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
@@ -56,6 +54,7 @@ const PoolList = ({
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const provider = useStore((state) => state.wallet.getProvider(''))
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -68,7 +67,6 @@ const PoolList = ({
   )
 
   const { chainId, signerAddress = '' } = curve ?? {}
-  const imageBaseUrl = getImageBaseUrl(rChainId)
   const showInPoolColumn = !!signerAddress
 
   const poolDatas = useMemo(() => Object.values(poolDataMapper ?? {}), [poolDataMapper])
@@ -223,7 +221,7 @@ const PoolList = ({
                     poolId={poolId}
                     rChainId={rChainId}
                     searchParams={searchParams}
-                    imageBaseUrl={imageBaseUrl}
+                    imageBaseUrl={network?.imageBaseUrl ?? ''}
                     showInPoolColumn={showInPoolColumn}
                     tableLabels={tableLabels}
                     searchTermMapper={searchTermMapper}

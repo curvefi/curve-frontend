@@ -1,17 +1,14 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 
 export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
   let curveApi: CurveApi | undefined
-  const { networkId } = networks[chainId] ?? {}
-
   try {
-    if (networkId) {
+    if (chainId) {
       curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
 
       if (wallet) {
-        await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+        await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
         return curveApi
       }
     }
@@ -81,31 +78,6 @@ export function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[
   }
 
   return { crvProfit: null, tokensProfit }
-}
-
-export function isValidWalletAddress(address: string) {
-  return address && address.length === 42 && address.toLowerCase().startsWith('0x')
-}
-
-export function getImageBaseUrl(rChainId: ChainId) {
-  return rChainId ? networks[rChainId].imageBaseUrl ?? '' : ''
-}
-
-export function getVolumeTvlStr(mapper: VolumeMapper | TvlMapper) {
-  let values = []
-  for (const key in mapper) {
-    const obj = mapper[key]
-    const wholeVal = obj.value.split('.')[0]
-    if (wholeVal && +wholeVal > 0) {
-      values.push(wholeVal)
-    }
-  }
-
-  if (values.length === 0 && typeof mapper !== 'undefined') {
-    return '0'
-  } else {
-    return values.join('.')
-  }
 }
 
 export function getWalletProvider(wallet: Wallet) {
