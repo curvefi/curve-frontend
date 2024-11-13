@@ -1,0 +1,935 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="ad47f02e-ff1e-4fcf-a427-14737b86252b" name="Changes" comment="fix: add env">
+      <change beforePath="$PROJECT_DIR$/129.9b6638fb.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/129.9b6638fb.iframe.bundle.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/162.cf63e245.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/162.cf63e245.iframe.bundle.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/231.294be3ba.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/253.28407f72.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/253.28407f72.iframe.bundle.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/253.28407f72.iframe.bundle.js.map" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/372.6ba43364.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/515.ea608312.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/577.2c2f8dd5.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/577.2c2f8dd5.iframe.bundle.js.LICENSE.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/810.9308d116.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/829.40fd1756.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/855.96f43ea3.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/977.34ccc41e.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/assets/sample.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fonts/Hubot-Sans.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fonts/Mona-Sans.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/iframe.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.1576ca45.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nunito-sans-bold-italic.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nunito-sans-bold.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nunito-sans-italic.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/nunito-sans-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages-Introduction-Introduction-mdx.a0ed02df.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/runtime~main.1970a7e1.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/a11y-11/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/a11y-11/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/chromatic-com-storybook-8/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/chromatic-com-storybook-8/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-actions-2/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-actions-2/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-backgrounds-3/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-backgrounds-3/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-controls-1/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-controls-1/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-measure-6/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-measure-6/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-outline-7/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-outline-7/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-toolbars-5/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-toolbars-5/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-viewport-4/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/essentials-viewport-4/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/interactions-9/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/interactions-9/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/storybook-core-core-server-presets-0/common-manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/storybook-core-core-server-presets-0/common-manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/themes-10/manager-bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-addons/themes-10/manager-bundle.js.LEGAL.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-common-assets/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-common-assets/nunito-sans-bold-italic.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-common-assets/nunito-sans-bold.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-common-assets/nunito-sans-italic.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-common-assets/nunito-sans-regular.woff2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-manager/globals-module-info.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-manager/globals-runtime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-manager/globals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-manager/runtime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-preview/globals.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sb-preview/runtime.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes-stories-Accordion-stories.c68e219c.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes-stories-Button-stories.745d5f5b.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes-stories-Switch-stories.f3acd744.iframe.bundle.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/themes-stories-Typography-stories.dbc388fd.iframe.bundle.js" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="figma-tokens" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;DanielSchiavini&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:curvefi/curve-frontend.git&quot;,
+    &quot;accountId&quot;: &quot;01d3cc52-218b-404d-ab04-07aec828eea7&quot;
+  },
+  &quot;editorReviewEnabled&quot;: false
+}</component>
+  <component name="JsbtTreeLayoutManager">
+    <layout place="tools.popupnpm">
+      <scroll-view-position x="0" y="0" />
+    </layout>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="2eDmJpM0VrfSl9Ka8wP4UeSfHl1" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.Dockerfile.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.codeium.enabled": "true",
+    "git-widget-placeholder": "github-pages",
+    "js.last.introduce.type": "CONST",
+    "last_opened_file_path": "/home/schiavini/curve/curve-frontend/packages/curve-ui-kit/src/themes/typography",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "npm.build.executor": "Run",
+    "npm.curve-frontend > dev.executor": "Run",
+    "npm.curve-lib > lint.executor": "Run",
+    "npm.curve-ui-kit > extract-figma-tokens.executor": "Run",
+    "npm.external-rewards > lint.executor": "Run",
+    "npm.format.executor": "Run",
+    "npm.lend > dev.executor": "Run",
+    "npm.lint -- --no-cache.executor": "Run",
+    "npm.lint --no-cache.executor": "Run",
+    "npm.lint.executor": "Run",
+    "npm.lint:fix.executor": "Run",
+    "npm.loan > start.executor": "Run",
+    "npm.main > build.executor": "Run",
+    "npm.storybook.executor": "Run",
+    "npm.tests > cy:open:e2e:main.executor": "Run",
+    "npm.tests > cy:run:e2e:lend.executor": "Run",
+    "npm.tests > cy:run:e2e:loan.executor": "Run",
+    "npm.tests > cy:run:e2e:main.executor": "Run",
+    "npm.watch.executor": "Run",
+    "prettierjs.PrettierConfiguration.Package": "/home/schiavini/curve/curve-frontend/node_modules/prettier",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications",
+    "ts.external.directory.path": "/home/schiavini/curve/curve-frontend/node_modules/typescript/lib",
+    "vcs.patch.to.clipboard": "true",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TEXT",
+      "HTML",
+      "JSON",
+      "JavaScript"
+    ]
+  }
+}]]></component>
+  <component name="ReactDesignerToolWindowState">
+    <option name="myId2Visible">
+      <map>
+        <entry key="com.intellij.reactbuddy.reactComponents" value="false" />
+        <entry key="com.intellij.reactbuddy.reactInspector" value="false" />
+        <entry key="com.intellij.reactbuddy.storybook" value="false" />
+      </map>
+    </option>
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/shared/ui" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/shared/ui/Social" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/features/switch-theme" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/shared/ui/Header" />
+    </key>
+    <key name="es6.move.members.recent.items">
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header/constants.ts" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header/MobileTopBar.tsx" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header/MenuCloseAnimatedButton.tsx" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header/SideBarFooter.tsx" />
+      <recent name="$PROJECT_DIR$/packages/curve-common/src/widgets/Header/SocialSidebarSection.tsx" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/themes/typography" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/themes/" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/themes/button" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/themes/stories" />
+      <recent name="$PROJECT_DIR$/packages/curve-ui-kit/src/themes" />
+    </key>
+  </component>
+  <component name="RunManager" selected="npm.curve-frontend &gt; dev">
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="build" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="curve-frontend &gt; dev" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="curve-ui-kit &gt; extract-figma-tokens" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/packages/curve-ui-kit/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="extract-figma-tokens" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="lend &gt; dev" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/apps/lend/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="lint --no-cache" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="lint" />
+      </scripts>
+      <arguments value="--no-cache" />
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="lint:fix" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="lint:fix" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="main &gt; build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/apps/main/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="build" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="storybook" type="js.build_tools.npm" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="storybook" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="npm.build" />
+      <item itemvalue="npm.curve-frontend &gt; dev" />
+      <item itemvalue="npm.storybook" />
+      <item itemvalue="npm.lend &gt; dev" />
+      <item itemvalue="npm.curve-ui-kit &gt; extract-figma-tokens" />
+      <item itemvalue="npm.lint --no-cache" />
+      <item itemvalue="npm.lint:fix" />
+      <item itemvalue="npm.main &gt; build" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="npm.main &gt; build" />
+        <item itemvalue="npm.lint:fix" />
+        <item itemvalue="npm.lint --no-cache" />
+        <item itemvalue="npm.curve-ui-kit &gt; extract-figma-tokens" />
+        <item itemvalue="npm.lend &gt; dev" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.23726.96" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="ShelveChangesManager">
+    <option name="remove_strategy" value="true" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ad47f02e-ff1e-4fcf-a427-14737b86252b" name="Changes" comment="" />
+      <created>1711447454047</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1711447454047</updated>
+      <workItem from="1711447455189" duration="1292000" />
+      <workItem from="1711449231501" duration="12201000" />
+      <workItem from="1711552515319" duration="1217000" />
+      <workItem from="1711556446448" duration="599000" />
+      <workItem from="1712041177855" duration="320000" />
+      <workItem from="1712042922974" duration="19240000" />
+      <workItem from="1712128193908" duration="1759000" />
+      <workItem from="1712129966049" duration="381000" />
+      <workItem from="1712223143651" duration="19296000" />
+      <workItem from="1712326695940" duration="3179000" />
+      <workItem from="1712925303616" duration="3079000" />
+      <workItem from="1712931985408" duration="779000" />
+      <workItem from="1712989003296" duration="23000" />
+      <workItem from="1713536004650" duration="4750000" />
+      <workItem from="1713810955841" duration="4214000" />
+      <workItem from="1713857247604" duration="11482000" />
+      <workItem from="1713891820451" duration="596000" />
+      <workItem from="1713899396415" duration="1246000" />
+      <workItem from="1713966177485" duration="609000" />
+      <workItem from="1714377568481" duration="365000" />
+      <workItem from="1714424097280" duration="14202000" />
+      <workItem from="1714904654692" duration="27000" />
+      <workItem from="1714904694277" duration="10000" />
+      <workItem from="1714990372276" duration="3112000" />
+      <workItem from="1715000233880" duration="2263000" />
+      <workItem from="1715067303862" duration="1203000" />
+      <workItem from="1716980246566" duration="646000" />
+      <workItem from="1723650280501" duration="529000" />
+      <workItem from="1723650824368" duration="125000" />
+      <workItem from="1723651781678" duration="425000" />
+      <workItem from="1724159391594" duration="8146000" />
+      <workItem from="1724227125058" duration="18273000" />
+      <workItem from="1724657189358" duration="5904000" />
+      <workItem from="1724679511974" duration="1364000" />
+      <workItem from="1724699199993" duration="12000" />
+      <workItem from="1724757671339" duration="14438000" />
+      <workItem from="1724854447746" duration="11532000" />
+      <workItem from="1724938044177" duration="864000" />
+      <workItem from="1724943992177" duration="84000" />
+      <workItem from="1725001439528" duration="730000" />
+      <workItem from="1725302812566" duration="603000" />
+      <workItem from="1725434498936" duration="21894000" />
+      <workItem from="1725632527159" duration="6324000" />
+      <workItem from="1725872395155" duration="25362000" />
+      <workItem from="1725972142178" duration="4036000" />
+      <workItem from="1726079842663" duration="20000" />
+      <workItem from="1726487902430" duration="8646000" />
+      <workItem from="1726556075541" duration="20695000" />
+      <workItem from="1726665997866" duration="5727000" />
+      <workItem from="1727100171316" duration="837000" />
+      <workItem from="1727101247084" duration="399000" />
+      <workItem from="1727116275267" duration="92000" />
+      <workItem from="1727181832367" duration="237000" />
+      <workItem from="1727182073506" duration="244000" />
+      <workItem from="1727182329399" duration="5145000" />
+      <workItem from="1727247994029" duration="1370000" />
+      <workItem from="1727271619032" duration="187000" />
+      <workItem from="1727702890449" duration="4760000" />
+      <workItem from="1727770165175" duration="4268000" />
+      <workItem from="1727775112718" duration="10780000" />
+      <workItem from="1727792916538" duration="828000" />
+      <workItem from="1727846698244" duration="20000" />
+      <workItem from="1727846726069" duration="14847000" />
+      <workItem from="1727894129808" duration="191000" />
+      <workItem from="1727941908452" duration="4785000" />
+      <workItem from="1727946700456" duration="845000" />
+      <workItem from="1727947552553" duration="2136000" />
+      <workItem from="1727950246604" duration="2195000" />
+      <workItem from="1728029297589" duration="12129000" />
+      <workItem from="1728284758945" duration="15847000" />
+      <workItem from="1728309739283" duration="6000" />
+      <workItem from="1728370565190" duration="10442000" />
+      <workItem from="1728382670608" duration="8083000" />
+      <workItem from="1728391585162" duration="3565000" />
+      <workItem from="1728480734767" duration="9000" />
+      <workItem from="1728500328104" duration="32000" />
+      <workItem from="1728500384076" duration="475000" />
+      <workItem from="1728545931485" duration="645000" />
+      <workItem from="1728547471057" duration="2873000" />
+      <workItem from="1728586090474" duration="3000" />
+      <workItem from="1728649315544" duration="12818000" />
+      <workItem from="1728721003801" duration="8000" />
+      <workItem from="1728894804507" duration="742000" />
+      <workItem from="1728896986548" duration="17581000" />
+      <workItem from="1728976616873" duration="23368000" />
+      <workItem from="1729105846106" duration="255000" />
+      <workItem from="1729155347584" duration="2194000" />
+      <workItem from="1729257105827" duration="3027000" />
+      <workItem from="1729507225246" duration="23056000" />
+      <workItem from="1729622495410" duration="154000" />
+      <workItem from="1729667832169" duration="11491000" />
+      <workItem from="1729681221647" duration="8013000" />
+      <workItem from="1729690309160" duration="1922000" />
+      <workItem from="1729695060727" duration="1355000" />
+      <workItem from="1729764047990" duration="9602000" />
+      <workItem from="1729845736488" duration="603000" />
+      <workItem from="1729846756900" duration="14780000" />
+      <workItem from="1730190569455" duration="18409000" />
+      <workItem from="1730219035095" duration="5781000" />
+      <workItem from="1730277810828" duration="5853000" />
+      <workItem from="1730283988622" duration="11157000" />
+      <workItem from="1730295860915" duration="650000" />
+      <workItem from="1730296521614" duration="14320000" />
+      <workItem from="1730365491117" duration="7551000" />
+      <workItem from="1730461938715" duration="2497000" />
+      <workItem from="1730464738050" duration="8569000" />
+      <workItem from="1730474251432" duration="5569000" />
+      <workItem from="1730535681259" duration="1593000" />
+      <workItem from="1730543188735" duration="2079000" />
+      <workItem from="1730661704949" duration="22429000" />
+      <workItem from="1730793279984" duration="9827000" />
+      <workItem from="1730814983627" duration="9857000" />
+      <workItem from="1730881301801" duration="15295000" />
+      <workItem from="1730897259109" duration="6201000" />
+      <workItem from="1730904043516" duration="2781000" />
+      <workItem from="1730920905916" duration="5000" />
+      <workItem from="1731052309574" duration="9935000" />
+      <workItem from="1731073961508" duration="8189000" />
+      <workItem from="1731093539908" duration="28000" />
+      <workItem from="1731319399530" duration="14638000" />
+      <workItem from="1731398238686" duration="310000" />
+      <workItem from="1731398562991" duration="794000" />
+      <workItem from="1731399372516" duration="1222000" />
+      <workItem from="1731401166305" duration="36000" />
+      <workItem from="1731401222053" duration="18115000" />
+      <workItem from="1731441431921" duration="602000" />
+      <workItem from="1731489123007" duration="19984000" />
+    </task>
+    <task id="LOCAL-00128" summary="fix: review comments&#10;&#10;- make sure header is 96px like design&#10;- vertical scrollbar no longer showing on desktop&#10;- max width applied on desktop&#10;- extra paddingX for header&#10;- center logo vertically&#10;- improve spacing on mobile sidebar by using links instead of buttons&#10;- use css variables for theme setup&#10;- move PageTabs indicator to top of tab">
+      <option name="closed" value="true" />
+      <created>1730802520631</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1730802520632</updated>
+    </task>
+    <task id="LOCAL-00129" summary="fix: theme issues&#10;&#10;- ChainSwitcher underline and option text size&#10;- button sizes&#10;- Cleanup theme props IconButton, Paper, Tabs, Toolbar, Container">
+      <option name="closed" value="true" />
+      <created>1730822716222</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1730822716222</updated>
+    </task>
+    <task id="LOCAL-00130" summary="fix: theme issues&#10;&#10;- ChainSwitcher underline and option text size&#10;- button sizes&#10;- Cleanup theme props IconButton, Paper, Tabs, Toolbar, Container">
+      <option name="closed" value="true" />
+      <created>1730822986204</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1730822986204</updated>
+    </task>
+    <task id="LOCAL-00131" summary="ux: larger hamburger icon, padding subtitle">
+      <option name="closed" value="true" />
+      <created>1730882877929</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1730882877929</updated>
+    </task>
+    <task id="LOCAL-00132" summary="refactor: rework figma token extraction&#10;&#10;- Do not read the JSON file during runtime&#10;- Instead, extract a TypeScript file&#10;- Get rid of FSD structure for themes&#10;- Get rid of import forwarding to MUI, any customization should be done via theme">
+      <option name="closed" value="true" />
+      <created>1730898673112</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1730898673113</updated>
+    </task>
+    <task id="LOCAL-00133" summary="chore: self-review">
+      <option name="closed" value="true" />
+      <created>1730899709176</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1730899709176</updated>
+    </task>
+    <task id="LOCAL-00134" summary="fix: menu drawer animation">
+      <option name="closed" value="true" />
+      <created>1730902287770</created>
+      <option name="number" value="00134" />
+      <option name="presentableId" value="LOCAL-00134" />
+      <option name="project" value="LOCAL" />
+      <updated>1730902287770</updated>
+    </task>
+    <task id="LOCAL-00135" summary="fix: menu drawer animation">
+      <option name="closed" value="true" />
+      <created>1730902371404</created>
+      <option name="number" value="00135" />
+      <option name="presentableId" value="LOCAL-00135" />
+      <option name="project" value="LOCAL" />
+      <updated>1730902371405</updated>
+    </task>
+    <task id="LOCAL-00136" summary="fix: header stats">
+      <option name="closed" value="true" />
+      <created>1730905515470</created>
+      <option name="number" value="00136" />
+      <option name="presentableId" value="LOCAL-00136" />
+      <option name="project" value="LOCAL" />
+      <updated>1730905515470</updated>
+    </task>
+    <task id="LOCAL-00137" summary="feat: use new header for `main` app">
+      <option name="closed" value="true" />
+      <created>1731060835805</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1731060835805</updated>
+    </task>
+    <task id="LOCAL-00138" summary="fix: main header">
+      <option name="closed" value="true" />
+      <created>1731071454020</created>
+      <option name="number" value="00138" />
+      <option name="presentableId" value="LOCAL-00138" />
+      <option name="project" value="LOCAL" />
+      <updated>1731071454020</updated>
+    </task>
+    <task id="LOCAL-00139" summary="chore: improve switch animation">
+      <option name="closed" value="true" />
+      <created>1731071966895</created>
+      <option name="number" value="00139" />
+      <option name="presentableId" value="LOCAL-00139" />
+      <option name="project" value="LOCAL" />
+      <updated>1731071966895</updated>
+    </task>
+    <task id="LOCAL-00140" summary="fix: border radius, dropdown design">
+      <option name="closed" value="true" />
+      <created>1731079466181</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1731079466181</updated>
+    </task>
+    <task id="LOCAL-00141" summary="fix: border radius, dropdown design">
+      <option name="closed" value="true" />
+      <created>1731079890142</created>
+      <option name="number" value="00141" />
+      <option name="presentableId" value="LOCAL-00141" />
+      <option name="project" value="LOCAL" />
+      <updated>1731079890142</updated>
+    </task>
+    <task id="LOCAL-00142" summary="feat: new header in crvUSD app">
+      <option name="closed" value="true" />
+      <created>1731082063954</created>
+      <option name="number" value="00142" />
+      <option name="presentableId" value="LOCAL-00142" />
+      <option name="project" value="LOCAL" />
+      <updated>1731082063954</updated>
+    </task>
+    <task id="LOCAL-00143" summary="fix: bad references">
+      <option name="closed" value="true" />
+      <created>1731083304291</created>
+      <option name="number" value="00143" />
+      <option name="presentableId" value="LOCAL-00143" />
+      <option name="project" value="LOCAL" />
+      <updated>1731083304291</updated>
+    </task>
+    <task id="LOCAL-00144" summary="chore: delete unused code">
+      <option name="closed" value="true" />
+      <created>1731084394179</created>
+      <option name="number" value="00144" />
+      <option name="presentableId" value="LOCAL-00144" />
+      <option name="project" value="LOCAL" />
+      <updated>1731084394179</updated>
+    </task>
+    <task id="LOCAL-00145" summary="chore: remove FSD rules">
+      <option name="closed" value="true" />
+      <created>1731320838295</created>
+      <option name="number" value="00145" />
+      <option name="presentableId" value="LOCAL-00145" />
+      <option name="project" value="LOCAL" />
+      <updated>1731320838295</updated>
+    </task>
+    <task id="LOCAL-00146" summary="chore: update lock file">
+      <option name="closed" value="true" />
+      <created>1731321108310</created>
+      <option name="number" value="00146" />
+      <option name="presentableId" value="LOCAL-00146" />
+      <option name="project" value="LOCAL" />
+      <updated>1731321108310</updated>
+    </task>
+    <task id="LOCAL-00147" summary="feat: storybook publishing, add new components">
+      <option name="closed" value="true" />
+      <created>1731335702292</created>
+      <option name="number" value="00147" />
+      <option name="presentableId" value="LOCAL-00147" />
+      <option name="project" value="LOCAL" />
+      <updated>1731335702292</updated>
+    </task>
+    <task id="LOCAL-00148" summary="fix: storybook workflow">
+      <option name="closed" value="true" />
+      <created>1731335903554</created>
+      <option name="number" value="00148" />
+      <option name="presentableId" value="LOCAL-00148" />
+      <option name="project" value="LOCAL" />
+      <updated>1731335903554</updated>
+    </task>
+    <task id="LOCAL-00149" summary="fix: storybook workflow">
+      <option name="closed" value="true" />
+      <created>1731337061915</created>
+      <option name="number" value="00149" />
+      <option name="presentableId" value="LOCAL-00149" />
+      <option name="project" value="LOCAL" />
+      <updated>1731337061915</updated>
+    </task>
+    <task id="LOCAL-00150" summary="refactor: cleanup separate toolbar colors">
+      <option name="closed" value="true" />
+      <created>1731337530829</created>
+      <option name="number" value="00150" />
+      <option name="presentableId" value="LOCAL-00150" />
+      <option name="project" value="LOCAL" />
+      <updated>1731337530829</updated>
+    </task>
+    <task id="LOCAL-00151" summary="chore: inline workflow">
+      <option name="closed" value="true" />
+      <created>1731337786832</created>
+      <option name="number" value="00151" />
+      <option name="presentableId" value="LOCAL-00151" />
+      <option name="project" value="LOCAL" />
+      <updated>1731337786832</updated>
+    </task>
+    <task id="LOCAL-00152" summary="chore: inline workflow">
+      <option name="closed" value="true" />
+      <created>1731337856224</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1731337856224</updated>
+    </task>
+    <task id="LOCAL-00153" summary="publish: github pages">
+      <option name="closed" value="true" />
+      <created>1731398606511</created>
+      <option name="number" value="00153" />
+      <option name="presentableId" value="LOCAL-00153" />
+      <option name="project" value="LOCAL" />
+      <updated>1731398606511</updated>
+    </task>
+    <task id="LOCAL-00154" summary="refactor: use network slice">
+      <option name="closed" value="true" />
+      <created>1731404502302</created>
+      <option name="number" value="00154" />
+      <option name="presentableId" value="LOCAL-00154" />
+      <option name="project" value="LOCAL" />
+      <updated>1731404502303</updated>
+    </task>
+    <task id="LOCAL-00155" summary="refactor: use network slice in components (main)">
+      <option name="closed" value="true" />
+      <created>1731407428596</created>
+      <option name="number" value="00155" />
+      <option name="presentableId" value="LOCAL-00155" />
+      <option name="project" value="LOCAL" />
+      <updated>1731407428596</updated>
+    </task>
+    <task id="LOCAL-00156" summary="refactor: use network slice in utils (main)">
+      <option name="closed" value="true" />
+      <created>1731407932871</created>
+      <option name="number" value="00156" />
+      <option name="presentableId" value="LOCAL-00156" />
+      <option name="project" value="LOCAL" />
+      <updated>1731407932871</updated>
+    </task>
+    <task id="LOCAL-00157" summary="refactor: use network slice in curvejs (main)">
+      <option name="closed" value="true" />
+      <created>1731409174782</created>
+      <option name="number" value="00157" />
+      <option name="presentableId" value="LOCAL-00157" />
+      <option name="project" value="LOCAL" />
+      <updated>1731409174782</updated>
+    </task>
+    <task id="LOCAL-00158" summary="fix: null check">
+      <option name="closed" value="true" />
+      <created>1731410797410</created>
+      <option name="number" value="00158" />
+      <option name="presentableId" value="LOCAL-00158" />
+      <option name="project" value="LOCAL" />
+      <updated>1731410797410</updated>
+    </task>
+    <task id="LOCAL-00159" summary="refactor: replace last @/network references">
+      <option name="closed" value="true" />
+      <created>1731415825694</created>
+      <option name="number" value="00159" />
+      <option name="presentableId" value="LOCAL-00159" />
+      <option name="project" value="LOCAL" />
+      <updated>1731415825694</updated>
+    </task>
+    <task id="LOCAL-00160" summary="fix: don't retrieve tvl">
+      <option name="closed" value="true" />
+      <created>1731416149418</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1731416149418</updated>
+    </task>
+    <task id="LOCAL-00161" summary="chore: revert lend changes, remove unused code">
+      <option name="closed" value="true" />
+      <created>1731416668063</created>
+      <option name="number" value="00161" />
+      <option name="presentableId" value="LOCAL-00161" />
+      <option name="project" value="LOCAL" />
+      <updated>1731416668063</updated>
+    </task>
+    <task id="LOCAL-00162" summary="chore: revert ui package change">
+      <option name="closed" value="true" />
+      <created>1731417039066</created>
+      <option name="number" value="00162" />
+      <option name="presentableId" value="LOCAL-00162" />
+      <option name="project" value="LOCAL" />
+      <updated>1731417039067</updated>
+    </task>
+    <task id="LOCAL-00163" summary="Merge branch 'task/add-curve-lite' of github.com:curvefi/curve-frontend into task/add-curve-lite-networks">
+      <option name="closed" value="true" />
+      <created>1731420916101</created>
+      <option name="number" value="00163" />
+      <option name="presentableId" value="LOCAL-00163" />
+      <option name="project" value="LOCAL" />
+      <updated>1731420916101</updated>
+    </task>
+    <task id="LOCAL-00164" summary="apply @amytsang changes from commit f39363b">
+      <option name="closed" value="true" />
+      <created>1731421756298</created>
+      <option name="number" value="00164" />
+      <option name="presentableId" value="LOCAL-00164" />
+      <option name="project" value="LOCAL" />
+      <updated>1731421756298</updated>
+    </task>
+    <task id="LOCAL-00165" summary="fix: layout improvements w/ UX">
+      <option name="closed" value="true" />
+      <created>1731491292537</created>
+      <option name="number" value="00165" />
+      <option name="presentableId" value="LOCAL-00165" />
+      <option name="project" value="LOCAL" />
+      <updated>1731491292537</updated>
+    </task>
+    <task id="LOCAL-00166" summary="fix: user info text based on figma">
+      <option name="closed" value="true" />
+      <created>1731491851109</created>
+      <option name="number" value="00166" />
+      <option name="presentableId" value="LOCAL-00166" />
+      <option name="project" value="LOCAL" />
+      <updated>1731491851109</updated>
+    </task>
+    <task id="LOCAL-00167" summary="fix: savings instead of saving">
+      <option name="closed" value="true" />
+      <created>1731492173243</created>
+      <option name="number" value="00167" />
+      <option name="presentableId" value="LOCAL-00167" />
+      <option name="project" value="LOCAL" />
+      <updated>1731492173243</updated>
+    </task>
+    <task id="LOCAL-00168" summary="fix: connect walelt from crv staking">
+      <option name="closed" value="true" />
+      <created>1731493019688</created>
+      <option name="number" value="00168" />
+      <option name="presentableId" value="LOCAL-00168" />
+      <option name="project" value="LOCAL" />
+      <updated>1731493019688</updated>
+    </task>
+    <task id="LOCAL-00169" summary="ux: update yield growth icon">
+      <option name="closed" value="true" />
+      <created>1731493764044</created>
+      <option name="number" value="00169" />
+      <option name="presentableId" value="LOCAL-00169" />
+      <option name="project" value="LOCAL" />
+      <updated>1731493764044</updated>
+    </task>
+    <task id="LOCAL-00170" summary="fix: add stack trace">
+      <option name="closed" value="true" />
+      <created>1731504332757</created>
+      <option name="number" value="00170" />
+      <option name="presentableId" value="LOCAL-00170" />
+      <option name="project" value="LOCAL" />
+      <updated>1731504332757</updated>
+    </task>
+    <task id="LOCAL-00171" summary="test: add cypress to pipeline">
+      <option name="closed" value="true" />
+      <created>1731505285351</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1731505285351</updated>
+    </task>
+    <task id="LOCAL-00172" summary="test: add wait-on to check if server is running">
+      <option name="closed" value="true" />
+      <created>1731505930325</created>
+      <option name="number" value="00172" />
+      <option name="presentableId" value="LOCAL-00172" />
+      <option name="project" value="LOCAL" />
+      <updated>1731505930325</updated>
+    </task>
+    <task id="LOCAL-00173" summary="fix: hide liquidity and volume for lite networks">
+      <option name="closed" value="true" />
+      <created>1731510254927</created>
+      <option name="number" value="00173" />
+      <option name="presentableId" value="LOCAL-00173" />
+      <option name="project" value="LOCAL" />
+      <updated>1731510254927</updated>
+    </task>
+    <task id="LOCAL-00174" summary="fix: pool parameters in lite network">
+      <option name="closed" value="true" />
+      <created>1731510758112</created>
+      <option name="number" value="00174" />
+      <option name="presentableId" value="LOCAL-00174" />
+      <option name="project" value="LOCAL" />
+      <updated>1731510758112</updated>
+    </task>
+    <task id="LOCAL-00175" summary="fix: storybook static build">
+      <option name="closed" value="true" />
+      <created>1731513549404</created>
+      <option name="number" value="00175" />
+      <option name="presentableId" value="LOCAL-00175" />
+      <option name="project" value="LOCAL" />
+      <updated>1731513549404</updated>
+    </task>
+    <task id="LOCAL-00176" summary="fix: add env">
+      <option name="closed" value="true" />
+      <created>1731514027028</created>
+      <option name="number" value="00176" />
+      <option name="presentableId" value="LOCAL-00176" />
+      <option name="project" value="LOCAL" />
+      <updated>1731514027028</updated>
+    </task>
+    <option name="localTasksCounter" value="177" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+        <option value="GitHub.CommitStatus" />
+      </list>
+    </option>
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refactor: use network slice in store" />
+    <MESSAGE value="refactor: use network slice in store" />
+    <MESSAGE value="refactor: use network slice in components (main)" />
+    <MESSAGE value="refactor: use network slice in utils (main)" />
+    <MESSAGE value="refactor: use network slice in curvejs (main)" />
+    <MESSAGE value="fix: null check" />
+    <MESSAGE value="refactor: replace last @/network references" />
+    <MESSAGE value="fix: don't retrieve tvl" />
+    <MESSAGE value="chore: revert lend changes, remove unused code" />
+    <MESSAGE value="chore: revert ui package change" />
+    <MESSAGE value="Merge branch 'task/add-curve-lite' of github.com:curvefi/curve-frontend into task/add-curve-lite-networks" />
+    <MESSAGE value="apply @amytsang changes from commit f39363b" />
+    <MESSAGE value="fix: layout improvements w/ UX" />
+    <MESSAGE value="fix: user info text based on figma" />
+    <MESSAGE value="fix: savings instead of saving" />
+    <MESSAGE value="fix: connect wallet from crv staking" />
+    <MESSAGE value="fix: connect wallet from crv staking" />
+    <MESSAGE value="ux: update yield growth icon" />
+    <MESSAGE value="fix: add stack trace" />
+    <MESSAGE value="test: add cypress to pipeline" />
+    <MESSAGE value="test: add wait-on to check if server is running" />
+    <MESSAGE value="fix: hide liquidity and volume for lite networks" />
+    <MESSAGE value="fix: pool parameters in lite network" />
+    <MESSAGE value="fix: storybook static build" />
+    <MESSAGE value="fix: add env" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix: add env" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
