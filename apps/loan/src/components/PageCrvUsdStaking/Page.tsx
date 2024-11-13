@@ -58,7 +58,7 @@ const HeaderContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  background-color: var(--table--background-color);
+  /* background-color: var(--table--background-color); */
   align-items: center;
   padding: var(--spacing-3);
   gap: var(--spacing-3);
