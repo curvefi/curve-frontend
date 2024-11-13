@@ -1,0 +1,39 @@
+name: CI
+on: [push]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 20
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn lint
+  cypress:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [main, loan, lend]
+        include:
+          - app: main
+            port: 3000
+          - app: loan
+            port: 3001
+          - app: lend
+            port: 3003
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 20
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn run start &
+        working-directory: apps/${{ matrix.app }}
+      - run: npx wait-on http://localhost:${{ matrix.port }}
+      - run: yarn run cy:run:e2e:${{ matrix.app }}
+        working-directory: tests
