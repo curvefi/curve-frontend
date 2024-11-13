@@ -17,7 +17,7 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import IntegrationAppComp from '@/ui/Integration/IntegrationApp'
 import SearchInput from '@/ui/SearchInput'
-import SelectNetwork from '@/ui/Select/SelectNetwork'
+import SelectNetwork from '@/ui/SelectNetwork/SelectNetwork'
 import SelectIntegrationTags from '@/components/PageIntegrations/components/SelectIntegrationTags'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations

@@ -1,6 +1,6 @@
 import type { FilterKey } from '@/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@/ui/Integration/types'
-import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
+import type { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
 
 export function parseSearchParams(
   searchParams: URLSearchParams | undefined,

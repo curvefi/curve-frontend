@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils'
 
-import SelectNetwork from 'ui/src/Select/SelectNetwork'
+import SelectNetwork from 'ui/src/SelectNetwork'
 
 export const AppNavSecondaryWrapper = styled.nav`
   border-bottom: 1px solid var(--nav--border-color);

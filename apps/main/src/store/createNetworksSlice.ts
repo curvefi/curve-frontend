@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import { Chain } from '@/shared/curve-lib'
 import { DEFAULT_NETWORK_CONFIG } from '@/constants'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
-import { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
+import { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
 

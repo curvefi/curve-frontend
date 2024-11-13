@@ -1,4 +1,4 @@
-import type { SelectNetworkItem } from '@/ui/Select/SelectNetwork'
+import type { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
 
 import sortBy from 'lodash/sortBy'
 
