@@ -86,12 +86,13 @@ const helpers = {
 
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
-      .handleError((error, tokenAddress) => {
-        console.error(`Unable to get usd rate for ${tokenAddress}`)
-        results[tokenAddress] = NaN
-      })
       .process(async (tokenAddress) => {
-        results[tokenAddress] = await curve.getUsdRate(tokenAddress)
+        try {
+          results[tokenAddress] = await curve.getUsdRate(tokenAddress)
+        } catch (error) {
+          console.error(`Unable to get usd rate for ${tokenAddress}`, error)
+          results[tokenAddress] = NaN
+        }
       })
     return results
   },
