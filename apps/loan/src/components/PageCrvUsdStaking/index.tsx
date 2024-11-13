@@ -9,7 +9,7 @@ import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
 
-const CrvUsdStaking = () => {
+const CrvUsdStaking = ({ mobileBreakpoint } : {mobileBreakpoint: string }) => {
   const {
     fetchUserBalances,
     checkApproval,
@@ -25,7 +25,6 @@ const CrvUsdStaking = () => {
   const chainId = useStore((state) => state.curve?.chainId)
   const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
 
-  const mobileBreakpoint = '47.5rem'
   const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
 
   useEffect(() => {
@@ -61,10 +60,9 @@ const CrvUsdStaking = () => {
 
   return (
     <Wrapper>
-      {isUserScrvUsdBalanceZero && <StyledStatsBanner />}
       <MainContainer mobileBreakpoint={mobileBreakpoint}>
         <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
-        {!isUserScrvUsdBalanceZero && <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
+        {isUserScrvUsdBalanceZero ? <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} /> : <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
       </MainContainer>
       <StyledUserInformation />
     </Wrapper>
@@ -93,12 +91,18 @@ const MainContainer = styled.div<{ mobileBreakpoint: string }>`
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: var(--spacing-3);
   @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
     flex-direction: column;
   }
 `
 
-const StyledStatsBanner = styled(StatsBanner)``
+const StyledStatsBanner = styled(StatsBanner)< {mobileBreakpoint: string }>`
+    max-width: 309px;
+    @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+        max-width: 100%;
+    }
+`
 
 const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
   margin: var(--spacing-3) 0 auto var(--spacing-3);
@@ -109,7 +113,6 @@ const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: 
 `
 
 const StyledDepositWithdraw = styled(DepositWithdraw)<{ mobileBreakpoint: string }>`
-  margin: var(--spacing-3) 0 auto;
   @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
     order: 2;
     margin: var(--spacing-3) auto auto;

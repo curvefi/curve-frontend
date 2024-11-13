@@ -70,7 +70,7 @@ const Header = () => {
     const links = isLgUp
       ? [
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`crvUSD Savings`, groupedTitle: 'savings' },
+          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Saving crvUSD`, groupedTitle: 'savings' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
           { ...APP_LINK.main, isDivider: true },
@@ -78,7 +78,7 @@ const Header = () => {
         ]
       : [
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
-          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`crvUSD Savings`, groupedTitle: 'savings' },
+          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Saving crvUSD`, groupedTitle: 'savings' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
           { ...APP_LINK.main, isDivider: true },
