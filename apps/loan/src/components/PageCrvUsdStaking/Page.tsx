@@ -21,6 +21,11 @@ import CrvUsdStaking from '@/components/PageCrvUsdStaking'
 const mobileBreakpoint = '47.5rem'
 
 const Page: NextPage = () => {
+  const params = useParams()
+  const location = useLocation()
+  const navigate = useNavigate()
+  usePageOnMount(params, location, navigate) // handles connecting wallet
+
   useEffect(() => {
     scrollToTop()
   }, [])
