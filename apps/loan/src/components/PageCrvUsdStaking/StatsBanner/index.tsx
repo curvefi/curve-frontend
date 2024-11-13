@@ -19,7 +19,6 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
   const exampleBalance = 100000
 
   const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
-  const isReadyPricesYieldData = isReady(pricesYieldData.fetchStatus)
   const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
   const oneMonthProjYield = formatNumber((scrvUsdApy / 12) * exampleBalance, {
     minimumFractionDigits: 2,
@@ -33,7 +32,7 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
   return (
     <Wrapper className={className}>
       <Box>
-        <Title>{t`SCRVUSD IS CURVE’S YIELD-BEARING STABLECOIN`}</Title>
+        <Title>{t`Your stablecoins could do more`}</Title>
         <Description>{t`With $100k of scrvUSD held you could get`}</Description>
       </Box>
       <StatsRow>
@@ -97,6 +96,7 @@ const Wrapper = styled.div`
   padding: var(--spacing-3);
   background-color: #d4f7e3;
   border: 1px solid #1fa25e;
+  align-self: flex-start;
 `
 
 const StatsTitleWrapper = styled.div`
@@ -124,8 +124,7 @@ const StatsRow = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
-  gap: var(--spacing-4);
+  gap: var(--spacing-3);
   flex-wrap: wrap;
   color: var(--black-100);
 `
@@ -134,6 +133,7 @@ const StatsItem = styled.div`
   display: flex;
   margin-right: auto;
   flex-direction: column;
+  min-width: 240px;
 `
 
 const StatsItemTitle = styled.h5`
