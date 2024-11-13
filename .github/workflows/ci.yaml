@@ -28,6 +28,7 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run dev -- --filter ${{ matrix.app }} &
+      - run: yarn run dev &
+        working-directory: apps/${{ matrix.app }}
       - run: yarn run cy:run:e2e:${{ matrix.app }}
         working-directory: tests
