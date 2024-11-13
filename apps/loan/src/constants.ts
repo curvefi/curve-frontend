@@ -103,20 +103,6 @@ export const PEG_KEEPERS = {
       ],
     },
   },
-  '0x0a05ff644878b908ef8eb29542aa88c07d9797d3': {
-    address: '0x0a05ff644878b908ef8eb29542aa88c07d9797d3',
-    token: 'TUSD',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-crvusd-3/deposit',
-    pool: {
-      id: 'factory-crvusd-3',
-      name: 'crvUSD/TUSD',
-      underlyingCoins: ['TUSD', 'crvUSD'],
-      underlyingCoinAddresses: [
-        '0x0000000000085d4780b73119b644ae5ecd22b376',
-        '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
-      ],
-    },
-  },
   '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
     address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
     token: 'USDM',
