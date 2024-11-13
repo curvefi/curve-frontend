@@ -80,7 +80,7 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
             <Loader isLightBg skeleton={[120, 26]} />
           ) : (
             <StatsItemValue>
-              ~{formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              ~{formatNumber(scrvUsdApy, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </StatsItemValue>
           )}
         </StatsItem>
