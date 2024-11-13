@@ -1,4 +1,5 @@
 import { t } from '@lingui/macro'
+import styled from 'styled-components'
 
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
@@ -20,7 +21,15 @@ const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ address }
     return t`Liquidity providers in this pool also earn additional tokens!`
   }
 
-  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
+  return (
+    <CampaignRewardsBannerWrapper>
+      <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
+    </CampaignRewardsBannerWrapper>
+  )
 }
+
+const CampaignRewardsBannerWrapper = styled.div`
+  margin: 0 0 var(--spacing-2) 0;
+`
 
 export default CampaignRewardsBanner

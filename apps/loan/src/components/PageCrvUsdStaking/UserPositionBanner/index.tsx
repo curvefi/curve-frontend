@@ -36,13 +36,13 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
   const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
   const exchangeRateLoading = isLoading(crvUsdExchangeRateFetchStatus)
 
-  const totalScrvUsdSupply = pricesYieldData.data[pricesYieldData.data.length - 1]?.supply ?? 0
+  const totalScrvUsdSupply = pricesYieldData.data?.supply ?? 0
   const totalScrvUsdSupplyFormatted = formatNumber(totalScrvUsdSupply, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
-  const scrvUsdApyFormatted = formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const scrvUsdApy = pricesYieldData.data?.proj_apr ?? 0
+  const scrvUsdApyFormatted = formatNumber(scrvUsdApy, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   const userShareOfTotalScrvUsdSupply = BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100).toString()
   const userShareOfTotalScrvUsdSupplyFormatted = formatNumber(userShareOfTotalScrvUsdSupply, {
