@@ -23,8 +23,6 @@ type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
 /*
  * If an image is not displaying, ensure it has been added to the repository at:
  * https://github.com/curvefi/curve-assets/tree/main/chains.
- *
- * The `darkSrc` property is optional. Only include a `darkSrc` if the image does not display correctly in dark theme.
  */
 export const SelectNetwork: React.FC<SelectNetworkProps> = ({
   className = '',
@@ -34,21 +32,12 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
   items,
   ...props
 }) => {
-  const selectItems = React.useMemo(() => {
-    if (!items) return []
-
-    if (isDarkTheme) {
-      return Array.from(items, ({ src, srcDark, ...rest }) => ({ src: srcDark, fallbackSrc: src, ...rest }))
-    }
-
-    return Array.from(items, ({ src, srcDark, ...rest }) => ({ src, fallbackSrc: src, ...rest }))
-  }, [items, isDarkTheme])
-
+  // TODO: add darkTheme icon or make sure icon work for both dark and light theme
   return (
-    <Select {...props} className={className} items={selectItems} aria-label="Select network" label="">
-      {({ chainId, src, fallbackSrc, label }) => (
+    <Select {...props} className={className} items={items} aria-label="Select network" label="">
+      {({ chainId, src, label }) => (
         <Item key={chainId} textValue={chainId.toString()}>
-          {!hideIcon && <SelectNetworkItem label={label} src={src} fallbackSrc={fallbackSrc} />}
+          {!hideIcon && <SelectNetworkItem label={label} src={src} fallbackSrc={src} />}
           <strong>{label}</strong>
         </Item>
       )}
