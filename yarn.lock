@@ -9962,14 +9962,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.6.1":
-  version: 1.7.2
-  resolution: "axios@npm:1.7.2"
+"axios@npm:^1.7.7":
+  version: 1.7.7
+  resolution: "axios@npm:1.7.7"
   dependencies:
     follow-redirects: "npm:^1.15.6"
     form-data: "npm:^4.0.0"
     proxy-from-env: "npm:^1.1.0"
-  checksum: 10c0/cbd47ce380fe045313364e740bb03b936420b8b5558c7ea36a4563db1258c658f05e40feb5ddd41f6633fdd96d37ac2a76f884dad599c5b0224b4c451b3fa7ae
+  checksum: 10c0/4499efc89e86b0b49ffddc018798de05fab26e3bf57913818266be73279a6418c3ce8f9e934c7d2d707ab8c095e837fc6c90608fb7715b94d357720b5f568af7
   languageName: node
   linkType: hard
 
@@ -15970,16 +15970,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17.11.0":
-  version: 17.13.1
-  resolution: "joi@npm:17.13.1"
+"joi@npm:^17.13.3":
+  version: 17.13.3
+  resolution: "joi@npm:17.13.3"
   dependencies:
     "@hapi/hoek": "npm:^9.3.0"
     "@hapi/topo": "npm:^5.1.0"
     "@sideway/address": "npm:^4.1.5"
     "@sideway/formula": "npm:^3.0.1"
     "@sideway/pinpoint": "npm:^2.0.0"
-  checksum: 10c0/485627809c5e424fc4af4310e06bc31a34fe10635b0bdbfcc425336db5e06b1da3ff8b35101878ffcbcd94c0187e7134c935fb2d1aeba641c92d7f505e6ffd8d
+  checksum: 10c0/9262aef1da3f1bec5b03caf50c46368899fe03b8ff26cbe3d53af4584dd1049079fc97230bbf1500b6149db7cc765b9ee45f0deb24bb6fc3fa06229d7148c17f
   languageName: node
   linkType: hard
 
@@ -21004,7 +21004,7 @@ __metadata:
     ethers: "npm:^6.12.1"
     hardhat: "npm:^2.22.10"
     tsconfig: "npm:*"
-    wait-on: "npm:^7.2.0"
+    wait-on: "npm:^8.0.1"
   languageName: unknown
   linkType: soft
 
@@ -22141,18 +22141,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wait-on@npm:^7.2.0":
-  version: 7.2.0
-  resolution: "wait-on@npm:7.2.0"
+"wait-on@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "wait-on@npm:8.0.1"
   dependencies:
-    axios: "npm:^1.6.1"
-    joi: "npm:^17.11.0"
+    axios: "npm:^1.7.7"
+    joi: "npm:^17.13.3"
     lodash: "npm:^4.17.21"
     minimist: "npm:^1.2.8"
     rxjs: "npm:^7.8.1"
   bin:
     wait-on: bin/wait-on
-  checksum: 10c0/1eff2189b3e4b0975889f3e480c75ca2a0d4275072779a6329e7cae8b729620594aa044509ddd89967de6ab2162169501b67b8d9562c16cac517837ffce17337
+  checksum: 10c0/e8fe78084465a5fa95b17095136dcb3942480c7d9e47a0cfb72363238e2411883630dc9ced02fb372f4cc7ec0ec2484c92c67060ea2f81d0e97e41ef21df8006
   languageName: node
   linkType: hard
 
