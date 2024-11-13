@@ -1,8 +1,8 @@
-import { Card, Container, CssBaseline, ThemeProvider } from '@mui/material'
+import { CssBaseline, ThemeProvider } from '@mui/material'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
-import { monaSans, hubotSans } from '../src/themes/typography/fonts'
+import { hubotSans, monaSans } from '../src/themes/typography/fonts'
 import { DocsContainer } from '@storybook/blocks'
 import Box from '@mui/material/Box'
 
@@ -42,7 +42,7 @@ export const decorators: Decorator[] = [
       </style>
       <Story />
     </>
-  )
+  ),
 ]
 
 const preview: Preview = {
@@ -60,13 +60,11 @@ const preview: Preview = {
       // Implement a custom docs container that applies the theme at the root level.
       // Workaround for: https://github.com/storybookjs/storybook/issues/26242
       container: ({ children, context }) => {
-        const theme = context.store.userGlobals.globals.theme
+        const theme = themes[context.store.userGlobals.globals.theme] ?? themes.light
         return (
           <DocsContainer context={context}>
-            <ThemeProvider theme={themes[theme]}>
-              <Box sx={{ '& .docs-story': { backgroundColor: 'background.paper' } }}>
-                {children}
-              </Box>
+            <ThemeProvider theme={theme}>
+              <Box sx={{ '& .docs-story': { backgroundColor: 'background.paper' } }}>{children}</Box>
             </ThemeProvider>
           </DocsContainer>
         )

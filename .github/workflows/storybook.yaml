@@ -26,7 +26,7 @@ jobs:
       - name: 'Build'
         working-directory: packages/curve-ui-kit
         run: |
-          yarn install
+          yarn install --immutable
           yarn build:storybook
 
       - name: 'upload'
