@@ -53,3 +53,15 @@ export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }
 
 /* createWalletSlice */
 export type Provider = ethers.providers.Web3Provider
+
+export type PricesYieldDataResponse = {
+  data: PricesYieldData[]
+}
+
+export type PricesYieldData = {
+  apy: number
+  proj_apy: number
+  price: number
+  supply: number
+  timestamp: number
+}
