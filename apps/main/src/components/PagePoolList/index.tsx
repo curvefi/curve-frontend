@@ -86,6 +86,13 @@ const PoolList = ({
     return isLite ? haveTvl : haveVolume && haveTvl
   }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
 
+  const isReadyWithApiData = useMemo(() => {
+    const haveVolume = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
+    const haveTvl = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
+
+    return isLite ? haveTvl : haveVolume && haveTvl
+  }, [isLite, tvlMapper, volumeMapper])
+
   const columnKeys = useMemo(() => {
     let keys: ColumnKeys[] = []
     if (showInPoolColumn) keys.push(COLUMN_KEYS.inPool)
@@ -147,11 +154,11 @@ const PoolList = ({
 
   // init
   useEffect(() => {
-    if (!isReady || !searchParams) return
+    if ((!isReady && !isReadyWithApiData) || !searchParams) return
 
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, chainId, signerAddress, searchParams])
+  }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -205,7 +212,7 @@ const PoolList = ({
             />
           )}
           <Tbody $borderBottom>
-            {isReady && formStatus.noResult ? (
+            {isReadyWithApiData && formStatus.noResult ? (
               <TableRowNoResult
                 colSpan={colSpan}
                 searchParams={searchParams}
