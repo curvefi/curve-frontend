@@ -27,12 +27,12 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`Saving crvUSD`} />
+      <DocumentHead title={t`Savings crvUSD`} />
       <Container>
         <HeaderContainer mobileBreakpoint={mobileBreakpoint}>
           <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
           <Box flex flexColumn>
-            <Title>{t`Saving crvUSD`}</Title>
+            <Title>{t`Savings crvUSD`}</Title>
             <Description>{t`Let your idle crvUSD do more for you.`}</Description>
           </Box>
         </HeaderContainer>
