@@ -61,7 +61,7 @@ const HeaderContainer = styled.div<{ mobileBreakpoint: string }>`
   flex-direction: row;
   width: 100%;
   align-items: center;
-  padding: var(--spacing-3) 0;
+  padding: var(--spacing-3);
   gap: var(--spacing-3);
   @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
     padding: var(--spacing-3);
