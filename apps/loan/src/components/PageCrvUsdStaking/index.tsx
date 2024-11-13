@@ -9,7 +9,7 @@ import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
 
-const CrvUsdStaking = ({ mobileBreakpoint } : {mobileBreakpoint: string }) => {
+const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const {
     fetchUserBalances,
     checkApproval,
@@ -42,13 +42,11 @@ const CrvUsdStaking = ({ mobileBreakpoint } : {mobileBreakpoint: string }) => {
   // none library fetches
   useEffect(() => {
     const fetchData = async () => {
-      if (!signerAddress) return
-
       fetchSavingsYield()
     }
 
     fetchData()
-  }, [fetchSavingsYield, signerAddress])
+  }, [fetchSavingsYield])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
@@ -62,7 +60,11 @@ const CrvUsdStaking = ({ mobileBreakpoint } : {mobileBreakpoint: string }) => {
     <Wrapper>
       <MainContainer mobileBreakpoint={mobileBreakpoint}>
         <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
-        {isUserScrvUsdBalanceZero ? <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} /> : <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />}
+        {isUserScrvUsdBalanceZero ? (
+          <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />
+        ) : (
+          <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />
+        )}
       </MainContainer>
       <StyledUserInformation />
     </Wrapper>
@@ -97,11 +99,11 @@ const MainContainer = styled.div<{ mobileBreakpoint: string }>`
   }
 `
 
-const StyledStatsBanner = styled(StatsBanner)< {mobileBreakpoint: string }>`
-    max-width: 309px;
-    @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
-        max-width: 100%;
-    }
+const StyledStatsBanner = styled(StatsBanner)<{ mobileBreakpoint: string }>`
+  max-width: 309px;
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    max-width: 100%;
+  }
 `
 
 const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
