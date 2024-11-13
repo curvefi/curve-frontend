@@ -83,7 +83,7 @@ const PoolList = ({
     const tvlCacheOrApi = tvlMapper || tvlMapperCached || {}
     const haveTvl = haveTvlMapper || Object.keys(tvlCacheOrApi).length > 0
 
-    return isLite ? haveTvl : haveVolume
+    return isLite ? haveTvl : haveVolume && haveTvl
   }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
 
   const columnKeys = useMemo(() => {
@@ -103,6 +103,7 @@ const PoolList = ({
     (searchParams: SearchParams) => {
       setFormValues(
         rChainId,
+        isLite,
         searchParams,
         sortSearchTextLast,
         typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
@@ -117,6 +118,7 @@ const PoolList = ({
       )
     },
     [
+      isLite,
       campaignRewardsMapper,
       poolDataMapper,
       poolDatas,

@@ -56,7 +56,7 @@ export type PoolListSlice = {
     sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper): P[]
     setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
-    setFormValues(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapper: TvlMapper, tvlMapperCached: { [poolId:string]: { value: string } }, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): void
+    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapper: TvlMapper, tvlMapperCached: { [poolId:string]: { value: string } }, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -315,6 +315,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     },
     setFormValues: async (
       rChainId,
+      isLite,
       searchParams,
       sortSearchTextLast,
       poolDatas,
@@ -329,10 +330,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     ) => {
       const state = get()
       let { formValues, result: storedResults, ...sliceState } = state[sliceKey]
-      const {
-        networks: { networks },
-      } = state
-      const { isLite } = networks[rChainId]
 
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
 
