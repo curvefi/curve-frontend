@@ -598,7 +598,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         } else if (amount === userBalance.scrvUSD) {
           response = await lendApi.st_crvUSD.previewRedeem(amount)
         } else {
-          response = await lendApi.st_crvUSD.previewWithdraw(amount)
+          response = await lendApi.st_crvUSD.previewRedeem(amount)
         }
 
         get()[sliceKey].setStateByKey('preview', { fetchStatus: 'success', value: response })
