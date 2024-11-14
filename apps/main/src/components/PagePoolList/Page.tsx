@@ -68,35 +68,20 @@ const Page: NextPage = () => {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
-      let searchPath = '?'
+      const searchPath = new URLSearchParams(
+        [
+          ['filter', filterKey && filterKey !== 'all' ? filterKey : ''],
+          ['hideSmallPools', hideSmallPools ? '' : 'false'],
+          ['sortBy', sortBy && sortBy !== 'volume' ? sortBy : ''],
+          ['sortByOrder', sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+          ['search', searchText ? encodeURIComponent(searchText) : ''],
+        ].filter(([, v]) => v),
+      ).toString()
 
-      if (filterKey && filterKey !== 'all' && !('filterKey' in updatedSearchParams)) {
-        searchPath += `filter=${filterKey}`
-      }
-      if (hideSmallPools === false && !('hideSmallPools' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
-      }
-      if (sortBy && sortBy !== 'volume' && !('sortBy' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
-      }
-      if (sortByOrder && sortByOrder !== 'desc' && !('sortByOrder' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}order=${sortByOrder}`
-      }
-      if (searchText && !('searchText' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
-      }
-
-      Object.entries(updatedSearchParams).forEach(([k, v]) => {
-        if (k === 'filterKey') searchPath += `filter=${v}`
-        if (k === 'hideSmallPools') searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=${v}`
-        if (k === 'sortBy') searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${v}`
-        if (k === 'sortByOrder') searchPath += `${searchPath === '?' ? '' : '&'}order=${v}`
-        if (k === 'searchText' && !!v) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(v)}`
-      })
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
       navigate(pathname)
     },
-    [navigate, params, parsedSearchParams]
+    [navigate, params, parsedSearchParams],
   )
 
   useEffect(() => {
