@@ -64,7 +64,7 @@ type SliceState = {
   }
   pricesYieldData: {
     fetchStatus: FetchStatus
-    data: PricesYieldData[]
+    data: PricesYieldData | null
   }
 }
 
@@ -155,7 +155,7 @@ const DEFAULT_STATE: SliceState = {
   },
   pricesYieldData: {
     fetchStatus: 'loading',
-    data: [],
+    data: null,
   },
 }
 
@@ -561,22 +561,17 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchSavingsYield: async () => {
-      const currentTimestamp = Math.floor(Date.now() / 1000)
-      const oneYearAgoTimestamp = currentTimestamp - 31536000
-
-      get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'loading', data: [] })
+      get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'loading', data: null })
 
       try {
-        const response = await fetch(
-          `https://prices.curve.fi/v1/crvusd/savings/yield?interval=day&start=${oneYearAgoTimestamp}&end=${currentTimestamp}`,
-        )
+        const response = await fetch(`https://prices.curve.fi/v1/crvusd/savings/statistics`)
 
         const data: PricesYieldDataResponse = await response.json()
 
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'success', data: data.data })
+        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'success', data })
       } catch (error) {
         console.error(error)
-        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'error', data: [] })
+        get()[sliceKey].setStateByKey('pricesYieldData', { fetchStatus: 'error', data: null })
       }
     },
     previewAction: async (flag: PreviewFlag, amount: string) => {
@@ -598,7 +593,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         } else if (amount === userBalance.scrvUSD) {
           response = await lendApi.st_crvUSD.previewRedeem(amount)
         } else {
-          response = await lendApi.st_crvUSD.previewWithdraw(amount)
+          response = await lendApi.st_crvUSD.previewRedeem(amount)
         }
 
         get()[sliceKey].setStateByKey('preview', { fetchStatus: 'success', value: response })

@@ -188,7 +188,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       !!signerAddress &&
       !!gaugeManager &&
       isAddressEqual(gaugeManager, signerAddress as Address),
-    [isPendingGaugeManager, signerAddress, gaugeManager]
+    [isPendingGaugeManager, signerAddress, gaugeManager],
   )
 
   const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
@@ -197,7 +197,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
       { key: 'swap', label: t`Swap` },
     ],
-    [themeType]
+    [themeType],
   )
 
   const toggleForm = useCallback(
@@ -205,7 +205,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
       navigate(pathname)
     },
-    [navigate, params]
+    [navigate, params],
   )
 
   useEffect(() => {
@@ -244,7 +244,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     <>
       {pricesApiPoolData && pricesApi && chartExpanded && (
         <PriceAndTradesExpandedContainer>
-          <Box flex>
+          <Box flex padding="0 0 0 var(--spacing-3)">
             <TitleComp />
             <ExpandButton variant={'select'} onClick={() => setChartExpanded(!chartExpanded)}>
               {chartExpanded ? 'Minimize' : 'Expand'}
@@ -326,7 +326,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
         <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
           {poolAddress && (
-            <Box margin="0 0 var(--spacing-2) 0">
+            <Box>
               <CampaignRewardsBanner address={poolAddress} />
             </Box>
           )}
@@ -413,8 +413,7 @@ const StyledExternalLink = styled(ExternalLink)`
 `
 
 const Title = styled(TextEllipsis)`
-  background-color: rgba(0, 0, 0, 0.8);
-  margin: var(--spacing-2) 0;
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
 
   @media (max-width: ${breakpoints.xxs}rem) {

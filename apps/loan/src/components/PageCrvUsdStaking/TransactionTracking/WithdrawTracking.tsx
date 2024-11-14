@@ -1,6 +1,7 @@
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
+import { txIsConfirming, txIsSuccess, txIsLoading } from '@/components/PageCrvUsdStaking/utils'
 
 import {
   Wrapper,
@@ -24,9 +25,10 @@ type WithdrawTrackingProps = {
 const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
   const { withdrawTransaction, setTransactionsReset } = useStore((state) => state.scrvusd)
 
-  const withdrawConfirmed = withdrawTransaction.transactionStatus === 'success'
-  const withdrawConfirming = withdrawTransaction.transactionStatus === 'confirming'
-  const withdrawLoading = withdrawTransaction.transactionStatus === 'loading'
+  const withdrawConfirmed = txIsSuccess(withdrawTransaction.transactionStatus)
+  const withdrawConfirming = txIsConfirming(withdrawTransaction.transactionStatus)
+  const withdrawLoading = txIsLoading(withdrawTransaction.transactionStatus)
+
   const getWithdrawTitle = () => {
     if (withdrawConfirming) {
       return t`Confirm Withdraw`
@@ -59,7 +61,7 @@ const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
           variant="text"
           size="small"
           onClick={() => setTransactionsReset()}
-        >{t`Make another withdrawl`}</ResetButton>
+        >{t`Make another withdrawal`}</ResetButton>
       )}
     </Wrapper>
   )

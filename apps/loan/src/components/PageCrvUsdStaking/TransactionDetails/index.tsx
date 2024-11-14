@@ -54,7 +54,7 @@ const TransactionDetails: React.FC<TransactionDetailsProps> = ({ className }) =>
       {isOpen && (
         <>
           <TransactionField>
-            <TransactionFieldLabel>{t`You recieve`}</TransactionFieldLabel>
+            <TransactionFieldLabel>{t`You receive`}</TransactionFieldLabel>
             <FieldValue
               value={preview.value}
               fetchStatus={preview.fetchStatus}

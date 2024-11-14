@@ -17,10 +17,10 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    background-image: url(${CURVE_ASSETS_URL + '/branding/curve-app-header.webp'});
+    /* background-image: url(${CURVE_ASSETS_URL + '/branding/curve-app-header.webp'});
     background-size: auto 400px;
     background-repeat: repeat-x;
-    background-attachment: fixed;
+    background-attachment: fixed; */
     //background-position-y: var(--header-height);
     
     &.scrollSmooth {
