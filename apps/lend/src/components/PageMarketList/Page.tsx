@@ -69,15 +69,18 @@ const Page: NextPage = () => {
       ...updatedSearchParams,
     }
 
-    let searchPath = '?'
-    if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
-    if (filterTypeKey && filterTypeKey !== 'borrow') searchPath += `${_querySymbol(searchPath)}type=${filterTypeKey}`
-    if (hideSmallMarkets === false) searchPath += `${_querySymbol(searchPath)}hideSmallMarkets=false`
-    if (searchText) searchPath += `${_querySymbol(searchPath)}search=${encodeURIComponent(searchText)}`
-    if (sortBy) searchPath += `${_querySymbol(searchPath)}sortBy=${sortBy}`
-    if (sortByOrder && sortByOrder !== 'desc') searchPath += `${_querySymbol(searchPath)}sortByOrder=${sortByOrder}`
+    const searchPath = new URLSearchParams(
+      [
+        ['search', searchText ? encodeURIComponent(searchText) : ''],
+        ['filter', filterKey && filterKey !== 'all' ? filterKey : ''],
+        ['type', filterTypeKey && filterTypeKey !== 'borrow' ? filterTypeKey : ''],
+        ['hideSmallMarkets', hideSmallMarkets === false ? 'false' : ''],
+        ['sortBy', sortBy ?? ''],
+        ['sortByOrder', sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+      ].filter(([, v]) => v),
+    ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}${searchPath}`)
+    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
     navigate(pathname)
   }
 
@@ -157,9 +160,5 @@ const ConnectWalletWrapper = styled.div`
   justify-content: center;
   margin: var(--spacing-3) auto;
 `
-
-function _querySymbol(searchPath: string) {
-  return searchPath === '?' ? '' : '&'
-}
 
 export default Page

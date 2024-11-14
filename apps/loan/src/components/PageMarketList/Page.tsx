@@ -52,12 +52,15 @@ const Page: NextPage = () => {
       ...updatedSearchParams,
     }
 
-    let searchPath = '?'
-    if (searchText) searchPath += `${_querySymbol(searchPath)}search=${encodeURIComponent(searchText)}`
-    if (sortBy && sortBy !== TITLE.totalBorrowed) searchPath += `${_querySymbol(searchPath)}sortBy=${sortBy}`
-    if (sortByOrder && sortByOrder !== 'desc') searchPath += `${_querySymbol(searchPath)}sortByOrder=${sortByOrder}`
+    const searchPath = new URLSearchParams(
+      [
+        ['search', searchText ? encodeURIComponent(searchText) : ''],
+        ['sortBy', sortBy && sortBy !== TITLE.totalBorrowed ? sortBy : ''],
+        ['sortByOrder', sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+      ].filter(([, v]) => v),
+    ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}${searchPath}`)
+    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
     navigate(pathname)
   }
 
@@ -141,10 +144,6 @@ const Content = styled.div`
   border: 1px solid var(--box--secondary--border);
   min-height: 288px;
 `
-
-function _querySymbol(searchPath: string) {
-  return searchPath === '?' ? '' : '&'
-}
 
 const ConnectWalletWrapper = styled.div`
   display: flex;
