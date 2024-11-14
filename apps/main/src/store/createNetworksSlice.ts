@@ -392,6 +392,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
               ...getBaseNetworksConfig(Number(chainId), config),
               ...DEFAULT_NETWORK_CONFIG,
               chainId,
+              hasFactory: true,
               isLite: true,
             }
             return prev
