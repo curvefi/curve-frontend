@@ -27,7 +27,7 @@ export const DesktopHeader = <TChainId extends number>({
     <Toolbar sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around' }}>
       <Container>
         <HeaderLogo appName={currentApp} />
-        <AppButtonLinks currentApp="lend" />
+        <AppButtonLinks currentApp={currentApp} />
 
         <Box sx={{ flexGrow: 1 }} />
 

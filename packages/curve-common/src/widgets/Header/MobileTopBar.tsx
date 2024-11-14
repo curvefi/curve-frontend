@@ -1,4 +1,4 @@
-import { AppName } from 'ui/src/AppNav/types'
+import { AppName } from './types'
 import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
 import Box from '@mui/material/Box'
 import { MenuToggleButton } from './MenuToggleButton'

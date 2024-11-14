@@ -1,7 +1,6 @@
-import React, { FunctionComponent, useCallback, useMemo } from 'react'
+import { Key, useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES, updateAppLocale } from '@/lib/i18n'
 import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
@@ -11,17 +10,16 @@ import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
 import { Header as NewHeader } from '@/common/widgets/Header'
-import { NavigationSection } from '@/common/widgets/Header/types'
-import { Locale } from '@/ui/AppNav/types'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/system'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import type { Locale, NavigationSection } from '@/common/widgets/Header/types'
 
-type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
+type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
 
-const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet');
+const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
-const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
+const Header = ({ chainId, sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
 
@@ -36,7 +34,7 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
-  const { data: tvl } = useTvl(chainId);
+  const { data: tvl } = useTvl(chainId)
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -51,16 +49,29 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
         useCallback((isAdvanced) => setAppCache('isAdvanceMode', isAdvanced), [setAppCache]),
       ]}
       currentApp="lend"
-      pages={useMemo(() =>
-        _parseRouteAndIsActive([
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
-          {
-            route: ROUTE.PAGE_INTEGRATIONS,
-            label: t`Integrations`,
-            groupedTitle: isMdUp ? 'Others' : 'Llamalend', ...!isMdUp && { minWidth: '10rem' }
-          },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isMdUp ? 'risk' : 'Llamalend' }
-        ], rLocalePathname, routerPathname, routerNetwork), [isMdUp, rLocalePathname, routerNetwork, routerPathname])}
+      pages={useMemo(
+        () =>
+          _parseRouteAndIsActive(
+            [
+              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
+              {
+                route: ROUTE.PAGE_INTEGRATIONS,
+                label: t`Integrations`,
+                groupedTitle: isMdUp ? 'Others' : 'Llamalend',
+                ...(!isMdUp && { minWidth: '10rem' }),
+              },
+              {
+                route: ROUTE.PAGE_RISK_DISCLAIMER,
+                label: t`Risk Disclaimer`,
+                groupedTitle: isMdUp ? 'risk' : 'Llamalend',
+              },
+            ],
+            rLocalePathname,
+            routerPathname,
+            routerNetwork,
+          ),
+        [isMdUp, rLocalePathname, routerNetwork, routerPathname],
+      )}
       themes={[
         themeType,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
@@ -68,40 +79,57 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
       LanguageProps={{
         locale,
         locales: DEFAULT_LOCALES,
-        onChange: useCallback((selectedLocale: React.Key) => {
-          const { rNetwork } = getNetworkFromUrl()
-          updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
-          navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
-        }, [updateGlobalStoreByKey, navigate]),
+        onChange: useCallback(
+          (selectedLocale: Key) => {
+            const { rNetwork } = getNetworkFromUrl()
+            updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
+            navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
+          },
+          [updateGlobalStoreByKey, navigate],
+        ),
       }}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
-        onChange: useCallback((selectedChainId: ChainId) => {
-          if (chainId !== selectedChainId) {
-            const network = networks[selectedChainId as ChainId].id
-            const [currPath] = window.location.hash.split('?')
+        onChange: useCallback(
+          (selectedChainId: ChainId) => {
+            if (chainId !== selectedChainId) {
+              const network = networks[selectedChainId as ChainId].id
+              const [currPath] = window.location.hash.split('?')
 
-            if (currPath.endsWith('markets')) {
-              // include search params when in market list page
-              navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
-            } else {
-              navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              if (currPath.endsWith('markets')) {
+                // include search params when in market list page
+                navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
+              } else {
+                navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              }
+
+              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
-
-            updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
-          }
-        }, [chainId, rLocalePathname, updateConnectState, navigate]),
+          },
+          [chainId, rLocalePathname, updateConnectState, navigate],
+        ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
-        onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
+        onConnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
+          [updateConnectState],
+        ),
+        onDisconnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
+          [updateConnectState],
+        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
-      appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
+      appStats={[
+        {
+          label: 'TVL',
+          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true })) || '',
+        },
+      ]}
       sections={sections}
       translations={{
         advanced: t`Advanced`,

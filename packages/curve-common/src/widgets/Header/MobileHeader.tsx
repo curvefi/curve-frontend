@@ -5,13 +5,12 @@ import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
-import { APP_LINK } from 'ui'
-import { AppNames } from 'ui/src/AppNav/types'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/model'
+import { APP_LINK, AppNames } from './constants'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
@@ -67,7 +66,7 @@ export const MobileHeader = <TChainId extends number>({
           hideBackdrop
         >
           <Box>
-            <Box sx={{ padding: 4 }}>
+            <Box padding={4} display="flex" flexDirection="column">
               <HeaderStats appStats={appStats} />
             </Box>
 

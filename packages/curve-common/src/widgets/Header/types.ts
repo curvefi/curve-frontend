@@ -1,9 +1,21 @@
-import type { AppName, AppPage, Locale } from 'ui/src/AppNav/types'
 import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
 import { Dispatch } from 'react'
-import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { AppNames } from './constants'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+
+export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
+export type AppName = typeof AppNames[number]
+
+export type AppPage = {
+  route: string
+  label: string
+  isActive?: boolean
+  target?: '_self' | '_blank'
+  groupedTitle?: string
+  minWidth?: string
+}
 
 export type NavigationSection = {
   title: string
@@ -38,6 +50,6 @@ export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
 
 export const APP_NAMES = {
   main: 'Curve',
-  lend: 'Llamalend',
+  lend: 'LLAMALEND',
   crvusd: 'crvUSD'
 } as const

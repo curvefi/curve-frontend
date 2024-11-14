@@ -7,19 +7,20 @@ import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { isFailure, isLoading } from '@/ui/utils'
 import { getWalletChainId, useConnectWallet } from '@/common/features/connect-wallet'
 import useStore from '@/store/useStore'
-
 import Header from '@/layout/Header'
-import Footer from '@/layout/Footer'
+import Footer from '@/ui/Footer'
 import GlobalBanner from '@/ui/Banner'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { t } from '@lingui/macro'
 import networks from '@/networks'
-import { Locale } from '@/ui/AppNav/types'
+import { Locale } from '@/common/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
   const elHeight = useHeightResizeObserver(globalAlertRef)
+  const footerRef = useRef<HTMLDivElement>(null)
+  const footerHeight = useHeightResizeObserver(footerRef)
 
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -48,6 +49,11 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elHeight])
 
+  useEffect(() => {
+    setLayoutHeight('footer', footerHeight)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [footerHeight])
+
   const sections = useMemo(() => getSections(rChainId, locale), [rChainId, locale])
   return (
     <>
@@ -62,7 +68,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
         <Header chainId={rChainId} sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer sections={sections} />}
+        {isMdUp && <Footer sections={sections} ref={footerRef} />}
       </Container>
     </>
   )

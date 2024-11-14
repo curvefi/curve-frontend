@@ -1,7 +1,7 @@
 import { type ThemeOptions } from '@mui/material/styles'
 import { BUTTONS_HEIGHTS, defineMuiButton } from '../../themes/button'
 import { defineMuiTypography } from '../../themes/typography'
-import { ThemeKey } from '../basic-theme'
+import type { ThemeKey } from '../basic-theme'
 import { FIGMA_TOKENS } from './figma-tokens.generated'
 
 export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium

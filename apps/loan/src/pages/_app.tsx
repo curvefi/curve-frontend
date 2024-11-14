@@ -8,8 +8,7 @@ import '@/globals.css'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/common/features/connect-wallet'
-import { initOnboard } from '@/common/features/connect-wallet'
+import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -23,6 +22,7 @@ import useStore from '@/store/useStore'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -130,6 +130,7 @@ function CurveApp({ Component }: AppProps) {
 
   return (
     <div suppressHydrationWarning>
+      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
       {typeof window === 'undefined' || !appLoaded ? null : (
         <HashRouter>
           <I18nProvider i18n={i18n}>
@@ -142,6 +143,7 @@ function CurveApp({ Component }: AppProps) {
           </I18nProvider>
         </HashRouter>
       )}
+      </ThemeProvider>
     </div>
   )
 }

@@ -3,10 +3,10 @@ import { t } from '@lingui/macro'
 import Image from 'next/image'
 
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
-import { APP_LINK } from '@/ui/AppNav'
 
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
+import { APP_LINK } from '@/common/widgets/Header/constants'
 
 type UserInformationProps = {
   className?: string

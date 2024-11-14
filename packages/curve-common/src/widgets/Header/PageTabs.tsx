@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
-import type { AppPage } from 'ui/src/AppNav/types'
+import type { AppPage } from './types'
 import Typography from '@mui/material/Typography'
 
 export type PageTabsProps = {

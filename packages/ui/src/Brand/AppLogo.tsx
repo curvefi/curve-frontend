@@ -5,7 +5,7 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils/responsive'
 import { LogoImg, RCLogoText } from 'ui/src/images'
-import { AppName } from '../AppNav/types'
+import type { AppName } from 'curve-common/src/widgets/Header/types'
 
 export type AppLogoProps = {
   className?: string

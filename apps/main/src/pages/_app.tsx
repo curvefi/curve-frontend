@@ -12,6 +12,7 @@ import type { AppProps } from 'next/app'
 import { connectWalletLocales } from '@/common/features/connect-wallet'
 import { initOnboard } from '@/common/features/connect-wallet'
 import { persister, queryClient } from '@/shared/api/query-client'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
@@ -152,22 +153,24 @@ function CurveApp({ Component }: AppProps) {
 
   return (
     <div suppressHydrationWarning>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <AriaI18nProvider locale={locale}>
-              <QueryProvider persister={persister} queryClient={queryClient}>
-                <OverlayProvider>
-                  <Page>
-                    <Component />
-                  </Page>
-                  <GlobalStyle />
-                </OverlayProvider>
-              </QueryProvider>
-            </AriaI18nProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <AriaI18nProvider locale={locale}>
+                <QueryProvider persister={persister} queryClient={queryClient}>
+                  <OverlayProvider>
+                    <Page>
+                      <Component />
+                    </Page>
+                    <GlobalStyle />
+                  </OverlayProvider>
+                </QueryProvider>
+              </AriaI18nProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
+      </ThemeProvider>
     </div>
   )
 }

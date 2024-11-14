@@ -4,9 +4,7 @@ description: Builds and deploys Storybook to GitHub Pages
 on:
   push:
     branches:
-      - develop
       - main
-      - figma-tokens
 
 permissions:
   contents: read
