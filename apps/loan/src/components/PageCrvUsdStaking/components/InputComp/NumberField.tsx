@@ -14,13 +14,17 @@ interface NumberFieldProps {
 const NumberField = ({ value, isDisabled = false, onChange, maxDecimals = 18, onFocus, onBlur }: NumberFieldProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
-    // Allow only numbers and one decimal point
-    if (!/^\d*\.?\d*$/.test(value)) return
+    // Allow numbers and both . and , as decimal separators
+    if (!/^\d*[.,]?\d*$/.test(value)) return
+    // Normalize , to . for internal handling
+    const normalizedValue = value.replace(',', '.')
+    // Remove leading zeros
+    const cleanValue = normalizedValue.replace(/^0+(\d)/, '$1')
     // Prevent more than maxDecimals decimal places
-    const [whole, decimal] = value.split('.')
+    const [whole, decimal] = cleanValue.split('.')
     if (decimal && decimal.length > maxDecimals) return
 
-    onChange?.(value === '' ? '0' : value)
+    onChange?.(cleanValue === '' ? '0' : cleanValue)
   }
 
   return (

@@ -66,10 +66,10 @@ const DeployButton: React.FC<DeployButtonProps> = ({ className }) => {
       if (inputAmount === userBalance.scrvUSD) {
         redeem(inputAmount)
       } else {
-        withdraw(inputAmount)
+        redeem(inputAmount)
       }
     }
-  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, withdraw, redeem, userBalance])
+  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, redeem, userBalance])
 
   return (
     <StyledButton

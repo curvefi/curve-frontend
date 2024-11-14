@@ -18,11 +18,13 @@ import Settings from '@/layout/Settings'
 
 import CrvUsdStaking from '@/components/PageCrvUsdStaking'
 
+const mobileBreakpoint = '47.5rem'
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
-  const { routerParams } = usePageOnMount(params, location, navigate)
+  usePageOnMount(params, location, navigate) // handles connecting wallet
 
   useEffect(() => {
     scrollToTop()
@@ -30,16 +32,16 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`crvUSD Savings Vault`} />
+      <DocumentHead title={t`Savings crvUSD`} />
       <Container>
-        <HeaderContainer>
+        <HeaderContainer mobileBreakpoint={mobileBreakpoint}>
           <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
           <Box flex flexColumn>
-            <Title>{t`crvUSD SAVINGS VAULT`}</Title>
+            <Title>{t`Savings crvUSD`}</Title>
             <Description>{t`Let your idle crvUSD do more for you.`}</Description>
           </Box>
         </HeaderContainer>
-        <CrvUsdStaking />
+        <CrvUsdStaking mobileBreakpoint={mobileBreakpoint} />
       </Container>
       <Settings showScrollButton />
     </>
@@ -54,14 +56,16 @@ const Container = styled.div`
   margin-bottom: var(--spacing-4);
 `
 
-const HeaderContainer = styled.div`
+const HeaderContainer = styled.div<{ mobileBreakpoint: string }>`
   display: flex;
   flex-direction: row;
   width: 100%;
-  background-color: var(--table--background-color);
   align-items: center;
   padding: var(--spacing-3);
   gap: var(--spacing-3);
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    padding: var(--spacing-3);
+  }
 `
 
 const Description = styled.p``
@@ -69,11 +73,6 @@ const Description = styled.p``
 const Title = styled.h1`
   font-size: var(--font-size-7);
   text-transform: uppercase;
-`
-
-const StyledExternalLink = styled(ExternalLink)`
-  color: inherit;
-  text-transform: initial;
 `
 
 export default Page
