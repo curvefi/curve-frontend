@@ -393,6 +393,9 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
               ...DEFAULT_NETWORK_CONFIG,
               chainId,
               hasFactory: true,
+              stableswapFactory: true,
+              twocryptoFactory: true,
+              tricryptoFactory: true,
               isLite: true,
             }
             return prev

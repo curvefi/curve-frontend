@@ -26,6 +26,7 @@ type Props = {
 const DeployGauge = ({ curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { chainId } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
+  const isLite = networks[chainId].isLite
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const {
@@ -87,7 +88,7 @@ const DeployGauge = ({ curve }: Props) => {
         </StyledBoxHeader>
         {chainId && Object.keys(curveNetworks).length !== 0 ? (
           <>
-            {sidechainGauge && (
+            {sidechainGauge && !isLite && (
               <NavBox flex flexJustifyContent="space-between" flexAlignItems="center">
                 {sidechainNav === 0 ? (
                   <>
@@ -144,11 +145,11 @@ const DeployGauge = ({ curve }: Props) => {
               noContentPadding
               state={overlayTriggerState}
             >
-              <ProcessSummary chainId={chainId} />
+              <ProcessSummary chainId={chainId} isLite={isLite} />
             </ModalDialog>
           )}
           <ProcessSummaryWrapper>
-            <ProcessSummary chainId={chainId} />
+            <ProcessSummary chainId={chainId} isLite={isLite} />
           </ProcessSummaryWrapper>
         </>
       )}
