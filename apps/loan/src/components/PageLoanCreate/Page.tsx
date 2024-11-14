@@ -170,7 +170,7 @@ const Page: NextPage = () => {
         <>
           {chartExpanded && (
             <PriceAndTradesExpandedContainer>
-              <Box flex>
+              <Box flex padding="0 0 0 var(--spacing-2)">
                 {isMdUp && <TitleComp />}
                 <ExpandButton
                   variant={'select'}
@@ -238,8 +238,7 @@ const Wrapper = styled(AppPageFormContainer)<{ isAdvanceMode: boolean; chartExpa
 `
 
 const Title = styled(TextEllipsis)`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
   font-weight: bold;
   line-height: 1;

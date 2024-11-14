@@ -106,7 +106,7 @@ const Wrapper = styled(Box)<WrapperProps>`
     } else if (size === 'md') {
       return `font-size: var(--font-size-3);`
     }
-  }};
+  }}
 
   .svg-tooltip {
     margin-top: 0.25rem;
