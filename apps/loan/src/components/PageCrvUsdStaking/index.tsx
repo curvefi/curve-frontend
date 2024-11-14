@@ -1,13 +1,15 @@
 import styled from 'styled-components'
 import { useEffect } from 'react'
+import BigNumber from 'bignumber.js'
 
 import useStore from '@/store/useStore'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
+import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
 
-const CrvUsdStaking = () => {
+const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
   const {
     fetchUserBalances,
     checkApproval,
@@ -21,6 +23,9 @@ const CrvUsdStaking = () => {
   const onboardInstance = useStore((state) => state.wallet.onboard)
   const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   const chainId = useStore((state) => state.curve?.chainId)
+  const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
+
+  const isUserScrvUsdBalanceZero = BigNumber(userScrvUsdBalance).isZero()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,11 +34,19 @@ const CrvUsdStaking = () => {
       fetchUserBalances()
       fetchExchangeRate()
       fetchCrvUsdSupplies()
-      fetchSavingsYield()
     }
 
     fetchData()
   }, [fetchUserBalances, lendApi, signerAddress, fetchExchangeRate, fetchCrvUsdSupplies, fetchSavingsYield])
+
+  // none library fetches
+  useEffect(() => {
+    const fetchData = async () => {
+      fetchSavingsYield()
+    }
+
+    fetchData()
+  }, [fetchSavingsYield])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
@@ -45,9 +58,15 @@ const CrvUsdStaking = () => {
 
   return (
     <Wrapper>
-      <StyledStatsBanner />
-      <StyledDepositWithdraw />
-      <UserInformation />
+      <MainContainer mobileBreakpoint={mobileBreakpoint}>
+        <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
+        {isUserScrvUsdBalanceZero ? (
+          <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />
+        ) : (
+          <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />
+        )}
+      </MainContainer>
+      <StyledUserInformation />
     </Wrapper>
   )
 }
@@ -70,10 +89,40 @@ const Wrapper = styled.div`
   }
 `
 
-const StyledStatsBanner = styled(StatsBanner)``
+const MainContainer = styled.div<{ mobileBreakpoint: string }>`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--spacing-3);
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    flex-direction: column;
+  }
+`
 
-const StyledDepositWithdraw = styled(DepositWithdraw)`
-  margin: 0 auto;
+const StyledStatsBanner = styled(StatsBanner)<{ mobileBreakpoint: string }>`
+  max-width: 309px;
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    max-width: 100%;
+  }
+`
+
+const StyledUserPositionBanner = styled(UserPositionBanner)<{ mobileBreakpoint: string }>`
+  margin: var(--spacing-3) 0 auto var(--spacing-3);
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    margin-left: 0;
+    order: 1;
+  }
+`
+
+const StyledDepositWithdraw = styled(DepositWithdraw)<{ mobileBreakpoint: string }>`
+  @media (max-width: ${({ mobileBreakpoint }) => mobileBreakpoint}) {
+    order: 2;
+    margin: var(--spacing-3) auto auto;
+  }
+`
+
+const StyledUserInformation = styled(UserInformation)`
+  order: 3;
 `
 
 export default CrvUsdStaking

@@ -62,7 +62,6 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const handleConnectLendApi = useCallback(
     async (options: ConnectState['options']) => {
       if (options) {
-        console.log('handleConnectLendApi', options)
         try {
           const [chainId, useWallet] = options
           await updateProvider(wallet)
