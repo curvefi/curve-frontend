@@ -54,6 +54,7 @@ export const Header = ({ sections }: HeaderProps) => {
       pages={useMemo(() =>
         _parseRouteAndIsActive([
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
+          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`crvUSD Staking`, groupedTitle: 'staking' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'crvUSD' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'integrations' : 'crvUSD' }
         ], rLocale.rLocalePathname, routerPathname, routerNetwork), [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])}
@@ -123,7 +124,7 @@ export const Header = ({ sections }: HeaderProps) => {
 function _getTvl(
   collateralDatasMapper: CollateralDatasMapper | undefined,
   loansDetailsMapper: LoanDetailsMapper | undefined,
-  usdRatesMapper: UsdRate | undefined
+  usdRatesMapper: UsdRate | undefined,
 ) {
   let formattedTvl = '-'
   let sum = 0

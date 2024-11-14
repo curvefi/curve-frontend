@@ -11,7 +11,7 @@ import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
-import { initCurveJs } from '@/utils/utilsCurvejs'
+import { initCurveJs, initLendApi } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
@@ -22,6 +22,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateWalletLocale = useSetLocale()
 
   const curve = useStore((state) => state.curve)
+  const { lendApi, updateLendApi } = useStore((state) => state)
   const connectState = useStore((state) => state.connectState)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateCurveJs = useStore((state) => state.updateCurveJs)
@@ -55,7 +56,32 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateProvider, wallet]
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, updateProvider, wallet],
+  )
+
+  const handleConnectLendApi = useCallback(
+    async (options: ConnectState['options']) => {
+      if (options) {
+        console.log('handleConnectLendApi', options)
+        try {
+          const [chainId, useWallet] = options
+          await updateProvider(wallet)
+          const prevApi = lendApi ?? null
+          updateGlobalStoreByKey('isLoadingLendApi', true)
+          const apiNew = await initLendApi(chainId, useWallet ? wallet : null)
+
+          if (apiNew) {
+            updateLendApi(apiNew, prevApi, wallet)
+          }
+
+          updateConnectState(apiNew ? 'success' : '', '')
+        } catch (error) {
+          console.error(error)
+          updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
+        }
+      }
+    },
+    [updateProvider, wallet, lendApi, updateGlobalStoreByKey, updateLendApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(
@@ -71,7 +97,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const walletStates = await Promise.race([
                 connect({ autoSelect: { label: walletName, disableModals: true } }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s'])
+                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
               ])
               resolve(walletStates)
@@ -120,7 +146,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState]
+    [connect, navigate, parsedParams, setChain, updateConnectState],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -133,7 +159,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState]
+    [disconnect, parsedParams.rChainId, updateConnectState],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -161,7 +187,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet]
+    [navigate, parsedParams, setChain, updateConnectState, wallet],
   )
 
   // onMount
@@ -169,7 +195,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (connectState.status === '' && connectState.stage === '') {
       const routerNetwork = params.network?.toLowerCase()
       const routerNetworkId = routerNetwork ? networksIdMapper[routerNetwork as INetworkName] : null
-      const isActiveNetwork = routerNetworkId ? networks[routerNetworkId]?.isActiveNetwork ?? false : false
+      const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false
 
       if (!isActiveNetwork) {
         // network in router is not good, redirect to default network
@@ -199,6 +225,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         handleDisconnectWallet(wallet)
       } else if (isLoading(connectState, CONNECT_STAGE.CONNECT_API)) {
         handleConnectCurveApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
+        handleConnectLendApi(getOptions(CONNECT_STAGE.CONNECT_API, connectState.options))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

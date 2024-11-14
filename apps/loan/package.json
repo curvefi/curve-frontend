@@ -24,6 +24,7 @@
     "tsconfig": "*"
   },
   "dependencies": {
+    "@curvefi/lending-api": "^2.3.6",
     "@curvefi/stablecoin-api": "^1.5.7",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
