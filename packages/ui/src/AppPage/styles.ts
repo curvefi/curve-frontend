@@ -56,7 +56,7 @@ export const AppPageFormsWrapper = styled(Box)<{ navHeight: number }>`
 
 export const AppPageFormTitleWrapper = styled.header`
   align-items: center;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   display: inline-flex;
   padding-top: var(--spacing-wide);
   padding-bottom: var(--spacing-2);
@@ -70,8 +70,7 @@ export const AppPageFormTitleWrapper = styled.header`
 `
 
 export const AppPageFormTitleContent = styled(TextEllipsis)`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
   font-weight: bold;
   line-height: 1;
@@ -79,8 +78,7 @@ export const AppPageFormTitleContent = styled(TextEllipsis)`
 `
 
 export const AppPageFormTitleLinks = styled.div`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-2);
   margin-bottom: var(--spacing-2);
   text-transform: uppercase;
@@ -90,6 +88,7 @@ export const AppPageFormTitleLinks = styled.div`
 
   a.active {
     background-color: black;
+    color: var(--nav--page--color);
   }
 `
 

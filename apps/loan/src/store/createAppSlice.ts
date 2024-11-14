@@ -21,10 +21,12 @@ type AppCacheKeys = 'themeType' | 'isAdvanceMode'
 type SliceState = {
   connectState: ConnectState
   curve: Curve | null
+  lendApi: LendApi | null
   crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
   dailyVolume: number | null
   isAdvanceMode: boolean
   isLoadingApi: false
+  isLoadingLendApi: false
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
@@ -43,6 +45,7 @@ export interface AppSlice extends SliceState {
   setAppCache<T>(key: AppCacheKeys, value: T): void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
+  updateLendApi(lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -54,11 +57,13 @@ export interface AppSlice extends SliceState {
 const DEFAULT_STATE: SliceState = {
   connectState: { status: '' as const, stage: '' },
   curve: null,
+  lendApi: null,
   crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
   dailyVolume: null,
   isAdvanceMode: false,
   isLoadingApi: false,
   isLoadingCurve: true,
+  isLoadingLendApi: false,
   isMobile: false,
   isPageVisible: true,
   locale: 'en' as const,
@@ -109,7 +114,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   updateConnectState: (
     status: ConnectState['status'],
     stage: ConnectState['stage'],
-    options?: ConnectState['options']
+    options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
     get().updateGlobalStoreByKey('connectState', value)
@@ -147,11 +152,32 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     state.updateGlobalStoreByKey('isLoadingApi', false)
   },
+  updateLendApi: async (lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null) => {
+    const { gas, loans, usdRates, ...state } = get()
+
+    const isNetworkSwitched = !!prevLendApi?.chainId && prevLendApi.chainId !== lendApi.chainId
+    const isUserSwitched = !!prevLendApi?.signerAddress && prevLendApi.signerAddress !== lendApi.signerAddress
+    log('updateLendApi', lendApi?.chainId, {
+      wallet: wallet?.chains[0]?.id ?? '',
+      isNetworkSwitched,
+      isUserSwitched,
+    })
+
+    // reset store
+    if (isUserSwitched || !lendApi.signerAddress) {
+      loans.setStateByKey('userWalletBalancesMapper', {})
+      loans.setStateByKey('userDetailsMapper', {})
+    }
+
+    // update network settings from api
+    state.updateGlobalStoreByKey('lendApi', lendApi)
+    state.updateGlobalStoreByKey('isLoadingLendApi', false)
+  },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
       produce((state) => {
         state[key] = value
-      })
+      }),
     )
   },
 
@@ -177,7 +203,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             state[sliceKey][key] = parsedValue
           }
         }
-      })
+      }),
     )
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
@@ -190,7 +216,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           }
           state[sliceKey][key] = value
         }
-      })
+      }),
     )
   },
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
@@ -205,7 +231,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
             }
             state[sliceKey][key] = value
           }
-        })
+        }),
       )
     }
   },
@@ -216,7 +242,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           ...state[sliceKey],
           ...defaultState,
         }
-      })
+      }),
     )
   },
 })

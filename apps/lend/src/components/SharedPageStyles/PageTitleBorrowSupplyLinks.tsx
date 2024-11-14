@@ -49,13 +49,13 @@ const PageTitleBorrowSupplyLinks = ({
 }
 
 const StyledLink = styled(InternalLink)`
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   text-decoration: none;
 
   &.active,
   :hover.active {
     color: inherit;
-    border-bottom: 3px solid var(--nav--page--color);
+    /* border-bottom: 3px solid var(--nav--page--color); */
   }
 `
 
