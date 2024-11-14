@@ -7,7 +7,7 @@ import Tooltip from '@mui/material/Tooltip'
 import Link from '@mui/material/Link'
 import { DiscordIcon } from 'curve-ui-kit/src/shared/ui/DiscordIcon'
 import { DodoIcon } from 'curve-ui-kit/src/shared/ui/DodoIcon'
-import { Box } from 'curve-ui-kit/src/shared/ui/Box'
+import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
 import type { Locale } from 'curve-common/src/widgets/Header/types'
 

@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { Box } from './Box'
+import Box from '@mui/material/Box'
 
 export type Address = `0x${string}`
 

@@ -3,7 +3,7 @@ import { List, ListSubheader } from '@mui/material'
 import { SidebarItem } from './SidebarItem'
 import type { AppPage } from 'curve-common/src/widgets/Header/types'
 import Divider from '@mui/material/Divider'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Typography from '@mui/material/Typography'
 
 interface SidebarSectionProps {
   title: string

@@ -1,6 +1,6 @@
 import { FunctionComponent } from 'react'
-import { Box } from 'curve-ui-kit/src/shared/ui/Box'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 
 export type HeaderStatsProps = {
   appStats: {label: string, value: string}[]

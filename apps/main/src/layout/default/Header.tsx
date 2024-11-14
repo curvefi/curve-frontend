@@ -11,8 +11,8 @@ import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
-import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
 import { NavigationSection } from '@/common/widgets/Header/types'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type HeaderProps = { sections: NavigationSection[] }
 

@@ -1,6 +1,6 @@
 import merge from 'lodash/merge'
 import dayjs from 'dayjs'
-import { ThemeKey } from '@ui-kit/shared/lib'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 export const APP_STORAGE = {
   APP_CACHE: 'lend-app-cache',

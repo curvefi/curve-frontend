@@ -1,6 +1,6 @@
 import { ChadImg, RCMoon, RCSun } from 'ui'
 import Image from 'next/image'
-import type { ThemeKey } from 'curve-ui-kit/src/shared/lib'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 const DEFAULT_SIZE = 24
 export const themes = [

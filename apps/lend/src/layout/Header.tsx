@@ -10,10 +10,14 @@ import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
 import { Header as NewHeader } from '@/common/widgets/Header'
-import { ThemeKey } from '@ui-kit/shared/lib'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { type Theme } from '@mui/system'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { Locale, NavigationSection } from '@/common/widgets/Header/types'
 
-type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
+type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
+
+const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
 const Header = ({ chainId, sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
@@ -23,14 +27,14 @@ const Header = ({ chainId, sections }: HeaderProps) => {
 
   const connectState = useStore((state) => state.connectState)
   const isAdvancedMode = useStore((state) => state.isAdvanceMode)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const locale = useStore((state) => state.locale)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const { data: tvl } = useTvl(chainId);
+  const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
+  const { data: tvl } = useTvl(chainId)
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -45,16 +49,29 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         useCallback((isAdvanced) => setAppCache('isAdvanceMode', isAdvanced), [setAppCache]),
       ]}
       currentApp="lend"
-      pages={useMemo(() =>
-        _parseRouteAndIsActive([
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
-          {
-            route: ROUTE.PAGE_INTEGRATIONS,
-            label: t`Integrations`,
-            groupedTitle: isMdUp ? 'Others' : 'Llamalend', ...!isMdUp && { minWidth: '10rem' }
-          },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isMdUp ? 'risk' : 'Llamalend' }
-        ], rLocalePathname, routerPathname, routerNetwork), [isMdUp, rLocalePathname, routerNetwork, routerPathname])}
+      pages={useMemo(
+        () =>
+          _parseRouteAndIsActive(
+            [
+              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
+              {
+                route: ROUTE.PAGE_INTEGRATIONS,
+                label: t`Integrations`,
+                groupedTitle: isMdUp ? 'Others' : 'Llamalend',
+                ...(!isMdUp && { minWidth: '10rem' }),
+              },
+              {
+                route: ROUTE.PAGE_RISK_DISCLAIMER,
+                label: t`Risk Disclaimer`,
+                groupedTitle: isMdUp ? 'risk' : 'Llamalend',
+              },
+            ],
+            rLocalePathname,
+            routerPathname,
+            routerNetwork,
+          ),
+        [isMdUp, rLocalePathname, routerNetwork, routerPathname],
+      )}
       themes={[
         themeType,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
@@ -62,44 +79,61 @@ const Header = ({ chainId, sections }: HeaderProps) => {
       LanguageProps={{
         locale,
         locales: DEFAULT_LOCALES,
-        onChange: useCallback((selectedLocale: Key) => {
-          const { rNetwork } = getNetworkFromUrl()
-          updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
-          navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
-        }, [updateGlobalStoreByKey, navigate]),
+        onChange: useCallback(
+          (selectedLocale: Key) => {
+            const { rNetwork } = getNetworkFromUrl()
+            updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
+            navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
+          },
+          [updateGlobalStoreByKey, navigate],
+        ),
       }}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
-        onChange: useCallback((selectedChainId: ChainId) => {
-          if (chainId !== selectedChainId) {
-            const network = networks[selectedChainId as ChainId].id
-            const [currPath] = window.location.hash.split('?')
+        onChange: useCallback(
+          (selectedChainId: ChainId) => {
+            if (chainId !== selectedChainId) {
+              const network = networks[selectedChainId as ChainId].id
+              const [currPath] = window.location.hash.split('?')
 
-            if (currPath.endsWith('markets')) {
-              // include search params when in market list page
-              navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
-            } else {
-              navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              if (currPath.endsWith('markets')) {
+                // include search params when in market list page
+                navigate(`${rLocalePathname}/${network}/${getRestFullPathname()}`)
+              } else {
+                navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              }
+
+              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
             }
-
-            updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [chainId, selectedChainId])
-          }
-        }, [chainId, rLocalePathname, updateConnectState, navigate]),
+          },
+          [chainId, rLocalePathname, updateConnectState, navigate],
+        ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
-        onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
+        onConnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
+          [updateConnectState],
+        ),
+        onDisconnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
+          [updateConnectState],
+        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
-      appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
+      appStats={[
+        {
+          label: 'TVL',
+          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true })) || '',
+        },
+      ]}
       sections={sections}
       translations={{
-        advanced: t`Advanced Mode`,
-        advancedMode: t`Advanced`,
+        advanced: t`Advanced`,
+        advancedMode: t`Advanced Mode`,
         theme: t`Mode`,
         language: t`Language`,
         otherApps: t`Other Apps`,
