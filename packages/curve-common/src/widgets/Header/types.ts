@@ -2,8 +2,8 @@ import type { AppName, AppPage, Locale } from 'ui/src/AppNav/types'
 import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
-import { ThemeKey } from 'curve-ui-kit/src/shared/lib'
 import { Dispatch } from 'react'
+import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 export type NavigationSection = {
   title: string
@@ -40,11 +40,4 @@ export const APP_NAMES = {
   main: 'Curve',
   lend: 'Llamalend',
   crvusd: 'crvUSD'
-} as const
-
-
-// TODO: Color should be in theme
-export const toolbarColors = {
-  light: ['#eeeceb', '#f4f3f0'],
-  dark: ['#1f1f1f', '#2f2f2f'] // todo
 } as const

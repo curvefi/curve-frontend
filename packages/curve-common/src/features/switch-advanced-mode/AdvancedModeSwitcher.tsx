@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Typography from '@mui/material/Typography'
 
 type AdvancedModeSwitcherProps = {
   label?: string,
@@ -10,15 +10,16 @@ type AdvancedModeSwitcherProps = {
 }
 
 export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> = ({ advancedMode, onChange, label }) => (
-  <Box display="inline-flex" marginRight={4} alignItems="center">
+  <Box display="inline-flex" alignItems="center">
     <Switch
       checked={advancedMode}
       onChange={() => onChange(!advancedMode)}
       color="primary"
       inputProps={{ ...label && { 'aria-label': label } }}
+      size="small"
     />
     {label && (
-      <Typography variant="headingXsBold" display="inline-block" sx={{ textTransform: 'uppercase', lineHeight: '37px' }}>
+      <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 3, marginRight: 4, textTransform: 'uppercase', lineHeight: '37px' }}>
         {label}
       </Typography>
     )}

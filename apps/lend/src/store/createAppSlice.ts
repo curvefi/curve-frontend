@@ -8,7 +8,7 @@ import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
-import { ThemeKey } from '@ui-kit/shared/lib'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { LocaleValue } from '@/common/features/switch-language'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE

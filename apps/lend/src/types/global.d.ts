@@ -9,7 +9,7 @@ import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 
 import { TITLE } from '@/constants'
-import { ThemeKey } from '@ui-kit/shared/lib'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 declare global {
   interface Window {

@@ -1,0 +1,44 @@
+name: Storybook
+description: Builds and deploys Storybook to GitHub Pages
+
+on:
+  push:
+    branches:
+      - develop
+      - main
+      - figma-tokens
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+
+      - name: 'Build'
+        working-directory: packages/curve-ui-kit
+        run: |
+          yarn install --immutable
+          yarn build:storybook
+
+      - name: 'upload'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/curve-ui-kit/storybook-static
+          name: 'github-pages'
+
+      - id: deploy
+        name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
+        with:
+          token: ${{ github.token }}

@@ -3,7 +3,7 @@ import { ListItem } from '@mui/material'
 import { RouterLink } from 'curve-ui-kit/src/shared/ui/RouterLink'
 import type { AppPage } from 'ui/src/AppNav/types'
 import Link from '@mui/material/Link'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Typography from '@mui/material/Typography'
 
 type SidebarItemProps = {
   page: AppPage;

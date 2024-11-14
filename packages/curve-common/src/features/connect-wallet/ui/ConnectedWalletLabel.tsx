@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { Button } from 'curve-ui-kit/src/shared/ui/Button'
+import Button from '@mui/material/Button'
 import { Address, AddressLabel } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 
 import type { SxProps, Theme } from '@mui/system'

@@ -11,11 +11,15 @@ import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
 import { Header as NewHeader } from '@/common/widgets/Header'
-import { ThemeKey } from '@ui-kit/shared/lib'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { Locale } from '@/ui/AppNav/types'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import { type Theme } from '@mui/system'
+import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type HeaderProps = { chainId: ChainId, sections: NavigationSection[] }
+
+const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet');
 
 const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
   const [{ wallet }] = useConnectWallet()
@@ -25,13 +29,13 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
 
   const connectState = useStore((state) => state.connectState)
   const isAdvancedMode = useStore((state) => state.isAdvanceMode)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const locale = useStore((state) => state.locale)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
+  const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId);
 
   const { params: routerParams, location } = routerProps ?? {}
@@ -100,8 +104,8 @@ const Header: FunctionComponent<HeaderProps> = ({ chainId, sections }) => {
       appStats={[{ label: 'TVL', value: tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true }) || '' }]}
       sections={sections}
       translations={{
-        advanced: t`Advanced Mode`,
-        advancedMode: t`Advanced`,
+        advanced: t`Advanced`,
+        advancedMode: t`Advanced Mode`,
         theme: t`Mode`,
         language: t`Language`,
         otherApps: t`Other Apps`,

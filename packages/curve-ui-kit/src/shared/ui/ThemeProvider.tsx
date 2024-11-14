@@ -1,7 +1,7 @@
 export type * from '@mui/system/ThemeProvider';
 import MuiThemeProvider from '@mui/system/ThemeProvider'
 import { FunctionComponent, ReactNode } from 'react'
-import { chadTheme, darkTheme, lightTheme } from '../../entities/themes'
+import { chadTheme, darkTheme, lightTheme } from '../../themes'
 
 const themes = {
   light: lightTheme,

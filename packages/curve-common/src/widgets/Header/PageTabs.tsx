@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import type { AppPage } from 'ui/src/AppNav/types'
-import { Typography } from 'curve-ui-kit/src/shared/ui/Typography'
+import Typography from '@mui/material/Typography'
 
 export type PageTabsProps = {
   pages: AppPage[]
