@@ -163,7 +163,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     ...DEFAULT_STATE,
 
     fetchPoolsTvl: async (curve, poolDatas) => {
-      const { storeCache, networks: {networks} } = get()
+      const {
+        storeCache,
+        networks: { networks },
+      } = get()
       const { tvlMapper: sTvlMapper } = get()[sliceKey]
 
       log('fetchPoolsTvl', curve.chainId, poolDatas.length)
@@ -186,7 +189,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const {
         storeCache,
         [sliceKey]: { volumeMapper: sVolumeMapper, ...sliceState },
-        networks: {networks}
+        networks: { networks },
       } = get()
       const { getVolume } = curvejsApi.pool
 
@@ -433,7 +436,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       // }
     },
     fetchPoolStats: async (curve, poolData) => {
-      const { pools, networks: {networks} } = get()
+      const {
+        pools,
+        networks: { networks },
+      } = get()
       const { chainId } = curve
       const { pool } = poolData
       const network = networks[chainId]
@@ -445,7 +451,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const [, , volume, { parameters }] = await Promise.all([
           pools.fetchPoolCurrenciesReserves(curve, poolData),
           pools.fetchPoolsRewardsApy(chainId, [poolData]),
-          isLite ? getVolume(pool, network) : null,
+          isLite ? null : getVolume(pool, network),
           poolParameters(pool),
         ])
 
@@ -464,11 +470,16 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     fetchTotalVolumeAndTvl: async (curve) => {
       log('fetchTotalVolumeAndTvl', curve.chainId)
       const { chainId } = curve
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       const { isLite } = networks[chainId]
       const { getTVL, getVolume } = curvejsApi.network
 
-      const [tvlResult, volumeResult] = await Promise.allSettled([!isLite && getTVL(curve), !isLite && getVolume(curve)])
+      const [tvlResult, volumeResult] = await Promise.allSettled([
+        !isLite && getTVL(curve),
+        !isLite && getVolume(curve),
+      ])
       const tvl = fulfilledValue(tvlResult) || 0
       const volumeObj = fulfilledValue(volumeResult) || { totalVolume: 0, cryptoVolume: 0, cryptoShare: 0 }
 
@@ -506,7 +517,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       )
     },
     fetchPricesApiPools: async (chainId: ChainId) => {
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       if (networks[chainId].pricesApi) {
         const networkName = networks[chainId]?.id
 
@@ -528,7 +541,9 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       if (networks[chainId].pricesApi) {
         const startTime = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000)
         const endTime = Math.floor(Date.now() / 1000)

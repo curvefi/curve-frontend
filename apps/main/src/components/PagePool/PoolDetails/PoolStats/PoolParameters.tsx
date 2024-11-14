@@ -21,6 +21,7 @@ const PoolParameters: React.FC<
 > = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
   const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
+  const isLite = useStore((state) => state.networks.networks[rChainId]?.isLite)
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
 
@@ -47,30 +48,32 @@ const PoolParameters: React.FC<
 
   return (
     <>
-      <article>
-        <Items listItemMargin="var(--spacing-1)">
-          <Item>
-            {t`Daily USD volume:`}{' '}
-            <strong title={volume?.value ?? '-'}>
-              {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
-            </strong>
-          </Item>
-          <Item>
-            {t`Liquidity utilization:`}{' '}
-            <Chip
-              isBold={liquidityUtilization !== '-'}
-              size="md"
-              tooltip={t`24h Volume/Liquidity ratio`}
-              tooltipProps={{
-                placement: 'bottom end',
-              }}
-            >
-              {liquidityUtilization}
-              <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-            </Chip>
-          </Item>
-        </Items>
-      </article>
+      {!isLite && (
+        <article>
+          <Items listItemMargin="var(--spacing-1)">
+            <Item>
+              {t`Daily USD volume:`}{' '}
+              <strong title={volume?.value ?? '-'}>
+                {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
+              </strong>
+            </Item>
+            <Item>
+              {t`Liquidity utilization:`}{' '}
+              <Chip
+                isBold={liquidityUtilization !== '-'}
+                size="md"
+                tooltip={t`24h Volume/Liquidity ratio`}
+                tooltipProps={{
+                  placement: 'bottom end',
+                }}
+              >
+                {liquidityUtilization}
+                <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+              </Chip>
+            </Item>
+          </Items>
+        </article>
+      )}
 
       <PoolTotalStaked poolDataCacheOrApi={poolDataCacheOrApi} />
 
