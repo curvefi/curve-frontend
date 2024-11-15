@@ -1,59 +1,45 @@
-import Switch from '@mui/material/Switch'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
-import { PaletteOptions } from '@mui/material/styles/createPalette'
+import type { Meta } from '@storybook/react'
 import { useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
+import { StandardCSSProperties } from '@mui/system/styleFunctionSx/StandardCssProperties'
+import Typography from '@mui/material/Typography'
 
-type Palette = keyof PaletteOptions
-
-const PaletteStory = ({ palette }: { palette: Palette }) => {
-  const options: Record<string, string> = useTheme().palette[palette]
-  return Object.entries(options).map(([key, color]) => (
+const PaletteStory = () => {
+  const { palette } = useTheme()
+  return (
     <Box>
-      <Box>{key}</Box>
-      <Box width="50%" height={100} bgcolor={color} />
+      {Object.entries(palette)
+        .filter(([, options]) => Object.values(options).filter((o) => typeof o === 'string').length)
+        .map(([type, options]) => (
+          <Box>
+            <Typography variant="headingMBold">{type}</Typography>
+            <Box display="flex" flexDirection="row" maxWidth="100%" flexWrap="wrap">
+              {Object.entries(options)
+                .filter(([, color]) => typeof color == 'string')
+                .map(([key, color]) => (
+                  <Box title={`${type}.${key}`}>
+                    <Box maxWidth={100} textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
+                      {key}
+                    </Box>
+                    <Box
+                      width={100}
+                      height={100}
+                      border={1}
+                      bgcolor={color as StandardCSSProperties['backgroundColor']}
+                    />
+                  </Box>
+                ))}
+            </Box>
+          </Box>
+        ))}
     </Box>
-  ))
+  )
 }
 
-const options: Palette[] = [
-  'neutral',
-  'primary',
-  'secondary',
-  'tertiary',
-  'error',
-  'warning',
-  'info',
-  'success',
-  'text',
-  'background',
-  'grey',
-  'green',
-  'red',
-  'blue',
-  'violet',
-]
-
-const meta: Meta<typeof PaletteStory> = {
+const meta: Meta = {
   title: 'UI Kit/Primitives/Palette',
   component: PaletteStory,
-  argTypes: {
-    palette: {
-      control: 'select',
-      options,
-      description: 'The palette',
-    },
-  }
 }
 
-type Story = StoryObj<typeof PaletteStory>
-
-export const stories: Story[] = options.map(
-  (palette) => ({
-    args: { palette },
-    storyName: palette,
-  })
-)
-
+export const Palette = {}
 export default meta
