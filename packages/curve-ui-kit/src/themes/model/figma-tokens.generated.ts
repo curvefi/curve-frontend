@@ -56,7 +56,7 @@ export const FIGMA_TOKENS = {
       textIndent: 0,
       textTransform: 'uppercase',
     },
-    headingXs: {
+    headingXsBold: {
       fontSize: '14px',
       fontWeight: 700,
       fontStyle: 'normal',
@@ -68,7 +68,7 @@ export const FIGMA_TOKENS = {
       textIndent: 0,
       textTransform: 'uppercase',
     },
-    headingXsLightLc: {
+    headingXs: {
       fontSize: '14px',
       fontWeight: 500,
       fontStyle: 'normal',
