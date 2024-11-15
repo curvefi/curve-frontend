@@ -34,11 +34,8 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
       <CompactDropDown<TChainId>
         value={chainId}
         onChange={onChange}
-        variant="standard"
         disabled={disabled}
         renderValue={renderChainIcon}
-        inputProps={{ sx: { paddingY: 0 } }}
-        MenuProps={{ MenuListProps: { sx: { paddingY: 0 } } }}
       >
         {
           options.map(({ chainId: id, icon: Icon, label }) => (
