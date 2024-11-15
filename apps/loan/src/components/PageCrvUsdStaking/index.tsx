@@ -20,7 +20,7 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
     stakingModule,
   } = useStore((state) => state.scrvusd)
   const lendApi = useStore((state) => state.lendApi)
-  const onboardInstance = useStore((state) => state.wallet.onboard)
+  const {onboard: onboardInstance, provider } = useStore((state) => state.wallet)
   const signerAddress = onboardInstance?.state.get().wallets?.[0]?.accounts?.[0]?.address
   const chainId = useStore((state) => state.curve?.chainId)
   const userScrvUsdBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? '']?.scrvUSD) ?? '0'
@@ -41,12 +41,8 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
 
   // none library fetches
   useEffect(() => {
-    const fetchData = async () => {
-      fetchSavingsYield()
-    }
-
-    fetchData()
-  }, [fetchSavingsYield])
+    fetchSavingsYield(provider)
+  }, [fetchSavingsYield, provider])
 
   useEffect(() => {
     if (!lendApi || !chainId || !signerAddress || inputAmount === '0') return
