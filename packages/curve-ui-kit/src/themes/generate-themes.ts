@@ -1,7 +1,7 @@
 import { createTheme as createMuiTheme, type Theme } from '@mui/material/styles'
-import { basicMuiTheme, type ThemeKey } from '../basic-theme'
-import { createComponents, createPalette, createSpacing } from '../model'
-import { createTypography } from '../typography'
+import { basicMuiTheme, type ThemeKey } from './basic-theme'
+import { createComponents, createPalette, createSpacing } from './model'
+import { createTypography } from './typography'
 
 const generateTheme = (mode: ThemeKey): Theme =>
   createMuiTheme({
