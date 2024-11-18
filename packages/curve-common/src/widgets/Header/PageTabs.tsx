@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import type { AppPage } from './types'
-import Typography from '@mui/material/Typography'
+import Button from '@mui/material/Button'
 
 export type PageTabsProps = {
   pages: AppPage[]
@@ -13,7 +13,7 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages }) => (
     {pages.map((page) => (
       <Tab
         key={page.label}
-        label={<Typography variant="headingXsBold">{page.label}</Typography>}
+        label={<Button variant="ghost" color="navigation">{page.label}</Button>}
         href={page.route}
         value={page.route}
       />

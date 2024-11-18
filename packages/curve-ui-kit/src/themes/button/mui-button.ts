@@ -47,7 +47,15 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
   const getGhostButtonStyle = (color: Color): CSSObject => ({
     ...getColorButtonStyle(color),
     backgroundColor: 'transparent',
-    color: buttonDesktop[color].default?.fill
+    color: buttonDesktop[color].default?.fill,
+    '&:hover': {
+      backgroundColor: buttonDesktop.ghost.hover.fill,
+      color: buttonDesktop.ghost.hover['label & icon'],
+    },
+    '&:disabled': {
+      backgroundColor: buttonDesktop.ghost.disabled.fill,
+      color: buttonDesktop.ghost.disabled['label & icon'],
+    },
   })
 
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS

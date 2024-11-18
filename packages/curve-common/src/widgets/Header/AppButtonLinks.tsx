@@ -15,7 +15,7 @@ export const AppButtonLinks = ({ currentApp }: AppNavAppsProps) => (
         <Button
           key={appName}
           variant={isActive ? 'contained' : 'ghost'}
-          color={isActive ? 'primary' : 'inherit'}
+          color={isActive ? 'primary' : 'secondary'}
           component={Link}
           href={app.route}
         >
