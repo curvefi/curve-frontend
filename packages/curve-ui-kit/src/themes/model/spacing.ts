@@ -6,6 +6,7 @@ export const createSpacing = (mode: ThemeKey): ThemeOptions => {
   const { xxs, xs, sm, md, lg, xl, xxl } = FIGMA_TOKENS.mappedSizesAndSpaces.desktop.spacing
   const theme = FIGMA_TOKENS.themes.desktop[mode]
   const spacing = [0, xxs, xs, sm, md, lg, xl, xxl]
+  // console.log(spacing.map((s, i) => `${i}: ${s}px`).join('\n'))
   return {
     spacing,
     shape: {

@@ -41,7 +41,7 @@ export const SideBarFooter = ({
             {t.settings}
           </Typography>
         </AccordionSummary>
-        <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
+        <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}`, paddingBottom: 4 }}>
           <SettingsOption label={t.theme}>
             <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t.theme} />
           </SettingsOption>
