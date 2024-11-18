@@ -65,7 +65,9 @@ const TableRowMobile = ({
     <Tr ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
       <td>
         <MobileLabelWrapper grid gridTemplateColumns={loanExists ? 'auto 1fr' : '1fr'}>
-          {loanExists && <CellInPool as="div" isMobile isIn type="market" />}
+          {loanExists && (
+            <CellInPool as="div" isMobile isIn type="market" tooltip={t`You have a balance in this market`} />
+          )}
           <Box grid gridTemplateColumns="1fr auto" fillWidth padding="0 0 0 var(--spacing-narrow)">
             <TokenLabel showAlert {...props} type="collateral" onClick={handleCellClick} />
             <IconButton

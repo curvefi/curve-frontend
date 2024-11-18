@@ -33,7 +33,9 @@ const TableRowMobileHead = ({
 
   return (
     <Box grid gridTemplateColumns={showInMarket ? '20px 1fr' : '1fr'}>
-      {showInMarket && <CellInPool as="div" isMobile isIn type="market" />}
+      {showInMarket && (
+        <CellInPool as="div" isMobile isIn type="market" tooltip={t`You have a balance in this market`} />
+      )}
       <Box grid gridTemplateColumns="1fr auto" fillWidth padding="var(--spacing-1) 0 0 var(--spacing-2)">
         <Box onClick={() => handleCellClick()}>
           <StyledTokens>

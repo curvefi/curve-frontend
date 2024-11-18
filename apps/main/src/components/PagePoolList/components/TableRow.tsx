@@ -1,6 +1,7 @@
 import type { FormValues, SearchParams } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
+import { t } from '@lingui/macro'
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
@@ -60,7 +61,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
-      {showInPoolColumn && <CellInPool isIn={isInPool} type="pool" />}
+      {showInPoolColumn && <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />}
       <Td $first={!showInPoolColumn}>
         <PoolLabel
           isVisible

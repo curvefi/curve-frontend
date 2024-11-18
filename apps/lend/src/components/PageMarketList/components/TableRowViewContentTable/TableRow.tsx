@@ -1,5 +1,6 @@
 import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
 
+import { t } from '@lingui/macro'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { FilterType } from '@/components/PageMarketList/utils'
@@ -48,6 +49,7 @@ const TableRowContent = ({
   const userHaveLoan = !!signerAddress && loanExists
   const haveVaultShares = +(vaultShares ?? '0') > 0 || +(gauge ?? '0') > 0
   const userSupplied = !!signerAddress && haveVaultShares
+  const inMarketTooltip = t`You have a balance in this market`
 
   const cellProps: TableCellProps = {
     rChainId,
@@ -63,7 +65,7 @@ const TableRowContent = ({
   // prettier-ignore
   const CONTENT: { borrow: Content[], supply: Content[] } = {
     [FilterType.borrow]: [
-      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userHaveLoan} type='market' />, show: showBorrowSignerCell },
+      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userHaveLoan} type='market' tooltip={userHaveLoan ? inMarketTooltip : ''} />, show: showBorrowSignerCell },
       { title: TITLE.tokenCollateral, className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral'  module='borrow' /> },
       { className: 'left', content: <CellToken {...cellProps} type='borrowed'  module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
@@ -74,7 +76,7 @@ const TableRowContent = ({
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
     ],
     [FilterType.supply]: [
-      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userSupplied} type='market' />, show: showSupplySignerCell },
+      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userSupplied} type='market' tooltip={userSupplied ? inMarketTooltip : ''} />, show: showSupplySignerCell },
       { title: TITLE.tokenBorrow, className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps}  type='borrowed' module='supply' /> },
       { className: 'left', content: <CellToken {...cellProps} type='collateral'  module='supply' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
