@@ -1,11 +1,14 @@
 import type { SearchParams } from '@/components/PageMarketList/types'
 
-import React, { useMemo } from 'react'
+import { Trans } from '@lingui/macro'
+import React from 'react'
+import styled from 'styled-components'
 
 import useStore from '@/store/useStore'
 
-import TrNoResult, { TrNoResultProps } from '@/ui/Table/TrNoResult'
 import { Td, Tr } from '@/ui/Table'
+import Button from '@/ui/Button'
+import ExternalLink from 'ui/src/Link/ExternalLink'
 
 const TableRowNoResult = ({
   colSpan,
@@ -17,18 +20,35 @@ const TableRowNoResult = ({
   const searchParams = useStore((state) => state.collateralList.searchParams)
   const { searchText } = searchParams
 
-  const props = useMemo<Pick<TrNoResultProps, 'noResultKey' | 'value' | 'action'>>(() => {
-    if (searchText) return { noResultKey: 'search', value: searchText, action: () => updatePath({ searchText: '' }) }
-    return { noResultKey: '', value: '' }
-  }, [searchText, updatePath])
-
   return (
     <Tr>
       <Td colSpan={colSpan}>
-        <TrNoResult type="market" {...props} />
+        <Wrapper>
+          {searchText ? (
+            <Trans>
+              No market found for “{searchText}”.
+              <br />{' '}
+              <Button variant="text" onClick={() => updatePath({ searchText: '' })}>
+                View all
+              </Button>
+            </Trans>
+          ) : (
+            <Trans>
+              Can&apos;t find what you&apos;re looking for?{' '}
+              <ExternalLink $noStyles href="https://t.me/curvefi">
+                Feel free to ask us on Telegram
+              </ExternalLink>
+            </Trans>
+          )}
+        </Wrapper>
       </Td>
     </Tr>
   )
 }
+
+const Wrapper = styled.div`
+  padding: var(--spacing-5);
+  text-align: center;
+`
 
 export default TableRowNoResult

@@ -1,12 +1,23 @@
 import type { PageMarketList } from '@/components/PageMarketList/types'
 
+import { t, Trans } from '@lingui/macro'
 import React, { useMemo } from 'react'
+import styled from 'styled-components'
 
 import { Filter } from '@/components/PageMarketList/utils'
 import useStore from '@/store/useStore'
 
 import { shortenAccount } from '@/ui/utils'
-import TrNoResult, { type TrNoResultProps } from '@/ui/Table/TrNoResult'
+import Box from '@/ui/Box'
+import AlertBox from '@/ui/AlertBox'
+import Button from '@/ui/Button'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+
+enum ERROR {
+  api = 'api',
+  search = 'search',
+  filter = 'filter',
+}
 
 const MarketListNoResult = ({
   searchParams,
@@ -17,24 +28,60 @@ const MarketListNoResult = ({
 
   const { searchText, filterKey } = searchParams
 
-  const props = useMemo<Pick<TrNoResultProps, 'noResultKey' | 'value' | 'action'>>(() => {
-    if (searchText) return { noResultKey: 'search', value: searchText, action: () => updatePath({ searchText: '' }) }
-    if (owmDatasError) return { noResultKey: 'api', value: '' }
+  const errorKey = useMemo(() => {
+    if (searchText) return ERROR.search
+    if (owmDatasError) return ERROR.api
+    if (filterKey) return ERROR.filter
+  }, [filterKey, owmDatasError, searchText])
 
-    if (filterKey === 'user' && !!signerAddress)
-      return {
-        noResultKey: 'filter',
-        value: shortenAccount(signerAddress),
-        action: () => updatePath({ filterKey: Filter.all }),
-      }
+  const errorSearchParams = useMemo(() => {
+    if (errorKey === ERROR.search) return { searchText: '' }
+    if (errorKey === ERROR.filter) return { filterKey: Filter.all }
+  }, [errorKey])
 
-    if (filterKey)
-      return { noResultKey: 'filter', value: filterKey, action: () => updatePath({ filterKey: Filter.all }) }
+  const errorSearchedValue = useMemo(() => {
+    if (errorKey === ERROR.search) return searchText
+    if (errorKey === ERROR.api) return ''
+    if (errorKey === ERROR.filter) {
+      if (filterKey === 'user' && !!signerAddress) return shortenAccount(signerAddress)
+      return filterKey
+    }
+    return ''
+  }, [filterKey, errorKey, searchText, signerAddress])
 
-    return { noResultKey: '', value: '' }
-  }, [filterKey, owmDatasError, searchText, signerAddress, updatePath])
-
-  return <TrNoResult type="market" {...props} />
+  return (
+    <Wrapper>
+      {errorKey === ERROR.api ? (
+        <Box flex flexJustifyContent="center">
+          <AlertBox alertType="error">{t`Unable to retrieve market list. Please try again later.`}</AlertBox>
+        </Box>
+      ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
+        <Trans>
+          No market found for “{errorSearchedValue}”.
+          {errorSearchParams && (
+            <>
+              <br />{' '}
+              <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
+                View all
+              </Button>
+            </>
+          )}
+        </Trans>
+      ) : (
+        <Trans>
+          Can&apos;t find what you&apos;re looking for?{' '}
+          <ExternalLink $noStyles href="https://t.me/curvefi">
+            Feel free to ask us on Telegram
+          </ExternalLink>
+        </Trans>
+      )}
+    </Wrapper>
+  )
 }
+
+const Wrapper = styled.div`
+  padding: var(--spacing-5);
+  text-align: center;
+`
 
 export default MarketListNoResult

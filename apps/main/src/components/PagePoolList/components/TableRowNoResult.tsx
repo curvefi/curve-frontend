@@ -1,12 +1,23 @@
 import type { SearchParams } from '@/components/PagePoolList/types'
 
-import { useMemo } from 'react'
-import useStore from '@/store/useStore'
+import { Trans } from '@lingui/macro'
+import React, { useMemo } from 'react'
+import styled from 'styled-components'
 
 import { shortenAccount } from '@/ui/utils'
+import useStore from '@/store/useStore'
 
-import TrNoResult, { TrNoResultProps } from '@/ui/Table/TrNoResult'
 import { Td, Tr } from '@/ui/Table'
+import Box from '@/ui/Box'
+import AlertBox from '@/ui/AlertBox'
+import Button from '@/ui/Button'
+import ExternalLink from 'ui/src/Link/ExternalLink'
+
+enum ERROR {
+  api = 'api',
+  search = 'search',
+  filter = 'filter',
+}
 
 type Props = {
   colSpan: number
@@ -21,27 +32,63 @@ const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: 
   const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
   const userPoolListError = useStore((state) => state.user.poolListError)
 
-  const props = useMemo<Pick<TrNoResultProps, 'noResultKey' | 'value' | 'action'>>(() => {
-    if (searchText) return { noResultKey: 'search', value: searchText, action: () => updatePath({ searchText: '' }) }
-    if (filterKey === 'user')
-      return {
-        noResultKey: 'filter',
-        value: shortenAccount(signerAddress),
-        action: () => updatePath({ filterKey: 'all' }),
-      }
+  const errorKey = useMemo(() => {
+    if (searchText) return ERROR.search
+    if (filterKey) return ERROR.filter
+    if (userPoolListLoaded && userPoolListError) return ERROR.api
+  }, [filterKey, searchText, userPoolListError, userPoolListLoaded])
 
-    if (filterKey) return { noResultKey: 'filter', value: filterKey, action: () => updatePath({ filterKey: 'all' }) }
-    if (userPoolListLoaded && userPoolListError) return { noResultKey: 'api', value: '' }
-    return { noResultKey: '', value: '' }
-  }, [filterKey, searchText, signerAddress, updatePath, userPoolListError, userPoolListLoaded])
+  const errorSearchParams = useMemo<Partial<SearchParams> | undefined>(() => {
+    if (errorKey === ERROR.search) return { searchText: '' }
+    if (errorKey === ERROR.filter) return { filterKey: 'all' }
+  }, [errorKey])
+
+  const errorSearchedValue = useMemo(() => {
+    if (errorKey === ERROR.search) return searchText
+    if (errorKey === ERROR.filter) {
+      if (filterKey === 'user' && !!signerAddress) return shortenAccount(signerAddress)
+      return filterKey
+    }
+    return ''
+  }, [filterKey, errorKey, searchText, signerAddress])
 
   return (
     <Tr>
       <Td colSpan={colSpan}>
-        <TrNoResult type="pool" {...props} />
+        <Wrapper>
+          {errorKey === ERROR.api ? (
+            <Box flex flexJustifyContent="center">
+              <AlertBox alertType="error">Unable to retrieve pool list. Please try again later.</AlertBox>
+            </Box>
+          ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
+            <Trans>
+              No pool found for “{errorSearchedValue}”.
+              {errorSearchParams && (
+                <>
+                  <br />{' '}
+                  <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
+                    View all
+                  </Button>
+                </>
+              )}
+            </Trans>
+          ) : (
+            <Trans>
+              Can&apos;t find what you&apos;re looking for?{' '}
+              <ExternalLink $noStyles href="https://t.me/curvefi">
+                Feel free to ask us on Telegram
+              </ExternalLink>
+            </Trans>
+          )}
+        </Wrapper>
       </Td>
     </Tr>
   )
 }
+
+const Wrapper = styled.div`
+  padding: var(--spacing-5);
+  text-align: center;
+`
 
 export default TableRowNoResult
