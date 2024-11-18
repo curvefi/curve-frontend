@@ -14,7 +14,7 @@ export const ThemeSwitcherButton: FunctionComponent<ThemeSwitcherProps> = ({ the
   const { Component } = themes[themeIndex]!
   return (
     <Tooltip title={label}>
-     <IconButton onClick={onClick} sx={{ fill: (t: Theme) => t.palette.primary.main }}>
+     <IconButton onClick={onClick} sx={{ padding: 2, fill: (t: Theme) => t.palette.primary.main }}>
        <Component size={28} />
      </IconButton>
     </Tooltip>

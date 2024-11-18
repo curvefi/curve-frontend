@@ -12,6 +12,13 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
   MuiButtonBase: {
     defaultProps: {
       disableRipple: true,
+    }
+  },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        borderRadius: '0',
+      },
     },
   },
   MuiButton: defineMuiButton(FIGMA_TOKENS, mode),

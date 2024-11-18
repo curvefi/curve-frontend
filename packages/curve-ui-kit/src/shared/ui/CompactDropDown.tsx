@@ -13,7 +13,7 @@ export const CompactDropDown = <T extends string | number>({ onChange, inputProp
     size="small"
     variant="standard"
     disableUnderline
-    inputProps={{ sx: { display: 'flex', padding: 3, ...inputProps?.sx }, ...inputProps }}
+    inputProps={{ sx: { display: 'flex', padding: 2, ...inputProps?.sx }, ...inputProps }}
     {...props}
   />
 )

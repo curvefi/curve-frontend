@@ -5,14 +5,14 @@ import { createTypography } from './typography'
 
 const generateTheme = (mode: ThemeKey): Theme =>
   createMuiTheme({
-      ...basicMuiTheme,
-      palette: createPalette(mode),
-      typography: createTypography(mode),
-      components: createComponents(mode),
-      ...createSpacing(mode),
-      cssVariables: true,
-      shadows: Array(25).fill("none") as Shadows,
-    })
+    ...basicMuiTheme,
+    palette: createPalette(mode),
+    typography: createTypography(mode),
+    components: createComponents(mode),
+    ...createSpacing(mode),
+    cssVariables: true,
+    shadows: Array(25).fill('none') as Shadows,
+  })
 
 export const lightTheme = generateTheme('light')
 export const darkTheme = generateTheme('dark')
