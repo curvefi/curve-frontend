@@ -37,7 +37,7 @@ export const TabsSwitcher = <T extends string | number>({
   <Tabs
     variant={muiVariant}
     textColor="inherit"
-    value={value}
+    value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
     sx={{ minHeight: TABS_HEIGHTS[size] }}
     className={TABS_VARIANT_CLASSES[variant]}

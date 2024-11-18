@@ -24,15 +24,15 @@ interface EnvConfig {
 const envConfig: EnvConfig = {
   main: {
     baseUrl: 'http://localhost:3000/#',
-    specPattern: 'cypress/e2e/main/**/*',
+    specPattern: 'cypress/e2e/main/**/*,cypress/e2e/all/**/*',
   },
   lend: {
     baseUrl: 'http://localhost:3003/#',
-    specPattern: 'cypress/e2e/lend/**/*',
+    specPattern: 'cypress/e2e/lend/**/*,cypress/e2e/all/**/*',
   },
   loan: {
     baseUrl: 'http://localhost:3001/#',
-    specPattern: 'cypress/e2e/loan/**/*',
+    specPattern: 'cypress/e2e/loan/**/*,cypress/e2e/all/**/*',
   },
 }
 

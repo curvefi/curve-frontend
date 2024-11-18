@@ -22,7 +22,12 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
         href={page.route}
         sx={{ justifyContent: 'flex-start', textDecoration: 'none' }}
       >
-        <Typography variant="bodyMBold" color={child ? 'text.secondary' : 'text.primary'} sx={{ textTransform: 'uppercase' }}>
+        <Typography
+          variant="bodyMBold"
+          color={child ? 'text.secondary' : 'text.primary'}
+          sx={{ textTransform: 'uppercase' }}
+          data-testid={`sidebar-item-${page.label.toLowerCase()}`}
+        >
           {page.label}
         </Typography>
       </Component>

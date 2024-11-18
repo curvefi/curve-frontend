@@ -1,6 +1,6 @@
 import { AppBar, Toolbar } from '@mui/material'
 import { BaseHeaderProps } from './types'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
@@ -11,6 +11,7 @@ import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/model'
 import { APP_LINK, AppNames } from './constants'
+import { useLocation } from 'react-router-dom'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
@@ -40,6 +41,9 @@ export const MobileHeader = <TChainId extends number>({
   const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
+  const location = useLocation()
+
+  useEffect(() => () => closeSidebar(), [location, closeSidebar]) // close when clicking a link
 
   const onConnect = useCallback(() => {
     closeSidebar()
