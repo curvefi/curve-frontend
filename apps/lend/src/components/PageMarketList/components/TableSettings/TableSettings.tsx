@@ -36,6 +36,7 @@ const TableSettings = ({
       <SettingsWrapper>
         <Box gridArea="search" fillWidth>
           <SearchListInput
+            placeholder={t`Search by tokens or address`}
             searchText={searchText}
             handleInputChange={(val) => updatePath({ searchText: val })}
             handleClose={() => updatePath({ searchText: '' })}

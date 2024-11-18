@@ -1,5 +1,6 @@
 import type { PageCollateralList, TableLabel } from '@/components/PageMarketList/types'
 
+import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -25,6 +26,7 @@ const TableSettings = ({
   return (
     <SettingsWrapper>
       <SearchListInput
+        placeholder={t`Search by tokens or address`}
         searchText={searchText}
         handleInputChange={(val) => updatePath({ searchText: val })}
         handleClose={() => updatePath({ searchText: '' })}

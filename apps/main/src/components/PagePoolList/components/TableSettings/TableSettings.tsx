@@ -56,7 +56,7 @@ const TableSettings = ({
       { key: 'cross-chain', label: t`Cross-chain` },
       { key: 'user', label: t`My Pools` },
     ],
-    []
+    [],
   )
 
   const parsedFilters = useMemo(() => {
@@ -82,6 +82,7 @@ const TableSettings = ({
     <Wrapper>
       <div>
         <SearchListInput
+          placeholder={t`Search by tokens or address`}
           searchText={searchParams.searchText}
           handleInputChange={(val) => updatePath({ searchText: val })}
           handleClose={() => updatePath({ searchText: '' })}
