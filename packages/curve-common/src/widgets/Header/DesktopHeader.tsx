@@ -21,7 +21,7 @@ export const DesktopHeader = <TChainId extends number>({
   appStats,
   themes: [theme, setTheme],
   advancedMode: [isAdvancedMode, setAdvancedMode],
-  translations: t
+  translations: t,
 }: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
     <Toolbar sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around' }}>
@@ -40,7 +40,15 @@ export const DesktopHeader = <TChainId extends number>({
         </Box>
       </Container>
     </Toolbar>
-    <Toolbar sx={{ backgroundColor: 'background.default', justifyContent: 'space-around' }}>
+    <Toolbar
+      sx={{
+        backgroundColor: 'background.layer1Fill',
+        justifyContent: 'space-around',
+        borderWidth: '1px 0',
+        borderColor: 'background.layer1Outline',
+        borderStyle: 'solid',
+      }}
+    >
       <Container>
         <PageTabs pages={pages} />
         <Box flexGrow={1} />

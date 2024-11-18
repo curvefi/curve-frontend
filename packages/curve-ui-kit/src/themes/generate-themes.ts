@@ -1,4 +1,4 @@
-import { createTheme as createMuiTheme, type Theme } from '@mui/material/styles'
+import { createTheme as createMuiTheme, type Shadows, type Theme } from '@mui/material/styles'
 import { basicMuiTheme, type ThemeKey } from './basic-theme'
 import { createComponents, createPalette, createSpacing } from './model'
 import { createTypography } from './typography'
@@ -11,6 +11,7 @@ const generateTheme = (mode: ThemeKey): Theme =>
       components: createComponents(mode),
       ...createSpacing(mode),
       cssVariables: true,
+      shadows: Array(25).fill("none") as Shadows,
     })
 
 export const lightTheme = generateTheme('light')

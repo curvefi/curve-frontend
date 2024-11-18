@@ -1,12 +1,11 @@
-import type { ThemeOptions } from '@mui/material'
 import type { ThemeKey } from '../basic-theme'
 import { FIGMA_TOKENS } from './figma-tokens.generated'
+import type { PaletteOptions } from '@mui/material/styles/createPalette'
 
-
-export const createPalette = (mode: ThemeKey): ThemeOptions['palette'] => {
+export const createPalette = (mode: ThemeKey): PaletteOptions => {
   const theme = FIGMA_TOKENS.themes.desktop[mode]
   return {
-    mode: mode === 'dark' ? 'dark' : 'light',
+    mode: mode === 'dark' ? ('dark' as const) : ('light' as const),
     neutral: {
       ...theme.color.neutral,
       main: theme.color.neutral['500'],
@@ -56,12 +55,13 @@ export const createPalette = (mode: ThemeKey): ThemeOptions['palette'] => {
     background: {
       default: theme.layer['1'].fill,
       paper: theme.layer['2'].fill,
-      // TODO: add layer 3 fill, app background, highlight fill
+      layer1Fill: theme.layer['1'].fill,
+      layer1Outline: theme.layer['1'].outline,
+      layer2Fill: theme.layer['2'].fill,
+      layer2Outline: theme.layer['2'].outline,
+      layer3Fill: theme.layer['3'].fill,
+      layer3Outline: theme.layer['3'].outline,
     },
     grey: FIGMA_TOKENS.primitives.grays,
-    green: FIGMA_TOKENS.primitives.greens,
-    red: FIGMA_TOKENS.primitives.reds,
-    blue: FIGMA_TOKENS.primitives.blues,
-    violet: FIGMA_TOKENS.primitives.violet,
   }
 }
