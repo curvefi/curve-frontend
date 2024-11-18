@@ -23,7 +23,7 @@ export const ChainSwitcher = <TChainId extends number>({ options, chainId, onCha
 
   const renderChainIcon = useCallback((value: TChainId) => {
     const { icon: Icon } = networkMapping[value]
-    return (<Icon width={32} />)
+    return (<Icon width={28} />)
   }, [networkMapping])
 
   if (options.length <= 1) {

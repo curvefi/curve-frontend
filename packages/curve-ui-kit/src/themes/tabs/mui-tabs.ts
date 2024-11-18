@@ -56,7 +56,7 @@ export const defineMuiTabs = (figmaTokens: FigmaTokens, mode: ThemeKey): Compone
       },
       indicator: {
         [`.${TABS_VARIANT_CLASSES.overlined} &`]: { top: 0 },
-        [`.${TABS_VARIANT_CLASSES.contained} &`]: { bottom: 7 },
+        [`.${TABS_VARIANT_CLASSES.contained} &`]: { top: 0 },
       },
     },
   }

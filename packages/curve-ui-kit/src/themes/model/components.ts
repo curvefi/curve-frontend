@@ -3,7 +3,7 @@ import { BUTTONS_HEIGHTS, defineMuiButton } from '../../themes/button'
 import { defineMuiTypography } from '../../themes/typography'
 import type { ThemeKey } from '../basic-theme'
 import { FIGMA_TOKENS } from './figma-tokens.generated'
-import { defineMuiTabs } from '@/themes/tabs'
+import { defineMuiTabs } from '@ui-kit/themes/tabs'
 
 export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 

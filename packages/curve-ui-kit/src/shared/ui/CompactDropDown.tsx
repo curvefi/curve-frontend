@@ -7,13 +7,13 @@ export type CompactDropDownProps<T extends string | number> = Omit<SelectProps<T
   onChange: (newValue: T) => void
 }
 
-export const CompactDropDown = <T extends string | number>({ onChange, sx, ...props }: CompactDropDownProps<T>) => (
+export const CompactDropDown = <T extends string | number>({ onChange, inputProps, ...props }: CompactDropDownProps<T>) => (
   <Select<T>
     onChange={useCallback((v: SelectChangeEvent<T>) => onChange(v.target.value as T), [onChange])}
     size="small"
     variant="standard"
-    sx={{ "::before": { content: "none" }, ...sx }} // removes the bottom border
     disableUnderline
+    inputProps={{ sx: { display: 'flex', padding: 3, ...inputProps?.sx }, ...inputProps }}
     {...props}
   />
 )

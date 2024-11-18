@@ -25,7 +25,7 @@ export const DesktopHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => (
   <AppBar color="transparent" position="relative">
     <Toolbar sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around' }}>
-      <Container>
+      <Container sx={{ paddingY: 1 }}>
         <HeaderLogo appName={currentApp} />
         <AppButtonLinks currentApp={currentApp} />
 
