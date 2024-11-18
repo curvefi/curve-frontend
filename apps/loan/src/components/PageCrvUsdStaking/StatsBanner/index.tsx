@@ -18,8 +18,9 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
 
   const exampleBalance = 100000
 
-  const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
-  const scrvUsdApy = pricesYieldData.data?.proj_apr ?? 0
+  const isLoadingPricesYieldData = !isReady(pricesYieldData.fetchStatus)
+
+  const scrvUsdApy = pricesYieldData.data?.proj_apr || 0
   const oneMonthProjYield = formatNumber((scrvUsdApy / 100 / 12) * exampleBalance, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
