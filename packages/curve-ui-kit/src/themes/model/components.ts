@@ -40,8 +40,11 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
     styleOverrides: {
       root: { padding: 0 },
       switchBase: { borderRadius: 0 },
-      track: { borderRadius: 0 },
-      thumb: { borderRadius: 0 },
+      track: { borderRadius: 0, backgroundColor: 'transparent', border: `1px solid ${FIGMA_TOKENS.themes.desktop[mode].layer[1].outline}` },
+      thumb: { borderRadius: 0, backgroundColor: FIGMA_TOKENS.themes.desktop[mode].color.primary[500] },
+      checked: {
+
+      }
     },
   },
 })

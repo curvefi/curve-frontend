@@ -19,7 +19,7 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       size="small"
     />
     {label && (
-      <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 3, marginRight: 4, textTransform: 'uppercase', lineHeight: '37px' }}>
+      <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 2, marginRight: 4, textTransform: 'uppercase', lineHeight: '37px' }}>
         {label}
       </Typography>
     )}

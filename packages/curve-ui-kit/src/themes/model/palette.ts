@@ -5,7 +5,7 @@ import type { PaletteOptions } from '@mui/material/styles/createPalette'
 export const createPalette = (mode: ThemeKey): PaletteOptions => {
   const theme = FIGMA_TOKENS.themes.desktop[mode]
   return {
-    mode: mode === 'dark' ? ('dark' as const) : ('light' as const),
+    mode: mode === 'dark' ? 'dark' : 'light',
     neutral: {
       ...theme.color.neutral,
       main: theme.color.neutral['500'],
