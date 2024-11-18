@@ -20,6 +20,14 @@ import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
 
+enum SEARCH {
+  filter = 'filter',
+  hideSmallPools = 'hideSmallPools',
+  sortBy = 'sortBy',
+  order = 'order',
+  search = 'search',
+}
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
@@ -70,11 +78,11 @@ const Page: NextPage = () => {
       }
       const searchPath = new URLSearchParams(
         [
-          ['filter', filterKey && filterKey !== 'all' ? filterKey : ''],
-          ['hideSmallPools', hideSmallPools ? '' : 'false'],
-          ['sortBy', sortBy && sortBy !== 'volume' ? sortBy : ''],
-          ['sortByOrder', sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
-          ['search', searchText ? encodeURIComponent(searchText) : ''],
+          [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+          [SEARCH.hideSmallPools, hideSmallPools ? '' : 'false'],
+          [SEARCH.sortBy, sortBy && sortBy !== 'volume' ? sortBy : ''],
+          [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+          [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
         ].filter(([, v]) => v),
       ).toString()
 
@@ -86,11 +94,11 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     if (rChainId) {
-      const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get('sortBy') || 'volume').toLowerCase()
-      const paramOrder = (searchParams.get('order') || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get('hideSmallPools') || 'true'
-      const searchText = decodeURIComponent(searchParams.get('search') || '')
+      const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
+      const paramSortBy = (searchParams.get(SEARCH.sortBy) || 'volume').toLowerCase()
+      const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
+      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
+      const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
 
       // validate filter key
       const foundFilterKey = networks[rChainId].poolFilters.find((f) => f === paramFilterKey)

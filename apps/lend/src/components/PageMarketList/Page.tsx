@@ -21,6 +21,15 @@ import Settings from '@/layout/Settings'
 import ConnectWallet from '@/components/ConnectWallet'
 import Box from '@/ui/Box'
 
+enum SEARCH {
+  filter = 'filter',
+  hideSmallMarkets = 'hideSmallMarkets',
+  sortBy = 'sortBy',
+  order = 'order',
+  search = 'search',
+  type = 'type',
+}
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
@@ -71,12 +80,12 @@ const Page: NextPage = () => {
 
     const searchPath = new URLSearchParams(
       [
-        ['search', searchText ? encodeURIComponent(searchText) : ''],
-        ['filter', filterKey && filterKey !== 'all' ? filterKey : ''],
-        ['type', filterTypeKey && filterTypeKey !== 'borrow' ? filterTypeKey : ''],
-        ['hideSmallMarkets', hideSmallMarkets === false ? 'false' : ''],
-        ['sortBy', sortBy ?? ''],
-        ['sortByOrder', sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+        [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+        [SEARCH.type, filterTypeKey && filterTypeKey !== 'borrow' ? filterTypeKey : ''],
+        [SEARCH.hideSmallMarkets, hideSmallMarkets === false ? 'false' : ''],
+        [SEARCH.sortBy, sortBy ?? ''],
+        [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
       ].filter(([, v]) => v),
     ).toString()
 
@@ -89,15 +98,15 @@ const Page: NextPage = () => {
 
     if (!pageLoaded || isLoadingApi) return
 
-    const hideSmallMarkets = searchParams.get('hideSmallMarkets') || 'true'
+    const hideSmallMarkets = searchParams.get(SEARCH.hideSmallMarkets) || 'true'
 
     const parsedSearchParams = {
-      filterKey: searchParams.get('filter') || 'all',
-      filterTypeKey: searchParams.get('type') || 'borrow',
+      filterKey: searchParams.get(SEARCH.filter) || 'all',
+      filterTypeKey: searchParams.get(SEARCH.type) || 'borrow',
       hideSmallMarkets: hideSmallMarkets === 'true',
-      sortBy: searchParams.get('sortBy') || '',
-      sortByOrder: searchParams.get('sortByOrder') || 'desc',
-      searchText: decodeURIComponent(searchParams.get('search') || ''),
+      sortBy: searchParams.get(SEARCH.sortBy) || '',
+      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
