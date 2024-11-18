@@ -14,4 +14,15 @@ describe('Header', () => {
       cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', 40);
     })
   })
+
+  describe('mobile', () => {
+    it('should open the menu', () => {
+      cy.viewport(randomInt(0, tablet), randomInt(minHeight, maxHeight));
+      cy.visit('/')
+      cy.get(`header`).invoke('outerHeight').should('equal', 56);
+      cy.get(`[data-testid='mobile-drawer']`).should('not.be.visible');
+      cy.get(`[data-testid='menu-toggle']`).click();
+      cy.get(`[data-testid='mobile-drawer']`).should('be.visible');
+    })
+  })
 })

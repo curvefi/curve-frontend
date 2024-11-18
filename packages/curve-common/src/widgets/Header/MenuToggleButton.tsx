@@ -16,7 +16,7 @@ type MenuToggleButtonProps = {
 }
 
 export const MenuToggleButton = ({ toggle, isOpen }: MenuToggleButtonProps) => (
-  <IconButton onClick={toggle} sx={{ display: 'inline-flex' }}>
+  <IconButton onClick={toggle} sx={{ display: 'inline-flex' }} data-testid="menu-toggle">
     <Svg
       // className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-36mik4-MuiSvgIcon-root"
       focusable="false"

@@ -64,6 +64,7 @@ export const MobileHeader = <TChainId extends number>({
           PaperProps={{ sx: { top: DEFAULT_BAR_SIZE, ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
           hideBackdrop
+          data-testid="mobile-drawer"
         >
           <Box>
             <Box padding={4} display="flex" flexDirection="column">

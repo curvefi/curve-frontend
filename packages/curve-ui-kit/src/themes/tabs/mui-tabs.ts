@@ -24,7 +24,7 @@ export const defineMuiTabs = (figmaTokens: FigmaTokens, mode: ThemeKey): Compone
             backgroundColor: contained.hover.fill,
             color: contained.hover['label & icon'],
           },
-          '&:current': {
+          '&.Mui-selected': {
             backgroundColor: contained.current.fill,
             color: contained.current['label & icon'],
           },
@@ -36,7 +36,7 @@ export const defineMuiTabs = (figmaTokens: FigmaTokens, mode: ThemeKey): Compone
             borderTop: overlined.hover.outline,
             color: overlined.hover['label & icon'],
           },
-          '&:current': {
+          '&.Mui-selected': {
             borderTop: overlined.current.outline,
             color: overlined.current['label & icon'],
           },
@@ -48,7 +48,7 @@ export const defineMuiTabs = (figmaTokens: FigmaTokens, mode: ThemeKey): Compone
             borderBottom: underlined.hover.outline,
             color: underlined.hover['label & icon'],
           },
-          '&:current': {
+          '&.Mui-selected': {
             borderBottom: underlined.current.outline,
             color: underlined.current['label & icon'],
           },
