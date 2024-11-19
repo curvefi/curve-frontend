@@ -1,4 +1,4 @@
 export * from './config'
 export * from './muiTypography'
 export * from './create-typography'
-export { monaSans, hubotSans } from './fonts'
+export { monaSans, minecraft } from './fonts'
