@@ -73,7 +73,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         [isMdUp, rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
-        themeType,
+        themeType as string == 'default' ? 'light' : themeType,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
       ]}
       LanguageProps={{

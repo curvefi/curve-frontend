@@ -1,5 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
-import { BUTTONS_HEIGHTS, defineMuiButton } from '../../themes/button'
+import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from '../../themes/button'
 import { defineMuiTypography } from '../../themes/typography'
 import type { ThemeKey } from '../basic-theme'
 import { FIGMA_TOKENS } from './figma-tokens.generated'
@@ -12,15 +12,9 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
   MuiButtonBase: {
     defaultProps: {
       disableRipple: true,
-    }
-  },
-  MuiIconButton: {
-    styleOverrides: {
-      root: {
-        borderRadius: '0',
-      },
     },
   },
+  MuiIconButton: defineMuiIconButton(FIGMA_TOKENS, mode),
   MuiButton: defineMuiButton(FIGMA_TOKENS, mode),
   MuiTabs: defineMuiTabs(FIGMA_TOKENS, mode),
   MuiToolbar: {
@@ -40,11 +34,13 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
     styleOverrides: {
       root: { padding: 0 },
       switchBase: { borderRadius: 0 },
-      track: { borderRadius: 0, backgroundColor: 'transparent', border: `1px solid ${FIGMA_TOKENS.themes.desktop[mode].layer[1].outline}` },
+      track: {
+        borderRadius: 0,
+        backgroundColor: 'transparent',
+        border: `1px solid ${FIGMA_TOKENS.themes.desktop[mode].layer[1].outline}`,
+      },
       thumb: { borderRadius: 0, backgroundColor: FIGMA_TOKENS.themes.desktop[mode].color.primary[500] },
-      checked: {
-
-      }
+      checked: {},
     },
   },
 })

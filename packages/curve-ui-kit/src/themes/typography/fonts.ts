@@ -9,14 +9,3 @@ export const FontFamilyMapping = {
   'Hubot Sans': [hubotSans.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(','),
   'Minecraft': [minecraft.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(','),
 } as const
-
-type SupportedFontFamily = keyof typeof FontFamilyMapping
-
-/**
- * The fonts imported via the next/font plugin get a different family name.
- * This function replaces the font family name with the generated one.
- */
-export const replaceFontName = <T extends { fontFamily: SupportedFontFamily }>({
-  fontFamily,
-  ...styles
-}: T) => ({ ...styles, fontFamily: FontFamilyMapping[fontFamily] })

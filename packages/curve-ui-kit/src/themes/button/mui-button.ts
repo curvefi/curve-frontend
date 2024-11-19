@@ -1,20 +1,38 @@
 import type { Components, CSSObject } from '@mui/material/styles'
 import { basicMuiTheme, ThemeKey } from '../basic-theme'
 import { FIGMA_TOKENS, FigmaTokens } from '../model'
-import { FontFamilyMapping, replaceFontName } from '../typography/fonts'
+import { FontFamilyMapping } from '../typography/fonts'
 
 const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
 type Color = (typeof COLORS)[number]
 
 export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
 
-export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
+export const defineMuiIconButton = ({ themes }: FigmaTokens, mode: ThemeKey) => {
+  const current = themes.desktop[mode].chips.current
+  return {
+    styleOverrides: {
+      root: {
+        borderRadius: '0',
+        '&.current': {
+          fill: current['label & icon'],
+          backgroundColor: current.fill,
+          borderStyle: 'solid',
+          borderColor: current.outline,
+          borderWidth: '1px',
+        },
+      },
+    },
+  }
+}
+
+export const defineMuiButton = ({ themes, mappedSizesAndSpaces, typography }: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const fontFamily = FontFamilyMapping[FIGMA_TOKENS.themes.desktop[mode].text.fontfamily.button]
 
-  const buttonDesktop = figmaTokens.themes.desktop[mode].button
-  const buttonMobile = figmaTokens.themes.mobile[mode].button
-  const spacingDesktop = figmaTokens.mappedSizesAndSpaces.desktop.spacing
-  const spacingMobile = figmaTokens.mappedSizesAndSpaces.mobile.spacing
+  const buttonDesktop = themes.desktop[mode].button
+  const buttonMobile = themes.mobile[mode].button
+  const spacingDesktop = mappedSizesAndSpaces.desktop.spacing
+  const spacingMobile = mappedSizesAndSpaces.mobile.spacing
 
   const getColorButtonStyle = (color: Color): CSSObject => ({
     backgroundColor: buttonDesktop[color].default?.fill,
@@ -81,21 +99,21 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
         height: largeHeight,
         padding: `0 ${spacingDesktop.sm}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}0px` },
-        ...figmaTokens.typography.buttonLabelM,
+        ...typography.buttonLabelM,
         fontFamily,
       },
       sizeMedium: {
         height: mediumHeight,
         padding: `0 ${spacingDesktop.sm}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}px` },
-        ...figmaTokens.typography.buttonLabelS,
+        ...typography.buttonLabelS,
         fontFamily,
       },
       sizeSmall: {
         height: smallHeight,
         padding: `0 ${spacingDesktop.md}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.md}px` },
-        ...figmaTokens.typography.buttonLabelS,
+        ...typography.buttonLabelS,
         fontFamily,
       },
     },
