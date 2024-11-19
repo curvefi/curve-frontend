@@ -206,11 +206,11 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Creating Stableswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-stableswap-ng-pool/',
+                  link: 'https://resources.curve.fi/pool-creation/creating-a-stableswap-pool/',
                 }}
                 link2={{
                   title: t`Learn more: Creating Cryptoswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-twocrypto-ng-pool/',
+                  link: 'https://resources.curve.fi/pool-creation/creating-a-cryptoswap-pool/',
                 }}
               />
             )}
@@ -218,7 +218,7 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Understanding Cryptoswap`,
-                  link: 'https://resources.curve.fi/base-features/understanding-crypto-pools',
+                  link: 'https://resources.curve.fi/pools/overview/',
                 }}
                 link2={{
                   title: t`Learn more: Read about Cryptoswap parameters`,
@@ -230,7 +230,7 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Understanding Stableswap`,
-                  link: 'https://resources.curve.fi/base-features/understanding-curve',
+                  link: 'https://resources.curve.fi/pools/overview/',
                 }}
               />
             )}

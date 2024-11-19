@@ -40,7 +40,7 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
         return (
           <CurrencyReservesContent
             key={`${token}-${idx}`}
-            cr={currencyReserves?.tokens.find((t) => t.token === token)}
+            cr={currencyReserves?.tokens.find((t) => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
             network={network}
             rChainId={rChainId}
