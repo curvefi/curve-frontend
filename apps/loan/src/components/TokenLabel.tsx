@@ -12,12 +12,23 @@ type Props = {
   className?: string
   rChainId: ChainId
   collateralDataCachedOrApi: CollateralDataCache | CollateralData | undefined
+  minHeight?: number
   type: 'collateral' | 'borrow'
   showAlert?: boolean
   size?: 'lg'
+  onClick?: () => void
 }
 
-const TokenLabel = ({ className, rChainId, collateralDataCachedOrApi, showAlert, type, size }: Props) => {
+const TokenLabel = ({
+  className,
+  rChainId,
+  collateralDataCachedOrApi,
+  minHeight,
+  showAlert,
+  type,
+  size,
+  onClick,
+}: Props) => {
   const collateralAlert = useCollateralAlert(collateralDataCachedOrApi?.llamma?.address)
 
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}
@@ -25,7 +36,13 @@ const TokenLabel = ({ className, rChainId, collateralDataCachedOrApi, showAlert,
   const tokenAddress = coinAddresses?.[type === 'collateral' ? 1 : 0] ?? ''
 
   return (
-    <Box flex flexAlignItems="center" className={className}>
+    <Wrapper
+      flex
+      flexAlignItems="center"
+      className={className}
+      $minHeight={minHeight}
+      {...(typeof onClick === 'function' ? { onClick } : {})}
+    >
       {showAlert && collateralAlert?.isDeprecated && (
         <AlertTooltipIcon minWidth="300px" placement="start" {...collateralAlert}>
           {collateralAlert.message}
@@ -33,9 +50,13 @@ const TokenLabel = ({ className, rChainId, collateralDataCachedOrApi, showAlert,
       )}
       <TokenIcon imageBaseUrl={getImageBaseUrl(rChainId)} token={token} address={tokenAddress} />{' '}
       <Label size={size}>{token}</Label>
-    </Box>
+    </Wrapper>
   )
 }
+
+const Wrapper = styled(Box)<{ $minHeight?: number }>`
+  ${({ $minHeight }) => typeof $minHeight !== 'undefined' && `min-height: ${$minHeight}px;`};
+`
 
 const Label = styled.strong<Pick<Props, 'size'>>`
   padding-left: var(--spacing-1);

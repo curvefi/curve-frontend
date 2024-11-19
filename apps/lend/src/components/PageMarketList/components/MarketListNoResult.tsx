@@ -1,17 +1,23 @@
 import type { PageMarketList } from '@/components/PageMarketList/types'
 
-import React from 'react'
-import { t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { Filter } from '@/components/PageMarketList/utils'
-import { shortenAccount } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
-import AlertBox from '@/ui/AlertBox'
+import { shortenAccount } from '@/ui/utils'
 import Box from '@/ui/Box'
+import AlertBox from '@/ui/AlertBox'
 import Button from '@/ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'
+
+enum ERROR {
+  api = 'api',
+  search = 'search',
+  filter = 'filter',
+}
 
 const MarketListNoResult = ({
   searchParams,
@@ -20,40 +26,60 @@ const MarketListNoResult = ({
 }: Pick<PageMarketList, 'searchParams' | 'updatePath'> & { signerAddress: string | undefined }) => {
   const owmDatasError = useStore((state) => state.markets.error)
 
+  const { searchText, filterKey } = searchParams
+
+  const errorKey = useMemo(() => {
+    if (searchText) return ERROR.search
+    if (owmDatasError) return ERROR.api
+    if (filterKey) return ERROR.filter
+  }, [filterKey, owmDatasError, searchText])
+
+  const errorSearchParams = useMemo(() => {
+    if (errorKey === ERROR.search) return { searchText: '' }
+    if (errorKey === ERROR.filter) return { filterKey: Filter.all }
+  }, [errorKey])
+
+  const errorSearchedValue = useMemo(() => {
+    if (errorKey === ERROR.search) return searchText
+    if (errorKey === ERROR.api) return ''
+    if (errorKey === ERROR.filter) {
+      if (filterKey === 'user' && !!signerAddress) return shortenAccount(signerAddress)
+      return filterKey
+    }
+    return ''
+  }, [filterKey, errorKey, searchText, signerAddress])
+
   return (
-    <TableRowNotFound>
-      {owmDatasError ? (
+    <Wrapper>
+      {errorKey === ERROR.api ? (
         <Box flex flexJustifyContent="center">
-          <AlertBox alertType="error">{t`Unable to retrieve markets`}</AlertBox>
+          <AlertBox alertType="error">{t`Unable to retrieve market list. Please try again later.`}</AlertBox>
         </Box>
-      ) : searchParams.searchText.length > 0 ? (
-        <>
-          {t`No market found for "${searchParams.searchText}". Feel free to search other tabs, or`}{' '}
-          <Button variant="text" onClick={() => updatePath({ searchText: '' })}>
-            {t`view all markets.`}
-          </Button>
-        </>
-      ) : searchParams.filterKey === 'user' && signerAddress ? (
-        <>
-          {t`No market found for "${shortenAccount(signerAddress)}".`}
-          <br />{' '}
-          <Button variant="text" onClick={() => updatePath({ filterKey: Filter.all })}>
-            {t`view all markets`}
-          </Button>
-        </>
+      ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
+        <Trans>
+          No market found for “{errorSearchedValue}”.
+          {errorSearchParams && (
+            <>
+              <br />{' '}
+              <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
+                View all
+              </Button>
+            </>
+          )}
+        </Trans>
       ) : (
-        <>
-          {t`Didn't find what you're looking for?`}{' '}
+        <Trans>
+          Can&apos;t find what you&apos;re looking for?{' '}
           <ExternalLink $noStyles href="https://t.me/curvefi">
-            {t`Join the Telegram`}
+            Feel free to ask us on Telegram
           </ExternalLink>
-        </>
+        </Trans>
       )}
-    </TableRowNotFound>
+    </Wrapper>
   )
 }
 
-const TableRowNotFound = styled.div`
+const Wrapper = styled.div`
   padding: var(--spacing-5);
   text-align: center;
 `

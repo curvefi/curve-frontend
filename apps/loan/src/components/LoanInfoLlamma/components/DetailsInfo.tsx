@@ -3,9 +3,9 @@ import useStore from '@/store/useStore'
 
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 import TokenLabel from '@/components/TokenLabel'
-import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
-import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
-import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
+import TableCellRate from '@/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
+import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
 
 const DetailsInfo = ({
   rChainId,
