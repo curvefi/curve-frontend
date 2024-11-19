@@ -1787,8 +1787,8 @@ export const FIGMA_TOKENS = {
           },
           fontfamily: {
             heading: 'Minecraft',
-            body: 'Hubot Sans',
-            mono: 'Hubot Sans',
+            body: 'Minecraft',
+            mono: 'Minecraft',
             button: 'Minecraft',
           },
         },
@@ -2782,8 +2782,8 @@ export const FIGMA_TOKENS = {
           },
           fontfamily: {
             heading: 'Minecraft',
-            body: 'Hubot Sans',
-            mono: 'Hubot Sans',
+            body: 'Minecraft',
+            mono: 'Minecraft',
             button: 'Minecraft',
           },
         },
