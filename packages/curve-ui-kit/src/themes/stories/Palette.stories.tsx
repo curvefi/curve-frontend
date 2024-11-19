@@ -17,7 +17,7 @@ const PaletteStory = () => {
               {Object.entries(options)
                 .filter(([, color]) => typeof color == 'string')
                 .map(([key, color]) => (
-                  <Box title={`${type}.${key}`}>
+                  <Box title={`${type}.${key}`} key={`${type}.${key}`}>
                     <Box maxWidth={100} textOverflow="ellipsis" whiteSpace="nowrap" overflow="hidden">
                       {key}
                     </Box>

@@ -9,9 +9,15 @@ const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, ex
 
 describe('Header', () => {
   describe('Desktop', () => {
+    let isDarkMode: boolean  // when running locally, the dark mode might be the default
+
     beforeEach(() => {
       cy.viewport(...oneDesktopViewport())
-      cy.visit('/')
+      cy.visit('/', {
+        onBeforeLoad: (win) => {
+          isDarkMode = win.matchMedia('(prefers-color-scheme: dark)').matches
+        }
+      })
       cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
     })
 
@@ -22,9 +28,12 @@ describe('Header', () => {
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
     })
 
-    it.only('should switch themes', () => {
+    it('should switch themes', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
         const font1 = $nav.css('font-family')
+        if (!isDarkMode) {
+          cy.get(`[data-testid='theme-switcher-light']`).click() // switch to dark mode
+        }
         cy.get(`[data-testid='theme-switcher-dark']`).click()
         cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
 
@@ -36,9 +45,7 @@ describe('Header', () => {
 
             // reset theme
             cy.get(`[data-testid='theme-switcher-chad']`).click()
-            cy.get(`[data-testid='theme-switcher-light']`).click()
-            cy.get(`[data-testid='theme-switcher-light']`).should('not.exist')
-            cy.get(`[data-testid='theme-switcher-dark']`).should('be.visible')
+            cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
           }
         )
       })
