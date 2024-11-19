@@ -11,7 +11,7 @@ const PaletteStory = () => {
       {Object.entries(palette)
         .filter(([, options]) => Object.values(options).filter((o) => typeof o === 'string').length)
         .map(([type, options]) => (
-          <Box>
+          <Box key={type}>
             <Typography variant="headingMBold">{type}</Typography>
             <Box display="flex" flexDirection="row" maxWidth="100%" flexWrap="wrap">
               {Object.entries(options)
