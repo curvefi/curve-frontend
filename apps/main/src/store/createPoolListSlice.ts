@@ -10,9 +10,12 @@ import type {
   SortKey,
 } from '@/components/PagePoolList/types'
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
+import type { ValueMapperCached } from '@/store/createCacheSlice'
+
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import uniqBy from 'lodash/uniqBy'
+
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/components/PagePoolList/utils'
 import { groupSearchTerms, searchByText } from '@/shared/curve-lib'
@@ -54,9 +57,9 @@ export type PoolListSlice = {
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
     filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper, chainId: ChainId): P[]
     sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, campaignRewardsMapper: CampaignRewardsMapper): P[]
-    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, tvlMapper: TvlMapper, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
-    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, sortSearchTextLast: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper, volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapper: TvlMapper, tvlMapperCached: { [poolId:string]: { value: string } }, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): void
+    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -207,7 +210,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     setSortAndFilterData: async (
       rChainId,
       searchParams,
-      sortSearchTextLast,
       poolDatas,
       rewardsApyMapper,
       volumeMapper,
@@ -244,13 +246,12 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         }
       }
 
-      // searchText (show before sortBy if it does not exist in updated search params)
-      if (searchText && !sortSearchTextLast) {
+      if (searchText) {
         tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
       }
 
       // sort by table labels 'pool | factory | type | rewards...'
-      if (sortBy && !sortSearchTextLast) {
+      if (sortBy) {
         if (sortBy.startsWith('rewards')) await pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)
         tablePoolDatas = sliceState.sortFn(
           sortBy,
@@ -261,11 +262,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           volumeMapper,
           campaignRewardsMapper,
         )
-      }
-
-      // searchText
-      if (searchText && sortSearchTextLast) {
-        tablePoolDatas = sliceState.filterBySearchText(searchText, tablePoolDatas)
       }
 
       // set result
@@ -317,9 +313,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       rChainId,
       isLite,
       searchParams,
-      sortSearchTextLast,
       poolDatas,
-      poolDatasCached,
+      poolDatasCached = [],
       rewardsApyMapper = {},
       volumeMapper = {},
       volumeMapperCached = {},
@@ -379,7 +374,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         sliceState.setSortAndFilterData(
           rChainId,
           searchParams,
-          sortSearchTextLast,
           poolDatas,
           rewardsApyMapper,
           volumeMapper,

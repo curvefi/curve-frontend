@@ -1,5 +1,6 @@
 import type { TableRowProps } from '@/components/PageMarketList/types'
 
+import { t } from '@lingui/macro'
 import React, { useRef } from 'react'
 import styled from 'styled-components'
 
@@ -33,7 +34,7 @@ const TableRow = ({
 
   // prettier-ignore
   const contents: { titleKey: TitleKey; content: React.ReactNode; show?: boolean; className?: string }[] = [
-    { titleKey: TITLE.isInMarket, content: <CellInPool isIn={loanExists} type='market' />, show: loanExists || someLoanExists },
+    { titleKey: TITLE.isInMarket, content: <CellInPool isIn={loanExists} type='market' tooltip={loanExists ? t`You have a balance in this market`: ''} />, show: loanExists || someLoanExists },
     { titleKey: TITLE.name, content: <TokenLabel showAlert {...props} type="collateral" size='lg' minHeight={35} /> },
     { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: someLoanExists, className: 'right' },
     { titleKey: TITLE.myDebt, content: <TableCellUser {...props} type='debt' />, show: someLoanExists, className: 'right border-right' },

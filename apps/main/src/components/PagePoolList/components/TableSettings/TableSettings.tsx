@@ -79,6 +79,7 @@ const TableSettings = ({
     <Wrapper>
       <div>
         <SearchListInput
+          placeholder={t`Search by tokens or address`}
           searchText={searchParams.searchText}
           handleInputChange={(val) => updatePath({ searchText: val })}
           handleClose={() => updatePath({ searchText: '' })}

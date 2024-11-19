@@ -23,6 +23,12 @@ import TableStats from '@/components/PageMarketList/components/TableStats'
 import ConnectWallet from '@/components/ConnectWallet'
 import Box from '@/ui/Box'
 
+enum SEARCH {
+  sortBy = 'sortBy',
+  order = 'sortByOrder',
+  search = 'search',
+}
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
@@ -52,12 +58,15 @@ const Page: NextPage = () => {
       ...updatedSearchParams,
     }
 
-    let searchPath = '?'
-    if (searchText) searchPath += `${_querySymbol(searchPath)}search=${encodeURIComponent(searchText)}`
-    if (sortBy && sortBy !== TITLE.totalBorrowed) searchPath += `${_querySymbol(searchPath)}sortBy=${sortBy}`
-    if (sortByOrder && sortByOrder !== 'desc') searchPath += `${_querySymbol(searchPath)}sortByOrder=${sortByOrder}`
+    const searchPath = new URLSearchParams(
+      [
+        [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        [SEARCH.sortBy, sortBy && sortBy !== TITLE.totalBorrowed ? sortBy : ''],
+        [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+      ].filter(([, v]) => v),
+    ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}${searchPath}`)
+    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
     navigate(pathname)
   }
 
@@ -67,9 +76,9 @@ const Page: NextPage = () => {
     if (!pageLoaded || isLoadingApi) return
 
     const parsedSearchParams = {
-      sortBy: searchParams.get('sortBy') || TITLE.totalBorrowed,
-      sortByOrder: searchParams.get('sortByOrder') || 'desc',
-      searchText: decodeURIComponent(searchParams.get('search') || ''),
+      sortBy: searchParams.get(SEARCH.sortBy) || TITLE.totalBorrowed,
+      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
@@ -141,10 +150,6 @@ const Content = styled.div`
   border: 1px solid var(--box--secondary--border);
   min-height: 288px;
 `
-
-function _querySymbol(searchPath: string) {
-  return searchPath === '?' ? '' : '&'
-}
 
 const ConnectWalletWrapper = styled.div`
   display: flex;

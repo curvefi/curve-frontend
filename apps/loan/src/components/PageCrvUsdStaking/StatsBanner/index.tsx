@@ -18,13 +18,14 @@ const StatsBanner: React.FC<StatsBannerProps> = ({ className }) => {
 
   const exampleBalance = 100000
 
-  const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
-  const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
-  const oneMonthProjYield = formatNumber((scrvUsdApy / 12) * exampleBalance, {
+  const isLoadingPricesYieldData = !isReady(pricesYieldData.fetchStatus)
+
+  const scrvUsdApy = pricesYieldData.data?.proj_apr || 0
+  const oneMonthProjYield = formatNumber((scrvUsdApy / 100 / 12) * exampleBalance, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const oneYearProjYield = formatNumber(scrvUsdApy * exampleBalance, {
+  const oneYearProjYield = formatNumber((scrvUsdApy / 100) * exampleBalance, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
@@ -80,7 +81,7 @@ This value is an indicator based on the historical yield of the crvUSD Savings V
             <Loader isLightBg skeleton={[120, 26]} />
           ) : (
             <StatsItemValue>
-              ~{formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              ~{formatNumber(scrvUsdApy, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
             </StatsItemValue>
           )}
         </StatsItem>

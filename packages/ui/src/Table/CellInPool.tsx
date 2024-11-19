@@ -10,16 +10,14 @@ type Props = {
   isIn?: boolean
   isMobile?: boolean
   type: 'pool' | 'market'
+  tooltip: string
 }
 
-const CellInPool = ({ isIn, isMobile, type, ...rest }: Props) => {
+const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => {
   return (
     <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
       {isIn && (
-        <Chip
-          tooltip={`You have a balance in this ${type === 'pool' ? 'pool' : 'market'}`}
-          tooltipProps={{ placement: 'top left' }}
-        >
+        <Chip tooltip={tooltip} tooltipProps={{ placement: 'top left' }}>
           <StyledIcon name="CurrencyDollar" size={16} />
         </Chip>
       )}

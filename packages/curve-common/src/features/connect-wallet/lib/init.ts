@@ -1,21 +1,19 @@
-import * as onboard from '@web3-onboard/react'
 import {
-  injected,
-  trezor,
-  ledger,
-  gnosis,
+  bitget,
   coinbaseWalletSdk,
   fortmatic,
-  walletConnect,
-  torus,
-  phantom,
   frontier,
-  bitget,
-  trust,
+  gnosis,
+  injected,
+  ledger,
   metamaskSDKWallet,
+  phantom,
+  torus,
+  trezor,
+  trust,
+  walletConnect
 } from './utils/walletModules'
-
-export * from '@web3-onboard/react'
+import * as onboard from '@web3-onboard/react'
 
 export function initOnboard(i18n: any, locale: any, themeType: any, networks: any) {
   let theme: 'system' | 'light' | 'dark' = 'system'

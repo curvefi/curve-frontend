@@ -14,14 +14,14 @@ export const AppNavSecondaryWrapper = styled.nav`
   top: 0;
 
   color: var(--nav--color);
-  background-color: var(--page--background-color);
+  background-color: var(--page--header--background-color);
   z-index: var(--z-index-page--top-nav);
 `
 
 export const AppNavBar = styled.nav<{ isMdUp: boolean }>`
   align-items: stretch;
   display: flex;
-  background-color: var(--page--background-color);
+  background-color: var(--page--header--background-color);
   box-shadow: 0 2px 3px 0 rgb(0 0 0 / 20%);
   color: var(--nav--color);
   font-size: var(--font-size-2);

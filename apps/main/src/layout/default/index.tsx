@@ -5,7 +5,7 @@ import { CONNECT_STAGE } from '@/constants'
 import { useNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { isFailure, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
+import { useConnectWallet } from '@/common/features/connect-wallet'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 

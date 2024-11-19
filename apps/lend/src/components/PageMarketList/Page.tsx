@@ -21,6 +21,15 @@ import Settings from '@/layout/Settings'
 import ConnectWallet from '@/components/ConnectWallet'
 import Box from '@/ui/Box'
 
+enum SEARCH {
+  filter = 'filter',
+  hideSmallMarkets = 'hideSmallMarkets',
+  sortBy = 'sortBy',
+  order = 'order',
+  search = 'search',
+  type = 'type',
+}
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
@@ -69,15 +78,18 @@ const Page: NextPage = () => {
       ...updatedSearchParams,
     }
 
-    let searchPath = '?'
-    if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
-    if (filterTypeKey && filterTypeKey !== 'borrow') searchPath += `${_querySymbol(searchPath)}type=${filterTypeKey}`
-    if (hideSmallMarkets === false) searchPath += `${_querySymbol(searchPath)}hideSmallMarkets=false`
-    if (searchText) searchPath += `${_querySymbol(searchPath)}search=${encodeURIComponent(searchText)}`
-    if (sortBy) searchPath += `${_querySymbol(searchPath)}sortBy=${sortBy}`
-    if (sortByOrder && sortByOrder !== 'desc') searchPath += `${_querySymbol(searchPath)}sortByOrder=${sortByOrder}`
+    const searchPath = new URLSearchParams(
+      [
+        [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+        [SEARCH.type, filterTypeKey && filterTypeKey !== 'borrow' ? filterTypeKey : ''],
+        [SEARCH.hideSmallMarkets, hideSmallMarkets === false ? 'false' : ''],
+        [SEARCH.sortBy, sortBy ?? ''],
+        [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+      ].filter(([, v]) => v),
+    ).toString()
 
-    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}${searchPath}`)
+    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
     navigate(pathname)
   }
 
@@ -86,15 +98,15 @@ const Page: NextPage = () => {
 
     if (!pageLoaded || isLoadingApi) return
 
-    const hideSmallMarkets = searchParams.get('hideSmallMarkets') || 'true'
+    const hideSmallMarkets = searchParams.get(SEARCH.hideSmallMarkets) || 'true'
 
     const parsedSearchParams = {
-      filterKey: searchParams.get('filter') || 'all',
-      filterTypeKey: searchParams.get('type') || 'borrow',
+      filterKey: searchParams.get(SEARCH.filter) || 'all',
+      filterTypeKey: searchParams.get(SEARCH.type) || 'borrow',
       hideSmallMarkets: hideSmallMarkets === 'true',
-      sortBy: searchParams.get('sortBy') || '',
-      sortByOrder: searchParams.get('sortByOrder') || 'desc',
-      searchText: decodeURIComponent(searchParams.get('search') || ''),
+      sortBy: searchParams.get(SEARCH.sortBy) || '',
+      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
     } as SearchParams
 
     setStateByKey('searchParams', parsedSearchParams)
@@ -157,9 +169,5 @@ const ConnectWalletWrapper = styled.div`
   justify-content: center;
   margin: var(--spacing-3) auto;
 `
-
-function _querySymbol(searchPath: string) {
-  return searchPath === '?' ? '' : '&'
-}
 
 export default Page

@@ -83,7 +83,13 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
     <LazyItem id={`${index}`} className="row--info">
       <td>
         <Box grid gridTemplateColumns={isInPool ? 'auto 1fr' : '1fr'}>
-          <CellInPool as="div" isMobile isIn={isInPool} type="pool" />
+          <CellInPool
+            as="div"
+            isMobile
+            isIn={isInPool}
+            type="pool"
+            tooltip={isInPool ? t`You have a balance in this pool` : ''}
+          />
           <MobileLabelContent>
             <PoolLabel
               isVisible

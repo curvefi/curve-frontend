@@ -11,7 +11,7 @@ import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useNetworkFromUrl, useParamsFromUrl, useRestFullPathname, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
-import { useConnectWallet } from '@/onboard'
+import { useConnectWallet } from '@/common/features/connect-wallet'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 

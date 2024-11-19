@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js'
 import Image from 'next/image'
 
 import useStore from '@/store/useStore'
-import { isLoading, isReady } from '@/components/PageCrvUsdStaking/utils'
+import { isReady } from '@/components/PageCrvUsdStaking/utils'
 import { formatNumber } from '@/ui/utils'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 import { CRVUSD_ADDRESS } from '@/constants'
@@ -24,7 +24,6 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
   const crvUsdRateLoading = useStore((state) => state.usdRates.loading)
   const signerAddress = useStore((state) => state.wallet.onboard?.state.get().wallets?.[0]?.accounts?.[0]?.address)
   const userBalance = useStore((state) => state.scrvusd.userBalances[signerAddress ?? ''])
-  const crvUsdExchangeRate = useStore((state) => state.scrvusd.crvUsdExchangeRate.value)
   const crvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.crvUsdExchangeRate.fetchStatus)
 
   const userScrvUsdBalance = userBalance?.scrvUSD ?? '0'
@@ -32,17 +31,17 @@ const UserPositionBanner: React.FC<UserPositionBannerProps> = ({ className, mobi
     minimumFractionDigits: 2,
     maximumFractionDigits: 4,
   })
-  const userBalanceLoading = isLoading(userBalance?.fetchStatus)
-  const isLoadingPricesYieldData = isLoading(pricesYieldData.fetchStatus)
-  const exchangeRateLoading = isLoading(crvUsdExchangeRateFetchStatus)
+  const userBalanceLoading = !isReady(userBalance?.fetchStatus)
+  const isLoadingPricesYieldData = !isReady(pricesYieldData.fetchStatus)
+  const exchangeRateLoading = !isReady(crvUsdExchangeRateFetchStatus)
 
-  const totalScrvUsdSupply = pricesYieldData.data[pricesYieldData.data.length - 1]?.supply ?? 0
+  const totalScrvUsdSupply = pricesYieldData.data?.supply ?? 0
   const totalScrvUsdSupplyFormatted = formatNumber(totalScrvUsdSupply, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })
-  const scrvUsdApy = pricesYieldData.data[pricesYieldData.data.length - 1]?.apy ?? 0
-  const scrvUsdApyFormatted = formatNumber(scrvUsdApy * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  const scrvUsdApy = pricesYieldData.data?.proj_apr ?? 0
+  const scrvUsdApyFormatted = formatNumber(scrvUsdApy, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 
   const userShareOfTotalScrvUsdSupply = BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100).toString()
   const userShareOfTotalScrvUsdSupplyFormatted = formatNumber(userShareOfTotalScrvUsdSupply, {

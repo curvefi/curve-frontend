@@ -1,6 +1,5 @@
 import type { Params } from 'react-router'
 
-import React from 'react'
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 
@@ -69,7 +68,6 @@ export type PagePoolList = {
   params: Params
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
-  sortSearchTextLast: boolean
   searchTermMapper: SearchTermMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }

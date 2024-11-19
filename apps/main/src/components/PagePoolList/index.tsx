@@ -26,7 +26,6 @@ const PoolList = ({
   curve,
   isLite,
   searchParams,
-  sortSearchTextLast,
   searchTermMapper,
   tableLabels,
   updatePath,
@@ -50,7 +49,6 @@ const PoolList = ({
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
-
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const provider = useStore((state) => state.wallet.getProvider(''))
@@ -112,7 +110,6 @@ const PoolList = ({
         rChainId,
         isLite,
         searchParams,
-        sortSearchTextLast,
         typeof poolDataMapper !== 'undefined' ? poolDatas : undefined,
         poolDatasCached,
         rewardsApyMapper ?? {},
@@ -133,7 +130,6 @@ const PoolList = ({
       rChainId,
       rewardsApyMapper,
       setFormValues,
-      sortSearchTextLast,
       tvlMapper,
       tvlMapperCached,
       userPoolList,
@@ -206,7 +202,7 @@ const PoolList = ({
               isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
               isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
               isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
-              searchParams={sortSearchTextLast ? { ...searchParams, sortBy: '' } : searchParams}
+              searchParams={searchParams}
               tableLabels={tableLabels}
               updatePath={updatePath}
             />

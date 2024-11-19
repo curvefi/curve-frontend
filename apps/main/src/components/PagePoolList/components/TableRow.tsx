@@ -2,6 +2,7 @@ import type { ColumnKeys, FormValues, SearchParams, ShowDetailsMapper } from '@/
 import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 
 import React from 'react'
+import { t } from '@lingui/macro'
 import { FunctionComponent, HTMLAttributes, useEffect, useRef, useState } from 'react'
 
 import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
@@ -66,7 +67,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
       {columnKeys.map((columnKey, idx) => {
         return (
           <React.Fragment key={`tRow${columnKey}${idx}`}>
-            {columnKey === COLUMN_KEYS.inPool && <CellInPool isIn={isInPool} type="pool" />}
+            {columnKey === COLUMN_KEYS.inPool && <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />}
             {columnKey === COLUMN_KEYS.poolName && (
               <Td $first={!showInPoolColumn}>
                 <PoolLabel

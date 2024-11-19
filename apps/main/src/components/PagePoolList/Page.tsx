@@ -1,9 +1,11 @@
 import type { NextPage } from 'next'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/components/PagePoolList/types'
+
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
+
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getPath } from '@/utils/utilsRouter'
@@ -11,9 +13,18 @@ import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useSearchTermMapper from '@/hooks/useSearchTermMapper'
 import useStore from '@/store/useStore'
+
 import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
+
+enum SEARCH {
+  filter = 'filter',
+  hideSmallPools = 'hideSmallPools',
+  sortBy = 'sortBy',
+  order = 'order',
+  search = 'search',
+}
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -61,32 +72,17 @@ const Page: NextPage = () => {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
-      let searchPath = '?'
+      const searchPath = new URLSearchParams(
+        [
+          [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+          [SEARCH.hideSmallPools, hideSmallPools ? '' : 'false'],
+          [SEARCH.sortBy, sortBy && sortBy !== defaultSortBy ? sortBy : ''],
+          [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+          [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        ].filter(([, v]) => v),
+      ).toString()
 
-      if (filterKey && filterKey !== 'all' && !('filterKey' in updatedSearchParams)) {
-        searchPath += `filter=${filterKey}`
-      }
-      if (hideSmallPools === false && !('hideSmallPools' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
-      }
-      if (sortBy && sortBy !== defaultSortBy && !('sortBy' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
-      }
-      if (sortByOrder && sortByOrder !== 'desc' && !('sortByOrder' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}order=${sortByOrder}`
-      }
-      if (searchText && !('searchText' in updatedSearchParams)) {
-        searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
-      }
-
-      Object.entries(updatedSearchParams).forEach(([k, v]) => {
-        if (k === 'filterKey') searchPath += `filter=${v}`
-        if (k === 'hideSmallPools') searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=${v}`
-        if (k === 'sortBy') searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${v}`
-        if (k === 'sortByOrder') searchPath += `${searchPath === '?' ? '' : '&'}order=${v}`
-        if (k === 'searchText' && !!v) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(v)}`
-      })
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
       navigate(pathname)
     },
     [defaultSortBy, navigate, params, parsedSearchParams],
@@ -94,11 +90,11 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     if (rChainId) {
-      const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get('sortBy') || defaultSortBy).toLowerCase()
-      const paramOrder = (searchParams.get('order') || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get('hideSmallPools') || 'true'
-      const searchText = decodeURIComponent(searchParams.get('search') || '')
+      const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
+      const paramSortBy = (searchParams.get(SEARCH.sortBy) || defaultSortBy).toLowerCase()
+      const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
+      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
+      const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
 
       // validate filter key
       const foundFilterKey = network.poolFilters.find((f) => f === paramFilterKey)
@@ -123,16 +119,6 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, network])
 
-  const sortSearchTextLast = useMemo(() => {
-    const searchParamsOrder: { key: string; value: string }[] = []
-    searchParams.forEach((value, key) => {
-      searchParamsOrder.push({ key, value })
-    })
-    const searchTextIdx = searchParamsOrder.findIndex((s) => s.key === 'search')
-    const sortByIdx = searchParamsOrder.findIndex((s) => s.key === 'sortBy')
-    return searchTextIdx !== -1 && searchTextIdx > sortByIdx
-  }, [searchParams])
-
   return (
     <>
       <DocumentHead title={t`Pools`} />
@@ -145,7 +131,6 @@ const Page: NextPage = () => {
             isLite={isLite}
             tableLabels={TABLE_LABEL}
             searchParams={parsedSearchParams}
-            sortSearchTextLast={sortSearchTextLast}
             searchTermMapper={searchTermMapper}
             updatePath={updatePath}
           />
