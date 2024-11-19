@@ -1,45 +1,87 @@
+import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
 
-const [minHeight, maxHeight] = [600, 1000]
-const [tablet, desktop] = [640, 1200]
-const [expectedMainNavHeight, expectedSubNavHeight, expectedConnectHeight] = [56, 40, 40]
-
-export const randomInt = (min: number, maxExclusive: number): number => Math.floor(Math.random() * (maxExclusive - min)) + min
+const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
+  expectedMainNavHeight: 56,
+  expectedSubNavHeight: 42,
+  expectedMobileNavHeight: 40,
+  expectedConnectHeight: 40,
+}
 
 describe('Header', () => {
   describe('Desktop', () => {
-    it('should have the right size', () => {
-      cy.viewport(randomInt(tablet, desktop), randomInt(minHeight, maxHeight))
+    beforeEach(() => {
+      cy.viewport(...oneDesktopViewport())
       cy.visit('/')
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedSubNavHeight + expectedMainNavHeight)
+    })
+
+    it('should have the right size', () => {
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
       cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedSubNavHeight + expectedMainNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
     })
 
     it('should switch themes', () => {
+      cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
+        const font1 = $nav.css('font-family')
+        cy.get(`[data-testid='theme-switcher-dark']`).click()
+        cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
 
+        // check font change
+        cy.get(`[data-testid='navigation-connect-wallet']`).then(
+          ($el) => {
+            const font2 = $el.css('font-family')
+            expect(font1).not.to.equal(font2)
+
+            // reset theme
+            cy.get(`[data-testid='theme-switcher-chad']`).click()
+            cy.get(`[data-testid='theme-switcher-light']`).click()
+            cy.get(`[data-testid='theme-switcher-light']`).should('not.exist')
+            cy.get(`[data-testid='theme-switcher-dark']`).should('be.visible')
+          }
+        )
+      })
     })
   })
 
-  describe('mobile', () => {
-    it('should open the menu', () => {
-      cy.viewport(randomInt(0, tablet), randomInt(minHeight, maxHeight))
+  describe('mobile or tablet', () => {
+    beforeEach(() => {
+      cy.viewport(...oneMobileOrTabletViewport())
       cy.visit('/')
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedMainNavHeight)
-      cy.get(`[data-testid='mobile-drawer']`).should('not.be.visible')
+      cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
+    })
+
+    it('should open the menu and navigate', () => {
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
+      cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       cy.get(`[data-testid='menu-toggle']`).click()
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
+      cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
       cy.url().then(url => {
         cy.get('[data-testid^="sidebar-item-"]').eq(2).click()
-        cy.get(`[data-testid='mobile-drawer']`).should('not.be.visible')
+        cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
       })
     })
 
     it('should switch themes', () => {
-      // todo: test font face, theme lighting
+      cy.get(`[data-testid='menu-toggle']`).click()
+      cy.get(`[data-testid='sidebar-settings']`).click()
+      cy.get(`[data-testid='sidebar-settings']`).then(($settings) => {
+        const font1 = $settings.css('font-family')
+        cy.get(`[data-testid='theme-switcher-button-chad']`).click()
+        cy.get(`[data-testid='theme-switcher-button-chad']`).should('have.class', 'current')
+
+        // check font change
+        cy.get(`[data-testid='sidebar-settings']`).then(
+          ($el) => {
+            const font2 = $el.css('font-family')
+            expect(font1).not.to.equal(font2)
+          }
+        )
+      })
     })
   })
 })

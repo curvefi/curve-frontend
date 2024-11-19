@@ -43,8 +43,6 @@ export const MobileHeader = <TChainId extends number>({
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const { pathname } = useLocation()
 
-  console.log(pages, groupedPages)
-
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
   const onConnect = useCallback(() => {
