@@ -1,9 +1,9 @@
-import type { FormStatus, MarketListMapper } from '@/components/PageMarketList/types'
+import type { FormStatus, MarketListMapper, SearchTermResult } from '@/components/PageMarketList/types'
 
-import differenceWith from 'lodash/differenceWith'
-import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 import startsWith from 'lodash/startsWith'
+import Fuse from 'fuse.js'
+import FuseResult = Fuse.FuseResult
 
 export enum Filter {
   all = 'all',
@@ -34,27 +34,6 @@ export function _parseSearchTextToList(searchText: string) {
     .map((st) => st.trim())
 }
 
-// search by tokens or token addresses
-export function _searchByTokensAddresses(parsedSearchText: string, searchText: string, datas: OWMData[]) {
-  const searchTextByList = _parseSearchTextToList(parsedSearchText)
-
-  return datas.filter(({ owm }) => {
-    const { borrowed_token, collateral_token } = owm
-    return (
-      differenceWith(
-        searchTextByList,
-        [borrowed_token.symbol.toLowerCase(), collateral_token.symbol.toLowerCase()],
-        isEqual
-      ).length === 0 ||
-      differenceWith(
-        searchTextByList,
-        [borrowed_token.address, collateral_token.address],
-        (parsedSearchText, tokenAddress) => _isStartPartOrEnd(parsedSearchText, tokenAddress)
-      ).length === 0
-    )
-  })
-}
-
 export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
   let marketListMapper: MarketListMapper = {}
   let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
@@ -80,4 +59,16 @@ export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
 
   const sortedMarketListMapperCache = sortBy(marketListMapperCache, (l) => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }
+}
+
+export function parseSearchTermResults(searchedTermsResults: FuseResult<OWMData>[]) {
+  return searchedTermsResults.reduce((prev, r) => {
+    if (!r.matches) return prev
+    prev[r.item.owm.id] = r.matches.reduce((prev, { key, value = '' }) => {
+      if (!key || !value) return prev
+      prev[key] = { value }
+      return prev
+    }, {} as { [k: string]: { value: string } })
+    return prev
+  }, {} as SearchTermResult)
 }

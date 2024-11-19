@@ -9,11 +9,12 @@ import Icon from '@/ui/Icon'
 
 type Props = {
   maxSlippage: string
+  noLabel?: boolean
 }
 
-const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
+const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
   return (
-    <StyledDetailInfo label={t`Slippage tolerance:`}>
+    <StyledDetailInfo label={noLabel ? undefined : t`Slippage tolerance:`}>
       <StyledAdvancedSettings
         maxSlippage={maxSlippage}
         buttonIcon={

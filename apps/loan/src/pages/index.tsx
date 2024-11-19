@@ -12,6 +12,7 @@ const PageRiskDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Pag
 const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
 const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
 const PagePegKeepers = dynamic(() => import('@/components/PagePegKeepers/Page'), { ssr: false })
+const PageCrvUsdStaking = dynamic(() => import('@/components/PageCrvUsdStaking/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (
@@ -21,6 +22,7 @@ const App: NextPage = () => {
       <Route path=":network/integrations" element={<PageIntegrations />} />
       <Route path=":network/pegkeepers" element={<PagePegKeepers />} />
       <Route path=":network/markets" element={<PageLlammasList />} />
+      <Route path=":network/scrvUSD" element={<PageCrvUsdStaking />} />
       <Route path=":network/markets/:collateralId" element={<Navigate to="create" />} />
       <Route path=":network/markets/:collateralId/create" element={<PageLoanCreate />} />
       <Route path=":network/markets/:collateralId/create/:formType" element={<PageLoanCreate />} />
@@ -34,6 +36,7 @@ const App: NextPage = () => {
       {SubRoutes}
       <Route path=":locale">{SubRoutes}</Route>
       <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
+      <Route path="/scrvUSD" element={<Navigate to={`/ethereum${ROUTE.PAGE_CRVUSD_STAKING}`} replace />} />
       <Route path="/risk-disclaimer" element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />} />
       <Route path="/pegkeepers" element={<Navigate to={`/ethereum${ROUTE.PAGE_PEGKEEPERS}`} replace />} />
       <Route path="/integrations" element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />} />
