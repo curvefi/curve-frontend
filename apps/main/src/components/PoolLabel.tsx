@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
-import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PagePoolList/utils'
 import useStore from '@/store/useStore'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokenAlert from '@/hooks/useTokenAlert'
@@ -23,31 +22,23 @@ type PoolListProps = {
   onClick(target: EventTarget): void
 }
 
-const PoolLabel = ({
-  className,
-  imageBaseUrl,
-  isVisible,
-  poolData,
-  poolListProps,
-}: {
+type Props = {
   className?: string
   imageBaseUrl: string
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
   poolListProps?: PoolListProps
-}) => {
+}
+
+const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, poolListProps }: Props) => {
+  const { pool, tokens = [], tokenAddresses = [] } = poolData ?? {}
+
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const isMobile = useStore((state) => state.isMobile)
+  const searchedTerms = useStore((state) => state.poolList.searchedTerms)
 
-  const { pool, tokens = [], tokenAddresses = [] } = poolData ?? {}
-  const { searchText, searchTextByTokensAndAddresses, searchTextByOther, quickViewValue, onClick } = poolListProps ?? {}
-  const parsedSearchText = searchText?.toLowerCase().trim()
-  const isHighlightPoolAddress = pool && parsedSearchText ? pool.address.includes(parsedSearchText) : false
-  const isHighlightPoolName =
-    !!pool && !!parsedSearchText && !!searchTextByOther && pool.address in searchTextByOther
-      ? pool.name.toLowerCase().includes(parsedSearchText)
-      : false
+  const { quickViewValue, onClick } = poolListProps ?? {}
 
   const handleClick = (target: EventTarget) => {
     if (typeof onClick === 'function') {
@@ -58,6 +49,31 @@ const PoolLabel = ({
       }
     }
   }
+
+  const { highlightedTokens, isHighlightPoolName } = useMemo(() => {
+    if (isMobile || !isVisible) return { highlightedTokens: [], isHighlightPoolName: true }
+
+    let foundSearchedToken = false
+
+    const highlightedTokens = tokens.map((token, idx) => {
+      const tokenAddress = tokenAddresses[idx]
+      const isHighLight =
+        searchedTerms.findIndex((searched) => {
+          const parsedToken = token.toLowerCase()
+          const parsedTokenAddress = tokenAddress.toLowerCase()
+          const parsedSearch = searched.toLowerCase()
+          return (
+            parsedToken.includes(parsedSearch) ||
+            parsedTokenAddress === parsedSearch ||
+            parsedTokenAddress.startsWith(parsedSearch)
+          )
+        }) !== -1
+      if (isHighLight) foundSearchedToken = true
+      return { token, tokenAddress, isHighLight }
+    })
+
+    return { highlightedTokens, isHighlightPoolName: !foundSearchedToken }
+  }, [isMobile, isVisible, searchedTerms, tokenAddresses, tokens])
 
   return (
     <div>
@@ -86,42 +102,23 @@ const PoolLabel = ({
                 )}
               </>
             )}
-            {pool && (
-              <ChipPool
-                isHighlightPoolName={isHighlightPoolName}
-                isHighlightPoolAddress={isHighlightPoolAddress}
-                poolAddress={pool.address}
-                poolName={pool.name}
-              />
-            )}
+            {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
+            {pool && <ChipPool poolAddress={pool.address} poolName={pool.name} isHighlightPoolName />}
           </Box>
 
           <PoolLabelTokensWrapper>
             {pool && (
               <div>
                 {isMobile
-                  ? tokens.map((token, idx) => {
-                      return <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>
-                    })
+                  ? tokens.map((token, idx) => <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>)
                   : isVisible &&
-                    tokens.map((token, idx) => {
-                      const tokenAddress = tokenAddresses[idx]
-                      const parsedSearchTexts = parsedSearchText ? parsedSearchTextToList(parsedSearchText) : null
-
-                      const isHighlight =
-                        !!parsedSearchTexts &&
-                        !!searchTextByTokensAndAddresses &&
-                        pool.address in searchTextByTokensAndAddresses
-                          ? parsedSearchTexts.some((st) => isStartPartOrEnd(st, token.toLowerCase())) ||
-                            parsedSearchTexts.some((st) => isStartPartOrEnd(st, tokenAddress.toLowerCase()))
-                          : false
-
+                    highlightedTokens.map(({ token, tokenAddress, isHighLight }, idx) => {
                       return (
                         <ChipToken
-                          key={`${token}-${tokenAddress}-${idx}`}
-                          isHighlight={isHighlight}
+                          key={`${token}${tokenAddress}${idx}`}
                           tokenName={token}
                           tokenAddress={tokenAddress}
+                          isHighlight={isHighLight}
                         />
                       )
                     })}
@@ -144,11 +141,6 @@ const PoolLabel = ({
       )}
     </div>
   )
-}
-
-PoolLabel.defaultProps = {
-  className: '',
-  isVisible: true,
 }
 
 const IconsWrapper = styled.div`
@@ -177,6 +169,7 @@ const StyledAlertBox = styled(AlertBox)`
   margin: var(--spacing-2) 0;
   max-height: 100px;
   overflow: scroll;
+  max-width: 260px;
 `
 
 export default PoolLabel

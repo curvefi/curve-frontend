@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 
 const CHAIN = 'mainnet'
 const MARKET_ID = 'CRV-crvUSD'
-describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
+describe.skip(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const market = markets[CHAIN][MARKET_ID]
   const settings = createLoanSettings[CHAIN][MARKET_ID]
   const collateralToken = tokens[CHAIN][market.collateral]

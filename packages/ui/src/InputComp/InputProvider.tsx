@@ -59,7 +59,7 @@ interface InputWrapperProps {
 export const InputWrapper = styled(Box)<InputWrapperProps>`
   ${focusVisible};
 
-  min-height: ${({ minHeight }) => `var(--height-${minHeight || 'x-large'});`}
+  min-height: ${({ minHeight }) => `var(--height-${minHeight || 'x-large'})`};
   padding: ${({ padding }) => padding || `var(--spacing-1) var(--spacing-1) var(--spacing-1) var(--spacing-2)`};
   position: relative;
 

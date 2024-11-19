@@ -37,10 +37,6 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipPoolProps extends AriaButtonProps {
   className?: string
   displayName: string
@@ -132,9 +128,5 @@ const ChipCopyButtonIcon = styled(Icon)`
   position: relative;
   top: 2px;
 `
-
-CollateralLabelNameAddress.defaultProps = {
-  className: '',
-}
 
 export default CollateralLabelNameAddress

@@ -39,10 +39,6 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipPoolProps extends AriaButtonProps {
   className?: string
   isHighlightPoolName?: boolean // highlight name if it is part of pool list search result
@@ -75,7 +71,9 @@ const ChipPool = ({
 
   return (
     <ChipPoolWrapper className={className}>
-      <ChipPoolName>{isHighlightPoolName || isHighlightPoolAddress ? <mark>{poolName}</mark> : poolName} </ChipPoolName>
+      <ChipPoolName>
+        {isHighlightPoolName || isHighlightPoolAddress ? <strong>{poolName}</strong> : poolName}{' '}
+      </ChipPoolName>
       <ChipPoolAdditionalInfo>
         <Button {...props} onPress={() => handleCopyClick(poolAddress)}>
           <ChipPoolAddress>
@@ -119,7 +117,6 @@ const ChipPoolAddress = styled.span`
 
 const ChipPoolName = styled(TextEllipsis)`
   font-size: var(--font-size-4);
-  font-weight: bold;
 
   @media (min-width: ${breakpoints.sm}rem) {
     font-size: 1.25rem; // 20px
@@ -134,9 +131,5 @@ const ChipPoolCopyButtonIcon = styled(Icon)`
   position: relative;
   top: 2px;
 `
-
-ChipPool.defaultProps = {
-  className: '',
-}
 
 export default ChipPool

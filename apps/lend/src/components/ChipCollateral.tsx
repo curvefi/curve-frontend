@@ -12,7 +12,7 @@ interface ButtonProps extends AriaButtonProps {
   className?: string
 }
 
-const Button = ({ className, ...props }: ButtonProps) => {
+const Button = ({ className = '', ...props }: ButtonProps) => {
   let ref = useRef(null)
   let { buttonProps, isPressed } = useButton(props, ref)
   let { children } = props
@@ -35,10 +35,6 @@ const ChipPoolCopyButton = styled.button`
     background-color: var(--primary-400);
   }
 `
-
-Button.defaultProps = {
-  className: '',
-}
 
 interface ChipPoolProps extends AriaButtonProps {
   className?: string
@@ -135,9 +131,5 @@ const ChipPoolCopyButtonIcon = styled(Icon)`
   position: relative;
   top: 2px;
 `
-
-ChipCollateral.defaultProps = {
-  className: '',
-}
 
 export default ChipCollateral

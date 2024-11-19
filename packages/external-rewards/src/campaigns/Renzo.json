@@ -11,33 +11,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xebafb74a98ba14430eedc716c0034123c3040ca4",
-      "network": "bsc",
-      "multiplier": "1",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "lp",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
       "address": "0x85de3add465a219ee25e04d22c39ab027cf5c12e",
       "network": "ethereum",
       "multiplier": "4",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "borrow",
-      "description": "null",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0x3c1350aa6FaFF17c87Bde2015BBb45100D37dAD3",
-      "network": "ethereum",
-      "multiplier": "3",
       "tags": ["points"],
       "lock": "false"
     },

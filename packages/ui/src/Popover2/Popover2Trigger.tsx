@@ -8,7 +8,7 @@ import Icon from 'ui/src/Icon/Icon'
 import Popover2 from 'ui/src/Popover2/Popover2'
 import Popover2Button from 'ui/src/Popover2/Popover2Button'
 
-function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
+function Popover2Trigger({ label, children, showExpandIcon = false, ...props }) {
   let ref = React.useRef(null)
   let state = useOverlayTriggerState(props)
   let { triggerProps, overlayProps } = useOverlayTrigger({ type: 'dialog' }, state, ref)
@@ -39,10 +39,6 @@ function Popover2Trigger({ label, children, showExpandIcon, ...props }) {
       )}
     </>
   )
-}
-
-Popover2Trigger.defaultProps = {
-  showExpandIcon: false, // show open or close svg after label
 }
 
 const ButtonWrapper = styled.span`

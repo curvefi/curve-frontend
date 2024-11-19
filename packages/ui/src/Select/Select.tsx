@@ -80,13 +80,9 @@ function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectio
 }
 
 Select.displayName = 'Select'
-Select.defaultProps = {
-  className: '',
-  label: '',
-}
 
 const Wrapper = styled.div`
-  border: 1px solid var(--nav_button--border-color);
+  border: 1px solid var(--button_outlined--border-color);
   display: inline-block;
   height: 100%;
   min-height: var(--height-medium);

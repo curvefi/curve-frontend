@@ -8,7 +8,10 @@ import styled from 'styled-components'
 import { breakpoints } from '@/ui/utils/responsive'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useStore from '@/store/useStore'
 
+import Box from '@/ui/Box'
+import ConnectWallet from '@/components/ConnectWallet'
 import DocumentHead from '@/layout/DocumentHead'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Settings from '@/layout/Settings'
@@ -21,6 +24,8 @@ const Page: NextPage = () => {
   const { routerParams } = usePageOnMount(params, location, navigate)
   const { rChainId } = routerParams
 
+  const provider = useStore((state) => state.wallet.getProvider(''))
+
   useEffect(() => {
     scrollToTop()
   }, [])
@@ -30,14 +35,28 @@ const Page: NextPage = () => {
       <DocumentHead title={t`PegKeepers`} />
       <Container>
         <ContainerContent>
-          <Title>{t`Peg Keepers`}</Title>
-          <Description>
-            <StyledExternalLink href="https://resources.curve.fi/crvusd/faq/#peg-keepers">
-              Click here
-            </StyledExternalLink>{' '}
-            to learn more about Peg Keepers.
-          </Description>
-          {rChainId && <PagePegKeepers rChainId={rChainId} />}
+          {rChainId && provider ? (
+            <>
+              <Title>{t`Peg Keepers`}</Title>
+              <Description>
+                <StyledExternalLink href="https://resources.curve.fi/crvusd/faq/#peg-keepers">
+                  Click here
+                </StyledExternalLink>{' '}
+                to learn more about Peg Keepers.
+              </Description>
+              <PagePegKeepers rChainId={rChainId} provider={provider} />
+            </>
+          ) : (
+            <Box display="flex" fillWidth>
+              <ConnectWalletWrapper>
+                <ConnectWallet
+                  description="Connect wallet to view markets list"
+                  connectText="Connect Wallet"
+                  loadingText="Connecting"
+                />
+              </ConnectWalletWrapper>
+            </Box>
+          )}
         </ContainerContent>
       </Container>
       <Settings showScrollButton />
@@ -89,6 +108,14 @@ const Title = styled.h1`
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;
   text-transform: initial;
+`
+
+const ConnectWalletWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  margin: var(--spacing-3) auto;
 `
 
 export default Page

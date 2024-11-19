@@ -11,7 +11,7 @@ import InputLabel from 'ui/src/InputComp/InputLabel'
 
 const InputDebounced = ({
   className,
-  delay,
+  delay = 700,
   disabled,
   labelProps,
   value,
@@ -20,7 +20,7 @@ const InputDebounced = ({
   ...inputProps
 }: Omit<InputProps, 'onChange'> & {
   className?: string
-  delay: number
+  delay?: number
   labelProps?: InputLabelProps | false
   value: string
   testId?: string
@@ -41,11 +41,6 @@ const InputDebounced = ({
       />
     </Box>
   )
-}
-
-InputDebounced.defaultProps = {
-  className: '',
-  delay: 700,
 }
 
 InputDebounced.displayName = 'InputDebounced'
