@@ -153,7 +153,7 @@ export const buttonBaseStyles = css<ButtonProps>`
       `
     } else if (variant === 'select') {
       return `
-        border: 1px solid var(--nav_button--border-color);
+        border: 1px solid var(--button_outlined--border-color);
         box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
         background: var(--layout--home--background-color);
         color: var(--page--text-color);

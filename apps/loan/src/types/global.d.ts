@@ -7,6 +7,7 @@ import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
 import type stablecoinApi from '@curvefi/stablecoin-api'
+import type lendingApi from '@curvefi/lending-api'
 
 import curvejsApi from '@/lib/apiCrvusd'
 
@@ -27,6 +28,7 @@ declare global {
   type AlertType = 'info' | 'warning' | 'error' | 'danger'
   type ChainId = 1
   type Curve = typeof stablecoinApi & { chainId: ChainId }
+  type LendApi = typeof lendingApi & { chainId: ChainId }
   type NetworkEnum = INetworkName
   type Provider = ethers.providers.web3Provider
 
@@ -210,4 +212,7 @@ declare global {
     TITLE,
     { title: string | React.ReactNode; tooltip?: string | React.ReactNode; tooltipProps?: TooltipProps }
   >
+
+  type FetchStatus = '' | 'loading' | 'success' | 'error'
+  type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'
 }

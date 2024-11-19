@@ -10,7 +10,7 @@ import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getLocaleFromUrl, getNetworkFromUrl, getPath, getRestFullPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
-import { useConnectWallet } from '@/onboard'
+import { useConnectWallet } from '@/common/features/connect-wallet'
 import { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
@@ -70,6 +70,7 @@ const Header = () => {
     const links = isLgUp
       ? [
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'savings' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'risk' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'integrations' },
           { ...APP_LINK.main, isDivider: true },
@@ -77,6 +78,7 @@ const Header = () => {
         ]
       : [
           { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'markets' },
+          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'savings' },
           { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: 'More', minWidth: '10rem' },
           { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'More' },
           { ...APP_LINK.main, isDivider: true },
@@ -88,7 +90,7 @@ const Header = () => {
 
   const formattedTvl = useMemo(
     () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
-    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
+    [collateralDatasMapper, loansDetailsMapper, usdRatesMapper],
   )
 
   // prettier-ignore
@@ -208,7 +210,7 @@ const Header = () => {
 function _getTvl(
   collateralDatasMapper: CollateralDatasMapper | undefined,
   loansDetailsMapper: LoanDetailsMapper | undefined,
-  usdRatesMapper: UsdRate | undefined
+  usdRatesMapper: UsdRate | undefined,
 ) {
   let formattedTvl = '-'
   let sum = 0

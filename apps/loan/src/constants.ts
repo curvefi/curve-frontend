@@ -12,6 +12,7 @@ export const ROUTE = {
   ...MAIN_ROUTE,
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
+  PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_404: '/404',
   PAGE_PEGKEEPERS: '/pegkeepers',
 }
@@ -36,6 +37,12 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export const SCRVUSD_GAS_ESTIMATE = {
+  FIRST_DEPOSIT: 95500,
+  FOLLOWING_DEPOSIT: 78500,
+  WITHDRAW: 73500,
+}
 
 export enum TITLE {
   isInMarket = 'isInMarket',
@@ -99,20 +106,6 @@ export const PEG_KEEPERS = {
       underlyingCoins: ['PYUSD', 'crvUSD'],
       underlyingCoinAddresses: [
         '0x6c3ea9036406852006290770bedfcaba0e23a0e8',
-        '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
-      ],
-    },
-  },
-  '0x0a05ff644878b908ef8eb29542aa88c07d9797d3': {
-    address: '0x0a05ff644878b908ef8eb29542aa88c07d9797d3',
-    token: 'TUSD',
-    poolUrl: 'https://curve.fi/#/ethereum/pools/factory-crvusd-3/deposit',
-    pool: {
-      id: 'factory-crvusd-3',
-      name: 'crvUSD/TUSD',
-      underlyingCoins: ['TUSD', 'crvUSD'],
-      underlyingCoinAddresses: [
-        '0x0000000000085d4780b73119b644ae5ecd22b376',
         '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
       ],
     },
