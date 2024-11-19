@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 
-import { Navigate, Route, Routes } from 'react-router'
 import dynamic from 'next/dynamic'
+import { Navigate, Route, Routes } from 'react-router'
 
 import { ROUTE } from '@/constants'
 

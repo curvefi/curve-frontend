@@ -17,10 +17,6 @@ export const SortIcon = ({ className, activeType }: SortIconProps) => {
   )
 }
 
-SortIcon.defaultProps = {
-  className: '',
-}
-
 const Wrapper = styled.div`
   display: inline-block;
   margin: 0;

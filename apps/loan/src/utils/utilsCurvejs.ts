@@ -19,14 +19,28 @@ export async function initCurveJs(chainId: ChainId, wallet: Wallet | null): Prom
   }
 }
 
+export async function initLendApi(chainId: ChainId, wallet: Wallet | null) {
+  try {
+    const { networkId } = networks[chainId]
+    const api = cloneDeep((await import('@curvefi/lending-api')).default) as LendApi
+
+    if (wallet) {
+      await api.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+      return api
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 export function getImageBaseUrl(rChainId: ChainId) {
-  return rChainId ? networks[rChainId].imageBaseUrl ?? '' : ''
+  return rChainId ? (networks[rChainId].imageBaseUrl ?? '') : ''
 }
 
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
   userLiquidationBand: number | null,
-  activeBand: number | null | undefined
+  activeBand: number | null | undefined,
 ) {
   if (typeof userLiquidationBand !== null && activeBand === null) {
     return false
@@ -39,7 +53,7 @@ export function getIsUserCloseToLiquidation(
 export function getLiquidationStatus(
   healthNotFull: string,
   userIsCloseToLiquidation: boolean,
-  userStateStablecoin: string
+  userStateStablecoin: string,
 ) {
   let userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
     label: 'Healthy',
@@ -78,7 +92,7 @@ export async function getChartBandBalancesData(
     bandBalances: BandBalance
   },
   liquidationBand: number | null,
-  llamma: Llamma
+  llamma: Llamma,
 ) {
   // filter out bands that doesn't have stablecoin and collaterals
   const ns = bandBalancesArr

@@ -1,8 +1,3 @@
-import type { AppProps } from 'next/app'
-import type { Locale } from '@/lib/i18n'
-
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -10,23 +5,24 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-
-import { dynamicActivate, initTranslation } from '@/lib/i18n'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getPageWidthClassName } from '@/store/createLayoutSlice'
-import { getStorageValue } from '@/utils/storage'
+import { useCallback, useEffect, useState } from 'react'
+import { HashRouter } from 'react-router-dom'
+import type { AppProps } from 'next/app'
+import { connectWalletLocales } from '@/common/features/connect-wallet'
+import { initOnboard } from '@/common/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@/constants'
-import { initOnboard } from 'onboard-helpers'
+import GlobalStyle from '@/globalStyle'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import Page from '@/layout/index'
+import type { Locale } from '@/lib/i18n'
+import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
-
-import Page from '@/layout/index'
-import GlobalStyle from '@/globalStyle'
+import { isMobile, removeExtraSpaces } from '@/utils/helpers'
+import { getStorageValue } from '@/utils/storage'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -60,15 +56,7 @@ function CurveApp({ Component }: AppProps) {
         theme = 'dark'
       }
 
-      const onboardInstance = initOnboard(
-        {
-          'zh-Hans': zhHans,
-          'zh-Hant': zhHant,
-        },
-        locale,
-        theme,
-        networks
-      )
+      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
       updateWalletStateByKey('onboard', onboardInstance)
     },
     [updateWalletStateByKey]
@@ -105,15 +93,7 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {

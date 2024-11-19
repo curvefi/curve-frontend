@@ -136,6 +136,54 @@
       "multiplier": "30",
       "tags": ["points"],
       "lock": "true"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xd29f8980852c2c76fc3f6e96a7aa06e0bedcc1b1",
+      "network": "ethereum",
+      "multiplier": "30",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x68984391a8ce6203067ee65ff7eed38c7e0d2d88",
+      "network": "ethereum",
+      "multiplier": "30",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x8b4e5263e8d6cc0bbf31edf14491fc6077b88229",
+      "network": "fraxtal",
+      "multiplier": "30",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1e199dbe1f7aa237282fe941d5bcc3b167c8ce48",
+      "network": "fraxtal",
+      "multiplier": "30",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

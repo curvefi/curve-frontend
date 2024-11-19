@@ -1,43 +1,35 @@
-import { TIME_FRAMES } from '@/constants'
-import type { AddRewardParams, CombinedGaugeParams, DepositRewardParams } from '@/entities/gauge/types'
-import { poolValidationGroup } from '@/entities/pool'
-import { addressValidationFn, amountValidationFn, createValidationSuite, tokenIdValidationFn } from '@/shared/lib/validation'
-import { BD } from '@/shared/curve-lib'
-import useStore from '@/store/useStore'
-import { formatNumber } from '@/utils'
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
+import { poolValidationGroup } from '@/entities/pool'
+import { BD } from '@/shared/curve-lib'
+import {
+  addressValidationFn,
+  amountValidationFn,
+  createValidationSuite,
+  tokenIdValidationFn
+} from '@/shared/lib/validation'
+import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
+import { TIME_FRAMES } from '@/constants'
+import useStore from '@/store/useStore'
+import { formatNumber } from '@/utils'
 
-export const gaugeAddRewardTokenValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
-  group('gaugeAddRewardTokenValidationGroup', () => {
+export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
+  group('gaugeAddRewardValidationGroup', () => {
     test('distributorId', () => addressValidationFn(distributorId))
 
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
   })
 
+export const gaugeDepositRewardApproveValidationGroup = ({ rewardTokenId, amount }: DepositRewardApproveParams) =>
+  group('gaugeDepositRewardApproveValidationGroup', () => {
+    test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
+    test('amount', () => validateAmount({ rewardTokenId, amount }))
+  })
+
 export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
   group('gaugeDepositRewardValidationGroup', () => {
     test('rewardTokenId', () => tokenIdValidationFn(rewardTokenId))
-
-    test('amount', () => {
-      amountValidationFn(amount)
-
-      if (!rewardTokenId || !amount) return
-
-      const state = useStore.getState()
-      const userBalancesMapper = state.userBalances.userBalancesMapper
-      const tokenBalance = userBalancesMapper[rewardTokenId]
-
-      if (!tokenBalance) return
-
-      enforce(amount).condition((amount) => {
-        return {
-          pass: BD.from(amount).lte(BD.from(tokenBalance)),
-          message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`,
-        }
-      })
-    })
-
+    test('amount', () => validateAmount({ rewardTokenId, amount }))
     test('epoch', () => {
       enforce(epoch)
         .message(t`Epoch is required`)
@@ -51,11 +43,33 @@ export const gaugeDepositRewardValidationGroup = ({ rewardTokenId, amount, epoch
     })
   })
 
-export const gaugeValidationGroup = (data: CombinedGaugeParams) => {
+export const gaugeAddRewardValidationSuite = createValidationSuite((data: AddRewardParams) => {
   poolValidationGroup(data)
-
-  gaugeAddRewardTokenValidationGroup(data)
+  gaugeAddRewardValidationGroup(data)
+})
+export const gaugeDepositRewardApproveValidationSuite = createValidationSuite((data: DepositRewardApproveParams) => {
+  poolValidationGroup(data)
+  gaugeDepositRewardApproveValidationGroup(data)
+})
+export const gaugeDepositRewardValidationSuite = createValidationSuite((data: DepositRewardParams) => {
+  poolValidationGroup(data)
   gaugeDepositRewardValidationGroup(data)
-}
+})
 
-export const gaugeValidationSuite = createValidationSuite(gaugeValidationGroup)
+function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
+  amountValidationFn(amount)
+  if (!rewardTokenId || !amount) return
+
+  const state = useStore.getState()
+  const userBalancesMapper = state.userBalances.userBalancesMapper
+  const tokenBalance = userBalancesMapper[rewardTokenId]
+
+  if (!tokenBalance) return
+
+  enforce(amount).condition((amount) => {
+    return {
+      pass: BD.from(amount).lte(BD.from(tokenBalance)),
+      message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`
+    }
+  })
+}

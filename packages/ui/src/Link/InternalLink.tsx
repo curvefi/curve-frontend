@@ -19,8 +19,4 @@ const StyledLink = styled(Link)`
   ${linkStyles}
 `
 
-InternalLink.defaultProps = {
-  className: '',
-}
-
 export default InternalLink

@@ -36,7 +36,8 @@ body.theme-dark {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
-  --page--background-color: var(--black);
+  --page--background-color: var(--black-100);
+  --page--header--background-color: var(--black);
 
   --layout--home--background-color: hsl(220, 9%, 13%);
 

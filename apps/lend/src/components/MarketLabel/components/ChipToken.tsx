@@ -130,8 +130,4 @@ const ChipTokenCopyButtonIcon = styled(Icon)`
   margin: 0 2px;
 `
 
-ChipToken.defaultProps = {
-  className: '',
-}
-
 export default ChipToken

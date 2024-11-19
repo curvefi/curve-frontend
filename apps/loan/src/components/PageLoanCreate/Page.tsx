@@ -87,7 +87,7 @@ const Page: NextPage = () => {
         fetchUserLoanWalletBalances(curve, llamma)
       }
     },
-    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys]
+    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const Page: NextPage = () => {
       }
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -165,12 +165,12 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${rCollateralId}`} />
+      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
       {provider ? (
         <>
           {chartExpanded && (
             <PriceAndTradesExpandedContainer>
-              <Box flex>
+              <Box flex padding="0 0 0 var(--spacing-2)">
                 {isMdUp && <TitleComp />}
                 <ExpandButton
                   variant={'select'}
@@ -238,8 +238,7 @@ const Wrapper = styled(AppPageFormContainer)<{ isAdvanceMode: boolean; chartExpa
 `
 
 const Title = styled(TextEllipsis)`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
   font-weight: bold;
   line-height: 1;

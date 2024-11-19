@@ -39,7 +39,8 @@ body.theme-chad {
 
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
-  --page--background-color: var(--primary-700);
+  --page--background-color: var(--primary-600);
+  --page--header--background-color: var(--primary-700);
 
   --layout--home--background-color: var(--white);
 

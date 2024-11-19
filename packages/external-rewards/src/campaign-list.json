@@ -18,9 +18,6 @@
     "campaign": "DLCLink.json"
   },
   {
-    "campaign": "Eigenlayer.json"
-  },
-  {
     "campaign": "Mellow.json"
   },
   {
@@ -52,5 +49,17 @@
   },
   {
     "campaign": "SolvProtocol.json"
+  },
+  {
+    "campaign": "Hinkal.json"
+  },
+  {
+    "campaign": "Inception.json"
+  },
+  {
+    "campaign": "TurtleTotems.json"
+  },
+  {
+    "campaign": "LevelMoney.json"
   }
 ]

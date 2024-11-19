@@ -33,6 +33,7 @@ const DetailInfo = ({
   tooltip: Tooltip,
   variant,
   children,
+  size='sm',
   ...props
 }: React.PropsWithChildren<Props>) => {
   const classNames = `${className} ${isDivider ? 'divider' : ''}`
@@ -40,6 +41,7 @@ const DetailInfo = ({
   return (
     <Wrapper
       {...props}
+      size={size}
       className={classNames}
       grid
       gridAutoFlow="column"
@@ -58,11 +60,6 @@ const DetailInfo = ({
       </DetailValue>
     </Wrapper>
   )
-}
-
-DetailInfo.defaultProps = {
-  className: '',
-  size: 'sm',
 }
 
 export const DetailLabel = styled.span`
@@ -109,7 +106,7 @@ const Wrapper = styled(Box)<WrapperProps>`
     } else if (size === 'md') {
       return `font-size: var(--font-size-3);`
     }
-  }};
+  }}
 
   .svg-tooltip {
     margin-top: 0.25rem;

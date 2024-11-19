@@ -25,7 +25,7 @@ interface Props {
   stepProgress?: StepProgress | null
 }
 
-const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, stepProgress }: Props) => {
+const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
   const chainTokenUsdRate = useStore((state) => state.usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'])
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
@@ -84,10 +84,6 @@ const DetailInfoEstimateGas = ({ chainId, isDivider, loading, estimatedGas, step
       )}
     </DetailInfo>
   )
-}
-
-DetailInfoEstimateGas.defaultProps = {
-  isDivider: false,
 }
 
 const StepProgressWrapper = styled.span`

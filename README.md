@@ -6,7 +6,7 @@ Curve-frontend is a NextJs user-interface application designed to connect to Cur
 
 Before you begin, ensure you have met the following requirements:
 
-- [nodejs](https://nodejs.org/) version 18.17
+- [nodejs](https://nodejs.org/) version 20
 - [yarn](https://yarnpkg.com/) version 1.22
 
 ## Installation
@@ -53,8 +53,9 @@ This repository is organized as follows:
 - `/apps/loan`: crvUSD [React](https://react.dev/) application.
 - `/apps/lend`: Lend [React](https://react.dev/) application.
 - `/tests`: DApp tests
-- `/packages/ui`: Shared CSS styled components using [styled-components](https://styled-components.com/).
-- `/packages/onboard-helpers`: Shared wallet connection using [Blocknative's Onboard](https://onboard.blocknative.com/).
+- `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@/shared/ui`
+- `/packages/curve-lib`: Shared logic for the DApps, mapped as `@/shared/lib`
+- `/packages/curve-common`: List of features for the DApps, mapped as `@/common`
 
 ## Development Guide
 

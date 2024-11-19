@@ -10,37 +10,34 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import { gaugeKeys } from '@/entities/gauge/model'
-import type { PoolQueryParams } from '@/entities/pool/types'
-import type { ExtractQueryKeys, ExtractQueryKeyType } from '@/shared/types/api'
-import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 import type { PoolTemplate } from '@curvefi/api/lib/pools'
 import type { Address } from 'viem'
+import { FieldsOf } from '@/shared/lib/validation'
+import { GaugeParams, GaugeQuery } from '@/shared/model/query'
+import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
 
 export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
 
-export type PoolMethodParameters<M extends NestedKeys<PoolTemplate>> = Parameters<NestedFunction<PoolTemplate, M>>
-
-export type GaugeQueryKeys = ExtractQueryKeys<typeof gaugeKeys>
-
-export type GaugeQueryKeyType<K extends keyof typeof gaugeKeys> = ExtractQueryKeyType<typeof gaugeKeys, K>
-
-export type GaugeQueryParams = PoolQueryParams & {}
-
-export type AddRewardParams<T extends Array<any> = PoolMethodParameters<'gauge.addReward'>> = {
-  rewardTokenId?: Address //T[0]
-  distributorId?: Address //T[1]
+export type AddReward = {
+  rewardTokenId: Address
+  distributorId: Address
 }
+export type AddRewardQuery = GaugeQuery & AddReward
+export type AddRewardParams = FieldsOf<AddRewardQuery>
+export type AddRewardMutation = FieldsOf<AddReward>
 
-export type DepositRewardApproveParams<T extends Array<any> = PoolMethodParameters<'gauge.depositRewardApprove'>> = {
-  rewardTokenId?: Address //T[0]
-  amount?: T[1]
+export type DepositRewardApprove = {
+  rewardTokenId: Address
+  amount: number | string
 }
+export type DepositRewardApproveQuery = GaugeQuery & DepositRewardApprove
+export type DepositRewardApproveParams = FieldsOf<DepositRewardApproveQuery>
+export type DepositRewardApproveMutation = FieldsOf<DepositRewardApprove>
 
-export type DepositRewardParams<T extends Array<any> = PoolMethodParameters<'gauge.depositReward'>> = {
-  rewardTokenId?: Address //T[0]
-  amount?: T[1]
-  epoch?: T[2]
+export type DepositReward = DepositRewardApprove & {
+  epoch: number | string
 }
+export type DepositRewardQuery = GaugeQuery & DepositReward
+export type DepositRewardParams = FieldsOf<DepositRewardQuery>
+export type DepositRewardMutation = FieldsOf<DepositReward>
 
-export type CombinedGaugeParams = GaugeQueryParams & AddRewardParams & DepositRewardApproveParams & DepositRewardParams
