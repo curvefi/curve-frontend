@@ -1334,7 +1334,7 @@ export const FIGMA_TOKENS = {
           },
           overlined: {
             default: {
-              'label & icon': '#968e84ff',
+              'label & icon': '#1f1e1bff',
               outline: '#dedbd8ff',
             },
             hover: {
