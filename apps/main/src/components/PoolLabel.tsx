@@ -102,9 +102,8 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
                 )}
               </>
             )}
-            {pool && (
-              <ChipPool poolAddress={pool.address} poolName={pool.name} isHighlightPoolName={isHighlightPoolName} />
-            )}
+            {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
+            {pool && <ChipPool poolAddress={pool.address} poolName={pool.name} isHighlightPoolName />}
           </Box>
 
           <PoolLabelTokensWrapper>
