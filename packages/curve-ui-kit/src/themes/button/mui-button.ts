@@ -1,14 +1,17 @@
 import type { Components, CSSObject } from '@mui/material/styles'
 import { basicMuiTheme, ThemeKey } from '../basic-theme'
-import { FigmaTokens } from '../model'
-import { replaceFontName } from '../typography/fonts'
+import { FIGMA_TOKENS, FigmaTokens } from '../model'
+import { FontFamilyMapping, replaceFontName } from '../typography/fonts'
 
 const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
-type Color = typeof COLORS[number]
+type Color = (typeof COLORS)[number]
 
 export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
 
 export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
+  const fontFamily = FontFamilyMapping[FIGMA_TOKENS.themes.desktop[mode].text.fontfamily.button]
+  console.log({ fontFamily })
+
   const buttonDesktop = figmaTokens.themes.desktop[mode].button
   const buttonMobile = figmaTokens.themes.mobile[mode].button
   const spacingDesktop = figmaTokens.mappedSizesAndSpaces.desktop.spacing
@@ -33,7 +36,7 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
       backgroundColor: buttonDesktop.navigation.hover.fill,
       color: buttonDesktop.navigation.hover['label & icon'],
     },
-    '&:current': {
+    '&.current': {
       backgroundColor: buttonDesktop.navigation.current.fill,
       color: buttonDesktop.navigation.current['label & icon'],
     },
@@ -79,19 +82,22 @@ export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Compo
         height: largeHeight,
         padding: `0 ${spacingDesktop.sm}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}0px` },
-        ...replaceFontName(figmaTokens.typography.buttonLabelM),
+        ...figmaTokens.typography.buttonLabelM,
+        fontFamily,
       },
       sizeMedium: {
         height: mediumHeight,
         padding: `0 ${spacingDesktop.sm}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}px` },
-        ...replaceFontName(figmaTokens.typography.buttonLabelS),
+        ...figmaTokens.typography.buttonLabelS,
+        fontFamily,
       },
       sizeSmall: {
         height: smallHeight,
         padding: `0 ${spacingDesktop.md}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.md}px` },
-        ...replaceFontName(figmaTokens.typography.buttonLabelS),
+        ...figmaTokens.typography.buttonLabelS,
+        fontFamily,
       },
     },
   }

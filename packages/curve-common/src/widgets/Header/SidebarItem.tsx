@@ -20,11 +20,12 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
       <Component
         target={page.route.startsWith('http') ? '_blank' : undefined}
         href={page.route}
+        className={page.isActive ? 'current' : ''}
         sx={{ justifyContent: 'flex-start', textDecoration: 'none' }}
       >
         <Typography
           variant="bodyMBold"
-          color={child ? 'text.secondary' : 'text.primary'}
+          color={child ? 'text.secondary' : 'navigation'}
           sx={{ textTransform: 'uppercase' }}
           data-testid={`sidebar-item-${page.label.toLowerCase()}`}
         >
