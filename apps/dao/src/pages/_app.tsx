@@ -12,14 +12,13 @@ import 'focus-visible'
 import '@/globals.css'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
+import { connectWalletLocales } from '@/common/features/connect-wallet'
 import { getLocaleFromUrl, getStorageValue } from '@/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@/ui/utils'
-import { initOnboard } from '@/onboard'
+import { initOnboard } from '@/common/features/connect-wallet'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
 import { REFRESH_INTERVAL } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 
@@ -79,15 +78,7 @@ function CurveApp({ Component }: AppProps) {
     updateAppLocale(parsedLocale, updateGlobalStoreByKey)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStoreByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {

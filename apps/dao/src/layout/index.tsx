@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { CONNECT_STAGE, isFailure, isLoading } from '@/ui/utils'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
-import { useConnectWallet } from '@/onboard'
+import { useConnectWallet } from '@/common/features/connect-wallet'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 

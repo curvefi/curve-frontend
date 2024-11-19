@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { useConnectWallet } from '@/onboard'
+import { useConnectWallet } from '@/common/features/connect-wallet'
 import { t } from '@lingui/macro'
 
 import Box from '@/ui/Box'
