@@ -10,7 +10,6 @@ export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px
 
 export const defineMuiButton = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
   const fontFamily = FontFamilyMapping[FIGMA_TOKENS.themes.desktop[mode].text.fontfamily.button]
-  console.log({ fontFamily })
 
   const buttonDesktop = figmaTokens.themes.desktop[mode].button
   const buttonMobile = figmaTokens.themes.mobile[mode].button

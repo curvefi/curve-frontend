@@ -21,7 +21,7 @@ export const LanguageSwitcher = ({ locales, locale, onChange }: LanguageSwitcher
   >
     {locales.map((languageOption) => (
       <MenuItem key={languageOption.value} value={languageOption.value}>
-        <Typography fontWeight="bold">{languageOption.name}</Typography>
+        <Typography variant="headingXsBold" sx={{lineHeight: '24px'}}>{languageOption.name}</Typography>
       </MenuItem>
     ))}
   </CompactDropDown>

@@ -21,6 +21,7 @@ export const createTypography = (mode: ThemeKey): TypographyOptions => {
     }),
     {} as TypographyOptions,
   )
+  console.log(typographyVariants)
 
   const disabledTypographyVariants = disabledTypographyKeys.reduce(
     (acc, variant) => ({ ...acc, [variant]: undefined }),

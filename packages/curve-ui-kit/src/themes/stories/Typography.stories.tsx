@@ -29,9 +29,6 @@ interface TypographyDisplayProps {
 
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
   const typography = FIGMA_TOKENS.typography[variant] as TypographyVariant
-  console.log('typography', typography)
-  console.log('children', children)
-
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
