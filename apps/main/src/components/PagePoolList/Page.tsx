@@ -3,7 +3,7 @@ import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from
 
 import { t } from '@lingui/macro'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
@@ -123,16 +123,6 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams])
 
-  const sortSearchTextLast = useMemo(() => {
-    const searchParamsOrder: { key: string; value: string }[] = []
-    searchParams.forEach((value, key) => {
-      searchParamsOrder.push({ key, value })
-    })
-    const searchTextIdx = searchParamsOrder.findIndex((s) => s.key === 'search')
-    const sortByIdx = searchParamsOrder.findIndex((s) => s.key === 'sortBy')
-    return searchTextIdx !== -1 && searchTextIdx > sortByIdx
-  }, [searchParams])
-
   return (
     <>
       <DocumentHead title={t`Pools`} />
@@ -144,7 +134,6 @@ const Page: NextPage = () => {
             params={params}
             tableLabels={TABLE_LABEL}
             searchParams={parsedSearchParams}
-            sortSearchTextLast={sortSearchTextLast}
             searchTermMapper={searchTermMapper}
             updatePath={updatePath}
           />

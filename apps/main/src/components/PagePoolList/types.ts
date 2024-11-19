@@ -67,7 +67,6 @@ export type PagePoolList = {
   params: Params
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
-  sortSearchTextLast: boolean
   searchTermMapper: SearchTermMapper
   updatePath(updatedSearchParams: Partial<SearchParams>): void
 }

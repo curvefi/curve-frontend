@@ -23,15 +23,7 @@ import TableRowNoResult from '@/components/PagePoolList/components/TableRowNoRes
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
 import ConnectWallet from '@/components/ConnectWallet'
 
-const PoolList = ({
-  rChainId,
-  curve,
-  searchParams,
-  sortSearchTextLast,
-  searchTermMapper,
-  tableLabels,
-  updatePath,
-}: PagePoolList) => {
+const PoolList = ({ rChainId, curve, searchParams, searchTermMapper, tableLabels, updatePath }: PagePoolList) => {
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
@@ -78,15 +70,17 @@ const PoolList = ({
   const imageBaseUrl = getImageBaseUrl(rChainId)
   const isReady = (poolDatasLength > 0 && volumeMapperStr !== '') || (poolDatasLength === 0 && formStatus.noResult)
   const haveMapperStr = useMemo(() => {
-    return Object.keys(tvlMapperCachedOrApi ?? {}).length > 0 && !!`${volumeMapperStr}${rewardsApyMapperStr}`
-  }, [rewardsApyMapperStr, tvlMapperCachedOrApi, volumeMapperStr])
+    if (searchParams.sortBy.startsWith('rewards')) {
+      return !!rewardsApyMapperStr
+    }
+    return Object.keys(tvlMapperCachedOrApi ?? {}).length > 0 && !!volumeMapperStr
+  }, [searchParams.sortBy, rewardsApyMapperStr, tvlMapperCachedOrApi, volumeMapperStr])
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
       setFormValues(
         rChainId,
         searchParams,
-        sortSearchTextLast,
         poolDatasCachedOrApi,
         rewardsApyMapper,
         volumeMapperCachedOrApi,
@@ -100,7 +94,6 @@ const PoolList = ({
       poolDatasCachedOrApi,
       rewardsApyMapper,
       setFormValues,
-      sortSearchTextLast,
       tvlMapperCachedOrApi,
       volumeMapperCachedOrApi,
       userPoolList,
@@ -171,7 +164,7 @@ const PoolList = ({
               isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
               isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
               isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
-              searchParams={sortSearchTextLast ? { ...searchParams, sortBy: '' } : searchParams}
+              searchParams={searchParams}
               showInPoolColumn={showInPoolColumn}
               tableLabels={tableLabels}
               updatePath={updatePath}
