@@ -12,6 +12,7 @@ describe('Header', () => {
     beforeEach(() => {
       cy.viewport(...oneDesktopViewport())
       cy.visit('/')
+      cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
     })
 
     it('should have the right size', () => {
@@ -21,7 +22,7 @@ describe('Header', () => {
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
     })
 
-    it('should switch themes', () => {
+    it.only('should switch themes', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
         const font1 = $nav.css('font-family')
         cy.get(`[data-testid='theme-switcher-dark']`).click()

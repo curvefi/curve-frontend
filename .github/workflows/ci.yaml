@@ -17,6 +17,7 @@ jobs:
     timeout-minutes: 5
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         app: [main, loan, lend]
     steps:
@@ -32,3 +33,9 @@ jobs:
         working-directory: apps/${{ matrix.app }}
       - run: yarn run cy:run:e2e:${{ matrix.app }}
         working-directory: tests
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-${{ matrix.app }}
+          path: tests/cypress
