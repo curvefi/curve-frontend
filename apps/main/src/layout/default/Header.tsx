@@ -114,7 +114,8 @@ export const Header = ({ sections }: HeaderProps) => {
           label: t`Daily Volume`,
           value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
-        { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
+        ...!window || window.innerWidth > 1330 ?
+        [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }] : [],
       ]}
       sections={sections}
       translations={{
