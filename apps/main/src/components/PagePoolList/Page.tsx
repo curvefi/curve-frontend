@@ -13,11 +13,20 @@ import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
 import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useSearchTermMapper from '@/hooks/useSearchTermMapper'
 import useStore from '@/store/useStore'
 
 import DocumentHead from '@/layout/default/DocumentHead'
 import PoolList from '@/components/PagePoolList/index'
 import Settings from '@/layout/default/Settings'
+
+enum SEARCH {
+  filter = 'filter',
+  hideSmallPools = 'hideSmallPools',
+  sortBy = 'sortBy',
+  order = 'order',
+  search = 'search',
+}
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -25,6 +34,7 @@ const Page: NextPage = () => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
   const { chainId } = curve ?? {}
 
@@ -66,25 +76,29 @@ const Page: NextPage = () => {
         ...parsedSearchParams,
         ...updatedSearchParams,
       }
-      let searchPath = '?'
-      if (filterKey && filterKey !== 'all') searchPath += `filter=${filterKey}`
-      if (hideSmallPools === false) searchPath += `${searchPath === '?' ? '' : '&'}hideSmallPools=false`
-      if (sortBy && sortBy !== 'volume') searchPath += `${searchPath === '?' ? '' : '&'}sortBy=${sortBy}`
-      if (sortByOrder && sortByOrder !== 'desc') searchPath += `${searchPath === '?' ? '' : '&'}order=${sortByOrder}`
-      if (searchText) searchPath += `${searchPath === '?' ? '' : '&'}search=${encodeURIComponent(searchText)}`
-      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}${searchPath}`)
+      const searchPath = new URLSearchParams(
+        [
+          [SEARCH.filter, filterKey && filterKey !== 'all' ? filterKey : ''],
+          [SEARCH.hideSmallPools, hideSmallPools ? '' : 'false'],
+          [SEARCH.sortBy, sortBy && sortBy !== 'volume' ? sortBy : ''],
+          [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+          [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        ].filter(([, v]) => v),
+      ).toString()
+
+      const pathname = getPath(params, `${ROUTE.PAGE_POOLS}?${searchPath}`)
       navigate(pathname)
     },
-    [navigate, params, parsedSearchParams]
+    [navigate, params, parsedSearchParams],
   )
 
   useEffect(() => {
     if (rChainId) {
-      const paramFilterKey = (searchParams.get('filter') || 'all').toLowerCase()
-      const paramSortBy = (searchParams.get('sortBy') || 'volume').toLowerCase()
-      const paramOrder = (searchParams.get('order') || 'desc').toLowerCase()
-      const paramHideSmallPools = searchParams.get('hideSmallPools') || 'true'
-      const searchText = decodeURIComponent(searchParams.get('search') || '')
+      const paramFilterKey = (searchParams.get(SEARCH.filter) || 'all').toLowerCase()
+      const paramSortBy = (searchParams.get(SEARCH.sortBy) || 'volume').toLowerCase()
+      const paramOrder = (searchParams.get(SEARCH.order) || 'desc').toLowerCase()
+      const paramHideSmallPools = searchParams.get(SEARCH.hideSmallPools) || 'true'
+      const searchText = decodeURIComponent(searchParams.get(SEARCH.search) || '')
 
       // validate filter key
       const foundFilterKey = networks[rChainId].poolFilters.find((f) => f === paramFilterKey)
@@ -120,6 +134,7 @@ const Page: NextPage = () => {
             params={params}
             tableLabels={TABLE_LABEL}
             searchParams={parsedSearchParams}
+            searchTermMapper={searchTermMapper}
             updatePath={updatePath}
           />
         )}

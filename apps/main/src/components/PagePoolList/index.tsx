@@ -1,47 +1,29 @@
-import type { FilterKey, PagePoolList, PoolListFilter, SearchParams } from '@/components/PagePoolList/types'
+import type { PagePoolList, SearchParams } from '@/components/PagePoolList/types'
 
 import { t } from '@lingui/macro'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useFocusRing } from '@react-aria/focus'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
-import {
-  DEFAULT_FORM_STATUS,
-  DEFAULT_SEARCH_PARAMS,
-  getPoolDatasCached,
-  getPoolListActiveKey,
-} from '@/store/createPoolListSlice'
+import { DEFAULT_FORM_STATUS, getPoolDatasCached, getPoolListActiveKey } from '@/store/createPoolListSlice'
 import { REFRESH_INTERVAL } from '@/constants'
-import { breakpoints } from '@/ui/utils/responsive'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
 
 import { getImageBaseUrl, getVolumeTvlStr } from '@/utils/utilsCurvejs'
 import { getRewardsApyStr, getUserPoolListStr } from '@/components/PagePoolList/utils'
 import { getUserActiveKey } from '@/store/createUserSlice'
-import networks from '@/networks'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
 
-import { ExternalLink } from '@/ui/Link'
-import Box from '@/ui/Box'
-import Button from '@/ui/Button'
-import Checkbox from '@/ui/Checkbox'
-import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Table from '@/ui/Table'
+import Table, { Tbody } from '@/ui/Table'
 import TableHead from '@/components/PagePoolList/components/TableHead'
 import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobile'
-import TableButtonFilters from '@/ui/TableButtonFilters'
-import TableButtonFiltersMobile from '@/ui/TableButtonFiltersMobile'
+import TableSettings from '@/components/PagePoolList/components/TableSettings/TableSettings'
+import TableRowNoResult from '@/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
-import TableSortSelect from '@/ui/TableSort/TableSortSelect'
-import TableSortSelectMobile from '@/ui/TableSort/TableSortSelectMobile'
 import ConnectWallet from '@/components/ConnectWallet'
 
-const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: PagePoolList) => {
-  const settingsRef = useRef<HTMLDivElement>(null)
-  const { isFocusVisible, focusProps } = useFocusRing()
-
+const PoolList = ({ rChainId, curve, searchParams, searchTermMapper, tableLabels, updatePath }: PagePoolList) => {
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
@@ -52,20 +34,16 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const poolDatas = useStore((state) => state.pools.pools[rChainId])
   const results = useStore((state) => state.poolList.result)
-  const resultRewardsCrvCount = useStore((state) => state.poolList.resultRewardsCrvCount)
-  const resultRewardsOtherCount = useStore((state) => state.poolList.resultRewardsOtherCount)
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
   const showHideSmallPools = useStore((state) => state.poolList.showHideSmallPools)
   const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
   const userActiveKey = getUserActiveKey(curve)
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
-  const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
-  const userPoolListError = useStore((state) => state.user.poolListError)
   const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
-  const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
+
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const provider = useStore((state) => state.wallet.getProvider(''))
@@ -74,7 +52,8 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
 
   const result =
     results[activeKey] ?? activeKey.split('-')[0] === prevActiveKey.split('-')[0] ? results[prevActiveKey] : undefined
-  const haveSigner = !!curve?.signerAddress
+
+  const { signerAddress = '' } = curve ?? {}
   const poolDatasCached = getPoolDatasCached(poolDataMapperCached)
   const poolDatasCachedOrApi = poolDatas ?? poolDatasCached
   const poolDatasLength = (poolDatasCachedOrApi ?? []).length
@@ -90,23 +69,12 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
   const volumeMapperStr = useMemo(() => getVolumeTvlStr(volumeMapper), [volumeMapper])
   const imageBaseUrl = getImageBaseUrl(rChainId)
   const isReady = (poolDatasLength > 0 && volumeMapperStr !== '') || (poolDatasLength === 0 && formStatus.noResult)
-
-  const FILTERS: PoolListFilter[] = useMemo(
-    () => [
-      { key: 'all', label: t`ALL` },
-      { key: 'usd', label: 'USD' },
-      { key: 'btc', label: 'BTC' },
-      { key: 'kava', label: 'KAVA' },
-      { key: 'eth', label: 'ETH' },
-      { key: 'crvusd', label: t`crvUSD` },
-      { key: 'tricrypto', label: t`Tricrypto` },
-      { key: 'crypto', label: t`Crypto` },
-      { key: 'stableng', label: t`Stable NG` },
-      { key: 'cross-chain', label: t`Cross-chain` },
-      { key: 'user', label: t`My Pools` },
-    ],
-    []
-  )
+  const haveMapperStr = useMemo(() => {
+    if (searchParams.sortBy.startsWith('rewards')) {
+      return !!rewardsApyMapperStr
+    }
+    return Object.keys(tvlMapperCachedOrApi ?? {}).length > 0 && !!volumeMapperStr
+  }, [searchParams.sortBy, rewardsApyMapperStr, tvlMapperCachedOrApi, volumeMapperStr])
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
@@ -145,9 +113,11 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
 
   // init
   useEffect(() => {
+    if (!haveMapperStr || !searchParams) return
+
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tvlMapperCachedOrApi, volumeMapperStr, userPoolListStr, rewardsApyMapperStr, searchParams, curve?.signerAddress])
+  }, [haveMapperStr, userPoolListStr, searchParams, curve?.signerAddress])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -162,82 +132,20 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
     colSpan++
   }
 
-  const parsedFilters = useMemo(() => {
-    let filters = FILTERS.filter((f) => {
-      return networks[rChainId].poolFilters.indexOf(f.key) !== -1
-    })
-
-    if (!haveSigner) {
-      filters = filters.filter((f) => f.key !== 'user')
-    }
-
-    if (Array.isArray(filters)) {
-      const parsedFilters: { [key: string]: { id: string; displayName: string } } = {}
-      for (const { key, label } of filters) {
-        parsedFilters[key] = { id: key, displayName: label }
-      }
-
-      return parsedFilters
-    }
-  }, [FILTERS, haveSigner, rChainId])
-
   return (
     <>
-      <SearchWrapper>
-        <SearchInput
-          id="inpSearchPool"
-          placeholder={t`Search by pool name, pool address, token name or token address`}
-          className={isFocusVisible ? 'focus-visible' : ''}
-          {...focusProps}
-          value={searchParams.searchText}
-          handleInputChange={(val) => updatePath({ searchText: val })}
-          handleSearchClose={() => updatePath({ searchText: '' })}
-        />
-      </SearchWrapper>
-      <Box ref={settingsRef} grid gridRowGap={2}>
-        <TableFilterSettings>
-          {!isXSmDown && parsedFilters && (
-            <TableButtonFilters
-              disabled={false}
-              filters={parsedFilters}
-              filterKey={searchParams.filterKey}
-              isLoading={!isReady || formStatus.isLoading}
-              resultsLength={result?.length}
-              updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
-            />
-          )}
-          <Box>
-            <Box flex gridColumnGap={2}>
-              {!isXSmDown && (
-                <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-              )}
-              {networks[rChainId].showHideSmallPoolsCheckbox ||
-              (typeof poolDatasCachedOrApi !== 'undefined' && poolDatasLength > 10) ? (
-                <Checkbox
-                  isDisabled={searchParams.filterKey === 'user'}
-                  isSelected={searchParams.filterKey === 'user' ? false : searchParams.hideSmallPools}
-                  onChange={(val) => {
-                    updatePath({ hideSmallPools: val })
-                    fetchMissingPoolsRewardsApy(rChainId, poolDatas)
-                  }}
-                >
-                  {t`Hide very small pools`}
-                </Checkbox>
-              ) : null}
-            </Box>
-            {isXSmDown && parsedFilters && (
-              <Box flex gridColumnGap={2} margin="1rem 0 0 0.25rem">
-                <TableButtonFiltersMobile
-                  filters={parsedFilters}
-                  filterKey={searchParams.filterKey}
-                  updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
-                />
-                <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
-              </Box>
-            )}
-          </Box>
-        </TableFilterSettings>
-      </Box>
+      <TableSettings
+        isReady={isReady}
+        activeKey={activeKey}
+        rChainId={rChainId}
+        poolDatasCachedOrApi={poolDatasCachedOrApi}
+        result={result}
+        signerAddress={signerAddress}
+        searchParams={searchParams}
+        tableLabels={tableLabels}
+        updatePath={updatePath}
+      />
+
       {!provider ? (
         <ConnectWalletWrapper>
           <ConnectWallet
@@ -247,7 +155,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
           />
         </ConnectWalletWrapper>
       ) : (
-        <StyledTable cellPadding={0} cellSpacing={0}>
+        <Table cellPadding={0} cellSpacing={0}>
           {isXSmDown ? (
             <TableHeadMobile showInPoolColumn={showInPoolColumn} />
           ) : (
@@ -256,41 +164,20 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
               isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
               isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
               isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
-              resultRewardsCrvCount={resultRewardsCrvCount}
-              resultRewardsOtherCount={resultRewardsOtherCount}
               searchParams={searchParams}
               showInPoolColumn={showInPoolColumn}
               tableLabels={tableLabels}
               updatePath={updatePath}
             />
           )}
-          <tbody>
+          <Tbody $borderBottom>
             {formStatus.noResult ? (
-              <tr>
-                <TableRowNotFound colSpan={colSpan}>
-                  {searchParams.filterKey === 'user' && userPoolListLoaded && !!userPoolListError ? (
-                    <>{t`Sorry, we are unable to load your pools.`}</>
-                  ) : searchParams.searchText.length > 0 ? (
-                    searchParams.filterKey === 'all' ? (
-                      <>
-                        {t`Didn't find what you're looking for?`}{' '}
-                        <ExternalLink $noStyles href="https://t.me/curvefi">
-                          {t`Join the Telegram`}
-                        </ExternalLink>
-                      </>
-                    ) : (
-                      <>
-                        {t`No pool found for "${searchParams.searchText}". Feel free to search other tabs, or`}{' '}
-                        <Button variant="text" onClick={() => updatePath(DEFAULT_SEARCH_PARAMS)}>
-                          {t`view all pools.`}
-                        </Button>
-                      </>
-                    )
-                  ) : (
-                    <>{t`No pool found in this category`}</>
-                  )}
-                </TableRowNotFound>
-              </tr>
+              <TableRowNoResult
+                colSpan={colSpan}
+                searchParams={searchParams}
+                signerAddress={signerAddress}
+                updatePath={updatePath}
+              />
             ) : Array.isArray(result) &&
               Object.keys(poolDataMapperCached ?? {}).length &&
               Object.keys(tvlMapperCached ?? {}).length ? (
@@ -305,6 +192,7 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                     imageBaseUrl={imageBaseUrl}
                     showInPoolColumn={showInPoolColumn}
                     tableLabels={tableLabels}
+                    searchTermMapper={searchTermMapper}
                     showDetail={showDetail}
                     setShowDetail={setShowDetail}
                     curve={curve}
@@ -320,109 +208,12 @@ const PoolList = ({ rChainId, curve, searchParams, tableLabels, updatePath }: Pa
                 </td>
               </tr>
             )}
-          </tbody>
-        </StyledTable>
+          </Tbody>
+        </Table>
       )}
     </>
   )
 }
-
-const TableRowNotFound = styled.td`
-  padding: var(--spacing-5);
-  text-align: center;
-`
-
-const SearchWrapper = styled(Box)`
-  display: grid;
-  margin: 1rem 1rem 0 1rem;
-  padding-top: 1rem;
-  height: var(--header-height);
-
-  background-color: var(--box--secondary--background-color);
-
-  grid-template-columns: 1fr;
-`
-
-const TableFilterSettings = styled(Box)`
-  align-items: flex-start;
-  display: grid;
-  margin: 1rem;
-  grid-row-gap: var(--spacing-2);
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-`
-
-const StyledTable = styled(Table)`
-  background-color: var(--table--background-color);
-
-  th,
-  th button {
-    align-items: flex-end;
-    vertical-align: bottom;
-    font-size: var(--font-size-2);
-    font-family: var(--table_head--font);
-    font-weight: bold;
-  }
-
-  thead {
-    border-bottom: 1px solid var(--border-400);
-  }
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    tr.row--info {
-      border-bottom: 1px solid var(--border-400);
-    }
-
-    tr.row--info td,
-    th {
-      padding: 0.75rem;
-      height: 1px;
-      line-height: 1;
-
-      &.row-in-pool {
-        padding-left: 0.375rem; //6px
-        padding-right: 0.375rem; //6px
-        padding-top: inherit;
-        padding-bottom: inherit;
-      }
-
-      &.center {
-        text-align: center;
-      }
-
-      &.left {
-        justify-content: left;
-        text-align: left;
-      }
-
-      &.right {
-        justify-content: right;
-        text-align: right;
-
-        > div,
-        > div button {
-          justify-content: right;
-          text-align: right;
-        }
-      }
-    }
-
-    tr.row--info td:not(.row-in-pool),
-    th {
-      &:first-of-type {
-        padding-left: 1rem;
-      }
-
-      &:last-of-type {
-        padding-right: 1rem;
-      }
-    }
-  }
-`
 
 const ConnectWalletWrapper = styled.div`
   display: flex;

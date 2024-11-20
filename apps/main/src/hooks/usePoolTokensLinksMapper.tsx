@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 enum Pool {
   fantomFactoryStableNg24 = `250-factory-stable-ng-24`,
+  fantomFactoryStableNg39 = '250-factory-stable-ng-39',
 }
 
 const BASE_URL = 'https://curve.fi/#/'
@@ -27,6 +28,14 @@ const usePoolTokensLinksMapper = (rChainId: ChainId, { pool }: PoolDataCacheOrAp
         '0xab72e7f7bcfe09a9105f24ffe45038f50f45ca5c': `${BASE_URL}bsc/pools/factory-stable-ng-21/deposit`, //sb3pool_b
         '0x904603366bc8acf881a35cd4c7e0d514f0477ffc': `${BASE_URL}base/pools/factory-v2-1/deposit`, //s4pool_ba
         '0x795b38c85d6f1524b434f14aa37c1c808c2bbd6b': `${BASE_URL}xdai/pools/3pool/deposit`, //sx3CRV_g
+      })
+    }
+
+    if (key === Pool.fantomFactoryStableNg39) {
+      setMapper({
+        '0x2dadf589f616876e21c8ba63f59af764479a422d': `${BASE_URL}ethereum/pools/factory-crvusd-16/deposit`, //s2BTC_e
+        '0x636cc0ab717be347ff3acf9763afbaf7d2cf47a9': `${BASE_URL}arbitrum/pools/factory-stable-ng-69/deposit`, //s2BTC_ar
+        '0x513a766f7b4269590850d566b64916d691a96927': `${BASE_URL}optimism/pools/factory-v2-63/deposit`, //s2BTC_o
       })
     }
   }, [rChainId, poolId])
