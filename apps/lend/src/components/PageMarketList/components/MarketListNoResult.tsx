@@ -56,17 +56,23 @@ const MarketListNoResult = ({
           <AlertBox alertType="error">{t`Unable to retrieve market list. Please try again later.`}</AlertBox>
         </Box>
       ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
-        <Trans>
-          No market found for “{errorSearchedValue}”.
-          {errorSearchParams && (
-            <>
-              <br />{' '}
-              <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
-                View all
-              </Button>
-            </>
+        <>
+          {filterKey === 'all' ? (
+            t`No market found`
+          ) : (
+            <Trans>
+              No market found for “{errorSearchedValue}”.
+              {errorSearchParams && (
+                <>
+                  <br />{' '}
+                  <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
+                    View all
+                  </Button>
+                </>
+              )}
+            </Trans>
           )}
-        </Trans>
+        </>
       ) : (
         <Trans>
           Can&apos;t find what you&apos;re looking for?{' '}

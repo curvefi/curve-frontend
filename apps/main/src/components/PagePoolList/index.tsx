@@ -199,9 +199,9 @@ const PoolList = ({
             <TableHead
               columnKeys={columnKeys}
               isLite={isLite}
-              isReadyRewardsApy={isReady && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0}
-              isReadyTvl={isReady && tvlMapper && Object.keys(tvlMapper).length > 0}
-              isReadyVolume={isReady && volumeMapper && (Object.keys(volumeMapper).length > 0 || formStatus.noResult)}
+              isReadyRewardsApy={!!rewardsApyMapper}
+              isReadyTvl={!!tvlMapper}
+              isReadyVolume={!!volumeMapper}
               searchParams={searchParams}
               tableLabels={tableLabels}
               updatePath={updatePath}
