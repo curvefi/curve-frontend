@@ -5,11 +5,11 @@ export const minecraft = localFont({
   src: [
     {
       path: '../../../public/fonts/Minecraft-Regular.otf',
-      weight: '400',
+      weight: 'normal',
     },
     {
       path: '../../../public/fonts/Minecraft-Bold.otf',
-      weight: '700',
+      weight: 'bold',
     },
   ],
 })
