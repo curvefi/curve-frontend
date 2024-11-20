@@ -1,63 +1,61 @@
 import type { Components } from '@mui/material/styles'
 import { ThemeKey } from '../basic-theme'
-import { FigmaTokens } from '../model'
+import { Palette } from '../palette'
 
-export const TABS_VARIANT_CLASSES = {
-  contained: 'variant-contained',
-  underlined: 'variant-underlined',
-  overlined: 'variant-overlined',
-}
+// css classes used by the TabSwitcher component
+const contained = 'variant-contained' as const;
+const underlined = 'variant-underlined' as const;
+const overlined = 'variant-overlined' as const;
+export const TABS_VARIANT_CLASSES = { contained, underlined, overlined };
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
-export const defineMuiTabs = (figmaTokens: FigmaTokens, mode: ThemeKey): Components['MuiTabs'] => {
-  // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-  const { contained, underlined, overlined } = figmaTokens.themes.desktop[mode].tabs
-
-  return {
-    styleOverrides: {
-      root: {
-        [`&.${TABS_VARIANT_CLASSES.contained} .MuiTab-root`]: {
-          color: contained.default['label & icon'],
-          backgroundColor: contained.default['fill'],
-          '&:hover': {
-            backgroundColor: contained.hover.fill,
-            color: contained.hover['label & icon'],
-          },
-          '&.Mui-selected': {
-            backgroundColor: contained.current.fill,
-            color: contained.current['label & icon'],
-          },
+// note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
+export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): Components['MuiTabs'] => ({
+  styleOverrides: {
+    root: {
+      [`&.${contained} .MuiTab-root`]: {
+        color: text.secondary,
+        backgroundColor: primary[200],
+        '&:hover': {
+          color: primary[950],
+          backgroundColor: neutral[50],
         },
-        [`&.${TABS_VARIANT_CLASSES.overlined} .MuiTab-root`]: {
-          color: overlined.default['label & icon'],
-          borderTop: overlined.default['outline'],
-          '&:hover': {
-            borderTop: overlined.hover.outline,
-            color: overlined.hover['label & icon'],
-          },
-          '&.Mui-selected': {
-            borderTop: overlined.current.outline,
-            color: overlined.current['label & icon'],
-          },
-        },
-        [`&.${TABS_VARIANT_CLASSES.underlined} .MuiTab-root`]: {
-          color: underlined.default['label & icon'],
-          borderBottom: underlined.default.outline,
-          '&:hover': {
-            borderBottom: underlined.hover.outline,
-            color: underlined.hover['label & icon'],
-          },
-          '&.Mui-selected': {
-            borderBottom: underlined.current.outline,
-            color: underlined.current['label & icon'],
-          },
+        '&.Mui-selected': {
+          color: text.primary,
+          backgroundColor: background.layer1Fill,
+          borderColor: background.highlightOutline,
         },
       },
-      indicator: {
-        [`.${TABS_VARIANT_CLASSES.overlined} &`]: { top: 0 },
-        [`.${TABS_VARIANT_CLASSES.contained} &`]: { top: 0 },
+      [`&.${overlined} .MuiTab-root`]: {
+        color: text.tertiary,
+        borderTop: background.layer2Outline,
+        '&:hover': {
+          color: text.primary,
+          borderTop: neutral[500],
+        },
+        '&.Mui-selected': {
+          color: text.highlight,
+          backgroundColor: background.layer3Fill,
+          borderTop: background.highlightOutline,
+        },
+      },
+      [`&.${underlined} .MuiTab-root`]: {
+        color: text.primary,
+        borderBottom: background.layer2Outline,
+        '&:hover': {
+          color: text.highlight,
+          borderBottom: background.highlightOutline,
+        },
+        '&.Mui-selected': {
+          color: text.primary,
+          borderBottom: background.highlightOutline,
+        },
       },
     },
-  }
-}
+    indicator: {
+      [`.${overlined} &`]: { top: 0 },
+      [`.${contained} &`]: { top: 0 },
+    },
+  },
+})

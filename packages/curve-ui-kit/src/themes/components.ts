@@ -1,22 +1,22 @@
 import { type ThemeOptions } from '@mui/material/styles'
-import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from '../../themes/button'
-import { defineMuiTypography } from '../../themes/typography'
-import type { ThemeKey } from '../basic-theme'
-import { FIGMA_TOKENS } from './figma-tokens.generated'
-import { defineMuiTabs } from '@ui-kit/themes/tabs'
+import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from './button'
+import { defineMuiTypography } from './typography'
+import { defineMuiTabs } from './tabs'
+import { Palette } from './palette'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
 export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 
-export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => ({
+export const createComponents = (palette: Palette, typography: TypographyOptions): ThemeOptions['components'] => ({
   MuiTypography: defineMuiTypography(),
   MuiButtonBase: {
     defaultProps: {
       disableRipple: true,
     },
   },
-  MuiIconButton: defineMuiIconButton(FIGMA_TOKENS, mode),
-  MuiButton: defineMuiButton(FIGMA_TOKENS, mode),
-  MuiTabs: defineMuiTabs(FIGMA_TOKENS, mode),
+  MuiIconButton: defineMuiIconButton(palette),
+  MuiButton: defineMuiButton(palette, typography),
+  MuiTabs: defineMuiTabs(palette),
   MuiToolbar: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
@@ -37,9 +37,9 @@ export const createComponents = (mode: ThemeKey): ThemeOptions['components'] => 
       track: {
         borderRadius: 0,
         backgroundColor: 'transparent',
-        border: `1px solid ${FIGMA_TOKENS.themes.desktop[mode].layer[1].outline}`,
+        border: `1px solid ${palette.background.layer1Outline}`,
       },
-      thumb: { borderRadius: 0, backgroundColor: FIGMA_TOKENS.themes.desktop[mode].color.primary[500] },
+      thumb: { borderRadius: 0, backgroundColor: palette.primary.main },
       checked: {},
     },
   },

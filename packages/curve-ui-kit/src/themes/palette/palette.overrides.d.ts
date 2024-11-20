@@ -13,6 +13,8 @@ declare module '@mui/material/styles/createPalette' {
     layer2Outline: string
     layer3Fill: string
     layer3Outline: string
+    highlightOutline: string
+    highlightFill: string
   }
 
   export interface PaletteColorOptions extends MuiPaletteColorOptions {}

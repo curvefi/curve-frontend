@@ -9,7 +9,7 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/model'
+import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { APP_LINK, AppNames } from './constants'
 import { useLocation } from 'react-router-dom'
 

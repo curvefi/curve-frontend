@@ -1,91 +1,94 @@
 import type { Components, CSSObject } from '@mui/material/styles'
-import { basicMuiTheme, ThemeKey } from '../basic-theme'
-import { FIGMA_TOKENS, FigmaTokens } from '../model'
-import { FontFamilyMapping } from '../typography/fonts'
+import { basicMuiTheme } from '../basic-theme'
+import { Palette } from '../palette'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
 const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
 type Color = (typeof COLORS)[number]
 
 export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
 
-export const defineMuiIconButton = ({ themes }: FigmaTokens, mode: ThemeKey) => {
-  const current = themes.desktop[mode].chips.current
-  return {
-    styleOverrides: {
-      root: {
-        borderRadius: '0',
-        '&.current': {
-          fill: current['label & icon'],
-          backgroundColor: current.fill,
-          borderStyle: 'solid',
-          borderColor: current.outline,
-          borderWidth: '1px',
-        },
+export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOptions): Components['MuiButton'] => {
+  const colors = {
+    primary: {
+      color: palette.neutral[50],
+      backgroundColor: palette.primary.main,
+      '&:hover': { backgroundColor: palette.neutral[900] },
+      '&:disabled': { color: palette.text.disabled },
+    },
+    secondary: {
+      color: palette.neutral[50],
+      backgroundColor: palette.primary[900],
+      '&:hover': { backgroundColor: palette.primary.main },
+      '&:disabled': {
+        color: palette.text.disabled,
+        backgroundColor: palette.primary[950],
+      },
+    },
+    success: {
+      color: palette.success.contrastText,
+      backgroundColor: palette.success.main,
+      '&:hover': {
+        color: palette.success.main,
+        backgroundColor: palette.success.contrastText,
+      },
+      '&:disabled': {
+        color: palette.neutral[950],
+        backgroundColor: palette.secondary[200],
+      },
+    },
+    alert: {
+      color: palette.error.contrastText,
+      backgroundColor: palette.error.main,
+      '&:hover': {
+        color: palette.error.main,
+        backgroundColor: palette.error.contrastText,
+      },
+      '&:disabled': {
+        color: palette.neutral[950],
+        backgroundColor: palette.tertiary[200],
       },
     },
   }
-}
-
-export const defineMuiButton = ({ themes, mappedSizesAndSpaces, typography }: FigmaTokens, mode: ThemeKey): Components['MuiButton'] => {
-  const fontFamily = FontFamilyMapping[FIGMA_TOKENS.themes.desktop[mode].text.fontfamily.button]
-
-  const buttonDesktop = themes.desktop[mode].button
-  const buttonMobile = themes.mobile[mode].button
-  const spacingDesktop = mappedSizesAndSpaces.desktop.spacing
-  const spacingMobile = mappedSizesAndSpaces.mobile.spacing
-
-  const getColorButtonStyle = (color: Color): CSSObject => ({
-    backgroundColor: buttonDesktop[color].default?.fill,
-    color: buttonDesktop[color].default['label & icon'],
-    '&:hover': {
-      backgroundColor: buttonDesktop[color].hover.fill,
-      color: buttonDesktop[color].hover['label & icon'],
-    },
-    '&:disabled': {
-      backgroundColor: buttonDesktop[color].disabled.fill,
-      color: buttonDesktop[color].disabled['label & icon'],
-    },
-  })
-
   const getNavigationButtonStyle = (): CSSObject => ({
-    color: buttonDesktop.navigation.default['label & icon'],
-    '&:hover': {
-      backgroundColor: buttonDesktop.navigation.hover.fill,
-      color: buttonDesktop.navigation.hover['label & icon'],
-    },
+    color: palette.text.tertiary,
     '&.current': {
-      backgroundColor: buttonDesktop.navigation.current.fill,
-      color: buttonDesktop.navigation.current['label & icon'],
+      color: palette.neutral[50],
+      backgroundColor: palette.background.highlightFill,
+    },
+    '&:hover': {
+      color: palette.text.primary,
+      backgroundColor: palette.background.layer1Fill,
     },
   })
 
   const getOutlinedButtonStyle = (color: Color): CSSObject => ({
     ...getGhostButtonStyle(color),
-    border: `1px solid ${buttonDesktop[color].default?.fill}`,
+    border: `1px solid ${colors[color].backgroundColor}`,
   })
 
   const getGhostButtonStyle = (color: Color): CSSObject => ({
-    ...getColorButtonStyle(color),
+    ...colors[color],
+    color: palette.text.highlight,
     backgroundColor: 'transparent',
-    color: buttonDesktop[color].default?.fill,
     '&:hover': {
-      backgroundColor: buttonDesktop.ghost.hover.fill,
-      color: buttonDesktop.ghost.hover['label & icon'],
+      color: palette.neutral[50],
+      backgroundColor: palette.neutral[900],
     },
     '&:disabled': {
-      backgroundColor: buttonDesktop.ghost.disabled.fill,
-      color: buttonDesktop.ghost.disabled['label & icon'],
+      color: palette.text.disabled,
+      backgroundColor: palette.neutral[900],
     },
   })
 
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
-
+  const [sm, md, lg] = [2, 3, 4].map(basicMuiTheme.spacing)
   return {
     styleOverrides: {
       root: {
         variants: [
           // todo: variants shouldn't have colors
-          ...COLORS.map((color) => ({ props: { color }, style: getColorButtonStyle(color) })),
+          ...COLORS.map((color) => ({ props: { color }, style: colors[color] })),
           ...COLORS.map((color) => ({ props: { variant: 'ghost', color }, style: getGhostButtonStyle(color) })),
           ...COLORS.map((color) => ({ props: { variant: 'outlined', color }, style: getOutlinedButtonStyle(color) })),
           {
@@ -93,27 +96,37 @@ export const defineMuiButton = ({ themes, mappedSizesAndSpaces, typography }: Fi
             style: getNavigationButtonStyle(),
           },
         ],
-        borderRadius: buttonDesktop.radius.md,
+        borderRadius: 0,
+        '&:focus': { border: `2px solid ${palette.primary[500]}` },
       },
       sizeLarge: {
         height: largeHeight,
-        padding: `0 ${spacingDesktop.sm}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}0px` },
-        ...typography.buttonLabelM,
+        padding: `0 ${md}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}0px` },
+        fontSize: '16px',
+        fontWeight: 'bold',
+        lineHeight: '40px',
+        textTransform: 'uppercase',
         fontFamily,
       },
       sizeMedium: {
         height: mediumHeight,
-        padding: `0 ${spacingDesktop.sm}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.sm}px` },
-        ...typography.buttonLabelS,
+        padding: `0 ${md}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}px` },
+        fontSize: '14px',
+        fontWeight: 'bold',
+        lineHeight: '24px',
+        textTransform: 'uppercase',
         fontFamily,
       },
       sizeSmall: {
         height: smallHeight,
-        padding: `0 ${spacingDesktop.md}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${spacingMobile.md}px` },
-        ...typography.buttonLabelS,
+        padding: `0 ${lg}px`,
+        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${md}px` },
+        fontSize: '14px',
+        fontWeight: 'bold',
+        lineHeight: '24px',
+        textTransform: 'uppercase',
         fontFamily,
       },
     },
