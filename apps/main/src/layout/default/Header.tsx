@@ -66,7 +66,7 @@ const Header = () => {
   const routerNetwork = routerParams?.network
 
   const appLogoProps: AppLogoProps = {
-    appName: '',
+    appName: isLite ? 'Lite' : '',
   }
 
   // prettier-ignore
