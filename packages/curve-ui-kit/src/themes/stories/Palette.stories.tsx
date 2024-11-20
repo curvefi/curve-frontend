@@ -3,13 +3,14 @@ import { useTheme } from '@mui/material'
 import Box from '@mui/material/Box'
 import { StandardCSSProperties } from '@mui/system/styleFunctionSx/StandardCssProperties'
 import Typography from '@mui/material/Typography'
+import { PALETTES } from '../palette'
 
 const PaletteStory = () => {
   const { palette } = useTheme()
   return (
     <Box>
       {Object.entries(palette)
-        .filter(([, options]) => Object.values(options).filter((o) => typeof o === 'string').length)
+        .filter(([type, options]) => type in PALETTES[palette.mode] && Object.values(options).some((o) => `${o}`.startsWith('#')))
         .map(([type, options]) => (
           <Box key={type}>
             <Typography variant="headingMBold">{type}</Typography>
