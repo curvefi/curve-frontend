@@ -54,6 +54,7 @@ const Header = () => {
   const updateConnectState = useStore((state) => state.updateConnectState)
 
   const { rChainId, rNetworkIdx, rLocalePathname } = useParamsFromUrl()
+  const isLite = networks[rChainId].isLite
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const { rNetwork } = useNetworkFromUrl()
@@ -69,7 +70,10 @@ const Header = () => {
   }
 
   // prettier-ignore
-  const appStats = [
+  // only show total deposits on curve-lite networks
+  const appStats = isLite ? [
+    { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+  ] : [
     { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: t`Daily Volume`, value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
