@@ -2,7 +2,6 @@ import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS, ROUTE } from '@/constants'
-import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
@@ -49,73 +48,96 @@ export const Header = ({ sections }: HeaderProps) => {
     <NewHeader
       locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[isAdvanceMode, useCallback(() => setAppCache('isAdvanceMode', !isAdvanceMode), [isAdvanceMode, setAppCache])]}
-      currentApp="crvusd"
-      pages={useMemo(() =>
-        _parseRouteAndIsActive([
-          { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
-          { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'staking' },
-          { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: isLgUp ? 'risk' : 'crvUSD' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'integrations' : 'crvUSD' }
-        ], rLocale.rLocalePathname, routerPathname, routerNetwork), [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname])}
-      themes={[
-        themeType == 'default' ? 'light' : themeType as ThemeKey,
-        useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType), [setAppCache])
+      advancedMode={[
+        isAdvanceMode,
+        useCallback(() => setAppCache('isAdvanceMode', !isAdvanceMode), [isAdvanceMode, setAppCache]),
       ]}
-      LanguageProps={{
-        locale,
-        locales: DEFAULT_LOCALES,
-        onChange: useCallback((selectedLocale: React.Key) => {
-          const locale = selectedLocale === 'en' ? '' : `/${selectedLocale}`
-          const { rNetwork } = getNetworkFromUrl()
-          navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
-        }, [navigate])
-      }}
+      currentApp="crvusd"
+      pages={useMemo(
+        () =>
+          _parseRouteAndIsActive(
+            [
+              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
+              { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'staking' },
+              {
+                route: ROUTE.PAGE_RISK_DISCLAIMER,
+                label: t`Risk Disclaimer`,
+                groupedTitle: isLgUp ? 'risk' : 'crvUSD',
+              },
+              {
+                route: ROUTE.PAGE_INTEGRATIONS,
+                label: t`Integrations`,
+                groupedTitle: isLgUp ? 'integrations' : 'crvUSD',
+              },
+            ],
+            rLocale.rLocalePathname,
+            routerPathname,
+            routerNetwork,
+          ),
+        [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname],
+      )}
+      themes={[
+        themeType == 'default' ? 'light' : (themeType as ThemeKey),
+        useCallback(
+          (selectedThemeType: ThemeKey) =>
+            setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType),
+          [setAppCache],
+        ),
+      ]}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
-        onChange: useCallback((selectedChainId: ChainId) => {
-          if (rChainId !== selectedChainId) {
-            const network = networks[selectedChainId as ChainId].id
-            navigate(`${locale}/${network}/${getRestFullPathname()}`)
-            updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
-          }
-        }, [rChainId, navigate, locale, updateConnectState])
+        onChange: useCallback(
+          (selectedChainId: ChainId) => {
+            if (rChainId !== selectedChainId) {
+              const network = networks[selectedChainId as ChainId].id
+              navigate(`${locale}/${network}/${getRestFullPathname()}`)
+              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+            }
+          },
+          [rChainId, navigate, locale, updateConnectState],
+        ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
-        onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
+        onConnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
+          [updateConnectState],
+        ),
+        onDisconnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
+          [updateConnectState],
+        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
-        label: t`Connect Wallet`
+        label: t`Connect Wallet`,
       }}
       appStats={[
         {
-          label: 'TVL', value: useMemo(
+          label: 'TVL',
+          value: useMemo(
             () => _getTvl(collateralDatasMapper, loansDetailsMapper, usdRatesMapper),
-            [collateralDatasMapper, loansDetailsMapper, usdRatesMapper]
-          )
+            [collateralDatasMapper, loansDetailsMapper, usdRatesMapper],
+          ),
         },
         {
           label: t`Daily volume`,
-          value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+          value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
         {
           label: t`Total Supply`,
-          value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+          value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
-        { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' }
+        { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
       sections={sections}
       translations={{
         advanced: t`Advanced Mode`,
         advancedMode: t`Advanced`,
         theme: t`Mode`,
-        language: t`Language`,
         otherApps: t`Other Apps`,
         settings: t`Settings`,
-        socialMedia: t`Community`
+        socialMedia: t`Community`,
       }}
     />
   )

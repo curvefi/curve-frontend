@@ -26,7 +26,6 @@ const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
   currentApp,
-  LanguageProps,
   pages,
   appStats,
   themes,
@@ -91,7 +90,6 @@ export const MobileHeader = <TChainId extends number>({
 
           <SideBarFooter
             translations={t}
-            LanguageProps={LanguageProps}
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}

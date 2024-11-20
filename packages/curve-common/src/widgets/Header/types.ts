@@ -24,7 +24,6 @@ export type NavigationSection = {
 
 export type BaseHeaderProps<TChainId = number> = {
   currentApp: AppName
-  LanguageProps: LanguageSwitcherProps
   ChainProps: ChainSwitcherProps<TChainId>
   WalletProps: ConnectWalletIndicatorProps
   pages: AppPage[]
@@ -37,7 +36,6 @@ export type BaseHeaderProps<TChainId = number> = {
     advanced: string
     advancedMode: string
     theme: string
-    language: string
     otherApps: string
     settings: string
     socialMedia: string

@@ -1,11 +1,9 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-
 import { CONNECT_STAGE, ROUTE } from '@/constants'
-import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -48,51 +46,61 @@ export const Header = ({ sections }: HeaderProps) => {
     <NewHeader
       locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[ advanced, updateAdvanced ]}
+      advancedMode={[advanced, updateAdvanced]}
       currentApp="main"
       pages={useMemo(() => {
-        return _parseRouteAndIsActive([
-          ...(hasRouter && networks[rChainId].showRouterSwap) ? [
-            {
-              route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached),
-              label: t`Quickswap`,
-              groupedTitle: isLgUp ? 'Quickswap' : 'DEX'
-            }
-          ] : [],
-          { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
-          { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: isLgUp ? 'Pool Creation' : 'DEX' },
-          { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
-          { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
-        ], rLocalePathname, routerPathname, routerNetwork)
+        return _parseRouteAndIsActive(
+          [
+            ...(hasRouter && networks[rChainId].showRouterSwap
+              ? [
+                  {
+                    route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached),
+                    label: t`Quickswap`,
+                    groupedTitle: isLgUp ? 'Quickswap' : 'DEX',
+                  },
+                ]
+              : []),
+            { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
+            { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: isLgUp ? 'Pool Creation' : 'DEX' },
+            { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
+            { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
+          ],
+          rLocalePathname,
+          routerPathname,
+          routerNetwork,
+        )
       }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])}
       themes={[
-        themeType == 'default' ? 'light' : themeType as ThemeKey,
-        useCallback((selectedThemeType: ThemeKey) => setThemeType(selectedThemeType == 'light' ? 'default' : selectedThemeType), [setThemeType]),
+        themeType == 'default' ? 'light' : (themeType as ThemeKey),
+        useCallback(
+          (selectedThemeType: ThemeKey) => setThemeType(selectedThemeType == 'light' ? 'default' : selectedThemeType),
+          [setThemeType],
+        ),
       ]}
-      LanguageProps={{
-        locale,
-        locales: DEFAULT_LOCALES,
-        onChange: useCallback((selectedLocale: React.Key) => {
-          const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-          const { rNetwork } = getNetworkFromUrl()
-          navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
-        }, [navigate]),
-      }}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
-        onChange: useCallback((selectedChainId: ChainId) => {
-          if (rChainId !== selectedChainId) {
-            const network = networks[selectedChainId as ChainId].id
-            navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
-            updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
-          }
-        }, [rChainId, navigate, rLocalePathname, updateConnectState]),
+        onChange: useCallback(
+          (selectedChainId: ChainId) => {
+            if (rChainId !== selectedChainId) {
+              const network = networks[selectedChainId as ChainId].id
+              navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
+            }
+          },
+          [rChainId, navigate, rLocalePathname, updateConnectState],
+        ),
       }}
       WalletProps={{
-        onConnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']), [updateConnectState]),
-        onDisconnectWallet: useCallback(() => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET), [updateConnectState]),
+        onConnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.CONNECT_WALLET, ['']),
+          [updateConnectState],
+        ),
+        onDisconnectWallet: useCallback(
+          () => updateConnectState('loading', CONNECT_STAGE.DISCONNECT_WALLET),
+          [updateConnectState],
+        ),
         walletAddress: getWalletSignerAddress(wallet),
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
@@ -100,11 +108,11 @@ export const Header = ({ sections }: HeaderProps) => {
       appStats={[
         {
           label: t`Total Deposits`,
-          value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+          value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
         {
           label: t`Daily Volume`,
-          value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+          value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
         { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
       ]}
@@ -113,7 +121,6 @@ export const Header = ({ sections }: HeaderProps) => {
         advanced: t`Advanced Mode`,
         advancedMode: t`Advanced`,
         theme: t`Mode`,
-        language: t`Language`,
         otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,
@@ -125,7 +132,7 @@ export const Header = ({ sections }: HeaderProps) => {
 function _parseSwapRoute(
   rChainId: ChainId,
   route: string,
-  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined
+  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
 ) {
   const routerDefault = rChainId ? networks[rChainId].swap : {}
   const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''

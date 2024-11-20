@@ -1,9 +1,8 @@
-import { Key, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
-import { DEFAULT_LOCALES, updateAppLocale } from '@/lib/i18n'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/networks'
@@ -13,7 +12,7 @@ import { Header as NewHeader } from '@/common/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/system'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import type { Locale, NavigationSection } from '@/common/widgets/Header/types'
+import type { NavigationSection } from '@/common/widgets/Header/types'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
 
@@ -28,7 +27,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
   const connectState = useStore((state) => state.connectState)
   const isAdvancedMode = useStore((state) => state.isAdvanceMode)
   const locale = useStore((state) => state.locale)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
   const setAppCache = useStore((state) => state.setAppCache)
@@ -73,21 +71,9 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         [isMdUp, rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
-        themeType as string == 'default' ? 'light' : themeType,
+        (themeType as string) == 'default' ? 'light' : themeType,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
       ]}
-      LanguageProps={{
-        locale,
-        locales: DEFAULT_LOCALES,
-        onChange: useCallback(
-          (selectedLocale: Key) => {
-            const { rNetwork } = getNetworkFromUrl()
-            updateAppLocale(selectedLocale as Locale, updateGlobalStoreByKey)
-            navigate(`${selectedLocale === 'en' ? '' : `/${selectedLocale}`}/${rNetwork}/${getRestFullPathname()}`)
-          },
-          [updateGlobalStoreByKey, navigate],
-        ),
-      }}
       ChainProps={{
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
@@ -135,7 +121,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         advanced: t`Advanced`,
         advancedMode: t`Advanced Mode`,
         theme: t`Mode`,
-        language: t`Language`,
         otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,

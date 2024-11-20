@@ -1,6 +1,5 @@
 import { BaseHeaderProps } from './types'
-import Box, {type BoxProps} from '@mui/material/Box'
-import { LanguageSwitcher } from '../../features/switch-language'
+import Box, { type BoxProps } from '@mui/material/Box'
 import { ThemeSwitcherButtons } from '../../features/switch-theme'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
 import type { SxProps, Theme } from '@mui/system'
@@ -10,13 +9,9 @@ import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
-import { ReactNode } from 'react'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 
-type SideBarFooterProps = Pick<
-  BaseHeaderProps,
-  'translations' | 'advancedMode' | 'LanguageProps' | 'themes' | 'WalletProps'
-> & {
+type SideBarFooterProps = Pick<BaseHeaderProps, 'translations' | 'advancedMode' | 'themes' | 'WalletProps'> & {
   sx: SxProps<Theme>
 }
 
@@ -25,7 +20,6 @@ const backgroundColor = 'background.paper'
 export const SideBarFooter = ({
   themes: [theme, setTheme],
   advancedMode: [isAdvancedMode, setAdvancedMode],
-  LanguageProps,
   WalletProps,
   translations: t,
   sx,
@@ -54,10 +48,6 @@ export const SideBarFooter = ({
         >
           <SettingsOption label={t.theme}>
             <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t.theme} />
-          </SettingsOption>
-          {/* extra margin to make it similar to the mode switcher */}
-          <SettingsOption label={t.language} marginBottom={3}>
-            <LanguageSwitcher {...LanguageProps} />
           </SettingsOption>
           <SettingsOption label={t.advancedMode}>
             <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} />
