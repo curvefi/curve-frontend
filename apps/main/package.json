@@ -24,7 +24,7 @@
     "tsconfig": "*"
   },
   "dependencies": {
-    "@curvefi/api": "^2.65.10",
+    "@curvefi/api": "^2.65.11",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@lingui/react": "^4.6.0",
