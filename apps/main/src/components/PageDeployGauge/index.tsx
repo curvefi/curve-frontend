@@ -80,11 +80,13 @@ const DeployGauge = ({ curve }: Props) => {
       <Container variant="primary" shadowed flex flexColumn>
         <StyledBoxHeader className="title-text">
           {sidechainGauge ? t`Deploy Sidechain Gauge` : t`Deploy Mainnet Gauge`}
-          <Switch
-            isSelected={sidechainGauge}
-            onChange={setSidechainGauge}
-            aria-label={t`Toggle between mainnet and sidechain gauge deployment`}
-          />
+          {!isLite && (
+            <Switch
+              isSelected={sidechainGauge}
+              onChange={setSidechainGauge}
+              aria-label={t`Toggle between mainnet and sidechain gauge deployment`}
+            />
+          )}
         </StyledBoxHeader>
         {chainId && Object.keys(curveNetworks).length !== 0 ? (
           <>

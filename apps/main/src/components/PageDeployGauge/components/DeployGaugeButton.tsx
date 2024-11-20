@@ -27,11 +27,13 @@ interface Props {
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
+  const isLite = networks[chainId].isLite
   const navigate = useNavigate()
   const { rChainId, rNetwork } = useNetworkFromUrl()
 
-  const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
-    useStore((state) => state.deployGauge)
+  const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
+    (state) => state.deployGauge,
+  )
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
@@ -46,11 +48,11 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const handleClick = async () => {
     if (sidechainGauge) {
       if (sidechainNav === 0) {
-        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
-        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
-        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE')
-        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE')
-        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE', isLite)
       }
       if (sidechainNav === 1) {
         if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
