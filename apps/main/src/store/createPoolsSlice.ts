@@ -117,6 +117,7 @@ export type PoolsSlice = {
     setChartTimeOption: (timeOption: TimeOptions) => void
     setChartExpanded: (expanded: boolean) => void
     setActivityHidden: (hidden: boolean) => void
+    setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -876,6 +877,19 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           state.pools.pricesApiState.activityHidden = hidden
         }),
       )
+    },
+    setEmptyPoolListDefault: (chainId: number) => {
+      const sliceState = get().pools
+      const strChainId = chainId.toString()
+
+      sliceState.setStateByActiveKey('tvlMapper', strChainId, {})
+      sliceState.setStateByActiveKey('volumeMapper', strChainId, {})
+      sliceState.setStateByActiveKey('poolsMapper', strChainId, {})
+      sliceState.setStateByKeys({
+        tvlTotal: 0,
+        volumeTotal: 0,
+        volumeCryptoShare: 0,
+      })
     },
 
     // slice helpers

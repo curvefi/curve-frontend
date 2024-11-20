@@ -203,15 +203,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     // if no pools found for network, set tvl, volume and pools state to empty object
     if (!poolIds.length) {
-      const strChainId = chainId.toString()
-      state.pools.setStateByActiveKey('tvlMapper', strChainId, {})
-      state.pools.setStateByActiveKey('volumeMapper', strChainId, {})
-      state.pools.setStateByActiveKey('poolsMapper', strChainId, {})
-      state.pools.setStateByKeys({
-        tvlTotal: 0,
-        volumeTotal: 0,
-        volumeCryptoShare: 0,
-      })
+      state.pools.setEmptyPoolListDefault(chainId)
+      state.tokens.setEmptyPoolListDefault(chainId)
       state.updateGlobalStoreByKey('isLoadingApi', false)
       return
     }

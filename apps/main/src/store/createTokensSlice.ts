@@ -21,6 +21,7 @@ export type TokensSlice = {
   [sliceKey]: SliceState & {
     setTokenImage: (tokenAddress: string, src: string | null) => void
     setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): Promise<string[]>
+    setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -120,6 +121,34 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       sliceState.setStateByKey('loading', false)
 
       return Object.keys(parsedPartialTokensMapper)
+    },
+    setEmptyPoolListDefault: async (chainId) => {
+      const { networks, [sliceKey]: sliceState } = get()
+      const nativeToken = networks.nativeToken[chainId]
+
+      if (!nativeToken) return
+
+      const strChainId = chainId.toString()
+
+      const tokensNameMapper = {
+        [nativeToken.address]: nativeToken.symbol,
+        [nativeToken.wrappedAddress]: nativeToken.wrappedSymbol,
+      }
+      sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
+
+      const tokensMapper: { [tokenAddress: string]: Token } = {
+        [nativeToken.address]: {
+          ...DEFAULT_TOKEN,
+          address: nativeToken.address,
+          symbol: nativeToken.symbol,
+        },
+        [nativeToken.wrappedAddress]: {
+          ...DEFAULT_TOKEN,
+          address: nativeToken.wrappedAddress,
+          symbol: nativeToken.wrappedSymbol,
+        },
+      }
+      sliceState.setStateByActiveKey('tokensMapper', strChainId, tokensMapper)
     },
 
     // slice helpers
