@@ -2,7 +2,6 @@ import { AppBar, Toolbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
-import { LanguageSwitcher } from '../../features/switch-language'
 import { ChainSwitcher } from '../../features/switch-chain'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
@@ -15,7 +14,6 @@ import { BaseHeaderProps } from './types'
 export const DesktopHeader = <TChainId extends number>({
   currentApp,
   ChainProps,
-  LanguageProps,
   WalletProps,
   pages,
   appStats,
@@ -25,7 +23,10 @@ export const DesktopHeader = <TChainId extends number>({
 }: BaseHeaderProps<TChainId>) => (
   <>
     <AppBar color="transparent">
-      <Toolbar sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around', paddingY: 3 }} data-testid="main-nav">
+      <Toolbar
+        sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around', paddingY: 3 }}
+        data-testid="main-nav"
+      >
         <Container>
           <HeaderLogo appName={currentApp} />
           <AppButtonLinks currentApp={currentApp} />
@@ -34,7 +35,6 @@ export const DesktopHeader = <TChainId extends number>({
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
             <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advanced} />
-            <LanguageSwitcher {...LanguageProps} />
             <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
             <ChainSwitcher {...ChainProps} />
             <ConnectWalletIndicator {...WalletProps} />
