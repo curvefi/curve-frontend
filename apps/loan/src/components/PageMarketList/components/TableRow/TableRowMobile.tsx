@@ -7,18 +7,17 @@ import styled from 'styled-components'
 import { TITLE } from '@/constants'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import { Item, TCellInPool } from '@/components/PageMarketList/components/TableRow'
+import { Tr, CellInPool } from '@/ui/Table'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import TokenLabel from '@/components/TokenLabel'
 import Icon from '@/ui/Icon'
 import IconButton from '@/ui/IconButton'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
-import TableCellUtilization from '@/components/PageMarketList/components/TableCellUtilization'
-import TableCellInPool from '@/components/PageMarketList/components/TableCellInPool'
-import TableCellRate from '@/components/PageMarketList/components/TableCellRate'
-import TableCellTotalCollateral from '@/components/PageMarketList/components/TableCellTotalCollateral'
-import TableCellUser from '@/components/PageMarketList/components/TableCellUser'
+import TableCellUtilization from '@/components/SharedCells/TableCellUtilization'
+import TableCellRate from '@/components/SharedCells/TableCellRate'
+import TableCellTotalCollateral from '@/components/SharedCells/TableCellTotalCollateral'
+import TableCellUser from '@/components/SharedCells/TableCellUser'
 
 const TableRowMobile = ({
   className = '',
@@ -63,18 +62,14 @@ const TableRowMobile = ({
   ]
 
   return (
-    <Item ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
-      <TCell>
-        <MobileLabelWrapper flex>
+    <Tr ref={ref} className={`${className} row--info ${isVisible ? '' : 'pending'}`}>
+      <td>
+        <MobileLabelWrapper grid gridTemplateColumns={loanExists ? 'auto 1fr' : '1fr'}>
           {loanExists && (
-            <TCellInPool as="div" className={`row-in-pool ${loanExists ? 'active' : ''} `}>
-              <TableCellInPool />
-            </TCellInPool>
+            <CellInPool as="div" isMobile isIn type="market" tooltip={t`You have a balance in this market`} />
           )}
-          <MobileLabelContent>
-            <Box grid gridTemplateColumns="1fr 1fr">
-              <TokenLabel showAlert {...props} type="collateral" />
-            </Box>
+          <Box grid gridTemplateColumns="1fr auto" fillWidth padding="0 0 0 var(--spacing-narrow)">
+            <TokenLabel showAlert {...props} type="collateral" onClick={handleCellClick} />
             <IconButton
               onClick={() =>
                 setShowDetail((prevState) => {
@@ -84,7 +79,7 @@ const TableRowMobile = ({
             >
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
-          </MobileLabelContent>
+          </Box>
         </MobileLabelWrapper>
 
         <MobileTableContentWrapper className={isShowDetail ? 'show' : ''}>
@@ -118,24 +113,13 @@ const TableRowMobile = ({
             )}
           </StyledListInfoItemsWrapper>
         </MobileTableContentWrapper>
-      </TCell>
-    </Item>
+      </td>
+    </Tr>
   )
 }
 
 const MobileLabelWrapper = styled(Box)`
-  .row-in-pool {
-    align-items: center;
-    display: inline-flex;
-    min-width: 1rem;
-  }
-`
-
-const MobileLabelContent = styled.div`
-  display: grid;
-  grid-template-columns: 1fr auto;
-  padding: 4px;
-  width: 100%;
+  min-height: 50px;
 `
 
 const StyledListInfoItemsWrapper = styled(ListInfoItemsWrapper)`
@@ -155,10 +139,6 @@ const MobileTableContentWrapper = styled.div`
     max-height: 100rem;
     transition: max-height 1s ease-in-out;
   }
-`
-
-const TCell = styled.td`
-  border-bottom: 1px solid var(--border-400);
 `
 
 export default TableRowMobile

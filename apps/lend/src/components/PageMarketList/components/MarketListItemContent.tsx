@@ -10,9 +10,11 @@ import MarketListTable from '@/components/PageMarketList/components/TableRowView
 import MarketListItemHeader from '@/components/PageMarketList/components/MarketListItemHeader'
 
 const MarketListItemContent = ({
+  idx,
   marketListItem,
   ...props
 }: {
+  idx: number
   pageProps: PageMarketList
   marketListItem: MarketListItemResult
   showBorrowSignerCell: boolean
@@ -30,7 +32,7 @@ const MarketListItemContent = ({
 
   return (
     <>
-      <MarketListItemHeader rChainId={rChainId} {...marketListItem} />
+      <MarketListItemHeader idx={idx} rChainId={rChainId} {...marketListItem} />
       <TableWrapper>
         <MarketListTable {...props} {...marketListItem} tableSettings={tableSettings} />
       </TableWrapper>
@@ -39,7 +41,6 @@ const MarketListItemContent = ({
 }
 
 const TableWrapper = styled.div`
-  border: 1px solid var(--box_header--primary--background-color);
   box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
 
   @media (min-width: ${breakpoints.xs}rem) {
