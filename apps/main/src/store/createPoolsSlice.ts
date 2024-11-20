@@ -476,10 +476,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const { isLite } = networks[chainId]
       const { getTVL, getVolume } = curvejsApi.network
 
-      const [tvlResult, volumeResult] = await Promise.allSettled([
-        !isLite && getTVL(curve),
-        !isLite && getVolume(curve),
-      ])
+      const [tvlResult, volumeResult] = await Promise.allSettled([getTVL(curve), !isLite && getVolume(curve)])
       const tvl = fulfilledValue(tvlResult) || 0
       const volumeObj = fulfilledValue(volumeResult) || { totalVolume: 0, cryptoVolume: 0, cryptoShare: 0 }
 

@@ -207,6 +207,11 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       state.pools.setStateByActiveKey('tvlMapper', strChainId, {})
       state.pools.setStateByActiveKey('volumeMapper', strChainId, {})
       state.pools.setStateByActiveKey('poolsMapper', strChainId, {})
+      state.pools.setStateByKeys({
+        tvlTotal: 0,
+        volumeTotal: 0,
+        volumeCryptoShare: 0,
+      })
       state.updateGlobalStoreByKey('isLoadingApi', false)
       return
     }
