@@ -6,7 +6,8 @@ import React, { useCallback } from 'react'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
-import { TheadSortButton } from '@/ui/Table'
+
+import { Th, Thead, TheadSortButton } from '@/ui/Table'
 import Box from '@/ui/Box'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import TableHeadRewards from '@/components/PagePoolList/components/TableHeadRewards'
@@ -16,8 +17,6 @@ const TableHead = ({
   isReadyTvl,
   isReadyVolume,
   isMdUp,
-  resultRewardsCrvCount,
-  resultRewardsOtherCount,
   searchParams,
   showInPoolColumn,
   tableLabels,
@@ -27,8 +26,6 @@ const TableHead = ({
   isReadyTvl: boolean
   isReadyVolume: boolean
   isMdUp: boolean
-  resultRewardsCrvCount: number
-  resultRewardsOtherCount: number
   searchParams: SearchParams
   showInPoolColumn: boolean
   tableLabels: PoolListTableLabel
@@ -63,71 +60,74 @@ const TableHead = ({
         <col className="right" />
         <col className="right" />
       </colgroup>
-      <thead>
+      <StyledThead>
         <tr>
           {showInPoolColumn && <th className="in-pool"> </th>}
 
-          <th className="left">
-            <TheadSortButton sortIdKey="name" {...props} loading={false} indicatorPlacement="right">
+          <Th $first={!showInPoolColumn}>
+            <StyledTheadSortButton
+              className="left"
+              sortIdKey="name"
+              {...props}
+              loading={false}
+              indicatorPlacement="right"
+            >
               {tableLabels.name.name}
-            </TheadSortButton>
-          </th>
+            </StyledTheadSortButton>
+          </Th>
           {isMdUp ? (
             <>
-              <th className="right">
-                <TheadSortButton sortIdKey="rewardsBase" {...props} loading={!isReadyRewardsApy}>
+              <Th>
+                <StyledTheadSortButton
+                  className="right"
+                  sortIdKey="rewardsBase"
+                  {...props}
+                  loading={!isReadyRewardsApy}
+                >
                   {tableLabels.rewardsBase.name}
                   <IconTooltip placement="top">{t`Variable APY based on today's trading activity`}</IconTooltip>
-                </TheadSortButton>
-              </th>
-              <th className="right">
+                </StyledTheadSortButton>
+              </Th>
+              <Th className="right">
                 <Box grid gridRowGap={1}>
-                  <TableHeadRewards
-                    isReadyRewardsApy={isReadyRewardsApy}
-                    resultRewardsCrvCount={resultRewardsCrvCount}
-                    resultRewardsOtherCount={resultRewardsOtherCount}
-                    tableLabels={tableLabels}
-                    {...props}
-                  />
+                  <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
                 </Box>
-              </th>
+              </Th>
             </>
           ) : (
-            <th className="right">
-              <Box grid gridRowGap={2}>
+            <Th className="right">
+              <Box grid gridRowGap={2} flexJustifyContent="flex-end">
                 <TheadSortButton sortIdKey="rewardsBase" {...props} loading={!isReadyRewardsApy}>
                   {tableLabels.rewardsBase.name}
                   <IconTooltip placement="top">{t`Variable APY based on today's trading activity`}</IconTooltip>
                 </TheadSortButton>
-                <div>
-                  <TableHeadRewards
-                    isReadyRewardsApy={isReadyRewardsApy}
-                    resultRewardsCrvCount={resultRewardsCrvCount}
-                    resultRewardsOtherCount={resultRewardsOtherCount}
-                    tableLabels={tableLabels}
-                    {...props}
-                  />
-                </div>
+                <Box flex flexJustifyContent="flex-end">
+                  <TableHeadRewards isReadyRewardsApy={isReadyRewardsApy} tableLabels={tableLabels} {...props} />
+                </Box>
               </Box>
-            </th>
+            </Th>
           )}
-          <th className="right">
-            <TheadSortButton sortIdKey="volume" {...props} loading={!isReadyVolume}>
+          <Th>
+            <StyledTheadSortButton className="right" sortIdKey="volume" {...props} loading={!isReadyVolume}>
               {tableLabels.volume.name}
-            </TheadSortButton>
-          </th>
-          <th className="right">
-            <TheadSortButton sortIdKey="tvl" {...props} loading={!isReadyTvl} indicatorPlacement="left">
+            </StyledTheadSortButton>
+          </Th>
+          <Th $last>
+            <StyledTheadSortButton
+              className="right"
+              sortIdKey="tvl"
+              {...props}
+              loading={!isReadyTvl}
+              indicatorPlacement="left"
+            >
               {tableLabels.tvl.name}
-            </TheadSortButton>
-          </th>
+            </StyledTheadSortButton>
+          </Th>
         </tr>
-      </thead>
+      </StyledThead>
     </>
   )
 }
-
-TableHead.displayName = 'TableHead'
 
 const Col = styled.col`
   @media (min-width: ${breakpoints.lg}rem) {
@@ -146,7 +146,16 @@ const Col = styled.col`
 `
 
 const ColInPool = styled.col`
-  width: 25px;
+  width: 21px;
+`
+
+const StyledThead = styled(Thead)`
+  font-size: var(--font-size-2);
+`
+
+const StyledTheadSortButton = styled(TheadSortButton)`
+  width: 100%;
+  height: 100%;
 `
 
 export default TableHead

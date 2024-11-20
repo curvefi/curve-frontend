@@ -53,20 +53,8 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
   }
 
-  .nowrap {
-    white-space: nowrap;
-  }
-
   .vertical-align-middle {
     vertical-align: middle;
-  }
-
-  .right {
-    text-align: right;
-  }
-
-  .left {
-    text-align: left;
   }
 `
 

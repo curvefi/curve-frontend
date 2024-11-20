@@ -2,17 +2,16 @@ import type { PageMarketList, TableLabel } from '@/components/PageMarketList/typ
 
 import React from 'react'
 import { t } from '@lingui/macro'
-import { useFocusRing } from '@react-aria/focus'
 import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import Checkbox from '@/ui/Checkbox'
-import SearchInput from '@/ui/SearchInput'
 import SelectFilter from '@/components/PageMarketList/components/TableSettings/SelectFilter'
 import SelectFilterType from '@/components/PageMarketList/components/TableSettings/SelectFilterType'
 import SelectFilterBorrowLend from '@/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
+import SearchListInput from '@/ui/SearchInput/SearchListInput'
 
 const TableSettings = ({
   filterList,
@@ -30,33 +29,27 @@ const TableSettings = ({
   tableLabels: TableLabel[]
   tableLabelsSelector: { borrow: TableLabel[]; supply: TableLabel[] }
 }) => {
-  const { isFocusVisible, focusProps } = useFocusRing()
-
-  const { hideSmallMarkets, searchText } = searchParams
+  const { filterKey, hideSmallMarkets, searchText } = searchParams
 
   return (
     <>
       <SettingsWrapper>
-        <SearchWrapper gridArea="search" fillWidth>
-          <StyledSearchInput
-            id="inp-search-integrations"
-            className={isFocusVisible ? 'focus-visible' : ''}
-            {...focusProps}
-            value={searchText}
+        <Box gridArea="search" fillWidth>
+          <SearchListInput
+            placeholder={t`Search by tokens or address`}
+            searchText={searchText}
             handleInputChange={(val) => updatePath({ searchText: val })}
-            handleSearchClose={() => updatePath({ searchText: '' })}
+            handleClose={() => updatePath({ searchText: '' })}
           />
-        </SearchWrapper>
-        <FiltersWrapper grid gridArea="filters" flexJustifyContent="flex-start" gridAutoFlow="column">
+        </Box>
+        <FiltersWrapper gridArea="filters">
           <SelectFilterBorrowLend
             filterTypeMapper={filterTypeMapper}
             searchParams={searchParams}
             tableLabelsSelector={tableLabelsSelector}
             updatePath={updatePath}
           />
-        </FiltersWrapper>
-        <FiltersWrapper grid gridArea="filters2" flexJustifyContent="flex-start" gridAutoFlow="column">
-          <SelectFilter list={filterList} filterKey={searchParams.filterKey} updatePath={updatePath} />
+          <SelectFilter list={filterList} filterKey={filterKey} updatePath={updatePath} />
           <SelectFilterType
             searchParams={searchParams}
             showBorrowSignerCell={showBorrowSignerCell}
@@ -66,7 +59,7 @@ const TableSettings = ({
             updatePath={updatePath}
           />
         </FiltersWrapper>
-        <FilterSmallWrapper grid gridArea="hide">
+        <FilterSmallWrapper grid gridArea="small-markets">
           <Checkbox
             isSelected={hideSmallMarkets}
             onChange={() => updatePath({ hideSmallMarkets: !hideSmallMarkets })}
@@ -83,64 +76,45 @@ const SettingsWrapper = styled.div`
   grid-template-areas:
     'grid-search'
     'grid-filters'
-    'grid-filters2'
-    'grid-hide';
-  padding-bottom: 0;
+    'grid-small-markets';
+  padding: var(--spacing-narrow);
+  padding-top: var(--spacing-normal);
 
   @media (min-width: ${breakpoints.sm}rem) {
     grid-gap: var(--spacing-narrow);
     grid-template-columns: auto 1fr auto;
     grid-template-areas:
-      'grid-filters grid-search grid-hide'
-      'grid-filters2 grid-filters2 grid-filters2';
+      'grid-search grid-search grid-search'
+      'grid-filters grid-filters grid-small-markets';
     justify-content: flex-start;
-    padding: 0 var(--spacing-normal);
-    padding-top: var(--spacing-wide);
+    padding: var(--spacing-normal);
+    padding-bottom: var(--spacing-narrow);
   }
 
   @media (min-width: ${breakpoints.md}rem) {
-    grid-template-columns: auto auto 1fr auto;
-    grid-template-areas: 'grid-filters grid-filters2 grid-search grid-hide';
-  }
-`
-
-const SearchWrapper = styled(Box)`
-  padding: var(--spacing-normal) var(--spacing-narrow) 0 var(--spacing-narrow);
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding: 0;
+    grid-template-columns: auto auto 1fr;
+    grid-template-areas:
+      'grid-search grid-search grid-search'
+      'grid-filters grid-filters grid-small-markets';
   }
 `
 
 const FiltersWrapper = styled(Box)`
-  padding-left: var(--spacing-narrow);
-  grid-gap: var(--spacing-narrow);
-  overflow-x: scroll;
+  align-content: flex-start;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  grid-column-gap: var(--spacing-narrow);
+  grid-row-gap: var(--spacing-narrow);
 
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding: 0;
-    grid-gap: var(--spacing-narrow);
-    overflow: initial;
+  > * {
+    height: var(--height-medium);
   }
 `
 
 const FilterSmallWrapper = styled(Box)`
-  padding: 0 var(--spacing-narrow);
-
   @media (min-width: ${breakpoints.sm}rem) {
-    padding: 0;
-  }
-`
-
-const StyledSearchInput = styled(SearchInput)`
-  min-height: var(--height-large);
-
-  button {
-    min-height: 100%;
-  }
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    min-height: 100%;
+    justify-content: flex-end;
   }
 `
 

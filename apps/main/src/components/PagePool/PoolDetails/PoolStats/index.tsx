@@ -68,7 +68,7 @@ const PoolStats: React.FC<PoolStatsProps> = ({
               {poolDataCacheOrApi.pool.referenceAsset === 'CRYPTO' && (
                 <AlertBox alertType="info" title={t`${poolDataCacheOrApi.pool.name} is a Cryptoswap pool`}>
                   {t`Cryptoswap pools contain non pegged assets. Liquidity providers are exposed to all assets in the pools.`}{' '}
-                  <ExternalLink $noStyles href="https://resources.curve.fi/base-features/understanding-crypto-pools/">
+                  <ExternalLink $noStyles href="https://resources.curve.fi/pools/overview/">
                     {t`Click here to learn more about Cryptoswap pools`}
                   </ExternalLink>
                 </AlertBox>

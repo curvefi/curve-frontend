@@ -1,12 +1,15 @@
-import type { PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
+import type { PoolListTableLabel, SearchParams, SearchTermMapper } from '@/components/PagePoolList/types'
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableRow, { TableRowProps } from '@/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback } from 'react'
+import React, { FunctionComponent, useCallback, useMemo } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
+import networks from '@/networks'
+import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
+import { TrSearchedTextResult } from 'ui/src/Table'
 
 interface PoolRowProps {
   poolId: string
@@ -16,6 +19,7 @@ interface PoolRowProps {
   imageBaseUrl: string
   showInPoolColumn: boolean
   tableLabels: PoolListTableLabel
+  searchTermMapper: SearchTermMapper
   showDetail: string
   setShowDetail: (value: ((prevState: string) => string) | string) => void
   curve: CurveApi | null
@@ -35,6 +39,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   imageBaseUrl,
   showInPoolColumn,
   tableLabels,
+  searchTermMapper,
   showDetail,
   setShowDetail,
   curve,
@@ -45,16 +50,24 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const formValues = useStore((state) => state.poolList.formValues)
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const poolDatasMapper = useStore((state) => state.pools.poolsMapper[rChainId])
-  const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
-  const tvlMapperCached = useStore((state) => state.storeCache.tvlMapper[rChainId])
-  const tvlMapper = useStore((state) => state.pools.tvlMapper[rChainId])
-  const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
+  const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
+  const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
+  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId])
+  const searchedByAddresses = useStore((state) => state.poolList.searchedByAddresses[poolId])
+  const tvlCached = useStore((state) => state.storeCache.tvlMapper[rChainId]?.[poolId])
+  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId])
+  const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
   const themeType = useStore((state) => state.themeType)
-  const volumeMapperCached = useStore((state) => state.storeCache.volumeMapper[rChainId])
-  const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
+  const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
+  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
+
+  const poolDataCachedOrApi = poolData ?? poolDataCached
+
+  const parsedSearchTermMapper = useMemo(
+    () => parseSearchTermMapper(searchedByAddresses, searchTermMapper, poolDataCachedOrApi),
+    [poolDataCachedOrApi, searchTermMapper, searchedByAddresses]
+  )
 
   const handleCellClick = useCallback(
     (target: EventTarget, formType?: 'swap' | 'withdraw') => {
@@ -67,37 +80,49 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
     [navigate, poolId]
   )
 
-  const poolDataCached = poolDataMapperCached?.[poolId]
-  const poolData = poolDatasMapper?.[poolId]
-
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
     formValues,
     searchParams,
-    isInPool: userPoolList?.[poolId],
+    isInPool,
     imageBaseUrl,
     poolId,
     poolData,
-    poolDataCachedOrApi: poolData ?? poolDataCached,
-    rewardsApy: rewardsApyMapper?.[poolId],
-    showInPoolColumn: showInPoolColumn,
-    tvlCached: tvlMapperCached?.[poolId],
-    tvl: tvlMapper?.[poolId],
-    volumeCached: volumeMapperCached?.[poolId],
-    volume: volumeMapper?.[poolId],
+    poolDataCachedOrApi,
+    rewardsApy,
+    showInPoolColumn,
+    tvlCached,
+    tvl,
+    volumeCached,
+    volume,
     handleCellClick,
     campaignRewardsMapper,
   }
 
-  return isXSmDown ? (
-    <TableRowMobile
-      tableLabel={tableLabels}
-      showDetail={showDetail}
-      themeType={themeType}
-      setShowDetail={setShowDetail}
-      {...tableRowProps}
-    />
-  ) : (
-    <TableRow isMdUp={isMdUp} {...tableRowProps} />
+  return (
+    <>
+      {isXSmDown ? (
+        <TableRowMobile
+          tableLabel={tableLabels}
+          showDetail={showDetail}
+          themeType={themeType}
+          setShowDetail={setShowDetail}
+          {...tableRowProps}
+        />
+      ) : (
+        <TableRow isMdUp={isMdUp} {...tableRowProps} />
+      )}
+
+      {searchedByAddresses && Object.keys(searchedByAddresses).length > 0 && (
+        <TrSearchedTextResult
+          colSpan={10}
+          id={poolId}
+          isMobile={isXSmDown}
+          result={searchedByAddresses}
+          searchTermMapper={parsedSearchTermMapper}
+          scanAddressPath={networks[rChainId].scanAddressPath}
+        />
+      )}
+    </>
   )
 }

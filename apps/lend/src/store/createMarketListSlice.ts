@@ -5,17 +5,21 @@ import type {
   FormStatus,
   MarketListItemResult,
   SearchParams,
-  TableSettings
+  SearchTermResult,
+  TableSettings,
 } from '@/components/PageMarketList/types'
 
 import chunk from 'lodash/chunk'
 import orderBy from 'lodash/orderBy'
 import sortByFn from 'lodash/sortBy'
+import uniqBy from 'lodash/uniqBy'
 
-import { _getMarketList, _searchByTokensAddresses, DEFAULT_FORM_STATUS } from '@/components/PageMarketList/utils'
+import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { TITLE } from '@/constants'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
+import { searchByText } from '@/shared/curve-lib'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
 import { getTokenUsdRateQueryData } from '@/entities/token'
@@ -33,6 +37,8 @@ type SliceState = {
   searchParams: SearchParams
   searchTextByTokensAndAddresses: { [activeKey: string]: { [address: string]: boolean } }
   searchTextByOther: { [activeKey: string]: { [address: string]: boolean } }
+  searchedByTokens: SearchTermResult
+  searchedByAddresses: SearchTermResult
   result: { [activeKey: string]: MarketListItemResult[] }
   showHideSmallPools: boolean
 }
@@ -75,6 +81,8 @@ const DEFAULT_STATE: SliceState = {
   },
   searchTextByTokensAndAddresses: {},
   searchTextByOther: {},
+  searchedByTokens: {},
+  searchedByAddresses: {},
   result: {},
   showHideSmallPools: false,
 }
@@ -96,21 +104,29 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       })
     },
     filterBySearchText: (searchText, markets) => {
-      let parsedSearchText = searchText.toLowerCase().trim()
+      const { formStatus, ...sliceState } = get()[sliceKey]
 
-      let results: { searchTerm: string; results: OneWayMarketTemplate[] } = {
-        searchTerm: '',
-        results: [],
-      }
+      const { tokensResult, addressesResult } = searchByText(
+        searchText,
+        markets,
+        [SEARCH_TERM['owm.borrowed_token.symbol'], SEARCH_TERM['owm.collateral_token.symbol']],
+        {
+          tokens: [SEARCH_TERM['owm.borrowed_token.address'], SEARCH_TERM['owm.collateral_token.address']],
+          other: [
+            SEARCH_TERM['owm.addresses.controller'],
+            SEARCH_TERM['owm.addresses.amm'],
+            SEARCH_TERM['owm.addresses.vault'],
+            SEARCH_TERM['owm.addresses.gauge'],
+          ],
+        },
+      )
 
-      const searchByTokensAddressesResult = _searchByTokensAddresses(parsedSearchText, searchText, markets)
-      results.searchTerm = parsedSearchText
-      results.results = searchByTokensAddressesResult
+      sliceState.setStateByKeys({
+        searchedByTokens: parseSearchTermResults(tokensResult),
+        searchedByAddresses: parseSearchTermResults(addressesResult),
+      })
 
-      if (results.searchTerm !== parsedSearchText) {
-        results.results = []
-      }
-      return results.results
+      return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.id).map((r) => r.item)
     },
     sortByUserData: (api, sortKey, market) => {
       const { user } = get()
@@ -193,25 +209,32 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       const { marketListMapper } = _getMarketList(markets)
 
-      const marketsResult = sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map((market, idx) => {
-        // set table settings for each market
-        parsedTableRowsSettings[market.address] = getTableRowSettings(market.address, searchParams, tableRowsSettings, idx !== 0)
+      const marketsResult = sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map(
+        (market, idx) => {
+          // set table settings for each market
+          parsedTableRowsSettings[market.address] = getTableRowSettings(
+            market.address,
+            searchParams,
+            tableRowsSettings,
+            idx !== 0,
+          )
 
-        const tokenOwmDatas = Object.keys(market.markets).map((k) => marketMapping[k])
+          const tokenOwmDatas = Object.keys(market.markets).map((k) => marketMapping[k])
 
-        return {
-          address: market.address,
-          symbol: market.symbol,
-          markets: sliceState
-            .sortFn(
-              api,
-              searchParams.filterTypeKey === 'borrow' ? 'totalCollateralValue' : 'totalLiquidity',
-              'desc',
-              tokenOwmDatas
-            )
-            .map((m) => m.id),
-        }
-      })
+          return {
+            address: market.address,
+            symbol: market.symbol,
+            markets: sliceState
+              .sortFn(
+                api,
+                searchParams.filterTypeKey === 'borrow' ? 'totalCollateralValue' : 'totalLiquidity',
+                'desc',
+                tokenOwmDatas,
+              )
+              .map((m) => m.id),
+          }
+        },
+      )
 
       return { result: marketsResult, tableRowsSettings: parsedTableRowsSettings }
     },
@@ -260,7 +283,9 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       sliceState.setStateByKeys({
         activeKey,
-        formStatus: { error: '', noResult: false, isLoading: true },
+        formStatus: { ...DEFAULT_FORM_STATUS, isLoading: true },
+        searchedByAddresses: {},
+        searchedByTokens: {},
       })
 
       // allow UI to update paint
@@ -284,6 +309,12 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         }
       }
 
+      // hide small markets
+      if (hideSmallMarkets) {
+        await markets.fetchDatas('statsCapAndAvailableMapper', api, cMarkets, shouldRefetch)
+        cMarkets = sliceState.filterSmallMarkets(api, cMarkets)
+      }
+
       if (filterKey) {
         if (filterKey === 'user' && !!signerAddress) {
           cMarkets = sliceState.filterUserList(api, cMarkets, searchParams.filterTypeKey)
@@ -295,12 +326,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       // searchText
       if (searchText) {
         cMarkets = sliceState.filterBySearchText(searchText, cMarkets)
-      }
-
-      // hide small markets
-      if (hideSmallMarkets) {
-        await markets.fetchDatas('statsCapAndAvailableMapper', api, cMarkets, shouldRefetch)
-        cMarkets = sliceState.filterSmallMarkets(api, cMarkets)
       }
 
       // api calls
@@ -337,7 +362,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       if (sortBy && sortBy.startsWith('my')) {
         await Promise.all(
-          ['loansHealthsMapper', 'loansStatesMapper'].map((k) => user.fetchLoanDatas(k, api, cMarkets, shouldRefetch))
+          ['loansHealthsMapper', 'loansStatesMapper'].map((k) => user.fetchLoanDatas(k, api, cMarkets, shouldRefetch)),
         )
       }
 
@@ -382,7 +407,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       }
 
       await Promise.all(
-        fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch))
+        fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch)),
       )
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
     },
@@ -419,7 +444,11 @@ export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   return `${chainId}-${filterTypeKey}-${filterKey}-${parsedSearchText}${sortByStr}`
 }
 
-function sortByRewards(market: OneWayMarketTemplate, rewardsMapper: MarketsRewardsMapper, ratesMapper: MarketsRatesMapper) {
+function sortByRewards(
+  market: OneWayMarketTemplate,
+  rewardsMapper: MarketsRewardsMapper,
+  ratesMapper: MarketsRatesMapper,
+) {
   const rewards = rewardsMapper[market.id]?.rewards
   const rates = ratesMapper[market.id]?.rates
 
@@ -434,7 +463,7 @@ function sortByRewards(market: OneWayMarketTemplate, rewardsMapper: MarketsRewar
 function sortByUtilization(
   market: OneWayMarketTemplate,
   statsCapAndAvailableMapper: MarketsStatsCapAndAvailableMapper,
-  statsTotalsMapper: MarketsStatsTotalsMapper
+  statsTotalsMapper: MarketsStatsTotalsMapper,
 ) {
   const statsCapAndAvailable = statsCapAndAvailableMapper[market.id]
   const statsTotals = statsTotalsMapper[market.id]
@@ -448,7 +477,7 @@ function getTableRowSettings(
   tokenAddress: string,
   { sortBy, sortByOrder, filterTypeKey }: SearchParams,
   tableSettingsMapper: { [tokenAddress: string]: TableSettings },
-  isNotSortable: boolean
+  isNotSortable: boolean,
 ) {
   const prevTableSettings = tableSettingsMapper[tokenAddress] ?? {}
 
