@@ -3,11 +3,8 @@ import type { ContractTransactionResponse } from 'ethers'
 import type { PoolType, PoolTypes } from '@/components/PageDeployGauge/types'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import produce from 'immer'
 import { t } from '@lingui/macro'
-
-import networks from '@/networks'
 import { shortenTokenAddress } from '@/utils'
 
 type NetworkWithFactory = {
@@ -56,7 +53,7 @@ export type DeployGaugeSlice = {
     setLpTokenAddress: (lpTokenAddress: string) => void
     setLinkPoolAddress: (linkPoolAddress: string) => void
     setSidechainNav: (number: number) => void
-    deployGauge: (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType) => void
+    deployGauge: (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType, isLite?: boolean) => void
     resetState: () => void
   }
 }
@@ -96,6 +93,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
     setCurveNetworks: () => {
       const networksWithFactory: NetworksWithFactory = {}
 
+      const {
+        networks: { networks },
+      } = get()
       Object.entries(networks).forEach(([key, chain]) => {
         if (chain.hasFactory) {
           networksWithFactory[key] = {
@@ -115,21 +115,21 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       set(
         produce((state: State) => {
           state.deployGauge.curveNetworks = networksWithFactory
-        })
+        }),
       )
     },
     setCurrentPoolType: (poolType: PoolType) => {
       set(
         produce((state: State) => {
           state.deployGauge.currentPoolType = poolType
-        })
+        }),
       )
     },
     setSidechainGauge: (bool: boolean) => {
       set(
         produce((state: State) => {
           state.deployGauge.sidechainGauge = bool
-        })
+        }),
       )
     },
     setCurrentSidechain: (chainName: string) => {
@@ -137,7 +137,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       const chainNameLower = chainName.toLowerCase()
 
       const matchingEntry = Object.entries(curveNetworks).find(
-        ([_, network]) => network.name.toLowerCase() === chainNameLower
+        ([_, network]) => network.name.toLowerCase() === chainNameLower,
       )
 
       const matchingChainId: ChainId | null = matchingEntry ? (Number(matchingEntry[0]) as ChainId) : null
@@ -145,38 +145,38 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       set(
         produce((state: State) => {
           state.deployGauge.currentSidechain = matchingChainId
-        })
+        }),
       )
     },
     setPoolAddress: (poolAddress: string) => {
       set(
         produce((state: State) => {
           state.deployGauge.poolAddress = poolAddress
-        })
+        }),
       )
     },
     setLpTokenAddress: (lpTokenAddress: string) => {
       set(
         produce((state: State) => {
           state.deployGauge.lpTokenAddress = lpTokenAddress
-        })
+        }),
       )
     },
     setSidechainNav: (number: SidechainNav) => {
       set(
         produce((state: State) => {
           state.deployGauge.sidechainNav = number
-        })
+        }),
       )
     },
     setLinkPoolAddress: (linkPoolAddress: string) => {
       set(
         produce((state) => {
           state.deployGauge.linkPoolAddress = linkPoolAddress
-        })
+        }),
       )
     },
-    deployGauge: async (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType) => {
+    deployGauge: async (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType, isLite = false) => {
       const { poolAddress, lpTokenAddress, sidechainGauge, currentSidechain } = get().deployGauge
       const chainId = curve.chainId
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -198,7 +198,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
         set(
           produce((state: State) => {
             state.deployGauge.deploymentStatus.mainnet.status = 'CONFIRMING'
-          })
+          }),
         )
 
         if (gaugeType === 'STABLENG') {
@@ -209,7 +209,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
@@ -221,7 +221,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
@@ -232,7 +232,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -246,7 +246,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
@@ -258,7 +258,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
@@ -269,7 +269,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -283,7 +283,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
@@ -295,7 +295,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
@@ -306,7 +306,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -320,7 +320,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
@@ -332,7 +332,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
@@ -343,7 +343,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -356,7 +356,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mainnet.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying gauge for ${shortenAddress}...`
@@ -368,7 +368,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mainnet gauge deployment successful.`
@@ -379,7 +379,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mainnet.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mainnet.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -391,7 +391,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
         set(
           produce((state: State) => {
             state.deployGauge.deploymentStatus.sidechain.status = 'CONFIRMING'
-          })
+          }),
         )
 
         if (gaugeType === 'STABLENG') {
@@ -402,7 +402,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
@@ -414,9 +414,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                state.deployGauge.sidechainNav = 1
+                state.deployGauge.sidechainNav = isLite ? 0 : 1
                 state.deployGauge.currentSidechain = chainId
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
@@ -427,7 +427,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -440,7 +440,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
@@ -452,9 +452,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                state.deployGauge.sidechainNav = 1
+                state.deployGauge.sidechainNav = isLite ? 0 : 1
                 state.deployGauge.currentSidechain = chainId
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
@@ -465,7 +465,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -478,7 +478,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
@@ -490,9 +490,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                state.deployGauge.sidechainNav = 1
+                state.deployGauge.sidechainNav = isLite ? 0 : 1
                 state.deployGauge.currentSidechain = chainId
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
@@ -503,7 +503,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -516,7 +516,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
@@ -528,9 +528,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                state.deployGauge.sidechainNav = 1
+                state.deployGauge.sidechainNav = isLite ? 0 : 1
                 state.deployGauge.currentSidechain = chainId
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
@@ -541,7 +541,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -554,7 +554,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'LOADING'
                 state.deployGauge.deploymentStatus.sidechain.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying sidechain gauge for ${shortenAddress}...`
@@ -566,9 +566,9 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'SUCCESS'
-                state.deployGauge.sidechainNav = 1
+                state.deployGauge.sidechainNav = isLite ? 0 : 1
                 state.deployGauge.currentSidechain = chainId
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Sidechain gauge deployment successful.`
@@ -579,7 +579,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.sidechain.status = 'ERROR'
                 state.deployGauge.deploymentStatus.sidechain.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -591,21 +591,21 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
         set(
           produce((state: State) => {
             state.deployGauge.deploymentStatus.mirror.status = 'CONFIRMING'
-          })
+          }),
         )
 
         if (gaugeType === 'STABLENG') {
           try {
             const deployGaugeTx = await curve.stableNgFactory.deployGaugeMirror(
               currentSidechain!,
-              cutSalt(lpTokenAddress)
+              cutSalt(lpTokenAddress),
             )
 
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
@@ -617,7 +617,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
@@ -628,7 +628,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -637,14 +637,14 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
           try {
             const deployGaugeTx = await curve.cryptoFactory.deployGaugeMirror(
               currentSidechain!,
-              cutSalt(lpTokenAddress)
+              cutSalt(lpTokenAddress),
             )
 
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
@@ -656,7 +656,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
@@ -667,7 +667,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -676,14 +676,14 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
           try {
             const deployGaugeTx = await curve.twocryptoFactory.deployGaugeMirror(
               currentSidechain!,
-              cutSalt(lpTokenAddress)
+              cutSalt(lpTokenAddress),
             )
 
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
@@ -695,7 +695,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
@@ -706,7 +706,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -715,14 +715,14 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
           try {
             const deployGaugeTx = await curve.tricryptoFactory.deployGaugeMirror(
               currentSidechain!,
-              cutSalt(lpTokenAddress)
+              cutSalt(lpTokenAddress),
             )
 
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
@@ -734,7 +734,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
@@ -745,7 +745,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -758,7 +758,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'LOADING'
                 state.deployGauge.deploymentStatus.mirror.transaction = deployGaugeTx
-              })
+              }),
             )
             dismissConfirm()
             const deployingNotificationMessage = t`Deploying mirror gauge for ${shortenAddress}...`
@@ -770,7 +770,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
             set(
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'SUCCESS'
-              })
+              }),
             )
             dismissDeploying()
             const successNotificationMessage = t`Mirror gauge deployment successful.`
@@ -781,7 +781,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
               produce((state) => {
                 state.deployGauge.deploymentStatus.mirror.status = 'ERROR'
                 state.deployGauge.deploymentStatus.mirror.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -792,7 +792,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
       set(
         produce((state) => {
           state.deployGauge = { ...get().deployGauge, DEFAULT_STATE }
-        })
+        }),
       )
     },
   },

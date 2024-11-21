@@ -11,7 +11,7 @@ function SelectModalListBox<T>(
   props: AriaListBoxOptions<T> & {
     state: SelectState<T>
     listBoxRef?: React.RefObject<HTMLUListElement>
-  }
+  },
 ) {
   const ref = React.useRef<HTMLUListElement>(null)
   const { listBoxRef = ref, state } = props
@@ -34,6 +34,7 @@ const StyledListBox = styled.ul<{ minWidth?: string }>`
   box-shadow: 6px 6px 0 var(--box--primary--shadow-color);
   font-size: var(--font-size-2);
   max-height: 80vh;
+  overflow-x: auto;
   ${({ minWidth }) => minWidth && `min-width: ${minWidth};`}//overflow: auto;
 `
 

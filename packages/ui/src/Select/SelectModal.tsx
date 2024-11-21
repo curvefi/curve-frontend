@@ -12,6 +12,7 @@ import SelectModalListBox from 'ui/src/Select/SelectModalListBox'
 function SelectModal<T>({
   menuProps,
   state,
+  selectSearchOptions,
   ...props
 }: React.PropsWithChildren<
   AriaOverlayProps & {
@@ -19,6 +20,10 @@ function SelectModal<T>({
     minWidth?: string
     mobileRightAlign?: boolean
     popoverRef?: React.RefObject<HTMLDivElement>
+    selectSearchOptions?: {
+      onSelectionChange: (key: React.Key) => void
+      searchFilterKeys: string[]
+    }
     state: SelectState<T>
   }
 >) {
@@ -33,7 +38,7 @@ function SelectModal<T>({
       shouldCloseOnBlur: true,
       isDismissable: true,
     },
-    popoverRef
+    popoverRef,
   )
 
   return (

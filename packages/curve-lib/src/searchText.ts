@@ -1,10 +1,11 @@
+import { isEqualWith, uniqWith } from 'lodash'
 import Fuse from 'fuse.js'
 import FuseResult = Fuse.FuseResult
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
 function uniqueResult<T>(results: SearchTermsFuseResult<T>): SearchTermsFuseResult<T> {
-  return Array.from(new Set(results.map((item) => JSON.stringify(item)))).map((item) => JSON.parse(item))
+  return uniqWith(results, isEqualWith)
 }
 
 export function groupSearchTerms(searchText: string) {
@@ -92,7 +93,7 @@ export function searchByText<T>(
   searchText: string,
   datas: T[],
   tokenKeys: string[],
-  addressKeys: { tokens: string[]; other: string[] }
+  addressKeys: { tokens: string[]; other: string[] },
 ) {
   const { addresses, tokens } = groupSearchTerms(searchText)
 

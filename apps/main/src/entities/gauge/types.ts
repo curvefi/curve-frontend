@@ -10,13 +10,9 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import type { PoolTemplate } from '@curvefi/api/lib/pools'
-import type { Address } from 'viem'
-import { FieldsOf } from '@/shared/lib/validation'
-import { GaugeParams, GaugeQuery } from '@/shared/model/query'
-import type { NestedFunction, NestedKeys } from '@/shared/types/nested'
-
-export type PoolMethodResult<M extends NestedKeys<PoolTemplate>> = Awaited<ReturnType<NestedFunction<PoolTemplate, M>>>
+import type {Address} from 'viem'
+import {FieldsOf} from '@/shared/lib/validation'
+import {GaugeQuery} from '@/shared/model/query'
 
 export type AddReward = {
   rewardTokenId: Address

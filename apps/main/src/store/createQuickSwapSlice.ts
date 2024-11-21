@@ -260,7 +260,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       const activeKey = sliceState.activeKey
       const { signerAddress } = curve
-      const { fromAmount, isFrom, toAmount } = sliceState.formValues
+      const { fromAmount } = sliceState.formValues
       const { fromAddress, toAddress } = searchedParams
 
       if (+fromAmount <= 0 || !signerAddress) return

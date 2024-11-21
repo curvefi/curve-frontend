@@ -1,22 +1,18 @@
 import type { FormStatus, FormValues, StepKey } from '@/components/PagePool/Withdraw/types'
 import type { Slippage, TransferProps } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled, { css } from 'styled-components'
-
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { amountsDescription } from '@/components/PagePool/utils'
 import { mediaQueries } from '@/ui/utils/responsive'
 import { resetFormAmounts } from '@/components/PagePool/Withdraw/utils'
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/components/PagePool'
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import { Radio, RadioGroup } from '@/ui/Radio'
@@ -64,6 +60,7 @@ const FormWithdraw = ({
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -84,10 +81,10 @@ const FormWithdraw = ({
         updatedFormValues,
         null,
         seed.isSeed,
-        updatedMaxSlippage || maxSlippage
+        updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage]
+    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -97,7 +94,7 @@ const FormWithdraw = ({
       await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification]
+    [fetchStepApprove, notifyNotification],
   )
 
   const handleWithdrawClick = useCallback(
@@ -107,13 +104,13 @@ const FormWithdraw = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = t`Withdrew ${formValues.lpToken} LP Tokens for ${tokenText}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification]
+    [fetchStepWithdraw, notifyNotification, network],
   )
 
   const getSteps = useCallback(
@@ -127,7 +124,7 @@ const FormWithdraw = ({
       slippage: Slippage,
       steps: Step[],
       maxSlippage: string,
-      isSeed: boolean
+      isSeed: boolean,
     ) => {
       const haveFormLpToken = +formValues.lpToken > 0
       const haveUserLpToken = typeof userPoolBalances !== 'undefined' && +userPoolBalances.lpToken > 0
@@ -193,7 +190,7 @@ const FormWithdraw = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances]
+    [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances],
   )
 
   // onMount
@@ -241,7 +238,7 @@ const FormWithdraw = ({
         slippage,
         steps,
         maxSlippage,
-        seed.isSeed
+        seed.isSeed,
       )
       setSteps(updatedSteps)
     }
@@ -305,7 +302,7 @@ const FormWithdraw = ({
               amounts: resetFormAmounts(formValues),
               lpToken: val,
             },
-            null
+            null,
           )
         }}
         disableInput={isDisabled}
@@ -317,7 +314,7 @@ const FormWithdraw = ({
               lpToken: (userPoolBalances?.lpToken as string) ?? '0',
             },
 
-            null
+            null,
           )
         }}
       />
@@ -338,7 +335,7 @@ const FormWithdraw = ({
                     selectedTokenAddress: formValues.selectedTokenAddress || poolDataCacheOrApi.tokenAddresses[0],
                   },
 
-                  null
+                  null,
                 )
               } else if (selected === 'lpToken') {
                 updateFormValues({ amounts: resetFormAmounts(formValues), selected }, null)
@@ -381,7 +378,7 @@ const FormWithdraw = ({
                         selectedTokenAddress: tokenAddress,
                       },
 
-                      null
+                      null,
                     )
                   }}
                 />
@@ -440,7 +437,7 @@ const FormWithdraw = ({
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <Checkbox
-            isDisabled={!poolData || isDisabled || networks[rChainId].poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
+            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
             onChange={(isWrapped) => {
               if (poolData) {

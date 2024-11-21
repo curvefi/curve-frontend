@@ -1,14 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-
 import { copyToClipboard } from '@/lib/utils'
 import { shortenTokenAddress } from '@/utils'
-import networks from '@/networks'
-
 import { StyledIconButton } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
+import useStore from '@/store/useStore'
 
 const ContractComp = ({
   address,
@@ -25,6 +23,7 @@ const ContractComp = ({
   showBottomBorder: boolean
   action?: React.ReactNode
 }) => {
+  const network = useStore((state) => state.networks.networks[rChainId])
   const handleCopyClick = (address: string) => {
     copyToClipboard(address)
   }
@@ -36,7 +35,7 @@ const ContractComp = ({
           <LabelWrapper flex flexDirection="row">
             <Box flex flexDirection="column">
               {label}
-              <StyledExternalLink href={networks[rChainId].scanAddressPath(address)}>
+              <StyledExternalLink href={network.scanAddressPath(address)}>
                 {shortenTokenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>
@@ -49,7 +48,7 @@ const ContractComp = ({
           <>
             <Label>{label}</Label>
             <span>
-              <StyledExternalLink href={networks[rChainId].scanAddressPath(address)}>
+              <StyledExternalLink href={network.scanAddressPath(address)}>
                 {shortenTokenAddress(address)}
                 <Icon name="Launch" size={16} />
               </StyledExternalLink>

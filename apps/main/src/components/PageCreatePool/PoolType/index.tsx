@@ -1,11 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-
-import networks from '@/networks'
-
 import Box from '@/ui/Box'
 import SelectButton from '@/components/PageCreatePool/components/SelectButton'
 
@@ -16,6 +12,7 @@ type Props = {
 const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
+  const networks = useStore((state) => state.networks.networks)
 
   const { stableswapFactory, stableswapFactoryOld, tricryptoFactory, twocryptoFactory } = networks[chainId]
 

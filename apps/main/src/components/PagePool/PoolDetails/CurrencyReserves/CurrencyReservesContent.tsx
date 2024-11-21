@@ -1,12 +1,8 @@
 import type { CurrencyReservesProps } from '@/components/PagePool/PoolDetails/CurrencyReserves/types'
-
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-
 import { breakpoints, formatNumber, formatNumberUsdRate } from '@/ui/utils'
-import { getImageBaseUrl } from '@/utils/utilsCurvejs'
 import { shortenTokenAddress } from '@/utils'
-
 import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@/ui/Typography/Chip'
 import Box from '@/ui/Box'
@@ -21,64 +17,61 @@ const CurrencyReservesContent = ({
   cr,
   haveSameTokenName,
   network,
-  rChainId,
   token,
   tokenAddress,
   tokenLink,
   tokensMapper,
   handleCopyClick,
-}: CurrencyReservesProps) => {
-  return (
-    <Wrapper flex flexJustifyContent="space-between" isBorderBottom>
-      <Box flex flexAlignItems="center" gridGap={1}>
-        <TokenIcon
-          size="sm"
-          imageBaseUrl={getImageBaseUrl(rChainId)}
-          token={token}
-          address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
-        />
+}: CurrencyReservesProps) => (
+  <Wrapper flex flexJustifyContent="space-between" isBorderBottom>
+    <Box flex flexAlignItems="center" gridGap={1}>
+      <TokenIcon
+        size="sm"
+        imageBaseUrl={network?.imageBaseUrl ?? ''}
+        token={token}
+        address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
+      />
 
-        <Box grid gridGap={1}>
-          <TokenLabelLink $noStyles href={network.scanTokenPath(tokenAddress)}>
-            <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
-            {haveSameTokenName ? (
-              <Chip opacity={0.7} size="xs">
-                {shortenTokenAddress(tokenAddress)}
-              </Chip>
-            ) : null}
-          </TokenLabelLink>
+      <Box grid gridGap={1}>
+        <TokenLabelLink $noStyles href={network.scanTokenPath(tokenAddress)}>
+          <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
+          {haveSameTokenName ? (
+            <Chip opacity={0.7} size="xs">
+              {shortenTokenAddress(tokenAddress)}
+            </Chip>
+          ) : null}
+        </TokenLabelLink>
 
-          <Box flex flexAlignItems="center" gridGap={2}>
-            <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
-            <TooltipButton onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
-              <Icon name="Copy" size={16} />
-            </TooltipButton>
+        <Box flex flexAlignItems="center" gridGap={2}>
+          <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
+          <TooltipButton onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
+            <Icon name="Copy" size={16} />
+          </TooltipButton>
 
-            {tokenLink && (
-              <TokenLink $noStyles href={tokenLink}>
-                <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
-              </TokenLink>
-            )}
-          </Box>
+          {tokenLink && (
+            <TokenLink $noStyles href={tokenLink}>
+              <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
+            </TokenLink>
+          )}
         </Box>
       </Box>
+    </Box>
 
-      <Box className={'right'} flex flexDirection="column">
-        <Chip size="md" isBold>
-          {formatNumber(cr?.balance, { defaultValue: '-' })}{' '}
-        </Chip>
-        <TokenBalancePercent opacity={0.7}>
-          {typeof cr?.percentShareInPool === 'undefined' || cr.percentShareInPool === 'NaN'
-            ? '?%'
-            : formatNumber(cr.percentShareInPool, {
-                style: 'percent',
-                ...(Number(cr.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
-              })}
-        </TokenBalancePercent>
-      </Box>
-    </Wrapper>
-  )
-}
+    <Box className={'right'} flex flexDirection="column">
+      <Chip size="md" isBold>
+        {formatNumber(cr?.balance, { defaultValue: '-' })}{' '}
+      </Chip>
+      <TokenBalancePercent opacity={0.7}>
+        {typeof cr?.percentShareInPool === 'undefined' || cr.percentShareInPool === 'NaN'
+          ? '?%'
+          : formatNumber(cr.percentShareInPool, {
+              style: 'percent',
+              ...(Number(cr.percentShareInPool) > 0 ? { minimumIntegerDigits: 2 } : {}),
+            })}
+      </TokenBalancePercent>
+    </Box>
+  </Wrapper>
+)
 
 const Wrapper = styled(StyledStats)`
   padding-top: var(--spacing-2);

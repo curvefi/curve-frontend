@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-
 import { CONNECT_STAGE } from '@/constants'
 import useStore from '@/store/useStore'
 import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { useNetworkFromUrl } from '@/utils/utilsRouter'
 import { shortenTokenAddress } from '@/utils'
 import {
   TWOCOINCRYPTOSWAP,
@@ -15,7 +13,6 @@ import {
   STABLESWAP,
   STABLESWAPOLD,
 } from '@/components/PageDeployGauge/constants'
-
 import Button from '@/ui/Button'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import AlertBox from '@/ui/AlertBox'
@@ -27,25 +24,22 @@ interface Props {
   curve: CurveApi
 }
 
-type InfoLinkBar = {
-  mainnetGaugeLinkBar: React.ReactNode | null
-  sidechainGaugeLinkBar: React.ReactNode | null
-  mirrorGaugeLinkBar: React.ReactNode | null
-}
-
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
-  const { haveSigner } = curveProps(curve)
+  const networks = useStore((state) => state.networks.networks)
+  const { haveSigner } = curveProps(curve, networks)
+  const isLite = networks[chainId].isLite
   const navigate = useNavigate()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
 
-  const { resetState, lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } =
-    useStore((state) => state.deployGauge)
+  const { lpTokenAddress, currentPoolType, sidechainGauge, sidechainNav, deploymentStatus, deployGauge } = useStore(
+    (state) => state.deployGauge,
+  )
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
 
   const handleConnectEth = () => {
-    const { rChainId, rNetwork } = getNetworkFromUrl()
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, 1])
     updateGlobalStoreByKey('isLoadingApi', true)
     navigate(`/${window.location.hash.substring(2).replace(rNetwork, networks[1].id)}`)
@@ -54,11 +48,11 @@ const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const handleClick = async () => {
     if (sidechainGauge) {
       if (sidechainNav === 0) {
-        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE')
-        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE')
-        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE')
-        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE')
-        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE')
+        if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === STABLESWAP) deployGauge(curve, 'STABLENG', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === TWOCOINCRYPTOSWAP) deployGauge(curve, 'TWOCRYPTO', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === TWOCOINCRYPTOSWAPNG) deployGauge(curve, 'TWOCRYPTONG', 'SIDECHAINGAUGE', isLite)
+        if (currentPoolType === THREECOINCRYPTOSWAP) deployGauge(curve, 'THREECRYPTO', 'SIDECHAINGAUGE', isLite)
       }
       if (sidechainNav === 1) {
         if (currentPoolType === STABLESWAPOLD) deployGauge(curve, 'STABLEOLD', 'MIRRORGAUGE')
