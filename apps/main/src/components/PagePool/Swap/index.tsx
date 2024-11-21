@@ -79,7 +79,7 @@ const Swap = ({
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [confirmedLoss, setConfirmedLoss] = useState(false)
@@ -94,7 +94,7 @@ const Swap = ({
 
   const { selectList, swapTokensMapper } = useMemo(
     () => getSwapTokens(tokensMapper, poolDataCacheOrApi),
-    [poolDataCacheOrApi, tokensMapper]
+    [poolDataCacheOrApi, tokensMapper],
   )
 
   const updateFormValues = useCallback(
@@ -109,10 +109,10 @@ const Swap = ({
         updatedFormValues,
         isGetMaxFrom,
         seed.isSeed,
-        updatedMaxSlippage || maxSlippage
+        updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage]
+    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleSwapClick = useCallback(
@@ -121,7 +121,7 @@ const Swap = ({
       curve: CurveApi,
       poolData: PoolData,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const { fromAmount, fromToken, toToken } = formValues
       const notifyMessage = t`Please confirm swap ${fromAmount} ${fromToken} for ${toToken} at max slippage ${maxSlippage}%.`
@@ -136,12 +136,12 @@ const Swap = ({
             onClose={() => {
               updateFormValues({}, null, null)
             }}
-          />
+          />,
         )
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network]
+    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -157,7 +157,7 @@ const Swap = ({
       steps: Step[],
       isSeed: boolean,
       maxSlippage: string,
-      userPoolBalancesLoading: boolean
+      userPoolBalancesLoading: boolean,
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const isValid =
@@ -225,7 +225,7 @@ const Swap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [fetchStepApprove, handleSwapClick, notifyNotification]
+    [fetchStepApprove, handleSwapClick, notifyNotification],
   )
 
   const fetchData = useCallback(() => {
@@ -300,7 +300,7 @@ const Swap = ({
         steps,
         seed.isSeed,
         maxSlippage,
-        userPoolBalancesLoading
+        userPoolBalancesLoading,
       )
       setSteps(updatedSteps)
     }
