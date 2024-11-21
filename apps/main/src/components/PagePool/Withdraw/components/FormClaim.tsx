@@ -71,7 +71,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepClaim, notifyNotification],
+    [fetchStepClaim, notifyNotification, network],
   )
 
   const getSteps = useCallback(

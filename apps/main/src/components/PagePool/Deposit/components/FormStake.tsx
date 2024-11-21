@@ -73,7 +73,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepStake, notifyNotification],
+    [fetchStepStake, notifyNotification, network],
   )
 
   const getSteps = useCallback(

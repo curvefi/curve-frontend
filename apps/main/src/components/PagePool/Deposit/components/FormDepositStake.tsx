@@ -108,7 +108,7 @@ const FormDepositStake = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDepositStake, notifyNotification]
+    [fetchStepDepositStake, notifyNotification, network],
   )
 
   const getSteps = useCallback(

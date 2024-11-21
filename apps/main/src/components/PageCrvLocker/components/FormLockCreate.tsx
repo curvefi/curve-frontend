@@ -117,7 +117,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [fetchStepCreate, notifyNotification],
+    [fetchStepCreate, notifyNotification, network],
   )
 
   const getSteps = useCallback(

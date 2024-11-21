@@ -77,6 +77,7 @@ const DetailInfoEstGas = ({
     chainTokenUsdRate,
     gasInfo?.l2GasPriceWei,
     gasInfo?.l1GasPriceWei,
+    networks,
   ])
 
   const labelText = t`Estimated TX cost:`
