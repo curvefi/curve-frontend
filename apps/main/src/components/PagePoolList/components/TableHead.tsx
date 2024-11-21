@@ -67,7 +67,8 @@ const TableHead: React.FC<Props> = ({
               )}
               {columnKey === COLUMN_KEYS.rewardsMobile && <Col className="right rewards" />}
               {columnKey === COLUMN_KEYS.volume && <col className="right" />}
-              {columnKey === COLUMN_KEYS.tvl && <Col className={`right ${isLite ? 'tvl' : ''}`} />}
+              {columnKey === COLUMN_KEYS.tvl && isLite && <Col className="right tvl" />}
+              {columnKey === COLUMN_KEYS.tvl && !isLite && <col className="right" />}
             </React.Fragment>
           )
         })}
