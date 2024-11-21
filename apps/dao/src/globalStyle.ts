@@ -16,10 +16,6 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    background-image: url(/images/hero-bg.webp);
-    background-size: auto 478px;
-    background-repeat: repeat-x;
-    background-attachment: fixed;
     //background-position-y: var(--header-height);
 
     &.scrollSmooth {

@@ -105,7 +105,7 @@ const Container = styled.div`
   flex-direction: column;
   gap: var(--spacing-3);
   padding: var(--spacing-3);
-  background-color: var(--box_header--secondary--background-color);
+  background-color: var(--box--secondary--background-color);
   @media (min-width: 20.625rem) {
     grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
   }

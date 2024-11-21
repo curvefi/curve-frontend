@@ -15,7 +15,7 @@ const MetricsComp: React.FC<Props> = ({ loading, title, data, className, row = f
   return (
     <Wrapper className={className} row={row}>
       <MetricsTitle row={row}>{title}</MetricsTitle>
-      {loading ? <StyledLoader isLightBg skeleton={[56, 18]} row={row} /> : data}
+      {loading ? <StyledLoader isLightBg skeleton={[56, 16.5]} row={row} /> : data}
     </Wrapper>
   )
 }
@@ -29,7 +29,7 @@ const Wrapper = styled(Box)<{ row?: boolean }>`
 `
 
 const StyledLoader = styled(Loader)<{ row?: boolean }>`
-  margin-top: ${({ row }) => (row ? '0' : 'var(--spacing-2)')};
+  margin-top: ${({ row }) => (row ? '0' : 'var(--spacing-1)')};
   margin-left: ${({ row }) => (row ? 'var(--spacing-2)' : '0')};
 `
 

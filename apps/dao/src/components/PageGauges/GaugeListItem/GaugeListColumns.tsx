@@ -1,6 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import { formatNumber } from '@/ui/utils'
+
 import useStore from '@/store/useStore'
 
 type GaugeListColumnsProps = {
@@ -14,7 +16,11 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
     <>
       <BoxColumn>
         <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
-          {gaugeData.gauge_relative_weight.toFixed(2)}%
+          {formatNumber(gaugeData.gauge_relative_weight, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+          %
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
@@ -27,7 +33,12 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
               : ''
           } ${gaugeListSortBy.key === 'gauge_relative_weight_7d_delta' ? 'bold' : ''}`}
         >
-          {gaugeData.gauge_relative_weight_7d_delta ? `${gaugeData.gauge_relative_weight_7d_delta.toFixed(2)}%` : 'N/A'}
+          {gaugeData.gauge_relative_weight_7d_delta
+            ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}%`
+            : 'N/A'}
         </GaugeData>
       </BoxColumn>
       <BoxColumn>
@@ -41,7 +52,10 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
           } ${gaugeListSortBy.key === 'gauge_relative_weight_60d_delta' ? 'bold' : ''}`}
         >
           {gaugeData.gauge_relative_weight_60d_delta
-            ? `${gaugeData.gauge_relative_weight_60d_delta.toFixed(2)}%`
+            ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}%`
             : 'N/A'}
         </GaugeData>
       </BoxColumn>

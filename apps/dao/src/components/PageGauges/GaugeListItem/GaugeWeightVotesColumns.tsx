@@ -27,14 +27,33 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
           minWidth="18rem"
           tooltip={
             <p>
-              {t`Updating gauge vote will update used veCRV from`} <strong>{formatNumber(userVeCrv)}</strong> {t`to`}{' '}
-              <strong>{formatNumber(userFutureVeCrv)}</strong>
+              {t`Updating gauge vote will update used veCRV from`}{' '}
+              <strong>
+                {formatNumber(userVeCrv, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </strong>{' '}
+              {t`to`}{' '}
+              <strong>
+                {formatNumber(userFutureVeCrv, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
+              </strong>
             </p>
           }
         >
           <GaugeData className={userGaugeVoteWeightsSortBy.key === 'userVeCrv' ? 'bold' : ''}>
-            {formatNumber(userVeCrv, { showDecimalIfSmallNumberOnly: true })}
-            {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { showDecimalIfSmallNumberOnly: true })}`}
+            {formatNumber(userVeCrv, {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
+            {hasFutureVeCrv &&
+              ` → ${formatNumber(userFutureVeCrv, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}`}
           </GaugeData>
         </Tooltip>
       </BoxColumn>
