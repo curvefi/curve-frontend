@@ -5,11 +5,11 @@ body.theme-default {
   --primary-200: hsla(228, 63%, 36%, 1);
   --primary-300: hsla(226, 65%, 43%, 1);
   --primary-400: hsla(225, 90%, 57%, 1);
-  --primary-400a10: hsl(225, 90%, 57%, 10%);
-  --primary-400a20: hsl(220, 98%, 54%, 20%);
-  --primary-400a50: hsl(220, 98%, 54%, 50%);
-  --primary-400a90: hsl(220, 98%, 54%, 90%);
-  --primary-400l10: hsl(220, 98%, 44%);
+  --primary-400a10: var(--primary-400) 10%;
+  --primary-400a20: var(--primary-400) 20%;
+  --primary-400a50: var(--primary-400) 50%;
+  --primary-400a90: var(--primary-400) 90%;
+  --primary-400l10: var(--primary-400);
   --primary-500: hsla(225, 81%, 73%, 1);
   --primary-600: hsla(224, 71%, 81%, 1);
   --primary-700: hsla(227, 47%, 89%, 1);
@@ -318,7 +318,7 @@ body.theme-default {
   --tooltip--background-color: var(--black);
   
   /* Charts */
-  --chart-green: #26a69a;
+  --chart-green: #1FA25E;
   --chart-red: #ED242F;
   --chart-label: #9b7dff;
   --chart-volume-green: #26a6997e;
