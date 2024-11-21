@@ -7,7 +7,6 @@ import styled from 'styled-components'
 
 import { breakpoints } from 'ui/src/utils'
 
-import SelectSearchList from 'ui/src/Select/SelectSearchList'
 import SelectModalListBox from 'ui/src/Select/SelectModalListBox'
 
 function SelectModal<T>({
@@ -50,11 +49,7 @@ function SelectModal<T>({
         ref={popoverRef}
         minWidth={minWidth}
       >
-        {!!selectSearchOptions && state.collection.size > 5 ? (
-          <SelectSearchList {...menuProps} {...selectSearchOptions} state={state} />
-        ) : (
-          <SelectModalListBox {...menuProps} state={state} />
-        )}
+        <SelectModalListBox {...menuProps} state={state} />
         <DismissButton onDismiss={state.close} />
       </StyledPopover>
     </FocusScope>
