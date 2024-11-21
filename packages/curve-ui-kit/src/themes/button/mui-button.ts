@@ -53,7 +53,7 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
   const getNavigationButtonStyle = (): CSSObject => ({
     color: palette.text.tertiary,
     '&.current': {
-      color: palette.neutral[50],
+      color: palette.grey[50],
       backgroundColor: palette.background.highlightFill,
     },
     '&:hover': {

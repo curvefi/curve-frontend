@@ -1,7 +1,7 @@
 import { type ThemeOptions } from '@mui/material/styles'
 import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from './button'
 import { defineMuiTypography } from './typography'
-import { defineMuiTabs } from './tabs'
+import { defineMuiTab, defineMuiTabs } from './tabs'
 import { Palette } from './palette'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
@@ -16,15 +16,11 @@ export const createComponents = (palette: Palette, typography: TypographyOptions
   },
   MuiIconButton: defineMuiIconButton(palette),
   MuiButton: defineMuiButton(palette, typography),
+  MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(palette),
   MuiToolbar: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
-    },
-  },
-  MuiTab: {
-    styleOverrides: {
-      root: { textTransform: 'uppercase', minHeight: DEFAULT_BAR_SIZE },
     },
   },
   MuiContainer: {
@@ -36,11 +32,10 @@ export const createComponents = (palette: Palette, typography: TypographyOptions
       switchBase: { borderRadius: 0 },
       track: {
         borderRadius: 0,
-        backgroundColor: 'transparent',
-        border: `1px solid ${palette.background.layer1Outline}`,
+        backgroundColor: palette.background.layer1Fill,
+        border: `1px solid ${palette.neutral[400]}`,
       },
-      thumb: { borderRadius: 0, backgroundColor: palette.primary.main },
-      checked: {},
+      thumb: { borderRadius: 0, color: palette.primary.main, '.Mui-checked &': { color: palette.neutral[50] } },
     },
   },
 })

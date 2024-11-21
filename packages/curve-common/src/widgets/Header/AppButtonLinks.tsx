@@ -10,12 +10,12 @@ export const AppButtonLinks = ({ currentApp }: AppNavAppsProps) => (
   <Box display="flex" alignItems="center" marginX={[2, 3, 4]} gap={2}>
     {AppNames.map((appName) => {
       const app = APP_LINK[appName]
-      const isActive = currentApp === appName
       return (
         <Button
           key={appName}
-          variant={isActive ? 'contained' : 'ghost'}
-          color={isActive ? 'primary' : 'secondary'}
+          variant="ghost"
+          color="navigation"
+          className={currentApp === appName ? 'current' : ''}
           component={Link}
           href={app.route}
         >

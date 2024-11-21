@@ -1,6 +1,8 @@
 import type { Components } from '@mui/material/styles'
-import { ThemeKey } from '../basic-theme'
 import { Palette } from '../palette'
+import { BUTTONS_HEIGHTS } from '../button'
+
+export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const;
@@ -9,6 +11,12 @@ const overlined = 'variant-overlined' as const;
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined };
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
+
+export const defineMuiTab = (): Components['MuiTab'] => ({
+  styleOverrides: {
+    root: { textTransform: 'uppercase', minHeight: DEFAULT_BAR_SIZE },
+  },
+})
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): Components['MuiTabs'] => ({
@@ -28,16 +36,18 @@ export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): 
         },
       },
       [`&.${overlined} .MuiTab-root`]: {
-        color: text.tertiary,
+        color: text.secondary,
         borderTop: background.layer2Outline,
+        '&.Mui-selected': {
+          color: text.primary,
+          borderTop: primary[500],
+        },
         '&:hover': {
           color: text.primary,
-          borderTop: neutral[500],
-        },
-        '&.Mui-selected': {
-          color: text.highlight,
-          backgroundColor: background.layer3Fill,
-          borderTop: background.highlightOutline,
+          paddingTop: '8px', // to compensate margin change
+          marginBottom: '-2px', // to avoid jumping
+          borderTop: `2px solid ${neutral.main}`,
+          backgroundColor: neutral[200],
         },
       },
       [`&.${underlined} .MuiTab-root`]: {
