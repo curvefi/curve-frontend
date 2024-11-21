@@ -19,7 +19,7 @@ const backgroundColor = 'background.paper'
 
 export const SideBarFooter = ({
   themes: [theme, setTheme],
-  advancedMode: [isAdvancedMode, setAdvancedMode],
+  advancedMode,
   WalletProps,
   translations: t,
   sx,
@@ -49,9 +49,11 @@ export const SideBarFooter = ({
           <SettingsOption label={t.theme}>
             <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t.theme} />
           </SettingsOption>
-          <SettingsOption label={t.advancedMode}>
-            <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} />
-          </SettingsOption>
+          {advancedMode && t.advancedMode && (
+            <SettingsOption label={t.advancedMode}>
+              <AdvancedModeSwitcher advancedMode={advancedMode} />
+            </SettingsOption>
+          )}
         </AccordionDetails>
       </Accordion>
     </Box>

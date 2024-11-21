@@ -18,7 +18,7 @@ export const DesktopHeader = <TChainId extends number>({
   pages,
   appStats,
   themes: [theme, setTheme],
-  advancedMode: [isAdvancedMode, setAdvancedMode],
+  advancedMode,
   translations: t,
 }: BaseHeaderProps<TChainId>) => (
   <>
@@ -34,7 +34,9 @@ export const DesktopHeader = <TChainId extends number>({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            <AdvancedModeSwitcher advancedMode={isAdvancedMode} onChange={setAdvancedMode} label={t.advanced} />
+            {advancedMode && (
+              <AdvancedModeSwitcher advancedMode={advancedMode} label={t.advanced} />
+            )}
             <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
             <ChainSwitcher {...ChainProps} />
             <ConnectWalletIndicator {...WalletProps} />

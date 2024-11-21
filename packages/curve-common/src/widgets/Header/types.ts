@@ -30,11 +30,11 @@ export type BaseHeaderProps<TChainId = number> = {
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
   appStats: { label: string, value: string }[]
-  advancedMode: [boolean, Dispatch<boolean>]
+  advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
   translations: {
     advanced: string
-    advancedMode: string
+    advancedMode?: string
     theme: string
     otherApps: string
     settings: string

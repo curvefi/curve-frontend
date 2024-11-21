@@ -32,7 +32,6 @@ export const Header = ({ sections }: HeaderProps) => {
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const { advanced, updateAdvanced } = useStore((state) => state.createPool)
 
   const { rChainId, rLocalePathname } = getParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -46,7 +45,6 @@ export const Header = ({ sections }: HeaderProps) => {
     <NewHeader
       locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[advanced, updateAdvanced]}
       currentApp="main"
       pages={useMemo(() => {
         return _parseRouteAndIsActive(
