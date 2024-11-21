@@ -520,6 +520,7 @@ declare global {
   }
 
   type FetchingState = 'LOADING' | 'SUCCESS' | 'ERROR'
+  type TransactionState = '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
   type ProposalListFilter = 'all' | 'active' | 'passed' | 'denied' | 'executable'
   type ProposalListFilterItem = { key: ProposalListFilter; label: string }
   type SortByFilterProposals = 'timeCreated' | 'endingSoon'

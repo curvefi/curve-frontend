@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import Fuse from 'fuse.js'
 import produce from 'immer'
+import { t } from '@lingui/macro'
 
 import { shortenTokenAddress } from '@/ui/utils'
 
@@ -9,7 +10,11 @@ type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   gaugesLoading: FetchingState
-  castVoteLoading: FetchingState | null
+  txCastVoteState: {
+    state: TransactionState
+    hash: string
+    errorMessage: string
+  } | null
   filteringGaugesLoading: boolean
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
@@ -58,7 +63,7 @@ export type GaugesSlice = {
 
 const DEFAULT_STATE: SliceState = {
   gaugesLoading: 'LOADING',
-  castVoteLoading: null,
+  txCastVoteState: null,
   filteringGaugesLoading: true,
   gaugeListSortBy: {
     key: 'gauge_relative_weight',
@@ -129,7 +134,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             fetchingState: 'LOADING',
             votes: [],
           }
-        })
+        }),
       )
 
       try {
@@ -147,14 +152,14 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
               fetchingState: 'SUCCESS',
               votes: formattedData,
             }
-          })
+          }),
         )
       } catch (error) {
         console.error('Error fetching gauge votes:', error)
         set(
           produce(get(), (state) => {
             state[sliceKey].gaugeVotesMapper[gaugeAddress].fetchingState = 'ERROR'
-          })
+          }),
         )
       }
     },
@@ -165,7 +170,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             loadingState: 'LOADING',
             data: [],
           }
-        })
+        }),
       )
 
       try {
@@ -188,13 +193,13 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
               data: formattedWeightsData,
             }
             state.storeCache.cacheGaugeWeightHistoryMapper[gaugeAddress] = formattedWeightsData
-          })
+          }),
         )
       } catch (error) {
         set(
           produce(get(), (state) => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
-          })
+          }),
         )
         console.log(error)
       }
@@ -248,7 +253,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             const reversedEntries = [...votes].reverse()
             state[sliceKey].gaugeVotesMapper[address].votes = reversedEntries
             state[sliceKey].gaugeVotesSortBy.order = order
-          })
+          }),
         )
       } else {
         const sortedEntries = [...votes].sort((a, b) => {
@@ -260,7 +265,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             state[sliceKey].gaugeVotesSortBy.key = sortBy
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
-          })
+          }),
         )
       }
     },
@@ -308,46 +313,83 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       if (!curve) return
 
       const address = gaugeAddress.toLowerCase()
+      const notifyNotification = get().wallet.notifyNotification
+      let dismissNotificationHandler
+
+      const notifyPendingMessage = t`Please confirm cast vote.`
+      const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
+      dismissNotificationHandler = dismissConfirm
 
       set(
         produce(get(), (state) => {
-          state[sliceKey].castVoteLoading = 'LOADING'
-        })
+          state[sliceKey].txCastVoteState = {
+            state: 'CONFIRMING',
+            hash: '',
+            errorMessage: '',
+          }
+        }),
       )
 
       try {
         const res = await curve.dao.voteForGauge(address, voteWeight * 100)
-        const reciept = await provider.waitForTransaction(res)
-
-        console.log('reciept', reciept)
 
         set(
           produce(get(), (state) => {
-            state[sliceKey].castVoteLoading = 'SUCCESS'
-          })
+            state[sliceKey].txCastVoteState = {
+              state: 'LOADING',
+              hash: '',
+              errorMessage: '',
+            }
+          }),
         )
+        dismissConfirm()
+
+        const loadingNotificationMessage = t`Casting vote...`
+        const { dismiss: dismissLoading } = notifyNotification(loadingNotificationMessage, 'pending')
+        dismissNotificationHandler = dismissLoading
+
+        const reciept = await provider.waitForTransaction(res)
+
+        if (reciept.status === 1) {
+          set(
+            produce(get(), (state) => {
+              state[sliceKey].txCastVoteState = {
+                state: 'SUCCESS',
+                hash: res,
+                errorMessage: '',
+              }
+            }),
+          )
+        }
+        dismissLoading()
+        const successNotificationMessage = t`Succesfully cast vote!`
+        notifyNotification(successNotificationMessage, 'success', 15000)
 
         await getUserGaugeVoteWeights(userAddress, true)
 
         set(
           produce(get(), (state) => {
             state[sliceKey].selectedGauge = null
-          })
+          }),
         )
 
         setTimeout(() => {
           set(
             produce(get(), (state) => {
-              state[sliceKey].castVoteLoading = null
-            })
+              state[sliceKey].txCastVoteState = null
+            }),
           )
         }, 5000)
       } catch (error) {
         console.error('Error casting vote:', error)
         set(
           produce(get(), (state) => {
-            state[sliceKey].castVoteLoading = 'ERROR'
-          })
+            state[sliceKey].txCastVoteState = {
+              state: 'ERROR',
+              hash: '',
+              errorMessage: 'Error casting vote',
+            }
+          }),
         )
       }
     },

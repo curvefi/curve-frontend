@@ -19,13 +19,13 @@ type SliceState = {
     hash: string | null
     txLink: string | null
     error: string | null
-    status: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
+    status: TransactionState
   }
   executeTx: {
     hash: string | null
     txLink: string | null
     error: string | null
-    status: '' | 'CONFIRMING' | 'LOADING' | 'SUCCESS' | 'ERROR'
+    status: TransactionState
   }
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
@@ -99,7 +99,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         while (true) {
           const proposalsRes = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals?pagination=${pagination}&page=${page}&status_filter=all&type_filter=all`
+            `https://prices.curve.fi/v1/dao/proposals?pagination=${pagination}&page=${page}&status_filter=all&type_filter=all`,
           )
           const data: PricesProposalsResponse = await proposalsRes.json()
           results = results.concat(data.proposals)
@@ -160,7 +160,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       try {
         const proposal = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`,
         )
         const data: PricesProposalResponse = await proposal.json()
 
@@ -187,7 +187,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             state[sliceKey].curveJsProposalLoadingState = 'SUCCESS'
             state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
             state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
-          })
+          }),
         )
       } catch (error) {
         console.log(error)
@@ -298,7 +298,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             })
 
             dismissDeploying()
-            const successNotificationMessage = t`Vote casted successfully.`
+            const successNotificationMessage = t`Vote casted successfully!`
             notifyNotification(successNotificationMessage, 'success', 15000)
           }
         }
@@ -369,7 +369,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             })
 
             dismissDeploying()
-            const successNotificationMessage = t`Proposal executed successfully.`
+            const successNotificationMessage = t`Proposal executed successfully!`
             notifyNotification(successNotificationMessage, 'success', 15000)
           }
         }
@@ -404,7 +404,7 @@ const getProposalStatus = (
   quorumVeCrv: number,
   votesFor: number,
   votesAgainst: number,
-  minSupport: number
+  minSupport: number,
 ) => {
   const totalVotes = votesFor + votesAgainst
   const passedQuorum = votesFor >= quorumVeCrv
@@ -453,7 +453,7 @@ const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFi
 const sortProposals = (
   proposals: ProposalData[],
   activeSortBy: SortByFilterProposals,
-  activeSortDirection: SortDirection
+  activeSortDirection: SortDirection,
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
@@ -461,7 +461,7 @@ const sortProposals = (
     const passedProposals = orderBy(
       proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS < currentTimestamp),
       ['voteId'],
-      ['desc']
+      ['desc'],
     )
 
     if (activeSortDirection === 'asc') {
