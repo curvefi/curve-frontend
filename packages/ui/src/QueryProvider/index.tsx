@@ -1,5 +1,4 @@
 import { type QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { type Persister, PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
 import React, { ReactNode } from 'react'
 
@@ -10,13 +9,13 @@ type QueryProviderWrapperProps = {
 }
 
 export function QueryProvider({ children, persister, queryClient }: QueryProviderWrapperProps) {
-  const content = (<>{children}<ReactQueryDevtools /></>)
+  // children = (<>{children}<ReactQueryDevtools buttonPosition="bottom-left" /></>)
   if (persister) {
     return (
       <PersistQueryClientProvider client={queryClient} persistOptions={{ persister }}>
-        {content}
+        {children}
       </PersistQueryClientProvider>
     )
   }
-  return <QueryClientProvider client={queryClient}>{content}</QueryClientProvider>
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }

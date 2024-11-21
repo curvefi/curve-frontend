@@ -1,5 +1,5 @@
 declare module 'global' {
-  type TypographyConfig = import('./config')
+  type TypographyConfig = import('./create-typography')
   type TypographyVariantKey = TypographyConfig['TypographyVariantKey']
 
   type NewTypographyVariants<T> = {[key in TypographyVariantKey]: T}

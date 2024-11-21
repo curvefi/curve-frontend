@@ -1,6 +1,6 @@
 import { AppBar, Toolbar } from '@mui/material'
 import { BaseHeaderProps } from './types'
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import groupBy from 'lodash/groupBy'
@@ -9,8 +9,9 @@ import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
-import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/model'
+import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { APP_LINK, AppNames } from './constants'
+import { useLocation } from 'react-router-dom'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
@@ -25,7 +26,6 @@ const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
   currentApp,
-  LanguageProps,
   pages,
   appStats,
   themes,
@@ -40,6 +40,9 @@ export const MobileHeader = <TChainId extends number>({
   const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
+  const { pathname } = useLocation()
+
+  useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
   const onConnect = useCallback(() => {
     closeSidebar()
@@ -64,6 +67,7 @@ export const MobileHeader = <TChainId extends number>({
           PaperProps={{ sx: { top: DEFAULT_BAR_SIZE, ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
           variant="temporary"
           hideBackdrop
+          data-testid="mobile-drawer"
         >
           <Box>
             <Box padding={4} display="flex" flexDirection="column">
@@ -86,7 +90,6 @@ export const MobileHeader = <TChainId extends number>({
 
           <SideBarFooter
             translations={t}
-            LanguageProps={LanguageProps}
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}

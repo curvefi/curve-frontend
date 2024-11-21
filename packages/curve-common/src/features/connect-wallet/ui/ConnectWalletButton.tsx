@@ -9,6 +9,6 @@ export type ConnectWalletButtonProps = {
 }
 
 export const ConnectWalletButton = ({ onConnectWallet, label, ...props }: ConnectWalletButtonProps) =>
-  <Button size="small" variant="contained" color="primary" onClick={onConnectWallet} {...props}>
+  <Button size="medium" variant="contained" color="primary" onClick={onConnectWallet} data-testid="navigation-connect-wallet" {...props}>
     {label}
   </Button>

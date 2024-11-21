@@ -1,8 +1,6 @@
 import { Divider, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { FIGMA_TOKENS } from '../model'
-import { TypographyVariantKey, typographyVariantsKeys } from '../typography'
-import { TypographyVariant } from '../typography/create-typography'
+import { TYPOGRAPHY_VARIANTS, TypographyVariantKey } from '../typography'
 
 const meta: Meta<typeof Typography> = {
   title: 'UI Kit/Primitives/Typography',
@@ -28,10 +26,7 @@ interface TypographyDisplayProps {
 }
 
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
-  const typography = FIGMA_TOKENS.typography[variant] as TypographyVariant
-  console.log('typography', typography)
-  console.log('children', children)
-
+  const typography = TYPOGRAPHY_VARIANTS[variant]
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
@@ -41,22 +36,21 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children
       <Typography variant="bodyXsRegular">
         Variant: <Typography variant="highLightedXs">{variant}</Typography>
       </Typography>
-      {typography?.description && (
-        <Typography variant="bodyXsRegular">Description: {typography.description}</Typography>
-      )}
     </Stack>
   )
 }
 
-const createStory = (categoryKey: keyof typeof typographyVariantsKeys): Story => ({
+const createStory = (category: string): Story => ({
   decorators: [
     (Story, { args }) => {
-      const variants = Object.keys(typographyVariantsKeys[categoryKey]) as TypographyVariantKey[]
       return (
         <Stack spacing={5}>
-          {variants.map((variant) => (
-            <TypographyDisplay {...args} key={variant} variant={variant} />
-          ))}
+          {Object.keys(TYPOGRAPHY_VARIANTS)
+            .filter((t) => t.includes(category))
+            .map((variant) => (
+              <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
+            ),
+          )}
         </Stack>
       )
     },

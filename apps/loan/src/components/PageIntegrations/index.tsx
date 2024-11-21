@@ -137,7 +137,7 @@ const IntegrationsComp = ({
                           // @ts-ignore
                           const chainId = networksIdMapper[networkName]
                           const Icon = networks[chainId as ChainId].icon
-                          return <Icon aria-label={chainId} title={chainId} width="18" height="18" />
+                          return <Icon key={network} aria-label={chainId} title={chainId} width="18" height="18" />
                         }
                         return null
                       })}

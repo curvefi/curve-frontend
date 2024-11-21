@@ -24,20 +24,18 @@ export type NavigationSection = {
 
 export type BaseHeaderProps<TChainId = number> = {
   currentApp: AppName
-  LanguageProps: LanguageSwitcherProps
   ChainProps: ChainSwitcherProps<TChainId>
   WalletProps: ConnectWalletIndicatorProps
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
   appStats: { label: string, value: string }[]
-  advancedMode: [boolean, Dispatch<boolean>]
+  advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
   translations: {
     advanced: string
-    advancedMode: string
+    advancedMode?: string
     theme: string
-    language: string
     otherApps: string
     settings: string
     socialMedia: string

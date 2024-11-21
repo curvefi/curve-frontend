@@ -1,15 +1,14 @@
-import { FunctionComponent } from 'react'
+import { Dispatch, FunctionComponent } from 'react'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 type AdvancedModeSwitcherProps = {
   label?: string,
-  advancedMode: boolean,
-  onChange: (value: boolean) => void
+  advancedMode: [boolean, Dispatch<boolean>]
 }
 
-export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> = ({ advancedMode, onChange, label }) => (
+export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> = ({ advancedMode: [advancedMode, onChange], label }) => (
   <Box display="inline-flex" alignItems="center">
     <Switch
       checked={advancedMode}
@@ -19,7 +18,7 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       size="small"
     />
     {label && (
-      <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 3, marginRight: 4, textTransform: 'uppercase', lineHeight: '37px' }}>
+      <Typography variant="headingXsBold" display="inline-block" sx={{ marginLeft: 2, marginRight: 4, lineHeight: '37px' }}>
         {label}
       </Typography>
     )}

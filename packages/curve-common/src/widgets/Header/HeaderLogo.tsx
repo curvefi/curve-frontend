@@ -1,9 +1,9 @@
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import * as React from 'react'
 import Box from '@mui/material/Box'
 import { LogoImg, RCLogoText } from 'ui/src/images'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
+import Link from '@mui/material/Link'
 import type { AppName } from './types'
 import { APP_NAMES } from './types'
 import type { SxProps, Theme } from '@mui/system'
@@ -21,11 +21,11 @@ export type HeaderLogoProps = {
 }
 
 export const HeaderLogo = ({ appName, sx }: HeaderLogoProps) => (
-  <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
+  <Link href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
-        <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary" >
+        <Typography variant="headingSLight" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary" >
           {APP_NAMES[appName]}
         </Typography>
         {appName !== 'main' && (
@@ -37,5 +37,5 @@ export const HeaderLogo = ({ appName, sx }: HeaderLogoProps) => (
     ) : (
       <RCLogoText />
     )}
-  </RouterLink>
+  </Link>
 )
