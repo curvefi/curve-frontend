@@ -27,18 +27,6 @@ body.theme-default {
   --gray-600: hsla(20, 8%, 93%, 1);
   --gray-700: hsla(0, 7%, 99%, 1);
 
-  --danger-400: hsla(357, 85%, 54%, 1);
-  --danger_darkBg-400: hsl(357, 81%, 5%);
-  --danger-600: hsl(357, 81%, 91%);
-
-  --success-400: hsl(117, 98%, 25%);
-  --success-600: hsl(117, 98%, 91%);
-
-  --warning-400: var(--orange-400);
-  --warning-text-400: var(--orange-200);
-
-  --info-400: hsl(220, 100%, 68%);
-
   --orange-200: hsla(40, 100%, 77%, 1);
   --orange-400: hsla(31, 100%, 48%, 1);
 
@@ -63,6 +51,18 @@ body.theme-default {
   --whitel85: hsl(0, 0%, 85%);
   --whitel92: hsla(15, 9%, 96%, 1);
   --whitel98: hsla(0, 7%, 97%, 1);
+
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsl(357, 81%, 5%);
+  --danger-600: hsl(357, 81%, 91%);
+
+  --success-400: hsla(149, 65%, 44%, 1);
+  --success-600: hsla(145, 69%, 80%, 1);
+
+  --warning-400: var(--orange-400);
+  --warning-text-400: var(--orange-200);
+
+  --info-400: var(--primary-500);
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
