@@ -81,7 +81,7 @@ const QuickSwap = ({
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -100,19 +100,19 @@ const QuickSwap = ({
 
   const tokensMapperNonSmallTvlStr = useMemo(
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
-    [tokensMapperNonSmallTvl]
+    [tokensMapperNonSmallTvl],
   )
 
   const selectFromTokensList = useMemo(
     () => getTokensObjList(selectFromList ?? selectToList, tokensMapper),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectFromList, selectToListStr, tokensMapperStr]
+    [selectFromList, selectToListStr, tokensMapperStr],
   )
 
   const selectToTokensList = useMemo(
     () => getTokensObjList(selectToList, tokensMapper),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectToListStr, tokensMapperStr]
+    [selectToListStr, tokensMapperStr],
   )
 
   const updateFormValues = useCallback(
@@ -121,7 +121,7 @@ const QuickSwap = ({
       isGetMaxFrom?: boolean,
       maxSlippage?: string,
       isFullReset?: boolean,
-      isRefetch?: boolean
+      isRefetch?: boolean,
     ) => {
       setTxInfoBar(null)
       setConfirmedLoss(false)
@@ -133,10 +133,10 @@ const QuickSwap = ({
         isGetMaxFrom,
         maxSlippage || globalMaxSlippage,
         isFullReset,
-        isRefetch
+        isRefetch,
       )
     },
-    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues]
+    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -148,7 +148,7 @@ const QuickSwap = ({
       routesAndOutput: RoutesAndOutput,
       searchedParams: SearchedParams,
       toToken: string,
-      fromToken: string
+      fromToken: string,
     ) => {
       const { fromAmount, toAmount } = formValues
       const { isExpectedToAmount, toAmountOutput } = routesAndOutput
@@ -168,13 +168,13 @@ const QuickSwap = ({
             description={txMessage}
             txHash={network.scanTxPath(resp.hash)}
             onClose={() => updateFormValues({}, false, '', true)}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network]
+    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -186,7 +186,7 @@ const QuickSwap = ({
       formValues: FormValues,
       searchedParams: SearchedParams,
       toToken: string,
-      fromToken: string
+      fromToken: string,
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
@@ -245,7 +245,7 @@ const QuickSwap = ({
                           routesAndOutput,
                           searchedParams,
                           toToken,
-                          fromToken
+                          fromToken,
                         )
                       }
                     },
@@ -265,7 +265,7 @@ const QuickSwap = ({
                       routesAndOutput,
                       searchedParams,
                       toToken,
-                      fromToken
+                      fromToken,
                     )
                   }
                 },
@@ -283,7 +283,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps]
+    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps],
   )
 
   const fetchData = useCallback(() => {
@@ -356,7 +356,7 @@ const QuickSwap = ({
       formValues,
       searchedParams,
       toToken,
-      fromToken
+      fromToken,
     )
     setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -535,7 +535,7 @@ const QuickSwap = ({
 function _isRoutesAndOutputLoading(
   routesAndOutput: RoutesAndOutput | undefined,
   { isFrom, fromAmount, toAmount }: FormValues,
-  { error }: FormStatus
+  { error }: FormStatus,
 ) {
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading

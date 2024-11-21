@@ -33,7 +33,7 @@ const FormClaimFeesButtons = ({
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {
@@ -103,7 +103,17 @@ const FormClaimFeesButtons = ({
         />,
       )
     },
-    [activeKey, curve, fetchStepClaimFees, notifyNotification, setFormStatus, setSteps, setTxInfoBar, walletAddress, network],
+    [
+      activeKey,
+      curve,
+      fetchStepClaimFees,
+      notifyNotification,
+      setFormStatus,
+      setSteps,
+      setTxInfoBar,
+      walletAddress,
+      network,
+    ],
   )
 
   return (

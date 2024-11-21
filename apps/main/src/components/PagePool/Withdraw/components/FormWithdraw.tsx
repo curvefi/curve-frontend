@@ -60,7 +60,7 @@ const FormWithdraw = ({
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -81,10 +81,10 @@ const FormWithdraw = ({
         updatedFormValues,
         null,
         seed.isSeed,
-        updatedMaxSlippage || maxSlippage
+        updatedMaxSlippage || maxSlippage,
       )
     },
-    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage]
+    [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )
 
   const handleApproveClick = useCallback(
@@ -94,7 +94,7 @@ const FormWithdraw = ({
       await fetchStepApprove(activeKey, curve, 'WITHDRAW', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification]
+    [fetchStepApprove, notifyNotification],
   )
 
   const handleWithdrawClick = useCallback(
@@ -110,7 +110,7 @@ const FormWithdraw = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, network]
+    [fetchStepWithdraw, notifyNotification, network],
   )
 
   const getSteps = useCallback(
@@ -124,7 +124,7 @@ const FormWithdraw = ({
       slippage: Slippage,
       steps: Step[],
       maxSlippage: string,
-      isSeed: boolean
+      isSeed: boolean,
     ) => {
       const haveFormLpToken = +formValues.lpToken > 0
       const haveUserLpToken = typeof userPoolBalances !== 'undefined' && +userPoolBalances.lpToken > 0
@@ -190,7 +190,7 @@ const FormWithdraw = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances]
+    [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances],
   )
 
   // onMount
@@ -238,7 +238,7 @@ const FormWithdraw = ({
         slippage,
         steps,
         maxSlippage,
-        seed.isSeed
+        seed.isSeed,
       )
       setSteps(updatedSteps)
     }
@@ -302,7 +302,7 @@ const FormWithdraw = ({
               amounts: resetFormAmounts(formValues),
               lpToken: val,
             },
-            null
+            null,
           )
         }}
         disableInput={isDisabled}
@@ -314,7 +314,7 @@ const FormWithdraw = ({
               lpToken: (userPoolBalances?.lpToken as string) ?? '0',
             },
 
-            null
+            null,
           )
         }}
       />
@@ -335,7 +335,7 @@ const FormWithdraw = ({
                     selectedTokenAddress: formValues.selectedTokenAddress || poolDataCacheOrApi.tokenAddresses[0],
                   },
 
-                  null
+                  null,
                 )
               } else if (selected === 'lpToken') {
                 updateFormValues({ amounts: resetFormAmounts(formValues), selected }, null)
@@ -378,7 +378,7 @@ const FormWithdraw = ({
                         selectedTokenAddress: tokenAddress,
                       },
 
-                      null
+                      null,
                     )
                   }}
                 />

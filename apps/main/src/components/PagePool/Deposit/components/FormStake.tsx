@@ -35,7 +35,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -48,7 +48,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       setTxInfoBar(null)
       setFormValues('STAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -58,7 +58,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       await fetchStepApprove(activeKey, curve, 'STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification]
+    [fetchStepApprove, notifyNotification],
   )
 
   const handleStakeClick = useCallback(
@@ -73,7 +73,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepStake, notifyNotification]
+    [fetchStepStake, notifyNotification],
   )
 
   const getSteps = useCallback(
@@ -83,7 +83,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       poolData: PoolData,
       formValues: FormValues,
       formStatus: FormStatus,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const isValid = !formStatus.error && +formValues.lpToken > 0
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
@@ -116,7 +116,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleStakeClick]
+    [handleApproveClick, handleStakeClick],
   )
 
   // onMount

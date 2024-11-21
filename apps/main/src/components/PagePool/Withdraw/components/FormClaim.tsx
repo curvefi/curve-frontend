@@ -31,7 +31,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -56,7 +56,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       poolData: PoolData,
       formValues: FormValues,
       formStatus: FormStatus,
-      rewardsNeedNudging: boolean | undefined
+      rewardsNeedNudging: boolean | undefined,
     ) => {
       const notifyMessage = getClaimText(formValues, formStatus, 'notify', rewardsNeedNudging)
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
@@ -71,7 +71,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepClaim, notifyNotification]
+    [fetchStepClaim, notifyNotification],
   )
 
   const getSteps = useCallback(
@@ -82,7 +82,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       formValues: FormValues,
       formStatus: FormStatus,
       rewardsNeedNudging: boolean | undefined,
-      isSeed: boolean
+      isSeed: boolean,
     ) => {
       const { isClaimCrv, step } = formStatus
       const isValid =
@@ -103,8 +103,8 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
               ? getClaimText({ ...formValues, claimableCrv: '1' }, formStatus, 'success', rewardsNeedNudging)
               : t`Claim Rewards Complete`
             : isClaimCrv
-            ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
-            : t`Claim Rewards`,
+              ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
+              : t`Claim Rewards`,
           onClick: () => {
             handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging)
           },
@@ -113,7 +113,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
       return ['CLAIM'].map((key) => stepsObj[key])
     },
-    [handleClaimClick]
+    [handleClaimClick],
   )
 
   // onMount

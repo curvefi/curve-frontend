@@ -27,7 +27,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => chainId && state.networks.networks[chainId])
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
@@ -40,7 +40,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       setTxInfoBar(null)
       setFormValues('UNSTAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
     },
-    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleUnstakeClick = useCallback(
@@ -55,7 +55,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepUnstake, notifyNotification, network]
+    [fetchStepUnstake, notifyNotification, network],
   )
 
   const getSteps = useCallback(
@@ -65,7 +65,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
       poolData: PoolData,
       formValues: FormValues,
       formStatus: FormStatus,
-      isSeed: boolean
+      isSeed: boolean,
     ) => {
       const { step } = formStatus
       const isValid = !isSeed && !formStatus.error && +formValues.stakedLpToken > 0
@@ -83,7 +83,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
 
       return ['UNSTAKE'].map((key) => stepsObj[key])
     },
-    [handleUnstakeClick]
+    [handleUnstakeClick],
   )
 
   // onMount
