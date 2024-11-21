@@ -45,7 +45,8 @@ export const Header = ({ sections }: HeaderProps) => {
   const routerPathname = location?.pathname ?? ''
 
   return (
-    <NewHeader
+    <NewHeader<ChainId>
+      mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
       advancedMode={[

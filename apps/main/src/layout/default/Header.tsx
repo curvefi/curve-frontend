@@ -6,11 +6,11 @@ import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from 
 import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/networks'
-import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import useLayoutHeight from '@/hooks/useLayoutHeight'
 
 type HeaderProps = { sections: NavigationSection[] }
 
@@ -21,6 +21,7 @@ export const Header = ({ sections }: HeaderProps) => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const connectState = useStore((state) => state.connectState)
+  const pageWidthPx = useStore((state) => state.pageWidthPx)
   const isMdUp = useStore((state) => state.isMdUp)
   const isLgUp = useStore((state) => state.isLgUp)
   const locale = useStore((state) => state.locale)
@@ -42,7 +43,8 @@ export const Header = ({ sections }: HeaderProps) => {
   const routerNetwork = routerParams?.network
 
   return (
-    <NewHeader
+    <NewHeader<ChainId>
+      mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
       currentApp="main"
@@ -112,8 +114,9 @@ export const Header = ({ sections }: HeaderProps) => {
           label: t`Daily Volume`,
           value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
-        ...!window || window.innerWidth > 1330 ?
-        [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }] : [],
+        ...(pageWidthPx == null || pageWidthPx > 1330
+          ? [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }]
+          : []),
       ]}
       sections={sections}
       translations={{

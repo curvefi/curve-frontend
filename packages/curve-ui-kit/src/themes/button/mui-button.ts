@@ -82,7 +82,7 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
   })
 
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
-  const [sm, md, lg] = [2, 3, 4].map(basicMuiTheme.spacing)
+  const [sm, md, lg] = [2, 3, 4].map(i => basicMuiTheme.spacing(i))
   return {
     styleOverrides: {
       root: {

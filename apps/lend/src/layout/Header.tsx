@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
@@ -13,6 +13,7 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/system'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { NavigationSection } from '@/common/widgets/Header/types'
+import { useHeightResizeObserver } from '@/ui/hooks'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
 
@@ -21,6 +22,15 @@ const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 const Header = ({ chainId, sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
+  const mainNavRef = useRef<HTMLDivElement>(null)
+  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  const footerHeight = useHeightResizeObserver(mainNavRef)
+
+  useEffect(() => {
+    setLayoutHeight('globalAlert', footerHeight)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [footerHeight])
+
 
   const { rLocalePathname } = getParamsFromUrl()
 
@@ -40,6 +50,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
 
   return (
     <NewHeader
+      mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
       advancedMode={[

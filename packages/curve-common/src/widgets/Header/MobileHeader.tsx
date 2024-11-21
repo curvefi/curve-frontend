@@ -25,6 +25,7 @@ const SECONDARY_BACKGROUND = {backgroundColor: 'background.default'}
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
+  mainNavRef,
   currentApp,
   pages,
   appStats,
@@ -50,7 +51,7 @@ export const MobileHeader = <TChainId extends number>({
   }, [startWalletConnection, closeSidebar])
 
   return (
-    <AppBar color="transparent" position="relative" sx={{ width: '100vw'}}>
+    <AppBar color="transparent" position="relative" sx={{ width: '100vw'}} ref={mainNavRef}>
       <Toolbar sx={SECONDARY_BACKGROUND}>
         <MobileTopBar
           ChainProps={ChainProps}

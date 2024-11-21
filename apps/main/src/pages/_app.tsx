@@ -22,7 +22,6 @@ import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { QueryProvider } from '@/ui/QueryProvider'
-import { getPageWidthClassName } from '@/ui/utils'
 import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 
@@ -53,7 +52,7 @@ function CurveApp({ Component }: AppProps) {
 
   const handleResizeListener = useCallback(() => {
     updateGlobalStoreByKey('isMobile', isMobile())
-    if (window.innerWidth) setPageWidth(getPageWidthClassName(window.innerWidth))
+    if (window.innerWidth) setPageWidth((window.innerWidth))
   }, [setPageWidth, updateGlobalStoreByKey])
 
   const fetchPoolsVolumeTvl = useCallback(

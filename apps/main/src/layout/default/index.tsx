@@ -48,7 +48,10 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
   }
 
-  const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
+  const minHeight = useMemo(() => {
+    console.log({layoutHeight})
+    return layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0)
+  }, [layoutHeight])
 
   return (
     <>
@@ -63,7 +66,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer sections={sections} ref={footerRef} />}
+        {isMdUp && <Footer sections={sections} footerRef={footerRef} />}
       </Container>
     </>
   )

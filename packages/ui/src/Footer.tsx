@@ -7,8 +7,8 @@ import Box from './Box'
 import { ExternalLink } from './Link'
 import { NavigationSection } from 'curve-common/src/widgets/Header/types'
 
-const Footer = ({ sections, ref }: { sections: NavigationSection[], ref: RefObject<HTMLDivElement> }) => (
-  <FooterWrapper ref={ref}>
+const Footer = ({ sections, footerRef }: { sections: NavigationSection[], footerRef: RefObject<HTMLDivElement> }) => (
+  <FooterWrapper ref={footerRef}>
     <FooterInnerWrapper grid gridAutoFlow="column" gridColumnGap={3} flexAlignItems="start">
       <div>
         <FooterLogoWrapper>

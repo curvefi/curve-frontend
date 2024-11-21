@@ -12,6 +12,7 @@ import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { BaseHeaderProps } from './types'
 
 export const DesktopHeader = <TChainId extends number>({
+  mainNavRef,
   currentApp,
   ChainProps,
   WalletProps,
@@ -22,7 +23,7 @@ export const DesktopHeader = <TChainId extends number>({
   translations: t,
 }: BaseHeaderProps<TChainId>) => (
   <>
-    <AppBar color="transparent">
+    <AppBar color="transparent" ref={mainNavRef}>
       <Toolbar
         sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around', paddingY: 3 }}
         data-testid="main-nav"
