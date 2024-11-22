@@ -20,7 +20,6 @@ export const defineMuiTab = (): Components['MuiTab'] => ({
       borderTop: '2px solid transparent',
       minHeight: 0,
       boxSizing: 'border-box',
-      paddingTop: '10px',
     },
   },
 })
@@ -63,6 +62,7 @@ export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): 
         },
       },
       [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
+      [`&.${medium} .MuiTab-root`]: { paddingY: '10px 12px' }, // +2px border == 24px padding, 16px content == 40px total
       [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
     },
     indicator: {
