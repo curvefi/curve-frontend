@@ -10,6 +10,7 @@ import { PageTabs } from './PageTabs'
 import { ThemeSwitcherButton } from '../../features/switch-theme'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { BaseHeaderProps } from './types'
+import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
@@ -35,9 +36,7 @@ export const DesktopHeader = <TChainId extends number>({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            {advancedMode && (
-              <AdvancedModeSwitcher advancedMode={advancedMode} label={t.advanced} />
-            )}
+            {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t.advanced} />}
             <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
             <ChainSwitcher {...ChainProps} />
             <ConnectWalletIndicator {...WalletProps} />
@@ -51,6 +50,8 @@ export const DesktopHeader = <TChainId extends number>({
           borderWidth: '1px 0',
           borderColor: 'background.layer1Outline',
           borderStyle: 'solid',
+          boxSizing: 'content-box',
+          height: DEFAULT_BAR_SIZE,
         }}
         data-testid="subnav"
       >
