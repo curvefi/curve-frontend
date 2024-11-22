@@ -1,9 +1,134 @@
 import type { ThemeKey } from '../basic-theme'
-import { chad } from './chad.palette'
-import { dark } from './dark.palette'
-import { light } from './light.palette'
 
-export const PALETTES = { light, dark, chad }
-export const createPalette = (mode: ThemeKey) => PALETTES[mode]
+export const PALETTE = {
+  neutral: {
+    '25': { light: '#fafafaff', dark: '#191815ff', chad: '#fafafaff' },
+    '50': { light: '#f8f7f7ff', dark: '#1f1e1bff', chad: '#f8f7f7ff' },
+    '75': { light: '#f6f4f4ff', dark: '#252420ff', chad: '#f6f4f4ff' },
+    '100': { light: '#eeecebff', dark: '#302e2aff', chad: '#eeecebff' },
+    '150': { light: '#e7e4e2ff', dark: '#3b3834ff', chad: '#e7e4e2ff' },
+    '200': { light: '#dedbd8ff', dark: '#494540ff', chad: '#dedbd8ff' },
+    '300': { light: '#d4d0ccff', dark: '#5a554fff', chad: '#d4d0ccff' },
+    '400': { light: '#bbb6afff', dark: '#746e66ff', chad: '#bbb6afff' },
+    '500': { light: '#968e84ff', dark: '#968e84ff', chad: '#968e84ff' },
+    '600': { light: '#746e66ff', dark: '#bbb6afff', chad: '#746e66ff' },
+    '700': { light: '#5a554fff', dark: '#d4d0ccff', chad: '#5a554fff' },
+    '750': { light: '#494540ff', dark: '#dedbd8ff', chad: '#494540ff' },
+    '800': { light: '#3b3834ff', dark: '#e7e4e2ff', chad: '#3b3834ff' },
+    '850': { light: '#302e2aff', dark: '#eeecebff', chad: '#302e2aff' },
+    '900': { light: '#252420ff', dark: '#f6f4f4ff', chad: '#252420ff' },
+    '950': { light: '#1f1e1bff', dark: '#f8f7f7ff', chad: '#1f1e1bff' },
+    '975': { light: '#191815ff', dark: '#fafafaff', chad: '#191815ff' },
+    main: { light: '#968e84ff', dark: '#968e84ff', chad: '#968e84ff' },
+    light: { light: '#d4d0ccff', dark: '#5a554fff', chad: '#d4d0ccff' },
+    dark: { light: '#5a554fff', dark: '#d4d0ccff', chad: '#5a554fff' },
+  },
+  primary: {
+    '50': { light: '#fefaefff', dark: '#171e55ff', chad: '#efedfcff' },
+    '100': { light: '#d5dbf0ff', dark: '#1d2c75ff', chad: '#dbd9f7ff' },
+    '200': { light: '#acbef1ff', dark: '#223995ff', chad: '#c6c4f2ff' },
+    '300': { light: '#839ff2ff', dark: '#2747b5ff', chad: '#b0aeeeff' },
+    '400': { light: '#5a81f3ff', dark: '#2c55d5ff', chad: '#9997e2ff' },
+    '500': { light: '#3162f4ff', dark: '#3162f4ff', chad: '#6a68b7ff' },
+    '600': { light: '#2c55d5ff', dark: '#5a81f3ff', chad: '#5f5caeff' },
+    '700': { light: '#2747b5ff', dark: '#839ff2ff', chad: '#554fa5ff' },
+    '800': { light: '#223995ff', dark: '#acbef1ff', chad: '#4a4395ff' },
+    '900': { light: '#1d2c75ff', dark: '#d5dbf0ff', chad: '#3e3684ff' },
+    '950': { light: '#171e55ff', dark: '#fefaefff', chad: '#2f2862ff' },
+    main: { light: '#3162f4ff', dark: '#3162f4ff', chad: '#6a68b7ff' },
+    light: { light: '#839ff2ff', dark: '#2747b5ff', chad: '#b0aeeeff' },
+    dark: { light: '#2747b5ff', dark: '#839ff2ff', chad: '#554fa5ff' },
+    contrastText: { light: '#1f1e1bff', dark: '#f8f7f7ff', chad: '#1f1e1bff' },
+  },
+  secondary: {
+    '100': { light: '#d4f7e3ff', dark: '#0b3d26ff', chad: '#d4f7e3ff' },
+    '200': { light: '#a8efc6ff', dark: '#0f5c38ff', chad: '#a8efc6ff' },
+    '300': { light: '#32ce79ff', dark: '#167d4aff', chad: '#32ce79ff' },
+    '400': { light: '#27b86cff', dark: '#1fa25eff', chad: '#27b86cff' },
+    '500': { light: '#1fa25eff', dark: '#27b86cff', chad: '#1fa25eff' },
+    '600': { light: '#167d4aff', dark: '#32ce79ff', chad: '#167d4aff' },
+    '700': { light: '#0f5c38ff', dark: '#a8efc6ff', chad: '#0f5c38ff' },
+    '800': { light: '#0b3d26ff', dark: '#d4f7e3ff', chad: '#0b3d26ff' },
+    main: { light: '#1fa25eff', dark: '#27b86cff', chad: '#1fa25eff' },
+    light: { light: '#32ce79ff', dark: '#167d4aff', chad: '#32ce79ff' },
+    dark: { light: '#0f5c38ff', dark: '#a8efc6ff', chad: '#0f5c38ff' },
+    contrastText: { light: '#5a554fff', dark: '#d4d0ccff', chad: '#5a554fff' },
+  },
+  tertiary: {
+    '200': { light: '#ffd88bff', dark: '#ed242fff', chad: '#ffd88bff' },
+    '300': { light: '#ffc300ff', dark: '#f77f00ff', chad: '#ffc300ff' },
+    '400': { light: '#f77f00ff', dark: '#ffc300ff', chad: '#f77f00ff' },
+    '600': { light: '#ed242fff', dark: '#ffd88bff', chad: '#ed242fff' },
+    main: { light: '#f77f00ff', dark: '#ffc300ff', chad: '#f77f00ff' },
+    contrastText: { light: '#968e84ff', dark: '#bbb6afff', chad: '#968e84ff' },
+  },
+  error: {
+    main: { light: '#ed242fff', dark: '#ed242fff', chad: '#ed242fff' },
+    contrastText: { light: '#f8f7f7ff', dark: '#f8f7f7ff', chad: '#f8f7f7ff' },
+  },
+  warning: {
+    main: { light: '#ffc300ff', dark: '#ffc300ff', chad: '#ffc300ff' },
+    contrastText: { light: '#f77f00ff', dark: '#ffc300ff', chad: '#f77f00ff' },
+  },
+  info: {
+    main: { light: '#839ff2ff', dark: '#2747b5ff', chad: '#b0aeeeff' },
+    contrastText: { light: '#1f1e1bff', dark: '#f8f7f7ff', chad: '#1f1e1bff' },
+  },
+  success: {
+    main: { light: '#27b86cff', dark: '#167d4aff', chad: '#27b86cff' },
+    contrastText: { light: '#252420ff', dark: '#252420ff', chad: '#252420ff' },
+  },
+  text: {
+    primary: { light: '#1f1e1bff', dark: '#f8f7f7ff', chad: '#1f1e1bff' },
+    secondary: { light: '#5a554fff', dark: '#d4d0ccff', chad: '#5a554fff' },
+    tertiary: { light: '#968e84ff', dark: '#bbb6afff', chad: '#968e84ff' },
+    disabled: { light: '#bbb6afff', dark: '#968e84ff', chad: '#bbb6afff' },
+    highlight: { light: '#3162f4ff', dark: '#3162f4ff', chad: '#5f5caeff' },
+  },
+  background: {
+    default: { light: '#f8f7f7ff', dark: '#1f1e1bff', chad: '#dbd9f7ff' },
+    paper: { light: '#eeecebff', dark: '#252420ff', chad: '#c6c4f2ff' },
+    layer1Fill: { light: '#f8f7f7ff', dark: '#1f1e1bff', chad: '#dbd9f7ff' },
+    layer1Outline: { light: '#d4d0ccff', dark: '#252420ff', chad: '#b0aeeeff' },
+    layer2Fill: { light: '#eeecebff', dark: '#252420ff', chad: '#c6c4f2ff' },
+    layer2Outline: { light: '#dedbd8ff', dark: '#3b3834ff', chad: '#9997e2ff' },
+    layer3Fill: { light: '#f8f7f7ff', dark: '#3b3834ff', chad: '#b0aeeeff' },
+    layer3Outline: { light: '#d4d0ccff', dark: '#5a554fff', chad: '#6a68b7ff' },
+    highlightOutline: { light: '#3162f4ff', dark: '#3162f4ff', chad: '#4a4395ff' },
+    highlightFill: { light: '#3162f4ff', dark: '#3162f4ff', chad: '#4a4395ff' },
+  },
+  grey: {
+    '10': '#fdfcfcff',
+    '25': '#fafafaff',
+    '50': '#f8f7f7ff',
+    '75': '#f6f4f4ff',
+    '100': '#eeecebff',
+    '150': '#e7e4e2ff',
+    '200': '#dedbd8ff',
+    '300': '#d4d0ccff',
+    '400': '#bbb6afff',
+    '500': '#968e84ff',
+    '600': '#746e66ff',
+    '700': '#5a554fff',
+    '750': '#494540ff',
+    '800': '#3b3834ff',
+    '850': '#302e2aff',
+    '900': '#252420ff',
+    '950': '#1f1e1bff',
+    '975': '#191815ff',
+  },
+} as const
+
+const modes = { chad: 'light', light: 'light', dark: 'dark' }
+
+export const createPalette = (mode: ThemeKey) => ({
+  mode: modes[mode],
+  ...Object.fromEntries(
+    Object.entries(PALETTE).map(([key, colors]) => [
+      key,
+      Object.fromEntries(Object.entries(colors).map(([color, hues]) => [color, hues[mode] ?? hues])),
+    ]),
+  ),
+})
 
 export type Palette = ReturnType<typeof createPalette>
