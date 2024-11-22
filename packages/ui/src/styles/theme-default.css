@@ -27,18 +27,6 @@ body.theme-default {
   --gray-600: hsla(20, 8%, 93%, 1);
   --gray-700: hsla(0, 7%, 99%, 1);
 
-  --danger-400: hsla(357, 85%, 54%, 1);
-  --danger_darkBg-400: hsl(357, 81%, 5%);
-  --danger-600: hsl(357, 81%, 91%);
-
-  --success-400: hsl(117, 98%, 25%);
-  --success-600: hsl(117, 98%, 91%);
-
-  --warning-400: var(--orange-400);
-  --warning-text-400: var(--orange-200);
-
-  --info-400: hsl(220, 100%, 68%);
-
   --orange-200: hsla(40, 100%, 77%, 1);
   --orange-400: hsla(31, 100%, 48%, 1);
 
@@ -63,6 +51,18 @@ body.theme-default {
   --whitel85: hsl(0, 0%, 85%);
   --whitel92: hsla(15, 9%, 96%, 1);
   --whitel98: hsla(0, 7%, 97%, 1);
+
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsl(357, 81%, 5%);
+  --danger-600: hsl(357, 81%, 91%);
+
+  --success-400: hsla(149, 65%, 44%, 1);
+  --success-600: hsla(145, 69%, 80%, 1);
+
+  --warning-400: var(--orange-400);
+  --warning-text-400: var(--orange-200);
+
+  --info-400: var(--primary-500);
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
@@ -112,7 +112,6 @@ body.theme-default {
   /* Buttons */
   --button--color: var(--primary-700);
   --button--background-color: var(--primary-400);
-  --button--border-color: var(--primary-400);
   --button--disabled--color: var(--gray-400);
   --button--disabled--border-color: var(--gray-500);
   --button--disabled--background-color: var(--gray-500);
@@ -120,11 +119,11 @@ body.theme-default {
   --button--font: var(--font);
   --button--font-size: inherit;
   --button--font-weight: var(--bold);
-  --button--shadow-color: var(--primary-300);
+  --button--shadow-color: var(--primary-200);
   --button--text-transform: initial;
   --button_filled--active--background-color: var(--white);
-  --button_filled--hover--background-color: var(--primary-400l10);
-  --button_filled-hover-contrast--background-color: var(--primary-400l10);
+  --button_filled--hover--background-color: var(--primary-300);
+  --button_filled-hover-contrast--background-color: var(--primary-300);
   --button_outlined--color: var(--text-400);
   --button_outlined--border-color: var(--border-400);
   --button_outlined--hover--color: var(--primary-400);
@@ -138,6 +137,8 @@ body.theme-default {
   --button_text--hover--color: var(--primary-400);
   --button_text_darkbg--hover--color: var(--primary-400);
   --button_text_darkbg--color: var(--primary-400);
+  --box_action--button--text-transform: capitalize;
+
 
   /*  Health Mode  */
   --health_mode_--color: var(--gray-400);
