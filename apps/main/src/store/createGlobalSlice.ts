@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { Locale } from '@/lib/i18n'
-import type { ConnectState } from '@/ui/utils'
+import { ConnectState, getPageWidthClassName } from '@/ui/utils'
 
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
@@ -41,6 +41,7 @@ type GlobalState = {
   layoutHeight: LayoutHeight
   loaded: boolean
   locale: Locale['value']
+  pageWidthPx: number | null
   pageWidth: PageWidthClassName | null
   maxSlippage: { [key: string]: string }
   routerProps: RouterProps | null
@@ -52,7 +53,7 @@ type GlobalState = {
 export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
-  setPageWidth: (pageWidthClassName: PageWidthClassName) => void
+  setPageWidth: (pageWidth: number) => void
   setThemeType: (themeType: Theme) => void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
@@ -131,7 +132,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     )
     setStorageValue('APP_CACHE', { themeType })
   },
-  setPageWidth: (pageWidthClassName: PageWidthClassName) => {
+  setPageWidth: (pageWidth: number) => {
+    const pageWidthClassName = getPageWidthClassName(pageWidth)
     const isXLgUp = pageWidthClassName.startsWith('page-wide')
     const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
     const isMd = pageWidthClassName.startsWith('page-medium')
@@ -141,6 +143,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     set(
       produce((state: State) => {
+        state.pageWidthPx = pageWidth
         state.pageWidth = pageWidthClassName
         state.isXSmDown = isXSmDown
         state.isSmUp = isSmUp || isMd || isLgUp

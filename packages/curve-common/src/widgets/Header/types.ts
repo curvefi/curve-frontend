@@ -1,7 +1,6 @@
-import { LanguageSwitcherProps } from '../../features/switch-language'
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
-import { Dispatch } from 'react'
+import { Dispatch, RefObject } from 'react'
 import { AppNames } from './constants'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
@@ -23,6 +22,7 @@ export type NavigationSection = {
 }
 
 export type BaseHeaderProps<TChainId = number> = {
+  mainNavRef: RefObject<HTMLDivElement>
   currentApp: AppName
   ChainProps: ChainSwitcherProps<TChainId>
   WalletProps: ConnectWalletIndicatorProps

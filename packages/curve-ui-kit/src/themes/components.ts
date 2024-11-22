@@ -35,7 +35,11 @@ export const createComponents = (palette: Palette, typography: TypographyOptions
         backgroundColor: palette.background.layer1Fill,
         border: `1px solid ${palette.neutral[400]}`,
       },
-      thumb: { borderRadius: 0, color: palette.primary.main, '.Mui-checked &': { color: palette.neutral[50] } },
+      thumb: {
+        borderRadius: 0,
+        color: palette.primary.main,
+        '.Mui-checked &': { color: palette.neutral[50] }
+      },
     },
   },
 })

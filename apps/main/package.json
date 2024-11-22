@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": ">=20"
+    "node": "20"
   },
   "scripts": {
     "dev": "yarn i18n:compile && next dev -p 3000",

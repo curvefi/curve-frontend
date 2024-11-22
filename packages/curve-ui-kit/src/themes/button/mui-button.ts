@@ -82,7 +82,7 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
   })
 
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
-  const [sm, md, lg] = [2, 3, 4].map(basicMuiTheme.spacing)
+  const [sm, md, lg] = [2, 3, 4].map(i => basicMuiTheme.spacing(i))
   return {
     styleOverrides: {
       root: {
@@ -97,7 +97,9 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
           },
         ],
         borderRadius: 0,
-        '&:focus': { border: `2px solid ${palette.primary[500]}` },
+        border: `2px solid transparent`,
+        boxSizing: 'border-box',
+        '&:focus': { borderColor: palette.primary[500] },
       },
       sizeLarge: {
         height: largeHeight,

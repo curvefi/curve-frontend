@@ -58,7 +58,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer ref={footerRef} sections={sections} />}
+        {isMdUp && <Footer footerRef={footerRef} sections={sections} />}
       </Container>
     </>
   )
