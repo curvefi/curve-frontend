@@ -1,20 +1,27 @@
 import type { Components } from '@mui/material/styles'
 import { Palette } from '../palette'
-import { BUTTONS_HEIGHTS } from '../button'
-
-export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const;
 const underlined = 'variant-underlined' as const;
 const overlined = 'variant-overlined' as const;
+const small = 'size-small' as const;
+const medium = 'size-medium' as const;
+const large = 'size-large' as const;
 export const TABS_VARIANT_CLASSES = { contained, underlined, overlined };
+export const TABS_HEIGHT_CLASSES = { small, medium, large };
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
 export const defineMuiTab = (): Components['MuiTab'] => ({
   styleOverrides: {
-    root: { textTransform: 'uppercase', minHeight: DEFAULT_BAR_SIZE },
+    root: {
+      textTransform: 'uppercase',
+      borderTop: '2px solid transparent',
+      minHeight: 0,
+      boxSizing: 'border-box',
+      paddingTop: '10px',
+    },
   },
 })
 
@@ -22,48 +29,44 @@ export const defineMuiTab = (): Components['MuiTab'] => ({
 export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
+      minHeight: 0,
       [`&.${contained} .MuiTab-root`]: {
         color: text.secondary,
         backgroundColor: primary[200],
         '&:hover': {
           color: primary[950],
           backgroundColor: neutral[50],
+          borderColor: background.highlightOutline,
         },
         '&.Mui-selected': {
           color: text.primary,
           backgroundColor: background.layer1Fill,
-          borderColor: background.highlightOutline,
         },
       },
       [`&.${overlined} .MuiTab-root`]: {
         color: text.secondary,
-        borderTop: background.layer2Outline,
-        '&.Mui-selected': {
-          color: text.primary,
-          borderTop: primary[500],
-        },
+        '&.Mui-selected': { color: text.primary },
         '&:hover': {
           color: text.primary,
-          paddingTop: '8px', // to compensate margin change
-          marginBottom: '-2px', // to avoid jumping
-          borderTop: `2px solid ${neutral.main}`,
+          borderColor: background.highlightOutline,
           backgroundColor: neutral[200],
         },
       },
       [`&.${underlined} .MuiTab-root`]: {
         color: text.primary,
-        borderBottom: background.layer2Outline,
         '&:hover': {
           color: text.highlight,
-          borderBottom: background.highlightOutline,
+          borderColor: background.highlightOutline,
         },
         '&.Mui-selected': {
           color: text.primary,
-          borderBottom: background.highlightOutline,
         },
       },
+      [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
+      [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
     },
     indicator: {
+      backgroundColor: background.highlightOutline,
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
     },

@@ -1,13 +1,7 @@
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Tab, {type TabProps} from '@mui/material/Tab'
-import { TabSwitcherVariants, TABS_VARIANT_CLASSES } from '@ui-kit/themes/tabs'
+import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '@ui-kit/themes/tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
-
-const TABS_HEIGHTS = {
-  small:'2rem',
-  medium: '2.5rem',
-  large: '3rem'
-} as const // 32px, 40px, 48px
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -15,7 +9,7 @@ export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> 
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
-  size?: keyof typeof TABS_HEIGHTS
+  size?: keyof typeof TABS_HEIGHT_CLASSES
   variant?: TabSwitcherVariants
   muiVariant?: TabsProps['variant']
   textVariant?: TypographyProps['variant']
@@ -39,8 +33,7 @@ export const TabsSwitcher = <T extends string | number>({
     textColor="inherit"
     value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
-    sx={{ minHeight: TABS_HEIGHTS[size] }}
-    className={TABS_VARIANT_CLASSES[variant]}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
     {...props}
   >
     {options.map(({ value, label, ...props }) => (

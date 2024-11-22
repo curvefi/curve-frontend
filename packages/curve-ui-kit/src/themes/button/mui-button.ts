@@ -97,7 +97,9 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
           },
         ],
         borderRadius: 0,
-        '&:focus': { border: `2px solid ${palette.primary[500]}` },
+        border: `2px solid transparent`,
+        boxSizing: 'border-box',
+        '&:focus': { borderColor: palette.primary[500] },
       },
       sizeLarge: {
         height: largeHeight,
