@@ -205,6 +205,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     if (!poolIds.length) {
       state.pools.setEmptyPoolListDefault(chainId)
       state.tokens.setEmptyPoolListDefault(chainId)
+      state.pools.fetchBasePools(curveApi)
       state.updateGlobalStoreByKey('isLoadingApi', false)
       return
     }
