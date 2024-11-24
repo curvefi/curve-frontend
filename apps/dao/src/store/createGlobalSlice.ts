@@ -6,7 +6,7 @@ import type { Locale } from '@/lib/i18n'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
-import { log } from '@/ui/utils'
+import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -95,7 +95,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state: State) => {
         state.themeType = themeType
-      })
+      }),
     )
     setStorageValue('APP_CACHE', { themeType })
   },
@@ -116,13 +116,13 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
         state.isLgUp = isLgUp
         state.isXLgUp = isXLgUp
         state.isXXSm = isXXSm
-      })
+      }),
     )
   },
   updateConnectState: (
     status: ConnectState['status'],
     stage: ConnectState['stage'],
-    options?: ConnectState['options']
+    options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
     get().updateGlobalStoreByKey('connectState', value)
@@ -165,7 +165,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state: State) => {
         if (value !== null) state.layoutHeight[key] = value
-      })
+      }),
     )
   },
   updateShowScrollButton: (scrollY: number) => {
@@ -174,7 +174,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       set(
         produce((state) => {
           state.showScrollButton = showScrollButton
-        })
+        }),
       )
     }
   },
@@ -182,7 +182,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state) => {
         state[key] = value
-      })
+      }),
     )
   },
 
@@ -208,7 +208,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
             state[sliceKey][key] = parsedValue
           }
         }
-      })
+      }),
     )
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
@@ -221,7 +221,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
           }
           state[sliceKey][key] = value
         }
-      })
+      }),
     )
   },
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
@@ -236,7 +236,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
             }
             state[sliceKey][key] = value
           }
-        })
+        }),
       )
     }
   },
@@ -247,7 +247,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
           ...state[sliceKey],
           ...defaultState,
         }
-      })
+      }),
     )
   },
 })

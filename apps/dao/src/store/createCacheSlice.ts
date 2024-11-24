@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 
-import { sleep } from '@/ui/utils'
+import { sleep } from '@/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

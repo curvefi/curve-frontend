@@ -4,7 +4,8 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { httpFetcher, log } from '@/ui/utils'
+import { httpFetcher } from '@/utils'
+import { log } from '@/shared/lib/logging'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

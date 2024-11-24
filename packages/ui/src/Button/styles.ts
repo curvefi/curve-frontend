@@ -191,8 +191,19 @@ export const buttonBaseStyles = css<ButtonProps>`
 
         transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
         &.active:not(:disabled) {
-          box-shadow: none;
+          color: var(--button--color);
+          background-color: var(--button--background-color);
           border: 1px solid var(--button--border-color);
+          box-shadow: 3px 3px 0 var(--button--shadow-color);
+        }
+        :hover:not(:disabled) {
+          color: var(--button--color); 
+          border: 1px solid var(--button--border-color);
+          background-color: var(--button_filled--hover--background-color);
+        }
+        &.loading,
+        :disabled {
+          color: var(--button--disabled--color);
         }
       `
     } else if (variant === 'select-flat') {

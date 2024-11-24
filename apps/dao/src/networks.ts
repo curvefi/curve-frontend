@@ -33,8 +33,6 @@ const networks: Record<ChainId, NetworkConfig> = {
       ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL!
       : `https://curve.drpc.org/ogrpc?network=ethereum`,
     symbol: 'ETH',
-    logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
-    logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     scanAddressPath: (hash: string) => `https://etherscan.io/address/${hash}`,
     scanTxPath: (hash: string) => `https://etherscan.com/tx/${hash}`,
     scanTokenPath: (hash: string) => `https://etherscan.io/token/${hash}`,

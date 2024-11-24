@@ -8,7 +8,7 @@ import networks from '@/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getErrorMessage } from '@/utils'
-import { log } from '@/ui/utils'
+import { log } from '@/shared/lib/logging'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
@@ -52,7 +52,7 @@ export const helpers = {
   },
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash)
+      async (hash) => await provider.waitForTransaction(hash),
     )
     if (Array.isArray(errors) && errors.length > 0) {
       throw errors
@@ -126,7 +126,7 @@ const lockCrv = {
     provider: Provider,
     lockedAmount: string,
     utcDate: DateValue,
-    days: number
+    days: number,
   ) => {
     log('createLock', lockedAmount, utcDate.toString(), days)
     let resp = { activeKey, hash: '', error: '' }
@@ -145,7 +145,7 @@ const lockCrv = {
     curve: CurveApi,
     formType: LockFormType,
     lockedAmount: string,
-    days: number | null
+    days: number | null,
   ) => {
     log('lockCrvEstGasApproval', formType, lockedAmount, days)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
@@ -252,7 +252,7 @@ const curvejsApi = {
 export default curvejsApi
 
 export function getImageBaseUrl(rChainId: ChainId) {
-  return rChainId ? networks[rChainId].imageBaseUrl ?? '' : ''
+  return rChainId ? (networks[rChainId].imageBaseUrl ?? '') : ''
 }
 
 export function getWalletProvider(wallet: Wallet) {
