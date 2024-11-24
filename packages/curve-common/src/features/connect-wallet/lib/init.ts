@@ -29,7 +29,7 @@ export function initOnboard(i18n: any, locale: any, themeType: any, networks: an
       id: network.hex,
       token: network.symbol,
       label: network.name,
-      rpcUrl: network.rpcUrlConnectWallet
+      rpcUrl: network.rpcUrl,
     }
   })
 
@@ -47,36 +47,35 @@ export function initOnboard(i18n: any, locale: any, themeType: any, networks: an
       frontier,
       bitget,
       trust,
-      metamaskSDKWallet
+      metamaskSDKWallet,
     ],
     chains,
     appMetadata: {
       name: 'Curve',
       description: 'Efficient stablecoin and non-stablecoin swapping',
-      icon: 'https://classic.curve.fi/logo-square.svg'
+      icon: 'https://classic.curve.fi/logo-square.svg',
     },
     disableFontDownload: true,
     i18n,
     notify: {
       desktop: {
         enabled: true,
-        transactionHandler: () => {
-        },
-        position: 'topRight'
-      }
+        transactionHandler: () => {},
+        position: 'topRight',
+      },
     },
     theme,
     accountCenter: {
       desktop: {
-        enabled: false
+        enabled: false,
       },
       mobile: {
-        enabled: false
-      }
+        enabled: false,
+      },
     },
     connect: {
-      autoConnectLastWallet: false
-    }
+      autoConnectLastWallet: false,
+    },
   })
 
   if (walletState && locale) {

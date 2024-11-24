@@ -1,17 +1,13 @@
 import type { FormValues, FormStatus, StepKey, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
 import type { Slippage, TransferProps } from '@/components/PagePool/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/components/PagePool'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/components/PagePool/Deposit/utils'
 import { amountsDescription, tokensDescription } from '@/components/PagePool/utils'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import AlertSlippage from '@/components/AlertSlippage'
@@ -45,7 +41,7 @@ const FormDeposit = ({
   const activeKey = useStore((state) => state.poolDeposit.activeKey)
   const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
-    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED
+    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
   )
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
@@ -55,6 +51,7 @@ const FormDeposit = ({
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -67,7 +64,7 @@ const FormDeposit = ({
     (
       updatedFormValues: Partial<FormValues>,
       loadMaxAmount: LoadMaxAmount | null,
-      updatedMaxSlippage: string | null
+      updatedMaxSlippage: string | null,
     ) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
@@ -79,10 +76,10 @@ const FormDeposit = ({
         updatedFormValues,
         loadMaxAmount,
         seed.isSeed,
-        updatedMaxSlippage || maxSlippage
+        updatedMaxSlippage || maxSlippage,
       )
     },
-    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -92,7 +89,7 @@ const FormDeposit = ({
       await fetchStepApprove(activeKey, curve, 'DEPOSIT', poolData.pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification]
+    [fetchStepApprove, notifyNotification],
   )
 
   const handleDepositClick = useCallback(
@@ -102,13 +99,13 @@ const FormDeposit = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepDeposit(activeKey, curve, poolData, formValues, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepDeposit, notifyNotification]
+    [fetchStepDeposit, notifyNotification, network],
   )
 
   const getSteps = useCallback(
@@ -121,7 +118,7 @@ const FormDeposit = ({
       slippageConfirmed: boolean,
       slippage: Slippage,
       steps: Step[],
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const haveFormValues = formValues.amounts.some((a) => Number(a.value) > 0)
       const isValid = haveFormValues && !formStatus.error
@@ -180,7 +177,7 @@ const FormDeposit = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleDepositClick]
+    [handleApproveClick, handleDepositClick],
   )
 
   // onMount
@@ -227,7 +224,7 @@ const FormDeposit = ({
         slippageConfirmed,
         slippage,
         steps,
-        maxSlippage
+        maxSlippage,
       )
       setSteps(updatedSteps)
     }

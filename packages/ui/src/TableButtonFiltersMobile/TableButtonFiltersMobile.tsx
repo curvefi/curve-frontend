@@ -1,39 +1,48 @@
 import React, { useMemo } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 
-import { delayAction } from 'ui/src/utils/helpers'
+import { delayAction, getIsMobile } from 'ui/src/utils/helpers'
 
 import { RadioGroup } from 'ui/src/Radio'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
 import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
 
+type Filters = { [_: string]: { id: string; displayName: string; color?: string } } | undefined
+
+const FILTER_DEFAULT = { selectedLabel: 'Filter by', selectedColor: null }
+
 const TableButtonFiltersMobile = ({
   filters,
   filterKey,
   updateRouteFilterKey,
 }: {
-  filters: {
-    [_: string]: { id: string; displayName: string; color?: string }
-  }
+  filters: Filters
   filterKey: string
   updateRouteFilterKey(filterKey: string): void
 }) => {
   let overlayTriggerState = useOverlayTriggerState({})
 
+  const handleClose = () => {
+    if (getIsMobile()) {
+      delayAction(overlayTriggerState.close)
+    } else {
+      overlayTriggerState.close()
+    }
+  }
+
   const handleRadioGroupChange = (updatedFilterKey: string) => {
     updateRouteFilterKey(updatedFilterKey)
-    delayAction(overlayTriggerState.close)
+    handleClose()
   }
 
   const { selectedLabel, selectedColor } = useMemo(() => {
-    if (filterKey) {
-      const found = filters[filterKey]
-      if (found) {
-        return { selectedLabel: found.displayName, selectedColor: found.color }
-      }
-    }
-    return { selectedLabel: 'Filter by', selectedColor: null }
+    if (!filters || !filterKey) return FILTER_DEFAULT
+
+    const found = filters[filterKey]
+    if (!found) return FILTER_DEFAULT
+
+    return { selectedLabel: found.displayName, selectedColor: found.color }
   }, [filters, filterKey])
 
   return (
@@ -43,12 +52,13 @@ const TableButtonFiltersMobile = ({
         {selectedLabel}
       </OpenDialogButton>
       {overlayTriggerState.isOpen && (
-        <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: () => overlayTriggerState.close() }}>
+        <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: handleClose }}>
           <RadioGroup aria-label={`Filter by`} onChange={handleRadioGroupChange} value={filterKey}>
-            {Object.keys(filters).map((k) => {
-              const item = filters[k]
-              return <TableButtonFiltersMobileItem key={item.id} item={item} />
-            })}
+            {filters &&
+              Object.keys(filters).map((k) => {
+                const item = filters[k]
+                return <TableButtonFiltersMobileItem key={item.id} item={item} />
+              })}
           </RadioGroup>
         </ModalDialog>
       )}

@@ -4,10 +4,8 @@ import styled from 'styled-components'
 import { copyToClipboard } from '@/lib/utils'
 import { getChainPoolIdActiveKey } from '@/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import usePoolTokensLinksMapper from '@/hooks/usePoolTokensLinksMapper'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import { StyledStats } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import CurrencyReservesContent from '@/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
@@ -21,6 +19,7 @@ interface Props {
 }
 
 const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
+  const network = useStore((state) => state.networks.networks[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
@@ -41,9 +40,9 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
         return (
           <CurrencyReservesContent
             key={`${token}-${idx}`}
-            cr={currencyReserves?.tokens.find((t) => t.token === token)}
+            cr={currencyReserves?.tokens.find((t) => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
-            network={networks[rChainId]}
+            network={network}
             rChainId={rChainId}
             tokensMapper={tokensMapper}
             token={token}

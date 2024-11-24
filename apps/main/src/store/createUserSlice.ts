@@ -6,7 +6,7 @@ import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { fulfilledValue, isValidAddress } from '@/utils'
-import networks from '@/networks'
+import curvejsApi from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -72,7 +72,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           poolListError: '',
         })
 
-        const { poolList } = await networks[chainId].api.wallet.getUserPoolList(curve, curve.signerAddress)
+        const { poolList } = await curvejsApi.wallet.getUserPoolList(curve, curve.signerAddress)
 
         // parse user pool list
         for (const poolId of poolList) {
@@ -103,7 +103,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         // get user wallet balances for pool
         get()[sliceKey].setStateByKey('walletBalancesLoading', true)
-        fetchedWalletBalances = await networks[chainId].api.wallet.poolWalletBalances(curve, poolId)
+        fetchedWalletBalances = await curvejsApi.wallet.poolWalletBalances(curve, poolId)
         get()[sliceKey].setStateByActiveKey('walletBalances', userPoolActiveKey, fetchedWalletBalances)
         get()[sliceKey].setStateByKey('walletBalancesLoading', false)
 
@@ -125,12 +125,12 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           const pool = storedPoolData.pool
           const [userPoolWithdrawResult, liquidityUsdResult, userShareResult, userCrvApyResult, userPoolBoostResult] =
             await Promise.allSettled([
-              networks[chainId].api.wallet.userPoolBalances(pool),
-              networks[chainId].api.wallet.userPoolLiquidityUsd(pool, curve.signerAddress),
-              networks[chainId].api.wallet.userPoolShare(pool),
-              networks[chainId].api.wallet.userPoolRewardCrvApy(pool, curve.signerAddress),
-              networks[chainId].forms.indexOf('BOOSTING') !== -1 && isValidAddress(pool.gauge.address)
-                ? networks[chainId].api.wallet.userPoolBoost(pool, curve.signerAddress)
+              curvejsApi.wallet.userPoolBalances(pool),
+              curvejsApi.wallet.userPoolLiquidityUsd(pool, curve.signerAddress),
+              curvejsApi.wallet.userPoolShare(pool),
+              curvejsApi.wallet.userPoolRewardCrvApy(pool, curve.signerAddress),
+              chainId === 1 && isValidAddress(pool.gauge.address)
+                ? curvejsApi.wallet.userPoolBoost(pool, curve.signerAddress)
                 : Promise.resolve(''),
             ])
 

@@ -1,11 +1,8 @@
 import type { PoolType } from '@/components/PageDeployGauge/types'
-
 import { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-
 import useStore from '@/store/useStore'
-import networks from '@/networks'
 import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
@@ -22,38 +19,39 @@ type Props = {
   chainId: ChainId
 }
 
+const mainnet = 1
+
 const DeployMainnet = ({ chainId }: Props) => {
   const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
   const setCurrentPoolType = useStore((state) => state.deployGauge.setCurrentPoolType)
   const poolAddress = useStore((state) => state.deployGauge.poolAddress)
   const setPoolAddress = useStore((state) => state.deployGauge.setPoolAddress)
 
-  const mainnet = 1
+  const network = useStore((state) => state.networks.networks[mainnet])
 
   const poolTypesList: PoolType[] = useMemo(() => {
     const list: PoolType[] = []
-
-    if (networks[mainnet].stableswapFactory) {
+    if (network.stableswapFactory) {
       list.push(STABLESWAP)
     }
-    if (networks[mainnet].twocryptoFactory) {
+    if (network.twocryptoFactory) {
       list.push(TWOCOINCRYPTOSWAPNG)
     }
-    if (networks[mainnet].tricryptoFactory) {
+    if (network.tricryptoFactory) {
       list.push(THREECOINCRYPTOSWAP)
     }
-    if (networks[mainnet].stableswapFactoryOld) {
+    if (network.stableswapFactoryOld) {
       list.push(STABLESWAPOLD)
     }
-    if (networks[mainnet].twocryptoFactoryOld) {
+    if (network.twocryptoFactoryOld) {
       list.push(TWOCOINCRYPTOSWAP)
     }
     return list
-  }, [])
+  }, [network])
 
   return (
     <Wrapper flex flexColumn>
-      {chainId === 1 ? (
+      {chainId === mainnet ? (
         <>
           <SelectorWrapper>
             <Box flex>

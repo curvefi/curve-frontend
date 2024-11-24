@@ -1,15 +1,11 @@
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import { shortenTokenAddress } from '@/utils'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
@@ -38,7 +34,7 @@ const MySharesStats = ({
   const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
   const userWithdrawAmounts = useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey] ?? [])
 
-  const haveBoosting = networks[rChainId].forms.indexOf('BOOSTING') !== -1
+  const haveBoosting = rChainId === 1
   const haveCrvRewards = rewardsApy?.crv?.[0] !== 0
   const { rewardsNeedNudging, areCrvRewardsStuckInBridge } = poolData?.gauge.status || {}
 

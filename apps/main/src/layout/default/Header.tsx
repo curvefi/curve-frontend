@@ -9,10 +9,9 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { DEFAULT_LOCALES } from '@/lib/i18n'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
+import { useNetworkFromUrl, useParamsFromUrl, useRestFullPathname, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress } from '@/store/createWalletSlice'
 import { useConnectWallet } from '@/common/features/connect-wallet'
-import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
@@ -44,6 +43,8 @@ const Header = () => {
   const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
+  const networks = useStore((state) => state.networks.networks)
+  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
   const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
   const themeType = useStore((state) => state.themeType)
@@ -52,20 +53,27 @@ const Header = () => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { rChainId, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rNetworkIdx, rLocalePathname } = useParamsFromUrl()
+  const isLite = networks[rChainId].isLite
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+  const { rNetwork } = useNetworkFromUrl()
+  const restFullPathname = useRestFullPathname()
+  const restPartialPathname = useRestPartialPathname()
 
   const { params: routerParams, location } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
   const appLogoProps: AppLogoProps = {
-    appName: '',
+    appName: isLite ? 'Lite' : '',
   }
 
   // prettier-ignore
-  const appStats = [
+  // only show total deposits on curve-lite networks
+  const appStats = isLite ? [
+    { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
+  ] : [
     { label: t`Total Deposits`, value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: t`Daily Volume`, value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }) },
     { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
@@ -91,12 +99,12 @@ const Header = () => {
         ]
 
     if (hasRouter && networks[rChainId].showRouterSwap) {
-      const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached)
+      const parsedSwapRoute = _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks)
       links.unshift({ route: parsedSwapRoute, label: t`Swap`, groupedTitle: 'Swap' })
     }
 
     return _parseRouteAndIsActive(links, rLocalePathname, routerPathname, routerNetwork)
-  }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
+  }, [hasRouter, isLgUp, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])
 
   const getPath = (route: string) => {
     const networkName = networks[rChainId || '1'].id
@@ -106,7 +114,7 @@ const Header = () => {
   const handleNetworkChange = (selectedChainId: React.Key) => {
     if (rChainId !== selectedChainId) {
       const network = networks[selectedChainId as ChainId].id
-      navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+      navigate(`${rLocalePathname}/${network}/${restPartialPathname}`)
       updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
     }
   }
@@ -142,8 +150,7 @@ const Header = () => {
     locales: DEFAULT_LOCALES,
     handleChange: (selectedLocale: React.Key) => {
       const locale = selectedLocale !== 'en' ? `/${selectedLocale}` : ''
-      const { rNetwork } = getNetworkFromUrl()
-      navigate(`${locale}/${rNetwork}/${getRestFullPathname()}`)
+      navigate(`${locale}/${rNetwork}/${restFullPathname}`)
     },
   }
 
@@ -208,7 +215,8 @@ const Header = () => {
 function _parseSwapRoute(
   rChainId: ChainId,
   route: string,
-  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined
+  routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
+  networks: Networks,
 ) {
   const routerDefault = rChainId ? networks[rChainId].swap : {}
   const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''

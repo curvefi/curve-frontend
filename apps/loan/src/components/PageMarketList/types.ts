@@ -1,4 +1,7 @@
-import { Params } from 'react-router'
+import type { Params } from 'react-router'
+import type { TheadSortButtonProps } from '@/ui/Table/TheadSortButton'
+
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 
 export type FormStatus = {
   error: string
@@ -6,38 +9,50 @@ export type FormStatus = {
   noResult: boolean
 }
 
+export type SearchTermKey = keyof typeof SEARCH_TERM
+export type SearchTermMapper = Record<SearchTermKey, { label?: string; isTokenAddress?: boolean }>
+export type SearchTermsResult = { [collateralId: string]: { [key: string]: { value: string } } }
 export type Order = 'desc' | 'asc'
-export type FilterKey = 'all' // move to networks
-export type SortKey =
-  | 'name'
-  | 'myHealth'
-  | 'myDebt'
-  | 'rate'
-  | 'totalBorrowed'
-  | 'cap'
-  | 'available'
-  | 'totalCollateral'
 
-export type FormValues = {
-  filterKey: FilterKey
+export type SearchParams = {
   searchText: string
-  sortBy: SortKey
+  sortBy: TitleKey | ''
   sortByOrder: Order
 }
 
 export type PageCollateralList = {
+  rChainId: ChainId
+  params: Params
   curve: Curve | null
   pageLoaded: boolean
-  params: Params
-  rChainId: ChainId
+  searchParams: SearchParams
+  searchTermMapper: SearchTermMapper
+  titleMapper: TitleMapper
+  updatePath(updatedSearchParams: Partial<SearchParams>): void
 }
 
 export type TableRowProps = {
   className?: string
   rChainId: ChainId
   collateralId: string
-  collateralDataCachedOrApi: CollateralDataCache | CollateralData | undefined
+  collateralDataCachedOrApi: CollateralDataCacheOrApi
   loanDetails: Partial<LoanDetails> | undefined
   loanExists: boolean | undefined
+  searchParams: SearchParams
+  titleMapper: TitleMapper
   handleCellClick(): void
+}
+
+export type TableLabel = {
+  titleKey: TitleKey
+  className: string
+  show?: boolean
+  width?: string
+  indicatorPlacement?: TheadSortButtonProps<TitleKey>['indicatorPlacement']
+}
+
+export type TableSettings = {
+  isNotSortable?: boolean
+  sortBy?: TitleKey | ''
+  sortByOrder?: Order
 }

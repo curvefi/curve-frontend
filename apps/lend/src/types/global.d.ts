@@ -7,6 +7,7 @@ import type { WalletState } from '@web3-onboard/core'
 import type { Eip1193Provider } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
+import type { BaseConfig } from '@/ui/utils'
 
 import React from 'react'
 
@@ -36,39 +37,10 @@ declare global {
   type EstimatedGas = number | number[] | null
 
   // NETWORK PROPERTIES
-  interface NetworkConfig {
-    blocknativeSupport: boolean
-    gasL2: boolean
-    gasPricesUnit: string
-    gasPricesUrl: string
-    gasPricesDefault: number
-    hex: string
-    icon: FunctionComponent<SVGProps<SVGSVGElement>>
-    id: NetworkEnum
-    imageBaseUrl: string
-    integrations: {
-      imageBaseurl: string
-      listUrl: string
-      tagsUrl: string
-    }
-    rewards: {
-      baseUrl: string
-      imageBaseUrl: string
-      campaignsUrl: string
-      tagsUrl: string
-    }
-    isActiveNetwork: boolean // show UI for this network default true
-    name: string
-    networkId: ChainId
-    orgUIPath: string
-    rpcUrlConnectWallet: string
-    rpcUrl: string
+  interface NetworkConfig extends BaseConfig {
     smallMarketAmount: number
-    scanAddressPath: (hash: string) => string
-    scanTxPath: (hash: string) => string
-    scanTokenPath: (hash: string) => string
+    isActiveNetwork: boolean
     showInSelectNetwork: boolean
-    symbol: string
 
     // market list page properties
     hideMarketsInUI: { [owmId: string]: boolean }

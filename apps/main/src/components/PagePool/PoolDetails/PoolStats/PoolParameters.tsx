@@ -1,13 +1,9 @@
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
-
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import { Item, Items } from '@/ui/Items'
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
@@ -24,7 +20,8 @@ const PoolParameters: React.FC<
   } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>
 > = ({ parameters, poolData, poolDataCacheOrApi, routerParams }) => {
   const { rChainId, rPoolId } = routerParams
-  const pricesApi = networks[rChainId].pricesApi
+  const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
+  const isLite = useStore((state) => state.networks.networks[rChainId]?.isLite)
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
 
@@ -51,30 +48,32 @@ const PoolParameters: React.FC<
 
   return (
     <>
-      <article>
-        <Items listItemMargin="var(--spacing-1)">
-          <Item>
-            {t`Daily USD volume:`}{' '}
-            <strong title={volume?.value ?? '-'}>
-              {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
-            </strong>
-          </Item>
-          <Item>
-            {t`Liquidity utilization:`}{' '}
-            <Chip
-              isBold={liquidityUtilization !== '-'}
-              size="md"
-              tooltip={t`24h Volume/Liquidity ratio`}
-              tooltipProps={{
-                placement: 'bottom end',
-              }}
-            >
-              {liquidityUtilization}
-              <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-            </Chip>
-          </Item>
-        </Items>
-      </article>
+      {!isLite && (
+        <article>
+          <Items listItemMargin="var(--spacing-1)">
+            <Item>
+              {t`Daily USD volume:`}{' '}
+              <strong title={volume?.value ?? '-'}>
+                {formatNumber(volume?.value, { notation: 'compact', defaultValue: '-' })}
+              </strong>
+            </Item>
+            <Item>
+              {t`Liquidity utilization:`}{' '}
+              <Chip
+                isBold={liquidityUtilization !== '-'}
+                size="md"
+                tooltip={t`24h Volume/Liquidity ratio`}
+                tooltipProps={{
+                  placement: 'bottom end',
+                }}
+              >
+                {liquidityUtilization}
+                <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+              </Chip>
+            </Item>
+          </Items>
+        </article>
+      )}
 
       <PoolTotalStaked poolDataCacheOrApi={poolDataCacheOrApi} />
 

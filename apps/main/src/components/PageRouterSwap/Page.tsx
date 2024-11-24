@@ -1,19 +1,15 @@
 import type { NextPage } from 'next'
-
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils'
-import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 import useTokensMapper from '@/hooks/useTokensMapper'
-
 import AdvancedSettings from '@/components/AdvancedSettings'
 import Box, { BoxHeader } from '@/ui/Box'
 import DocumentHead from '@/layout/default/DocumentHead'
@@ -35,13 +31,15 @@ const Page: NextPage = () => {
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const provider = useStore((state) => state.wallet.getProvider(''))
+  const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
+  const network = useStore((state) => state.networks.networks[rChainId])
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
 
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
-  const paramsFromAddress = searchParams.get('from')?.toLowerCase() || ''
-  const paramsToAddress = searchParams.get('to')?.toLowerCase() || ''
+  const paramsFromAddress = searchParams.get('from')?.toLowerCase() || nativeToken?.address || ''
+  const paramsToAddress = searchParams.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams.get('slippage')
 
   const redirect = useCallback(
@@ -58,7 +56,7 @@ const Page: NextPage = () => {
         navigate(getPath(params, `${ROUTE.PAGE_SWAP}${pathname}`))
       }
     },
-    [location.search, navigate, params]
+    [location.search, navigate, params],
   )
 
   useEffect(() => {
@@ -69,14 +67,14 @@ const Page: NextPage = () => {
   useEffect(() => {
     setLoaded(false)
     if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
-      if (!hasRouter || !networks[rChainId].showRouterSwap) {
+      if (!hasRouter || !network.showRouterSwap) {
         navigate(getPath(params, `${ROUTE.PAGE_POOLS}`))
       } else {
         if (paramsMaxSlippage) {
           updateGlobalStoreByKey('maxSlippage', paramsMaxSlippage)
         }
 
-        const routerDefault = networks[rChainId].swap
+        const routerDefault = network.swap
         if (Object.keys(tokensMapper).length && !!routerDefault) {
           const isValidParamsFromAddress = !!paramsFromAddress && !!tokensMapper[paramsFromAddress]
           const isValidParamsToAddress = !!paramsToAddress && !!tokensMapper[paramsToAddress]

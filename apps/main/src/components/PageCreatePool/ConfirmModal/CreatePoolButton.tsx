@@ -15,7 +15,8 @@ interface Props {
 }
 
 const CreatePoolButton = ({ disabled, curve }: Props) => {
-  const { haveSigner } = curveProps(curve)
+  const networks = useStore((state) => state.networks.networks)
+  const { haveSigner } = curveProps(curve, networks)
 
   const deployPool = useStore((state) => state.createPool.deployPool)
   const { txStatus, txSuccess, txLink, poolId, errorMessage } = useStore((state) => state.createPool.transactionState)

@@ -4,7 +4,6 @@ import useStore from '@/store/useStore'
 
 import PoolRewardsCrv from '@/components/PoolRewardsCrv'
 import TableCellRewardsBase from '@/components/PagePoolList/components/TableCellRewardsBase'
-import TableCellRewardsGauge from '@/components/PagePoolList/components/TableCellRewardsGauge'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 
 interface Props {
@@ -13,17 +12,9 @@ interface Props {
   isHighlightOther: boolean
   poolData: PoolDataCache | PoolData | undefined
   rewardsApy: RewardsApy | undefined
-  searchText: string
 }
 
-const TCellRewards = ({
-  isHighlightBase,
-  isHighlightCrv,
-  isHighlightOther,
-  poolData,
-  rewardsApy,
-  searchText,
-}: Props) => {
+const TCellRewards = ({ isHighlightBase, isHighlightCrv, isHighlightOther, poolData, rewardsApy }: Props) => {
   const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
   if (typeof rewardsApy === 'undefined') {
@@ -38,7 +29,6 @@ const TCellRewards = ({
           <PoolRewardsCrv isHighlight={isHighlightCrv} poolData={poolData} rewardsApy={rewardsApy} />
           <TableCellRewardsOthers isHighlight={isHighlightOther} rewardsApy={rewardsApy} />
         </Wrapper>
-        <TableCellRewardsGauge address={poolData?.pool?.gauge.address} searchText={searchText} />
       </div>
     )
   }

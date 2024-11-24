@@ -1,10 +1,6 @@
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
-import networks from '@/networks'
-
 import { IMPLEMENTATION_IDS } from '@/components/PageCreatePool/constants'
-
 import {
   CategoryDataRow,
   SummaryDataTitle,
@@ -23,8 +19,10 @@ const StableswapParameters = ({ chainId }: Props) => {
     advanced,
     implementation,
   } = useStore((state) => state.createPool)
+  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
+  const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
 
-  const implementations = IMPLEMENTATION_IDS(chainId)
+  const implementations = IMPLEMENTATION_IDS(nativeToken)
 
   return (
     <>
@@ -43,7 +41,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             <SummaryDataTitle>A:</SummaryDataTitle>
             {stableA === '' ? <SummaryDataPlaceholder>-</SummaryDataPlaceholder> : <SummaryData>{stableA}</SummaryData>}
           </ExtraMarginRow>
-          {networks[chainId].stableswapFactory && (
+          {stableswapFactory && (
             <>
               <CategoryDataRow>
                 <SummaryDataTitle>{t`Offpeg Fee Multiplier:`}</SummaryDataTitle>
@@ -63,7 +61,7 @@ const StableswapParameters = ({ chainId }: Props) => {
               </CategoryDataRow>
             </>
           )}
-          {!networks[chainId].stableswapFactory && advanced && (
+          {!stableswapFactory && advanced && (
             <CategoryDataRow>
               <SummaryDataTitle>{t`Pool Implementation:`}</SummaryDataTitle>
               <SummaryData>{implementations[implementation].name}</SummaryData>

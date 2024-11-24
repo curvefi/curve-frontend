@@ -53,3 +53,30 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export const DEFAULT_NETWORK_CONFIG = {
+  useApi: true, // default to true when calling fetchPools
+  excludeTokensBalancesMapper: {}, // tokens that cause issues when getting wallet balances
+  excludePoolsMapper: {}, // remove pool from pool list and pool page
+  hideSmallPoolsTvl: 10000,
+  isLite: false,
+  isActiveNetwork: true,
+  missingPools: [],
+  poolCustomTVL: {}, // hardcode tvl for pool
+  poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
+  poolIsWrappedOnly: {}, // show only wrapped pool data
+  poolListFormValuesDefault: {},
+  swap: { fromAddress: '', toAddress: '' },
+  swapCustomRouteRedirect: {},
+  showInSelectNetwork: true,
+  showRouterSwap: true,
+  createQuickList: [],
+  createDisabledTokens: [],
+  stableswapFactory: false, // determines support in pool creation and gauge deployment
+  stableswapFactoryOld: false, // determines support in pool creation and gauge deployment
+  twocryptoFactoryOld: false, // determines support in pool creation and gauge deployment
+  twocryptoFactory: false, // determines support in pool creation and gauge deployment
+  tricryptoFactory: false, // determines support in pool creation and gauge deployment
+  hasFactory: false,
+  pricesApi: false,
+}

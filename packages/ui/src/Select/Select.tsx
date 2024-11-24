@@ -9,7 +9,6 @@ import styled from 'styled-components'
 import { getIsFullScreen } from 'ui/src/utils'
 import Icon from 'ui/src/Icon/Icon'
 import SelectBtn from 'ui/src/Select/SelectBtn'
-import SelectIconBtnDelete from 'ui/src/Select/SelectIconBtnDelete'
 import SelectModal from 'ui/src/Select/SelectModal'
 import SelectModalFull from 'ui/src/Select/SelectModalFull'
 
@@ -24,9 +23,18 @@ export interface SelectProps<T extends object>
   mobileRightAlign?: boolean // right align dropdown list on small width
   selectedItemLabel?: string | React.ReactNode // selected button label that is different from list
   onSelectionDelete?: () => void
+  selectSearchOptions?: {
+    searchFilterKeys: string[]
+  }
 }
 
-function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectionDelete, ...props }: SelectProps<T>) {
+function Select<T extends object>({
+  buttonStyles = {},
+  noLabelChange,
+  onSelectionDelete,
+  selectSearchOptions,
+  ...props
+}: SelectProps<T>) {
   const state = useSelectState(props)
   const buttonRef = React.useRef<HTMLButtonElement>(null)
   const { labelProps, triggerProps, menuProps } = useSelect(props, state, buttonRef)
@@ -57,8 +65,6 @@ function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectio
             />
           )}
         </SelectBtn>
-
-        {onSelectionDelete && <SelectIconBtnDelete loading={props.loading} onSelectionDelete={onSelectionDelete} />}
       </InnerWrapper>
       {state.isOpen && (
         <>
@@ -71,6 +77,7 @@ function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectio
               mobileRightAlign={props.mobileRightAlign}
               menuProps={menuProps}
               state={state}
+              {...(selectSearchOptions ? { ...selectSearchOptions, onSelectionChange: props.onSelectionChange } : {})}
             />
           )}
         </>
@@ -82,13 +89,15 @@ function Select<T extends object>({ buttonStyles = {}, noLabelChange, onSelectio
 Select.displayName = 'Select'
 
 const Wrapper = styled.div`
-  border: 1px solid var(--nav_button--border-color);
+  border: 1px solid var(--button_outlined--border-color);
   display: inline-block;
   height: 100%;
   min-height: var(--height-medium);
   position: relative;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 `
 

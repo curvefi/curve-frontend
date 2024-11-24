@@ -1,13 +1,19 @@
 import type { NextPage } from 'next'
+import type { SearchParams } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
-import { useEffect } from 'react'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 
+import { DEFAULT_SEARCH_PARAMS } from '@/components/PageMarketList/utils'
+import { ROUTE, TITLE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
+import { getPath } from '@/utils/utilsRouter'
 import { scrollToTop } from '@/utils/helpers'
 import usePageOnMount from '@/hooks/usePageOnMount'
+import useSearchTermMapper from '@/hooks/useSearchTermMapper'
+import useTitleMapper from '@/hooks/useTitleMapper'
 import useStore from '@/store/useStore'
 
 import DocumentHead from '@/layout/DocumentHead'
@@ -17,17 +23,69 @@ import TableStats from '@/components/PageMarketList/components/TableStats'
 import ConnectWallet from '@/components/ConnectWallet'
 import Box from '@/ui/Box'
 
+enum SEARCH {
+  sortBy = 'sortBy',
+  order = 'sortByOrder',
+  search = 'search',
+}
+
 const Page: NextPage = () => {
   const params = useParams()
   const location = useLocation()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { pageLoaded, routerParams, curve } = usePageOnMount(params, location, navigate)
+  const titleMapper = useTitleMapper()
+  const searchTermMapper = useSearchTermMapper()
   const { rChainId } = routerParams
   const provider = useStore((state) => state.wallet.getProvider(''))
 
+  const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
+
+  const [loaded, setLoaded] = useState(false)
+  const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)
+
   useEffect(() => {
     scrollToTop()
+    setStateByKey('initialLoaded', false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const updatePath = (updatedSearchParams: Partial<SearchParams>) => {
+    const { searchText, sortBy, sortByOrder } = {
+      ...parsedSearchParams,
+      ...updatedSearchParams,
+    }
+
+    const searchPath = new URLSearchParams(
+      [
+        [SEARCH.search, searchText ? encodeURIComponent(searchText) : ''],
+        [SEARCH.sortBy, sortBy && sortBy !== TITLE.totalBorrowed ? sortBy : ''],
+        [SEARCH.order, sortByOrder && sortByOrder !== 'desc' ? sortByOrder : ''],
+      ].filter(([, v]) => v),
+    ).toString()
+
+    const pathname = getPath(params, `${ROUTE.PAGE_MARKETS}?${searchPath}`)
+    navigate(pathname)
+  }
+
+  useEffect(() => {
+    setLoaded(false)
+
+    if (!pageLoaded || isLoadingApi) return
+
+    const parsedSearchParams = {
+      sortBy: searchParams.get(SEARCH.sortBy) || TITLE.totalBorrowed,
+      sortByOrder: searchParams.get(SEARCH.order) || 'desc',
+      searchText: decodeURIComponent(searchParams.get(SEARCH.search) || ''),
+    } as SearchParams
+
+    setStateByKey('searchParams', parsedSearchParams)
+    setParsedSearchParams(parsedSearchParams)
+    setLoaded(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageLoaded, isLoadingApi, searchParams])
 
   return (
     <>
@@ -35,7 +93,18 @@ const Page: NextPage = () => {
       {provider ? (
         <Container>
           <Content>
-            {rChainId && <CollateralList pageLoaded={pageLoaded} params={params} rChainId={rChainId} curve={curve} />}
+            {rChainId && (
+              <CollateralList
+                rChainId={rChainId}
+                params={params}
+                curve={curve}
+                pageLoaded={loaded}
+                searchParams={parsedSearchParams}
+                searchTermMapper={searchTermMapper}
+                titleMapper={titleMapper}
+                updatePath={updatePath}
+              />
+            )}
           </Content>
           {rChainId && <TableStats />}
         </Container>
@@ -73,6 +142,9 @@ const Container = styled.div`
 `
 
 const Content = styled.div`
+  align-content: flex-start;
+  display: grid;
+  grid-gap: var(--spacing-normal);
   background-color: var(--table--background-color);
   box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
   border: 1px solid var(--box--secondary--border);

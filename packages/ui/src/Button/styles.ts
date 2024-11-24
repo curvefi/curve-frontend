@@ -10,8 +10,10 @@ export const buttonFilledStyles = css`
   border: 1px solid var(--button--border-color);
   box-shadow: 3px 3px 0 var(--button--shadow-color);
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :hover:not(:disabled):not(.loading) {
@@ -39,7 +41,9 @@ export const buttonSelectStyles = css`
   background: var(--layout--home--background-color);
   color: var(--page--text-color);
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   &.active:not(:disabled) {
     color: var(--button--color);
@@ -63,8 +67,10 @@ export const buttonOutlinedStyles = css`
   background-color: transparent;
   border: 1px solid var(--button_outlined--border-color);
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :disabled {
@@ -178,7 +184,16 @@ export const buttonBaseStyles = css<ButtonProps>`
       `
     } else if (variant === 'select') {
       return `
-        ${buttonSelectStyles}
+        border: 1px solid var(--button_outlined--border-color);
+        box-shadow: 3px 3px 0 var(--box--primary--shadow-color);
+        background: var(--layout--home--background-color);
+        color: var(--page--text-color);
+
+        transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+        &.active:not(:disabled) {
+          box-shadow: none;
+          border: 1px solid var(--button--border-color);
+        }
       `
     } else if (variant === 'select-flat') {
       return `
@@ -186,7 +201,7 @@ export const buttonBaseStyles = css<ButtonProps>`
         box-shadow: none;
         &.active:not(:disabled) {
           box-shadow: none;
-          border: 1px solid var(--button--border-color);
+          border: 1px solid var(--button_outlined--border-color);
         }
       `
     }

@@ -1,12 +1,7 @@
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-
 import useStore from '@/store/useStore'
-
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
-
-import networks from '@/networks'
-
 import Box from '@/ui/Box'
 import {
   CategoryColumn,
@@ -24,6 +19,7 @@ type Props = {
 
 const PoolInfoSummary = ({ chainId }: Props) => {
   const { poolSymbol, swapType, poolName, assetType, validation } = useStore((state) => state.createPool)
+  const { stableswapFactory } = useStore((state) => state.networks.networks[chainId])
 
   return (
     <StyledCategoryColumn>
@@ -49,7 +45,7 @@ const PoolInfoSummary = ({ chainId }: Props) => {
           <SummaryData>{poolSymbol}</SummaryData>
         )}
       </CategoryDataRow>
-      {swapType === STABLESWAP && !networks[chainId].stableswapFactory && (
+      {swapType === STABLESWAP && stableswapFactory && (
         <CategoryDataRow>
           <SummaryDataTitle>{t`Asset Type:`}</SummaryDataTitle>
           {assetType === null ? (
