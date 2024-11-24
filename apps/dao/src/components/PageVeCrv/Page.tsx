@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
-import { scrollToTop } from '@/ui/utils'
+import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
 
@@ -37,7 +37,7 @@ const Page: NextPage = () => {
       const pathname = getPath(params, `${ROUTE.PAGE_VECRV}/${formType}`)
       navigate(pathname)
     },
-    [navigate, params]
+    [navigate, params],
   )
 
   const fetchData = useCallback(
@@ -52,7 +52,7 @@ const Page: NextPage = () => {
         }
       }
     },
-    [fetchVecrvInfo, rFormType, toggleForm]
+    [fetchVecrvInfo, rFormType, toggleForm],
   )
 
   // onMount

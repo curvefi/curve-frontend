@@ -1,21 +1,18 @@
 import type { Locale } from '@/lib/i18n'
-
 import { Trans } from '@lingui/macro'
 import styled, { css } from 'styled-components'
 import Image from 'next/image'
-import React, { useEffect, useRef } from 'react'
-
+import React, { useRef } from 'react'
 import { breakpoints } from '@/ui/utils/responsive'
 import { isLocaleInChinese } from '@/lib/i18n'
-import { useHeightResizeObserver } from '@/ui/hooks'
-import networks from '@/networks'
+import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
-
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
 import { sizes } from '@/ui/utils'
 import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import InternalLink from '@/ui/Link/InternalLink'
+
+import networks from '@/networks'
 
 type InnerSectionProps = {
   className?: string
@@ -80,38 +77,33 @@ export const CommunitySection = ({
       <SectionItem>
         <StyledExternalLink href="https://curvemonitor.com">Curve Monitor</StyledExternalLink>
       </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://crvhub.com/">Crvhub</StyledExternalLink>
+      </SectionItem>
     </CommunityWrapper>
   )
-}
-
-CommunitySection.defaultProps = {
-  className: '',
 }
 
 interface ResourcesSectionProps extends InnerSectionProps {
   chainId: ChainId | null
 }
 
-export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) => {
-  const orgUIPath = networks[chainId ?? '1'].orgUIPath
+export const ResourcesSection = ({ className = '', columnCount, chainId }: ResourcesSectionProps) => {
+  const orgUIPath = networks[chainId ?? 1]?.orgUIPath
 
   return (
-    <ResourcesWrapper className={className}>
+    <ResourcesWrapper className={className} $columnCount={columnCount}>
       <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/whitepapers/overview/">
-          <Trans>Whitepaper</Trans>
+        <StyledExternalLink href={`https://resources.curve.fi/`}>
+          <Trans>Resources</Trans>
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi/references/audits/audits_pdf/">
-          <Trans>Audits</Trans>
-        </StyledExternalLink>
+        <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink
-          href={`${orgUIPath}/events/compound_usdt_iearn_busd_susdv2_pax_tbtc_ren_sbtc_hbtc_3pool_gusd_husd_usdk_usdn_linkusd_musd_rsv_dusd_pbtc_bbtc_obtc_ust_eurs_seth_aave_steth/Exchange`}
-        >
-          <Trans>Events</Trans>
+        <StyledExternalLink href="https://docs.curve.fi">
+          <Trans>Developer Docs</Trans>
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
@@ -120,26 +112,26 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
+        <StyledExternalLink href="https://resources.curve.fi/glossary-branding/branding/">Branding</StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/integration/overview/">
+          <Trans>Integrations</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/references/whitepapers/overview/">
+          <Trans>Whitepaper</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
+        <StyledExternalLink href="https://docs.curve.fi/references/audits/">
+          <Trans>Audits</Trans>
+        </StyledExternalLink>
+      </SectionItem>
+      <SectionItem>
         <StyledExternalLink href={`${orgUIPath}/bugbounty`}>
           <Trans>Bug Bounty</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/rootfaq`}>FAQ</StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledInternalLink href="/integrations">
-          <Trans>Integrations</Trans>
-        </StyledInternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/donate`}>
-          <Trans>Donate</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href="https://docs.curve.fi">
-          <Trans>Developer Docs</Trans>
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
@@ -147,35 +139,15 @@ export const ResourcesSection = ({ className, chainId }: ResourcesSectionProps) 
           <Trans>News</Trans>
         </StyledExternalLink>
       </SectionItem>
-      <SectionItem>
-        <StyledExternalLink href={`https://resources.curve.fi/`}>
-          <Trans>Resources</Trans>
-        </StyledExternalLink>
-      </SectionItem>
-
-      {/* section 3 */}
-      <SectionItem>
-        <StyledExternalLink href="https://github.com/curvefi">Github</StyledExternalLink>
-      </SectionItem>
     </ResourcesWrapper>
   )
 }
 
-ResourcesSection.defaultProps = {
-  className: '',
-}
-
 const Footer = ({ chainId }: { chainId: ChainId | null }) => {
   const footerRef = useRef<HTMLDivElement>(null)
-  const footerHeight = useHeightResizeObserver(footerRef)
+  useLayoutHeight(footerRef, 'footer')
 
   const locale = useStore((state) => state.locale)
-  const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-
-  useEffect(() => {
-    updateLayoutHeight('footer', footerHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [footerHeight])
 
   return (
     <FooterWrapper ref={footerRef}>
@@ -227,9 +199,9 @@ const Section = ({ className, title, children }: React.PropsWithChildren<Section
   )
 }
 
-const ResourcesWrapper = styled.ul`
+const ResourcesWrapper = styled.ul<{ $columnCount?: number }>`
   @media (min-width: ${breakpoints.md}rem) {
-    column-count: 3;
+    column-count: ${({ $columnCount }) => $columnCount || 3};
   }
 `
 
@@ -247,6 +219,7 @@ const CommunityWrapper = styled.ul<{ $columnCount?: number }>`
         `
       }
     }}
+  }
 `
 
 const FooterLogoWrapper = styled.div`
@@ -336,12 +309,6 @@ const linkStyles = css`
 
 const ExternalLinkButton = styled(ExternalLink)`
   ${linkStyles};
-`
-
-const StyledInternalLink = styled(InternalLink)`
-  ${linkStyles};
-  text-transform: inherit;
-  text-decoration: none;
 `
 
 export default Footer

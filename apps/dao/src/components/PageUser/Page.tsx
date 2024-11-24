@@ -4,7 +4,8 @@ import { useEffect } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { breakpoints, scrollToTop } from '@/ui/utils'
+import { breakpoints } from '@/ui/utils'
+import { scrollToTop } from '@/utils'
 import usePageOnMount from '@/hooks/usePageOnMount'
 
 import UserPage from '@/components/PageUser/index'

@@ -43,3 +43,11 @@ export function delayAction<T>(cb: T) {
     setTimeout(() => cb(), 50)
   }
 }
+
+export function scrollToTop() {
+  window.scroll({
+    top: 0,
+    left: 0,
+    behavior: 'smooth',
+  })
+}

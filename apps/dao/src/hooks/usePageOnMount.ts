@@ -5,7 +5,7 @@ import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
 
-import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
+import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
@@ -48,7 +48,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet]
+    [curve, updateConnectState, updateCurveJs, updateGlobalStoreByKey, wallet],
   )
 
   const handleConnectWallet = useCallback(
@@ -64,7 +64,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const walletStates = await Promise.race([
                 connect({ autoSelect: { label: walletName, disableModals: true } }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s'])
+                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
               ])
               resolve(walletStates)
@@ -113,7 +113,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState]
+    [connect, navigate, parsedParams, setChain, updateConnectState],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -126,7 +126,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState]
+    [disconnect, parsedParams.rChainId, updateConnectState],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -154,7 +154,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet]
+    [navigate, parsedParams, setChain, updateConnectState, wallet],
   )
 
   // onMount

@@ -8,7 +8,6 @@ import { TOP_HOLDERS } from '@/constants'
 
 import PaginatedTable, { Column } from '@/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/components/PaginatedTable/TableRow'
-import { InternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 
 const TopHoldersTable: React.FC = () => {

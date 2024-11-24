@@ -9,7 +9,6 @@ import { shortenTokenAddress } from '@/ui/utils'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import Chip from '@/ui/Typography/Chip'
-import TokenIcon from '@/components/TokenIcons/TokenIcon'
 
 const ComboBoxListItem = ({
   imageBaseUrl,

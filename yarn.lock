@@ -2099,7 +2099,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.13":
+"@curvefi/api@npm:^2.63.10, @curvefi/api@npm:^2.65.13":
   version: 2.65.13
   resolution: "@curvefi/api@npm:2.65.13"
   dependencies:

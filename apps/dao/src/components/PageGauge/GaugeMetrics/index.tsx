@@ -3,7 +3,6 @@ import { t } from '@lingui/macro'
 
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@/ui/utils/'
 import networks from '@/networks'
-import { breakpoints } from 'ui/src/utils'
 
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
