@@ -30,14 +30,17 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
   const availableVeCrv = userVeCrv * maxPower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
-  const { castVote, castVoteLoading } = useStore((state) => state.gauges)
+  const { castVote, txCastVoteState } = useStore((state) => state.gauges)
 
   const address = userAddress?.toLowerCase()
   const canVote = newVote
     ? true
     : userGaugeVoteData.nextVoteTime.timestamp && Date.now() > userGaugeVoteData.nextVoteTime.timestamp
 
-  const loading = userGaugeVoteData.nextVoteTime.fetchingState === 'LOADING' || castVoteLoading === 'LOADING'
+  const loading =
+    userGaugeVoteData.nextVoteTime.fetchingState === 'LOADING' ||
+    txCastVoteState?.state === 'LOADING' ||
+    txCastVoteState?.state === 'CONFIRMING'
 
   const handleChangePower = (value: number) => {
     if (value > maxPower) {
@@ -164,7 +167,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
             {t`Updating vote available on:`} <br />
             <strong>
               {new Date(
-                convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime())
+                convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime()),
               ).toLocaleString()}
             </strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>

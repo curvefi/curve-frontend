@@ -7,7 +7,6 @@ import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../consta
 
 import SearchInput from '@/ui/SearchInput'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
-import Box from '@/ui/Box'
 
 import SelectSortingMethod from '@/ui/Select/SelectSortingMethod'
 import GaugeListItem from '@/components/PageGauges/GaugeListItem'
@@ -43,7 +42,7 @@ const GaugesList = () => {
       setGaugeListSortBy(key as SortByFilterGaugesKeys)
       setGauges(searchValue)
     },
-    [setGaugeListSortBy, setGauges, searchValue]
+    [setGaugeListSortBy, setGauges, searchValue],
   )
 
   return (

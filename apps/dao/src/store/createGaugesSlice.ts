@@ -9,7 +9,7 @@ import { shortenTokenAddress } from '@/ui/utils'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  gaugesLoading: FetchingState
+  gaugesLoading: FetchingState | null
   txCastVoteState: {
     state: TransactionState
     hash: string
@@ -62,7 +62,7 @@ export type GaugesSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  gaugesLoading: 'LOADING',
+  gaugesLoading: null,
   txCastVoteState: null,
   filteringGaugesLoading: true,
   gaugeListSortBy: {
@@ -348,19 +348,17 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const { dismiss: dismissLoading } = notifyNotification(loadingNotificationMessage, 'pending')
         dismissNotificationHandler = dismissLoading
 
-        const reciept = await provider.waitForTransaction(res)
+        await provider.waitForTransaction(res)
 
-        if (reciept.status === 1) {
-          set(
-            produce(get(), (state) => {
-              state[sliceKey].txCastVoteState = {
-                state: 'SUCCESS',
-                hash: res,
-                errorMessage: '',
-              }
-            }),
-          )
-        }
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].txCastVoteState = {
+              state: 'SUCCESS',
+              hash: res,
+              errorMessage: '',
+            }
+          }),
+        )
         dismissLoading()
         const successNotificationMessage = t`Succesfully cast vote!`
         notifyNotification(successNotificationMessage, 'success', 15000)

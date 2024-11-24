@@ -21,7 +21,7 @@ export type StepProgress = {
 const DetailInfoEstGas = ({
   curve,
   chainId,
-  isDivider,
+  isDivider = false,
   loading,
   estimatedGas,
   stepProgress,
@@ -99,10 +99,6 @@ const DetailInfoEstGas = ({
         (haveUsdRate ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
     </DetailInfo>
   )
-}
-
-DetailInfoEstGas.defaultProps = {
-  isDivider: false,
 }
 
 const StepProgressWrapper = styled.span`

@@ -361,17 +361,17 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             hash: voteResponseHash,
             txLink: networks[1].scanTxPath(voteResponseHash),
           })
-          const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
-          if (receipt.status === 1) {
-            get()[sliceKey].setStateByKey('executeTx', {
-              ...get()[sliceKey].executeTx,
-              status: 'SUCCESS',
-            })
 
-            dismissDeploying()
-            const successNotificationMessage = t`Proposal executed successfully!`
-            notifyNotification(successNotificationMessage, 'success', 15000)
-          }
+          await provider.waitForTransactionReceipt(voteResponseHash)
+
+          get()[sliceKey].setStateByKey('executeTx', {
+            ...get()[sliceKey].executeTx,
+            status: 'SUCCESS',
+          })
+
+          dismissDeploying()
+          const successNotificationMessage = t`Proposal executed successfully!`
+          notifyNotification(successNotificationMessage, 'success', 15000)
         }
       } catch (error) {
         if (typeof dismissNotificationHandler === 'function') {

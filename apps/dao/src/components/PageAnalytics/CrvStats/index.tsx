@@ -13,6 +13,7 @@ const CrvStats: React.FC = () => {
   const provider = useStore((state) => state.wallet.getProvider(''))
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
 
+  const noProvider = !provider
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
 
@@ -31,29 +32,29 @@ const CrvStats: React.FC = () => {
         <h4>{t`VECRV METRICS`}</h4>
         <MetricsContainer>
           <MetricsComp
-            loading={veCrvLoading}
+            loading={provider && veCrvLoading}
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
-                {formatNumber(veCrvData.totalCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalCrv, { showDecimalIfSmallNumberOnly: true })}
               </MetricsColumnData>
             }
           />
           <MetricsComp
-            loading={veCrvLoading}
+            loading={provider && veCrvLoading}
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
-                {formatNumber(veCrvData.totalLockedCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv, { showDecimalIfSmallNumberOnly: true })}
               </MetricsColumnData>
             }
           />
           <MetricsComp
-            loading={veCrvLoading}
+            loading={provider && veCrvLoading}
             title={t`veCRV`}
             data={
               <MetricsColumnData>
-                {formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
               </MetricsColumnData>
             }
           />
@@ -71,20 +72,24 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={veCrvLoading}
+            loading={provider && veCrvLoading}
             title={t`CRV Supply Locked`}
             data={
-              <MetricsColumnData>{`${formatNumber(veCrvData.lockedPercentage, {
-                showDecimalIfSmallNumberOnly: true,
-              })}%`}</MetricsColumnData>
+              <MetricsColumnData>
+                {noProvider
+                  ? '-'
+                  : `${formatNumber(veCrvData.lockedPercentage, {
+                      showDecimalIfSmallNumberOnly: true,
+                    })}%`}
+              </MetricsColumnData>
             }
           />
           <MetricsComp
-            loading={veCrvLoading || veCrvFeesLoading}
+            loading={provider && (veCrvLoading || veCrvFeesLoading)}
             title={t`veCRV APR`}
             data={
               <AprRow>
-                <MetricsColumnData noMargin>{`~${veCrvApr.toFixed(2)}%`}</MetricsColumnData>
+                <MetricsColumnData noMargin>{noProvider ? '-' : `~${veCrvApr.toFixed(2)}%`}</MetricsColumnData>
               </AprRow>
             }
           />
