@@ -49,6 +49,8 @@ const Header = () => {
 
   const { rChainId, rNetwork, rNetworkIdx, rLocalePathname } = getParamsFromUrl()
 
+  const ethereumLogoSrc = `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/ethereum.png`
+
   const appLogoProps: AppLogoProps = {
     appName: 'Dao',
   }
@@ -98,7 +100,11 @@ const Header = () => {
     <AppSelectNetwork
       connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
-      items={visibleNetworksList}
+      items={visibleNetworksList.map((item) => ({
+        ...item,
+        src: ethereumLogoSrc,
+        srcDark: ethereumLogoSrc,
+      }))}
       loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
       minWidth="9rem"
       mobileRightAlign
