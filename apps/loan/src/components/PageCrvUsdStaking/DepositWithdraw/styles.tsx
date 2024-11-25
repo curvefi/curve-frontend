@@ -18,7 +18,7 @@ export const SelectorBox = styled.div`
 
 export const StyledIcon = styled(Icon)`
   margin: var(--spacing-3) auto 0;
-    color: var(--white);
+  color: var(--white);
 `
 
 export const StyledInputComp = styled(InputComp)`
@@ -39,6 +39,7 @@ export const InputSelectorText = styled.p`
 export const InputLabel = styled.p`
   font-size: var(--font-size-2);
   margin-bottom: var(--spacing-1);
+  color: var(--box--primary--color);
 `
 
 export const ErrorText = styled.p`
