@@ -54,7 +54,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 
-  const sections = useMemo(() => getSections(rChainId, locale), [rChainId, locale])
+  const sections = useMemo(() => getSections(locale), [rChainId, locale])
   return (
     <>
       <GlobalBanner
@@ -74,7 +74,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (rChainId: ChainId, locale: Locale) => [
+const getSections = (locale: Locale) => [
   {
     title: t`Documentation`,
     links: [
@@ -83,19 +83,19 @@ const getSections = (rChainId: ChainId, locale: Locale) => [
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
       { route: 'https://docs.curve.fi/integration/overview/', label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
-      ...(locale === 'zh-Hans' || locale === 'zh-Hant') ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : [],
-    ]
+      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+    ],
   },
   {
     title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
     links: [
       { route: 'https://docs.curve.fi/references/audits/', label: t`Audits` },
-      { route: `${networks[rChainId ?? 1]?.orgUIPath}/bugbounty`, label: t`Bug Bounty` },
+      { route: 'https://docs.curve.fi/security/security/', label: t`Bug Bounty` },
       { route: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
       { route: 'https://curvemonitor.com', label: t`Curve Monitor` },
-      { route: 'https://crvhub.com/', label: t`Crvhub` }
-    ]
-  }
+      { route: 'https://crvhub.com/', label: t`Crvhub` },
+    ],
+  },
 ]
 
 const Main = styled.main<{ minHeight: number }>`
