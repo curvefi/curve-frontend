@@ -1,15 +1,13 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-
 import produce from 'immer'
-
 import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import { LocaleValue } from '@/common/features/switch-language'
+import { LocaleValue } from '@/lib/i18n'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -110,7 +108,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    await api.oneWayfactory.fetchMarkets();
+    await api.oneWayfactory.fetchMarkets()
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {

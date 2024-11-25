@@ -3,7 +3,7 @@ import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { Palette } from './palette'
-import { ThemeKey } from '@/themes/basic-theme'
+import { ThemeKey } from './basic-theme'
 
 export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 

@@ -1,6 +1,5 @@
 import type { I1inchRoute, IChainId, INetworkName } from '@curvefi/lending-api/lib/interfaces'
 import type { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import type { LocaleOption } from '@/lib/i18n'
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ReactNode } from 'react'
 import React from 'react'
@@ -8,9 +7,7 @@ import type { Eip1193Provider, WalletState } from '@web3-onboard/core'
 import type lendingApi from '@curvefi/lending-api'
 import type { TooltipProps } from '@/ui/Tooltip/types'
 import type { BaseConfig } from '@/ui/utils'
-
 import { TITLE } from '@/constants'
-import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 declare global {
   interface Window {
