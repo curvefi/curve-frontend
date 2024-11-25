@@ -125,11 +125,11 @@ export const Header = ({ sections }: HeaderProps) => {
         },
         {
           label: t`Daily volume`,
-          value: formatNumber(dailyVolume, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+          value: formatNumber(dailyVolume, { currency: 'USD', notation: 'compact' }),
         },
         {
           label: t`Total Supply`,
-          value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+          value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', notation: 'compact' }),
         },
         { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
@@ -179,7 +179,7 @@ function _getTvl(
     })
 
     if (+sum > 0) {
-      formattedTvl = formatNumber(sum, { currency: 'USD', showDecimalIfSmallNumberOnly: true })
+      formattedTvl = formatNumber(sum, { currency: 'USD', notation: 'compact' })
     }
   }
   return formattedTvl

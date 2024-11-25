@@ -120,14 +120,14 @@ export const Header = ({ sections }: HeaderProps) => {
       appStats={[
         {
           label: t`Total Deposits`,
-          value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+          value: formatNumber(tvlTotal, { currency: 'USD', notation: 'compact' }),
         },
         ...(network?.isLite // only show total deposits on curve-lite networks
           ? []
           : [
               {
                 label: t`Daily Volume`,
-                value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+                value: formatNumber(volumeTotal, { currency: 'USD', notation: 'compact' }),
               },
               ...(pageWidthPx == null || pageWidthPx > 1330
                 ? [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }]

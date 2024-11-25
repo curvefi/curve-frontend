@@ -126,7 +126,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
       appStats={[
         {
           label: 'TVL',
-          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true })) || '',
+          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
         },
       ]}
       sections={sections}
