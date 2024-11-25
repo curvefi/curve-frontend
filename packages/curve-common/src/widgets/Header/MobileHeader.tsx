@@ -34,6 +34,7 @@ export const MobileHeader = <TChainId extends number>({
   locale,
   translations: t,
   ChainProps,
+  isLite = false,
   advancedMode,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: BaseHeaderProps<TChainId>) => {
@@ -54,6 +55,7 @@ export const MobileHeader = <TChainId extends number>({
     <AppBar color="transparent" position="relative" sx={{ width: '100vw'}} ref={mainNavRef}>
       <Toolbar sx={SECONDARY_BACKGROUND}>
         <MobileTopBar
+          isLite={isLite}
           ChainProps={ChainProps}
           currentApp={currentApp}
           isSidebarOpen={isSidebarOpen}

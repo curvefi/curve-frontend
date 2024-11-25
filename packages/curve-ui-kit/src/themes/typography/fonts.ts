@@ -1,6 +1,7 @@
 import localFont from 'next/font/local'
 
 export const monaSans = localFont({ src: '../../../public/fonts/Mona-Sans.woff2' })
+export const hubotSans = localFont({ src: '../../../public/fonts/Hubot-Sans.woff2' })
 export const minecraft = localFont({
   src: [
     {
@@ -13,7 +14,13 @@ export const minecraft = localFont({
     },
   ],
 })
-export const FontFamilyMapping = {
-  'Mona Sans': [monaSans.style.fontFamily, '"Helvetica Neue"', 'sans-serif'].join(','),
-  'Minecraft': [minecraft.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(','),
-} as const
+
+const MonaSans = [monaSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
+const HubotSans = [hubotSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
+const Minecraft = [minecraft.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(',')
+
+export const ThemeFontFamily = {
+  chad: { body: HubotSans, header: Minecraft, button: Minecraft },
+  light: { body: MonaSans, header: MonaSans, button: MonaSans },
+  dark: { body: MonaSans, header: MonaSans, button: MonaSans },
+}

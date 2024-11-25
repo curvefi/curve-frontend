@@ -17,19 +17,26 @@ const LogoImageSrc = (LogoImg as unknown as { src: string }).src
 
 export type HeaderLogoProps = {
   appName: AppName
+  isLite: boolean
   sx?: SxProps<Theme>
 }
 
-export const HeaderLogo = ({ appName, sx }: HeaderLogoProps) => (
+export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
   <Link href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
-        <Typography variant="headingSLight" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary" >
+        <Typography variant="headingSLight" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
           {APP_NAMES[appName]}
         </Typography>
-        {appName !== 'main' && (
-          <Typography variant="bodyXsRegular" color="grey.600">
+        {appName === 'main' ? (
+          isLite && (
+            <Typography variant="bodyXsBold" color="textTertiary">
+              Lite
+            </Typography>
+          )
+        ) : (
+          <Typography variant="bodyXsRegular" color="textTertiary">
             powered by Curve
           </Typography>
         )}

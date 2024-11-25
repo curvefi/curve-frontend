@@ -21,6 +21,7 @@ export const DesktopHeader = <TChainId extends number>({
   appStats,
   themes: [theme, setTheme],
   advancedMode,
+  isLite = false,
   translations: t,
 }: BaseHeaderProps<TChainId>) => (
   <>
@@ -30,7 +31,7 @@ export const DesktopHeader = <TChainId extends number>({
         data-testid="main-nav"
       >
         <Container>
-          <HeaderLogo appName={currentApp} />
+          <HeaderLogo isLite={isLite} appName={currentApp} />
           <AppButtonLinks currentApp={currentApp} />
 
           <Box sx={{ flexGrow: 1 }} />
