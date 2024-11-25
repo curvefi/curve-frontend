@@ -66,11 +66,6 @@ export const Header = ({ sections }: HeaderProps) => {
                 label: t`Risk Disclaimer`,
                 groupedTitle: isLgUp ? 'risk' : 'crvUSD',
               },
-              {
-                route: ROUTE.PAGE_INTEGRATIONS,
-                label: t`Integrations`,
-                groupedTitle: isLgUp ? 'integrations' : 'crvUSD',
-              },
             ],
             rLocale.rLocalePathname,
             routerPathname,

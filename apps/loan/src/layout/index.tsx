@@ -1,7 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
-import { CONNECT_STAGE } from '@/constants'
+import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { layoutHeightKeys } from '@/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
@@ -71,7 +71,7 @@ const getSections = (rChainId: ChainId, locale: Locale) => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
-      { route: 'https://docs.curve.fi/integration/overview/', label: t`Integrations` },
+      { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(locale === 'zh-Hans' || locale === 'zh-Hant') ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : [],
     ]
