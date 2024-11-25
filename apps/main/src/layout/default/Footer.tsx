@@ -130,7 +130,7 @@ export const ResourcesSection = ({ className, columnCount, chainId }: ResourcesS
         </StyledExternalLink>
       </SectionItem>
       <SectionItem>
-        <StyledExternalLink href={`${orgUIPath}/bugbounty`}>
+        <StyledExternalLink href="https://docs.curve.fi/security/security/">
           <Trans>Bug Bounty</Trans>
         </StyledExternalLink>
       </SectionItem>
