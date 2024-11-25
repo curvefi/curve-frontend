@@ -65,7 +65,7 @@ body.theme-dark {
   --box--primary--shadow-color: var(--black-100);
   --box--primary--content--background-color: var(--black-400);
   --box--primary--content--shadow-color: var(--black-100);
-  --box_header--primary--background-color: var(--black-200);
+  --box_header--primary--background-color: var(--black-100);
   --box--secondary--background-color: var(--black-200);
   --box--secondary--border: 1px solid transparent;
   --box--secondary--content--background-color: var(--black-300);
@@ -155,7 +155,6 @@ body.theme-dark {
   /* Tab */
   --tab--content--background-color: var(--black-300);
   --tab--border: 3px solid var(--black-300);
-
   --tab_secondary--color: var(--gray-500);
   --tab-secondary--content--background-color: var(--box--primary--background);
   --tab-secondary--background-color: var(--box--primary--background);
