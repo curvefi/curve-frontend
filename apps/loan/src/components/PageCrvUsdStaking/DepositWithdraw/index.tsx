@@ -118,7 +118,7 @@ const Wrapper = styled.div`
 const ModuleContainer = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: var(--box--secondary--background-color);
+  background-color: var(--box--primary--background);
   min-width: 100%;
   padding: var(--spacing-3);
 `

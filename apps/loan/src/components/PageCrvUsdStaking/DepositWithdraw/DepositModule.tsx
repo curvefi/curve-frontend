@@ -57,7 +57,7 @@ const DepositModule = () => {
       )}
       <StyledIcon name="ArrowDown" size={16} />
       <div>
-        <InputLabel>{t`To Vault`}</InputLabel>
+        <InputLabel>{`To Vault`}</InputLabel>
         <InputWrapper>
           <Box flex>
             <SelectorBox>

@@ -31,7 +31,7 @@ body.theme-chad {
   --focus: var(--primary-400);
   --link-400: hsl(220, 98%, 57%);
   --text-400: var(--white);
-  --text-600: var(--primary-100);
+  --text-600: var(--black);
   --text_dark_background-400: var(--white);
 
   /* ------ Components  ------ */

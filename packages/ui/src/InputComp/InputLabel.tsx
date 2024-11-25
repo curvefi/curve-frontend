@@ -54,7 +54,7 @@ const StyledLabel = styled.label<{ descriptionLoading: boolean }>`
   font-size: var(--font-size-1);
   font-weight: 500;
   line-height: 1;
-  margin-top: 0.1875rem; // 3px
+  margin-top: 0.1875rem; // 3px;
 `
 
 InputLabel.displayName = 'InputLabel'
