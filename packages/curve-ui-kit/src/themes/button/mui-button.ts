@@ -81,7 +81,7 @@ export const defineMuiButton = (mode: ThemeKey, palette: Palette): Components['M
     },
   })
 
-  const fontFamily = ThemeFontFamily[mode].body
+  const fontFamily = ThemeFontFamily[mode].button
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
   const [sm, md, lg] = [2, 3, 4].map(i => basicMuiTheme.spacing(i))
   return {
