@@ -73,13 +73,22 @@ export const Header = ({ sections }: HeaderProps) => {
                 groupedTitle: isLgUp ? 'Pool Creation' : 'DEX',
               },
               { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
-              { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
             ],
             rLocalePathname,
             routerPathname,
             routerNetwork,
           ),
-        [hasRouter, isLgUp, network?.showRouterSwap, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
+        [
+          hasRouter,
+          isLgUp,
+          network?.showRouterSwap,
+          networks,
+          rChainId,
+          rLocalePathname,
+          routerCached,
+          routerNetwork,
+          routerPathname,
+        ],
       )}
       themes={[
         theme,
@@ -120,18 +129,16 @@ export const Header = ({ sections }: HeaderProps) => {
       appStats={[
         {
           label: t`Total Deposits`,
-          value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+          value: formatNumber(tvlTotal, { currency: 'USD', notation: 'compact' }),
         },
         ...(network?.isLite // only show total deposits on curve-lite networks
           ? []
           : [
               {
                 label: t`Daily Volume`,
-                value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+                value: formatNumber(volumeTotal, { currency: 'USD', notation: 'compact' }),
               },
-              ...(pageWidthPx == null || pageWidthPx > 1330
-                ? [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }]
-                : []),
+              { label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) },
             ]),
       ]}
       sections={sections}
@@ -151,7 +158,7 @@ function _parseSwapRoute(
   rChainId: ChainId,
   route: string,
   routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
-  networks: Networks
+  networks: Networks,
 ) {
   const routerDefault = rChainId ? networks[rChainId].swap : {}
   const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''

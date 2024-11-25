@@ -4,6 +4,7 @@ import { type RefObject } from 'react'
 import { breakpoints, sizes } from './utils'
 import { RCDiscordLogo, RCGithubLogo, RCTelegramLogo, RCTwitterLogo } from '@/images'
 import Box from './Box'
+import Typography from '@mui/material/Typography'
 import { ExternalLink } from './Link'
 import { NavigationSection } from 'curve-common/src/widgets/Header/types'
 
@@ -54,7 +55,7 @@ interface SectionProps {
 
 const Section = ({ className, title, children }: React.PropsWithChildren<SectionProps>) => (
   <SectionWrapper className={className} as="article">
-    <Header>{title}</Header>
+    <Typography variant="headingXsBold" sx={{ marginBottom: 4 }}>{title}</Typography>
     <SectionChildrenWrapper>{children}</SectionChildrenWrapper>
   </SectionWrapper>
 )

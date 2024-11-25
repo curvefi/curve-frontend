@@ -3,9 +3,8 @@ import type { DefaultStateKeys } from '@/store/createAppSlice'
 import { I18n, i18n } from '@lingui/core'
 import { en, zh } from 'make-plural/plurals'
 import { setStorageValue } from '@/utils/utilsStorage'
-import { LocaleOption } from '@/common/features/switch-language'
 
-export const DEFAULT_LOCALES: LocaleOption[] = [
+export const DEFAULT_LOCALES = [
   { name: 'English', value: 'en', lang: 'en' },
   ...(
     process.env.NODE_ENV === 'development' ? [
@@ -14,7 +13,9 @@ export const DEFAULT_LOCALES: LocaleOption[] = [
       { name: 'pseudo', value: 'pseudo' as const, lang: 'en' },
     ] : []
   )
-]
+] as const
+export type LocaleOption = (typeof DEFAULT_LOCALES)[number]
+export type LocaleValue = LocaleOption['value']
 
 export function initTranslation(i18n: I18n, defaultLocale: string): void {
   i18n.loadLocaleData({
@@ -33,7 +34,7 @@ export const findLocale = (selectedLocale: string) => DEFAULT_LOCALES.find((l) =
   return l.value.toLowerCase() === parsedLocale
 })
 
-export function parseLocale(locale?: string): { parsedLocale: LocaleOption['value']; pathnameLocale: string } {
+export function parseLocale(locale?: string): { parsedLocale: LocaleValue; pathnameLocale: string } {
   if (!locale) return { parsedLocale: 'en', pathnameLocale: '' }
   const foundLocale = findLocale(locale)
   const parsedLocale = foundLocale?.value ?? 'en'

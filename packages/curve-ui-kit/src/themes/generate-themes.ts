@@ -3,15 +3,16 @@ import { basicMuiTheme, type ThemeKey } from './basic-theme'
 import { createPalette } from './palette'
 import { createTypography } from './typography'
 import { createComponents } from './components'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
 const generateTheme = (mode: ThemeKey): Theme => {
   const palette = createPalette(mode)
-  const typography = createTypography(mode)
+  const typography = createTypography(mode) as TypographyOptions
   return createMuiTheme({
     ...basicMuiTheme,
     palette,
     typography,
-    components: createComponents(palette, typography),
+    components: createComponents(mode, palette),
     shape: { borderRadius: 0 },
     cssVariables: true,
     shadows: Array(25).fill('none') as Shadows,

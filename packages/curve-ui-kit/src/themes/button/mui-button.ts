@@ -1,14 +1,14 @@
 import type { Components, CSSObject } from '@mui/material/styles'
-import { basicMuiTheme } from '../basic-theme'
+import { basicMuiTheme, ThemeKey } from '../basic-theme'
 import { Palette } from '../palette'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { ThemeFontFamily } from '../typography'
 
 const COLORS = ['primary', 'secondary', 'success', 'alert'] as const
 type Color = (typeof COLORS)[number]
 
 export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
 
-export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOptions): Components['MuiButton'] => {
+export const defineMuiButton = (mode: ThemeKey, palette: Palette): Components['MuiButton'] => {
   const colors = {
     primary: {
       color: palette.neutral[50],
@@ -81,6 +81,7 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
     },
   })
 
+  const fontFamily = ThemeFontFamily[mode].button
   const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
   const [sm, md, lg] = [2, 3, 4].map(i => basicMuiTheme.spacing(i))
   return {
@@ -105,9 +106,9 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
         height: largeHeight,
         padding: `0 ${md}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}0px` },
-        fontSize: '16px',
-        fontWeight: 'bold',
-        lineHeight: '40px',
+        fontSize: '14px',
+        fontWeight: 700,
+        lineHeight: '24px',
         textTransform: 'uppercase',
         fontFamily,
       },
@@ -116,7 +117,7 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
         padding: `0 ${md}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}px` },
         fontSize: '14px',
-        fontWeight: 'bold',
+        fontWeight: 700,
         lineHeight: '24px',
         textTransform: 'uppercase',
         fontFamily,
@@ -126,10 +127,10 @@ export const defineMuiButton = (palette: Palette, { fontFamily }: TypographyOpti
         padding: `0 ${lg}px`,
         [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${md}px` },
         fontSize: '14px',
-        fontWeight: 'bold',
-        lineHeight: '24px',
+        fontWeight: 700,
+        lineHeight: '16px',
         textTransform: 'uppercase',
-        fontFamily,
+        fontFamily: ThemeFontFamily[mode].button,
       },
     },
   }

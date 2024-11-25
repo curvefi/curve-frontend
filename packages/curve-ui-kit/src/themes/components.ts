@@ -3,11 +3,11 @@ import { BUTTONS_HEIGHTS, defineMuiButton, defineMuiIconButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { Palette } from './palette'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { ThemeKey } from './basic-theme'
 
 export const DEFAULT_BAR_SIZE = BUTTONS_HEIGHTS[1] // medium
 
-export const createComponents = (palette: Palette, typography: TypographyOptions): ThemeOptions['components'] => ({
+export const createComponents = (mode: ThemeKey, palette: Palette): ThemeOptions['components'] => ({
   MuiTypography: defineMuiTypography(),
   MuiButtonBase: {
     defaultProps: {
@@ -15,7 +15,7 @@ export const createComponents = (palette: Palette, typography: TypographyOptions
     },
   },
   MuiIconButton: defineMuiIconButton(palette),
-  MuiButton: defineMuiButton(palette, typography),
+  MuiButton: defineMuiButton(mode, palette),
   MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(palette),
   MuiToolbar: {
@@ -38,7 +38,7 @@ export const createComponents = (palette: Palette, typography: TypographyOptions
       thumb: {
         borderRadius: 0,
         color: palette.primary.main,
-        '.Mui-checked &': { color: palette.neutral[50] }
+        '.Mui-checked &': { color: palette.neutral[50] },
       },
     },
   },

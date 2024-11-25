@@ -31,7 +31,7 @@ const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>
   results: QueryResultsArray<T>,
   keys: K,
 ): CombinedQueryMappingResult<T, K> => ({
-  data: Object.fromEntries((results || []).map((result, index) => [keys[index], result])) as Record<
+  data: Object.fromEntries((results || []).map(({ data }, index) => [keys[index], data])) as Record<
     K[number],
     ExtractDataType<T[number]>
   >,

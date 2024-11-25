@@ -8,10 +8,10 @@ export type HeaderStatsProps = {
 
 export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) => (
   appStats.map(({ label, value }) => (
-    <Box key={label} display="inline-flex">
+    <Box key={label} display="inline-flex" alignItems="baseline">
       <Typography variant="bodyMRegular" color="grey.600">{label}:</Typography>
       &nbsp;
-      <Typography variant="bodyMBold" color="text.primary">{value || '-'}</Typography>
+      <Typography variant="highlightM" color="text.primary">{value || '-'}</Typography>
     </Box>
   ))
 )

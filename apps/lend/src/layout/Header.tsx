@@ -65,12 +65,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
             [
               { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
               {
-                route: ROUTE.PAGE_INTEGRATIONS,
-                label: t`Integrations`,
-                groupedTitle: isMdUp ? 'Others' : 'Llamalend',
-                ...(!isMdUp && { minWidth: '10rem' }),
-              },
-              {
                 route: ROUTE.PAGE_RISK_DISCLAIMER,
                 label: t`Risk Disclaimer`,
                 groupedTitle: isMdUp ? 'risk' : 'Llamalend',
@@ -126,7 +120,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
       appStats={[
         {
           label: 'TVL',
-          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, showDecimalIfSmallNumberOnly: true })) || '',
+          value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
         },
       ]}
       sections={sections}

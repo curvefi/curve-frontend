@@ -1,4 +1,4 @@
-import { Select } from '@mui/material'
+import Select from '@mui/material/Select'
 import type { SelectProps } from '@mui/material/Select/Select'
 import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 import { useCallback } from 'react'

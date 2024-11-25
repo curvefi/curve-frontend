@@ -1,6 +1,6 @@
 import { type TypographyOptions } from '@mui/material/styles/createTypography'
 import { basicMuiTheme, type ThemeKey } from '../basic-theme'
-import { FontFamilyMapping } from './fonts'
+import { ThemeFontFamily } from './fonts'
 
 const disabledTypographyKeys = [
   'h1',
@@ -17,12 +17,6 @@ const disabledTypographyKeys = [
   'subtitle1',
   'subtitle2',
 ] as const
-
-const themeFontFamily = {
-  chad: FontFamilyMapping.Minecraft,
-  light: FontFamilyMapping['Mona Sans'],
-  dark: FontFamilyMapping['Mona Sans'],
-}
 
 export const TYPOGRAPHY_VARIANTS = {
   headingXxl: {
@@ -94,23 +88,6 @@ export const TYPOGRAPHY_VARIANTS = {
     fontWeight: 700,
     lineHeight: '14px',
   },
-  buttonLabelXs: {
-    fontSize: '14px',
-    fontWeight: 700,
-    lineHeight: '16px',
-  },
-  buttonLabelS: {
-    fontSize: '14px',
-    fontWeight: 700,
-    lineHeight: '24px',
-    textTransform: 'uppercase',
-  },
-  buttonLabelM: {
-    fontSize: '16px',
-    fontWeight: 700,
-    lineHeight: '40',
-    textTransform: 'uppercase',
-  },
   tableHeaderM: {
     fontSize: '16px',
     fontWeight: 500,
@@ -146,38 +123,38 @@ export const TYPOGRAPHY_VARIANTS = {
     fontWeight: 500,
     lineHeight: '14px',
   },
-  valueXsNotional: {
+  highlightXsNotional: {
     fontSize: '12px',
     fontWeight: 500,
     lineHeight: '14px',
   },
-  valueXs: {
+  highlightXs: {
     fontSize: '12px',
     fontWeight: 700,
     lineHeight: '14px',
   },
-  valueS: {
+  highlightS: {
     fontSize: '14px',
     fontWeight: 700,
     lineHeight: '16px',
   },
-  valueM: {
+  highlightM: {
     fontSize: '16px',
     fontWeight: 700,
     lineHeight: '16px',
   },
-  valueL: {
+  highlightL: {
     fontSize: '24px',
     fontWeight: 700,
     lineHeight: '24px',
   },
-  valueXl: {
+  highlightXl: {
     fontSize: '32px',
     fontWeight: 700,
     letterSpacing: '-1.28px',
     lineHeight: '36px',
   },
-  valueXxl: {
+  highlightXxl: {
     fontSize: '64px',
     fontWeight: 700,
     letterSpacing: '-2.56px',
@@ -185,18 +162,21 @@ export const TYPOGRAPHY_VARIANTS = {
   },
 } as const
 
-export const createTypography = (mode: ThemeKey): TypographyOptions => {
-  const fontFamily = themeFontFamily[mode]
+export const createTypography = (mode: ThemeKey) => {
   const disabledTypographyVariants = disabledTypographyKeys.reduce(
     (acc, variant) => ({ ...acc, [variant]: undefined }),
     {} as TypographyOptions,
   )
 
+  const { header, body } = ThemeFontFamily[mode]
   const variants = Object.fromEntries(
-    Object.entries(TYPOGRAPHY_VARIANTS).map(([key, value]) => [key, { ...value, fontFamily }]),
+    Object.entries(TYPOGRAPHY_VARIANTS).map(([key, value]) => [
+      key,
+      { ...value, fontFamily: key.startsWith('head') || key.startsWith('highlight') ? header : body },
+    ]),
   )
   return {
-    fontFamily,
+    fontFamily: ThemeFontFamily[mode].body,
     fontWeightBold: 700,
     fontWeightMedium: 600,
     fontWeightRegular: 500,
@@ -207,8 +187,8 @@ export const createTypography = (mode: ThemeKey): TypographyOptions => {
     },
     ...disabledTypographyVariants,
     ...variants,
-  } as TypographyOptions
+  }
 }
 
-export type DisabledTypographyVariantKey = (typeof disabledTypographyKeys)
+export type DisabledTypographyVariantKey = typeof disabledTypographyKeys
 export type TypographyVariantKey = keyof typeof TYPOGRAPHY_VARIANTS

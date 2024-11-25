@@ -68,7 +68,7 @@ describe('Header', () => {
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
       cy.url().then(url => {
-        cy.get('[data-testid^="sidebar-item-"]').eq(2).click()
+        cy.get('[data-testid^="sidebar-item-"]').eq(1).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
       })

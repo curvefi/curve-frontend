@@ -10,12 +10,13 @@ import type { Theme, SxProps } from '@mui/system'
 export type MobileTopBarProps<TChainId extends number> = {
   toggleSidebar: () => void,
   isSidebarOpen: boolean,
+  isLite: boolean,
   currentApp: AppName,
   ChainProps: ChainSwitcherProps<TChainId>
   sx: SxProps<Theme>
 }
 
-export const MobileTopBar = <TChainId extends number>({ ChainProps, currentApp, isSidebarOpen, toggleSidebar, sx }: MobileTopBarProps<TChainId>) => (
+export const MobileTopBar = <TChainId extends number>({ ChainProps, currentApp, isSidebarOpen, toggleSidebar, isLite, sx }: MobileTopBarProps<TChainId>) => (
   <Box
     display="flex"
     flexDirection="row"
@@ -24,7 +25,7 @@ export const MobileTopBar = <TChainId extends number>({ ChainProps, currentApp, 
     sx={sx}
   >
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
-    <HeaderLogo appName={currentApp} />
+    <HeaderLogo isLite={isLite} appName={currentApp} />
     <Box flexGrow={1} />
     <ChainSwitcher {...ChainProps} />
   </Box>
