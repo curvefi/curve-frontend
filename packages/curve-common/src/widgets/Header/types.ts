@@ -24,6 +24,7 @@ export type NavigationSection = {
 export type BaseHeaderProps<TChainId = number> = {
   mainNavRef: RefObject<HTMLDivElement>
   currentApp: AppName
+  isLite?: boolean
   ChainProps: ChainSwitcherProps<TChainId>
   WalletProps: ConnectWalletIndicatorProps
   pages: AppPage[]

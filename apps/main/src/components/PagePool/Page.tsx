@@ -1,16 +1,12 @@
 import type { NextPage } from 'next'
-
 import { useEffect, useMemo } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import { ROUTE } from '@/constants'
 import { getPath } from '@/utils/utilsRouter'
-import networks from '@/networks'
 import usePageOnMount from '@/hooks/usePageOnMount'
 import useStore from '@/store/useStore'
-
 import { scrollToTop } from '@/utils'
 import DocumentHead from '@/layout/default/DocumentHead'
 import Transfer from '@/components/PagePool/index'
@@ -31,8 +27,8 @@ const Page: NextPage = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[parsedRPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[parsedRPoolId])
-  const hidePoolsMapper = rChainId ? networks[rChainId].customPoolIds : null
   const provider = useStore((state) => state.wallet.getProvider(''))
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const { hasDepositAndStake } = getNetworkConfigFromApi(rChainId)
 
@@ -43,32 +39,22 @@ const Page: NextPage = () => {
   }, [])
 
   useEffect(() => {
-    if (hidePoolsMapper) {
-      const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
-      if (!rFormType || !rPoolId || (rPoolId && hidePoolsMapper[rPoolId])) {
-        navigate(reRoutePathname)
-      } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
-        ;(async () => {
-          const foundPoolData = await fetchNewPool(curve, rPoolId)
-          if (!foundPoolData) {
-            navigate(reRoutePathname)
-          }
-        })()
-      }
+    if (!rChainId) return
+
+    const { excludePoolsMapper } = network
+    const reRoutePathname = getPath(params, ROUTE.PAGE_POOLS)
+    if (!rFormType || !rPoolId || (rPoolId && excludePoolsMapper[rPoolId])) {
+      navigate(reRoutePathname)
+    } else if (!!curve && pageLoaded && !isLoadingApi && curve.chainId === +rChainId && haveAllPools && !poolData) {
+      ;(async () => {
+        const foundPoolData = await fetchNewPool(curve, rPoolId)
+        if (!foundPoolData) {
+          navigate(reRoutePathname)
+        }
+      })()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    curve?.chainId,
-    fetchNewPool,
-    haveAllPools,
-    isLoadingApi,
-    pageLoaded,
-    poolData,
-    rChainId,
-    rFormType,
-    rPoolId,
-    hidePoolsMapper,
-  ])
+  }, [curve?.chainId, fetchNewPool, haveAllPools, isLoadingApi, pageLoaded, poolData, rChainId, rFormType, rPoolId])
 
   return (
     <>

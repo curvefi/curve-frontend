@@ -44,6 +44,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
 
+  const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
       mainNavRef={mainNavRef}
@@ -78,7 +79,7 @@ export const Header = ({ sections }: HeaderProps) => {
         [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
-        themeType == 'default' ? 'light' : (themeType as ThemeKey),
+        theme,
         useCallback(
           (selectedThemeType: ThemeKey) =>
             setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType),
@@ -86,6 +87,7 @@ export const Header = ({ sections }: HeaderProps) => {
         ),
       ]}
       ChainProps={{
+        theme,
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,

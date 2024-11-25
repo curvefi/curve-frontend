@@ -3,14 +3,12 @@ import type { FormType as LockFormType } from '@/components/PageCrvLocker/types'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
 import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
-
 import countBy from 'lodash/countBy'
 import dayjs from '@/lib/dayjs'
 import chunk from 'lodash/chunk'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
 import PromisePool from '@supercharge/promise-pool/dist'
-
 import {
   filterCrvProfit,
   filterRewardsApy,
@@ -19,8 +17,6 @@ import {
   separateCrvProfit,
   separateCrvReward,
 } from '@/utils/utilsCurvejs'
-
-import networks from '@/networks'
 import { BN } from '@/ui/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
 import { fulfilledValue, getErrorMessage, isValidAddress, shortenTokenAddress } from '@/utils'
@@ -32,6 +28,7 @@ import {
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
 import { log } from '@/shared/lib/logging'
+import useStore from '@/store/useStore'
 
 // Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
 // https://twitter.com/MultichainOrg
@@ -68,10 +65,10 @@ const helpers = {
       return resp
     }
   },
-  fetchL1AndL2GasPrice: async (curve: CurveApi) => {
+  fetchL1AndL2GasPrice: async (curve: CurveApi, network: NetworkConfig) => {
     let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
     try {
-      if (networks[curve.chainId].gasL2) {
+      if (network.gasL2) {
         const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
         resp.l2GasPriceWei = l2GasPriceWei
         resp.l1GasPriceWei = l1GasPriceWei
@@ -89,12 +86,13 @@ const helpers = {
 
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
-      .handleError((error, tokenAddress) => {
-        console.error(`Unable to get usd rate for ${tokenAddress}`)
-        results[tokenAddress] = NaN
-      })
       .process(async (tokenAddress) => {
-        results[tokenAddress] = await curve.getUsdRate(tokenAddress)
+        try {
+          results[tokenAddress] = await curve.getUsdRate(tokenAddress)
+        } catch (error) {
+          console.error(`Unable to get usd rate for ${tokenAddress}`, error)
+          results[tokenAddress] = NaN
+        }
       })
     return results
   },
@@ -103,7 +101,7 @@ const helpers = {
   },
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await provider.waitForTransaction(hash)
+      async (hash) => await provider.waitForTransaction(hash),
     )
     if (Array.isArray(errors) && errors.length > 0) {
       throw errors
@@ -115,11 +113,10 @@ const helpers = {
 
 // curve
 const network = {
-  fetchAllPoolsList: async (curve: CurveApi) => {
-    const { chainId } = curve
-    log('fetchAllPoolsList', curve.chainId)
+  fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
+    log('fetchAllPoolsList', curve.chainId, network)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
-    const useApi = networks[chainId].useApi
+    const useApi = network.useApi
     await Promise.allSettled([
       curve.factory.fetchPools(useApi),
       curve.cryptoFactory.fetchPools(useApi),
@@ -172,8 +169,22 @@ const network = {
 }
 
 const pool = {
-  getPoolData: (p: Pool, chainId: ChainId, storedPoolData: PoolData | undefined) => {
-    const isWrappedOnly = networks[chainId].poolIsWrappedOnly[p.id]
+  getTvl: async (p: Pool, network: NetworkConfig) => {
+    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+
+    try {
+      resp.value = network.poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
+      return resp
+    } catch (error) {
+      console.error(error)
+      if (p.inApi) {
+        resp.errorMessage = 'Unable to get tvl'
+      }
+      return resp
+    }
+  },
+  getPoolData: (p: Pool, network: NetworkConfig, storedPoolData: PoolData | undefined) => {
+    const isWrappedOnly = network.poolIsWrappedOnly[p.id]
     const tokensWrapped = p.wrappedCoins.map((token, idx) => token || shortenTokenAddress(p.wrappedCoinAddresses[idx])!)
     const tokens = isWrappedOnly
       ? tokensWrapped
@@ -189,7 +200,7 @@ const pool = {
 
     const poolData: PoolData = {
       pool: p,
-      chainId,
+      chainId: network.chainId,
       curvefiUrl: '',
 
       // stats
@@ -227,22 +238,10 @@ const pool = {
 
     return poolData
   },
-  getTvl: async (p: Pool, chainId: ChainId) => {
+  getVolume: async (p: Pool, network: NetworkConfig) => {
     let resp = { poolId: p.id, value: '0', errorMessage: '' }
 
-    try {
-      resp.value = networks[chainId].poolCustomTVL[p.id] || (await p.stats.totalLiquidity())
-      return resp
-    } catch (error) {
-      console.error(error)
-      if (p.inApi) {
-        resp.errorMessage = 'Unable to get tvl'
-      }
-      return resp
-    }
-  },
-  getVolume: async (p: Pool) => {
-    let resp = { poolId: p.id, value: '0', errorMessage: '' }
+    if (network.isLite) return resp
 
     try {
       resp.value = await p.stats.volume()
@@ -277,7 +276,7 @@ const pool = {
       return resp
     }
   },
-  poolAllRewardsApy: async (chainId: ChainId, p: Pool) => {
+  poolAllRewardsApy: async (network: NetworkConfig, p: Pool) => {
     let resp: RewardsApy = {
       poolId: p.id,
       base: { day: '0', week: '0' },
@@ -286,79 +285,75 @@ const pool = {
       error: {},
     }
 
-    // do not show pool rewards due to exploit https://hackmd.io/@LlamaRisk/BJzSKHNjn
-    if (networks[chainId].hidePoolRewards[p.id]) {
+    const { isLite, chainId } = network
+
+    // get base vAPY
+    if (!isLite) {
+      const DEFAULT_BASE = { day: '0', week: '0' }
+      const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
+      resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
+      if (baseApyResult.status === 'rejected') {
+        if (p.inApi) resp.error['base'] = true
+      } else {
+        resp.base.day = new BN(resp.base.day).toFixed(8)
+        resp.base.week = new BN(resp.base.week).toFixed(8)
+      }
+    }
+
+    if (!isValidAddress(p.gauge.address)) return resp
+
+    // both crv and incentives (others) are in one call
+    if (p.rewardsOnly()) {
+      const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy()])
+      const rewards = fulfilledValue(rewardsResult)
+
+      if (rewardsResult.status === 'rejected') {
+        resp.error['others'] = true
+        resp.error['crv'] = true
+      }
+
+      if (rewardsResult.status === 'fulfilled' && rewards) {
+        const [others, [baseApy, boostedApy]] = separateCrvReward(filterRewardsApy(rewards)) as [
+          RewardOther[],
+          RewardCrv[],
+        ]
+
+        // others rewards
+        resp.other = others.filter((other) => +other.apy > 0)
+        resp.crv = +baseApy > 0 || (+boostedApy > 0 && !multichainNetworks[chainId]) ? [baseApy, boostedApy] : [0, 0]
+      }
       return resp
     }
 
-    // get base vAPY
-    const DEFAULT_BASE = { day: '0', week: '0' }
-    const [baseApyResult] = await Promise.allSettled([p.stats.baseApy()])
-    resp.base = fulfilledValue(baseApyResult) ?? DEFAULT_BASE
-    if (baseApyResult.status === 'rejected') {
-      if (p.inApi) resp.error['base'] = true
+    const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(), p.stats.tokenApy()])
+
+    // others rewards
+    const others = fulfilledValue(otherResult) ?? []
+    if (otherResult.status === 'rejected') {
+      resp.error['others'] = true
     } else {
-      resp.base.day = new BN(resp.base.day).toFixed(8)
-      resp.base.week = new BN(resp.base.week).toFixed(8)
+      for (const idx in others) {
+        const other = others[idx]
+        if (chainId === 8453) {
+          if (other.symbol !== 'CRV' && +other.apy > 0) {
+            resp.other.push(other)
+          }
+        } else if (+other.apy > 0) {
+          resp.other.push(other)
+        }
+      }
     }
 
-    if (isValidAddress(p.gauge.address)) {
-      const isRewardsOnly = p.rewardsOnly()
-
-      // both crv and incentives (others) are in one call
-      if (isRewardsOnly) {
-        const [rewardsResult] = await Promise.allSettled([p.stats.rewardsApy()])
-        const rewards = fulfilledValue(rewardsResult)
-        if (rewardsResult.status === 'rejected') {
-          resp.error['others'] = true
-          resp.error['crv'] = true
-        } else {
-          if (rewards) {
-            const [others, crv] = separateCrvReward(filterRewardsApy(rewards)) as [RewardOther[], RewardCrv[]]
-
-            // others rewards
-            for (const idx in others) {
-              const other = others[idx]
-              if (+other.apy > 0) {
-                resp.other.push(other)
-              }
-            }
-
-            // crv rewards
-            if (+crv[0] > 0 || (+crv[1] > 0 && !multichainNetworks[chainId])) {
-              resp.crv = crv
-            }
-          }
-        }
-      } else {
-        const [otherResult, crvResult] = await Promise.allSettled([p.stats.rewardsApy(), p.stats.tokenApy()])
-
-        // others rewards
-        const others = fulfilledValue(otherResult) ?? []
-        if (otherResult.status === 'rejected') {
-          resp.error['others'] = true
-        } else {
-          for (const idx in others) {
-            const other = others[idx]
-            if (chainId === 8453) {
-              if (other.symbol !== 'CRV' && +other.apy > 0) {
-                resp.other.push(other)
-              }
-            } else if (+other.apy > 0) {
-              resp.other.push(other)
-            }
-          }
-        }
-
-        // crv rewards
-        const crv = fulfilledValue(crvResult)
-        if (crvResult.status === 'rejected') {
-          resp.error['crv'] = true
-        } else {
-          const [baseApy] = crv ?? []
-          if (crv && baseApy && !Number.isNaN(baseApy) && !multichainNetworks[chainId]) {
-            resp.crv = crv
-          }
+    // crv rewards
+    if (!isLite) {
+      const crv = fulfilledValue(crvResult)
+      if (crvResult.status === 'rejected') {
+        resp.error['crv'] = true
+      }
+      if (crvResult.status === 'fulfilled' && !!crvResult.value) {
+        const [baseApy] = crvResult.value
+        if (crv && baseApy && !Number.isNaN(baseApy) && !multichainNetworks[chainId]) {
+          resp.crv = crv
         }
       }
     }
@@ -380,7 +375,7 @@ const router = {
     poolsMapper: { [poolId: string]: PoolData },
     formValues: FormValues,
     searchedParams: SearchedParams,
-    maxSlippage: string | undefined
+    maxSlippage: string | undefined,
   ) => {
     const { isFrom, fromAmount, toAmount } = formValues
     const { fromAddress, toAddress } = searchedParams
@@ -426,7 +421,7 @@ const router = {
             fetchedToAmount,
             toAddress,
             fromAmount,
-            fromAddress
+            fromAddress,
           ),
         }
       } else {
@@ -436,7 +431,7 @@ const router = {
         const { route: routes, output } = await curve.router.getBestRouteAndOutput(
           fromAddress,
           toAddress,
-          fetchedFromAmount
+          fetchedFromAmount,
         )
 
         if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
@@ -459,7 +454,7 @@ const router = {
             toAddress,
             fetchedFromAmount,
             fromAddress,
-            fetchedToAmount
+            fetchedToAmount,
           ),
         }
       }
@@ -476,7 +471,7 @@ const router = {
     fromAddress: string,
     toAddress: string,
     fromAmount: string,
-    isApprovalCheckOnly?: boolean
+    isApprovalCheckOnly?: boolean,
   ) => {
     log('routerEstGasApproval', fromAddress, toAddress, fromAmount)
     const resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
@@ -500,7 +495,7 @@ const router = {
     curve: CurveApi,
     provider: Provider,
     fromAddress: string,
-    fromAmount: string
+    fromAmount: string,
   ) => {
     log('swapApprove', fromAddress, fromAmount)
     const api = curve as CurveApi
@@ -522,7 +517,7 @@ const router = {
     fromAddress: string,
     fromAmount: string,
     toAddress: string,
-    slippageTolerance: string
+    slippageTolerance: string,
   ) => {
     log('swap', fromAddress, fromAmount, toAddress, slippageTolerance)
     const resp = { activeKey, hash: '', swappedAmount: '', error: '' }
@@ -585,7 +580,7 @@ const poolDeposit = {
     chainId: ChainId,
     p: Pool,
     isWrapped: boolean,
-    amounts: string[]
+    amounts: string[],
   ) => {
     log('depositEstGasApproval', p.name, isWrapped, amounts)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
@@ -627,7 +622,7 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('deposit', p.name, isWrapped, amounts, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -676,7 +671,7 @@ const poolDeposit = {
     chainId: ChainId,
     p: Pool,
     isWrapped: boolean,
-    amounts: string[]
+    amounts: string[],
   ) => {
     log('depositAndStakeEstGasApproval', p.name, isWrapped, amounts)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
@@ -707,7 +702,7 @@ const poolDeposit = {
     provider: Provider,
     p: Pool,
     isWrapped: boolean,
-    amounts: string[]
+    amounts: string[],
   ) => {
     log('depositAndStakeApprove', p.name, isWrapped, amounts)
     let resp = { activeKey, hashes: [] as string[], error: '' }
@@ -727,7 +722,7 @@ const poolDeposit = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('depositAndStake', p.name, isWrapped, amounts, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -794,7 +789,7 @@ const poolSwap = {
     p: Pool,
     formValues: PoolSwapFormValues,
     maxSlippage: string,
-    ignoreExchangeRateCheck: boolean
+    ignoreExchangeRateCheck: boolean,
   ) => {
     log('exchangeOutput', activeKey, p.name, formValues, maxSlippage)
     let resp = {
@@ -884,7 +879,7 @@ const poolSwap = {
     fromAddress: string,
     toAddress: string,
     fromAmount: string,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('poolSwapEstGasApproval', p.name, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage)
     let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
@@ -916,7 +911,7 @@ const poolSwap = {
     p: Pool,
     isWrapped: boolean,
     fromAddress: string,
-    fromAmount: string
+    fromAmount: string,
   ) => {
     log('swapApprove', p.name, isWrapped, fromAddress, fromAmount)
     let resp = { activeKey, hashes: [] as string[], error: '' }
@@ -940,7 +935,7 @@ const poolSwap = {
     fromAddress: string,
     toAddress: string,
     fromAmount: string,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('swap', p.name, isWrapped, fromAddress, toAddress, fromAmount, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -979,7 +974,7 @@ const poolWithdraw = {
     chainId: ChainId,
     p: Pool,
     isWrapped: boolean,
-    lpTokenAmount: string
+    lpTokenAmount: string,
   ) => {
     log('withdrawEstGasApproval', p.name, lpTokenAmount)
     let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
@@ -1020,7 +1015,7 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     lpTokenAmount: string,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('withdraw', p.name, isWrapped, lpTokenAmount, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -1060,7 +1055,7 @@ const poolWithdraw = {
     chainId: ChainId,
     p: Pool,
     isWrapped: boolean,
-    amounts: string[]
+    amounts: string[],
   ) => {
     log('withdrawImbalanceEstGasApproval', p.name, isWrapped, amounts)
     let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
@@ -1101,7 +1096,7 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     amounts: string[],
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('withdrawImbalance', p.name, isWrapped, amounts, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -1124,7 +1119,7 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     lpTokenAmount: string,
-    tokenAddress: string
+    tokenAddress: string,
   ) => {
     log('withdrawOneCoinBonusAndExpected', p.name, isWrapped, lpTokenAmount, tokenAddress)
     let resp = { activeKey, expected: '', bonus: '', error: '' }
@@ -1152,7 +1147,7 @@ const poolWithdraw = {
     p: Pool,
     isWrapped: boolean,
     lpTokenAmount: string,
-    tokenAddress: string
+    tokenAddress: string,
   ) => {
     log('withdrawOneCoinEstGasApproval', p.name, isWrapped, lpTokenAmount, tokenAddress)
     let resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: false, error: '' }
@@ -1193,7 +1188,7 @@ const poolWithdraw = {
     isWrapped: boolean,
     lpTokenAmount: string,
     tokenAddress: string,
-    maxSlippage: string
+    maxSlippage: string,
   ) => {
     log('withdrawOneCoin', p.name, isWrapped, lpTokenAmount, tokenAddress, maxSlippage)
     let resp = { activeKey, hash: '', error: '' }
@@ -1576,7 +1571,7 @@ const lockCrv = {
     provider: Provider,
     lockedAmount: string,
     utcDate: DateValue,
-    days: number
+    days: number,
   ) => {
     log('createLock', lockedAmount, utcDate.toString(), days)
     let resp = { activeKey, hash: '', error: '' }
@@ -1595,7 +1590,7 @@ const lockCrv = {
     curve: CurveApi,
     formType: LockFormType,
     lockedAmount: string,
-    days: number | null
+    days: number | null,
   ) => {
     log('lockCrvEstGasApproval', formType, lockedAmount, days)
     let resp = { activeKey, isApproved: false, estimatedGas: null as EstimatedGas, error: '' }
@@ -1695,7 +1690,8 @@ const lockCrv = {
 }
 
 function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
-  const isGasL2 = networks[chainId]?.gasL2
+  const network = useStore.getState().networks.networks[chainId]
+  const isGasL2 = network?.gasL2
   if (isGasL2 && !Array.isArray(estimatedGas) && estimatedGas !== null) {
     console.warn('Incorrect estimated gas returned for L2', estimatedGas)
   }

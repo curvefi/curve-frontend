@@ -3,9 +3,8 @@ import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { getParamsFromUrl, getRestPartialPathname } from '@/utils/utilsRouter'
+import { useParamsFromUrl, useRestFullPathname, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
-import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
@@ -33,45 +32,57 @@ export const Header = ({ sections }: HeaderProps) => {
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
+  const networks = useStore((state) => state.networks.networks)
+  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
 
-  const { rChainId, rLocalePathname } = getParamsFromUrl()
+  const { rChainId, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
   const { params: routerParams, location } = routerProps ?? {}
+  const network = networks[rChainId]
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
+  const restPartialPathname = useRestPartialPathname()
 
+  const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
       mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
       currentApp="main"
-      pages={useMemo(() => {
-        return _parseRouteAndIsActive(
-          [
-            ...(hasRouter && networks[rChainId].showRouterSwap
-              ? [
-                  {
-                    route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached),
-                    label: t`Quickswap`,
-                    groupedTitle: isLgUp ? 'Quickswap' : 'DEX',
-                  },
-                ]
-              : []),
-            { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
-            { route: ROUTE.PAGE_CREATE_POOL, label: t`Pool Creation`, groupedTitle: isLgUp ? 'Pool Creation' : 'DEX' },
-            { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
-            { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
-          ],
-          rLocalePathname,
-          routerPathname,
-          routerNetwork,
-        )
-      }, [hasRouter, isLgUp, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname])}
+      isLite={network?.isLite}
+      pages={useMemo(
+        () =>
+          _parseRouteAndIsActive(
+            [
+              ...(hasRouter && network?.showRouterSwap
+                ? [
+                    {
+                      route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
+                      label: t`Quickswap`,
+                      groupedTitle: isLgUp ? 'Quickswap' : 'DEX',
+                    },
+                  ]
+                : []),
+              { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
+              {
+                route: ROUTE.PAGE_CREATE_POOL,
+                label: t`Pool Creation`,
+                groupedTitle: isLgUp ? 'Pool Creation' : 'DEX',
+              },
+              { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
+              { route: ROUTE.PAGE_INTEGRATIONS, label: t`Integrations`, groupedTitle: isLgUp ? 'Integrations' : 'DEX' },
+            ],
+            rLocalePathname,
+            routerPathname,
+            routerNetwork,
+          ),
+        [hasRouter, isLgUp, network?.showRouterSwap, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
+      )}
       themes={[
-        themeType == 'default' ? 'light' : (themeType as ThemeKey),
+        theme,
         useCallback(
           (selectedThemeType: ThemeKey) => setThemeType(selectedThemeType == 'light' ? 'default' : selectedThemeType),
           [setThemeType],
@@ -79,17 +90,18 @@ export const Header = ({ sections }: HeaderProps) => {
       ]}
       ChainProps={{
         options: visibleNetworksList,
+        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
         onChange: useCallback(
           (selectedChainId: ChainId) => {
             if (rChainId !== selectedChainId) {
               const network = networks[selectedChainId as ChainId].id
-              navigate(`${rLocalePathname}/${network}/${getRestPartialPathname()}`)
+              navigate(`${rLocalePathname}/${network}/${restPartialPathname}`)
               updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [rChainId, selectedChainId])
             }
           },
-          [rChainId, navigate, rLocalePathname, updateConnectState],
+          [rChainId, networks, navigate, rLocalePathname, restPartialPathname, updateConnectState],
         ),
       }}
       WalletProps={{
@@ -110,13 +122,17 @@ export const Header = ({ sections }: HeaderProps) => {
           label: t`Total Deposits`,
           value: formatNumber(tvlTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
         },
-        {
-          label: t`Daily Volume`,
-          value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
-        },
-        ...(pageWidthPx == null || pageWidthPx > 1330
-          ? [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }]
-          : []),
+        ...(network?.isLite // only show total deposits on curve-lite networks
+          ? []
+          : [
+              {
+                label: t`Daily Volume`,
+                value: formatNumber(volumeTotal, { currency: 'USD', showDecimalIfSmallNumberOnly: true }),
+              },
+              ...(pageWidthPx == null || pageWidthPx > 1330
+                ? [{ label: t`Crypto Volume Share`, value: formatNumber(volumeCryptoShare, FORMAT_OPTIONS.PERCENT) }]
+                : []),
+            ]),
       ]}
       sections={sections}
       translations={{
@@ -135,6 +151,7 @@ function _parseSwapRoute(
   rChainId: ChainId,
   route: string,
   routerCached: { fromAddress: string; fromToken: string; toAddress: string; toToken: string } | undefined,
+  networks: Networks
 ) {
   const routerDefault = rChainId ? networks[rChainId].swap : {}
   const routerFromAddress = routerCached?.fromAddress ?? routerDefault?.fromAddress ?? ''

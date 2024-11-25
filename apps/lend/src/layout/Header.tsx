@@ -48,6 +48,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 
+  const theme = (themeType as string) == 'default' ? 'light' : themeType
   return (
     <NewHeader
       mainNavRef={mainNavRef}
@@ -82,11 +83,12 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         [isMdUp, rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
-        (themeType as string) == 'default' ? 'light' : themeType,
+        theme,
         useCallback((selectedThemeType: ThemeKey) => setAppCache('themeType', selectedThemeType), [setAppCache]),
       ]}
       ChainProps={{
         options: visibleNetworksList,
+        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
         onChange: useCallback(

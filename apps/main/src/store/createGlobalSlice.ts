@@ -2,13 +2,11 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { Locale } from '@/lib/i18n'
 import { ConnectState, getPageWidthClassName } from '@/ui/utils'
-
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils'
-import networks from '@/networks'
+import curvejsApi from '@/lib/curvejs'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -114,21 +112,21 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
   },
   setNetworkConfigFromApi: (curve: CurveApi) => {
     const { chainId } = curve
-    const { hasDepositAndStake, hasRouter } = networks[chainId].api.network.fetchNetworkConfig(curve)
+    const { hasDepositAndStake, hasRouter } = curvejsApi.network.fetchNetworkConfig(curve)
     set(
       produce((state: State) => {
         state.hasDepositAndStake[chainId] = hasDepositAndStake
         state.storeCache.hasDepositAndStake[chainId] = hasDepositAndStake
         state.hasRouter[chainId] = hasRouter
         state.storeCache.hasRouter[chainId] = hasRouter
-      })
+      }),
     )
   },
   setThemeType: (themeType: Theme) => {
     set(
       produce((state: State) => {
         state.themeType = themeType
-      })
+      }),
     )
     setStorageValue('APP_CACHE', { themeType })
   },
@@ -151,18 +149,19 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
         state.isLgUp = isLgUp
         state.isXLgUp = isXLgUp
         state.isXXSm = isXXSm
-      })
+      }),
     )
   },
   updateConnectState: (
     status: ConnectState['status'],
     stage: ConnectState['stage'],
-    options?: ConnectState['options']
+    options?: ConnectState['options'],
   ) => {
     const value = options ? { status, stage, options } : { status, stage }
     get().updateGlobalStoreByKey('connectState', value)
   },
   updateCurveJs: async (curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null) => {
+    const state = get()
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
@@ -174,67 +173,78 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
 
     // reset store
     if (isNetworkSwitched) {
-      get().gas.resetState()
-      get().pools.resetState()
-      get().quickSwap.resetState()
-      get().tokens.resetState()
-      get().usdRates.resetState()
-      get().userBalances.resetState()
-      get().user.resetState()
-      get().userBalances.resetState()
-      get().lockedCrv.resetState()
-      get().createPool.resetState()
-      get().campaigns.resetState()
+      state.gas.resetState()
+      state.pools.resetState()
+      state.quickSwap.resetState()
+      state.tokens.resetState()
+      state.usdRates.resetState()
+      state.userBalances.resetState()
+      state.user.resetState()
+      state.userBalances.resetState()
+      state.lockedCrv.resetState()
+      state.createPool.resetState()
+      state.campaigns.resetState()
+      state.dashboard.resetState()
     }
 
     if (isUserSwitched || !curveApi.signerAddress) {
-      get().user.resetState()
-      get().userBalances.resetState()
+      state.user.resetState()
+      state.userBalances.resetState()
     }
 
     // update network settings from api
-    get().setNetworkConfigFromApi(curveApi)
-    get().updateGlobalStoreByKey('curve', curveApi)
-    get().updateGlobalStoreByKey('isLoadingCurve', false)
+    state.setNetworkConfigFromApi(curveApi)
+    state.updateGlobalStoreByKey('curve', curveApi)
+    state.updateGlobalStoreByKey('isLoadingCurve', false)
+
+    const network = state.networks.networks[chainId]
+    const { excludePoolsMapper } = network
 
     // get poolList
-    const poolIds = await networks[chainId].api.network.fetchAllPoolsList(curveApi)
+    const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
+      (poolId) => !excludePoolsMapper[poolId],
+    )
+
+    // if no pools found for network, set tvl, volume and pools state to empty object
+    if (!poolIds.length) {
+      state.pools.setEmptyPoolListDefault(chainId)
+      state.tokens.setEmptyPoolListDefault(chainId)
+      state.pools.fetchBasePools(curveApi)
+      state.updateGlobalStoreByKey('isLoadingApi', false)
+      return
+    }
 
     // default hideSmallPools to false if poolIds length < 10
-    get().poolList.setStateByKey('formValues', { ...get().poolList.formValues, hideSmallPools: poolIds.length > 10 })
+    state.poolList.setStateByKey('formValues', { ...state.poolList.formValues, hideSmallPools: poolIds.length > 10 })
 
     // TODO: Temporary code to determine if there is an issue with getting base APY from  Kava Api (https://api.curve.fi/api/getFactoryAPYs-kava)
     const failedFetching24hOldVprice: { [poolAddress: string]: boolean } =
-      chainId === 2222 ? await networks[chainId].api.network.getFailedFetching24hOldVprice() : {}
+      chainId === 2222 ? await curvejsApi.network.getFailedFetching24hOldVprice() : {}
 
-    await get().pools.fetchPools(
-      curveApi,
-      poolIds.filter((poolId) => !networks[chainId].customPoolIds[poolId]),
-      failedFetching24hOldVprice
-    )
+    await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (!prevCurveApi || isNetworkSwitched) {
-      get().gas.fetchGasInfo(curveApi)
-      get().updateGlobalStoreByKey('isLoadingApi', false)
-      get().pools.fetchPricesApiPools(chainId)
-      get().pools.fetchBasePools(curveApi)
+      state.gas.fetchGasInfo(curveApi)
+      state.updateGlobalStoreByKey('isLoadingApi', false)
+      state.pools.fetchPricesApiPools(chainId)
+      state.pools.fetchBasePools(curveApi)
 
       // pull all api calls before isLoadingApi if it is not needed for initial load
-      get().usdRates.fetchAllStoredUsdRates(curveApi)
-      get().pools.fetchTotalVolumeAndTvl(curveApi)
+      state.usdRates.fetchAllStoredUsdRates(curveApi)
+      state.pools.fetchTotalVolumeAndTvl(curveApi)
     } else {
-      get().updateGlobalStoreByKey('isLoadingApi', false)
+      state.updateGlobalStoreByKey('isLoadingApi', false)
     }
 
     if (curveApi.signerAddress) {
-      get().user.fetchUserPoolList(curveApi)
+      state.user.fetchUserPoolList(curveApi)
     }
   },
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => {
     set(
       produce((state: State) => {
         state.layoutHeight[key] = value
-      })
+      }),
     )
   },
   updateMaxSlippage: (key: string, value: string | null) => {
@@ -246,7 +256,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
 
         state.maxSlippage[key] = value
-      })
+      }),
     )
   },
   updateShowScrollButton: (scrollY: number) => {
@@ -255,7 +265,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.showScrollButton = showScrollButton
-        })
+        }),
       )
     }
   },
@@ -263,7 +273,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
     set(
       produce((state) => {
         state[key] = value
-      })
+      }),
     )
   },
 
@@ -289,7 +299,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey][key] = parsedValue
           }
         }
-      })
+      }),
     )
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
@@ -302,7 +312,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
           }
           state[sliceKey][key] = value
         }
-      })
+      }),
     )
   },
   setAppStateByKeys: <T>(sliceKey: SliceKey, sliceState: T, showLog?: boolean) => {
@@ -317,7 +327,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
             }
             state[sliceKey][key] = value
           }
-        })
+        }),
       )
     }
   },
@@ -328,7 +338,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>) => ({
           ...state[sliceKey],
           ...defaultState,
         }
-      })
+      }),
     )
   },
 })

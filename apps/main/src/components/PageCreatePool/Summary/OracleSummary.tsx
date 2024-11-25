@@ -1,12 +1,8 @@
 import type { TokenState } from '@/components/PageCreatePool/types'
-
 import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@/utils'
-import networks from '@/networks'
 import styled from 'styled-components'
-
 import useStore from '@/store/useStore'
-
 import Icon from '@/ui/Icon'
 import {
   CategoryDataRow,
@@ -62,40 +58,43 @@ const OracleSummary = ({ chainId }: Props) => {
   )
 }
 
-const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) => (
-  <OracleTokenWrapper>
-    <CategoryDataRow>
-      <SummarySubTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</SummarySubTitle>
-    </CategoryDataRow>
-    <CategoryDataRow>
-      <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
-      {token.oracleAddress === '' ? (
-        <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
-      ) : (
-        <SummaryData>
-          {token.oracleAddress.length === 42 ? (
-            <AddressLink href={networks[chainId].scanAddressPath(token.oracleAddress)}>
-              {shortenTokenAddress(token.oracleAddress)}
-              <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
-            </AddressLink>
-          ) : token.oracleAddress.length > 13 ? (
-            shortenTokenAddress(token.oracleAddress)
-          ) : (
-            token.oracleAddress
-          )}
-        </SummaryData>
-      )}
-    </CategoryDataRow>
-    <CategoryDataRow>
-      <SummaryDataTitle>{t`Function:`}</SummaryDataTitle>
-      {token.oracleFunction === '' ? (
-        <SummaryDataPlaceholder>{t`No function set`}</SummaryDataPlaceholder>
-      ) : (
-        <SummaryData>{token.oracleFunction}</SummaryData>
-      )}
-    </CategoryDataRow>
-  </OracleTokenWrapper>
-)
+const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) => {
+  const network = useStore((state) => state.networks.networks[chainId])
+  return (
+    <OracleTokenWrapper>
+      <CategoryDataRow>
+        <SummarySubTitle>{t`${title} ${token.symbol !== '' ? `(${token.symbol})` : ''} Oracle`}</SummarySubTitle>
+      </CategoryDataRow>
+      <CategoryDataRow>
+        <SummaryDataTitle>{t`Address:`}</SummaryDataTitle>
+        {token.oracleAddress === '' ? (
+          <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
+        ) : (
+          <SummaryData>
+            {token.oracleAddress.length === 42 ? (
+              <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
+                {shortenTokenAddress(token.oracleAddress)}
+                <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+              </AddressLink>
+            ) : token.oracleAddress.length > 13 ? (
+              shortenTokenAddress(token.oracleAddress)
+            ) : (
+              token.oracleAddress
+            )}
+          </SummaryData>
+        )}
+      </CategoryDataRow>
+      <CategoryDataRow>
+        <SummaryDataTitle>{t`Function:`}</SummaryDataTitle>
+        {token.oracleFunction === '' ? (
+          <SummaryDataPlaceholder>{t`No function set`}</SummaryDataPlaceholder>
+        ) : (
+          <SummaryData>{token.oracleFunction}</SummaryData>
+        )}
+      </CategoryDataRow>
+    </OracleTokenWrapper>
+  )
+}
 
 const OraclesWrapper = styled.div`
   margin-top: var(--spacing-2);

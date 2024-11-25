@@ -1,10 +1,10 @@
 import {
   CreateToken,
-  TokenState,
   ImplementationId,
+  NgAssetType,
   SwapType,
   TokenId,
-  NgAssetType,
+  TokenState,
 } from '@/components/PageCreatePool/types'
 import type { ContractTransactionResponse } from 'ethers'
 
@@ -14,11 +14,10 @@ import { BigNumber } from 'bignumber.js'
 import { t } from '@lingui/macro'
 
 import type { State } from '@/store/useStore'
-import networks from '@/networks'
 
 import {
-  POOL_PRESETS,
   CRYPTOSWAP,
+  POOL_PRESETS,
   STABLESWAP,
   TOKEN_A,
   TOKEN_B,
@@ -114,7 +113,7 @@ export type CreatePoolSlice = {
       tokenE: TokenState,
       tokenF: TokenState,
       tokenG: TokenState,
-      tokenH: TokenState
+      tokenH: TokenState,
     ) => void
     clearToken: (tokenId: TokenId) => void
     updateStandardToggle: (tokenId: TokenId) => void
@@ -290,25 +289,26 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.createPool.navigationIndex = index
-        })
+        }),
       )
     },
     updateAdvanced: (boolean: boolean) => {
       set(
         produce((state) => {
           state.createPool.advanced = boolean
-        })
+        }),
       )
     },
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
+      const { networks: {networks} } = get()
       if (swapType === CRYPTOSWAP) {
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
         set(
           produce((state) => {
             state.createPool.tokensInPool.tokenAmount = amount
-          })
+          }),
         )
       }
 
@@ -321,7 +321,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             produce((state) => {
               state.createPool.tokensInPool.tokenAmount = 2
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
-            })
+            }),
           )
         }
         if (tokenB.basePool) {
@@ -329,49 +329,49 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
               state.createPool.tokensInPool.metaPoolToken = false
-            })
+            }),
           )
         }
         if (tokenC.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_C] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_C]
-            })
+            }),
           )
         }
         if (tokenD.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_D] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_D]
-            })
+            }),
           )
         }
         if (tokenE.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_E] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_E]
-            })
+            }),
           )
         }
         if (tokenF.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_F] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_F]
-            })
+            }),
           )
         }
         if (tokenG.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_G] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_G]
-            })
+            }),
           )
         }
         if (tokenH.basePool) {
           set(
             produce((state) => {
               state.createPool.tokensInPool[TOKEN_H] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_H]
-            })
+            }),
           )
         }
       }
@@ -381,7 +381,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
           state.createPool.swapType = swapType
-        })
+        }),
       )
     },
     updatePoolPresetIndex: (presetIndex: number) => {
@@ -389,7 +389,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         produce((state) => {
           state.createPool.poolPresetIndex = presetIndex
           state.createPool.parameters = POOL_PRESETS[presetIndex].defaultParams
-        })
+        }),
       )
     },
     resetPoolPresetIndex: () => {
@@ -397,7 +397,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         produce((state) => {
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
-        })
+        }),
       )
     },
     updateTokensInPool: async (
@@ -409,7 +409,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       tokenE: TokenState,
       tokenF: TokenState,
       tokenG: TokenState,
-      tokenH: TokenState
+      tokenH: TokenState,
     ) => {
       let tokensInPoolUpdates = {
         ...get().createPool.tokensInPool,
@@ -487,7 +487,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         produce((state) => {
           state.createPool.tokensInPool = tokensInPoolUpdates
           state.createPool.initialPrice = initialPriceUpdates
-        })
+        }),
       )
     },
     clearToken: (tokenId: TokenId) => {
@@ -497,35 +497,35 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.tokensInPool.metaPoolToken = get().createPool.tokensInPool[tokenId].basePool
             ? false
             : get().createPool.tokensInPool.metaPoolToken
-        })
+        }),
       )
     },
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => {
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId].ngAssetType = value
-        })
+        }),
       )
     },
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => {
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId].oracleAddress = oracleAddress
-        })
+        }),
       )
     },
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => {
       set(
         produce((state) => {
           state.createPool.tokensInPool[tokenId].oracleFunction = oracleFunction
-        })
+        }),
       )
     },
     updateTokenAmount: (amount: number) =>
       set(
         produce((state) => {
           state.createPool.tokensInPool.tokenAmount = amount
-        })
+        }),
       ),
     updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => {
       set(
@@ -537,7 +537,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             userAddedToken: true,
             basePool: basePool,
           })
-        })
+        }),
       )
     },
     updateInitialPrice: (tokenA: number, tokenB: number, tokenC: number) =>
@@ -547,46 +547,46 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             calculateInitialPrice(tokenA, tokenB),
             calculateInitialPrice(tokenA, tokenC),
           ]
-        })
+        }),
       ),
     updateTokenPrice: (tokenId: TokenId, price: number) => {
       if (tokenId === TOKEN_A) {
         get().createPool.updateInitialPrice(
           price,
           get().createPool.initialPrice[TOKEN_B],
-          get().createPool.initialPrice[TOKEN_C]
+          get().createPool.initialPrice[TOKEN_C],
         )
 
         set(
           produce((state) => {
             state.createPool.initialPrice[TOKEN_A] = price
-          })
+          }),
         )
       }
       if (tokenId === TOKEN_B) {
         get().createPool.updateInitialPrice(
           get().createPool.initialPrice[TOKEN_A],
           price,
-          get().createPool.initialPrice[TOKEN_C]
+          get().createPool.initialPrice[TOKEN_C],
         )
 
         set(
           produce((state) => {
             state.createPool.initialPrice[TOKEN_B] = price
-          })
+          }),
         )
       }
       if (tokenId === TOKEN_C) {
         get().createPool.updateInitialPrice(
           get().createPool.initialPrice[TOKEN_A],
           get().createPool.initialPrice[TOKEN_B],
-          price
+          price,
         )
 
         set(
           produce((state) => {
             state.createPool.initialPrice[TOKEN_C] = price
-          })
+          }),
         )
       }
       console.log(get().createPool.initialPrice)
@@ -594,15 +594,15 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
     refreshInitialPrice: async (curve: CurveApi) => {
       const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(
         curve,
-        get().createPool.tokensInPool[TOKEN_A].address
+        get().createPool.tokensInPool[TOKEN_A].address,
       )
       const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(
         curve,
-        get().createPool.tokensInPool[TOKEN_B].address
+        get().createPool.tokensInPool[TOKEN_B].address,
       )
       const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(
         curve,
-        get().createPool.tokensInPool[TOKEN_C].address
+        get().createPool.tokensInPool[TOKEN_C].address,
       )
       const tokenAPrice = Number(tokenAPriceRaw)
       const tokenBPrice = Number(tokenBPriceRaw)
@@ -618,38 +618,38 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             tokenBPrice: tokenBPrice,
             tokenCPrice: tokenCPrice,
           }
-        })
+        }),
       )
     },
     updateStableSwapFee: (fee: string) =>
       set(
         produce((state) => {
           state.createPool.parameters.stableSwapFee = fee
-        })
+        }),
       ),
     updateMidFee: (fee: string) =>
       set(
         produce((state) => {
           state.createPool.parameters.midFee = fee
-        })
+        }),
       ),
     updateOutFee: (fee: string) =>
       set(
         produce((state) => {
           state.createPool.parameters.outFee = fee
-        })
+        }),
       ),
     updateStableA: (value: number) =>
       set(
         produce((state) => {
           state.createPool.parameters.stableA = new BigNumber(value).toString()
-        })
+        }),
       ),
     updateCryptoA: (value: number) =>
       set(
         produce((state) => {
           state.createPool.parameters.cryptoA = new BigNumber(value).toString()
-        })
+        }),
       ),
     updateGamma: (value: number | string) =>
       set(
@@ -657,7 +657,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.gamma = value)
             : (state.createPool.parameters.gamma = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
@@ -665,7 +665,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.allowedExtraProfit = value)
             : (state.createPool.parameters.allowedExtraProfit = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateFeeGamma: (value: number | string) =>
       set(
@@ -673,7 +673,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.feeGamma = value)
             : (state.createPool.parameters.feeGamma = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
@@ -681,7 +681,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.adjustmentStep = value)
             : (state.createPool.parameters.adjustmentStep = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
@@ -689,7 +689,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.maHalfTime = value)
             : (state.createPool.parameters.maHalfTime = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateMaExpTime: (value: number | string) =>
       set(
@@ -697,7 +697,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.maExpTime = value)
             : (state.createPool.parameters.maExpTime = new BigNumber(value).toString())
-        })
+        }),
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
@@ -705,88 +705,91 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           value === typeof 'string'
             ? (state.createPool.parameters.offpegFeeMultiplier = value)
             : (state.createPool.parameters.offpegFeeMultiplier = new BigNumber(value).toString())
-        })
+        }),
       ),
     updatePoolName: (name: string) =>
       set(
         produce((state) => {
           state.createPool.poolName = name
-        })
+        }),
       ),
     updatePoolSymbol: (symbol: string) =>
       set(
         produce((state) => {
           state.createPool.poolSymbol = symbol
-        })
+        }),
       ),
     updateAssetType: (type: string) =>
       set(
         produce((state) => {
           state.createPool.assetType = type
-        })
+        }),
       ),
     updateImplementation: (type: ImplementationId) =>
       set(
         produce((state) => {
           state.createPool.implementation = type
-        })
+        }),
       ),
     updatePoolTypeValidation: (poolType: boolean) => {
       set(
         produce((state) => {
           state.createPool.validation.poolType = poolType
-        })
+        }),
       )
     },
     updateTokensInPoolValidation: (tokensInPool: boolean) => {
       set(
         produce((state) => {
           state.createPool.validation.tokensInPool = tokensInPool
-        })
+        }),
       )
     },
     updateParametersValidation: (parameters: boolean) => {
       set(
         produce((state) => {
           state.createPool.validation.parameters = parameters
-        })
+        }),
       )
     },
     updatePoolInfoValidation: (poolInfo: boolean) => {
       set(
         produce((state) => {
           state.createPool.validation.poolInfo = poolInfo
-        })
+        }),
       )
     },
     deployPool: async (curve: CurveApi) => {
       const chainId = curve.chainId
       const {
-        poolSymbol,
-        swapType,
-        tokensInPool: { tokenAmount, metaPoolToken, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH },
-        parameters: {
-          stableSwapFee,
-          stableA,
-          cryptoA,
-          midFee,
-          outFee,
-          gamma,
-          feeGamma,
-          allowedExtraProfit,
-          adjustmentStep,
-          maExpTime,
-          maHalfTime,
-          offpegFeeMultiplier,
+        pools: { fetchNewPool, basePools },
+        gas: { fetchGasInfo },
+        wallet: { notifyNotification },
+        createPool: {
+          poolSymbol,
+          swapType,
+          tokensInPool: { tokenAmount, metaPoolToken, tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH },
+          parameters: {
+            stableSwapFee,
+            stableA,
+            cryptoA,
+            midFee,
+            outFee,
+            gamma,
+            feeGamma,
+            allowedExtraProfit,
+            adjustmentStep,
+            maExpTime,
+            maHalfTime,
+            offpegFeeMultiplier,
+          },
+          poolName,
+          assetType,
+          initialPrice,
+          implementation,
         },
-        poolName,
-        assetType,
-        initialPrice,
-        implementation,
-      } = get().createPool
-      const fetchNewPool = get().pools.fetchNewPool
-      const fetchGasInfo = get().gas.fetchGasInfo
-      const notifyNotification = get().wallet.notifyNotification
+        networks: { networks },
+      } = get()
 
       let dismissNotificationHandler
 
@@ -800,7 +803,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.createPool.transactionState.txStatus = 'CONFIRMING'
-        })
+        }),
       )
 
       if (swapType === CRYPTOSWAP) {
@@ -821,14 +824,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               feeGamma,
               adjustmentStep,
               +maHalfTime,
-              initialPrice.initialPrice
+              initialPrice.initialPrice,
             )
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -845,7 +848,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -857,7 +860,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -866,7 +869,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -878,7 +881,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -901,7 +904,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               feeGamma,
               adjustmentStep,
               maExpTime,
-              initialPrice.initialPrice[0]
+              initialPrice.initialPrice[0],
             )
 
             set(
@@ -909,7 +912,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -926,7 +929,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -938,7 +941,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -947,7 +950,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -958,7 +961,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
           }
         }
@@ -968,7 +971,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         // convert token address of basepool to pool address of basepool
         const convertTokenAddressToPoolAddress = (val: string) => {
           let newValue = ''
-          get().pools.basePools[chainId].find((item) => {
+          basePools[chainId].find((item) => {
             if (item.token.toLowerCase() === val.toLowerCase()) newValue = item.pool
           })
           return newValue === '' ? val : newValue
@@ -1000,14 +1003,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               0,
               coin.ngAssetType,
               oracleFunction,
-              oracleAddress
+              oracleAddress,
             )
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -1025,7 +1028,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -1037,7 +1040,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -1046,7 +1049,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -1057,7 +1060,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -1071,14 +1074,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               coin.address,
               stableA,
               stableSwapFee,
-              implementationIdx
+              implementationIdx,
             )
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -1095,7 +1098,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -1107,7 +1110,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -1116,7 +1119,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -1127,7 +1130,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -1137,14 +1140,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
         // STABLE NG
         if (networks[chainId].stableswapFactory) {
           const coins = [tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH].filter(
-            (coin) => coin.address !== ''
+            (coin) => coin.address !== '',
           )
 
           try {
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
             const oracleAddresses = coins.map((coin) =>
-              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000'
+              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000',
             )
             const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
@@ -1160,14 +1163,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               0,
               maExpTimeFormatted,
               oracleAddresses,
-              oracleFunctions
+              oracleFunctions,
             )
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -1184,7 +1187,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -1196,7 +1199,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -1205,7 +1208,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -1216,7 +1219,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -1239,14 +1242,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               stableA,
               stableSwapFee,
               assetTypeNumber(),
-              implementation
+              implementation,
             )
             set(
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
-              })
+              }),
             )
 
             // set up deploying message
@@ -1264,7 +1267,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
                 state.createPool.transactionState.poolAddress = poolAddress
-              })
+              }),
             )
 
             // set up success message
@@ -1276,7 +1279,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
             set(
               produce((state) => {
                 state.createPool.transactionState.poolId = poolId
-              })
+              }),
             )
 
             const poolData = await fetchNewPool(curve, poolId)
@@ -1285,7 +1288,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
                 produce((state) => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
-                })
+                }),
               )
             }
           } catch (error) {
@@ -1296,7 +1299,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
-              })
+              }),
             )
             console.log(error)
           }
@@ -1307,7 +1310,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.createPool = { ...state.createPool, ...DEFAULT_CREATE_POOL_STATE }
-        })
+        }),
       ),
   },
 })

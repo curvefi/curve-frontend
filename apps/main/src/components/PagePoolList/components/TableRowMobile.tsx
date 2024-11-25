@@ -6,6 +6,7 @@ import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 
+import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 import { formatNumber } from '@/ui/utils'
 
 import { CellInPool } from '@/ui/Table'
@@ -34,6 +35,8 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   index,
+  isLite,
+  columnKeys,
   formValues,
   isInPool,
   imageBaseUrl,
@@ -117,9 +120,11 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
             {isShowDetail && (
               <>
                 <ListInfoItems>
-                  <ListInfoItem title={tableLabel.volume.name}>
-                    <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
-                  </ListInfoItem>
+                  {columnKeys.indexOf(COLUMN_KEYS.volume) !== -1 && (
+                    <ListInfoItem title={tableLabel.volume.name}>
+                      <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+                    </ListInfoItem>
+                  )}
                   <ListInfoItem title={tableLabel.tvl.name}>
                     <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
                   </ListInfoItem>
@@ -134,20 +139,30 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
 
                   {!poolData?.gauge.isKilled && (
                     <>
-                      <ListInfoItem
-                        title={t`REWARDS tAPR`}
-                        titleNoCap
-                        titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
-                        tooltip={t`Token APR based on current prices of tokens and reward rates`}
-                      >
-                        <TCellRewards
-                          poolData={poolData}
-                          isHighlightBase={sortBy === 'rewardsBase'}
-                          isHighlightCrv={sortBy === 'rewardsCrv'}
-                          isHighlightOther={sortBy === 'rewardsOther'}
-                          rewardsApy={rewardsApy}
-                        />
-                      </ListInfoItem>
+                      {columnKeys.indexOf(COLUMN_KEYS.rewardsLite) !== -1 ? (
+                        <ListInfoItem
+                          title={t`REWARDS tAPR`}
+                          titleNoCap
+                          tooltip={t`Token APR based on current prices of tokens and reward rates`}
+                        >
+                          <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
+                        </ListInfoItem>
+                      ) : (
+                        <ListInfoItem
+                          title={t`REWARDS tAPR`}
+                          titleNoCap
+                          titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
+                          tooltip={t`Token APR based on current prices of tokens and reward rates`}
+                        >
+                          <TCellRewards
+                            poolData={poolData}
+                            isHighlightBase={sortBy === 'rewardsBase'}
+                            isHighlightCrv={sortBy === 'rewardsCrv'}
+                            isHighlightOther={sortBy === 'rewardsOther'}
+                            rewardsApy={rewardsApy}
+                          />
+                        </ListInfoItem>
+                      )}
                       {poolData && campaignRewardsMapper[poolData.pool.address] && (
                         <ListInfoItem title={t`Additional external rewards`}>
                           <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />

@@ -1,11 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import {
   checkSwapType,
   checkTokensInPool,
@@ -15,7 +12,6 @@ import {
   checkPoolInfo,
 } from '@/components/PageCreatePool/utils'
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-
 import Spinner from '@/ui/Spinner'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -34,7 +30,8 @@ type Props = {
 }
 
 const CreatePool = ({ curve }: Props) => {
-  const { chainId, haveSigner } = curveProps(curve) as { chainId: ChainId; haveSigner: boolean }
+  const networks = useStore((state) => state.networks.networks)
+  const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const {
     poolSymbol,
     swapType,
@@ -127,6 +124,7 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool.tokenG,
     tokensInPool.tokenH,
     updateTokensInPoolValidation,
+    networks,
   ])
 
   useEffect(() => {
@@ -157,6 +155,7 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool.tokenB,
     tokensInPool.tokenC,
     updateParametersValidation,
+    networks,
   ])
 
   useEffect(() => {
@@ -164,7 +163,7 @@ const CreatePool = ({ curve }: Props) => {
     updatePoolInfoValidation(
       checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType)
     )
-  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation])
+  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>

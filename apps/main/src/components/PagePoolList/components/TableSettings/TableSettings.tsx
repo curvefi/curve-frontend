@@ -1,13 +1,9 @@
 import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/components/PagePoolList/types'
-
 import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 import styled from 'styled-components'
-
 import { breakpoints } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import Box from '@/ui/Box'
 import SearchListInput from '@/ui/SearchInput/SearchListInput'
 import TableButtonFilters from '@/ui/TableButtonFilters'
@@ -20,6 +16,7 @@ type Props = {
   isReady: boolean
   activeKey: string
   rChainId: ChainId
+  isLite: boolean
   poolDatasCachedOrApi: PoolData[]
   result: string[] | undefined
   signerAddress: string
@@ -32,6 +29,7 @@ const TableSettings = ({
   isReady,
   activeKey,
   rChainId,
+  isLite,
   poolDatasCachedOrApi,
   result,
   signerAddress,
@@ -41,6 +39,7 @@ const TableSettings = ({
 }: Props) => {
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey])
   const isLgUp = useStore((state) => state.isLgUp)
+  const { poolFilters } = useStore((state) => state.networks.networks[rChainId])
 
   const FILTERS: PoolListFilter[] = useMemo(
     () => [
@@ -60,9 +59,7 @@ const TableSettings = ({
   )
 
   const parsedFilters = useMemo(() => {
-    let filters = FILTERS.filter((f) => {
-      return networks[rChainId].poolFilters.indexOf(f.key) !== -1
-    })
+    let filters = FILTERS.filter((f) => poolFilters.indexOf(f.key) !== -1)
 
     if (!signerAddress) {
       filters = filters.filter((f) => f.key !== 'user')
@@ -76,7 +73,7 @@ const TableSettings = ({
 
       return parsedFilters
     }
-  }, [FILTERS, signerAddress, rChainId])
+  }, [FILTERS, signerAddress, poolFilters])
 
   return (
     <Wrapper>
@@ -89,8 +86,8 @@ const TableSettings = ({
         />
       </div>
 
-      <FiltersWrapper>
-        {isLgUp ? (
+      <FiltersWrapper $isLite={isLite}>
+        {isLgUp && !isLite ? (
           <>
             <TableButtonFilters
               disabled={false}
@@ -103,7 +100,6 @@ const TableSettings = ({
             <Box flex gridGap={2}>
               <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
               <TableCheckboxHideSmallPools
-                rChainId={rChainId}
                 searchParams={searchParams}
                 poolDatasCachedOrApi={poolDatasCachedOrApi}
                 updatePath={updatePath}
@@ -119,7 +115,6 @@ const TableSettings = ({
             />
             <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
             <TableCheckboxHideSmallPools
-              rChainId={rChainId}
               searchParams={searchParams}
               poolDatasCachedOrApi={poolDatasCachedOrApi}
               updatePath={updatePath}
@@ -144,7 +139,7 @@ const Wrapper = styled.div`
   }
 `
 
-const FiltersWrapper = styled(Box)`
+const FiltersWrapper = styled(Box)<{ $isLite: boolean }>`
   align-items: flex-start;
   display: flex;
   flex-wrap: wrap;
@@ -156,7 +151,7 @@ const FiltersWrapper = styled(Box)`
   }
 
   @media (min-width: ${breakpoints.lg}rem) {
-    grid-template-columns: 1fr auto auto;
+    grid-template-columns: ${({ $isLite }) => ($isLite ? 'auto 1fr auto' : '1fr auto auto')};
   }
 `
 

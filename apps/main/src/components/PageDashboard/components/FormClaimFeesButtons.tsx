@@ -1,14 +1,11 @@
 import type { ButtonProps } from '@/ui/Button/types'
 import type { Step } from '@/ui/Stepper/types'
-
 import React, { useCallback, useMemo, useState } from 'react'
 import { t } from '@lingui/macro'
-
 import { DEFAULT_FORM_STATUS } from '@/components/PageDashboard/utils'
 import { claimButtonsKey } from '@/components/PageDashboard/components/FormClaimFees'
-import networks from '@/networks'
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 import useStore from '@/store/useStore'
-
 import Button from '@/ui/Button'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
@@ -28,15 +25,15 @@ const FormClaimFeesButtons = ({
   setSteps: React.Dispatch<React.SetStateAction<Step[]>>
   setTxInfoBar: React.Dispatch<React.SetStateAction<React.ReactNode>>
 }) => {
-  const curve = useStore((state) => state.curve)
+  const { curve, isValidAddress } = useDashboardContext()
   const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
   const formProcessing = useStore((state) => state.dashboard.formStatus.formProcessing)
-  const isValidWalletAddress = useStore((state) => state.dashboard.isValidWalletAddress[activeKey])
   const fetchStepClaimFees = useStore((state) => state.dashboard.fetchStepClaimFees)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {
@@ -46,7 +43,7 @@ const FormClaimFeesButtons = ({
     const noClaimFees = claim3Crv + claimCrvUSD === 0
 
     const buttonProps: React.ButtonHTMLAttributes<HTMLButtonElement> & ButtonProps = {
-      disabled: loadingClaimFees || !signerAddress || noClaimFees || !isValidWalletAddress,
+      disabled: loadingClaimFees || !signerAddress || noClaimFees || !isValidAddress,
       loading: loadingClaimFees || formProcessing,
       variant: 'filled',
       size: 'medium',
@@ -56,11 +53,13 @@ const FormClaimFeesButtons = ({
       { buttonProps, label: t`Claim 3CRV`, key: claimButtonsKey['3CRV'], show: claim3Crv > 0 },
       { buttonProps, label: t`Claim crvUSD`, key: claimButtonsKey.crvUSD, show: claimCrvUSD > 0 },
     ]
-  }, [claimFeesAmounts, formProcessing, isValidWalletAddress, loading, signerAddress, walletAddress])
+  }, [claimFeesAmounts, formProcessing, isValidAddress, loading, signerAddress, walletAddress])
 
   const handleBtnClickClaimFees = useCallback(
     async (key: claimButtonsKey) => {
-      const { scanTxPath } = networks[chainId]
+      if (!network || !curve) return
+
+      const { scanTxPath } = network
       const notifyMessage = t`Please approve claim veCRV rewards.`
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
 
@@ -101,12 +100,11 @@ const FormClaimFeesButtons = ({
             setSteps([])
             setTxInfoBar(null)
           }}
-        />
+        />,
       )
     },
     [
       activeKey,
-      chainId,
       curve,
       fetchStepClaimFees,
       notifyNotification,
@@ -114,7 +112,8 @@ const FormClaimFeesButtons = ({
       setSteps,
       setTxInfoBar,
       walletAddress,
-    ]
+      network,
+    ],
   )
 
   return (

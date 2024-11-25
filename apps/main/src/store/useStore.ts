@@ -6,6 +6,7 @@ import merge from 'lodash/merge'
 import debounce from 'lodash/debounce'
 
 import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
+import createNetworksSlice, { NetworksSlice } from '@/store/createNetworksSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
 import createPoolsSlice, { PoolsSlice } from '@/store/createPoolsSlice'
@@ -28,6 +29,7 @@ import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/store/createPoolWi
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/store/createCampaignRewardsSlice'
 
 export type State = GlobalSlice &
+  NetworksSlice &
   GasSlice &
   WalletSlice &
   CacheSlice &
@@ -51,6 +53,7 @@ export type State = GlobalSlice &
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
+  ...createNetworksSlice(set, get),
   ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
   ...createWalletSlice(set, get),

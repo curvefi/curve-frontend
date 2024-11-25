@@ -19,8 +19,7 @@ import type {
   DepositRewardApproveMutation,
   DepositRewardApproveParams,
   DepositRewardMutation,
-  DepositRewardParams,
-  PoolMethodResult
+  DepositRewardParams
 } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
 import { GaugeParams } from '@/shared/model/query'
@@ -30,7 +29,7 @@ import useStore from '@/store/useStore'
 export const useAddRewardToken = ({
   chainId,
   poolId,
-}: GaugeParams): UseMutationResult<PoolMethodResult<'gauge.addReward'>, Error, AddRewardMutation> => {
+}: GaugeParams): UseMutationResult<string, Error, AddRewardMutation> => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -72,7 +71,7 @@ export const useDepositRewardApprove = ({
   chainId,
   poolId,
 }: GaugeParams): UseMutationResult<
-  PoolMethodResult<'gauge.depositRewardApprove'>,
+  string[],
   Error,
   DepositRewardApproveMutation
 > => {
@@ -113,7 +112,7 @@ export const useDepositRewardApproveIsMutating = ({
 export const useDepositReward = ({
   chainId,
   poolId,
-}: GaugeParams): UseMutationResult<PoolMethodResult<'gauge.depositReward'>, Error, DepositRewardMutation> => {
+}: GaugeParams): UseMutationResult<string, Error, DepositRewardMutation> => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const { tokensMapper } = useTokensMapper(chainId)
 

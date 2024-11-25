@@ -1,7 +1,7 @@
 import type { Params } from 'react-router'
 
-import React from 'react'
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
+import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 
 export type FormStatus = {
   error: string
@@ -48,8 +48,8 @@ export type FormValues = {
 
 export type PoolListTableLabel = {
   [label: string]: {
-    name: string | React.ReactNode
-    mobile?: string
+    name: string
+    mobile?: string | undefined
   }
 }
 
@@ -64,6 +64,7 @@ export type SearchParams = {
 export type PagePoolList = {
   rChainId: ChainId
   curve: CurveApi | null
+  isLite: boolean
   params: Params
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
@@ -75,3 +76,7 @@ export type PoolListFilter = {
   key: FilterKey
   label: string
 }
+
+export type ColumnKeys = keyof typeof COLUMN_KEYS
+
+export type ShowDetailsMapper = { [poolId: string]: boolean }
