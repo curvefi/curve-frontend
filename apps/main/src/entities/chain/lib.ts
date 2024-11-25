@@ -1,5 +1,5 @@
-import networks from '@/networks'
 import { useCurve } from '@/entities/curve'
+import useStore from '@/store/useStore'
 
 export const useChainId = () => {
   const { data: curve } = useCurve()
@@ -8,6 +8,7 @@ export const useChainId = () => {
 }
 
 export const useImageBaseUrl = (chainId?: ChainId) => {
+  const networks = useStore((state) => state.networks.networks)
   const { data: defaultChainId } = useChainId()
   const finalChainId = chainId ?? defaultChainId
   const imageBaseUrl = networks[finalChainId].imageBaseUrl

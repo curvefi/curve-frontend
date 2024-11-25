@@ -80,7 +80,7 @@ const getSections = (rChainId: ChainId, locale: Locale) => [
     title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
     links: [
       { route: 'https://docs.curve.fi/references/audits/', label: t`Audits` },
-      { route: `${networks[rChainId ?? '1']?.orgUIPath}/bugbounty`, label: t`Bug Bounty` },
+      { route: `${networks[rChainId ?? 1]?.orgUIPath}/bugbounty`, label: t`Bug Bounty` },
       { route: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
       { route: 'https://curvemonitor.com', label: t`Curve Monitor` },
       { route: 'https://crvhub.com/', label: t`Crvhub` }

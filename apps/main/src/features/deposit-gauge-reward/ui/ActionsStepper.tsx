@@ -5,7 +5,7 @@ import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-g
 import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
 import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
 import { REFRESH_INTERVAL } from '@/constants'
-import networks from '@/networks'
+import useStore from '@/store/useStore'
 import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
@@ -25,6 +25,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
     setError,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
+  const { scanTxPath } = useStore((state) => state.networks.networks[chainId])
 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')
@@ -47,7 +48,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
       setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
       setLatestTxInfo({
         description: t`Reward approved`,
-        txHash: networks[chainId].scanTxPath(data[0]),
+        txHash: scanTxPath(data[0]),
       })
     }
 
@@ -62,7 +63,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
       },
       { onSuccess: onApproveSuccess, onError: onApproveError }
     )
-  }, [depositRewardApprove, getValues, setError, setValue, chainId])
+  }, [depositRewardApprove, getValues, setError, setValue, scanTxPath])
 
   const onSubmitDeposit = useCallback(() => {
     depositReward(
@@ -76,7 +77,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
           setValue('step', DepositRewardStep.CONFIRMATION)
           setLatestTxInfo({
             description: t`Reward deposited`,
-            txHash: networks[chainId].scanTxPath(data),
+            txHash: scanTxPath(data),
           })
         },
         onError: (error: Error) => {
@@ -84,7 +85,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         },
       }
     )
-  }, [depositReward, getValues, setError, setValue, chainId])
+  }, [depositReward, getValues, setError, setValue, scanTxPath])
 
   const { data: isDepositRewardApproved, isLoading: isLoadingDepositRewardApproved } = useGaugeDepositRewardIsApproved({
     chainId,

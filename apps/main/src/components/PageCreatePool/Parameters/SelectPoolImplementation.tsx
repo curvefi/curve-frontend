@@ -17,9 +17,10 @@ type Props = {
 
 const SelectPoolImplementation = ({ chainId }: Props) => {
   const { i18n } = useLingui()
+  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const { implementation, updateImplementation } = useStore((state) => state.createPool)
 
-  const implementations = IMPLEMENTATION_IDS(chainId)
+  const implementations = IMPLEMENTATION_IDS(nativeToken)
 
   return (
     <Wrapper>

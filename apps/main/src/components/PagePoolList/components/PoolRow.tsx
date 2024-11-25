@@ -1,20 +1,21 @@
-import type { PoolListTableLabel, SearchParams, SearchTermMapper } from '@/components/PagePoolList/types'
+import type { ColumnKeys, PoolListTableLabel, SearchParams, SearchTermMapper } from '@/components/PagePoolList/types'
 import { ROUTE } from '@/constants'
 import TableRowMobile from '@/components/PagePoolList/components/TableRowMobile'
 import TableRow, { TableRowProps } from '@/components/PagePoolList/components/TableRow'
-import React, { FunctionComponent, useCallback, useMemo } from 'react'
+import React, { FunctionComponent, useCallback, useMemo, useState } from 'react'
 import useStore from '@/store/useStore'
 import { getUserActiveKey } from '@/store/createUserSlice'
 import { useNavigate } from 'react-router-dom'
 import useCampaignRewardsMapper from '@/hooks/useCampaignRewardsMapper'
-import networks from '@/networks'
 import { parseSearchTermMapper } from '@/hooks/useSearchTermMapper'
 import { TrSearchedTextResult } from 'ui/src/Table'
 
 interface PoolRowProps {
   poolId: string
   index: number
+  isLite: boolean
   rChainId: ChainId
+  columnKeys: ColumnKeys[]
   searchParams: SearchParams
   imageBaseUrl: string
   showInPoolColumn: boolean
@@ -34,7 +35,9 @@ const ROUTES = {
 export const PoolRow: FunctionComponent<PoolRowProps> = ({
   poolId,
   index,
+  isLite,
   rChainId,
+  columnKeys,
   searchParams,
   imageBaseUrl,
   showInPoolColumn,
@@ -48,7 +51,6 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
-  const isMdUp = useStore((state) => state.isMdUp)
   const isXSmDown = useStore((state) => state.isXSmDown)
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
@@ -60,13 +62,14 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const themeType = useStore((state) => state.themeType)
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
+  const network = useStore((state) => state.networks.networks[rChainId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
 
   const poolDataCachedOrApi = poolData ?? poolDataCached
 
   const parsedSearchTermMapper = useMemo(
     () => parseSearchTermMapper(searchedByAddresses, searchTermMapper, poolDataCachedOrApi),
-    [poolDataCachedOrApi, searchTermMapper, searchedByAddresses]
+    [poolDataCachedOrApi, searchTermMapper, searchedByAddresses],
   )
 
   const handleCellClick = useCallback(
@@ -77,16 +80,18 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
       }
       navigate(`${poolId}${ROUTES[formType ?? 'deposit']}`)
     },
-    [navigate, poolId]
+    [navigate, poolId],
   )
 
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
+    isLite,
     formValues,
     searchParams,
     isInPool,
     imageBaseUrl,
     poolId,
+    columnKeys,
     poolData,
     poolDataCachedOrApi,
     rewardsApy,
@@ -110,7 +115,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
           {...tableRowProps}
         />
       ) : (
-        <TableRow isMdUp={isMdUp} {...tableRowProps} />
+        <TableRow {...tableRowProps} />
       )}
 
       {searchedByAddresses && Object.keys(searchedByAddresses).length > 0 && (
@@ -120,7 +125,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
           isMobile={isXSmDown}
           result={searchedByAddresses}
           searchTermMapper={parsedSearchTermMapper}
-          scanAddressPath={networks[rChainId].scanAddressPath}
+          scanAddressPath={network.scanAddressPath}
         />
       )}
     </>

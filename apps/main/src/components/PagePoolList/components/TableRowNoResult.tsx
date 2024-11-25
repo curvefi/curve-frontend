@@ -61,17 +61,23 @@ const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: 
               <AlertBox alertType="error">Unable to retrieve pool list. Please try again later.</AlertBox>
             </Box>
           ) : errorKey === ERROR.search || errorKey === ERROR.filter ? (
-            <Trans>
-              No pool found for “{errorSearchedValue}”.
-              {errorSearchParams && (
-                <>
-                  <br />{' '}
-                  <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
-                    View all
-                  </Button>
-                </>
+            <>
+              {filterKey === 'all' ? (
+                <Trans>No pool found</Trans>
+              ) : (
+                <Trans>
+                  No pool found for “{errorSearchedValue}”.
+                  {errorSearchParams && (
+                    <>
+                      <br />{' '}
+                      <Button variant="text" onClick={() => updatePath(errorSearchParams)}>
+                        View all
+                      </Button>
+                    </>
+                  )}
+                </Trans>
               )}
-            </Trans>
+            </>
           ) : (
             <Trans>
               Can&apos;t find what you&apos;re looking for?{' '}

@@ -3,7 +3,6 @@ import type { State } from '@/store/useStore'
 
 import cloneDeep from 'lodash/cloneDeep'
 
-import { NETWORK_TOKEN } from '@/constants'
 import curvejsApi from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -30,10 +29,7 @@ export type UsdRatesSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  usdRatesMapper: {
-    [NETWORK_TOKEN]: 0,
-    crv: 0,
-  },
+  usdRatesMapper: {},
   loading: true,
 }
 

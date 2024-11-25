@@ -1,11 +1,6 @@
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
-
 import { isTricrypto } from '@/components/PageCreatePool/utils'
-
-import networks from '@/networks'
-
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -23,6 +18,7 @@ const StableswapParameters = ({ chainId }: Props) => {
   const { midFee, outFee, maHalfTime, gamma, feeGamma, allowedExtraProfit, cryptoA, adjustmentStep } = useStore(
     (state) => state.createPool.parameters
   )
+  const networks = useStore((state) => state.networks.networks)
 
   return (
     <>

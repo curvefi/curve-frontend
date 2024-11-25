@@ -1,20 +1,17 @@
 import type { PageVecrv, FormEstGas, FormStatus, FormValues, StepKey } from '@/components/PageCrvLocker/types'
 import type { DateValue } from '@react-types/calendar'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
-
 import { DEFAULT_FORM_EST_GAS } from '@/components/PageCrvLocker/utils'
 import { REFRESH_INTERVAL } from '@/constants'
 import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
+import curvejsApi from '@/lib/curvejs'
 import dayjs from '@/lib/dayjs'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'
-
 import AlertBox from '@/ui/AlertBox'
 import AlertFormError from '@/components/AlertFormError'
 import FormActions from '@/components/PageCrvLocker/components/FormActions'
@@ -35,6 +32,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const network = useStore((state) => state.networks.networks[rChainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
@@ -53,11 +51,10 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
     let maxUtcDate: dayjs.Dayjs | null = null
 
     if (curve) {
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      maxUtcDate = fn(curve, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
+      maxUtcDate = curvejsApi.lockCrv.calcUnlockTime(curve, rFormType, currUnlockTime, 365 * 4 - remainingLockedDays)
     }
     return maxUtcDate
-  }, [currUnlockTime, curve, rChainId, rFormType, remainingLockedDays])
+  }, [currUnlockTime, curve, rFormType, remainingLockedDays])
 
   const isMax = maxUtcDate ? 365 * 4 - remainingLockedDays <= 7 : false
 
@@ -66,7 +63,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues]
+    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -80,8 +77,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       }
 
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
-      const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
+      const calcdUtcDate = curvejsApi.lockCrv.calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
       updateFormValues(
         {
@@ -91,23 +87,23 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
             utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
           days,
         },
-        false
+        false,
       )
     },
-    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues]
+    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rFormType, updateFormValues],
   )
 
   const handleBtnClickQuickAction = useCallback(
     (curve: CurveApi, value: number, unit: dayjs.ManipulateType) => {
       const utcDate = dayjs.utc(currUnlockTime).add(value, unit)
       const days = utcDate.diff(currUnlockUtcTime, 'd')
-      const fn = networks[rChainId].api.lockCrv.calcUnlockTime
+      const fn = curvejsApi.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
     },
-    [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues]
+    [currUnlockTime, currUnlockUtcTime, rFormType, updateFormValues],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -120,12 +116,12 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
         if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
           const txDescription = t`Lock date updated`
-          setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+          setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
         }
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime]
+    [notifyNotification, fetchStepIncreaseTime, network],
   )
 
   const getSteps = useCallback(
@@ -136,7 +132,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           status: getStepStatus(
             formStatus.formTypeCompleted === 'INCREASE_TIME',
             formStatus.step === 'INCREASE_TIME',
-            !!formValues.utcDate && !formValues.utcDateError && !formStatus.error && !formEstGas.loading
+            !!formValues.utcDate && !formValues.utcDateError && !formStatus.error && !formEstGas.loading,
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
@@ -147,7 +143,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const stepsKey: StepKey[] = ['INCREASE_TIME']
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleBtnClickIncrease]
+    [handleBtnClickIncrease],
   )
 
   // onMount

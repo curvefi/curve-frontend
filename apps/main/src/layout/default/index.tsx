@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 import { CONNECT_STAGE } from '@/constants'
-import { getNetworkFromUrl } from '@/utils/utilsRouter'
+import { useNetworkFromUrl } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { isFailure, isLoading } from '@/ui/utils'
 import { useConnectWallet } from '@/common/features/connect-wallet'
@@ -14,7 +14,6 @@ import GlobalBanner from '@/ui/Banner'
 import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
 import Footer from '@/ui/Footer'
-import networks from '@/networks'
 import { layoutHeightKeys } from '@/store/createGlobalSlice'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
@@ -30,9 +29,10 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const locale = useStore((state) => state.locale)
 
-  const { rChainId, rNetwork } = getNetworkFromUrl()
+  const { rChainId, rNetwork } = useNetworkFromUrl()
+  const network = useStore((state) => state.networks.networks[rChainId ?? 1 as const])
 
-  const sections = useMemo(() => getSections(rChainId, locale), [rChainId, locale])
+  const sections = useMemo(() => getSections(locale, network), [locale, network])
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
@@ -48,10 +48,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [getWalletChainId(wallet), rChainId])
   }
 
-  const minHeight = useMemo(() => {
-    console.log({layoutHeight})
-    return layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0)
-  }, [layoutHeight])
+  const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
     <>
@@ -72,7 +69,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   )
 }
 
-const getSections = (rChainId: ChainId, locale: Locale) => [
+const getSections = (locale: Locale, network?: NetworkConfig) => [
   {
     title: t`Documentation`,
     links: [
@@ -88,7 +85,7 @@ const getSections = (rChainId: ChainId, locale: Locale) => [
     title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
     links: [
       { route: 'https://docs.curve.fi/references/audits/', label: t`Audits` },
-      { route: `${networks[rChainId ?? '1']?.orgUIPath}/bugbounty`, label: t`Bug Bounty` },
+      { route: `${network?.orgUIPath}/bugbounty`, label: t`Bug Bounty` },
       { route: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
       { route: 'https://curvemonitor.com', label: t`Curve Monitor` },
       { route: 'https://crvhub.com/', label: t`Crvhub` }

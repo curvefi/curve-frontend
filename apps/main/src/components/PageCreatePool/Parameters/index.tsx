@@ -2,18 +2,14 @@ import { useState, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 import { BigNumber } from 'bignumber.js'
-
 import useStore from '@/store/useStore'
-
 import {
   STABLESWAP_MIN_MAX_PARAMETERS,
   TWOCRYPTO_MIN_MAX_PARAMETERS,
   TRICRYPTO_MIN_MAX_PARAMETERS,
   STABLESWAP,
   POOL_PRESETS,
-  CRYPTOSWAP,
 } from '@/components/PageCreatePool/constants'
-
 import SelectPreset from '@/components/PageCreatePool/Parameters/SelectPreset'
 import SelectPoolImplementation from '@/components/PageCreatePool/Parameters/SelectPoolImplementation'
 import NumberField from '@/components/PageCreatePool/components/NumberField'
@@ -22,7 +18,6 @@ import Switch from '@/components/PageCreatePool/components/Switch'
 import TokenWarningBox from '@/components/PageCreatePool/components/WarningBox'
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
-import networks from '@/networks'
 
 type Props = {
   curve: CurveApi
@@ -66,6 +61,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
     refreshInitialPrice,
     initialPrice,
   } = useStore((state) => state.createPool)
+  const networks = useStore((state) => state.networks.networks)
 
   const [stableFeeValue, setStableFeeValue] = useState<string>(stableSwapFee)
   const [midValue, setMidValue] = useState<string>(midFee)

@@ -10,7 +10,7 @@ type SwapFormValuesCache = {
   toToken: string
 }
 
-type ValueMapperCached = { [poolId: string]: { value: string } }
+export type ValueMapperCached = { [poolId: string]: { value: string } }
 
 type StateKey = keyof typeof DEFAULT_STATE
 
