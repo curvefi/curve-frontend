@@ -52,7 +52,7 @@ export const ChainSwitcher = <TChainId extends number>({
   const renderChainIcon = useCallback(
     (value: TChainId) => {
       const { label, src } = networkMapping[value]
-      return <ChainIcon size={18} label={label} src={src} />
+      return <ChainIcon size={28} label={label} src={src} />
     },
     [networkMapping],
   )
