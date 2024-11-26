@@ -29,7 +29,6 @@ export const Header = ({ sections }: HeaderProps) => {
   const dailyVolume = useStore((state) => state.dailyVolume)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isLgUp = useStore((state) => state.layout.isLgUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
   const locale = useStore((state) => state.locale)
   const routerProps = useStore((state) => state.routerProps)
@@ -59,19 +58,15 @@ export const Header = ({ sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isLgUp ? 'markets' : 'crvUSD' },
-              { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'staking' },
-              {
-                route: ROUTE.PAGE_RISK_DISCLAIMER,
-                label: t`Risk Disclaimer`,
-                groupedTitle: isLgUp ? 'risk' : 'crvUSD',
-              },
+              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'crvUSD' },
+              { route: ROUTE.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD`, groupedTitle: 'crvUSD' },
+              { route: ROUTE.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer`, groupedTitle: 'crvUSD' },
             ],
             rLocale.rLocalePathname,
             routerPathname,
             routerNetwork,
           ),
-        [isLgUp, rLocale.rLocalePathname, routerNetwork, routerPathname],
+        [rLocale.rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
         theme,
