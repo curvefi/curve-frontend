@@ -19,6 +19,10 @@ type SliceState = {
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
   gaugeMapper: GaugeMapper
+  gaugeDataMapper: {
+    fetchingState: FetchingState
+    data: GaugeDataMapper
+  }
   gaugeVotesMapper: GaugeVotesMapper
   gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
   filteredGauges: GaugeFormattedData[]
@@ -42,6 +46,7 @@ const sliceKey = 'gauges'
 export type GaugesSlice = {
   [sliceKey]: SliceState & {
     getGauges(forceReload?: boolean): Promise<void>
+    getGaugesData(): Promise<void>
     getGaugeVotes(gaugeAddress: string): Promise<void>
     getHistoricGaugeWeights(gaugeAddress: string): Promise<void>
 
@@ -71,6 +76,10 @@ const DEFAULT_STATE: SliceState = {
   },
   searchValue: '',
   gaugeMapper: {},
+  gaugeDataMapper: {
+    fetchingState: 'LOADING',
+    data: {},
+  },
   gaugeVotesMapper: {},
   gaugeWeightHistoryMapper: {},
   filteredGauges: [],
@@ -123,6 +132,46 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       } catch (error) {
         console.error('Error fetching gauges:', error)
         get().setAppStateByKey(sliceKey, 'gaugesLoading', 'ERROR')
+      }
+    },
+    getGaugesData: async () => {
+      set(
+        produce(get(), (state) => {
+          state[sliceKey].gaugeDataMapper = {
+            fetchingState: 'LOADING',
+            data: {},
+          }
+        }),
+      )
+
+      try {
+        const response = await fetch(`https://api.curve.fi/v1/getAllGauges`)
+        const data: CurveGaugeResponse = await response.json()
+
+        const gaugeDataMapper: GaugeDataMapper = Object.entries(data.data).reduce((acc, [poolId, gaugeData]) => {
+          if (gaugeData.gauge) {
+            acc[gaugeData.gauge] = gaugeData
+          }
+          return acc
+        }, {} as GaugeDataMapper)
+
+        console.log(gaugeDataMapper)
+
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeDataMapper = {
+              fetchingState: 'SUCCESS',
+              data: gaugeDataMapper,
+            }
+          }),
+        )
+      } catch (error) {
+        console.error('Error fetching gauges data:', error)
+        set(
+          produce(get(), (state) => {
+            state[sliceKey].gaugeDataMapper.fetchingState = 'ERROR'
+          }),
+        )
       }
     },
     getGaugeVotes: async (gaugeAddress: string) => {
@@ -214,25 +263,24 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
     setGauges: (searchValue: string) => {
       const { selectFilteredSortedGauges } = get()[sliceKey]
-      get()[sliceKey].setStateByKey('filteringGaugesLoading', true)
+      const gauges = selectFilteredSortedGauges()
+
+      if (searchValue !== '') {
+        const searchFilteredGauges = searchFn(searchValue, gauges)
+        get()[sliceKey].setStateByKeys({
+          filteredGauges: searchFilteredGauges,
+          filteringGaugesLoading: true,
+        })
+      } else {
+        get()[sliceKey].setStateByKeys({
+          filteredGauges: gauges,
+          filteringGaugesLoading: true,
+        })
+      }
 
       setTimeout(() => {
-        const gauges = selectFilteredSortedGauges()
-
-        if (searchValue !== '') {
-          const searchFilteredGauges = searchFn(searchValue, gauges)
-          get()[sliceKey].setStateByKeys({
-            filteringGaugesLoading: false,
-            filteredGauges: searchFilteredGauges,
-          })
-          return searchFilteredGauges
-        }
-
-        get()[sliceKey].setStateByKeys({
-          filteringGaugesLoading: false,
-          filteredGauges: gauges,
-        })
-      }, 500)
+        get()[sliceKey].setStateByKey('filteringGaugesLoading', false)
+      }, 100)
     },
     setGaugeVotesSortBy: (gaugeAddress: string, sortBy: GaugeVotesSortBy) => {
       const address = gaugeAddress.toLowerCase()

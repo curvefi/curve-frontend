@@ -25,17 +25,15 @@ const GaugesList = () => {
     searchValue,
     filteredGauges,
   } = useStore((state) => state.gauges)
-  const curve = useStore((state) => state.curve)
-  const isLoadingCurve = useStore((state) => state.isLoadingCurve)
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
   const smallScreenBreakpoint = 42.3125
 
   useEffect(() => {
-    if (gaugesLoading === 'SUCCESS' && !isLoadingCurve) {
+    if (gaugesLoading === 'SUCCESS') {
       setGauges(searchValue)
     }
-  }, [curve, gaugesLoading, isLoadingCurve, searchValue, setGauges, gaugeListSortBy])
+  }, [gaugesLoading, searchValue, setGauges, gaugeListSortBy])
 
   const handleSortChange = useCallback(
     (key: React.Key) => {
@@ -86,7 +84,7 @@ const GaugesList = () => {
           <PaginatedTable<GaugeFormattedData>
             data={filteredGauges}
             minWidth={tableMinWidth}
-            fetchingState={gaugesLoading ?? 'LOADING'}
+            fetchingState={gaugesLoading}
             columns={GAUGE_VOTES_TABLE_LABELS}
             sortBy={gaugeListSortBy}
             errorMessage={t`An error occurred while fetching gauges.`}

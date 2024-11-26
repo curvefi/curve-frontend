@@ -40,6 +40,7 @@ function CurveApp({ Component }: AppProps) {
   const updateUserData = useStore((state) => state.user.updateUserData)
   const getProposals = useStore((state) => state.proposals.getProposals)
   const getGauges = useStore((state) => state.gauges.getGauges)
+  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const curve = useStore((state) => state.curve)
   const onboard = useStore((state) => state.wallet.onboard)
@@ -120,7 +121,8 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     getProposals()
     getGauges()
-  }, [getGauges, getProposals])
+    getGaugesData()
+  }, [getGauges, getProposals, getGaugesData])
 
   useEffect(() => {
     if (curve) {
@@ -135,6 +137,7 @@ function CurveApp({ Component }: AppProps) {
       }
       getProposals()
       getGauges()
+      getGaugesData()
     },
     REFRESH_INTERVAL['5m'],
     isPageVisible,

@@ -20,27 +20,10 @@ declare global {
   type ChainId = 1
   type NetworkEnum = INetworkName
 
-  type NetworkConfig = {
-    name: string
-    id: NetworkEnum
-    networkId: ChainId
+  interface NetworkConfig extends BaseConfig {
     api: typeof curvejsApi
-    blocknativeSupport: boolean
-    gasL2: boolean
-    gasPricesUnit: string
-    gasPricesUrl: string
-    gasPricesDefault: number
-    hex: string
-    icon: FunctionComponent<SVGProps<SVGSVGElement>>
-    imageBaseUrl: string
-    orgUIPath: string
-    rpcUrlConnectWallet: string // for wallet connect
-    rpcUrl: string // for curvejs & curve-stablecoin api
-    symbol: string
-    showInSelectNetwork: boolean
-    scanAddressPath: (hash: string) => string
-    scanTxPath: (hash: string) => string
-    scanTokenPath: (hash: string) => string
+    isActiveNetwork: boolean // show network in UI's select dropdown list (ready for public)
+    showInSelectNetwork: boolean // show network in UI
   }
 
   type RouterParams = {
@@ -238,6 +221,64 @@ declare global {
     last_vote_tx: string
   }
 
+  type CurveApiBaseGauge = {
+    isPool: boolean
+    name: string
+    shortName: string
+    factory: boolean
+    lpTokenPrice: number | null
+    blockchainId: string
+    gauge: string
+    gauge_data: {
+      inflation_rate: string
+      working_supply: string
+    }
+    gauge_controller: {
+      gauge_relative_weight: string
+      gauge_future_relative_weight: string
+      get_gauge_weight: string
+      inflation_rate: string
+    }
+    gaugeCrvApy: [number, number]
+    gaugeFutureCrvApy: [number, number]
+    side_chain: boolean
+    is_killed: boolean
+    hasNoCrv: boolean
+  }
+
+  type CurveApiPoolGauge = CurveApiBaseGauge & {
+    isPool: true
+    poolUrls: {
+      swap: string[]
+      deposit: string[]
+      withdraw: string[]
+    }
+    poolAddress: string
+    virtualPrice: string | number
+    type: string
+    swap: string
+    swap_token: string
+  }
+
+  type CurveApiLendingGauge = CurveApiBaseGauge & {
+    isPool: false
+    lendingVaultUrls: {
+      deposit: string
+      withdraw: string
+    }
+    lendingVaultAddress: string
+  }
+
+  type CurveApiGaugeData = CurveApiPoolGauge | CurveApiLendingGauge
+
+  type CurveGaugeResponse = {
+    success: boolean
+    data: {
+      [poolId: string]: CurveApiGaugeData
+    }
+    generatedTimeMs: number
+  }
+
   type PricesGaugeOverviewResponse = {
     gauges: PricesGaugeOverviewData[]
   }
@@ -250,6 +291,10 @@ declare global {
 
   interface GaugeMapper {
     [gaugeAddress: string]: GaugeFormattedData
+  }
+
+  interface GaugeDataMapper {
+    [gaugeAddress: string]: CurveApiGaugeData
   }
 
   type GaugeVotesResponse = {

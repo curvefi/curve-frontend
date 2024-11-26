@@ -100,11 +100,7 @@ const Header = () => {
     <AppSelectNetwork
       connectState={connectState}
       buttonStyles={{ textTransform: 'uppercase' }}
-      items={visibleNetworksList.map((item) => ({
-        ...item,
-        src: ethereumLogoSrc,
-        srcDark: ethereumLogoSrc,
-      }))}
+      items={visibleNetworksList}
       loading={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
       minWidth="9rem"
       mobileRightAlign
