@@ -14,7 +14,7 @@ export const defineMuiTypography = (): Components['MuiTypography'] => ({
       headingXxl: 'h1',
       headingMBold: 'h2',
       headingMLight: 'h3',
-      headingSLight: 'h4',
+      headingSBold: 'h4',
       headingXsBold: 'h5',
       headingXsMedium: 'h6',
     },

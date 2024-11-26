@@ -66,7 +66,7 @@ export const ChainSwitcher = <TChainId extends number>({
       {options.map(({ chainId: id, src, label }) => (
         <MenuItem key={id} value={id} divider>
           <ChainIcon size={18} label={label} src={src} />
-          <Typography sx={{ marginLeft: 4 }} variant="bodySRegular">
+          <Typography sx={{ marginLeft: 4 }} variant="headingXs">
             {label}
           </Typography>
         </MenuItem>

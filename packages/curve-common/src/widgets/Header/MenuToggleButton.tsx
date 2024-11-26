@@ -4,8 +4,8 @@ import { styled } from '@mui/material/styles'
 
 const Svg = styled('svg')({
   fill: 'currentColor',
-  width: '0.8em',
-  height: '0.8em',
+  width: '24px',
+  height: '24px',
 })
 
 const Path = styled('path')``

@@ -3,7 +3,7 @@ import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
 const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
   expectedMainNavHeight: 56,
   expectedSubNavHeight: 42, // 40 + 2px border
-  expectedMobileNavHeight: 40,
+  expectedMobileNavHeight: 56,
   expectedConnectHeight: 40,
 }
 
