@@ -18,7 +18,7 @@ type ContractsProps = {
 const Contracts: React.FC<ContractsProps> = ({ rChainId, poolDataCacheOrApi }) => {
   const { address = '', lpToken = '', gauge } = poolDataCacheOrApi.pool
   const isSameAddress = address === lpToken
-  const gaugeAddress = isValidAddress(gauge.address) ? gauge.address : ''
+  const gaugeAddress = isValidAddress(gauge?.address) ? gauge.address : ''
 
   return (
     <Article>

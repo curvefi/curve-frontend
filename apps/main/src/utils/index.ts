@@ -79,9 +79,8 @@ export function formatNumber(value: string | number | undefined, formatOptions?:
   }
 }
 
-export function isValidAddress(address: string) {
-  return address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
-}
+export const isValidAddress = (address?: string): address is string =>
+  address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
 
 export function shortenTokenAddress(tokenAddress: string, startOnly?: boolean) {
   if (!tokenAddress) return

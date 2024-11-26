@@ -13,12 +13,12 @@ import { poolValidationSuite } from '@/entities/pool'
 import { GaugeParams, rootKeys } from '@/shared/model/query'
 import { queryFactory } from '@/shared/model/query/factory'
 import {
+  queryDepositRewardIsApproved,
+  queryGaugeDistributors,
+  queryGaugeManager,
   queryGaugeStatus,
   queryGaugeVersion,
-  queryDepositRewardIsApproved,
-  queryGaugeManager,
-  queryGaugeDistributors,
-  queryIsDepositRewardAvailable
+  queryIsDepositRewardAvailable,
 } from '../api'
 import type { DepositRewardApproveParams } from '../types'
 import { gaugeDepositRewardApproveValidationSuite } from './gauge-validation'

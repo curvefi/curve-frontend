@@ -75,7 +75,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
   return (
     <>
-      {isValidAddress(poolDataCacheOrApi.pool.gauge.address) && rChainId && (
+      {isValidAddress(poolDataCacheOrApi.pool.gauge?.address) && rChainId && (
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ formType, label }, idx) => {

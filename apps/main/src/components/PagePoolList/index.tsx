@@ -16,8 +16,7 @@ import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobil
 import TableSettings from '@/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
-import { useApiTvlMapping, useApiPoolMapping, useApiVolumeMapping } from '@/entities/pool'
-import { useTvl } from 'lend/src/entities/chain'
+import { useApiPoolMapping, useApiTvlMapping, useApiVolumeMapping } from '@/entities/pool'
 
 const PoolList = ({
   rChainId,
@@ -69,7 +68,10 @@ const PoolList = ({
   const showInPoolColumn = !!signerAddress
 
   const poolDatas = useMemo(() => Object.values(poolDataMapper ?? {}), [poolDataMapper])
-  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? poolMappingApi ?? {}), [poolDataMapperCached, poolMappingApi])
+  const poolDatasCached = useMemo(
+    () => Object.values(poolDataMapperCached ?? poolMappingApi ?? {}),
+    [poolDataMapperCached, poolMappingApi],
+  )
 
   const isReady = useMemo(() => {
     const haveVolume = Object.keys(volumeMapper ?? volumeMappingApi ?? {}).length >= 0

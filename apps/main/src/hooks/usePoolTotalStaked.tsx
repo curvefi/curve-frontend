@@ -59,7 +59,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     if (address && rpcUrl && shouldCallApi) {
       ;(async () => {
         const provider = getProvider('') || new JsonRpcProvider(rpcUrl)
-        const gaugeContract = isValidAddress(gauge.address)
+        const gaugeContract = isValidAddress(gauge?.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
           : null
 
@@ -67,9 +67,9 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
           const poolContract =
             address === lpToken
               ? await getContract('poolTotalSupply', address, provider)
-              : await getContract('lpTokenTotalSupply', lpToken, provider)
+              : await getContract('lpTokenTotalSupply', lpToken!, provider)
 
-          if (poolContract) getTotalSupply(poolContract, gaugeContract)
+          if (poolContract) await getTotalSupply(poolContract, gaugeContract)
         } else {
           updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         }
