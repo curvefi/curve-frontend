@@ -1,8 +1,5 @@
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/components/PagePoolList/types'
-
-import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
 
 import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/store/createPoolListSlice'
@@ -19,7 +16,8 @@ import TableHeadMobile from '@/components/PagePoolList/components/TableHeadMobil
 import TableSettings from '@/components/PagePoolList/components/TableSettings/TableSettings'
 import TableRowNoResult from '@/components/PagePoolList/components/TableRowNoResult'
 import { PoolRow } from '@/components/PagePoolList/components/PoolRow'
-import ConnectWallet from '@/components/ConnectWallet'
+import { useApiTvlMapping, useApiPoolMapping, useApiVolumeMapping } from '@/entities/pool'
+import { useTvl } from 'lend/src/entities/chain'
 
 const PoolList = ({
   rChainId,
@@ -51,8 +49,11 @@ const PoolList = ({
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
-  const provider = useStore((state) => state.wallet.getProvider(''))
   const network = useStore((state) => state.networks.networks[rChainId])
+
+  const poolMappingApi = useApiPoolMapping(rChainId)
+  const tvlMappingApi = useApiTvlMapping(rChainId)
+  const volumeMappingApi = useApiVolumeMapping(rChainId)
 
   const [showDetail, setShowDetail] = useState('')
 
@@ -68,27 +69,18 @@ const PoolList = ({
   const showInPoolColumn = !!signerAddress
 
   const poolDatas = useMemo(() => Object.values(poolDataMapper ?? {}), [poolDataMapper])
-  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? {}), [poolDataMapperCached])
+  const poolDatasCached = useMemo(() => Object.values(poolDataMapperCached ?? poolMappingApi ?? {}), [poolDataMapperCached, poolMappingApi])
 
   const isReady = useMemo(() => {
-    // volume
-    const haveVolumeMapper = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
-    const volumeCacheOrApi = volumeMapper || volumeMapper || {}
-    const haveVolume = haveVolumeMapper || Object.keys(volumeCacheOrApi).length > 0
-
-    // tvl
-    const haveTvlMapper = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
-    const tvlCacheOrApi = tvlMapper || tvlMapperCached || {}
-    const haveTvl = haveTvlMapper || Object.keys(tvlCacheOrApi).length > 0
-
-    return isLite ? haveTvl : haveVolume && haveTvl
-  }, [isLite, tvlMapper, tvlMapperCached, volumeMapper])
+    const haveVolume = Object.keys(volumeMapper ?? volumeMappingApi ?? {}).length >= 0
+    const haveTvl = Object.keys(tvlMapper ?? tvlMapperCached ?? tvlMappingApi ?? {}).length >= 0
+    return haveTvl && (isLite || haveVolume)
+  }, [volumeMapper, volumeMappingApi, tvlMapper, tvlMapperCached, tvlMappingApi, isLite])
 
   const isReadyWithApiData = useMemo(() => {
-    const haveVolume = typeof volumeMapper !== 'undefined' && Object.keys(volumeMapper).length >= 0
-    const haveTvl = typeof tvlMapper !== 'undefined' && Object.keys(tvlMapper).length >= 0
-
-    return isLite ? haveTvl : haveVolume && haveTvl
+    const haveVolume = Object.keys(volumeMapper ?? {}).length >= 0
+    const haveTvl = Object.keys(tvlMapper ?? {}).length >= 0
+    return haveTvl && (isLite || haveVolume)
   }, [isLite, tvlMapper, volumeMapper])
 
   const columnKeys = useMemo(() => {
@@ -114,9 +106,9 @@ const PoolList = ({
         poolDatasCached,
         rewardsApyMapper ?? {},
         volumeMapper ?? {},
-        volumeMapperCached ?? {},
+        volumeMapperCached ?? volumeMappingApi ?? {},
         tvlMapper ?? {},
-        tvlMapperCached ?? {},
+        tvlMapperCached ?? tvlMappingApi ?? {},
         userPoolList ?? {},
         campaignRewardsMapper,
       )
@@ -132,9 +124,11 @@ const PoolList = ({
       setFormValues,
       tvlMapper,
       tvlMapperCached,
+      tvlMappingApi,
       userPoolList,
       volumeMapper,
       volumeMapperCached,
+      volumeMappingApi,
     ],
   )
 
@@ -183,81 +177,63 @@ const PoolList = ({
         updatePath={updatePath}
       />
 
-      {!provider ? (
-        <ConnectWalletWrapper>
-          <ConnectWallet
-            description={t`Connect wallet to view pool list`}
-            connectText={t`Connect Wallet`}
-            loadingText={t`Connecting`}
+      <Table cellPadding={0} cellSpacing={0}>
+        {isXSmDown ? (
+          <TableHeadMobile showInPoolColumn={showInPoolColumn} />
+        ) : (
+          <TableHead
+            columnKeys={columnKeys}
+            isLite={isLite}
+            isReadyRewardsApy={!!rewardsApyMapper}
+            isReadyTvl={!!tvlMapper}
+            isReadyVolume={Object.keys(volumeMapper ?? volumeMappingApi ?? {}).length > 0}
+            searchParams={searchParams}
+            tableLabels={tableLabels}
+            updatePath={updatePath}
           />
-        </ConnectWalletWrapper>
-      ) : (
-        <Table cellPadding={0} cellSpacing={0}>
-          {isXSmDown ? (
-            <TableHeadMobile showInPoolColumn={showInPoolColumn} />
-          ) : (
-            <TableHead
-              columnKeys={columnKeys}
-              isLite={isLite}
-              isReadyRewardsApy={!!rewardsApyMapper}
-              isReadyTvl={!!tvlMapper}
-              isReadyVolume={!!volumeMapper}
+        )}
+        <Tbody $borderBottom>
+          {isReadyWithApiData && formStatus.noResult ? (
+            <TableRowNoResult
+              colSpan={colSpan}
               searchParams={searchParams}
-              tableLabels={tableLabels}
+              signerAddress={signerAddress}
               updatePath={updatePath}
             />
+          ) : isReady && Array.isArray(result) ? (
+            <>
+              {result.map((poolId: string, index: number) => (
+                <PoolRow
+                  key={poolId}
+                  index={index}
+                  columnKeys={columnKeys}
+                  isLite={isLite}
+                  poolId={poolId}
+                  rChainId={rChainId}
+                  searchParams={searchParams}
+                  imageBaseUrl={network?.imageBaseUrl ?? ''}
+                  showInPoolColumn={showInPoolColumn}
+                  tableLabels={tableLabels}
+                  searchTermMapper={searchTermMapper}
+                  showDetail={showDetail}
+                  setShowDetail={setShowDetail}
+                  curve={curve}
+                />
+              ))}
+            </>
+          ) : (
+            <tr>
+              <td colSpan={colSpan}>
+                <SpinnerWrapper>
+                  <Spinner />
+                </SpinnerWrapper>
+              </td>
+            </tr>
           )}
-          <Tbody $borderBottom>
-            {isReadyWithApiData && formStatus.noResult ? (
-              <TableRowNoResult
-                colSpan={colSpan}
-                searchParams={searchParams}
-                signerAddress={signerAddress}
-                updatePath={updatePath}
-              />
-            ) : isReady && Array.isArray(result) ? (
-              <>
-                {result.map((poolId: string, index: number) => (
-                  <PoolRow
-                    key={poolId}
-                    index={index}
-                    columnKeys={columnKeys}
-                    isLite={isLite}
-                    poolId={poolId}
-                    rChainId={rChainId}
-                    searchParams={searchParams}
-                    imageBaseUrl={network?.imageBaseUrl ?? ''}
-                    showInPoolColumn={showInPoolColumn}
-                    tableLabels={tableLabels}
-                    searchTermMapper={searchTermMapper}
-                    showDetail={showDetail}
-                    setShowDetail={setShowDetail}
-                    curve={curve}
-                  />
-                ))}
-              </>
-            ) : (
-              <tr>
-                <td colSpan={colSpan}>
-                  <SpinnerWrapper>
-                    <Spinner />
-                  </SpinnerWrapper>
-                </td>
-              </tr>
-            )}
-          </Tbody>
-        </Table>
-      )}
+        </Tbody>
+      </Table>
     </>
   )
 }
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-`
 
 export default PoolList
