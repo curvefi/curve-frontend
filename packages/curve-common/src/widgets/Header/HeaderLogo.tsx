@@ -10,7 +10,7 @@ import type { SxProps, Theme } from '@mui/system'
 
 const Image = styled('img')({
   width: 30,
-  marginRight: 12
+  marginRight: 8
 });
 
 const LogoImageSrc = (LogoImg as unknown as { src: string }).src
@@ -26,7 +26,7 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
-        <Typography variant="headingSLight" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
+        <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
           {APP_NAMES[appName]}
         </Typography>
         {appName === 'main' ? (

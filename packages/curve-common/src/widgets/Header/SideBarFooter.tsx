@@ -32,7 +32,7 @@ export const SideBarFooter = ({
 
       {/* todo: Update all paper borders and colors in theme */}
       <Accordion sx={{ borderRadius: '0 !important', backgroundColor }} disableGutters>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor }}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingX: 4 }}>
           <SettingsIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
           <Typography
             sx={{ marginLeft: 1, verticalAlign: 'top' }}

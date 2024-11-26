@@ -52,15 +52,15 @@ export const MobileHeader = <TChainId extends number>({
   }, [startWalletConnection, closeSidebar])
 
   return (
-    <AppBar color="transparent" position="relative" sx={{ width: '100vw'}} ref={mainNavRef}>
-      <Toolbar sx={SECONDARY_BACKGROUND}>
+    <AppBar color="transparent" position="relative" sx={{ width: '100vw' }} ref={mainNavRef}>
+      <Toolbar sx={{ ...SECONDARY_BACKGROUND, paddingY: 3 }}>
         <MobileTopBar
           isLite={isLite}
           ChainProps={ChainProps}
           currentApp={currentApp}
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
-          sx={{zIndex}}
+          sx={{ zIndex }}
         />
 
         <Drawer
@@ -86,7 +86,9 @@ export const MobileHeader = <TChainId extends number>({
               pages={AppNames.filter((appName) => appName != currentApp).map((appName) => APP_LINK[appName])}
             />
 
-            {sections.map(({ title, links }) => <SidebarSection key={title} title={title} pages={links} />)}
+            {sections.map(({ title, links }) => (
+              <SidebarSection key={title} title={title} pages={links} />
+            ))}
 
             <SocialSidebarSection title={t.socialMedia} locale={locale} />
           </Box>
@@ -99,7 +101,6 @@ export const MobileHeader = <TChainId extends number>({
             sx={{ ...SIDEBAR_WIDTH, zIndex }}
           />
         </Drawer>
-
       </Toolbar>
     </AppBar>
   )

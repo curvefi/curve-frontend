@@ -14,8 +14,8 @@ interface SidebarSectionProps {
 export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, title, children }) => (
   <List
     subheader={
-      <ListSubheader disableSticky>
-        <Typography variant="bodyMBold" color="text.primary" sx={{ textTransform: 'uppercase' }}>
+      <ListSubheader disableSticky sx={{ padding: 0 }}>
+        <Typography variant="headingSBold" color="text.primary" sx={{ paddingX: 4, paddingTop: 4, paddingBottom: 2 }}>
           {title}
         </Typography>
         <Divider />

@@ -11,7 +11,7 @@ type SidebarItemProps = {
 }
 
 export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
-  <ListItem disableGutters sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 2, paddingLeft: child ? 4 : 0 }}>
+  <ListItem disableGutters sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>
     <Button
       component={page.route.startsWith('/') ? RouterLink : Link}
       target={page.route.startsWith('http') ? '_blank' : undefined}
@@ -21,7 +21,7 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
       color="navigation"
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}
-      sx={{ justifyContent: 'flex-start', textDecoration: 'none', textTransform: 'uppercase' }}
+      sx={{ justifyContent: 'flex-start', textDecoration: 'none', textTransform: 'uppercase', width: '100%' }}
       variant="ghost"
     >
       {page.label}

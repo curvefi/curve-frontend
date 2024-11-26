@@ -39,7 +39,7 @@ export const TYPOGRAPHY_VARIANTS = {
     lineHeight: '36px',
     textTransform: 'uppercase',
   },
-  headingSLight: {
+  headingSBold: {
     fontSize: '24px',
     fontWeight: 700,
     letterSpacing: '-0.48px',
