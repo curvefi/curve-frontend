@@ -7,6 +7,7 @@ import Box from './Box'
 import Typography from '@mui/material/Typography'
 import { ExternalLink } from './Link'
 import { NavigationSection } from 'curve-common/src/widgets/Header/types'
+import { Link } from 'react-router-dom'
 
 const Footer = ({ sections, footerRef }: { sections: NavigationSection[], footerRef: RefObject<HTMLDivElement> }) => (
   <FooterWrapper ref={footerRef}>
@@ -37,7 +38,8 @@ const Footer = ({ sections, footerRef }: { sections: NavigationSection[], footer
           <Section key={section.title} title={section.title}>
             {section.links.map(({ label, route }) => (
               <SectionItem key={route}>
-                <StyledExternalLink href={route}>{label}</StyledExternalLink>
+                {route.startsWith('/') ? <StyledInternalLink to={route}>{label}</StyledInternalLink> :
+                <StyledExternalLink href={route}>{label}</StyledExternalLink> }
               </SectionItem>
             ))}
           </Section>
@@ -74,6 +76,18 @@ const InfoBox = styled(Box)`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
+    font-size: 0.875rem;
+    text-decoration: none;
+    text-transform: initial;
+
+    color: inherit;
+
+    :hover {
+        color: var(--footer--hover-color);
+    }
+`
+
+const StyledInternalLink = styled(Link)`
   font-size: 0.875rem;
   text-decoration: none;
   text-transform: initial;
