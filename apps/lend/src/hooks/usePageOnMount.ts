@@ -1,17 +1,22 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@/ui/utils'
+import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useConnectWallet,
+  useSetChain,
+  useSetLocale
+} from '@/common/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import { helpers } from '@/lib/apiLending'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'

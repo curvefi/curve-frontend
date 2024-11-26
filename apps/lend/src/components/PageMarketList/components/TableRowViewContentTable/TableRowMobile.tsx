@@ -17,12 +17,10 @@ export type Content = {
 }
 
 const TableRowMobile = (props: TableRowProps) => {
-  const { rChainId, api, filterTypeKey, owmId, owmDataCachedOrApi, userActiveKey } = props
+  const { rChainId, api, filterTypeKey, owmId, market, userActiveKey } = props
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref)
-
   const userVaultShares = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
-
   const { signerAddress } = api ?? {}
 
   const [showDetail, setShowDetail] = useState<string>('')
@@ -40,7 +38,7 @@ const TableRowMobile = (props: TableRowProps) => {
     rChainId,
     rOwmId: owmId,
     owmId,
-    owmDataCachedOrApi,
+    market,
     userActiveKey,
     filterTypeKey,
     isBold: false,

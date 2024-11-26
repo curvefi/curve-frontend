@@ -37,7 +37,8 @@ const NavWrapper = styled(Box)<{ nested?: boolean }>`
 `
 
 const ButtonWrapper = styled(Box)`
-  background-color: var(--page--background-color);
+  background-color: var(--box_header--primary--background-color);
+  color: var(--tab--color);
 `
 
 const NavButton = styled(Button)`
@@ -47,12 +48,20 @@ const NavButton = styled(Button)`
   text-transform: none;
   font-weight: var(--bold);
   line-break: break-spaces;
+  color: var(--tab--color);
   padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
-  background-color: var(--box--secondary--content--background-color);
   &.active {
     border-top: 2px solid var(--primary-400);
     padding-top: calc(var(--spacing-3) - 2px);
-    background-color: var(--box--secondary--background-color);
+    background-color: var(--tab--content--background-color);
+  }
+  &:hover:not(:disabled) {
+    background-color: var(--tab--content--background-color);
+    color: var(--tab--color); 
+  }
+  &:hover {
+    background-color: blue;
+    color: var(--tab--color); 
   }
 `
 

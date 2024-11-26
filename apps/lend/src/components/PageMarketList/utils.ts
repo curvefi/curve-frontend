@@ -1,7 +1,7 @@
 import type { FormStatus, MarketListMapper, SearchTermResult } from '@/components/PageMarketList/types'
 
 import sortBy from 'lodash/sortBy'
-import startsWith from 'lodash/startsWith'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import Fuse from 'fuse.js'
 import FuseResult = Fuse.FuseResult
 
@@ -22,24 +22,11 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
   noResult: false,
 }
 
-export function _isStartPartOrEnd(searchString: string, string: string) {
-  return startsWith(string, searchString) || string.includes(searchString) || string === searchString
-}
-
-export function _parseSearchTextToList(searchText: string) {
-  return searchText
-    .toLowerCase()
-    .split(searchText.indexOf(',') !== -1 ? ',' : ' ')
-    .filter((st) => st !== '')
-    .map((st) => st.trim())
-}
-
-export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
+export function _getMarketList(markets: OneWayMarketTemplate[]) {
   let marketListMapper: MarketListMapper = {}
   let marketListMapperCache: { [tokenAddress: string]: { symbol: string; address: string } } = {}
 
-  owmDatas.forEach((d) => {
-    const { id, collateral_token, borrowed_token } = d.owm
+  markets.forEach(({ id, collateral_token, borrowed_token }) => {
     const { address: cAddress, symbol: cSymbol } = collateral_token
     const { address: bAddress, symbol: bSymbol } = borrowed_token
 
@@ -54,21 +41,29 @@ export function _getMarketList(owmDatas: OWMData[], crvusdAddress: string) {
   })
 
   // filter crvusd
-  delete marketListMapper[crvusdAddress]
-  delete marketListMapperCache[crvusdAddress]
+  const crvUsdAddress = markets
+    .map((m) => m.borrowed_token)
+    .find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
+  if (crvUsdAddress) {
+    delete marketListMapper[crvUsdAddress]
+    delete marketListMapperCache[crvUsdAddress]
+  }
 
   const sortedMarketListMapperCache = sortBy(marketListMapperCache, (l) => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }
 }
 
-export function parseSearchTermResults(searchedTermsResults: FuseResult<OWMData>[]) {
+export function parseSearchTermResults(searchedTermsResults: FuseResult<OneWayMarketTemplate>[]) {
   return searchedTermsResults.reduce((prev, r) => {
     if (!r.matches) return prev
-    prev[r.item.owm.id] = r.matches.reduce((prev, { key, value = '' }) => {
-      if (!key || !value) return prev
-      prev[key] = { value }
-      return prev
-    }, {} as { [k: string]: { value: string } })
+    prev[r.item.id] = r.matches.reduce(
+      (prev, { key, value = '' }) => {
+        if (!key || !value) return prev
+        prev[key] = { value }
+        return prev
+      },
+      {} as { [k: string]: { value: string } },
+    )
     return prev
   }, {} as SearchTermResult)
 }

@@ -1,4 +1,5 @@
 import { Filter, FilterType } from '@/components/PageMarketList/utils'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 
 export type FormStatus = {
@@ -78,7 +79,7 @@ export type TableLabel = {
 
 export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchTermMapper' | 'titleMapper'> & {
   owmId: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
   filterTypeKey: FilterTypeKey
   loanExists: boolean
   searchParams: SearchParams
@@ -91,7 +92,7 @@ export type TableRowProps = Pick<PageMarketList, 'rChainId' | 'api' | 'searchTer
 export type TableCellProps = {
   rChainId: ChainId
   owmId: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
   userActiveKey: string
   filterTypeKey: FilterTypeKey
   rOwmId: string

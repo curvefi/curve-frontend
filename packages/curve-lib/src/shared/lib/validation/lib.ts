@@ -7,13 +7,13 @@ extendEnforce(enforce)
 export const checkValidity = <D extends object, S extends Suite<any, any>>(
   suite: S,
   data: FieldsOf<D>,
-  fields?: FieldName<D>[]
+  fields?: FieldName<D>[],
 ): boolean => Object.keys(suite(data, fields).getErrors()).length === 0
 
 export function assertValidity<D extends object, S extends Suite<any, any>>(
   suite: S,
   data: FieldsOf<D>,
-  fields?: FieldName<D>[]
+  fields?: FieldName<D>[],
 ): D {
   const result = suite(data, fields)
   const entries = Object.entries(result.getErrors())
@@ -25,7 +25,7 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
 
 export const createValidationSuite = <
   T extends object,
-  TGroupName extends string = string
+  TGroupName extends string = string,
 >(validationGroup: (data: T) => void): Suite<FieldName<T>, TGroupName> =>
   create<FieldName<T>, TGroupName>((data: T, fieldsList?: FieldName<T>[]) => {
     only(fieldsList)

@@ -15,7 +15,7 @@ type SliceState = {
   networks: Record<number, NetworkConfig>
   nativeToken: Record<number, NativeToken | undefined>
   networksIdMapper: Record<string, number>
-  visibleNetworksList: Iterable<SelectNetworkItem>
+  visibleNetworksList: SelectNetworkItem[]
 }
 
 // prettier-ignore

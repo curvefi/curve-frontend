@@ -11,8 +11,8 @@ import {
 } from '@/features/deposit-gauge-reward/ui'
 import { useGaugeRewardsDistributors } from '@/entities/gauge'
 import { formDefaultOptions } from '@/shared/model/form'
-import { BlockSkeleton } from '@/shared/ui/skeleton'
-import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/shared/ui/styled-containers'
+import { BlockSkeleton } from '../../../../../../packages/ui/src/skeleton'
+import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'
 import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 

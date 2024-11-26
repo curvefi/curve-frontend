@@ -77,10 +77,14 @@ const InputComp: React.FC<InputCompProps> = ({
 const InputCompWrapper = styled.div<{ isFocused: boolean }>`
   display: flex;
   flex-direction: row;
-  background-color: var(--summary_header--loading--background-color);
+  min-height: var(--height-x-large);
   padding: var(--spacing-1);
+  color: var(--gray-200);
+  background-color: var(--input--background-color);
   box-sizing: border-box;
-  ${({ isFocused }) => isFocused && 'outline: 2px solid var(--primary-400);'}
+  border: 1px solid var(--input--border-color);
+  box-shadow: inset 0.5px 0.5px 0 0.5px var(--input--border-color);
+  ${({ isFocused }) => isFocused && 'border: 1px solid var(--primary-400); box-shadow: inset 0.5px 0.5px 0 0.5px var(--primary-400);'}
 `
 
 const InputLoaderWrapper = styled.div`

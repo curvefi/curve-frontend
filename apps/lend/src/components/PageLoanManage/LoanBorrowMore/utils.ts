@@ -1,6 +1,7 @@
 import { FormStatus, FormValues } from '@/components/PageLoanManage/LoanBorrowMore/types'
 import { DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import { _parseStepTokensList } from '@/utils/helpers'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   ...FORM_STATUS,
@@ -18,7 +19,7 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 
 export function _getStepTokensStr(
   { userCollateral, userCollateralError, userBorrowed, userBorrowedError }: FormValues,
-  { collateral_token, borrowed_token }: OWM
+  { collateral_token, borrowed_token }: OneWayMarketTemplate
 ) {
   let list = []
   const haveUserCollateral = +userCollateral > 0

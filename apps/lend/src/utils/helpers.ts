@@ -1,4 +1,5 @@
 import { t } from '@lingui/macro'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export * from './utilsGasPrices'
 export * from './utilsRouter'
@@ -156,12 +157,10 @@ export function _parseStepTokensList(list: { value: string | number; symbol: str
   }
 }
 
-export function _parseActiveKey(api: Api | null, owmData: OWMData | undefined) {
+export function _parseActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined) {
   const { chainId = '', signerAddress = '' } = api ?? {}
   const parsedSignerAddress = signerAddress.slice(0, 10)
-  const { id } = owmData?.owm ?? {}
-
-  return `${chainId}-${parsedSignerAddress}${id}`
+  return `${chainId}-${parsedSignerAddress}${market?.id}`
 }
 
 export function _showNoLoanFound(signerAddress: string | undefined, isComplete: boolean, loanExists?: boolean) {

@@ -7,14 +7,15 @@ import useStore from '@/store/useStore'
 import Chip from '@/ui/Typography/Chip'
 import CellUtilizationTooltip from '@/components/SharedCellData/CellUtilizationTooltip'
 import ProgressBar from '@/ui/ProgressBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type Props = {
   isMobile?: boolean
   rChainId: ChainId
   rOwmId: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
 }
-const CellUtilization = ({ isMobile, rChainId, rOwmId, owmDataCachedOrApi }: Props) => {
+const CellUtilization = ({ isMobile, rChainId, rOwmId, market }: Props) => {
   const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
   const totalResp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
@@ -29,7 +30,7 @@ const CellUtilization = ({ isMobile, rChainId, rOwmId, owmDataCachedOrApi }: Pro
 
   return (
     <StyledChip
-      tooltip={<CellUtilizationTooltip rChainId={rChainId} rOwmId={rOwmId} owmDataCachedOrApi={owmDataCachedOrApi} />}
+      tooltip={<CellUtilizationTooltip rChainId={rChainId} rOwmId={rOwmId} market={market} />}
       tooltipProps={isMobile ? {} : {}}
     >
       {formatNumber(utilization, FORMAT_OPTIONS.PERCENT)}

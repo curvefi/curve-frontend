@@ -41,7 +41,7 @@ const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
       <ContentWrapper>
         <p>{description}</p>
         {!isLoading ? (
-          <StyledButton size="large" variant="filled" onClick={connectWallet} loading={isLoading}>
+          <StyledButton size="large" variant="filled" onClick={connectWallet} testId="connect-prompt">
             {connectText}
           </StyledButton>
         ) : (

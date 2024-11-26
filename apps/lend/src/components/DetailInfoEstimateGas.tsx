@@ -10,6 +10,8 @@ import useStore from '@/store/useStore'
 
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
+import { useTokenUsdRate } from '@/entities/token'
+import { NETWORK_TOKEN } from '@/constants'
 
 export type StepProgress = {
   active: number
@@ -26,7 +28,7 @@ interface Props {
 }
 
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
-  const chainTokenUsdRate = useStore((state) => state.usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'])
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: NETWORK_TOKEN })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
   const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)
@@ -38,10 +40,10 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
       const { symbol, gasPricesUnit } = networks[chainId]
 
       const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * estimatedGas))
-      if (chainTokenUsdRate === 'NaN') {
+      if (isNaN(chainTokenUsdRate)) {
         return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: '' }
       } else {
-        const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
+        const estGasCostUsd = estGasCost.multipliedBy(new BN(chainTokenUsdRate)).toString()
         const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
         const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
         return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }

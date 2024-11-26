@@ -13,13 +13,11 @@ const DetailsUserLoanChartBandBalances = ({
   rChainId,
   rOwmId,
   api,
-  owmData,
-  borrowed_token,
-  collateral_token,
-}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'owmData' | 'borrowed_token' | 'collateral_token'>) => {
+  market,
+}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'market'>) => {
   const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
-  const userActiveKey = helpers.getUserActiveKey(api, owmData)
+  const userActiveKey = helpers.getUserActiveKey(api, market!)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
@@ -67,8 +65,7 @@ const DetailsUserLoanChartBandBalances = ({
     <ChartBandBalances
       rChainId={rChainId}
       rOwmId={rOwmId}
-      borrowed_token={borrowed_token}
-      collateral_token={collateral_token}
+      market={market}
       brushIndex={brushIndex}
       data={chartBandBalancesData}
       oraclePrice={oraclePrice}

@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "private": true,
   "engines": {
-    "node": ">=20"
+    "node": "20"
   },
   "workspaces": [
     "apps/*",
@@ -16,7 +16,9 @@
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prepare": "is-ci || husky"
+    "prepare": "is-ci || husky",
+    "storybook": "turbo run storybook --filter=curve-ui-kit",
+    "storybook:build": "turbo run storybook:build --filter=curve-ui-kit"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.5.0",

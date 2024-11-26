@@ -42,7 +42,7 @@ export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   }
 `
 
-export const AppPageFormsWrapper = styled(Box)<{ navHeight: number }>`
+export const AppPageFormsWrapper = styled(Box)<{ navHeight: number | string }>`
   margin-bottom: 2rem;
 
   @media (min-width: ${breakpoints.md}rem) {
@@ -50,7 +50,7 @@ export const AppPageFormsWrapper = styled(Box)<{ navHeight: number }>`
     min-width: var(--loan-form-min-width);
     max-width: var(--loan-form-min-width);
     //position: sticky;
-    top: ${({ navHeight }) => `${navHeight + 40}px;`};
+    top: ${({ navHeight }) => typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`};
   }
 `
 
