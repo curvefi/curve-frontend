@@ -27,7 +27,7 @@ interface Props {
 const DeployGaugeButton = ({ disabled, chainId, curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
-  const isLite = networks[chainId].isLite ?? false
+  const isLite = networks[chainId]?.isLite ?? false
   const navigate = useNavigate()
   const { rChainId, rNetwork } = useNetworkFromUrl()
 

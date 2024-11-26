@@ -26,7 +26,7 @@ type Props = {
 const DeployGauge = ({ curve }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { chainId } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
-  const isLite = networks[chainId].isLite ?? false
+  const isLite = networks[chainId]?.isLite ?? false
 
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const {
