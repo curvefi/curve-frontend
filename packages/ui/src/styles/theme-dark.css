@@ -1,45 +1,50 @@
 body.theme-dark {
   /* ------ Colors  ------ */
-  --primary-100: hsl(220, 73%, 5%);
-  --primary-200: hsl(220, 73%, 22%);
-  --primary-300: hsl(220, 74%, 31%);
-  --primary-400: hsl(220, 98%, 54%);
-  --primary-400a10: hsl(220, 98%, 54%, 10%);
-  --primary-400a20: hsl(220, 98%, 54%, 20%);
-  --primary-400a30: hsl(220, 98%, 54%, 30%);
-  --primary-400a50: hsl(220, 98%, 54%, 50%);
+  --primary-100: hsla(230, 60%, 29%, 1);
+  --primary-200: hsla(228, 63%, 36%, 1);
+  --primary-300: hsla(226, 65%, 43%, 1);
+  --primary-400: hsla(225, 90%, 57%, 1);
+  --primary-400a10: var(--primary-400) 10%;
+  --primary-400a20: var(--primary-400) 20%;
+  --primary-400a30: var(--primary-400) 30%;
+  --primary-400a50: var(--primary-400) 50%;
   --primary-400l59: hsl(220, 98%, 59%);
-  --primary-500: hsl(220, 99%, 71%);
+  --primary-500: hsla(225, 81%, 73%, 1);
   --primary-500l61: hsl(220, 99%, 61%);
-  --primary-600: hsl(220, 100%, 91%);
-  --primary-700: hsl(220, 100%, 99%);
+  --primary-600: hsla(224, 71%, 81%, 1);
+  --primary-700: hsla(227, 47%, 89%, 1);
 
-  --black-100: hsl(240, 8%, 10%);
-  --black-200: hsl(240, 6%, 13%);
-  --black-300: hsl(240, 5%, 16%);
-  --black-400: hsl(240, 4%, 20%);
-  --black-500: hsl(240, 3%, 23%);
-  --black-600: hsl(240, 3%, 26%);
-  --black-700: hsl(240, 3%, 29%);
-  --black-800: hsl(240, 3%, 33%);
-  --black-900: hsl(240, 3%, 36%);
+  --black-100: hsla(45, 7%, 9%, 1);
+  --black-200: hsla(45, 7%, 11%, 1);
+  --black-300: hsla(48, 7%, 14%, 1);
+  --black-400: hsla(34, 6%, 22%, 1);
+  --black-500: hsla(33, 7%, 27%, 1);
+  --black-600: hsla(34, 6%, 43%, 1);
+  --black-700: hsla(33, 8%, 55%, 1);
+  --black-800: hsla(35, 8%, 71%, 1);
+  --black-900: hsla(30, 9%, 82%, 1);
 
-  --gray-100: hsl(220, 9%, 5%);
-  --gray-300: hsl(220, 9%, 22%);
-  --gray-500: hsl(220, 9%, 54%);
-  --gray-600: hsl(220, 9%, 71%);
-  --gray-700: hsl(220, 9%, 91%);
+  --gray-100: hsla(45, 7%, 9%, 1);
+  --gray-300: hsla(40, 7%, 18%, 1);
+  --gray-500: hsla(35, 8%, 71%, 1);
+  --gray-600: hsla(20, 8%, 93%, 1);
+  --gray-700: hsla(0, 7%, 99%, 1);
 
-  --warning-text-400: hsl(47, 82%, 48%);
+  --orange-200: hsla(40, 100%, 77%, 1);
+  --orange-400: hsla(31, 100%, 48%, 1);
 
-  --info-400: hsl(220, 50%, 32%);
+  --warning-text-400: var(--orange-400);
+
+  --success-400: hsla(149, 65%, 44%, 1);
+
+  --info-400: var(--primary-200);
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
-  --page--background-color: var(--black-100);
+  --page--background-color: hsla(47, 9%, 6%, 1);
   --page--header--background-color: var(--black);
 
-  --layout--home--background-color: hsl(220, 9%, 13%);
+  --layout--home--background-color: var(--page--background-color);
 
   --active--background-color: var(--primary-400);
   --active--border-color: var(--primary-400);
@@ -47,7 +52,7 @@ body.theme-dark {
   --border-400: var(--gray-300);
   --border-600: var(--black-400);
   --focus: var(--primary-400);
-  --link-400: hsl(220, 98%, 57%);
+  --link-400: var(--primary-400);
   --text-400: var(--gray-700);
   --text-600: var(--gray-100);
   --text_dark_background-400: var(--gray-700);
@@ -55,21 +60,20 @@ body.theme-dark {
   /* ------ Components  ------ */
   /* Box */
   --box--primary--color: var(--text-400);
-  --box--primary--background-color: var(--black-300);
-  --box--primary--background: var(--black-300);
-  --box--primary--shadow-color: hsl(240, 8%, 5%, 80%);
+  --box--primary--background-color: var(--black-400);
+  --box--primary--background: var(--black-200);
+  --box--primary--shadow-color: var(--black-100);
   --box--primary--content--background-color: var(--black-400);
-  --box--primary--content--shadow-color: hsl(0, 0%, 12%);
-  --box_header--primary--background-color: var(--black-200);
-  --box_header--secondary--background-color: var(--black-100);
+  --box--primary--content--shadow-color: var(--black-100);
+  --box_header--primary--background-color: var(--black-100);
   --box--secondary--background-color: var(--black-200);
   --box--secondary--border: 1px solid transparent;
-  --box--secondary--content--background-color: hsl(240, 6%, 10%);
+  --box--secondary--content--background-color: var(--black-300);
 
   /* Buttons */
   --button--disabled--background-color: var(--black-600);
-  --button--disabled--border-color: hsl(240, 3%, 29%);
-  --button--disabled--color: hsl(0, 0%, 48%);
+  --button--disabled--border-color: var(--black-500);
+  --button--disabled--color: var(--black-700);
   --button_outlined--hover--background-color: var(--primary-400a20);
 
   /* Chart */
@@ -81,8 +85,8 @@ body.theme-dark {
   --chart_reference_line_darkBg--color: var(--white);
   --chart_reference_line--color: var(--white);
 
-  --chart_collateral--color: #9a9aa3;
-  --chart_stablecoin--color: #5f5f69;
+  --chart_collateral--color: var(--black-900);
+  --chart_stablecoin--color: var(--black-800);
 
   /* Checkbox */
   --checkbox--background-color: var(--blackl30);
@@ -105,10 +109,10 @@ body.theme-dark {
   /* Input */
   --input--color: var(--text-400);
   --input--background-color: var(--black-500);
-  --input--border-color: hsl(240, 3%, 13%);
+  --input--border-color: var(--black-200);
   --input_button--color: var(--whitel72);
-  --input_button--border-color: hsl(0, 0%, 13%);
-  --input_button--hover--background-color: hsl(240, 3%, 26%);
+  --input_button--border-color: var(--black-300);
+  --input_button--hover--background-color: --black-500;
 
   /* Link */
   --link_box--background-color: var(--black-200);
@@ -141,21 +145,20 @@ body.theme-dark {
   --spinner--background-color: var(--gray-600);
 
   /* Summary */
-  --summary_header--background-color: hsl(240, 4%, 22%);
-  --summary_header--loading--background-color: hsla(240, 4%, 22%, 0.8);
-  --summary_header--border-color: hsl(240, 4%, 35%);
-  --summary_content--background-color: var(--black-400);
-  --summary_content--loading--background-color: hsla(240, 4%, 20%, 0.8);
-  --summary_content--border-color: hsl(240, 4%, 35%);
+  --summary_header--background-color: var(--black-300);
+  --summary_header--loading--background-color: var(--black-200);
+  --summary_header--border-color: var(--black-500);
+  --summary_content--background-color: var(--black-100);
+  --summary_content--loading--background-color: var(--black-200);
+  --summary_content--border-color: var(--black-600);
 
   /* Tab */
   --tab--content--background-color: var(--black-300);
-  --tab--border: 3px solid hsl(240, 5%, 19%);
-
+  --tab--border: 3px solid var(--black-300);
   --tab_secondary--color: var(--gray-500);
   --tab-secondary--content--background-color: var(--box--primary--background);
   --tab-secondary--background-color: var(--box--primary--background);
-  --tabs-secondary--background-color: hsl(240, 6%, 10%);
+  --tabs-secondary--background-color: hsl(240, 100%, 50%);
 
   /* Table */
   --table--background-color: var(--black-200);

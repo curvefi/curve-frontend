@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf8db2accdef8e7a26b0e65c3980adc8ce11671a4",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x02950460e2b9529d0e00284a5fa2d7bdf3fa4d72",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf36a4ba50c603204c3fc6d2da8b78a7b69cbc67d",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -49,7 +49,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf55b0f6f2da5ffddb104b58a60f2862745960442",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0x5dc1bf6f1e983c0b21efb003c105133736fa0743",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -73,7 +73,7 @@
       "campaignEnd": "1770000000",
       "address": "0x670a72e6d22b0956c0d2573288f82dcc5d6e3a61",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -85,7 +85,7 @@
       "campaignEnd": "1770000000",
       "address": "0x1c34204fcfe5314dcf53be2671c02c35db58b4e3",
       "network": "arbitrum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -97,7 +97,7 @@
       "campaignEnd": "1770000000",
       "address": "0x74f88baa966407b50c10b393bbd789639effe78b",
       "network": "ethereum",
-      "multiplier": "20",
+      "multiplier": "20x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -109,7 +109,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb536fea3a01c95dd09932440ec802a75410139d6",
       "network": "ethereum",
-      "multiplier": "5",
+      "multiplier": "5x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -121,7 +121,7 @@
       "campaignEnd": "1770000000",
       "address": "0x096a8865367686290639bc50bf8d85c0110d9fea",
       "network": "arbitrum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -133,7 +133,7 @@
       "campaignEnd": "1770000000",
       "address": "0x167478921b907422f8e88b43c4af2b8bea278d3a",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "true"
     },
@@ -145,7 +145,7 @@
       "campaignEnd": "1770000000",
       "address": "0xd29f8980852c2c76fc3f6e96a7aa06e0bedcc1b1",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -157,7 +157,7 @@
       "campaignEnd": "1770000000",
       "address": "0x68984391a8ce6203067ee65ff7eed38c7e0d2d88",
       "network": "ethereum",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -169,7 +169,7 @@
       "campaignEnd": "1770000000",
       "address": "0x8b4e5263e8d6cc0bbf31edf14491fc6077b88229",
       "network": "fraxtal",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -181,7 +181,7 @@
       "campaignEnd": "1770000000",
       "address": "0x1e199dbe1f7aa237282fe941d5bcc3b167c8ce48",
       "network": "fraxtal",
-      "multiplier": "30",
+      "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
     }

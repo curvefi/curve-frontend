@@ -1,6 +1,7 @@
 import type { SearchTermMapper, SearchTermKey } from '@/components/PageMarketList/types'
 
 import { t } from '@lingui/macro'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export enum SEARCH_TERM {
   'owm.collateral_token.symbol' = 'owm.collateral_token.symbol',
@@ -15,14 +16,14 @@ export enum SEARCH_TERM {
 }
 
 export function parseSearchTermMapper(
-  owmDataCachedOrApi: OWMDataCacheOrApi | undefined,
+  market: OneWayMarketTemplate | undefined,
   searchedByAddresses: { [key: string]: { value: string } },
   searchTermMapper: SearchTermMapper
 ) {
-  if (!searchedByAddresses || !searchTermMapper || !owmDataCachedOrApi) return undefined
+  if (!searchedByAddresses || !searchTermMapper || !market) return undefined
 
   let parsed = { ...searchTermMapper }
-  const { collateral_token, borrowed_token } = owmDataCachedOrApi?.owm
+  const { collateral_token, borrowed_token } = market
 
   Object.keys(searchedByAddresses).forEach((key) => {
     const k = key as SearchTermKey

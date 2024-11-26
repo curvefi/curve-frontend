@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis,
+  YAxis
 } from 'recharts'
 import { t } from '@lingui/macro'
 import React from 'react'
@@ -17,6 +17,7 @@ import styled from 'styled-components'
 import { formatNumber } from '@/ui/utils'
 
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/components/ChartTooltip'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 interface Props {
   data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]
@@ -24,7 +25,7 @@ interface Props {
   height?: number
   isDetailView?: boolean // component not inside the form
   isManage: boolean
-  theme: Theme
+  theme: ThemeKey
 }
 
 const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetailView, theme }: Props) => {

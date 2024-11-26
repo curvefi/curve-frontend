@@ -136,7 +136,7 @@ const IntegrationsComp = ({
                         if (networkId in networksIdMapper) {
                           const chainId = networksIdMapper[networkId as NetworkEnum]
                           const { name, logoSrc } = networks[chainId]
-                          return <Image alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
+                          return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
                         }
                         return null
                       })}

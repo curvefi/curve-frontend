@@ -122,8 +122,3 @@ export function getWalletChainId(wallet: Wallet | undefined | null) {
   const chainId = wallet.chains[0].id
   return Number(BigInt(chainId).toString())
 }
-
-export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
-  if (!wallet) return ''
-  return wallet.accounts[0]?.address
-}

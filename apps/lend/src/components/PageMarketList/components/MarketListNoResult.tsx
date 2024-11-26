@@ -5,13 +5,13 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { Filter } from '@/components/PageMarketList/utils'
-import useStore from '@/store/useStore'
 
 import { shortenAccount } from '@/ui/utils'
 import Box from '@/ui/Box'
 import AlertBox from '@/ui/AlertBox'
 import Button from '@/ui/Button'
 import ExternalLink from 'ui/src/Link/ExternalLink'
+import { useChainId, useOneWayMarketMapping } from '@/entities/chain'
 
 enum ERROR {
   api = 'api',
@@ -24,15 +24,16 @@ const MarketListNoResult = ({
   signerAddress,
   updatePath,
 }: Pick<PageMarketList, 'searchParams' | 'updatePath'> & { signerAddress: string | undefined }) => {
-  const owmDatasError = useStore((state) => state.markets.error)
+  const chainId = useChainId()?.data!
+  const marketMappingError = useOneWayMarketMapping(chainId)?.error
 
   const { searchText, filterKey } = searchParams
 
   const errorKey = useMemo(() => {
     if (searchText) return ERROR.search
-    if (owmDatasError) return ERROR.api
+    if (marketMappingError) return ERROR.api
     if (filterKey) return ERROR.filter
-  }, [filterKey, owmDatasError, searchText])
+  }, [filterKey, marketMappingError, searchText])
 
   const errorSearchParams = useMemo(() => {
     if (errorKey === ERROR.search) return { searchText: '' }

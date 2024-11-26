@@ -4,20 +4,21 @@ import { useMemo } from 'react'
 
 import { formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type Props = {
   className?: string
   isMobile?: boolean
   rChainId: ChainId
   rOwmId: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
 }
 
-const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, owmDataCachedOrApi }: Props) => {
+const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, market }: Props) => {
   const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
   const totalResp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
-  const { collateral_token, borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { collateral_token, borrowed_token } = market ?? {}
   const { cap, available } = resp ?? {}
   const { totalDebt } = totalResp ?? {}
 

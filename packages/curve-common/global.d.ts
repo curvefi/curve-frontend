@@ -8,3 +8,8 @@ declare global {
     ethereum: EIP1193Provider & { isBitKeep?: boolean }
   }
 }
+
+declare module '*.png' {
+  const content: any
+  export default content
+}

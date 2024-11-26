@@ -5,6 +5,7 @@ import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
 
 import { ethers, isError } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
+import { getWalletProvider } from '@/common/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -65,7 +66,7 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
     updateProvider: async (wallet) => {
       try {
         const storedProvider = get().wallet.provider
-        const newProvider = wallet ? _getProvider(wallet) : null
+        const newProvider = wallet ? getWalletProvider(wallet) : null
         if (storedProvider) await storedProvider.removeAllListeners()
         get().wallet.setStateByKey('provider', newProvider)
       } catch (error) {
@@ -97,34 +98,11 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
     },
 
     // slice helpers
-    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
-      get().setAppStateByActiveKey(sliceKey, key, activeKey, value)
-    },
-    setStateByKey: <T>(key: StateKey, value: T) => {
-      get().setAppStateByKey(sliceKey, key, value)
-    },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
-      get().setAppStateByKeys(sliceKey, sliceState)
-    },
-    resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
-    },
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => get().setAppStateByActiveKey(sliceKey, key, activeKey, value),
+    setStateByKey: <T>(key: StateKey, value: T) => get().setAppStateByKey(sliceKey, key, value),
+    setStateByKeys: (sliceState: Partial<SliceState>) => get().setAppStateByKeys(sliceKey, sliceState),
+    resetState: () => get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE)),
   },
 })
 
 export default createWalletSlice
-
-export function _getProvider(wallet: Wallet) {
-  return new ethers.BrowserProvider(wallet.provider)
-}
-
-export function getWalletChainId(wallet: Wallet | undefined | null) {
-  if (!wallet) return null
-  const chainId = wallet.chains[0].id
-  return Number(BigInt(chainId).toString())
-}
-
-export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
-  if (!wallet) return ''
-  return wallet.accounts[0]?.address
-}

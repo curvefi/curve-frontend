@@ -21,7 +21,7 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
+        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}`}</Multiplier>}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" highContrast={highContrast} />}
       </Container>
     </Tooltip>

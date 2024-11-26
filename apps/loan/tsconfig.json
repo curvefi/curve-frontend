@@ -5,7 +5,9 @@
     "paths": {
       "@/*": ["*"],
       "@/ui": ["../../../packages/ui/src/index.ts"],
+      "@/shared/ui/*": ["../../../packages/ui/src/shared/ui/*"],
       "@/ui/*": ["../../../packages/ui/src/*"],
+      "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
       "@/common/*": ["../../../packages/curve-common/src/*"],
@@ -13,9 +15,10 @@
       "@/shared/api/*": ["../../../packages/curve-lib/src/shared/api/*"],
       "@/shared/lib/*": ["../../../packages/curve-lib/src/shared/lib/*"],
       "@/shared/model/*": ["../../../packages/curve-lib/src/shared/model/*"],
-      "@/shared/types/*": ["../../../packages/curve-lib/src/shared/types/*"]
-    },
+      "@/shared/types/*": ["../../../packages/curve-lib/src/shared/types/*"],
+      "@/shared/external-rewards": ["../../../packages/external-rewards/src/index.ts"]
+    }
   },
-  "exclude": ["node_modules"],
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+  "exclude": ["node_modules", "cypress"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "../../packages/curve-ui-kit/**/*.d.ts"]
 }

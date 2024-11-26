@@ -23,7 +23,7 @@
     "chai-bigint": "^0.2.0",
     "cypress": "^13.9.0",
     "dotenv-flow": "^4.1.0",
-    "ethers": "^6.12.1",
+    "ethers": "^6.11.0",
     "hardhat": "^2.22.10",
     "tsconfig": "*",
     "wait-on": "^8.0.1"

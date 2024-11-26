@@ -1,2 +1,2 @@
-export { default as TokensIcon } from 'Token/TokensIcon'
+export { default as TokensIcon } from './TokensIcon'
 export { default } from './TokenIcon'

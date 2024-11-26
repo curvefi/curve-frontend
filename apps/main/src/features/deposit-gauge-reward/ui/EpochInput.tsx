@@ -5,7 +5,7 @@ import { TIME_FRAMES } from '@/constants'
 import type { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/features/deposit-gauge-reward/ui'
 import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/entities/gauge'
-import { FlexContainer } from '@/shared/ui/styled-containers'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()

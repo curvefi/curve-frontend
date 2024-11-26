@@ -30,14 +30,14 @@ const TableRowMobileContent = ({
   handleCellClick,
   isHideDetail,
   loanExists,
-  owmDataCachedOrApi,
+  market,
   showMyVaultCell,
   titleMapper,
   userActiveKey,
 }: Props) => {
   const contentRef = useRef<HTMLDivElement>(null)
 
-  const { borrowed_token } = owmDataCachedOrApi?.owm ?? {}
+  const { borrowed_token } = market ?? {}
 
   const handleTransitionEnd = useCallback(() => {
     if (!contentRef.current) return

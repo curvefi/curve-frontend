@@ -1,14 +1,13 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@/lib/i18n'
-
 import produce from 'immer'
-
 import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
+import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { LocaleValue } from '@/lib/i18n'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -24,11 +23,11 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  locale: Locale['value']
+  locale: LocaleValue
   maxSlippage: string
   routerProps: RouterProps | null
   scrollY: number
-  themeType: Theme
+  themeType: ThemeKey
 }
 
 // prettier-ignore
@@ -57,7 +56,7 @@ const DEFAULT_STATE: SliceState = {
   maxSlippage: '0.1',
   routerProps: null,
   scrollY: 0,
-  themeType: 'default',
+  themeType: 'light',
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
@@ -91,7 +90,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         if (
           stateKey.startsWith('loan') ||
           stateKey.startsWith('user') ||
-          stateKey === 'usdRates' ||
           stateKey === 'tokens' ||
           stateKey === 'chartBands' ||
           stateKey === 'campaigns'
@@ -110,8 +108,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    await state.markets.fetchMarkets(api)
-    await state.usdRates.fetchAllStoredUsdRates(api)
+    await api.oneWayfactory.fetchMarkets()
     state.updateGlobalStoreByKey('isLoadingApi', false)
 
     if (!prevApi || isNetworkSwitched) {

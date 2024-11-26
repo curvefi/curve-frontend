@@ -58,3 +58,4 @@ report.*.json
 
 # hardhat
 cache/
+downloads/

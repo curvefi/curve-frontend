@@ -8,8 +8,9 @@ import 'focus-visible'
 import '@/globals.css'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/common/features/connect-wallet'
+import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
 import { persister, queryClient } from '@/shared/api/query-client'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
@@ -21,7 +22,6 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
-import { initOnboard } from '@/common/features/connect-wallet'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -62,7 +62,7 @@ function CurveApp({ Component }: AppProps) {
 
     // init theme
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
+    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'light')
 
     // init locale
     const { rLocale } = getLocaleFromUrl()
@@ -76,7 +76,7 @@ function CurveApp({ Component }: AppProps) {
       connectWalletLocales,
       locale,
       themeType,
-      networks
+      networks,
     )
     updateWalletStateByKey('onboard', onboardInstance)
 
@@ -102,18 +102,22 @@ function CurveApp({ Component }: AppProps) {
 
   return (
     <div suppressHydrationWarning>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+      <ThemeProvider theme={themeType as string === 'default' ? 'light' : themeType}>
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
+      </ThemeProvider>
     </div>
   )
 }
