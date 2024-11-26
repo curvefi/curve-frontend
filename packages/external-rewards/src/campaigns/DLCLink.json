@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0xe957ce03ccdd88f02ed8b05c9a3a28abef38514a",
       "network": "arbitrum",
-      "multiplier": "5",
+      "multiplier": "5x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0x3e293db65c81742e32b74e21a0787d2936beedf7",
       "network": "arbitrum",
-      "multiplier": "5",
+      "multiplier": "5x",
       "tags": ["points"],
       "lock": "false"
     }
