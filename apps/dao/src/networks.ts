@@ -1,4 +1,5 @@
 import type { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
+import { ChainOption } from '@/common/features/switch-chain'
 
 import sortBy from 'lodash/sortBy'
 
@@ -39,10 +40,10 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
   {
     networks: {} as Record<ChainId, NetworkConfig>,
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
-    selectNetworkList: [] as SelectNetworkItem[],
+    selectNetworkList: [] as ChainOption<ChainId>[],
   },
 )
 
-export const visibleNetworksList: Iterable<SelectNetworkItem> = sortBy(selectNetworkList, (n) => n.label)
+export const visibleNetworksList: ChainOption<ChainId>[] = sortBy(selectNetworkList, (n) => n.label)
 
 export default networks

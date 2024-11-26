@@ -1,5 +1,8 @@
+import { Locale } from '@/common/widgets/Header/types'
+
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { t } from '@lingui/macro'
 
 import { CONNECT_STAGE, isFailure, isLoading } from '@/ui/utils'
 import { getWalletChainId } from '@/store/createWalletSlice'
@@ -18,10 +21,11 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.isMdUp)
+  const isMdUp = useStore((state) => state.layout.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
+  const locale = useStore((state) => state.locale)
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight)
@@ -54,6 +58,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     return total - layoutHeight.footer + 24
   }, [layoutHeight])
 
+  const sections = useMemo(() => getSections(locale), [rChainId, locale])
   return (
     <>
       <GlobalBanner
@@ -65,13 +70,36 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         handleNetworkChange={handleNetworkChange}
       />
       <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header />
+        <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
         {isMdUp && <Footer chainId={rChainId} />}
       </Container>
     </>
   )
 }
+
+const getSections = (locale: Locale) => [
+  {
+    title: t`Documentation`,
+    links: [
+      { route: 'https://news.curve.fi/', label: t`News` },
+      { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
+      { route: 'https://docs.curve.fi', label: t`Developer Resources` },
+      { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
+      ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
+    ],
+  },
+  {
+    title: t`Security`, // audits, bug bounty, dune analytics, curve monitor & crvhub
+    links: [
+      { route: 'https://docs.curve.fi/references/audits/', label: t`Audits` },
+      { route: 'https://docs.curve.fi/security/security/', label: t`Bug Bounty` },
+      { route: 'https://dune.com/mrblock_buidl/Curve.fi', label: t`Dune Analytics` },
+      { route: 'https://curvemonitor.com', label: t`Curve Monitor` },
+      { route: 'https://crvhub.com/', label: t`Crvhub` },
+    ],
+  },
+]
 
 type MainProps = {
   minHeight: number

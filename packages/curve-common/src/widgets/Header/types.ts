@@ -5,7 +5,7 @@ import { AppNames } from './constants'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
-export type AppName = typeof AppNames[number]
+export type AppName = (typeof AppNames)[number]
 
 export type AppPage = {
   route: string
@@ -30,7 +30,7 @@ export type BaseHeaderProps<TChainId = number> = {
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
-  appStats: { label: string, value: string }[]
+  appStats: { label: string; value: string }[]
   advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
   translations: {
@@ -50,5 +50,6 @@ export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
 export const APP_NAMES = {
   main: 'Curve',
   lend: 'LLAMALEND',
-  crvusd: 'crvUSD'
+  crvusd: 'crvUSD',
+  dao: 'DAO',
 } as const

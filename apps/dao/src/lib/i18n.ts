@@ -1,4 +1,4 @@
-import type { DefaultStateKeys } from '@/store/createGlobalSlice'
+import type { DefaultStateKeys } from '@/store/createAppSlice'
 
 import { I18n, i18n } from '@lingui/core'
 import { en, zh } from 'make-plural/plurals'

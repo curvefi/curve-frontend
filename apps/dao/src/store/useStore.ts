@@ -1,10 +1,11 @@
 import type { SetState, GetState } from 'zustand'
+import type { PersistOptions } from 'zustand/middleware/persist'
 
 import { devtools, persist } from 'zustand/middleware'
-import create from 'zustand'
+import { create } from 'zustand'
 import merge from 'lodash/merge'
 
-import createGlobalSlice, { GlobalSlice } from '@/store/createGlobalSlice'
+import createAppSlice, { AppSlice } from '@/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@/store/createCacheSlice'
 import createGasSlice, { GasSlice } from '@/store/createGasSlice'
 import createWalletSlice, { WalletSlice } from '@/store/createWalletSlice'
@@ -15,8 +16,8 @@ import createAnalyticsSlice, { AnalyticsSlice } from '@/store/createAnalyticsSli
 import createTokensSlice, { TokensSlice } from './createTokensSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
-
-export type State = GlobalSlice &
+import createLayoutSlice, { AppLayoutSlice } from './createLayoutSlice'
+export type State = AppSlice &
   CacheSlice &
   GasSlice &
   WalletSlice &
@@ -26,10 +27,11 @@ export type State = GlobalSlice &
   AnalyticsSlice &
   TokensSlice &
   LockedCrvSlice &
-  UsdRatesSlice
+  UsdRatesSlice &
+  AppLayoutSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
-  ...createGlobalSlice(set, get),
+  ...createAppSlice(set, get),
   ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
   ...createWalletSlice(set, get),
@@ -40,26 +42,18 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createTokensSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createUsdRatesSlice(set, get),
+  ...createLayoutSlice(set, get),
 })
 
-// cache all items in CacheSlice store
-const cache = {
+const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'dao-app-store-cache',
-  partialize: (state: State) => {
-    return Object.fromEntries(
-      Object.entries(state).filter(([key]) => {
-        return ['storeCache'].includes(key)
-      })
-    )
-  },
-  merge: (persistedState: State, currentState: State) => merge(persistedState, currentState),
-  version: 1, // update version number to prevent UI from using cache
+  partialize: ({ storeCache }: State) => ({ storeCache }),
+  // @ts-ignore
+  merge: (persistedState, currentState) => merge(persistedState, currentState),
+  version: 2, // update version number to prevent UI from using cache
 }
 
 const useStore =
-  process.env.NODE_ENV === 'development'
-    ? create<State>(devtools(persist(store, cache)))
-    : create<State>(persist(store, cache))
-// const useStore = isDevelopment ? create(devtools(store)) : create(store)
+  process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
 
 export default useStore

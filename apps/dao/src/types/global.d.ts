@@ -6,6 +6,7 @@ import type curveApi from '@curvefi/api'
 
 import { ethers } from 'ethers'
 import curvejsApi from '@/lib/curvejs'
+import type { BaseConfig } from '@/ui/utils'
 
 declare global {
   interface Window {
@@ -22,8 +23,8 @@ declare global {
 
   interface NetworkConfig extends BaseConfig {
     api: typeof curvejsApi
-    isActiveNetwork: boolean // show network in UI's select dropdown list (ready for public)
-    showInSelectNetwork: boolean // show network in UI
+    isActiveNetwork: boolean
+    showInSelectNetwork: boolean
   }
 
   type RouterParams = {

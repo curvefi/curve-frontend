@@ -1,4 +1,4 @@
-import type { LayoutHeight } from '@/store/createGlobalSlice'
+import type { LayoutHeight } from '@/store/createAppSlice'
 
 import React, { useEffect } from 'react'
 

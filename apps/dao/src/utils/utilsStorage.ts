@@ -1,4 +1,4 @@
-import type { Theme } from '@/store/createGlobalSlice'
+import type { Theme } from '@/store/createAppSlice'
 
 import merge from 'lodash/merge'
 

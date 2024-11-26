@@ -12,7 +12,6 @@ import { setStorageValue } from '@/utils'
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
-
 export type Theme = 'dark' | 'default' | 'chad'
 export type LayoutHeight = {
   globalAlert: number
@@ -21,23 +20,18 @@ export type LayoutHeight = {
   footer: number
 }
 
-type GlobalState = {
+type AppCacheKeys = 'themeType'
+
+type SliceState = {
   connectState: ConnectState
   curve: CurveApi | null
   isLoadingApi: boolean
   isLoadingCurve: boolean
   isMobile: boolean
   isPageVisible: boolean
-  isXXSm: boolean
-  isXSmDown: boolean
-  isSmUp: boolean
-  isMdUp: boolean
-  isLgUp: boolean
-  isXLgUp: boolean
   layoutHeight: LayoutHeight
   loaded: boolean
   locale: Locale['value']
-  pageWidth: PageWidthClassName | null
   maxSlippage: string
   routerProps: RouterProps | null
   showScrollButton: boolean
@@ -45,13 +39,13 @@ type GlobalState = {
 }
 
 // prettier-ignore
-export interface GlobalSlice extends GlobalState {
-  setPageWidth: (pageWidthClassName: PageWidthClassName) => void
+export interface AppSlice extends SliceState {
   setThemeType: (themeType: Theme) => void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
   updateShowScrollButton(scrollY: number): void
+  setAppCache<T>(key: AppCacheKeys, value: T): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
@@ -67,12 +61,6 @@ const DEFAULT_STATE = {
   isLoadingApi: false,
   isLoadingCurve: true,
   isPageVisible: true,
-  isXXSm: false,
-  isXSmDown: false,
-  isSmUp: false,
-  isMdUp: false,
-  isLgUp: false,
-  isXLgUp: false,
   loaded: false,
   locale: 'en' as const,
   pageWidth: null,
@@ -88,7 +76,7 @@ const DEFAULT_STATE = {
   themeType: 'default' as const,
 }
 
-const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSlice => ({
+const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
   setThemeType: (themeType: Theme) => {
@@ -98,26 +86,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       }),
     )
     setStorageValue('APP_CACHE', { themeType })
-  },
-  setPageWidth: (pageWidthClassName: PageWidthClassName) => {
-    const isXLgUp = pageWidthClassName.startsWith('page-wide')
-    const isLgUp = pageWidthClassName.startsWith('page-large') || pageWidthClassName.startsWith('page-wide')
-    const isMd = pageWidthClassName.startsWith('page-medium')
-    const isSmUp = pageWidthClassName === 'page-small'
-    const isXSmDown = pageWidthClassName.startsWith('page-small-x')
-    const isXXSm = pageWidthClassName === 'page-small-xx'
-
-    set(
-      produce((state: State) => {
-        state.pageWidth = pageWidthClassName
-        state.isXSmDown = isXSmDown
-        state.isSmUp = isSmUp || isMd || isLgUp
-        state.isMdUp = isMd || isLgUp
-        state.isLgUp = isLgUp
-        state.isXLgUp = isXLgUp
-        state.isXXSm = isXXSm
-      }),
-    )
   },
   updateConnectState: (
     status: ConnectState['status'],
@@ -177,6 +145,12 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
         }),
       )
     }
+  },
+  setAppCache: <T>(key: AppCacheKeys, value: T) => {
+    get().updateGlobalStoreByKey(key, value)
+    setStorageValue('APP_CACHE', {
+      themeType: key === 'themeType' ? value : get().themeType || 'default',
+    })
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
@@ -252,4 +226,4 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   },
 })
 
-export default createGlobalSlice
+export default createAppSlice
