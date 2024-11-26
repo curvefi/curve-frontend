@@ -3,6 +3,7 @@ import { ListItem } from '@mui/material'
 import type { AppPage } from 'curve-common/src/widgets/Header/types'
 import Link from '@mui/material/Link'
 import Button from '@mui/material/Button'
+import { Link as RouterLink } from 'react-router-dom'
 
 type SidebarItemProps = {
   page: AppPage
@@ -12,9 +13,10 @@ type SidebarItemProps = {
 export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
   <ListItem disableGutters sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 2, paddingLeft: child ? 4 : 0 }}>
     <Button
-      component={Link}
+      component={page.route.startsWith('/') ? RouterLink : Link}
       target={page.route.startsWith('http') ? '_blank' : undefined}
       href={page.route}
+      to={page.route}
       className={page.isActive ? 'current' : ''}
       color="navigation"
       size="small"

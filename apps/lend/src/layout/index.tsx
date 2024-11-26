@@ -12,7 +12,6 @@ import Footer from '@/ui/Footer'
 import GlobalBanner from '@/ui/Banner'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { t } from '@lingui/macro'
-import networks from '@/networks'
 import { Locale } from '@/common/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {

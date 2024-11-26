@@ -63,18 +63,18 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: isMdUp ? 'Markets' : 'Llamalend' },
+              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'Llamalend' },
               {
                 route: ROUTE.PAGE_RISK_DISCLAIMER,
                 label: t`Risk Disclaimer`,
-                groupedTitle: isMdUp ? 'risk' : 'Llamalend',
+                groupedTitle: 'Llamalend',
               },
             ],
             rLocalePathname,
             routerPathname,
             routerNetwork,
           ),
-        [isMdUp, rLocalePathname, routerNetwork, routerPathname],
+        [rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
         theme,
