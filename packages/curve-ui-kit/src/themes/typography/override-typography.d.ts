@@ -20,3 +20,11 @@ declare module 'global' {
   //   interface Typography extends TypographyVariants {}
   // }
 }
+
+declare module "react" {
+  interface CSSProperties {
+    "--font-monaSans"?: string
+    "--font-hubotSans"?: string
+    "--font-minecraft"?: string
+  }
+}

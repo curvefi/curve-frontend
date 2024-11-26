@@ -24,3 +24,11 @@ export const ThemeFontFamily = {
   light: { body: MonaSans, header: MonaSans, button: MonaSans },
   dark: { body: MonaSans, header: MonaSans, button: MonaSans },
 }
+
+export const RootCssProperties = {
+  '--font-monaSans': MonaSans,
+  '--font-hubotSans': HubotSans,
+  '--font-minecraft': Minecraft,
+  '--font': MonaSans,
+  '--font-mono': Minecraft,
+}
