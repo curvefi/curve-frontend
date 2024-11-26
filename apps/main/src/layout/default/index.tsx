@@ -30,9 +30,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const locale = useStore((state) => state.locale)
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
-  const network = useStore((state) => state.networks.networks[rChainId ?? 1 as const])
 
-  const sections = useMemo(() => getSections(locale), [locale, network])
+  const sections = useMemo(() => getSections(locale), [locale])
 
   // Update `NEXT_PUBLIC_MAINTENANCE_MESSAGE` environment variable value to display a global message in app.
   const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
