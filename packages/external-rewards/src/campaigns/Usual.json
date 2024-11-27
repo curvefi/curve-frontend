@@ -13,8 +13,8 @@
       "campaignEnd": "1770000000",
       "address": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
       "network": "ethereum",
-      "multiplier": "points",
-      "tags": ["tokens"],
+      "multiplier": "usual",
+      "tags": ["points"],
       "lock": "false"
     },
     {
@@ -25,8 +25,8 @@
       "campaignEnd": "1770000000",
       "address": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
       "network": "ethereum",
-      "multiplier": "points",
-      "tags": ["tokens"],
+      "multiplier": "usual",
+      "tags": ["points"],
       "lock": "false"
     }
   ]
