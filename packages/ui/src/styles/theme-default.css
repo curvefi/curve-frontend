@@ -280,7 +280,7 @@ body.theme-default {
   --summary_header--background-color: var(--gray-600);
   --summary_header--loading--background-color: var(--gray-500);
   --summary_header--border-color: var(--gray-500);
-  --summary_content--background-color: var(--gray-500a25);
+  --summary_content--background-color: var(--gray-600);
   --summary_content--loading--background-color: var(--gray-500a20);
   --summary_content--border-color: var(--gray-500a20);
 

@@ -67,10 +67,10 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           strokeWidth={2}
           activeDot={{ r: 4 }}
           dot={{
-            r: 2,
-            fill: 'var(--white)',
+            r: 3,
+            fill: 'var(--primary-400)',
             stroke: 'var(--chart-purple)',
-            strokeWidth: 1,
+            strokeWidth: 2,
           }}
         />
       </LineChart>
