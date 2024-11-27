@@ -33,3 +33,5 @@ export const RootCssProperties = {
   '--font-hubotSans': HubotSans,
   '--font-minecraft': Minecraft,
 } as CSSProperties
+
+export const ChadCssProperties = { '--font': HubotSans } as CSSProperties
