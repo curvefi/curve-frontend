@@ -1,6 +1,6 @@
 import { AppBar, Toolbar } from '@mui/material'
 import { BaseHeaderProps } from './types'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import Box from '@mui/material/Box'
@@ -10,9 +10,9 @@ import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useLocation } from 'react-router-dom'
-import { APP_LINK, AppName, AppNames, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
+import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
 
-const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
+const SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
   '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
@@ -20,7 +20,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = {backgroundColor: 'background.default'}
+const SECONDARY_BACKGROUND = { backgroundColor: 'background.default' }
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
@@ -83,7 +83,10 @@ export const MobileHeader = <TChainId extends number>({
                 <SidebarSection
                   key={appName}
                   title={label}
-                  pages={pages.map((page) => ({ ...page, route: externalAppUrl(page, appName as AppName) }))}
+                  pages={pages.map(({ route, label }) => ({
+                    label: label(),
+                    route: externalAppUrl(route, appName as AppName),
+                  }))}
                 />
               ))}
 

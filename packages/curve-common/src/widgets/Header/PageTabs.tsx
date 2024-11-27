@@ -22,10 +22,10 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, 
               to: page.route,
               component: RouterLink,
             }))
-          : APP_LINK[selectedApp].pages.map((page) => ({
-              label: page.label,
-              value: page.route,
-              href: externalAppUrl(page, selectedApp),
+          : APP_LINK[selectedApp].pages.map(({ label, route }) => ({
+              label: label(),
+              value: route,
+              href: externalAppUrl(route, selectedApp),
             })),
       [currentApp, pages, selectedApp],
     )}

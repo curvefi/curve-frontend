@@ -14,6 +14,7 @@ import { APP_LINK } from '@ui-kit/shared/routes'
 
 type HeaderProps = { sections: NavigationSection[] }
 
+const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
@@ -60,7 +61,7 @@ export const Header = ({ sections }: HeaderProps) => {
                 ? [
                     {
                       route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
-                      label: t`Quickswap`,
+                      label: QuickSwap,
                     },
                   ]
                 : []),

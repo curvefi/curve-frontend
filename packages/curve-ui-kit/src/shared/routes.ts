@@ -1,5 +1,5 @@
-import { type AppPage, AppRoutes } from 'curve-common/src/widgets/Header/types'
-import { t } from '@/shared/translation'
+import { AppRoutes } from 'curve-common/src/widgets/Header/types'
+import { t } from '@lingui/macro'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
@@ -27,27 +27,27 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     root: getAppRoot('curve.fi', 'dapp', 3000),
     label: 'DEX',
     pages: [
-      { route: DEX_ROUTES.PAGE_SWAP, label: t`Quickswap` },
-      { route: DEX_ROUTES.PAGE_POOLS, label: t`Pools`  },
-      { route: DEX_ROUTES.PAGE_CREATE_POOL, label: t`Pool Creation` },
-      { route: DEX_ROUTES.PAGE_DASHBOARD, label: t`Dashboard` },
+      { route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
+      { route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
+      { route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
+      { route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
     ],
   },
   crvusd: {
     root: getAppRoot('crvusd.curve.fi', 'dapp-crvusd', 3001),
     label: 'crvUSD',
     pages: [
-      { route: CRVUSD_ROUTES.PAGE_MARKETS, label: t`Markets` },
-      { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: t`Savings crvUSD` },
-      { route: CRVUSD_ROUTES.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
+      { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
+      { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
+      { route: CRVUSD_ROUTES.PAGE_RISK_DISCLAIMER, label: () => t`Risk Disclaimer` },
     ],
   },
   lend: {
     root: getAppRoot('lend.curve.fi', 'dapp-lend', 3003),
     label: 'Lend',
     pages: [
-      { route: LEND_ROUTES.PAGE_MARKETS, label: t`Markets` },
-      { route: LEND_ROUTES.PAGE_RISK_DISCLAIMER, label: t`Risk Disclaimer` },
+      { route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
+      { route: LEND_ROUTES.PAGE_RISK_DISCLAIMER, label: () => t`Risk Disclaimer` },
     ],
   },
 }
@@ -72,4 +72,5 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   return `https://${productionHost}`
 }
 
-export const externalAppUrl = ({ route }: AppPage, app?: AppName) => app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`
+export const externalAppUrl = (route: string, app?: AppName) =>
+  app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`
