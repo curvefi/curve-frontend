@@ -207,17 +207,19 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       return sortedProposals
     },
     setProposals: (searchValue: string) => {
-      const { selectFilteredSortedProposals } = get()[sliceKey]
+      const { selectFilteredSortedProposals, activeSortBy, activeSortDirection } = get()[sliceKey]
 
       const proposals = selectFilteredSortedProposals()
 
       if (searchValue !== '') {
         const searchFilteredProposals = searchFn(searchValue, proposals)
+        const sortedProposals = sortProposals(searchFilteredProposals, activeSortBy, activeSortDirection)
+
         get()[sliceKey].setStateByKeys({
           filteringProposalsLoading: false,
-          proposals: searchFilteredProposals,
+          proposals: sortedProposals,
         })
-        return searchFilteredProposals
+        return sortedProposals
       }
 
       get()[sliceKey].setStateByKeys({
