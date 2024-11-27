@@ -47,10 +47,10 @@ export const Header = ({ sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              { route: ROUTE.PAGE_VECRV_CREATE, label: t`Lock CRV`, groupedTitle: 'Lock CRV' },
-              { route: ROUTE.PAGE_PROPOSALS, label: t`Proposals`, groupedTitle: 'Proposals' },
-              { route: ROUTE.PAGE_GAUGES, label: t`Gauges`, groupedTitle: 'Gauges' },
-              { route: ROUTE.PAGE_ANALYTICS, label: t`Analytics`, groupedTitle: 'Analytics' },
+              { route: ROUTE.PAGE_VECRV_CREATE, label: t`Lock CRV`, groupedTitle: 'DAO' },
+              { route: ROUTE.PAGE_PROPOSALS, label: t`Proposals`, groupedTitle: 'DAO' },
+              { route: ROUTE.PAGE_GAUGES, label: t`Gauges`, groupedTitle: 'DAO' },
+              { route: ROUTE.PAGE_ANALYTICS, label: t`Analytics`, groupedTitle: 'DAO' },
             ],
             rLocale.rLocalePathname,
             routerPathname,
