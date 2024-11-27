@@ -1,5 +1,5 @@
 import { type AppPage, AppRoutes } from 'curve-common/src/widgets/Header/types'
-import { t } from '@lingui/macro'
+import { t } from '@/shared/translation'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
