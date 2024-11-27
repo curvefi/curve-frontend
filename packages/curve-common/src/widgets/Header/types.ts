@@ -1,19 +1,23 @@
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
 import { Dispatch, RefObject } from 'react'
-import { AppNames } from './constants'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { AppName, AppNames } from 'curve-ui-kit/src/shared/routes'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
-export type AppName = typeof AppNames[number]
 
 export type AppPage = {
   route: string
   label: string
   isActive?: boolean
   target?: '_self' | '_blank'
-  groupedTitle?: string
   minWidth?: string
+}
+
+export type AppRoutes = {
+  root: string
+  label: string
+  pages: AppPage[]
 }
 
 export type NavigationSection = {
@@ -37,7 +41,6 @@ export type BaseHeaderProps<TChainId = number> = {
     advanced: string
     advancedMode?: string
     theme: string
-    otherApps: string
     settings: string
     socialMedia: string
   }

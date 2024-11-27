@@ -4,9 +4,9 @@ import { LogoImg, RCLogoText } from 'ui/src/images'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
-import type { AppName } from './types'
 import { APP_NAMES } from './types'
 import type { SxProps, Theme } from '@mui/system'
+import { AppName } from 'curve-ui-kit/src/shared/routes'
 
 const Image = styled('img')({
   width: 30,

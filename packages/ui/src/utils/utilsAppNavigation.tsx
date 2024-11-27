@@ -17,9 +17,7 @@ export const _parseRouteAndIsActive = (
   const parsedRouterNetwork = routerNetwork || 'ethereum'
 
   return {
-    route: route.startsWith('http')
-      ? `${route}/#/${parsedRouterNetwork}`
-      : `#${routerLocalePathname}/${parsedRouterNetwork}${route}`,
+    route: `${routerLocalePathname}/${parsedRouterNetwork}${route}`,
     isActive: rPathname && routePathname ? rPathname.endsWith(routePathname) : false,
     ...rest,
   }

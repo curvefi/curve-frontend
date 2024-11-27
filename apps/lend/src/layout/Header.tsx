@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { CONNECT_STAGE } from '@/constants'
 import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
@@ -14,6 +14,7 @@ import { type Theme } from '@mui/system'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { NavigationSection } from '@/common/widgets/Header/types'
 import { useHeightResizeObserver } from '@/ui/hooks'
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
 
@@ -30,7 +31,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
     setLayoutHeight('globalAlert', footerHeight)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
-
 
   const { rLocalePathname } = getParamsFromUrl()
 
@@ -60,20 +60,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
       ]}
       currentApp="lend"
       pages={useMemo(
-        () =>
-          _parseRouteAndIsActive(
-            [
-              { route: ROUTE.PAGE_MARKETS, label: t`Markets`, groupedTitle: 'Llamalend' },
-              {
-                route: ROUTE.PAGE_RISK_DISCLAIMER,
-                label: t`Risk Disclaimer`,
-                groupedTitle: 'Llamalend',
-              },
-            ],
-            rLocalePathname,
-            routerPathname,
-            routerNetwork,
-          ),
+        () => _parseRouteAndIsActive(APP_LINK.lend.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
@@ -128,7 +115,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         advanced: t`Advanced`,
         advancedMode: t`Advanced Mode`,
         theme: t`Mode`,
-        otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,
       }}
