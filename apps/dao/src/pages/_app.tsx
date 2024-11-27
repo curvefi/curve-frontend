@@ -10,6 +10,7 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { connectWalletLocales } from '@/common/features/connect-wallet'
@@ -31,9 +32,9 @@ i18n.activate('en')
 function CurveApp({ Component }: AppProps) {
   const connectState = useStore((state) => state.connectState)
   const locale = useStore((state) => state.locale)
-  const pageWidth = useStore((state) => state.pageWidth)
+  const pageWidth = useStore((state) => state.layout.pageWidth)
   const themeType = useStore((state) => state.themeType)
-  const setPageWidth = useStore((state) => state.setPageWidth)
+  const setPageWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
@@ -144,22 +145,24 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <div suppressHydrationWarning>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <AriaI18nProvider locale={locale}>
-              <OverlayProvider>
-                <Page>
-                  <Component />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
-            </AriaI18nProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
-    </div>
+    <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+      <div suppressHydrationWarning>
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <AriaI18nProvider locale={locale}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </AriaI18nProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
+      </div>
+    </ThemeProvider>
   )
 }
 

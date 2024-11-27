@@ -17,7 +17,7 @@ interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 const DEFAULT_IMAGE = '/images/default-crypto.png'
 
-function TokenIcon({ className, imageBaseUrl, token, size, address }: TokenIconProps) {
+function TokenIcon({ className = '', imageBaseUrl, token, size, address }: TokenIconProps) {
   const storedSrc = useStore((state) => state.tokens.tokensImage[address ?? ''])
   const setTokenImage = useStore((state) => state.tokens.setTokenImage)
 
@@ -51,10 +51,6 @@ function TokenIcon({ className, imageBaseUrl, token, size, address }: TokenIconP
       height="26"
     />
   )
-}
-
-TokenIcon.defaultProps = {
-  className: '',
 }
 
 const Icon = styled(Image)`
