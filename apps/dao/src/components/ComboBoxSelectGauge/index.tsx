@@ -1,7 +1,7 @@
 import type { EndsWith } from '@/components/ComboBoxSelectGauge/types'
 
 import Fuse from 'fuse.js'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { useFilter } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { t } from '@lingui/macro'
@@ -39,8 +39,8 @@ const ComboBoxGauges = ({
     .filter(
       (gauge) =>
         !userGaugeVoteWeights?.data.gauges.some(
-          (userGauge) => userGauge.gaugeAddress.toLowerCase() === gauge.address.toLowerCase()
-        )
+          (userGauge) => userGauge.gaugeAddress.toLowerCase() === gauge.address.toLowerCase(),
+        ),
     )
     .sort((a, b) => b.gauge_weight - a.gauge_weight)
 
@@ -54,7 +54,7 @@ const ComboBoxGauges = ({
       const result = filterValue && gauges && gauges.length > 0 ? _filter(filterValue, endsWith, gauges) : gauges
       setResult(result)
     },
-    [endsWith, setStateByKey]
+    [endsWith, setStateByKey],
   )
 
   const handleOnSelectChange = (gaugeAddress: string) => {

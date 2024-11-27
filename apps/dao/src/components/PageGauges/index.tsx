@@ -15,7 +15,7 @@ import GaugeVoting from './GaugeVoting'
 import SubNav from '@/components/SubNav'
 
 const Gauges = () => {
-  const { isMdUp } = useStore((state) => state)
+  const { isMdUp } = useStore((state) => state.layout)
   const [{ wallet }] = useConnectWallet()
   const userAddress = wallet?.accounts[0].address
 
