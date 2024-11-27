@@ -5,7 +5,7 @@ import React, { useEffect } from 'react'
 import useStore from '@/store/useStore'
 
 function useLayoutHeight(elementRef: React.RefObject<Element>, key: keyof LayoutHeight) {
-  const pageWidth = useStore((state) => state.pageWidth)
+  const pageWidth = useStore((state) => state.layout.pageWidth)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
 
   useEffect(() => {
