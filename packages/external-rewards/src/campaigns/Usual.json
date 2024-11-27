@@ -1,7 +1,7 @@
 {
   "campaignName": "",
   "platform": "Usual",
-  "description": "Points for providing liquidity.",
+  "description": "Tokens rewards for providing liquidity.",
   "platformImageId": "usual.png",
   "dashboardLink": "https://app.usual.money/",
   "pools": [
@@ -14,7 +14,7 @@
       "address": "0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52",
       "network": "ethereum",
       "multiplier": "usual",
-      "tags": ["points"],
+      "tags": ["tokens"],
       "lock": "false"
     },
     {
@@ -26,7 +26,7 @@
       "address": "0x14100f81e33c33ecc7cdac70181fb45b6e78569f",
       "network": "ethereum",
       "multiplier": "usual",
-      "tags": ["points"],
+      "tags": ["tokens"],
       "lock": "false"
     }
   ]
