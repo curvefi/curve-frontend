@@ -27,4 +27,4 @@ export const ThemeFontFamily = {
 }
 
 export const RootCssProperties = { '--font': MonaSans, '--font-mono': Minecraft } as CSSProperties
-export const ChadCssProperties = { '--font': HubotSans, '--font-display': Minecraft } as CSSProperties
+export const ChadCssProperties = { '--font': HubotSans, '--button--font': Minecraft } as CSSProperties
