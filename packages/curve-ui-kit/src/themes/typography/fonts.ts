@@ -26,12 +26,5 @@ export const ThemeFontFamily = {
   dark: { body: MonaSans, header: MonaSans, button: MonaSans },
 }
 
-export const RootCssProperties = {
-  '--font': MonaSans,
-  '--font-mono': Minecraft,
-  '--font-monaSans': MonaSans,
-  '--font-hubotSans': HubotSans,
-  '--font-minecraft': Minecraft,
-} as CSSProperties
-
-export const ChadCssProperties = { '--font': HubotSans } as CSSProperties
+export const RootCssProperties = { '--font': MonaSans, '--font-mono': Minecraft } as CSSProperties
+export const ChadCssProperties = { '--font': HubotSans, '--font-display': Minecraft } as CSSProperties
