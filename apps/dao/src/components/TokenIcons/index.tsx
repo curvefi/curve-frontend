@@ -8,11 +8,11 @@ type Props = {
     {
       symbol: string
       address: string
-    }
+    },
   ]
 }
 
-const TokenIcons = ({ className, imageBaseUrl, tokens }: Props) => {
+const TokenIcons = ({ className = '', imageBaseUrl, tokens }: Props) => {
   const totalCount = tokens.length
   const isOddCount = totalCount % 2 === 1
   const iconsPerRow = totalCount > 4 ? 3 : 2
@@ -49,10 +49,6 @@ const TokenIcons = ({ className, imageBaseUrl, tokens }: Props) => {
       })}
     </Wrapper>
   )
-}
-
-TokenIcons.defaultProps = {
-  className: '',
 }
 
 type TokenIconProps = {

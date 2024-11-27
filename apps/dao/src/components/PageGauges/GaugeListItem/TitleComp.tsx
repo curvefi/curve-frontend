@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useMemo } from 'react'
 
 import { shortenTokenAddress } from '@/ui/utils'
 import networks from '@/networks'
@@ -16,9 +17,28 @@ interface TitleCompProps {
 }
 
 const TitleComp = ({ gaugeData, imageBaseUrl, gaugeAddress }: TitleCompProps) => {
+  const imageBaseUrlFormatted = useMemo(() => {
+    if (gaugeData.pool) {
+      if (gaugeData.pool.chain === 'ethereum') {
+        return imageBaseUrl
+      }
+      // Insert chain before the last slash in imageBaseUrl
+      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
+      return `${baseUrlWithoutTrailingSlash}-${gaugeData.pool.chain}/`
+    }
+    if (gaugeData.market) {
+      if (gaugeData.market.chain === 'ethereum') {
+        return imageBaseUrl
+      }
+      const baseUrlWithoutTrailingSlash = imageBaseUrl.replace(/\/$/, '')
+      return `${baseUrlWithoutTrailingSlash}-${gaugeData.market.chain}/`
+    }
+    return imageBaseUrl
+  }, [gaugeData.pool, gaugeData.market, imageBaseUrl])
+
   return (
     <Wrapper>
-      {gaugeData.tokens && <TokenIcons imageBaseUrl={imageBaseUrl} tokens={gaugeData.tokens} />}
+      {gaugeData.tokens && <TokenIcons imageBaseUrl={imageBaseUrlFormatted} tokens={gaugeData.tokens} />}
       <Box flex flexColumn flexGap={'var(--spacing-1)'}>
         <BoxedDataComp>
           {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
