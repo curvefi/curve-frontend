@@ -3,7 +3,7 @@
   "platform": "Usual",
   "description": "Points for providing liquidity.",
   "platformImageId": "usual.png",
-  "dashboardLink": "https://app.usual.money/drugstore",
+  "dashboardLink": "https://app.usual.money/",
   "pools": [
     {
       "id": "null",
