@@ -44,7 +44,7 @@ const TableHeader = <T,>({
 }
 
 const TableHeaderWrapper = styled.div<{ noTitle: boolean; smallScreenBreakpoint?: number }>`
-  background: var(--box_header--secondary--background-color);
+  background-color: var(--box--secondary--content--background-color);
   padding: ${({ noTitle }) => (noTitle ? 'var(--spacing-3)' : '0')} 0 0 0;
   @media (max-width: ${({ smallScreenBreakpoint }) => `${smallScreenBreakpoint}rem`}) {
     display: none;

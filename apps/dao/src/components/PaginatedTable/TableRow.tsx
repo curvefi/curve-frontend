@@ -28,7 +28,7 @@ export const TableRowWrapper = styled.div<{ columns: number; gridTemplateColumns
   display: grid;
   grid-template-columns: ${({ columns, gridTemplateColumns }) =>
     gridTemplateColumns ? gridTemplateColumns : `repeat(${columns}, 1fr)`};
-  padding: var(--spacing-1) 0;
+  padding: var(--spacing-1) var(--spacing-3);
   border-bottom: 1px solid var(--gray-500a20);
   &:last-child {
     border-bottom: none;

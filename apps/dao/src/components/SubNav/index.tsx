@@ -37,7 +37,8 @@ const NavWrapper = styled(Box)<{ nested?: boolean }>`
 `
 
 const ButtonWrapper = styled(Box)`
-  background-color: var(--page--background-color);
+  background-color: var(--box_header--primary--background-color);
+  color: var(--tab--color);
 `
 
 const NavButton = styled(Button)`
