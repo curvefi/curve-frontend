@@ -56,7 +56,7 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   if (process.env.NODE_ENV === 'development') {
     return `http://localhost:${developmentPort}`
   }
-  const windowHost = window?.location.host
+  const windowHost = typeof window === 'undefined' ? undefined : window.location.host
   if (windowHost?.startsWith('staging')) {
     return `https://staging${productionHost === 'curve.fi' ? `.${productionHost}` : `-${productionHost}`}/`
   }
