@@ -32,6 +32,7 @@ body.theme-dark {
 
   --orange-200: hsla(40, 100%, 77%, 1);
   --orange-400: hsla(31, 100%, 48%, 1);
+  --danger_darkBg-400: hsla(31, 100%, 48%, 1);
 
   --warning-text-400: var(--orange-400);
 
