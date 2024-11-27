@@ -50,7 +50,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
 
   const theme = (themeType as string) == 'default' ? 'light' : themeType
   return (
-    <NewHeader
+    <NewHeader<ChainId>
       mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}

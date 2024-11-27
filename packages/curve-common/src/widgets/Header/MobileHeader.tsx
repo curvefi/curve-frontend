@@ -10,7 +10,7 @@ import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useLocation } from 'react-router-dom'
-import { APP_LINK, AppName, AppNames, createAppUrl } from 'curve-ui-kit/src/shared/routes'
+import { APP_LINK, AppName, AppNames, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
 
 const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
 const HIDE_SCROLLBAR = {
@@ -83,10 +83,9 @@ export const MobileHeader = <TChainId extends number>({
                 <SidebarSection
                   key={appName}
                   title={label}
-                  pages={pages.map((page) => ({...page, route: createAppUrl(appName as AppName, page)}))}
+                  pages={pages.map((page) => ({ ...page, route: externalAppUrl(page, appName as AppName) }))}
                 />
-              ))
-            }
+              ))}
 
             {sections.map(({ title, links }) => (
               <SidebarSection key={title} title={title} pages={links} />

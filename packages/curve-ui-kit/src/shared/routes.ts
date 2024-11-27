@@ -56,17 +56,20 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   if (process.env.NODE_ENV === 'development') {
     return `http://localhost:${developmentPort}`
   }
-  const windowHost = typeof window !== 'undefined' ? window.location.host : ''
-  if (windowHost.startsWith('staging')) {
+  const windowHost = window?.location.host
+  if (windowHost?.startsWith('staging')) {
     return `https://staging${productionHost === 'curve.fi' ? `.${productionHost}` : `-${productionHost}`}/`
   }
-  if (windowHost.startsWith('curvefi.vercel.app')) {
+  if (windowHost?.endsWith('curvefi.vercel.app')) {
     const branchPrefix = /curve-dapp(-lend|-crvusd)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
     if (branchPrefix) {
       return `https://curve-${previewPrefix}-${branchPrefix}-curvefi.vercel.app`
     }
   }
+  if (windowHost && !windowHost?.endsWith(productionHost)) {
+    console.warn(`Unexpected host: ${windowHost}`)
+  }
   return `https://${productionHost}`
 }
 
-export const createAppUrl = (app: AppName, { route }: AppPage) => `${APP_LINK[app].root}/#${route}`
+export const externalAppUrl = ({ route }: AppPage, app?: AppName) => app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`
