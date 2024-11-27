@@ -143,7 +143,7 @@ const AppExternalLink = styled(ExternalLink)`
 
   :hover:not(:disabled) {
     color: var(--button--color);
-    border: 1px solid var(--button--border-color);
+    border: 1px solid var(--nav_button--border-color);
     background-color: var(--button_filled--hover--background-color);
   }
 `

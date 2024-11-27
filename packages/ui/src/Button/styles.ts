@@ -7,7 +7,7 @@ import { focusVisible } from 'ui/src/utils/sharedStyles'
 export const buttonFilledStyles = css`
   color: var(--button--color);
   background-color: var(--button--background-color);
-  border: 1px solid var(--button--border-color);
+  border: 1px solid var(--nav_button--border-color);
   box-shadow: 3px 3px 0 var(--button--shadow-color);
 
   transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
@@ -162,12 +162,12 @@ export const buttonBaseStyles = css<ButtonProps>`
         &.active:not(:disabled) {
           color: var(--button--color);
           background-color: var(--button--background-color);
-          border: 1px solid var(--button--border-color);
+          border: 1px solid var(--nav_button--border-color);
           box-shadow: 3px 3px 0 var(--button--shadow-color);
         }
         :hover:not(:disabled) {
           color: var(--button--color); 
-          border: 1px solid var(--button--border-color);
+          border: 1px solid var(--nav_button--border-color);
           background-color: var(--button_filled--hover--background-color);
         }
         &.loading,
