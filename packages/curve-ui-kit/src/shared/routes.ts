@@ -67,7 +67,6 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
       { route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
       { route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
-      { route: DAO_ROUTES.PAGE_USER, label: () => t`User` },
     ],
   },
 }
