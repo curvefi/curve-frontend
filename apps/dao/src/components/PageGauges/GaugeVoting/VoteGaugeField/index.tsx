@@ -25,9 +25,9 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
   newVote = false,
 }) => {
   const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
-  const assignedPower = 100 - powerUsed
-  const maxPower = newVote ? assignedPower / 100 : assignedPower / 100
-  const availableVeCrv = userVeCrv * maxPower
+  const availablePower = 100 - powerUsed
+  const maxPower = newVote ? availablePower / 100 : (availablePower + userGaugeVoteData.userPower) / 100
+  const availableVeCrv = userVeCrv * availablePower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
   const { castVote, txCastVoteState } = useStore((state) => state.gauges)
@@ -81,7 +81,11 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
                 title="Assigned voting power"
                 data={
                   <MetricsColumnData>
-                    {formatNumber(power * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                    {formatNumber(userGaugeVoteData.userPower, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}
+                    %
                   </MetricsColumnData>
                 }
               />
@@ -96,7 +100,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
                 title="Available voting power"
                 data={
                   <MetricsColumnData>
-                    {formatNumber(maxPower * 100, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                    {formatNumber(availablePower, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
                   </MetricsColumnData>
                 }
               />
@@ -116,7 +120,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
                 <LabelTitle>{t`Available voting power:`}</LabelTitle>
                 <LabelData>
                   <strong>
-                    {formatNumber(assignedPower, {
+                    {formatNumber(availablePower, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
