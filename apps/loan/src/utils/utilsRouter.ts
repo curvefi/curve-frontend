@@ -3,10 +3,11 @@ import type { FormType as ManageFormType } from '@/components/PageLoanManage/typ
 import type { Locale } from '@/lib/i18n'
 
 import { DEFAULT_LOCALES, parseLocale } from '@/lib/i18n'
-import { MAIN_ROUTE, ROUTE } from '@/constants'
+import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
+import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
 
-export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
+export function getPath({ locale = 'en', network = 'ethereum' }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)
   return parsedLocale && parsedLocale !== 'en'
     ? `/${parsedLocale}/${network}${rerouteRoute}`
@@ -45,9 +46,9 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
-    const foundSubdirectory = Object.keys(MAIN_ROUTE).find((k) => {
-      return MAIN_ROUTE[k as keyof typeof MAIN_ROUTE].substring(1).toLowerCase() === subdirectory.toLowerCase()
-    })
+    const foundSubdirectory = Object.keys(CRVUSD_ROUTES).find(
+      (k) => CRVUSD_ROUTES[k as keyof typeof CRVUSD_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase(),
+    )
     if (foundSubdirectory) {
       rSubdirectory = subdirectory
       rSubdirectoryUseDefault = false
@@ -140,8 +141,4 @@ export function getRestFullPathname() {
   const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
   const { rNetworkIdx } = getNetworkFromUrl()
   return restPathnames.slice(rNetworkIdx + 1, restPathnames.length).join('/')
-}
-
-export function getParamsFromUrl() {
-  return { ...getNetworkFromUrl(), ...getLocaleFromUrl() }
 }
