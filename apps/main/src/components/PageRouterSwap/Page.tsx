@@ -67,31 +67,31 @@ const Page: NextPage = () => {
   useEffect(() => {
     setLoaded(false)
     if (pageLoaded && !isLoadingCurve && rChainId && typeof hasRouter !== 'undefined') {
-      if (!hasRouter || !network.showRouterSwap) {
+      if (!hasRouter) {
         navigate(getPath(params, `${ROUTE.PAGE_POOLS}`))
-      } else {
-        if (paramsMaxSlippage) {
-          updateGlobalStoreByKey('maxSlippage', paramsMaxSlippage)
-        }
+        return
+      }
+      if (paramsMaxSlippage) {
+        updateGlobalStoreByKey('maxSlippage', paramsMaxSlippage)
+      }
 
-        const routerDefault = network.swap
-        if (Object.keys(tokensMapper).length && !!routerDefault) {
-          const isValidParamsFromAddress = !!paramsFromAddress && !!tokensMapper[paramsFromAddress]
-          const isValidParamsToAddress = !!paramsToAddress && !!tokensMapper[paramsToAddress]
+      const routerDefault = network.swap
+      if (Object.keys(tokensMapper).length && !!routerDefault) {
+        const isValidParamsFromAddress = !!paramsFromAddress && !!tokensMapper[paramsFromAddress]
+        const isValidParamsToAddress = !!paramsToAddress && !!tokensMapper[paramsToAddress]
 
-          if (
-            !paramsFromAddress ||
-            !paramsToAddress ||
-            !isValidParamsFromAddress ||
-            !isValidParamsToAddress ||
-            paramsToAddress === paramsFromAddress
-          ) {
-            const fromAddress = routerCached?.fromAddress ?? routerDefault.fromAddress
-            const toAddress = routerCached?.toAddress ?? routerDefault.toAddress
-            if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
-          } else {
-            setLoaded(true)
-          }
+        if (
+          !paramsFromAddress ||
+          !paramsToAddress ||
+          !isValidParamsFromAddress ||
+          !isValidParamsToAddress ||
+          paramsToAddress === paramsFromAddress
+        ) {
+          const fromAddress = routerCached?.fromAddress ?? routerDefault.fromAddress
+          const toAddress = routerCached?.toAddress ?? routerDefault.toAddress
+          if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
+        } else {
+          setLoaded(true)
         }
       }
     }

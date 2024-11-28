@@ -14,7 +14,6 @@ import GlobalBanner from '@/ui/Banner'
 import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
 import Footer from '@/ui/Footer'
-import networks from '@/networks'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -44,7 +43,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
 
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
-  const sections = useMemo(() => getSections(locale), [rChainId, locale])
+  const sections = useMemo(() => getSections(locale), [locale])
   return (
     <>
       <GlobalBanner

@@ -1,17 +1,13 @@
+import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'
+
 export const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
 
-export const MAIN_ROUTE = {
-  PAGE_MARKETS: '/markets',
-  PAGE_RISK_DISCLAIMER: '/risk-disclaimer',
-  PAGE_INTEGRATIONS: '/integrations',
-}
-
 export const ROUTE = {
-  ...MAIN_ROUTE,
+  ...CRVUSD_ROUTES,
+  PAGE_INTEGRATIONS: '/integrations',
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
-  PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_404: '/404',
   PAGE_PEGKEEPERS: '/pegkeepers',
 }
