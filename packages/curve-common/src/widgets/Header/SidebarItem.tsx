@@ -11,13 +11,14 @@ type SidebarItemProps = {
 }
 
 export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
-  <ListItem disableGutters sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>
+  <ListItem
+    disableGutters
+    sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}
+  >
     <Button
-      component={page.route.startsWith('/') ? RouterLink : Link}
-      target={page.route.startsWith('http') ? '_blank' : undefined}
-      href={page.route}
-      to={page.route}
-      className={page.isActive ? 'current' : ''}
+      {...(page.route.startsWith('http')
+        ? { component: Link, href: page.route, target: page.target }
+        : { component: RouterLink, to: page.route, className: page.isActive ? 'current' : '' })}
       color="navigation"
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}

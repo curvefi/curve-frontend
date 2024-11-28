@@ -53,7 +53,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 
-  const sections = useMemo(() => getSections(locale), [rChainId, locale])
+  const sections = useMemo(() => getSections(locale), [locale])
   return (
     <>
       <GlobalBanner

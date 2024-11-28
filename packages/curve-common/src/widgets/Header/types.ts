@@ -1,19 +1,27 @@
 import { ChainSwitcherProps } from '../../features/switch-chain'
 import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
 import { Dispatch, RefObject } from 'react'
-import { AppNames } from './constants'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { AppName } from 'curve-ui-kit/src/shared/routes'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
-export type AppName = typeof AppNames[number]
 
 export type AppPage = {
   route: string
   label: string
   isActive?: boolean
-  target?: '_self' | '_blank'
-  groupedTitle?: string
-  minWidth?: string
+  target?: '_self' | '_blank' // note this is only used for external routes
+}
+
+export type AppRoute = {
+  route: string
+  label: () => string // lazy evaluation for translations
+}
+
+export type AppRoutes = {
+  root: string
+  label: string
+  pages: AppRoute[]
 }
 
 export type NavigationSection = {
@@ -30,14 +38,13 @@ export type BaseHeaderProps<TChainId = number> = {
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
-  appStats: { label: string, value: string }[]
+  appStats: { label: string; value: string }[]
   advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
   translations: {
     advanced: string
     advancedMode?: string
     theme: string
-    otherApps: string
     settings: string
     socialMedia: string
   }
@@ -50,5 +57,5 @@ export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
 export const APP_NAMES = {
   main: 'Curve',
   lend: 'LLAMALEND',
-  crvusd: 'crvUSD'
+  crvusd: 'crvUSD',
 } as const

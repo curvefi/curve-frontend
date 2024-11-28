@@ -1,10 +1,10 @@
-import { AppName } from './types'
 import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
 import Box from '@mui/material/Box'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
 import React from 'react'
 import type { Theme, SxProps } from '@mui/system'
+import { AppName } from 'curve-ui-kit/src/shared/routes'
 
 
 export type MobileTopBarProps<TChainId extends number> = {
