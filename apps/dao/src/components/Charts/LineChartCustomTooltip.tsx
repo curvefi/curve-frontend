@@ -28,7 +28,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
             {gauge_weight ? (
               <TooltipData>
                 {formatNumber(gauge_weight, {
-                  showDecimalIfSmallNumberOnly: true,
+                  notation: 'compact',
                 })}
               </TooltipData>
             ) : (
@@ -38,7 +38,11 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
           <TooltipColumn>
             <TooltipDataTitle>{t`Relative Gauge Weight`}</TooltipDataTitle>
             {gauge_relative_weight ? (
-              <TooltipData>{gauge_relative_weight}%</TooltipData>
+              <TooltipData>
+                {formatNumber(gauge_relative_weight, {
+                  notation: 'compact',
+                })}
+              </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -48,7 +52,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
             {emissions ? (
               <TooltipData>
                 {formatNumber(emissions, {
-                  showDecimalIfSmallNumberOnly: true,
+                  notation: 'compact',
                 })}
               </TooltipData>
             ) : (

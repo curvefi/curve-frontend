@@ -20,9 +20,7 @@ const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, Name
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`User veCRV`}</TooltipDataTitle>
-            <TooltipData>
-              {formatNumber(payload[0].payload.userVeCrv, { showDecimalIfSmallNumberOnly: true })} veCRV
-            </TooltipData>
+            <TooltipData>{formatNumber(payload[0].payload.userVeCrv, { notation: 'compact' })} veCRV</TooltipData>
           </TooltipColumn>
         </Box>
       </TooltipWrapper>

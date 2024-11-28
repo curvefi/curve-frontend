@@ -4,6 +4,8 @@ import { TooltipProps } from 'recharts'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
+import { formatNumber } from '@/ui/utils'
+
 import Box from '@/ui/Box'
 
 const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
@@ -22,7 +24,9 @@ const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, Name
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge weight 7d delta`}</TooltipDataTitle>
             {sevenDayDelta ? (
-              <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>{sevenDayDelta}%</TooltipData>
+              <TooltipData className={sevenDayDelta > 0 ? 'positive' : 'negative'}>
+                {formatNumber(sevenDayDelta, { notation: 'compact' })}%
+              </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
@@ -30,7 +34,9 @@ const BarChartCustomTooltip = ({ active, payload }: TooltipProps<ValueType, Name
           <TooltipColumn>
             <TooltipDataTitle>{t`Gauge weight 60d delta`}</TooltipDataTitle>
             {sixtyDayDelta ? (
-              <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>{sixtyDayDelta}%</TooltipData>
+              <TooltipData className={sixtyDayDelta > 0 ? 'positive' : 'negative'}>
+                {formatNumber(sixtyDayDelta, { notation: 'compact' })}%
+              </TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}
