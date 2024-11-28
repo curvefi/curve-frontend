@@ -158,8 +158,6 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           {} as GaugeCurveApiDataMapper,
         )
 
-        console.log(gaugeDataMapper)
-
         set(
           produce(get(), (state) => {
             state[sliceKey].gaugeCurveApiData = {

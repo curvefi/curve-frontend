@@ -1,15 +1,9 @@
+import { DAO_ROUTES } from '@ui-kit/shared/routes'
+
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
-export const MAIN_ROUTE = {
-  PAGE_PROPOSALS: '/proposals',
-  PAGE_GAUGES: '/gauges',
-  PAGE_VECRV: '/vecrv',
-  PAGE_ANALYTICS: '/analytics',
-  PAGE_USER: '/user',
-}
-
 export const ROUTE = {
-  ...MAIN_ROUTE,
+  ...DAO_ROUTES,
   PAGE_VECRV_CREATE: '/vecrv/create',
   PAGE_VECRV_ADJUST_CRV: '/vecrv/adjust_crv',
   PAGE_VECRV_ADJUST_DATE: '/vecrv/adjust_date',

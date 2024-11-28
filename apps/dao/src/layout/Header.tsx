@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
-import { CONNECT_STAGE, ROUTE } from '@/constants'
+import { CONNECT_STAGE } from '@/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, isLoading } from '@/ui/utils'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
@@ -11,6 +11,7 @@ import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 type HeaderProps = { sections: NavigationSection[] }
 
@@ -30,7 +31,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const rLocale = getLocaleFromUrl()
+  const { rLocalePathname } = getLocaleFromUrl()
   const { params: routerParams, location } = routerProps ?? {}
 
   const routerNetwork = routerParams?.network ?? 'ethereum'
@@ -44,19 +45,8 @@ export const Header = ({ sections }: HeaderProps) => {
       isMdUp={isMdUp}
       currentApp="dao"
       pages={useMemo(
-        () =>
-          _parseRouteAndIsActive(
-            [
-              { route: ROUTE.PAGE_VECRV_CREATE, label: t`Lock CRV`, groupedTitle: 'DAO' },
-              { route: ROUTE.PAGE_PROPOSALS, label: t`Proposals`, groupedTitle: 'DAO' },
-              { route: ROUTE.PAGE_GAUGES, label: t`Gauges`, groupedTitle: 'DAO' },
-              { route: ROUTE.PAGE_ANALYTICS, label: t`Analytics`, groupedTitle: 'DAO' },
-            ],
-            rLocale.rLocalePathname,
-            routerPathname,
-            routerNetwork,
-          ),
-        [rLocale.rLocalePathname, routerNetwork, routerPathname],
+        () => _parseRouteAndIsActive(APP_LINK.dao.pages, rLocalePathname, routerPathname, routerNetwork),
+        [rLocalePathname, routerNetwork, routerPathname],
       )}
       themes={[
         theme,
@@ -101,7 +91,6 @@ export const Header = ({ sections }: HeaderProps) => {
         advanced: t`Advanced Mode`,
         advancedMode: t`Advanced`,
         theme: t`Mode`,
-        otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,
       }}

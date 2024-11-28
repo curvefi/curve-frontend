@@ -12,7 +12,7 @@ const PageAnalytics = dynamic(() => import('@/components/PageAnalytics/Page'), {
 const PageUser = dynamic(() => import('@/components/PageUser/Page'), { ssr: false })
 const PageGauge = dynamic(() => import('@/components/PageGauge/Page'), { ssr: false })
 const PageVeCrv = dynamic(() => import('@/components/PageVeCrv/Page'), { ssr: false })
-const App: NextPage = (pageProps) => {
+const App: NextPage = () => {
   const SubRoutes = (
     <>
       <Route path=":network/" element={<PageDao />} />
