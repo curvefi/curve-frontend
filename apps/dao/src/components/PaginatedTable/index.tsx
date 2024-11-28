@@ -72,7 +72,7 @@ const PaginatedTable = <T,>({
             gridTemplateColumns={gridTemplateColumns}
             smallScreenBreakpoint={smallScreenBreakpoint}
           />
-          <TableBody>
+          <TableBody noPagination={noPagination}>
             {fetchingState === 'LOADING' && <Spinner height={FETCH_FEEDBACK_HEIGHT} />}
             {fetchingState === 'SUCCESS' &&
               currentItems.map((item, index) => renderRow(item, indexOfFirstItem + index))}
@@ -125,9 +125,10 @@ const ErrorMessageWrapper = styled(Box)<{ height: string }>`
   width: 100%;
 `
 
-const TableBody = styled.div`
+const TableBody = styled.div<{ noPagination: boolean }>`
   display: flex;
   flex-direction: column;
+  ${({ noPagination }) => noPagination && 'padding-bottom: var(--spacing-3)'}
 `
 
 export default PaginatedTable

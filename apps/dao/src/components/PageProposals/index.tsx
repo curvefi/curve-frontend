@@ -43,7 +43,7 @@ const Proposals = () => {
     (key: React.Key) => {
       setActiveSortBy(key as SortByFilterProposals)
     },
-    [setActiveSortBy]
+    [setActiveSortBy],
   )
 
   const handleChangeSortingDirection = useCallback(() => {
@@ -54,7 +54,7 @@ const Proposals = () => {
     (rProposalId: string) => {
       navigate(`/ethereum/proposals/${rProposalId}`)
     },
-    [navigate]
+    [navigate],
   )
 
   useEffect(() => {
@@ -122,7 +122,7 @@ const Proposals = () => {
             </SearchMessage>
           )}
           <ProposalsWrapper>
-            {isLoading && (
+            {isLoading && !isError && (
               <StyledSpinnerWrapper>
                 <Spinner />
               </StyledSpinnerWrapper>

@@ -11,6 +11,7 @@ import Icon from '@/ui/Icon'
 import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import InternalLinkButton from '@/components/InternalLinkButton'
+import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 
 import LineChartComponent from '@/components/Charts/LineChartComponent'
 import TitleComp from '@/components/PageGauges/GaugeListItem/TitleComp'
@@ -37,6 +38,7 @@ const GaugeListItem = ({
   addUserVote = false,
 }: Props) => {
   const { gaugeWeightHistoryMapper, getHistoricGaugeWeights } = useStore((state) => state.gauges)
+  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
   const { veCrv } = useStore((state) => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
@@ -46,6 +48,9 @@ const GaugeListItem = ({
     !gaugeWeightHistoryMapper[gaugeData.address] ||
     (gaugeWeightHistoryMapper[gaugeData.address]?.data.length === 0 &&
       gaugeWeightHistoryMapper[gaugeData.address]?.loadingState !== 'ERROR')
+  const gaugeExternalLink = gaugeCurveApiData?.isPool
+    ? gaugeCurveApiData.poolUrls.deposit[0]
+    : gaugeCurveApiData?.lendingVaultUrls.deposit
 
   useEffect(() => {
     if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
@@ -106,6 +111,12 @@ const GaugeListItem = ({
             flexAlignItems={'center'}
             margin={'var(--spacing-2) 0 var(--spacing-2) auto'}
           >
+            <ExternalLinkIconButton
+              href={gaugeExternalLink}
+              tooltip={t`Visit gauge ${gaugeCurveApiData?.isPool ? 'pool' : 'market'}`}
+            >
+              {t`VISIT ${gaugeCurveApiData?.isPool ? 'POOL' : 'MARKET'}`}
+            </ExternalLinkIconButton>
             <InternalLinkButton to={`/gauges/${gaugeData.address}`}>{t`VISIT GAUGE`}</InternalLinkButton>
           </Box>
         </OpenContainer>

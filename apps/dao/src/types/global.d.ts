@@ -294,7 +294,7 @@ declare global {
     [gaugeAddress: string]: GaugeFormattedData
   }
 
-  interface GaugeDataMapper {
+  interface GaugeCurveApiDataMapper {
     [gaugeAddress: string]: CurveApiGaugeData
   }
 

@@ -19,9 +19,9 @@ type SliceState = {
   gaugeListSortBy: SortByFilterGauges
   searchValue: string
   gaugeMapper: GaugeMapper
-  gaugeDataMapper: {
+  gaugeCurveApiData: {
     fetchingState: FetchingState
-    data: GaugeDataMapper
+    data: GaugeCurveApiDataMapper
   }
   gaugeVotesMapper: GaugeVotesMapper
   gaugeWeightHistoryMapper: { [address: string]: { loadingState: FetchingState; data: GaugeWeightHistoryData[] } }
@@ -76,7 +76,7 @@ const DEFAULT_STATE: SliceState = {
   },
   searchValue: '',
   gaugeMapper: {},
-  gaugeDataMapper: {
+  gaugeCurveApiData: {
     fetchingState: 'LOADING',
     data: {},
   },
@@ -137,7 +137,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     getGaugesData: async () => {
       set(
         produce(get(), (state) => {
-          state[sliceKey].gaugeDataMapper = {
+          state[sliceKey].gaugeCurveApiData = {
             fetchingState: 'LOADING',
             data: {},
           }
@@ -148,18 +148,21 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const response = await fetch(`https://api.curve.fi/v1/getAllGauges`)
         const data: CurveGaugeResponse = await response.json()
 
-        const gaugeDataMapper: GaugeDataMapper = Object.entries(data.data).reduce((acc, [poolId, gaugeData]) => {
-          if (gaugeData.gauge) {
-            acc[gaugeData.gauge] = gaugeData
-          }
-          return acc
-        }, {} as GaugeDataMapper)
+        const gaugeDataMapper: GaugeCurveApiDataMapper = Object.entries(data.data).reduce(
+          (acc, [poolId, gaugeData]) => {
+            if (gaugeData.gauge) {
+              acc[gaugeData.gauge.toLowerCase()] = gaugeData
+            }
+            return acc
+          },
+          {} as GaugeCurveApiDataMapper,
+        )
 
         console.log(gaugeDataMapper)
 
         set(
           produce(get(), (state) => {
-            state[sliceKey].gaugeDataMapper = {
+            state[sliceKey].gaugeCurveApiData = {
               fetchingState: 'SUCCESS',
               data: gaugeDataMapper,
             }
@@ -169,7 +172,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         console.error('Error fetching gauges data:', error)
         set(
           produce(get(), (state) => {
-            state[sliceKey].gaugeDataMapper.fetchingState = 'ERROR'
+            state[sliceKey].gaugeCurveApiData.fetchingState = 'ERROR'
           }),
         )
       }

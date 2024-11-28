@@ -3,6 +3,7 @@ import { t } from '@lingui/macro'
 
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp, shortenTokenAddress } from '@/ui/utils/'
 import networks from '@/networks'
+import useStore from '@/store/useStore'
 
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import Box from '@/ui/Box'
@@ -15,6 +16,11 @@ interface GaugeMetricsProps {
 }
 
 const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
+  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
+  const gaugeExternalLink = gaugeCurveApiData?.isPool
+    ? gaugeCurveApiData.poolUrls.deposit[0]
+    : gaugeCurveApiData?.lendingVaultUrls.deposit
+
   return (
     <Wrapper>
       <h4>{t`GAUGE METRICS`}</h4>
@@ -131,8 +137,8 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                   <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.pool?.address)}</StyledMetricsColumnData>
                   <BigScreenButtonsWrapper>
                     <ExternalLinkIconButton
-                      href={networks[1].scanAddressPath(gaugeData?.pool?.address)}
-                      tooltip={t`View on explorer`}
+                      href={gaugeExternalLink}
+                      tooltip={gaugeCurveApiData?.isPool ? t`Visit pool` : t`Visit market`}
                     />
                     <CopyIconButton copyContent={gaugeData?.pool?.address} tooltip={t`Copy address`} />
                   </BigScreenButtonsWrapper>
