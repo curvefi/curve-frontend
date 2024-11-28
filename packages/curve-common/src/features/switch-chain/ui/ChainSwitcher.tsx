@@ -1,10 +1,11 @@
+import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import Box from '@mui/material/Box'
 import { useCallback, useMemo } from 'react'
 import Typography from '@mui/material/Typography'
-import { CompactDropDown } from 'curve-ui-kit/src/shared/ui/CompactDropDown'
 import Image from 'next/image'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
@@ -57,20 +58,30 @@ export const ChainSwitcher = <TChainId extends number>({
     [networkMapping],
   )
 
+  const onSelectChanged = useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])
   if (options.length <= 1) {
     return null
   }
 
   return (
-    <CompactDropDown<TChainId> value={chainId} onChange={onChange} disabled={disabled} renderValue={renderChainIcon}>
+    <Select<TChainId>
+      onChange={onSelectChanged}
+      size="small"
+      variant="standard"
+      disableUnderline
+      inputProps={{ sx: { display: 'flex', padding: 2 } }}
+      value={chainId}
+      disabled={disabled}
+      renderValue={renderChainIcon}
+    >
       {options.map(({ chainId: id, src, label }) => (
         <MenuItem key={id} value={id} divider>
           <ChainIcon size={18} label={label} src={src} />
-          <Typography sx={{ marginLeft: 4 }} variant="headingXs">
+          <Typography sx={{ marginLeft: 4 }} variant="headingXsBold">
             {label}
           </Typography>
         </MenuItem>
       ))}
-    </CompactDropDown>
+    </Select>
   )
 }
