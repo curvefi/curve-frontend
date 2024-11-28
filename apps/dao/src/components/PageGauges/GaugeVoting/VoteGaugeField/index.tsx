@@ -26,7 +26,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
 }) => {
   const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
   const assignedPower = 100 - powerUsed
-  const maxPower = newVote ? assignedPower / 100 : (assignedPower + userGaugeVoteData.userPower) / 100
+  const maxPower = newVote ? assignedPower / 100 : assignedPower / 100
   const availableVeCrv = userVeCrv * maxPower
 
   const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
