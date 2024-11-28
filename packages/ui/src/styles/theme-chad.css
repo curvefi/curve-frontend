@@ -15,12 +15,16 @@ body.theme-chad {
   --primary-700: hsla(243, 64%, 86%, 1);
   --primary_darkBg-400: hsla(244, 65%, 91%, 1);
 
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsla(31, 100%, 48%, 1);
+  --danger-600: hsl(357, 81%, 91%);
+
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
   --page--background-color: hsl(242, 56%, 83%);
   --page--header--background-color: var(--page--background-color);
 
-  --layout--home--background-color: var(--page--background-color);
+  --layout--home--background-color: var(--white);
 
   --active--background-color: var(--primary-100);
   --active--border-color: var(--primary-100);

@@ -53,7 +53,7 @@ body.theme-default {
   --whitel98: hsla(0, 7%, 97%, 1);
 
   --danger-400: hsla(357, 85%, 54%, 1);
-  --danger_darkBg-400: hsl(357, 81%, 5%);
+  --danger_darkBg-400: hsla(357, 85%, 54%, 1);
   --danger-600: hsl(357, 81%, 91%);
 
   --success-400: hsla(149, 65%, 44%, 1);
