@@ -108,7 +108,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
                     })}{' '}
                     {votePercentage(
                       userProposalVotesMapper[userAddress].votes[proposalId].vote_for,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply,
                     )}
                   </VotedRowItem>
                 </VotedRow>
@@ -124,7 +124,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
                     })}{' '}
                     {votePercentage(
                       userProposalVotesMapper[userAddress].votes[proposalId].vote_against,
-                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply
+                      userProposalVotesMapper[userAddress].votes[proposalId].vote_total_supply,
                     )}
                   </VotedRowItem>
                 </VotedRow>
@@ -233,7 +233,8 @@ const VoteButton = styled(Button)<{ isFor?: boolean }>`
         background-color: var(--chart-green);
         border: 1px solid var(--chart-green);
         color: var(--white);
-        &:hover {
+        &:hover:not(:disabled):not(.loading),
+        &:active:not(:disabled):not(.loading) {
           background-color: var(--chart-green);
           opacity: 0.8;
         }
@@ -243,7 +244,8 @@ const VoteButton = styled(Button)<{ isFor?: boolean }>`
         background-color: var(--chart-red);
         border: 1px solid var(--chart-red);
         color: var(--white);
-        &:hover {
+        &:hover:not(:disabled):not(.loading),
+        &:active:not(:disabled):not(.loading) {
           background-color: var(--chart-red);
           opacity: 0.8;
         }
