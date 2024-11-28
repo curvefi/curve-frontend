@@ -65,9 +65,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Emissions (CRV)`}
             data={
               <StyledMetricsColumnData>
-                {formatNumber(gaugeData.emissions, {
-                  showDecimalIfSmallNumberOnly: true,
-                })}
+                {formatNumber(gaugeData.emissions, { notation: 'compact' })}
               </StyledMetricsColumnData>
             }
           />
@@ -83,7 +81,9 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Relative Weight`}
           data={
             <StyledMetricsColumnData>
-              {gaugeData?.gauge_relative_weight ? `${gaugeData?.gauge_relative_weight.toFixed(2)}%` : 'N/A'}
+              {gaugeData?.gauge_relative_weight
+                ? `${formatNumber(gaugeData?.gauge_relative_weight, { notation: 'compact' })}%`
+                : 'N/A'}
             </StyledMetricsColumnData>
           }
         />
@@ -101,7 +101,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               }`}
             >
               {gaugeData?.gauge_relative_weight_7d_delta
-                ? `${gaugeData?.gauge_relative_weight_7d_delta.toFixed(2)}%`
+                ? `${formatNumber(gaugeData?.gauge_relative_weight_7d_delta, { notation: 'compact' })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -120,7 +120,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
               }`}
             >
               {gaugeData?.gauge_relative_weight_60d_delta
-                ? `${gaugeData?.gauge_relative_weight_60d_delta.toFixed(2)}%`
+                ? `${formatNumber(gaugeData?.gauge_relative_weight_60d_delta, { notation: 'compact' })}%`
                 : 'N/A'}
             </StyledMetricsColumnData>
           }
@@ -160,8 +160,8 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Pool TVL`}
             data={
               <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.tvl_usd, {
-                showDecimalIfSmallNumberOnly: true,
                 currency: 'USD',
+                notation: 'compact',
               })}`}</StyledMetricsColumnData>
             }
           />
@@ -174,7 +174,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`24h Pool Volume`}
             data={
               <StyledMetricsColumnData>{t`${formatNumber(gaugeData?.pool?.trading_volume_24h, {
-                showDecimalIfSmallNumberOnly: true,
+                notation: 'compact',
                 currency: 'USD',
               })}`}</StyledMetricsColumnData>
             }

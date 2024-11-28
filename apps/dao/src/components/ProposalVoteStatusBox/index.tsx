@@ -1,8 +1,7 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
-import { formatNumberWithSuffix } from '@/ui/utils'
-import { breakpoints } from '@/ui/utils'
+import { breakpoints, formatNumber } from '@/ui/utils'
 
 import Box from '@/ui/Box'
 import ProgressBar from '@/components/ProposalVoteStatusBox/ProgressBar'
@@ -30,8 +29,8 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>{t`Quorum`} </HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>{currentQuorumPercentage.toFixed(2)}%</HighlightedData>{' '}
-            <Data>of {formatNumberWithSuffix(minAcceptQuorumPercent)}%</Data>
+            <HighlightedData>{formatNumber(currentQuorumPercentage, { notation: 'compact' })}%</HighlightedData>{' '}
+            <Data>of {formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}%</Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
         </Box>
@@ -49,7 +48,7 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>{t`Min Support`}</HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            <HighlightedData>{formatNumber(support, { notation: 'compact' })}%</HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
@@ -58,13 +57,13 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
         <Box flex flexJustifyContent="space-between">
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
-            <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesFor)} veCRV`}>
-              <HighlightedData>{support.toFixed(2)}%</HighlightedData>
+            <Tooltip noWrap tooltip={`${formatNumber(votesFor, { notation: 'compact' })} veCRV`}>
+              <HighlightedData>{formatNumber(support, { notation: 'compact' })}%</HighlightedData>
             </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <Tooltip noWrap tooltip={`${formatNumberWithSuffix(votesAgainst)} veCRV`}>
-              <HighlightedData>{against.toFixed(2)}%</HighlightedData>
+            <Tooltip noWrap tooltip={`${formatNumber(votesAgainst, { notation: 'compact' })} veCRV`}>
+              <HighlightedData>{formatNumber(against, { notation: 'compact' })}%</HighlightedData>
             </Tooltip>
             <HighlightedData className="against">{t`Against`}</HighlightedData>
           </Box>

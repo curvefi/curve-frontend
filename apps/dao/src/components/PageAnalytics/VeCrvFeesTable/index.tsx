@@ -50,9 +50,9 @@ const VeCrcFees: React.FC = () => {
                           {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
                         </FeeDate>
                         <FeeData>
-                          $
                           {formatNumber(item.fees_usd, {
-                            showDecimalIfSmallNumberOnly: true,
+                            currency: 'USD',
+                            notation: 'compact',
                           })}
                         </FeeData>
                       </FeeRow>
@@ -61,7 +61,7 @@ const VeCrcFees: React.FC = () => {
                 </FeesContainer>
                 <TotalFees>
                   <FeeDate>{t`Total Fees:`}</FeeDate>
-                  <FeeData>${formatNumber(veCrvFees.veCrvTotalFees, { showDecimalIfSmallNumberOnly: true })}</FeeData>
+                  <FeeData>{formatNumber(veCrvFees.veCrvTotalFees, { currency: 'USD', notation: 'compact' })}</FeeData>
                 </TotalFees>
               </>
             )}

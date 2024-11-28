@@ -46,7 +46,6 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       sortBy={gaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
       setSortBy={(key) => {
-        console.log('key', key)
         setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
       }}
       getData={() => getGaugeVotes(gaugeAddress)}
@@ -63,9 +62,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
           </TableData>
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(gaugeVote.weight, {
-              showDecimalIfSmallNumberOnly: true,
-            })}
+            {formatNumber(gaugeVote.weight, { notation: 'compact' })}
           </TableData>
           <TableDataLink
             onClick={(e) => {

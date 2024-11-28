@@ -17,8 +17,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
       <BoxColumn>
         <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
           {formatNumber(gaugeData.gauge_relative_weight, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
+            notation: 'compact',
           })}
           %
         </GaugeData>
@@ -35,8 +34,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
         >
           {gaugeData.gauge_relative_weight_7d_delta
             ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
+                notation: 'compact',
               })}%`
             : 'N/A'}
         </GaugeData>
@@ -53,8 +51,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
         >
           {gaugeData.gauge_relative_weight_60d_delta
             ? `${formatNumber(gaugeData.gauge_relative_weight_60d_delta, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
+                notation: 'compact',
               })}%`
             : 'N/A'}
         </GaugeData>

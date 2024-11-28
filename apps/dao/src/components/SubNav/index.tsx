@@ -55,6 +55,9 @@ const NavButton = styled(Button)`
     padding-top: calc(var(--spacing-3) - 2px);
     background-color: var(--box--secondary--background-color);
   }
+  &:hover:not(:disabled) {
+    background-color: var(--box--secondary--background-color);
+  }
 `
 
 export default SubNav

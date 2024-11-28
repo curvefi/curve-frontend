@@ -29,13 +29,13 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
         <Box>
           <SubTitle>{t`Total Votes`}</SubTitle>
           <Box>
-            <Data>{formatNumber(totalVotes)} veCRV</Data>
+            <Data>{formatNumber(totalVotes, { notation: 'compact' })} veCRV</Data>
           </Box>
         </Box>
         <Box>
           <SubTitle>{t`Voters`}</SubTitle>
           <Box>
-            <Data className="align-right">{formatNumber(currentProposal?.vote_count)}</Data>
+            <Data className="align-right">{formatNumber(currentProposal?.vote_count, { notation: 'compact' })}</Data>
           </Box>
         </Box>
       </TotalWrapper>
@@ -65,7 +65,8 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
                 </Box>
                 <StyledExternalLink href={networks[1].scanTxPath(vote.transaction_hash)}>
                   <Data>
-                    {formatNumberWithSuffix(+vote.stake)} ({vote.relativePower.toFixed(2)}%)
+                    {formatNumber(+vote.stake, { notation: 'compact' })} (
+                    {formatNumber(vote.relativePower, { notation: 'compact' })}%)
                   </Data>
                 </StyledExternalLink>
               </DataRow>

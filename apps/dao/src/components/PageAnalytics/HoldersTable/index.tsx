@@ -48,15 +48,15 @@ const TopHoldersTable: React.FC = () => {
               </span>
             </StyledTableDataLink>
             <TableData className={allHoldersSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.weight, { showDecimalIfSmallNumberOnly: true })}
+              {formatNumber(holder.weight, { notation: 'compact' })}
             </TableData>
             <TableData className={allHoldersSortBy.key === 'locked' ? 'sortby-active right-padding' : 'right-padding'}>
-              {formatNumber(holder.locked, { showDecimalIfSmallNumberOnly: true })}
+              {formatNumber(holder.locked, { notation: 'compact' })}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'weight_ratio' ? 'sortby-active right-padding' : 'right-padding'}
             >
-              {formatNumber(holder.weight_ratio, { style: 'percent' })}
+              {formatNumber(holder.weight_ratio, { style: 'percent', notation: 'compact' })}
             </TableData>
             <TableData
               className={allHoldersSortBy.key === 'unlock_time' ? 'sortby-active right-padding' : 'right-padding'}

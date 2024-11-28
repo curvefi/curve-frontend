@@ -22,7 +22,7 @@ const PositiveAndNegativeBarChartTooltip: React.FC<TooltipProps<ValueType, NameT
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV Locked`}</TooltipDataTitle>
             {amount ? (
-              <TooltipData>{formatNumber(amount, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
+              <TooltipData>{formatNumber(amount, { notation: 'compact' })}</TooltipData>
             ) : (
               <TooltipDataNotAvailable>{t`N/A`}</TooltipDataNotAvailable>
             )}

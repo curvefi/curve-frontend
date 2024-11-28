@@ -36,7 +36,7 @@ const CrvStats: React.FC = () => {
             title={t`Total CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalCrv, { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -45,7 +45,7 @@ const CrvStats: React.FC = () => {
             title={t`Locked CRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalLockedCrv, { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -54,7 +54,7 @@ const CrvStats: React.FC = () => {
             title={t`veCRV`}
             data={
               <MetricsColumnData>
-                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv, { showDecimalIfSmallNumberOnly: true })}
+                {noProvider ? '-' : formatNumber(veCrvData.totalVeCrv, { notation: 'compact' })}
               </MetricsColumnData>
             }
           />
@@ -66,7 +66,7 @@ const CrvStats: React.FC = () => {
                 tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
               >
                 <MetricsColumnData>
-                  {formatNumber(veCrvHolders.totalHolders, { showDecimalIfSmallNumberOnly: true })}
+                  {formatNumber(veCrvHolders.totalHolders, { notation: 'compact' })}
                 </MetricsColumnData>
               </StyledTooltip>
             }
@@ -79,7 +79,7 @@ const CrvStats: React.FC = () => {
                 {noProvider
                   ? '-'
                   : `${formatNumber(veCrvData.lockedPercentage, {
-                      showDecimalIfSmallNumberOnly: true,
+                      notation: 'compact',
                     })}%`}
               </MetricsColumnData>
             }
@@ -89,7 +89,9 @@ const CrvStats: React.FC = () => {
             title={t`veCRV APR`}
             data={
               <AprRow>
-                <MetricsColumnData noMargin>{noProvider ? '-' : `~${veCrvApr.toFixed(2)}%`}</MetricsColumnData>
+                <MetricsColumnData noMargin>
+                  {noProvider ? '-' : `~${formatNumber(veCrvApr, { notation: 'compact' })}%`}
+                </MetricsColumnData>
               </AprRow>
             }
           />

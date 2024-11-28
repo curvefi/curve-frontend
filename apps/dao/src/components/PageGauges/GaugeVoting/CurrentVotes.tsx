@@ -26,7 +26,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const { userEns, userVeCrv } = useStore((state) => state.user)
   const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
   const { setUserGaugeVoteWeightsSortBy, userGaugeVoteWeightsSortBy, getUserGaugeVoteWeights } = useStore(
-    (state) => state.user
+    (state) => state.user,
   )
   const { gaugeMapper, selectedGauge, gaugesLoading } = useStore((state) => state.gauges)
 
