@@ -1,15 +1,11 @@
+import { LEND_ROUTES } from '@ui-kit/shared/routes'
+
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
-export const LARGE_APY = 5000000
-
-export const MAIN_ROUTE = {
-  PAGE_MARKETS: '/markets',
-  PAGE_RISK_DISCLAIMER: '/risk-disclaimer',
-  PAGE_INTEGRATIONS: '/integrations',
-}
 
 export const ROUTE = {
-  ...MAIN_ROUTE,
+  ...LEND_ROUTES,
+  PAGE_INTEGRATIONS: '/integrations',
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
   PAGE_VAULT: '/vault',

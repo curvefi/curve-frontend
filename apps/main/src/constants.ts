@@ -1,15 +1,12 @@
+import { DEX_ROUTES } from '@ui-kit/shared/routes'
+
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
-
-export const WS_ADDRESS = 'wss://prices.curve.fi/v1/stream/ws'
 export const LARGE_APY = 5000
 
 export const MAIN_ROUTE = {
-  PAGE_SWAP: '/swap',
-  PAGE_POOLS: '/pools',
-  PAGE_CREATE_POOL: '/create-pool',
+  ...DEX_ROUTES,
   PAGE_DEPLOY_GAUGE: '/deploy-gauge',
-  PAGE_DASHBOARD: '/dashboard',
   PAGE_LOCKER: '/locker',
   PAGE_INTEGRATIONS: '/integrations',
   PAGE_COMPENSATION: '/compensation',
