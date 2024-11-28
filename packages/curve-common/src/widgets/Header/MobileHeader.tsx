@@ -65,7 +65,14 @@ export const MobileHeader = <TChainId extends number>({
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          PaperProps={{ sx: { top: DEFAULT_BAR_SIZE, ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
+          PaperProps={{
+            sx: {
+              top: (t) => `calc(2 * ${t.spacing(3)} + ${DEFAULT_BAR_SIZE})`,
+              ...SECONDARY_BACKGROUND,
+              ...SIDEBAR_WIDTH,
+              ...HIDE_SCROLLBAR,
+            },
+          }}
           variant="temporary"
           hideBackdrop
           data-testid="mobile-drawer"
