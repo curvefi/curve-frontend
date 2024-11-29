@@ -138,6 +138,8 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   }
 
   if (userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS') {
+    const id = pricesProposal?.vote_id
+
     return (
       <Wrapper className={className}>
         {/* Vote */}
@@ -145,14 +147,14 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
           <VoteButton
             isFor
             variant="icon-filled"
-            onClick={() => castVote(1, 'PARAMETER', true)}
+            onClick={() => castVote(id, 'PARAMETER', true)}
             loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
           >
             {t`Vote For`}
           </VoteButton>
           <VoteButton
             variant="icon-filled"
-            onClick={() => castVote(1, 'PARAMETER', false)}
+            onClick={() => castVote(id, 'PARAMETER', false)}
             loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
           >
             {t`Vote Against`}
