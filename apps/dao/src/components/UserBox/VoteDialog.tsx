@@ -32,10 +32,10 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
 
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
 
-  const executeProposalComponent = () => {
-    const id = pricesProposal?.vote_id
-    const type = pricesProposal?.vote_type
+  const id = pricesProposal?.vote_id
+  const type = pricesProposal?.vote_type
 
+  const executeProposalComponent = () => {
     return (
       <>
         {executeTx.status === 'LOADING' && (
@@ -138,8 +138,6 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   }
 
   if (userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS') {
-    const id = pricesProposal?.vote_id
-
     return (
       <Wrapper className={className}>
         {/* Vote */}
@@ -147,14 +145,14 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
           <VoteButton
             isFor
             variant="icon-filled"
-            onClick={() => castVote(id, 'PARAMETER', true)}
+            onClick={() => castVote(id, type, true)}
             loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
           >
             {t`Vote For`}
           </VoteButton>
           <VoteButton
             variant="icon-filled"
-            onClick={() => castVote(id, 'PARAMETER', false)}
+            onClick={() => castVote(id, type, false)}
             loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
           >
             {t`Vote Against`}
