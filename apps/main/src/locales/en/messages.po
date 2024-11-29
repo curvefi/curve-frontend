@@ -3216,16 +3216,16 @@ msgstr "Withdraw/Claim"
 #~ msgstr "Withdrawing"
 
 #: src/components/PagePool/Withdraw/components/FormWithdraw.tsx:110
-msgid "Withdrew {0} LP Tokens for {tokenText}"
-msgstr "Withdrew {0} LP Tokens for {tokenText}"
+msgid "withdraw {0} LP Tokens for {tokenText}"
+msgstr "withdraw {0} LP Tokens for {tokenText}"
 
 #: src/domain/transfer/withdraw/form-withdraw/withdraw-actions.tsx:221
-#~ msgid "Withdrew {lpTokenPayload} LP Tokens, received {0}"
-#~ msgstr "Withdrew {lpTokenPayload} LP Tokens, received {0}"
+#~ msgid "withdraw {lpTokenPayload} LP Tokens, received {0}"
+#~ msgstr "withdraw {lpTokenPayload} LP Tokens, received {0}"
 
 #: src/domain/user-dashboard/form-vecrv/index.tsx:86
-#~ msgid "Withdrew CRV"
-#~ msgstr "Withdrew CRV"
+#~ msgid "withdraw CRV"
+#~ msgstr "withdraw CRV"
 
 #: src/components/PagePool/PoolDetails/PoolParameters/index.tsx:178
 msgid "Xcp Profit A:"
