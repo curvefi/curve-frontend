@@ -15,6 +15,7 @@ export const AppButtonLinks = ({ selectedApp, onChange }: AppNavAppsProps) => (
         className={selectedApp === appName ? 'current' : ''}
         component={Link}
         onClick={() => onChange(appName)}
+        href={APP_LINK[appName].root}
       >
         {APP_LINK[appName].label}
       </Button>
