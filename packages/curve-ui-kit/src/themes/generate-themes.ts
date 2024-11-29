@@ -4,15 +4,19 @@ import { createPalette } from './palette'
 import { createTypography } from './typography'
 import { createComponents } from './components'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { DesignSystem, PaletteVariants } from './design'
 
-const generateTheme = (mode: ThemeKey): Theme => {
-  const palette = createPalette(mode)
-  const typography = createTypography(mode) as TypographyOptions
+const paletteMode = (theme: ThemeKey, options: PaletteVariants) => options.inverted ? (theme == 'dark' ? 'light' : 'dark') : theme == 'chad' ? 'light' : theme
+
+const generateTheme = (theme: ThemeKey, options: PaletteVariants = {}): Theme => {
+  const design = DesignSystem[theme](options)
+  const typography = createTypography(theme) as TypographyOptions
   return createMuiTheme({
     ...basicMuiTheme,
-    palette,
+    design,
+    palette: createPalette(paletteMode(theme, options), design),
     typography,
-    components: createComponents(mode, palette),
+    components: createComponents(design),
     shape: { borderRadius: 0 },
     cssVariables: true,
     shadows: Array(25).fill('none') as Shadows,

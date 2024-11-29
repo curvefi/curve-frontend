@@ -1,17 +1,19 @@
-import { Palette } from '../palette'
+import { DesignSystem } from '../design'
+import { Fonts } from '../typography'
 
-export const defineMuiIconButton = (palette: Palette) => ({
+export const defineMuiIconButton = ({ Layer, Text }: DesignSystem) => ({
   styleOverrides: {
     root: {
       borderRadius: '0',
       '&.current': {
-        fill: palette.text.highlight,
-        backgroundColor: palette.background.layer1Fill,
+        fill: Text.TextColors.Highlight,
+        backgroundColor: Layer[1].Fill,
         borderStyle: 'solid',
-        borderColor: palette.background.highlightOutline,
+        borderColor: Layer.Highlight.Outline,
         borderWidth: '1px',
         height: '40px',
-      }
-    }
-  }
+      },
+      fontFamily: Fonts[Text.FontFamily.Button],
+    },
+  },
 })

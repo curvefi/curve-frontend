@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material/styles'
-import { Palette } from '../palette'
+import { DesignSystem } from '../design'
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const;
@@ -25,40 +25,40 @@ export const defineMuiTab = (): Components['MuiTab'] => ({
 })
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): Components['MuiTabs'] => ({
+export const defineMuiTabs = ({ Text, Color: { Primary, Neutral }, Layer }: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
       minHeight: 0,
       [`&.${contained} .MuiTab-root`]: {
-        color: text.secondary,
-        backgroundColor: primary[200],
+        color: Text.TextColors.Secondary,
+        backgroundColor: Primary[200],
         '&:hover': {
-          color: primary[950],
-          backgroundColor: neutral[50],
-          borderColor: background.highlightOutline,
+          color: Primary[950],
+          backgroundColor: Neutral[50],
+          borderColor: Layer.Highlight.Outline,
         },
         '&.Mui-selected': {
-          color: text.primary,
-          backgroundColor: background.layer1Fill,
+          color: Text.TextColors.Primary,
+          backgroundColor: Layer[1].Fill,
         },
       },
       [`&.${overlined} .MuiTab-root`]: {
-        color: text.secondary,
-        '&.Mui-selected': { color: text.primary },
+        color: Text.TextColors.Secondary,
+        '&.Mui-selected': { color: Text.TextColors.Primary },
         '&:hover': {
-          color: text.primary,
-          borderColor: background.highlightOutline,
-          backgroundColor: neutral[200],
+          color: Text.TextColors.Primary,
+          borderColor: Layer.Highlight.Outline,
+          backgroundColor: Neutral[200],
         },
       },
       [`&.${underlined} .MuiTab-root`]: {
-        color: text.primary,
+        color: Text.TextColors.Primary,
         '&:hover': {
-          color: text.highlight,
-          borderColor: background.highlightOutline,
+          color: Text.TextColors.Highlight,
+          borderColor: Layer.Highlight.Outline,
         },
         '&.Mui-selected': {
-          color: text.primary,
+          color: Text.TextColors.Primary,
         },
       },
       [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
@@ -66,7 +66,7 @@ export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): 
       [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
     },
     indicator: {
-      backgroundColor: background.highlightOutline,
+      backgroundColor: Layer.Highlight.Outline,
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
     },

@@ -23,7 +23,6 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}
       sx={{ justifyContent: 'flex-start', textDecoration: 'none', textTransform: 'uppercase', width: '100%' }}
-      variant="ghost"
     >
       {page.label}
     </Button>

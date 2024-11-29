@@ -8,12 +8,12 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['contained', 'outlined', 'ghost', undefined],
+      options: ['text', 'contained', 'outlined', undefined],
       description: 'The variant of the component',
     },
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'success', 'alert', 'navigation', undefined],
+      options: ['primary', 'secondary', 'success', 'error', 'outlined', 'ghost', 'navigation', undefined],
       description: 'The color of the component',
     },
     children: {
@@ -49,14 +49,12 @@ export const Primary: Story = {
     },
   },
   args: {
-    variant: 'contained',
     color: 'primary',
     children: 'Primary',
   },
 }
 export const Secondary: Story = {
   args: {
-    variant: 'contained',
     color: 'secondary',
     children: 'Secondary',
   },
@@ -64,7 +62,6 @@ export const Secondary: Story = {
 
 export const Outlined: Story = {
   args: {
-    variant: 'outlined',
     color: undefined,
     children: 'Outlined',
   },
@@ -72,31 +69,27 @@ export const Outlined: Story = {
 
 export const Ghost: Story = {
   args: {
-    variant: 'ghost',
-    color: "alert",
+    color: 'ghost',
     children: 'Ghost',
   },
 }
 
 export const Success: Story = {
   args: {
-    variant: 'contained',
     color: 'success',
     children: 'Success',
   },
 }
 
-export const Alert: Story = {
+export const Error: Story = {
   args: {
-    variant: 'contained',
-    color: 'alert',
-    children: 'Alert',
+    color: 'error',
+    children: 'Error',
   },
 }
 
 export const Navigation: Story = {
   args: {
-    variant: 'contained',
     color: 'navigation',
     children: 'Navigation',
   },
