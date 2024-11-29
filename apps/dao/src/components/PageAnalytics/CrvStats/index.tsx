@@ -23,8 +23,7 @@ const CrvStats: React.FC = () => {
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
-  const veCrvApr =
-    veCrvLoading || veCrvFeesLoading ? 0 : (((veCrvFees.fees[1].fees_usd / veCrvData.totalVeCrv) * 52) / 0.3) * 100
+  const veCrvApr = veCrvLoading || veCrvFeesLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv)
 
   return (
     <Wrapper>
@@ -99,6 +98,10 @@ const CrvStats: React.FC = () => {
       </Container>
     </Wrapper>
   )
+}
+
+const calculateApr = (fees: number, totalVeCrv: number) => {
+  return (((fees / totalVeCrv) * 52) / 0.3) * 100
 }
 
 const Wrapper = styled(Box)`

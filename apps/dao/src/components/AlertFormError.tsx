@@ -6,36 +6,34 @@ import styled from 'styled-components'
 
 import AlertBox from '@/ui/AlertBox'
 
-const ALERT_FORM_ERROR_KEYS = {
-  'error-user-rejected-action': 'error-user-rejected-action',
-  'error-est-gas-approval': 'error-est-gas-approval',
-  'error-invalid-provider': 'error-invalid-provider',
-  'error-pool-list': 'error-pool-list',
-  'error-step-approve': 'error-step-approve',
-  'error-step-deposit': 'error-step-deposit',
-  'error-step-swap': 'error-step-swap',
-  'error-step-stake': 'error-step-stake',
-  'error-step-withdraw': 'error-step-withdraw',
-  'error-step-unstake': 'error-step-unstake',
-  'error-swap-exchange-and-output': 'error-swap-exchange-and-output',
-  'error-swap-not-available': 'error-swap-not-available',
-  'error-deposit-bonus': 'error-deposit-bonus',
-  'error-deposit-balance': 'error-deposit-balance',
-  'error-deposit-withdraw-expected': 'error-deposit-withdraw-expected',
-  'error-deposit-withdraw-expected-bonus': 'error-deposit-withdraw-expected-bonus',
-  'error-step-claim': 'error-step-claim',
-  'error-get-claimable': 'error-get-claimable',
-  'error-get-dashboard-data': 'error-get-dashboard-data',
-  'error-get-gas': 'error-get-gas',
-  'error-get-locked-crv-info': 'error-get-locked-crv-info',
-  'error-step-claim-fees': 'error-step-claim-fees',
-  'error-step-create-locked-crv': 'error-step-create-locked-crv',
-  'error-step-locked-time': 'error-step-locked-time',
-  'error-step-locked-crv': 'error-step-locked-crv',
-  'error-withdraw-locked-crv': 'error-withdraw-locked-crv',
-} as const
-
-export type AlertFormErrorKey = keyof typeof ALERT_FORM_ERROR_KEYS
+export enum AlertFormErrorKey {
+  USER_REJECTED_ACTION = 'error-user-rejected-action',
+  EST_GAS_APPROVAL = 'error-est-gas-approval',
+  INVALID_PROVIDER = 'error-invalid-provider',
+  POOL_LIST = 'error-pool-list',
+  STEP_APPROVE = 'error-step-approve',
+  STEP_DEPOSIT = 'error-step-deposit',
+  STEP_SWAP = 'error-step-swap',
+  STEP_STAKE = 'error-step-stake',
+  STEP_WITHDRAW = 'error-step-withdraw',
+  STEP_UNSTAKE = 'error-step-unstake',
+  SWAP_EXCHANGE_AND_OUTPUT = 'error-swap-exchange-and-output',
+  SWAP_NOT_AVAILABLE = 'error-swap-not-available',
+  DEPOSIT_BONUS = 'error-deposit-bonus',
+  DEPOSIT_BALANCE = 'error-deposit-balance',
+  DEPOSIT_WITHDRAW_EXPECTED = 'error-deposit-withdraw-expected',
+  DEPOSIT_WITHDRAW_EXPECTED_BONUS = 'error-deposit-withdraw-expected-bonus',
+  STEP_CLAIM = 'error-step-claim',
+  GET_CLAIMABLE = 'error-get-claimable',
+  GET_DASHBOARD_DATA = 'error-get-dashboard-data',
+  GET_GAS = 'error-get-gas',
+  GET_LOCKED_CRV_INFO = 'error-get-locked-crv-info',
+  STEP_CLAIM_FEES = 'error-step-claim-fees',
+  STEP_CREATE_LOCKED_CRV = 'error-step-create-locked-crv',
+  STEP_LOCKED_TIME = 'error-step-locked-time',
+  STEP_LOCKED_CRV = 'error-step-locked-crv',
+  WITHDRAW_LOCKED_CRV = 'error-withdraw-locked-crv',
+}
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: AlertFormErrorKey | string
@@ -47,42 +45,42 @@ const AlertFormError = ({ errorKey, ...props }: React.PropsWithChildren<Props>) 
     // locale will update inside component
     const messages: { [key: AlertFormErrorKey | string]: string } = {
       // quick swap and pool swap
-      [ALERT_FORM_ERROR_KEYS['error-swap-not-available']]: t`Swap is not available.`,
-      [ALERT_FORM_ERROR_KEYS['error-swap-exchange-and-output']]: t`Unable to get exchange rates and swap amount`,
-      [ALERT_FORM_ERROR_KEYS['error-step-swap']]: t`Unable to swap`,
+      [AlertFormErrorKey.SWAP_NOT_AVAILABLE]: t`Swap is not available.`,
+      [AlertFormErrorKey.SWAP_EXCHANGE_AND_OUTPUT]: t`Unable to get exchange rates and swap amount`,
+      [AlertFormErrorKey.STEP_SWAP]: t`Unable to swap`,
 
       // all
-      [ALERT_FORM_ERROR_KEYS['error-user-rejected-action']]: t`User rejected action`,
-      [ALERT_FORM_ERROR_KEYS['error-est-gas-approval']]: t`Unable to get approval or estimated gas`,
-      [ALERT_FORM_ERROR_KEYS['error-invalid-provider']]: t`Unable to find provider`,
-      [ALERT_FORM_ERROR_KEYS['error-step-approve']]: t`Unable to approve spending`,
-      [ALERT_FORM_ERROR_KEYS['error-deposit-withdraw-expected']]: t`Unable to get expected`,
-      [ALERT_FORM_ERROR_KEYS['error-deposit-withdraw-expected-bonus']]: t`Unable to get bonus or expected`,
-      [ALERT_FORM_ERROR_KEYS['error-pool-list']]: t`Unable to get pool list`,
-      [ALERT_FORM_ERROR_KEYS['error-get-dashboard-data']]: t`Unable to get dashboard data`,
-      [ALERT_FORM_ERROR_KEYS['error-get-gas']]: t`Unable to get gas price`,
+      [AlertFormErrorKey.USER_REJECTED_ACTION]: t`User rejected action`,
+      [AlertFormErrorKey.EST_GAS_APPROVAL]: t`Unable to get approval or estimated gas`,
+      [AlertFormErrorKey.INVALID_PROVIDER]: t`Unable to find provider`,
+      [AlertFormErrorKey.STEP_APPROVE]: t`Unable to approve spending`,
+      [AlertFormErrorKey.DEPOSIT_WITHDRAW_EXPECTED]: t`Unable to get expected`,
+      [AlertFormErrorKey.DEPOSIT_WITHDRAW_EXPECTED_BONUS]: t`Unable to get bonus or expected`,
+      [AlertFormErrorKey.POOL_LIST]: t`Unable to get pool list`,
+      [AlertFormErrorKey.GET_DASHBOARD_DATA]: t`Unable to get dashboard data`,
+      [AlertFormErrorKey.GET_GAS]: t`Unable to get gas price`,
 
       //  deposit
-      [ALERT_FORM_ERROR_KEYS['error-step-deposit']]: t`Unable to deposit`,
-      [ALERT_FORM_ERROR_KEYS['error-deposit-bonus']]: t`Unable to get bonus`,
-      [ALERT_FORM_ERROR_KEYS['error-step-stake']]: t`Unable to stake`,
-      [ALERT_FORM_ERROR_KEYS['error-deposit-balance']]: t`Unable to get balanced amounts`,
+      [AlertFormErrorKey.STEP_DEPOSIT]: t`Unable to deposit`,
+      [AlertFormErrorKey.DEPOSIT_BONUS]: t`Unable to get bonus`,
+      [AlertFormErrorKey.STEP_STAKE]: t`Unable to stake`,
+      [AlertFormErrorKey.DEPOSIT_BALANCE]: t`Unable to get balanced amounts`,
 
       //   withdraw
-      [ALERT_FORM_ERROR_KEYS['error-get-claimable']]: t`Unable to get claimable amounts`,
-      [ALERT_FORM_ERROR_KEYS['error-step-withdraw']]: t`Unable to withdraw`,
-      [ALERT_FORM_ERROR_KEYS['error-step-unstake']]: t`Unable to unstake`,
-      [ALERT_FORM_ERROR_KEYS['error-step-claim']]: t`Unable to claim`,
+      [AlertFormErrorKey.GET_CLAIMABLE]: t`Unable to get claimable amounts`,
+      [AlertFormErrorKey.STEP_WITHDRAW]: t`Unable to withdraw`,
+      [AlertFormErrorKey.STEP_UNSTAKE]: t`Unable to unstake`,
+      [AlertFormErrorKey.STEP_CLAIM]: t`Unable to claim`,
 
       //   claim fees
-      [ALERT_FORM_ERROR_KEYS['error-step-claim-fees']]: t`Unable to claim veCRV 3pool LP`,
+      [AlertFormErrorKey.STEP_CLAIM_FEES]: t`Unable to claim veCRV 3pool LP`,
 
       // locked crv
-      [ALERT_FORM_ERROR_KEYS['error-get-locked-crv-info']]: t`Unable to get locked CRV info`,
-      [ALERT_FORM_ERROR_KEYS['error-step-create-locked-crv']]: t`Unable to create locked CRV`,
-      [ALERT_FORM_ERROR_KEYS['error-step-locked-crv']]: t`Unable to lock crv`,
-      [ALERT_FORM_ERROR_KEYS['error-step-locked-time']]: t`Unable to lock date`,
-      [ALERT_FORM_ERROR_KEYS['error-withdraw-locked-crv']]: t`Unable to withdraw locked CRV`,
+      [AlertFormErrorKey.GET_LOCKED_CRV_INFO]: t`Unable to get locked CRV info`,
+      [AlertFormErrorKey.STEP_CREATE_LOCKED_CRV]: t`Unable to create locked CRV`,
+      [AlertFormErrorKey.STEP_LOCKED_CRV]: t`Unable to lock crv`,
+      [AlertFormErrorKey.STEP_LOCKED_TIME]: t`Unable to lock date`,
+      [AlertFormErrorKey.WITHDRAW_LOCKED_CRV]: t`Unable to withdraw locked CRV`,
     }
 
     if (errorKey) {
