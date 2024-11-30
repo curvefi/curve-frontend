@@ -14,7 +14,7 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
-  curveJsProposalLoadingState: FetchingState
+  proposalLoadingState: FetchingState
   voteTx: {
     hash: string | null
     txLink: string | null
@@ -30,6 +30,10 @@ type SliceState = {
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   proposalMapper: ProposalMapper
+  userProposalVote: {
+    fetchingState: FetchingState | null
+    voted: boolean | null
+  }
   searchValue: string
   activeFilter: ProposalListFilter
   activeSortBy: SortByFilterProposals
@@ -41,7 +45,8 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
-    getProposal(curve: CurveApi, voteId: number, voteType: ProposalType): void
+    getProposal(voteId: number, voteType: ProposalType): void
+    getUserProposalVote(userAddress: string, voteId: number, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
@@ -59,7 +64,7 @@ export type ProposalsSlice = {
 const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
-  curveJsProposalLoadingState: 'LOADING',
+  proposalLoadingState: 'LOADING',
   voteTx: {
     hash: null,
     txLink: null,
@@ -78,6 +83,10 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
   proposalMapper: {},
   proposalsMapper: {},
+  userProposalVote: {
+    fetchingState: null,
+    voted: null,
+  },
   proposals: [],
 }
 
@@ -155,8 +164,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (curve: CurveApi, voteId: number, voteType: ProposalType) => {
-      get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'LOADING')
+    getProposal: async (voteId: number, voteType: ProposalType) => {
+      get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
 
       try {
         const proposal = await fetch(
@@ -184,14 +193,63 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
         set(
           produce((state: State) => {
-            state[sliceKey].curveJsProposalLoadingState = 'SUCCESS'
+            state[sliceKey].proposalLoadingState = 'SUCCESS'
             state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
             state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
           }),
         )
       } catch (error) {
         console.log(error)
-        get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'ERROR')
+        get()[sliceKey].setStateByKey('proposalLoadingState', 'ERROR')
+      }
+    },
+    // used to check if a user has voted but it has not yet been updated by the API
+    getUserProposalVote: async (userAddress: string, voteId: number, voteType: ProposalType, txHash?: string) => {
+      get()[sliceKey].setStateByKey('userProposalVote', {
+        fetchingState: 'LOADING',
+        voted: null,
+      })
+
+      try {
+        const request = await fetch(
+          `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
+        )
+        const data: PricesProposalResponse = await request.json()
+
+        get()[sliceKey].setStateByKey('userProposalVote', {
+          fetchingState: 'SUCCESS',
+          voted: true,
+        })
+
+        const formattedData = {
+          ...data,
+          votes_for: +data.votes_for / 1e18,
+          votes_against: +data.votes_against / 1e18,
+          support_required: +data.support_required / 1e18,
+          min_accept_quorum: +data.min_accept_quorum / 1e18,
+          total_supply: +data.total_supply / 1e18,
+          creator_voting_power: +data.creator_voting_power / 1e18,
+          votes: data.votes
+            .map((vote) => ({
+              ...vote,
+              topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
+              stake: +vote.voting_power / 1e18,
+              relativePower: (+vote.voting_power / +data.total_supply) * 100,
+            }))
+            .sort((a, b) => b.stake - a.stake),
+        }
+
+        set(
+          produce((state: State) => {
+            state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
+            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
+          }),
+        )
+      } catch (error) {
+        get()[sliceKey].setStateByKey('userProposalVote', {
+          fetchingState: 'ERROR',
+          voted: false,
+        })
       }
     },
     selectFilteredSortedProposals: () => {

@@ -34,21 +34,22 @@ type ProposalProps = {
 const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
   const [voteId, voteType] = rProposalId.split('-')
   const provider = useStore((state) => state.wallet.getProvider(''))
-  const curve = useStore((state) => state.curve)
-  const { proposalsLoadingState, getProposal, curveJsProposalLoadingState } = useStore((state) => state.proposals)
+  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote, userProposalVote } = useStore(
+    (state) => state.proposals,
+  )
   const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
-  const curveJsProposal = proposalMapper[rProposalId] ?? null
+  const pricesProposal = proposalMapper[rProposalId] ?? null
   const proposal = proposalsMapper[rProposalId] ?? null
 
   const isLoading =
-    curveJsProposalLoadingState === 'LOADING' ||
+    proposalLoadingState === 'LOADING' ||
     proposalsLoadingState === 'LOADING' ||
-    (!curveJsProposal && proposalsLoadingState !== 'ERROR')
-  const isError = curveJsProposalLoadingState === 'ERROR'
-  const isFetched = curveJsProposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && curveJsProposal
+    (!pricesProposal && proposalsLoadingState !== 'ERROR')
+  const isError = proposalLoadingState === 'ERROR'
+  const isFetched = proposalLoadingState === 'SUCCESS' && proposalsLoadingState === 'SUCCESS' && pricesProposal
 
   const activeProposal = useMemo(
     () =>
@@ -59,7 +60,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
             endTimestamp: proposal?.startDate + 604800,
           }
         : undefined,
-    [proposal?.status, proposal?.startDate]
+    [proposal?.status, proposal?.startDate],
   )
 
   const handleCopyClick = (address: string) => {
@@ -78,9 +79,22 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
   }, [provider, rProposalId, setSnapshotVeCrv, proposal?.snapshotBlock, snapshotVeCrv, userAddress])
 
   useEffect(() => {
-    if (curveJsProposal || !curve) return
-    getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')
-  }, [curve, getProposal, curveJsProposal, voteId, voteType])
+    if (pricesProposal) return
+    getProposal(+voteId, voteType as ProposalType)
+  }, [getProposal, pricesProposal, voteId, voteType])
+
+  // check to see if a user has voted and it has not been updated by the API
+  useEffect(() => {
+    if (
+      !userAddress ||
+      !isFetched ||
+      userProposalVote.voted !== null ||
+      pricesProposal?.votes.find((vote) => vote.voter.toLowerCase() === userAddress.toLowerCase())
+    ) {
+      return
+    }
+    getUserProposalVote(userAddress, +voteId, voteType as ProposalType)
+  }, [getUserProposalVote, isFetched, pricesProposal?.votes, userAddress, userProposalVote, voteId, voteType])
 
   return (
     <Wrapper>
@@ -93,7 +107,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
               <ErrorWrapper>
                 <ErrorMessage
                   message={t`Error loading proposal data`}
-                  onClick={() => curve && getProposal(curve, +voteId, voteType as 'PARAMETER' | 'OWNERSHIP')}
+                  onClick={() => getProposal(+voteId, voteType as ProposalType)}
                 />
               </ErrorWrapper>
             )}
@@ -116,7 +130,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
                   </Box>
                   <MetaDataParaphraph>{proposal?.metadata}</MetaDataParaphraph>
                 </MetaData>
-                {curveJsProposal && <Script script={curveJsProposal?.script} />}
+                {pricesProposal && <Script script={pricesProposal?.script} />}
 
                 {/* Votes and User Box inline on small screens */}
                 <VotesAndUserBox>
