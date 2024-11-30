@@ -18,7 +18,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
           <>
             <StatsTitleRow>
               <h6>{t`Pool`}</h6>
-              <h6>{t`24 Volume`}</h6>
+              <h6>{t`24h Volume`}</h6>
               <h6>{t`TVL`}</h6>
             </StatsTitleRow>
             <StatsRow>
@@ -57,7 +57,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       <Box flex flexColumn>
         <StatsTitleRow>
           <h6>{t`Gauge`}</h6>
-          <h6>{t`Emissions (CRV)`}</h6>
+          <h6>{t`Current Week Emissions (CRV)`}</h6>
           <h6>{t`Created`}</h6>
         </StatsTitleRow>
         <StatsRow>
