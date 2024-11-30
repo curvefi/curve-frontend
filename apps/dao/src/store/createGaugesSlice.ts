@@ -114,15 +114,11 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
             platform: gauge.market !== null ? 'Lend' : gauge.pool !== null ? 'AMM' : '',
             title: formatGaugeTitle(gauge.pool?.name, gauge.market?.name ?? null, gauge.address),
             gauge_weight: +gauge.gauge_weight,
-            gauge_relative_weight: +(gauge.gauge_relative_weight * 100).toFixed(4),
+            gauge_relative_weight: +(gauge.gauge_relative_weight * 100),
             gauge_relative_weight_7d_delta:
-              gauge.gauge_relative_weight_7d_delta != null
-                ? +(gauge.gauge_relative_weight_7d_delta * 100).toFixed(4)
-                : null,
+              gauge.gauge_relative_weight_7d_delta != null ? +(gauge.gauge_relative_weight_7d_delta * 100) : null,
             gauge_relative_weight_60d_delta:
-              gauge.gauge_relative_weight_60d_delta != null
-                ? +(gauge.gauge_relative_weight_60d_delta * 100).toFixed(4)
-                : null,
+              gauge.gauge_relative_weight_60d_delta != null ? +(gauge.gauge_relative_weight_60d_delta * 100) : null,
           }
         })
 
@@ -231,7 +227,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           .map((weight: GaugeWeightHistoryData) => ({
             ...weight,
             gauge_weight: +weight.gauge_weight / 1e18,
-            gauge_relative_weight: ((+weight.gauge_relative_weight / 1e18) * 100).toFixed(2),
+            gauge_relative_weight: (+weight.gauge_relative_weight / 1e18) * 100,
             emissions: +weight.emissions,
           }))
           .sort((a: GaugeWeightHistoryData, b: GaugeWeightHistoryData) => a.epoch - b.epoch)

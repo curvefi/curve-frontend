@@ -164,7 +164,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userMapper[userAddress] = {
               ens: ensName || null,
             }
-          })
+          }),
         )
       } catch (error) {
         console.error('Error fetching ENS name:', error)
@@ -173,7 +173,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userMapper[userAddress] = {
               ens: null,
             }
-          })
+          }),
         )
       }
     },
@@ -186,7 +186,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             fetchingState: 'LOADING',
             votes: {},
           }
-        })
+        }),
       )
 
       try {
@@ -196,7 +196,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         while (true) {
           const ownershipVotesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals/votes/user/${address}?pagination=${pagination}&page=${page}`
+            `https://prices.curve.fi/v1/dao/proposals/votes/user/${address}?pagination=${pagination}&page=${page}`,
           )
           const ownershipVotes: UserProposalVotesRes = await ownershipVotesRes.json()
 
@@ -228,7 +228,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'SUCCESS',
               votes: results,
             }
-          })
+          }),
         )
       } catch (error) {
         set(
@@ -237,7 +237,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'ERROR',
               votes: {},
             }
-          })
+          }),
         )
       }
     },
@@ -250,7 +250,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             fetchingState: 'LOADING',
             locks: [],
           }
-        })
+        }),
       )
 
       try {
@@ -275,7 +275,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'SUCCESS',
               locks: formattedData,
             }
-          })
+          }),
         )
       } catch (error) {
         console.log(error)
@@ -286,7 +286,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'ERROR',
               locks: [],
             }
-          })
+          }),
         )
       }
     },
@@ -299,7 +299,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             fetchingState: 'LOADING',
             votes: [],
           }
-        })
+        }),
       )
 
       try {
@@ -326,7 +326,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'SUCCESS',
               votes: sortedVotes,
             }
-          })
+          }),
         )
       } catch (error) {
         console.error(error)
@@ -336,7 +336,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'ERROR',
               votes: [],
             }
-          })
+          }),
         )
       }
     },
@@ -357,7 +357,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                 gauges: [],
               },
             }
-          })
+          }),
         )
       }
 
@@ -380,6 +380,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                 fetchingState: null,
                 timestamp: null,
               },
+              needsUpdate: calculateGaugeVoteStale(Number(gauge.userVeCrv), Number(gauge.userFutureVeCrv), 1.05),
             }))
             .sort((a, b) => b.userPower - a.userPower),
         }
@@ -390,7 +391,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
               fetchingState: 'SUCCESS',
               data,
             }
-          })
+          }),
         )
       } catch (error) {
         console.error(error)
@@ -404,7 +405,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                 gauges: [],
               },
             }
-          })
+          }),
         )
       }
     },
@@ -431,9 +432,9 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                 }
               }
               return gauge
-            }
+            },
           )
-        })
+        }),
       )
 
       try {
@@ -453,9 +454,9 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                   }
                 }
                 return gauge
-              }
+              },
             )
-          })
+          }),
         )
       } catch (error) {
         console.error(error)
@@ -473,9 +474,9 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                   }
                 }
                 return gauge
-              }
+              },
             )
-          })
+          }),
         )
       }
     },
@@ -498,7 +499,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             const reversedEntries = [...locks].reverse()
             state[sliceKey].userLocksMapper[address].locks = reversedEntries
             state[sliceKey].userLocksSortBy.order = order
-          })
+          }),
         )
       } else {
         const sortedEntries = [...locks].sort((a, b) => {
@@ -515,7 +516,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userLocksSortBy.key = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
             state[sliceKey].userLocksMapper[address].locks = sortedEntries
-          })
+          }),
         )
       }
     },
@@ -554,7 +555,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           state[sliceKey].userProposalVotesSortBy.key = sortBy
           state[sliceKey].userProposalVotesSortBy.order = order
           state[sliceKey].userProposalVotesMapper[address].votes = sortedVotes
-        })
+        }),
       )
     },
     setUserGaugeVotesSortBy: (userAddress: string, sortBy: UserGaugeVotesSortBy) => {
@@ -576,7 +577,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             const reversedEntries = [...votes].reverse()
             state[sliceKey].userGaugeVotesMapper[address].votes = reversedEntries
             state[sliceKey].userGaugeVotesSortBy.order = order
-          })
+          }),
         )
       } else {
         const sortedEntries = [...votes].sort((a, b) => {
@@ -588,7 +589,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
             state[sliceKey].userGaugeVotesMapper[address].votes = sortedEntries
-          })
+          }),
         )
       }
     },
@@ -611,7 +612,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             const reversedEntries = [...data.gauges].reverse()
             state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = reversedEntries
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
-          })
+          }),
         )
       } else {
         const sortedEntries = [...data.gauges].sort((a, b) => {
@@ -623,7 +624,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
             state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
             state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = sortedEntries
-          })
+          }),
         )
       }
     },
@@ -635,7 +636,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             value: null,
             blockNumber: null,
           }
-        })
+        }),
       )
 
       const contract = new Contract(contractVeCRV, abiVeCrv, signer)
@@ -648,7 +649,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
             value: Number(snapshotValue) / 1e18,
             blockNumber: snapshot,
           }
-        })
+        }),
       )
     },
     // slice helpers
@@ -666,5 +667,9 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
   },
 })
+
+const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number, delta: number) => {
+  return usedVeCrv * delta < futureVeCrv
+}
 
 export default createUserSlice

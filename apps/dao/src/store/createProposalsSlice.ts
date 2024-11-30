@@ -41,7 +41,7 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
-    getProposal(curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP'): void
+    getProposal(curve: CurveApi, voteId: number, voteType: ProposalType): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
@@ -155,7 +155,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (curve: CurveApi, voteId: number, voteType: 'PARAMETER' | 'OWNERSHIP') => {
+    getProposal: async (curve: CurveApi, voteId: number, voteType: ProposalType) => {
       get()[sliceKey].setStateByKey('curveJsProposalLoadingState', 'LOADING')
 
       try {

@@ -527,6 +527,7 @@ declare global {
       fetchingState: FetchingState | null
       timestamp: number | null
     }
+    needsUpdate: boolean
   }
 
   type UserGaugeVoteWeightRes = {

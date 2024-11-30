@@ -8,7 +8,7 @@ import { formatNumber, shortenTokenAddress } from '@/ui/utils'
 import networks from '@/networks'
 
 import { USER_VOTES_TABLE_LABELS } from './constants'
-
+import { calculateUserPowerStale } from './utils'
 import InternalLink from '@/ui/Link/InternalLink'
 import Box from '@/ui/Box'
 import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
@@ -17,6 +17,7 @@ import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
 import VoteGauge from '@/components/PageGauges/GaugeVoting/VoteGauge'
 import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
+import AlertBox from '@/ui/AlertBox'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
@@ -38,6 +39,11 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 0.5fr'
   const smallScreenBreakpoint = 42.3125
+  const isUserPowerStale = calculateUserPowerStale(
+    +userVeCrv.lockedCrv,
+    userData?.data.powerUsed,
+    userData?.data.veCrvUsed,
+  )
 
   const formattedSelectedGauge: UserGaugeVoteWeight = {
     title: selectedGauge?.title ?? '',
@@ -58,6 +64,7 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
       fetchingState: null,
       timestamp: null,
     },
+    needsUpdate: false,
   }
 
   return (
@@ -66,39 +73,44 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
         <h3>{t`USER GAUGE VOTES`}</h3>
         {userAddress && (
           <UserDataWrapper>
-            <MetricsComp
-              loading={userWeightsLoading}
-              title="User"
-              data={
-                <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
-                  <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
-                </StyledInternalLink>
-              }
-            />
-            <MetricsComp
-              loading={userWeightsLoading}
-              title="Power used"
-              data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
-            />
-            <MetricsComp
-              loading={userWeightsLoading}
-              title="veCRV"
-              data={
-                <MetricsColumnData>
-                  {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })}
-                </MetricsColumnData>
-              }
-            />
-            <MetricsComp
-              loading={userWeightsLoading}
-              title="veCRV used"
-              data={
-                <MetricsColumnData>
-                  {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
-                </MetricsColumnData>
-              }
-            />
-            <ComboBoxSelectGauge title={''} />
+            <Box flex flexWrap="wrap" flexGap="var(--spacing-3)" flexJustifyContent="space-between">
+              <MetricsComp
+                loading={userWeightsLoading}
+                title="User"
+                data={
+                  <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
+                    <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
+                  </StyledInternalLink>
+                }
+              />
+              <MetricsComp
+                loading={userWeightsLoading}
+                title="Power used"
+                data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
+              />
+              <MetricsComp
+                loading={userWeightsLoading}
+                title="veCRV"
+                data={
+                  <MetricsColumnData>
+                    {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })}
+                  </MetricsColumnData>
+                }
+              />
+              <MetricsComp
+                loading={userWeightsLoading}
+                title="veCRV used"
+                data={
+                  <MetricsColumnData>
+                    {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
+                  </MetricsColumnData>
+                }
+              />
+              <ComboBoxSelectGauge title={''} />
+            </Box>
+            {isUserPowerStale && (
+              <AlertBox alertType="info">{t`You have more power! Update gauges to unlock it.`}</AlertBox>
+            )}
           </UserDataWrapper>
         )}
       </VoteStats>
@@ -169,9 +181,14 @@ const VoteStats = styled(Box)<{ selectedGauge: GaugeFormattedData | null }>`
 
 const UserDataWrapper = styled(Box)`
   display: flex;
+  flex-direction: column;
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--spacing-3);
+`
+
+const StyledAlertBox = styled(AlertBox)`
+  margin: 0 auto var(--spacing-3) var(--spacing-3);
 `
 
 const StyledInternalLink = styled(InternalLink)`
