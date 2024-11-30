@@ -75,6 +75,7 @@ export type UserSlice = {
     getUserGaugeVoteWeights(userAddress: string, silentFetch?: boolean): Promise<void>
     getUserLocks(userAddress: string): Promise<void>
     getVoteForGaugeNextTime(userAddress: string, gaugeAddress: string): Promise<void>
+    getAllVoteForGaugeNextTime(userAddress: string): Promise<void>
 
     setUserProposalVotesSortBy(userAddress: string, sortBy: UserProposalVotesSortBy): void
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => void
@@ -380,7 +381,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
                 fetchingState: null,
                 timestamp: null,
               },
-              needsUpdate: calculateGaugeVoteStale(Number(gauge.userVeCrv), Number(gauge.userFutureVeCrv), 1.05),
+              canVote: true,
             }))
             .sort((a, b) => b.userPower - a.userPower),
         }
@@ -418,22 +419,22 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       if (!userGaugeVoteWeights) return
 
+      // Get current state before updating
+      const currentGauges = [...userGaugeVoteWeights.data.gauges]
+      const gaugeIndex = currentGauges.findIndex((g) => g.gaugeAddress === gaugeAddress)
+      if (gaugeIndex === -1) return
+
       set(
         produce((state) => {
-          state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = userGaugeVoteWeights.data.gauges.map(
-            (gauge) => {
-              if (gauge.gaugeAddress === gaugeAddress) {
-                return {
-                  ...gauge,
-                  nextVoteTime: {
-                    fetchingState: 'LOADING',
-                    timestamp: null,
-                  },
-                }
-              }
-              return gauge
+          const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
+          gauges[gaugeIndex] = {
+            ...gauges[gaugeIndex],
+            nextVoteTime: {
+              fetchingState: 'LOADING',
+              timestamp: null,
             },
-          )
+          }
+          state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
         }),
       )
 
@@ -442,43 +443,41 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = userGaugeVoteWeights.data.gauges.map(
-              (gauge) => {
-                if (gauge.gaugeAddress === gaugeAddress) {
-                  return {
-                    ...gauge,
-                    nextVoteTime: {
-                      fetchingState: 'SUCCESS',
-                      timestamp: nextVoteTime,
-                    },
-                  }
-                }
-                return gauge
+            const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
+            gauges[gaugeIndex] = {
+              ...gauges[gaugeIndex],
+              nextVoteTime: {
+                fetchingState: 'SUCCESS',
+                timestamp: nextVoteTime,
               },
-            )
+              canVote: nextVoteTime && Date.now() > nextVoteTime,
+            }
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
           }),
         )
       } catch (error) {
         console.error(error)
         set(
           produce((state) => {
-            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = userGaugeVoteWeights.data.gauges.map(
-              (gauge) => {
-                if (gauge.gaugeAddress === gaugeAddress) {
-                  return {
-                    ...gauge,
-                    nextVoteTime: {
-                      fetchingState: 'ERROR',
-                      timestamp: null,
-                    },
-                  }
-                }
-                return gauge
+            const gauges = [...state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges]
+            gauges[gaugeIndex] = {
+              ...gauges[gaugeIndex],
+              nextVoteTime: {
+                fetchingState: 'ERROR',
+                timestamp: null,
               },
-            )
+            }
+            state[sliceKey].userGaugeVoteWeightsMapper[address].data.gauges = gauges
           }),
         )
       }
+    },
+    getAllVoteForGaugeNextTime: async (userAddress: string) => {
+      const { getVoteForGaugeNextTime } = get()[sliceKey]
+      const gauges = get()[sliceKey].userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? '']?.data.gauges
+      if (!gauges) return
+
+      Promise.all(gauges.map((gauge) => getVoteForGaugeNextTime(userAddress, gauge.gaugeAddress)))
     },
     setUserLocksSortBy: (userAddress: string, sortBy: UserLocksSortBy) => {
       const address = userAddress.toLowerCase()
@@ -668,8 +667,8 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   },
 })
 
-const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number, delta: number) => {
-  return usedVeCrv * delta < futureVeCrv
+const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => {
+  return usedVeCrv < futureVeCrv
 }
 
 export default createUserSlice

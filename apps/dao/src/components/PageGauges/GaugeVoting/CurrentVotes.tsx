@@ -1,49 +1,43 @@
 import React from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
+import { useEffect } from 'react'
 
 import useStore from '@/store/useStore'
 
-import { formatNumber, shortenTokenAddress } from '@/ui/utils'
 import networks from '@/networks'
 
 import { USER_VOTES_TABLE_LABELS } from './constants'
-import { calculateUserPowerStale } from './utils'
-import InternalLink from '@/ui/Link/InternalLink'
 import Box from '@/ui/Box'
-import MetricsComp, { MetricsColumnData } from '@/components/MetricsComp'
 import PaginatedTable from '@/components/PaginatedTable'
-import ComboBoxSelectGauge from '@/components/ComboBoxSelectGauge'
 import VoteGauge from '@/components/PageGauges/GaugeVoting/VoteGauge'
 import GaugeListItem from '@/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/components/PageGauges/GaugeListItem/SmallScreenCard'
-import AlertBox from '@/ui/AlertBox'
+import GaugeVotingStats from '@/components/PageGauges/GaugeVoting/GaugeVotingStats'
 
 type CurrentVotesProps = {
   userAddress: string | undefined
 }
 
 const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
-  const { userEns, userVeCrv } = useStore((state) => state.user)
   const userData = useStore((state) => state.user.userGaugeVoteWeightsMapper[userAddress?.toLowerCase() ?? ''])
-  const { setUserGaugeVoteWeightsSortBy, userGaugeVoteWeightsSortBy, getUserGaugeVoteWeights } = useStore(
-    (state) => state.user,
-  )
+  const {
+    setUserGaugeVoteWeightsSortBy,
+    userGaugeVoteWeightsSortBy,
+    getUserGaugeVoteWeights,
+    getAllVoteForGaugeNextTime,
+  } = useStore((state) => state.user)
   const { gaugeMapper, selectedGauge, gaugesLoading } = useStore((state) => state.gauges)
 
   const userGauges = userData?.data.gauges ?? []
   const userWeightsLoading = !userData || userData?.fetchingState === 'LOADING'
   const gaugeMapperLoading = gaugesLoading === 'LOADING'
+  const userWeightReady = userData?.fetchingState === 'SUCCESS'
   const tableLoading = userWeightsLoading || gaugeMapperLoading
 
   const tableMinWidth = 0
-  const gridTemplateColumns = '17.5rem 1fr 1fr 0.5fr'
+  const gridTemplateColumns = '17.5rem 1fr 1fr 1fr'
   const smallScreenBreakpoint = 42.3125
-  const isUserPowerStale = calculateUserPowerStale(
-    +userVeCrv.lockedCrv,
-    userData?.data.powerUsed,
-    userData?.data.veCrvUsed,
-  )
 
   const formattedSelectedGauge: UserGaugeVoteWeight = {
     title: selectedGauge?.title ?? '',
@@ -64,55 +58,21 @@ const CurrentVotes = ({ userAddress }: CurrentVotesProps) => {
       fetchingState: null,
       timestamp: null,
     },
-    needsUpdate: false,
+    canVote: true,
   }
+
+  // Get next vote time for all gauges
+  useEffect(() => {
+    if (userWeightReady) {
+      getAllVoteForGaugeNextTime(userAddress ?? '')
+    }
+  }, [userAddress, userWeightReady, getAllVoteForGaugeNextTime])
 
   return (
     <Wrapper>
       <VoteStats selectedGauge={selectedGauge}>
         <h3>{t`USER GAUGE VOTES`}</h3>
-        {userAddress && (
-          <UserDataWrapper>
-            <Box flex flexWrap="wrap" flexGap="var(--spacing-3)" flexJustifyContent="space-between">
-              <MetricsComp
-                loading={userWeightsLoading}
-                title="User"
-                data={
-                  <StyledInternalLink href={`/ethereum/user/${userAddress}`}>
-                    <MetricsColumnData>{userEns ?? shortenTokenAddress(userAddress)}</MetricsColumnData>
-                  </StyledInternalLink>
-                }
-              />
-              <MetricsComp
-                loading={userWeightsLoading}
-                title="Power used"
-                data={<MetricsColumnData>{userData?.data.powerUsed}%</MetricsColumnData>}
-              />
-              <MetricsComp
-                loading={userWeightsLoading}
-                title="veCRV"
-                data={
-                  <MetricsColumnData>
-                    {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })}
-                  </MetricsColumnData>
-                }
-              />
-              <MetricsComp
-                loading={userWeightsLoading}
-                title="veCRV used"
-                data={
-                  <MetricsColumnData>
-                    {formatNumber(userData?.data.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
-                  </MetricsColumnData>
-                }
-              />
-              <ComboBoxSelectGauge title={''} />
-            </Box>
-            {isUserPowerStale && (
-              <AlertBox alertType="info">{t`You have more power! Update gauges to unlock it.`}</AlertBox>
-            )}
-          </UserDataWrapper>
-        )}
+        {userAddress && <GaugeVotingStats userAddress={userAddress} />}
       </VoteStats>
       {selectedGauge && (
         <VoteGauge
@@ -177,24 +137,6 @@ const VoteStats = styled(Box)<{ selectedGauge: GaugeFormattedData | null }>`
     padding-bottom: var(--spacing-3);
     border-bottom: 1px solid var(--gray-500a20);
   }
-`
-
-const UserDataWrapper = styled(Box)`
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--spacing-3);
-`
-
-const StyledAlertBox = styled(AlertBox)`
-  margin: 0 auto var(--spacing-3) var(--spacing-3);
-`
-
-const StyledInternalLink = styled(InternalLink)`
-  text-decoration: none;
-  color: inherit;
-  text-transform: none;
 `
 
 const GaugeListItemWrapper = styled.div`

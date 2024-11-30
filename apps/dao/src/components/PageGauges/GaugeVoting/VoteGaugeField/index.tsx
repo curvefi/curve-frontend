@@ -24,21 +24,19 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
   userVeCrv,
   newVote = false,
 }) => {
-  const [power, setPower] = useState(userGaugeVoteData.userPower / 100)
+  const { canVote, nextVoteTime, userPower, gaugeAddress } = userGaugeVoteData
+  const [power, setPower] = useState(userPower / 100)
   const availablePower = 100 - powerUsed
-  const maxPower = newVote ? availablePower / 100 : (availablePower + userGaugeVoteData.userPower) / 100
+  const maxPower = newVote ? availablePower / 100 : (availablePower + userPower) / 100
   const availableVeCrv = userVeCrv * availablePower
 
-  const { userAddress, getVoteForGaugeNextTime } = useStore((state) => state.user)
+  const { userAddress } = useStore((state) => state.user)
   const { castVote, txCastVoteState } = useStore((state) => state.gauges)
 
   const address = userAddress?.toLowerCase()
-  const canVote = newVote
-    ? true
-    : userGaugeVoteData.nextVoteTime.timestamp && Date.now() > userGaugeVoteData.nextVoteTime.timestamp
 
   const loading =
-    userGaugeVoteData.nextVoteTime.fetchingState === 'LOADING' ||
+    nextVoteTime.fetchingState === 'LOADING' ||
     txCastVoteState?.state === 'LOADING' ||
     txCastVoteState?.state === 'CONFIRMING'
 
@@ -52,22 +50,8 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
 
   const handleCastVote = () => {
     if (!address) return
-    castVote(address, userGaugeVoteData.gaugeAddress, power)
+    castVote(address, gaugeAddress, power)
   }
-
-  useEffect(() => {
-    if (!address) return
-
-    if (!newVote && userGaugeVoteData.nextVoteTime.fetchingState === null) {
-      getVoteForGaugeNextTime(address, userGaugeVoteData.gaugeAddress)
-    }
-  }, [
-    address,
-    getVoteForGaugeNextTime,
-    newVote,
-    userGaugeVoteData.gaugeAddress,
-    userGaugeVoteData.nextVoteTime.fetchingState,
-  ])
 
   return (
     <Wrapper>
@@ -81,7 +65,7 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
                 title="Assigned voting power"
                 data={
                   <MetricsColumnData>
-                    {formatNumber(userGaugeVoteData.userPower, {
+                    {formatNumber(userPower, {
                       minimumFractionDigits: 2,
                       maximumFractionDigits: 2,
                     })}
@@ -165,14 +149,12 @@ const VoteGaugeField: React.FC<VoteGaugeFieldProps> = ({
           veCRV
         </NewVoteAbsoluteData>
       )}
-      {!canVote && !loading && userGaugeVoteData.nextVoteTime.timestamp && (
+      {!canVote && !loading && nextVoteTime.timestamp && (
         <Box flex flexGap="var(--spacing-1)" flexAlignItems="center">
           <VoteOnCooldown>
             {t`Updating vote available on:`} <br />
             <strong>
-              {new Date(
-                convertToLocaleTimestamp(new Date(userGaugeVoteData.nextVoteTime.timestamp).getTime()),
-              ).toLocaleString()}
+              {new Date(convertToLocaleTimestamp(new Date(nextVoteTime.timestamp).getTime())).toLocaleString()}
             </strong>
             <TooltipIcon>{t`You can only vote or update your vote once every 10 days.`}</TooltipIcon>
           </VoteOnCooldown>

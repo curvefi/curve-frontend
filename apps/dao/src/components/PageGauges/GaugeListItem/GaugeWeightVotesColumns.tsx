@@ -7,7 +7,6 @@ import { calculateStaleVeCrvPercentage } from './utils'
 import useStore from '@/store/useStore'
 
 import Tooltip from '@/ui/Tooltip'
-import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 
 type GaugeWeightVotesColumnsProps = {
@@ -15,7 +14,7 @@ type GaugeWeightVotesColumnsProps = {
 }
 
 const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesColumnsProps) => {
-  const { userPower, userVeCrv, userFutureVeCrv, needsUpdate } = userGaugeWeightVoteData
+  const { userPower, userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData
   const { userGaugeVoteWeightsSortBy } = useStore((state) => state.user)
 
   const hasFutureVeCrv = userFutureVeCrv > userVeCrv
@@ -31,13 +30,6 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
             minWidth="18rem"
             tooltip={
               <p>
-                {needsUpdate && (
-                  <>
-                    {t`You have more veCRV to use! Update gauge to use it.`}
-                    <br />
-                    <br />
-                  </>
-                )}
                 {t`Updating gauge vote will update used veCRV from`}{' '}
                 <strong>
                   {formatNumber(userVeCrv, {
@@ -67,7 +59,6 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
                   maximumFractionDigits: 2,
                 })}`}
             </GaugeData>
-            {needsUpdate && <StyledIcon name="WarningSquareFilled" size={16} />}
           </Tooltip>
         </Box>
       </BoxColumn>
@@ -94,11 +85,6 @@ const GaugeData = styled.p`
   &.bold {
     font-weight: var(--bold);
   }
-`
-
-const StyledIcon = styled(Icon)`
-  margin-left: var(--spacing-1);
-  color: var(--danger-400);
 `
 
 export default GaugeWeightVotesColumns

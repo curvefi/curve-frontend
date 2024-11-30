@@ -12,6 +12,7 @@ import Spinner, { SpinnerWrapper } from '@/ui/Spinner'
 import ErrorMessage from '@/components/ErrorMessage'
 import InternalLinkButton from '@/components/InternalLinkButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
+import Button from '@/ui/Button'
 
 import LineChartComponent from '@/components/Charts/LineChartComponent'
 import TitleComp from '@/components/PageGauges/GaugeListItem/TitleComp'
@@ -67,9 +68,14 @@ const GaugeListItem = ({
         ) : (
           <GaugeListColumns gaugeData={gaugeData} />
         )}
-        <StyledIconButton size="small">
-          {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
-        </StyledIconButton>
+        <Box flex flexJustifyContent="flex-end" flexAlignItems="center" margin="0 0 0 auto">
+          {userGaugeWeightVoteData?.canVote && (
+            <UpdateGaugeIndicator variant="select-flat">{t`Update`}</UpdateGaugeIndicator>
+          )}
+          <StyledIconButton size="small">
+            {open ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+          </StyledIconButton>
+        </Box>
       </DataComp>
       {open && (
         <OpenContainer
@@ -186,6 +192,14 @@ const ErrorWrapper = styled.div`
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)`
   height: 400px;
+`
+
+const UpdateGaugeIndicator = styled(Button)`
+  padding: var(--spacing-1) var(--spacing-2);
+  /* background-color: var(--warning-400);
+  color: var(--page--text-color); */
+  font-weight: var(--bold);
+  font-size: var(--font-size-1);
 `
 
 export default GaugeListItem
