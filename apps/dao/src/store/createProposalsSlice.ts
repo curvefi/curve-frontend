@@ -173,6 +173,11 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
         const data: PricesProposalResponse = await proposal.json()
 
+        if ('detail' in data) {
+          console.log(data.detail)
+          return
+        }
+
         const formattedData = {
           ...data,
           votes_for: +data.votes_for / 1e18,
