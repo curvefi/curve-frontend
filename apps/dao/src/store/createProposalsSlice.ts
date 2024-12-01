@@ -212,9 +212,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       try {
         const request = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
+          `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType.toLowerCase()}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
         )
         const data: PricesProposalResponse = await request.json()
+
+        if ('detail' in data) {
+          console.log(data.detail)
+          return
+        }
 
         // refresh user votes list
         await get().user.getUserProposalVotes(userAddress)
