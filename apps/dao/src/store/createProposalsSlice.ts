@@ -3,6 +3,7 @@ import type { State } from '@/store/useStore'
 
 import networks from '@/networks'
 import { SEVEN_DAYS, TOP_HOLDERS } from '@/constants'
+import { helpers } from '@/lib/curvejs'
 
 import Fuse from 'fuse.js'
 import orderBy from 'lodash/orderBy'
@@ -344,7 +345,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             txLink: networks[1].scanTxPath(voteResponseHash),
           })
 
-          await provider.waitForTransactionReceipt(voteResponseHash)
+          await helpers.waitForTransaction(voteResponseHash, provider)
 
           get()[sliceKey].setStateByKey('voteTx', {
             ...get()[sliceKey].voteTx,
@@ -422,7 +423,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             txLink: networks[1].scanTxPath(voteResponseHash),
           })
 
-          await provider.waitForTransactionReceipt(voteResponseHash)
+          await helpers.waitForTransaction(voteResponseHash, provider)
 
           get()[sliceKey].setStateByKey('executeTx', {
             ...get()[sliceKey].executeTx,
