@@ -45,7 +45,7 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
-    getProposal(voteId: number, voteType: ProposalType): void
+    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean): void
     getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
@@ -164,8 +164,10 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (voteId: number, voteType: ProposalType) => {
-      get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
+    getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false) => {
+      if (!silentFetch) {
+        get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
+      }
 
       try {
         const proposal = await fetch(
@@ -234,30 +236,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           voted: true,
         })
 
-        const formattedData = {
-          ...data,
-          votes_for: +data.votes_for / 1e18,
-          votes_against: +data.votes_against / 1e18,
-          support_required: +data.support_required / 1e18,
-          min_accept_quorum: +data.min_accept_quorum / 1e18,
-          total_supply: +data.total_supply / 1e18,
-          creator_voting_power: +data.creator_voting_power / 1e18,
-          votes: data.votes
-            .map((vote) => ({
-              ...vote,
-              topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
-              stake: +vote.voting_power / 1e18,
-              relativePower: (+vote.voting_power / +data.total_supply) * 100,
-            }))
-            .sort((a, b) => b.stake - a.stake),
-        }
-
-        set(
-          produce((state: State) => {
-            state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
-            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
-          }),
-        )
+        // refresh proposal data
+        get()[sliceKey].getProposal(+voteId, voteType)
       } catch (error) {
         get()[sliceKey].setStateByKey('userProposalVote', {
           fetchingState: 'ERROR',
@@ -363,17 +343,17 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             hash: voteResponseHash,
             txLink: networks[1].scanTxPath(voteResponseHash),
           })
-          const receipt = await provider.waitForTransactionReceipt(voteResponseHash)
-          if (receipt.status === 1) {
-            get()[sliceKey].setStateByKey('voteTx', {
-              ...get()[sliceKey].voteTx,
-              status: 'SUCCESS',
-            })
 
-            dismissDeploying()
-            const successNotificationMessage = t`Vote casted successfully!`
-            notifyNotification(successNotificationMessage, 'success', 15000)
-          }
+          await provider.waitForTransactionReceipt(voteResponseHash)
+
+          get()[sliceKey].setStateByKey('voteTx', {
+            ...get()[sliceKey].voteTx,
+            status: 'SUCCESS',
+          })
+
+          dismissDeploying()
+          const successNotificationMessage = t`Vote casted successfully!`
+          notifyNotification(successNotificationMessage, 'success', 15000)
 
           // get new user votes list from api
           const userAddress = get().user.userAddress
