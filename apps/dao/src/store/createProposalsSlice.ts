@@ -345,6 +345,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             txLink: networks[1].scanTxPath(voteResponseHash),
           })
 
+          console.log('hash: ', voteResponseHash)
+          console.log('tx link: ', networks[1].scanTxPath(voteResponseHash))
+
           await helpers.waitForTransaction(voteResponseHash, provider)
 
           get()[sliceKey].setStateByKey('voteTx', {
