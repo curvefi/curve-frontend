@@ -8,7 +8,7 @@ import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
 import AlertBox from '@/ui/AlertBox'
-import ModalPendingTx from '@/ui/ModalPendingTx'
+import PendingTx from '@/components/UserBox/PendingTx'
 
 type Props = {
   userAddress: string
@@ -21,7 +21,7 @@ type Props = {
 }
 
 const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
-  const { castVote, voteTx, executeProposal, executeTx } = useStore((state) => state.proposals)
+  const { castVote, voteTx, executeProposal, executeTx, userProposalVote } = useStore((state) => state.proposals)
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const { userProposalVotesMapper } = useStore((state) => state.user)
@@ -40,11 +40,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
       <>
         {executeTx.status === 'LOADING' && (
           <Box>
-            <ModalPendingTx
-              transactionHash={executeTx.hash!}
-              txLink={executeTx.txLink!}
-              pendingMessage={t`Executing proposal...`}
-            />
+            <PendingTx pendingMessage={t`Executing proposal...`} />
           </Box>
         )}
         {executeTx.status === 'ERROR' && (
@@ -135,6 +131,13 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
         </Box>
       </Wrapper>
     )
+  }
+
+  if (
+    ((voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING') && userProposalVote.fetchingState === 'LOADING') ||
+    (voteTx.status === 'SUCCESS' && userProposalVote.fetchingState === 'LOADING')
+  ) {
+    return <PendingTx pendingMessage={t`Casting vote...`} />
   }
 
   if (userProposalVotesMapper[userAddress].fetchingState === 'SUCCESS') {

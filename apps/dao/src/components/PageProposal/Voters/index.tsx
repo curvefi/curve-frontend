@@ -6,8 +6,6 @@ import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import networks from '@/networks'
 
-import { formatNumberWithSuffix } from '@/ui/utils'
-
 import Box from '@/ui/Box'
 import { ExternalLink, InternalLink } from '@/ui/Link'
 import Icon from '@/ui/Icon'
@@ -19,7 +17,7 @@ type Props = {
 }
 
 const Voters = ({ totalVotes, rProposalId, className }: Props) => {
-  const curveJsProposalLoadingState = useStore((state) => state.proposals.curveJsProposalLoadingState)
+  const proposalLoadingState = useStore((state) => state.proposals.proposalLoadingState)
   const currentProposal = useStore((state) => state.proposals.proposalMapper[rProposalId])
   const navigate = useNavigate()
 
@@ -39,7 +37,7 @@ const Voters = ({ totalVotes, rProposalId, className }: Props) => {
           </Box>
         </Box>
       </TotalWrapper>
-      {currentProposal && curveJsProposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
+      {currentProposal && proposalLoadingState === 'SUCCESS' && currentProposal.votes.length !== 0 && (
         <VotesWrapper>
           <Box flex flexJustifyContent="space-between">
             <SubTitle>{t`Voter`}</SubTitle>

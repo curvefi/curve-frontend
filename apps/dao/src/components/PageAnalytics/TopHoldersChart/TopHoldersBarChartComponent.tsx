@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 
-import { shortenTokenAddress, formatNumberWithSuffix } from '@/ui/utils'
+import { shortenTokenAddress, formatNumber } from '@/ui/utils'
 import { TOP_HOLDERS } from '@/constants'
 
 import CustomTooltip from './TopHoldersBarChartTooltip'
@@ -35,7 +35,7 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
       return TOP_HOLDERS[address].title
     }
 
-    return user.length > 15 ? shortenTokenAddress(user)?.toString() ?? user : user
+    return user.length > 15 ? (shortenTokenAddress(user)?.toString() ?? user) : user
   }
 
   return (
@@ -75,7 +75,9 @@ const TopHoldersBarChart: React.FC<TopHoldersBarChartProps> = ({ data, filter })
             dataKey={filter}
             interval={0}
             tick={{ fill: 'var(--page--text-color)', fontWeight: 'var(--bold)', fontSize: 'var(--font-size-1)' }}
-            tickFormatter={(value) => (filter === 'weight_ratio' ? `${value}%` : formatNumberWithSuffix(value))}
+            tickFormatter={(value) =>
+              filter === 'weight_ratio' ? `${value}%` : formatNumber(value, { notation: 'compact' })
+            }
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}
             dx={-4}

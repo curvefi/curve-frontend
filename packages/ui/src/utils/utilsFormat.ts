@@ -14,7 +14,7 @@ export interface NumberFormatOptions extends Intl.NumberFormatOptions {
   defaultValue?: string // value to display when it is undefined || null || empty string
   showAllFractionDigits?: boolean // do not hide any decimal digits
   showDecimalIfSmallNumberOnly?: boolean // show decimal if value is < 10
-  trailingZeroDisplay?: "auto" | "stripIfInteger"
+  trailingZeroDisplay?: 'auto' | 'stripIfInteger'
 }
 
 export const FORMAT_OPTIONS = {
@@ -141,7 +141,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
 
 function _formatNumber(val: string | number, options: NumberFormatOptions) {
   return new Intl.NumberFormat(localeDetected, options).format(
-    options.style === 'percent' ? Number(val) / 100 : Number(val)
+    options.style === 'percent' ? Number(val) / 100 : Number(val),
   )
 }
 
@@ -171,18 +171,6 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
   }
 
   return parsedUsdRate
-}
-
-export const formatNumberWithSuffix = (value: number): string => {
-  if (value >= 1e9) {
-    return `${(value / 1e9).toFixed(2)}B`
-  } else if (value >= 1e6) {
-    return `${(value / 1e6).toFixed(2)}M`
-  } else if (value >= 1000) {
-    return `${(value / 1000).toFixed(2)}K`
-  } else {
-    return value.toFixed(0)
-  }
 }
 
 export const formatDateFromTimestamp = (unixTime: number) => {

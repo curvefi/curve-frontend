@@ -32,12 +32,11 @@ type ProposalProps = {
 }
 
 const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
-  const [voteId, voteType] = rProposalId.split('-')
+  const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const provider = useStore((state) => state.wallet.getProvider(''))
-  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote, userProposalVote } = useStore(
-    (state) => state.proposals,
-  )
-  const { setSnapshotVeCrv, userAddress } = useStore((state) => state.user)
+  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote, userProposalVote, voteTx } =
+    useStore((state) => state.proposals)
+  const { setSnapshotVeCrv, userAddress, userProposalVotesMapper } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
   const { proposalsMapper } = useProposalsMapper()
@@ -80,21 +79,31 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
 
   useEffect(() => {
     if (pricesProposal) return
-    getProposal(+voteId, voteType as ProposalType)
+    getProposal(+voteId, voteType)
   }, [getProposal, pricesProposal, voteId, voteType])
 
-  // check to see if a user has voted and it has not been updated by the API
+  // check to see if a user has voted and it has not yet been updated by the API
   useEffect(() => {
-    if (
-      !userAddress ||
-      !isFetched ||
-      userProposalVote.voted !== null ||
-      pricesProposal?.votes.find((vote) => vote.voter.toLowerCase() === userAddress.toLowerCase())
-    ) {
+    if (!userAddress || userProposalVote.fetchingState !== null) {
       return
     }
-    getUserProposalVote(userAddress, +voteId, voteType as ProposalType)
-  }, [getUserProposalVote, isFetched, pricesProposal?.votes, userAddress, userProposalVote, voteId, voteType])
+
+    const userVotes = userProposalVotesMapper[userAddress]
+
+    if (userVotes.votes[rProposalId]) {
+      return
+    }
+
+    getUserProposalVote(userAddress, voteId, voteType)
+  }, [
+    getUserProposalVote,
+    rProposalId,
+    userAddress,
+    userProposalVote.fetchingState,
+    userProposalVotesMapper,
+    voteId,
+    voteType,
+  ])
 
   return (
     <Wrapper>

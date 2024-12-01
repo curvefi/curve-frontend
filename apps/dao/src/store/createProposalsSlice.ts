@@ -46,7 +46,7 @@ export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
     getProposal(voteId: number, voteType: ProposalType): void
-    getUserProposalVote(userAddress: string, voteId: number, voteType: ProposalType, txHash?: string): void
+    getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
     setActiveSortBy(sortBy: SortByFilterProposals): void
@@ -204,7 +204,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     // used to check if a user has voted but it has not yet been updated by the API
-    getUserProposalVote: async (userAddress: string, voteId: number, voteType: ProposalType, txHash?: string) => {
+    getUserProposalVote: async (userAddress: string, voteId: string, voteType: ProposalType, txHash?: string) => {
       get()[sliceKey].setStateByKey('userProposalVote', {
         fetchingState: 'LOADING',
         voted: null,
@@ -215,6 +215,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
         )
         const data: PricesProposalResponse = await request.json()
+
+        // refresh user votes list
+        await get().user.getUserProposalVotes(userAddress)
 
         get()[sliceKey].setStateByKey('userProposalVote', {
           fetchingState: 'SUCCESS',
@@ -317,13 +320,13 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       dismissNotificationHandler = dismissConfirm
 
       // refresh user votes list
-      const onboard = get().wallet.onboard
-      if (onboard) {
-        const connectedWallets = onboard.state.get().wallets
-        if (connectedWallets.length > 0) {
-          get().user.updateUserData(curve, connectedWallets[0])
-        }
-      }
+      // const onboard = get().wallet.onboard
+      // if (onboard) {
+      //   const connectedWallets = onboard.state.get().wallets
+      //   if (connectedWallets.length > 0) {
+      //     get().user.updateUserData(curve, connectedWallets[0])
+      //   }
+      // }
 
       try {
         await fetchGasInfo(curve)
@@ -360,6 +363,13 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             dismissDeploying()
             const successNotificationMessage = t`Vote casted successfully!`
             notifyNotification(successNotificationMessage, 'success', 15000)
+          }
+
+          // get new user votes list from api
+          const userAddress = get().user.userAddress
+
+          if (userAddress) {
+            get()[sliceKey].getUserProposalVote(userAddress, voteId.toString(), voteType, voteResponseHash)
           }
         }
       } catch (error) {
