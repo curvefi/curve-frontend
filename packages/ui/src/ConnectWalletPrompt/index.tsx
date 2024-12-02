@@ -1,8 +1,7 @@
 import styled from 'styled-components'
 import React from 'react'
 import Image from 'next/image'
-
-import Button from '../Button'
+import Button from '@mui/material/Button'
 import Spinner from '../Spinner'
 
 import { LogoImg } from '../images'
@@ -40,14 +39,14 @@ const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
       </ImageWrapper>
       <ContentWrapper>
         <p>{description}</p>
-        {!isLoading ? (
-          <StyledButton size="large" variant="filled" onClick={connectWallet} testId="connect-prompt">
-            {connectText}
-          </StyledButton>
+        {isLoading ? (
+          <Button disabled size="large" color="primary" endIcon={<Spinner isDisabled size={15} />}>
+            {loadingText}
+          </Button>
         ) : (
-          <StyledButton disabled size="large" variant="icon-filled">
-            {loadingText} <Spinner isDisabled size={15} />
-          </StyledButton>
+          <Button size="large" color="primary" onClick={connectWallet} data-testid="connect-prompt">
+            {connectText}
+          </Button>
         )}
       </ContentWrapper>
     </Wrapper>
@@ -117,10 +116,6 @@ const ContentWrapper = styled.div`
   gap: var(--spacing-2);
   width: 100%;
   margin: 0 auto;
-`
-
-const StyledButton = styled(Button)`
-  padding: var(--spacing-2) var(--spacing-5);
 `
 
 export default ConnectWalletPrompt
