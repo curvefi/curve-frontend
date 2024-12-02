@@ -6,12 +6,9 @@ export type PaletteVariants = {
 }
 
 export const DesignSystem = {
-  light: ({ inverted }: PaletteVariants) =>
-    createLightDesign(inverted ? SurfacesAndText.inverted.Light : SurfacesAndText.plain.Light),
-  dark: ({ inverted }: PaletteVariants) =>
-    createDarkDesign(inverted ? SurfacesAndText.inverted.Dark : SurfacesAndText.plain.Dark),
-  chad: ({ inverted }: PaletteVariants) =>
-    createChadDesign(inverted ? SurfacesAndText.inverted.Chad : SurfacesAndText.plain.Chad),
+  light: ({ inverted }: PaletteVariants) => createLightDesign(SurfacesAndText[inverted ? 'inverted' : 'plain'].Light),
+  dark: ({ inverted }: PaletteVariants) => createDarkDesign(SurfacesAndText[inverted ? 'inverted' : 'plain'].Dark),
+  chad: ({ inverted }: PaletteVariants) => createChadDesign(SurfacesAndText[inverted ? 'inverted' : 'plain'].Chad),
 }
 
 export type DesignSystem = ReturnType<(typeof DesignSystem)[keyof typeof DesignSystem]>

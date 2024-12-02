@@ -1,4 +1,5 @@
 import { createTheme as createMuiTheme } from '@mui/material/styles'
+import { Spacing } from '../design/0_primitives'
 
 export const basicMuiTheme = createMuiTheme({
   breakpoints: {
@@ -10,6 +11,6 @@ export const basicMuiTheme = createMuiTheme({
     },
     unit: 'px',
   },
-  spacing: [0, 2, 4, 8, 16, 24, 32, 48],
+  spacing: Object.values(Spacing),
   direction: 'ltr',
 })

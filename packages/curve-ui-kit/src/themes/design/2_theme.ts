@@ -1,5 +1,6 @@
-import { SurfacesAndText } from './1_surfaces_text'
 import { Blues, Grays, Greens, Reds, Violet } from './0_primitives'
+import { SizesAndSpaces } from './1_sizes_spaces'
+import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
 
@@ -184,7 +185,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        'Label_&_Icon_2': Text.TextColors.Primary,
+        Label2: Text.TextColors.Primary,
         Fill: Layer[1].Fill,
       },
       Current: {

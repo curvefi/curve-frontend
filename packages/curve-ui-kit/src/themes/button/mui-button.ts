@@ -2,11 +2,14 @@ import type { Components } from '@mui/material/styles'
 import { basicMuiTheme } from '../basic-theme'
 import { Fonts } from '../typography'
 import { DesignSystem } from '../design'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import { Breakpoint } from '@mui/material'
 
-export const BUTTONS_HEIGHTS = ['2rem', '2.5rem', '3rem'] as const // 32px, 40px, 48px
+const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
 
 type ButtonStyle = { Label?: string; Fill?: string; Outline?: string }
-type ButtonColor = { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle, Current?: ButtonStyle }
+type ButtonColor = { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle; Current?: ButtonStyle }
+type Responsive = Record<Breakpoint, string>
 
 const buttonStyle = ({ Fill, Label, Outline }: ButtonStyle) => ({
   color: Label,
@@ -21,6 +24,28 @@ const buttonColor = ({ Default, Disabled, Hover, Current }: ButtonColor) => ({
   '&.current': Current && buttonStyle(Current),
 })
 
+const sizeBreakpoint = (
+  height: string,
+  fontSize: Responsive,
+  fontWeight: Responsive,
+  lineHeight: Responsive,
+  breakpoint: Breakpoint,
+) => ({
+  [basicMuiTheme.breakpoints.up(breakpoint)]: {
+    height,
+    fontSize: fontSize[breakpoint],
+    fontWeight: fontWeight[breakpoint],
+    lineHeight: lineHeight[breakpoint],
+  },
+})
+
+type ButtonSize = { height: keyof typeof ButtonSize; fontSize: keyof typeof FontSize; fontWeight?: keyof typeof FontWeight; lineHeight: keyof typeof LineHeight }
+const buttonSize = ({ height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize) => ({
+  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'mobile'),
+  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'tablet'),
+  ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'desktop'),
+})
+
 export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['MuiButton'] => {
   const { Primary, Secondary, Success, Error, Outlined, Ghost, Navigation, Focus_Outline } = Button
   const colors = {
@@ -33,47 +58,21 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
     navigation: buttonColor(Navigation),
   }
   const fontFamily = Fonts[Text.FontFamily.Button]
-  const [smallHeight, mediumHeight, largeHeight] = BUTTONS_HEIGHTS
-  const [sm, md, lg] = [2, 3, 4].map((i) => basicMuiTheme.spacing(i))
   return {
     styleOverrides: {
       root: {
         variants: Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
         borderRadius: 0,
-        border: `2px solid transparent`,
+        border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
         '&:focus': { borderColor: Focus_Outline },
-      },
-      sizeLarge: {
-        height: largeHeight,
-        padding: `0 ${md}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}0px` },
-        fontSize: '14px',
-        fontWeight: 700,
-        lineHeight: '24px',
-        textTransform: 'uppercase',
         fontFamily,
-      },
-      sizeMedium: {
-        height: mediumHeight,
-        padding: `0 ${md}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${sm}px` },
-        fontSize: '14px',
-        fontWeight: 700,
-        lineHeight: '24px',
         textTransform: 'uppercase',
-        fontFamily,
       },
-      sizeSmall: {
-        height: smallHeight,
-        padding: `0 ${lg}px`,
-        [basicMuiTheme.breakpoints.down('tablet')]: { padding: `0 ${md}px` },
-        fontSize: '14px',
-        fontWeight: 700,
-        lineHeight: '16px',
-        textTransform: 'uppercase',
-        fontFamily,
-      },
+      sizeExtraSmall: buttonSize({ height: 'xs', fontSize: 'sm', lineHeight: 'md' }),
+      sizeSmall: buttonSize({ height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
+      sizeMedium: buttonSize({ height: 'md', fontSize: 'md', lineHeight: 'xl' }),
+      sizeLarge: buttonSize({ height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
     },
   }
 }

@@ -11,6 +11,7 @@ export const AppButtonLinks = ({ selectedApp, onChange }: AppNavAppsProps) => (
       <Button
         key={appName}
         color="navigation"
+        size="small"
         className={selectedApp === appName ? 'current' : ''}
         component={Link}
         onClick={() => onChange(appName)}

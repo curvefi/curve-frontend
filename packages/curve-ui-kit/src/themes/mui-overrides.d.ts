@@ -18,4 +18,12 @@ declare module '@mui/material/Button' {
 
   export interface ButtonPropsColorOverrides extends ButtonColors {
   }
+
+  export interface ButtonPropsSizeOverrides {
+    extraSmall: true
+  }
+
+  export interface ButtonClasses {
+    sizeExtraSmall: string
+  }
 }

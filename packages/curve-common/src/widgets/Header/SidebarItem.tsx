@@ -20,7 +20,7 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
         ? { component: Link, href: page.route, target: page.target }
         : { component: RouterLink, to: page.route, className: page.isActive ? 'current' : '' })}
       color="navigation"
-      size="small"
+      size="extraSmall"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}
       sx={{ justifyContent: 'flex-start', textDecoration: 'none', textTransform: 'uppercase', width: '100%' }}
     >

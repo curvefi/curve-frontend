@@ -1,6 +1,6 @@
 import { Sizing, Spacing } from './0_primitives'
 
-export const MappedSpacing = {
+const MappedSpacing = {
   xxs: {
     mobile: Spacing[100],
     tablet: Spacing[100],
@@ -38,7 +38,7 @@ export const MappedSpacing = {
   },
 } as const
 
-export const MappedSizing = {
+const MappedSizing = {
   xxs: {
     mobile: Sizing[50],
     tablet: Sizing[100],
@@ -81,7 +81,7 @@ export const MappedSizing = {
   },
 } as const
 
-export const MappedIconSize = {
+const MappedIconSize = {
   xxs: {
     mobile: Sizing[100],
     tablet: Sizing[125],
@@ -129,7 +129,7 @@ export const MappedIconSize = {
   },
 } as const
 
-export const MappedGrid = {
+const MappedGrid = {
   Column_Spacing: {
     mobile: Spacing[300],
     tablet: Spacing[400],
@@ -142,7 +142,7 @@ export const MappedGrid = {
   },
 } as const
 
-export const MappedFontSize = {
+const MappedFontSize = {
   xs: {
     mobile: Sizing[125],
     tablet: Sizing[125],
@@ -175,7 +175,14 @@ export const MappedFontSize = {
   },
 } as const
 
-export const MappedFontWeight = {
+const MappedButtonSize = {
+  xs: Sizing[300],
+  sm: Sizing[500],
+  md: Sizing[600],
+  lg: Sizing[650],
+}
+
+const MappedFontWeight = {
   Extra_Light: {
     mobile: '200',
     tablet: '200',
@@ -213,35 +220,47 @@ export const MappedFontWeight = {
   },
 } as const
 
-export const MappedLineHeight = {
+const MappedLineHeight = {
   xs: {
-    mobile: '12px',
-    tablet: '12px',
-    desktop: '14px',
+    mobile: '0.75rem', // 12px
+    tablet: '0.75rem', // 12px
+    desktop: '0.875rem', // 14px
   },
   sm: {
-    mobile: '14px',
-    tablet: '14px',
-    desktop: '16px',
+    mobile: '0.875rem', // 14px
+    tablet: '0.875rem', // 14px
+    desktop: '1rem', // 16px
   },
   md: {
-    mobile: '16px',
-    tablet: '16px',
-    desktop: '24px',
+    mobile: '1rem', // 16px
+    tablet: '1rem', // 16px
+    desktop: '1.5rem', // 24px
   },
   lg: {
-    mobile: '24px',
-    tablet: '24px',
-    desktop: '28px',
+    mobile: '1.5rem', // 24px
+    tablet: '1.5rem', // 24px
+    desktop: '1.75rem', // 28px
   },
   xl: {
-    mobile: '32px',
-    tablet: '32px',
-    desktop: '40px',
+    mobile: '2rem', // 32px
+    tablet: '2rem', // 32px
+    desktop: '2.5rem', // 40px
   },
   xxl: {
-    mobile: '40px',
-    tablet: '40px',
-    desktop: '64px',
+    mobile: '2.5rem', // 40px
+    tablet: '2.5rem', // 40px
+    desktop: '4rem', // 64px
   },
+} as const
+
+export const SizesAndSpaces = {
+  Spacing: MappedSpacing,
+  Sizing: MappedSizing,
+  IconSize: MappedIconSize,
+  ButtonSize: MappedButtonSize,
+  Grid: MappedGrid,
+  FontSize: MappedFontSize,
+  FontWeight: MappedFontWeight,
+  LineHeight: MappedLineHeight,
+  OutlineWidth: '0.125rem', // 2px
 } as const
