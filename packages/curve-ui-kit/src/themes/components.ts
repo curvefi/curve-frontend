@@ -5,6 +5,9 @@ import { defineMuiTab, defineMuiTabs } from './tabs'
 import { DesignSystem } from './design'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 
+
+export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
+
 export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
   MuiTypography: defineMuiTypography(),
   MuiButtonBase: {
@@ -18,7 +21,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiTabs: defineMuiTabs(design),
   MuiToolbar: {
     styleOverrides: {
-      root: { minHeight: SizesAndSpaces.ButtonSize.sm, paddingX: 3 },
+      root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
     },
   },
   MuiContainer: {
