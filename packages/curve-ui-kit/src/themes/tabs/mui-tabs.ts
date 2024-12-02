@@ -24,43 +24,29 @@ export const defineMuiTab = (): Components['MuiTab'] => ({
   },
 })
 
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+
+const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
+  color: Label,
+  backgroundColor: Fill,
+  borderColor: Outline,
+})
+
+const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
+  ...tabStyle(Default),
+  '&:hover': tabStyle(Hover),
+  '&.Mui-selected': tabStyle(Current),
+})
+
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-export const defineMuiTabs = ({ Text, Color: { Primary, Neutral }, Layer }: DesignSystem): Components['MuiTabs'] => ({
+export const defineMuiTabs = ({ Tabs: { UnderLined, OverLined, Contained }, Color: { Primary, Neutral }, Layer }: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
       minHeight: 0,
-      [`&.${contained} .MuiTab-root`]: {
-        color: Text.TextColors.Secondary,
-        backgroundColor: Primary[200],
-        '&:hover': {
-          color: Primary[950],
-          backgroundColor: Neutral[50],
-          borderColor: Layer.Highlight.Outline,
-        },
-        '&.Mui-selected': {
-          color: Text.TextColors.Primary,
-          backgroundColor: Layer[1].Fill,
-        },
-      },
-      [`&.${overlined} .MuiTab-root`]: {
-        color: Text.TextColors.Secondary,
-        '&.Mui-selected': { color: Text.TextColors.Primary },
-        '&:hover': {
-          color: Text.TextColors.Primary,
-          borderColor: Layer.Highlight.Outline,
-          backgroundColor: Neutral[200],
-        },
-      },
-      [`&.${underlined} .MuiTab-root`]: {
-        color: Text.TextColors.Primary,
-        '&:hover': {
-          color: Text.TextColors.Highlight,
-          borderColor: Layer.Highlight.Outline,
-        },
-        '&.Mui-selected': {
-          color: Text.TextColors.Primary,
-        },
-      },
+      [`&.${contained} .MuiTab-root`]: tabVariant(Contained),
+      [`&.${overlined} .MuiTab-root`]: tabVariant(OverLined),
+      [`&.${underlined} .MuiTab-root`]: tabVariant(UnderLined),
       [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
       [`&.${medium} .MuiTab-root`]: { paddingY: '10px 12px' }, // +2px border == 24px padding, 16px content == 40px total
       [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
