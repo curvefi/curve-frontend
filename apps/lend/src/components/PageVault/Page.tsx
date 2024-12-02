@@ -68,17 +68,21 @@ const Page: NextPage = () => {
   const selectedTab = _getSelectedTab(marketDetailsView, signerAddress)
 
   const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
+    (api: Api, market: OneWayMarketTemplate) => {
+      let timeout: NodeJS.Timeout | null = null
       setLoaded(true)
 
       // delay fetch rest after form details are fetch first
-      setTimeout(async () => {
+      timeout = setTimeout(async () => {
+        console.log('fetchInitial')
         const { signerAddress } = api
 
         fetchAllMarketDetails(api, market, true)
 
-        if (signerAddress) {
+        if (signerAddress && timeout) {
           const loanExists = (await fetchUserLoanExists(api, market, true))?.loanExists
+          if (!timeout) return
+
           if (loanExists) {
             fetchAllUserMarketDetails(api, market, true)
           } else {
@@ -87,6 +91,12 @@ const Page: NextPage = () => {
         }
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
+
+      return () => {
+        clearTimeout(timeout!)
+        timeout = null
+        console.log('clear fetchInitial')
+      }
     },
     [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances]
   )
@@ -99,13 +109,13 @@ const Page: NextPage = () => {
     setLoaded(false)
 
     if (!isLoadingApi && api && market) {
-      fetchInitial(api, market)
+      return fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoadingApi])
 
   useEffect(() => {
-    if (api && market && isPageVisible && initialLoaded) fetchInitial(api, market)
+    if (api && market && isPageVisible && initialLoaded) return fetchInitial(api, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 

@@ -1,7 +1,7 @@
-import type { LlammaLiquididationRange, LiquidationRanges } from '@/ui/Chart/types'
+import type { LiquidationRanges, LlammaLiquididationRange } from '@/ui/Chart/types'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
 
@@ -34,10 +34,10 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const repayLeveragePrices = useStore((state) => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
   const repayLoanPrices = useStore((state) => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
   const addCollateralPrices = useStore(
-    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null
+    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null,
   )
   const removeCollateralPrices = useStore(
-    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null
+    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -88,26 +88,11 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     }
 
     const formatRange = (liqRange: string[]) => {
-      let range: LlammaLiquididationRange = {
-        price1: [],
-        price2: [],
-      }
-
-      for (const data of currentChart.data) {
-        range.price1 = [
-          ...range.price1,
-          {
-            time: data.time,
-            value: +liqRange[1],
-          },
-        ]
-        range.price2 = [
-          ...range.price2,
-          {
-            time: data.time,
-            value: +liqRange[0],
-          },
-        ]
+      const range: LlammaLiquididationRange = { price1: [], price2: [] }
+      const [value1, value2] = [+liqRange[1], +liqRange[0]]
+      for (const { time } of currentChart.data) {
+        range.price1.push({ time, value: value1 })
+        range.price2.push({ time, value: value2 })
       }
       return range
     }
@@ -117,49 +102,40 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
       if (liqRangesMapper[formValues.n].prices.length !== 0) {
         const currentPrices = liqRangesMapper[formValues.n].prices
         // flip order to match other data
-        const range = formatRange([currentPrices[1], currentPrices[0]])
-        liqRanges.new = range
+        liqRanges.new = formatRange([currentPrices[1], currentPrices[0]])
       } else {
         const currentPrices = loanCreateDetailInfo?.prices
 
         if (currentPrices) {
-          const range = formatRange([currentPrices[0], currentPrices[1]])
-          liqRanges.new = range
+          liqRanges.new = formatRange([currentPrices[0], currentPrices[1]])
         }
       }
     }
 
     // current loan prices
     if (userPrices && currentChart.data) {
-      const range = formatRange(userPrices)
-      liqRanges.current = range
+      liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
     if (borrowMorePrices && borrowMorePrices.length !== 0 && currentChart.data) {
-      const range = formatRange(borrowMorePrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(borrowMorePrices)
     }
     // decrease loan prices
     if (repayLoanPrices && repayLoanPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(repayLoanPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(repayLoanPrices)
     }
     // increase collateral prices
     if (addCollateralPrices && addCollateralPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(addCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(addCollateralPrices)
     }
     // decrease collateral prices
     if (removeCollateralPrices && removeCollateralPrices.length !== 0 && currentChart.data) {
-      const range = formatRange(removeCollateralPrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(removeCollateralPrices)
     }
     // // deleverage prices
     if (repayLeveragePrices && currentChart.data) {
-      const range = formatRange(repayLeveragePrices)
-      liqRanges.new = range
+      liqRanges.new = formatRange(repayLeveragePrices)
     }
-
     return liqRanges
   }, [
     formValues.n,
@@ -273,7 +249,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
     if (market?.addresses.amm) {
@@ -284,7 +260,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
   }, [
@@ -310,7 +286,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
       fetchOraclePoolOhlcData(
         rChainId,
@@ -318,7 +294,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
   }, [
@@ -347,11 +323,11 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartInterval,
           timeUnit,
           startTime,
-          endTime
+          endTime,
         )
       }
     },
-    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit]
+    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],
   )
 
   if (ohlcDataUnavailable) {
