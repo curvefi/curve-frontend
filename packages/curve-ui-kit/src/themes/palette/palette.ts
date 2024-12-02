@@ -16,49 +16,14 @@ export const createPalette = (
   text: {
     primary: Text.TextColors.Primary,
     secondary: Text.TextColors.Secondary,
+    tertiary: Text.TextColors.Tertiary,
     disabled: Text.TextColors.Disabled,
-    // highlight: Text.TextColors.Highlight,
+    highlight: Text.TextColors.Highlight,
   },
-  // curve design language
-  // inputs: {
-  //   fill: Inputs.Base.Default.Fill,
-  //   largeFill: Inputs.Large.Default.Fill,
-  //   border: Inputs.Base.Default.Border,
-  //   nested: Inputs.Base.Nested.Nested,
-  //   nestedFill: Inputs.Base.Nested.Fill,
-  //   nestedBorder: Inputs.Base.Nested.Border.Default,
-  //   nestedBorderActive: Inputs.Base.Nested.Border.Active,
-  //   nestedBorderFilled: Inputs.Base.Nested.Border.Filled,
-  //   nestedBorderError: Inputs.Base.Nested.Border.Error,
-  // },
-  // tabs: {
-  //
-  // },
-  // toggles: {
-  //
-  // },
-  // table: {
-  //
-  // },
-  // button: {
-  //
-  // },
-
-  // TODO: divider: string,
-  // TODO: action: active, hover, hoverOpacity, selected, selectedOpacity, disabled, disabledOpacity, disabledBackground, focus, focusOpacity, activatedOpacity
   background: {
     // used by MUI
     default: Layer.App.Background,
     paper: Layer[1].Fill,
-    // curve design language
-    // layer1Fill: Layer[1].Fill,
-    // layer1Outline: Layer[1].Outline,
-    // layer2Fill: Layer[2].Fill,
-    // layer2Outline: Layer[2].Outline,
-    // layer3Fill: Layer[3].Fill,
-    // layer3Outline: Layer[3].Outline,
-    // highlightOutline: Layer.Highlight.Outline,
-    // highlightFill: Layer.Highlight.Fill,
   },
 })
 

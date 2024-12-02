@@ -8,6 +8,11 @@ declare module '@mui/material/styles' {
   interface ThemeOptions {
     design?: DesignSystem
   }
+
+  interface TypeText {
+    tertiary: string
+    highlight: string
+  }
 }
 
 declare module '@mui/material/Button' {
