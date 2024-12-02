@@ -16,24 +16,30 @@ type SliceState = {
   proposalsLoadingState: FetchingState
   filteringProposalsLoading: boolean
   proposalLoadingState: FetchingState
-  voteTx: {
-    hash: string | null
-    txLink: string | null
-    error: string | null
-    status: TransactionState
+  voteTxMapper: {
+    [voteId: string]: {
+      hash: string | null
+      txLink: string | null
+      error: string | null
+      status: TransactionState
+    }
   }
-  executeTx: {
-    hash: string | null
-    txLink: string | null
-    error: string | null
-    status: TransactionState
+  executeTxMapper: {
+    [voteId: string]: {
+      hash: string | null
+      txLink: string | null
+      error: string | null
+      status: TransactionState
+    }
   }
   proposalsMapper: { [voteId: string]: ProposalData }
   proposals: ProposalData[]
   proposalMapper: ProposalMapper
-  userProposalVote: {
-    fetchingState: FetchingState | null
-    voted: boolean | null
+  userProposalVoteMapper: {
+    [voteId: string]: {
+      fetchingState: FetchingState | null
+      voted: boolean | null
+    }
   }
   searchValue: string
   activeFilter: ProposalListFilter
@@ -66,28 +72,15 @@ const DEFAULT_STATE: SliceState = {
   proposalsLoadingState: 'LOADING',
   filteringProposalsLoading: true,
   proposalLoadingState: 'LOADING',
-  voteTx: {
-    hash: null,
-    txLink: null,
-    error: null,
-    status: '',
-  },
-  executeTx: {
-    hash: null,
-    txLink: null,
-    error: null,
-    status: '',
-  },
+  voteTxMapper: {},
+  executeTxMapper: {},
   searchValue: '',
   activeFilter: 'all',
   activeSortBy: 'endingSoon',
   activeSortDirection: 'desc',
   proposalMapper: {},
   proposalsMapper: {},
-  userProposalVote: {
-    fetchingState: null,
-    voted: null,
-  },
+  userProposalVoteMapper: {},
   proposals: [],
 }
 
@@ -213,9 +206,13 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     // used to check if a user has voted but it has not yet been updated by the API
     getUserProposalVote: async (userAddress: string, voteId: string, voteType: ProposalType, txHash?: string) => {
-      get()[sliceKey].setStateByKey('userProposalVote', {
-        fetchingState: 'LOADING',
-        voted: null,
+      const voteIdKey = `${voteId}-${voteType}`
+
+      get()[sliceKey].setStateByKey('userProposalVoteMapper', {
+        [voteIdKey]: {
+          fetchingState: 'LOADING',
+          voted: null,
+        },
       })
 
       try {
@@ -225,24 +222,51 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const data: PricesProposalResponse = await request.json()
 
         if ('detail' in data) {
-          console.log(data.detail)
           return
+        }
+
+        const proposalData = get()[sliceKey].proposalMapper[`${voteId}-${voteType}`]
+        const formattedData = {
+          votes_for: +data.votes_for / 1e18,
+          votes_against: +data.votes_against / 1e18,
+          votes: data.votes
+            .map((vote) => ({
+              ...vote,
+              topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
+              stake: +vote.voting_power / 1e18,
+              relativePower: (+vote.voting_power / +data.total_supply) * 100,
+            }))
+            .sort((a, b) => b.stake - a.stake),
         }
 
         // refresh user votes list
         await get().user.getUserProposalVotes(userAddress)
 
-        get()[sliceKey].setStateByKey('userProposalVote', {
-          fetchingState: 'SUCCESS',
-          voted: true,
+        get()[sliceKey].setStateByKey('userProposalVoteMapper', {
+          [voteIdKey]: {
+            fetchingState: 'SUCCESS',
+            voted: true,
+          },
         })
 
-        // refresh proposal data
-        get()[sliceKey].getProposal(+voteId, voteType)
+        set(
+          produce((state: State) => {
+            state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = {
+              ...proposalData,
+              ...formattedData,
+            }
+            state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = {
+              ...proposalData,
+              ...formattedData,
+            }
+          }),
+        )
       } catch (error) {
-        get()[sliceKey].setStateByKey('userProposalVote', {
-          fetchingState: 'ERROR',
-          voted: false,
+        get()[sliceKey].setStateByKey('userProposalVoteMapper', {
+          [voteIdKey]: {
+            fetchingState: 'ERROR',
+            voted: false,
+          },
         })
       }
     },
@@ -292,6 +316,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       get()[sliceKey].setStateByKey('activeSortBy', sortBy)
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
+      const voteIdKey = `${voteId}-${voteType}`
       const { curve } = get()
       const provider = get().wallet.getProvider('')
       const notifyNotification = get().wallet.notifyNotification
@@ -303,21 +328,17 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       const notifyPendingMessage = t`Please confirm to cast vote.`
       const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-      get()[sliceKey].setStateByKey('voteTx', {
-        ...get()[sliceKey].voteTx,
-        status: 'CONFIRMING',
+      get()[sliceKey].setStateByKey('voteTxMapper', {
+        ...get()[sliceKey].voteTxMapper,
+        [voteIdKey]: {
+          status: 'CONFIRMING',
+          hash: null,
+          txLink: null,
+          error: null,
+        },
       })
 
       dismissNotificationHandler = dismissConfirm
-
-      // refresh user votes list
-      // const onboard = get().wallet.onboard
-      // if (onboard) {
-      //   const connectedWallets = onboard.state.get().wallets
-      //   if (connectedWallets.length > 0) {
-      //     get().user.updateUserData(curve, connectedWallets[0])
-      //   }
-      // }
 
       try {
         await fetchGasInfo(curve)
@@ -329,9 +350,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const voteResponseHash = await curve.dao.voteForProposal(voteType, voteId, support)
 
         if (voteResponseHash) {
-          get()[sliceKey].setStateByKey('voteTx', {
-            ...get()[sliceKey].voteTx,
-            status: 'LOADING',
+          get()[sliceKey].setStateByKey('voteTxMapper', {
+            ...get()[sliceKey].voteTxMapper,
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: null,
+              txLink: null,
+              error: null,
+            },
           })
 
           dismissConfirm()
@@ -339,20 +365,24 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
-          get()[sliceKey].setStateByKey('voteTx', {
-            ...get()[sliceKey].voteTx,
-            hash: voteResponseHash,
-            txLink: networks[1].scanTxPath(voteResponseHash),
+          get()[sliceKey].setStateByKey('voteTxMapper', {
+            ...get()[sliceKey].voteTxMapper,
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: voteResponseHash,
+              txLink: networks[1].scanTxPath(voteResponseHash),
+            },
           })
-
-          console.log('hash: ', voteResponseHash)
-          console.log('tx link: ', networks[1].scanTxPath(voteResponseHash))
 
           await helpers.waitForTransaction(voteResponseHash, provider)
 
-          get()[sliceKey].setStateByKey('voteTx', {
-            ...get()[sliceKey].voteTx,
-            status: 'SUCCESS',
+          get()[sliceKey].setStateByKey('voteTxMapper', {
+            ...get()[sliceKey].voteTxMapper,
+            [voteIdKey]: {
+              status: 'SUCCESS',
+              hash: voteResponseHash,
+              txLink: networks[1].scanTxPath(voteResponseHash),
+            },
           })
 
           dismissDeploying()
@@ -371,10 +401,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           dismissNotificationHandler()
         }
 
-        get()[sliceKey].setStateByKey('voteTx', {
-          ...get()[sliceKey].voteTx,
-          status: 'ERROR',
-          error: error.message,
+        get()[sliceKey].setStateByKey('voteTxMapper', {
+          ...get()[sliceKey].voteTxMapper,
+          [voteIdKey]: {
+            status: 'ERROR',
+            hash: null,
+            txLink: null,
+            error: error.message,
+          },
         })
 
         console.log(error)
@@ -382,6 +416,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
       const { curve } = get()
+      const voteIdKey = `${voteId}-${voteType}`
 
       const provider = get().wallet.getProvider('')
       const notifyNotification = get().wallet.notifyNotification
@@ -393,9 +428,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       const notifyPendingMessage = t`Please confirm to execute proposal.`
       const { dismiss: dismissConfirm } = notifyNotification(notifyPendingMessage, 'pending')
-      get()[sliceKey].setStateByKey('executeTx', {
-        ...get()[sliceKey].executeTx,
-        status: 'CONFIRMING',
+      get()[sliceKey].setStateByKey('executeTxMapper', {
+        ...get()[sliceKey].executeTxMapper,
+        [voteIdKey]: {
+          status: 'CONFIRMING',
+          hash: null,
+          txLink: null,
+          error: null,
+        },
       })
 
       dismissNotificationHandler = dismissConfirm
@@ -410,9 +450,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         const voteResponseHash = await curve.dao.executeVote(voteType, voteId)
 
         if (voteResponseHash) {
-          get()[sliceKey].setStateByKey('executeTx', {
-            ...get()[sliceKey].executeTx,
-            status: 'LOADING',
+          get()[sliceKey].setStateByKey('executeTxMapper', {
+            ...get()[sliceKey].executeTxMapper,
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: null,
+              txLink: null,
+              error: null,
+            },
           })
 
           dismissConfirm()
@@ -420,17 +465,26 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const { dismiss: dismissDeploying } = notifyNotification(deployingNotificationMessage, 'pending')
           dismissNotificationHandler = dismissDeploying
 
-          get()[sliceKey].setStateByKey('executeTx', {
-            ...get()[sliceKey].executeTx,
-            hash: voteResponseHash,
-            txLink: networks[1].scanTxPath(voteResponseHash),
+          get()[sliceKey].setStateByKey('executeTxMapper', {
+            ...get()[sliceKey].executeTxMapper,
+            [voteIdKey]: {
+              status: 'LOADING',
+              hash: voteResponseHash,
+              txLink: networks[1].scanTxPath(voteResponseHash),
+              error: null,
+            },
           })
 
           await helpers.waitForTransaction(voteResponseHash, provider)
 
-          get()[sliceKey].setStateByKey('executeTx', {
-            ...get()[sliceKey].executeTx,
-            status: 'SUCCESS',
+          get()[sliceKey].setStateByKey('executeTxMapper', {
+            ...get()[sliceKey].executeTxMapper,
+            [voteIdKey]: {
+              status: 'SUCCESS',
+              hash: voteResponseHash,
+              txLink: networks[1].scanTxPath(voteResponseHash),
+              error: null,
+            },
           })
 
           dismissDeploying()
@@ -442,10 +496,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           dismissNotificationHandler()
         }
 
-        get()[sliceKey].setStateByKey('executeTx', {
-          ...get()[sliceKey].executeTx,
-          status: 'ERROR',
-          error: error.message,
+        get()[sliceKey].setStateByKey('executeTxMapper', {
+          ...get()[sliceKey].executeTxMapper,
+          [voteIdKey]: {
+            status: 'ERROR',
+            hash: null,
+            txLink: null,
+            error: error.message,
+          },
         })
 
         console.log(error)

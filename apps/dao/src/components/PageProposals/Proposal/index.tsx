@@ -189,7 +189,7 @@ const ExecutedStatus = styled.h4`
       margin: auto 0.3rem auto 0;
       width: 0.5rem;
       height: 0.5rem;
-      background: var(--chart-orange);
+      background: var(--chart-liq-range);
       border-radius: 50%;
     }
   }

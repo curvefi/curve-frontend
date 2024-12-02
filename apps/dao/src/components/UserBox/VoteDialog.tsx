@@ -21,10 +21,14 @@ type Props = {
 }
 
 const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPower, proposalId }: Props) => {
-  const { castVote, voteTx, executeProposal, executeTx, userProposalVote } = useStore((state) => state.proposals)
+  const { castVote, voteTxMapper, executeProposal, executeTxMapper } = useStore((state) => state.proposals)
+  const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[proposalId ?? '']) ?? null
   const pricesProposal = useStore((state) => state.proposals.proposalMapper[proposalId ?? ''])
   const proposal = useStore((state) => state.proposals.proposalsMapper[proposalId ?? ''])
   const { userProposalVotesMapper } = useStore((state) => state.user)
+
+  const voteTx = voteTxMapper[proposalId ?? ''] ?? null
+  const executeTx = executeTxMapper[proposalId ?? ''] ?? null
 
   const voted = userProposalVotesMapper[userAddress].votes[proposalId ?? '']
   const votedFor = (userProposalVotesMapper[userAddress].votes[proposalId ?? '']?.vote_for ?? 0) > 0
@@ -33,7 +37,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
 
   const id = pricesProposal?.vote_id
-  const type = pricesProposal?.vote_type
+  const type: ProposalType = pricesProposal?.vote_type
 
   const executeProposalComponent = () => {
     return (
@@ -54,7 +58,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
         {executeTx.status !== 'SUCCESS' && (
           <ExecuteButton
             variant="icon-filled"
-            onClick={() => executeProposal(id, type as ProposalType)}
+            onClick={() => executeProposal(id, type)}
             loading={executeTx.status === 'CONFIRMING' || executeTx.status === 'LOADING'}
           >
             {t`Execute`}
@@ -134,8 +138,9 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   }
 
   if (
-    ((voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING') && userProposalVote.fetchingState === 'LOADING') ||
-    (voteTx.status === 'SUCCESS' && userProposalVote.fetchingState === 'LOADING')
+    ((voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING') &&
+      userProposalVote?.fetchingState === 'LOADING') ||
+    (voteTx?.status === 'SUCCESS' && userProposalVote?.fetchingState === 'LOADING')
   ) {
     return <PendingTx pendingMessage={t`Casting vote...`} />
   }
@@ -149,14 +154,14 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
             isFor
             variant="icon-filled"
             onClick={() => castVote(id, type, true)}
-            loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+            loading={voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING'}
           >
             {t`Vote For`}
           </VoteButton>
           <VoteButton
             variant="icon-filled"
             onClick={() => castVote(id, type, false)}
-            loading={voteTx.status === 'CONFIRMING' || voteTx.status === 'LOADING'}
+            loading={voteTx?.status === 'CONFIRMING' || voteTx?.status === 'LOADING'}
           >
             {t`Vote Against`}
           </VoteButton>

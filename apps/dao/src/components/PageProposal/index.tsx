@@ -34,8 +34,10 @@ type ProposalProps = {
 const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) => {
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const provider = useStore((state) => state.wallet.getProvider(''))
-  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote, userProposalVote, voteTx } =
-    useStore((state) => state.proposals)
+  const { proposalsLoadingState, getProposal, proposalLoadingState, getUserProposalVote } = useStore(
+    (state) => state.proposals,
+  )
+  const userProposalVote = useStore((state) => state.proposals.userProposalVoteMapper[`${voteId}-${voteType}`]) ?? null
   const { setSnapshotVeCrv, userAddress, userProposalVotesMapper } = useStore((state) => state.user)
   const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
   const { proposalMapper } = useProposalMapper()
@@ -84,7 +86,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
 
   // check to see if a user has voted and it has not yet been updated by the API
   useEffect(() => {
-    if (!userAddress || userProposalVote.fetchingState !== null) {
+    if (!userAddress || (userProposalVote && userProposalVote.fetchingState !== null)) {
       return
     }
 
@@ -95,15 +97,7 @@ const Proposal: React.FC<ProposalProps> = ({ routerParams: { rProposalId } }) =>
     }
 
     getUserProposalVote(userAddress, voteId, voteType)
-  }, [
-    getUserProposalVote,
-    rProposalId,
-    userAddress,
-    userProposalVote.fetchingState,
-    userProposalVotesMapper,
-    voteId,
-    voteType,
-  ])
+  }, [getUserProposalVote, rProposalId, userAddress, userProposalVote, userProposalVotesMapper, voteId, voteType])
 
   return (
     <Wrapper>
