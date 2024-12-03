@@ -6,6 +6,7 @@ export const defineMuiIconButton = ({ Layer, Text }: DesignSystem) => ({
   styleOverrides: {
     root: {
       height: SizesAndSpaces.ButtonSize.sm,
+      minWidth: SizesAndSpaces.ButtonSize.sm,
       borderRadius: '0',
       padding: 0,
       '&.current': {
