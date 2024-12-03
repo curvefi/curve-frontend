@@ -10,13 +10,14 @@ import { SettingsButton } from './SettingsButton'
 import { ChainIcon } from './ChainIcon'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
+import { useLocalStorage } from 'curve-ui-kit/src/hooks/useLocalStorage'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
   label: string
   src: string
   srcDark: string
-  isTestNet: boolean
+  isTestnet: boolean
 }
 
 export type ChainSwitcherProps<TChainId> = {
@@ -35,7 +36,7 @@ export const ChainSwitcher = <TChainId extends number>({
 }: ChainSwitcherProps<TChainId>) => {
   const [isOpen, , close, toggle] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
-  const [showTestnets, setShowTestnets] = useState(true)
+  const [showTestnets, setShowTestnets] = useLocalStorage<boolean>('showTestnets', false)
   const selectedNetwork = useMemo(() => options.find((o) => o.chainId === chainId) ?? options[0], [options, chainId])
 
   useEffect(() => () => close(), [chainId, close]) // close on chain change
@@ -67,7 +68,7 @@ export const ChainSwitcher = <TChainId extends number>({
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList<TChainId> showTestnets={showTestnets} onChange={onChange} onClick={close} options={options} />
+            <ChainList<TChainId> showTestnets={showTestnets} onChange={onChange} options={options} />
           )}
         </ModalDialog>
       )}

@@ -86,7 +86,7 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
     }
   }
   if (windowHost && !windowHost?.endsWith(productionHost)) {
-    console.warn(`Unexpected host: ${windowHost}`)
+    console.warn(`Unexpected host: ${windowHost}, expected ${productionHost}`)
   }
   return `https://${productionHost}`
 }

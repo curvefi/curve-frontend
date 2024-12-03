@@ -38,7 +38,7 @@ export type BaseHeaderProps<TChainId = number> = {
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
-  appStats: { label: string; value: string }[]
+  appStats?: { label: string; value: string }[]
   advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
 }

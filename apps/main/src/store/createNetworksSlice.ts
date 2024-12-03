@@ -396,6 +396,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
               twocryptoFactory: true,
               tricryptoFactory: true,
               isLite: true,
+              isTestnet: config.isTestnet,
             }
             return prev
           },
@@ -436,6 +437,7 @@ const createNetworksSlice = (set: SetState<State>, get: GetState<State>): Networ
           chainId: networkConfig.chainId,
           src: networkConfig.logoSrc,
           srcDark: networkConfig.logoSrcDark,
+          isTestnet: networkConfig.isTestnet,
         }))
 
       sliceState.setStateByKey(
