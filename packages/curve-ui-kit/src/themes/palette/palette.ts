@@ -23,7 +23,7 @@ export const createPalette = (
   background: {
     // used by MUI
     default: Layer.App.Background,
-    paper: Layer[1].Fill,
+    paper: Layer[3].Fill,
   },
 })
 

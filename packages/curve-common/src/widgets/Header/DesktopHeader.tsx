@@ -13,6 +13,7 @@ import { BaseHeaderProps } from './types'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useState } from 'react'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
+import {t} from '@lingui/macro'
 
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
@@ -24,7 +25,6 @@ export const DesktopHeader = <TChainId extends number>({
   themes: [theme, setTheme],
   advancedMode,
   isLite = false,
-  translations: t,
 }: BaseHeaderProps<TChainId>) => {
   const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
   return (
@@ -41,8 +41,8 @@ export const DesktopHeader = <TChainId extends number>({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t.advanced} />}
-              <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
+              {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t`Advanced`} />}
+              <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
               <ChainSwitcher {...ChainProps} />
               <ConnectWalletIndicator {...WalletProps} />
             </Box>

@@ -1,17 +1,22 @@
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import Box from '@mui/material/Box'
-import { useCallback, useMemo } from 'react'
-import Typography from '@mui/material/Typography'
-import Image from 'next/image'
+import IconButton from '@mui/material/IconButton'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { useEffect, useMemo, useState } from 'react'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import type { SelectChangeEvent } from '@mui/material/Select/SelectInput'
+import { useSwitch } from 'curve-ui-kit/src/hooks/useSwitch'
+import { ModalDialog } from 'curve-ui-kit/src/shared/ui/ModalDialog'
+import { t } from '@lingui/macro'
+import { SettingsButton } from './SettingsButton'
+import { ChainIcon } from './ChainIcon'
+import { ChainList } from './ChainList'
+import { ChainSettings } from './ChainSettings'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
   label: string
   src: string
   srcDark: string
+  isTestNet: boolean
 }
 
 export type ChainSwitcherProps<TChainId> = {
@@ -22,66 +27,50 @@ export type ChainSwitcherProps<TChainId> = {
   theme: ThemeKey
 }
 
-export const ChainIcon = ({ label, src, size }: { label: string; src: string; size: number }) => (
-  <Box component="span" alignItems="center" display="flex" marginRight="0.25rem">
-    <Image
-      alt={label}
-      // onError={(evt) => (evt.target as HTMLImageElement).src = src}
-      src={src}
-      loading="lazy"
-      width={size}
-      height={size}
-    />
-  </Box>
-)
-
 export const ChainSwitcher = <TChainId extends number>({
   options,
   chainId,
   onChange,
   disabled,
 }: ChainSwitcherProps<TChainId>) => {
-  const networkMapping = useMemo(
-    () =>
-      options.reduce(
-        (acc, option) => ({ ...acc, [option.chainId]: option }),
-        {} as Record<TChainId, ChainOption<TChainId>>,
-      ),
-    [options],
-  )
+  const [isOpen, , close, toggle] = useSwitch()
+  const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
+  const [showTestnets, setShowTestnets] = useState(true)
+  const selectedNetwork = useMemo(() => options.find((o) => o.chainId === chainId) ?? options[0], [options, chainId])
 
-  const renderChainIcon = useCallback(
-    (value: TChainId) => {
-      const { label, src } = networkMapping[value]
-      return <ChainIcon size={28} label={label} src={src} />
-    },
-    [networkMapping],
-  )
+  useEffect(() => () => close(), [chainId, close]) // close on chain change
 
-  const onSelectChanged = useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])
   if (options.length <= 1) {
     return null
   }
 
   return (
-    <Select<TChainId>
-      onChange={onSelectChanged}
-      size="small"
-      variant="standard"
-      disableUnderline
-      inputProps={{ sx: { display: 'flex', padding: 2 } }}
-      value={chainId}
-      disabled={disabled}
-      renderValue={renderChainIcon}
-    >
-      {options.map(({ chainId: id, src, label }) => (
-        <MenuItem key={id} value={id} divider>
-          <ChainIcon size={18} label={label} src={src} />
-          <Typography sx={{ marginLeft: 4 }} variant="headingXsBold">
-            {label}
-          </Typography>
-        </MenuItem>
-      ))}
-    </Select>
+    <>
+      <IconButton size="small" disabled={disabled} onClick={toggle}>
+        <ChainIcon size={28} label={selectedNetwork.label} src={selectedNetwork.src} />
+        <KeyboardArrowDownIcon />
+      </IconButton>
+      {isOpen != null && (
+        <ModalDialog
+          open={isOpen}
+          onClose={close}
+          title={isSettingsOpen ? t`Select Network Settings` : t`Select Network`}
+          titleAction={
+            isSettingsOpen && (
+              <IconButton onClick={closeSettings}>
+                <ArrowBackIcon sx={{ color: (t) => t.design.Button.Ghost.Default.Label }} />
+              </IconButton>
+            )
+          }
+          footer={!isSettingsOpen && <SettingsButton onClick={openSettings} />}
+        >
+          {isSettingsOpen ? (
+            <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
+          ) : (
+            <ChainList<TChainId> showTestnets={showTestnets} onChange={onChange} onClick={close} options={options} />
+          )}
+        </ModalDialog>
+      )}
+    </>
   )
 }

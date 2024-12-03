@@ -1,11 +1,11 @@
 import { DesignSystem } from '../design'
 import { Fonts } from '../typography'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import type { Components } from '@mui/material/styles'
 
-export const defineMuiIconButton = ({ Layer, Text }: DesignSystem) => ({
+export const defineMuiIconButton = ({ Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
   styleOverrides: {
     root: {
-      height: SizesAndSpaces.ButtonSize.sm,
       borderRadius: '0',
       padding: 0,
       '&.current': {
@@ -17,5 +17,17 @@ export const defineMuiIconButton = ({ Layer, Text }: DesignSystem) => ({
       },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
+    sizeSmall: {
+      height: SizesAndSpaces.ButtonSize.sm,
+      minWidth: SizesAndSpaces.ButtonSize.sm,
+    },
+    sizeMedium: {
+      height: SizesAndSpaces.ButtonSize.md,
+      minWidth: SizesAndSpaces.ButtonSize.md,
+    },
+    sizeLarge: {
+      height: SizesAndSpaces.ButtonSize.lg,
+      minWidth: SizesAndSpaces.ButtonSize.lg,
+    }
   },
 })

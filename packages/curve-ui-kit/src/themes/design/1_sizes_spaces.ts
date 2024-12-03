@@ -253,6 +253,14 @@ const MappedLineHeight = {
   },
 } as const
 
+const MappedModalWidth = {
+  xs: '19rem',
+  sm: '24rem',
+  md: '28rem',
+  lg: '32rem',
+  xl: '36rem',
+}
+
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
   Sizing: MappedSizing,
@@ -262,5 +270,6 @@ export const SizesAndSpaces = {
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
+  ModalWidth: MappedModalWidth,
   OutlineWidth: '0.125rem', // 2px
 } as const

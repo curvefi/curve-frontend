@@ -33,6 +33,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
         chainId,
         src: networkConfig.logoSrc,
         srcDark: networkConfig.logoSrcDark,
+        isTestNet: networkConfig.isTestnet,
       })
     }
     return mapper
