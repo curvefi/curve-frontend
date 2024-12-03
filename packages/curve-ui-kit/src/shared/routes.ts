@@ -19,7 +19,16 @@ export const CRVUSD_ROUTES = {
   PAGE_RISK_DISCLAIMER: '/risk-disclaimer',
 }
 
-export const AppNames = ['main', 'lend', 'crvusd'] as const
+export const DAO_ROUTES = {
+  PAGE_VECRV_CREATE: '/vecrv/create',
+  PAGE_PROPOSALS: '/proposals',
+  PAGE_GAUGES: '/gauges',
+  PAGE_VECRV: '/vecrv',
+  PAGE_ANALYTICS: '/analytics',
+  PAGE_USER: '/user',
+}
+
+export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
@@ -50,6 +59,16 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: LEND_ROUTES.PAGE_RISK_DISCLAIMER, label: () => t`Risk Disclaimer` },
     ],
   },
+  dao: {
+    root: getAppRoot('dao.curve.fi', 'dapp-dao', 3002),
+    label: 'DAO',
+    pages: [
+      { route: DAO_ROUTES.PAGE_VECRV_CREATE, label: () => t`Lock CRV` },
+      { route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
+      { route: DAO_ROUTES.PAGE_GAUGES, label: () => t`Gauges` },
+      { route: DAO_ROUTES.PAGE_ANALYTICS, label: () => t`Analytics` },
+    ],
+  },
 }
 
 function getAppRoot(productionHost: string, previewPrefix: string, developmentPort: number) {
@@ -72,5 +91,4 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   return `https://${productionHost}`
 }
 
-export const externalAppUrl = (route: string, app?: AppName) =>
-  app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`
+export const externalAppUrl = (route: string, app?: AppName) => (app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`)

@@ -14,7 +14,7 @@ export interface NumberFormatOptions extends Intl.NumberFormatOptions {
   defaultValue?: string // value to display when it is undefined || null || empty string
   showAllFractionDigits?: boolean // do not hide any decimal digits
   showDecimalIfSmallNumberOnly?: boolean // show decimal if value is < 10
-  trailingZeroDisplay?: "auto" | "stripIfInteger"
+  trailingZeroDisplay?: 'auto' | 'stripIfInteger'
 }
 
 export const FORMAT_OPTIONS = {
@@ -141,7 +141,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
 
 function _formatNumber(val: string | number, options: NumberFormatOptions) {
   return new Intl.NumberFormat(localeDetected, options).format(
-    options.style === 'percent' ? Number(val) / 100 : Number(val)
+    options.style === 'percent' ? Number(val) / 100 : Number(val),
   )
 }
 
@@ -171,4 +171,18 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
   }
 
   return parsedUsdRate
+}
+
+export const formatDateFromTimestamp = (unixTime: number) => {
+  const date = new Date(unixTime * 1000)
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = String(date.getFullYear()).slice(-2)
+  return `${day}/${month}/${year}`
+}
+
+export const convertToLocaleTimestamp = (unixTime: number) => {
+  const offsetInSeconds = new Date().getTimezoneOffset() * 60
+  const localTimestamp = unixTime - offsetInSeconds
+  return localTimestamp
 }

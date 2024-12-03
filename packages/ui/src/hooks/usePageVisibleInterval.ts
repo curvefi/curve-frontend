@@ -12,14 +12,14 @@ function usePageVisibleInterval<T>(callback: T, delay: number, isPageVisible: bo
   }, [callback])
 
   React.useEffect(() => {
-    function band() {
+    function tick() {
       if (typeof savedCallback.current === 'function') {
         savedCallback.current()
       }
     }
 
     if (delay !== null) {
-      let id = setInterval(band, delay)
+      let id = setInterval(tick, delay)
       idRef.current = id
       return () => clearInterval(id)
     }

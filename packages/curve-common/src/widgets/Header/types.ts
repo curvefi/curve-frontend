@@ -51,4 +51,5 @@ export const APP_NAMES = {
   main: 'Curve',
   lend: 'LLAMALEND',
   crvusd: 'crvUSD',
+  dao: 'DAO',
 } as const
