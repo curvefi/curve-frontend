@@ -14,8 +14,7 @@ const meta: Meta<typeof Typography> = {
     },
   },
   args: {
-    children:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+    children: 'The quick brown fox jumps over the lazy dog. While the dog is sleeping, the fox is running.',
   },
 }
 
@@ -34,7 +33,7 @@ const Item = ({title, value}:{ title: string, value: ReactNode }) => value && (
 )
 
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
-  const { fontFamily, fontWeight, fontSize, lineHeight, marginBottom, letterSpacing } = TYPOGRAPHY_VARIANTS[variant]
+  const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[variant]
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
@@ -48,7 +47,6 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children
           <Item title="Font Weight" value={fontWeight} />
           <Item title="Font Size" value={fontSize} />
           <Item title="Line Height" value={lineHeight} />
-          <Item title="Margin Bottom" value={marginBottom} />
           <Item title="Letter Spacing" value={letterSpacing} />
         </List>
       </Typography>
