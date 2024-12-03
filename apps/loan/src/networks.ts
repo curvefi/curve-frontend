@@ -1,7 +1,4 @@
-import type { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
-
 import sortBy from 'lodash/sortBy'
-
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import curvejsApi from '@/lib/apiCrvusd'
 import { ChainOption } from '@/common/features/switch-chain'

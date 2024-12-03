@@ -1,10 +1,9 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import { Chain } from '@/shared/curve-lib'
 import { DEFAULT_NETWORK_CONFIG } from '@/constants'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
-import { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
+import type { ChainOption } from '@/common/features/switch-chain'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
 
@@ -15,7 +14,7 @@ type SliceState = {
   networks: Record<number, NetworkConfig>
   nativeToken: Record<number, NativeToken | undefined>
   networksIdMapper: Record<string, number>
-  visibleNetworksList: SelectNetworkItem[]
+  visibleNetworksList: ChainOption<ChainId>[]
 }
 
 // prettier-ignore
