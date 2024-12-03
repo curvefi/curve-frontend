@@ -90,8 +90,7 @@ export class Eip1193BridgeV6 extends EventEmitter {
       }
 
       case 'eth_getCode': {
-        const result = await this.provider.getCode(params![0], params![1])
-        return result
+        return await this.provider.getCode(params![0], params![1])
       }
 
       case 'eth_sendRawTransaction': {

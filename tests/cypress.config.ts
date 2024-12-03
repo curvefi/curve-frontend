@@ -1,27 +1,6 @@
 import { defineConfig } from 'cypress'
 
-const commonConfig = defineConfig({
-  viewportWidth: 1000,
-  viewportHeight: 800,
-  chromeWebSecurity: false,
-  defaultCommandTimeout: 20000,
-  pageLoadTimeout: 120000,
-  requestTimeout: 30000,
-  retries: { runMode: 2, openMode: 0 },
-  scrollBehavior: 'center',
-  e2e: {
-    setupNodeEvents(on, config) {},
-  },
-})
-
-interface EnvConfig {
-  [key: string]: {
-    baseUrl: string
-    specPattern: string
-  }
-}
-
-const envConfig: EnvConfig = {
+const envConfig = {
   main: {
     baseUrl: 'http://localhost:3000/#',
     specPattern: 'cypress/e2e/(main|all)/**/*',
@@ -34,14 +13,22 @@ const envConfig: EnvConfig = {
     baseUrl: 'http://localhost:3001/#',
     specPattern: 'cypress/e2e/(loan|all)/**/*',
   },
-}
+} as const
 
-const selectedDapp = envConfig[process.env.CYPRESS_DAPP ?? 'main']
+const APP = process.env.CYPRESS_DAPP ?? 'main'
 
 export default defineConfig({
-  ...commonConfig,
+  viewportWidth: 1000,
+  viewportHeight: 800,
+  chromeWebSecurity: false,
+  defaultCommandTimeout: 20000,
+  pageLoadTimeout: 120000,
+  requestTimeout: 30000,
+  retries: { runMode: 2, openMode: 0 },
+  scrollBehavior: 'center',
   e2e: {
-    ...commonConfig.e2e,
-    ...selectedDapp,
+    setupNodeEvents(on, config) {},
+    env: { APP },
+    ...envConfig[APP as keyof typeof envConfig],
   },
 })

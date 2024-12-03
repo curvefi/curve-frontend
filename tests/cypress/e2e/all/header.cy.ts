@@ -1,4 +1,4 @@
-import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
+import { oneDesktopViewport, oneMobileOrTabletViewport, oneViewport } from '@/support/ui'
 
 const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
   expectedMainNavHeight: 56,
@@ -9,14 +9,14 @@ const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, ex
 
 describe('Header', () => {
   describe('Desktop', () => {
-    let isDarkMode: boolean  // when running locally, the dark mode might be the default
+    let isDarkMode: boolean // when running locally, the dark mode might be the default
 
     beforeEach(() => {
       cy.viewport(...oneDesktopViewport())
       cy.visit('/', {
         onBeforeLoad: (win) => {
           isDarkMode = win.matchMedia('(prefers-color-scheme: dark)').matches
-        }
+        },
       })
       cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
     })
@@ -24,7 +24,9 @@ describe('Header', () => {
     it('should have the right size', () => {
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
       cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedSubNavHeight + expectedMainNavHeight)
+      cy.get(`header`)
+        .invoke('outerHeight')
+        .should('equal', expectedSubNavHeight + expectedMainNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
     })
 
@@ -38,16 +40,14 @@ describe('Header', () => {
         cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
 
         // check font change
-        cy.get(`[data-testid='navigation-connect-wallet']`).then(
-          ($el) => {
-            const font2 = $el.css('font-family')
-            expect(font1).not.to.equal(font2)
+        cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
+          const font2 = $el.css('font-family')
+          expect(font1).not.to.equal(font2)
 
-            // reset theme
-            cy.get(`[data-testid='theme-switcher-chad']`).click()
-            cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
-          }
-        )
+          // reset theme
+          cy.get(`[data-testid='theme-switcher-chad']`).click()
+          cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
+        })
       })
     })
   })
@@ -67,7 +67,7 @@ describe('Header', () => {
       cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      cy.url().then(url => {
+      cy.url().then((url) => {
         cy.get('[data-testid^="sidebar-item-"]').eq(1).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
@@ -83,13 +83,27 @@ describe('Header', () => {
         cy.get(`[data-testid='theme-switcher-button-chad']`).should('have.class', 'current')
 
         // check font change
-        cy.get(`[data-testid='sidebar-settings']`).then(
-          ($el) => {
-            const font2 = $el.css('font-family')
-            expect(font1).not.to.equal(font2)
-          }
-        )
+        cy.get(`[data-testid='sidebar-settings']`).then(($el) => {
+          const font2 = $el.css('font-family')
+          expect(font1).not.to.equal(font2)
+        })
       })
     })
+  })
+
+  it('should change chains', () => {
+    cy.viewport(...oneViewport())
+    cy.visit('/')
+    if (Cypress.env('APP') == 'loan') {
+      expect(cy.get(`[data-testid='btn-change-chain']`).should('not.exist'))
+      return
+    }
+
+    const [eth, arbitrum] = [1, 42161]
+    cy.get(`[data-testid='chain-icon-${eth}']`).should('be.visible')
+    cy.get(`[data-testid='btn-change-chain']`).click()
+    cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
+    cy.get(`[data-testid^='menu-item-chain-']`).should('not.be.visible')
+    cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
   })
 })

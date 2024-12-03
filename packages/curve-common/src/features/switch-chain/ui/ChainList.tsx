@@ -38,11 +38,11 @@ export function ChainList<TChainId extends number>({
       />
 
       <Box onClick={onClick}>
-        {filteredOptions.map(({ chainId: id, src, label }) => (
-          <MenuItem key={id} onClick={() => onChange(id)}>
-            <ChainIcon size={28} label={label} src={src} />
+        {filteredOptions.map((chain) => (
+          <MenuItem key={chain.chainId} onClick={() => onChange(chain.chainId)} data-testid={`menu-item-chain-${chain.chainId}`}>
+            <ChainIcon chain={chain} />
             <Typography sx={{ marginLeft: 4 }} variant="headingXsBold">
-              {label}
+              {chain.label}
             </Typography>
           </MenuItem>
         ))}
