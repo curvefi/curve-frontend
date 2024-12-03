@@ -6,6 +6,8 @@ import type { Components } from '@mui/material/styles'
 export const defineMuiIconButton = ({ Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
   styleOverrides: {
     root: {
+      height: SizesAndSpaces.ButtonSize.sm,
+      minWidth: SizesAndSpaces.ButtonSize.sm,
       borderRadius: '0',
       padding: 0,
       '&.current': {

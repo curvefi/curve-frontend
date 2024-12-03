@@ -33,41 +33,44 @@ type ButtonSize = {
   marginBottom?: number
 }
 
-const variant = ({ fontFamily, fontSize, fontWeight, lineHeight, letterSpacing = '0%', textCase, marginBottom }: ButtonSize) => {
-  const fontSize1 = FontSize[fontSize as keyof typeof FontSize] ?? fontSize
-  return {
-    fontFamily,
-    fontSize: fontSize1,
-    fontWeight: FontWeight[fontWeight ?? 'Medium'],
-    lineHeight: LineHeight[(lineHeight ?? fontWeight) as keyof typeof LineHeight] ?? lineHeight,
-    letterSpacing: `calc(${letterSpacing} * ${fontSize1})`,
-    marginBottom,
-    textTransform: textCase,
-  }
-}
+const variant = ({
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight,
+  letterSpacing = '0%',
+  textCase,
+}: ButtonSize) => ({
+  fontFamily,
+  fontSize: FontSize[fontSize as keyof typeof FontSize] ?? fontSize,
+  fontWeight: FontWeight[fontWeight ?? 'Medium'],
+  lineHeight: LineHeight[(lineHeight ?? fontSize) as keyof typeof LineHeight] ?? lineHeight,
+  letterSpacing,
+  textTransform: textCase,
+})
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
   headingXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-4%' }),
-  headingMBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%', textCase: 'uppercase', marginBottom: 72 }),
+  headingMBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%', textCase: 'uppercase' }),
   headingMLight: variant({ fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%', textCase: 'uppercase' }),
-  headingSBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', letterSpacing: '-2%', textCase: 'uppercase', marginBottom: 16 }),
+  headingSBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', letterSpacing: '-2%', textCase: 'uppercase' }),
   headingXsBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', textCase: 'uppercase' }),
   headingXsMedium: variant({ fontFamily: 'Heading', fontSize: 'sm', textCase: 'capitalize' }),
 
-  bodyMRegular: variant({ fontFamily: 'Body', fontSize: 'md', marginBottom: 12 }),
-  bodyMBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'md', marginBottom: 12 }),
-  bodySRegular: variant({ fontFamily: 'Body', fontSize: 'sm', marginBottom: 8 }),
-  bodySBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'sm', marginBottom: 8 }),
-  bodyXsRegular: variant({ fontFamily: 'Body', fontSize: 'xs', marginBottom: 8 }),
-  bodyXsBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'xs', marginBottom: 8 }),
+  bodyMRegular: variant({ fontFamily: 'Body', fontSize: 'md' }),
+  bodyMBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'md' }),
+  bodySRegular: variant({ fontFamily: 'Body', fontSize: 'sm' }),
+  bodySBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'sm' }),
+  bodyXsRegular: variant({ fontFamily: 'Body', fontSize: 'xs' }),
+  bodyXsBold: variant({ fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'xs' }),
 
   buttonXs: variant({ fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm' }),
-  buttonS: variant({ fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', textCase: 'uppercase', marginBottom: 20 }),
+  buttonS: variant({ fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'sm', lineHeight: 'md', textCase: 'uppercase' }),
   buttonM: variant({ fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'xl', textCase: 'uppercase' }),
 
-  tableHeaderM: variant({ fontFamily: 'Body', fontSize: 'md', lineHeight: 'sm', marginBottom: 16 }),
-  tableHeaderS: variant({ fontFamily: 'Body', fontSize: 'sm', lineHeight: 'xs', marginBottom: 14 }),
+  tableHeaderM: variant({ fontFamily: 'Body', fontSize: 'md', lineHeight: 'sm' }),
+  tableHeaderS: variant({ fontFamily: 'Body', fontSize: 'sm', lineHeight: 'xs' }),
   tableCellL: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[250], lineHeight: Sizing[250] }),
   tableCellMRegular: variant({ fontFamily: 'Mono', fontSize: 'md', lineHeight: 'sm' }),
   tableCellMBold: variant({ fontFamily: 'Mono', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' }),
@@ -83,24 +86,25 @@ export const TYPOGRAPHY_VARIANTS = {
   highlightXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-4%' }),
 }
 
-export const createTypography = ({ Text }: DesignSystem) => ({
-  fontFamily: Fonts[Text.FontFamily.Body],
-  fontWeightBold: FontWeight.Bold,
-  fontWeightMedium: FontWeight.Medium,
-  fontWeightRegular: FontWeight.Normal,
-  fontWeightLight: FontWeight.Light,
-  fontSize: 16,
-  [basicMuiTheme.breakpoints.down('tablet')]: {
-    fontSize: 12,
-  },
-  ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
-  ...Object.fromEntries(
-    Object.entries(TYPOGRAPHY_VARIANTS).map(([key, { fontFamily, ...value }]) => [
-      key,
-      { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] },
-    ]),
-  ),
-}) as TypographyOptions
+export const createTypography = ({ Text }: DesignSystem) =>
+  ({
+    fontFamily: Fonts[Text.FontFamily.Body],
+    fontWeightBold: FontWeight.Bold,
+    fontWeightMedium: FontWeight.Medium,
+    fontWeightRegular: FontWeight.Normal,
+    fontWeightLight: FontWeight.Light,
+    fontSize: 16,
+    [basicMuiTheme.breakpoints.down('tablet')]: {
+      fontSize: 12,
+    },
+    ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
+    ...Object.fromEntries(
+      Object.entries(TYPOGRAPHY_VARIANTS).map(([key, { fontFamily, ...value }]) => [
+        key,
+        { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] },
+      ]),
+    ),
+  }) as TypographyOptions
 
 export type DisabledTypographyVariantKey = typeof disabledTypographyKeys
 export type TypographyVariantKey = keyof typeof TYPOGRAPHY_VARIANTS
