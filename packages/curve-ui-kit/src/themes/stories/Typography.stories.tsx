@@ -1,6 +1,7 @@
-import { Divider, Stack, Typography } from '@mui/material'
+import { Divider, Stack, Typography, List, ListItem } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
 import { TYPOGRAPHY_VARIANTS, TypographyVariantKey } from '../typography'
+import { ReactNode } from 'react'
 
 const meta: Meta<typeof Typography> = {
   title: 'UI Kit/Primitives/Typography',
@@ -25,8 +26,15 @@ interface TypographyDisplayProps {
   [key: string]: any
 }
 
+const Item = ({title, value}:{ title: string, value: ReactNode }) => value && (
+  <ListItem>
+    <Typography variant="headingXsBold">{title}: &nbsp;</Typography>
+    <Typography variant="headingXsMedium">{value}</Typography>
+  </ListItem>
+)
+
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
-  const typography = TYPOGRAPHY_VARIANTS[variant]
+  const { fontFamily, fontWeight, fontSize, lineHeight, marginBottom, letterSpacing } = TYPOGRAPHY_VARIANTS[variant]
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
@@ -34,7 +42,15 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children
       </Typography>
       <Divider />
       <Typography variant="bodyXsRegular">
-        Variant: <Typography variant="highLightedXs">{variant}</Typography>
+        <List>
+          <Item title="Variant" value={variant} />
+          <Item title="Font Family" value={fontFamily} />
+          <Item title="Font Weight" value={fontWeight} />
+          <Item title="Font Size" value={fontSize} />
+          <Item title="Line Height" value={lineHeight} />
+          <Item title="Margin Bottom" value={marginBottom} />
+          <Item title="Letter Spacing" value={letterSpacing} />
+        </List>
       </Typography>
     </Stack>
   )
@@ -59,8 +75,8 @@ const createStory = (category: string): Story => ({
 
 export const Heading = createStory('heading')
 export const Body = createStory('body')
-export const ButtonLabel = createStory('buttonLabel')
+export const Button = createStory('button')
 export const Table = createStory('table')
-export const Value = createStory('value')
+export const Highlight = createStory('highlight')
 
 export default meta

@@ -24,9 +24,3 @@ export const Fonts = {
   'Hubot Sans': HubotSans,
   Minecraft,
 }
-
-export const ThemeFontFamily = {
-  chad: { body: HubotSans, header: Minecraft, button: Minecraft },
-  light: { body: MonaSans, header: MonaSans, button: MonaSans },
-  dark: { body: MonaSans, header: MonaSans, button: MonaSans },
-}

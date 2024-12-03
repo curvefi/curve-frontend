@@ -253,6 +253,34 @@ const MappedLineHeight = {
   },
 } as const
 
+const MappedTypography = {
+  FontSize: {
+    xs: Sizing[125],
+    sm: Sizing[150],
+    md: Sizing[200],
+    lg: Sizing[250],
+    xl: Sizing[350],
+    xxl: Sizing[500]
+  },
+  FontWeight: {
+    Extra_Light: 200,
+    Light: 300,
+    Normal: 400,
+    Medium: 500,
+    Semi_Bold: 600,
+    Bold: 700,
+    Extra_Bold: 800
+  },
+  LineHeight: {
+    xs: '0.75rem', // 12px
+    sm: '0.875rem', // 14px
+    md: '1rem', // 16px
+    lg: '1.5rem', // 24px
+    xl: '2rem', // 32px
+    xxl: '2.5rem' // 40px
+  }
+} as const
+
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
   Sizing: MappedSizing,
@@ -262,5 +290,6 @@ export const SizesAndSpaces = {
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
+  Typography: MappedTypography,
   OutlineWidth: '0.125rem', // 2px
 } as const
