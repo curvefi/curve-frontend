@@ -51,10 +51,10 @@ const variant = ({
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
-  headingXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-4%' }),
-  headingMBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%', textCase: 'uppercase' }),
-  headingMLight: variant({ fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%', textCase: 'uppercase' }),
-  headingSBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', letterSpacing: '-2%', textCase: 'uppercase' }),
+  headingXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' }),
+  headingMBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' }),
+  headingMLight: variant({ fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' }),
+  headingSBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', letterSpacing: '-0.48px', textCase: 'uppercase' }),
   headingXsBold: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', textCase: 'uppercase' }),
   headingXsMedium: variant({ fontFamily: 'Heading', fontSize: 'sm', textCase: 'capitalize' }),
 
@@ -82,8 +82,8 @@ export const TYPOGRAPHY_VARIANTS = {
   highlightS: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm' }),
   highlightM: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' }),
   highlightL: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md' }),
-  highlightXl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-4%' }),
-  highlightXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-4%' }),
+  highlightXl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px' }),
+  highlightXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' }),
 }
 
 export const createTypography = ({ Text }: DesignSystem) =>
