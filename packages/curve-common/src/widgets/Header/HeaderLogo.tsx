@@ -26,17 +26,17 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
-        <Typography variant="headingSBold" sx={{ marginBottom: 0, lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
+        <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
           {APP_NAMES[appName]}
         </Typography>
         {appName === 'main' ? (
           isLite && (
-            <Typography variant="bodyXsBold" color="textTertiary" sx={{marginBottom: 0}}>
+            <Typography variant="bodyXsBold" color="textTertiary">
               Lite
             </Typography>
           )
         ) : (
-          <Typography variant="bodyXsRegular" color="textTertiary" sx={{marginBottom: 0}}>
+          <Typography variant="bodyXsRegular" color="textTertiary">
             powered by Curve
           </Typography>
         )}

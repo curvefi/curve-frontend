@@ -21,7 +21,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer.App.Background }
+const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
