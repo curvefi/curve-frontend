@@ -4,10 +4,10 @@ body.theme-dark {
   --primary-200: hsla(228, 63%, 36%, 1);
   --primary-300: hsla(226, 65%, 43%, 1);
   --primary-400: hsla(225, 90%, 57%, 1);
-  --primary-400a10: var(--primary-400) 10%;
-  --primary-400a20: var(--primary-400) 20%;
-  --primary-400a30: var(--primary-400) 30%;
-  --primary-400a50: var(--primary-400) 50%;
+  --primary-400a10: color-mix(in srgb, var(--primary-400) 10%, transparent);
+  --primary-400a20: color-mix(in srgb, var(--primary-400) 20%, transparent);
+  --primary-400a30: color-mix(in srgb, var(--primary-400) 30%, transparent);
+  --primary-400a50: color-mix(in srgb, var(--primary-400) 50%, transparent);
   --primary-400l59: hsl(220, 98%, 59%);
   --primary-500: hsla(225, 81%, 73%, 1);
   --primary-500l61: hsl(220, 99%, 61%);

@@ -19,6 +19,7 @@ const Box = styled.div.attrs(attributes)<BoxProps>`
   ${({ flexAlignItems }) => flexAlignItems && `align-items: ${flexAlignItems};`}
   ${({ flexJustifyContent }) => flexJustifyContent && `justify-content: ${flexJustifyContent};`}
   ${({ flexWrap }) => flexWrap && `flex-wrap: ${flexWrap};`}
+  ${({ flexGap }) => flexGap && `gap: ${flexGap};`}
 
   ${({ flexCenter }) => {
     if (flexCenter) {
