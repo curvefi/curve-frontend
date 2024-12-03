@@ -1,4 +1,3 @@
-import type { SelectNetworkItem } from '@/ui/SelectNetwork/SelectNetwork'
 import { ChainOption } from '@/common/features/switch-chain'
 
 import sortBy from 'lodash/sortBy'
@@ -33,6 +32,7 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
         chainId,
         src: networkConfig.logoSrc,
         srcDark: networkConfig.logoSrcDark,
+        isTestnet: networkConfig.isTestnet,
       })
     }
     return mapper

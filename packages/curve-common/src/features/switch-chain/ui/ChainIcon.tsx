@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Image from 'next/image'
 import { ChainOption } from './ChainSwitcher'
-import useTheme from '@mui/material/styles/useTheme'
+import useTheme from '@mui/system/useTheme'
 
 export const ChainIcon = <TChainId extends number>({
   chain: { chainId, label, src, srcDark },
