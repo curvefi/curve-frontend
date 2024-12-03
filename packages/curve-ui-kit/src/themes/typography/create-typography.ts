@@ -33,18 +33,23 @@ type ButtonSize = {
   marginBottom?: number
 }
 
-const variant = ({ fontFamily, fontSize, fontWeight, lineHeight, letterSpacing = '0%', textCase, marginBottom }: ButtonSize) => {
-  const fontSize1 = FontSize[fontSize as keyof typeof FontSize] ?? fontSize
-  return {
-    fontFamily,
-    fontSize: fontSize1,
-    fontWeight: FontWeight[fontWeight ?? 'Medium'],
-    lineHeight: LineHeight[(lineHeight ?? fontWeight) as keyof typeof LineHeight] ?? lineHeight,
-    letterSpacing: `calc(${letterSpacing} * ${fontSize1})`,
-    marginBottom,
-    textTransform: textCase,
-  }
-}
+const variant = ({
+  fontFamily,
+  fontSize,
+  fontWeight,
+  lineHeight,
+  letterSpacing = '0%',
+  textCase,
+  marginBottom,
+}: ButtonSize) => ({
+  fontFamily,
+  fontSize: FontSize[fontSize as keyof typeof FontSize] ?? fontSize,
+  fontWeight: FontWeight[fontWeight ?? 'Medium'],
+  lineHeight: LineHeight[(lineHeight ?? fontWeight) as keyof typeof LineHeight] ?? lineHeight,
+  letterSpacing,
+  marginBottom,
+  textTransform: textCase,
+})
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
@@ -83,24 +88,25 @@ export const TYPOGRAPHY_VARIANTS = {
   highlightXxl: variant({ fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-4%' }),
 }
 
-export const createTypography = ({ Text }: DesignSystem) => ({
-  fontFamily: Fonts[Text.FontFamily.Body],
-  fontWeightBold: FontWeight.Bold,
-  fontWeightMedium: FontWeight.Medium,
-  fontWeightRegular: FontWeight.Normal,
-  fontWeightLight: FontWeight.Light,
-  fontSize: 16,
-  [basicMuiTheme.breakpoints.down('tablet')]: {
-    fontSize: 12,
-  },
-  ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
-  ...Object.fromEntries(
-    Object.entries(TYPOGRAPHY_VARIANTS).map(([key, { fontFamily, ...value }]) => [
-      key,
-      { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] },
-    ]),
-  ),
-}) as TypographyOptions
+export const createTypography = ({ Text }: DesignSystem) =>
+  ({
+    fontFamily: Fonts[Text.FontFamily.Body],
+    fontWeightBold: FontWeight.Bold,
+    fontWeightMedium: FontWeight.Medium,
+    fontWeightRegular: FontWeight.Normal,
+    fontWeightLight: FontWeight.Light,
+    fontSize: 16,
+    [basicMuiTheme.breakpoints.down('tablet')]: {
+      fontSize: 12,
+    },
+    ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
+    ...Object.fromEntries(
+      Object.entries(TYPOGRAPHY_VARIANTS).map(([key, { fontFamily, ...value }]) => [
+        key,
+        { ...value, fontFamily: Fonts[Text.FontFamily[fontFamily]] },
+      ]),
+    ),
+  }) as TypographyOptions
 
 export type DisabledTypographyVariantKey = typeof disabledTypographyKeys
 export type TypographyVariantKey = keyof typeof TYPOGRAPHY_VARIANTS

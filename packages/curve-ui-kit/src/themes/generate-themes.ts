@@ -10,12 +10,11 @@ const paletteMode = (theme: ThemeKey, options: PaletteVariants) =>
 
 const generateTheme = (theme: ThemeKey, options: PaletteVariants = {}): Theme => {
   const design = DesignSystem[theme](options)
-  const typography = createTypography(design)
   return createMuiTheme({
     ...basicMuiTheme,
     design,
     palette: createPalette(paletteMode(theme, options), design),
-    typography,
+    typography: createTypography(design),
     components: createComponents(design),
     shape: { borderRadius: 0 },
     cssVariables: true,
