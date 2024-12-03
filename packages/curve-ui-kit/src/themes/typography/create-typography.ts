@@ -33,14 +33,18 @@ type ButtonSize = {
   marginBottom?: number
 }
 
-const variant = ({ fontFamily, fontSize, fontWeight, lineHeight, letterSpacing = '0%', marginBottom }: ButtonSize) => ({
-  fontFamily,
-  fontSize: FontSize[fontSize as keyof typeof FontSize] ?? fontSize,
-  fontWeight: FontWeight[fontWeight ?? 'Medium'],
-  lineHeight: LineHeight[(lineHeight ?? fontWeight) as keyof typeof LineHeight] ?? lineHeight,
-  letterSpacing,
-  marginBottom,
-})
+const variant = ({ fontFamily, fontSize, fontWeight, lineHeight, letterSpacing = '0%', textCase, marginBottom }: ButtonSize) => {
+  const fontSize1 = FontSize[fontSize as keyof typeof FontSize] ?? fontSize
+  return {
+    fontFamily,
+    fontSize: fontSize1,
+    fontWeight: FontWeight[fontWeight ?? 'Medium'],
+    lineHeight: LineHeight[(lineHeight ?? fontWeight) as keyof typeof LineHeight] ?? lineHeight,
+    letterSpacing: `calc(${letterSpacing} * ${fontSize1})`,
+    marginBottom,
+    textTransform: textCase,
+  }
+}
 
 // prettier-ignore
 export const TYPOGRAPHY_VARIANTS = {
