@@ -42,24 +42,24 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   const executeProposalComponent = () => {
     return (
       <>
-        {executeTx.status === 'LOADING' && (
+        {executeTx?.status === 'LOADING' && (
           <Box>
             <PendingTx pendingMessage={t`Executing proposal...`} />
           </Box>
         )}
-        {executeTx.status === 'ERROR' && (
+        {executeTx?.status === 'ERROR' && (
           <Box margin="0 0 var(--spacing-2) 0">
             <StyledAlertBox alertType="error" limitHeight>
-              {executeTx.error}
+              {executeTx?.error}
             </StyledAlertBox>
           </Box>
         )}
-        {executeTx.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
-        {executeTx.status !== 'SUCCESS' && (
+        {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
+        {executeTx?.status !== 'SUCCESS' && (
           <ExecuteButton
             variant="icon-filled"
             onClick={() => executeProposal(id, type)}
-            loading={executeTx.status === 'CONFIRMING' || executeTx.status === 'LOADING'}
+            loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
           >
             {t`Execute`}
           </ExecuteButton>
