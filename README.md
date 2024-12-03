@@ -1,4 +1,4 @@
-# curve-frontend
+# curve-frontend 
 
 Curve-frontend is a NextJs user-interface application designed to connect to Curve's deployment of smart contracts. This UI application is designed for both the [crvUSD](https://crvusd-curve.fi) and [Curve](https://curve.fi) dapps, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-stablecoin-api](https://github.com/curvefi/curve-stablecoin-js) to communicate with the blockchain.
 
