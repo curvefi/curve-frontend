@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material/styles'
-import { basicMuiTheme } from '../basic-theme'
+import { basicMuiTheme, type Responsive } from '../basic-theme'
 import { Fonts } from '../typography'
 import { DesignSystem } from '../design'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
@@ -9,7 +9,6 @@ const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndS
 
 type ButtonStyle = { Label?: string; Fill?: string; Outline?: string }
 type ButtonColor = { Default: ButtonStyle; Disabled?: ButtonStyle; Hover: ButtonStyle; Current?: ButtonStyle }
-type Responsive = Record<Breakpoint, string>
 
 const buttonStyle = ({ Fill, Label, Outline }: ButtonStyle) => ({
   color: Label,

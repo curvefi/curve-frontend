@@ -1,5 +1,6 @@
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { Spacing } from '../design/0_primitives'
+import { Breakpoint } from '@mui/material'
 
 export const basicMuiTheme = createMuiTheme({
   breakpoints: {
@@ -14,3 +15,5 @@ export const basicMuiTheme = createMuiTheme({
   spacing: Object.values(Spacing),
   direction: 'ltr',
 })
+
+export type Responsive = Record<Breakpoint, string>
