@@ -21,7 +21,7 @@ const GridItem = ({ children, title, icon }: { children: ReactNode; title: strin
 )
 
 export const LlamalendSubFooter = () => (
-  <Card sx={{ paddingX: SizesAndSpaces.Spacing.lg, paddingTop: SizesAndSpaces.Spacing.lg }}>
+  <Card sx={{ paddingX: SizesAndSpaces.Spacing.lg, paddingTop: SizesAndSpaces.Spacing.lg, backgroundColor: t => t.design.Layer[1].Fill }}>
     <Typography variant="headingSBold" textAlign="center">{t`Why Use Llamalend?`}</Typography>
     <Box paddingY={SizesAndSpaces.Spacing.md}>
       <Grid container spacing={SizesAndSpaces.Spacing.lg}>

@@ -4,10 +4,13 @@ import { MarketsTable } from '@/components/PageLlamaMarkets/MarketsTable'
 import { LlamalendSubFooter } from '@/components/PageLlamaMarkets/LlamalendSubFooter'
 
 export const PageLlamaMarkets = () => {
+  const reload = () => {
+    console.log('reloading')
+  }
   return (
     <Box>
       <LllamalendSubHeader />
-      <MarketsTable></MarketsTable>
+      <MarketsTable onReload={reload} />
       <LlamalendSubFooter />
     </Box>
   )
