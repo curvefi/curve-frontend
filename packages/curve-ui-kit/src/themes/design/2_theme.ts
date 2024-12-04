@@ -142,8 +142,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays[50],
-        Fill: Grays[900],
+        Label: Grays[975]
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -459,11 +458,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Ghost: {
       Default: {
-        Label: Text.TextColors.Primary,
+        Label: Color.Primary[700],
       },
       Hover: {
-        Label: Blues[800],
-        Fill: Grays[50],
+        Label: Grays[50],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -780,8 +778,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays[50],
-        Fill: Violet[500],
+        Label: Grays[800],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
