@@ -13,18 +13,15 @@ import Header from '@/layout/default/Header'
 import GlobalBanner from '@/ui/Banner'
 import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
-import Footer from '@/ui/Footer'
+import { Footer } from 'curve-ui-kit/src/widgets/Footer'
 import { layoutHeightKeys } from '@/store/createGlobalSlice'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
   const globalAlertRef = useRef<HTMLDivElement>(null)
-  const footerRef = useRef<HTMLDivElement>(null)
   useLayoutHeight(globalAlertRef, 'globalAlert')
-  useLayoutHeight(footerRef, 'footer')
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const locale = useStore((state) => state.locale)
@@ -59,10 +56,10 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         maintenanceMessage={maintenanceMessage}
         handleNetworkChange={handleNetworkChange}
       />
-      <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
+      <Container globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer sections={sections} footerRef={footerRef} />}
+        <Footer />
       </Container>
     </>
   )
@@ -108,10 +105,7 @@ const Container = styled.div<{ globalAlertHeight: number }>`
   flex-direction: column;
   position: relative;
   width: 100%;
-
-  &.hasFooter {
-    min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
-  }
+  min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
 `
 
 export default BaseLayout
