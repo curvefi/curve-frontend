@@ -19,7 +19,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
-  const {data: marketMapping} = useOneWayMarketMapping(rChainId)
+  const { data: marketMapping } = useOneWayMarketMapping(rChainId)
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
@@ -62,14 +62,13 @@ const MarketList = (pageProps: PageMarketList) => {
     ],
   }
 
-  const parsedResult =
-    results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
+  const parsedResult = results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
       setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
     },
-    [setFormValues, rChainId, isLoaded, api, marketMapping]
+    [setFormValues, rChainId, isLoaded, api, marketMapping],
   )
 
   useEffect(() => {
