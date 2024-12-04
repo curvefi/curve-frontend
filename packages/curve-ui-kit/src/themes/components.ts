@@ -4,6 +4,7 @@ import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { DesignSystem } from './design'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
+import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 
 
@@ -60,21 +61,6 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
     },
   },
-  MuiSwitch: {
-    styleOverrides: {
-      root: { padding: 0 },
-      switchBase: { borderRadius: 0 },
-      track: {
-        borderRadius: 0,
-        backgroundColor: design.Layer[1].Fill,
-        border: `1px solid ${design.Color.Neutral[400]}`,
-      },
-      thumb: {
-        borderRadius: 0,
-        color: design.Color.Primary[500],
-        '.Mui-checked &': { color: design.Color.Neutral[50] },
-      },
-    },
-  },
+  MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(),
 })
