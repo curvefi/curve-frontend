@@ -11,13 +11,11 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem) => ({
       padding: 0,
       '&.current': {
         fill: Text.TextColors.Highlight,
-        backgroundColor: Layer[1].Fill,
         borderStyle: 'solid',
         borderColor: Layer.Highlight.Outline,
         borderWidth: SizesAndSpaces.OutlineWidth,
       },
-      '&:hover': { color: Button.Focus_Outline, backgroundColor: 'transparent' },
-
+      '&:hover': { fill: Button.Ghost.Hover.Label, backgroundColor: 'transparent' },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
     sizeSmall: {
