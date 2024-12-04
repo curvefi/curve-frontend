@@ -5,7 +5,8 @@ import { Navigate, Route, Routes } from 'react-router'
 
 import { ROUTE } from '@/constants'
 
-const PageLlammasList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
+const PageMarketList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
+const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Page').then(p => p.PageLlamaMarkets), { ssr: false })
 const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
 const PageLoanManage = dynamic(() => import('@/components/PageLoanManage/Page'), { ssr: false })
 const PageRiskDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
@@ -17,11 +18,12 @@ const PageCrvUsdStaking = dynamic(() => import('@/components/PageCrvUsdStaking/P
 const App: NextPage = () => {
   const SubRoutes = (
     <>
-      <Route path=":network" element={<PageLlammasList />} />
+      <Route path=":network" element={<PageMarketList />} />
       <Route path=":network/risk-disclaimer" element={<PageRiskDisclaimer />} />
       <Route path=":network/integrations" element={<PageIntegrations />} />
       <Route path=":network/pegkeepers" element={<PagePegKeepers />} />
-      <Route path=":network/markets" element={<PageLlammasList />} />
+      <Route path=":network/markets" element={<PageMarketList />} />
+      <Route path=":network/llama-markets" element={<PageLlamaMarkets />} />
       <Route path=":network/scrvUSD" element={<PageCrvUsdStaking />} />
       <Route path=":network/markets/:collateralId" element={<Navigate to="create" />} />
       <Route path=":network/markets/:collateralId/create" element={<PageLoanCreate />} />

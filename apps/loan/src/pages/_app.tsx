@@ -13,7 +13,6 @@ import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/index'
-import type { Locale } from '@/lib/i18n'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
@@ -46,21 +45,6 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth, updateGlobalStoreByKey])
-
-  const initOnboardApi = useCallback(
-    async (locale: Locale['value'], themeType?: Theme) => {
-      let theme = 'system'
-      if (themeType === 'default' || themeType === 'chad') {
-        theme = 'light'
-      } else if (themeType === 'dark') {
-        theme = 'dark'
-      }
-
-      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-      updateWalletStateByKey('onboard', onboardInstance)
-    },
-    [updateWalletStateByKey]
-  )
 
   // update on every state change
   useEffect(() => {
@@ -96,9 +80,7 @@ function CurveApp({ Component }: AppProps) {
     const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
     handleResizeListener()
@@ -131,7 +113,7 @@ function CurveApp({ Component }: AppProps) {
   return (
     <div suppressHydrationWarning>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-      {typeof window === 'undefined' || !appLoaded ? null : (
+      {typeof window !== 'undefined' && appLoaded && (
         <HashRouter>
           <I18nProvider i18n={i18n}>
             <OverlayProvider>
