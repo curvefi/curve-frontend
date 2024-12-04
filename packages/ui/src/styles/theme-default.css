@@ -96,6 +96,7 @@ body.theme-default {
   --box--primary--shadow-color: var(--blackl20);
   --box--primary--content--background-color: hsl(0, 0%, 105%);
   --box--primary--content--shadow-color: var(--primary-400);
+  --button--border-color: transparent;
   --box_header--border: 3px solid var(--border-400);
   --box_header--primary--background-color: var(--whitel85);
   --box_header--font-size: var(--font-size-4);

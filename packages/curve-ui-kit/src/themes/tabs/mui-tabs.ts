@@ -30,7 +30,7 @@ type TabVariant = { Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
   color: Label,
   backgroundColor: Fill,
-  borderColor: Outline,
+  borderColor: Outline ?? 'transparent',
 })
 
 const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
@@ -40,7 +40,7 @@ const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
 })
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-export const defineMuiTabs = ({ Tabs: { UnderLined, OverLined, Contained }, Color: { Primary, Neutral }, Layer }: DesignSystem): Components['MuiTabs'] => ({
+export const defineMuiTabs = ({ Tabs: { UnderLined, OverLined, Contained }, Layer }: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
       minHeight: 0,
