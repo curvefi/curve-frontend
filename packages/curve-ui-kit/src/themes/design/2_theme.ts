@@ -3,6 +3,8 @@ import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
 
+const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s'
+
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
     Neutral: {
@@ -95,6 +97,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
   const Button = {
     Focus_Outline: Color.Primary[500],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
@@ -414,6 +417,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
   const Button = {
     Focus_Outline: Color.Primary[500],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
@@ -731,6 +735,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
   const Button = {
     Focus_Outline: Color.Primary[600],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
