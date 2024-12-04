@@ -71,7 +71,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
       rChainId,
       setStateByKey,
       userWalletBalances,
-    ]
+    ],
   )
 
   const getSteps = useCallback(
@@ -83,7 +83,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
       liquidationAmt: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
       const isValid =
@@ -135,7 +135,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
                   description={TxDescription}
                   txHash={networks[chainId].scanTxPath(resp.hash)}
                   onClose={() => reset(false, true)}
-                />
+                />,
               )
             }
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
@@ -153,7 +153,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset]
+    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset],
   )
 
   // onMount
@@ -185,7 +185,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
         liquidationAmt,
         maxSlippage,
         userWalletBalances,
-        steps
+        steps,
       )
       setSteps(updatedSteps)
     }

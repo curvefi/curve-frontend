@@ -40,7 +40,7 @@ export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => {
 export const queryGaugeVersion = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve
   const pool = curve.getPool(poolId)
-  return await pool.gauge.gaugeVersion() ?? null
+  return (await pool.gauge.gaugeVersion()) ?? null
 }
 
 export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) => {

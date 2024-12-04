@@ -59,7 +59,7 @@ function CurveApp({ Component }: AppProps) {
       const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
       updateWalletStateByKey('onboard', onboardInstance)
     },
-    [updateWalletStateByKey]
+    [updateWalletStateByKey],
   )
 
   // update on every state change
@@ -125,24 +125,24 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (
     <div suppressHydrationWarning>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <OverlayProvider>
+                <Page>
+                  <Component />
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
       </ThemeProvider>
     </div>
   )

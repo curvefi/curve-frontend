@@ -20,4 +20,3 @@ export type CombinedQueriesResult<T extends QueryOptionsArray> = PartialQueryRes
 export type CombinedQueryMappingResult<T extends QueryOptionsArray, K extends string[]> = PartialQueryResult<
   Record<K[number], CombinedDataType<T>[number]>
 >
-

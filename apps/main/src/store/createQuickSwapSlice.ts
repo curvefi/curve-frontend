@@ -40,14 +40,14 @@ export type QuickSwapSlice = {
     fetchUserBalances(
       curve: CurveApi,
       fromAddress: string,
-      toAddress: string
+      toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
     fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
     fetchRoutesAndOutput(
       curve: CurveApi,
       searchedParams: SearchedParams,
-      maxSlippage: string | undefined
+      maxSlippage: string | undefined,
     ): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     resetFormErrors(): void
@@ -58,7 +58,7 @@ export type QuickSwapSlice = {
       isGetMaxFrom?: boolean,
       maxSlippage?: string,
       isFullReset?: boolean,
-      isRefetch?: boolean
+      isRefetch?: boolean,
     ): Promise<void>
 
     // select token list
@@ -72,14 +72,14 @@ export type QuickSwapSlice = {
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      globalMaxSlippage: string
+      globalMaxSlippage: string,
     ): Promise<FnStepApproveResponse | undefined>
     fetchStepSwap(
       activeKey: string,
       curve: CurveApi,
       formValues: FormValues,
       searchedParams: SearchedParams,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<(FnStepResponse & { swappedAmount: string }) | undefined>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -157,7 +157,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
               poolsMapper,
               cFormValues,
               searchedParams,
-              maxSlippage
+              maxSlippage,
             )
 
             const resp = await curvejsApi.router.estGasApproval(activeKey, curve, fromAddress, toAddress, userBalance)
@@ -208,7 +208,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         poolsMapper,
         cFormValues,
         searchedParams,
-        maxSlippage
+        maxSlippage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -238,7 +238,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
                   exchangeRates,
                   cFormValues,
                   searchedParams,
-                  tokensNameMapper
+                  tokensNameMapper,
                 ),
                 modal: getRouterWarningModal(resp, searchedParams, tokensNameMapper) as RoutesAndOutputModal | null,
               },
@@ -298,7 +298,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       isGetMaxFrom,
       maxSlippage,
       isFullReset,
-      isRefetch // x
+      isRefetch, // x
     ) => {
       const state = get()
       const sliceState = state[sliceKey]
@@ -313,12 +313,12 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         isRefetch
           ? storedFormValues
           : isFullReset
-          ? { ...storedFormValues, isFrom: true, fromAmount: '', fromError: '' as const, toAmount: '' }
-          : {
-              ...storedFormValues,
-              ...updatedFormValues,
-              fromError: '' as const,
-            }
+            ? { ...storedFormValues, isFrom: true, fromAmount: '', fromError: '' as const, toAmount: '' }
+            : {
+                ...storedFormValues,
+                ...updatedFormValues,
+                fromError: '' as const,
+              },
       )
 
       let activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
@@ -377,7 +377,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       await state.userBalances.fetchUserBalancesByTokens(curve, selectToList)
       const userBalancesMapper = get().userBalances.userBalancesMapper
       const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
-        (k) => +(userBalancesMapper[k] ?? '0') > 0
+        (k) => +(userBalancesMapper[k] ?? '0') > 0,
       )
 
       // get usd rates
@@ -393,7 +393,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         userBalancesMapper,
         usdRatesMapper,
         selectToList,
-        firstBasePlusPriority
+        firstBasePlusPriority,
       )
 
       const isSame = isEqual(storedSelectFromList, selectFromList)
@@ -411,7 +411,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const selectToList = orderBy(
         Object.entries(tokensMapper).map(([_, v]) => v!),
         ({ volume }) => (typeof volume !== 'undefined' ? +volume : 0),
-        ['desc']
+        ['desc'],
       ).map(({ address }) => address)
 
       sliceState.setStateByActiveKey('selectToList', chainId.toString(), selectToList)
@@ -490,7 +490,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         fromAddress,
         fromAmount,
         toAddress,
-        maxSlippage
+        maxSlippage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -558,7 +558,7 @@ function getRouterActiveKey(
   curve: CurveApi | null,
   { fromAmount }: FormValues,
   searchedParams: SearchedParams,
-  maxSlippage: string | undefined
+  maxSlippage: string | undefined,
 ) {
   const { chainId = '', signerAddress = '' } = curve ?? {}
   const { fromAddress, toAddress } = searchedParams
@@ -574,7 +574,7 @@ export function getRouterSwapsExchangeRates(
   exchangeRates: string[],
   formValues: FormValues,
   searchedParams: SearchedParams,
-  tokensNameMapper: { [address: string]: string }
+  tokensNameMapper: { [address: string]: string },
 ) {
   const fromToken = tokensNameMapper[searchedParams.fromAddress]
   const toToken = tokensNameMapper[searchedParams.toAddress]
@@ -616,7 +616,7 @@ function getRouterWarningModal(
     | 'fromAmount'
   >,
   { toAddress }: SearchedParams,
-  storedTokensNameMapper: { [address: string]: string }
+  storedTokensNameMapper: { [address: string]: string },
 ) {
   const toToken = storedTokensNameMapper[toAddress] ?? ''
   const parsedToAmount = isExpectedToAmount ? toAmountOutput : toAmount

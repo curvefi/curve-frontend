@@ -88,7 +88,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
           userCollateral,
           userBorrowed,
           maxSlippage,
-          userState.debt
+          userState.debt,
         )
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
 
@@ -128,7 +128,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         userBorrowed,
         isFullRepay,
         maxSlippage,
-        swapRequired
+        swapRequired,
       )
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -212,7 +212,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         userCollateral,
         userBorrowed,
         isFullRepay,
-        swapRequired
+        swapRequired,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -256,7 +256,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         userBorrowed,
         isFullRepay,
         maxSlippage,
-        swapRequired
+        swapRequired,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -309,7 +309,12 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
 
 export default createLoanRepaySlice
 
-function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, formValues: FormValues, maxSlippage: string) {
+function _getActiveKey(
+  api: Api | null,
+  market: OneWayMarketTemplate | undefined,
+  formValues: FormValues,
+  maxSlippage: string,
+) {
   const { userBorrowed, userCollateral, stateCollateral, isFullRepay } = formValues
   const pIsFullRepay = isFullRepay ? 'full' : ''
   const { swapRequired } = _parseValues(formValues)

@@ -2,14 +2,14 @@ import type { Components } from '@mui/material/styles'
 import { Palette } from '../palette'
 
 // css classes used by the TabSwitcher component
-const contained = 'variant-contained' as const;
-const underlined = 'variant-underlined' as const;
-const overlined = 'variant-overlined' as const;
-const small = 'size-small' as const;
-const medium = 'size-medium' as const;
-const large = 'size-large' as const;
-export const TABS_VARIANT_CLASSES = { contained, underlined, overlined };
-export const TABS_HEIGHT_CLASSES = { small, medium, large };
+const contained = 'variant-contained' as const
+const underlined = 'variant-underlined' as const
+const overlined = 'variant-overlined' as const
+const small = 'size-small' as const
+const medium = 'size-medium' as const
+const large = 'size-large' as const
+export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
+export const TABS_HEIGHT_CLASSES = { small, medium, large }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 

@@ -14,7 +14,7 @@ export const checkTokensInPoolUnset = (
   tokenE: TokenState,
   tokenF: TokenState,
   tokenG: TokenState,
-  tokenH: TokenState
+  tokenH: TokenState,
 ) =>
   tokenA.address !== '' ||
   tokenB.address !== '' ||
@@ -36,7 +36,7 @@ export const checkTokensInPool = (
   tokenG: TokenState,
   tokenH: TokenState,
   tricryptoEnabled: boolean,
-  cryptoSwapEnabled: boolean
+  cryptoSwapEnabled: boolean,
 ) => {
   // make sure three tokens is selected when tricrypto but no twocrypto
   if (swapType === CRYPTOSWAP && tricryptoEnabled && !cryptoSwapEnabled) {
@@ -64,7 +64,7 @@ export const checkParameters = (
   tokenB: TokenState,
   tokenC: TokenState,
   tricryptoEnabled: boolean,
-  poolPresetIndex: number
+  poolPresetIndex: number,
 ) => {
   if (poolPresetIndex === null) return false
   if (swapType === STABLESWAP) return stableSwapFee !== null
@@ -81,7 +81,7 @@ export const checkPoolInfo = (
   swapType: SwapType,
   poolSymbol: string,
   poolName: string,
-  assetType: string
+  assetType: string,
 ) => {
   if (swapType === STABLESWAP) {
     if (stableswapNg) {
@@ -115,7 +115,7 @@ export const checkFormReady = (
   poolTypeValid: boolean,
   tokensInPoolValid: boolean,
   parametersValid: boolean,
-  poolInfoValid: boolean
+  poolInfoValid: boolean,
 ) => {
   return poolTypeValid && tokensInPoolValid && parametersValid && poolInfoValid
 }
@@ -125,7 +125,7 @@ export const isTricrypto = (
   tokenAmount: number,
   tokenA: TokenState,
   tokenB: TokenState,
-  tokenC: TokenState
+  tokenC: TokenState,
 ) => {
   return (
     tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''

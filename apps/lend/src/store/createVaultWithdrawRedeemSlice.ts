@@ -146,7 +146,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
         market,
         isFullWithdraw,
         amount,
-        vaultShares
+        vaultShares,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -190,7 +190,7 @@ export function _getActiveKey(
   rChainId: ChainId,
   formType: FormType,
   market: OneWayMarketTemplate | undefined,
-  { amount }: FormValues
+  { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }

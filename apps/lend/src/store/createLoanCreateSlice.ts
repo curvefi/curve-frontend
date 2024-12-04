@@ -147,7 +147,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           userBorrowed,
           debt,
           n,
-          maxSlippage
+          maxSlippage,
         )
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
         if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
@@ -172,7 +172,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         userCollateral,
         userBorrowed,
         debt,
-        isLeverage
+        isLeverage,
       )
       sliceState.setStateByKey('liqRanges', { [activeKeyLiqRange]: resp.liqRanges })
       sliceState.setStateByKey('liqRangesMapper', { [activeKeyLiqRange]: resp.liqRangesMapper })
@@ -196,7 +196,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         debt,
         n,
         maxSlippage,
-        isLeverage
+        isLeverage,
       )
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -275,7 +275,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         market,
         userCollateral,
         userBorrowed,
-        isLeverage
+        isLeverage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -317,7 +317,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         debt,
         n,
         maxSlippage,
-        isLeverage
+        isLeverage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -367,7 +367,7 @@ export function _getActiveKey(
   api: Api | null,
   market: OneWayMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt, n }: FormValues,
-  maxSlippage: string
+  maxSlippage: string,
 ) {
   let activeKey = `${_parseActiveKey(api, market)}${n}`
   return {

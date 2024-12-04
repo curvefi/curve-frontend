@@ -76,12 +76,11 @@ const SelectToken = ({
           <p>{t`Token C`}</p>
           <Box flex>
             <ClearButton variant="text" onClick={() => clearToken(tokenId)}>{t`Clear`}</ClearButton>
-            {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) &&
-              removeToken && (
-                <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C, tokensInPool)}>
-                  <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
-                </RemoveButton>
-              )}
+            {((swapType === CRYPTOSWAP && network.twocryptoFactory) || swapType === STABLESWAP) && removeToken && (
+              <RemoveButton variant={'text'} onClick={() => removeToken(TOKEN_C, tokensInPool)}>
+                <Icon name={'RowDelete'} size={16} aria-label={t`Remove token`} />
+              </RemoveButton>
+            )}
           </Box>
         </LabelRow>
       )}
@@ -111,32 +110,30 @@ const SelectToken = ({
         selectedAddress={token.address}
         onSelectionChange={(value: Key) => handleInpChange(tokenId, value as string, tokensInPool)}
       />
-      {swapType === STABLESWAP &&
-        (network.stableswapFactory || network.stableswapFactoryOld) &&
-        !token.basePool && (
-          <StableSwapTogglesRow>
-            <StyledCheckbox
-              isSelected={token.ngAssetType === 0}
-              onChange={() => updateNgAssetType(tokenId, 0)}
-              isDisabled={false}
-            >{t`Standard`}</StyledCheckbox>
-            <StyledCheckbox
-              isSelected={token.ngAssetType === 1}
-              isDisabled={false}
-              onChange={() => updateNgAssetType(tokenId, 1)}
-            >{t`Oracle`}</StyledCheckbox>
-            <StyledCheckbox
-              isSelected={token.ngAssetType === 2}
-              onChange={() => updateNgAssetType(tokenId, 2)}
-              isDisabled={false}
-            >{t`Rebasing`}</StyledCheckbox>
-            <StyledCheckbox
-              isSelected={token.ngAssetType === 3}
-              isDisabled={false}
-              onChange={() => updateNgAssetType(tokenId, 3)}
-            >{t`ERC4626`}</StyledCheckbox>
-          </StableSwapTogglesRow>
-        )}
+      {swapType === STABLESWAP && (network.stableswapFactory || network.stableswapFactoryOld) && !token.basePool && (
+        <StableSwapTogglesRow>
+          <StyledCheckbox
+            isSelected={token.ngAssetType === 0}
+            onChange={() => updateNgAssetType(tokenId, 0)}
+            isDisabled={false}
+          >{t`Standard`}</StyledCheckbox>
+          <StyledCheckbox
+            isSelected={token.ngAssetType === 1}
+            isDisabled={false}
+            onChange={() => updateNgAssetType(tokenId, 1)}
+          >{t`Oracle`}</StyledCheckbox>
+          <StyledCheckbox
+            isSelected={token.ngAssetType === 2}
+            onChange={() => updateNgAssetType(tokenId, 2)}
+            isDisabled={false}
+          >{t`Rebasing`}</StyledCheckbox>
+          <StyledCheckbox
+            isSelected={token.ngAssetType === 3}
+            isDisabled={false}
+            onChange={() => updateNgAssetType(tokenId, 3)}
+          >{t`ERC4626`}</StyledCheckbox>
+        </StableSwapTogglesRow>
+      )}
     </TokenPickerContainer>
   )
 }

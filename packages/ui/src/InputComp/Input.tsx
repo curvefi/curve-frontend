@@ -21,7 +21,7 @@ const Input = forwardRef<HTMLInputElement, InputProps & { testId?: string }>(
         name={id}
       />
     )
-  }
+  },
 )
 
 Input.displayName = 'Input'

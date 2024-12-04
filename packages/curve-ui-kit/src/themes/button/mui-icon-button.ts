@@ -11,7 +11,7 @@ export const defineMuiIconButton = (palette: Palette) => ({
         borderColor: palette.background.highlightOutline,
         borderWidth: '1px',
         height: '40px',
-      }
-    }
-  }
+      },
+    },
+  },
 })

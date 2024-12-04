@@ -9,7 +9,7 @@ import { ExternalLink } from './Link'
 import { NavigationSection } from 'curve-common/src/widgets/Header/types'
 import { Link } from 'react-router-dom'
 
-const Footer = ({ sections, footerRef }: { sections: NavigationSection[], footerRef: RefObject<HTMLDivElement> }) => (
+const Footer = ({ sections, footerRef }: { sections: NavigationSection[]; footerRef: RefObject<HTMLDivElement> }) => (
   <FooterWrapper ref={footerRef}>
     <FooterInnerWrapper grid gridAutoFlow="column" gridColumnGap={3} flexAlignItems="start">
       <div>
@@ -38,8 +38,11 @@ const Footer = ({ sections, footerRef }: { sections: NavigationSection[], footer
           <Section key={section.title} title={section.title}>
             {section.links.map(({ label, route }) => (
               <SectionItem key={route}>
-                {route.startsWith('/') ? <StyledInternalLink to={route}>{label}</StyledInternalLink> :
-                <StyledExternalLink href={route}>{label}</StyledExternalLink> }
+                {route.startsWith('/') ? (
+                  <StyledInternalLink to={route}>{label}</StyledInternalLink>
+                ) : (
+                  <StyledExternalLink href={route}>{label}</StyledExternalLink>
+                )}
               </SectionItem>
             ))}
           </Section>
@@ -57,14 +60,20 @@ interface SectionProps {
 
 const Section = ({ className, title, children }: React.PropsWithChildren<SectionProps>) => (
   <SectionWrapper className={className} as="article">
-    <Typography variant="headingXsBold" sx={{ marginBottom: 4 }}>{title}</Typography>
+    <Typography variant="headingXsBold" sx={{ marginBottom: 4 }}>
+      {title}
+    </Typography>
     <SectionChildrenWrapper>{children}</SectionChildrenWrapper>
   </SectionWrapper>
 )
 
 const SectionChildrenWrapper = styled.ul`
-  @media (min-width: ${breakpoints.md}rem) { column-count: 2 }
-  @media (min-width: ${breakpoints.lg}rem) { column-count: 3 }
+  @media (min-width: ${breakpoints.md}rem) {
+    column-count: 2;
+  }
+  @media (min-width: ${breakpoints.lg}rem) {
+    column-count: 3;
+  }
 `
 
 const FooterLogoWrapper = styled.div`
@@ -76,15 +85,15 @@ const InfoBox = styled(Box)`
 `
 
 const StyledExternalLink = styled(ExternalLink)`
-    font-size: 0.875rem;
-    text-decoration: none;
-    text-transform: initial;
+  font-size: 0.875rem;
+  text-decoration: none;
+  text-transform: initial;
 
-    color: inherit;
+  color: inherit;
 
-    :hover {
-        color: var(--footer--hover-color);
-    }
+  :hover {
+    color: var(--footer--hover-color);
+  }
 `
 
 const StyledInternalLink = styled(Link)`

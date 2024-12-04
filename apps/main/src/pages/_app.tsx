@@ -54,7 +54,7 @@ function CurveApp({ Component }: AppProps) {
 
   const handleResizeListener = useCallback(() => {
     updateGlobalStoreByKey('isMobile', isMobile())
-    if (window.innerWidth) setPageWidth((window.innerWidth))
+    if (window.innerWidth) setPageWidth(window.innerWidth)
   }, [setPageWidth, updateGlobalStoreByKey])
 
   const fetchPoolsVolumeTvl = useCallback(

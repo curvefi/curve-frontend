@@ -31,7 +31,7 @@ const DeploySidechain = ({ chainId }: Props) => {
   const setLpTokenAddress = useStore((state) => state.deployGauge.setLpTokenAddress)
   const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
 
-  const currentChainId = sidechainNav === 0 ? chainId : currentSidechain ?? 1
+  const currentChainId = sidechainNav === 0 ? chainId : (currentSidechain ?? 1)
 
   // keep unavailable pool types out of state
   useEffect(() => {

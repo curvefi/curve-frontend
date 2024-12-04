@@ -38,7 +38,7 @@ const TableHead: React.FC<Props> = ({
     (sortBy: string, sortByOrder: Order) => {
       updatePath({ sortBy: sortBy as SortKey, sortByOrder })
     },
-    [updatePath]
+    [updatePath],
   )
 
   const props: Omit<TheadSortButtonProps<SortKey>, 'sortIdKey' | 'loading'> = {

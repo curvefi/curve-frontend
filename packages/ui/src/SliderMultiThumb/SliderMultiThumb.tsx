@@ -84,7 +84,7 @@ function Thumb(props: {
       trackRef,
       inputRef,
     },
-    state
+    state,
   )
 
   const { focusProps, isFocusVisible } = useFocusRing()

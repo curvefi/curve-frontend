@@ -19,7 +19,7 @@ const SandwichMenu: React.FC<SandwichMenuProps> = ({ className, onItemClick }) =
     {
       onPress: () => state.toggle(),
     },
-    buttonRef
+    buttonRef,
   )
 
   return (

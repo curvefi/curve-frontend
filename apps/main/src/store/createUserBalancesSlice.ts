@@ -38,7 +38,9 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
     fetchUserBalancesByTokens: async (curve, tokensAddresses) => {
       const state = get()
       const sliceState = state[sliceKey]
-      const { networks: { networks } } = state
+      const {
+        networks: { networks },
+      } = state
 
       const storedUserBalancesMapper = sliceState.userBalancesMapper
 

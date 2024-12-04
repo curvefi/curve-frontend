@@ -1,5 +1,5 @@
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
-import Tab, {type TabProps} from '@mui/material/Tab'
+import Tab, { type TabProps } from '@mui/material/Tab'
 import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '@ui-kit/themes/tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 

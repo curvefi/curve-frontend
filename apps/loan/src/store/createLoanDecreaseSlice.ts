@@ -36,13 +36,13 @@ export type LoanDecreaseSlice = {
       activeKey: string,
       curve: Curve,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepDecrease(
       activeKey: string,
       curve: Curve,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
@@ -135,7 +135,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
           storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
         let loadingDetailInfo = cloneDeep(
-          storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO
+          storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
         )
         const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)
         if (parsedPrices) loadingDetailInfo.prices = parsedPrices

@@ -18,10 +18,7 @@ const InfoBox = () => (
           Only admin/manager can set reward token, set reward token distributor address.
         `}
       </InfoText>
-      <StyledExternalLink
-        $noStyles
-        href="https://resources.curve.fi/reward-gauges/permissionless-rewards/"
-      >
+      <StyledExternalLink $noStyles href="https://resources.curve.fi/reward-gauges/permissionless-rewards/">
         {t`Learn more`}
       </StyledExternalLink>
     </Box>

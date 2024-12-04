@@ -6,13 +6,13 @@ import { setStorageValue } from '@/utils/utilsStorage'
 
 export const DEFAULT_LOCALES = [
   { name: 'English', value: 'en', lang: 'en' },
-  ...(
-    process.env.NODE_ENV === 'development' ? [
-      { name: '简体中文', value: 'zh-Hans' as const, lang: 'zh-Hans' },
-      { name: '繁體中文', value: 'zh-Hant' as const, lang: 'zh-Hant' },
-      { name: 'pseudo', value: 'pseudo' as const, lang: 'en' },
-    ] : []
-  )
+  ...(process.env.NODE_ENV === 'development'
+    ? [
+        { name: '简体中文', value: 'zh-Hans' as const, lang: 'zh-Hans' },
+        { name: '繁體中文', value: 'zh-Hant' as const, lang: 'zh-Hant' },
+        { name: 'pseudo', value: 'pseudo' as const, lang: 'en' },
+      ]
+    : []),
 ] as const
 export type LocaleOption = (typeof DEFAULT_LOCALES)[number]
 export type LocaleValue = LocaleOption['value']
@@ -28,11 +28,12 @@ export function initTranslation(i18n: I18n, defaultLocale: string): void {
   i18n.activate(defaultLocale)
 }
 
-export const findLocale = (selectedLocale: string) => DEFAULT_LOCALES.find((l) => {
-  // backward compatibility for 'zh'
-  const parsedLocale = selectedLocale.toLowerCase() === 'zh' ? 'zh-hant' : selectedLocale.toLowerCase()
-  return l.value.toLowerCase() === parsedLocale
-})
+export const findLocale = (selectedLocale: string) =>
+  DEFAULT_LOCALES.find((l) => {
+    // backward compatibility for 'zh'
+    const parsedLocale = selectedLocale.toLowerCase() === 'zh' ? 'zh-hant' : selectedLocale.toLowerCase()
+    return l.value.toLowerCase() === parsedLocale
+  })
 
 export function parseLocale(locale?: string): { parsedLocale: LocaleValue; pathnameLocale: string } {
   if (!locale) return { parsedLocale: 'en', pathnameLocale: '' }

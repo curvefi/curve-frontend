@@ -106,7 +106,7 @@ export function logTxReceipt<T>(title: string, chainId: ChainId, txReceipt: T & 
     'color:#0FFF50; font-family:monospace; font-size:22px',
     'color:#0FFF50; font-family:monospace; font-size:16px',
     '\n',
-    txReceipt
+    txReceipt,
   )
 }
 

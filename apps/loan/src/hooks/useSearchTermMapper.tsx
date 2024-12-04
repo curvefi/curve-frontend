@@ -12,7 +12,7 @@ export enum SEARCH_TERM {
 export function parseSearchTermMapper(
   collateralDataCachedOrApi: CollateralDataCacheOrApi | undefined,
   searchedByAddresses: { [key: string]: { value: string } },
-  searchTermMapper: SearchTermMapper
+  searchTermMapper: SearchTermMapper,
 ) {
   if (!searchedByAddresses || !searchTermMapper || !collateralDataCachedOrApi) return undefined
 

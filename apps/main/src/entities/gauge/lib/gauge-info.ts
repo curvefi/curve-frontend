@@ -17,7 +17,7 @@ import { GaugeParams } from '@/shared/model/query'
 export const useGauge = ({ chainId, poolId }: GaugeParams) =>
   useCombinedQueries([
     models.gaugeStatus.getQueryOptions({ chainId, poolId }),
-    models.depositRewardAvailable.getQueryOptions({ chainId, poolId })
+    models.depositRewardAvailable.getQueryOptions({ chainId, poolId }),
   ])
 
 export const { useQuery: useGaugeVersion } = models.gaugeVersion

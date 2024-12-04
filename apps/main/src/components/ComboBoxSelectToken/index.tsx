@@ -57,7 +57,7 @@ const ComboBoxTokens = ({
       const result = filterValue && tokens && tokens.length > 0 ? _filter(filterValue, endsWith, tokens) : tokens
       setResult(result)
     },
-    [endsWith, setStateByKey]
+    [endsWith, setStateByKey],
   )
 
   const handleOnSelectChange = (tokenAddress: React.Key) => {

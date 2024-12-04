@@ -18,7 +18,7 @@ export enum SEARCH_TERM {
 export function parseSearchTermMapper(
   market: OneWayMarketTemplate | undefined,
   searchedByAddresses: { [key: string]: { value: string } },
-  searchTermMapper: SearchTermMapper
+  searchTermMapper: SearchTermMapper,
 ) {
   if (!searchedByAddresses || !searchTermMapper || !market) return undefined
 

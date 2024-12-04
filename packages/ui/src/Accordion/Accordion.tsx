@@ -10,7 +10,7 @@ function Button(
   props: AriaButtonProps & {
     className?: string
     isHideTopBorder?: boolean
-  }
+  },
 ) {
   let ref = React.useRef<HTMLButtonElement>(null)
   let { buttonProps } = useButton(props, ref)
@@ -91,8 +91,10 @@ const StyledButton = styled.button<{ isHideTopBorder?: boolean }>`
   opacity: 0.8;
   padding: 8px;
   width: 100%;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :disabled {

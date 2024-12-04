@@ -73,7 +73,7 @@ export const Outlined: Story = {
 export const Ghost: Story = {
   args: {
     variant: 'ghost',
-    color: "alert",
+    color: 'alert',
     children: 'Ghost',
   },
 }

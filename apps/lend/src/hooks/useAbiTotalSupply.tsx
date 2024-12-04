@@ -34,7 +34,7 @@ const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefine
       if (contract && isValidAddress) getTotalSupply(contract)
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return totalSupply

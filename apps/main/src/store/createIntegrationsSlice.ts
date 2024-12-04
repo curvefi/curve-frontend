@@ -59,7 +59,9 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
     ...DEFAULT_STATE,
     init: async (chainId: ChainId) => {
       const state = get()
-      const { networks: { networks } } = state
+      const {
+        networks: { networks },
+      } = state
       const { integrationsList: storedList, integrationsTags: storedTags, setStateByKey } = state[sliceKey]
 
       const parsedChainId = chainId || 1
@@ -92,7 +94,9 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       return integrationApps
     },
     filterByNetwork: (filterNetworkId: string, integrationApps: IntegrationApp[]) => {
-      const { networks: { networks } } = get()
+      const {
+        networks: { networks },
+      } = get()
       const networkId = networks[+filterNetworkId as ChainId]?.id
 
       if (networkId) {
@@ -155,7 +159,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       set(
         produce((state: State) => {
           state[sliceKey] = { ...state[sliceKey], ...DEFAULT_STATE }
-        })
+        }),
       )
     },
   },
@@ -190,7 +194,7 @@ function parseIntegrationsList(
     networks: string[]
     tags: string[]
     twitterUrl: string | null
-  }[]
+  }[],
 ) {
   const parsedIntegrationsList: IntegrationApp[] = []
 

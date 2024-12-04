@@ -13,7 +13,7 @@ export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | 
   const tokens = useMemo(
     () => addresses.map((address) => (address ? tokensMapper[address] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensKey, tokensMapper]
+    [tokensKey, tokensMapper],
   )
 
   return { data: tokens }
@@ -27,7 +27,7 @@ export const useTokensUSDRates = (tokens: (Address | undefined)[]): { data: (num
   const usdRates = useMemo(
     () => tokens.map((token) => (token ? usdRatesMapper[token] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensKey, usdRatesMapper]
+    [tokensKey, usdRatesMapper],
   )
 
   return { data: usdRates }

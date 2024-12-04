@@ -150,7 +150,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
       set(
         produce((state: State) => {
           state[sliceKey] = { ...state[sliceKey], ...DEFAULT_STATE }
-        })
+        }),
       )
     },
   },
@@ -187,7 +187,7 @@ function parseIntegrationsList(
     networks: string[]
     tags: string[]
     twitterUrl: string | null
-  }[]
+  }[],
 ) {
   const parsedIntegrationsList: IntegrationApp[] = []
 

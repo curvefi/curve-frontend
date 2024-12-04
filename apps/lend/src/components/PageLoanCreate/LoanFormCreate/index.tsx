@@ -82,12 +82,12 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
         maxSlippage,
         isLeverage,
-        shouldRefetch
+        shouldRefetch,
       )
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [setFormValues, isLoaded, api, market, maxSlippage, isLeverage]
+    [setFormValues, isLoaded, api, market, maxSlippage, isLeverage],
   )
 
   const handleClickCreate = useCallback(
@@ -97,7 +97,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       formValues: FormValues,
       market: OneWayMarketTemplate,
       maxSlippage: string,
-      isLeverage: boolean
+      isLeverage: boolean,
     ) => {
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepCreate(payloadActiveKey, api, market, maxSlippage, formValues, isLeverage)
@@ -109,7 +109,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepCreate, notifyNotification, rChainId]
+    [activeKey, fetchStepCreate, notifyNotification, rChainId],
   )
 
   const getSteps = useCallback(
@@ -125,7 +125,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       maxSlippage: string,
       steps: Step[],
       isLeverage: boolean,
-      priceImpact: string
+      priceImpact: string,
     ) => {
       const { signerAddress } = api
       const { collateral_token, borrowed_token } = market
@@ -151,7 +151,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
               userWallet={userBalances}
               type="create"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -238,7 +238,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       notifyNotification,
       userBalances,
       userDetails?.state,
-    ]
+    ],
   )
 
   // onMount
@@ -265,7 +265,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
       }
     },
     REFRESH_INTERVAL['10s'],
-    isPageVisible
+    isPageVisible,
   )
 
   // steps
@@ -283,7 +283,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         maxSlippage,
         steps,
         isLeverage,
-        detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : ''
+        detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
       )
       setSteps(updatedSteps)
     }

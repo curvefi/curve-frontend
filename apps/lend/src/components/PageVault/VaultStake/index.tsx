@@ -46,7 +46,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, market, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -54,7 +54,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
@@ -62,7 +62,13 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   }
 
   const handleBtnClickStake = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
       const { amount } = formValues
 
@@ -80,7 +86,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepStake, notifyNotification, reset]
+    [activeKey, fetchStepStake, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -91,7 +97,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError } = formValues
@@ -132,7 +138,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickStake, notifyNotification]
+    [fetchStepApprove, handleBtnClickStake, notifyNotification],
   )
 
   // onMount

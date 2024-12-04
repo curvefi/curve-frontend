@@ -45,7 +45,7 @@ const SandwichMenuPopover: React.FC<SandwichMenuPopoverProps> = ({ isOpen, onClo
       },
     },
     state,
-    triggerRef
+    triggerRef,
   )
   const { triggerProps, overlayProps } = useOverlayTrigger({ type: 'menu' }, state, triggerRef)
 

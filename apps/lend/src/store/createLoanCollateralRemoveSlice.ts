@@ -156,7 +156,7 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         activeKey,
         provider,
         market,
-        formValues.collateral
+        formValues.collateral,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

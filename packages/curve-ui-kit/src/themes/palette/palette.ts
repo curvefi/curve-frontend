@@ -123,18 +123,19 @@ export const PALETTE = {
 
 const modes = { chad: 'light', light: 'light', dark: 'dark' } as const
 
-export const createPalette = (mode: ThemeKey) => ({
-  mode: modes[mode],
-  ...Object.fromEntries(
-    Object.entries(PALETTE).map(([key, colors]) => [
-      key,
-      Object.fromEntries(Object.entries(colors).map(([color, hues]) => [color, hues[mode] ?? hues])),
-    ]),
-  ),
-}) as Palette
+export const createPalette = (mode: ThemeKey) =>
+  ({
+    mode: modes[mode],
+    ...Object.fromEntries(
+      Object.entries(PALETTE).map(([key, colors]) => [
+        key,
+        Object.fromEntries(Object.entries(colors).map(([color, hues]) => [color, hues[mode] ?? hues])),
+      ]),
+    ),
+  }) as Palette
 
-export type Palette = {mode: 'light' | 'dark'} & {
+export type Palette = { mode: 'light' | 'dark' } & {
   [K1 in keyof typeof PALETTE]: {
-    [K in keyof typeof PALETTE[K1]]: HexColor
+    [K in keyof (typeof PALETTE)[K1]]: HexColor
   }
 }

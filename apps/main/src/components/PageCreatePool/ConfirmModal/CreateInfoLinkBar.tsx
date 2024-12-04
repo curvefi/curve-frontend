@@ -33,7 +33,9 @@ const StyledExternalLink = styled(ExternalLink)<StylesProps>`
   width: 100%;
   padding: var(--spacing-2);
   padding-right: 0;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   display: flex;
   flex-direction: row;
   align-content: center;
