@@ -4,31 +4,27 @@ import 'intersection-observer'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
-import delay from 'lodash/delay'
 import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/common/features/connect-wallet'
-import { initOnboard } from '@/common/features/connect-wallet'
 import { persister, queryClient } from '@/shared/api/query-client'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import Page from '@/layout/default'
-import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 import { QueryProvider } from '@/ui/QueryProvider'
-import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { isMobile, removeExtraSpaces } from '@/utils'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
 
-function CurveApp({ Component }: AppProps) {
+function CurveApp(props: AppProps) {
+  console.log('_app', {window: typeof window, props: JSON.stringify(props) })
+  const { Component, pageProps } = props
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -36,8 +32,6 @@ function CurveApp({ Component }: AppProps) {
   const pageWidth = useStore((state) => state.pageWidth)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
   const themeType = useStore((state) => state.themeType)
-  const setPageWidth = useStore((state) => state.setPageWidth)
-  const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
@@ -45,17 +39,8 @@ function CurveApp({ Component }: AppProps) {
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const updateShowScrollButton = useStore((state) => state.updateShowScrollButton)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
   const network = useStore((state) => state.networks.networks[chainId])
-
   const [appLoaded, setAppLoaded] = useState(false)
-
-  const handleResizeListener = useCallback(() => {
-    updateGlobalStoreByKey('isMobile', isMobile())
-    if (window.innerWidth) setPageWidth((window.innerWidth))
-  }, [setPageWidth, updateGlobalStoreByKey])
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
@@ -68,52 +53,13 @@ function CurveApp({ Component }: AppProps) {
   )
 
   useEffect(() => {
+    setAppLoaded(true)
     if (!pageWidth) return
 
     document.body.className = removeExtraSpaces(`theme-${themeType} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
     document.body.setAttribute('data-theme', themeType || '')
     document.documentElement.lang = locale
-  })
-
-  useEffect(() => {
-    const handleScrollListener = () => {
-      updateShowScrollButton(window.scrollY)
-    }
-
-    const { themeType } = getStorageValue('APP_CACHE') ?? {}
-
-    // init theme
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
-
-    // init locale
-    const { rLocale } = getLocaleFromUrl()
-    const parsedLocale = rLocale?.value ?? 'en'
-    initTranslation(i18n, parsedLocale)
-    dynamicActivate(parsedLocale)
-    updateAppLocale(parsedLocale, updateGlobalStoreByKey)
-    ;(async () => {
-      const networks = await fetchNetworks()
-
-      // init onboard
-      const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
-      updateWalletStoreByKey('onboard', onboardInstance)
-
-      const handleVisibilityChange = () => {
-        updateGlobalStoreByKey('isPageVisible', !document.hidden)
-      }
-
-      setAppLoaded(true)
-      updateGlobalStoreByKey('loaded', true)
-      handleResizeListener()
-      handleVisibilityChange()
-
-      document.addEventListener('visibilitychange', handleVisibilityChange)
-      window.addEventListener('resize', () => handleResizeListener())
-      window.addEventListener('scroll', () => delay(handleScrollListener, 200))
-    })()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [locale, pageWidth, themeType])
 
   const refetchPools = useCallback(
     async (curve: CurveApi) => {
@@ -152,15 +98,13 @@ function CurveApp({ Component }: AppProps) {
   return (
     <div suppressHydrationWarning>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-        {typeof window === 'undefined' || !appLoaded ? null : (
+        {typeof window !== 'undefined' && appLoaded && (
           <HashRouter>
             <I18nProvider i18n={i18n}>
               <AriaI18nProvider locale={locale}>
                 <QueryProvider persister={persister} queryClient={queryClient}>
                   <OverlayProvider>
-                    <Page>
-                      <Component />
-                    </Page>
+                      <Component {...pageProps} />
                     <GlobalStyle />
                   </OverlayProvider>
                 </QueryProvider>
@@ -172,5 +116,3 @@ function CurveApp({ Component }: AppProps) {
     </div>
   )
 }
-
-export default CurveApp

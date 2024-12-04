@@ -30,7 +30,8 @@ export default class CurveDocument extends Document {
           enhanceApp: (App) => (props) => sheet.collectStyles(<App {...props} />),
         })
 
-      const initialProps = await Document.getInitialProps(ctx)
+      console.log({Document, ctx})
+      const initialProps = await Document?.getInitialProps(ctx)
       return {
         ...initialProps,
         styles: (

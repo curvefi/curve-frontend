@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfiguration = {
-  output: 'export',
+  // output: 'export',
   compiler: {
     styledComponents: true
   },
@@ -26,6 +26,7 @@ const nextConfiguration = {
     ],
     unoptimized: true,
   },
+  swcMinify: false,
   trailingSlash: true,
   transpilePackages: ['curve-common', 'curve-ui-kit'],
   webpack(config) {
