@@ -38,16 +38,11 @@ export const Link = ({ label, href, icon }: LinkProps) => (
     </Box>
 
     <Typography
-      variant="ghost"
+      variant="bodyMRegular"
       sx={{
         display: 'flex',
         alignItems: 'center',
         height: '1.5rem',
-        fontFamily: Fonts['Mona Sans'],
-        fontSize: SizesAndSpaces.FontSize.md,
-        // In dark mode the bolder font is very hard to read.
-        fontWeight: (t) =>
-          t.palette.mode === 'dark' ? SizesAndSpaces.FontWeight.Normal : SizesAndSpaces.FontWeight.Medium,
       }}
     >
       {label}
