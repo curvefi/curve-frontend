@@ -7,11 +7,11 @@ import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
 
-import { XIcon } from 'curve-ui-kit/src/shared/ui/XIcon'
-import { DiscordIcon } from 'curve-ui-kit/src/shared/ui/DiscordIcon'
-import { LAFIcon } from 'curve-ui-kit/src/shared/ui/LAFIcon'
-import { DuneIcon } from 'curve-ui-kit/src/shared/ui/DuneIcon'
-import { CrvHubIcon } from 'curve-ui-kit/src/shared/ui/CrvHubIcon'
+import { XIcon } from 'curve-ui-kit/src/shared/icons/XIcon'
+import { DiscordIcon } from 'curve-ui-kit/src/shared/icons/DiscordIcon'
+import { LAFIcon } from 'curve-ui-kit/src/shared/icons/LAFIcon'
+import { DuneIcon } from 'curve-ui-kit/src/shared/icons/DuneIcon'
+import { CrvHubIcon } from 'curve-ui-kit/src/shared/icons/CrvHubIcon'
 import { SectionProps } from './Section'
 
 export const sections: SectionProps[] = [
