@@ -169,6 +169,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
         const data: PricesProposalResponse = await proposal.json()
 
+        // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
           console.log(data.detail)
           return
@@ -221,7 +222,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
         const data: PricesProposalResponse = await request.json()
 
+        // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
+          console.log(data.detail)
           return
         }
 
@@ -487,7 +490,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           )
           const data: PricesProposalResponse = await response.json()
 
+          // the api returns a detail object if the proposal is not found
           if ('detail' in data) {
+            console.log(data.detail)
             return
           }
 
