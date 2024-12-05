@@ -42,13 +42,7 @@ export const Description = () => (
       </Typography>
     </Link>
 
-    <Typography
-      variant="bodySRegular"
-      color="textSecondary"
-      sx={{
-        lineHeight: '1rem',
-      }}
-    >
+    <Typography variant="bodySRegular" color="textSecondary">
       Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and
       autonomous.
     </Typography>
