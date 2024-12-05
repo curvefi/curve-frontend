@@ -31,7 +31,6 @@ export const Footer = () => (
     <Grid
       size={{
         mobile: 12,
-        tablet: 12,
         desktop: 3,
       }}
     >
