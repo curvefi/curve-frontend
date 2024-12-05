@@ -2,7 +2,7 @@ import type { InputProps } from './types'
 
 import styled from 'styled-components'
 
-export const StyledInput = styled.input<Pick<InputProps, 'minHeight'>>`
+export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'>>`
   width: 100%;
 
   background-color: transparent;
@@ -18,6 +18,11 @@ export const StyledInput = styled.input<Pick<InputProps, 'minHeight'>>`
   }
 
   font-size: var(--input--font-size);
+  ${({ variant }) =>
+    variant === 'small' &&
+    `
+    font-size: var(--font-size-2);
+  `}
 
   color: inherit;
 

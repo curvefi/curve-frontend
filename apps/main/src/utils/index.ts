@@ -165,3 +165,5 @@ export function getChainPoolIdActiveKey(chainId: ChainId | null, poolId: string 
 export function getChainSignerActiveKey(chainId: ChainId | null, signerAddress: string | undefined) {
   return chainId && signerAddress ? `${chainId}-${shortenAccount(signerAddress)}` : ''
 }
+
+export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
