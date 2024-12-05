@@ -1,5 +1,6 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
+import { RootCssProperties } from '@ui-kit/themes/typography'
 
 const injectIpfsPrefix = `
 (function () {
@@ -47,7 +48,7 @@ export default class CurveDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html style={RootCssProperties}>
         <Head>
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
