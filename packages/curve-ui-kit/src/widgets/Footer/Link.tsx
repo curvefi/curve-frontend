@@ -38,7 +38,7 @@ export const Link = ({ label, href, icon }: LinkProps) => (
       sx={{
         display: 'flex',
         alignItems: 'center',
-        height: '1.5rem',
+        height: SizesAndSpaces.ButtonSize.xs,
       }}
     >
       {label}
