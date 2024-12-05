@@ -7,13 +7,13 @@ const envConfig: Record<string, EnvConfig> = {
     baseUrl: 'http://localhost:3000/#',
     specPattern: 'cypress/e2e/(main|all)/**/*',
   },
-  dao: {
-    baseUrl: 'http://localhost:3002/#',
-    specPattern: 'cypress/e2e/(dao|all)/**/*',
-  },
   loan: {
     baseUrl: 'http://localhost:3001/#',
     specPattern: 'cypress/e2e/(loan|all)/**/*',
+  },
+  dao: {
+    baseUrl: 'http://localhost:3002/#',
+    specPattern: 'cypress/e2e/(dao|all)/**/*',
   },
   lend: {
     baseUrl: 'http://localhost:3003/#',
