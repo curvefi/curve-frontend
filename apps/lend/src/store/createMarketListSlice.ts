@@ -109,14 +109,14 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const { tokensResult, addressesResult } = searchByText(
         searchText,
         markets,
-        [SEARCH_TERM['owm.borrowed_token.symbol'], SEARCH_TERM['owm.collateral_token.symbol']],
+        [SEARCH_TERM['borrowed_token.symbol'], SEARCH_TERM['collateral_token.symbol']],
         {
-          tokens: [SEARCH_TERM['owm.borrowed_token.address'], SEARCH_TERM['owm.collateral_token.address']],
+          tokens: [SEARCH_TERM['borrowed_token.address'], SEARCH_TERM['collateral_token.address']],
           other: [
-            SEARCH_TERM['owm.addresses.controller'],
-            SEARCH_TERM['owm.addresses.amm'],
-            SEARCH_TERM['owm.addresses.vault'],
-            SEARCH_TERM['owm.addresses.gauge'],
+            SEARCH_TERM['addresses.controller'],
+            SEARCH_TERM['addresses.amm'],
+            SEARCH_TERM['addresses.vault'],
+            SEARCH_TERM['addresses.gauge'],
           ],
         },
       )
