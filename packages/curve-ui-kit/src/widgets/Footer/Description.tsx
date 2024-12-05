@@ -18,7 +18,6 @@ export const Description = () => (
     sx={{
       display: 'flex',
       flexDirection: 'column',
-      maxWidth: '330px',
       mr: '1.5rem',
     }}
   >
