@@ -1,8 +1,9 @@
 import { Blues, Grays, Greens, Reds, Violet } from './0_primitives'
-import { SizesAndSpaces } from './1_sizes_spaces'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
+
+const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s'
 
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
@@ -96,6 +97,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
   const Button = {
     Focus_Outline: Color.Primary[500],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
@@ -143,8 +145,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays[50],
-        Fill: Grays[900],
+        Label: Grays[975]
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -185,7 +186,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        Label2: Text.TextColors.Primary,
         Fill: Layer[1].Fill,
       },
       Current: {
@@ -310,6 +310,18 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         },
       },
     },
+    Switch: {
+      Default: {
+        Fill: Layer[1].Fill,
+        Outline: Color.Neutral[400],
+        Label: Color.Primary[500],
+      },
+      Checked: {
+        Fill: Color.Primary[500],
+        Outline: Color.Neutral[400],
+        Label: Grays[50],
+      },
+    }
   } as const
 }
 
@@ -405,6 +417,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
   const Button = {
     Focus_Outline: Color.Primary[500],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
@@ -449,11 +462,10 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Ghost: {
       Default: {
-        Label: Text.TextColors.Primary,
+        Label: Color.Primary[700],
       },
       Hover: {
-        Label: Blues[800],
-        Fill: Grays[50],
+        Label: Grays[50],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -494,7 +506,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        'Label_&_Icon_2': Text.TextColors.Primary,
         Fill: Layer[1].Fill,
       },
       Current: {
@@ -617,6 +628,18 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         },
       },
     },
+    Switch: {
+      Default: {
+        Fill: Layer[1].Fill,
+        Outline: Color.Neutral[400],
+        Label: Color.Primary[500],
+      },
+      Checked: {
+        Fill: Color.Primary[500],
+        Outline: Color.Neutral[400],
+        Label: Grays[50],
+      },
+    }
   } as const
 }
 
@@ -712,6 +735,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
   const Button = {
     Focus_Outline: Color.Primary[600],
+    Transition,
     Primary: {
       Default: {
         Label: Grays[50],
@@ -759,8 +783,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Label: Text.TextColors.Highlight,
       },
       Hover: {
-        Label: Grays[50],
-        Fill: Violet[500],
+        Label: Grays[800],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -801,7 +824,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Text.TextColors.Primary,
-        'Label_&_Icon_2': Text.TextColors.Primary,
         Fill: Layer[1].Fill,
       },
       Current: {
@@ -926,5 +948,17 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         },
       },
     },
+    Switch: {
+      Default: {
+        Fill: Layer[1].Fill,
+        Outline: Color.Neutral[400],
+        Label: Color.Primary[500],
+      },
+      Checked: {
+        Fill: Color.Primary[500],
+        Outline: Color.Neutral[400],
+        Label: Grays[50],
+      },
+    }
   } as const
 }

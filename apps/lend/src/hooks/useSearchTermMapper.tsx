@@ -4,21 +4,21 @@ import { t } from '@lingui/macro'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 export enum SEARCH_TERM {
-  'owm.collateral_token.symbol' = 'owm.collateral_token.symbol',
-  'owm.borrowed_token.symbol' = 'owm.borrowed_token.symbol',
-  'owm.collateral_token.address' = 'owm.collateral_token.address',
-  'owm.borrowed_token.address' = 'owm.borrowed_token.address',
-  'owm.addresses.amm' = 'owm.addresses.amm',
-  'owm.addresses.controller' = 'owm.addresses.controller',
-  'owm.addresses.monetary_policy' = 'owm.addresses.monetary_policy',
-  'owm.addresses.vault' = 'owm.addresses.vault',
-  'owm.addresses.gauge' = 'owm.addresses.gauge',
+  'collateral_token.symbol' = 'collateral_token.symbol',
+  'borrowed_token.symbol' = 'borrowed_token.symbol',
+  'collateral_token.address' = 'collateral_token.address',
+  'borrowed_token.address' = 'borrowed_token.address',
+  'addresses.amm' = 'addresses.amm',
+  'addresses.controller' = 'addresses.controller',
+  'addresses.monetary_policy' = 'addresses.monetary_policy',
+  'addresses.vault' = 'addresses.vault',
+  'addresses.gauge' = 'addresses.gauge',
 }
 
 export function parseSearchTermMapper(
   market: OneWayMarketTemplate | undefined,
   searchedByAddresses: { [key: string]: { value: string } },
-  searchTermMapper: SearchTermMapper
+  searchTermMapper: SearchTermMapper,
 ) {
   if (!searchedByAddresses || !searchTermMapper || !market) return undefined
 
@@ -46,15 +46,15 @@ export function parseSearchTermMapper(
 
 const useSearchTermMapper = (): SearchTermMapper => {
   return {
-    'owm.collateral_token.symbol': {},
-    'owm.borrowed_token.symbol': {},
-    'owm.collateral_token.address': { isTokenAddress: true },
-    'owm.borrowed_token.address': { isTokenAddress: true },
-    'owm.addresses.amm': { label: t`AMM` },
-    'owm.addresses.controller': { label: t`Controller` },
-    'owm.addresses.monetary_policy': { label: t`Monetary Policy` },
-    'owm.addresses.vault': { label: t`Vault` },
-    'owm.addresses.gauge': { label: t`Gauge` },
+    'collateral_token.symbol': {},
+    'borrowed_token.symbol': {},
+    'collateral_token.address': { isTokenAddress: true },
+    'borrowed_token.address': { isTokenAddress: true },
+    'addresses.amm': { label: t`AMM` },
+    'addresses.controller': { label: t`Controller` },
+    'addresses.monetary_policy': { label: t`Monetary Policy` },
+    'addresses.vault': { label: t`Vault` },
+    'addresses.gauge': { label: t`Gauge` },
   }
 }
 
