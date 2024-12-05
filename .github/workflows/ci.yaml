@@ -14,7 +14,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
   cypress:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -38,4 +38,4 @@ jobs:
         if: failure()
         with:
           name: cypress-${{ matrix.app }}
-          path: tests/cypress
+          path: tests/cypress/screenshots

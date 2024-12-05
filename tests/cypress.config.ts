@@ -1,6 +1,6 @@
 import { defineConfig } from 'cypress'
 
-type EnvConfig = { baseUrl: string, specPattern: string }
+type EnvConfig = { baseUrl: string; specPattern: string }
 
 const envConfig: Record<string, EnvConfig> = {
   main: {
@@ -21,7 +21,7 @@ const envConfig: Record<string, EnvConfig> = {
   },
 }
 
-const selectedDapp = envConfig[process.env.CYPRESS_DAPP ?? 'main']
+const APP = process.env.CYPRESS_DAPP ?? 'main'
 
 export default defineConfig({
   viewportWidth: 1000,
@@ -34,6 +34,7 @@ export default defineConfig({
   scrollBehavior: 'center',
   e2e: {
     setupNodeEvents(on, config) {},
-    ...selectedDapp,
+    env: { APP },
+    ...envConfig[APP],
   },
 })
