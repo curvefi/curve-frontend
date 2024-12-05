@@ -3,16 +3,18 @@ import { t } from '@lingui/macro'
 import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
-import { useParamsFromUrl, useRestFullPathname, useRestPartialPathname } from '@/utils/utilsRouter'
+import { useParamsFromUrl, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import useStore from '@/store/useStore'
 import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 type HeaderProps = { sections: NavigationSection[] }
 
+const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
@@ -20,9 +22,7 @@ export const Header = ({ sections }: HeaderProps) => {
   useLayoutHeight(mainNavRef, 'mainNav')
 
   const connectState = useStore((state) => state.connectState)
-  const pageWidthPx = useStore((state) => state.pageWidthPx)
   const isMdUp = useStore((state) => state.isMdUp)
-  const isLgUp = useStore((state) => state.isLgUp)
   const locale = useStore((state) => state.locale)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
@@ -57,38 +57,21 @@ export const Header = ({ sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              ...(hasRouter && network?.showRouterSwap
+              ...(hasRouter && (!network || network?.showRouterSwap)
                 ? [
                     {
                       route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
-                      label: t`Quickswap`,
-                      groupedTitle: isLgUp ? 'Quickswap' : 'DEX',
+                      label: QuickSwap,
                     },
                   ]
                 : []),
-              { route: ROUTE.PAGE_POOLS, label: t`Pools`, groupedTitle: isLgUp ? 'Pools' : 'DEX' },
-              {
-                route: ROUTE.PAGE_CREATE_POOL,
-                label: t`Pool Creation`,
-                groupedTitle: isLgUp ? 'Pool Creation' : 'DEX',
-              },
-              { route: ROUTE.PAGE_DASHBOARD, label: t`Dashboard`, groupedTitle: isLgUp ? 'Dashboard' : 'DEX' },
+              ...APP_LINK.main.pages.filter((page) => page.route !== ROUTE.PAGE_SWAP),
             ],
             rLocalePathname,
             routerPathname,
             routerNetwork,
           ),
-        [
-          hasRouter,
-          isLgUp,
-          network?.showRouterSwap,
-          networks,
-          rChainId,
-          rLocalePathname,
-          routerCached,
-          routerNetwork,
-          routerPathname,
-        ],
+        [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
       )}
       themes={[
         theme,
@@ -146,7 +129,6 @@ export const Header = ({ sections }: HeaderProps) => {
         advanced: t`Advanced Mode`,
         advancedMode: t`Advanced`,
         theme: t`Mode`,
-        otherApps: t`Other Apps`,
         settings: t`Settings`,
         socialMedia: t`Community`,
       }}

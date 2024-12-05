@@ -6,7 +6,8 @@ import { RCCrvUSDLogoSM, RCScrvUSDLogoSM, RCYieldGrowth } from 'ui/src/images'
 
 import Icon from '@/ui/Icon'
 import { ExternalLink } from '@/ui/Link'
-import { APP_LINK } from '@/common/widgets/Header/constants'
+
+import { APP_LINK } from '@ui-kit/shared/routes'
 
 type UserInformationProps = {
   className?: string
@@ -26,7 +27,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           </InformationParagraph>
           <InformationParagraph>
             {t`We recommend using Curve's`}{' '}
-            <StyledExternalLinkInline href={APP_LINK.main.route}>QuickSwap</StyledExternalLinkInline>
+            <StyledExternalLinkInline href={APP_LINK.main.root}>QuickSwap</StyledExternalLinkInline>
             {t`, or alternatively an aggregator like`}{' '}
             <StyledExternalLinkInline href="https://swap.cow.fi/#/1/swap/WETH/crvUSD">Cowswap</StyledExternalLinkInline>
             .

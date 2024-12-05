@@ -5,9 +5,9 @@ body.theme-chad {
   --primary-200: hsla(246, 42%, 36%, 1);
   --primary-300: hsla(245, 38%, 42%, 1);
   --primary-400: hsla(245, 38%, 42%, 1);
-  --primary-400a10: var(--primary-400) 10%;
-  --primary-400a20: var(--primary-400) 20%;
-  --primary-400a50: var(--primary-400) 50%;
+  --primary-400a10: color-mix(in srgb, var(--primary-400) 10%, transparent);
+  --primary-400a20: color-mix(in srgb, var(--primary-400) 20%, transparent);
+  --primary-400a50: color-mix(in srgb, var(--primary-400) 50%, transparent);
   --primary-400l10: var(--primary-400);
   --primary-500: hsla(242, 56%, 74%, 1);
   --primary-600: hsla(242, 65%, 81%, 1);
@@ -15,12 +15,16 @@ body.theme-chad {
   --primary-700: hsla(243, 64%, 86%, 1);
   --primary_darkBg-400: hsla(244, 65%, 91%, 1);
 
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsla(31, 100%, 48%, 1);
+  --danger-600: hsl(357, 81%, 91%);
+
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
   --page--background-color: hsl(242, 56%, 83%);
   --page--header--background-color: var(--page--background-color);
 
-  --layout--home--background-color: var(--page--background-color);
+  --layout--home--background-color: var(--white);
 
   --active--background-color: var(--primary-100);
   --active--border-color: var(--primary-100);
@@ -38,7 +42,7 @@ body.theme-chad {
   /* Box */
   --box--primary--color: var(--text-400);
   --box--primary--background-color: var(--primary-300);
-  --box--primary--background: var(--box--primary--background-color) ;
+  --box--primary--background: var(--box--primary--background-color);
   --box--primary--shadow-color: var(--gray-300);
   --box--primary--content--background-color: var(--primary-500);
   --box--primary--content--shadow-color: var(--primary-500);
@@ -166,5 +170,4 @@ body.theme-chad {
 
   /* Tooltip */
   --tooltip--border-color: var(--border-600);
-
 }

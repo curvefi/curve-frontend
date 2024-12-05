@@ -1,4 +1,4 @@
-export type * from '@mui/system/ThemeProvider';
+export type * from '@mui/system/ThemeProvider'
 import MuiThemeProvider from '@mui/system/ThemeProvider'
 import { FunctionComponent, ReactNode } from 'react'
 import { chadTheme, darkTheme, lightTheme } from '../../themes'
@@ -14,8 +14,6 @@ type ThemeProviderProps = {
   children: ReactNode
 }
 
-export const ThemeProvider: FunctionComponent<ThemeProviderProps> = ({theme, children}) => (
-  <MuiThemeProvider theme={themes[theme]}>
-    {children}
-  </MuiThemeProvider>
+export const ThemeProvider: FunctionComponent<ThemeProviderProps> = ({ theme, children }) => (
+  <MuiThemeProvider theme={themes[theme]}>{children}</MuiThemeProvider>
 )

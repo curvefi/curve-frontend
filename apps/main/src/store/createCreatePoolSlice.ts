@@ -798,7 +798,11 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       dismissNotificationHandler = dismissConfirm
 
-      await fetchGasInfo(curve)
+      try {
+        await fetchGasInfo(curve)
+      } catch (error) {
+        console.log(error)
+      }
 
       set(
         produce((state) => {

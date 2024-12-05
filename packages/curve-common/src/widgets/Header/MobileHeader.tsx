@@ -1,19 +1,18 @@
 import { AppBar, Toolbar } from '@mui/material'
 import { BaseHeaderProps } from './types'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
-import groupBy from 'lodash/groupBy'
 import Box from '@mui/material/Box'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
-import { APP_LINK, AppNames } from './constants'
 import { useLocation } from 'react-router-dom'
+import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
 
-const SIDEBAR_WIDTH = {width: '100%', minWidth: 320} as const
+const SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
   '&::-webkit-scrollbar': { display: 'none' }, // chrome, safari, opera
@@ -21,7 +20,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = {backgroundColor: 'background.default'}
+const SECONDARY_BACKGROUND = { backgroundColor: 'background.default' }
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
@@ -39,7 +38,6 @@ export const MobileHeader = <TChainId extends number>({
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
-  const groupedPages = useMemo(() => groupBy(pages, (p) => p.groupedTitle), [pages])
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const { pathname } = useLocation()
@@ -67,7 +65,14 @@ export const MobileHeader = <TChainId extends number>({
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          PaperProps={{ sx: { top: DEFAULT_BAR_SIZE, ...SECONDARY_BACKGROUND, ...SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } }}
+          PaperProps={{
+            sx: {
+              top: (t) => `calc(2 * ${t.spacing(3)} + ${DEFAULT_BAR_SIZE})`,
+              ...SECONDARY_BACKGROUND,
+              ...SIDEBAR_WIDTH,
+              ...HIDE_SCROLLBAR,
+            },
+          }}
           variant="temporary"
           hideBackdrop
           data-testid="mobile-drawer"
@@ -77,14 +82,20 @@ export const MobileHeader = <TChainId extends number>({
               <HeaderStats appStats={appStats} />
             </Box>
 
-            {Object.entries(groupedPages).map(([title, pages]) => (
-              <SidebarSection title={title} key={title} pages={pages} />
-            ))}
+            <SidebarSection title={APP_LINK[currentApp].label} pages={pages} />
 
-            <SidebarSection
-              title={t.otherApps}
-              pages={AppNames.filter((appName) => appName != currentApp).map((appName) => APP_LINK[appName])}
-            />
+            {Object.entries(APP_LINK)
+              .filter(([appName]) => appName != currentApp)
+              .map(([appName, { label, pages }]) => (
+                <SidebarSection
+                  key={appName}
+                  title={label}
+                  pages={pages.map(({ route, label }) => ({
+                    label: label(),
+                    route: externalAppUrl(route, appName as AppName),
+                  }))}
+                />
+              ))}
 
             {sections.map(({ title, links }) => (
               <SidebarSection key={title} title={title} pages={links} />
