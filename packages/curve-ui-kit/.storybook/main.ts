@@ -86,7 +86,6 @@ const config: StorybookConfig = {
       config.resolve.alias = {
         ...config.resolve.alias,
         '@': path.resolve(__dirname, '../src'),
-        '@ui-kit': path.resolve(__dirname, '../src'),
       }
     }
     return config
