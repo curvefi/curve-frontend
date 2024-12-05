@@ -52,7 +52,7 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
-    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean): void
+    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): void
     getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
@@ -158,14 +158,14 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false) => {
+    getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false, txHash?: string) => {
       if (!silentFetch) {
         get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
       }
 
       try {
         const proposal = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`,
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
         )
         const data: PricesProposalResponse = await proposal.json()
 
@@ -450,9 +450,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
 
       try {
-        const voteResponseHash = await curve.dao.executeVote(voteType, voteId)
+        const transactionHash = await curve.dao.executeVote(voteType, voteId)
 
-        if (voteResponseHash) {
+        if (transactionHash) {
           get()[sliceKey].setStateByKey('executeTxMapper', {
             ...get()[sliceKey].executeTxMapper,
             [voteIdKey]: {
@@ -472,56 +472,27 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             ...get()[sliceKey].executeTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
-              hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
+              hash: transactionHash,
+              txLink: networks[1].scanTxPath(transactionHash),
               error: null,
             },
           })
 
-          await helpers.waitForTransaction(voteResponseHash, provider)
+          await helpers.waitForTransaction(transactionHash, provider)
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
           notifyNotification(successNotificationMessage, 'success', 15000)
 
-          // update proposal executed status
-          const response = await fetch(
-            `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}?tx_hash=${voteResponseHash}`,
-          )
-          const data: PricesProposalResponse = await response.json()
-
-          // the api returns a detail object if the proposal is not found
-          if ('detail' in data) {
-            console.log(data.detail)
-            return
-          }
-
-          const formattedData = {
-            ...data,
-            votes_for: +data.votes_for / 1e18,
-            votes_against: +data.votes_against / 1e18,
-            support_required: +data.support_required / 1e18,
-            min_accept_quorum: +data.min_accept_quorum / 1e18,
-            total_supply: +data.total_supply / 1e18,
-            creator_voting_power: +data.creator_voting_power / 1e18,
-            votes: data.votes
-              .map((vote) => ({
-                ...vote,
-                topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
-                stake: +vote.voting_power / 1e18,
-                relativePower: (+vote.voting_power / +data.total_supply) * 100,
-              }))
-              .sort((a, b) => b.stake - a.stake),
-          }
+          // update proposal executed status, forcing api to update by provviding a transaction hash
+          get()[sliceKey].getProposal(voteId, voteType, true, transactionHash)
 
           set(
             produce((state: State) => {
-              state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
-              state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
               state[sliceKey].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
-                hash: voteResponseHash,
-                txLink: networks[1].scanTxPath(voteResponseHash),
+                hash: transactionHash,
+                txLink: networks[1].scanTxPath(transactionHash),
                 error: null,
               }
             }),
