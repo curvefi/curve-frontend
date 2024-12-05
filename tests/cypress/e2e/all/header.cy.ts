@@ -14,11 +14,9 @@ describe('Header', () => {
     beforeEach(() => {
       cy.viewport(...oneDesktopViewport())
       cy.visit('/', {
-        onBeforeLoad: (win) => {
-          isDarkMode = win.matchMedia('(prefers-color-scheme: dark)').matches
-        },
+        onBeforeLoad: (win) => (isDarkMode = win.matchMedia('(prefers-color-scheme: dark)').matches),
       })
-      cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
+      waitIsLoaded()
     })
 
     it('should have the right size', () => {
@@ -56,7 +54,7 @@ describe('Header', () => {
     beforeEach(() => {
       cy.viewport(...oneMobileOrTabletViewport())
       cy.visit('/')
-      cy.get(`[data-testid='btn-connect-prompt']`).should('be.visible') // wait for loading
+      waitIsLoaded()
     })
 
     it('should open the menu and navigate', () => {
@@ -68,7 +66,8 @@ describe('Header', () => {
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
       cy.url().then((url) => {
-        cy.get('[data-testid^="sidebar-item-"]').eq(1).click()
+        const clickIndex = Cypress.env('APP') == 'dao' ? 0 : 1
+        cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
         cy.url().should('not.equal', url)
       })
@@ -90,4 +89,9 @@ describe('Header', () => {
       })
     })
   })
+
+  function waitIsLoaded() {
+    const testId = Cypress.env('APP') == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
+    cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
+  }
 })
