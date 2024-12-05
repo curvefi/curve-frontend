@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { ReactNode } from 'react'
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { Fonts } from 'curve-ui-kit/src/themes/typography'
 
 export type LinkProps = {
   label: string
