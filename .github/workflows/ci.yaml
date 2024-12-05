@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [main, loan, lend]
+        app: [main, loan, lend, dao]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
