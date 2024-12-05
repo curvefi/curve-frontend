@@ -1,6 +1,8 @@
 import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
 
+import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
+
 import { Link, LinkProps } from './Link'
 
 export type SectionProps = {
@@ -16,7 +18,7 @@ export const Section = ({ title, links }: SectionProps) => (
         sx={{
           display: 'flex',
           alignItems: 'center',
-          height: '2.5rem',
+          height: SizesAndSpaces.ButtonSize.sm,
         }}
       >
         {title}
