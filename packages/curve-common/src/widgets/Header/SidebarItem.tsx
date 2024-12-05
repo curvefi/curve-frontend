@@ -13,7 +13,7 @@ type SidebarItemProps = {
 export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
   <ListItem
     disableGutters
-    sx={{ display: 'flex', marginY: 3, paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}
+    sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}
   >
     <Button
       {...(page.route.startsWith('http')
@@ -23,7 +23,6 @@ export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }
       size="small"
       data-testid={`sidebar-item-${page.label.toLowerCase()}`}
       sx={{ justifyContent: 'flex-start', textDecoration: 'none', textTransform: 'uppercase', width: '100%' }}
-      variant="ghost"
     >
       {page.label}
     </Button>

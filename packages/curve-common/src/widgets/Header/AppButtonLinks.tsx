@@ -10,8 +10,8 @@ export const AppButtonLinks = ({ selectedApp, onChange }: AppNavAppsProps) => (
     {AppNames.map((appName) => (
       <Button
         key={appName}
-        variant="ghost"
         color="navigation"
+        size="small"
         className={selectedApp === appName ? 'current' : ''}
         component={Link}
         onClick={() => onChange(appName)}

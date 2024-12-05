@@ -9,10 +9,6 @@
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
     "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"],
-      "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"]
-    }
   },
   "exclude": ["node_modules"],
   "include": [
