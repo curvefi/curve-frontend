@@ -1,3 +1,4 @@
+import { t } from '@lingui/macro'
 import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
@@ -43,8 +44,7 @@ export const Description = () => (
     </Link>
 
     <Typography variant="bodySRegular" color="textSecondary">
-      Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and
-      autonomous.
+      {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
     </Typography>
   </Box>
 )
