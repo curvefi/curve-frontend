@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import Box from '@mui/material/Box'
+import { type Theme } from '@mui/material/styles'
 import { HeaderStats } from './HeaderStats'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
@@ -20,7 +21,7 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = { backgroundColor: 'background.default' }
+const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }
 const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
