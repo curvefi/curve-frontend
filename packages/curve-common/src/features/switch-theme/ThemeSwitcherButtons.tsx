@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton'
 export const ThemeSwitcherButtons: FunctionComponent<ThemeSwitcherProps> = ({ theme, onChange }) =>
   themes.map(({ type, Component }) => (
     <IconButton
+      size="small"
       key={type}
       onClick={() => onChange(type)}
       className={theme === type ? 'current' : ''}

@@ -1,5 +1,5 @@
 import type { Components } from '@mui/material/styles'
-import { Palette } from '../palette'
+import { DesignSystem } from '../design'
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const
@@ -24,49 +24,38 @@ export const defineMuiTab = (): Components['MuiTab'] => ({
   },
 })
 
+type TabStyle = { Label?: string; Fill?: string; Outline?: string }
+type TabVariant = { Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+
+const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
+  color: Label,
+  backgroundColor: Fill,
+  borderColor: Outline ?? 'transparent',
+})
+
+const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
+  ...tabStyle(Default),
+  '&:hover': tabStyle(Hover),
+  '&.Mui-selected': tabStyle(Current),
+})
+
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-export const defineMuiTabs = ({ text, primary, neutral, background }: Palette): Components['MuiTabs'] => ({
+export const defineMuiTabs = ({
+  Tabs: { UnderLined, OverLined, Contained },
+  Layer,
+}: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
       minHeight: 0,
-      [`&.${contained} .MuiTab-root`]: {
-        color: text.secondary,
-        backgroundColor: primary[200],
-        '&:hover': {
-          color: primary[950],
-          backgroundColor: neutral[50],
-          borderColor: background.highlightOutline,
-        },
-        '&.Mui-selected': {
-          color: text.primary,
-          backgroundColor: background.layer1Fill,
-        },
-      },
-      [`&.${overlined} .MuiTab-root`]: {
-        color: text.secondary,
-        '&.Mui-selected': { color: text.primary },
-        '&:hover': {
-          color: text.primary,
-          borderColor: background.highlightOutline,
-          backgroundColor: neutral[200],
-        },
-      },
-      [`&.${underlined} .MuiTab-root`]: {
-        color: text.primary,
-        '&:hover': {
-          color: text.highlight,
-          borderColor: background.highlightOutline,
-        },
-        '&.Mui-selected': {
-          color: text.primary,
-        },
-      },
+      [`&.${contained} .MuiTab-root`]: tabVariant(Contained),
+      [`&.${overlined} .MuiTab-root`]: tabVariant(OverLined),
+      [`&.${underlined} .MuiTab-root`]: tabVariant(UnderLined),
       [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
       [`&.${medium} .MuiTab-root`]: { paddingY: '10px 12px' }, // +2px border == 24px padding, 16px content == 40px total
       [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
     },
     indicator: {
-      backgroundColor: background.highlightOutline,
+      backgroundColor: Layer.Highlight.Outline,
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
     },

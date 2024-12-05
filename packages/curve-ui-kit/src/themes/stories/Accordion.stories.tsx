@@ -2,7 +2,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
-import Button from '@mui/material/Button'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react'
 import React from 'react'
@@ -25,7 +24,7 @@ const AccordionStory = ({ title }: StoryProps) => (
   </Accordion>
 )
 
-const meta: Meta<typeof Button> = {
+const meta: Meta<typeof AccordionStory> = {
   title: 'UI Kit/Primitives/Accordion',
   component: AccordionStory,
   argTypes: {

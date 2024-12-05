@@ -31,7 +31,7 @@ export const DesktopHeader = <TChainId extends number>({
     <>
       <AppBar color="transparent" ref={mainNavRef}>
         <Toolbar
-          sx={{ backgroundColor: 'background.paper', justifyContent: 'space-around', paddingY: 3 }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
           data-testid="main-nav"
         >
           <Container>
@@ -50,10 +50,10 @@ export const DesktopHeader = <TChainId extends number>({
         </Toolbar>
         <Toolbar
           sx={{
-            backgroundColor: 'background.layer1Fill',
+            backgroundColor: (t) => t.design.Layer[2].Fill,
             justifyContent: 'space-around',
             borderWidth: '1px 0',
-            borderColor: 'background.layer1Outline',
+            borderColor: (t) => t.design.Layer[2].Outline,
             borderStyle: 'solid',
             boxSizing: 'content-box',
             height: DEFAULT_BAR_SIZE,

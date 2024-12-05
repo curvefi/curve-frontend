@@ -1,6 +1,6 @@
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Tab, { type TabProps } from '@mui/material/Tab'
-import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '@ui-kit/themes/tabs'
+import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '../../themes/tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
@@ -37,16 +37,7 @@ export const TabsSwitcher = <T extends string | number>({
     {...props}
   >
     {options.map(({ value, label, ...props }) => (
-      <Tab
-        key={value}
-        value={value}
-        label={
-          <Typography sx={{ textTransform: 'uppercase' }} variant={textVariant}>
-            {label}
-          </Typography>
-        }
-        {...props}
-      />
+      <Tab key={value} value={value} label={<Typography variant={textVariant}>{label}</Typography>} {...props} />
     ))}
   </Tabs>
 )

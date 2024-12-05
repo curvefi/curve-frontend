@@ -1,7 +1,7 @@
 import { Stack, Tabs } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { TabsSwitcher, TabsSwitcherProps } from '@/shared/ui/TabsSwitcher'
-import { TabSwitcherVariants } from '@ui-kit/themes/tabs'
+import { TabsSwitcher, TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
+import { TabSwitcherVariants } from '../tabs'
 import { useState } from 'react'
 
 type Story = StoryObj<typeof Tabs>
