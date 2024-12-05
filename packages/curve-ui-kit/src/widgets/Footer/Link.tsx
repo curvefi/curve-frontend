@@ -20,13 +20,10 @@ export const Link = ({ label, href, icon }: LinkProps) => (
       display: 'grid',
       gridTemplateColumns: '1rem 1fr',
       gap: SizesAndSpaces.Spacing.sm,
-      alignItems: 'center',
     }}
   >
     <Box
       sx={{
-        display: 'flex',
-        alignItems: 'center',
         '& svg': {
           width: '100%',
           height: '100%',
