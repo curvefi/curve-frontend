@@ -18,7 +18,7 @@ type SocialButtonProps = {
 }
 
 const SocialButton = ({ icon: Icon, href, label }: SocialButtonProps) => (
-  <IconButton component={Link} href={href} target="_blank" rel="noopener noreferrer">
+  <IconButton component={Link} href={href} target="_blank" rel="noopener noreferrer" size="small">
     <Tooltip title={label}>
       <Icon fontSize="large" color="primary" />
     </Tooltip>

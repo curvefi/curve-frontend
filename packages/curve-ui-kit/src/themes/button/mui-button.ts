@@ -46,7 +46,7 @@ const buttonSize = ({ height, fontSize, fontWeight = 'Bold', lineHeight }: Butto
 })
 
 export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['MuiButton'] => {
-  const { Primary, Secondary, Success, Error, Outlined, Ghost, Navigation, Focus_Outline } = Button
+  const { Primary, Secondary, Success, Error, Outlined, Ghost, Navigation, Focus_Outline, Transition } = Button
   const colors = {
     primary: buttonColor(Primary),
     secondary: buttonColor(Secondary),
@@ -67,6 +67,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         '&:focus': { borderColor: Focus_Outline },
         fontFamily,
         textTransform: 'uppercase',
+        transition: Transition,
       },
       sizeExtraSmall: buttonSize({ height: 'xs', fontSize: 'sm', lineHeight: 'md' }),
       sizeSmall: buttonSize({ height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
