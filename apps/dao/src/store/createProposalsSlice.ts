@@ -477,19 +477,50 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
           await helpers.waitForTransaction(voteResponseHash, provider)
 
-          get()[sliceKey].setStateByKey('executeTxMapper', {
-            ...get()[sliceKey].executeTxMapper,
-            [voteIdKey]: {
-              status: 'SUCCESS',
-              hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
-              error: null,
-            },
-          })
-
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
           notifyNotification(successNotificationMessage, 'success', 15000)
+
+          // update proposal executed status
+          const response = await fetch(
+            `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}?tx_hash=${voteResponseHash}`,
+          )
+          const data: PricesProposalResponse = await response.json()
+
+          if ('detail' in data) {
+            return
+          }
+
+          const formattedData = {
+            ...data,
+            votes_for: +data.votes_for / 1e18,
+            votes_against: +data.votes_against / 1e18,
+            support_required: +data.support_required / 1e18,
+            min_accept_quorum: +data.min_accept_quorum / 1e18,
+            total_supply: +data.total_supply / 1e18,
+            creator_voting_power: +data.creator_voting_power / 1e18,
+            votes: data.votes
+              .map((vote) => ({
+                ...vote,
+                topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
+                stake: +vote.voting_power / 1e18,
+                relativePower: (+vote.voting_power / +data.total_supply) * 100,
+              }))
+              .sort((a, b) => b.stake - a.stake),
+          }
+
+          set(
+            produce((state: State) => {
+              state[sliceKey].proposalMapper[`${voteId}-${voteType}`] = formattedData
+              state.storeCache.cacheProposalMapper[`${voteId}-${voteType}`] = formattedData
+              state[sliceKey].executeTxMapper[voteIdKey] = {
+                status: 'SUCCESS',
+                hash: voteResponseHash,
+                txLink: networks[1].scanTxPath(voteResponseHash),
+                error: null,
+              }
+            }),
+          )
         }
       } catch (error) {
         if (typeof dismissNotificationHandler === 'function') {
