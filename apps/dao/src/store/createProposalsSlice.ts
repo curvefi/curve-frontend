@@ -484,8 +484,8 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
           const successNotificationMessage = t`Proposal executed successfully!`
           notifyNotification(successNotificationMessage, 'success', 15000)
 
-          // update proposal executed status, forcing api to update by provviding a transaction hash
-          get()[sliceKey].getProposal(voteId, voteType, true, transactionHash)
+          // update proposal executed status, forcing api to update by providing a transaction hash
+          await get()[sliceKey].getProposal(voteId, voteType, true, transactionHash)
 
           set(
             produce((state: State) => {
