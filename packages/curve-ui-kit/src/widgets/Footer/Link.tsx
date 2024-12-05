@@ -18,7 +18,7 @@ export const Link = ({ label, href, icon }: LinkProps) => (
     underline="hover"
     sx={{
       display: 'grid',
-      gridTemplateColumns: '16px 1fr',
+      gridTemplateColumns: '1rem 1fr',
       gap: SizesAndSpaces.Spacing.sm,
       alignItems: 'center',
     }}
