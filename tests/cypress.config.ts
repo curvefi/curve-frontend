@@ -1,19 +1,25 @@
 import { defineConfig } from 'cypress'
 
-const envConfig = {
+type EnvConfig = { baseUrl: string; specPattern: string }
+
+const envConfig: Record<string, EnvConfig> = {
   main: {
     baseUrl: 'http://localhost:3000/#',
     specPattern: 'cypress/e2e/(main|all)/**/*',
-  },
-  lend: {
-    baseUrl: 'http://localhost:3003/#',
-    specPattern: 'cypress/e2e/(lend|all)/**/*',
   },
   loan: {
     baseUrl: 'http://localhost:3001/#',
     specPattern: 'cypress/e2e/(loan|all)/**/*',
   },
-} as const
+  dao: {
+    baseUrl: 'http://localhost:3002/#',
+    specPattern: 'cypress/e2e/(dao|all)/**/*',
+  },
+  lend: {
+    baseUrl: 'http://localhost:3003/#',
+    specPattern: 'cypress/e2e/(lend|all)/**/*',
+  },
+}
 
 const APP = process.env.CYPRESS_DAPP ?? 'main'
 
@@ -29,6 +35,6 @@ export default defineConfig({
   e2e: {
     setupNodeEvents(on, config) {},
     env: { APP },
-    ...envConfig[APP as keyof typeof envConfig],
+    ...envConfig[APP],
   },
 })
