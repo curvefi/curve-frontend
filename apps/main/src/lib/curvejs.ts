@@ -30,14 +30,6 @@ import {
 import { log } from '@/shared/lib/logging'
 import useStore from '@/store/useStore'
 
-// Due to the event from Mutlichain, the CRV rewards distribution for Fantom, Avalanche and Celo are suspended indefinitely. Remove this once it is resolved.
-// https://twitter.com/MultichainOrg
-// TODO: REMOVE once resolved
-const multichainNetworks: { [chainId: string]: boolean } = {
-  43114: true,
-  42220: true,
-}
-
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
     let resp: { customFeeData: Record<string, number | null> | null; error: string } = {
@@ -319,7 +311,7 @@ const pool = {
 
         // others rewards
         resp.other = others.filter((other) => +other.apy > 0)
-        resp.crv = +baseApy > 0 || (+boostedApy > 0 && !multichainNetworks[chainId]) ? [baseApy, boostedApy] : [0, 0]
+        resp.crv = +baseApy > 0 || +boostedApy > 0 ? [baseApy, boostedApy] : [0, 0]
       }
       return resp
     }
@@ -351,7 +343,7 @@ const pool = {
       }
       if (crvResult.status === 'fulfilled' && !!crvResult.value) {
         const [baseApy] = crvResult.value
-        if (crv && baseApy && !Number.isNaN(baseApy) && !multichainNetworks[chainId]) {
+        if (crv && baseApy && !Number.isNaN(baseApy)) {
           resp.crv = crv
         }
       }
