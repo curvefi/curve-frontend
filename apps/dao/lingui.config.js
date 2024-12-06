@@ -14,7 +14,7 @@ module.exports = {
         'src/layout',
         'src/pages',
         'src/store',
-        '../../packages/curve-ui-kit/src/shared/routes.ts',
+        '../../packages/curve-ui-kit',
       ],
     },
   ],

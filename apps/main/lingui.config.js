@@ -19,7 +19,7 @@ module.exports = {
         'src/store',
 //        'src/utils',
         'src/widgets',
-        '../../packages/curve-ui-kit/src/shared/routes.ts'
+        '../../packages/curve-ui-kit',
       ],
     },
   ],
