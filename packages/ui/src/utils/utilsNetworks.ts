@@ -174,6 +174,7 @@ export type BaseConfig = {
   networkId: string
   hex: string
   blocknativeSupport: boolean
+  isTestnet: boolean
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
@@ -192,7 +193,7 @@ export type BaseConfig = {
 
 export function getBaseNetworksConfig(chainId: number, networkConfig: any): BaseConfig {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
-  const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, ...rest } = config
+  const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
 
   return {
     ...rest,
@@ -209,6 +210,7 @@ export function getBaseNetworksConfig(chainId: number, networkConfig: any): Base
     logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,
+    isTestnet,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
     scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}`,

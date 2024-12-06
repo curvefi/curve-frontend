@@ -26,6 +26,7 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
     <Image src={LogoImageSrc} alt="Curve" width={30} />
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
+        {/* Note: Anti-pattern to change the line height, however we want the subtitle to fit nicely */}
         <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
           {APP_NAMES[appName]}
         </Typography>

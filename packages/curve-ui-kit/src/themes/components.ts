@@ -5,18 +5,56 @@ import { defineMuiTab, defineMuiTabs } from './tabs'
 import { DesignSystem } from './design'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
+import { basicMuiTheme } from './basic-theme'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 
 export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
-  MuiTypography: defineMuiTypography(),
+  MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {
       disableRipple: true,
     },
   },
+  MuiCardHeader: {
+    styleOverrides: {
+      root: {
+        padding: SizesAndSpaces.Spacing.sm.desktop + ' ' + SizesAndSpaces.Spacing.md.desktop,
+        borderBottom: `1px solid ${design.Layer[3].Outline}`,
+        minHeight: SizesAndSpaces.ButtonSize.lg,
+      },
+      action: { alignContent: 'center' },
+    },
+  },
+  MuiCardActions: {
+    styleOverrides: {
+      root: {
+        borderTop: `1px solid ${design.Layer[3].Outline}`,
+        minHeight: SizesAndSpaces.ButtonSize.lg,
+        justifyContent: 'center',
+      },
+    },
+  },
+  MuiContainer: {
+    styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
+  },
+  MuiDialog: {
+    styleOverrides: {
+      paper: { [basicMuiTheme.breakpoints.down('tablet')]: { margin: SizesAndSpaces.Spacing.md.mobile } },
+    },
+  },
   MuiIconButton: defineMuiIconButton(design),
-  MuiButton: defineMuiButton(design),
+  MuiInputBase: {
+    styleOverrides: {
+      input: {
+        height: SizesAndSpaces.ButtonSize.md,
+        boxSizing: 'border-box',
+      },
+      inputSizeSmall: {
+        height: SizesAndSpaces.ButtonSize.sm,
+      },
+    },
+  },
   MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(design),
   MuiToolbar: {
@@ -24,8 +62,6 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
     },
   },
-  MuiContainer: {
-    styleOverrides: { root: { display: 'flex', maxWidth: 'var(--width)' } },
-  },
   MuiSwitch: defineMuiSwitch(design),
+  MuiTypography: defineMuiTypography(),
 })

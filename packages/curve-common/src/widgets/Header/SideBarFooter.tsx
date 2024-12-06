@@ -3,27 +3,22 @@ import Box, { type BoxProps } from '@mui/material/Box'
 import { ThemeSwitcherButtons } from '../../features/switch-theme'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
 import type { SxProps, Theme } from '@mui/system'
-import SettingsIcon from '@mui/icons-material/Settings'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
+import { t } from '@lingui/macro'
+import SettingsIcon from '@mui/icons-material/Settings'
 
-type SideBarFooterProps = Pick<BaseHeaderProps, 'translations' | 'advancedMode' | 'themes' | 'WalletProps'> & {
+type SideBarFooterProps = Pick<BaseHeaderProps, 'advancedMode' | 'themes' | 'WalletProps'> & {
   sx: SxProps<Theme>
 }
 
 const backgroundColor = 'background.paper'
 
-export const SideBarFooter = ({
-  themes: [theme, setTheme],
-  advancedMode,
-  WalletProps,
-  translations: t,
-  sx,
-}: SideBarFooterProps) => (
+export const SideBarFooter = ({ themes: [theme, setTheme], advancedMode, WalletProps, sx }: SideBarFooterProps) => (
   <>
     <Box position="fixed" bottom={0} sx={{ ...sx, backgroundColor }}>
       <Box display="flex" paddingX={4} marginTop={4}>
@@ -40,17 +35,17 @@ export const SideBarFooter = ({
             color="navigation"
             data-testid="sidebar-settings"
           >
-            {t.settings}
+            {t`Settings`}
           </Typography>
         </AccordionSummary>
         <AccordionDetails
           sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}`, paddingBottom: 4 }}
         >
-          <SettingsOption label={t.theme}>
-            <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t.theme} />
+          <SettingsOption label={t`Mode`}>
+            <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t`Mode`} />
           </SettingsOption>
-          {advancedMode && t.advancedMode && (
-            <SettingsOption label={t.advancedMode}>
+          {advancedMode && (
+            <SettingsOption label={t`Advanced Mode`}>
               <AdvancedModeSwitcher advancedMode={advancedMode} />
             </SettingsOption>
           )}

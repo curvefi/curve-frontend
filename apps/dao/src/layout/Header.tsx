@@ -85,15 +85,7 @@ export const Header = ({ sections }: HeaderProps) => {
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
-      appStats={[]}
       sections={sections}
-      translations={{
-        advanced: t`Advanced Mode`,
-        advancedMode: t`Advanced`,
-        theme: t`Mode`,
-        settings: t`Settings`,
-        socialMedia: t`Community`,
-      }}
     />
   )
 }
