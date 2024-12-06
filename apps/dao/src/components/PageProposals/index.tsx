@@ -75,7 +75,7 @@ const Proposals = () => {
     <Wrapper>
       <ProposalsContainer variant="secondary">
         <Header>
-          <h3>{t`PROPOSALS`}</h3>
+          <h3 data-testid="proposal-title">{t`PROPOSALS`}</h3>
           <StyledSearchInput
             id="inpSearchProposals"
             placeholder={t`Search`}

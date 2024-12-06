@@ -27,7 +27,7 @@ export function ChainList<TChainId extends number>({
   const groupedOptions = useMemo(
     () =>
       groupBy(
-        options.filter((o) => o.label.toLowerCase().includes(searchValue.toLowerCase())),
+        options.filter((o) => o.label.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         (o: ChainOption<TChainId>) => (o.isTestnet ? ChainType.test : ChainType.main),
       ),
     [options, searchValue],

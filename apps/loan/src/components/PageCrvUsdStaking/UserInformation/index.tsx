@@ -23,7 +23,7 @@ const UserInformation = ({ className }: UserInformationProps) => {
           <InformationTitle>{t`Get crvUSD`}</InformationTitle>
           <InformationParagraph>
             {t`To access the yield of Savings crvUSD (scrvUSD), you need crvUSD.`}{' '}
-            {t`You can aquire it on the open markets or borrow it in the LLAMALEND markets.`}
+            {t`You can acquire it on the open markets or borrow it in the LLAMALEND markets.`}
           </InformationParagraph>
           <InformationParagraph>
             {t`We recommend using Curve's`}{' '}
