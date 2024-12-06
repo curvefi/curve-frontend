@@ -2,7 +2,11 @@ import type { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } fr
 import { BD } from '@/shared/curve-lib'
 import useStore from '@/store/useStore'
 
-export const queryEstimateGasDepositRewardApprove = async ({ poolId, rewardTokenId, amount }: DepositRewardApproveQuery) => {
+export const queryEstimateGasDepositRewardApprove = async ({
+  poolId,
+  rewardTokenId,
+  amount,
+}: DepositRewardApproveQuery) => {
   const { curve } = useStore.getState()
   const pool = curve.getPool(poolId)
   const strAmount = BD.from(amount).toString()

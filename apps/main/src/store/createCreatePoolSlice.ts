@@ -301,7 +301,9 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       if (swapType === CRYPTOSWAP) {
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 

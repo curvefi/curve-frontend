@@ -15,11 +15,14 @@ const getErrorMessage = (error: FormError): string => {
 }
 
 type FormErrorsDisplayProps<T extends Record<string, any>> = {
-  errorKeys?: Array<keyof T>,
-  component: FunctionComponent<{errorKey: string, handleBtnClose: () => void}>
+  errorKeys?: Array<keyof T>
+  component: FunctionComponent<{ errorKey: string; handleBtnClose: () => void }>
 }
 
-export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys, component: Component }: FormErrorsDisplayProps<T>) => {
+export const FormErrorsDisplay = <T extends Record<string, any>>({
+  errorKeys,
+  component: Component,
+}: FormErrorsDisplayProps<T>) => {
   const {
     formState: { errors },
     clearErrors,
@@ -48,7 +51,7 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({ errorKeys, co
         }}
       />
     ),
-    [Component, clearErrors]
+    [Component, clearErrors],
   )
 
   if (filteredErrors.length === 0) return null

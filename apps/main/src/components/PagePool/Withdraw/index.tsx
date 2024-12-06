@@ -32,7 +32,7 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
       { label: t`Unstake`, formType: 'UNSTAKE' },
       { label: t`Claim Rewards`, formType: 'CLAIM' },
     ],
-    []
+    [],
   )
 
   // tabs positions
@@ -58,7 +58,7 @@ const Withdraw: React.FC<TransferProps> = (transferProps) => {
       setStateByKey('formType', TABS[idx].formType)
       setSelectedTabIdx(idx)
     },
-    [TABS, setStateByKey]
+    [TABS, setStateByKey],
   )
 
   useEffect(() => {

@@ -268,7 +268,9 @@ const PoolPresetButton = styled(Button)`
 
   grid-template-columns: auto 1fr auto;
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :hover {
     color: var(--button--color);

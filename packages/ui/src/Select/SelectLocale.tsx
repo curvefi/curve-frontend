@@ -27,7 +27,7 @@ export const SelectLocale = ({
       if (!selectedLocale) return ''
       return locales.find(({ value }) => value.toLowerCase() === selectedLocale.toLowerCase())?.name ?? ''
     },
-    [locales]
+    [locales],
   )
 
   return mobileHeader ? (

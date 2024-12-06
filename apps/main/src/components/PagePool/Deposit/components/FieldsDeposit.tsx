@@ -29,7 +29,7 @@ const FieldsDeposit = ({
   updateFormValues: (
     updatedFormValues: Partial<FormValues>,
     loadMaxAmount: LoadMaxAmount | null,
-    updatedMaxSlippage: string | null
+    updatedMaxSlippage: string | null,
   ) => void
 } & Pick<
   TransferProps,
@@ -51,7 +51,7 @@ const FieldsDeposit = ({
         isBalancedAmounts: false,
       },
       null,
-      null
+      null,
     )
   }
 

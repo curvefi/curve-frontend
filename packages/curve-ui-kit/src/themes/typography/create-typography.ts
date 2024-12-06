@@ -33,14 +33,7 @@ type ButtonSize = {
   marginBottom?: number
 }
 
-const variant = ({
-  fontFamily,
-  fontSize,
-  fontWeight,
-  lineHeight,
-  letterSpacing = '0%',
-  textCase,
-}: ButtonSize) => ({
+const variant = ({ fontFamily, fontSize, fontWeight, lineHeight, letterSpacing = '0%', textCase }: ButtonSize) => ({
   fontFamily,
   fontSize: FontSize[fontSize as keyof typeof FontSize] ?? fontSize,
   fontWeight: FontWeight[fontWeight ?? 'Medium'],

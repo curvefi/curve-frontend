@@ -20,7 +20,7 @@ const TableCellReferenceAsset = ({ isCrypto, referenceAsset }: Props) => {
 
   return (
     <StyledChip size="xs" tooltip={tooltip}>
-      {referenceAsset ? referenceAssets[referenceAsset] ?? referenceAsset : ''}
+      {referenceAsset ? (referenceAssets[referenceAsset] ?? referenceAsset) : ''}
     </StyledChip>
   )
 }

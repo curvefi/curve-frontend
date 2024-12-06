@@ -70,7 +70,9 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
     fetchIgnoreExchangeRateCheck: async (curve: CurveApi, pool: Pool) => {
       const state = get()
       const sliceState = state[sliceKey]
-      const { networks: { networks } } = state
+      const {
+        networks: { networks },
+      } = state
 
       const { chainId } = curve
 

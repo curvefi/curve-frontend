@@ -20,7 +20,15 @@ export type ModalDialogProps = {
 
 export const ModalDialog = ({ children, open, onClose, title, titleAction, footer }: ModalDialogProps) => (
   <Dialog open={open} onClose={onClose}>
-    <Card sx={{width: SizesAndSpaces.ModalWidth.md, maxWidth: '100vw', height: '80vh', display: 'flex', flexDirection: 'column'}}>
+    <Card
+      sx={{
+        width: SizesAndSpaces.ModalWidth.md,
+        maxWidth: '100vw',
+        height: '80vh',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       <CardHeader
         action={
           <IconButton>
@@ -29,10 +37,12 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
         }
         avatar={titleAction}
         title={
-          <Typography variant="headingXsBold" color="textSecondary">{title}</Typography>
+          <Typography variant="headingXsBold" color="textSecondary">
+            {title}
+          </Typography>
         }
       />
-      <CardContent sx={{ flexGrow: 1 , overflowY: 'auto'}}>{children}</CardContent>
+      <CardContent sx={{ flexGrow: 1, overflowY: 'auto' }}>{children}</CardContent>
       {footer && <CardActions>{footer}</CardActions>}
     </Card>
   </Dialog>

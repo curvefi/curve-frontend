@@ -51,7 +51,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
     (shouldRefetch?: boolean) => {
       setFormValues(rChainId, pageLoaded ? curve : null, shouldRefetch)
     },
-    [setFormValues, rChainId, pageLoaded, curve]
+    [setFormValues, rChainId, pageLoaded, curve],
   )
 
   // fetch partial user loan details
@@ -97,7 +97,7 @@ const CollateralList = (pageProps: PageCollateralList) => {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   // prettier-ignore

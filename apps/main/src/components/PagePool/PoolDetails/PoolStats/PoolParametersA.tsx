@@ -36,7 +36,7 @@ const PoolParametersA: React.FC<{ parameters: PoolData['parameters'] }> = ({ par
                   <>
                     <br />{' '}
                     {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
-                      future_A_time
+                      future_A_time,
                     ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
                   </>
                 )}

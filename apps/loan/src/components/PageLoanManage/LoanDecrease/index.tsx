@@ -47,7 +47,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES
+    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
 
@@ -82,7 +82,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey]
+    [formStatus, setStateByKey],
   )
 
   const handleInpChangeDebt = (debt: string) => {
@@ -128,12 +128,12 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
                 navigate(getCollateralListPathname(params))
               }
             }}
-          />
+          />,
         )
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepDecrease, navigate, notifyNotification, params, rChainId, reset]
+    [activeKey, fetchStepDecrease, navigate, notifyNotification, params, rChainId, reset],
   )
 
   const getSteps = useCallback(
@@ -144,7 +144,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { debt, debtError, isFullRepay } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
@@ -184,7 +184,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickPay, notifyNotification]
+    [fetchStepApprove, handleBtnClickPay, notifyNotification],
   )
 
   // onMount

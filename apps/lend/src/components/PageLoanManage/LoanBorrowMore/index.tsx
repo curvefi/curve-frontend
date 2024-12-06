@@ -75,7 +75,7 @@ const LoanBorrowMore = ({
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
-      shouldRefetch?: boolean
+      shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       setFormValues(
@@ -84,12 +84,12 @@ const LoanBorrowMore = ({
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
         updatedMaxSlippage ?? maxSlippage,
         isLeverage,
-        shouldRefetch
+        shouldRefetch,
       )
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLeverage, isLoaded, maxSlippage, market, setFormValues]
+    [api, isLeverage, isLoaded, maxSlippage, market, setFormValues],
   )
 
   const handleBtnClickBorrow = useCallback(
@@ -99,7 +99,7 @@ const LoanBorrowMore = ({
       formValues: FormValues,
       market: OneWayMarketTemplate,
       maxSlippage: string,
-      isLeverage: boolean
+      isLeverage: boolean,
     ) => {
       const { chainId } = api
 
@@ -113,13 +113,13 @@ const LoanBorrowMore = ({
             description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => updateFormValues({}, '', true, true)}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues]
+    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -135,7 +135,7 @@ const LoanBorrowMore = ({
       maxSlippage: string,
       isLeverage: boolean,
       priceImpact: string,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { collateral_token, borrowed_token } = market
@@ -153,8 +153,8 @@ const LoanBorrowMore = ({
             ? t`Borrow additional ${debtStr}, deposit ${tokensMessage} at max slippage ${maxSlippage}%.`
             : t`Borrow additional ${debtStr}`
           : haveValues
-          ? t`Borrow additional ${debtStr}, deposit ${tokensMessage}.`
-          : t`Borrow additional ${debtStr}`
+            ? t`Borrow additional ${debtStr}, deposit ${tokensMessage}.`
+            : t`Borrow additional ${debtStr}`
 
         setTxInfoBar(
           <AlertBox alertType="info">
@@ -167,7 +167,7 @@ const LoanBorrowMore = ({
               userWallet={userBalances}
               type="change"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -252,7 +252,7 @@ const LoanBorrowMore = ({
       notifyNotification,
       fetchStepApprove,
       handleBtnClickBorrow,
-    ]
+    ],
   )
 
   // onMount
@@ -279,7 +279,7 @@ const LoanBorrowMore = ({
       }
     },
     REFRESH_INTERVAL['10s'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -311,7 +311,7 @@ const LoanBorrowMore = ({
         maxSlippage,
         isLeverage,
         detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
-        steps
+        steps,
       )
       setSteps(updatedSteps)
     }

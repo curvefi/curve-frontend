@@ -96,7 +96,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         llamma,
         cFormValues,
         maxSlippage,
-        userState
+        userState,
       )
 
       if (fDetailInfo.error) {

@@ -4,7 +4,6 @@ import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
-
 export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)
   return parsedLocale && parsedLocale !== 'en'

@@ -70,7 +70,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
         produce((state: State) => {
           state[sliceKey].initiated = true
           state[sliceKey].campaignRewardsMapper = campaignRewardsMapper
-        })
+        }),
       )
     },
 

@@ -63,8 +63,8 @@ const DetailInfoHealth = ({
           healthNotFull,
           true,
           currentHealthModeColorKey ?? '',
-          newHealthModeColorKey ?? ''
-        )
+          newHealthModeColorKey ?? '',
+        ),
       )
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
@@ -95,8 +95,8 @@ const DetailInfoHealth = ({
           healthNotFull,
           false,
           '',
-          newHealthModeColorKey
-        )
+          newHealthModeColorKey,
+        ),
       )
     }
   }, [activeBand, amount, formType, newHealthModeColorKey, userLoanDetails])
@@ -169,7 +169,7 @@ export function getHealthMode(
   healthNotFull: string,
   isNew: boolean,
   currColorKey: string,
-  newColorKey: string
+  newColorKey: string,
 ) {
   let healthMode: HealthMode = {
     percent: healthFull,

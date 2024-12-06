@@ -10,9 +10,9 @@
  * developer experience when working with gauge-related functionality.
  */
 
-import type {Address} from 'viem'
-import {FieldsOf} from '@/shared/lib/validation'
-import {GaugeQuery} from '@/shared/model/query'
+import type { Address } from 'viem'
+import { FieldsOf } from '@/shared/lib/validation'
+import { GaugeQuery } from '@/shared/model/query'
 
 export type AddReward = {
   rewardTokenId: Address
@@ -36,4 +36,3 @@ export type DepositReward = DepositRewardApprove & {
 export type DepositRewardQuery = GaugeQuery & DepositReward
 export type DepositRewardParams = FieldsOf<DepositRewardQuery>
 export type DepositRewardMutation = FieldsOf<DepositReward>
-

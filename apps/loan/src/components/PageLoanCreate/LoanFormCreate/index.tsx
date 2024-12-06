@@ -52,13 +52,13 @@ const LoanCreate = ({
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const maxRecv = useStore((state) =>
     isLeverage
-      ? state.loanCreate.maxRecvLeverage[activeKey]?.maxBorrowable ?? ''
-      : state.loanCreate.maxRecv[activeKey] ?? ''
+      ? (state.loanCreate.maxRecvLeverage[activeKey]?.maxBorrowable ?? '')
+      : (state.loanCreate.maxRecv[activeKey] ?? ''),
   )
   const maxSlippage = useStore((state) => state.maxSlippage)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES
+    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
@@ -81,7 +81,7 @@ const LoanCreate = ({
         setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
       }
     },
-    [curve, isLeverage, llamma, maxSlippage, setFormValues]
+    [curve, isLeverage, llamma, maxSlippage, setFormValues],
   )
 
   const reset = useCallback(
@@ -96,7 +96,7 @@ const LoanCreate = ({
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey]
+    [formStatus, setStateByKey],
   )
 
   const handleInpChange = (name: 'collateral' | 'debt', value: string) => {
@@ -116,7 +116,7 @@ const LoanCreate = ({
       formValues: FormValues,
       isLeverage: boolean,
       llamma: Llamma,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const notifyMessage = t`Please confirm deposit of ${formValues.collateral} ${llamma.collateralSymbol}`
       const notify = notifyNotification(notifyMessage, 'pending')
@@ -128,7 +128,7 @@ const LoanCreate = ({
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepCreate, network, notifyNotification]
+    [activeKey, fetchStepCreate, network, notifyNotification],
   )
 
   const getSteps = useCallback(
@@ -142,7 +142,7 @@ const LoanCreate = ({
       formStatus: FormStatus,
       formValues: FormValues,
       maxSlippage: string,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { collateral, collateralError, debt, debtError, n } = formValues
       const { isApproved, isComplete, isInProgress, error, warning, step } = formStatus
@@ -219,7 +219,7 @@ const LoanCreate = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleClickCreate, healthMode, notifyNotification]
+    [fetchStepApprove, handleClickCreate, healthMode, notifyNotification],
   )
 
   // onMount
@@ -245,7 +245,7 @@ const LoanCreate = ({
         formStatus,
         formValues,
         maxSlippage,
-        steps
+        steps,
       )
       setSteps(updatedSteps)
     }

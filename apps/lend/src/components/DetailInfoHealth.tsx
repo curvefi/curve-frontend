@@ -65,8 +65,8 @@ const DetailInfoHealth = ({
           formType,
           healthFull,
           currentHealthModeColorKey ?? '',
-          newHealthModeColorKey ?? ''
-        )
+          newHealthModeColorKey ?? '',
+        ),
       )
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
@@ -88,7 +88,7 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand === 'number' && userLoanDetails) {
       const { healthFull, bands } = userLoanDetails
       setCurrentHealthMode(
-        getHealthMode(market, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey)
+        getHealthMode(market, oraclePriceBand, amount, bands, formType, healthFull, '', newHealthModeColorKey),
       )
     }
   }, [oraclePriceBand, amount, formType, newHealthModeColorKey, market, userLoanDetails])
@@ -160,7 +160,7 @@ export function getHealthMode(
   formType: FormType,
   healthFull: string,
   currColorKey: string,
-  newColorKey: string
+  newColorKey: string,
 ) {
   let healthMode: HealthMode = {
     percent: healthFull,

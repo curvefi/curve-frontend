@@ -13,10 +13,10 @@ const CellLoanUserState = ({ userActiveKey, type }: { userActiveKey: string; typ
       {typeof loanExistsResp === 'undefined'
         ? null
         : stateError || loanExistsError
-        ? '?'
-        : !loanExists
-        ? null
-        : formatNumber(debt, { notation: 'compact', defaultValue: '-' })}
+          ? '?'
+          : !loanExists
+            ? null
+            : formatNumber(debt, { notation: 'compact', defaultValue: '-' })}
     </>
   )
 }

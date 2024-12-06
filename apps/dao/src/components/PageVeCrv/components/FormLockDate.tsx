@@ -66,7 +66,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues]
+    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -91,10 +91,10 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
             utcDateError !== 'invalid-date' && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
           days,
         },
-        false
+        false,
       )
     },
-    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues]
+    [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues],
   )
 
   const handleBtnClickQuickAction = useCallback(
@@ -107,7 +107,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
       return calcdUtcDate
     },
-    [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues]
+    [currUnlockTime, currUnlockUtcTime, rChainId, rFormType, updateFormValues],
   )
 
   const handleBtnClickIncrease = useCallback(
@@ -125,7 +125,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [notifyNotification, fetchStepIncreaseTime]
+    [notifyNotification, fetchStepIncreaseTime],
   )
 
   const getSteps = useCallback(
@@ -136,7 +136,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           status: getStepStatus(
             formStatus.formTypeCompleted === 'INCREASE_TIME',
             formStatus.step === 'INCREASE_TIME',
-            !!formValues.utcDate && !formValues.utcDateError && !formStatus.error && !formEstGas.loading
+            !!formValues.utcDate && !formValues.utcDateError && !formStatus.error && !formEstGas.loading,
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'INCREASE_TIME' ? t`Lock Increased` : t`Increase Lock`,
@@ -147,7 +147,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const stepsKey: StepKey[] = ['INCREASE_TIME']
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleBtnClickIncrease]
+    [handleBtnClickIncrease],
   )
 
   // onMount

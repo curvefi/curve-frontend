@@ -69,7 +69,7 @@ export const getLiquidationRange = (
   price1: string,
   price2: string,
   priceDataLength: number,
-  timeOption: TimeOptions
+  timeOption: TimeOptions,
 ) => {
   const endDate = new Date()
   const interval = getMilliseconds(timeOption)

@@ -18,7 +18,7 @@ import {
   AppPageFormTitleWrapper,
   AppPageInfoContentHeader,
   AppPageInfoContentWrapper,
-  AppPageInfoWrapper
+  AppPageInfoWrapper,
 } from '@/ui/AppPage'
 import DocumentHead from '@/layout/DocumentHead'
 import LoanCreate from '@/components/PageLoanCreate/index'
@@ -29,7 +29,7 @@ import {
   ExpandButton,
   ExpandIcon,
   PriceAndTradesExpandedContainer,
-  PriceAndTradesExpandedWrapper
+  PriceAndTradesExpandedWrapper,
 } from '@/ui/Chart/styles'
 import Box from '@/ui/Box'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
@@ -81,7 +81,7 @@ const Page: NextPage = () => {
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances]
+    [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
   )
 
   useEffect(() => {

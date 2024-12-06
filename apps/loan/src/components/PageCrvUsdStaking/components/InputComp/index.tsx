@@ -84,7 +84,8 @@ const InputCompWrapper = styled.div<{ isFocused: boolean }>`
   box-sizing: border-box;
   border: 1px solid var(--input--border-color);
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--input--border-color);
-  ${({ isFocused }) => isFocused && 'border: 1px solid var(--primary-400); box-shadow: inset 0.5px 0.5px 0 0.5px var(--primary-400);'}
+  ${({ isFocused }) =>
+    isFocused && 'border: 1px solid var(--primary-400); box-shadow: inset 0.5px 0.5px 0 0.5px var(--primary-400);'}
 `
 
 const InputLoaderWrapper = styled.div`

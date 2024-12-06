@@ -52,7 +52,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       setTxInfoBar(null)
       setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
-    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues]
+    [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
 
   const handleInpEstUnlockedDays = useCallback(
@@ -76,10 +76,10 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
           calcdUtcDate: haveSigner && !utcDate.isSame(calcdUtcDate) ? formatDisplayDate(calcdUtcDate) : '',
           days,
         },
-        false
+        false,
       )
     },
-    [currUtcDate, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues]
+    [currUtcDate, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues],
   )
 
   const handleBtnClickQuickAction = useCallback(
@@ -93,7 +93,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' }, false)
       return utcDate
     },
-    [currUtcDate, rChainId, updateFormValues]
+    [currUtcDate, rChainId, updateFormValues],
   )
 
   const handleBtnClickApproval = useCallback(
@@ -103,7 +103,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       await fetchStepApprove(activeKey, curve, rFormType, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification, rFormType]
+    [fetchStepApprove, notifyNotification, rFormType],
   )
 
   const handleBtnClickCreate = useCallback(
@@ -121,7 +121,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [fetchStepCreate, notifyNotification]
+    [fetchStepCreate, notifyNotification],
   )
 
   const getSteps = useCallback(
@@ -131,7 +131,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       formEstGas: FormEstGas,
       formValues: FormValues,
       formStatus: FormStatus,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const isValid =
         +formValues.lockedAmt > 0 &&
@@ -154,7 +154,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
           status: getStepStatus(
             formStatus.formTypeCompleted === 'CREATE_LOCK',
             formStatus.step === 'CREATE_LOCK',
-            isValid && formStatus.isApproved
+            isValid && formStatus.isApproved,
           ),
           type: 'action',
           content: formStatus.formTypeCompleted === 'CREATE_LOCK' ? t`Lock Created` : t`Create Lock`,
@@ -172,7 +172,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleBtnClickApproval, handleBtnClickCreate]
+    [handleBtnClickApproval, handleBtnClickCreate],
   )
 
   // onMount

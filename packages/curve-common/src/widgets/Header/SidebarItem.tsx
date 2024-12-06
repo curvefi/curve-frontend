@@ -11,10 +11,7 @@ type SidebarItemProps = {
 }
 
 export const SidebarItem: FunctionComponent<SidebarItemProps> = ({ page, child }) => (
-  <ListItem
-    disableGutters
-    sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}
-  >
+  <ListItem disableGutters sx={{ display: 'flex', paddingY: 0, paddingRight: 4, paddingLeft: child ? 4 : 0 }}>
     <Button
       {...(page.route.startsWith('http')
         ? { component: Link, href: page.route, target: page.target }

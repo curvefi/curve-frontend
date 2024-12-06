@@ -17,7 +17,7 @@ function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
 
   const { totalApr, tooltipValues } = useMemo(
     () => _getTotalAndTooltip(marketRewardsResp, marketRatesResp),
-    [marketRewardsResp, marketRatesResp]
+    [marketRewardsResp, marketRatesResp],
   )
 
   return {

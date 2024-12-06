@@ -90,7 +90,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
         const canSelfLiquidateWithStateBorrowed = isGreaterThanOrEqualTo(
           stateBorrowed,
           stateDebt,
-          borrowedTokenDecimals
+          borrowedTokenDecimals,
         )
         const canSelfLiquidateWithWalletBorrowed = _canSelfLiquidate(walletBorrowed, tokensToLiquidate)
         const warning =

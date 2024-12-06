@@ -64,24 +64,25 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
                   <LpEventType className="remove">{t`Remove`}</LpEventType>
                   <LpTokensContainer>
                     {transaction.token_amounts.map(
-                      (tx, index) => tx !== 0 && (
-                        <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
-                          <Chip isBold isNumber>
-                            {formatNumber(transaction.token_amounts[index], {
-                              ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
-                            })}
-                          </Chip>
-                          <LpSymbol>{coins[index].symbol}</LpSymbol>
-                          <StyledTokenIcon
-                            size="sm"
-                            imageBaseUrl={network?.imageBaseUrl ?? ''}
-                            token={coins[index].address}
-                            address={
-                              tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
-                            }
-                          />
-                        </LpAssetRow>
-                      ),
+                      (tx, index) =>
+                        tx !== 0 && (
+                          <LpAssetRow key={`${transaction.transaction_hash}-${tx}-${index}`}>
+                            <Chip isBold isNumber>
+                              {formatNumber(transaction.token_amounts[index], {
+                                ...getFractionDigitsOptions(transaction.token_amounts[index], 2),
+                              })}
+                            </Chip>
+                            <LpSymbol>{coins[index].symbol}</LpSymbol>
+                            <StyledTokenIcon
+                              size="sm"
+                              imageBaseUrl={network?.imageBaseUrl ?? ''}
+                              token={coins[index].address}
+                              address={
+                                tokensMapper[chainId]?.[coins[index].address]?.ethAddress || coins[index].address
+                              }
+                            />
+                          </LpAssetRow>
+                        ),
                     )}
                   </LpTokensContainer>
                 </>

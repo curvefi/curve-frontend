@@ -2,11 +2,11 @@ import { FieldsOf } from '../../lib'
 
 export type ChainQuery = { chainId: number }
 export type PoolQuery = ChainQuery & { poolId: string }
-export type GaugeQuery = PoolQuery;
+export type GaugeQuery = PoolQuery
 
-export type ChainParams = FieldsOf<ChainQuery>;
-export type PoolParams = FieldsOf<PoolQuery>;
-export type GaugeParams = FieldsOf<GaugeQuery>;
+export type ChainParams = FieldsOf<ChainQuery>
+export type PoolParams = FieldsOf<PoolQuery>
+export type GaugeParams = FieldsOf<GaugeQuery>
 
 export const rootKeys = {
   chain: ({ chainId }: ChainParams) => ['chain', { chainId }] as const,

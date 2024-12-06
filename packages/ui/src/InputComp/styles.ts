@@ -10,7 +10,9 @@ export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'
   :-webkit-autofill,
   :-webkit-autofill:focus {
     -webkit-text-fill-color: var(--input--color) !important;
-    transition: background-color 600000s 0s, color 600000s 0s;
+    transition:
+      background-color 600000s 0s,
+      color 600000s 0s;
   }
 
   input[data-autocompleted] {

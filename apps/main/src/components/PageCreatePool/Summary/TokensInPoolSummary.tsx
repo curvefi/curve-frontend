@@ -64,7 +64,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           tokensInPool[TOKEN_E],
           tokensInPool[TOKEN_F],
           tokensInPool[TOKEN_G],
-          tokensInPool[TOKEN_H]
+          tokensInPool[TOKEN_H],
         ) && (
           <Box flex flexAlignItems="center">
             <StyledBWButtonTokenIcon imageBaseUrl={''} token={''} address={''} />

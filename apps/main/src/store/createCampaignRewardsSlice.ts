@@ -36,7 +36,9 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
       let campaignRewardsMapper: CampaignRewardsMapper = {}
-      const { networks: {networks} } = get()
+      const {
+        networks: { networks },
+      } = get()
       const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key
@@ -70,7 +72,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
         produce((state: State) => {
           state[sliceKey].initiated = true
           state[sliceKey].campaignRewardsMapper = campaignRewardsMapper
-        })
+        }),
       )
     },
 

@@ -57,11 +57,11 @@ const NavButton = styled(Button)`
   }
   &:hover:not(:disabled) {
     background-color: var(--tab--content--background-color);
-    color: var(--tab--color); 
+    color: var(--tab--color);
   }
   &:hover {
     background-color: blue;
-    color: var(--tab--color); 
+    color: var(--tab--color);
   }
 `
 

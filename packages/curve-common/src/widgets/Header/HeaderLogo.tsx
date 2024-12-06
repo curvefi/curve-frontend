@@ -10,8 +10,8 @@ import { AppName } from 'curve-ui-kit/src/shared/routes'
 
 const Image = styled('img')({
   width: 30,
-  marginRight: 8
-});
+  marginRight: 8,
+})
 
 const LogoImageSrc = (LogoImg as unknown as { src: string }).src
 
@@ -47,4 +47,3 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
     )}
   </Link>
 )
-  

@@ -82,8 +82,8 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].twocryptoFactory
-        )
+          networks[chainId].twocryptoFactory,
+        ),
       )
     } else {
       updateTokensInPoolValidation(
@@ -98,7 +98,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].twocryptoFactory
+          networks[chainId].twocryptoFactory,
         ) &&
           oraclesReady([
             tokensInPool.tokenA,
@@ -109,7 +109,7 @@ const CreatePool = ({ curve }: Props) => {
             tokensInPool.tokenF,
             tokensInPool.tokenG,
             tokensInPool.tokenH,
-          ])
+          ]),
       )
     }
   }, [
@@ -140,8 +140,8 @@ const CreatePool = ({ curve }: Props) => {
         tokensInPool.tokenB,
         tokensInPool.tokenC,
         networks[chainId].tricryptoFactory,
-        poolPresetIndex
-      )
+        poolPresetIndex,
+      ),
     )
   }, [
     chainId,
@@ -161,7 +161,7 @@ const CreatePool = ({ curve }: Props) => {
   useEffect(() => {
     if (!chainId) return
     updatePoolInfoValidation(
-      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType)
+      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType),
     )
   }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
@@ -259,7 +259,7 @@ const CreatePool = ({ curve }: Props) => {
                       validation.poolType,
                       validation.tokensInPool,
                       validation.parameters,
-                      validation.poolInfo
+                      validation.poolInfo,
                     )
                   }
                   chainId={chainId}

@@ -44,7 +44,7 @@ const TableRowResult = ({
 
   const parsedSearchTermMapper = useMemo(
     () => parseSearchTermMapper(collateralDataCachedOrApi, searchedByAddresses, searchTermMapper),
-    [collateralDataCachedOrApi, searchTermMapper, searchedByAddresses]
+    [collateralDataCachedOrApi, searchTermMapper, searchedByAddresses],
   )
 
   const handleCellClick = () => {

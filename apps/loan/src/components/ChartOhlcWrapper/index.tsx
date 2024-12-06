@@ -30,10 +30,10 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
   const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
   const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
   const increaseCollateralPrices = useStore(
-    (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null
+    (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
   )
   const decreaseCollateralPrices = useStore(
-    (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null
+    (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
@@ -210,7 +210,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
   }, [
@@ -232,7 +232,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
 
       fetchMoreOhlcData(rChainId, address, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit]
+    [timeOption, fetchMoreOhlcData, rChainId, address, chartInterval, timeUnit],
   )
 
   return chartExpanded ? (

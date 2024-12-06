@@ -30,14 +30,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const LoanCollateralRemove = ({
-  rChainId,
-  rOwmId,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
@@ -71,7 +64,7 @@ const LoanCollateralRemove = ({
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLoaded, market, setFormValues]
+    [api, isLoaded, market, setFormValues],
   )
 
   const handleBtnClickRemove = useCallback(
@@ -87,13 +80,13 @@ const LoanCollateralRemove = ({
             description={txMessage}
             txHash={txHash}
             onClose={() => updateFormValues(DEFAULT_FORM_VALUES, true)}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepDecrease, network, notifyNotification, updateFormValues]
+    [activeKey, fetchStepDecrease, network, notifyNotification, updateFormValues],
   )
 
   const stepsObj = useCallback(
@@ -105,7 +98,7 @@ const LoanCollateralRemove = ({
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
-      formValues: FormValues
+      formValues: FormValues,
     ) => {
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
@@ -126,7 +119,7 @@ const LoanCollateralRemove = ({
               userWallet={userBalances}
               type="change"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -172,7 +165,7 @@ const LoanCollateralRemove = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickRemove, userBalances, userDetails?.state]
+    [handleBtnClickRemove, userBalances, userDetails?.state],
   )
 
   // onMount
@@ -204,7 +197,7 @@ const LoanCollateralRemove = ({
         confirmedWarning,
         formEstGas,
         formStatus,
-        formValues
+        formValues,
       )
       setSteps(updatedSteps)
     }

@@ -30,7 +30,7 @@ export function resetFormAmounts(formValues: FormValues) {
 
 export function getTokensText(
   { claimableCrv, claimableRewards }: FormValues,
-  { isClaimCrv, isClaimRewards }: FormStatus
+  { isClaimCrv, isClaimRewards }: FormStatus,
 ) {
   let message = []
 
@@ -49,7 +49,7 @@ export function getClaimText(
   formValues: FormValues,
   formStatus: FormStatus,
   comp: 'notify' | 'inProgress' | 'success' | 'successTxInfo' | 'claimCrvButton',
-  rewardsNeedNudging: boolean | undefined
+  rewardsNeedNudging: boolean | undefined,
 ) {
   const tokensMessage = getTokensText(formValues, formStatus)
   const haveClaimableCrv = +formValues.claimableCrv > 0

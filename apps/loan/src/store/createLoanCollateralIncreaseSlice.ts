@@ -35,13 +35,13 @@ export type LoanCollateralIncreaseSlice = {
       activeKey: string,
       curve: Curve,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepIncrease(
       activeKey: string,
       curve: Curve,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
@@ -117,7 +117,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
       let loadingDetailInfo = cloneDeep(
-        storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO
+        storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)
       if (parsedPrices) loadingDetailInfo.prices = parsedPrices

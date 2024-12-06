@@ -5,7 +5,7 @@ import { Address, AddressLabel } from 'curve-ui-kit/src/shared/ui/AddressLabel'
 import type { SxProps, Theme } from '@mui/system'
 
 export type ConnectedWalletLabelProps = {
-  walletAddress: Address,
+  walletAddress: Address
   onDisconnectWallet: () => void
   disabled?: boolean
   sx?: SxProps<Theme>

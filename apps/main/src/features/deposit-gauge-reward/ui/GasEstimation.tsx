@@ -24,7 +24,7 @@ export const GasEstimation: React.FC<{
     isFetching: isFetchingGasEstimateDepositRewardApprove,
   } = useEstimateGasDepositRewardApprove(
     { chainId, poolId, rewardTokenId, amount },
-    step === DepositRewardStep.APPROVAL && isValid
+    step === DepositRewardStep.APPROVAL && isValid,
   )
 
   const {
@@ -39,7 +39,7 @@ export const GasEstimation: React.FC<{
       amount,
       epoch,
     },
-    step === DepositRewardStep.DEPOSIT && isValid
+    step === DepositRewardStep.DEPOSIT && isValid,
   )
 
   return (
