@@ -37,16 +37,16 @@ export const Footer = () => (
       <Description />
     </Grid>
 
-    {sections.map((section, i) => (
+    {sections.map((section) => (
       <Grid
-        key={i}
+        key={section.title}
         size={{
           mobile: 12,
           tablet: 4,
           desktop: 3,
         }}
       >
-        <Section key={section.title} {...section} />
+        <Section {...section} />
       </Grid>
     ))}
 

@@ -25,8 +25,8 @@ export const Section = ({ title, links }: SectionProps) => (
       </Typography>
     </Grid>
 
-    {links.map((link, i) => (
-      <Grid key={i} size={{ mobile: 6, tablet: 12, desktop: 12 }}>
+    {links.map((link) => (
+      <Grid key={link.href} size={{ mobile: 6, tablet: 12, desktop: 12 }}>
         <Link {...link} />
       </Grid>
     ))}
