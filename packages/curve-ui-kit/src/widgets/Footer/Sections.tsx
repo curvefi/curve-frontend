@@ -1,3 +1,5 @@
+import { t } from '@lingui/macro'
+
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import TelegramIcon from '@mui/icons-material/Telegram'
 import NewspaperIcon from '@mui/icons-material/Newspaper'
@@ -16,100 +18,100 @@ import { SectionProps } from './Section'
 
 export const sections: SectionProps[] = [
   {
-    title: 'Community',
+    title: t`Community`,
     links: [
       {
-        label: 'Twitter',
+        label: t`Twitter`,
         href: 'https://twitter.com/curvefinance',
         icon: <XIcon />,
       },
       {
-        label: 'Discord',
+        label: t`Discord`,
         href: 'https://discord.gg/rgrfS7W',
         icon: <DiscordIcon />,
       },
       {
-        label: 'Youtube',
+        label: t`Youtube`,
         href: 'https://www.youtube.com/c/CurveFinance',
         icon: <YouTubeIcon />,
       },
       {
-        label: 'Announcements',
+        label: t`Announcements`,
         href: 'https://t.me/curvefi',
         icon: <TelegramIcon />,
       },
       {
-        label: 'Telegram',
+        label: t`Telegram`,
         href: 'https://t.me/crvtraders',
         icon: <TelegramIcon />,
       },
       {
-        label: 'Telegram (CN)',
+        label: t`Telegram (CN)`,
         href: 'https://t.me/curveficn',
         icon: <TelegramIcon />,
       },
       {
-        label: 'Telegram (RU)',
+        label: t`Telegram (RU)`,
         href: 'https://t.me/crvrussianchat',
         icon: <TelegramIcon />,
       },
     ],
   },
   {
-    title: 'Documentation',
+    title: t`Documentation`,
     links: [
       {
-        label: 'News',
+        label: t`News`,
         href: 'https://news.curve.fi/',
         icon: <NewspaperIcon />,
       },
       {
-        label: 'Integrations',
+        label: t`Integrations`,
         href: 'https://docs.curve.fi/integration/overview/',
         icon: <IntegrationInstructionsOutlinedIcon />,
       },
       {
-        label: 'User Docs',
+        label: t`User Docs`,
         href: 'https://resources.curve.fi/',
         icon: <BookIcon />,
       },
       {
-        label: 'Technical Docs',
+        label: t`Technical Docs`,
         href: 'https://docs.curve.fi/',
         icon: <BookIcon />,
       },
       {
-        label: 'Github',
+        label: t`Github`,
         href: 'https://github.com/curvefi',
         icon: <GitHubIcon />,
       },
     ],
   },
   {
-    title: 'Security',
+    title: t`Security`,
     links: [
       {
-        label: 'Audits',
+        label: t`Audits`,
         href: 'https://docs.curve.fi/references/audits/',
         icon: <BeenhereOutlinedIcon />,
       },
       {
-        label: 'Bug Bounty',
+        label: t`Bug Bounty`,
         href: 'https://docs.curve.fi/security/security/',
         icon: <BugReportOutlinedIcon />,
       },
       {
-        label: 'Curve Monitor',
+        label: t`Curve Monitor`,
         href: 'https://curvemonitor.com/',
         icon: <LAFIcon />,
       },
       {
-        label: 'CrvHub',
+        label: t`CrvHub`,
         href: 'https://crvhub.com/',
         icon: <CrvHubIcon />,
       },
       {
-        label: 'Dune Analytics',
+        label: t`Dune Analytics`,
         href: 'https://dune.com/mrblock_buidl/Curve.fi',
         icon: <DuneIcon />,
       },
