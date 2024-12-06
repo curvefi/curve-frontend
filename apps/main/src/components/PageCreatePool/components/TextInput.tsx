@@ -49,7 +49,9 @@ const StyledInput = styled.input`
   background-color: var(--dialog--background-color);
   box-shadow: inset 0.5px 0.5px 0 0.5px var(--input--border-color);
   cursor: pointer;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   :focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }

@@ -316,7 +316,10 @@ const market = {
           const rewardsResp = await market.vault.rewardsApr(useMultiCall)
           rewards.other = _filterZeroApy(rewardsResp)
         } else {
-          const [others, crv] = await Promise.all([market.vault.rewardsApr(useMultiCall), market.vault.crvApr(useMultiCall)])
+          const [others, crv] = await Promise.all([
+            market.vault.rewardsApr(useMultiCall),
+            market.vault.crvApr(useMultiCall),
+          ])
           rewards.other = _filterZeroApy(others)
           rewards.crv = crv
         }
@@ -535,8 +538,7 @@ const user = {
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const resp = await market.wallet.balances()
-        let vaultSharesConverted =
-          +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
+        let vaultSharesConverted = +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
         results[userActiveKey] = { ...resp, vaultSharesConverted, error: '' }
       })
 
@@ -585,7 +587,13 @@ const loanCreate = {
       return resp
     }
   },
-  detailInfo: async (activeKey: string, market: OneWayMarketTemplate, userCollateral: string, debt: string, n: number) => {
+  detailInfo: async (
+    activeKey: string,
+    market: OneWayMarketTemplate,
+    userCollateral: string,
+    debt: string,
+    n: number,
+  ) => {
     userCollateral = userCollateral || '0'
     debt = debt || '0'
     log('detailInfo', userCollateral, debt, n, 'futureRates', [0, debt])
@@ -849,7 +857,12 @@ const loanBorrowMore = {
       return resp
     }
   },
-  maxRecvLeverage: async (market: OneWayMarketTemplate, activeKey: string, userCollateral: string, userBorrowed: string) => {
+  maxRecvLeverage: async (
+    market: OneWayMarketTemplate,
+    activeKey: string,
+    userCollateral: string,
+    userBorrowed: string,
+  ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
     log('maxRecvLeverage', userCollateral, userBorrowed)
@@ -1393,7 +1406,12 @@ const loanCollateralAdd = {
     const fn = async () => await market.addCollateralApprove(userCollateral)
     return await approve(activeKey, fn, provider)
   },
-  addCollateral: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, userCollateral: string) => {
+  addCollateral: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    userCollateral: string,
+  ) => {
     log('addCollateral', userCollateral)
     const fn = async () => await market.addCollateral(userCollateral)
     return await submit(activeKey, fn, provider)
@@ -1463,7 +1481,12 @@ const loanCollateralRemove = {
       return resp
     }
   },
-  removeCollateral: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, userCollateral: string) => {
+  removeCollateral: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    userCollateral: string,
+  ) => {
     log('removeCollateral', userCollateral)
     const fn = async () => await market.removeCollateral(userCollateral)
     return await submit(activeKey, fn, provider)

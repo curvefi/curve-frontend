@@ -43,7 +43,7 @@ export type LoanCreateSlice = {
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<void>
     fetchDetailInfo(
       activeKey: string,
@@ -52,28 +52,28 @@ export type LoanCreateSlice = {
       llamma: Llamma,
       formValues: FormValues,
       address: string | undefined,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<void>
     fetchLiqRanges(
       activeKeyLiqRange: string,
       chainId: ChainId,
       isLeverage: boolean,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<void>
     fetchMaxRecv(
       activeKey: string,
       chainId: ChainId,
       isLeverage: boolean,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ): Promise<{ maxRecv: string; activeKey: string; error: string } | undefined>
     setFormValues(
       curve: Curve,
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<void>
 
     // steps
@@ -83,7 +83,7 @@ export type LoanCreateSlice = {
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepCreate(
       activeKey: string,
@@ -91,7 +91,7 @@ export type LoanCreateSlice = {
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
@@ -127,7 +127,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const { collateral, debt, n } = formValues
       if (n !== null) {
@@ -153,7 +153,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       llamma: Llamma,
       formValues: FormValues,
       address: string | undefined,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const { collateral, debt, n } = formValues
       if (n !== null) {
@@ -172,7 +172,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       chainId: ChainId,
       isLeverage: boolean,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ) => {
       const { collateral, debt } = formValues
       const liqRangesFn = networks[chainId].api.loanCreate.liqRanges
@@ -186,7 +186,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       chainId: ChainId,
       isLeverage: boolean,
       llamma: Llamma,
-      formValues: FormValues
+      formValues: FormValues,
     ) => {
       const { collateral, n } = formValues
       if (n !== null) {
@@ -208,7 +208,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const chainId = curve.chainId
       const signerAddress = curve.signerAddress
@@ -238,7 +238,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           llamma,
           clonedFormValues,
           isLeverage,
-          maxSlippage
+          maxSlippage,
         )
         const haveCollateral = +clonedFormValues.collateral > 0
         const haveDebt = +clonedFormValues.debt > 0
@@ -256,7 +256,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           ? cloneDeep(
               storedDetailInfoLeverage[activeKey] ??
                 storedDetailInfoLeverage[prevActiveKey] ??
-                DEFAULT_DETAIL_INFO_LEVERAGE
+                DEFAULT_DETAIL_INFO_LEVERAGE,
             )
           : cloneDeep(storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO)
         const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)
@@ -267,7 +267,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByActiveKey(
           isLeverage ? 'detailInfoLeverage' : 'detailInfo',
           activeKey,
-          loadingDetailInfo
+          loadingDetailInfo,
         )
 
         // update form values
@@ -284,7 +284,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
             chainId,
             isLeverage,
             llamma,
-            clonedFormValues
+            clonedFormValues,
           )
           if (fetchedMaxRecv && fetchedMaxRecv.activeKey === activeKey) {
             maxRecv = fetchedMaxRecv.maxRecv
@@ -322,7 +322,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
             llamma,
             clonedFormValues,
             signerAddress,
-            maxSlippage
+            maxSlippage,
           )
 
           if (signerAddress && !collateralError) {
@@ -358,7 +358,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const provider = get().wallet.getProvider(sliceKey)
 
@@ -396,7 +396,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       isLeverage: boolean,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const chainId = curve.chainId
       const provider = get().wallet.getProvider(sliceKey)
@@ -472,7 +472,7 @@ export function getCreateLoanActiveKey(
   llamma: Llamma,
   { collateral, debt, n }: FormValues,
   isLeverage: boolean,
-  maxSlippage: string
+  maxSlippage: string,
 ) {
   const activeKeyLiqRange = `${llamma.id}-${isLeverage ? 'leverage-' : ''}${collateral}-${debt}`
   return {

@@ -13,7 +13,7 @@ import TopHoldersBarChartComponent from '@/components/PageAnalytics/TopHoldersCh
 
 const TopLockers: React.FC = () => {
   const { getVeCrvHolders, veCrvHolders, topHoldersSortBy, setTopHoldersSortBy, veCrvData } = useStore(
-    (state) => state.analytics
+    (state) => state.analytics,
   )
 
   const lockersFetchSuccess = veCrvHolders.fetchStatus === 'SUCCESS'

@@ -58,7 +58,10 @@ export const ChainSwitcher = <TChainId extends number>({
     [networkMapping],
   )
 
-  const onSelectChanged = useCallback((v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId), [onChange])
+  const onSelectChanged = useCallback(
+    (v: SelectChangeEvent<TChainId>) => onChange(v.target.value as TChainId),
+    [onChange],
+  )
   if (options.length <= 1) {
     return null
   }

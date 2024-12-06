@@ -30,14 +30,14 @@ export type LoanSwapSlice = {
       llamma: Llamma,
       formValues: FormValues,
       amount: string,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<void>
     fetchDetailInfo(
       activeKey: string,
       chainId: ChainId,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<void>
     fetchMaxSwappable(chainId: ChainId, llamma: Llamma, formValues: FormValues): Promise<string>
     setFormValues(chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
@@ -48,14 +48,14 @@ export type LoanSwapSlice = {
       curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepSwap(
       activeKey: string,
       curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
@@ -117,7 +117,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       llamma: Llamma,
       formValues: FormValues,
       amount: string,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const { item1Key, item2Key } = formValues
       const estGasApprovalFn = networks[chainId].api.swap.estGasApproval
@@ -141,7 +141,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       chainId: ChainId,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const detailInfoFn = networks[chainId].api.swap.detailInfoExpected
       const { activeKey: fetchedActiveKey, resp } = await detailInfoFn(activeKey, llamma, formValues)
@@ -199,7 +199,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
       let loadingDetailInfo = cloneDeep(
-        storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO
+        storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       loadingDetailInfo.loading = true
 
@@ -234,7 +234,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const provider = get().wallet.getProvider(sliceKey)
 
@@ -270,7 +270,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       curve: Curve,
       llamma: Llamma,
       formValues: FormValues,
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const provider = get().wallet.getProvider(sliceKey)
 

@@ -8,7 +8,7 @@ const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
   signerRequired: boolean,
   jsonModuleName: string,
-  contractAddress: string | undefined
+  contractAddress: string | undefined,
 ) => {
   const getProvider = useStore((state) => state.wallet.getProvider)
 
@@ -31,7 +31,7 @@ const useAbiGaugeTotalSupply = (
         return null
       }
     },
-    []
+    [],
   )
 
   useEffect(() => {

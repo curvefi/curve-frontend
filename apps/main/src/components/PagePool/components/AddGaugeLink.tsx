@@ -23,7 +23,7 @@ const AddGaugeLink = ({
   poolDataCacheOrApi,
 }: { chainId: ChainId; address: string; lpToken: string } & Pick<PageTransferProps, 'poolDataCacheOrApi'>) => {
   const { setCurrentPoolType, setSidechainGauge, setPoolAddress, setLpTokenAddress } = useStore(
-    (state) => state.deployGauge
+    (state) => state.deployGauge,
   )
 
   const params = useParams()

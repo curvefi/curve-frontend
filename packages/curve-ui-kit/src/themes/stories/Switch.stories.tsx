@@ -3,13 +3,18 @@ import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import { useState } from 'react'
 
-
 const SwitchStory = ({ checked, onChange, ...props }: SwitchProps) => {
   const [isChecked, setIsChecked] = useState(checked)
-  return <Switch {...props} checked={isChecked} onChange={(item, value) => {
-    setIsChecked(value)
-    onChange?.(item, value)
-  }} />
+  return (
+    <Switch
+      {...props}
+      checked={isChecked}
+      onChange={(item, value) => {
+        setIsChecked(value)
+        onChange?.(item, value)
+      }}
+    />
+  )
 }
 
 const meta: Meta<typeof Switch> = {

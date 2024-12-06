@@ -11,7 +11,7 @@ function useIntersectionObserver(elementRef: RefObject<Element>, options: Props 
   const frozen = freezeOnceVisible && entry?.isIntersecting
 
   // when contents move during render, multiple updates may be received. Always use the last one (i.e. most recent)
-  const updateEntry = useCallback((entries: IntersectionObserverEntry[]) => setEntry(entries[entries.length -  1]), [])
+  const updateEntry = useCallback((entries: IntersectionObserverEntry[]) => setEntry(entries[entries.length - 1]), [])
 
   useEffect(() => {
     // show node if IO not supported
@@ -26,10 +26,10 @@ function useIntersectionObserver(elementRef: RefObject<Element>, options: Props 
     const observerParams = { threshold, root, rootMargin }
     const observer = new IntersectionObserver(updateEntry, observerParams)
     observer.observe(node)
-    return () => observer.disconnect();
+    return () => observer.disconnect()
   }, [elementRef, root, rootMargin, frozen, updateEntry, threshold])
 
-  return entry;
+  return entry
 }
 
 export default useIntersectionObserver

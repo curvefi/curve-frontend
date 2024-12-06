@@ -11,7 +11,7 @@ import {
   torus,
   trezor,
   trust,
-  walletConnect
+  walletConnect,
 } from './utils/walletModules'
 import * as onboard from '@web3-onboard/react'
 

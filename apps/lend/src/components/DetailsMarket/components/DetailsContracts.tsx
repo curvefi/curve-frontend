@@ -19,7 +19,7 @@ const DetailsContracts = ({
 }: Pick<PageContentProps, 'rChainId' | 'market'> & {
   type: 'borrow' | 'supply'
 }) => {
-  const { addresses, borrowed_token, collateral_token } = market ?? {};
+  const { addresses, borrowed_token, collateral_token } = market ?? {}
 
   // prettier-ignore
   let contracts: { borrow: ContractItems[], supply: ContractItems[] } = {

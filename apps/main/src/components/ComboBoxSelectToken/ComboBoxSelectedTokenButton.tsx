@@ -34,7 +34,9 @@ const StyledComboBoxButton = styled(ButtonComp)`
 
   grid-template-columns: auto 1fr auto;
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :disabled {
     opacity: 0.7;

@@ -152,7 +152,7 @@ export function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
   market: OneWayMarketTemplate | undefined,
-  { amount }: FormValues
+  { amount }: FormValues,
 ) {
   return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }

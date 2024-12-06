@@ -111,7 +111,7 @@ export default DetailInfoCrvIncentives
 function _getDataApr(
   currApr: string | number | undefined = '',
   gaugeTotalSupply: number | null,
-  lpTokenAmount: string
+  lpTokenAmount: string,
 ) {
   let resp = { aprCurr: formatNumber(currApr, FORMAT_OPTIONS.PERCENT), aprNew: '', ratio: 0 }
 

@@ -339,7 +339,7 @@ const Parameters = ({ curve, chainId, haveSigner }: Props) => {
                   />
                   <NumberField
                     label={`Gamma (${new BigNumber(CRYPTOSWAP_MIN_MAX.gamma.min).toString()} - ${new BigNumber(
-                      CRYPTOSWAP_MIN_MAX.gamma.max
+                      CRYPTOSWAP_MIN_MAX.gamma.max,
                     ).toString()})`}
                     value={+gamma}
                     minValue={CRYPTOSWAP_MIN_MAX.gamma.min}
@@ -447,7 +447,9 @@ const ResetButton = styled(Button)`
   color: var(--box--primary--color);
   opacity: 0.7;
   font-size: var(--font-size-1);
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   :hover:not(:disabled),
   :active:not(:disabled) {

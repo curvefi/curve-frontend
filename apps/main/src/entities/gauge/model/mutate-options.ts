@@ -17,7 +17,7 @@ import type {
   DepositRewardApproveMutation,
   DepositRewardApproveParams,
   DepositRewardMutation,
-  DepositRewardParams
+  DepositRewardParams,
 } from '@/entities/gauge/types'
 import { assertValidity } from '@/shared/lib/validation'
 import { GaugeParams } from '@/shared/model/query'
@@ -34,8 +34,8 @@ export const getAddRewardTokenMutation = (gauge: GaugeParams) => ({
   mutationKey: keys.addRewardToken(gauge),
   meta: {
     queryKeyFn: ({ rewardTokenId, distributorId }: AddRewardParams) =>
-      keys.addRewardToken({ rewardTokenId, distributorId, ...gauge })
-  }
+      keys.addRewardToken({ rewardTokenId, distributorId, ...gauge }),
+  },
 })
 
 export const getDepositRewardApproveMutation = (gauge: GaugeParams) => ({
@@ -43,9 +43,8 @@ export const getDepositRewardApproveMutation = (gauge: GaugeParams) => ({
     api.mutateDepositRewardApprove(assertValidity(gaugeDepositRewardApproveValidationSuite, { ...gauge, ...params })),
   mutationKey: keys.depositRewardApprove(gauge),
   meta: {
-    queryKeyFn: (params: DepositRewardApproveParams) =>
-      keys.depositRewardApprove({ ...gauge, ...params })
-  }
+    queryKeyFn: (params: DepositRewardApproveParams) => keys.depositRewardApprove({ ...gauge, ...params }),
+  },
 })
 
 export const getDepositRewardMutation = (gauge: GaugeParams) => ({
@@ -54,6 +53,6 @@ export const getDepositRewardMutation = (gauge: GaugeParams) => ({
   mutationKey: keys.depositReward(gauge),
   meta: {
     queryKeyFn: ({ rewardTokenId, amount, epoch }: DepositRewardParams) =>
-      keys.depositReward({ rewardTokenId, amount, epoch, ...gauge })
-  }
+      keys.depositReward({ rewardTokenId, amount, epoch, ...gauge }),
+  },
 })

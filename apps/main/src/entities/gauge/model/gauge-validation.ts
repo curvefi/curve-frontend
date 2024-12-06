@@ -6,7 +6,7 @@ import {
   addressValidationFn,
   amountValidationFn,
   createValidationSuite,
-  tokenIdValidationFn
+  tokenIdValidationFn,
 } from '@/shared/lib/validation'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
 import { TIME_FRAMES } from '@/constants'
@@ -69,7 +69,7 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
   enforce(amount).condition((amount) => {
     return {
       pass: BD.from(amount).lte(BD.from(tokenBalance)),
-      message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`
+      message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`,
     }
   })
 }

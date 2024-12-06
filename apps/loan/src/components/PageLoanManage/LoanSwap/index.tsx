@@ -44,7 +44,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const maxSwappableActiveKey = useStore((state) => state.loanSwap.maxSwappableActiveKey)
   const maxSwappable = useStore((state) => state.loanSwap.maxSwappable[maxSwappableActiveKey] ?? '')
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES
+    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
   const init = useStore((state) => state.loanSwap.init)
@@ -67,7 +67,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
         setFormValues(chainId, llamma, updatedFormValues, maxSlippage)
       }
     },
-    [chainId, llamma, maxSlippage, setFormValues]
+    [chainId, llamma, maxSlippage, setFormValues],
   )
 
   const reset = useCallback(
@@ -78,7 +78,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey]
+    [formStatus, setStateByKey],
   )
 
   const handleInpChange = (val: string, inpNum: 0 | 1) => {
@@ -118,7 +118,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
         curve,
         llamma,
         { ...formValues, item1: swapAmount },
-        maxSlippage
+        maxSlippage,
       )
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
@@ -127,12 +127,12 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
             description={t`Transaction complete`}
             txHash={networks[rChainId].scanTxPath(resp.hash)}
             onClose={() => reset(false, true)}
-          />
+          />,
         )
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, detailInfo.amount, fetchStepSwap, notifyNotification, rChainId, reset]
+    [activeKey, detailInfo.amount, fetchStepSwap, notifyNotification, rChainId, reset],
   )
 
   const getSteps = useCallback(
@@ -144,7 +144,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       formStatus: FormStatus,
       formValues: FormValues,
       maxSlippage: string,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { item1, item1Error, item2, item2Error } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
@@ -188,7 +188,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap, notifyNotification]
+    [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap, notifyNotification],
   )
 
   // onMount

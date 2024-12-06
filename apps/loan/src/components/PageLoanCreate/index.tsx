@@ -44,7 +44,7 @@ const LoanCreate = ({
         navigate(getLoanCreatePathname(params, rCollateralId, formType))
       }
     },
-    [curve, fetchInitial, llamma, loanExists, navigate, params, rCollateralId]
+    [curve, fetchInitial, llamma, loanExists, navigate, params, rCollateralId],
   )
 
   return (

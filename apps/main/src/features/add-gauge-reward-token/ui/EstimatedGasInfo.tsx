@@ -18,7 +18,7 @@ export const EstimatedGasInfo: React.FC<{ chainId: ChainId; poolId: string }> = 
       rewardTokenId,
       distributorId,
     },
-    isValid
+    isValid,
   )
 
   return (

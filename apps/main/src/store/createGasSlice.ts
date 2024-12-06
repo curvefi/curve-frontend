@@ -44,7 +44,10 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       if (!curve) return
 
       const { chainId } = curve
-      const { wallet, networks: { networks } } = get()
+      const {
+        wallet,
+        networks: { networks },
+      } = get()
       const provider = wallet.getProvider('')
       log('fetchGasInfo', chainId)
 
@@ -245,7 +248,7 @@ async function calcBasePlusPriority(
     max: number[] | null
     priority: number[] | null
   },
-  networks: Record<number, NetworkConfig>
+  networks: Record<number, NetworkConfig>,
 ) {
   let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],

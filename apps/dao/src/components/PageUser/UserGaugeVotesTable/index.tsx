@@ -18,7 +18,7 @@ interface UserGaugeVotesTableProps {
 
 const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {
   const { getUserGaugeVotes, userGaugeVotesMapper, userGaugeVotesSortBy, setUserGaugeVotesSortBy } = useStore(
-    (state) => state.user
+    (state) => state.user,
   )
   const navigate = useNavigate()
 

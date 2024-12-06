@@ -73,7 +73,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): Promise<void>
     fetchMoreLlammaOhlcData(
       chainId: ChainId,
@@ -81,7 +81,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): Promise<{
       ohlcData: LpPriceOhlcDataFormatted[]
       volumeData: VolumeData[]
@@ -96,7 +96,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): Promise<void>
     fetchMoreOraclePoolOhlcData(
       chainId: ChainId,
@@ -104,7 +104,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): Promise<{
       ohlcData: LpPriceOhlcDataFormatted[]
       oracleData: OraclePriceData[]
@@ -127,7 +127,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): Promise<void>
     fetchPoolActivity(chainId: ChainId, poolAddress: string): Promise<void>
     setActivityHidden(bool?: boolean): void
@@ -185,7 +185,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].timeOption = timeOption
-        })
+        }),
       )
     },
     fetchLlammaOhlcData: async (
@@ -195,7 +195,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       set(
         produce((state: State) => {
@@ -209,13 +209,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
             dataDisabled: DEFAULT_STATE.chartLlammaOhlc.dataDisabled,
           }
-        })
+        }),
       )
       const network = networks[chainId].id.toLowerCase()
 
       try {
         const lendOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/lending/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const lendOhlcResponse = await lendOhlcFetch.json()
 
@@ -276,7 +276,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
-          })
+          }),
         )
       } catch (error) {
         set(
@@ -291,7 +291,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               lastFetchEndTime: DEFAULT_STATE.chartLlammaOhlc.lastFetchEndTime,
               dataDisabled: true,
             }
-          })
+          }),
         )
         console.log(error)
       }
@@ -302,13 +302,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       const network = networks[chainId].id.toLowerCase()
 
       try {
         const llammaOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/lending/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const llammaOhlcResponse: LlammaOhlcApiResponse = await llammaOhlcFetch.json()
 
@@ -355,7 +355,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         set(
           produce((state: State) => {
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
         return {
@@ -374,7 +374,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       set(
         produce((state: State) => {
@@ -389,7 +389,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
             dataDisabled: DEFAULT_STATE.chartOraclePoolOhlc.dataDisabled,
           }
-        })
+        }),
       )
 
       const network = networks[chainId].id.toLowerCase()
@@ -397,7 +397,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
       try {
         const oracleOhlcDataFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const oracleOhlcResponse = await oracleOhlcDataFetch.json()
 
@@ -454,7 +454,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].chartOraclePoolOhlc.refetchingCapped = ohlcDataArray.length < 299
             state[sliceKey].chartOraclePoolOhlc.lastFetchEndTime = oracleOhlcResponse.data[0].time
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'READY'
-          })
+          }),
         )
       } catch (error) {
         set(
@@ -470,7 +470,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               lastFetchEndTime: DEFAULT_STATE.chartOraclePoolOhlc.lastFetchEndTime,
               dataDisabled: true,
             }
-          })
+          }),
         )
         console.log(error)
       }
@@ -481,14 +481,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       const network = networks[chainId].id.toLowerCase()
       const checkSummedController = getAddress(controller)
 
       try {
         const oracleOhlcDataFetch = await fetch(
-          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/lending/oracle_ohlc/${network}/${checkSummedController}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const oracleOhlcResponse = await oracleOhlcDataFetch.json()
 
@@ -539,7 +539,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         set(
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc.fetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
         return {
@@ -560,7 +560,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       const { chartLlammaOhlc, chartOraclePoolOhlc, fetchMoreLlammaOhlcData, fetchMoreOraclePoolOhlcData } =
         get()[sliceKey]
@@ -599,7 +599,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               lastFetchEndTime: llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
-          })
+          }),
         )
 
         return
@@ -621,7 +621,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               lastFetchEndTime: oracleData.lastFetchEndTime,
               dataDisabled: false,
             }
-          })
+          }),
         )
 
         return
@@ -642,7 +642,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
               lastFetchEndTime: llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
-          })
+          }),
         )
 
         return
@@ -652,7 +652,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].activityFetchStatus = 'LOADING'
-        })
+        }),
       )
 
       const network = networks[chainId].id.toLowerCase()
@@ -660,7 +660,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       try {
         const tradesFetch = await fetch(
           `https://prices.curve.fi/v1/lending/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
-          `
+          `,
         )
         const lpTradesRes: LlammaTradesApiResponse = await tradesFetch.json()
         const sortedData = lpTradesRes.data.sort((a: LlammaTradeEvent, b: LlammaTradeEvent) => {
@@ -673,12 +673,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state: State) => {
               state[sliceKey].lendTradesData = sortedData
-            })
+            }),
           )
         }
 
         const controllerEventsRes = await fetch(
-          `https://prices.curve.fi/v1/lending/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
+          `https://prices.curve.fi/v1/lending/llamma_events/${network}/${poolAddress}?page=1&per_page=100`,
         )
         const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
 
@@ -708,14 +708,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             produce((state: State) => {
               state[sliceKey].lendControllerData = formattedLiquidityEventsData
               state[sliceKey].activityFetchStatus = 'READY'
-            })
+            }),
           )
         }
       } catch (error) {
         set(
           produce((state: State) => {
             state[sliceKey].activityFetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
       }
@@ -724,7 +724,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].activityHidden = bool !== undefined ? bool : !get()[sliceKey].activityHidden
-        })
+        }),
       )
     },
     setChartExpanded: (bool?: boolean) => {
@@ -732,28 +732,28 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         produce((state: State) => {
           state[sliceKey].chartExpanded = bool !== undefined ? bool : !get()[sliceKey].chartExpanded
           state[sliceKey].activityHidden = false
-        })
+        }),
       )
     },
     toggleOraclePriceVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].oraclePriceVisible = !get()[sliceKey].oraclePriceVisible
-        })
+        }),
       )
     },
     toggleLiqRangeCurrentVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].liqRangeCurrentVisible = !get()[sliceKey].liqRangeCurrentVisible
-        })
+        }),
       )
     },
     toggleLiqRangeNewVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].liqRangeNewVisible = !get()[sliceKey].liqRangeNewVisible
-        })
+        }),
       )
     },
     resetState: () => {

@@ -61,11 +61,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
         <Box grid gridGap={3}>
           <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="supply" />
           <div>
-            <DetailsContracts
-              rChainId={rChainId}
-              market={market}
-              type={type}
-            />
+            <DetailsContracts rChainId={rChainId} market={market} type={type} />
           </div>
         </Box>
       </StyledDarkContent>

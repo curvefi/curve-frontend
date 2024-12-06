@@ -17,7 +17,9 @@ const PaletteStory = () => {
             .filter(([, options]) => Object.values(options).some((o) => `${o}`.startsWith('#')))
             .map(([type, options]) => (
               <Box key={type} sx={{ marginY: 7 }}>
-                <Typography variant="headingMLight">{palette}.{type}</Typography>
+                <Typography variant="headingMLight">
+                  {palette}.{type}
+                </Typography>
                 <Box display="flex" flexDirection="row" maxWidth="100%" flexWrap="wrap">
                   {Object.entries(options)
                     .filter(([, color]) => typeof color == 'string')

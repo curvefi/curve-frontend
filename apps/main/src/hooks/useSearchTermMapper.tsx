@@ -16,7 +16,7 @@ export enum SEARCH_TERM {
 export function parseSearchTermMapper(
   searchedByAddresses: { [key: string]: { value: string } },
   searchTermMapper: SearchTermMapper,
-  poolDataCachedOrApi: PoolDataCacheOrApi | undefined
+  poolDataCachedOrApi: PoolDataCacheOrApi | undefined,
 ) {
   if (!searchedByAddresses || !searchTermMapper || !poolDataCachedOrApi) return undefined
 

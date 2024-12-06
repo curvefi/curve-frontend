@@ -52,7 +52,13 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   }, [updateFormValues])
 
   const handleBtnClickClaim = useCallback(
-    async (payloadActiveKey: string, claimable: MarketClaimable, api: Api, market: OneWayMarketTemplate, type: RewardType) => {
+    async (
+      payloadActiveKey: string,
+      claimable: MarketClaimable,
+      api: Api,
+      market: OneWayMarketTemplate,
+      type: RewardType,
+    ) => {
       const { chainId } = api
       const { crv, rewards } = claimable.claimable ?? {}
 
@@ -66,17 +72,27 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
       if (isSubscribed.current && resp && resp.hash && resp.userActiveKey === userActiveKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         setTxInfoBar(
-          <TxInfoBar description={txMessage} txHash={networks[chainId].scanTxPath(resp.hash)} onClose={() => reset()} />
+          <TxInfoBar
+            description={txMessage}
+            txHash={networks[chainId].scanTxPath(resp.hash)}
+            onClose={() => reset()}
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [fetchStepClaim, notifyNotification, reset, userActiveKey]
+    [fetchStepClaim, notifyNotification, reset, userActiveKey],
   )
 
   const getSteps = useCallback(
-    (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, claimable: MarketClaimable, formStatus: FormStatus) => {
+    (
+      payloadActiveKey: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      claimable: MarketClaimable,
+      formStatus: FormStatus,
+    ) => {
       const { signerAddress } = api
       const { isComplete, step } = formStatus
       const { crv, rewards } = claimable.claimable ?? {}
@@ -108,7 +124,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickClaim]
+    [handleBtnClickClaim],
   )
 
   // onMount

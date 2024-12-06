@@ -12,15 +12,18 @@ export enum COLUMN_KEYS {
 }
 
 export function parseSearchTermResults<P extends { pool: { id: string } }>(
-  searchedTermsResults: SearchTermsFuseResult<P>
+  searchedTermsResults: SearchTermsFuseResult<P>,
 ) {
   return searchedTermsResults.reduce((prev, r) => {
     if (!r.matches) return prev
-    prev[r.item.pool.id] = r.matches.reduce((prev, { key, value = '' }) => {
-      if (!key || !value) return prev
-      prev[key] = { value }
-      return prev
-    }, {} as { [k: string]: { value: string } })
+    prev[r.item.pool.id] = r.matches.reduce(
+      (prev, { key, value = '' }) => {
+        if (!key || !value) return prev
+        prev[key] = { value }
+        return prev
+      },
+      {} as { [k: string]: { value: string } },
+    )
     return prev
   }, {} as SearchTermsResult)
 }

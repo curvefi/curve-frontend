@@ -17,8 +17,8 @@ const AccordionStory = ({ title }: StoryProps) => (
     </AccordionSummary>
     <AccordionDetails>
       <Typography>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-        sit amet blandit leo lobortis eget.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo
+        lobortis eget.
       </Typography>
     </AccordionDetails>
   </Accordion>
@@ -35,13 +35,11 @@ const meta: Meta<typeof AccordionStory> = {
   },
   args: {
     title: 'Accordion Title',
-  }
+  },
 }
 
 type Story = StoryObj<typeof AccordionStory>
 
-export const accordion: Story = {
-
-}
+export const accordion: Story = {}
 
 export default meta

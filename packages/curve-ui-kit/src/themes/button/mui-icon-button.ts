@@ -2,7 +2,7 @@ import { DesignSystem } from '../design'
 import { Fonts } from '../typography'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
-const {ButtonSize, OutlineWidth} = SizesAndSpaces
+const { ButtonSize, OutlineWidth } = SizesAndSpaces
 
 export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem) => ({
   styleOverrides: {

@@ -13,10 +13,10 @@ const CellLoanUserHealth = ({ userActiveKey }: { userActiveKey: string }) => {
       {typeof loanExistsResp === 'undefined'
         ? null
         : loanExistsError || (loanExists && userLoanDetailsError)
-        ? '?'
-        : !loanExists
-        ? null
-        : formatNumber(healthFull, { style: 'percent', maximumFractionDigits: 2 })}
+          ? '?'
+          : !loanExists
+            ? null
+            : formatNumber(healthFull, { style: 'percent', maximumFractionDigits: 2 })}
     </>
   )
 }

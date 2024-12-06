@@ -48,12 +48,12 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
         if (Object.keys(detailsMapper).length > 0) return
 
         const contracts = await Promise.all(
-          PEG_KEEPERS_ADDRESSES.map((p) => state.getContract('pegKeeper', p, provider))
+          PEG_KEEPERS_ADDRESSES.map((p) => state.getContract('pegKeeper', p, provider)),
         )
         const debtCeilingContract = await state.getContract(
           'pegKeeperDebtCeiling',
           '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC',
-          provider
+          provider,
         )
 
         let results: DetailsMapper = {}

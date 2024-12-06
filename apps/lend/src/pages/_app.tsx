@@ -98,7 +98,7 @@ function CurveApp({ Component }: AppProps) {
 
   return (
     <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
-      <ThemeProvider theme={themeType as string === 'default' ? 'light' : themeType}>
+      <ThemeProvider theme={(themeType as string) === 'default' ? 'light' : themeType}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <I18nProvider i18n={i18n}>

@@ -7,7 +7,7 @@ import {
   ResponsiveContainer,
   Tooltip,
   XAxis,
-  YAxis
+  YAxis,
 } from 'recharts'
 import { t } from '@lingui/macro'
 import React from 'react'

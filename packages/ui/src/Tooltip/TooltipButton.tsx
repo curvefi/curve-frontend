@@ -60,7 +60,7 @@ function TooltipButton({
         window.addEventListener('scroll', handleScroll)
       }
     },
-    [handleScroll, onClick, state, triggerProps]
+    [handleScroll, onClick, state, triggerProps],
   )
 
   return (
@@ -68,7 +68,7 @@ function TooltipButton({
     <StyledTooltipButton {...(as ? { as } : {})}>
       <Button ref={ref} {...triggerProps} className={`${className} tooltip-button`} onClick={handleBtnClick}>
         {showIcon || customIcon
-          ? customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />
+          ? (customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />)
           : children}
       </Button>
       {state.isOpen && (

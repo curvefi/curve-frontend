@@ -34,17 +34,15 @@ const AlertFormError = ({ errorKey, ...props }: React.PropsWithChildren<Props>) 
     const messages: { [key: AlertFormErrorKey | string]: string } = {
       // loan deleverage
       [ALERT_FORM_ERROR_KEYS['error-deleverage-api']]: t`Unable to get deleverage info`,
-      [ALERT_FORM_ERROR_KEYS[
-        'error-full-repayment-required'
-      ]]: t`Only full repayment is allowed when in soft-liquidation mode.`,
+      [ALERT_FORM_ERROR_KEYS['error-full-repayment-required']]:
+        t`Only full repayment is allowed when in soft-liquidation mode.`,
 
       // all
       [ALERT_FORM_ERROR_KEYS['error-est-gas-approval']]: t`Unable to get approval or estimated gas`,
       [ALERT_FORM_ERROR_KEYS['error-invalid-provider']]: t`Unable to find provider`,
       [ALERT_FORM_ERROR_KEYS['error-step-approve']]: t`Unable to approve spending`,
-      [ALERT_FORM_ERROR_KEYS[
-        'error-liquidation-mode'
-      ]]: t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,
+      [ALERT_FORM_ERROR_KEYS['error-liquidation-mode']]:
+        t`You cannot adjust your collateral while in liquidation mode. Your options are repayment or self-liquidation.`,
       [ALERT_FORM_ERROR_KEYS['error-total-supply']]: t`Unable to get total supply`,
     }
 

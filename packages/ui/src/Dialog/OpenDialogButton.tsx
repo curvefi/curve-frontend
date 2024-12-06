@@ -25,7 +25,7 @@ const OpenDialogButton = ({
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps } = useButton(
     { onPress: () => (getIsMobile() ? delayAction(overlayTriggerState.open) : overlayTriggerState.open()) },
-    openButtonRef
+    openButtonRef,
   )
 
   return (

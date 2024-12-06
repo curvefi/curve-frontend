@@ -117,7 +117,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
 
         while (true) {
           const veCrvFeesRes = await fetch(
-            `https://prices.curve.fi/v1/dao/fees/distributions?page=${page}&per_page=${pagination}`
+            `https://prices.curve.fi/v1/dao/fees/distributions?page=${page}&per_page=${pagination}`,
           )
           const data: VeCrvFeesRes = await veCrvFeesRes.json()
           results = results.concat(data.distributions)
@@ -194,7 +194,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
 
         while (true) {
           const veCrvHoldersRes = await fetch(
-            `https://prices.curve.fi/v1/dao/lockers?pagination=${pagination}&page=${page}`
+            `https://prices.curve.fi/v1/dao/lockers?pagination=${pagination}&page=${page}`,
           )
           const data: VeCrvHoldersRes = await veCrvHoldersRes.json()
 
@@ -228,7 +228,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
             locked: acc.locked + item.locked,
             weight_ratio: acc.weight_ratio + item.weight_ratio,
           }),
-          { weight: 0, locked: 0, weight_ratio: 0 }
+          { weight: 0, locked: 0, weight_ratio: 0 },
         )
 
         get()[sliceKey].setStateByKey('veCrvHolders', {
@@ -262,9 +262,9 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
         produce((state) => {
           state[sliceKey].topHoldersSortBy = sortBy
           state[sliceKey].veCrvHolders.topHolders = [...topHolders].sort(
-            (a: VeCrvHolder, b: VeCrvHolder) => b[sortBy] - a[sortBy]
+            (a: VeCrvHolder, b: VeCrvHolder) => b[sortBy] - a[sortBy],
           )
-        })
+        }),
       )
     },
     setAllHoldersSortBy: (sortBy: AllHoldersSortBy) => {
@@ -282,7 +282,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
             const reversedEntries = Object.entries(allHolders).reverse()
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(reversedEntries)
             state[sliceKey].allHoldersSortBy.order = order
-          })
+          }),
         )
       } else {
         const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => {
@@ -294,7 +294,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
             state[sliceKey].allHoldersSortBy.key = sortBy
             state[sliceKey].allHoldersSortBy.order = 'desc'
             state[sliceKey].veCrvHolders.allHolders = Object.fromEntries(sortedEntries)
-          })
+          }),
         )
       }
     },

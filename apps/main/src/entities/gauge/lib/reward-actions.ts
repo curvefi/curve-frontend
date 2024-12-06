@@ -19,7 +19,7 @@ import type {
   DepositRewardApproveMutation,
   DepositRewardApproveParams,
   DepositRewardMutation,
-  DepositRewardParams
+  DepositRewardParams,
 } from '@/entities/gauge/types'
 import { queryClient } from '@/shared/api/query-client'
 import { GaugeParams } from '@/shared/model/query'
@@ -63,18 +63,14 @@ export const useAddRewardTokenIsMutating = ({
     useIsMutating({
       mutationKey: keys.addRewardToken({ chainId, poolId }),
       predicate: ({ state }) =>
-        state.variables?.rewardTokenId === rewardTokenId && state.variables?.distributorId === distributorId
-    })
+        state.variables?.rewardTokenId === rewardTokenId && state.variables?.distributorId === distributorId,
+    }),
   )
 
 export const useDepositRewardApprove = ({
   chainId,
   poolId,
-}: GaugeParams): UseMutationResult<
-  string[],
-  Error,
-  DepositRewardApproveMutation
-> => {
+}: GaugeParams): UseMutationResult<string[], Error, DepositRewardApproveMutation> => {
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -105,8 +101,8 @@ export const useDepositRewardApproveIsMutating = ({
   Boolean(
     useIsMutating({
       mutationKey: keys.depositRewardIsApproved({ chainId, poolId }),
-      predicate: ({ state }) => state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount
-    })
+      predicate: ({ state }) => state.variables?.rewardTokenId === rewardTokenId && state.variables?.amount === amount,
+    }),
   )
 
 export const useDepositReward = ({
@@ -145,6 +141,6 @@ export const useDepositRewardIsMutating = ({
       predicate: ({ state }) =>
         state.variables?.rewardTokenId === rewardTokenId &&
         state.variables?.amount === amount &&
-        state.variables?.epoch === epoch
-    })
+        state.variables?.epoch === epoch,
+    }),
   )

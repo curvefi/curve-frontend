@@ -15,7 +15,7 @@ const GlobalBanner = React.forwardRef<
 >(
   (
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
-    ref
+    ref,
   ) => {
     return (
       <Wrapper ref={ref} show={showSwitchNetworkMessage || showConnectApiErrorMessage || !!maintenanceMessage}>
@@ -37,7 +37,7 @@ const GlobalBanner = React.forwardRef<
         )}
       </Wrapper>
     )
-  }
+  },
 )
 
 GlobalBanner.displayName = 'GlobalBanner'

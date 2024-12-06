@@ -50,7 +50,7 @@ export const AppPageFormsWrapper = styled(Box)<{ navHeight: number | string }>`
     min-width: var(--loan-form-min-width);
     max-width: var(--loan-form-min-width);
     //position: sticky;
-    top: ${({ navHeight }) => typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`};
+    top: ${({ navHeight }) => (typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`)};
   }
 `
 

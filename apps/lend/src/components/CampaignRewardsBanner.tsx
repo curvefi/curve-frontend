@@ -28,8 +28,8 @@ const CampaignRewardsBanner: React.FC<CampaignRewardsBannerProps> = ({ borrowAdd
     supplyCampaignRewardsPool && borrowCampaignRewardsPool
       ? t`Supplying and borrowing in this pool earns points!`
       : supplyCampaignRewardsPool
-      ? t`Supplying in this pool earns points!`
-      : t`Borrowing in this pool earns points!`
+        ? t`Supplying in this pool earns points!`
+        : t`Borrowing in this pool earns points!`
 
   return <CampaignBannerComp campaignRewardsPool={campaignRewardsPools()} message={message} />
 }

@@ -30,7 +30,7 @@ const DetailInfo = ({
   userActiveKey,
   setHealthMode,
 }: DetailProps & Pick<PageContentProps, 'market'>) => {
-  const { borrowed_token, collateral_token } = market ?? {};
+  const { borrowed_token, collateral_token } = market ?? {}
   const detailInfoNonLeverage = useStore((state) => state.loanRepay.detailInfo[activeKey])
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
@@ -114,7 +114,7 @@ const DetailInfo = ({
           {...detailInfo}
           loading={loading}
           isPayoff={repayIsFull || formValues.isFullRepay}
-          amount={swapRequired ? expectedBorrowed?.totalBorrowed ?? '' : formValues.userBorrowed}
+          amount={swapRequired ? (expectedBorrowed?.totalBorrowed ?? '') : formValues.userBorrowed}
           formType=""
           healthMode={healthMode}
           userActiveKey={userActiveKey}

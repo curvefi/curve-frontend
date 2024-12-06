@@ -37,7 +37,7 @@ const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, ma
         content: formatNumber(available, { notation: 'compact', defaultValue: '-' }),
       },
     ],
-    [available, borrowed_token?.symbol, cap, collateral_token?.symbol, totalDebt]
+    [available, borrowed_token?.symbol, cap, collateral_token?.symbol, totalDebt],
   )
 
   return (

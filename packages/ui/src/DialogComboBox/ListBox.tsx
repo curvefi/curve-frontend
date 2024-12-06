@@ -14,7 +14,7 @@ function ListBox<T extends object>(
     listBoxRef: React.RefObject<HTMLUListElement>
     state: ListState<any>
     testId?: string
-  }
+  },
 ) {
   const ref = useRef<HTMLUListElement>(null)
   const { listBoxRef = ref, state, testId } = props
