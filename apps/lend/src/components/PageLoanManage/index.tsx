@@ -64,7 +64,7 @@ const ManageLoan = (pageProps: PageContentProps) => {
         cb()
       }
     },
-    [loanExistsResp, navigate, params, rOwmId]
+    [loanExistsResp, navigate, params, rOwmId],
   )
 
   // init campaignRewardsMapper
@@ -78,10 +78,10 @@ const ManageLoan = (pageProps: PageContentProps) => {
     !rFormType || rFormType === 'loan'
       ? TABS_LOAN
       : rFormType === 'collateral'
-      ? TABS_COLLATERAL
-      : rFormType === 'leverage'
-      ? TABS_LEVERAGE
-      : []
+        ? TABS_COLLATERAL
+        : rFormType === 'leverage'
+          ? TABS_LEVERAGE
+          : []
 
   return (
     <AppFormContent variant="primary" shadowed>

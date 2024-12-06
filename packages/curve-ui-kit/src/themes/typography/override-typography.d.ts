@@ -2,8 +2,8 @@ declare module 'global' {
   type TypographyConfig = import('./create-typography')
   type TypographyVariantKey = TypographyConfig['TypographyVariantKey']
 
-  type NewTypographyVariants<T> = {[key in TypographyVariantKey]: T}
-  type DisabledTypographyVariants = {[key in TypographyConfig['DisabledTypographyVariantKey']]: false}
+  type NewTypographyVariants<T> = { [key in TypographyVariantKey]: T }
+  type DisabledTypographyVariants = { [key in TypographyConfig['DisabledTypographyVariantKey']]: false }
 
   // type TypographyVariants = {[key in TypographyVariantKey]: CSSProperties}
 

@@ -35,7 +35,7 @@ const meta: Meta<typeof TabsDisplay> = {
   argTypes: {},
   args: {
     options: [1, 2, 3, 4].map((value) => ({ label: `Tab ${value}`, value })),
-    defaultValue: 1
+    defaultValue: 1,
   },
 }
 export default meta

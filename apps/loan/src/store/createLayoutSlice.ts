@@ -77,7 +77,7 @@ const createLayoutSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.layout.isLgUp = isLgUp
           state.layout.isXLgUp = isXLgUp
           state.layout.isXXSm = isXXSm
-        })
+        }),
       )
     },
     setLayoutHeight: (key: keyof LayoutHeight, value: number) => {

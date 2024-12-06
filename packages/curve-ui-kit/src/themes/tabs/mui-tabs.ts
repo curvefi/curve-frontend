@@ -2,14 +2,14 @@ import type { Components } from '@mui/material/styles'
 import { DesignSystem } from '../design'
 
 // css classes used by the TabSwitcher component
-const contained = 'variant-contained' as const;
-const underlined = 'variant-underlined' as const;
-const overlined = 'variant-overlined' as const;
-const small = 'size-small' as const;
-const medium = 'size-medium' as const;
-const large = 'size-large' as const;
-export const TABS_VARIANT_CLASSES = { contained, underlined, overlined };
-export const TABS_HEIGHT_CLASSES = { small, medium, large };
+const contained = 'variant-contained' as const
+const underlined = 'variant-underlined' as const
+const overlined = 'variant-overlined' as const
+const small = 'size-small' as const
+const medium = 'size-medium' as const
+const large = 'size-large' as const
+export const TABS_VARIANT_CLASSES = { contained, underlined, overlined }
+export const TABS_HEIGHT_CLASSES = { small, medium, large }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
@@ -40,7 +40,10 @@ const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
 })
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
-export const defineMuiTabs = ({ Tabs: { UnderLined, OverLined, Contained }, Layer }: DesignSystem): Components['MuiTabs'] => ({
+export const defineMuiTabs = ({
+  Tabs: { UnderLined, OverLined, Contained },
+  Layer,
+}: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
       minHeight: 0,

@@ -35,14 +35,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const LoanRepay = ({
-  rChainId,
-  rOwmId,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const LoanRepay = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const params = useParams()
   const navigate = useNavigate()
@@ -80,18 +73,24 @@ const LoanRepay = ({
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
-      shouldRefetch?: boolean
+      shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       setFormValues(isLoaded ? api : null, market, updatedFormValues, updatedMaxSlippage || maxSlippage, shouldRefetch)
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
-    [api, isLoaded, maxSlippage, market, setFormValues]
+    [api, isLoaded, maxSlippage, market, setFormValues],
   )
 
   const handleBtnClickPay = useCallback(
-    async (payloadActiveKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues, maxSlippage: string) => {
+    async (
+      payloadActiveKey: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+      maxSlippage: string,
+    ) => {
       const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
       const resp = await fetchStepRepay(payloadActiveKey, api, market, formValues, maxSlippage)
 
@@ -109,13 +108,13 @@ const LoanRepay = ({
                 navigate(getCollateralListPathname(params))
               }
             }}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues]
+    [activeKey, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -129,7 +128,7 @@ const LoanRepay = ({
       formValues: FormValues,
       maxSlippage: string,
       steps: Step[],
-      priceImpact: string
+      priceImpact: string,
     ) => {
       const { signerAddress } = api
       const { borrowed_token, collateral_token } = market
@@ -150,8 +149,8 @@ const LoanRepay = ({
         const notifyMessage = swapRequired
           ? t`Repay with ${tokensMessage} at max slippage ${maxSlippage}%.`
           : isFullRepay
-          ? t`Repay in full.`
-          : t`Repay with ${tokensMessage}.`
+            ? t`Repay in full.`
+            : t`Repay with ${tokensMessage}.`
 
         setTxInfoBar(
           <AlertBox alertType="info">
@@ -165,7 +164,7 @@ const LoanRepay = ({
               market={market}
               type={detailInfoLeverage?.repayIsFull || isFullRepay ? 'full' : 'partial'}
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -246,7 +245,7 @@ const LoanRepay = ({
       notifyNotification,
       state,
       userBalances,
-    ]
+    ],
   )
 
   // onMount
@@ -274,7 +273,7 @@ const LoanRepay = ({
       }
     },
     REFRESH_INTERVAL['10s'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -303,7 +302,7 @@ const LoanRepay = ({
         formValues,
         maxSlippage,
         steps,
-        detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : ''
+        detailInfoLeverage?.isHighPriceImpact ? detailInfoLeverage.priceImpact : '',
       )
       setSteps(updatedSteps)
     }

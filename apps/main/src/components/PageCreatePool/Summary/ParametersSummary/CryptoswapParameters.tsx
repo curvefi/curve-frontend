@@ -16,7 +16,7 @@ type Props = {
 const StableswapParameters = ({ chainId }: Props) => {
   const { tokensInPool, initialPrice, advanced } = useStore((state) => state.createPool)
   const { midFee, outFee, maHalfTime, gamma, feeGamma, allowedExtraProfit, cryptoA, adjustmentStep } = useStore(
-    (state) => state.createPool.parameters
+    (state) => state.createPool.parameters,
   )
   const networks = useStore((state) => state.networks.networks)
 
@@ -37,7 +37,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             tokensInPool.tokenAmount,
             tokensInPool.tokenA,
             tokensInPool.tokenB,
-            tokensInPool.tokenC
+            tokensInPool.tokenC,
           )
             ? ' A'
             : ''
@@ -53,7 +53,7 @@ const StableswapParameters = ({ chainId }: Props) => {
         tokensInPool.tokenAmount,
         tokensInPool.tokenA,
         tokensInPool.tokenB,
-        tokensInPool.tokenC
+        tokensInPool.tokenC,
       ) && (
         <CategoryDataRow>
           <SummaryDataTitle>{t`Initial Price B:`}</SummaryDataTitle>

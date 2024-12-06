@@ -33,7 +33,7 @@ const DetailInfo = ({
   tooltip: Tooltip,
   variant,
   children,
-  size='sm',
+  size = 'sm',
   ...props
 }: React.PropsWithChildren<Props>) => {
   const classNames = `${className} ${isDivider ? 'divider' : ''}`

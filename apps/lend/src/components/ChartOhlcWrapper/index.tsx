@@ -34,10 +34,10 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const repayLeveragePrices = useStore((state) => state.loanRepay.detailInfoLeverage[repayActiveKey]?.prices ?? null)
   const repayLoanPrices = useStore((state) => state.loanRepay.detailInfo[loanRepayActiveKey]?.prices ?? null)
   const addCollateralPrices = useStore(
-    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null
+    (state) => state.loanCollateralAdd.detailInfo[loanCollateralAddActiveKey]?.prices ?? null,
   )
   const removeCollateralPrices = useStore(
-    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null
+    (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -273,7 +273,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
     if (market?.addresses.amm) {
@@ -284,7 +284,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
   }, [
@@ -310,7 +310,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
       fetchOraclePoolOhlcData(
         rChainId,
@@ -318,7 +318,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
         chartInterval,
         timeUnit,
         chartTimeSettings.start,
-        chartTimeSettings.end
+        chartTimeSettings.end,
       )
     }
   }, [
@@ -347,11 +347,11 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartInterval,
           timeUnit,
           startTime,
-          endTime
+          endTime,
         )
       }
     },
-    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit]
+    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],
   )
 
   if (ohlcDataUnavailable) {

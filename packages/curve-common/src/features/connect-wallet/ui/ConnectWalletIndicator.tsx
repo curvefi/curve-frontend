@@ -3,9 +3,16 @@ import { ConnectWalletButton, ConnectWalletButtonProps } from './ConnectWalletBu
 import { ConnectedWalletLabel, ConnectedWalletLabelProps } from './ConnectedWalletLabel'
 import type { SetOptional } from 'type-fest'
 
-export type ConnectWalletIndicatorProps = ConnectWalletButtonProps & SetOptional<ConnectedWalletLabelProps, 'walletAddress'>
+export type ConnectWalletIndicatorProps = ConnectWalletButtonProps &
+  SetOptional<ConnectedWalletLabelProps, 'walletAddress'>
 
-export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({ walletAddress, label, onConnectWallet, onDisconnectWallet, ...props }) =>
+export const ConnectWalletIndicator: FunctionComponent<ConnectWalletIndicatorProps> = ({
+  walletAddress,
+  label,
+  onConnectWallet,
+  onDisconnectWallet,
+  ...props
+}) =>
   walletAddress ? (
     <ConnectedWalletLabel walletAddress={walletAddress} onDisconnectWallet={onDisconnectWallet} {...props} />
   ) : (

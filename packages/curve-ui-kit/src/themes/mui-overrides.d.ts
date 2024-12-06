@@ -21,8 +21,7 @@ declare module '@mui/material/Button' {
     [K in keyof Buttons as Lowercase<string & K>]: true
   }
 
-  export interface ButtonPropsColorOverrides extends ButtonColors {
-  }
+  export interface ButtonPropsColorOverrides extends ButtonColors {}
 
   export interface ButtonPropsSizeOverrides {
     extraSmall: true

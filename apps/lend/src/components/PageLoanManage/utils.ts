@@ -40,7 +40,7 @@ export const DEFAULT_CONFIRM_WARNING = {
 
 export function _getSelectedTab(
   marketDetailsView: MarketDetailsView,
-  signerAddress: string | undefined
+  signerAddress: string | undefined,
 ): MarketDetailsView {
   if (marketDetailsView === 'user') {
     return signerAddress ? 'user' : 'market'

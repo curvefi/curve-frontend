@@ -108,7 +108,9 @@ const ButtonStyles = styled(Button)`
   color: var(--box--primary--color);
   font-weight: 700;
   background: none;
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
   @media (min-width: 39.375rem) {
     display: flex;

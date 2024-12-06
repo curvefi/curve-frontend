@@ -48,7 +48,7 @@ const ChartBandBalances = ({
   title: string
   setBrushIndex: React.Dispatch<BrushStartEndIndex>
 }) => {
-  const { borrowed_token, collateral_token } = market ?? {};
+  const { borrowed_token, collateral_token } = market ?? {}
   const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
   const statsCapAndAvailable = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
 

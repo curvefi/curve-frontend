@@ -15,7 +15,7 @@ export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ cha
 
   const onEpochChange = useCallback(
     (epoch: string) => setValue('epoch', parseInt(epoch) * TIME_FRAMES.WEEK, { shouldValidate: true }),
-    [setValue]
+    [setValue],
   )
 
   const isPendingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })

@@ -63,7 +63,7 @@ const ConfirmModal = ({
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(
     { onPressEnd: () => (!disabled ? overlayTriggerState.open() : null) },
-    openButtonRef
+    openButtonRef,
   )
 
   const modalTitle = useMemo(() => {
@@ -85,7 +85,7 @@ const ConfirmModal = ({
       tokensInPool.tokenC.address,
       tokensInPool.tokenD.address,
       userAddedTokens,
-    ]
+    ],
   )
 
   return (
@@ -126,7 +126,7 @@ const ConfirmModal = ({
               validation.poolType,
               validation.tokensInPool,
               validation.parameters,
-              validation.poolInfo
+              validation.poolInfo,
             ) && <Icon name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
           )}
         </NavCreateButton>
@@ -218,7 +218,7 @@ const ConfirmModal = ({
                     validation.poolType,
                     validation.tokensInPool,
                     validation.parameters,
-                    validation.poolInfo
+                    validation.poolInfo,
                   )
                 }
                 curve={curve}

@@ -95,7 +95,7 @@ const Page: NextPage = () => {
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey]
+    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey],
   )
 
   // onMount
@@ -129,15 +129,12 @@ const Page: NextPage = () => {
     }
   }, [chartExpanded])
 
-  const TitleComp = () => market && (
-    <AppPageFormTitleWrapper>
-      <PageTitleBorrowSupplyLinks
-        params={params}
-        activeKey="borrow"
-        market={market}
-      />
-    </AppPageFormTitleWrapper>
-  )
+  const TitleComp = () =>
+    market && (
+      <AppPageFormTitleWrapper>
+        <PageTitleBorrowSupplyLinks params={params} activeKey="borrow" market={market} />
+      </AppPageFormTitleWrapper>
+    )
 
   const pageProps: PageContentProps = {
     params,

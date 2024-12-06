@@ -260,7 +260,7 @@ const MappedTypography = {
     md: Sizing[200],
     lg: Sizing[250],
     xl: Sizing[350],
-    xxl: Sizing[500]
+    xxl: Sizing[500],
   },
   FontWeight: {
     Extra_Light: 200,
@@ -269,7 +269,7 @@ const MappedTypography = {
     Medium: 500,
     Semi_Bold: 600,
     Bold: 700,
-    Extra_Bold: 800
+    Extra_Bold: 800,
   },
   LineHeight: {
     xs: '0.75rem', // 12px
@@ -277,8 +277,8 @@ const MappedTypography = {
     md: '1rem', // 16px
     lg: '1.5rem', // 24px
     xl: '2rem', // 32px
-    xxl: '2.5rem' // 40px
-  }
+    xxl: '2.5rem', // 40px
+  },
 } as const
 
 const MappedModalWidth = {

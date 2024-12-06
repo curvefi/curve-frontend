@@ -88,7 +88,7 @@ const Page: NextPage = () => {
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances]
+    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances],
   )
 
   useEffect(() => {
@@ -109,11 +109,12 @@ const Page: NextPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
-  const TitleComp = () => market && (
-    <AppPageFormTitleWrapper>
-      <PageTitleBorrowSupplyLinks params={params} activeKey="supply" market={market} />
-    </AppPageFormTitleWrapper>
-  )
+  const TitleComp = () =>
+    market && (
+      <AppPageFormTitleWrapper>
+        <PageTitleBorrowSupplyLinks params={params} activeKey="supply" market={market} />
+      </AppPageFormTitleWrapper>
+    )
 
   const pageProps: PageContentProps = {
     params,

@@ -26,15 +26,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const VaultDepositMint = ({
-  rChainId,
-  rOwmId,
-  rFormType,
-  isLoaded,
-  api,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
@@ -62,7 +54,7 @@ const VaultDepositMint = ({
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, market, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -70,7 +62,7 @@ const VaultDepositMint = ({
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
@@ -78,7 +70,13 @@ const VaultDepositMint = ({
   }
 
   const handleBtnClickDeposit = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
       const { amount } = formValues
 
@@ -95,13 +93,13 @@ const VaultDepositMint = ({
             description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => reset({})}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, notifyNotification, reset]
+    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -112,7 +110,7 @@ const VaultDepositMint = ({
       market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError } = formValues
@@ -153,7 +151,7 @@ const VaultDepositMint = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickDeposit, notifyNotification]
+    [fetchStepApprove, handleBtnClickDeposit, notifyNotification],
   )
 
   // onMount

@@ -42,7 +42,7 @@ const SelectFilterBorrowLend = ({
 
       updatePath(updatedSearchParams)
     },
-    [searchParams, tableLabelsSelector, updatePath]
+    [searchParams, tableLabelsSelector, updatePath],
   )
 
   return (

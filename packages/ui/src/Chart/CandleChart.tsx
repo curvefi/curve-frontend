@@ -88,8 +88,8 @@ const CandleChart = ({
         fetchMoreChartData(lastFetchEndTimeRef.current)
       },
       500,
-      { leading: true, trailing: false }
-    )
+      { leading: true, trailing: false },
+    ),
   )
 
   useEffect(() => {

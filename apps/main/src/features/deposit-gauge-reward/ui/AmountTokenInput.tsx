@@ -67,7 +67,7 @@ export const AmountTokenInput: React.FC<{
     const filteredTokens = Object.values(tokensMapper).filter(
       (token): token is Token =>
         token !== undefined &&
-        activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address))
+        activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
     )
 
     const rewardTokenId = getValues('rewardTokenId')
@@ -86,7 +86,7 @@ export const AmountTokenInput: React.FC<{
     (amount: string) => {
       setValue('amount', amount, { shouldValidate: true })
     },
-    [setValue]
+    [setValue],
   )
 
   const onChangeToken = useCallback(
@@ -95,7 +95,7 @@ export const AmountTokenInput: React.FC<{
       setValue('rewardTokenId', value as Address, { shouldValidate: true })
       setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
     },
-    [rewardTokenId, setValue]
+    [rewardTokenId, setValue],
   )
 
   const onMaxButtonClick = useCallback(
@@ -104,7 +104,7 @@ export const AmountTokenInput: React.FC<{
       if (!tokenBalance) return
       setValue('amount', tokenBalance, { shouldValidate: true })
     },
-    [tokenBalance, setValue]
+    [tokenBalance, setValue],
   )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
@@ -128,7 +128,7 @@ export const AmountTokenInput: React.FC<{
               }
             }
             testId="deposit-amount"
-            value={isMaxLoading ? '' : amount ?? ''}
+            value={isMaxLoading ? '' : (amount ?? '')}
             onChange={onChangeAmount}
           />
         </FlexItemAmount>

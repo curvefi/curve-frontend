@@ -13,57 +13,60 @@ import * as api from '@/entities/gauge/api'
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
 import { queryFactory, rootKeys } from '@/shared/model/query'
 import {
-    gaugeAddRewardValidationSuite,
-    gaugeDepositRewardApproveValidationSuite,
-    gaugeDepositRewardValidationSuite
+  gaugeAddRewardValidationSuite,
+  gaugeDepositRewardApproveValidationSuite,
+  gaugeDepositRewardValidationSuite,
 } from './gauge-validation'
 import { gaugeKeys } from './query-keys'
 import { depositRewardAvailable, depositRewardIsApproved } from './query-options'
 
 export const estimateGasDepositRewardApprove = queryFactory({
-    queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) => [
-        ...rootKeys.gauge({ ...gaugeParams }),
-        ...gaugeKeys.estimateGas(),
-        'depositRewardApprove',
-        { rewardTokenId },
-        { amount }
+  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
+    [
+      ...rootKeys.gauge({ ...gaugeParams }),
+      ...gaugeKeys.estimateGas(),
+      'depositRewardApprove',
+      { rewardTokenId },
+      { amount },
     ] as const,
-    queryFn: api.queryEstimateGasDepositRewardApprove,
-    refetchInterval: '1m',
-    validationSuite: gaugeDepositRewardApproveValidationSuite,
-    refetchOnWindowFocus: 'always',
-    refetchOnMount: 'always',
-  })
+  queryFn: api.queryEstimateGasDepositRewardApprove,
+  refetchInterval: '1m',
+  validationSuite: gaugeDepositRewardApproveValidationSuite,
+  refetchOnWindowFocus: 'always',
+  refetchOnMount: 'always',
+})
 
 export const estimateGasAddRewardToken = queryFactory({
-    queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) => [
-        ...rootKeys.gauge({ ...gaugeParams }),
-        ...gaugeKeys.estimateGas(),
-        'addRewardToken',
-        { rewardTokenId },
-        { distributorId }
+  queryKey: ({ rewardTokenId, distributorId, ...gaugeParams }: AddRewardParams) =>
+    [
+      ...rootKeys.gauge({ ...gaugeParams }),
+      ...gaugeKeys.estimateGas(),
+      'addRewardToken',
+      { rewardTokenId },
+      { distributorId },
     ] as const,
-    queryFn: api.queryEstimateGasAddRewardToken,
-    refetchInterval: '1m',
-    validationSuite: gaugeAddRewardValidationSuite,
-    dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
-    refetchOnWindowFocus: 'always',
-    refetchOnMount: 'always',
-  })
+  queryFn: api.queryEstimateGasAddRewardToken,
+  refetchInterval: '1m',
+  validationSuite: gaugeAddRewardValidationSuite,
+  dependencies: (params: AddRewardParams) => [depositRewardAvailable.queryKey(params)],
+  refetchOnWindowFocus: 'always',
+  refetchOnMount: 'always',
+})
 
 export const estimateGasDepositReward = queryFactory({
-    queryKey: ({ rewardTokenId, amount, epoch, ...gaugeParams }: DepositRewardParams) => [
-        ...rootKeys.gauge({ ...gaugeParams }),
-        ...gaugeKeys.estimateGas(),
-        'depositReward',
-        { rewardTokenId },
-        { amount },
-        { epoch }
+  queryKey: ({ rewardTokenId, amount, epoch, ...gaugeParams }: DepositRewardParams) =>
+    [
+      ...rootKeys.gauge({ ...gaugeParams }),
+      ...gaugeKeys.estimateGas(),
+      'depositReward',
+      { rewardTokenId },
+      { amount },
+      { epoch },
     ] as const,
-    queryFn: api.queryEstimateGasDepositReward,
-    refetchInterval: '1m',
-    validationSuite: gaugeDepositRewardValidationSuite,
-    dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
-    refetchOnWindowFocus: 'always',
-    refetchOnMount: 'always',
-  })
+  queryFn: api.queryEstimateGasDepositReward,
+  refetchInterval: '1m',
+  validationSuite: gaugeDepositRewardValidationSuite,
+  dependencies: (params: DepositRewardParams) => [depositRewardIsApproved.queryKey(params)],
+  refetchOnWindowFocus: 'always',
+  refetchOnMount: 'always',
+})

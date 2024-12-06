@@ -3,15 +3,18 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 export type HeaderStatsProps = {
-  appStats?: {label: string, value: string}[]
+  appStats?: { label: string; value: string }[]
 }
 
-export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) => (
+export const HeaderStats: FunctionComponent<HeaderStatsProps> = ({ appStats }) =>
   appStats?.map(({ label, value }) => (
     <Box key={label} display="inline-flex" alignItems="baseline">
-      <Typography variant="bodyMRegular" color="grey.600">{label}:</Typography>
+      <Typography variant="bodyMRegular" color="grey.600">
+        {label}:
+      </Typography>
       &nbsp;
-      <Typography variant="highlightM" color="text.primary">{value || '-'}</Typography>
+      <Typography variant="highlightM" color="text.primary">
+        {value || '-'}
+      </Typography>
     </Box>
   ))
-)

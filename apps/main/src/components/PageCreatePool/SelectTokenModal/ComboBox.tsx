@@ -44,7 +44,7 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
       listBoxRef,
       popoverRef,
     },
-    state
+    state,
   )
 
   const handleBtnClickClear = () => {
@@ -60,7 +60,7 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
         props.onInputChange(evt.target.value)
       }
     },
-    [props]
+    [props],
   )
 
   const debounceInpChange = useMemo(() => debounce(handleInpChange, 700), [handleInpChange])
@@ -71,7 +71,7 @@ function ComboBox<T extends object>({ listBoxHeight, onClose, showSearch, ...pro
         if (typeof onClose === 'function') onClose()
       },
     },
-    closeButtonRef
+    closeButtonRef,
   )
 
   return (

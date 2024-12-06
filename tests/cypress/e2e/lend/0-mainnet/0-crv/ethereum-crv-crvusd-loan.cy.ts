@@ -46,7 +46,7 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
       .tokenBalance(borrowToken.address)
       .then(($tokenBalance) => {
         cy.get<string>('@debtAmount').then(($debtAmount) =>
-          expect($tokenBalance).to.be.equal(ethers.parseUnits($debtAmount, borrowToken.decimals))
+          expect($tokenBalance).to.be.equal(ethers.parseUnits($debtAmount, borrowToken.decimals)),
         )
       })
     cy.get<ethers.HDNodeWallet>('@wallet').tokenBalance(collateralToken.address).should('eq', BigInt(0))

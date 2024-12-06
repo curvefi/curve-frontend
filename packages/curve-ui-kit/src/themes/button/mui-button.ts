@@ -38,7 +38,12 @@ const sizeBreakpoint = (
   },
 })
 
-type ButtonSize = { height: keyof typeof ButtonSize; fontSize: keyof typeof FontSize; fontWeight?: keyof typeof FontWeight; lineHeight: keyof typeof LineHeight }
+type ButtonSize = {
+  height: keyof typeof ButtonSize
+  fontSize: keyof typeof FontSize
+  fontWeight?: keyof typeof FontWeight
+  lineHeight: keyof typeof LineHeight
+}
 const buttonSize = ({ height, fontSize, fontWeight = 'Bold', lineHeight }: ButtonSize) => ({
   ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'mobile'),
   ...sizeBreakpoint(ButtonSize[height], FontSize[fontSize], FontWeight[fontWeight], LineHeight[lineHeight], 'tablet'),

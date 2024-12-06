@@ -18,7 +18,7 @@ import {
   queryDepositRewardIsApproved,
   queryGaugeManager,
   queryGaugeDistributors,
-  queryIsDepositRewardAvailable
+  queryIsDepositRewardAvailable,
 } from '../api'
 import type { DepositRewardApproveParams } from '../types'
 import { gaugeDepositRewardApproveValidationSuite } from './gauge-validation'
@@ -59,7 +59,8 @@ export const gaugeVersion = queryFactory({
 })
 
 export const depositRewardIsApproved = queryFactory({
-  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) => [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
+  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
+    [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
   queryFn: queryDepositRewardIsApproved,
   staleTime: '1h',
   validationSuite: gaugeDepositRewardApproveValidationSuite,

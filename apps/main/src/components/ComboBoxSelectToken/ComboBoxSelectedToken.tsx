@@ -30,11 +30,7 @@ const ComboBoxSelectedToken = ({
         <SelectedLabelText data-testid={`label-${testId}`} title={selected.symbol}>
           {selected.symbol}
         </SelectedLabelText>{' '}
-        {selected?.haveSameTokenName && (
-          <AddressChip isMono size="xs">
-            {shortenTokenAddress(selected.address)}
-          </AddressChip>
-        )}
+        {selected?.haveSameTokenName && <AddressChip size="xs">{shortenTokenAddress(selected.address)}</AddressChip>}
       </LabelTextWrapper>
     </>
   )

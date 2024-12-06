@@ -49,7 +49,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
         if (notify && typeof notify.dismiss === 'function') notify.dismiss()
       }
     },
-    [fetchUpdate, notifyNotification, poolName, rChainId]
+    [fetchUpdate, notifyNotification, poolName, rChainId],
   )
 
   // onMount

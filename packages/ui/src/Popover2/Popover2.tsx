@@ -19,7 +19,7 @@ function Popover2({ children, state, offset = 8, portalContainer, ...props }: Po
       offset,
       popoverRef,
     },
-    state
+    state,
   )
 
   return (

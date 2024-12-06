@@ -31,7 +31,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         { label: t`Stake`, formType: 'STAKE' },
         { label: t`Deposit & Stake`, formType: 'DEPOSIT_STAKE' },
       ] as const,
-    []
+    [],
   )
 
   // tabs positions
@@ -61,7 +61,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
       setSelectedTabIdx(idx)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setStateByKeys]
+    [setStateByKeys],
   )
 
   // onMount

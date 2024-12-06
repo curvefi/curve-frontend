@@ -23,7 +23,7 @@ const Popover = (props: React.PropsWithChildren<Props>) => {
       shouldCloseOnBlur: true,
       isDismissable: true,
     },
-    popoverRef
+    popoverRef,
   )
 
   // Add a hidden <DismissButton> component at the end of the popover

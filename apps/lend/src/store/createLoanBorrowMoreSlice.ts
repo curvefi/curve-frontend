@@ -142,7 +142,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
           userCollateral,
           userBorrowed,
           debt,
-          maxSlippage
+          maxSlippage,
         )
         sliceState.setStateByActiveKey('detailInfoLeverage', resp.activeKey, { ...resp.resp, error: resp.error })
       } else {
@@ -168,7 +168,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         userBorrowed,
         debt,
         maxSlippage,
-        isLeverage
+        isLeverage,
       )
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -251,7 +251,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         market,
         userCollateral,
         userBorrowed,
-        isLeverage
+        isLeverage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -293,7 +293,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         userBorrowed,
         debt,
         maxSlippage,
-        isLeverage
+        isLeverage,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -345,7 +345,7 @@ export function _getActiveKeys(
   market: OneWayMarketTemplate | undefined,
   { userCollateral, userBorrowed, debt }: FormValues,
   isLeverage: boolean,
-  maxSlippage: string
+  maxSlippage: string,
 ) {
   const leverageKey = isLeverage ? 'leverage' : ''
   const activeKey = `${_parseActiveKey(api, market)}${leverageKey}`

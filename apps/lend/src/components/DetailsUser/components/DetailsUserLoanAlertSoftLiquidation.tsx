@@ -9,7 +9,7 @@ import Box from '@/ui/Box'
 import ExternalLink from '@/ui/Link/ExternalLink'
 
 const DetailsUserLoanAlertSoftLiquidation = ({ market, userActiveKey }: PageContentProps) => {
-  const {borrowed_token, collateral_token} = market ?? {}
+  const { borrowed_token, collateral_token } = market ?? {}
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   // TODO handle error

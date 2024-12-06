@@ -108,7 +108,7 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (

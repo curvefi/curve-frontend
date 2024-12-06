@@ -41,5 +41,5 @@ export {
   Hinkal,
   Inception,
   TurtleTotems,
-  LevelMoney
+  LevelMoney,
 }

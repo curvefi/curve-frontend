@@ -72,7 +72,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
       liquidationAmt: string,
       maxSlippage: string,
       steps: Step[],
-      state: Omit<UserLoanState, 'error'>
+      state: Omit<UserLoanState, 'error'>,
     ) => {
       const { chainId, signerAddress } = api
       const { error, loading, warning, isApproved, isComplete, isInProgress, step } = formStatus
@@ -92,7 +92,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
               userWallet={userBalances}
               type="self"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -135,7 +135,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
                   description={TxDescription}
                   txHash={networks[chainId].scanTxPath(resp.hash)}
                   onClose={reset}
-                />
+                />,
               )
             }
             if (resp?.error) setTxInfoBar(null)
@@ -154,7 +154,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances]
+    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances],
   )
 
   // onMount

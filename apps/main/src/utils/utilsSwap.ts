@@ -97,7 +97,7 @@ export function _parseRoutesAndOutput(
   toAddress: string,
   fromAmount: string,
   fromAddress: string,
-  fetchedToAmount?: string
+  fetchedToAmount?: string,
 ) {
   const parsedRouterRoutes = parseRouterRoutes(routes, poolsMapper, curve.getPool)
   const haveCryptoRoutes = parsedRouterRoutes.haveCryptoRoutes
