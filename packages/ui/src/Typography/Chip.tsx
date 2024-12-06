@@ -32,32 +32,11 @@ interface LabelProps
   extends Pick<ChipProps, 'isBold' | 'isError' | 'isMono' | 'fontVariantNumeric' | 'opacity' | 'size' | 'maxWidth'> {}
 
 const Label = styled.span<LabelProps>`
-  ${({ isBold }) => {
-    if (isBold) {
-      return `font-weight: var(--font-weight--bold);`
-    }
-  }}
-
-  ${({ fontVariantNumeric }) => {
-    if (fontVariantNumeric) return `font-variant-numeric: ${fontVariantNumeric};`
-  }}
-  
-  ${({ isMono }) => {
-    if (isMono) {
-      return 'font-family: var(--font-mono);'
-    }
-  }}
-
-  ${({ isError }) => {
-    if (isError) {
-      return `color: var(--danger_darkBg-400);`
-    }
-  }}
-  ${({ opacity }) => {
-    if (typeof opacity !== 'undefined') {
-      return `opacity: ${opacity};`
-    }
-  }}
+  ${({ isBold }) => isBold && `font-weight: var(--font-weight--bold);`}
+  ${({ fontVariantNumeric }) => fontVariantNumeric && `font-variant-numeric: ${fontVariantNumeric};`}
+  ${({ isMono }) => (isMono ? 'font-family: var(--font-mono);' : 'font-family: var(--font);')}
+  ${({ isError }) => isError && `color: var(--danger_darkBg-400);`}
+  ${({ opacity }) => opacity !== undefined && `opacity: ${opacity};`}}
   
     // TODO: remove
   ${({ maxWidth }) => {

@@ -31,7 +31,7 @@ const ComboBoxSelectedToken = ({
           {selected.symbol}
         </SelectedLabelText>{' '}
         {selected?.haveSameTokenName && (
-          <AddressChip isMono size="xs">
+          <AddressChip size="xs">
             {shortenTokenAddress(selected.address)}
           </AddressChip>
         )}
