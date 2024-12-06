@@ -11,10 +11,6 @@
   --font-size-9: 2.375rem;
   --font-size-10: 2.5rem;
 
-  --font: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  --font-mono: monospace;
-  --font-display: 'Commodore', monospace;
-
   --bold: 700;
   --semi-bold: 500;
   --normal: 400;

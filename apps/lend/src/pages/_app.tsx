@@ -22,6 +22,7 @@ import { QueryProvider } from '@/ui/QueryProvider'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { getStorageValue } from '@/utils/utilsStorage'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -96,7 +97,7 @@ function CurveApp({ Component }: AppProps) {
   }, [])
 
   return (
-    <div suppressHydrationWarning>
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={(themeType as string) === 'default' ? 'light' : themeType}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>

@@ -13,10 +13,9 @@ import '@/globals.css'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
-import { connectWalletLocales } from '@/common/features/connect-wallet'
+import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
 import { getLocaleFromUrl, getStorageValue } from '@/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@/ui/utils'
-import { initOnboard } from '@/common/features/connect-wallet'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
@@ -25,6 +24,7 @@ import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 
 import Page from '@/layout'
 import GlobalStyle from '@/globalStyle'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -145,8 +145,8 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-      <div suppressHydrationWarning>
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <I18nProvider i18n={i18n}>
@@ -161,8 +161,8 @@ function CurveApp({ Component }: AppProps) {
             </I18nProvider>
           </HashRouter>
         )}
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </div>
   )
 }
 

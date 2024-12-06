@@ -52,7 +52,7 @@ const sliceKey = 'proposals'
 export type ProposalsSlice = {
   [sliceKey]: SliceState & {
     getProposals(): void
-    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean): void
+    getProposal(voteId: number, voteType: ProposalType, silentFetch?: boolean, txHash?: string): void
     getUserProposalVote(userAddress: string, voteId: string, voteType: ProposalType, txHash?: string): void
     setSearchValue(searchValue: string): void
     setActiveFilter(filter: ProposalListFilter): void
@@ -158,17 +158,18 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         get()[sliceKey].setStateByKey('proposalsLoadingState', 'ERROR')
       }
     },
-    getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false) => {
+    getProposal: async (voteId: number, voteType: ProposalType, silentFetch = false, txHash?: string) => {
       if (!silentFetch) {
         get()[sliceKey].setStateByKey('proposalLoadingState', 'LOADING')
       }
 
       try {
         const proposal = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}`,
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
         )
         const data: PricesProposalResponse = await proposal.json()
 
+        // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
           console.log(data.detail)
           return
@@ -221,7 +222,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         )
         const data: PricesProposalResponse = await request.json()
 
+        // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
+          console.log(data.detail)
           return
         }
 
@@ -447,9 +450,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
 
       try {
-        const voteResponseHash = await curve.dao.executeVote(voteType, voteId)
+        const transactionHash = await curve.dao.executeVote(voteType, voteId)
 
-        if (voteResponseHash) {
+        if (transactionHash) {
           get()[sliceKey].setStateByKey('executeTxMapper', {
             ...get()[sliceKey].executeTxMapper,
             [voteIdKey]: {
@@ -469,27 +472,31 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             ...get()[sliceKey].executeTxMapper,
             [voteIdKey]: {
               status: 'LOADING',
-              hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
+              hash: transactionHash,
+              txLink: networks[1].scanTxPath(transactionHash),
               error: null,
             },
           })
 
-          await helpers.waitForTransaction(voteResponseHash, provider)
-
-          get()[sliceKey].setStateByKey('executeTxMapper', {
-            ...get()[sliceKey].executeTxMapper,
-            [voteIdKey]: {
-              status: 'SUCCESS',
-              hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
-              error: null,
-            },
-          })
+          await helpers.waitForTransaction(transactionHash, provider)
 
           dismissDeploying()
           const successNotificationMessage = t`Proposal executed successfully!`
           notifyNotification(successNotificationMessage, 'success', 15000)
+
+          // update proposal executed status, forcing api to update by providing a transaction hash
+          await get()[sliceKey].getProposal(voteId, voteType, true, transactionHash)
+
+          set(
+            produce((state: State) => {
+              state[sliceKey].executeTxMapper[voteIdKey] = {
+                status: 'SUCCESS',
+                hash: transactionHash,
+                txLink: networks[1].scanTxPath(transactionHash),
+                error: null,
+              }
+            }),
+          )
         }
       } catch (error) {
         if (typeof dismissNotificationHandler === 'function') {
