@@ -30,7 +30,7 @@ export const Link = ({ label, href, icon }: LinkProps) => (
         },
       }}
     >
-      {icon ? icon : null}
+      {icon}
     </Box>
 
     <Typography
