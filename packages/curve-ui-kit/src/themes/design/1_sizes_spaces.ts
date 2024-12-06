@@ -301,4 +301,5 @@ export const SizesAndSpaces = {
   Typography: MappedTypography,
   ModalWidth: MappedModalWidth,
   OutlineWidth: '0.125rem', // 2px
+  MaxWidth: '90rem', // 1440px
 } as const
