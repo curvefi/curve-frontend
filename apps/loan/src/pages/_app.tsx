@@ -23,6 +23,8 @@ import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -117,12 +119,14 @@ function CurveApp({ Component }: AppProps) {
         {typeof window !== 'undefined' && appLoaded && (
           <HashRouter>
             <I18nProvider i18n={i18n}>
-              <OverlayProvider>
-                <Page>
-                  <Component />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
             </I18nProvider>
           </HashRouter>
         )}

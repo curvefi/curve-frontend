@@ -1,5 +1,5 @@
 import { queryOneWayMarketNames } from '@/entities/chain/api/markets-query'
-import { chainValidationSuite } from '@/entities/chain/model/validation'
+import { chainValidationSuite } from '@/entities/chain/model'
 import { ChainParams, queryFactory } from '@/shared/model/query'
 
 export const oneWayMarketNames = queryFactory({

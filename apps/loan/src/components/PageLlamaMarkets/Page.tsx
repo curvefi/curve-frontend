@@ -2,15 +2,16 @@ import Box from '@mui/material/Box'
 import { LllamalendSubHeader } from '@/components/PageLlamaMarkets/LllamalendSubHeader'
 import { MarketsTable } from '@/components/PageLlamaMarkets/MarketsTable'
 import { LlamalendSubFooter } from '@/components/PageLlamaMarkets/LlamalendSubFooter'
+import { invalidatePoolsQuery, usePoolsQuery } from '@/entities/pools'
+
+const onReload = () => invalidatePoolsQuery({})
 
 export const PageLlamaMarkets = () => {
-  const reload = () => {
-    console.log('reloading')
-  }
+  const { data, error, isLoading } = usePoolsQuery({})
   return (
     <Box>
       <LllamalendSubHeader />
-      <MarketsTable onReload={reload} />
+      {data && <MarketsTable onReload={onReload} data={data} />}
       <LlamalendSubFooter />
     </Box>
   )
