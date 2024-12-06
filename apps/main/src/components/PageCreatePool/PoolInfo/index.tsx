@@ -113,7 +113,7 @@ const TagButton = styled(Button)`
   &:hover:not(:disabled) {
     background: var(--dropdown--active--background-color);
     color: var(--button-text-contrast--color);
-    border-color: var(--button--border-color);
+    border-color: var(--nav_button--border-color);
     box-shadow: 3px 3px 0 var(--button--shadow-color);
   }
   &.active:not(:disabled) {
@@ -122,7 +122,7 @@ const TagButton = styled(Button)`
     &:hover {
       background-color: var(--button_filled-hover-contrast--background-color);
       color: var(--button-text-contrast--color);
-      border-color: var(--button--border-color);
+      border-color: var(--nav_button--border-color);
     }
   }
 `
