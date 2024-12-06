@@ -47,7 +47,7 @@ const IntegrationsComp = ({
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues({ ...formValues, ...updatedFormValues }, rChainId)
     },
-    [formValues, rChainId, setFormValues]
+    [formValues, rChainId, setFormValues],
   )
 
   const filterKeyLabel = useMemo(() => {

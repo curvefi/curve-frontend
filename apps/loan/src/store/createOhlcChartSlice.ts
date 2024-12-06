@@ -51,7 +51,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): void
     fetchMoreOhlcData(
       chainId: ChainId,
@@ -59,7 +59,7 @@ export type OhlcChartSlice = {
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ): void
     fetchPoolActivity(chainId: ChainId, poolAddress: string): void
     setActivityHidden(bool?: boolean): void
@@ -97,7 +97,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].timeOption = timeOption
-        })
+        }),
       )
     },
     fetchOhlcData: async (
@@ -107,19 +107,19 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       set(
         produce((state: State) => {
           state[sliceKey].chartFetchStatus = 'LOADING'
           state[sliceKey].refetchingCapped = DEFAULT_STATE.refetchingCapped
-        })
+        }),
       )
       const network = networks[chainId].id.toLowerCase()
 
       try {
         const llamaOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const llamaOhlcResponse: LlammaOhlcApiResponse = await llamaOhlcFetch.json()
 
@@ -182,13 +182,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 298
             state[sliceKey].lastFetchEndTime = llamaOhlcResponse.data[0].time
             state[sliceKey].chartFetchStatus = 'READY'
-          })
+          }),
         )
       } catch (error) {
         set(
           produce((state: State) => {
             state[sliceKey].chartFetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
       }
@@ -199,13 +199,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       interval: number,
       timeUnit: string,
       start: number,
-      end: number
+      end: number,
     ) => {
       const network = networks[chainId].id.toLowerCase()
 
       try {
         const llammaOhlcFetch = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`
+          `https://prices.curve.fi/v1/crvusd/llamma_ohlc/${network}/${poolAddress}?agg_number=${interval}&agg_units=${timeUnit}&start=${start}&end=${end}`,
         )
         const llammaOhlcResponse: LlammaOhlcApiResponse = await llammaOhlcFetch.json()
 
@@ -260,13 +260,13 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             state[sliceKey].baselinePriceData = [...baselinePriceArray, ...get()[sliceKey].baselinePriceData]
             state[sliceKey].refetchingCapped = ohlcDataArray.length < 299
             state[sliceKey].lastFetchEndTime = llammaOhlcResponse.data[0].time
-          })
+          }),
         )
       } catch (error) {
         set(
           produce((state: State) => {
             state[sliceKey].chartFetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
       }
@@ -275,7 +275,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].activityFetchStatus = 'LOADING'
-        })
+        }),
       )
 
       const network = networks[chainId].id.toLowerCase()
@@ -283,7 +283,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       try {
         const tradesFetch = await fetch(
           `https://prices.curve.fi/v1/crvusd/llamma_trades/${network}/${poolAddress}?page=1&per_page=100
-          `
+          `,
         )
         const lpTradesRes: LlammaTradesApiResponse = await tradesFetch.json()
         const sortedData = lpTradesRes.data.sort((a: LlammaTradeEvent, b: LlammaTradeEvent) => {
@@ -296,12 +296,12 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           set(
             produce((state: State) => {
               state[sliceKey].llammaTradesData = sortedData
-            })
+            }),
           )
         }
 
         const controllerEventsRes = await fetch(
-          `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`
+          `https://prices.curve.fi/v1/crvusd/llamma_events/${network}/${poolAddress}?page=1&per_page=100`,
         )
         const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
 
@@ -331,14 +331,14 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
             produce((state: State) => {
               state[sliceKey].llammaControllerData = formattedLiquidityEventsData
               state[sliceKey].activityFetchStatus = 'READY'
-            })
+            }),
           )
         }
       } catch (error) {
         set(
           produce((state: State) => {
             state[sliceKey].activityFetchStatus = 'ERROR'
-          })
+          }),
         )
         console.log(error)
       }
@@ -347,7 +347,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state: State) => {
           state[sliceKey].activityHidden = bool !== undefined ? bool : !get()[sliceKey].activityHidden
-        })
+        }),
       )
     },
     setChartExpanded: (bool?: boolean) => {
@@ -355,28 +355,28 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         produce((state: State) => {
           state[sliceKey].chartExpanded = bool !== undefined ? bool : !get()[sliceKey].chartExpanded
           state[sliceKey].activityHidden = false
-        })
+        }),
       )
     },
     toggleOraclePriceVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].oraclePriceVisible = !get()[sliceKey].oraclePriceVisible
-        })
+        }),
       )
     },
     toggleLiqRangeCurrentVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].liqRangeCurrentVisible = !get()[sliceKey].liqRangeCurrentVisible
-        })
+        }),
       )
     },
     toggleLiqRangeNewVisible: () => {
       set(
         produce((state: State) => {
           state[sliceKey].liqRangeNewVisible = !get()[sliceKey].liqRangeNewVisible
-        })
+        }),
       )
     },
     resetState: () => {

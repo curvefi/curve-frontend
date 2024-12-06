@@ -49,7 +49,7 @@ const FormCompensation = ({
       etherContract: EtherContract,
       idx: number,
       signerAddress: string,
-      signer: ContractRunner
+      signer: ContractRunner,
     ) => {
       const { contractAddress, token, poolId } = etherContract
       const defaultVestedTotal = { poolId, amount: 0 }
@@ -69,7 +69,7 @@ const FormCompensation = ({
         return defaultVestedTotal
       }
     },
-    [contracts]
+    [contracts],
   )
 
   const getVestContract = useCallback(
@@ -81,14 +81,14 @@ const FormCompensation = ({
         // @ts-ignore
         const iface = new Interface(abi)
         const vestedTotals = await Promise.all(
-          vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer))
+          vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
         )
         setVestedTotals(groupBy(vestedTotals, ({ poolId }) => poolId))
       } catch (error) {
         console.error(error)
       }
     },
-    [getVestedAmount, provider]
+    [getVestedAmount, provider],
   )
 
   useEffect(() => {

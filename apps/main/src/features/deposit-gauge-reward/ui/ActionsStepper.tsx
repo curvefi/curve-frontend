@@ -31,15 +31,12 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
   const rewardTokenId = watch('rewardTokenId')
   const step = watch('step')
 
-  const {
-    mutate: depositRewardApprove,
-    isPending: isPendingDepositRewardApprove,
-  } = useDepositRewardApprove({ chainId, poolId })
+  const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
+    chainId,
+    poolId,
+  })
 
-  const {
-    mutate: depositReward,
-    isPending: isPendingDepositReward,
-  } = useDepositReward({ chainId, poolId })
+  const { mutate: depositReward, isPending: isPendingDepositReward } = useDepositReward({ chainId, poolId })
 
   const [latestTxInfo, setLatestTxInfo] = useState<TxInfo | null>(null)
 
@@ -61,7 +58,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
       },
-      { onSuccess: onApproveSuccess, onError: onApproveError }
+      { onSuccess: onApproveSuccess, onError: onApproveError },
     )
   }, [depositRewardApprove, getValues, setError, setValue, scanTxPath])
 
@@ -83,7 +80,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         onError: (error: Error) => {
           setError('root.serverError', { message: error.message })
         },
-      }
+      },
     )
   }, [depositReward, getValues, setError, setValue, scanTxPath])
 
@@ -122,7 +119,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         status: getStepStatus(
           [DepositRewardStep.CONFIRMATION, DepositRewardStep.DEPOSIT].includes(step),
           step === DepositRewardStep.APPROVAL && (isSubmitting || isPendingDepositRewardApprove),
-          isValid && !isSubmitting
+          isValid && !isSubmitting,
         ),
         type: 'action',
         content:
@@ -137,7 +134,7 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         status: getStepStatus(
           step === DepositRewardStep.CONFIRMATION,
           step === DepositRewardStep.DEPOSIT && isPendingDepositReward,
-          isValid && !isPendingDepositReward && !!isDepositRewardApproved
+          isValid && !isPendingDepositReward && !!isDepositRewardApproved,
         ),
         type: 'action',
         content: step === DepositRewardStep.CONFIRMATION ? t`Deposited` : t`Deposit`,

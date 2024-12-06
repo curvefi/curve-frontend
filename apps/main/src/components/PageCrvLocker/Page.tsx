@@ -37,7 +37,7 @@ const Page: NextPage = () => {
       const pathname = getPath(params, `${ROUTE.PAGE_LOCKER}/${formType}`)
       navigate(pathname)
     },
-    [navigate, params]
+    [navigate, params],
   )
 
   const fetchData = useCallback(
@@ -52,7 +52,7 @@ const Page: NextPage = () => {
         }
       }
     },
-    [fetchVecrvInfo, rFormType, toggleForm]
+    [fetchVecrvInfo, rFormType, toggleForm],
   )
 
   // onMount

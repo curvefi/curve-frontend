@@ -13,7 +13,6 @@ import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/index'
-import type { Locale } from '@/lib/i18n'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
@@ -23,6 +22,7 @@ import { isMobile, removeExtraSpaces } from '@/utils/helpers'
 import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -46,21 +46,6 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth, updateGlobalStoreByKey])
-
-  const initOnboardApi = useCallback(
-    async (locale: Locale['value'], themeType?: Theme) => {
-      let theme = 'system'
-      if (themeType === 'default' || themeType === 'chad') {
-        theme = 'light'
-      } else if (themeType === 'dark') {
-        theme = 'dark'
-      }
-
-      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
-      updateWalletStateByKey('onboard', onboardInstance)
-    },
-    [updateWalletStateByKey]
-  )
 
   // update on every state change
   useEffect(() => {
@@ -125,24 +110,24 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (
-    <div suppressHydrationWarning>
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <OverlayProvider>
+                <Page>
+                  <Component />
+                </Page>
+                <GlobalStyle />
+              </OverlayProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
       </ThemeProvider>
     </div>
   )

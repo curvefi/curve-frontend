@@ -94,10 +94,10 @@ const LoanDeleverage = ({
         llamma,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
         updatedMaxSlippage || maxSlippage,
-        isFullReset
+        isFullReset,
       )
     },
-    [curve, llamma, llammaId, maxSlippage, setFormValues]
+    [curve, llamma, llammaId, maxSlippage, setFormValues],
   )
 
   const handleBtnClickRepay = useCallback(
@@ -125,12 +125,12 @@ const LoanDeleverage = ({
                 navigate(getCollateralListPathname(params))
               }
             }}
-          />
+          />,
         )
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues]
+    [activeKey, collateralName, fetchStepRepay, navigate, notifyNotification, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -140,7 +140,7 @@ const LoanDeleverage = ({
       llamma: Llamma,
       formStatus: FormStatus,
       formValues: FormValues,
-      detailInfo: FormDetailInfo
+      detailInfo: FormDetailInfo,
     ) => {
       const { isComplete, step } = formStatus
       const isValidForm =
@@ -182,7 +182,7 @@ const LoanDeleverage = ({
 
       return ['REPAY'].map((k) => stepsObj[k])
     },
-    [userState?.collateral, confirmHighPriceImpact, maxSlippage, handleBtnClickRepay]
+    [userState?.collateral, confirmHighPriceImpact, maxSlippage, handleBtnClickRepay],
   )
 
   // onMount
@@ -235,7 +235,7 @@ const LoanDeleverage = ({
       }
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   // steps

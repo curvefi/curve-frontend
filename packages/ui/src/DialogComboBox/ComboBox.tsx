@@ -49,7 +49,7 @@ function ComboBox<T extends object>({
       listBoxRef,
       popoverRef,
     },
-    state
+    state,
   )
 
   const { buttonProps: closeButtonProps } = useButton(
@@ -58,7 +58,7 @@ function ComboBox<T extends object>({
         if (typeof onClose === 'function') onClose()
       },
     },
-    closeButtonRef
+    closeButtonRef,
   )
 
   return (

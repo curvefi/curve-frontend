@@ -9,7 +9,7 @@ const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, ex
 
 describe('Header', () => {
   describe('Desktop', () => {
-    let isDarkMode: boolean  // when running locally, the dark mode might be the default
+    let isDarkMode: boolean // when running locally, the dark mode might be the default
 
     beforeEach(() => {
       cy.viewport(...oneDesktopViewport())
@@ -22,7 +22,9 @@ describe('Header', () => {
     it('should have the right size', () => {
       cy.get("[data-testid='main-nav']").invoke('outerHeight').should('equal', expectedMainNavHeight)
       cy.get("[data-testid='subnav']").invoke('outerHeight').should('equal', expectedSubNavHeight)
-      cy.get(`header`).invoke('outerHeight').should('equal', expectedSubNavHeight + expectedMainNavHeight)
+      cy.get(`header`)
+        .invoke('outerHeight')
+        .should('equal', expectedSubNavHeight + expectedMainNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
     })
 
@@ -36,16 +38,14 @@ describe('Header', () => {
         cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
 
         // check font change
-        cy.get(`[data-testid='navigation-connect-wallet']`).then(
-          ($el) => {
-            const font2 = $el.css('font-family')
-            expect(font1).not.to.equal(font2)
+        cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
+          const font2 = $el.css('font-family')
+          expect(font1).not.to.equal(font2)
 
-            // reset theme
-            cy.get(`[data-testid='theme-switcher-chad']`).click()
-            cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
-          }
-        )
+          // reset theme
+          cy.get(`[data-testid='theme-switcher-chad']`).click()
+          cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
+        })
       })
     })
   })
@@ -65,7 +65,7 @@ describe('Header', () => {
       cy.get(`header`).invoke('outerHeight').should('equal', expectedMobileNavHeight)
       cy.get("[data-testid='navigation-connect-wallet']").invoke('outerHeight').should('equal', expectedConnectHeight)
 
-      cy.url().then(url => {
+      cy.url().then((url) => {
         const clickIndex = Cypress.env('APP') == 'dao' ? 0 : 1
         cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
@@ -82,12 +82,10 @@ describe('Header', () => {
         cy.get(`[data-testid='theme-switcher-button-chad']`).should('have.class', 'current')
 
         // check font change
-        cy.get(`[data-testid='sidebar-settings']`).then(
-          ($el) => {
-            const font2 = $el.css('font-family')
-            expect(font1).not.to.equal(font2)
-          }
-        )
+        cy.get(`[data-testid='sidebar-settings']`).then(($el) => {
+          const font2 = $el.css('font-family')
+          expect(font1).not.to.equal(font2)
+        })
       })
     })
   })

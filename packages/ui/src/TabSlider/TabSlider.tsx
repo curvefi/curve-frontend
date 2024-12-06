@@ -47,7 +47,7 @@ const TabSlider = <T,>({ tabs, activeTab, onTabChange, isTabVisible = () => true
       onTabChange(tabs[idx].value)
       setSelectedTabIdx(idx)
     },
-    [onTabChange, tabs]
+    [onTabChange, tabs],
   )
 
   useEffect(() => {

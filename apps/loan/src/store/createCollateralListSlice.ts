@@ -72,7 +72,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
         {
           tokens: [SEARCH_TERM['llamma.coinAddresses']],
           other: [SEARCH_TERM['llamma.address'], SEARCH_TERM['llamma.controller']],
-        }
+        },
       )
 
       sliceState.setStateByKeys({
@@ -110,9 +110,9 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
             const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
             const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
-            return totalCollateralUsd + Number(totalStablecoin ?? 0)  
+            return totalCollateralUsd + Number(totalStablecoin ?? 0)
           },
-          [order]
+          [order],
         )
       }
 

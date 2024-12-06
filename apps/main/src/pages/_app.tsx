@@ -24,6 +24,7 @@ import useStore from '@/store/useStore'
 import { QueryProvider } from '@/ui/QueryProvider'
 import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -54,7 +55,7 @@ function CurveApp({ Component }: AppProps) {
 
   const handleResizeListener = useCallback(() => {
     updateGlobalStoreByKey('isMobile', isMobile())
-    if (window.innerWidth) setPageWidth((window.innerWidth))
+    if (window.innerWidth) setPageWidth(window.innerWidth)
   }, [setPageWidth, updateGlobalStoreByKey])
 
   const fetchPoolsVolumeTvl = useCallback(
@@ -150,7 +151,7 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <div suppressHydrationWarning>
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>

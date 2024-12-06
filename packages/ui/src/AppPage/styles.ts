@@ -47,10 +47,10 @@ export const AppPageFormsWrapper = styled(Box)<{ navHeight: number | string }>`
 
   @media (min-width: ${breakpoints.md}rem) {
     align-self: flex-start;
-    min-width: var(--loan-form-min-width);
-    max-width: var(--loan-form-min-width);
+    min-width: 23.3125rem;
+    max-width: 23.3125rem;
     //position: sticky;
-    top: ${({ navHeight }) => typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`};
+    top: ${({ navHeight }) => (typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`)};
   }
 `
 

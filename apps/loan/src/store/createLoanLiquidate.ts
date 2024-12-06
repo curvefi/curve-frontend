@@ -26,20 +26,20 @@ export type LoanLiquidateSlice = {
       llamma: Llamma,
       llammaId: string,
       maxSlippage: string,
-      userWalletBalances: UserWalletBalances
+      userWalletBalances: UserWalletBalances,
     ): Promise<void>
 
     // step
     fetchStepApprove(
       curve: Curve,
       llamma: Llamma,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ hashes: string[]; error: string } | undefined>
     fetchStepLiquidate(
       curve: Curve,
       llamma: Llamma,
       liquidationAmt: string,
-      maxSlippage: string
+      maxSlippage: string,
     ): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
@@ -83,7 +83,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       llamma: Llamma,
       llammaId: string,
       maxSlippage: string,
-      userWalletBalances: UserWalletBalances
+      userWalletBalances: UserWalletBalances,
     ) => {
       const resp = await networks[chainId].api.loanLiquidate.tokensToLiquidate(chainId, llamma)
       get()[sliceKey].setStateByKey('liquidationAmt', resp.tokensToLiquidate)

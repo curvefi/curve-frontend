@@ -64,7 +64,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         navigate(getLoanCreatePathname(params, rCollateralId))
       }
     },
-    [llamma, loanExists, navigate, params, rCollateralId, resetUserDetailsState]
+    [llamma, loanExists, navigate, params, rCollateralId, resetUserDetailsState],
   )
 
   // tabs positions

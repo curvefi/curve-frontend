@@ -31,7 +31,7 @@ function useDebounceValue(initialVal: string, delay: number, callback: (value: s
         }
       }
     },
-    [callback, delay, timer]
+    [callback, delay, timer],
   )
 
   return [val, handleInputChange] as const

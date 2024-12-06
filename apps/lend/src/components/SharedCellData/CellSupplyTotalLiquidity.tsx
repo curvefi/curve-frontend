@@ -13,8 +13,8 @@ const CellSupplyTotalLiquidity = ({ rChainId, rOwmId }: { rChainId: ChainId; rOw
       {typeof resp === 'undefined'
         ? '-'
         : error
-        ? '?'
-        : formatNumber(totalLiquidity, { currency: 'USD', notation: 'compact' })}
+          ? '?'
+          : formatNumber(totalLiquidity, { currency: 'USD', notation: 'compact' })}
     </>
   )
 }

@@ -159,8 +159,20 @@ const DEFAULT_STATE: SliceState = {
 const VAULT_ADDRESS = '0x0655977FEb2f289A4aB78af67BAB0d17aAb84367'
 const YEAR = 86400 * 365.25 * 100
 const VAULT_ABI = [
-  { stateMutability: 'view', type: 'function', name: 'profitUnlockingRate', inputs: [], outputs: [{ name: '', type: 'uint256' }] },
-  { stateMutability: 'view', type: 'function', name: 'totalSupply', inputs: [], outputs: [{ name: '', type: 'uint256' }] },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'profitUnlockingRate',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
+  {
+    stateMutability: 'view',
+    type: 'function',
+    name: 'totalSupply',
+    inputs: [],
+    outputs: [{ name: '', type: 'uint256' }],
+  },
 ]
 
 /**
@@ -172,7 +184,9 @@ async function _fetchSavingsYield(provider?: Provider | null): Promise<PricesYie
   if (provider) {
     const vault = new Contract(VAULT_ADDRESS, VAULT_ABI, provider)
     const [unlock_amount, supply, block] = await Promise.all([
-      vault.profitUnlockingRate(), vault.totalSupply(), provider.getBlock('latest')
+      vault.profitUnlockingRate(),
+      vault.totalSupply(),
+      provider.getBlock('latest'),
     ])
     return {
       last_updated: new Date(block.timestamp).toISOString(),

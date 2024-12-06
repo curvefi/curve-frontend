@@ -69,7 +69,7 @@ function Thumb(props: { index: number; state: SliderState; trackRef: React.RefOb
       trackRef,
       inputRef,
     },
-    state
+    state,
   )
 
   const { focusProps, isFocusVisible } = useFocusRing()

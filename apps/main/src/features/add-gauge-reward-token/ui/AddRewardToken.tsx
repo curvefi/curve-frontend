@@ -6,11 +6,7 @@ import { zeroAddress } from 'viem'
 import { addGaugeRewardTokenValidationSuite } from '@/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/features/add-gauge-reward-token/types'
 import { DistributorInput, EstimatedGasInfo, FormActions, TokenSelector } from '@/features/add-gauge-reward-token/ui'
-import {
-  useAddRewardToken,
-  useGaugeRewardsDistributors,
-  useIsDepositRewardAvailable
-} from '@/entities/gauge'
+import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/entities/gauge'
 import { useSignerAddress } from '@/entities/signer'
 import { formDefaultOptions } from '@/shared/model/form'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/ui/styled-containers'
@@ -58,10 +54,10 @@ export const AddRewardToken: React.FC<AddRewardTokenProps> = ({ chainId, poolId 
           onError: (error: Error) => {
             setError('root.serverError', { type: 'manual', message: error.message })
           },
-        }
+        },
       )
     },
-    [addRewardToken, setError]
+    [addRewardToken, setError],
   )
 
   const isFormDisabled = !isDepositRewardAvailable

@@ -98,7 +98,8 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
     },
 
     // slice helpers
-    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => get().setAppStateByActiveKey(sliceKey, key, activeKey, value),
+    setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) =>
+      get().setAppStateByActiveKey(sliceKey, key, activeKey, value),
     setStateByKey: <T>(key: StateKey, value: T) => get().setAppStateByKey(sliceKey, key, value),
     setStateByKeys: (sliceState: Partial<SliceState>) => get().setAppStateByKeys(sliceKey, sliceState),
     resetState: () => get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE)),

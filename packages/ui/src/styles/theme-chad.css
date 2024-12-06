@@ -54,9 +54,6 @@ body.theme-chad {
   /* Buttons */
   --button--color: var(--text-600);
   --button--background-color: var(--primary-700);
-  --button--font: var(--font-display);
-  --button--font-size: small;
-  --button--font-weight: var(--normal);
   --button--shadow-color: var(--text-600);
   --button--text-transform: uppercase;
   --button_filled--hover--background-color: var(--white);

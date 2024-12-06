@@ -1,3 +1,3 @@
 import { oneWayMarketNames } from '../model'
 
-export const { useQuery: useOneWayMarketNames } = oneWayMarketNames;
+export const { useQuery: useOneWayMarketNames } = oneWayMarketNames

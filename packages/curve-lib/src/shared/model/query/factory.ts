@@ -7,8 +7,13 @@ import { assertValidity as sharedAssertValidity, checkValidity, FieldName, Field
 import { REFRESH_INTERVAL } from '@/shared/model/time'
 import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
 
-export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey, assertValidity: (data: TParams, fields?: TField[]) => TQuery) {
-  const queryParams = (Object.fromEntries(queryKey.flatMap(i => i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(
+  queryKey: TKey,
+  assertValidity: (data: TParams, fields?: TField[]) => TQuery,
+) {
+  const queryParams = Object.fromEntries(
+    queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : [])),
+  ) as TParams
   return assertValidity(queryParams)
 }
 
@@ -19,15 +24,28 @@ export function queryFactory<
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
   TField extends FieldName<TQuery> = FieldName<TQuery>,
   TGroup extends string = string,
-  TCallback extends CB = CB<TQuery, TField[]>
+  TCallback extends CB = CB<TQuery, TField[]>,
 >({
-    queryFn, queryKey, staleTime, refetchInterval, validationSuite, dependencies, refetchOnWindowFocus, refetchOnMount
-  }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<TQuery, TKey, TData, TParams> {
-
+  queryFn,
+  queryKey,
+  staleTime,
+  refetchInterval,
+  validationSuite,
+  dependencies,
+  refetchOnWindowFocus,
+  refetchOnMount,
+}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
+  TQuery,
+  TKey,
+  TData,
+  TParams
+> {
   // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
-  const assertValidity = (data: TParams, fields?: TField[]) => (sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery)
+  const assertValidity = (data: TParams, fields?: TField[]) =>
+    sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery
 
-  const isEnabled = (params: TParams) => checkValidity(validationSuite, params) && !dependencies?.(params).some(key => !queryClient.getQueryData(key))
+  const isEnabled = (params: TParams) =>
+    checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
 
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
@@ -50,8 +68,8 @@ export function queryFactory<
     isEnabled: isEnabled,
     queryKey,
     getQueryOptions,
-    getQueryData: params => queryClient.getQueryData(queryKey(params)),
+    getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
     useQuery: createQueryHook(getQueryOptions),
-    invalidate: params => queryClient.invalidateQueries({ queryKey: queryKey(params) })
+    invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }
 }

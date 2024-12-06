@@ -106,7 +106,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
       chartTimeSettings.end,
       chartTimeSettings.start,
       chartCombinations,
-      isFlipped
+      isFlipped,
     )
     fetchPricesApiActivity(rChainId, pricesApiPoolData.address, chartCombinations)
   }
@@ -122,7 +122,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
       chartTimeSettings.end,
       chartTimeSettings.start,
       chartCombinations,
-      isFlipped
+      isFlipped,
     )
   }, [
     rChainId,
@@ -151,7 +151,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
         +startTime,
         endTime,
         chartCombinations,
-        isFlipped
+        isFlipped,
       )
     },
     [
@@ -164,7 +164,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
       selectedChartIndex,
       timeOption,
       timeUnit,
-    ]
+    ],
   )
 
   useEffect(() => {
@@ -185,7 +185,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
               return {
                 label: `${referenceTokenSymbol} / ${mainTokenSymbol}`,
               }
-            })
+            }),
           )
         : []
     setSelectChartList(chartsList)
@@ -199,7 +199,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
 
   const flipChart = () => {
     const updatedList = isFlipped.map((item, index) =>
-      index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2]
+      index === selectedChartIndex - 2 ? !isFlipped[selectedChartIndex - 2] : isFlipped[selectedChartIndex - 2],
     )
     setIsFlipped(updatedList)
   }

@@ -4,15 +4,16 @@ export const _parseRouteAndIsActive = (
   pages: AppRoute[],
   routerLocalePathname: string,
   routerPathname: string,
-  routerNetwork: string | undefined
-) => pages.map(({ route, label }) => {
-  const rPathname = routerPathname.split('?')[0] ?? ''
-  const routePathname = route.split('?')[0] ?? ''
-  const parsedRouterNetwork = routerNetwork || 'ethereum'
+  routerNetwork: string | undefined,
+) =>
+  pages.map(({ route, label }) => {
+    const rPathname = routerPathname.split('?')[0] ?? ''
+    const routePathname = route.split('?')[0] ?? ''
+    const parsedRouterNetwork = routerNetwork || 'ethereum'
 
-  return {
-    route: `${routerLocalePathname}/${parsedRouterNetwork}${route}`,
-    isActive: rPathname && routePathname ? rPathname.endsWith(routePathname) : false,
-    label: label(),
-  }
-})
+    return {
+      route: `${routerLocalePathname}/${parsedRouterNetwork}${route}`,
+      isActive: rPathname && routePathname ? rPathname.endsWith(routePathname) : false,
+      label: label(),
+    }
+  })

@@ -67,7 +67,9 @@ const TableRow: FunctionComponent<TableRowProps> = ({
       {columnKeys.map((columnKey, idx) => {
         return (
           <React.Fragment key={`tRow${columnKey}${idx}`}>
-            {columnKey === COLUMN_KEYS.inPool && <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />}
+            {columnKey === COLUMN_KEYS.inPool && (
+              <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
+            )}
             {columnKey === COLUMN_KEYS.poolName && (
               <Td $first={!showInPoolColumn}>
                 <PoolLabel

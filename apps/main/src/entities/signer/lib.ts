@@ -14,7 +14,7 @@ export const useIsSignerConnected = () => {
 }
 
 export const useTokensBalances = (
-  tokens: (Address | undefined)[]
+  tokens: (Address | undefined)[],
 ): { data: (string | undefined)[]; isLoading: boolean } => {
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)

@@ -29,14 +29,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const LoanCollateralAdd = ({
-  rChainId,
-  rOwmId,
-  api,
-  isLoaded,
-  market,
-  userActiveKey,
-}: PageContentProps) => {
+const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -64,7 +57,7 @@ const LoanCollateralAdd = ({
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setFormValues(isLoaded ? api : null, market, isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues)
     },
-    [api, isLoaded, market, setFormValues]
+    [api, isLoaded, market, setFormValues],
   )
 
   const handleBtnClickAdd = useCallback(
@@ -82,7 +75,7 @@ const LoanCollateralAdd = ({
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues]
+    [activeKey, fetchStepIncrease, notifyNotification, updateFormValues],
   )
 
   const getSteps = useCallback(
@@ -93,7 +86,7 @@ const LoanCollateralAdd = ({
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
@@ -113,7 +106,7 @@ const LoanCollateralAdd = ({
               userWallet={userBalances}
               type="change"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -152,7 +145,7 @@ const LoanCollateralAdd = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, notifyNotification, userBalances, userDetails?.state]
+    [fetchStepApprove, handleBtnClickAdd, notifyNotification, userBalances, userDetails?.state],
   )
 
   // onMount

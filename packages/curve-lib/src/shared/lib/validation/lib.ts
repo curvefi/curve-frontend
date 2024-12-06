@@ -23,10 +23,9 @@ export function assertValidity<D extends object, S extends Suite<any, any>>(
   return data as D
 }
 
-export const createValidationSuite = <
-  T extends object,
-  TGroupName extends string = string,
->(validationGroup: (data: T) => void): Suite<FieldName<T>, TGroupName> =>
+export const createValidationSuite = <T extends object, TGroupName extends string = string>(
+  validationGroup: (data: T) => void,
+): Suite<FieldName<T>, TGroupName> =>
   create<FieldName<T>, TGroupName>((data: T, fieldsList?: FieldName<T>[]) => {
     only(fieldsList)
     validationGroup(data)

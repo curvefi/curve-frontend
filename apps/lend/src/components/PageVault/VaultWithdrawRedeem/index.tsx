@@ -64,7 +64,7 @@ const VaultWithdrawRedeem = ({
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, market, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -72,18 +72,24 @@ const VaultWithdrawRedeem = ({
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleFormChange = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       reset({ ...updatedFormValues, amountError: '' })
     },
-    [reset]
+    [reset],
   )
 
   const handleBtnClickWithdrawRedeem = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
 
       let notifyMessage = t`withdraw ${formValues.amount} ${market.borrowed_token.symbol}`
@@ -106,13 +112,13 @@ const VaultWithdrawRedeem = ({
             description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => reset({})}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset]
+    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -123,7 +129,7 @@ const VaultWithdrawRedeem = ({
       market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError, isFullWithdraw } = formValues
@@ -153,7 +159,7 @@ const VaultWithdrawRedeem = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickWithdrawRedeem]
+    [handleBtnClickWithdrawRedeem],
   )
 
   // onMount

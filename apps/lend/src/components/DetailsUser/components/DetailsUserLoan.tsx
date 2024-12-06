@@ -89,11 +89,13 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
               <ListInfoItemsWrapper>
                 {contents.map((groupedContents, idx) => (
                   <ListInfoItems key={`contents${idx}`}>
-                    {groupedContents.filter(({show}) => _showContent(show)).map(({ titleKey, content }, idx) => (
-                      <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
-                        {content}
-                      </ListInfoItem>
-                    ))}
+                    {groupedContents
+                      .filter(({ show }) => _showContent(show))
+                      .map(({ titleKey, content }, idx) => (
+                        <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                          {content}
+                        </ListInfoItem>
+                      ))}
                   </ListInfoItems>
                 ))}
               </ListInfoItemsWrapper>

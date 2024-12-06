@@ -1,5 +1,6 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
+import { RootCssProperties } from '@ui-kit/themes/typography'
 
 const injectIpfsPrefix = `
 (function () {
@@ -47,7 +48,7 @@ export default class CurveDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html style={RootCssProperties}>
         <Head>
           {/* Primary Meta Tags */}
           <meta name="title" content="Curve.fi" />

@@ -137,13 +137,15 @@ const AppExternalLink = styled(ExternalLink)`
   text-transform: initial;
   text-decoration: none;
 
-  transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
-    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+  transition:
+    background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    border-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
+    color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms,
     opacity 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
   :hover:not(:disabled) {
     color: var(--button--color);
-    border: 1px solid var(--button--border-color);
+    border: 1px solid var(--nav_button--border-color);
     background-color: var(--button_filled--hover--background-color);
   }
 `

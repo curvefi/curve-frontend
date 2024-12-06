@@ -43,7 +43,7 @@ const FormDepositStake = ({
   const activeKey = useStore((state) => state.poolDeposit.activeKey)
   const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
   const formLpTokenExpected = useStore(
-    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED
+    (state) => state.poolDeposit.formLpTokenExpected[activeKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED,
   )
   const formStatus = useStore((state) => state.poolDeposit.formStatus)
   const formValues = useStore((state) => state.poolDeposit.formValues)
@@ -67,7 +67,7 @@ const FormDepositStake = ({
     (
       updatedFormValues: Partial<FormValues>,
       loadMaxAmount: LoadMaxAmount | null,
-      updatedMaxSlippage: string | null
+      updatedMaxSlippage: string | null,
     ) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
@@ -79,10 +79,10 @@ const FormDepositStake = ({
         updatedFormValues,
         loadMaxAmount,
         seed.isSeed,
-        updatedMaxSlippage || maxSlippage
+        updatedMaxSlippage || maxSlippage,
       )
     },
-    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues]
+    [curve, maxSlippage, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
 
   const handleApproveClick = useCallback(
@@ -92,7 +92,7 @@ const FormDepositStake = ({
       await fetchStepApprove(activeKey, curve, 'DEPOSIT_STAKE', pool, formValues)
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepApprove, notifyNotification]
+    [fetchStepApprove, notifyNotification],
   )
 
   const handleDepositStakeClick = useCallback(
@@ -121,7 +121,7 @@ const FormDepositStake = ({
       slippageConfirmed: boolean,
       slippage: Slippage,
       steps: Step[],
-      maxSlippage: string
+      maxSlippage: string,
     ) => {
       const haveFormValues = formValues.amounts.some((a) => Number(a.value) > 0)
       const isValid = haveFormValues && !formStatus.error
@@ -180,7 +180,7 @@ const FormDepositStake = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [handleApproveClick, handleDepositStakeClick]
+    [handleApproveClick, handleDepositStakeClick],
   )
 
   // onMount
@@ -227,7 +227,7 @@ const FormDepositStake = ({
         slippageConfirmed,
         slippage,
         steps,
-        maxSlippage
+        maxSlippage,
       )
       setSteps(updatedSteps)
     }

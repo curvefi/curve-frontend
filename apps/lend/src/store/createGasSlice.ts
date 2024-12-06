@@ -96,7 +96,8 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
               curve.setCustomFeeData(customFeeData)
             }
           }
-        } else if (chainId === 10) { // Optimism
+        } else if (chainId === 10) {
+          // Optimism
           const provider = get().wallet.getProvider('')
 
           if (provider) {
@@ -216,7 +217,7 @@ async function calcBasePlusPriority(
     gasPrice: number | null
     max: number[] | null
     priority: number[] | null
-  }
+  },
 ) {
   let result: Pick<GasInfo, 'basePlusPriority' | 'basePlusPriorityL1' | 'l1GasPriceWei' | 'l2GasPriceWei'> = {
     basePlusPriority: [] as number[],

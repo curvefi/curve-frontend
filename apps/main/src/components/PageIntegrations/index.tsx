@@ -46,7 +46,12 @@ const IntegrationsComp = ({
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
-  const { filterKey, filterNetworkId } = parseSearchParams(searchParams, rChainId, visibleNetworksList, integrationsTags)
+  const { filterKey, filterNetworkId } = parseSearchParams(
+    searchParams,
+    rChainId,
+    visibleNetworksList,
+    integrationsTags,
+  )
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {

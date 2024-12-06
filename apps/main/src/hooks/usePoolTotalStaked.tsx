@@ -17,7 +17,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
       setStateByActiveKey('stakedMapper', address, { ...value, timestamp: Date.now() })
     },
-    [address, setStateByActiveKey]
+    [address, setStateByActiveKey],
   )
 
   const getContract = useCallback(
@@ -31,7 +31,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
         console.error(error)
       }
     },
-    [updateTotalStakeValue]
+    [updateTotalStakeValue],
   )
 
   const getTotalSupply = useCallback(
@@ -50,7 +50,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
         console.error(error)
       }
     },
-    [updateTotalStakeValue]
+    [updateTotalStakeValue],
   )
 
   useEffect(() => {

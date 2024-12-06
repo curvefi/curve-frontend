@@ -106,7 +106,7 @@ export function useNetworkFromUrl() {
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const hash = window.location.hash
-  return useMemo(() =>{
+  return useMemo(() => {
     const restPathnames = hash?.substring(2)?.split('/') ?? []
     const firstPath = (restPathnames[0] ?? '').toLowerCase() as NetworkEnum
     const secondPath = (restPathnames[1] ?? '').toLowerCase() as NetworkEnum

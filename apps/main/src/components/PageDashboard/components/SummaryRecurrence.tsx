@@ -62,7 +62,7 @@ const TotalRecurrence: React.FC<Props> = ({ title }) => {
         prev.totalUsd += profitsTotalUsd
         return prev
       },
-      { tokens: {}, totalUsd: 0 } as TotalAll
+      { tokens: {}, totalUsd: 0 } as TotalAll,
     )
   }, [dashboardDataMapper])
 

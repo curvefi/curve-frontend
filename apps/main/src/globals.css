@@ -1,14 +1,1 @@
-@import url('//fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 @import '@/ui/styles/base.css';
-
-@font-face {
-    font-family: 'Commodore';
-    src: url('/fonts/commodore/commodore-pixeled.ttf');
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-}
-
-:root {
-    --loan-form-min-width: 23.3125rem;
-}

@@ -48,7 +48,7 @@ const ModalDialog = ({
         if (typeof state.close === 'function') state.close()
       },
     },
-    closeButtonRef
+    closeButtonRef,
   )
 
   const showCloseButton = !!state.close

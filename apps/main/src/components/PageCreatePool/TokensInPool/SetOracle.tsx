@@ -29,7 +29,7 @@ type OracleInputProps = {
 
 const SetOracle = () => {
   const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
-    (state) => state.createPool.tokensInPool
+    (state) => state.createPool.tokensInPool,
   )
 
   return (

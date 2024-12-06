@@ -25,12 +25,13 @@ interface TypographyDisplayProps {
   [key: string]: any
 }
 
-const Item = ({title, value}:{ title: string, value: ReactNode }) => value && (
-  <ListItem>
-    <Typography variant="headingXsBold">{title}: &nbsp;</Typography>
-    <Typography variant="headingXsMedium">{value}</Typography>
-  </ListItem>
-)
+const Item = ({ title, value }: { title: string; value: ReactNode }) =>
+  value && (
+    <ListItem>
+      <Typography variant="headingXsBold">{title}: &nbsp;</Typography>
+      <Typography variant="headingXsMedium">{value}</Typography>
+    </ListItem>
+  )
 
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
   const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[variant]
@@ -63,8 +64,7 @@ const createStory = (category: string): Story => ({
             .filter((t) => t.includes(category))
             .map((variant) => (
               <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
-            ),
-          )}
+            ))}
         </Stack>
       )
     },

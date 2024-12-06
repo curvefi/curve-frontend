@@ -23,7 +23,7 @@ export const SidebarSection: FunctionComponent<SidebarSectionProps> = ({ pages, 
     }
     sx={{ marginTop: 3 }}
   >
-    {pages?.map((page) => <SidebarItem child key={page.route} page={page}  />)}
+    {pages?.map((page) => <SidebarItem child key={page.route} page={page} />)}
     {children}
   </List>
 )

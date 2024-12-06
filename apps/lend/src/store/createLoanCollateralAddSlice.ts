@@ -169,7 +169,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         activeKey,
         provider,
         market,
-        formValues.collateral
+        formValues.collateral,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

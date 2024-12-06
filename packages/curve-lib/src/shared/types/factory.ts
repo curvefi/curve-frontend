@@ -9,17 +9,13 @@ import type { REFRESH_INTERVAL } from '@/shared/model/time'
 
 // Checks if T is a string literal or an object with one property
 type IsLiteralOrSingleKeyObject<T> =
-  IsStringLiteral<T> extends true
-    ? true
-    : T extends SingleKeyObject<T>
-        ? true
-        : false
+  IsStringLiteral<T> extends true ? true : T extends SingleKeyObject<T> ? true : false
 
 // Recursively checks each element in the tuple
 type AreAllElementsLiteralOrSinglePropertyObject<T extends readonly unknown[]> = T extends readonly [
-    infer First,
-    ...infer Rest,
-  ]
+  infer First,
+  ...infer Rest,
+]
   ? IsLiteralOrSingleKeyObject<First> extends true
     ? AreAllElementsLiteralOrSinglePropertyObject<Rest>
     : false
@@ -34,7 +30,6 @@ export type QueryKeyTuple<T extends readonly unknown[]> = T extends readonly [..
       : never // Elements fail the check
   : never // Not an array
 
-
 export type QueryFactoryInput<
   TValidParams extends object,
   TKey extends readonly unknown[],
@@ -42,7 +37,7 @@ export type QueryFactoryInput<
   TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
   TField extends string = FieldName<TValidParams>,
   TGroup extends string = string,
-  TCallback extends CB = CB<TValidParams, TField[]>
+  TCallback extends CB = CB<TValidParams, TField[]>,
 > = {
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, TGroup, TCallback>
@@ -59,7 +54,7 @@ export type QueryFactoryOutput<
   TKey extends readonly unknown[],
   TData,
   TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
-  TError = DefaultError
+  TError = DefaultError,
 > = {
   getQueryOptions: (params: TParams, enabled?: boolean) => UseQueryOptions<TData, TError, TData, TKey>
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
