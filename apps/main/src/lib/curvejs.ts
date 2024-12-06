@@ -36,7 +36,6 @@ import useStore from '@/store/useStore'
 const multichainNetworks: { [chainId: string]: boolean } = {
   43114: true,
   42220: true,
-  250: true,
 }
 
 const helpers = {
