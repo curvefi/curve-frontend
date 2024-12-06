@@ -16,7 +16,7 @@ import { DuneIcon } from 'curve-ui-kit/src/shared/icons/DuneIcon'
 import { CrvHubIcon } from 'curve-ui-kit/src/shared/icons/CrvHubIcon'
 import { SectionProps } from './Section'
 
-export const sections: SectionProps[] = [
+export const getSections = (): SectionProps[] => [
   {
     title: t`Community`,
     links: [
