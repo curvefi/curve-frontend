@@ -107,13 +107,6 @@ const LlamaImg = styled(Image)`
 
 const SectionItem = styled.li``
 
-const Header = styled.header`
-  margin-bottom: var(--spacing-narrow);
-
-  font-size: var(--font-size-4);
-  font-weight: var(--font-weight--bold);
-`
-
 const SectionWrapper = styled.div`
   li:not(:last-of-type) {
     margin-bottom: var(--spacing-1);

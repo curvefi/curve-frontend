@@ -1,4 +1,5 @@
 import localFont from 'next/font/local'
+import { CSSProperties } from 'react'
 
 export const monaSans = localFont({ src: '../../../public/fonts/Mona-Sans.woff2' })
 export const hubotSans = localFont({ src: '../../../public/fonts/Hubot-Sans.woff2' })
@@ -24,3 +25,6 @@ export const Fonts = {
   'Hubot Sans': HubotSans,
   Minecraft,
 }
+
+export const RootCssProperties = { '--font': MonaSans, '--font-mono': Minecraft } as CSSProperties
+export const ChadCssProperties = { '--font': HubotSans, '--button--font': Minecraft } as CSSProperties
