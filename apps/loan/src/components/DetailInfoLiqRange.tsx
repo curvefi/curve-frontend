@@ -5,13 +5,13 @@ import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import Button from '@/ui/Button'
 import DetailInfo from '@/ui/DetailInfo'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import Icon from '@/ui/Icon'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoLiqRange = ({
   bands: newBands,
@@ -40,7 +40,7 @@ const DetailInfoLiqRange = ({
   userLoanDetails: UserLoanDetails | undefined
   handleLiqRangesEdit?: () => void
 }) => {
-  const theme = useStore((state) => state.themeType)
+  const { theme } = useUserProfileStore()
 
   const { userPrices: currPrices, userBands: currBands } = userLoanDetails ?? {}
 
@@ -126,7 +126,7 @@ const DetailInfoLiqRange = ({
           }
           healthColorKey={healthMode?.colorKey}
           isManage={isManage}
-          theme={theme}
+          theme={theme === 'light' ? 'default' : theme}
         />
       </Wrapper>
 

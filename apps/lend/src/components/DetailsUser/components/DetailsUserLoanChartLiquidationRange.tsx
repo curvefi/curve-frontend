@@ -3,11 +3,13 @@ import { t } from '@lingui/macro'
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
 import useStore from '@/store/useStore'
 import { useMemo } from 'react'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
-  const theme = useStore((state) => state.themeType)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+
+  const { theme } = useUserProfileStore()
 
   const { prices: currPrices, status } = userLoanDetails ?? {}
 

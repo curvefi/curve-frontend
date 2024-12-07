@@ -10,6 +10,7 @@ import Chip from '@/ui/Typography/Chip'
 import DetailInfo from '@/ui/DetailInfo'
 import Icon from '@/ui/Icon'
 import { useOneWayMarket } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const MarketParameters = ({
   rChainId,
@@ -21,11 +22,12 @@ const MarketParameters = ({
   type: 'borrow' | 'supply'
 }) => {
   const owm = useOneWayMarket(rChainId, rOwmId).data
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
+
+  const { isAdvancedMode } = useUserProfileStore()
 
   const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}
@@ -62,7 +64,7 @@ const MarketParameters = ({
       {marketDetails.map((details, idx) => (
         <div key={`details-${idx}`}>
           {details.map(({ label, value, formatOptions, title, isError, isRow, isAdvance, tooltip }) => {
-            const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvanceMode)
+            const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvancedMode)
             return (
               <React.Fragment key={label}>
                 {show ? (

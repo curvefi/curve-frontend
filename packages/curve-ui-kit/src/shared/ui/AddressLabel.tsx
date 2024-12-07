@@ -1,5 +1,6 @@
 import { FunctionComponent } from 'react'
 import Box from '@mui/material/Box'
+import { addressShort } from 'curve-ui-kit/src/util'
 
 export type Address = `0x${string}`
 
@@ -9,6 +10,6 @@ export type AddressLabelProps = {
 
 export const AddressLabel: FunctionComponent<AddressLabelProps> = ({ value }) => (
   <Box maxWidth={200} title={value}>
-    {value.substring(0, 6)}...{value.substring(38)}
+    {addressShort(value)}
   </Box>
 )

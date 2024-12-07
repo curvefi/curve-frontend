@@ -10,6 +10,7 @@ import useStore from '@/store/useStore'
 import { Chip } from '@/ui/Typography'
 import Box from '@/ui/Box'
 import TextCaption from '@/ui/TextCaption'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type Props = {
   rChainId: ChainId
@@ -20,7 +21,8 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
   const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+
+  const { isAdvancedMode } = useUserProfileStore()
 
   const { totalCollateral, totalStablecoin } = loanDetails ?? {}
 
@@ -53,7 +55,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   return (
     <Box grid>
       {formatNumber(totalCollateralValue, { notation: 'compact', currency: 'USD' })}
-      {isAdvanceMode && (
+      {isAdvancedMode && (
         <>
           {+totalCollateralValue > 0 && (
             <TotalSummary>

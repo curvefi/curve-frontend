@@ -19,12 +19,12 @@ import networks from '@/networks'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
 import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
 import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -32,15 +32,15 @@ i18n.activate('en')
 function CurveApp({ Component }: AppProps) {
   const curve = useStore((state) => state.curve)
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.layout.pageWidth)
-  const themeType = useStore((state) => state.themeType)
   const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchCrvUSDTotalSupply = useStore((state) => state.fetchCrvUSDTotalSupply)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const setLayoutWidth = useStore((state) => state.layout.setLayoutWidth)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
+
+  const { locale, theme } = useUserProfileStore()
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -53,7 +53,7 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     if (!pageWidth) return
 
-    document.body.className = removeExtraSpaces(`theme-${themeType} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
+    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
     document.documentElement.lang = locale
   })
 
@@ -63,15 +63,6 @@ function CurveApp({ Component }: AppProps) {
       updateGlobalStoreByKey('scrollY', window.scrollY)
     }
 
-    const { themeType, isAdvanceMode } = getStorageValue('APP_CACHE') ?? {}
-
-    // init advanceMode
-    updateGlobalStoreByKey('isAdvanceMode', isAdvanceMode)
-
-    // init theme
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
-
     // init locale
     const { rLocale } = getLocaleFromUrl()
     const parsedLocale = rLocale?.value ?? 'en'
@@ -80,10 +71,9 @@ function CurveApp({ Component }: AppProps) {
       let data = await import(`@/locales/${parsedLocale}/messages`)
       dynamicActivate(parsedLocale, data)
     })()
-    updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
+    const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
@@ -117,8 +107,8 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
-      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={theme}>
         {typeof window !== 'undefined' && appLoaded && (
           <HashRouter>
             <I18nProvider i18n={i18n}>

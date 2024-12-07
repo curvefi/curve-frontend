@@ -36,6 +36,7 @@ import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 import ConnectWallet from '@/components/ConnectWallet'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { useOneWayMarket } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -46,7 +47,6 @@ const Page: NextPage = () => {
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.layout.isMdUp)
@@ -55,6 +55,8 @@ const Page: NextPage = () => {
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
+
+  const { isAdvancedMode } = useUserProfileStore()
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
@@ -158,13 +160,13 @@ const Page: NextPage = () => {
             </PriceAndTradesExpandedContainer>
           )}
 
-          <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+          <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
             <AppPageFormsWrapper navHeight="var(--header-height)">
-              {(!isMdUp || !isAdvanceMode) && <TitleComp />}
+              {(!isMdUp || !isAdvancedMode) && <TitleComp />}
               {rChainId && rOwmId && <LoanCreate {...pageProps} />}
             </AppPageFormsWrapper>
 
-            {isAdvanceMode && rChainId && rOwmId && (
+            {isAdvancedMode && rChainId && rOwmId && (
               <AppPageInfoWrapper>
                 {isMdUp && <TitleComp />}
                 <Box margin="0 0 var(--spacing-2)">

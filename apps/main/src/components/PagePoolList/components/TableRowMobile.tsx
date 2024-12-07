@@ -1,5 +1,4 @@
 import type { PoolListTableLabel } from '@/components/PagePoolList/types'
-import type { Theme } from '@/store/createGlobalSlice'
 import type { CampaignRewardsMapper } from '@/ui/CampaignRewards/types'
 
 import { t } from '@lingui/macro'
@@ -24,10 +23,11 @@ import TableCellRewardsBase from '@/components/PagePoolList/components/TableCell
 import TableCellRewardsCrv from '@/components/PagePoolList/components/TableCellRewardsCrv'
 import TableCellRewardsOthers from '@/components/PagePoolList/components/TableCellRewardsOthers'
 import CampaignRewardsRow from '@/components/CampaignRewardsRow'
+import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
-  themeType: Theme
+  themeType: ThemeKey
   setShowDetail: React.Dispatch<React.SetStateAction<string>>
   tableLabel: PoolListTableLabel
   campaignRewardsMapper: CampaignRewardsMapper
@@ -194,7 +194,7 @@ const MobileLabelContent = styled.div`
   width: 100%;
 `
 
-const MobileTableContent = styled.div<{ themeType: Theme }>`
+const MobileTableContent = styled.div<{ themeType: ThemeKey }>`
   display: grid;
   min-height: 150px;
   padding: ${({ themeType }) => (themeType === 'chad' ? '1rem 0.75rem 0.75rem' : '1rem 1rem 0.75rem 1rem')};

@@ -2,6 +2,7 @@ import { isLoading } from '@/ui/utils'
 import useStore from '@/store/useStore'
 
 import ConnectWalletPrompt from '@/ui/ConnectWalletPrompt'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type ConnectWalletProps = {
   description: string
@@ -12,7 +13,8 @@ type ConnectWalletProps = {
 const ConnectWallet: React.FC<ConnectWalletProps> = ({ description, connectText, loadingText }) => {
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const connectState = useStore((state) => state.connectState)
-  const theme = useStore((state) => state.themeType)
+
+  const { theme } = useUserProfileStore()
 
   const loading = isLoading(connectState)
 

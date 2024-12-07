@@ -1,6 +1,5 @@
 import merge from 'lodash/merge'
 import dayjs from '@ui-kit/lib/dayjs'
-import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 
 export const APP_STORAGE = {
   APP_CACHE: 'lend-app-cache',
@@ -22,18 +21,9 @@ export function getStorageValue(key: Key) {
 
   if (key === 'APP_CACHE') {
     return {
-      themeType: getTheme(parsedStoredValue.themeType),
       timestamp: parsedStoredValue.timestamp ?? '',
       walletName: getWalletName(parsedStoredValue.walletName, parsedStoredValue.timestamp),
-      isAdvanceMode: parsedStoredValue.isAdvanceMode ?? false,
     }
-  }
-}
-
-function getTheme(svThemeType: string | undefined) {
-  if (svThemeType) {
-    const foundThemeType = ['default', 'dark', 'chad'].find((t) => t === svThemeType) as ThemeKey
-    return (foundThemeType || 'default') as ThemeKey
   }
 }
 

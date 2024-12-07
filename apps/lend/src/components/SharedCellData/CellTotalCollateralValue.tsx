@@ -6,12 +6,14 @@ import useStore from '@/store/useStore'
 
 import TextCaption from '@/ui/TextCaption'
 import { useOneWayMarket } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
   const fetchTotalCollateralValue = useStore((state) => state.markets.fetchTotalCollateralValue)
+
+  const { isAdvancedMode } = useUserProfileStore()
 
   const { total = null, tooltipContent = [], error } = totalCollateralValue ?? {}
 
@@ -30,7 +32,7 @@ const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOw
         <>
           {formatNumber(total, { notation: 'compact', currency: 'USD' })}
           <br />
-          {isAdvanceMode && +total > 0 && (
+          {isAdvancedMode && +total > 0 && (
             <TotalSummary>
               {tooltipContent.map(({ label, value }, idx) => {
                 const isLast = tooltipContent.length - 1 === idx
