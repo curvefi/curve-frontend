@@ -2,6 +2,7 @@ import { AppBar, Toolbar } from '@mui/material'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
+import { UserProfileButton } from 'curve-ui-kit/src/features/user-profile'
 import { ChainSwitcher } from '../../features/switch-chain'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
@@ -45,6 +46,7 @@ export const DesktopHeader = <TChainId extends number>({
               <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t.theme} />
               <ChainSwitcher {...ChainProps} />
               <ConnectWalletIndicator {...WalletProps} />
+              <UserProfileButton {...WalletProps} />
             </Box>
           </Container>
         </Toolbar>
