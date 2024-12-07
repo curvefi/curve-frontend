@@ -12,6 +12,7 @@ import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -24,18 +25,17 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
 
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.isMdUp)
-  const locale = useStore((state) => state.locale)
   const tvlTotal = useStore((state) => state.pools.tvlTotal)
   const volumeTotal = useStore((state) => state.pools.volumeTotal)
   const volumeCryptoShare = useStore((state) => state.pools.volumeCryptoShare)
-  const themeType = useStore((state) => state.themeType)
-  const setThemeType = useStore((state) => state.setThemeType)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
+
+  const { locale, theme, setTheme } = useUserProfileStore()
 
   const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -47,7 +47,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const routerNetwork = routerParams?.network
   const restPartialPathname = useRestPartialPathname()
 
-  const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
@@ -76,13 +75,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           ),
         [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
       )}
-      themes={[
-        theme,
-        useCallback(
-          (selectedThemeType: ThemeKey) => setThemeType(selectedThemeType == 'light' ? 'default' : selectedThemeType),
-          [setThemeType],
-        ),
-      ]}
+      themes={[theme, setTheme]}
       ChainProps={{
         options: visibleNetworksList,
         theme,

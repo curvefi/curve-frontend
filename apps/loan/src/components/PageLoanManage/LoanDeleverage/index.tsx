@@ -43,6 +43,7 @@ import LoanDeleverageAlertPartial from '@/components/PageLoanManage/LoanDelevera
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -60,15 +61,18 @@ const LoanDeleverage = ({
   const formEstGas = useStore((state) => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
   const formStatus = useStore((state) => state.loanDeleverage.formStatus)
   const formValues = useStore((state) => state.loanDeleverage.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
+
+  const {
+    isAdvancedMode,
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const [confirmHighPriceImpact, setConfirmHighPriceImpact] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -312,7 +316,7 @@ const LoanDeleverage = ({
 
       {/* detail info */}
       <StyledDetailInfoWrapper>
-        {isAdvanceMode ? (
+        {isAdvancedMode ? (
           <DetailInfoLiqRange
             isManage
             {...detailInfo}

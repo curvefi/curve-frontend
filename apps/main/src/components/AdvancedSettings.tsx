@@ -6,7 +6,6 @@ import { Trans, t } from '@lingui/macro'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
-import useStore from '@/store/useStore'
 
 import { Chip } from '@/ui/Typography'
 import { Radio, RadioGroup } from '@/ui/Radio'
@@ -16,6 +15,7 @@ import Icon from '@/ui/Icon'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import ModalDialog, { OpenDialogIconButton } from '@/ui/Dialog'
 import InputProvider, { InputField } from '@/ui/InputComp'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type FormValues = {
   selected: string
@@ -61,23 +61,23 @@ export const AdvancedSettings = ({
   className,
   buttonIcon,
   maxSlippage,
-  stateKey, // object key for state
+  stateKey, // object key for slippage state
   testId,
 }: React.PropsWithChildren<AdvancedSettingsProps>) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const updateMaxSlippage = useStore((state) => state.updateMaxSlippage)
+  const { setMaxSlippage } = useUserProfileStore()
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 
   const handleSave = () => {
     const updatedCustomSlippage = formValues.selected === 'custom' ? formValues.customValue : formValues.selected
-    updateMaxSlippage(stateKey, updatedCustomSlippage)
+    setMaxSlippage(updatedCustomSlippage, stateKey)
     overlayTriggerState.close()
   }
 
   const handleDiscard = () => {
     setFormValues(getDefaultFormValuesState(DEFAULT_FORM_VALUES, maxSlippage))
-    updateMaxSlippage(stateKey, null)
+    setMaxSlippage(null, stateKey)
     overlayTriggerState.close()
   }
 

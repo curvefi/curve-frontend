@@ -20,6 +20,7 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       inputProps={{ ...(label && { 'aria-label': label }) }}
       size="small"
     />
+
     {label && (
       <Typography
         variant="headingXsBold"

@@ -26,6 +26,7 @@ import InternalLink from '@/ui/Link/InternalLink'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -36,7 +37,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const formEstGas = useStore((state) => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanLiquidate.formStatus)
   const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
 
@@ -46,6 +46,10 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setStateByKey = useStore((state) => state.loanLiquidate.setStateByKey)
   const resetState = useStore((state) => state.loanLiquidate.resetState)
+
+  const {
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

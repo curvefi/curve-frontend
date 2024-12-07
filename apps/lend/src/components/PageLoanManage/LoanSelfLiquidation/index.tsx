@@ -30,6 +30,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -40,7 +41,6 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
@@ -48,6 +48,10 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
+
+  const {
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

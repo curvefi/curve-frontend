@@ -18,6 +18,7 @@ import DetailInfoLiqRangeEdit from '@/components/DetailInfoLiqRangeEdit'
 import DetailInfoN from '@/components/DetailInfoN'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
 import DetailInfoTradeRoutes from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfoLeverage = ({
   activeKey,
@@ -44,8 +45,11 @@ const DetailInfoLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+
+  const {
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const LeverageDetail = () => (
     <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>

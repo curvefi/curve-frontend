@@ -14,6 +14,7 @@ import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { Footer } from 'curve-ui-kit/src/widgets/Footer'
 import { layoutHeightKeys } from '@/store/createGlobalSlice'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -23,7 +24,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const connectState = useStore((state) => state.connectState)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
-  const locale = useStore((state) => state.locale)
+
+  const { locale } = useUserProfileStore()
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
 

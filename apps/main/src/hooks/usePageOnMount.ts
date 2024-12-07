@@ -14,6 +14,7 @@ import { getWalletChainId } from '@/store/createWalletSlice'
 import { initCurveJs } from '@/utils/utilsCurvejs'
 import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import useStore from '@/store/useStore'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -29,6 +30,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const { rChainId } = useNetworkFromUrl()
+
+  const { setLocale } = useUserProfileStore()
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -254,7 +257,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           let data = await import(`@/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
-        updateAppLocale(rLocale, updateGlobalStoreByKey)
+        setLocale(rLocale)
+        updateAppLocale(rLocale)
         updateWalletLocale(rLocale)
       } else if (
         walletChainId &&

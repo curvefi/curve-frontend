@@ -13,6 +13,7 @@ import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
 import { Footer } from 'curve-ui-kit/src/widgets/Footer'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -23,7 +24,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
-  const locale = useStore((state) => state.locale)
+
+  const { locale } = useUserProfileStore()
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight)

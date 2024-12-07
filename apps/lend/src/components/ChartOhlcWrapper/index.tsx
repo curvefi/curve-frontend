@@ -16,11 +16,10 @@ import PoolActivity from '@/components/ChartOhlcWrapper/PoolActivity'
 import TextCaption from '@/ui/TextCaption'
 import AlertBox from '@/ui/AlertBox'
 import { useOneWayMarket } from '@/entities/chain'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiveKey, rOwmId }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const themeType = useStore((state) => state.themeType)
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)
@@ -39,6 +38,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
   const removeCollateralPrices = useStore(
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
+
+  const { isAdvancedMode, theme } = useUserProfileStore()
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {
@@ -377,7 +378,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartStatus={currentChart.fetchStatus}
           chartHeight={chartHeight}
           chartExpanded={chartExpanded}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={currentChart.data}
           volumeData={chartLlammaOhlc.volumeData}
           oraclePriceData={oraclePriceData}
@@ -405,7 +406,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
-    <Wrapper className={!isAdvanceMode ? 'normal-mode' : ''} chartExpanded={chartExpanded}>
+    <Wrapper className={!isAdvancedMode ? 'normal-mode' : ''} chartExpanded={chartExpanded}>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -437,7 +438,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
           chartStatus={currentChart.fetchStatus}
           chartHeight={chartHeight}
           chartExpanded={false}
-          themeType={themeType}
+          themeType={theme}
           ohlcData={currentChart.data}
           volumeData={chartLlammaOhlc.volumeData}
           oraclePriceData={oraclePriceData}

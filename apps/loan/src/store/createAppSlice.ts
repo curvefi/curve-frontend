@@ -1,14 +1,12 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@ui-kit/lib/i18n'
 
 import produce from 'immer'
 
 import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import { httpFetcher, log } from '@/utils/helpers'
-import { setStorageValue } from '@/utils/storage'
 import isEqual from 'lodash/isEqual'
 import networks from '@/networks'
 
@@ -16,25 +14,19 @@ export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
 
-type AppCacheKeys = 'themeType' | 'isAdvanceMode'
-
 type SliceState = {
   connectState: ConnectState
   curve: Curve | null
   lendApi: LendApi | null
   crvusdTotalSupply: { total: string; minted: string; pegKeepersDebt: string; error: string }
   dailyVolume: number | null
-  isAdvanceMode: boolean
   isLoadingApi: false
   isLoadingLendApi: false
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  locale: Locale['value']
-  maxSlippage: string
   routerProps: RouterProps | null
   scrollY: number
-  themeType: Theme
 }
 
 // prettier-ignore
@@ -42,7 +34,6 @@ export interface AppSlice extends SliceState {
   getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   fetchDailyVolume(): Promise<void>
-  setAppCache<T>(key: AppCacheKeys, value: T): void
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateCurveJs(curve: Curve, prevCurveApi: Curve | null, wallet: Wallet | null): Promise<void>
   updateLendApi(lendApi: LendApi, prevLendApi: LendApi | null, wallet: Wallet | null): Promise<void>
@@ -60,17 +51,13 @@ const DEFAULT_STATE: SliceState = {
   lendApi: null,
   crvusdTotalSupply: { total: '', minted: '', pegKeepersDebt: '', error: '' },
   dailyVolume: null,
-  isAdvanceMode: false,
   isLoadingApi: false,
   isLoadingCurve: true,
   isLoadingLendApi: false,
   isMobile: false,
   isPageVisible: true,
-  locale: 'en' as const,
-  maxSlippage: '0.1',
   routerProps: null,
   scrollY: 0,
-  themeType: 'default',
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
@@ -103,13 +90,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       console.error(error)
       updateGlobalStoreByKey('dailyVolume', 'NaN')
     }
-  },
-  setAppCache: <T>(key: AppCacheKeys, value: T) => {
-    get().updateGlobalStoreByKey(key, value)
-    setStorageValue('APP_CACHE', {
-      themeType: key === 'themeType' ? value : get().themeType || 'default',
-      isAdvanceMode: key === 'isAdvanceMode' ? value : get().isAdvanceMode || false,
-    })
   },
   updateConnectState: (
     status: ConnectState['status'],

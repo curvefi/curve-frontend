@@ -3,6 +3,7 @@ import Box, { type BoxProps } from '@mui/material/Box'
 import { ThemeSwitcherButtons } from 'curve-ui-kit/src/features/switch-theme'
 import { ConnectWalletIndicator } from 'curve-ui-kit/src/features/connect-wallet'
 import type { Theme } from '@mui/material/styles'
+import { UserProfileButton } from 'curve-ui-kit/src/features/user-profile'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
@@ -30,6 +31,7 @@ export const SideBarFooter = ({ themes: [theme, setTheme], advancedMode, WalletP
     >
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
+        <UserProfileButton />
       </Box>
 
       <Accordion sx={{ backgroundColor }} disableGutters>

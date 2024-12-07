@@ -31,6 +31,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -51,7 +52,6 @@ const LoanBorrowMore = ({
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
@@ -61,6 +61,10 @@ const LoanBorrowMore = ({
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
+
+  const {
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

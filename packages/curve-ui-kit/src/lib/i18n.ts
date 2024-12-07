@@ -77,8 +77,7 @@ export function dynamicActivate(locale: string, data: { messages: Record<string,
   i18n.activate(locale)
 }
 
-export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: 'locale', value: T) => void) {
-  updateGlobalStoreByKey('locale', locale)
+export function updateAppLocale(locale: string) {
   setDayjsLocale(locale as Locale['value'])
 
   let numbroLang = ''

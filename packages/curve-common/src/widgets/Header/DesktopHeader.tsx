@@ -3,6 +3,7 @@ import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from 'curve-ui-kit/src/features/connect-wallet'
+import { UserProfileButton } from 'curve-ui-kit/src/features/user-profile'
 import { ChainSwitcher } from 'curve-ui-kit/src/features/switch-chain'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
@@ -16,6 +17,7 @@ import { useState } from 'react'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
+import { isBeta } from 'curve-ui-kit/src/utils'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
@@ -50,8 +52,15 @@ export const DesktopHeader = <TChainId extends number>({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t`Advanced`} />}
-              <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+              {isBeta ? (
+                <UserProfileButton />
+              ) : (
+                <>
+                  {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t`Advanced`} />}
+                  <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+                </>
+              )}
+
               <ChainSwitcher {...ChainProps} />
               <ConnectWalletIndicator {...WalletProps} />
             </Box>

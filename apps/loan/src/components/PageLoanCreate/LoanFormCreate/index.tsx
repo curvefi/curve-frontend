@@ -30,6 +30,7 @@ import LoanInfoParameters from '@/components/LoanInfoLlamma/LoanInfoParameters'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import DialogHealthLeverageWarning from '@/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const LoanCreate = ({
   collateralAlert,
@@ -49,13 +50,11 @@ const LoanCreate = ({
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const maxRecv = useStore((state) =>
     isLeverage
       ? (state.loanCreate.maxRecvLeverage[activeKey]?.maxBorrowable ?? '')
       : (state.loanCreate.maxRecv[activeKey] ?? ''),
   )
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
@@ -66,6 +65,11 @@ const LoanCreate = ({
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
   const resetState = useStore((state) => state.loanCreate.resetState)
+
+  const {
+    isAdvancedMode,
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -343,7 +347,7 @@ const LoanCreate = ({
         formValues={formValues}
         haveSigner={haveSigner}
         healthMode={healthMode}
-        isAdvanceMode={isAdvanceMode}
+        isAdvanceMode={isAdvancedMode}
         isLeverage={isLeverage}
         isReady={isReady}
         llamma={llamma}
@@ -386,7 +390,7 @@ const LoanCreate = ({
         )}
       </LoanFormConnect>
 
-      {!isAdvanceMode && (
+      {!isAdvancedMode && (
         <Accordion btnLabel={t`Loan Parameters`}>
           <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
         </Accordion>

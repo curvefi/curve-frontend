@@ -16,6 +16,7 @@ import DetailInfoLeverageExpected from '@/components/DetailInfoLeverageExpected'
 import DetailInfoPriceImpact from '@/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoSlippageTolerance from '@/components/DetailInfoSlippageTolerance'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfo = ({
   rChainId,
@@ -35,8 +36,11 @@ const DetailInfo = ({
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanRepay.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
-  const maxSlippage = useStore((state) => state.maxSlippage)
+
+  const {
+    isAdvancedMode,
+    maxSlippage: { global: maxSlippage },
+  } = useUserProfileStore()
 
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
 
@@ -50,7 +54,7 @@ const DetailInfo = ({
 
   return (
     <>
-      {isAdvanceMode ? (
+      {isAdvancedMode ? (
         <>
           <DetailInfoLiqRange
             isManage

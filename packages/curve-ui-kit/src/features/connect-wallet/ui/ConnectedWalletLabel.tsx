@@ -1,6 +1,7 @@
 import { FunctionComponent } from 'react'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Address, AddressLabel } from '@ui-kit/shared/ui/AddressLabel'
+import { addressShort, type Address } from '@ui-kit/utils'
 
 import type { SxProps, Theme } from '@mui/material/styles'
 
@@ -17,6 +18,8 @@ export const ConnectedWalletLabel: FunctionComponent<ConnectedWalletLabelProps> 
   ...props
 }) => (
   <Button size="small" color="ghost" onClick={onDisconnectWallet} {...props}>
-    <AddressLabel value={walletAddress} />
+    <Box maxWidth={200} title={walletAddress}>
+      {addressShort(walletAddress)}
+    </Box>
   </Button>
 )

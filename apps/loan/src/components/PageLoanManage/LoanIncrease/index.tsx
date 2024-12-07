@@ -32,6 +32,7 @@ import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import AlertFormError from '@/components/AlertFormError'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -46,7 +47,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const formValues = useStore((state) => state.loanIncrease.formValues)
   const maxRecvActiveKey = llamma ? getMaxRecvActiveKey(llamma, formValues.collateral) : ''
   const maxRecv = useStore((state) => state.loanIncrease.maxRecv[maxRecvActiveKey])
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
@@ -61,6 +61,8 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)
+
+  const { isAdvancedMode } = useUserProfileStore()
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -316,7 +318,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
         {/* detail info */}
         <StyledDetailInfoWrapper>
-          {isAdvanceMode && (
+          {isAdvancedMode && (
             <DetailInfoLiqRange
               isManage
               {...detailInfo}
