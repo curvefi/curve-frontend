@@ -74,14 +74,14 @@ export type ExtendedPoolDataFromApi = {
 export const _getPoolsFromApi = async (): Promise<ExtendedPoolDataFromApi> => {
   const url = `https://api.curve.fi/api/getPools/all`
   const response = await fetch(url)
-  const { data, success } = await response.json()
+  const { data, success } = await response.json() as { data?: ExtendedPoolDataFromApi, success: boolean }
   if (!success || !data) {
     throw new Error('Failed to fetch pools')
   }
   return data
 }
 
-export const { useQuery: usePoolsQuery, invalidate: invalidatePoolsQuery } = queryFactory({
+export const { useQuery: useAllPoolsQuery, invalidate: invalidateAllPoolsQuery } = queryFactory({
   queryKey: () => ['pools'] as const,
   queryFn: _getPoolsFromApi,
   staleTime: '5m',
