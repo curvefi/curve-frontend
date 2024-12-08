@@ -47,27 +47,27 @@
   --footer-create-pool-height: 58px;
 
   /* z-index */
-  --account-center-z-index: 999; /* blocknative notify */
-  --onboard-modal-z-index: 88; /* blocknative connect wallet modal */
-  --onboard-account-select-modal-z-index: 88;
-  --z-index-select-dropdown: 999;
-  --z-index-modal: 101;
-  --z-index-chip: 89;
-  --z-index-icon-tooltip: 89;
-  --z-index-overlay: 89;
-  --z-index-page-settings: 98;
-  --z-index-page--top-nav: 88;
-  --z-index-page-nav: 87;
-  --z-index-main-content-scrolled: 86;
-  --z-index-page-nav-scrolled: 85;
-  --z-index-page-mobile-nav: 1;
-  --z-index-stepper: 1;
-  --z-index-tab: 1;
-  --z-index-tooltip: 1;
+  --account-center-z-index: 1999; /* blocknative notify */
+  --onboard-modal-z-index: 1188; /* blocknative connect wallet modal */
+  --onboard-account-select-modal-z-index: 1188;
+  --z-index-select-dropdown: 1999;
+  --z-index-modal: 1101;
+  --z-index-chip: 1189;
+  --z-index-icon-tooltip: 1189;
+  --z-index-overlay: 1189;
+  --z-index-page-settings: 1198;
+  --z-index-page--top-nav: 1188;
+  --z-index-page-nav: 1187;
+  --z-index-main-content-scrolled: 1186;
+  --z-index-page-nav-scrolled: 1185;
+  --z-index-page-mobile-nav: 1101;
+  --z-index-stepper: 1101;
+  --z-index-tab: 1101;
+  --z-index-tooltip: 1101;
 }
 
 body {
-  --wcm-z-index: 101; /* Wallet Connect has an option to override its theme, but this object is not exposed in Onboard, so the override is handled in the UI library. See https://docs.reown.com/advanced/walletconnectmodal/theming for more overrides*/
+  --wcm-z-index: 1010; /* Wallet Connect has an option to override its theme, but this object is not exposed in Onboard, so the override is handled in the UI library. See https://docs.reown.com/advanced/walletconnectmodal/theming for more overrides*/
 }
 
 
