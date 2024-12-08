@@ -12,10 +12,13 @@ import Tooltip from '@/ui/Tooltip'
 const CrvStats: React.FC = () => {
   const provider = useStore((state) => state.wallet.getProvider(''))
   const { veCrvData, getVeCrvData, veCrvFees, veCrvHolders } = useStore((state) => state.analytics)
+  const { loading: usdRatesLoading, usdRatesMapper } = useStore((state) => state.usdRates)
+  const crv = usdRatesMapper.crv
 
   const noProvider = !provider
   const veCrvLoading = veCrvData.fetchStatus === 'LOADING'
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
+  const aprLoading = veCrvLoading || veCrvFeesLoading || usdRatesLoading || !crv
 
   useEffect(() => {
     if (provider && veCrvData.totalCrv === 0 && veCrvData.fetchStatus !== 'ERROR') {
@@ -23,7 +26,7 @@ const CrvStats: React.FC = () => {
     }
   }, [veCrvData.totalCrv, veCrvData.fetchStatus, getVeCrvData, provider])
 
-  const veCrvApr = veCrvLoading || veCrvFeesLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv)
+  const veCrvApr = aprLoading ? 0 : calculateApr(veCrvFees.fees[1].fees_usd, veCrvData.totalVeCrv, crv)
 
   return (
     <Wrapper>
@@ -84,7 +87,7 @@ const CrvStats: React.FC = () => {
             }
           />
           <MetricsComp
-            loading={provider && (veCrvLoading || veCrvFeesLoading)}
+            loading={provider && (veCrvLoading || veCrvFeesLoading || aprLoading)}
             title={t`veCRV APR`}
             data={
               <AprRow>
@@ -100,8 +103,8 @@ const CrvStats: React.FC = () => {
   )
 }
 
-const calculateApr = (fees: number, totalVeCrv: number) => {
-  return (((fees / totalVeCrv) * 52) / 0.3) * 100
+const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) => {
+  return (((fees / totalVeCrv) * 52) / crvPrice) * 100
 }
 
 const Wrapper = styled(Box)`
