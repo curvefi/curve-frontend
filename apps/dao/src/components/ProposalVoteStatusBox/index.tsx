@@ -29,7 +29,9 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>{t`Quorum`} </HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>{formatNumber(currentQuorumPercentage, { notation: 'compact' })}%</HighlightedData>{' '}
+            <HighlightedData>
+              {formatNumber(currentQuorumPercentage, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+            </HighlightedData>{' '}
             <Data>of {formatNumber(minAcceptQuorumPercent, { notation: 'compact' })}%</Data>
             <TooltipIcon>{t`The minimum share of For votes required to reach quorum is ${minAcceptQuorumPercent}% for this proposal.`}</TooltipIcon>
           </Box>
@@ -48,7 +50,9 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
             <HighlightedData>{t`Min Support`}</HighlightedData>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
-            <HighlightedData>{formatNumber(support, { notation: 'compact' })}%</HighlightedData>
+            <HighlightedData>
+              {formatNumber(support, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+            </HighlightedData>
             <Data>{t`of ${minSupport}%`}</Data>
             <TooltipIcon>{t`The minimum support required to pass this proposal is ${minSupport}%.`}</TooltipIcon>
           </Box>
@@ -58,12 +62,16 @@ const ProposalVoteStatusBox = ({ proposalData, className }: ProposalVoteStatusBo
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <HighlightedData className="for">{t`For`}</HighlightedData>{' '}
             <Tooltip noWrap tooltip={`${formatNumber(votesFor, { notation: 'compact' })} veCRV`}>
-              <HighlightedData>{formatNumber(support, { notation: 'compact' })}%</HighlightedData>
+              <HighlightedData>
+                {formatNumber(support, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              </HighlightedData>
             </Tooltip>
           </Box>
           <Box flex flexGap="var(--spacing-1)" flexAlignItems="flex-end">
             <Tooltip noWrap tooltip={`${formatNumber(votesAgainst, { notation: 'compact' })} veCRV`}>
-              <HighlightedData>{formatNumber(against, { notation: 'compact' })}%</HighlightedData>
+              <HighlightedData>
+                {formatNumber(against, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+              </HighlightedData>
             </Tooltip>
             <HighlightedData className="against">{t`Against`}</HighlightedData>
           </Box>
