@@ -5,5 +5,12 @@ const randomInt = (min: number, maxExclusive: number): number => Math.floor(Math
 
 export const oneDesktopViewport = () =>
   [randomInt(DESKTOP_BREAKPOINT, MAX_WIDTH), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+
+export const oneMobileViewport = () =>
+  [randomInt(MOBILE_BREAKPOINT, TABLET_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+
+export const oneTabletViewport = () =>
+  [randomInt(TABLET_BREAKPOINT, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+
 export const oneMobileOrTabletViewport = () =>
   [randomInt(MOBILE_BREAKPOINT, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
