@@ -5,13 +5,12 @@ import { ethers } from 'ethers'
 
 const CHAIN = 'mainnet'
 const MARKET_ID = 'CRV-crvUSD'
-describe.skip(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
+describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const market = markets[CHAIN][MARKET_ID]
   const settings = createLoanSettings[CHAIN][MARKET_ID]
   const collateralToken = tokens[CHAIN][market.collateral]
 
   const borrowToken = tokens[CHAIN][market.borrow]
-  const borrowTokenAmount = 1
 
   beforeEach(() => {
     // prepare wallet
@@ -30,7 +29,8 @@ describe.skip(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
     cy.get('@wallet').connectMetamask()
   })
 
-  it('Create max amount soft liquidation loan', () => {
+  // todo: set up test nodes and wallet integration in CI
+  it.skip('Create max amount soft liquidation loan', () => {
     cy.dataTestId('btn-approval').as('btnApproval').should('be.disabled')
     cy.dataTestId('btn-create').as('btnCreate').should('be.disabled')
 

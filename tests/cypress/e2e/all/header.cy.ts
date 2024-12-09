@@ -1,4 +1,4 @@
-import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
+import { oneDesktopViewport, oneMobileOrTabletViewport, oneViewport } from '@/support/ui'
 
 const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
   expectedMainNavHeight: 56,
@@ -88,6 +88,22 @@ describe('Header', () => {
         })
       })
     })
+  })
+
+  it('should change chains', () => {
+    cy.viewport(...oneViewport())
+    cy.visit('/')
+    if (['loan', 'dao'].includes(Cypress.env('APP'))) {
+      expect(cy.get(`[data-testid='btn-change-chain']`).should('not.exist'))
+      return
+    }
+
+    const [eth, arbitrum] = [1, 42161]
+    cy.get(`[data-testid='chain-icon-${eth}']`).should('be.visible')
+    cy.get(`[data-testid='btn-change-chain']`).click()
+    cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
+    cy.get(`[data-testid^='menu-item-chain-']`).should('not.be.visible')
+    cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
   })
 
   function waitIsLoaded() {

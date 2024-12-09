@@ -18,7 +18,7 @@ export const createPalette = (
     disabled: Text.TextColors.Disabled,
     highlight: Text.TextColors.Highlight,
   },
-  background: { default: Layer.App.Background, paper: Layer[1].Fill },
+  background: { default: Layer.App.Background, paper: Layer[3].Fill },
 })
 
 export type Palette = ReturnType<typeof createPalette>
