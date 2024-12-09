@@ -23,7 +23,6 @@ const App: NextPage = () => {
       <Route path=":network/integrations" element={<PageIntegrations />} />
       <Route path=":network/pegkeepers" element={<PagePegKeepers />} />
       <Route path=":network/markets" element={<PageMarketList />} />
-      <Route path=":network/llama-markets" element={<PageLlamaMarkets />} />
       <Route path=":network/scrvUSD" element={<PageCrvUsdStaking />} />
       <Route path=":network/markets/:collateralId" element={<Navigate to="create" />} />
       <Route path=":network/markets/:collateralId/create" element={<PageLoanCreate />} />
@@ -37,6 +36,7 @@ const App: NextPage = () => {
     <Routes>
       {SubRoutes}
       <Route path=":locale">{SubRoutes}</Route>
+      <Route path={ROUTE.BETA_PAGE_MARKETS} element={<PageLlamaMarkets />} />
       <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
       <Route path="/scrvUSD" element={<Navigate to={`/ethereum${ROUTE.PAGE_CRVUSD_STAKING}`} replace />} />
       <Route path="/risk-disclaimer" element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />} />

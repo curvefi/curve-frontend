@@ -5,15 +5,15 @@ import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { BorrowRateCell, LiquidityCell, PoolTitleCell, SupplyYieldCell, UtilizationCell } from './cells'
 import { TableGrid } from '@ui-kit/shared/ui/TableGrid'
-import { ExtendedPoolDataFromApi } from '@/entities/pools'
+import { LendingVaultFromApi } from '@/entities/vaults'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: ExtendedPoolDataFromApi }) => (
+export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: LendingVaultFromApi[] }) => (
   <Card sx={{ paddingY: Spacing.xs, maxWidth: MaxWidth, backgroundColor: (t) => t.design.Layer[1].Fill }}>
     <TableFilters title={t`Llamalend Markets`} subtitle={t`Select a market to view more details`} onReload={onReload} />
     <TableGrid
-      data={useMemo(() => data.poolData.filter((pool) => pool.coins.find((c) => c.symbol == 'crvUSD')), [data])}
+      data={useMemo(() => data.filter(d => d.usdTotal > 0).sort((a, b) => b.usdTotal - a.usdTotal), [data])}
       rowId={(row) => [row.blockchainId, row.registryId, row.id].join('-')}
       columns={useMemo(
         () => [

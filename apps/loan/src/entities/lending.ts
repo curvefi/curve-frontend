@@ -1,5 +1,6 @@
-import { PoolParams, PoolQuery, queryFactory, rootKeys } from '@/shared/model/query'
+import { ContractParams, ContractQuery, PoolParams, PoolQuery, queryFactory, rootKeys } from '@/shared/model/query'
 import { poolValidationSuite } from '@/shared/model/query/pool-validation'
+import { contractValidationSuite } from '@/shared/model/query/contract-validation'
 
 type LendingSnapshotFromApi = {
   rate: number
@@ -35,8 +36,8 @@ type LendingSnapshotsFromApi = {
   data: LendingSnapshotFromApi[]
 }
 
-export const _getLendingSnapshots = async ({ chainId, poolId }: PoolQuery): Promise<LendingSnapshotsFromApi> => {
-  const url = `https://prices.curve.fi/v1/lending/markets/${chainId}/${poolId}/snapshots`
+export const _getLendingSnapshots = async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshotsFromApi> => {
+  const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots`
   const response = await fetch(url)
   const { data } = (await response.json()) as { data: LendingSnapshotsFromApi }
   if (!data) {
@@ -46,8 +47,8 @@ export const _getLendingSnapshots = async ({ chainId, poolId }: PoolQuery): Prom
 }
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
-  queryKey: (params: PoolParams) => [...rootKeys.pool(params), 'lendingSnapshots'] as const,
+  queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots'] as const,
   queryFn: _getLendingSnapshots,
   staleTime: '1d',
-  validationSuite: poolValidationSuite,
+  validationSuite: contractValidationSuite,
 })

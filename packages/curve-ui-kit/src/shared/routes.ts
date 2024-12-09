@@ -15,6 +15,7 @@ export const LEND_ROUTES = {
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
+  BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_RISK_DISCLAIMER: '/risk-disclaimer',
 }
@@ -30,6 +31,8 @@ export const DAO_ROUTES = {
 
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
+
+const isBeta = typeof window !== 'undefined' && (window.localStorage.getItem('beta') !== null || !window.location.hostname.includes('curve.fi'))
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
@@ -47,6 +50,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     label: 'crvUSD',
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
+      ...isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : [],
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
       { route: CRVUSD_ROUTES.PAGE_RISK_DISCLAIMER, label: () => t`Risk Disclaimer` },
     ],
