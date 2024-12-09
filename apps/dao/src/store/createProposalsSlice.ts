@@ -165,7 +165,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       try {
         const proposal = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
+          `https://prices.curve.fi/v1/dao/proposals/details/${voteType.toLowerCase()}/${voteId}${txHash ? `?tx_hash=${txHash}` : ''}`,
         )
         const data: PricesProposalResponse = await proposal.json()
 
@@ -218,9 +218,9 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
 
       try {
         const request = await fetch(
-          `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType.toLowerCase()}/${voteId}${!!txHash ? `?tx_hash=${txHash}` : ''}`,
+          `https://prices.curve.fi/v1/dao/proposals/vote/user/${userAddress}/${voteType.toLowerCase()}/${voteId}${txHash ? `?tx_hash=${txHash}` : ''}`,
         )
-        const data: PricesProposalResponse = await request.json()
+        const data: UserProposalVoteResData = await request.json()
 
         // the api returns a detail object if the proposal is not found
         if ('detail' in data) {
@@ -229,15 +229,16 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
         }
 
         const proposalData = get()[sliceKey].proposalMapper[`${voteId}-${voteType}`]
+
         const formattedData = {
-          votes_for: +data.votes_for / 1e18,
-          votes_against: +data.votes_against / 1e18,
+          votes_for: +data.proposal.votes_for / 1e18,
+          votes_against: +data.proposal.votes_against / 1e18,
           votes: data.votes
             .map((vote) => ({
               ...vote,
               topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
               stake: +vote.voting_power / 1e18,
-              relativePower: (+vote.voting_power / +data.total_supply) * 100,
+              relativePower: (+vote.voting_power / +data.proposal.total_supply) * 100,
             }))
             .sort((a, b) => b.stake - a.stake),
         }
