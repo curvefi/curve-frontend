@@ -12,7 +12,7 @@ export const ThemeSwitcherButton: FunctionComponent<ThemeSwitcherProps> = ({ the
   }, [themeIndex, onChange])
 
   useEffect(() => {
-    if(typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
       const timer = setInterval(onClick, 3000)
       return () => clearTimeout(timer)
     }

@@ -67,7 +67,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       dense: {
         height: SizesAndSpaces.ButtonSize.sm,
       },
-    }
+    },
   },
   MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(design),
@@ -80,9 +80,9 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
     styleOverrides: {
       root: {
         // Disable elevation making the background color lighter in dark mode (default mui behavior)
-        backgroundImage: 'none'
+        backgroundImage: 'none',
       },
-    }
+    },
   },
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(),

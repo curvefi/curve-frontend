@@ -27,7 +27,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Grays[100],
           Hover: Grays[150],
-        }
+        },
       },
       Tables: {
         Header_Fill: Grays[200],
@@ -58,7 +58,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Grays[750],
           Hover: Grays[800],
-        }
+        },
       },
       Tables: {
         Header_Fill: Grays[800],
@@ -92,7 +92,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Violet[50],
           Hover: Violet[200],
-        }
+        },
       },
     },
   },
@@ -122,7 +122,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Grays[850],
           Hover: Grays[900],
-        }
+        },
       },
       Tables: {
         Header_Fill: Grays[800],
@@ -153,7 +153,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Blues[100],
           Hover: Blues[50],
-        }
+        },
       },
       Tables: {
         Header_Fill: Grays[200],
@@ -187,7 +187,7 @@ export const SurfacesAndText = {
         TypeAction: {
           Selected: Violet[800],
           Hover: Violet[900],
-        }
+        },
       },
     },
   },

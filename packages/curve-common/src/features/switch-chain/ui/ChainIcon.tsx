@@ -6,7 +6,10 @@ type ChainIconProps<TChainId> = {
   chain: ChainOption<TChainId>
   size?: number
 }
-export const ChainIcon = <TChainId extends number>({ chain: { chainId, label, src }, size = 28 }: ChainIconProps<TChainId>) => (
+export const ChainIcon = <TChainId extends number>({
+  chain: { chainId, label, src },
+  size = 28,
+}: ChainIconProps<TChainId>) => (
   <Box component="span" alignItems="center" display="flex" marginRight="0.25rem" data-testid={`chain-icon-${chainId}`}>
     <Image
       alt={label}

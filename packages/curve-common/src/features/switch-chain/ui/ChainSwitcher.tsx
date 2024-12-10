@@ -68,7 +68,12 @@ export const ChainSwitcher = <TChainId extends number>({
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList<TChainId> showTestnets={showTestnets} onChange={onChange} options={options} selectedNetwork={selectedNetwork} />
+            <ChainList<TChainId>
+              showTestnets={showTestnets}
+              onChange={onChange}
+              options={options}
+              selectedNetwork={selectedNetwork}
+            />
           )}
         </ModalDialog>
       )}

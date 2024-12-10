@@ -81,7 +81,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     TypeAction: {
       Hover: Light.Layer.TypeAction.Hover,
       Selected: Light.Layer.TypeAction.Selected,
-    }
+    },
   } as const
   const Text = {
     TextColors: {
@@ -407,7 +407,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     TypeAction: {
       Hover: Dark.Layer.TypeAction.Hover,
       Selected: Dark.Layer.TypeAction.Selected,
-    }
+    },
   } as const
   const Text = {
     TextColors: {
@@ -713,7 +713,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     TypeAction: {
       Hover: Chad.Layer.TypeAction.Hover,
       Selected: Chad.Layer.TypeAction.Selected,
-    }
+    },
   } as const
   const Text = {
     TextColors: {

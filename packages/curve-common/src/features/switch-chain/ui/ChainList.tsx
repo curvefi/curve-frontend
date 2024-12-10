@@ -57,43 +57,45 @@ export function ChainList<TChainId extends number>({
         value={searchValue}
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
-        {entries.length ? entries
-          .filter(([key]) => showTestnets || key !== ChainType.test)
-          .flatMap(([key, chains]) => (
-            <>
-              {showTestnets && (
-                <CardHeader
-                  title={<Typography variant="headingXsBold">{chainTypeNames[key as ChainType]}</Typography>}
-                  sx={{
-                    position: 'sticky',
-                    top: 0,
-                    backgroundColor: 'background.paper',
-                    zIndex: 1,
-                  }}
-                />
-              )}
-              <List>
-                {chains.map((chain) => (
-                  <MenuItem
-                    key={chain.chainId}
-                    onClick={() => onChange(chain.chainId)}
-                    data-testid={`menu-item-chain-${chain.chainId}`}
-                    selected={chain.chainId == selectedNetwork?.chainId}
-                  >
-                    <ChainIcon chain={chain} size={36} />
-                    <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
-                      {chain.label}
-                    </Typography>
-                    {chain.chainId == selectedNetwork?.chainId && <CheckedIcon />}
-                  </MenuItem>
-                ))}
-              </List>
-            </>
-          )) : (
-            <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>
-              {t`No networks found`}
-            </Alert>
-          )}
+        {entries.length ? (
+          entries
+            .filter(([key]) => showTestnets || key !== ChainType.test)
+            .flatMap(([key, chains]) => (
+              <>
+                {showTestnets && (
+                  <CardHeader
+                    title={<Typography variant="headingXsBold">{chainTypeNames[key as ChainType]}</Typography>}
+                    sx={{
+                      position: 'sticky',
+                      top: 0,
+                      backgroundColor: 'background.paper',
+                      zIndex: 1,
+                    }}
+                  />
+                )}
+                <List>
+                  {chains.map((chain) => (
+                    <MenuItem
+                      key={chain.chainId}
+                      onClick={() => onChange(chain.chainId)}
+                      data-testid={`menu-item-chain-${chain.chainId}`}
+                      selected={chain.chainId == selectedNetwork?.chainId}
+                    >
+                      <ChainIcon chain={chain} size={36} />
+                      <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
+                        {chain.label}
+                      </Typography>
+                      {chain.chainId == selectedNetwork?.chainId && <CheckedIcon />}
+                    </MenuItem>
+                  ))}
+                </List>
+              </>
+            ))
+        ) : (
+          <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>
+            {t`No networks found`}
+          </Alert>
+        )}
       </Box>
     </>
   )
