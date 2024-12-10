@@ -18,6 +18,14 @@ export const createPalette = (
     disabled: Text.TextColors.Disabled,
     highlight: Text.TextColors.Highlight,
   },
+  action: {
+    // active: Layer.Highlight.Fill,
+    hover: Layer[2].Fill,
+    // selected: Layer.Highlight.Fill,
+    // disabled: string,
+    // disabledBackground: string,
+    // focus: string,
+  },
   background: { default: Layer.App.Background, paper: Layer[3].Fill },
 })
 

@@ -3,7 +3,7 @@ import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
 
-const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s'
+const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s, filter ease-out 0.256s'
 
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {

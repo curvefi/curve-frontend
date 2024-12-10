@@ -55,6 +55,20 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        height: SizesAndSpaces.ButtonSize.md,
+        transition: design.Button.Transition,
+        // todo: use design sizes
+        gap: '4px',
+        padding: '4px',
+      },
+      dense: {
+        height: SizesAndSpaces.ButtonSize.sm,
+      },
+    }
+  },
   MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(design),
   MuiToolbar: {
