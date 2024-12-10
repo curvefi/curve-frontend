@@ -8,10 +8,10 @@ export const createPalette = (
   mode,
   primary: { main: Color.Primary[500] },
   secondary: { main: Color.Secondary[500] },
-  error: { main: Feedback.Error },
-  info: { main: Feedback.Info },
-  warning: { main: Feedback.Warning },
-  success: { main: Feedback.Success },
+  error: { main: Feedback.Error, contrastText: Text.TextColors.Error },
+  info: { main: Feedback.Info, contrastText: Text.TextColors.Info },
+  warning: { main: Feedback.Warning, contrastText: Text.TextColors.Warning },
+  success: { main: Feedback.Success, contrastText: Text.TextColors.Success },
   text: {
     primary: Text.TextColors.Primary,
     secondary: Text.TextColors.Secondary,
@@ -20,14 +20,11 @@ export const createPalette = (
     highlight: Text.TextColors.Highlight,
   },
   action: {
-    // active: Layer.Highlight.Fill,
-    hover: Layer[2].Fill,
-    // selected: Layer.Highlight.Fill,
-    // disabled: string,
-    // disabledBackground: string,
-    // focus: string,
+    // note: action, disabled, focus themes are left default for now
+    hover: Layer.TypeAction.Hover,
+    selected: Layer.TypeAction.Selected,
   },
-  background: { default: Layer.App.Background, paper: Layer[3].Fill },
+  background: { default: Layer.App.Background, paper: Layer[1].Fill },
 })
 
 export type Palette = ReturnType<typeof createPalette>

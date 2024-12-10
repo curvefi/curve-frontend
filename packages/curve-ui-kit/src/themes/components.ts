@@ -76,6 +76,14 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
     },
   },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        // Disable elevation making the background color lighter in dark mode (default mui behavior)
+        backgroundImage: 'none'
+      },
+    }
+  },
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(),
 })
