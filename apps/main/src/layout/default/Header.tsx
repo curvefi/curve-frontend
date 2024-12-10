@@ -125,13 +125,6 @@ export const Header = ({ sections }: HeaderProps) => {
             ]),
       ]}
       sections={sections}
-      translations={{
-        advanced: t`Advanced Mode`,
-        advancedMode: t`Advanced`,
-        theme: t`Mode`,
-        settings: t`Settings`,
-        socialMedia: t`Community`,
-      }}
     />
   )
 }

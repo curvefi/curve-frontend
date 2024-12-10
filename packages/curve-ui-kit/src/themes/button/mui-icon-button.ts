@@ -1,10 +1,11 @@
 import { DesignSystem } from '../design'
 import { Fonts } from '../typography'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import type { Components } from '@mui/material/styles'
 
 const { ButtonSize, OutlineWidth } = SizesAndSpaces
 
-export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem) => ({
+export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
   styleOverrides: {
     root: {
       height: ButtonSize.sm,
@@ -18,7 +19,7 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem) => ({
         borderColor: Layer.Highlight.Outline,
         borderWidth: OutlineWidth,
       },
-      '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent' },
+      '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent', filter: 'saturate(2)' },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
     sizeSmall: {

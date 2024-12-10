@@ -111,13 +111,6 @@ const Header = ({ chainId, sections }: HeaderProps) => {
         },
       ]}
       sections={sections}
-      translations={{
-        advanced: t`Advanced`,
-        advancedMode: t`Advanced Mode`,
-        theme: t`Mode`,
-        settings: t`Settings`,
-        socialMedia: t`Community`,
-      }}
     />
   )
 }
