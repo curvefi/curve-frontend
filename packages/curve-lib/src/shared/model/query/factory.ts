@@ -44,8 +44,11 @@ export function queryFactory<
   const assertValidity = (data: TParams, fields?: TField[]) =>
     sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery
 
-  const isEnabled = (params: TParams) =>
-    checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
+  const isEnabled = (params: TParams) => {
+    const valid = checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
+    console.log('valid', valid, validationSuite, params)
+    return valid
+  }
 
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
@@ -65,7 +68,7 @@ export function queryFactory<
   return {
     assertValidity,
     checkValidity: (data: TParams, fields?: TField[]) => checkValidity(validationSuite, data, fields),
-    isEnabled: isEnabled,
+    isEnabled,
     queryKey,
     getQueryOptions,
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
