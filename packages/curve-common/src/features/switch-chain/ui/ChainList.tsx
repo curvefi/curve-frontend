@@ -10,6 +10,7 @@ import groupBy from 'lodash/groupBy'
 import CardHeader from '@mui/material/CardHeader'
 import List from '@mui/material/List'
 import Box from '@mui/material/Box'
+import Alert from '@mui/material/Alert'
 import { CheckedIcon } from 'curve-ui-kit/src/shared/icons/CheckedIcon'
 
 enum ChainType {
@@ -66,7 +67,7 @@ export function ChainList<TChainId extends number>({
                   sx={{
                     position: 'sticky',
                     top: 0,
-                    backgroundColor: (t) => t.design.Layer[3].Fill,
+                    backgroundColor: 'background.paper',
                     zIndex: 1,
                   }}
                 />
@@ -89,11 +90,9 @@ export function ChainList<TChainId extends number>({
               </List>
             </>
           )) : (
-            <List>
-              <MenuItem disabled>
-                <Typography variant="bodyMBold">{t`No networks found`}</Typography>
-              </MenuItem>
-            </List>
+            <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>
+              {t`No networks found`}
+            </Alert>
           )}
       </Box>
     </>

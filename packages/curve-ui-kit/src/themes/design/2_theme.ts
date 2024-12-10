@@ -196,6 +196,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
   const Feedback = {
     Success: Greens[300],
+    Info: Blues[200],
     Warning: Reds[300],
     Error: Reds[500],
   } as const
@@ -516,6 +517,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
   const Feedback = {
     Success: Greens[400],
+    Info: Blues[300],
     Warning: Reds[300],
     Error: Reds[500],
   } as const
@@ -834,6 +836,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
   const Feedback = {
     Success: Greens[400],
+    Info: Blues[300],
     Warning: Reds[300],
     Error: Reds[500],
   } as const

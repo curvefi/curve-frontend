@@ -9,6 +9,7 @@ export const createPalette = (
   primary: { main: Color.Primary[500] },
   secondary: { main: Color.Secondary[500] },
   error: { main: Feedback.Error },
+  info: { main: Feedback.Info },
   warning: { main: Feedback.Warning },
   success: { main: Feedback.Success },
   text: {
