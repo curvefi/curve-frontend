@@ -3,6 +3,7 @@ import { basicMuiTheme, type Responsive } from '../basic-theme'
 import { Fonts } from '../typography'
 import { DesignSystem } from '../design'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import { Sizing } from '../design/0_primitives'
 import { Breakpoint } from '@mui/material'
 
 const { LineHeight, OutlineWidth, FontWeight, ButtonSize, FontSize } = SizesAndSpaces
@@ -65,7 +66,20 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
   return {
     styleOverrides: {
       root: {
-        variants: Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
+        variants: [
+          ...Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
+          {
+            props: {
+              variant: 'link',
+            },
+            style: {
+              textTransform: 'none',
+              padding: 0,
+              height: `${Sizing[400]} !important`,
+              '&:focus': { borderColor: 'transparent' },
+            },
+          },
+        ],
         borderRadius: 0,
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
