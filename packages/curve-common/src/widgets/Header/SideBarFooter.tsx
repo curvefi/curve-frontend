@@ -10,7 +10,7 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 import { AdvancedModeSwitcher } from '../../features/switch-advanced-mode'
 import { t } from '@lingui/macro'
-import SettingsIcon from '@mui/icons-material/Settings'
+import { GearIcon } from 'curve-ui-kit/src/shared/icons/GearIcon'
 
 type SideBarFooterProps = Pick<BaseHeaderProps, 'advancedMode' | 'themes' | 'WalletProps'> & {
   sx: SxProps<Theme>
@@ -25,12 +25,11 @@ export const SideBarFooter = ({ themes: [theme, setTheme], advancedMode, WalletP
         <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
       </Box>
 
-      {/* todo: Update all paper borders and colors in theme */}
-      <Accordion sx={{ borderRadius: '0 !important', backgroundColor }} disableGutters>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingX: 4 }}>
-          <SettingsIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
+      <Accordion sx={{ backgroundColor }} disableGutters>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingInline: 4 }}>
+          <GearIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
           <Typography
-            sx={{ marginLeft: 1, verticalAlign: 'top' }}
+            sx={{ marginLeft: 1, alignContent: 'center' }}
             variant="bodyMBold"
             color="navigation"
             data-testid="sidebar-settings"

@@ -176,10 +176,10 @@ const MappedFontSize = {
 } as const
 
 const MappedButtonSize = {
-  xs: Sizing[300],
-  sm: Sizing[500],
-  md: Sizing[600],
-  lg: Sizing[650],
+  xs: Sizing[300], // 24px
+  sm: Sizing[500], // 40px
+  md: Sizing[600], // 48px
+  lg: Sizing[650], // 56px
 }
 
 const MappedFontWeight = {
@@ -282,11 +282,11 @@ const MappedTypography = {
 } as const
 
 const MappedModalWidth = {
-  xs: '19rem',
-  sm: '24rem',
-  md: '28rem',
-  lg: '32rem',
-  xl: '36rem',
+  xs: '19rem', // 304px
+  sm: '24rem', // 384px
+  md: '28rem', // 448px
+  lg: '32rem', // 512px
+  xl: '36rem', // 576px
 }
 
 export const SizesAndSpaces = {

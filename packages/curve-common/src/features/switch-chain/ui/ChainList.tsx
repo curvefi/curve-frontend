@@ -7,11 +7,11 @@ import Typography from '@mui/material/Typography'
 import { ChainOption } from './ChainSwitcher'
 import { useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
-import CardHeader from '@mui/material/CardHeader'
 import List from '@mui/material/List'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import { CheckedIcon } from 'curve-ui-kit/src/shared/icons/CheckedIcon'
+import { MenuSectionHeader } from 'curve-ui-kit/src/shared/ui/MenuSectionHeader'
 
 enum ChainType {
   test = 'test',
@@ -62,17 +62,7 @@ export function ChainList<TChainId extends number>({
             .filter(([key]) => showTestnets || key !== ChainType.test)
             .flatMap(([key, chains]) => (
               <>
-                {showTestnets && (
-                  <CardHeader
-                    title={<Typography variant="headingXsBold">{chainTypeNames[key as ChainType]}</Typography>}
-                    sx={{
-                      position: 'sticky',
-                      top: 0,
-                      backgroundColor: 'background.paper',
-                      zIndex: 1,
-                    }}
-                  />
-                )}
+                {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <List>
                   {chains.map((chain) => (
                     <MenuItem

@@ -34,10 +34,26 @@ export const Success: Story = {
   },
 }
 
+export const SuccessOutlined: Story = {
+  args: {
+    severity: 'success',
+    variant: 'outlined',
+    children: 'An outlined success text message is displayed. A little llama is happy.',
+  },
+}
+
 export const Info: Story = {
   args: {
     severity: 'info',
     children: 'An info text message is displayed. A little llama is curious.',
+  },
+}
+
+export const InfoOutlined: Story = {
+  args: {
+    severity: 'info',
+    variant: 'outlined',
+    children: 'An outlined info text message is displayed. A little llama is curious.',
   },
 }
 
