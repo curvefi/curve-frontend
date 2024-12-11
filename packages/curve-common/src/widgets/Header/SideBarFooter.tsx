@@ -2,6 +2,7 @@ import { BaseHeaderProps } from './types'
 import Box, { type BoxProps } from '@mui/material/Box'
 import { ThemeSwitcherButtons } from '../../features/switch-theme'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
+import { UserProfileButton } from 'curve-ui-kit/src/features/user-profile'
 import type { SxProps, Theme } from '@mui/system'
 import SettingsIcon from '@mui/icons-material/Settings'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
@@ -28,6 +29,7 @@ export const SideBarFooter = ({
     <Box position="fixed" bottom={0} sx={{ ...sx, backgroundColor }}>
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
+        <UserProfileButton {...WalletProps} />
       </Box>
 
       {/* todo: Update all paper borders and colors in theme */}
