@@ -17,15 +17,15 @@ export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: L
       rowId={(row) => [row.blockchainId, row.registryId, row.id].join('-')}
       columns={useMemo(
         () => [
-          { key: 'title', title: t`Collateral • Borrow`, component: PoolTitleCell, size: { mobile: 6, desktop: 3 } },
-          { key: 'borrow', title: t`7D Borrow Rate`, component: BorrowRateCell, size: { mobile: 6, desktop: 3 } },
-          { key: 'supply', title: t`7D Supply Yield`, component: SupplyYieldCell, size: { mobile: 6, desktop: 3 } },
-          { key: 'utilization', title: t`Utilization`, component: UtilizationCell, size: { mobile: 3, desktop: 2 } },
+          { key: 'title', title: t`Collateral • Borrow`, component: PoolTitleCell, size: { mobile: 12, tablet: 6, desktop: 3 } },
+          { key: 'borrow', title: t`7D Borrow Rate`, component: BorrowRateCell, size: { mobile: 6, tablet: 6, desktop: 3 } },
+          { key: 'supply', title: t`7D Supply Yield`, component: SupplyYieldCell, size: { mobile: 6, tablet: 6, desktop: 3 } },
+          { key: 'utilization', title: t`Utilization`, component: UtilizationCell, size: { mobile: 6, tablet: 3, desktop: 2 } },
           {
             key: 'liquidity',
             title: t`Available Liquidity`,
             component: LiquidityCell,
-            size: { mobile: 3, desktop: 1 },
+            size: { mobile: 6, tablet: 3, desktop: 1 },
           },
         ],
         [],
