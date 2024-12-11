@@ -5,6 +5,7 @@ import type { Components } from '@mui/material/styles'
 
 const { ButtonSize, OutlineWidth } = SizesAndSpaces
 
+// note: should use IconSize instead of ButtonSize? Plus introduce many more sizes (xs to 4xl)
 export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
   styleOverrides: {
     root: {

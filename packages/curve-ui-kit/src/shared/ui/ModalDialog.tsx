@@ -31,8 +31,8 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
     >
       <CardHeader
         action={
-          <IconButton>
-            <CloseIcon fontSize="large" onClick={onClose} />
+          <IconButton onClick={onClose}>
+            <CloseIcon />
           </IconButton>
         }
         avatar={titleAction}

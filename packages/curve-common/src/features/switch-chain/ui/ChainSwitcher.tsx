@@ -1,7 +1,7 @@
 import IconButton from '@mui/material/IconButton'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo } from 'react'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { useSwitch } from 'curve-ui-kit/src/hooks/useSwitch'
 import { ModalDialog } from 'curve-ui-kit/src/shared/ui/ModalDialog'
@@ -59,7 +59,7 @@ export const ChainSwitcher = <TChainId extends number>({
           titleAction={
             isSettingsOpen && (
               <IconButton onClick={closeSettings}>
-                <ArrowBackIcon sx={{ color: (t) => t.design.Button.Ghost.Default.Label }} />
+                <ArrowBackIcon />
               </IconButton>
             )
           }

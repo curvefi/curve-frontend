@@ -19,11 +19,13 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiCardHeader: {
     styleOverrides: {
       root: {
-        padding: SizesAndSpaces.Spacing.sm.desktop + ' ' + SizesAndSpaces.Spacing.md.desktop,
+        paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
+        paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
+
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
         minHeight: SizesAndSpaces.ButtonSize.lg,
       },
-      action: { alignContent: 'center' },
+      action: { alignContent: 'center', margin: 0 },
     },
   },
   MuiCardActions: {
