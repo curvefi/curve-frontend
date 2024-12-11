@@ -1,4 +1,5 @@
 import { styled } from '@mui/material/styles'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
@@ -18,42 +19,50 @@ export const Footer = () => {
   const sections = getSections()
 
   return (
-    <Grid
-      container
+    <Box
       component="footer"
       data-testid="footer"
-      spacing={1}
-      rowGap={4}
+      display="flex"
+      justifyContent="center"
       sx={(t) => ({
-        position: 'relative',
+        backgroundColor: t.design.Layer[3].Fill,
         paddingInline: SizesAndSpaces.Spacing.lg,
         paddingBlock: SizesAndSpaces.Spacing.xl,
-        backgroundColor: t.design.Layer[3].Fill,
       })}
     >
       <Grid
-        size={{
-          mobile: 12,
-          desktop: 3,
+        container
+        spacing={1}
+        rowGap={4}
+        sx={{
+          position: 'relative',
+          maxWidth: SizesAndSpaces.FooterWidth,
         }}
       >
-        <Description />
-      </Grid>
-
-      {sections.map((section) => (
         <Grid
-          key={section.title}
           size={{
             mobile: 12,
-            tablet: 4,
             desktop: 3,
           }}
         >
-          <Section {...section} />
+          <Description />
         </Grid>
-      ))}
 
-      <Llama src={LlamaImageSrc} sx={{ right: SizesAndSpaces.Spacing.lg }} />
-    </Grid>
+        {sections.map((section) => (
+          <Grid
+            key={section.title}
+            size={{
+              mobile: 12,
+              tablet: 4,
+              desktop: 3,
+            }}
+          >
+            <Section {...section} />
+          </Grid>
+        ))}
+
+        <Llama src={LlamaImageSrc} sx={{ right: SizesAndSpaces.Spacing.lg }} />
+      </Grid>
+    </Box>
   )
 }
