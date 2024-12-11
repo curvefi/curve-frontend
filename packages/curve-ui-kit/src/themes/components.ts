@@ -48,6 +48,14 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiIconButton: defineMuiIconButton(design),
   MuiInputBase: {
     styleOverrides: {
+      root: {
+        // color the whole input base when accepting autofill suggestions in chromium browsers
+        ':has(input:autofill)': {
+          backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',
+          boxShadow: '0 0 0 100px #266798 inset',
+          '& svg': { color: 'rgb(232, 240, 254)' },
+        },
+      },
       input: {
         height: SizesAndSpaces.ButtonSize.md,
         boxSizing: 'border-box',

@@ -55,6 +55,7 @@ export function ChainList<TChainId extends number>({
         slotProps={{ input: { startAdornment: <SearchIcon /> } }}
         variant="outlined"
         value={searchValue}
+        name="chainName"
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
         {entries.length ? (
