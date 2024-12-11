@@ -1,7 +1,6 @@
 import { t } from '@lingui/macro'
 
 import YouTubeIcon from '@mui/icons-material/YouTube'
-import TelegramIcon from '@mui/icons-material/Telegram'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
@@ -15,6 +14,9 @@ import { CrvHubIcon } from 'curve-ui-kit/src/shared/icons/CrvHubIcon'
 import { NewsIcon } from 'curve-ui-kit/src/shared/icons/NewsIcon'
 import { IntegrationsIcon } from 'curve-ui-kit/src/shared/icons/IntegrationsIcon'
 import { DocsIcon } from 'curve-ui-kit/src/shared/icons/DocsIcon'
+import { TelegramIcon } from 'curve-ui-kit/src/shared/icons/TelegramIcon'
+import { TelegramCNIcon } from 'curve-ui-kit/src/shared/icons/TelegramCNIcon'
+import { TelegramRUIcon } from 'curve-ui-kit/src/shared/icons/TelegramRUIcon'
 import { SectionProps } from './Section'
 
 export const getSections = (): SectionProps[] => [
@@ -49,12 +51,12 @@ export const getSections = (): SectionProps[] => [
       {
         label: t`Telegram (CN)`,
         href: 'https://t.me/curveficn',
-        icon: <TelegramIcon />,
+        icon: <TelegramCNIcon />,
       },
       {
         label: t`Telegram (RU)`,
         href: 'https://t.me/crvrussianchat',
-        icon: <TelegramIcon />,
+        icon: <TelegramRUIcon />,
       },
     ],
   },
