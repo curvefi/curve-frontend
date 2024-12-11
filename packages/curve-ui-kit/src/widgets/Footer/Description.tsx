@@ -1,18 +1,9 @@
 import { t } from '@lingui/macro'
-import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
-import { LogoImg } from 'ui/src/images'
-
-const LogoImageSrc = (LogoImg as unknown as { src: string }).src
-const Logo = styled('img')({
-  width: 48,
-  height: 48,
-  margin: 8,
-  alt: 'Curve',
-})
+import { RCLogoSM } from 'ui/src/images'
 
 export const Description = () => (
   <Box
@@ -30,7 +21,13 @@ export const Description = () => (
         textDecoration: 'none',
       }}
     >
-      <Logo src={LogoImageSrc} />
+      <RCLogoSM
+        style={{
+          width: '48px',
+          height: '48px',
+          margin: '8px',
+        }}
+      />
 
       <Typography
         color="textPrimary"
