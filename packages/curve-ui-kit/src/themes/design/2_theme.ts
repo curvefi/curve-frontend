@@ -3,29 +3,31 @@ import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
 
-const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s'
+const Transition = 'color ease-out 0.256s, background-color ease-out 0.256s, filter ease-out 0.256s'
+
+const Neutral = {
+  '25': Grays[25],
+  '50': Grays[50],
+  '75': Grays[75],
+  '100': Grays[100],
+  '150': Grays[150],
+  '200': Grays[200],
+  '300': Grays[300],
+  '400': Grays[400],
+  '500': Grays[500],
+  '600': Grays[600],
+  '700': Grays[700],
+  '750': Grays[750],
+  '800': Grays[800],
+  '850': Grays[850],
+  '900': Grays[900],
+  '950': Grays[950],
+  '975': Grays[975],
+}
 
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
-    Neutral: {
-      '25': Grays[25],
-      '50': Grays[50],
-      '75': Grays[75],
-      '100': Grays[100],
-      '150': Grays[150],
-      '200': Grays[200],
-      '300': Grays[300],
-      '400': Grays[400],
-      '500': Grays[500],
-      '600': Grays[600],
-      '700': Grays[700],
-      '750': Grays[750],
-      '800': Grays[800],
-      '850': Grays[850],
-      '900': Grays[900],
-      '950': Grays[950],
-      '975': Grays[975],
-    },
+    Neutral,
     Primary: {
       '50': Blues[50],
       '100': Blues[100],
@@ -56,24 +58,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       '600': Reds[500],
     },
   } as const
-  const Text = {
-    TextColors: {
-      Primary: Light.Text.primary,
-      Secondary: Light.Text.secondary,
-      Tertiary: Light.Text.tertiary,
-      Highlight: Light.Text.highlight,
-      Disabled: Light.Text.Disabled,
-      Success: Greens[500],
-      Warning: Reds[400],
-      Error: Reds[500],
-    },
-    FontFamily: {
-      Heading: 'Mona Sans',
-      Body: 'Mona Sans',
-      Mono: 'Mona Sans',
-      Button: 'Mona Sans',
-    },
-  } as const
   const Layer = {
     '1': {
       Fill: Light.Layer[1].Fill,
@@ -93,6 +77,29 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Highlight: {
       Fill: Light.Layer.Highlight,
       Outline: Light.Layer.Highlight,
+    },
+    TypeAction: {
+      Hover: Light.Layer.TypeAction.Hover,
+      Selected: Light.Layer.TypeAction.Selected,
+    },
+  } as const
+  const Text = {
+    TextColors: {
+      Primary: Light.Text.primary,
+      Secondary: Light.Text.secondary,
+      Tertiary: Light.Text.tertiary,
+      Highlight: Light.Text.highlight,
+      Disabled: Light.Text.Disabled,
+      Success: Greens[500],
+      Warning: Reds[400],
+      Error: Reds[500],
+      Info: Layer.Highlight.Outline,
+    },
+    FontFamily: {
+      Heading: 'Mona Sans',
+      Body: 'Mona Sans',
+      Mono: 'Mona Sans',
+      Button: 'Mona Sans',
     },
   } as const
   const Button = {
@@ -196,6 +203,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
   const Feedback = {
     Success: Greens[300],
+    Info: Layer[3].Fill,
     Warning: Reds[300],
     Error: Reds[500],
   } as const
@@ -376,24 +384,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       '600': Reds[200],
     },
   } as const
-  const Text = {
-    TextColors: {
-      Primary: Dark.Text.primary,
-      Secondary: Dark.Text.secondary,
-      Tertiary: Dark.Text.tertiary,
-      Highlight: Dark.Text.highlight,
-      Disabled: Dark.Text.Disabled,
-      Success: Greens[400],
-      Warning: Reds[300],
-      Error: Reds[500],
-    },
-    FontFamily: {
-      Heading: 'Mona Sans',
-      Body: 'Mona Sans',
-      Mono: 'Mona Sans',
-      Button: 'Mona Sans',
-    },
-  } as const
   const Layer = {
     '1': {
       Fill: Dark.Layer[1].Fill,
@@ -413,6 +403,29 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Highlight: {
       Fill: Dark.Layer.Highlight,
       Outline: Dark.Layer.Highlight,
+    },
+    TypeAction: {
+      Hover: Dark.Layer.TypeAction.Hover,
+      Selected: Dark.Layer.TypeAction.Selected,
+    },
+  } as const
+  const Text = {
+    TextColors: {
+      Primary: Dark.Text.primary,
+      Secondary: Dark.Text.secondary,
+      Tertiary: Dark.Text.tertiary,
+      Highlight: Dark.Text.highlight,
+      Disabled: Dark.Text.Disabled,
+      Success: Greens[400],
+      Info: Layer.Highlight.Outline,
+      Warning: Reds[300],
+      Error: Reds[500],
+    },
+    FontFamily: {
+      Heading: 'Mona Sans',
+      Body: 'Mona Sans',
+      Mono: 'Mona Sans',
+      Button: 'Mona Sans',
     },
   } as const
   const Button = {
@@ -516,6 +529,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
   const Feedback = {
     Success: Greens[400],
+    Info: Layer[3].Fill,
     Warning: Reds[300],
     Error: Reds[500],
   } as const
@@ -645,25 +659,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
 export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad) => {
   const Color = {
-    Neutral: {
-      '25': Grays[25],
-      '50': Grays[50],
-      '75': Grays[75],
-      '100': Grays[100],
-      '150': Grays[150],
-      '200': Grays[200],
-      '300': Grays[300],
-      '400': Grays[400],
-      '500': Grays[500],
-      '600': Grays[600],
-      '700': Grays[700],
-      '750': Grays[750],
-      '800': Grays[800],
-      '850': Grays[850],
-      '900': Grays[900],
-      '950': Grays[950],
-      '975': Grays[975],
-    },
+    Neutral,
     Primary: {
       '50': Violet[50],
       '100': Violet[100],
@@ -694,24 +690,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       '600': Reds[500],
     },
   } as const
-  const Text = {
-    TextColors: {
-      Primary: Chad.Text.primary,
-      Secondary: Chad.Text.secondary,
-      Tertiary: Chad.Text.tertiary,
-      Highlight: Chad.Text.highlight,
-      Disabled: Chad.Text.Disabled,
-      Success: Greens[500],
-      Warning: Reds[400],
-      Error: Reds[500],
-    },
-    FontFamily: {
-      Heading: 'Minecraft',
-      Body: 'Hubot Sans',
-      Mono: 'Hubot Sans',
-      Button: 'Minecraft',
-    },
-  } as const
   const Layer = {
     '1': {
       Fill: Chad.Layer[1].Fill,
@@ -731,6 +709,29 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Highlight: {
       Fill: Chad.Layer.Highlight,
       Outline: Chad.Layer.Highlight,
+    },
+    TypeAction: {
+      Hover: Chad.Layer.TypeAction.Hover,
+      Selected: Chad.Layer.TypeAction.Selected,
+    },
+  } as const
+  const Text = {
+    TextColors: {
+      Primary: Chad.Text.primary,
+      Secondary: Chad.Text.secondary,
+      Tertiary: Chad.Text.tertiary,
+      Highlight: Chad.Text.highlight,
+      Disabled: Chad.Text.Disabled,
+      Success: Greens[500],
+      Info: Layer.Highlight.Outline,
+      Warning: Reds[400],
+      Error: Reds[500],
+    },
+    FontFamily: {
+      Heading: 'Minecraft',
+      Body: 'Hubot Sans',
+      Mono: 'Hubot Sans',
+      Button: 'Minecraft',
     },
   } as const
   const Button = {
@@ -834,6 +835,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
   const Feedback = {
     Success: Greens[400],
+    Info: Layer[3].Fill,
     Warning: Reds[300],
     Error: Reds[500],
   } as const
