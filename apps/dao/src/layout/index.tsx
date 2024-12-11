@@ -57,7 +57,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
     return total - layoutHeight.footer + 24
   }, [layoutHeight])
 
-  const sections = useMemo(() => getSections(locale), [rChainId, locale])
+  const sections = useMemo(() => getSections(locale), [locale])
   return (
     <>
       <GlobalBanner

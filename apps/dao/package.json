@@ -24,7 +24,7 @@
     "tsconfig": "*"
   },
   "dependencies": {
-    "@curvefi/api": "^2.65.17",
+    "@curvefi/api": "^2.65.18",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^3.9.0",
     "@lingui/react": "^4.6.0",
@@ -32,6 +32,7 @@
     "bignumber.js": "^9.0.1",
     "curve-common": "*",
     "curve-lib": "*",
+    "curve-ui-kit": "*",
     "dayjs": "^1.11.7",
     "ethers": "^6.9.0",
     "focus-visible": "5.2.0",

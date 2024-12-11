@@ -10,6 +10,7 @@ export const ThemeSwitcherButton: FunctionComponent<ThemeSwitcherProps> = ({ the
     const nextIndex = (themeIndex + 1) % themes.length
     onChange(themes[nextIndex].type)
   }, [themeIndex, onChange])
+
   const { Component } = themes[themeIndex]!
   return (
     <Tooltip title={label}>

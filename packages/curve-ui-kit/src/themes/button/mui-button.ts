@@ -78,6 +78,16 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
       sizeSmall: buttonSize({ height: 'sm', fontSize: 'sm', lineHeight: 'md' }),
       sizeMedium: buttonSize({ height: 'md', fontSize: 'md', lineHeight: 'xl' }),
       sizeLarge: buttonSize({ height: 'lg', fontSize: 'md', lineHeight: 'xl' }),
+      startIcon: {
+        [basicMuiTheme.breakpoints.up('mobile')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.mobile },
+        [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.tablet },
+        [basicMuiTheme.breakpoints.up('desktop')]: { marginInlineEnd: SizesAndSpaces.Spacing.xs.desktop },
+      },
+      endIcon: {
+        [basicMuiTheme.breakpoints.up('mobile')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.mobile },
+        [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.tablet },
+        [basicMuiTheme.breakpoints.up('desktop')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.desktop },
+      },
     },
   }
 }
