@@ -300,5 +300,10 @@ export const SizesAndSpaces = {
   LineHeight: MappedLineHeight,
   Typography: MappedTypography,
   ModalWidth: MappedModalWidth,
+  ModalHeight: {
+    height: '80vh',
+    maxHeight: '800px',
+    minHeight: '300px',
+  },
   OutlineWidth: '0.125rem', // 2px
 } as const
