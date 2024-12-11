@@ -12,6 +12,7 @@ import { MobileTopBar } from './MobileTopBar'
 import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useLocation } from 'react-router-dom'
 import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
+import { t } from '@lingui/macro'
 
 const SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 const HIDE_SCROLLBAR = {
@@ -32,7 +33,6 @@ export const MobileHeader = <TChainId extends number>({
   themes,
   sections,
   locale,
-  translations: t,
   ChainProps,
   isLite = false,
   advancedMode,
@@ -102,11 +102,10 @@ export const MobileHeader = <TChainId extends number>({
               <SidebarSection key={title} title={title} pages={links} />
             ))}
 
-            <SocialSidebarSection title={t.socialMedia} locale={locale} />
+            <SocialSidebarSection title={t`Community`} locale={locale} />
           </Box>
 
           <SideBarFooter
-            translations={t}
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
