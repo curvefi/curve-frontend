@@ -2,18 +2,19 @@ import { t } from '@lingui/macro'
 
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import TelegramIcon from '@mui/icons-material/Telegram'
-import NewspaperIcon from '@mui/icons-material/Newspaper'
-import IntegrationInstructionsOutlinedIcon from '@mui/icons-material/IntegrationInstructionsOutlined'
-import BookIcon from '@mui/icons-material/Book'
 import GitHubIcon from '@mui/icons-material/GitHub'
 import BeenhereOutlinedIcon from '@mui/icons-material/BeenhereOutlined'
 import BugReportOutlinedIcon from '@mui/icons-material/BugReportOutlined'
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 import { XIcon } from 'curve-ui-kit/src/shared/icons/XIcon'
 import { DiscordIcon } from 'curve-ui-kit/src/shared/icons/DiscordIcon'
 import { LAFIcon } from 'curve-ui-kit/src/shared/icons/LAFIcon'
 import { DuneIcon } from 'curve-ui-kit/src/shared/icons/DuneIcon'
 import { CrvHubIcon } from 'curve-ui-kit/src/shared/icons/CrvHubIcon'
+import { NewsIcon } from 'curve-ui-kit/src/shared/icons/NewsIcon'
+import { IntegrationsIcon } from 'curve-ui-kit/src/shared/icons/IntegrationsIcon'
+import { DocsIcon } from 'curve-ui-kit/src/shared/icons/DocsIcon'
 import { SectionProps } from './Section'
 
 export const getSections = (): SectionProps[] => [
@@ -63,22 +64,22 @@ export const getSections = (): SectionProps[] => [
       {
         label: t`News`,
         href: 'https://news.curve.fi/',
-        icon: <NewspaperIcon />,
+        icon: <NewsIcon />,
       },
       {
         label: t`User Docs`,
         href: 'https://resources.curve.fi/',
-        icon: <BookIcon />,
+        icon: <HelpOutlineIcon />,
       },
       {
         label: t`Integrations`,
         href: 'https://docs.curve.fi/integration/overview/',
-        icon: <IntegrationInstructionsOutlinedIcon />,
+        icon: <IntegrationsIcon />,
       },
       {
         label: t`Technical Docs`,
         href: 'https://docs.curve.fi/',
-        icon: <BookIcon />,
+        icon: <DocsIcon />,
       },
       {
         label: t`Github`,
