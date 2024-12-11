@@ -66,14 +66,14 @@ export const getSections = (): SectionProps[] => [
         icon: <NewspaperIcon />,
       },
       {
-        label: t`Integrations`,
-        href: 'https://docs.curve.fi/integration/overview/',
-        icon: <IntegrationInstructionsOutlinedIcon />,
-      },
-      {
         label: t`User Docs`,
         href: 'https://resources.curve.fi/',
         icon: <BookIcon />,
+      },
+      {
+        label: t`Integrations`,
+        href: 'https://docs.curve.fi/integration/overview/',
+        icon: <IntegrationInstructionsOutlinedIcon />,
       },
       {
         label: t`Technical Docs`,
