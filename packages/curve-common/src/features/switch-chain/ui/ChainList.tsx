@@ -7,7 +7,11 @@ import Typography from '@mui/material/Typography'
 import { ChainOption } from './ChainSwitcher'
 import { useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
-import CardHeader from '@mui/material/CardHeader'
+import List from '@mui/material/List'
+import Box from '@mui/material/Box'
+import Alert from '@mui/material/Alert'
+import { CheckedIcon } from 'curve-ui-kit/src/shared/icons/CheckedIcon'
+import { MenuSectionHeader } from 'curve-ui-kit/src/shared/ui/MenuSectionHeader'
 
 enum ChainType {
   test = 'test',
@@ -18,10 +22,12 @@ export function ChainList<TChainId extends number>({
   options,
   onChange,
   showTestnets,
+  selectedNetwork,
 }: {
   onChange: (chainId: TChainId) => void
   options: ChainOption<TChainId>[]
   showTestnets: boolean
+  selectedNetwork: ChainOption<TChainId>
 }) {
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
@@ -38,6 +44,7 @@ export function ChainList<TChainId extends number>({
     [ChainType.main]: t`Main networks`,
   }
 
+  const entries = Object.entries(groupedOptions)
   return (
     <>
       <TextField
@@ -48,28 +55,39 @@ export function ChainList<TChainId extends number>({
         slotProps={{ input: { startAdornment: <SearchIcon /> } }}
         variant="outlined"
         value={searchValue}
+        name="chainName"
       />
-      {Object.entries(groupedOptions)
-        .filter(([key]) => showTestnets || key !== ChainType.test)
-        .flatMap(([key, chains]) => (
-          <>
-            {showTestnets && (
-              <CardHeader title={<Typography variant="headingXsBold">{chainTypeNames[key as ChainType]}</Typography>} />
-            )}
-            {chains.map((chain) => (
-              <MenuItem
-                key={chain.chainId}
-                onClick={() => onChange(chain.chainId)}
-                data-testid={`menu-item-chain-${chain.chainId}`}
-              >
-                <ChainIcon chain={chain} />
-                <Typography sx={{ marginLeft: 4 }} variant="headingXsBold">
-                  {chain.label}
-                </Typography>
-              </MenuItem>
-            ))}
-          </>
-        ))}
+      <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
+        {entries.length ? (
+          entries
+            .filter(([key]) => showTestnets || key !== ChainType.test)
+            .flatMap(([key, chains]) => (
+              <>
+                {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
+                <List>
+                  {chains.map((chain) => (
+                    <MenuItem
+                      key={chain.chainId}
+                      onClick={() => onChange(chain.chainId)}
+                      data-testid={`menu-item-chain-${chain.chainId}`}
+                      selected={chain.chainId == selectedNetwork?.chainId}
+                    >
+                      <ChainIcon chain={chain} size={36} />
+                      <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
+                        {chain.label}
+                      </Typography>
+                      {chain.chainId == selectedNetwork?.chainId && <CheckedIcon />}
+                    </MenuItem>
+                  ))}
+                </List>
+              </>
+            ))
+        ) : (
+          <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>
+            {t`No networks found`}
+          </Alert>
+        )}
+      </Box>
     </>
   )
 }

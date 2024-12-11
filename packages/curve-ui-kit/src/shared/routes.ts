@@ -89,8 +89,8 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
       return `https://curve-${previewPrefix}-${branchPrefix}-curvefi.vercel.app`
     }
   }
-  if (windowHost && !windowHost?.endsWith(productionHost)) {
-    console.warn(`Unexpected host: ${windowHost}, expected ${productionHost}`)
+  if (windowHost && !windowHost.endsWith('curve.fi')) {
+    console.warn(`Unexpected host: ${windowHost}`)
   }
   return `https://${productionHost}`
 }

@@ -5,6 +5,7 @@ import type { Components } from '@mui/material/styles'
 
 const { ButtonSize, OutlineWidth } = SizesAndSpaces
 
+// note: should use IconSize instead of ButtonSize? Plus introduce many more sizes (xs to 4xl)
 export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
   styleOverrides: {
     root: {
@@ -19,7 +20,7 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Comp
         borderColor: Layer.Highlight.Outline,
         borderWidth: OutlineWidth,
       },
-      '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent' },
+      '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent', filter: 'saturate(2)' },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
     sizeSmall: {

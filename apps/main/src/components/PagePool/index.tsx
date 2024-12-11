@@ -185,14 +185,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     [isPendingGaugeManager, signerAddress, gaugeManager],
   )
 
-  const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
-    () => [
-      { key: 'deposit', label: t`Deposit` },
-      { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
-      { key: 'swap', label: t`Swap` },
-    ],
-    [themeType],
-  )
+  const ACTION_TABS: { key: TransferFormType; label: string }[] = [
+    { key: 'deposit', label: t`Deposit` },
+    { key: 'withdraw', label: t`Withdraw/Claim` },
+    { key: 'swap', label: t`Swap` },
+  ]
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {

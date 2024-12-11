@@ -19,11 +19,13 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiCardHeader: {
     styleOverrides: {
       root: {
-        padding: SizesAndSpaces.Spacing.sm.desktop + ' ' + SizesAndSpaces.Spacing.md.desktop,
+        paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
+        paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
+
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
         minHeight: SizesAndSpaces.ButtonSize.lg,
       },
-      action: { alignContent: 'center' },
+      action: { alignContent: 'center', margin: 0 },
     },
   },
   MuiCardActions: {
@@ -46,6 +48,14 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiIconButton: defineMuiIconButton(design),
   MuiInputBase: {
     styleOverrides: {
+      root: {
+        // color the whole input base when accepting autofill suggestions in chromium browsers
+        ':has(input:autofill)': {
+          backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',
+          boxShadow: '0 0 0 100px #266798 inset',
+          '& svg': { color: 'rgb(232, 240, 254)' },
+        },
+      },
       input: {
         height: SizesAndSpaces.ButtonSize.md,
         boxSizing: 'border-box',
@@ -55,11 +65,33 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
+  MuiMenuItem: {
+    styleOverrides: {
+      root: {
+        height: SizesAndSpaces.ButtonSize.md,
+        transition: design.Button.Transition,
+        // todo: use design sizes
+        gap: '4px',
+        padding: '4px',
+      },
+      dense: {
+        height: SizesAndSpaces.ButtonSize.sm,
+      },
+    },
+  },
   MuiTab: defineMuiTab(),
   MuiTabs: defineMuiTabs(design),
   MuiToolbar: {
     styleOverrides: {
       root: { minHeight: DEFAULT_BAR_SIZE, paddingX: 3 },
+    },
+  },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        // Disable elevation making the background color lighter in dark mode (default mui behavior)
+        backgroundImage: 'none',
+      },
     },
   },
   MuiSwitch: defineMuiSwitch(design),

@@ -31,8 +31,8 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
     >
       <CardHeader
         action={
-          <IconButton>
-            <CloseIcon fontSize="large" onClick={onClose} />
+          <IconButton onClick={onClose}>
+            <CloseIcon />
           </IconButton>
         }
         avatar={titleAction}
@@ -42,7 +42,9 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
           </Typography>
         }
       />
-      <CardContent sx={{ flexGrow: 1, overflowY: 'auto' }}>{children}</CardContent>
+      <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column' }}>
+        {children}
+      </CardContent>
       {footer && <CardActions>{footer}</CardActions>}
     </Card>
   </Dialog>
