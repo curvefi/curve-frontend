@@ -15156,7 +15156,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"curve-ui-kit@workspace:packages/curve-ui-kit":
+"curve-ui-kit@npm:*, curve-ui-kit@workspace:packages/curve-ui-kit":
   version: 0.0.0-use.local
   resolution: "curve-ui-kit@workspace:packages/curve-ui-kit"
   dependencies:
@@ -15377,6 +15377,7 @@ __metadata:
     bignumber.js: "npm:^9.0.1"
     curve-common: "npm:*"
     curve-lib: "npm:*"
+    curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.9.0"
@@ -20685,6 +20686,7 @@ __metadata:
     cross-fetch: "npm:^3.1.5"
     curve-common: "npm:*"
     curve-lib: "npm:*"
+    curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
@@ -20957,6 +20959,7 @@ __metadata:
     cross-fetch: "npm:^3.1.5"
     curve-common: "npm:*"
     curve-lib: "npm:*"
+    curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^5"
@@ -21390,6 +21393,7 @@ __metadata:
     cross-fetch: "npm:^3.1.5"
     curve-common: "npm:*"
     curve-lib: "npm:*"
+    curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
     ethers: "npm:^6.11.0"
