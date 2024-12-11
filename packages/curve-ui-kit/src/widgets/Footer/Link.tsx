@@ -8,12 +8,13 @@ export type LinkProps = {
   label: string
   href: string
   icon?: ReactNode
+  target?: string
 }
 
-export const Link = ({ label, href, icon }: LinkProps) => (
+export const Link = ({ label, href, icon, target = '_blank' }: LinkProps) => (
   <LinkMui
     href={href}
-    target="_blank"
+    target={target}
     rel="noreferrer"
     underline="hover"
     sx={{

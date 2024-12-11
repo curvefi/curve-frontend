@@ -73,8 +73,9 @@ export const getSections = (): SectionProps[] => [
       },
       {
         label: t`Integrations`,
-        href: 'https://docs.curve.fi/integration/overview/',
+        href: '#/integrations',
         icon: <IntegrationsIcon />,
+        target: '_self',
       },
       {
         label: t`Technical Docs`,
