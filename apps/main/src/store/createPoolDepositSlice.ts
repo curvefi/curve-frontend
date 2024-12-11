@@ -173,7 +173,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           : await curvejsApi.poolDeposit.depositAndStakeBonus(activeKey, pool, isWrapped, amounts)
 
       if (resp.error) {
-        if (get().curve.getIsLiteChain()) return
         get()[sliceKey].setStateByKeys({
           formStatus: {
             ...cloneDeep(DEFAULT_FORM_STATUS),
