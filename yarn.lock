@@ -3328,7 +3328,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.20":
+"@curvefi/api@npm:^2.65.18":
   version: 2.65.20
   resolution: "@curvefi/api@npm:2.65.20"
   dependencies:
@@ -3339,7 +3339,7 @@ __metadata:
     memoizee: "npm:^0.4.15"
   checksum: 10c0/5c1385dc13ace632e1ebb0b1aaabee806e15797f3eb99645c691e567fb82907e1f159f26571d373666f1e10ec02be3eea6a9c2d9fc8d5b566cbea1605ac019b7
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@curvefi/ethcall@npm:6.0.7":
   version: 6.0.7
@@ -17597,7 +17597,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:^6.13.4":
+"ethers@npm:^6.11.0, ethers@npm:^6.13.4":
   version: 6.13.4
   resolution: "ethers@npm:6.13.4"
   dependencies:

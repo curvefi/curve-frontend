@@ -59,7 +59,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1",
-    "@curvefi/api": "portal:/home/schiavini/curve/curve-js"
+    "@types/react-dom": "^18.3.1"
   }
 }
