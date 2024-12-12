@@ -32,8 +32,8 @@ export const Footer = () => {
     >
       <Grid
         container
-        spacing={1}
-        rowGap={4}
+        spacing={SizesAndSpaces.Grid.Column_Spacing}
+        rowGap={SizesAndSpaces.Grid.Row_Spacing}
         sx={{
           position: 'relative',
           maxWidth: SizesAndSpaces.FooterWidth,
@@ -61,7 +61,13 @@ export const Footer = () => {
           </Grid>
         ))}
 
-        <Llama src={LlamaImageSrc} sx={{ right: SizesAndSpaces.Spacing.lg }} />
+        <Llama
+          src={LlamaImageSrc}
+          sx={{
+            height: SizesAndSpaces.IconSize.xxl,
+            right: SizesAndSpaces.Spacing.lg,
+          }}
+        />
       </Grid>
     </Box>
   )
