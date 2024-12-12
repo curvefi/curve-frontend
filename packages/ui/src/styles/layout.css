@@ -21,7 +21,7 @@
   --box_header--height: 3.5rem;
 
   /* Fixed layout */
-  --width: 90rem; /* 1440px */
+  --width: 96rem; /* 1536px */
 
   /* Swap, Deposit, Withdraw */
   --transfer-min-width: 23.3125rem;
