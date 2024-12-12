@@ -1,8 +1,10 @@
 import localFont from 'next/font/local'
 import { CSSProperties } from 'react'
 
+// Fonts might not load when running Storybook locally.
 const isStorybook = process.env.STORYBOOK === 'true'
 
+// localFont calls have to be standalone, so the actual storybook check happens below.
 const monaSansFont = localFont({ src: '../../../public/fonts/Mona-Sans.woff2' })
 const hubotSansFont = localFont({ src: '../../../public/fonts/Hubot-Sans.woff2' })
 const minecraftFont = localFont({
