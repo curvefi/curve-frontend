@@ -22,9 +22,9 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
   <Dialog open={open} onClose={onClose}>
     <Card
       sx={{
+        ...SizesAndSpaces.ModalHeight,
         width: SizesAndSpaces.ModalWidth.md,
         maxWidth: '100vw',
-        height: '80vh',
         display: 'flex',
         flexDirection: 'column',
       }}

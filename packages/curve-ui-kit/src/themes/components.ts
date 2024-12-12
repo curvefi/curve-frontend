@@ -21,9 +21,8 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       root: {
         paddingBlock: SizesAndSpaces.Spacing.sm.desktop + ' 0',
         paddingInline: SizesAndSpaces.Spacing.md.desktop + ' 0',
-
         borderBottom: `1px solid ${design.Layer[3].Outline}`,
-        minHeight: SizesAndSpaces.ButtonSize.lg,
+        minHeight: `calc(${SizesAndSpaces.ButtonSize.lg} + 1px)`, // 1px for the border
       },
       action: { alignContent: 'center', margin: 0 },
     },
