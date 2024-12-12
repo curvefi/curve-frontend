@@ -75,6 +75,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
             style: {
               textTransform: 'none',
               padding: 0,
+              // !important is required as the sizes defined below with `buttonSize` have a higher specificity.
               height: `${Sizing[400]} !important`,
               '&:focus': { borderColor: 'transparent' },
             },
