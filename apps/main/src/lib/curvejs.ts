@@ -81,7 +81,9 @@ const helpers = {
         try {
           results[tokenAddress] = await curve.getUsdRate(tokenAddress)
         } catch (error) {
-          console.error(`Unable to get usd rate for ${tokenAddress}`, error)
+          if (!curve.getIsLiteChain()) {
+            console.error(`Unable to get usd rate for ${tokenAddress}`, error)
+          }
           results[tokenAddress] = NaN
         }
       })

@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.18":
-  version: 2.65.18
-  resolution: "@curvefi/api@npm:2.65.18"
+"@curvefi/api@npm:^2.65.21":
+  version: 2.65.21
+  resolution: "@curvefi/api@npm:2.65.21"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.11.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/ca01d8620e9ee791d326751fd2a2a2d649c45672e1cdb97a7cfe924d24c2c54c0beb4ea3565275b184dccfc59c5960c920b274c1e547b4b5a106d9236fa03b13
+  checksum: 10c0/79f4077924bb98eb6034ba6fc8c295463239edaa1d11fe3852dc1d2f07b306a285cf81049c886561e82164fe05390e05afd96bb10e020aa1ab61cccf73904d6a
   languageName: node
   linkType: hard
 
@@ -15357,7 +15357,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dao@workspace:apps/dao"
   dependencies:
-    "@curvefi/api": "npm:^2.65.18"
+    "@curvefi/api": "npm:^2.65.21"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
@@ -21372,7 +21372,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.65.18"
+    "@curvefi/api": "npm:^2.65.21"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
