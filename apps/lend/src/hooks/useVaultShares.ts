@@ -24,7 +24,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
       const borrowedAmtUsd = +pricePerShare * +vaultShares * +usdRate
 
       return {
-        borrowedAmount: `${formatNumber(borrowedAmt, { showDecimalIfSmallNumberOnly: true })} ${symbol}`,
+        borrowedAmount: `${formatNumber(borrowedAmt, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${symbol}`,
         borrowedAmountUsd: formatNumber(borrowedAmtUsd, FORMAT_OPTIONS.USD),
       }
     }

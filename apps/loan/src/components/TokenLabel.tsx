@@ -44,9 +44,11 @@ const TokenLabel = ({
       {...(typeof onClick === 'function' ? { onClick } : {})}
     >
       {showAlert && collateralAlert?.isDeprecated && (
-        <AlertTooltipIcon minWidth="300px" placement="start" {...collateralAlert}>
-          {collateralAlert.message}
-        </AlertTooltipIcon>
+        <TooltipIconWrapper>
+          <AlertTooltipIcon minWidth="300px" placement="start" {...collateralAlert}>
+            {collateralAlert.message}
+          </AlertTooltipIcon>
+        </TooltipIconWrapper>
       )}
       <TokenIcon imageBaseUrl={getImageBaseUrl(rChainId)} token={token} address={tokenAddress} />{' '}
       <Label size={size}>{token}</Label>
@@ -61,6 +63,17 @@ const Wrapper = styled(Box)<{ $minHeight?: number }>`
 const Label = styled.strong<Pick<Props, 'size'>>`
   padding-left: var(--spacing-1);
   ${({ size }) => size === 'lg' && `font-size: var(--font-size-4);`}
+`
+
+/**
+ * Vertically aligns the tooltip icon. Not part of the tooltip icon itself as it messes up
+ * when used elsewhere, so it's just specific for this instance. Will most likely be
+ * replaced in the future, so good enough for now.
+ */
+const TooltipIconWrapper = styled(Box)`
+  > span {
+    display: flex;
+  }
 `
 
 export default TokenLabel
