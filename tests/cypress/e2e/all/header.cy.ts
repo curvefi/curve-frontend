@@ -8,7 +8,6 @@ const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, ex
 }
 const mainAppUrl = 'http://localhost:3000'
 
-
 describe('Header', () => {
   describe('Desktop', () => {
     let isDarkMode: boolean // when running locally, the dark mode might be the default
@@ -109,13 +108,17 @@ describe('Header', () => {
       if (['loan', 'dao'].includes(Cypress.env('APP'))) {
         cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
         cy.get(`[data-testid='menu-toggle']`).click()
-        cy.get(`[data-testid='sidebar-item-quickswap']`).invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum/swap`)
+        cy.get(`[data-testid='sidebar-item-quickswap']`)
+          .invoke('attr', 'href')
+          .should('eq', `${mainAppUrl}/#/ethereum/swap`)
         return
       }
 
       switchEthToArbitrum()
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-quickswap']`).invoke('attr', 'href').should('eq', `${mainAppUrl}/#/arbitrum/swap`)
+      cy.get(`[data-testid='sidebar-item-quickswap']`)
+        .invoke('attr', 'href')
+        .should('eq', `${mainAppUrl}/#/arbitrum/swap`)
     })
   })
 
