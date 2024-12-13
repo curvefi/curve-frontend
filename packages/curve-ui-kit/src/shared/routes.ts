@@ -91,5 +91,5 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   return `https://${productionHost}`
 }
 
-export const externalAppUrl = (route: string, networkName: string, app: AppName) =>
-  app ? `${APP_LINK[app].root}/#${networkName ? networkName + '/' : ''}${route}` : `/#${route}`
+export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
+  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`
