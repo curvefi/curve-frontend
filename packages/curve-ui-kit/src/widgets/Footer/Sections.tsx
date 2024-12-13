@@ -40,12 +40,12 @@ export const getSections = (): SectionProps[] => [
       },
       {
         label: t`Announcements`,
-        href: 'https://t.me/curvefi',
+        href: 'https://t.me/curvefiann',
         icon: <TelegramIcon />,
       },
       {
         label: t`Telegram`,
-        href: 'https://t.me/crvtraders',
+        href: 'https://t.me/curvefi',
         icon: <TelegramIcon />,
       },
       {
