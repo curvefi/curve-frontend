@@ -55,7 +55,7 @@ describe('Header', () => {
       cy.visit('/')
       if (['loan', 'dao'].includes(Cypress.env('APP'))) {
         cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
-        cy.get("[data-testid='app-link-main']").its('href').should('eq', `${mainAppUrl}/#/ethereum`)
+        cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
         return
       }
       switchEthToArbitrum()
