@@ -8,9 +8,10 @@ export type PageTabsProps = {
   pages: AppPage[]
   currentApp: AppName
   selectedApp: AppName
+  networkName: string
 }
 
-export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, selectedApp }) => (
+export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, selectedApp, networkName }) => (
   <TabsSwitcher
     value={currentApp == selectedApp ? pages.find((page) => page.isActive)?.route : undefined}
     options={useMemo(
@@ -25,9 +26,9 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, 
           : APP_LINK[selectedApp].pages.map(({ label, route }) => ({
               label: label(),
               value: route,
-              href: externalAppUrl(route, selectedApp),
+              href: externalAppUrl(route, networkName, selectedApp),
             })),
-      [currentApp, pages, selectedApp],
+      [currentApp, networkName, pages, selectedApp],
     )}
     variant="overlined"
     textVariant="headingXsBold"
