@@ -12,7 +12,9 @@ type TableGridColumn<T> = {
   title: ReactNode
   key: string
 }
-type TableGridProps<T> = { data: T[]; columns: TableGridColumn<T>[], rowId: (row: T) => string }
+type TableGridProps<T> = { data: T[]; columns: TableGridColumn<T>[]; rowId: (row: T) => string }
+
+const { Sizing, Spacing } = SizesAndSpaces
 
 const TableGridCell = <T extends unknown>({
   column: { component: Component, key, size, title },
@@ -26,7 +28,7 @@ const TableGridCell = <T extends unknown>({
   <Grid2
     key={key}
     size={size}
-    height={SizesAndSpaces.Sizing['3xl']}
+    height={Sizing['3xl']}
     display="flex"
     flexDirection="column"
     // alignContent={showTitle ? 'normal' : 'end'}
@@ -41,30 +43,45 @@ const TableGridCell = <T extends unknown>({
         {title}
       </Typography>
     )}
-    <Box
-      paddingInline={SizesAndSpaces.Spacing.sm}
-      paddingBlock={SizesAndSpaces.Spacing.md}>
-    <Component data={row} />
+    <Box paddingInline={Spacing.sm} paddingBlock={Spacing.md}>
+      <Component data={row} />
     </Box>
   </Grid2>
 )
 
-const TableGridRow = <T extends unknown>({row, columns, showTitle, rowId}: { row: T, columns: TableGridColumn<T>[], showTitle: boolean, rowId: (row: T) => string }) => {
+const TableGridRow = <T extends unknown>({
+  row,
+  columns,
+  showTitle,
+  rowId,
+}: {
+  row: T
+  columns: TableGridColumn<T>[]
+  showTitle: boolean
+  rowId: (row: T) => string
+}) => {
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
   return (
-    <Grid2 container spacing={SizesAndSpaces.Spacing.xxs} maxHeight={1088} sx={{ overflowY: 'auto', marginBlock: showTitle ? 6 : 0 }} ref={ref}
-           borderBottom="1px solid"
-           borderColor="divider">
-      {entry?.isIntersecting && columns.map((column) => (
-        <TableGridCell key={[column.key, rowId(row)].join('-')} column={column} row={row} showTitle={showTitle} />
-      ))}
+    <Grid2
+      container
+      spacing={Spacing.xxs}
+      maxHeight={1088}
+      sx={{ overflowY: 'auto', marginBlock: showTitle ? 6 : 0 }}
+      ref={ref}
+      borderBottom="1px solid"
+      borderColor="divider"
+    >
+      {entry?.isIntersecting &&
+        columns.map((column) => (
+          <TableGridCell key={[column.key, rowId(row)].join('-')} column={column} row={row} showTitle={showTitle} />
+        ))}
     </Grid2>
   )
 }
 
-const TableHeaderCell = <T extends unknown>({column: { key, size, title }}:{ column : TableGridColumn<T>}) => (
-  <Grid2 size={size} height={SizesAndSpaces.Sizing['3xl']} alignContent="end">
+const TableHeaderCell = <T extends unknown>({ column: { size, title } }: { column: TableGridColumn<T> }) => (
+  <Grid2 size={size} height={Sizing['3xl']} alignContent="end" padding={Spacing.sm} paddingTop={0}>
     <Typography variant="tableHeaderS" color="textSecondary">
       {title}
     </Typography>
@@ -76,11 +93,7 @@ export const TableGrid = <T extends unknown>({ columns, data, rowId }: TableGrid
   return (
     <Box>
       {isDesktop && (
-        <Grid2
-          container
-          sx={{ backgroundColor: (t) => t.design.Table.Header_Fill }}
-          spacing={SizesAndSpaces.Spacing.xxs}
-        >
+        <Grid2 container sx={{ backgroundColor: (t) => t.design.Table.Header_Fill }} spacing={Spacing.xxs}>
           {columns.map((col) => (
             <TableHeaderCell key={col.key} column={col} />
           ))}

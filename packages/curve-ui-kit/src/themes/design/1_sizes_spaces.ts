@@ -260,7 +260,7 @@ const MappedTypography = {
     md: Sizing[200],
     lg: Sizing[250],
     xl: Sizing[350],
-    xxl: Sizing[500],
+    xxl: Sizing[700],
   },
   FontWeight: {
     Extra_Light: 200,
@@ -272,12 +272,12 @@ const MappedTypography = {
     Extra_Bold: 800,
   },
   LineHeight: {
-    xs: '0.75rem', // 12px
-    sm: '0.875rem', // 14px
-    md: '1rem', // 16px
-    lg: '1.5rem', // 24px
-    xl: '2rem', // 32px
-    xxl: '2.5rem', // 40px
+    xs: '0.875rem', // 14px
+    sm: '1rem', // 16px
+    md: '1.5rem', // 24px
+    lg: '2rem', // 32px
+    xl: '2.5rem', // 40px
+    xxl: '4rem', // 64px
   },
 } as const
 
@@ -306,5 +306,8 @@ export const SizesAndSpaces = {
     minHeight: '300px',
   },
   OutlineWidth: '0.125rem', // 2px
-  MaxWidth: '90rem', // 1440px
+  MaxWidth: {
+    md: '67rem', // 1072px
+    lg: '90rem', // 1440px
+  },
 } as const

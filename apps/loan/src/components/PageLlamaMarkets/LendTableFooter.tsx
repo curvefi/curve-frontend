@@ -12,6 +12,8 @@ import { CardStackPlusIcon } from '@/components/PageLlamaMarkets/CardStackPlusIc
 import { SignIcon } from '@/components/PageLlamaMarkets/SignIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
+const { Spacing } = SizesAndSpaces
+
 const GridItem = ({ children, title, icon }: { children: ReactNode; title: string; icon: ReactNode }) => (
   <Grid size={{ tablet: 4, mobile: 12 }}>
     {icon}
@@ -20,11 +22,11 @@ const GridItem = ({ children, title, icon }: { children: ReactNode; title: strin
   </Grid>
 )
 
-export const LlamalendSubFooter = () => (
-  <Card sx={{ paddingX: SizesAndSpaces.Spacing.lg, paddingTop: SizesAndSpaces.Spacing.lg, backgroundColor: t => t.design.Layer[1].Fill }}>
+export const LendTableFooter = () => (
+  <Card sx={{ paddingX: Spacing.lg, paddingTop: Spacing.lg, backgroundColor: (t) => t.design.Layer[1].Fill }}>
     <Typography variant="headingSBold" textAlign="center">{t`Why Use Llamalend?`}</Typography>
-    <Box paddingY={SizesAndSpaces.Spacing.md}>
-      <Grid container spacing={SizesAndSpaces.Spacing.lg}>
+    <Box paddingY={Spacing.md}>
+      <Grid container spacing={Spacing.lg}>
         <GridItem title={t`Efficient collateral`} icon={<SoftLiquidationIcon />}>
           {t`Llamalend is powered by the cutting edge LLAMA liquidation engine.`}
           {t`Soft - liquidations convert your collateral when in the collateral erosion zone to protect your from liquidations, ultimately letting improve your capital efficiency.`}

@@ -30,8 +30,8 @@ type CrvUsdSnapshotFromApi = {
 }
 
 type CrvUsdSnapshotsFromApi = {
-  chain: string,
-  market_id: number,
+  chain: string
+  market_id: number
   data: CrvUsdSnapshotFromApi[]
 }
 

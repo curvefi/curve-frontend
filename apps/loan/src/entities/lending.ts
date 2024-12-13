@@ -31,12 +31,15 @@ type LendingSnapshotFromApi = {
 }
 
 type LendingSnapshotsFromApi = {
-  chain: string,
-  market_id: number,
+  chain: string
+  market_id: number
   data: LendingSnapshotFromApi[]
 }
 
-export const _getLendingSnapshots = async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshotsFromApi> => {
+export const _getLendingSnapshots = async ({
+  blockchainId,
+  contractAddress,
+}: ContractQuery): Promise<LendingSnapshotsFromApi> => {
   const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots`
   const response = await fetch(url)
   const { data } = (await response.json()) as { data: LendingSnapshotsFromApi }

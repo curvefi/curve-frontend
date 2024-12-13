@@ -8,8 +8,11 @@ export const contractValidationGroup = ({ blockchainId, contractAddress }: Contr
     chainNameValidationGroup({ blockchainId })
 
     test('contractAddress', () => {
-      console.log(contractAddress)
-      enforce(contractAddress).isNotEmpty().message('Contract address is required').isNotZeroAddress().message('Invalid contract address')
+      enforce(contractAddress)
+        .isNotEmpty()
+        .message('Contract address is required')
+        .isNotZeroAddress()
+        .message('Invalid contract address')
     })
   })
 

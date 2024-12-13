@@ -6,7 +6,9 @@ import { Navigate, Route, Routes } from 'react-router'
 import { ROUTE } from '@/constants'
 
 const PageMarketList = dynamic(() => import('@/components/PageMarketList/Page'), { ssr: false })
-const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Page').then(p => p.PageLlamaMarkets), { ssr: false })
+const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Page').then((p) => p.PageLlamaMarkets), {
+  ssr: false,
+})
 const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
 const PageLoanManage = dynamic(() => import('@/components/PageLoanManage/Page'), { ssr: false })
 const PageRiskDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
@@ -19,16 +21,17 @@ const App: NextPage = () => {
   const SubRoutes = (
     <>
       <Route path=":network" element={<PageMarketList />} />
-      <Route path=":network/risk-disclaimer" element={<PageRiskDisclaimer />} />
-      <Route path=":network/integrations" element={<PageIntegrations />} />
-      <Route path=":network/pegkeepers" element={<PagePegKeepers />} />
-      <Route path=":network/markets" element={<PageMarketList />} />
-      <Route path=":network/scrvUSD" element={<PageCrvUsdStaking />} />
-      <Route path=":network/markets/:collateralId" element={<Navigate to="create" />} />
-      <Route path=":network/markets/:collateralId/create" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:collateralId/create/:formType" element={<PageLoanCreate />} />
-      <Route path=":network/markets/:collateralId/manage" element={<Navigate to="create" />} />
-      <Route path=":network/markets/:collateralId/manage/:formType" element={<PageLoanManage />} />
+      <Route path={`:network${ROUTE.PAGE_RISK_DISCLAIMER}`} element={<PageRiskDisclaimer />} />
+      <Route path={`:network${ROUTE.PAGE_INTEGRATIONS}`} element={<PageIntegrations />} />
+      <Route path={`:network${ROUTE.PAGE_PEGKEEPERS}`} element={<PagePegKeepers />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}`} element={<PageMarketList />} />
+      <Route path={`:network${ROUTE.BETA_PAGE_MARKETS}`} element={<PageLlamaMarkets />} />
+      <Route path={`:network${ROUTE.PAGE_CRVUSD_STAKING}`} element={<PageCrvUsdStaking />} />
+      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId`} element={<Navigate to="create" />} />
+      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/create`} element={<PageLoanCreate />} />
+      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/create/:formType`} element={<PageLoanCreate />} />
+      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/manage`} element={<Navigate to="create" />} />
+      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/manage/:formType`} element={<PageLoanManage />} />
     </>
   )
 
@@ -36,13 +39,18 @@ const App: NextPage = () => {
     <Routes>
       {SubRoutes}
       <Route path=":locale">{SubRoutes}</Route>
-      <Route path={ROUTE.BETA_PAGE_MARKETS} element={<PageLlamaMarkets />} />
-      <Route path="/markets/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
-      <Route path="/scrvUSD" element={<Navigate to={`/ethereum${ROUTE.PAGE_CRVUSD_STAKING}`} replace />} />
-      <Route path="/risk-disclaimer" element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />} />
-      <Route path="/pegkeepers" element={<Navigate to={`/ethereum${ROUTE.PAGE_PEGKEEPERS}`} replace />} />
-      <Route path="/integrations" element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />} />
-      <Route path="/" element={<Navigate to={`/ethereum/markets`} replace />} />
+      <Route path={`${ROUTE.PAGE_MARKETS}/*`} element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
+      <Route
+        path={ROUTE.PAGE_CRVUSD_STAKING}
+        element={<Navigate to={`/ethereum${ROUTE.PAGE_CRVUSD_STAKING}`} replace />}
+      />
+      <Route
+        path={ROUTE.PAGE_RISK_DISCLAIMER}
+        element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />}
+      />
+      <Route path={ROUTE.PAGE_PEGKEEPERS} element={<Navigate to={`/ethereum${ROUTE.PAGE_PEGKEEPERS}`} replace />} />
+      <Route path={ROUTE.PAGE_INTEGRATIONS} element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />} />
+      <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />
       <Route path="404" element={<Page404 />} />
       <Route path="*" element={<Page404 />} />
     </Routes>

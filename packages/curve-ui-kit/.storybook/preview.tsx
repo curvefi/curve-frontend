@@ -7,9 +7,12 @@ import { DocsContainer } from '@storybook/blocks'
 import Box from '@mui/material/Box'
 
 const themes = {
-  light: lightTheme,
-  dark: darkTheme,
-  chad: chadTheme,
+  light: lightTheme(),
+  lightInverted: darkTheme({ inverted: true }),
+  dark: lightTheme(),
+  darkInverted: darkTheme({ inverted: true }),
+  chad: chadTheme(),
+  chadInverted: chadTheme({ inverted: true }),
 }
 
 export const decorators: Decorator[] = [
