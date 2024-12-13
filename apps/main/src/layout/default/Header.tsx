@@ -58,7 +58,7 @@ export const Header = ({ sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              ...(hasRouter && (!network || network?.showRouterSwap)
+              ...(hasRouter && (!network || network.showRouterSwap)
                 ? [
                     {
                       route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
@@ -70,7 +70,7 @@ export const Header = ({ sections }: HeaderProps) => {
             ],
             rLocalePathname,
             routerPathname,
-            routerNetwork,
+            rNetwork,
           ),
         [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
       )}

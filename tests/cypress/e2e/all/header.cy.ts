@@ -1,4 +1,4 @@
-import { DESKTOP_BREAKPOINT, oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
+import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
 
 const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
   expectedMainNavHeight: 56,
@@ -108,17 +108,17 @@ describe('Header', () => {
       if (['loan', 'dao'].includes(Cypress.env('APP'))) {
         cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
         cy.get(`[data-testid='menu-toggle']`).click()
-        cy.get(`[data-testid='sidebar-item-quickswap']`)
+        cy.get(`[data-testid='sidebar-item-pools']`)
           .invoke('attr', 'href')
-          .should('eq', `${mainAppUrl}/#/ethereum/swap`)
+          .should('eq', `${mainAppUrl}/#/ethereum/pools`)
         return
       }
 
       switchEthToArbitrum()
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-quickswap']`)
+      cy.get(`[data-testid='sidebar-item-pools']`)
         .invoke('attr', 'href')
-        .should('eq', `${mainAppUrl}/#/arbitrum/swap`)
+        .should('eq', `${mainAppUrl}/#/arbitrum/pools`)
     })
   })
 

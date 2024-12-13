@@ -4,12 +4,12 @@ export const _parseRouteAndIsActive = (
   pages: AppRoute[],
   routerLocalePathname: string,
   routerPathname: string,
-  routerNetwork: string | undefined,
+  network: string | undefined,
 ) =>
   pages.map(({ route, label }) => {
     const rPathname = routerPathname.split('?')[0] ?? ''
     const routePathname = route.split('?')[0] ?? ''
-    const parsedRouterNetwork = routerNetwork || 'ethereum'
+    const parsedRouterNetwork = network || 'ethereum'
 
     return {
       route: `${routerLocalePathname}/${parsedRouterNetwork}${route}`,
