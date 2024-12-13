@@ -82,7 +82,6 @@ function TooltipButton({
 
 const StyledTooltipButton = styled.span`
   position: relative;
-  display: flex;
 `
 
 const Button = styled.span`
