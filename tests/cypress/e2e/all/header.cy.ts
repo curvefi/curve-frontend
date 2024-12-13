@@ -116,9 +116,7 @@ describe('Header', () => {
 
       switchEthToArbitrum()
       cy.get(`[data-testid='menu-toggle']`).click()
-      cy.get(`[data-testid='sidebar-item-pools']`)
-        .invoke('attr', 'href')
-        .should('eq', `${mainAppUrl}/#/arbitrum/pools`)
+      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('eq', `${mainAppUrl}/#/arbitrum/pools`)
     })
   })
 
