@@ -181,7 +181,8 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
 export function formatNumberWithPrecision(value: number, precisionDigits: number) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
   const fractionDigits = precisionDigits - Math.min(precisionDigits, valueDigits)
-  return formatNumber(value, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits })
+  const opts = { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }
+  return _formatNumber(value, opts)
 }
 
 export const formatDateFromTimestamp = (unixTime: number) => {
@@ -192,8 +193,4 @@ export const formatDateFromTimestamp = (unixTime: number) => {
   return `${day}/${month}/${year}`
 }
 
-export const convertToLocaleTimestamp = (unixTime: number) => {
-  const offsetInSeconds = new Date().getTimezoneOffset() * 60
-  const localTimestamp = unixTime - offsetInSeconds
-  return localTimestamp
-}
+export const convertToLocaleTimestamp = (unixTime: number) => unixTime - new Date().getTimezoneOffset() * 60
