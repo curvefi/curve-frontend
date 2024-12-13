@@ -1,31 +1,24 @@
+import WarningOutlinedIcon from '@mui/icons-material/WarningOutlined'
+
 import type { AlertType } from 'ui/src/AlertBox/types'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 
 import * as React from 'react'
-import Icon from 'ui/src/Icon'
 import IconTooltip from 'ui/src/Tooltip/TooltipIcon'
 
 const TooltipAlert = ({
   alertType,
+  isDeprecated,
   ...props
 }: React.PropsWithChildren<
   TooltipProps & {
     alertType: AlertType
+    isDeprecated?: boolean
   }
 >) => {
-  return (
-    <IconTooltip {...props} customIcon={<Icon name="WarningSquareFilled" size={24} fill={getColor(alertType)} />} />
-  )
-}
+  const color = isDeprecated ? 'error' : alertType === '' ? 'info' : alertType === 'danger' ? 'error' : alertType
 
-function getColor(alertType: AlertType) {
-  if (alertType === 'error' || alertType === 'danger') {
-    return `var(--danger-400)`
-  } else if (alertType === 'info') {
-    return `var(--info-400)`
-  } else if (alertType === 'warning') {
-    return `var(--warning-400)`
-  }
+  return <IconTooltip {...props} customIcon={<WarningOutlinedIcon color={color} />} />
 }
 
 export default TooltipAlert

@@ -306,4 +306,5 @@ export const SizesAndSpaces = {
     minHeight: '300px',
   },
   OutlineWidth: '0.125rem', // 2px
+  FooterWidth: '96rem', // 1536px
 } as const

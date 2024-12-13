@@ -55,7 +55,7 @@ const TokenLabel = ({
 }
 
 const Wrapper = styled(Box)<{ $minHeight?: number }>`
-  ${({ $minHeight }) => typeof $minHeight !== 'undefined' && `min-height: ${$minHeight}px;`};
+  ${({ $minHeight }) => typeof $minHeight !== 'undefined' && `min-height: ${$minHeight}px; gap: 0.25rem`};
 `
 
 const Label = styled.strong<Pick<Props, 'size'>>`
