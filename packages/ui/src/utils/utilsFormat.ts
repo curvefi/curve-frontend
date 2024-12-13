@@ -173,6 +173,17 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
   return parsedUsdRate
 }
 
+/**
+ * Format number with the given precision digits, without rounding the whole part of the number.
+ * @param value number to format
+ * @param precisionDigits number of decimal digits to show. This will be the maximum number of decimal digits.
+ */
+export function formatNumberWithPrecision(value: number, precisionDigits: number) {
+  const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
+  const fractionDigits = precisionDigits - Math.min(precisionDigits, valueDigits)
+  return formatNumber(value, { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits })
+}
+
 export const formatDateFromTimestamp = (unixTime: number) => {
   const date = new Date(unixTime * 1000)
   const day = String(date.getDate()).padStart(2, '0')
