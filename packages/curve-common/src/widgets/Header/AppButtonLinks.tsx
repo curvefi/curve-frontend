@@ -16,6 +16,7 @@ export const AppButtonLinks = ({ selectedApp, onChange, networkName }: AppNavApp
         component={Link}
         onClick={() => onChange(appName)}
         href={`${APP_LINK[appName].root}/#/${networkName}`}
+        data-testid={`app-link-${appName}`}
       >
         {APP_LINK[appName].label}
       </Button>
