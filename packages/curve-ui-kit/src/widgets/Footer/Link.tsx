@@ -1,4 +1,6 @@
 import Button from '@mui/material/Button'
+import LinkMui from '@mui/material/Link'
+import { Link as RouterLink } from 'react-router-dom'
 import { ReactNode } from 'react'
 
 export type LinkProps = {
@@ -9,7 +11,16 @@ export type LinkProps = {
 }
 
 export const Link = ({ label, href, icon, target = '_blank' }: LinkProps) => (
-  <Button component="a" href={href} target={target} rel="noreferrer" color="ghost" variant="link" startIcon={icon}>
+  <Button
+    component={href.startsWith('http') ? LinkMui : RouterLink}
+    to={href}
+    href={href}
+    target={target}
+    rel="noreferrer"
+    color="ghost"
+    variant="link"
+    startIcon={icon}
+  >
     {label}
   </Button>
 )
