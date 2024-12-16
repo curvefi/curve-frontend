@@ -15,7 +15,7 @@ type TableGridColumn<T> = {
 }
 type TableGridProps<T> = { data: T[]; columns: TableGridColumn<T>[]; rowId: (row: T) => string }
 
-const { Sizing, Spacing } = SizesAndSpaces
+const { Sizing, Spacing, ModalHeight } = SizesAndSpaces
 
 const TableGridCell = <T extends unknown>({
   column: { component: Component, key, size, title },
@@ -66,8 +66,7 @@ const TableGridRow = <T extends unknown>({
     <Grid
       container
       spacing={Spacing.xxs}
-      maxHeight={1088}
-      sx={{ overflowY: 'auto', marginBlock: showTitle ? 6 : 0 }}
+      sx={{ marginBlock: showTitle ? 6 : 0 }}
       ref={ref}
       borderBottom="1px solid"
       borderColor="divider"
@@ -99,9 +98,11 @@ export const TableGrid = <T extends unknown>({ columns, data, rowId }: TableGrid
           ))}
         </Grid>
       )}
-      {data.map((row) => (
-        <TableGridRow<T> key={rowId(row)} rowId={rowId} row={row} columns={columns} showTitle={!isDesktop} />
-      ))}
+      <Box sx={{ maxHeight: ModalHeight, overflowY: "auto" }}>
+        {data.map((row) => (
+          <TableGridRow<T> key={rowId(row)} rowId={rowId} row={row} columns={columns} showTitle={!isDesktop} />
+        ))}
+      </Box>
     </Box>
   )
 }
