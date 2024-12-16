@@ -8,7 +8,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: 'select',
-      options: ['text', 'contained', 'outlined', undefined],
+      options: ['text', 'contained', 'outlined', 'link', undefined],
       description: 'The variant of the component',
     },
     color: {
@@ -71,6 +71,14 @@ export const Ghost: Story = {
   args: {
     color: 'ghost',
     children: 'Ghost',
+  },
+}
+
+export const Link: Story = {
+  args: {
+    variant: 'link',
+    color: 'ghost',
+    children: 'Link',
   },
 }
 

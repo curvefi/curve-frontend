@@ -29,7 +29,8 @@
     "ARBITRUM_ALCHEMY_API_KEY",
     "HARDHAT_CHAIN_ID",
     "HARDHAT_MNEMONIC",
-    "CYPRESS_DAPP"
+    "CYPRESS_DAPP",
+    "STORYBOOK"
   ],
   "tasks": {
     "build": {
