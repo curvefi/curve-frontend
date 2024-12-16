@@ -7,7 +7,10 @@ import { ReloadIcon } from '../icons/ReloadIcon'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 
-const { Spacing, Grid: { Column_Spacing } } = SizesAndSpaces
+const {
+  Spacing,
+  Grid: { Column_Spacing },
+} = SizesAndSpaces
 
 export const TableFilters = ({
   title,

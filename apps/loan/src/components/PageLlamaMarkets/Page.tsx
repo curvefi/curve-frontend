@@ -20,7 +20,11 @@ export const PageLlamaMarkets = () => {
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
       <DocumentHead title={t`Llamalend Markets`} />
       <LendTableTitle />
-      {isReady ? <MarketsTable onReload={onReload} data={data.lendingVaultData} /> : <Skeleton variant="rectangular" width={MaxWidth.lg} height={ModalHeight.height} />}
+      {isReady ? (
+        <MarketsTable onReload={onReload} data={data.lendingVaultData} />
+      ) : (
+        <Skeleton variant="rectangular" width={MaxWidth.lg} height={ModalHeight.height} />
+      )}
       <LendTableFooter />
     </Box>
   )

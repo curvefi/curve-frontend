@@ -98,7 +98,7 @@ export const TableGrid = <T extends unknown>({ columns, data, rowId }: TableGrid
           ))}
         </Grid>
       )}
-      <Box sx={{ maxHeight: ModalHeight, overflowY: "auto" }}>
+      <Box sx={{ maxHeight: ModalHeight, overflowY: 'auto' }}>
         {data.map((row) => (
           <TableGridRow<T> key={rowId(row)} rowId={rowId} row={row} columns={columns} showTitle={!isDesktop} />
         ))}

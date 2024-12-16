@@ -36,7 +36,7 @@ export const Footer = () => {
         rowGap={SizesAndSpaces.Grid.Row_Spacing}
         sx={{
           position: 'relative',
-          maxWidth: SizesAndSpaces.FooterWidth,
+          maxWidth: SizesAndSpaces.ModalWidth.lg,
         }}
       >
         <Grid
