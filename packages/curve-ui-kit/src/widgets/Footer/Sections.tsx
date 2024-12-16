@@ -40,12 +40,12 @@ export const getSections = (): SectionProps[] => [
       },
       {
         label: t`Announcements`,
-        href: 'https://t.me/curvefi',
+        href: 'https://t.me/curvefiann',
         icon: <TelegramIcon />,
       },
       {
         label: t`Telegram`,
-        href: 'https://t.me/crvtraders',
+        href: 'https://t.me/curvefi',
         icon: <TelegramIcon />,
       },
       {
@@ -96,12 +96,12 @@ export const getSections = (): SectionProps[] => [
     links: [
       {
         label: t`Audits`,
-        href: 'https://docs.curve.fi/references/audits/',
+        href: 'https://docs.curve.fi/security/security/#security-audits',
         icon: <BeenhereOutlinedIcon />,
       },
       {
         label: t`Bug Bounty`,
-        href: 'https://docs.curve.fi/security/security/',
+        href: 'https://docs.curve.fi/security/security/#bug-bounty',
         icon: <BugReportOutlinedIcon />,
       },
       {
