@@ -108,10 +108,6 @@ export const createTypography = ({ Text }: DesignSystem) =>
     fontWeightMedium: FontWeight.Medium,
     fontWeightRegular: FontWeight.Normal,
     fontWeightLight: FontWeight.Light,
-    fontSize: 16,
-    [basicMuiTheme.breakpoints.down('tablet')]: {
-      fontSize: 12,
-    },
     ...disabledTypographyKeys.reduce((acc, variant) => ({ ...acc, [variant]: undefined }), {} as TypographyOptions),
     ...Object.fromEntries(
       Object.entries(TYPOGRAPHY_VARIANTS).map(([key, def]) => {

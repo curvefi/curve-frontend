@@ -102,7 +102,7 @@ describe('Header', () => {
     cy.get(`[data-testid='chain-icon-${eth}']`).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
     cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
-    cy.get(`[data-testid^='menu-item-chain-']`).should('not.be.visible')
+    cy.get(`[data-testid^='menu-item-chain-']`).should('not.exist')
     cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
   })
 

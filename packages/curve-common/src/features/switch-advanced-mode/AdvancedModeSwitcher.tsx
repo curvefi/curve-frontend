@@ -24,7 +24,7 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       <Typography
         variant="headingXsBold"
         display="inline-block"
-        sx={{ marginLeft: 2, marginRight: 4, lineHeight: '37px' }}
+        sx={{ marginLeft: 2, marginRight: 4, lineHeight: '37px !important' }}
       >
         {label}
       </Typography>

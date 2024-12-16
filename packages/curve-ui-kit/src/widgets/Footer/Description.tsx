@@ -39,7 +39,7 @@ export const Description = () => (
         color="textPrimary"
         sx={{
           fontSize: Sizing[600], // This is a one-off specifically for the logo text
-          fontWeight: 'bold',
+          fontWeight: 'bold !important',
         }}
       >
         Curve
