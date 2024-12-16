@@ -34,7 +34,7 @@
       "action": "lp",
       "description": "null",
       "campaignStart": "0",
-      "campaignEnd": "1770000000",
+      "campaignEnd": "1734480000",
       "address": "0xf36a4ba50c603204c3fc6d2da8b78a7b69cbc67d",
       "network": "ethereum",
       "multiplier": "30x",
@@ -46,7 +46,7 @@
       "action": "lp",
       "description": "null",
       "campaignStart": "0",
-      "campaignEnd": "1770000000",
+      "campaignEnd": "1734480000",
       "address": "0xf55b0f6f2da5ffddb104b58a60f2862745960442",
       "network": "ethereum",
       "multiplier": "30x",
@@ -58,7 +58,7 @@
       "action": "lp",
       "description": "null",
       "campaignStart": "0",
-      "campaignEnd": "1770000000",
+      "campaignEnd": "1734480000",
       "address": "0x5dc1bf6f1e983c0b21efb003c105133736fa0743",
       "network": "ethereum",
       "multiplier": "30x",
@@ -184,6 +184,18 @@
       "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2d9bf9c1befd77c094461df615bdbe905895f7c6",
+      "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "true"
     }
   ]
 }
