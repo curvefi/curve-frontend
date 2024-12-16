@@ -255,12 +255,12 @@ const MappedLineHeight = {
 
 const MappedTypography = {
   FontSize: {
-    xs: Sizing[125],
-    sm: Sizing[150],
-    md: Sizing[200],
-    lg: Sizing[250],
-    xl: Sizing[350],
-    xxl: Sizing[500],
+    xs: { mobile: Sizing[125], tablet: Sizing[125], desktop: Sizing[125] },
+    sm: { mobile: Sizing[150], tablet: Sizing[150], desktop: Sizing[150] },
+    md: { mobile: Sizing[200], tablet: Sizing[200], desktop: Sizing[200] },
+    lg: { mobile: Sizing[250], tablet: Sizing[300], desktop: Sizing[300] },
+    xl: { mobile: Sizing[350], tablet: Sizing[400], desktop: Sizing[400] },
+    xxl: { mobile: Sizing[500], tablet: Sizing[600], desktop: Sizing[700] },
   },
   FontWeight: {
     Extra_Light: 200,
@@ -272,12 +272,36 @@ const MappedTypography = {
     Extra_Bold: 800,
   },
   LineHeight: {
-    xs: '0.75rem', // 12px
-    sm: '0.875rem', // 14px
-    md: '1rem', // 16px
-    lg: '1.5rem', // 24px
-    xl: '2rem', // 32px
-    xxl: '2.5rem', // 40px
+    xs: {
+      mobile: '0.75rem', // 12px
+      tablet: '0.75rem', // 12px
+      desktop: '0.875rem', // 14px
+    },
+    sm: {
+      mobile: '0.875rem', // 14px
+      tablet: '0.875rem', // 14px
+      desktop: '1rem', // 16px
+    },
+    md: {
+      mobile: '1rem', // 16px
+      tablet: '1rem', // 16px
+      desktop: '1.5rem', // 24px
+    },
+    lg: {
+      mobile: '1.5rem', // 24px
+      tablet: '1.5rem', // 24px
+      desktop: '1.75rem', // 28px
+    },
+    xl: {
+      mobile: '2rem', // 32px
+      tablet: '2rem', // 32px
+      desktop: '2.5rem', // 40px
+    },
+    xxl: {
+      mobile: '2.5rem', // 40px
+      tablet: '2.5rem', // 40px
+      desktop: '4rem', // 64px
+    },
   },
 } as const
 
