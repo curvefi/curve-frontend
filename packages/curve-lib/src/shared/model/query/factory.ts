@@ -55,7 +55,7 @@ export function queryFactory<
         const params = getParamsFromQueryKey(queryKey, assertValidity)
         return queryFn(params)
       },
-      staleTime: staleTime ? REFRESH_INTERVAL[staleTime] : undefined,
+      staleTime: REFRESH_INTERVAL[staleTime ?? '5m'],
       refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
       enabled: enabled && isEnabled(params),
       refetchOnWindowFocus,

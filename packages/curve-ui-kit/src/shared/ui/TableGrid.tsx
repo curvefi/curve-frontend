@@ -1,5 +1,6 @@
 import { FunctionComponent, ReactNode, useRef } from 'react'
-import { Grid2, Grid2Props, useMediaQuery } from '@mui/material'
+import useMediaQuery from '@mui/material/useMediaQuery'
+import Grid, { type Grid2Props as GridProps } from '@mui/material/Grid2'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
@@ -8,7 +9,7 @@ import { Theme } from '@mui/material/styles'
 
 type TableGridColumn<T> = {
   component: FunctionComponent<{ data: T }>
-  size: Grid2Props['size']
+  size: GridProps['size']
   title: ReactNode
   key: string
 }
@@ -25,13 +26,12 @@ const TableGridCell = <T extends unknown>({
   row: T
   showTitle: boolean
 }) => (
-  <Grid2
+  <Grid
     key={key}
     size={size}
     height={Sizing['3xl']}
     display="flex"
     flexDirection="column"
-    // alignContent={showTitle ? 'normal' : 'end'}
     justifyContent={showTitle ? 'space-between' : 'flex-end'}
   >
     {showTitle && (
@@ -46,7 +46,7 @@ const TableGridCell = <T extends unknown>({
     <Box paddingInline={Spacing.sm} paddingBlock={Spacing.md}>
       <Component data={row} />
     </Box>
-  </Grid2>
+  </Grid>
 )
 
 const TableGridRow = <T extends unknown>({
@@ -63,7 +63,7 @@ const TableGridRow = <T extends unknown>({
   const ref = useRef<HTMLDivElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
   return (
-    <Grid2
+    <Grid
       container
       spacing={Spacing.xxs}
       maxHeight={1088}
@@ -76,16 +76,16 @@ const TableGridRow = <T extends unknown>({
         columns.map((column) => (
           <TableGridCell key={[column.key, rowId(row)].join('-')} column={column} row={row} showTitle={showTitle} />
         ))}
-    </Grid2>
+    </Grid>
   )
 }
 
 const TableHeaderCell = <T extends unknown>({ column: { size, title } }: { column: TableGridColumn<T> }) => (
-  <Grid2 size={size} height={Sizing['3xl']} alignContent="end" padding={Spacing.sm} paddingTop={0}>
+  <Grid size={size} height={Sizing['3xl']} alignContent="end" padding={Spacing.sm} paddingTop={0}>
     <Typography variant="tableHeaderS" color="textSecondary">
       {title}
     </Typography>
-  </Grid2>
+  </Grid>
 )
 
 export const TableGrid = <T extends unknown>({ columns, data, rowId }: TableGridProps<T>) => {
@@ -93,11 +93,11 @@ export const TableGrid = <T extends unknown>({ columns, data, rowId }: TableGrid
   return (
     <Box>
       {isDesktop && (
-        <Grid2 container sx={{ backgroundColor: (t) => t.design.Table.Header_Fill }} spacing={Spacing.xxs}>
+        <Grid container sx={{ backgroundColor: (t) => t.design.Table.Header_Fill }} spacing={Spacing.xxs}>
           {columns.map((col) => (
             <TableHeaderCell key={col.key} column={col} />
           ))}
-        </Grid2>
+        </Grid>
       )}
       {data.map((row) => (
         <TableGridRow<T> key={rowId(row)} rowId={rowId} row={row} columns={columns} showTitle={!isDesktop} />

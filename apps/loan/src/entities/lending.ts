@@ -1,5 +1,4 @@
-import { ContractParams, ContractQuery, PoolParams, PoolQuery, queryFactory, rootKeys } from '@/shared/model/query'
-import { poolValidationSuite } from '@/shared/model/query/pool-validation'
+import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@/shared/model/query'
 import { contractValidationSuite } from '@/shared/model/query/contract-validation'
 
 type LendingSnapshotFromApi = {
@@ -36,22 +35,18 @@ type LendingSnapshotsFromApi = {
   data: LendingSnapshotFromApi[]
 }
 
-export const _getLendingSnapshots = async ({
-  blockchainId,
-  contractAddress,
-}: ContractQuery): Promise<LendingSnapshotsFromApi> => {
-  const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots`
-  const response = await fetch(url)
-  const { data } = (await response.json()) as { data: LendingSnapshotsFromApi }
-  if (!data) {
-    throw new Error('Failed to fetch lending snapshots')
-  }
-  return data
-}
-
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots'] as const,
-  queryFn: _getLendingSnapshots,
-  staleTime: '1d',
+  queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshotsFromApi> => {
+    // call with units=none it returns 4h points
+    const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?units=none`
+    const response = await fetch(url)
+    const { data } = (await response.json()) as { data: LendingSnapshotsFromApi }
+    if (!data) {
+      throw new Error('Failed to fetch lending snapshots')
+    }
+    return data
+  },
+  staleTime: '1h',
   validationSuite: contractValidationSuite,
 })

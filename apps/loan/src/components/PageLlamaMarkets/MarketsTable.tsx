@@ -18,7 +18,7 @@ export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: L
       backgroundColor: (t) => t.design.Layer[1].Fill,
     }}
   >
-    <TableFilters title={t`Llamalend Markets`} subtitle={t`Select a market to view more details`} onReload={onReload} />
+    <TableFilters title={t`Llamalend Markets`} subtitle={t`Select a market to view more details`} onReload={onReload} learnMoreUrl="https://docs.curve.fi/lending/overview/" />
     <TableGrid
       data={useMemo(() => data.filter((d) => d.usdTotal > 0).sort((a, b) => b.usdTotal - a.usdTotal), [data])}
       rowId={(row) => [row.blockchainId, row.registryId, row.id].join('-')}

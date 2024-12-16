@@ -1,19 +1,19 @@
 import { queryFactory } from '@/shared/model/query'
 import { createValidationSuite } from '@/shared/lib/validation'
 
-export interface AmmBalances {
+export type AmmBalances = {
   ammBalanceBorrowed: number
   ammBalanceBorrowedUsd: number
   ammBalanceCollateral: number
   ammBalanceCollateralUsd: number | null
 }
 
-export interface LendingVaultAssets {
+export type LendingVaultAssets = {
   borrowed: AssetDetails
   collateral: AssetDetails
 }
 
-export interface AssetDetails {
+export type AssetDetails = {
   symbol: string
   decimals: number
   address: string
@@ -21,12 +21,12 @@ export interface AssetDetails {
   usdPrice: number | null
 }
 
-export interface CoinValue {
+export type CoinValue = {
   total: number
   usdTotal: number
 }
 
-export interface GaugeReward {
+export type GaugeReward = {
   gaugeAddress: string
   tokenPrice: number
   name: string
@@ -37,17 +37,17 @@ export interface GaugeReward {
   metaData?: GaugeRewardMetadata
 }
 
-export interface GaugeRewardMetadata {
+export type GaugeRewardMetadata = {
   rate: string
   periodFinish: number
 }
 
-export interface LendingVaultUrls {
+export type LendingVaultUrls = {
   deposit: string
   withdraw: string
 }
 
-export interface LendingRates {
+export type LendingRates = {
   borrowApr: number
   borrowApy: number
   borrowApyPcent: number
@@ -56,7 +56,7 @@ export interface LendingRates {
   lendApyPcent: number
 }
 
-export interface VaultShares {
+export type VaultShares = {
   pricePerShare: number
   totalShares: number
 }
@@ -88,19 +88,16 @@ export type ExtendedLendingVaultFromApi = {
   tvl: number
 }
 
-export const _getAllLendingVaultsFromApi = async (): Promise<ExtendedLendingVaultFromApi> => {
-  const url = `https://api.curve.fi/v1/getLendingVaults/all`
-  const response = await fetch(url)
-  const { data, success } = (await response.json()) as { data?: ExtendedLendingVaultFromApi; success: boolean }
-  if (!success || !data) {
-    throw new Error('Failed to fetch pools')
-  }
-  return data
-}
-
 export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults } = queryFactory({
   queryKey: () => ['lending-vaults'] as const,
-  queryFn: _getAllLendingVaultsFromApi,
+  queryFn: async () => {
+    const response = await fetch('https://api.curve.fi/v1/getLendingVaults/all')
+    const { data, success } = (await response.json()) as { data?: ExtendedLendingVaultFromApi; success: boolean }
+    if (!success || !data) {
+      throw new Error('Failed to fetch pools')
+    }
+    return data
+  },
   staleTime: '5m',
   validationSuite: createValidationSuite(() => {}), // no arguments to validate
 })
