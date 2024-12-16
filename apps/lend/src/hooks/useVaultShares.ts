@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import useStore from '@/store/useStore'
 
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@/ui/utils'
 import { useTokenUsdRate } from '@/entities/token'
 import { useOneWayMarket } from '@/entities/chain'
 
@@ -24,7 +24,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
       const borrowedAmtUsd = +pricePerShare * +vaultShares * +usdRate
 
       return {
-        borrowedAmount: `${formatNumber(borrowedAmt, { showDecimalIfSmallNumberOnly: true })} ${symbol}`,
+        borrowedAmount: `${formatNumberWithPrecision(borrowedAmt, 6)} ${symbol}`,
         borrowedAmountUsd: formatNumber(borrowedAmtUsd, FORMAT_OPTIONS.USD),
       }
     }

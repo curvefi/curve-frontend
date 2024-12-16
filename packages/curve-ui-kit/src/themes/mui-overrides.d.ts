@@ -30,4 +30,11 @@ declare module '@mui/material/Button' {
   export interface ButtonClasses {
     sizeExtraSmall: string
   }
+
+  export interface ButtonPropsVariantOverrides {
+    text: true
+    contained: true
+    outlined: true
+    link: true
+  }
 }

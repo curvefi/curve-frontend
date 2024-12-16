@@ -308,6 +308,6 @@ export const SizesAndSpaces = {
   OutlineWidth: '0.125rem', // 2px
   MaxWidth: {
     md: '67rem', // 1072px
-    lg: '90rem', // 1440px
+    lg: '96rem', // 1536px
   },
 } as const

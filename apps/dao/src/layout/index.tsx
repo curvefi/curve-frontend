@@ -12,7 +12,7 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
-import Footer from '@/layout/Footer'
+import { Footer } from 'curve-ui-kit/src/widgets/Footer'
 import GlobalBanner from '@/ui/Banner'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
@@ -21,7 +21,6 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const globalAlertHeight = useHeightResizeObserver(globalAlertRef)
 
   const connectState = useStore((state) => state.connectState)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
@@ -69,10 +68,10 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         maintenanceMessage={maintenanceMessage}
         handleNetworkChange={handleNetworkChange}
       />
-      <Container className={isMdUp ? 'hasFooter' : ''} globalAlertHeight={layoutHeight?.globalAlert}>
+      <Container globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        {isMdUp && <Footer chainId={rChainId} />}
+        <Footer />
       </Container>
     </>
   )
@@ -119,10 +118,7 @@ const Container = styled.div<{ globalAlertHeight: number }>`
   flex-direction: column;
   position: relative;
   width: 100%;
-
-  &.hasFooter {
-    min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
-  }
+  min-height: ${({ globalAlertHeight }) => `calc(100vh - ${globalAlertHeight}px)`};
 `
 
 export default BaseLayout
