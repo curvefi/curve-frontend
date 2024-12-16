@@ -178,7 +178,7 @@ export function formatNumberUsdRate(usdRate: number | string | undefined, hideCu
  * @param value number to format
  * @param precisionDigits number of decimal digits to show. This will be the maximum number of decimal digits.
  */
-export function formatNumberWithPrecision(value: number, precisionDigits: number) {
+export function formatNumberWithPrecision(value: number, precisionDigits: number = 4) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
   const fractionDigits = precisionDigits - Math.min(precisionDigits, valueDigits)
   const opts = { minimumFractionDigits: fractionDigits, maximumFractionDigits: fractionDigits }

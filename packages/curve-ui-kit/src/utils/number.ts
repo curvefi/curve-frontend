@@ -1,3 +1,13 @@
+import { formatNumberWithPrecision } from 'ui'
+
+const units = ['', 'K', 'M', 'B', 'T']
+
+export function getAbbreviateExponent(value: number) {
+  const exponent = Math.log10(Math.abs(value))
+  const index = Math.floor(exponent / 3)
+  return Math.max(0, Math.min(units.length - 1, index)) * 3
+}
+
 /**
  * Returns the appropriate unit suffix for a given number value.
  *
@@ -13,12 +23,7 @@
  * unit(-1000000) // Returns 'm'
  * unit(0) // Returns ''
  */
-export function suffix(value: number): string {
-  const units = ['', 'k', 'm', 'b', 't']
-  const index = Math.max(0, Math.min(units.length - 1, Math.floor(Math.log10(Math.abs(value)) / 3)))
-
-  return units[index]
-}
+const suffix = (value: number) => units[getAbbreviateExponent(value) / 3]
 
 /**
  * Abbreviates a number such that it can go along with a suffix like k, m, b or t.
@@ -27,10 +32,5 @@ export function suffix(value: number): string {
  * round(1234.5678) // Returns "1.23", goes with suffix "k"
  * round(1000000) // Returns "1.0", goes with suffix "m"
  */
-export function abbr(value: number): number {
-  const exp = Math.floor(Math.log10(Math.abs(value)) / 3) * 3
-  // Only apply the scaling if exp is positive
-  value /= exp > 0 ? 10 ** exp : 1
-
-  return value
-}
+export const abbr = (value: number): string =>
+  formatNumberWithPrecision(value / Math.pow(10, getAbbreviateExponent(value))) + suffix(value)

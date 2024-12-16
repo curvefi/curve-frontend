@@ -4,7 +4,8 @@ import Typography from '@mui/material/Typography'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
-import { abbr, suffix } from 'curve-ui-kit/src/utils'
+import { abbr, getAbbreviateExponent } from 'curve-ui-kit/src/utils'
+import { useEffect, useState } from 'react'
 
 const { Spacing } = SizesAndSpaces
 
@@ -103,6 +104,60 @@ type Props = {
   loading?: boolean
 }
 
+type NumberProps = { label: string; value: number }
+
+const animationMs = 1000
+const lineHeight = 16
+
+function AnimatedNumber({ label, value }: NumberProps) {
+  const [previous, setPrevious] = useState<NumberProps>()
+  const exp = getAbbreviateExponent(value)
+  const length = Math.max(label.length, previous?.label.length ?? 0)
+
+  useEffect(
+    () => () => {
+      const prev = { label, value }
+      setPrevious(prev)
+      console.log('set previous', prev)
+      setTimeout(() => {
+        console.log('clear previous', prev)
+        setPrevious((p) => (p === prev ? undefined : p))
+      }, animationMs)
+    },
+    [value, label],
+  )
+
+  let indexInLabel = 0
+  return (
+    <Box sx={{overflowY: "hidden", height: `${lineHeight}px`}}>
+      {Array.from({ length }).map((_, index) => {
+        const char = label[index]
+        const previousChar = previous?.label[index]
+        const isChanged = previousChar && previousChar != char
+        // const keyChar = previousChar ?? char
+        // const key = keyChar && keyChar >= '0' && keyChar <= '9' ? +keyChar * Math.pow(10, exp - (indexInLabel++)) : keyChar
+        // console.log('AnimatedNumber', { char, previousChar, isChanged, key })
+        return (
+          <Box
+            component="span"
+            key={index}
+            display="inline-flex"
+            flexDirection="column"
+            sx={{
+              transition: `transform ${previous ? animationMs : 0}ms`,
+              transform: `translateY(${isChanged ? -lineHeight : 0}px)`,
+            }}
+            paddingBlock="1px" // otherwise the text is cut off
+          >
+            {isChanged && <span>{previousChar}</span>}
+            <span>{char ?? ''}</span>
+          </Box>
+        )
+      })}
+    </Box>
+  )
+}
+
 export const Metric = ({
   label,
 
@@ -152,15 +207,9 @@ export const Metric = ({
             </Typography>
           )}
 
-          <Typography variant={MetricSize[size]} color="textPrimary">
-            {formatter(valueAbbr ? abbr(value) : value)}
+          <Typography variant={MetricSize[size]} color="textPrimary" data-testid="here">
+            <AnimatedNumber label={valueAbbr ? abbr(value) : formatter(value)} value={value} />
           </Typography>
-
-          {valueAbbr && (
-            <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
-              {suffix(value)}
-            </Typography>
-          )}
 
           {unit?.position === 'suffix' && (
             <Typography variant={MetricSize[size]} color="textSecondary">
@@ -183,8 +232,7 @@ export const Metric = ({
       {notional !== undefined && (
         <Typography variant="highlightXsNotional" color="textTertiary">
           {notionalUnit?.position === 'prefix' && notionalUnit.symbol}
-          {notionalFormatter(notionalAbbr ? abbr(notional) : notional)}
-          {notionalAbbr && suffix(notional)}
+          {notionalAbbr ? abbr(notional) : notionalFormatter(notional)}
           {notionalUnit?.position === 'suffix' && notionalUnit.symbol}
         </Typography>
       )}
