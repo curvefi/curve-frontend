@@ -1,1 +1,34 @@
-
+{
+  "campaignName": "",
+  "platform": "Corn",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "corn.png",
+  "dashboardLink": "https://usecorn.com/app?action=earn",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xab3291b73a1087265e126e330cede0cfd4b8a693",
+      "network": "corn",
+      "multiplier": "3x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xb27d447cf1d211ca60676728ac28060ecfb90800",
+      "network": "corn",
+      "multiplier": "3x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
+ 
