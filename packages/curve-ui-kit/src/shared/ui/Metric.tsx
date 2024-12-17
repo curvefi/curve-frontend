@@ -122,10 +122,10 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
 }: Props) => {
-  unit = typeof unit === 'string' ? UNIT_MAP[unit as keyof typeof UNIT_MAP] : unit
+  unit = typeof unit === 'string' ? UNIT_MAP[unit] : unit
   const valueAbbr = abbreviate ?? unit?.abbreviate ?? false
 
-  notionalUnit = typeof notionalUnit === 'string' ? UNIT_MAP[notionalUnit as keyof typeof UNIT_MAP] : notionalUnit
+  notionalUnit = typeof notionalUnit === 'string' ? UNIT_MAP[notionalUnit] : notionalUnit
   const notionalAbbr = notionalAbbreviate ?? notionalUnit?.abbreviate ?? false
 
   return (
