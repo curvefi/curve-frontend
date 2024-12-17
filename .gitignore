@@ -44,7 +44,7 @@ yarn-error.log*
 .cursorignore
 
 # husky
-.husky
+.husky/_
 
 # lingui compiled translation files
 src/locales/_build/
