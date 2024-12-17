@@ -48,20 +48,18 @@ const UNIT_MAP: Record<(typeof UNITS)[number], UnitOptions> = {
 } as const
 
 // Default value formatter.
-const formatValue = (value: number, decimals?: number): string => {
-  return value.toLocaleString(undefined, {
+const formatValue = (value: number, decimals?: number): string =>
+  value.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
-}
 
 // Default notional value formatter.
-const formatNotionalValue = (value: number, decimals?: number): string => {
-  return value.toLocaleString(undefined, {
+const formatNotionalValue = (value: number, decimals?: number): string =>
+  value.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
-}
 
 const formatChange = (value: number) => {
   // Looks aesthetically more pleasing without decimals.
