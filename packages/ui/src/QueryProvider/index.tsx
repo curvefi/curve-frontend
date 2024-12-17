@@ -9,10 +9,10 @@ type QueryProviderWrapperProps = {
   queryClient: QueryClient
 }
 
-export function QueryProvider({ children, persister, queryClient }: QueryProviderWrapperProps) {
-  // Cypress runs in dev mode which means the devtools button is visible, which may break tests.
-  const isCypress = typeof window !== 'undefined' && (window as any).Cypress
+// Cypress runs in dev mode which means the devtools button is visible, which may break tests.
+const isCypress = typeof window !== 'undefined' && (window as any).Cypress
 
+export function QueryProvider({ children, persister, queryClient }: QueryProviderWrapperProps) {
   children = (
     <>
       {children}
