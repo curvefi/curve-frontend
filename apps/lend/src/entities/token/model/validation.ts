@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { chainValidationGroup } from '@/entities/chain/model'
+import { chainValidationGroup } from '@/entities/chain'
 import type { TokenParams } from '@/entities/token/types'
 import { createValidationSuite } from '@/shared/lib/validation'
 

@@ -10,5 +10,6 @@ export const tokenUsdRate = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
   queryFn: queryTokenUsdRate,
   staleTime: '5m',
+  refetchInterval: '1m',
   validationSuite: tokenValidationSuite,
 })
