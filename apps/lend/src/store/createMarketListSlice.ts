@@ -57,7 +57,7 @@ export type MarketListSlice = {
     sortFn(api: Api, sortKey: TitleKey, order: Order, markets: OneWayMarketTemplate[]): OneWayMarketTemplate[]
     sortByCollateral(api: Api, markets: OneWayMarketTemplate[], marketMapping: IDict<OneWayMarketTemplate>): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
     sortByAll(api: Api, markets: OneWayMarketTemplate[], sortBy: TitleKey, sortByOrder: Order): { result: MarketListItemResult[], tableRowsSettings: { [tokenAddress:string]: TableSettings } }
-    setFormValues(rChainId: ChainId, api: Api | null, marketMapping: IDict<OneWayMarketTemplate>, shouldRefetch: boolean): Promise<void>
+    setFormValues(rChainId: ChainId, api: Api | null, marketMapping?: IDict<OneWayMarketTemplate>, shouldRefetch?: boolean): Promise<void>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -291,7 +291,6 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       if (!api || !marketMapping) {
         logQuery(['market-list-slice', 'setFormValues'], { api: Boolean(api), marketMapping: Boolean(marketMapping) })
-        debugger
         return
       }
 

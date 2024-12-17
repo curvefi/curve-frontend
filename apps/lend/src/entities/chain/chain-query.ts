@@ -1,6 +1,7 @@
-import { chainValidationSuite } from './validation'
+import { apiValidationGroup, chainValidationGroup } from './validation'
 import { ChainParams, ChainQuery, queryFactory } from '@/shared/model/query'
 import useStore from '@/store/useStore'
+import { createValidationSuite } from '@/shared/lib/validation'
 
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
@@ -11,5 +12,8 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   },
   staleTime: '5m',
   refetchInterval: '1m',
-  validationSuite: chainValidationSuite,
+  validationSuite: createValidationSuite((params: ChainParams<ChainId>) => {
+    chainValidationGroup(params)
+    apiValidationGroup(params)
+  }),
 })
