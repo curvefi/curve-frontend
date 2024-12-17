@@ -123,10 +123,10 @@ export const Metric = ({
   loading = false,
 }: Props) => {
   unit = typeof unit === 'string' ? UNIT_MAP[unit] : unit
-  const valueAbbr = abbreviate ?? unit?.abbreviate ?? false
+  abbreviate ??= unit?.abbreviate ?? false
 
   notionalUnit = typeof notionalUnit === 'string' ? UNIT_MAP[notionalUnit] : notionalUnit
-  const notionalAbbr = notionalAbbreviate ?? notionalUnit?.abbreviate ?? false
+  notionalAbbreviate ??= notionalUnit?.abbreviate ?? false
 
   return (
     <Box display="flex" flexDirection="column" alignItems={alignment} gap={Spacing.xs}>
@@ -151,10 +151,10 @@ export const Metric = ({
           )}
 
           <Typography variant={MetricSize[size]} color="textPrimary">
-            {formatter(valueAbbr ? abbr(value) : value)}
+            {formatter(abbreviate ? abbr(value) : value)}
           </Typography>
 
-          {valueAbbr && (
+          {abbreviate && (
             <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
               {suffix(value)}
             </Typography>
@@ -181,8 +181,8 @@ export const Metric = ({
       {notional !== undefined && (
         <Typography variant="highlightXsNotional" color="textTertiary">
           {notionalUnit?.position === 'prefix' && notionalUnit.symbol}
-          {notionalFormatter(notionalAbbr ? abbr(notional) : notional)}
-          {notionalAbbr && suffix(notional)}
+          {notionalFormatter(notionalAbbreviate ? abbr(notional) : notional)}
+          {notionalAbbreviate && suffix(notional)}
           {notionalUnit?.position === 'suffix' && notionalUnit.symbol}
         </Typography>
       )}
