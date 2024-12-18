@@ -6,6 +6,7 @@ import Skeleton from '@mui/material/Skeleton'
 import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
@@ -79,6 +80,8 @@ const formatChange = (value: number) => {
 type Props = {
   /** Label that goes above the value */
   label: string
+  /** Optional tooltip content shown next to the label */
+  tooltip?: string
 
   /** The actual metric value to display */
   value: number
@@ -108,6 +111,7 @@ type Props = {
 
 export const Metric = ({
   label,
+  tooltip,
 
   value,
   formatter = (value: number) => formatValue(value, decimals),
@@ -144,6 +148,14 @@ export const Metric = ({
     <Box display="flex" flexDirection="column" alignItems={alignment} gap={Spacing.xs}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
+        {tooltip && (
+          <Tooltip title={tooltip}>
+            <span>
+              &nbsp;
+              <InfoOutlinedIcon sx={{ fontSize: '1.25em' }} />
+            </span>
+          </Tooltip>
+        )}
       </Typography>
 
       {loading ? (

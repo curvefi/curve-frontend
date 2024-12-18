@@ -19,6 +19,10 @@ const meta: Meta<typeof Metric> = {
       control: 'text',
       description: 'The label on top of the value describing it',
     },
+    tooltip: {
+      control: 'text',
+      description: 'Optional tooltip shown next to the label',
+    },
     value: {
       control: 'number',
       description: 'The value of the component',
@@ -72,7 +76,7 @@ export const Default: Story = {
     docs: {
       description: {
         component: 'Metric',
-        story: 'Metric widget with all value properties in use',
+        story: 'Simple metric widget showing a dollar value with no special features',
       },
     },
   },
@@ -83,6 +87,12 @@ export const Percentage: Story = {
     value: 1337.42,
     decimals: 2,
     unit: 'percentage',
+  },
+}
+
+export const Tooltip: Story = {
+  args: {
+    tooltip: "Alu's future portfolio value",
   },
 }
 
