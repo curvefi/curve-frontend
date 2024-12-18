@@ -1,5 +1,6 @@
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
@@ -143,28 +144,32 @@ export const Metric = ({
           }}
         />
       ) : (
-        <Box display="flex" alignItems="baseline" gap={Spacing.xxs}>
-          {unit?.position === 'prefix' && (
-            <Typography variant={MetricSize[size]} color="textSecondary">
-              {unit.symbol}
-            </Typography>
-          )}
+        <Box display="flex" gap={Spacing.xs} alignItems="baseline">
+          <Tooltip arrow title={value.toLocaleString()}>
+            <Box display="flex" gap={Spacing.xxs} alignItems="baseline">
+              {unit?.position === 'prefix' && (
+                <Typography variant={MetricSize[size]} color="textSecondary">
+                  {unit.symbol}
+                </Typography>
+              )}
 
-          <Typography variant={MetricSize[size]} color="textPrimary">
-            {formatter(abbreviate ? abbreviateNumber(value) : value)}
-          </Typography>
+              <Typography variant={MetricSize[size]} color="textPrimary">
+                {formatter(abbreviate ? abbreviateNumber(value) : value)}
+              </Typography>
 
-          {abbreviate && (
-            <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
-              {scaleSuffix(value)}
-            </Typography>
-          )}
+              {abbreviate && (
+                <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
+                  {scaleSuffix(value)}
+                </Typography>
+              )}
 
-          {unit?.position === 'suffix' && (
-            <Typography variant={MetricSize[size]} color="textSecondary">
-              {unit.symbol}
-            </Typography>
-          )}
+              {unit?.position === 'suffix' && (
+                <Typography variant={MetricSize[size]} color="textSecondary">
+                  {unit.symbol}
+                </Typography>
+              )}
+            </Box>
+          </Tooltip>
 
           {(change || change === 0) && (
             <Typography
