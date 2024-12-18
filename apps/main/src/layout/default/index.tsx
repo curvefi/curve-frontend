@@ -47,7 +47,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
-    <>
+    <Container globalAlertHeight={layoutHeight?.globalAlert}>
+      <Header sections={sections} />
       <GlobalBanner
         ref={globalAlertRef}
         networkName={rNetwork}
@@ -56,12 +57,9 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         maintenanceMessage={maintenanceMessage}
         handleNetworkChange={handleNetworkChange}
       />
-      <Container globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header sections={sections} />
-        <Main minHeight={minHeight}>{children}</Main>
-        <Footer />
-      </Container>
-    </>
+      <Main minHeight={minHeight}>{children}</Main>
+      <Footer />
+    </Container>
   )
 }
 

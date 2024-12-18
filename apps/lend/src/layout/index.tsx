@@ -54,7 +54,8 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
 
   const sections = useMemo(() => getSections(locale), [locale])
   return (
-    <>
+    <Container globalAlertHeight={layoutHeight?.globalAlert}>
+      <Header chainId={rChainId} sections={sections} />
       <GlobalBanner
         ref={globalAlertRef}
         networkName={rNetwork}
@@ -63,12 +64,9 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         maintenanceMessage=""
         handleNetworkChange={handleNetworkChange}
       />
-      <Container globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header chainId={rChainId} sections={sections} />
-        <Main minHeight={minHeight}>{children}</Main>
-        <Footer />
-      </Container>
-    </>
+      <Main minHeight={minHeight}>{children}</Main>
+      <Footer />
+    </Container>
   )
 }
 

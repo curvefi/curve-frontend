@@ -42,16 +42,17 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
-          const api = await initCurveJs(chainId, useWallet ? wallet : null)
 
-          if (api) {
+          if (useWallet && wallet && chainId) {
+            const api = await initCurveJs(chainId, wallet)
             setNetworkConfigs(api)
             updateCurveJs(api, prevCurveApi, wallet)
+            updateConnectState('success', '')
+          } else {
+            updateConnectState('', '')
           }
-
-          updateConnectState(api ? 'success' : '', '')
         } catch (error) {
-          console.error(error)
+          console.error('Failed to connect to network', error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         }
       }
