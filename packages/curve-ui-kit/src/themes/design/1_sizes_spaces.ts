@@ -255,12 +255,36 @@ const MappedLineHeight = {
 
 const MappedTypography = {
   FontSize: {
-    xs: { mobile: Sizing[125], tablet: Sizing[125], desktop: Sizing[125] },
-    sm: { mobile: Sizing[150], tablet: Sizing[150], desktop: Sizing[150] },
-    md: { mobile: Sizing[200], tablet: Sizing[200], desktop: Sizing[200] },
-    lg: { mobile: Sizing[250], tablet: Sizing[300], desktop: Sizing[300] },
-    xl: { mobile: Sizing[350], tablet: Sizing[400], desktop: Sizing[400] },
-    xxl: { mobile: Sizing[500], tablet: Sizing[600], desktop: Sizing[700] },
+    xs: {
+      mobile: Sizing[125],
+      tablet: Sizing[125],
+      desktop: Sizing[125],
+    },
+    sm: {
+      mobile: Sizing[150],
+      tablet: Sizing[150],
+      desktop: Sizing[150],
+    },
+    md: {
+      mobile: Sizing[200],
+      tablet: Sizing[200],
+      desktop: Sizing[200],
+    },
+    lg: {
+      mobile: Sizing[250],
+      tablet: Sizing[300],
+      desktop: Sizing[300],
+    },
+    xl: {
+      mobile: Sizing[350],
+      tablet: Sizing[400],
+      desktop: Sizing[400],
+    },
+    xxl: {
+      mobile: Sizing[500],
+      tablet: Sizing[600],
+      desktop: Sizing[700],
+    },
   },
   FontWeight: {
     Extra_Light: 200,

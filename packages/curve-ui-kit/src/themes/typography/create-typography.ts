@@ -49,7 +49,7 @@ const variant = ({
   fontFamily,
   fontSize,
   fontWeight,
-  lineHeight,
+  lineHeight = fontSize,
   letterSpacing = '0%',
   textCase,
 }: TypographyVariantDefinition) => ({
@@ -58,10 +58,10 @@ const variant = ({
   letterSpacing,
   textTransform: textCase,
   ...(!(fontSize in FontSize) && { fontSize }),
-  ...(lineHeight && !(lineHeight in LineHeight) && { lineHeight }),
-  ...responsiveValues(fontSize, lineHeight ?? fontSize, 'mobile'),
-  ...responsiveValues(fontSize, lineHeight ?? fontSize, 'tablet'),
-  ...responsiveValues(fontSize, lineHeight ?? fontSize, 'desktop'),
+  ...(!(lineHeight in LineHeight) && { lineHeight }),
+  ...responsiveValues(fontSize, lineHeight, 'mobile'),
+  ...responsiveValues(fontSize, lineHeight, 'tablet'),
+  ...responsiveValues(fontSize, lineHeight, 'desktop'),
 })
 
 // prettier-ignore

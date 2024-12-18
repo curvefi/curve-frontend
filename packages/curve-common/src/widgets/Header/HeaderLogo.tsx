@@ -29,7 +29,8 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
         {/* Note: Anti-pattern to change the line height, however we want the subtitle to fit nicely */}
         <Typography
           variant="headingSBold"
-          sx={{ lineHeight: '1.2rem !important', textTransform: 'none' }}
+          // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
+          sx={{ '&': { lineHeight: '1.2rem' }, textTransform: 'none' }}
           color="textPrimary"
         >
           {APP_NAMES[appName]}

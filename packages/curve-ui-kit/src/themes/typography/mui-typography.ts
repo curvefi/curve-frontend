@@ -20,26 +20,23 @@ const variantMapping = {
   buttonS: 'span',
   buttonM: 'span',
 
-  tableHeaderM: 'dfn',
-  tableHeaderS: 'dfn',
-  tableCellL: 'span',
-  tableCellMRegular: 'span',
-  tableCellMBold: 'span',
-  tableCellSRegular: 'span',
-  tableCellSBold: 'span',
+  tableHeaderM: 'p',
+  tableHeaderS: 'p',
+  tableCellL: 'p',
+  tableCellMRegular: 'p',
+  tableCellMBold: 'p',
+  tableCellSRegular: 'p',
+  tableCellSBold: 'p',
 
-  highlightXsNotional: 'em',
-  highlightXs: 'em',
-  highlightS: 'em',
-  highlightM: 'strong',
-  highlightL: 'strong',
-  highlightXl: 'strong',
-  highlightXxl: 'strong',
+  highlightXsNotional: 'p',
+  highlightXs: 'p',
+  highlightS: 'p',
+  highlightM: 'p',
+  highlightL: 'p',
+  highlightXl: 'p',
+  highlightXxl: 'p',
 } as const satisfies Record<TypographyVariantKey, keyof HTMLElementTagNameMap>
 
 export const defineMuiTypography = (): Components['MuiTypography'] => ({
-  defaultProps: {
-    variant: 'bodyMRegular',
-    variantMapping: variantMapping,
-  },
+  defaultProps: { variant: 'bodyMRegular', variantMapping },
 })
