@@ -145,7 +145,14 @@ export const Metric = ({
         />
       ) : (
         <Box display="flex" gap={Spacing.xs} alignItems="baseline">
-          <Tooltip arrow title={value.toLocaleString()}>
+          <Tooltip
+            arrow
+            title={value.toLocaleString()}
+            onClick={() => navigator.clipboard.writeText(value.toString())}
+            sx={{
+              cursor: 'pointer',
+            }}
+          >
             <Box display="flex" gap={Spacing.xxs} alignItems="baseline">
               {unit?.position === 'prefix' && (
                 <Typography variant={MetricSize[size]} color="textSecondary">
