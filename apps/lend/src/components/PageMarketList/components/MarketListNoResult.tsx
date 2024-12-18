@@ -24,8 +24,8 @@ const MarketListNoResult = ({
   signerAddress,
   updatePath,
 }: Pick<PageMarketList, 'searchParams' | 'updatePath'> & { signerAddress: string | undefined }) => {
-  const chainId = useChainId()?.data!
-  const marketMappingError = useOneWayMarketMapping(chainId)?.error
+  const chainId = useChainId()?.data
+  const marketMappingError = useOneWayMarketMapping({ chainId })?.error
 
   const { searchText, filterKey } = searchParams
 
