@@ -1,5 +1,6 @@
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { logQuery, logSuccess } from '@/shared/lib/logging'
 
 export function calculateChainTvl(
   marketMapping: IDict<OneWayMarketTemplate>,
@@ -22,5 +23,7 @@ export function calculateChainTvl(
     totalLiquidity += +marketsTotalSupplyMapper[id]?.totalLiquidity
   })
 
-  return totalCollateral + totalLiquidity - totalDebt
+  const tvl = totalCollateral + totalLiquidity - totalDebt
+  logSuccess(['chain-tvl'], { totalCollateral, totalLiquidity, totalDebt }, tvl)
+  return tvl
 }

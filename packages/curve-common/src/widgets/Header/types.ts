@@ -41,6 +41,7 @@ export type BaseHeaderProps<TChainId = number> = {
   appStats?: { label: string; value: string }[]
   advancedMode?: [boolean, Dispatch<boolean>]
   locale: Locale
+  networkName: string
 }
 
 export type HeaderProps<TChainId> = BaseHeaderProps<TChainId> & {
