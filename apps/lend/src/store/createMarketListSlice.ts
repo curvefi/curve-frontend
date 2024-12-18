@@ -25,6 +25,7 @@ import networks from '@/networks'
 import { getTokenUsdRateQueryData } from '@/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { logQuery, logSuccess } from '@/shared/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -288,10 +289,13 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         searchedByTokens: {},
       })
 
+      if (!api || !marketMapping) {
+        logQuery(['market-list-slice', 'setFormValues'], { api: Boolean(api), marketMapping: Boolean(marketMapping) })
+        return
+      }
+
       // allow UI to update paint
       await sleep(100)
-
-      if (!api || !marketMapping) return
 
       const { signerAddress } = api
       const { filterKey, filterTypeKey, hideSmallMarkets, searchText, sortBy, sortByOrder } = searchParams
@@ -410,6 +414,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         fns.map(({ fn, key, isTvl }) => fn(key, api, isTvl ? Object.values(marketMapping) : cMarkets, shouldRefetch)),
       )
       if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
+      logSuccess(['market-list-slice', 'setFormValues'], sorted.result)
     },
 
     // slice helpers
