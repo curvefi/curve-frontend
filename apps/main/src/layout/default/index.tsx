@@ -59,7 +59,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <Container globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        <Footer />
+        <Footer networkName={rNetwork} />
       </Container>
     </>
   )

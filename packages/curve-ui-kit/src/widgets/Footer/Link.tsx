@@ -8,13 +8,14 @@ export type LinkProps = {
   href: string
   icon?: ReactNode
   target?: string
+  networkName?: string
 }
 
-export const Link = ({ label, href, icon, target = '_blank' }: LinkProps) => (
+export const Link = ({ label, href, icon, target = '_blank', networkName }: LinkProps) => (
   <Button
     {...(href.startsWith('http')
       ? { component: LinkMui, href, target, rel: 'noreferrer' }
-      : { component: RouterLink, to: href })}
+      : { component: RouterLink, to: `${networkName ? `/${networkName}` : ''}${href}` })}
     color="ghost"
     variant="link"
     startIcon={icon}
