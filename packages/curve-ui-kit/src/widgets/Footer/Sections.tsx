@@ -78,7 +78,6 @@ export const getSections = (): SectionProps[] => [
         // Would've loved to have used ROUTE.PAGE_INTEGRATIONS, but they differ per app.
         href: '/integrations',
         icon: <IntegrationsIcon />,
-        target: '_self',
       },
       {
         label: t`Technical Docs`,
