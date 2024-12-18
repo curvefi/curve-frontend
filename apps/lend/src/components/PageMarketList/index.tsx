@@ -19,7 +19,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
-  const { data: marketMapping } = useOneWayMarketMapping(rChainId)
+  const { data: marketMapping } = useOneWayMarketMapping({ chainId: rChainId })
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)

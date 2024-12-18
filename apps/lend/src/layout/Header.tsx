@@ -32,7 +32,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [footerHeight])
 
-  const { rLocalePathname } = getParamsFromUrl()
+  const { rLocalePathname, rNetwork } = getParamsFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const isAdvancedMode = useStore((state) => state.isAdvanceMode)
@@ -51,6 +51,7 @@ const Header = ({ chainId, sections }: HeaderProps) => {
   const theme = (themeType as string) == 'default' ? 'light' : themeType
   return (
     <NewHeader<ChainId>
+      networkName={rNetwork}
       mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
