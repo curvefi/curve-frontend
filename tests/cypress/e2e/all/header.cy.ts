@@ -1,4 +1,4 @@
-import { oneDesktopViewport, oneMobileOrTabletViewport, oneViewport } from '@/support/ui'
+import { oneDesktopViewport, oneMobileOrTabletViewport } from '@/support/ui'
 
 const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, expectedConnectHeight } = {
   expectedMainNavHeight: 56,
@@ -6,6 +6,7 @@ const { expectedMainNavHeight, expectedSubNavHeight, expectedMobileNavHeight, ex
   expectedMobileNavHeight: 56,
   expectedConnectHeight: 40,
 }
+const mainAppUrl = 'http://localhost:3000'
 
 describe('Header', () => {
   describe('Desktop', () => {
@@ -48,6 +49,18 @@ describe('Header', () => {
         })
       })
     })
+
+    it('should change chains', () => {
+      cy.viewport(...oneDesktopViewport())
+      cy.visit('/')
+      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
+        cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
+        cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
+        return
+      }
+      switchEthToArbitrum()
+      cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/arbitrum`)
+    })
   })
 
   describe('mobile or tablet', () => {
@@ -88,26 +101,36 @@ describe('Header', () => {
         })
       })
     })
+
+    it('should change chains', () => {
+      cy.viewport(...oneMobileOrTabletViewport())
+      cy.visit('/')
+      if (['loan', 'dao'].includes(Cypress.env('APP'))) {
+        cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
+        cy.get(`[data-testid='menu-toggle']`).click()
+        cy.get(`[data-testid='sidebar-item-pools']`)
+          .invoke('attr', 'href')
+          .should('eq', `${mainAppUrl}/#/ethereum/pools`)
+        return
+      }
+
+      switchEthToArbitrum()
+      cy.get(`[data-testid='menu-toggle']`).click()
+      cy.get(`[data-testid='sidebar-item-pools']`).invoke('attr', 'href').should('eq', `${mainAppUrl}/#/arbitrum/pools`)
+    })
   })
 
-  it('should change chains', () => {
-    cy.viewport(...oneViewport())
-    cy.visit('/')
-    if (['loan', 'dao'].includes(Cypress.env('APP'))) {
-      expect(cy.get(`[data-testid='btn-change-chain']`).should('not.exist'))
-      return
-    }
+  function waitIsLoaded() {
+    const testId = Cypress.env('APP') == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
+    cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
+  }
 
+  function switchEthToArbitrum() {
     const [eth, arbitrum] = [1, 42161]
     cy.get(`[data-testid='chain-icon-${eth}']`).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
     cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
     cy.get(`[data-testid^='menu-item-chain-']`).should('not.exist')
     cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
-  })
-
-  function waitIsLoaded() {
-    const testId = Cypress.env('APP') == 'dao' ? 'proposal-title' : 'btn-connect-prompt'
-    cy.get(`[data-testid='${testId}']`).should('be.visible') // wait for loading
   }
 })

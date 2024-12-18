@@ -80,7 +80,7 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
     return `https://staging${productionHost === 'curve.fi' ? `.${productionHost}` : `-${productionHost}`}/`
   }
   if (windowHost?.endsWith('curvefi.vercel.app')) {
-    const branchPrefix = /curve-dapp(-lend|-crvusd)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
+    const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
     if (branchPrefix) {
       return `https://curve-${previewPrefix}-${branchPrefix}-curvefi.vercel.app`
     }
@@ -91,4 +91,5 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   return `https://${productionHost}`
 }
 
-export const externalAppUrl = (route: string, app?: AppName) => (app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`)
+export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
+  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`

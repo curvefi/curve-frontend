@@ -24,6 +24,7 @@ export const DesktopHeader = <TChainId extends number>({
   appStats,
   themes: [theme, setTheme],
   advancedMode,
+  networkName,
   isLite = false,
 }: BaseHeaderProps<TChainId>) => {
   const [selectedApp, setSelectedApp] = useState<AppName>(currentApp)
@@ -36,7 +37,7 @@ export const DesktopHeader = <TChainId extends number>({
         >
           <Container>
             <HeaderLogo isLite={isLite} appName={currentApp} />
-            <AppButtonLinks selectedApp={selectedApp} onChange={setSelectedApp} />
+            <AppButtonLinks selectedApp={selectedApp} onChange={setSelectedApp} networkName={networkName} />
 
             <Box sx={{ flexGrow: 1 }} />
 
@@ -61,7 +62,7 @@ export const DesktopHeader = <TChainId extends number>({
           data-testid="subnav"
         >
           <Container>
-            <PageTabs pages={pages} currentApp={currentApp} selectedApp={selectedApp} />
+            <PageTabs pages={pages} currentApp={currentApp} selectedApp={selectedApp} networkName={networkName} />
             <Box flexGrow={1} />
             <Box display="flex" gap={3} alignItems="center">
               <HeaderStats appStats={appStats} />
