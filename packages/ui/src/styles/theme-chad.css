@@ -56,7 +56,7 @@ body.theme-chad {
   --button--background-color: var(--primary-700);
   --button--shadow-color: var(--text-600);
   --button--text-transform: uppercase;
-  --button_filled--hover--background-color: var(--white);
+  --button_filled--hover--background-color: var(--primary_darkBg-400);
   --button_filled-hover-contrast--background-color: var(--primary-100a90);
   --button_outlined--color: var(--text-600);
   --button_outlined--border-color: var(--gray-500);
