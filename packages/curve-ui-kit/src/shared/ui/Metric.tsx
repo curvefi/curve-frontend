@@ -13,6 +13,7 @@ import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/them
 import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
 
 const { Spacing } = SizesAndSpaces
+const COPY_ALERT_DURATION = 6000
 
 // Correspond to flexbox align items values.
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
@@ -223,7 +224,7 @@ export const Metric = ({
         </Typography>
       )}
 
-      <Snackbar open={openCopyAlert} autoHideDuration={6000} onClose={() => setOpenCopyAlert(false)}>
+      <Snackbar open={openCopyAlert} autoHideDuration={COPY_ALERT_DURATION} onClose={() => setOpenCopyAlert(false)}>
         <Alert variant="filled" severity="success">
           Copied metric value: {value}
         </Alert>
