@@ -1,15 +1,18 @@
 import { DesignSystem } from './design'
 import type { Components } from '@mui/material/styles'
 
-export const defineMuiSwitch = ({ Switch: { Default, Checked }, Button: {Focus_Outline} }: DesignSystem): Components['MuiSwitch'] => ({
+export const defineMuiSwitch = ({
+  Switch: { Default, Checked },
+  Button: { Focus_Outline },
+}: DesignSystem): Components['MuiSwitch'] => ({
   styleOverrides: {
     root: {
       padding: 0,
       ':focus-within': {
         '.MuiSwitch-track': {
           borderColor: Focus_Outline,
-        }
-      }
+        },
+      },
     },
     switchBase: { borderRadius: 0, '&.Mui-checked+.MuiSwitch-track': { opacity: 1 } },
     track: {
