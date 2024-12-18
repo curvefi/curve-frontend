@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
-import { abbr, suffix } from 'curve-ui-kit/src/utils'
+import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -151,12 +151,12 @@ export const Metric = ({
           )}
 
           <Typography variant={MetricSize[size]} color="textPrimary">
-            {formatter(abbreviate ? abbr(value) : value)}
+            {formatter(abbreviate ? abbreviateNumber(value) : value)}
           </Typography>
 
           {abbreviate && (
             <Typography variant={MetricSize[size]} color="textPrimary" textTransform="capitalize">
-              {suffix(value)}
+              {scaleSuffix(value)}
             </Typography>
           )}
 
@@ -181,8 +181,8 @@ export const Metric = ({
       {notional !== undefined && (
         <Typography variant="highlightXsNotional" color="textTertiary">
           {notionalUnit?.position === 'prefix' && notionalUnit.symbol}
-          {notionalFormatter(notionalAbbreviate ? abbr(notional) : notional)}
-          {notionalAbbreviate && suffix(notional)}
+          {notionalFormatter(notionalAbbreviate ? abbreviateNumber(notional) : notional)}
+          {notionalAbbreviate && scaleSuffix(notional)}
           {notionalUnit?.position === 'suffix' && notionalUnit.symbol}
         </Typography>
       )}
