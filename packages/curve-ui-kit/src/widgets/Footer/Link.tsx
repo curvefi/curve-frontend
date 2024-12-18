@@ -12,11 +12,9 @@ export type LinkProps = {
 
 export const Link = ({ label, href, icon, target = '_blank' }: LinkProps) => (
   <Button
-    component={href.startsWith('http') ? LinkMui : RouterLink}
-    to={href}
-    href={href}
-    target={target}
-    rel="noreferrer"
+    {...(href.startsWith('http')
+      ? { component: LinkMui, href, target, rel: 'noreferrer' }
+      : { component: RouterLink, to: href })}
     color="ghost"
     variant="link"
     startIcon={icon}
