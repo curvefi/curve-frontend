@@ -1,5 +1,9 @@
+import { useState } from 'react'
+
+import Alert from '@mui/material/Alert'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import Snackbar from '@mui/material/Snackbar'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
@@ -129,6 +133,13 @@ export const Metric = ({
   notionalUnit = typeof notionalUnit === 'string' ? UNIT_MAP[notionalUnit] : notionalUnit
   notionalAbbreviate ??= notionalUnit?.abbreviate ?? false
 
+  const [openCopyAlert, setOpenCopyAlert] = useState(false)
+
+  const copyValue = () => {
+    navigator.clipboard.writeText(value.toString())
+    setOpenCopyAlert(true)
+  }
+
   return (
     <Box display="flex" flexDirection="column" alignItems={alignment} gap={Spacing.xs}>
       <Typography variant="bodyXsRegular" color="textTertiary">
@@ -148,7 +159,7 @@ export const Metric = ({
           <Tooltip
             arrow
             title={value.toLocaleString()}
-            onClick={() => navigator.clipboard.writeText(value.toString())}
+            onClick={copyValue}
             sx={{
               cursor: 'pointer',
             }}
@@ -198,6 +209,12 @@ export const Metric = ({
           {notionalUnit?.position === 'suffix' && notionalUnit.symbol}
         </Typography>
       )}
+
+      <Snackbar open={openCopyAlert} autoHideDuration={6000} onClose={() => setOpenCopyAlert(false)}>
+        <Alert variant="filled" severity="success">
+          Copied metric value: {value}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }
