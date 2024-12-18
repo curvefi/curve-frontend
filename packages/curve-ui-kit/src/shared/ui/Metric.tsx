@@ -151,7 +151,7 @@ export const Metric = ({
         {tooltip && (
           <Tooltip arrow placement="top" title={tooltip}>
             <span>
-              &nbsp;
+              {' '}
               <InfoOutlinedIcon sx={{ fontSize: '1.25em' }} />
             </span>
           </Tooltip>
