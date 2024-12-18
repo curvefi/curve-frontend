@@ -206,7 +206,7 @@ export const Metric = ({
             <Typography
               variant="highlightM"
               color={change > 0 ? 'success' : change < 0 ? 'error' : 'textHighlight'}
-              sx={{ marginInlineStart: Spacing.xs }} // Not part of Figma, but my own addition
+              sx={{ marginInlineStart: Spacing.xs }}
             >
               {formatChange(change)}%
             </Typography>
