@@ -149,7 +149,7 @@ export const Metric = ({
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (
-          <Tooltip title={tooltip}>
+          <Tooltip arrow placement="top" title={tooltip}>
             <span>
               &nbsp;
               <InfoOutlinedIcon sx={{ fontSize: '1.25em' }} />
@@ -170,6 +170,7 @@ export const Metric = ({
         <Box display="flex" gap={Spacing.xs} alignItems="baseline">
           <Tooltip
             arrow
+            placement="bottom"
             title={value.toLocaleString()}
             onClick={copyValue}
             sx={{
