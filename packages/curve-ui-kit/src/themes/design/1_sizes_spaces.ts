@@ -281,7 +281,7 @@ const MappedTypography = {
       desktop: Sizing[400],
     },
     xxl: {
-      mobile: Sizing[700],
+      mobile: Sizing[500],
       tablet: Sizing[600],
       desktop: Sizing[700],
     },
