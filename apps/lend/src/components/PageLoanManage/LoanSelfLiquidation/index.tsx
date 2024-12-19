@@ -29,8 +29,9 @@ import InternalLink from '@/ui/Link/InternalLink'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userActiveKey }: PageContentProps) => {
+const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const params = useParams()
 
@@ -57,43 +58,41 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
   const reset = useCallback(() => {
     setTxInfoBar(null)
 
-    if (isLoaded && api && owmData) {
-      fetchDetails(api, owmData, maxSlippage)
+    if (isLoaded && api && market) {
+      fetchDetails(api, market, maxSlippage)
     }
-  }, [isLoaded, api, owmData, fetchDetails, maxSlippage])
+  }, [isLoaded, api, market, fetchDetails, maxSlippage])
 
   const getSteps = useCallback(
     (
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       liquidationAmt: string,
       maxSlippage: string,
       steps: Step[],
-      state: Omit<UserLoanState, 'error'>
+      state: Omit<UserLoanState, 'error'>,
     ) => {
       const { chainId, signerAddress } = api
-      const { owm } = owmData
       const { error, loading, warning, isApproved, isComplete, isInProgress, step } = formStatus
 
       const isValid = !!signerAddress && !formEstGas?.loading && !loading && !error && !warning
 
       if (isValid) {
-        const notifyMessage = t`Self-liquidate ${owm.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
+        const notifyMessage = t`Self-liquidate ${market.borrowed_token.symbol} at ${maxSlippage}% max slippage.`
         setTxInfoBar(
           <AlertBox alertType="info">
             <AlertSummary
               pendingMessage={notifyMessage}
-              borrowed_token={owm.borrowed_token}
-              collateral_token={owm.collateral_token}
+              market={market}
               receive=""
               formValueStateCollateral=""
               userState={state}
               userWallet={userBalances}
               type="self"
             />
-          </AlertBox>
+          </AlertBox>,
         )
       } else if (!isComplete) {
         setTxInfoBar(null)
@@ -106,10 +105,10 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
           type: 'action',
           content: isApproved ? t`Spending Approved` : t`Approve Spending`,
           onClick: async () => {
-            const notifyMessage = t`Please approve spending of ${owm.borrowed_token.symbol}`
+            const notifyMessage = t`Please approve spending of ${market.borrowed_token.symbol}`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(api, owmData, maxSlippage)
+            await fetchStepApprove(api, market, maxSlippage)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -120,7 +119,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
           content: isComplete ? t`Self-liquidated` : t`Self-liquidate`,
           onClick: async () => {
             const notify = notifyNotification(NOFITY_MESSAGE.pendingConfirm, 'pending')
-            const resp = await fetchStepLiquidate(api, owmData, liquidationAmt, maxSlippage)
+            const resp = await fetchStepLiquidate(api, market, liquidationAmt, maxSlippage)
 
             if (isSubscribed.current && resp && resp.hash && !resp.loanExists && !resp.error) {
               const TxDescription = (
@@ -136,7 +135,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
                   description={TxDescription}
                   txHash={networks[chainId].scanTxPath(resp.hash)}
                   onClose={reset}
-                />
+                />,
               )
             }
             if (resp?.error) setTxInfoBar(null)
@@ -155,7 +154,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances]
+    [fetchStepApprove, fetchStepLiquidate, notifyNotification, params, reset, userBalances],
   )
 
   // onMount
@@ -169,23 +168,23 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
   // max slippage
   useEffect(() => {
-    if (isLoaded && api && owmData && maxSlippage) fetchDetails(api, owmData, maxSlippage)
+    if (isLoaded && api && market && maxSlippage) fetchDetails(api, market, maxSlippage)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
   // init
   useEffect(() => {
-    if (isLoaded && api && owmData && maxSlippage) {
+    if (isLoaded && api && market && maxSlippage) {
       resetState()
-      fetchDetails(api, owmData, maxSlippage)
+      fetchDetails(api, market, maxSlippage)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && state) {
-      const updatedSteps = getSteps(api, owmData, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, state)
+    if (isLoaded && api && market && state) {
+      const updatedSteps = getSteps(api, market, formEstGas, formStatus, liquidationAmt, maxSlippage, steps, state)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -201,7 +200,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, owmData, userAct
 
       {/* detail info */}
       <div>
-        <DetailInfoRate rChainId={rChainId} rOwmId={rOwmId} isBorrow futureRates={futureRates} />
+        <DetailInfoRate rChainId={rChainId} rOwmId={rOwmId} isBorrow={true} futureRates={futureRates} />
         <DetailInfoEstimateGas
           isDivider
           chainId={rChainId}

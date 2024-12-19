@@ -7,17 +7,12 @@ import useStore from '@/store/useStore'
 import Box from '@/ui/Box'
 import InpChipUsdRate from '@/components/InpChipUsdRate'
 import TextCaption from '@/ui/TextCaption'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const CellLlammaBalances = ({
-  userActiveKey,
-  owmDataCachedOrApi,
-}: {
-  userActiveKey: string
-  owmDataCachedOrApi: OWMDataCacheOrApi
-}) => {
+const CellLlammaBalances = ({ userActiveKey, market }: { userActiveKey: string; market: OneWayMarketTemplate }) => {
   const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
-  const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
+  const { borrowed_token, collateral_token } = market ?? {}
   const { details, error } = resp ?? {}
 
   return (

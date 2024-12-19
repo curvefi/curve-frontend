@@ -24,17 +24,9 @@ import InpChipUsdRate from '@/components/InpChipUsdRate'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const VaultDepositMint = ({
-  rChainId,
-  rOwmId,
-  rFormType,
-  isLoaded,
-  api,
-  owmData,
-  userActiveKey,
-  borrowed_token,
-}: PageContentProps) => {
+const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
@@ -43,7 +35,7 @@ const VaultDepositMint = ({
   const formStatus = useStore((state) => state.vaultDepositMint.formStatus)
   const formValues = useStore((state) => state.vaultDepositMint.formValues)
   const detailInfo = useStore((state) => state.vaultDepositMint.detailInfo[activeKey])
-  const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, owmData)
+  const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore((state) => state.vaultDepositMint.max[maxActiveKey])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
@@ -54,14 +46,15 @@ const VaultDepositMint = ({
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const { borrowed_token } = market ?? {}
 
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, rFormType, isLoaded ? api : null, owmData, updatedFormValues)
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, owmData, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -69,7 +62,7 @@ const VaultDepositMint = ({
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
@@ -77,7 +70,13 @@ const VaultDepositMint = ({
   }
 
   const handleBtnClickDeposit = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
       const { amount } = formValues
 
@@ -85,7 +84,7 @@ const VaultDepositMint = ({
       const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
-      const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, owmData, formValues)
+      const resp = await fetchStepDepositMint(payloadActiveKey, rFormType, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -94,13 +93,13 @@ const VaultDepositMint = ({
             description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => reset({})}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, notifyNotification, reset]
+    [activeKey, borrowed_token?.symbol, fetchStepDepositMint, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -108,15 +107,15 @@ const VaultDepositMint = ({
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
-      const { symbol } = owmData.owm.borrowed_token
+      const { symbol } = market.borrowed_token
       const isValid = !!signerAddress && +amount > 0 && !amountError && !error
 
       const stepsObj: { [key: string]: Step } = {
@@ -129,7 +128,7 @@ const VaultDepositMint = ({
             const notifyMessage = t`Please approve spending of ${symbol}`
             const notify = notifyNotification(notifyMessage, 'pending')
 
-            await fetchStepApprove(payloadActiveKey, rFormType, api, owmData, formValues)
+            await fetchStepApprove(payloadActiveKey, rFormType, api, market, formValues)
             if (notify && typeof notify.dismiss === 'function') notify.dismiss()
           },
         },
@@ -138,7 +137,7 @@ const VaultDepositMint = ({
           status: helpers.getStepStatus(isComplete, step === 'DEPOSIT_MINT', isValid && isApproved),
           type: 'action',
           content: isComplete ? t`Deposited` : t`Deposit`,
-          onClick: async () => handleBtnClickDeposit(payloadActiveKey, rFormType, api, owmData, formValues),
+          onClick: async () => handleBtnClickDeposit(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -152,7 +151,7 @@ const VaultDepositMint = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickDeposit, notifyNotification]
+    [fetchStepApprove, handleBtnClickDeposit, notifyNotification],
   )
 
   // onMount
@@ -172,8 +171,8 @@ const VaultDepositMint = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && rFormType) {
-      const updatedSteps = getSteps(activeKey, rFormType, api, owmData, formStatus, formValues, steps)
+    if (isLoaded && api && market && rFormType) {
+      const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

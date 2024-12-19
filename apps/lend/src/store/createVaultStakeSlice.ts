@@ -9,6 +9,7 @@ import merge from 'lodash/merge'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageVault/VaultStake/utils'
 import apiLending, { helpers } from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -25,12 +26,12 @@ type SliceState = {
 // prettier-ignore
 export type VaultStakeSlice = {
   [sliceKey]: SliceState & {
-    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, owmData: OWMData | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchEstGasApproval(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, formType: FormType, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepStake(activeKey: string, formType: FormType, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepApprove(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepStake(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -51,7 +52,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchEstGasApproval: async (activeKey, formType, api, owmData) => {
+    fetchEstGasApproval: async (activeKey, formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError } = get()[sliceKey].formValues
 
@@ -59,7 +60,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
       await get().gas.fetchGasInfo(api)
-      const resp = await apiLending.vaultStake.estGasApproval(activeKey, owmData, amount)
+      const resp = await apiLending.vaultStake.estGasApproval(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
       // update formStatus
@@ -68,23 +69,23 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       cFormStatus.error = cFormStatus.error || resp.error
       get()[sliceKey].setStateByKey('formStatus', cFormStatus)
     },
-    setFormValues: async (rChainId, formType, api, owmData, partialFormValues) => {
+    setFormValues: async (rChainId, formType, api, market, partialFormValues) => {
       const storedFormStatus = get()[sliceKey].formStatus
       const storedFormValues = get()[sliceKey].formValues
 
       // update activeKey, formValues
       const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
       const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
-      const activeKey = _getActiveKey(rChainId, formType, owmData, cFormValues)
+      const activeKey = _getActiveKey(rChainId, formType, market, cFormValues)
       get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
 
-      if (!api || !owmData) return
+      if (!api || !market) return
 
       const { signerAddress } = api
 
       // validation
       if (signerAddress) {
-        const userBalancesResp = await get().user.fetchUserMarketBalances(api, owmData, true)
+        const userBalancesResp = await get().user.fetchUserMarketBalances(api, market, true)
         cFormValues.amountError = helpers.isTooMuch(cFormValues.amount, userBalancesResp?.vaultShares)
           ? 'too-much-wallet'
           : ''
@@ -93,12 +94,12 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       // api calls
       if (signerAddress) {
-        get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, owmData)
+        get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
       }
     },
 
     // steps
-    fetchStepApprove: async (activeKey, formType, api, owmData, formValues) => {
+    fetchStepApprove: async (activeKey, formType, api, market, formValues) => {
       const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
@@ -109,7 +110,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       await get().gas.fetchGasInfo(api)
       const { amount } = formValues
-      const resp = await apiLending.vaultStake.approve(activeKey, provider, owmData, amount)
+      const resp = await apiLending.vaultStake.approve(activeKey, provider, market, amount)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
@@ -119,11 +120,11 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
           isInProgress: true,
         }
         get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, owmData)
+        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
         return resp
       }
     },
-    fetchStepStake: async (activeKey, formType, api, owmData, formValues) => {
+    fetchStepStake: async (activeKey, formType, api, market, formValues) => {
       const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
@@ -135,12 +136,12 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       // api calls
       await get().gas.fetchGasInfo(api)
       const { amount } = formValues
-      const resp = await apiLending.vaultStake.stake(activeKey, provider, owmData, amount)
+      const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
-        get().user.fetchUserMarketBalances(api, owmData, true)
-        get().markets.fetchAll(api, owmData, true)
+        get().user.fetchUserMarketBalances(api, market, true)
+        get().markets.fetchAll(api, market, true)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {
@@ -177,10 +178,10 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 export function _getActiveKey(
   rChainId: ChainId,
   formType: FormType | null,
-  owmData: OWMData | undefined,
-  { amount }: FormValues
+  market: OneWayMarketTemplate | undefined,
+  { amount }: FormValues,
 ) {
-  return `${rChainId}-${formType}-${owmData?.owm?.id ?? ''}-${amount}`
+  return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
 
 export default createVaultStake

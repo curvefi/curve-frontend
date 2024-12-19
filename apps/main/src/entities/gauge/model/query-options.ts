@@ -1,5 +1,4 @@
 /**
- * @file entities/gauge/model.ts
  * @description This file defines the data fetching and mutation logic for gauge-related operations in the Curve.fi DApp.
  * It's a core part of the 'gauge' entity in the FSD architecture.
  *
@@ -10,57 +9,59 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import { REFRESH_INTERVAL } from '@/constants'
-import * as api from '@/entities/gauge/api'
-import * as conditions from '@/entities/gauge/model/enabled-conditions'
-import { gaugeKeys as keys } from '@/entities/gauge/model'
-import type { DepositRewardApproveParams, GaugeQueryParams } from '@/entities/gauge/types'
-import { queryOptions } from '@tanstack/react-query'
+import { poolValidationSuite } from '@/shared/model/query/pool-validation'
+import { GaugeParams, rootKeys } from '@/shared/model/query'
+import { queryFactory } from '@/shared/model/query/factory'
+import {
+  queryGaugeStatus,
+  queryGaugeVersion,
+  queryDepositRewardIsApproved,
+  queryGaugeManager,
+  queryGaugeDistributors,
+  queryIsDepositRewardAvailable,
+} from '../api'
+import type { DepositRewardApproveParams } from '../types'
+import { gaugeDepositRewardApproveValidationSuite } from './gauge-validation'
 
-export const getGaugeStatusQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.status(params),
-    queryFn: api.queryGaugeStatus,
-    staleTime: REFRESH_INTERVAL['5m'],
-    enabled: conditions.enabledGaugeStatus(params),
-  })
+export const gaugeStatus = queryFactory({
+  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'gauge', 'status'] as const,
+  queryFn: queryGaugeStatus,
+  staleTime: '5m',
+  validationSuite: poolValidationSuite,
+})
 
-export const getIsDepositRewardAvailableQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.isDepositRewardAvailable(params),
-    queryFn: api.queryIsDepositRewardAvailable,
-    staleTime: REFRESH_INTERVAL['5m'],
-    enabled: conditions.enabledIsDepositRewardAvailable(params),
-  })
+export const depositRewardAvailable = queryFactory({
+  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'isDepositRewardAvailable'] as const,
+  queryFn: queryIsDepositRewardAvailable,
+  staleTime: '5m',
+  validationSuite: poolValidationSuite,
+})
 
-export const getGaugeManagerQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.manager(params),
-    queryFn: api.queryGaugeManager,
-    staleTime: REFRESH_INTERVAL.Inf,
-    enabled: conditions.enabledGaugeManager(params),
-  })
+export const gaugeManager = queryFactory({
+  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'manager'] as const,
+  queryFn: queryGaugeManager,
+  staleTime: 'Inf',
+  validationSuite: poolValidationSuite,
+})
 
-export const getGaugeDistributorsQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.distributors(params),
-    queryFn: api.queryGaugeDistributors,
-    staleTime: REFRESH_INTERVAL['5m'],
-    enabled: conditions.enabledGaugeDistributors(params),
-  })
+export const gaugeDistributors = queryFactory({
+  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'distributors'] as const,
+  queryFn: queryGaugeDistributors,
+  staleTime: '5m',
+  validationSuite: poolValidationSuite,
+})
 
-export const getGaugeVersionQueryOptions = (params: GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.version(params),
-    queryFn: api.queryGaugeVersion,
-    staleTime: REFRESH_INTERVAL.Inf,
-    enabled: conditions.enabledGaugeVersion(params),
-  })
+export const gaugeVersion = queryFactory({
+  queryKey: (params: GaugeParams) => [...rootKeys.gauge(params), 'version'] as const,
+  queryFn: queryGaugeVersion,
+  staleTime: 'Inf',
+  validationSuite: poolValidationSuite,
+})
 
-export const getDepositRewardIsApprovedQueryOptions = (params: DepositRewardApproveParams & GaugeQueryParams) =>
-  queryOptions({
-    queryKey: keys.depositRewardIsApproved(params),
-    queryFn: api.queryDepositRewardIsApproved,
-    staleTime: REFRESH_INTERVAL['1h'],
-    enabled: conditions.enabledDepositRewardIsApproved(params),
-  })
+export const depositRewardIsApproved = queryFactory({
+  queryKey: ({ rewardTokenId, amount, ...gaugeParams }: DepositRewardApproveParams) =>
+    [...rootKeys.gauge(gaugeParams), 'depositRewardIsApproved', { rewardTokenId }, { amount }] as const,
+  queryFn: queryDepositRewardIsApproved,
+  staleTime: '1h',
+  validationSuite: gaugeDepositRewardApproveValidationSuite,
+})

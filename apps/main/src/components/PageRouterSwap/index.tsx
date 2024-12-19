@@ -2,10 +2,8 @@ import type { FormStatus, RoutesAndOutput, StepKey } from '@/components/PageRout
 import type { FormValues, SearchedParams } from '@/components/PageRouterSwap/types'
 import type { Params } from 'react-router'
 import type { Step } from '@/ui/Stepper/types'
-
 import { t } from '@lingui/macro'
 import React, { useEffect, useCallback, useState, useRef, useMemo } from 'react'
-
 import { NETWORK_TOKEN } from '@/constants'
 import { REFRESH_INTERVAL } from '@/constants'
 import { formatNumber } from '@/ui/utils'
@@ -13,12 +11,10 @@ import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { getTokensMapperStr } from '@/store/createTokensSlice'
 import { getTokensObjList } from '@/store/createQuickSwapSlice'
 import { getChainSignerActiveKey } from '@/utils'
-import networks from '@/networks'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import useSelectToList from '@/components/PageRouterSwap/components/useSelectToList'
 import useStore from '@/store/useStore'
 import useTokensNameMapper from '@/hooks/useTokensNameMapper'
-
 import AlertBox from '@/ui/AlertBox'
 import Box from '@/ui/Box'
 import ChipInpHelper from '@/components/ChipInpHelper'
@@ -85,6 +81,7 @@ const QuickSwap = ({
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
   const setSelectFromList = useStore((state) => state.quickSwap.setSelectFromList)
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
+  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -103,19 +100,19 @@ const QuickSwap = ({
 
   const tokensMapperNonSmallTvlStr = useMemo(
     () => getTokensMapperStr(tokensMapperNonSmallTvl),
-    [tokensMapperNonSmallTvl]
+    [tokensMapperNonSmallTvl],
   )
 
   const selectFromTokensList = useMemo(
     () => getTokensObjList(selectFromList ?? selectToList, tokensMapper),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectFromList, selectToListStr, tokensMapperStr]
+    [selectFromList, selectToListStr, tokensMapperStr],
   )
 
   const selectToTokensList = useMemo(
     () => getTokensObjList(selectToList, tokensMapper),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [selectToListStr, tokensMapperStr]
+    [selectToListStr, tokensMapperStr],
   )
 
   const updateFormValues = useCallback(
@@ -124,7 +121,7 @@ const QuickSwap = ({
       isGetMaxFrom?: boolean,
       maxSlippage?: string,
       isFullReset?: boolean,
-      isRefetch?: boolean
+      isRefetch?: boolean,
     ) => {
       setTxInfoBar(null)
       setConfirmedLoss(false)
@@ -136,10 +133,10 @@ const QuickSwap = ({
         isGetMaxFrom,
         maxSlippage || globalMaxSlippage,
         isFullReset,
-        isRefetch
+        isRefetch,
       )
     },
-    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues]
+    [curve, globalMaxSlippage, isLoadingApi, pageLoaded, searchedParams, setFormValues],
   )
 
   const handleBtnClickSwap = useCallback(
@@ -151,7 +148,7 @@ const QuickSwap = ({
       routesAndOutput: RoutesAndOutput,
       searchedParams: SearchedParams,
       toToken: string,
-      fromToken: string
+      fromToken: string,
     ) => {
       const { fromAmount, toAmount } = formValues
       const { isExpectedToAmount, toAmountOutput } = routesAndOutput
@@ -164,20 +161,20 @@ const QuickSwap = ({
 
       const resp = await fetchStepSwap(actionActiveKey, curve, formValues, searchedParams, maxSlippage)
 
-      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
+      if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error && network) {
         const txMessage = t`Transaction complete. Received ${resp.swappedAmount} ${toToken}.`
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={network.scanTxPath(resp.hash)}
             onClose={() => updateFormValues({}, false, '', true)}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, chainId, fetchStepSwap, notifyNotification, updateFormValues]
+    [activeKey, fetchStepSwap, notifyNotification, updateFormValues, network],
   )
 
   const getSteps = useCallback(
@@ -189,7 +186,7 @@ const QuickSwap = ({
       formValues: FormValues,
       searchedParams: SearchedParams,
       toToken: string,
-      fromToken: string
+      fromToken: string,
     ) => {
       const { formProcessing, formTypeCompleted, step } = formStatus
       const { fromAmount } = formValues
@@ -248,7 +245,7 @@ const QuickSwap = ({
                           routesAndOutput,
                           searchedParams,
                           toToken,
-                          fromToken
+                          fromToken,
                         )
                       }
                     },
@@ -268,7 +265,7 @@ const QuickSwap = ({
                       routesAndOutput,
                       searchedParams,
                       toToken,
-                      fromToken
+                      fromToken,
                     )
                   }
                 },
@@ -286,7 +283,7 @@ const QuickSwap = ({
 
       return stepsKey.map((key) => stepsObj[key])
     },
-    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps]
+    [confirmedLoss, fetchStepApprove, globalMaxSlippage, handleBtnClickSwap, notifyNotification, steps],
   )
 
   const fetchData = useCallback(() => {
@@ -359,14 +356,14 @@ const QuickSwap = ({
       formValues,
       searchedParams,
       toToken,
-      fromToken
+      fromToken,
     )
     setSteps(updatedSteps)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const imageBaseUrl = networks[rChainId].imageBaseUrl
+  const imageBaseUrl = network?.imageBaseUrl ?? ''
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading = !pageLoaded || _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
 
@@ -538,7 +535,7 @@ const QuickSwap = ({
 function _isRoutesAndOutputLoading(
   routesAndOutput: RoutesAndOutput | undefined,
   { isFrom, fromAmount, toAmount }: FormValues,
-  { error }: FormStatus
+  { error }: FormStatus,
 ) {
   if (typeof routesAndOutput !== 'undefined') {
     return routesAndOutput.loading

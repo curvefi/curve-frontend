@@ -1,11 +1,11 @@
-import { TIME_FRAMES } from '@/constants'
-import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/entities/gauge'
-import type { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
-import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/features/deposit-gauge-reward/ui'
-import { FlexContainer } from '@/shared/ui/styled-containers'
 import { InputDebounced } from '@/ui/InputComp'
 import { useCallback } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { TIME_FRAMES } from '@/constants'
+import type { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { EpochInputWrapper, EpochLabel, StyledInputProvider } from '@/features/deposit-gauge-reward/ui'
+import { useDepositRewardApproveIsMutating, useDepositRewardIsMutating } from '@/entities/gauge'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const { setValue, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -15,7 +15,7 @@ export const EpochInput: React.FC<{ chainId: ChainId; poolId: string }> = ({ cha
 
   const onEpochChange = useCallback(
     (epoch: string) => setValue('epoch', parseInt(epoch) * TIME_FRAMES.WEEK, { shouldValidate: true }),
-    [setValue]
+    [setValue],
   )
 
   const isPendingDepositRewardApprove = useDepositRewardApproveIsMutating({ chainId, poolId, rewardTokenId, amount })

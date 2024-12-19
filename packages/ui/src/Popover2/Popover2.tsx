@@ -11,7 +11,7 @@ interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   state: OverlayTriggerState
 }
 
-function Popover2({ children, state, offset, portalContainer, ...props }: PopoverProps) {
+function Popover2({ children, state, offset = 8, portalContainer, ...props }: PopoverProps) {
   let popoverRef = React.useRef(null)
   let { popoverProps, underlayProps } = usePopover(
     {
@@ -19,7 +19,7 @@ function Popover2({ children, state, offset, portalContainer, ...props }: Popove
       offset,
       popoverRef,
     },
-    state
+    state,
   )
 
   return (
@@ -54,9 +54,5 @@ const Popover = styled.div`
   border: 1px solid var(--popover--border-color);
   box-shadow: var(--popover--box-shadow);
 `
-
-Popover2.defaultProps = {
-  offset: 8,
-}
 
 export default Popover2

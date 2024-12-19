@@ -7,7 +7,7 @@ import orderBy from 'lodash/orderBy'
 import uniq from 'lodash/uniq'
 
 import { NETWORK_TOKEN } from '@/constants'
-import { log } from '@/utils'
+import { log } from '@/shared/lib/logging'
 import { weiToEther } from '@/shared/curve-lib'
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
@@ -30,7 +30,7 @@ export function sortTokensByGasFees(
   userBalancesMapper: UserBalancesMapper,
   usdRatesMapper: UsdRatesMapper,
   selectToList: string[],
-  firstBasePlusPriority: number
+  firstBasePlusPriority: number,
 ) {
   const GAS_USED = 250000
   const networkTokenUsdRate = usdRatesMapper[NETWORK_TOKEN] ?? 1
@@ -42,7 +42,7 @@ export function sortTokensByGasFees(
 
   // only allow user tokens with usd balance > gasFees to be visible at top and order by balance
   const userTokensGreaterThanGasFees = orderBy(userBalancesUsd, ({ userBalancesUsd }) => userBalancesUsd, ['desc']).map(
-    ({ address }) => address
+    ({ address }) => address,
   )
 
   return uniq([...userTokensGreaterThanGasFees, ...selectToList])
@@ -51,7 +51,7 @@ export function sortTokensByGasFees(
 export function parseRouterRoutes(
   routes: IRouteStep[],
   poolsMapper: { [poolId: string]: PoolData },
-  getPool: (poolId: string) => Pool
+  getPool: (poolId: string) => Pool,
 ) {
   let haveCryptoRoutes = false
   let parsedRoutes: Route[] = []

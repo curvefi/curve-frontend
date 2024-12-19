@@ -1,8 +1,11 @@
 {
   "extends": "tsconfig/base.json",
   "compilerOptions": {
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    }
   },
-  "include": ["src"],
+  "include": ["src", "../curve-ui-kit/**/*.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }

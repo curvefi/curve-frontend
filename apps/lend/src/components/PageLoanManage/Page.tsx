@@ -37,6 +37,9 @@ import {
   ExpandIcon,
 } from '@/ui/Chart/styles'
 import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
+import ConnectWallet from '@/components/ConnectWallet'
+import { useOneWayMarket } from '@/entities/chain'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -46,24 +49,23 @@ const Page: NextPage = () => {
   const titleMapper = useTitleMapper()
   const { rChainId, rOwmId, rFormType, rSubdirectory } = routerParams
 
-  const owmDataCache = useStore((state) => state.storeCache.owmDatasMapper[rChainId]?.[rOwmId])
-  const owmData = useStore((state) => state.markets.owmDatasMapper[rChainId]?.[rOwmId])
-  const owmDataCachedOrApi = owmData ?? owmDataCache
-  const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
+  const market = useOneWayMarket(rChainId, rOwmId).data
+
+  const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
-  const navHeight = useStore((state) => state.layout.navHeight)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const { signerAddress } = api ?? {}
-  const { borrowed_token, collateral_token } = owmDataCachedOrApi?.owm ?? {}
+  const { borrowed_token, collateral_token } = market ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
   const [initialLoaded, setInitialLoaded] = useState(false)
@@ -76,24 +78,24 @@ const Page: NextPage = () => {
   const selectedTab = _getSelectedTab(marketDetailsView, signerAddress)
 
   const fetchInitial = useCallback(
-    async (api: Api, owmData: OWMData) => {
+    async (api: Api, market: OneWayMarketTemplate) => {
       const { signerAddress } = api
       // check for an existing loan
-      const loanExists = signerAddress ? (await fetchUserLoanExists(api, owmData, true))?.loanExists : false
+      const loanExists = signerAddress ? (await fetchUserLoanExists(api, market, true))?.loanExists : false
       if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
       setLoaded(true)
 
       // delay fetch rest after form details are fetch first
       setTimeout(() => {
-        fetchAllMarketDetails(api, owmData, true)
+        fetchAllMarketDetails(api, market, true)
 
         if (signerAddress && loanExists) {
-          fetchAllUserMarketDetails(api, owmData, true)
+          fetchAllUserMarketDetails(api, market, true)
         }
         setInitialLoaded(true)
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey]
+    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey],
   )
 
   // onMount
@@ -104,14 +106,14 @@ const Page: NextPage = () => {
   // onMount
   useEffect(() => {
     setLoaded(false)
-    if (pageLoaded && !isLoadingApi && api && owmData) {
-      fetchInitial(api, owmData)
+    if (pageLoaded && !isLoadingApi && api && market) {
+      fetchInitial(api, market)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageLoaded, isLoadingApi])
 
   useEffect(() => {
-    if (api && owmData && isPageVisible && initialLoaded) fetchInitial(api, owmData)
+    if (api && market && isPageVisible && initialLoaded) fetchInitial(api, market)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
@@ -127,17 +129,12 @@ const Page: NextPage = () => {
     }
   }, [chartExpanded])
 
-  const TitleComp = () => (
-    <AppPageFormTitleWrapper>
-      <PageTitleBorrowSupplyLinks
-        rChainId={rChainId}
-        rOwmId={rOwmId}
-        params={params}
-        activeKey="borrow"
-        owmDataCachedOrApi={owmDataCachedOrApi}
-      />
-    </AppPageFormTitleWrapper>
-  )
+  const TitleComp = () =>
+    market && (
+      <AppPageFormTitleWrapper>
+        <PageTitleBorrowSupplyLinks params={params} activeKey="borrow" market={market} />
+      </AppPageFormTitleWrapper>
+    )
 
   const pageProps: PageContentProps = {
     params,
@@ -147,11 +144,8 @@ const Page: NextPage = () => {
     rSubdirectory,
     isLoaded,
     api,
-    owmData,
-    owmDataCachedOrApi,
+    market,
     userActiveKey,
-    borrowed_token: owmDataCachedOrApi?.owm?.borrowed_token,
-    collateral_token: owmDataCachedOrApi?.owm?.collateral_token,
     titleMapper,
   }
 
@@ -159,65 +153,77 @@ const Page: NextPage = () => {
     <>
       <DocumentHead title={`${collateral_token?.symbol ?? ''}, ${borrowed_token?.symbol ?? ''} | Manage Loan`} />
 
-      {chartExpanded && networks[rChainId].pricesData && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex padding="0 0 var(--spacing-2)">
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-
-      <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {!isMdUp && <TitleComp />}
-          {rChainId && rOwmId && <LoanMange {...pageProps} />}
-        </AppPageFormsWrapper>
-
-        <AppPageInfoWrapper>
-          {isMdUp && <TitleComp />}
-          <Box margin="0 0 var(--spacing-2)">
-            <CampaignRewardsBanner
-              borrowAddress={owmDataCachedOrApi?.owm?.addresses?.controller || ''}
-              supplyAddress={owmDataCachedOrApi?.owm?.addresses?.vault || ''}
-            />
-          </Box>
-          <AppPageInfoTabsWrapper>
-            <Tabs>
-              {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                <Tab
-                  key={key}
-                  className={selectedTab === key ? 'active' : ''}
-                  variant="secondary"
-                  disabled={selectedTab === key}
-                  onClick={() => setMarketsStateKey('marketDetailsView', key)}
+      {provider ? (
+        <>
+          {chartExpanded && networks[rChainId].pricesData && (
+            <PriceAndTradesExpandedContainer>
+              <Box flex padding="0 0 var(--spacing-2)">
+                <ExpandButton
+                  variant={'select'}
+                  onClick={() => {
+                    setChartExpanded()
+                  }}
                 >
-                  {label}
-                </Tab>
-              ))}
-            </Tabs>
-          </AppPageInfoTabsWrapper>
+                  {chartExpanded ? 'Minimize' : 'Expand'}
+                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+                </ExpandButton>
+              </Box>
+              <PriceAndTradesExpandedWrapper variant="secondary">
+                <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+              </PriceAndTradesExpandedWrapper>
+            </PriceAndTradesExpandedContainer>
+          )}
 
-          <AppPageInfoContentWrapper variant="secondary">
-            {rChainId && rOwmId && (
-              <>
-                {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
-                {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
-              </>
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </AppPageFormContainer>
+          <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+            <AppPageFormsWrapper navHeight="var(--header-height)">
+              {!isMdUp && <TitleComp />}
+              {rChainId && rOwmId && <LoanMange {...pageProps} />}
+            </AppPageFormsWrapper>
+
+            <AppPageInfoWrapper>
+              {isMdUp && <TitleComp />}
+              <Box margin="0 0 var(--spacing-2)">
+                <CampaignRewardsBanner
+                  borrowAddress={market?.addresses?.controller || ''}
+                  supplyAddress={market?.addresses?.vault || ''}
+                />
+              </Box>
+              <AppPageInfoTabsWrapper>
+                <Tabs>
+                  {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                    <Tab
+                      key={key}
+                      className={selectedTab === key ? 'active' : ''}
+                      variant="secondary"
+                      disabled={selectedTab === key}
+                      onClick={() => setMarketsStateKey('marketDetailsView', key)}
+                    >
+                      {label}
+                    </Tab>
+                  ))}
+                </Tabs>
+              </AppPageInfoTabsWrapper>
+
+              <AppPageInfoContentWrapper variant="secondary">
+                {rChainId && rOwmId && (
+                  <>
+                    {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
+                    {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
+                  </>
+                )}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          </AppPageFormContainer>
+        </>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }

@@ -1,12 +1,12 @@
+import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { t } from '@lingui/macro'
+import { useCallback, useMemo, type Key } from 'react'
+import { useFormContext } from 'react-hook-form'
+import { Address, isAddressEqual } from 'viem'
 import { NETWORK_TOKEN } from '@/constants'
-import { useImageBaseUrl } from '@/entities/chain'
-import {
-  useDepositRewardApproveIsMutating,
-  useDepositRewardIsMutating,
-  useGaugeRewardsDistributors,
-} from '@/entities/gauge'
-import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
-import { useTokens } from '@/entities/token'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import useStore from '@/store/useStore'
+import { formatNumber } from '@/utils'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import {
   FlexItemAmount,
@@ -15,15 +15,15 @@ import {
   StyledInputProvider,
   StyledTokenComboBox,
 } from '@/features/deposit-gauge-reward/ui/styled'
-import useTokensMapper from '@/hooks/useTokensMapper'
-import { FlexContainer } from '@/shared/ui/styled-containers'
-import useStore from '@/store/useStore'
-import { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
-import { formatNumber } from '@/utils'
-import { t } from '@lingui/macro'
-import { useCallback, useMemo, type Key } from 'react'
-import { useFormContext } from 'react-hook-form'
-import { Address, isAddressEqual } from 'viem'
+import { useImageBaseUrl } from '@/entities/chain'
+import {
+  useDepositRewardApproveIsMutating,
+  useDepositRewardIsMutating,
+  useGaugeRewardsDistributors,
+} from '@/entities/gauge'
+import { useIsSignerConnected, useSignerAddress, useTokensBalances } from '@/entities/signer'
+import { useTokens } from '@/entities/token'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const AmountTokenInput: React.FC<{
   chainId: ChainId
@@ -67,7 +67,7 @@ export const AmountTokenInput: React.FC<{
     const filteredTokens = Object.values(tokensMapper).filter(
       (token): token is Token =>
         token !== undefined &&
-        activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address))
+        activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
     )
 
     const rewardTokenId = getValues('rewardTokenId')
@@ -86,7 +86,7 @@ export const AmountTokenInput: React.FC<{
     (amount: string) => {
       setValue('amount', amount, { shouldValidate: true })
     },
-    [setValue]
+    [setValue],
   )
 
   const onChangeToken = useCallback(
@@ -95,7 +95,7 @@ export const AmountTokenInput: React.FC<{
       setValue('rewardTokenId', value as Address, { shouldValidate: true })
       setValue('step', DepositRewardStep.APPROVAL, { shouldValidate: true })
     },
-    [rewardTokenId, setValue]
+    [rewardTokenId, setValue],
   )
 
   const onMaxButtonClick = useCallback(
@@ -104,7 +104,7 @@ export const AmountTokenInput: React.FC<{
       if (!tokenBalance) return
       setValue('amount', tokenBalance, { shouldValidate: true })
     },
-    [tokenBalance, setValue]
+    [tokenBalance, setValue],
   )
 
   const isDisabled = isMutatingDepositReward || isMutatingDepositRewardApprove
@@ -128,7 +128,7 @@ export const AmountTokenInput: React.FC<{
               }
             }
             testId="deposit-amount"
-            value={isMaxLoading ? '' : amount ?? ''}
+            value={isMaxLoading ? '' : (amount ?? '')}
             onChange={onChangeAmount}
           />
         </FlexItemAmount>

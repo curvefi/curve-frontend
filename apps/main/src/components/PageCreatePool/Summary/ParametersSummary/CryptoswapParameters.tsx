@@ -1,11 +1,6 @@
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
-
 import { isTricrypto } from '@/components/PageCreatePool/utils'
-
-import networks from '@/networks'
-
 import {
   CategoryDataRow,
   ExtraMarginRow,
@@ -21,8 +16,9 @@ type Props = {
 const StableswapParameters = ({ chainId }: Props) => {
   const { tokensInPool, initialPrice, advanced } = useStore((state) => state.createPool)
   const { midFee, outFee, maHalfTime, gamma, feeGamma, allowedExtraProfit, cryptoA, adjustmentStep } = useStore(
-    (state) => state.createPool.parameters
+    (state) => state.createPool.parameters,
   )
+  const networks = useStore((state) => state.networks.networks)
 
   return (
     <>
@@ -41,7 +37,7 @@ const StableswapParameters = ({ chainId }: Props) => {
             tokensInPool.tokenAmount,
             tokensInPool.tokenA,
             tokensInPool.tokenB,
-            tokensInPool.tokenC
+            tokensInPool.tokenC,
           )
             ? ' A'
             : ''
@@ -57,7 +53,7 @@ const StableswapParameters = ({ chainId }: Props) => {
         tokensInPool.tokenAmount,
         tokensInPool.tokenA,
         tokensInPool.tokenB,
-        tokensInPool.tokenC
+        tokensInPool.tokenC,
       ) && (
         <CategoryDataRow>
           <SummaryDataTitle>{t`Initial Price B:`}</SummaryDataTitle>

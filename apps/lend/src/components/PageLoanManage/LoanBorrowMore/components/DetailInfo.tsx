@@ -17,7 +17,7 @@ const DetailInfo = ({
   steps,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'owmData' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market' | 'userActiveKey'> & {
   activeStep: number | null
   healthMode: HealthMode
   steps: Step[]

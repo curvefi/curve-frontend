@@ -1,5 +1,5 @@
 import type { LiqRangeSliderIdx } from '@/store/types'
-import type { DetailInfoCompProps, DetailInfoCompAdditionalProps } from '@/components/PageLoanCreate/types'
+import type { DetailInfoCompAdditionalProps, DetailInfoCompProps } from '@/components/PageLoanCreate/types'
 
 import React, { useMemo } from 'react'
 
@@ -10,11 +10,9 @@ import DetailInfoNonLeverage from '@/components/PageLoanCreate/LoanFormCreate/co
 import DetailInfoLeverage from '@/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 
 const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
-  const { api, owmData, steps, updateFormValues } = props
+  const { api, market, steps, updateFormValues } = props
 
   const { signerAddress } = api ?? {}
-  const { owm } = owmData ?? {}
-
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
@@ -26,12 +24,12 @@ const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoC
   const selectedLiqRange = useMemo(() => {
     if (formValues.n && liqRanges) {
       return liqRanges[formValues.n]
-    } else if (owm) {
-      return { n: owm.defaultBands } as LiqRangeSliderIdx
+    } else if (market) {
+      return { n: market.defaultBands } as LiqRangeSliderIdx
     } else {
       return undefined
     }
-  }, [formValues.n, liqRanges, owm])
+  }, [formValues.n, liqRanges, market])
 
   const handleLiqRangesEdit = () => {
     const showEditLiqRange = !isEditLiqRange

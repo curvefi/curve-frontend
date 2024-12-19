@@ -1,19 +1,17 @@
 import type { TableCellProps, TableRowProps } from '@/components/PageMarketList/types'
 
+import { t } from '@lingui/macro'
 import React, { useEffect, useRef, useState } from 'react'
-import styled, { css } from 'styled-components'
 
 import { FilterType } from '@/components/PageMarketList/utils'
+import { TITLE } from '@/constants'
 import { _showContent } from '@/utils/helpers'
-import { breakpoints } from '@/ui/utils'
 import useStore from '@/store/useStore'
 import useIntersectionObserver from '@/ui/hooks/useIntersectionObserver'
 
-import CellCap from '@/components/SharedCellData/CellCap'
-import CellInPool from '@/components/SharedCellData/CellInPool'
+import { Tr, Td, CellInPool } from '@/ui/Table'
 import CellLoanUserState from '@/components/SharedCellData/CellLoanUserState'
 import CellLoanUserHealth from '@/components/SharedCellData/CellLoanUserHealth'
-import CellLoanTotalDebt from '@/components/SharedCellData/CellLoanTotalDebt'
 import CellToken from '@/components/SharedCellData/CellToken'
 import CellBorrowRate from '@/components/SharedCellData/CellBorrowRate'
 import CellRewards from '@/components/SharedCellData/CellRewards'
@@ -21,18 +19,22 @@ import CellSupplyTotalLiquidity from '@/components/SharedCellData/CellSupplyTota
 import CellUserVaultShares from '@/components/SharedCellData/CellUserVaultShares'
 import CellTotalCollateralValue from '@/components/SharedCellData/CellTotalCollateralValue'
 import CellMaxLeverage from '@/components/SharedCellData/CellMaxLeverage'
+import CellUtilization from '@/components/SharedCellData/CellUtilization'
 
 type Content = {
   className: string
   content: React.ReactNode
   show?: boolean
+  title?: TitleKey
 }
+
+const MIN_ROW_HEIGHT = 53
 
 const TableRowContent = ({
   rChainId,
   api,
   owmId,
-  owmDataCachedOrApi,
+  market,
   filterTypeKey,
   loanExists,
   showBorrowSignerCell,
@@ -47,12 +49,13 @@ const TableRowContent = ({
   const userHaveLoan = !!signerAddress && loanExists
   const haveVaultShares = +(vaultShares ?? '0') > 0 || +(gauge ?? '0') > 0
   const userSupplied = !!signerAddress && haveVaultShares
+  const inMarketTooltip = t`You have a balance in this market`
 
   const cellProps: TableCellProps = {
     rChainId,
     rOwmId: owmId,
     owmId,
-    owmDataCachedOrApi,
+    market,
     userActiveKey,
     filterTypeKey,
     isBold: false,
@@ -62,22 +65,19 @@ const TableRowContent = ({
   // prettier-ignore
   const CONTENT: { borrow: Content[], supply: Content[] } = {
     [FilterType.borrow]: [
-      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userHaveLoan} />, show: showBorrowSignerCell },
-      { className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral'  module='borrow' /> },
+      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userHaveLoan} type='market' tooltip={userHaveLoan ? inMarketTooltip : ''} />, show: showBorrowSignerCell },
+      { title: TITLE.tokenCollateral, className: `left ${showBorrowSignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps} type='collateral'  module='borrow' /> },
       { className: 'left', content: <CellToken {...cellProps} type='borrowed'  module='borrow' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'center border-left', content: <CellLoanUserHealth {...cellProps} />, show: showBorrowSignerCell },
       { className: 'center border-right', content: <CellLoanUserState {...cellProps} type='debt' />, show: showBorrowSignerCell },
       { className: 'right', content: <CellBorrowRate {...cellProps} /> },
-      { className: 'right', content: <CellCap {...cellProps} type='available' /> },
-      { className: 'right', content: <CellLoanTotalDebt {...cellProps} /> },
-      { className: 'right', content: <CellCap {...cellProps} type='cap' /> },
-      { className: 'right', content: <CellCap {...cellProps} type='utilization' /> },
+      { className: 'right', content: <CellUtilization {...cellProps}  /> },
       { className: 'right', content: <CellTotalCollateralValue {...cellProps} /> },
     ],
     [FilterType.supply]: [
-      { className: 'center noPadding border-right', content: <CellInPool {...cellProps} isInMarket={userSupplied} />, show: showSupplySignerCell },
-      { className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps}  type='borrowed' module='supply' /> },
+      { title: TITLE.isInMarket, className: '', content: <CellInPool isIn={userSupplied} type='market' tooltip={userSupplied ? inMarketTooltip : ''} />, show: showSupplySignerCell },
+      { title: TITLE.tokenBorrow, className: `left ${showSupplySignerCell ? '' : 'paddingLeft'}`, content: <CellToken {...cellProps}  type='borrowed' module='supply' /> },
       { className: 'left', content: <CellToken {...cellProps} type='collateral'  module='supply' /> },
       { className: 'left', content: <CellMaxLeverage {...cellProps} /> },
       { className: 'right border-left border-right', content: <CellUserVaultShares {...cellProps} />, show: showSupplySignerCell },
@@ -86,13 +86,21 @@ const TableRowContent = ({
     ]
   }
 
-  return CONTENT[filterTypeKey].map(({ className, content, show }, idx) => {
-    if (!_showContent(show)) return null
+  return CONTENT[filterTypeKey].map(({ className, content, show, title = '' }, idx) => {
+    const isFirst = idx === 1 ? (filterTypeKey === 'borrow' ? !userHaveLoan : !userSupplied) : false
+    const isLast = idx === CONTENT[filterTypeKey].length - 1
+    const isInMarketCell = title === TITLE.isInMarket
+    const visible = _showContent(show)
 
     return (
-      <Td key={idx} className={className}>
-        {content}
-      </Td>
+      <React.Fragment key={`content${idx}`}>
+        {visible && isInMarketCell && content}
+        {visible && !isInMarketCell && (
+          <Td key={idx} className={className} $first={isFirst} $last={isLast}>
+            {content}
+          </Td>
+        )}
+      </React.Fragment>
     )
   })
 }
@@ -107,50 +115,19 @@ const TableRow = (props: TableRowProps) => {
 
   useEffect(() => {
     if (!isVisible || !ref.current || height !== 0) return
-    setHeight(ref.current.getBoundingClientRect().height)
+    const refHeight = ref.current.getBoundingClientRect().height
+    setHeight(Math.max(refHeight, MIN_ROW_HEIGHT))
   }, [height, isVisible])
 
   return (
     <Tr
       ref={ref}
-      className={`row--info ${isVisible ? '' : 'pending'}`}
       onClick={(evt) => props.handleCellClick(evt.target)}
-      rowHeight={height}
+      {...(!isVisible ? (height > MIN_ROW_HEIGHT ? { height: `${height}px` } : { className: 'pending' }) : {})}
     >
       {isVisible && <TableRowContent {...props} />}
     </Tr>
   )
 }
-
-export const Tr = styled.tr<{ rowHeight: number }>`
-  &.pending {
-    height: ${({ rowHeight }) => `${rowHeight}px` || '2.8125rem'}; // default 45px
-  }
-
-  :hover:not(.disabled) {
-    cursor: pointer;
-    background-color: var(--table_row--hover--color);
-  }
-`
-
-export const cellCss = css`
-  padding-bottom: var(--spacing-narrow);
-  padding-top: var(--spacing-narrow);
-  padding-left: var(--spacing-1);
-  padding-right: var(--spacing-1);
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    padding-left: var(--spacing-2);
-    padding-right: var(--spacing-2);
-  }
-
-  &.noPadding {
-    padding: 0;
-  }
-`
-
-const Td = styled.td`
-  ${cellCss};
-`
 
 export default TableRow

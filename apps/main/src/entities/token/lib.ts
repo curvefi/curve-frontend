@@ -1,7 +1,7 @@
-import useTokensMapper from '@/hooks/useTokensMapper'
-import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import type { Address } from 'viem'
+import useTokensMapper from '@/hooks/useTokensMapper'
+import useStore from '@/store/useStore'
 import { useChainId } from '@/entities/chain'
 
 export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | undefined)[] } => {
@@ -13,7 +13,7 @@ export const useTokens = (addresses: (Address | undefined)[]): { data: (Token | 
   const tokens = useMemo(
     () => addresses.map((address) => (address ? tokensMapper[address] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensKey, tokensMapper]
+    [tokensKey, tokensMapper],
   )
 
   return { data: tokens }
@@ -27,7 +27,7 @@ export const useTokensUSDRates = (tokens: (Address | undefined)[]): { data: (num
   const usdRates = useMemo(
     () => tokens.map((token) => (token ? usdRatesMapper[token] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensKey, usdRatesMapper]
+    [tokensKey, usdRatesMapper],
   )
 
   return { data: usdRates }

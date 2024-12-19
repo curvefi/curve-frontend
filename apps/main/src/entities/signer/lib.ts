@@ -1,6 +1,6 @@
-import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 import type { Address } from 'viem'
+import useStore from '@/store/useStore'
 
 export const useSignerAddress = (): { data: Address | undefined } => {
   const onboardInstance = useStore((state) => state.wallet.onboard)
@@ -14,7 +14,7 @@ export const useIsSignerConnected = () => {
 }
 
 export const useTokensBalances = (
-  tokens: (Address | undefined)[]
+  tokens: (Address | undefined)[],
 ): { data: (string | undefined)[]; isLoading: boolean } => {
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)

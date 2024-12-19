@@ -1,39 +1,47 @@
 import sortBy from 'lodash/sortBy'
-
-import { baseNetworksConfig } from '@/ui/utils'
+import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
 import curvejsApi from '@/lib/apiCrvusd'
-
-const isDevelopment = process.env.NODE_ENV === 'development'
-const drpcUrl = (network: string) =>
-  `https://lb.drpc.org/ogrpc?network=${network}&dkey=${process.env.NEXT_PUBLIC_FRONTEND_DRPC_KEY}`
+import { ChainOption } from '@/common/features/switch-chain'
 
 const DEFAULT_NETWORK_CONFIG = {
   api: curvejsApi,
+  isActiveNetwork: true,
   showInSelectNetwork: true,
 }
 
-const networks: Record<ChainId, NetworkConfig> = {
-  1: {
-    ...DEFAULT_NETWORK_CONFIG,
-    ...baseNetworksConfig['1'],
-    rpcUrl: isDevelopment ? process.env.NEXT_PUBLIC_ETHEREUM_DEV_RPC_URL! : drpcUrl('ethereum'),
-  },
+const networksConfig = {
+  1: {},
 }
 
-export const networksIdMapper = Object.keys(networks).reduce((prev, chainId: unknown) => {
-  const networkConfig = networks[chainId as ChainId]
-  prev[networkConfig.id] = networkConfig.networkId
-  return prev
-}, {} as Record<NetworkEnum, ChainId>)
+export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(
+  (mapper, [key, config]) => {
+    const chainId = Number(key) as ChainId
+    const networkConfig = {
+      ...getBaseNetworksConfig(chainId, NETWORK_BASE_CONFIG[chainId]),
+      ...DEFAULT_NETWORK_CONFIG,
+      ...config,
+    }
+    mapper.networks[chainId] = networkConfig
+    mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
 
-export const visibleNetworksList = sortBy(
-  Object.keys(networks)
-    .filter((chainId) => networks[+chainId as ChainId].showInSelectNetwork)
-    .map((chainId: unknown) => {
-      const networkConfig = networks[chainId as ChainId]
-      return { icon: networkConfig.icon, label: networkConfig.name, chainId: networkConfig.networkId }
-    }),
-  (n) => n.label
+    if (networkConfig.showInSelectNetwork) {
+      mapper.selectNetworkList.push({
+        label: networkConfig.name,
+        chainId,
+        src: networkConfig.logoSrc,
+        srcDark: networkConfig.logoSrcDark,
+        isTestnet: networkConfig.isTestnet,
+      })
+    }
+    return mapper
+  },
+  {
+    networks: {} as Record<ChainId, NetworkConfig>,
+    networksIdMapper: {} as Record<NetworkEnum, ChainId>,
+    selectNetworkList: [] as ChainOption<ChainId>[],
+  },
 )
+
+export const visibleNetworksList: ChainOption<ChainId>[] = sortBy(selectNetworkList, (n) => n.label)
 
 export default networks

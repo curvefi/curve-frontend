@@ -8,7 +8,15 @@ module.exports = {
   catalogs: [
     {
       path: 'src/locales/{locale}/messages',
-      include: ['src/components', 'src/hooks', 'src/layout', 'src/pages', 'src/store'],
+      include: [
+        'src/components',
+        'src/hooks',
+        'src/layout',
+        'src/pages',
+        'src/store',
+        '../../packages/curve-ui-kit',
+        '../../packages/curve-common',
+      ],
     },
   ],
   format: 'po',

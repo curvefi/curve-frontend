@@ -17,9 +17,9 @@ import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import InternalLinkButton from '@/ui/InternalLinkButton'
 import ExternalLink from '@/ui/Link/ExternalLink'
-import { shortenTokenAddress } from '@/utils'
 import { ROUTE } from '@/constants'
 import Spinner from 'ui/src/Spinner/Spinner'
+import ModalPendingTx from 'ui/src/ModalPendingTx'
 
 import ModalDialog from '@/components/PageCreatePool/ConfirmModal/ModalDialog'
 import CreatePoolButton from '@/components/PageCreatePool/ConfirmModal/CreatePoolButton'
@@ -63,7 +63,7 @@ const ConfirmModal = ({
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(
     { onPressEnd: () => (!disabled ? overlayTriggerState.open() : null) },
-    openButtonRef
+    openButtonRef,
   )
 
   const modalTitle = useMemo(() => {
@@ -85,7 +85,7 @@ const ConfirmModal = ({
       tokensInPool.tokenC.address,
       tokensInPool.tokenD.address,
       userAddedTokens,
-    ]
+    ],
   )
 
   return (
@@ -126,7 +126,7 @@ const ConfirmModal = ({
               validation.poolType,
               validation.tokensInPool,
               validation.parameters,
-              validation.poolInfo
+              validation.poolInfo,
             ) && <Icon name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
           )}
         </NavCreateButton>
@@ -178,7 +178,7 @@ const ConfirmModal = ({
                     {fetchPoolStatus === 'LOADING' && (
                       <FetchPoolWrapper>
                         <StyledFetchingSpinner isDisabled size={14} />
-                        <FetchingPoolMessage>Fetching new pool...</FetchingPoolMessage>
+                        <FetchingPoolMessage>{t`Fetching new pool...`}</FetchingPoolMessage>
                       </FetchPoolWrapper>
                     )}
                   </SuccessBox>
@@ -196,17 +196,11 @@ const ConfirmModal = ({
             )}
             <BlurWrapper>
               {txStatus === 'LOADING' && (
-                <PendingContainer>
-                  <PendingWrapper>
-                    <PendingMessage>{t`Deploying Pool ${poolName}...`}</PendingMessage>
-                    <StyledPendingSpinner isDisabled size={24} />
-                    <Transaction variant={'contained'} href={txLink}>
-                      <p>{t`Transaction:`}</p>
-                      {shortenTokenAddress(transaction!.hash)}
-                      <StyledIcon name={'Launch'} size={16} />
-                    </Transaction>
-                  </PendingWrapper>
-                </PendingContainer>
+                <ModalPendingTx
+                  transactionHash={transaction!.hash}
+                  txLink={txLink}
+                  pendingMessage={t`Deploying Pool ${poolName}...`}
+                />
               )}
               {txStatus !== 'SUCCESS' && (
                 <SummaryContent>
@@ -224,7 +218,7 @@ const ConfirmModal = ({
                     validation.poolType,
                     validation.tokensInPool,
                     validation.parameters,
-                    validation.poolInfo
+                    validation.poolInfo,
                   )
                 }
                 curve={curve}
@@ -350,29 +344,6 @@ const SuccessInfo = styled.p`
 
 const BlurWrapper = styled.div`
   position: relative;
-`
-
-const PendingContainer = styled.div`
-  position: absolute;
-  z-index: 102;
-  width: 100%;
-  height: 100%;
-  backdrop-filter: blur(3px);
-  display: flex;
-`
-
-const PendingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  margin: auto;
-  background: var(--box--secondary--background-color);
-  padding: var(--spacing-4) var(--spacing-5);
-`
-
-const PendingMessage = styled.h4`
-  margin: 0 auto;
 `
 
 const FetchPoolWrapper = styled.div`

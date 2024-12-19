@@ -20,14 +20,14 @@ const DetailInfoLeverage = ({
   rChainId,
   rOwmId,
   api,
-  owmData,
+  market,
   activeStep,
   healthMode,
   isLoaded,
   steps,
   userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'owmData' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market' | 'userActiveKey'> & {
   activeStep: number | null
   healthMode: HealthMode
   isLoaded: boolean
@@ -43,7 +43,7 @@ const DetailInfoLeverage = ({
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral, routes } = detailInfo ?? {}
-  const { collateral_token, borrowed_token } = owmData?.owm ?? {}
+  const { collateral_token, borrowed_token } = market ?? {}
   const { haveDebt, haveFormErrors } = _parseValues(formValues)
 
   const loading =
@@ -112,7 +112,7 @@ const DetailInfoLeverage = ({
         userActiveKey={userActiveKey}
         setHealthMode={setHealthMode}
       />
-      <DetailInfoRate isBorrow rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
+      <DetailInfoRate isBorrow={true} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
 
       {signerAddress && (
         <>

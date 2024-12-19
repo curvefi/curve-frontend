@@ -9,46 +9,36 @@
  * business logic and data fetching.
  */
 
-import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
+import { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } from '@/entities/gauge/types'
 import useStore from '@/store/useStore'
-import { type MutateFunction } from '@tanstack/react-query'
 
-export const mutateAddRewardToken: MutateFunction<
-  PoolMethodResult<'gauge.addReward'>,
-  Error,
-  GaugeQueryKeyType<'addRewardToken'>
-> = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, distributorId] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, distributorId })
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
-  return pool.gauge.addReward(_valid.rewardTokenId, _valid.distributorId)
+export const mutateAddRewardToken = async ({
+  poolId,
+  rewardTokenId,
+  distributorId,
+}: AddRewardQuery): Promise<string> => {
+  const { curve } = useStore.getState()
+  const pool = curve.getPool(poolId)
+  return pool.gauge.addReward(rewardTokenId, distributorId)
 }
 
-export const mutateDepositRewardApprove: MutateFunction<
-  PoolMethodResult<'gauge.depositRewardApprove'>,
-  Error,
-  GaugeQueryKeyType<'depositRewardApprove'>
-> = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, amount] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount })
-
+export const mutateDepositRewardApprove = async ({
+  poolId,
+  rewardTokenId,
+  amount,
+}: DepositRewardApproveQuery): Promise<string[]> => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
-  return pool.gauge.depositRewardApprove(_valid.rewardTokenId, _valid.amount)
+  const pool = curve.getPool(poolId)
+  return pool.gauge.depositRewardApprove(rewardTokenId, amount)
 }
 
-export const mutateDepositReward: MutateFunction<
-  PoolMethodResult<'gauge.depositReward'>,
-  Error,
-  GaugeQueryKeyType<'depositReward'>
-> = async (queryKey) => {
-  const [, chainId, , poolId, , , rewardTokenId, amount, epoch] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount, epoch })
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
-  return pool.gauge.depositReward(_valid.rewardTokenId, _valid.amount, _valid.epoch)
+export const mutateDepositReward = async ({
+  poolId,
+  rewardTokenId,
+  amount,
+  epoch,
+}: DepositRewardQuery): Promise<string> => {
+  const { curve } = useStore.getState()
+  const pool = curve.getPool(poolId)
+  return pool.gauge.depositReward(rewardTokenId, amount, epoch)
 }

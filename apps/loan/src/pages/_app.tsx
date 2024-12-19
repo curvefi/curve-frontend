@@ -1,8 +1,3 @@
-import type { AppProps } from 'next/app'
-import type { Locale } from '@/lib/i18n'
-
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -10,23 +5,26 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-
-import { dynamicActivate, initTranslation } from '@/lib/i18n'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getPageWidthClassName } from '@/store/createLayoutSlice'
-import { getStorageValue } from '@/utils/storage'
+import { useCallback, useEffect, useState } from 'react'
+import { HashRouter } from 'react-router-dom'
+import type { AppProps } from 'next/app'
+import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@/constants'
-import { initOnboard } from 'onboard-helpers'
+import GlobalStyle from '@/globalStyle'
+import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import Page from '@/layout/index'
+import { dynamicActivate, initTranslation } from '@/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
-import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
+import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
-
-import Page from '@/layout/index'
-import GlobalStyle from '@/globalStyle'
+import { isMobile, removeExtraSpaces } from '@/utils/helpers'
+import { getStorageValue } from '@/utils/storage'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -50,29 +48,6 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('isMobile', isMobile())
     if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
   }, [setLayoutWidth, updateGlobalStoreByKey])
-
-  const initOnboardApi = useCallback(
-    async (locale: Locale['value'], themeType?: Theme) => {
-      let theme = 'system'
-      if (themeType === 'default' || themeType === 'chad') {
-        theme = 'light'
-      } else if (themeType === 'dark') {
-        theme = 'dark'
-      }
-
-      const onboardInstance = initOnboard(
-        {
-          'zh-Hans': zhHans,
-          'zh-Hant': zhHant,
-        },
-        locale,
-        theme,
-        networks
-      )
-      updateWalletStateByKey('onboard', onboardInstance)
-    },
-    [updateWalletStateByKey]
-  )
 
   // update on every state change
   useEffect(() => {
@@ -105,20 +80,10 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
     handleResizeListener()
@@ -145,23 +110,27 @@ function CurveApp({ Component }: AppProps) {
       }
     },
     REFRESH_INTERVAL['5m'],
-    isPageVisible
+    isPageVisible,
   )
 
   return (
-    <div suppressHydrationWarning>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+        {typeof window !== 'undefined' && appLoaded && (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
+      </ThemeProvider>
     </div>
   )
 }

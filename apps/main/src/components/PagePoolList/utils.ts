@@ -1,30 +1,29 @@
-import startsWith from 'lodash/startsWith'
-import union from 'lodash/union'
-import isUndefined from 'lodash/isUndefined'
+import type { SearchTermsFuseResult } from '@/shared/curve-lib'
+import type { SearchTermsResult } from '@/components/PagePoolList/types'
 
-export function isStartPartOrEnd(searchString: string, string: string) {
-  return startsWith(string, searchString) || string.includes(searchString) || string === searchString
+export enum COLUMN_KEYS {
+  'inPool' = 'inPool',
+  'poolName' = 'poolName',
+  'rewardsLite' = 'rewardsLite',
+  'rewardsDesktop' = 'rewardsDesktop',
+  'rewardsMobile' = 'rewardsMobile',
+  'volume' = 'volume',
+  'tvl' = 'tvl',
 }
 
-export function parsedSearchTextToList(searchText: string) {
-  return searchText
-    .toLowerCase()
-    .split(searchText.indexOf(',') !== -1 ? ',' : ' ')
-    .filter((st) => st !== '')
-    .map((st) => st.trim())
-}
-
-export function getRewardsApyStr(
-  rewardsApyMapper: RewardsApyMapper | undefined,
-  rewardsApyMapperCached: RewardsApyMapper | undefined
+export function parseSearchTermResults<P extends { pool: { id: string } }>(
+  searchedTermsResults: SearchTermsFuseResult<P>,
 ) {
-  if (!isUndefined(rewardsApyMapper) || !isUndefined(rewardsApyMapperCached)) {
-    const rewardsApyKeys = Object.keys(rewardsApyMapper ?? {})
-    const rewardsApyCacheKeys = Object.keys(rewardsApyMapperCached ?? {})
-    return union(rewardsApyKeys, rewardsApyCacheKeys).join(',')
-  }
-}
-
-export function getUserPoolListStr(userPoolList: UserPoolListMapper | undefined) {
-  return Object.keys(userPoolList ?? {}).join(',') ?? ''
+  return searchedTermsResults.reduce((prev, r) => {
+    if (!r.matches) return prev
+    prev[r.item.pool.id] = r.matches.reduce(
+      (prev, { key, value = '' }) => {
+        if (!key || !value) return prev
+        prev[key] = { value }
+        return prev
+      },
+      {} as { [k: string]: { value: string } },
+    )
+    return prev
+  }, {} as SearchTermsResult)
 }

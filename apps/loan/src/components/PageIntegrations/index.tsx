@@ -4,6 +4,7 @@ import type { NavigateFunction, Params } from 'react-router'
 
 import { Trans } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo } from 'react'
+import Image from 'next/image'
 import styled from 'styled-components'
 
 import { ROUTE } from '@/constants'
@@ -46,7 +47,7 @@ const IntegrationsComp = ({
     (updatedFormValues: Partial<FormValues>) => {
       setFormValues({ ...formValues, ...updatedFormValues }, rChainId)
     },
-    [formValues, rChainId, setFormValues]
+    [formValues, rChainId, setFormValues],
   )
 
   const filterKeyLabel = useMemo(() => {
@@ -131,13 +132,11 @@ const IntegrationsComp = ({
                 integrationsAppNetworks={
                   !rChainId && (
                     <Box margin="0.25rem 0 0 0">
-                      {Object.keys(app.networks).map((network) => {
-                        const networkName = network as NetworkEnum
-                        if (networkName in networksIdMapper) {
-                          // @ts-ignore
-                          const chainId = networksIdMapper[networkName]
-                          const Icon = networks[chainId as ChainId].icon
-                          return <Icon aria-label={chainId} title={chainId} width="18" height="18" />
+                      {Object.keys(app.networks).map((networkId) => {
+                        if (networkId in networksIdMapper) {
+                          const chainId = networksIdMapper[networkId as NetworkEnum]
+                          const { name, logoSrc } = networks[chainId]
+                          return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
                         }
                         return null
                       })}

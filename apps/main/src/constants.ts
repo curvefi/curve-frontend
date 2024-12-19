@@ -1,15 +1,12 @@
+import { DEX_ROUTES } from '@ui-kit/shared/routes'
+
 export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const INVALID_ADDRESS = '0x0000000000000000000000000000000000000000'
-
-export const WS_ADDRESS = 'wss://prices.curve.fi/v1/stream/ws'
 export const LARGE_APY = 5000
 
 export const MAIN_ROUTE = {
-  PAGE_SWAP: '/swap',
-  PAGE_POOLS: '/pools',
-  PAGE_CREATE_POOL: '/create-pool',
+  ...DEX_ROUTES,
   PAGE_DEPLOY_GAUGE: '/deploy-gauge',
-  PAGE_DASHBOARD: '/dashboard',
   PAGE_LOCKER: '/locker',
   PAGE_INTEGRATIONS: '/integrations',
   PAGE_COMPENSATION: '/compensation',
@@ -53,3 +50,30 @@ export const CONNECT_STAGE = {
   DISCONNECT_WALLET: 'disconnect-wallet',
   SWITCH_NETWORK: 'switch-network',
 } as const
+
+export const DEFAULT_NETWORK_CONFIG = {
+  useApi: true, // default to true when calling fetchPools
+  excludeTokensBalancesMapper: {}, // tokens that cause issues when getting wallet balances
+  excludePoolsMapper: {}, // remove pool from pool list and pool page
+  hideSmallPoolsTvl: 10000,
+  isLite: false,
+  isActiveNetwork: true,
+  missingPools: [],
+  poolCustomTVL: {}, // hardcode tvl for pool
+  poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'stableng', 'others', 'user'],
+  poolIsWrappedOnly: {}, // show only wrapped pool data
+  poolListFormValuesDefault: {},
+  swap: { fromAddress: '', toAddress: '' },
+  swapCustomRouteRedirect: {},
+  showInSelectNetwork: true,
+  showRouterSwap: true,
+  createQuickList: [],
+  createDisabledTokens: [],
+  stableswapFactory: false, // determines support in pool creation and gauge deployment
+  stableswapFactoryOld: false, // determines support in pool creation and gauge deployment
+  twocryptoFactoryOld: false, // determines support in pool creation and gauge deployment
+  twocryptoFactory: false, // determines support in pool creation and gauge deployment
+  tricryptoFactory: false, // determines support in pool creation and gauge deployment
+  hasFactory: false,
+  pricesApi: false,
+}

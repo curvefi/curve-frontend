@@ -1,71 +1,73 @@
 body,
 body.theme-default {
   /* ------ Colors  ------ */
-  --primary-100: hsl(220, 73%, 5%);
-  --primary-200: hsl(220, 73%, 22%);
-  --primary-300: hsl(220, 74%, 31%);
-  --primary-400: hsl(220, 98%, 54%);
-  --primary-400a10: hsl(220, 98%, 54%, 10%);
-  --primary-400a20: hsl(220, 98%, 54%, 20%);
-  --primary-400a50: hsl(220, 98%, 54%, 50%);
-  --primary-400a90: hsl(220, 98%, 54%, 90%);
-  --primary-400l10: hsl(220, 98%, 44%);
-  --primary-500: hsl(220, 99%, 71%);
-  --primary-600: hsl(220, 100%, 91%);
-  --primary-700: hsl(220, 100%, 99%);
+  --primary-100: hsla(230, 60%, 29%, 1);
+  --primary-200: hsla(228, 63%, 36%, 1);
+  --primary-300: hsla(226, 65%, 43%, 1);
+  --primary-400: hsla(225, 90%, 57%, 1);
+  --primary-400a10: color-mix(in srgb, var(--primary-400) 10%, transparent);
+  --primary-400a20: color-mix(in srgb, var(--primary-400) 20%, transparent);
+  --primary-400a50: color-mix(in srgb, var(--primary-400) 50%, transparent);
+  --primary-400a90: color-mix(in srgb, var(--primary-400) 90%, transparent);
+  --primary-400l10: var(--primary-400);
+  --primary-500: hsla(225, 81%, 73%, 1);
+  --primary-600: hsla(224, 71%, 81%, 1);
+  --primary-700: hsla(227, 47%, 89%, 1);
 
   --primary_darkBg-400: hsl(220, 98%, 54%);
 
-  --gray-100: hsl(220, 9%, 5%);
-  --gray-200: hsl(220, 9%, 22%);
-  --gray-300: hsl(220, 9%, 31%);
-  --gray-400: hsl(220, 9%, 54%);
-  --gray-400a20: hsl(220, 9%, 54%, 20%);
-  --gray-500: hsl(220, 9%, 71%);
-  --gray-500a20: hsl(220, 9%, 71%, 20%);
-  --gray-500a25: hsl(220, 9%, 71%, 25%);
-  --gray-600: hsl(220, 9%, 91%);
-  --gray-700: hsl(220, 9%, 99%);
+  --gray-100: hsla(45, 7%, 9%, 1);
+  --gray-200: hsla(33, 7%, 27%, 1);
+  --gray-300: hsla(34, 6%, 43%, 1);
+  --gray-400: hsla(33, 8%, 55%, 1);
+  --gray-400a20: color-mix(in srgb, var(--gray-400) 20%, transparent);
+  --gray-500: hsla(35, 8%, 71%, 1);
+  --gray-500a20: color-mix(in srgb, var(--gray-500) 20%, transparent);
+  --gray-500a25: color-mix(in srgb, var(--gray-500) 25%, transparent);
+  --gray-600: hsla(20, 8%, 93%, 1);
+  --gray-700: hsla(0, 7%, 99%, 1);
 
-  --danger-400: hsl(357, 81%, 57%);
-  --danger_darkBg-400: hsl(357, 81%, 57%);
+  --orange-200: hsla(40, 100%, 77%, 1);
+  --orange-400: hsla(31, 100%, 48%, 1);
+
+  --black: hsla(45, 7%, 9%, 1);
+  --blacka05: color-mix(in srgb, var(--black) 5%, transparent);
+  --blacka10: color-mix(in srgb, var(--black) 10%, transparent);
+  --blacka25: color-mix(in srgb, var(--black) 25%, transparent);
+  --blacka80: color-mix(in srgb, var(--black) 80%, transparent);
+  --blackl01: hsla(48, 7%, 14%, 1);
+  --blackl05: hsla(40, 7%, 18%, 1);
+  --blackl10: hsla(34, 6%, 22%, 1);
+  --blackl20: hsla(33, 7%, 27%, 1);
+  --blackl30: hsla(34, 6%, 43%, 1);
+  --white: hsla(0, 7%, 99%, 1);
+  --whitea10: color-mix(in srgb, var(--white) 10%, transparent);
+  --whitea20: color-mix(in srgb, var(--white) 20%, transparent);
+  --whitea30: color-mix(in srgb, var(--white) 30%, transparent);
+  --whitea60: color-mix(in srgb, var(--white) 60%, transparent);
+  --whitel05: hsla(0, 7%, 98%, 1);
+  --whitel62: hsla(24, 9%, 90%, 1);
+  --whitel72: hsla(20, 8%, 93%, 1);
+  --whitel85: hsl(0, 0%, 85%);
+  --whitel92: hsla(15, 9%, 96%, 1);
+  --whitel98: hsla(0, 7%, 97%, 1);
+
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsla(357, 85%, 54%, 1);
   --danger-600: hsl(357, 81%, 91%);
 
-  --success-400: hsl(117, 98%, 25%);
-  --success-600: hsl(117, 98%, 91%);
+  --success-400: hsla(149, 65%, 44%, 1);
+  --success-600: hsla(145, 69%, 80%, 1);
 
-  --warning-400: hwb(47 9% 13%);
-  --warning-text-400: hsl(47, 92%, 31%);
+  --warning-400: var(--orange-400);
+  --warning-text-400: var(--orange-200);
 
-  --info-400: hsl(220, 100%, 68%);
-
-  --orange-400: hsl(24, 100%, 50%);
-
-  --black: hsl(0, 0%, 0%);
-  --blacka05: hsl(0, 0%, 0%, 5%);
-  --blacka10: hsl(0, 0%, 0%, 10%);
-  --blacka25: hsl(0, 0%, 0%, 25%);
-  --blacka80: hsl(0, 0%, 0%, 80%);
-  --blackl01: hsl(0, 0%, 1%);
-  --blackl05: hsl(0, 0%, 5%);
-  --blackl10: hsl(0, 0%, 10%);
-  --blackl20: hsl(0, 0%, 20%);
-  --blackl30: hsl(0, 0%, 30%);
-  --white: hsl(0, 0%, 100%);
-  --whitea10: hsl(0, 0%, 100%, 10%);
-  --whitea20: hsl(0, 0%, 100%, 20%);
-  --whitea30: hsl(0, 0%, 100%, 30%);
-  --whitea60: hsl(0, 0%, 100%, 60%);
-  --whitel05: hsl(0, 0%, 95%);
-  --whitel62: hsl(0, 0%, 62%);
-  --whitel72: hsl(0, 0%, 72%);
-  --whitel85: hsl(0, 0%, 85%);
-  --whitel92: hsl(0, 0%, 92%);
-  --whitel98: hsl(0, 0%, 98%);
+  --info-400: var(--primary-500);
 
   /* ------ Global ------ */
   --page--text-color: var(--text-400);
-  --page--background-color: var(--whitel05);
+  --page--background-color: var(--whitel62);
+  --page--header--background-color: var(--white);
 
   --layout--home--background-color: var(--whitel98);
 
@@ -81,36 +83,37 @@ body.theme-default {
   --border-400: var(--gray-500);
   --border-600: var(--gray-500a25);
   --focus: var(--primary-400);
-  --link-400: hsl(220, 98%, 57%);
-  --text-400: hsl(210, 11%, 15%);
+  --link-400: var(--primary-400);
+  --text-400: var(--black);
   --text-600: var(--gray-700);
-  --text_dark_background-400: hsl(210, 11%, 15%);
+  --text_dark_background-400: var(--text-400);
 
   /* ------ Components  ------ */
   /* Box */
   --box--primary--color: var(--text-400);
-  --box--primary--background-color: hsl(0, 0%, 93%);
-  --box--primary--background: hsl(0, 0%, 93%);
-  --box--primary--shadow-color: hsl(210, 6%, 39%);
+  --box--primary--background-color: hsl(257, 100%, 50%); /*unused*/
+  --box--primary--background: var(--gray-700);
+  --box--primary--shadow-color: var(--blackl20);
   --box--primary--content--background-color: hsl(0, 0%, 105%);
-  --box--primary--content--shadow-color: hsl(220, 9%, 81%);
+  --box--primary--content--shadow-color: var(--primary-400);
+  --button--border-color: transparent;
   --box_header--border: 3px solid var(--border-400);
   --box_header--primary--background-color: var(--whitel85);
   --box_header--font-size: var(--font-size-4);
   --box_header--font-weight: var(--bold);
+  --box_header--secondary--background-color: var(--gray-500a20);
   --box--secondary--background-color: var(--layout--home--background-color);
   --box--secondary--border: 1px solid var(--border-600);
   --box--secondary--content--background-color: var(--border-600);
   --box_action--button--font-size: var(--font-size-4);
   --box_action--button--text-transform: initial;
-  --box_action--button--loading--color: hsl(221, 93%, 67%);
-  --box_action--button--loading--background-color: hsl(226, 66%, 87%);
-  --box_action--button--loading--shadow-color: hsl(223, 81%, 81%);
+  --box_action--button--loading--color: var(--primary-500);
+  --box_action--button--loading--background-color: var(--primary-300);
+  --box_action--button--loading--shadow-color: var(--primary-200);
 
   /* Buttons */
   --button--color: var(--primary-700);
   --button--background-color: var(--primary-400);
-  --button--border-color: var(--primary-400);
   --button--disabled--color: var(--gray-400);
   --button--disabled--border-color: var(--gray-500);
   --button--disabled--background-color: var(--gray-500);
@@ -118,11 +121,11 @@ body.theme-default {
   --button--font: var(--font);
   --button--font-size: inherit;
   --button--font-weight: var(--bold);
-  --button--shadow-color: var(--primary-300);
+  --button--shadow-color: var(--primary-200);
   --button--text-transform: initial;
   --button_filled--active--background-color: var(--white);
-  --button_filled--hover--background-color: var(--primary-400l10);
-  --button_filled-hover-contrast--background-color: var(--primary-400l10);
+  --button_filled--hover--background-color: var(--primary-300);
+  --button_filled-hover-contrast--background-color: var(--primary-300);
   --button_outlined--color: var(--text-400);
   --button_outlined--border-color: var(--border-400);
   --button_outlined--hover--color: var(--primary-400);
@@ -136,6 +139,7 @@ body.theme-default {
   --button_text--hover--color: var(--primary-400);
   --button_text_darkbg--hover--color: var(--primary-400);
   --button_text_darkbg--color: var(--primary-400);
+  --box_action--button--text-transform: capitalize;
 
   /*  Health Mode  */
   --health_mode_--color: var(--gray-400);
@@ -199,8 +203,8 @@ body.theme-default {
   --input--background-color: var(--white);
   --input--border: 1px solid var(--gray-300);
   --input--border-color: var(--gray-300);
-  --input--disabled--color: hsl(210, 3%, 50%);
-  --input--disabled--background-color: hsl(210, 3%, 50%, 0.3);
+  --input--disabled--color: var(--gray-400);
+  --input--disabled--background-color: var(--gray-200);
   --input--font-size: var(--font-size-4);
   --input_button--color: var(--gray-300);
   --input_button--border-color: var(--whitel85);
@@ -274,12 +278,12 @@ body.theme-default {
   --spinner--background-color: var(--primary-400a50);
 
   /* Summary */
-  --summary_header--background-color: hsl(0, 0%, 91%);
-  --summary_header--loading--background-color: hsl(0, 0%, 91%, 0.8);
-  --summary_header--border-color: hsl(0, 0%, 71%);
-  --summary_content--background-color: hsl(0, 0%, 95%);
-  --summary_content--loading--background-color: hsla(0, 0%, 95%, 0.8);
-  --summary_content--border-color: hsl(0, 0%, 91%);
+  --summary_header--background-color: var(--gray-600);
+  --summary_header--loading--background-color: var(--gray-500);
+  --summary_header--border-color: var(--gray-500);
+  --summary_content--background-color: var(--gray-600);
+  --summary_content--loading--background-color: var(--gray-500a20);
+  --summary_content--border-color: var(--gray-500a20);
 
   /* Switch */
   /* border-400 with opacity */
@@ -314,14 +318,15 @@ body.theme-default {
   --tooltip--color: var(--white);
   --tooltip--border-color: var(--border-400);
   --tooltip--background-color: var(--black);
+
   /* Charts */
-  --chart-green: #26a69a;
-  --chart-red: #ef5350;
+  --chart-green: #1fa25e;
+  --chart-red: #ed242f;
   --chart-label: #9b7dff;
   --chart-volume-green: #26a6997e;
-  --chart-volume-red: #ef53507e;
-  --chart-oracle-price-line: #3360c9;
-  --chart-liq-range: #ea920e;
+  --chart-volume-red: #b0151f;
+  --chart-oracle-price-line: #3162f4;
+  --chart-liq-range: #ffc300;
   --chart-liq-range-a25: #ea920e25;
   --chart-liq-range-old: #bababa;
   --chart-liq-range-a25-old: #aaaaaa25;

@@ -1,29 +1,28 @@
-import type { AppProps } from 'next/app'
-
-import { useCallback, useEffect, useState } from 'react'
-import { HashRouter } from 'react-router-dom'
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 import { OverlayProvider } from '@react-aria/overlays'
 import delay from 'lodash/delay'
+import { useCallback, useEffect, useState } from 'react'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-
+import { HashRouter } from 'react-router-dom'
+import type { AppProps } from 'next/app'
+import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
+import GlobalStyle from '@/globalStyle'
+import Page from '@/layout/index'
 import { dynamicActivate, initTranslation } from '@/lib/i18n'
-import { getLocaleFromUrl } from '@/utils/utilsRouter'
-import { isMobile, removeExtraSpaces } from '@/utils/helpers'
-import { getPageWidthClassName } from '@/store/createLayoutSlice'
-import { getStorageValue } from '@/utils/utilsStorage'
-import { initOnboard } from 'onboard-helpers'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
+import { getPageWidthClassName } from '@/store/createLayoutSlice'
 import useStore from '@/store/useStore'
-import zhHans from 'onboard-helpers/src/locales/zh-Hans'
-import zhHant from 'onboard-helpers/src/locales/zh-Hant'
-
-import Page from '@/layout/index'
-import GlobalStyle from '@/globalStyle'
+import { QueryProvider } from '@/ui/QueryProvider'
+import { isMobile, removeExtraSpaces } from '@/utils/helpers'
+import { getLocaleFromUrl } from '@/utils/utilsRouter'
+import { getStorageValue } from '@/utils/utilsStorage'
+import { ChadCssProperties } from '@ui-kit/themes/typography'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -64,7 +63,7 @@ function CurveApp({ Component }: AppProps) {
 
     // init theme
     const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
+    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'light')
 
     // init locale
     const { rLocale } = getLocaleFromUrl()
@@ -74,15 +73,7 @@ function CurveApp({ Component }: AppProps) {
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
-    const onboardInstance = initOnboard(
-      {
-        'zh-Hans': zhHans,
-        'zh-Hant': zhHant,
-      },
-      locale,
-      themeType,
-      networks
-    )
+    const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
     const handleVisibilityChange = () => {
@@ -106,19 +97,23 @@ function CurveApp({ Component }: AppProps) {
   }, [])
 
   return (
-    <div suppressHydrationWarning>
-      {typeof window === 'undefined' || !appLoaded ? null : (
-        <HashRouter>
-          <I18nProvider i18n={i18n}>
-            <OverlayProvider>
-              <Page>
-                <Component />
-              </Page>
-              <GlobalStyle />
-            </OverlayProvider>
-          </I18nProvider>
-        </HashRouter>
-      )}
+    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={(themeType as string) === 'default' ? 'light' : themeType}>
+        {typeof window === 'undefined' || !appLoaded ? null : (
+          <HashRouter>
+            <I18nProvider i18n={i18n}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
+            </I18nProvider>
+          </HashRouter>
+        )}
+      </ThemeProvider>
     </div>
   )
 }

@@ -7,14 +7,9 @@ type Props = {
   skeleton?: [number, number]
 }
 
-const Loader = ({ className, ...props }: Props) => {
-  return <TextSkeleton className={className} {...props} />
-}
-
-Loader.defaultProps = {
-  isLightBg: false,
-  skeleton: [12, 12],
-}
+const Loader = ({ className, isLightBg = false, skeleton = [12, 12], ...props }: Props) => (
+  <TextSkeleton className={className} isLightBg={isLightBg} skeleton={skeleton} {...props} />
+)
 
 const AnimateShimmer = keyframes`
   100% { transform: translateX(100%); }

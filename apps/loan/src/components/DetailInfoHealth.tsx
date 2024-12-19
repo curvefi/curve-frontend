@@ -63,8 +63,8 @@ const DetailInfoHealth = ({
           healthNotFull,
           true,
           currentHealthModeColorKey ?? '',
-          newHealthModeColorKey ?? ''
-        )
+          newHealthModeColorKey ?? '',
+        ),
       )
     } else {
       setHealthMode(DEFAULT_HEALTH_MODE)
@@ -95,8 +95,8 @@ const DetailInfoHealth = ({
           healthNotFull,
           false,
           '',
-          newHealthModeColorKey
-        )
+          newHealthModeColorKey,
+        ),
       )
     }
   }, [activeBand, amount, formType, newHealthModeColorKey, userLoanDetails])
@@ -119,7 +119,7 @@ const DetailInfoHealth = ({
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
               {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
-              <ExternalLink href="https://resources.curve.fi/crvusd/loan-details/#hard-liquidations" $noStyles>
+              <ExternalLink href="https://resources.curve.fi/crvusd/loan-concepts/#hard-liquidations" $noStyles>
                 Click here to learn more.
               </ExternalLink>
             </p>
@@ -169,7 +169,7 @@ export function getHealthMode(
   healthNotFull: string,
   isNew: boolean,
   currColorKey: string,
-  newColorKey: string
+  newColorKey: string,
 ) {
   let healthMode: HealthMode = {
     percent: healthFull,

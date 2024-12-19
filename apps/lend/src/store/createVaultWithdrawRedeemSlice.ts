@@ -10,6 +10,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/components/PageLoanManage/utils'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/components/PageVault/VaultWithdrawRedeem/utils'
 import { _getMaxActiveKey } from '@/store/createVaultDepositMintSlice'
 import apiLending, { helpers } from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -28,13 +29,13 @@ type SliceState = {
 // prettier-ignore
 export type VaultWithdrawRedeemSlice = {
   [sliceKey]: SliceState & {
-    fetchMax(api: Api, formType: FormType, owmData: OWMData): Promise<void>
-    fetchEstGas(activeKey: string, formType: FormType, api: Api, owmData: OWMData): Promise<void>
-    fetchDetails(activeKey: string, formType: FormType, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, owmData: OWMData | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
+    fetchMax(api: Api, formType: FormType, market: OneWayMarketTemplate): Promise<void>
+    fetchEstGas(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
+    fetchDetails(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(rChainId: ChainId, formType: FormType, api: Api | null, market: OneWayMarketTemplate | undefined, updatedPartialFormValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepWithdrawRedeem(activeKey: string, formType: FormType, api: Api, owmData: OWMData, formValues: FormValues, vaultShares: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepWithdrawRedeem(activeKey: string, formType: FormType, api: Api, market: OneWayMarketTemplate, formValues: FormValues, vaultShares: string): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -58,15 +59,15 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMax: async (api, formType: FormType, owmData) => {
+    fetchMax: async (api, formType: FormType, market) => {
       const { chainId, signerAddress } = api
 
       if (!signerAddress) return
 
       const resp = _isWithdraw(formType)
-        ? await apiLending.vaultWithdraw.max(owmData)
-        : await apiLending.vaultRedeem.max(owmData)
-      const activeKey = _getMaxActiveKey(chainId, formType, owmData)
+        ? await apiLending.vaultWithdraw.max(market)
+        : await apiLending.vaultRedeem.max(market)
+      const activeKey = _getMaxActiveKey(chainId, formType, market)
       get()[sliceKey].setStateByActiveKey('max', activeKey, resp)
 
       // validation
@@ -76,7 +77,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
         : cFormValues.amountError
       get()[sliceKey].setStateByKey('formValues', cFormValues)
     },
-    fetchEstGas: async (activeKey, formType, api, owmData) => {
+    fetchEstGas: async (activeKey, formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError, isFullWithdraw } = get()[sliceKey].formValues
 
@@ -87,10 +88,10 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
       let resp
       if (isFullWithdraw) {
-        const { vaultShares } = await owmData.owm.wallet.balances()
-        resp = await apiLending.vaultRedeem.estGas(activeKey, owmData, vaultShares)
+        const { vaultShares } = await market.wallet.balances()
+        resp = await apiLending.vaultRedeem.estGas(activeKey, market, vaultShares)
       } else {
-        resp = await apiLending.vaultWithdraw.estGas(activeKey, owmData, amount)
+        resp = await apiLending.vaultWithdraw.estGas(activeKey, market, amount)
       }
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -99,35 +100,35 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       cFormStatus.error = cFormStatus.error || resp.error || ''
       get()[sliceKey].setStateByKey('formStatus', cFormStatus)
     },
-    fetchDetails: async (activeKey, formType, api, owmData) => {
+    fetchDetails: async (activeKey, formType, api, market) => {
       const { signerAddress } = api
       const { amount, amountError } = get()[sliceKey].formValues
 
       if (!signerAddress || +amount <= 0 || amountError) return
 
       const fn = _isWithdraw(formType) ? apiLending.vaultWithdraw.detailInfo : apiLending.vaultRedeem.detailInfo
-      const resp = await fn(activeKey, owmData, amount)
+      const resp = await fn(activeKey, market, amount)
       get()[sliceKey].setStateByActiveKey('detailInfo', resp.activeKey, resp)
     },
-    setFormValues: async (rChainId, formType, api, owmData, partialFormValues) => {
+    setFormValues: async (rChainId, formType, api, market, partialFormValues) => {
       const storedFormValues = get()[sliceKey].formValues
 
       // update activeKey and formValues
       const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
       const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS })
-      const activeKey = _getActiveKey(rChainId, formType, owmData, cFormValues)
+      const activeKey = _getActiveKey(rChainId, formType, market, cFormValues)
       get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
 
-      if (!api || !owmData) return
+      if (!api || !market) return
 
       // api calls
-      await get()[sliceKey].fetchMax(api, formType, owmData)
-      get()[sliceKey].fetchDetails(activeKey, formType, api, owmData)
-      get()[sliceKey].fetchEstGas(activeKey, formType, api, owmData)
+      await get()[sliceKey].fetchMax(api, formType, market)
+      get()[sliceKey].fetchDetails(activeKey, formType, api, market)
+      get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
     },
 
     // steps
-    fetchStepWithdrawRedeem: async (activeKey, formType: FormType, api, owmData, formValues, vaultShares) => {
+    fetchStepWithdrawRedeem: async (activeKey, formType: FormType, api, market, formValues, vaultShares) => {
       const provider = get().wallet.getProvider(sliceKey)
 
       if (!provider) return
@@ -142,16 +143,16 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       const resp = await apiLending.vaultWithdraw.withdraw(
         activeKey,
         provider,
-        owmData,
+        market,
         isFullWithdraw,
         amount,
-        vaultShares
+        vaultShares,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // api calls
-        get().user.fetchUserMarketBalances(api, owmData, true)
-        get()[sliceKey].fetchMax(api, formType, owmData)
+        get().user.fetchUserMarketBalances(api, market, true)
+        get()[sliceKey].fetchMax(api, formType, market)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }
@@ -188,10 +189,10 @@ export function _isWithdraw(formType: FormType) {
 export function _getActiveKey(
   rChainId: ChainId,
   formType: FormType,
-  owmData: OWMData | undefined,
-  { amount }: FormValues
+  market: OneWayMarketTemplate | undefined,
+  { amount }: FormValues,
 ) {
-  return `${rChainId}-${formType}-${owmData?.owm?.id ?? ''}-${amount}`
+  return `${rChainId}-${formType}-${market?.id ?? ''}-${amount}`
 }
 
 export default createVaultWithdrawRedeem

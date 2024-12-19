@@ -20,8 +20,9 @@ import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
-const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, userActiveKey }: PageContentProps) => {
+const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.vaultUnstake.activeKey)
@@ -41,9 +42,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, rFormType, isLoaded ? api : null, owmData, updatedFormValues)
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, owmData, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -51,7 +52,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
@@ -59,7 +60,13 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
   }
 
   const handleBtnClickUnstake = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
       const { amount } = formValues
 
@@ -67,7 +74,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
       const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">Pending {notifyMessage}</AlertBox>)
 
-      const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, owmData, formValues)
+      const resp = await fetchStepUnstake(payloadActiveKey, rFormType, api, market, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
@@ -77,7 +84,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepUnstake, notifyNotification, reset]
+    [activeKey, fetchStepUnstake, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -85,10 +92,10 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError } = formValues
@@ -102,7 +109,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
           status: helpers.getStepStatus(isComplete, step === 'UNSTAKE', isValid),
           type: 'action',
           content: isComplete ? t`Unstaked` : t`Unstake`,
-          onClick: async () => handleBtnClickUnstake(payloadActiveKey, rFormType, api, owmData, formValues),
+          onClick: async () => handleBtnClickUnstake(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -116,7 +123,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickUnstake]
+    [handleBtnClickUnstake],
   )
 
   // onMount
@@ -136,8 +143,8 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, owmData, use
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && rFormType) {
-      const updatedSteps = getSteps(activeKey, rFormType, api, owmData, formStatus, formValues, steps)
+    if (isLoaded && api && market && rFormType) {
+      const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

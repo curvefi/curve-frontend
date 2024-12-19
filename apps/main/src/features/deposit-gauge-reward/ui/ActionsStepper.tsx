@@ -1,49 +1,42 @@
-import { REFRESH_INTERVAL } from '@/constants'
-import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
+import { t } from '@lingui/macro'
+import { FunctionComponent, useCallback, useLayoutEffect, useMemo, useState } from 'react'
+import { useFormContext } from 'react-hook-form'
 import { DepositRewardFormValues, DepositRewardStep } from '@/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/features/deposit-gauge-reward/ui'
-import networks from '@/networks'
+import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/entities/gauge'
+import { REFRESH_INTERVAL } from '@/constants'
+import useStore from '@/store/useStore'
 import Stepper from '@/ui/Stepper'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import type { Step } from '@/ui/Stepper/types'
 import TxInfoBar from '@/ui/TxInfoBar'
-import { t } from '@lingui/macro'
-import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
-import { useFormContext } from 'react-hook-form'
 
 type TxInfo = {
   description: string
   txHash: string
 }
 
-export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
+export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const {
     formState: { isValid, isSubmitting },
     watch,
     setValue,
     getValues,
     setError,
-    reset,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
+  const { scanTxPath } = useStore((state) => state.networks.networks[chainId])
 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')
   const step = watch('step')
 
-  const {
-    mutate: depositRewardApprove,
-    isPending: isPendingDepositRewardApprove,
-    isSuccess: isSuccessDepositRewardApprove,
-    data: depositRewardApproveData,
-  } = useDepositRewardApprove({ chainId, poolId })
+  const { mutate: depositRewardApprove, isPending: isPendingDepositRewardApprove } = useDepositRewardApprove({
+    chainId,
+    poolId,
+  })
 
-  const {
-    mutate: depositReward,
-    isPending: isPendingDepositReward,
-    isSuccess: isSuccessDepositReward,
-    data: depositRewardData,
-  } = useDepositReward({ chainId, poolId })
+  const { mutate: depositReward, isPending: isPendingDepositReward } = useDepositReward({ chainId, poolId })
 
   const [latestTxInfo, setLatestTxInfo] = useState<TxInfo | null>(null)
 
@@ -52,7 +45,7 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
       setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
       setLatestTxInfo({
         description: t`Reward approved`,
-        txHash: networks[chainId].scanTxPath(data[0]),
+        txHash: scanTxPath(data[0]),
       })
     }
 
@@ -65,9 +58,9 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
         rewardTokenId: getValues('rewardTokenId'),
         amount: getValues('amount'),
       },
-      { onSuccess: onApproveSuccess, onError: onApproveError }
+      { onSuccess: onApproveSuccess, onError: onApproveError },
     )
-  }, [depositRewardApprove, getValues, setError, setValue, chainId])
+  }, [depositRewardApprove, getValues, setError, setValue, scanTxPath])
 
   const onSubmitDeposit = useCallback(() => {
     depositReward(
@@ -81,15 +74,15 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
           setValue('step', DepositRewardStep.CONFIRMATION)
           setLatestTxInfo({
             description: t`Reward deposited`,
-            txHash: networks[chainId].scanTxPath(data),
+            txHash: scanTxPath(data),
           })
         },
         onError: (error: Error) => {
           setError('root.serverError', { message: error.message })
         },
-      }
+      },
     )
-  }, [depositReward, getValues, setError, setValue, chainId])
+  }, [depositReward, getValues, setError, setValue, scanTxPath])
 
   const { data: isDepositRewardApproved, isLoading: isLoadingDepositRewardApproved } = useGaugeDepositRewardIsApproved({
     chainId,
@@ -126,7 +119,7 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
         status: getStepStatus(
           [DepositRewardStep.CONFIRMATION, DepositRewardStep.DEPOSIT].includes(step),
           step === DepositRewardStep.APPROVAL && (isSubmitting || isPendingDepositRewardApprove),
-          isValid && !isSubmitting
+          isValid && !isSubmitting,
         ),
         type: 'action',
         content:
@@ -141,7 +134,7 @@ export const DepositStepper: React.FC<{ chainId: ChainId; poolId: string }> = ({
         status: getStepStatus(
           step === DepositRewardStep.CONFIRMATION,
           step === DepositRewardStep.DEPOSIT && isPendingDepositReward,
-          isValid && !isPendingDepositReward && !!isDepositRewardApproved
+          isValid && !isPendingDepositReward && !!isDepositRewardApproved,
         ),
         type: 'action',
         content: step === DepositRewardStep.CONFIRMATION ? t`Deposited` : t`Deposit`,

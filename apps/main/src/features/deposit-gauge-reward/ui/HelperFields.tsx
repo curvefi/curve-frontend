@@ -1,8 +1,8 @@
-import FieldHelperUsdRate from '@/components/FieldHelperUsdRate'
-import { useTokensUSDRates } from '@/entities/token'
-import { type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
-import { FlexContainer } from '@/shared/ui/styled-containers'
 import { useFormContext } from 'react-hook-form'
+import FieldHelperUsdRate from '@/components/FieldHelperUsdRate'
+import { type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { useTokensUSDRates } from '@/entities/token'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const HelperFields: React.FC<{ chainId: ChainId; poolId: string }> = ({ chainId, poolId }) => {
   const { watch } = useFormContext<DepositRewardFormValues>()

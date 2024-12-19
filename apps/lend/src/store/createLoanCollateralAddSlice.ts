@@ -8,6 +8,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,13 +25,13 @@ const sliceKey = 'loanCollateralAdd'
 // prettier-ignore
 export type LoanCollateralAddSlice = {
   [sliceKey]: SliceState & {
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    fetchEstGasApproval(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(api: Api | null, owmData: OWMData | undefined, formValues: Partial<FormValues>): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    fetchEstGasApproval(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, formValues: Partial<FormValues>): Promise<void>
 
     // steps
-    fetchStepApprove(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
-    fetchStepIncrease(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
+    fetchStepIncrease(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -65,17 +66,17 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetailInfo: async (activeKey, api, owmData) => {
+    fetchDetailInfo: async (activeKey, api, market) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral } = formValues
 
       if (!signerAddress || +collateral <= 0) return
 
-      const resp = await loanCollateralAdd.detailInfo(activeKey, api, owmData, collateral)
+      const resp = await loanCollateralAdd.detailInfo(activeKey, api, market, collateral)
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
-    fetchEstGasApproval: async (activeKey, api, owmData) => {
+    fetchEstGasApproval: async (activeKey, api, market) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -85,7 +86,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
       await gas.fetchGasInfo(api)
-      const resp = await loanCollateralAdd.estGasApproval(activeKey, owmData, collateral)
+      const resp = await loanCollateralAdd.estGasApproval(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus
@@ -95,34 +96,34 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         error: formStatus.error || resp.error,
       })
     },
-    setFormValues: async (api, owmData, partialFormValues) => {
+    setFormValues: async (api, market, partialFormValues) => {
       const { user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
       // update activeKey, formValues
       const cFormValues: FormValues = { ...formValues, ...partialFormValues, collateralError: '' }
       const cFormStatus: FormStatus = { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved }
-      const activeKey = _getActiveKey(api, owmData, cFormValues.collateral)
+      const activeKey = _getActiveKey(api, market, cFormValues.collateral)
       sliceState.setStateByKeys({ activeKey, formValues: cFormValues, formStatus: cFormStatus })
 
-      if (!api || !owmData) return
+      if (!api || !market) return
 
       const { signerAddress } = api
 
       // validation
       if (signerAddress) {
-        const userBalancesResp = await user.fetchUserMarketBalances(api, owmData, true)
+        const userBalancesResp = await user.fetchUserMarketBalances(api, market, true)
         const collateralError = isTooMuch(cFormValues.collateral, userBalancesResp.collateral) ? 'too-much' : ''
         sliceState.setStateByKey('formValues', { ...cFormValues, collateralError })
       }
 
       // api calls
-      sliceState.fetchDetailInfo(activeKey, api, owmData)
-      sliceState.fetchEstGasApproval(activeKey, api, owmData)
+      sliceState.fetchDetailInfo(activeKey, api, market)
+      sliceState.fetchEstGasApproval(activeKey, api, market)
     },
 
     // step
-    fetchStepApprove: async (activeKey, api, owmData, formValues) => {
+    fetchStepApprove: async (activeKey, api, market, formValues) => {
       const { gas, wallet } = get()
       const sliceState = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -134,7 +135,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
       // api calls
       await gas.fetchGasInfo(api)
-      const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, owmData, formValues.collateral)
+      const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, market, formValues.collateral)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // update formStatus
@@ -144,11 +145,11 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
           isApproved: !error,
           isInProgress: !error,
         })
-        if (!error) sliceState.fetchEstGasApproval(activeKey, api, owmData)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market)
         return { ...resp, error }
       }
     },
-    fetchStepIncrease: async (activeKey, api, owmData, formValues) => {
+    fetchStepIncrease: async (activeKey, api, market, formValues) => {
       const { gas, markets, wallet, user } = get()
       const sliceState = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -167,8 +168,8 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       const { error, ...resp } = await loanCollateralAdd.addCollateral(
         activeKey,
         provider,
-        owmData,
-        formValues.collateral
+        market,
+        formValues.collateral,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -177,9 +178,9 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
           return { ...resp, error, loanExists: true }
         } else {
           // api calls
-          const loanExists = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
-          if (loanExists) user.fetchAll(api, owmData, true)
-          markets.fetchAll(api, owmData, true)
+          const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
+          if (loanExists) user.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({
@@ -210,6 +211,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
 export default createLoanCollateralAdd
 
-export function _getActiveKey(api: Api | null, owmData: OWMData | undefined, collateral: string) {
-  return `${_parseActiveKey(api, owmData)}-${collateral}`
+export function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
+  return `${_parseActiveKey(api, market)}-${collateral}`
 }

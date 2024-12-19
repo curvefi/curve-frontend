@@ -12,9 +12,9 @@ import ChartBandBalances from '@/components/ChartBandBalances'
 const DetailsLoanChartBalances = ({
   rChainId,
   rOwmId,
-  borrowed_token,
-  collateral_token,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'borrowed_token' | 'collateral_token'>) => {
+  market,
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'>) => {
+  const { borrowed_token, collateral_token } = market ?? {}
   const statsBandsResp = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
@@ -59,8 +59,7 @@ const DetailsLoanChartBalances = ({
     <ChartBandBalances
       rChainId={rChainId}
       rOwmId={rOwmId}
-      borrowed_token={borrowed_token}
-      collateral_token={collateral_token}
+      market={market}
       brushIndex={brushIndex}
       data={parsedChartBandBalancesData}
       oraclePrice={oraclePrice}

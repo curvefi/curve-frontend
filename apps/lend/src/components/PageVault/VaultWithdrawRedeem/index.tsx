@@ -1,4 +1,4 @@
-import type { FormValues, FormStatus, StepKey } from '@/components/PageVault/VaultWithdrawRedeem/types'
+import type { FormStatus, FormValues, StepKey } from '@/components/PageVault/VaultWithdrawRedeem/types'
 import type { Step } from '@/ui/Stepper/types'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -24,6 +24,7 @@ import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
 import LoanFormConnect from '@/components/LoanFormConnect'
 import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -31,7 +32,7 @@ const VaultWithdrawRedeem = ({
   rFormType,
   isLoaded,
   api,
-  owmData,
+  market,
   userActiveKey,
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -41,7 +42,7 @@ const VaultWithdrawRedeem = ({
   const formStatus = useStore((state) => state.vaultWithdrawRedeem.formStatus)
   const formValues = useStore((state) => state.vaultWithdrawRedeem.formValues)
   const detailInfo = useStore((state) => state.vaultWithdrawRedeem.detailInfo[activeKey])
-  const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, owmData)
+  const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
   const maxResp = useStore((state) => state.vaultWithdrawRedeem.max[maxActiveKey])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepWithdrawRedeem = useStore((state) => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
@@ -61,9 +62,9 @@ const VaultWithdrawRedeem = ({
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, rFormType, isLoaded ? api : null, owmData, updatedFormValues)
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
     },
-    [api, isLoaded, owmData, rChainId, rFormType, setFormValues]
+    [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
@@ -71,33 +72,38 @@ const VaultWithdrawRedeem = ({
       setTxInfoBar(null)
       updateFormValues(updatedFormValues)
     },
-    [updateFormValues]
+    [updateFormValues],
   )
 
   const handleFormChange = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       reset({ ...updatedFormValues, amountError: '' })
     },
-    [reset]
+    [reset],
   )
 
   const handleBtnClickWithdrawRedeem = useCallback(
-    async (payloadActiveKey: string, rFormType: string, api: Api, owmData: OWMData, formValues: FormValues) => {
+    async (
+      payloadActiveKey: string,
+      rFormType: string,
+      api: Api,
+      market: OneWayMarketTemplate,
+      formValues: FormValues,
+    ) => {
       const { chainId } = api
-      const { owm } = owmData
 
-      let notifyMessage = t`withdraw ${formValues.amount} ${owm.borrowed_token.symbol}`
+      let notifyMessage = t`withdraw ${formValues.amount} ${market.borrowed_token.symbol}`
       let vaultShares = ''
 
       if (formValues.isFullWithdraw) {
-        const userBalances = await fetchUserMarketBalances(api, owmData, true)
+        const userBalances = await fetchUserMarketBalances(api, market, true)
         vaultShares = userBalances.vaultShares
         notifyMessage = t`a full withdraw of ${vaultShares} vault shares`
       }
 
       const notify = notifyNotification(`Please confirm ${notifyMessage}`, 'pending')
       setTxInfoBar(<AlertBox alertType="info">{`Pending ${notifyMessage}`}</AlertBox>)
-      const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, owmData, formValues, vaultShares)
+      const resp = await fetchStepWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues, vaultShares)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const txMessage = t`Transaction complete.`
@@ -106,13 +112,13 @@ const VaultWithdrawRedeem = ({
             description={txMessage}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => reset({})}
-          />
+          />,
         )
       }
       if (resp?.error) setTxInfoBar(null)
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset]
+    [activeKey, fetchStepWithdrawRedeem, fetchUserMarketBalances, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -120,10 +126,10 @@ const VaultWithdrawRedeem = ({
       payloadActiveKey: string,
       rFormType: string,
       api: Api,
-      owmData: OWMData,
+      market: OneWayMarketTemplate,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { signerAddress } = api
       const { amount, amountError, isFullWithdraw } = formValues
@@ -139,7 +145,7 @@ const VaultWithdrawRedeem = ({
           status: helpers.getStepStatus(isComplete, step === 'WITHDRAW_REDEEM', isValid),
           type: 'action',
           content: isComplete ? (isWithdraw ? t`Withdrawn` : t`Redeemed`) : isWithdraw ? t`Withdraw` : t`Redeem`,
-          onClick: async () => handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, owmData, formValues),
+          onClick: async () => handleBtnClickWithdrawRedeem(payloadActiveKey, rFormType, api, market, formValues),
         },
       }
 
@@ -153,7 +159,7 @@ const VaultWithdrawRedeem = ({
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [handleBtnClickWithdrawRedeem]
+    [handleBtnClickWithdrawRedeem],
   )
 
   // onMount
@@ -173,8 +179,8 @@ const VaultWithdrawRedeem = ({
 
   // steps
   useEffect(() => {
-    if (isLoaded && api && owmData && rFormType) {
-      const updatedSteps = getSteps(activeKey, rFormType, api, owmData, formStatus, formValues, steps)
+    if (isLoaded && api && market && rFormType) {
+      const updatedSteps = getSteps(activeKey, rFormType, api, market, formStatus, formValues, steps)
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

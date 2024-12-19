@@ -9,6 +9,12 @@
     "lint": "eslint \"**/*.ts*\""
   },
   "devDependencies": {
+    "eslint": "*",
+    "eslint-config-custom": "*",
+    "tsconfig": "*"
+  },
+  "peerDependencies": {
+    "eslint": "*",
     "eslint-config-custom": "*",
     "tsconfig": "*"
   }

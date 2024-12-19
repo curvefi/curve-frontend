@@ -1,13 +1,9 @@
 import { SwapType, TokenState } from '@/components/PageCreatePool/types'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
-
 import { t } from '@lingui/macro'
 import { shortenTokenAddress } from '@/utils'
-import networks from '@/networks'
 import styled from 'styled-components'
-
 import useStore from '@/store/useStore'
-
 import { checkTokensInPoolUnset, containsOracle } from '@/components/PageCreatePool/utils'
 import {
   TOKEN_A,
@@ -19,7 +15,6 @@ import {
   TOKEN_G,
   TOKEN_H,
 } from '@/components/PageCreatePool/constants'
-
 import {
   CategoryColumn,
   CategoryDataColumn,
@@ -69,7 +64,7 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
           tokensInPool[TOKEN_E],
           tokensInPool[TOKEN_F],
           tokensInPool[TOKEN_G],
-          tokensInPool[TOKEN_H]
+          tokensInPool[TOKEN_H],
         ) && (
           <Box flex flexAlignItems="center">
             <StyledBWButtonTokenIcon imageBaseUrl={''} token={''} address={''} />
@@ -196,29 +191,32 @@ const TokensInPoolSummary = ({ imageBaseUrl, chainId }: Props) => {
   )
 }
 
-const TokenSummary = ({ imageBaseUrl, token, chainId, swapType }: TokenSummary) => (
-  <TokenRow>
-    <ButtonTokenIcon imageBaseUrl={imageBaseUrl} token={token.symbol} address={token.address} />
-    <Box flex flexColumn>
-      <TokenSymbol className="token-symbol">
-        {token.symbol}
-        {token.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
-      </TokenSymbol>
-      {swapType === STABLESWAP && networks[chainId].stableswapFactory && (
-        <TokenType>
-          {token.ngAssetType === 0 && t`Standard`}
-          {token.ngAssetType === 1 && t`Oracle`}
-          {token.ngAssetType === 2 && t`Rebasing`}
-          {token.ngAssetType === 3 && t`ERC4626`}
-        </TokenType>
-      )}
-    </Box>
-    <AddressLink href={networks[chainId].scanAddressPath(token.address)}>
-      {shortenTokenAddress(token.address)}
-      <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
-    </AddressLink>
-  </TokenRow>
-)
+const TokenSummary = ({ imageBaseUrl, token, chainId, swapType }: TokenSummary) => {
+  const { scanAddressPath, stableswapFactory } = useStore((state) => state.networks.networks[chainId])
+  return (
+    <TokenRow>
+      <ButtonTokenIcon imageBaseUrl={imageBaseUrl} token={token.symbol} address={token.address} />
+      <Box flex flexColumn>
+        <TokenSymbol className="token-symbol">
+          {token.symbol}
+          {token.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
+        </TokenSymbol>
+        {swapType === STABLESWAP && stableswapFactory && (
+          <TokenType>
+            {token.ngAssetType === 0 && t`Standard`}
+            {token.ngAssetType === 1 && t`Oracle`}
+            {token.ngAssetType === 2 && t`Rebasing`}
+            {token.ngAssetType === 3 && t`ERC4626`}
+          </TokenType>
+        )}
+      </Box>
+      <AddressLink href={scanAddressPath(token.address)}>
+        {shortenTokenAddress(token.address)}
+        <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
+      </AddressLink>
+    </TokenRow>
+  )
+}
 
 const StyledBWButtonTokenIcon = styled(ButtonTokenIcon)`
   filter: grayscale(100%);

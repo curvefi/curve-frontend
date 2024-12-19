@@ -16,12 +16,12 @@ import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo
 import MarketParameters from '@/components/DetailsMarket/components/MarketParameters'
 
 const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
-  const { rChainId, rOwmId, owmDataCachedOrApi, borrowed_token, collateral_token, titleMapper } = pageProps
+  const { rChainId, rOwmId, market, titleMapper } = pageProps
 
   const cellProps = {
     rChainId,
     rOwmId,
-    owmDataCachedOrApi,
+    market,
     size: 'md' as const,
   }
 
@@ -61,13 +61,7 @@ const DetailsSupply = ({ type, ...pageProps }: PageContentProps & { type: Market
         <Box grid gridGap={3}>
           <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="supply" />
           <div>
-            <DetailsContracts
-              rChainId={rChainId}
-              owmDataCachedOrApi={owmDataCachedOrApi}
-              borrowed_token={borrowed_token}
-              collateral_token={collateral_token}
-              type={type}
-            />
+            <DetailsContracts rChainId={rChainId} market={market} type={type} />
           </div>
         </Box>
       </StyledDarkContent>

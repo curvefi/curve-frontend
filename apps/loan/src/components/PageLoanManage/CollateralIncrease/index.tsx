@@ -45,7 +45,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES
+    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
   const fetchStepApprove = useStore((state) => state.loanCollateralIncrease.fetchStepApprove)
@@ -68,7 +68,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         setFormValues(chainId, llamma, updatedFormValues)
       }
     },
-    [chainId, llamma, setFormValues]
+    [chainId, llamma, setFormValues],
   )
 
   const reset = useCallback(
@@ -83,7 +83,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey]
+    [formStatus, setStateByKey],
   )
 
   const handleInpChangeCollateral = (collateral: string) => {
@@ -108,12 +108,12 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             description={t`Transaction complete`}
             txHash={networks[chainId].scanTxPath(resp.hash)}
             onClose={() => reset(false, true)}
-          />
+          />,
         )
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepIncrease, notifyNotification, reset]
+    [activeKey, fetchStepIncrease, notifyNotification, reset],
   )
 
   const getSteps = useCallback(
@@ -125,7 +125,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       formEstGas: FormEstGas,
       formStatus: FormStatus,
       formValues: FormValues,
-      steps: Step[]
+      steps: Step[],
     ) => {
       const { collateral, collateralError } = formValues
       const { error, isApproved, isComplete, isInProgress, step } = formStatus
@@ -188,7 +188,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, healthMode, notifyNotification]
+    [fetchStepApprove, handleBtnClickAdd, healthMode, notifyNotification],
   )
 
   // onMount
@@ -212,7 +212,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         formEstGas,
         formStatus,
         formValues,
-        steps
+        steps,
       )
       setSteps(updatedSteps)
     }

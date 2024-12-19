@@ -1,21 +1,18 @@
-import type { Params } from 'react-router'
 import type { Step } from '@/ui/Stepper/types'
 import type { FormStatus } from '@/components/PageDashboard/types'
-
-import { t, Trans } from '@lingui/macro'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { t, Trans } from '@lingui/macro'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-
 import { ROUTE } from '@/constants'
 import { breakpoints } from '@/ui/utils/responsive'
 import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/components/PageDashboard/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { getStepStatus } from '@/ui/Stepper/helpers'
-import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
+import { formatNumber } from '@/ui/utils'
 import dayjs from '@/lib/dayjs'
-import networks from '@/networks'
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 import useStore from '@/store/useStore'
-
 import { Chip } from '@/ui/Typography'
 import { InternalLink } from '@/ui/Link'
 import { Items } from '@/ui/Items'
@@ -27,17 +24,14 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 
 // TODO uncomment locker link code once it is ready
-const FormVecrv = ({
-  activeKey,
-  curve,
-  walletAddress,
-  params,
-}: {
-  activeKey: string
-  curve: CurveApi | null
-  walletAddress: string
-  params: Readonly<Params<string>>
-}) => {
+const FormVecrv = () => {
+  const {
+    activeKey,
+    curve,
+    formValues: { walletAddress },
+  } = useDashboardContext()
+
+  const params = useParams()
   const isSubscribed = useRef(false)
 
   const activeKeyVecrv = useStore((state) => state.lockedCrv.activeKeyVecrvInfo)
@@ -47,6 +41,7 @@ const FormVecrv = ({
   const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
+  const network = useStore((state) => curve && state.networks.networks[curve.chainId])
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
@@ -68,22 +63,22 @@ const FormVecrv = ({
       const { dismiss } = notifyNotification(notifyMessage, 'pending')
       const resp = await fetchStepWithdraw(activeKey, curve, walletAddress)
 
-      if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress) {
+      if (isSubscribed.current && resp && resp.hash && resp.walletAddress === walletAddress && network) {
         const txDescription = t`Withdraw Complete`
         setTxInfoBar(
           <TxInfoBar
             description={txDescription}
-            txHash={networks[curve.chainId].scanTxPath(resp.hash)}
+            txHash={network.scanTxPath(resp.hash)}
             onClose={() => {
               setTxInfoBar(null)
               setFormStatusVecrv(DEFAULT_FORM_STATUS)
             }}
-          />
+          />,
         )
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [fetchStepWithdraw, notifyNotification, setFormStatusVecrv, walletAddress]
+    [fetchStepWithdraw, notifyNotification, setFormStatusVecrv, walletAddress, network],
   )
 
   const getSteps = useCallback(
@@ -94,7 +89,7 @@ const FormVecrv = ({
           status: getStepStatus(
             formStatus.formTypeCompleted === 'WITHDRAW',
             formStatus.step === 'WITHDRAW',
-            !formStatus.error && +lockedAmount > 0
+            !formStatus.error && +lockedAmount > 0,
           ),
           type: 'action',
           content: !!formStatus.formTypeCompleted ? t`Withdraw CRV Complete` : t`Withdraw CRV`,
@@ -105,7 +100,7 @@ const FormVecrv = ({
       }
       return ['WITHDRAW'].map((key) => stepsObj[key])
     },
-    [handleBtnClickWithdraw]
+    [handleBtnClickWithdraw],
   )
 
   // onMount
@@ -195,10 +190,6 @@ const FormVecrv = ({
       )}
     </>
   )
-}
-
-FormVecrv.defaultProps = {
-  className: '',
 }
 
 const AdjustVecrvLink = styled(InternalLink)`

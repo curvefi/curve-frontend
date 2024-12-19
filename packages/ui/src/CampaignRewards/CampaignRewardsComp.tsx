@@ -21,8 +21,8 @@ const RewardsCompSmall: React.FC<CampaignRewardsCompProps> = ({ rewardsPool, hig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
-        {rewardsPool.lock && <Icon size={16} name="Locked" />}
+        {isPoints && <Multiplier highContrast={highContrast}>{`${multiplier}`}</Multiplier>}
+        {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
       </Container>
     </Tooltip>
   )
@@ -45,8 +45,13 @@ const TokenIcon = styled(Image)`
 const Multiplier = styled.p<{ highContrast?: boolean }>`
   text-transform: uppercase;
   font-size: var(--font-size-3);
-  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : '--page--text-color')};
+  color: ${({ highContrast }) => (highContrast ? 'var(--white)' : 'var(--page--text-color)')};
   white-space: nowrap;
+`
+
+// note: $ prefix so prop is not passed to <Icon>
+const StyledIcon = styled(Icon)<{ $highContrast?: boolean }>`
+  color: ${({ $highContrast }) => ($highContrast ? 'var(--white)' : 'var(--page--text-color)')};
 `
 
 export default RewardsCompSmall

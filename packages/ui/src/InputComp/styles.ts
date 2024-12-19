@@ -2,7 +2,7 @@ import type { InputProps } from './types'
 
 import styled from 'styled-components'
 
-export const StyledInput = styled.input<Pick<InputProps, 'minHeight'>>`
+export const StyledInput = styled.input<Pick<InputProps, 'variant' | 'minHeight'>>`
   width: 100%;
 
   background-color: transparent;
@@ -10,7 +10,9 @@ export const StyledInput = styled.input<Pick<InputProps, 'minHeight'>>`
   :-webkit-autofill,
   :-webkit-autofill:focus {
     -webkit-text-fill-color: var(--input--color) !important;
-    transition: background-color 600000s 0s, color 600000s 0s;
+    transition:
+      background-color 600000s 0s,
+      color 600000s 0s;
   }
 
   input[data-autocompleted] {
@@ -18,6 +20,11 @@ export const StyledInput = styled.input<Pick<InputProps, 'minHeight'>>`
   }
 
   font-size: var(--input--font-size);
+  ${({ variant }) =>
+    variant === 'small' &&
+    `
+    font-size: var(--font-size-2);
+  `}
 
   color: inherit;
 

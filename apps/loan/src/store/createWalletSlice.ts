@@ -124,8 +124,3 @@ export function getWalletChainId(wallet: Wallet | undefined | null) {
   const chainId = (wallet as Wallet).chains[0].id
   return ethers.BigNumber.from(chainId).toNumber()
 }
-
-export function getWalletSignerAddress(wallet: Wallet | undefined | null) {
-  if (!wallet) return ''
-  return wallet.accounts[0]?.address
-}

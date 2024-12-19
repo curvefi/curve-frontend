@@ -8,6 +8,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/components/PageLoanManage/utils'
 import { _parseActiveKey } from '@/utils/helpers'
 import apiLending, { helpers } from '@/lib/apiLending'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -25,13 +26,13 @@ const sliceKey = 'loanCollateralRemove'
 // prettier-ignore
 export type LoanCollateralRemoveSlice = {
   [sliceKey]: SliceState & {
-    fetchMaxRemovable(api: Api, owmData: OWMData): Promise<void>
-    fetchDetailInfo(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    fetchEstGas(activeKey: string, api: Api, owmData: OWMData): Promise<void>
-    setFormValues(api: Api | null, owmData: OWMData | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
+    fetchMaxRemovable(api: Api, market: OneWayMarketTemplate): Promise<void>
+    fetchDetailInfo(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    fetchEstGas(activeKey: string, api: Api, market: OneWayMarketTemplate): Promise<void>
+    setFormValues(api: Api | null, market: OneWayMarketTemplate | undefined, partialFormValues: Partial<FormValues>, shouldRefetch?: boolean): Promise<void>
 
     // step
-    fetchStepDecrease(activeKey: string, api: Api, owmData: OWMData, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    fetchStepDecrease(activeKey: string, api: Api, market: OneWayMarketTemplate, formValues: FormValues): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -67,13 +68,13 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxRemovable: async (api, owmData) => {
+    fetchMaxRemovable: async (api, market) => {
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
 
       if (!signerAddress) return
 
-      const resp = await loanCollateralRemove.maxRemovable(owmData)
+      const resp = await loanCollateralRemove.maxRemovable(market)
       if (resp.error) sliceState.setStateByKey('formStatus', { ...formStatus, error: resp.error })
       sliceState.setStateByKey('maxRemovable', resp.maxRemovable)
 
@@ -81,17 +82,17 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       const collateralError = isTooMuch(formValues.collateral, resp.maxRemovable) ? 'too-much-max' : ''
       sliceState.setStateByKey('formValues', { ...formValues, collateralError })
     },
-    fetchDetailInfo: async (activeKey, api, owmData) => {
+    fetchDetailInfo: async (activeKey, api, market) => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
 
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
-      const resp = await loanCollateralRemove.detailInfo(activeKey, api, owmData, collateral)
+      const resp = await loanCollateralRemove.detailInfo(activeKey, api, market, collateral)
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
-    fetchEstGas: async (activeKey, api, owmData) => {
+    fetchEstGas: async (activeKey, api, market) => {
       const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
@@ -101,41 +102,41 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
       await gas.fetchGasInfo(api)
-      const resp = await loanCollateralRemove.estGas(activeKey, owmData, collateral)
+      const resp = await loanCollateralRemove.estGas(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...formStatus, error: formStatus.error || resp.error })
     },
-    setFormValues: async (api, owmData, partialFormValues, shouldRefetch) => {
+    setFormValues: async (api, market, partialFormValues, shouldRefetch) => {
       const { user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
 
       // update activeKey, formValues
       const cFormValues: FormValues = { ...formValues, ...partialFormValues, collateralError: '' }
       const cFormStatus: FormStatus = { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved }
-      const activeKey = _getActiveKey(api, owmData, cFormValues.collateral)
+      const activeKey = _getActiveKey(api, market, cFormValues.collateral)
       sliceState.setStateByKeys({ activeKey, formValues: cFormValues, formStatus: cFormStatus })
 
-      if (!api || !owmData) return
+      if (!api || !market) return
 
       const { signerAddress } = api
 
       // validation
       if (signerAddress) {
-        const userBalances = await user.fetchUserMarketBalances(api, owmData, shouldRefetch)
+        const userBalances = await user.fetchUserMarketBalances(api, market, shouldRefetch)
         const collateralError = isTooMuch(cFormValues.collateral, userBalances?.collateral) ? 'too-much' : ''
         sliceState.setStateByKey('formValues', { ...cFormValues, collateralError })
       }
 
       // api calls
-      await sliceState.fetchMaxRemovable(api, owmData)
-      sliceState.fetchDetailInfo(activeKey, api, owmData)
-      sliceState.fetchEstGas(activeKey, api, owmData)
+      await sliceState.fetchMaxRemovable(api, market)
+      sliceState.fetchDetailInfo(activeKey, api, market)
+      sliceState.fetchEstGas(activeKey, api, market)
     },
 
     // steps
-    fetchStepDecrease: async (activeKey, api, owmData) => {
+    fetchStepDecrease: async (activeKey, api, market) => {
       const { gas, markets, wallet, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const provider = wallet.getProvider(sliceKey)
@@ -154,8 +155,8 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       const { error, ...resp } = await loanCollateralRemove.removeCollateral(
         activeKey,
         provider,
-        owmData,
-        formValues.collateral
+        market,
+        formValues.collateral,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -164,16 +165,16 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
           return { ...resp, error }
         } else {
           // api calls
-          const loanExists = (await user.fetchUserLoanExists(api, owmData, true))?.loanExists
-          if (loanExists) user.fetchAll(api, owmData, true)
-          markets.fetchAll(api, owmData, true)
+          const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
+          if (loanExists) user.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isComplete: true },
           })
-          sliceState.setFormValues(api, owmData, DEFAULT_FORM_VALUES)
+          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES)
           return { ...resp, error }
         }
       }
@@ -197,6 +198,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
 export default createLoanCollateralRemove
 
-export function _getActiveKey(api: Api | null, owmData: OWMData | undefined, collateral: string) {
-  return `${_parseActiveKey(api, owmData)}-${collateral}`
+export function _getActiveKey(api: Api | null, market: OneWayMarketTemplate | undefined, collateral: string) {
+  return `${_parseActiveKey(api, market)}-${collateral}`
 }

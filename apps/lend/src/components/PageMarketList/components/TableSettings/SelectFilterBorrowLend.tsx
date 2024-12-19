@@ -42,7 +42,7 @@ const SelectFilterBorrowLend = ({
 
       updatePath(updatedSearchParams)
     },
-    [searchParams, tableLabelsSelector, updatePath]
+    [searchParams, tableLabelsSelector, updatePath],
   )
 
   return (
@@ -61,8 +61,7 @@ const StyledTableButtonFilters = styled(TableButtonFilters)`
 
   button {
     margin-right: 0;
-    margin-bottom: 0;
-    min-height: var(--height-medium);
+    min-height: 35px;
   }
 `
 

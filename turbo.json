@@ -1,16 +1,5 @@
 {
   "$schema": "https://turborepo.org/schema.json",
-  "pipeline": {
-    "build": {
-      "dependsOn": ["^build"],
-      "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**"]
-    },
-    "lint": {},
-    "dev": {
-      "cache": false,
-      "persistent": true
-    }
-  },
   "globalDependencies": ["**/.env.*local"],
   "globalEnv": [
     "NEXT_PUBLIC_MAINTENANCE_MESSAGE",
@@ -40,6 +29,21 @@
     "ARBITRUM_ALCHEMY_API_KEY",
     "HARDHAT_CHAIN_ID",
     "HARDHAT_MNEMONIC",
-    "CYPRESS_DAPP"
-  ]
+    "CYPRESS_DAPP",
+    "STORYBOOK"
+  ],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "!**/*.stories.{tsx,jsx,mdx}"],
+      "outputs": ["dist/**", "out/**", ".next/**", "!.next/cache/**", "storybook-static/**"]
+    },
+    "lint": {},
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "build:storybook": {},
+    "storybook": { "cache": false, "persistent": true }
+  }
 }

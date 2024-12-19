@@ -15,7 +15,7 @@ function Popover({ children, state, ...props }: PopoverProps) {
       ...props,
       popoverRef,
     },
-    state
+    state,
   )
 
   return (

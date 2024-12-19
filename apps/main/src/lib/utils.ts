@@ -1,5 +1,4 @@
 import fetch from 'cross-fetch'
-import networks from '@/networks'
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
@@ -24,11 +23,7 @@ export function copyToClipboard(text: string) {
   }
 }
 
-export function haveWalletLpToken(balances: Balances) {
-  return Number(balances?.lpToken || '0') > 0 || Number(balances?.gauge || '0') > 0
-}
-
-export function curveProps(curve: CurveApi | null) {
+export function curveProps(curve: CurveApi | null, networks: Record<number, NetworkConfig>) {
   if (curve) {
     const { chainId, signerAddress } = curve
     return {
@@ -37,12 +32,11 @@ export function curveProps(curve: CurveApi | null) {
       signerAddress: signerAddress,
       network: networks[chainId],
     }
-  } else {
-    return {
-      chainId: null,
-      haveSigner: false,
-      signerAddress: '',
-      network: null,
-    }
+  }
+  return {
+    chainId: null,
+    haveSigner: false,
+    signerAddress: '',
+    network: null,
   }
 }

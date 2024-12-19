@@ -1,9 +1,8 @@
 import type { Params } from 'react-router'
-import type { Locale } from '@/lib/i18n'
-
-import { DEFAULT_LOCALES, parseLocale } from '@/lib/i18n'
-import { MAIN_ROUTE, ROUTE } from '@/constants'
+import { DEFAULT_LOCALES, LocaleOption, parseLocale } from '@/lib/i18n'
+import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
+import { LEND_ROUTES } from '@ui-kit/shared/routes'
 
 export function getPath({ locale = 'en', network = 'ethereum', ...rest }: Params<string>, rerouteRoute: string) {
   const { parsedLocale } = parseLocale(locale)
@@ -45,8 +44,8 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
-    const foundSubdirectory = Object.keys(MAIN_ROUTE).find((k) => {
-      return MAIN_ROUTE[k as keyof typeof MAIN_ROUTE].substring(1).toLowerCase() === subdirectory.toLowerCase()
+    const foundSubdirectory = Object.keys(LEND_ROUTES).find((k) => {
+      return LEND_ROUTES[k as keyof typeof LEND_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase()
     })
     if (foundSubdirectory) {
       rSubdirectory = subdirectory
@@ -90,7 +89,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
 export function getLocaleFromUrl() {
   const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
-  let resp: { rLocale: Locale | null; rLocalePathname: string } = {
+  let resp: { rLocale: LocaleOption | null; rLocalePathname: string } = {
     rLocale: null,
     rLocalePathname: '',
   }

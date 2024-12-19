@@ -1,7 +1,6 @@
-import { gaugeAddRewardTokenValidationGroup } from '@/entities/gauge'
-import type { AddRewardFormValues } from '@/features/add-gauge-reward-token/types'
-import { createValidationSuite } from '@/shared/validation'
+import { AddRewardParams, gaugeAddRewardValidationGroup } from '@/entities/gauge'
+import { createValidationSuite } from '@/shared/lib/validation'
 
-export const addGaugeRewardTokenValidationSuite = createValidationSuite<AddRewardFormValues>(
-  gaugeAddRewardTokenValidationGroup
+export const addGaugeRewardTokenValidationSuite = createValidationSuite((data: AddRewardParams) =>
+  gaugeAddRewardValidationGroup(data),
 )

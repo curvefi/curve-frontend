@@ -1,24 +1,21 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import useStore from '@/store/useStore'
 import { STABLESWAP } from '@/components/PageCreatePool/constants'
-
 import Box from '@/ui/Box'
 import Button from '@/ui/Button'
 import TextInput from '@/components/PageCreatePool/components/TextInput'
-import networks from '@/networks'
 
 type Props = {
   chainId: ChainId
 }
 
 const PoolInfo = ({ chainId }: Props) => {
+  const networks = useStore((state) => state.networks.networks)
   const swapType = useStore((state) => state.createPool.swapType)
   const poolName = useStore((state) => state.createPool.poolName)
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
   const assetType = useStore((state) => state.createPool.assetType)
-
   const updatePoolName = useStore((state) => state.createPool.updatePoolName)
   const updatePoolSymbol = useStore((state) => state.createPool.updatePoolSymbol)
   const updateAssetType = useStore((state) => state.createPool.updateAssetType)
@@ -116,7 +113,7 @@ const TagButton = styled(Button)`
   &:hover:not(:disabled) {
     background: var(--dropdown--active--background-color);
     color: var(--button-text-contrast--color);
-    border-color: var(--button--border-color);
+    border-color: var(--nav_button--border-color);
     box-shadow: 3px 3px 0 var(--button--shadow-color);
   }
   &.active:not(:disabled) {
@@ -125,7 +122,7 @@ const TagButton = styled(Button)`
     &:hover {
       background-color: var(--button_filled-hover-contrast--background-color);
       color: var(--button-text-contrast--color);
-      border-color: var(--button--border-color);
+      border-color: var(--nav_button--border-color);
     }
   }
 `

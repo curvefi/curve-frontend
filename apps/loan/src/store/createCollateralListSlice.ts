@@ -1,25 +1,18 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { FormStatus, FormValues, Order, SortKey } from '@/components/PageMarketList/types'
+import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/components/PageMarketList/types'
 
-import Fuse from 'fuse.js'
 import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
-import differenceWith from 'lodash/differenceWith'
-import endsWith from 'lodash/endsWith'
 import orderBy from 'lodash/orderBy'
+import uniqBy from 'lodash/uniqBy'
 
-import { isStartPartOrEnd, parsedSearchTextToList } from '@/components/PageMarketList/utils'
+import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/components/PageMarketList/utils'
+import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
+import { TITLE } from '@/constants'
+import { searchByText } from '@/shared/curve-lib'
 import { sleep } from '@/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE
-
-export const DEFAULT_FORM_VALUES: FormValues = {
-  filterKey: 'all',
-  searchText: '',
-  sortBy: 'totalBorrowed',
-  sortByOrder: 'desc',
-}
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',
@@ -29,8 +22,11 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 
 type SliceState = {
   activeKey: string
-  formValues: FormValues
+  initialLoaded: false
   formStatus: FormStatus
+  searchParams: SearchParams
+  searchedByTokens: SearchTermsResult
+  searchedByAddresses: SearchTermsResult
   result: { [activeKey: string]: string[] }
   showHideSmallPools: boolean
 }
@@ -40,9 +36,9 @@ const sliceKey = 'collateralList'
 // prettier-ignore
 export type CollateralListSlice = {
   [sliceKey]: SliceState & {
-    filterBySearchText(searchText: string, poolDatas: CollateralDataCacheOrApi[]): CollateralDataCacheOrApi[]
-    sortFn(sortKey: SortKey, order: Order, collateralDataCacheOrApi: CollateralDataCacheOrApi[], loanDetailsMapper: LoanDetailsMapper): CollateralDataCacheOrApi[]
-    setFormValues(pageLoaded: boolean, rChainId: ChainId, formValues: Partial<FormValues>, collateralDataCacheOrApi: CollateralDataCacheOrApi[], loansDetailsMapper: LoanDetailsMapper): Promise<void>
+    filterBySearchText(searchText: string, collateralData: CollateralData[]): CollateralData[]
+    sortFn(rChainId: ChainId, sortKey: TitleKey, order: Order, collateralData: CollateralData[]): CollateralData[]
+    setFormValues(rChainId: ChainId, curve: Curve | null, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -53,8 +49,11 @@ export type CollateralListSlice = {
 
 const DEFAULT_STATE: SliceState = {
   activeKey: '',
-  formValues: DEFAULT_FORM_VALUES,
+  initialLoaded: false,
   formStatus: DEFAULT_FORM_STATUS,
+  searchParams: DEFAULT_SEARCH_PARAMS,
+  searchedByTokens: {},
+  searchedByAddresses: {},
   result: {},
   showHideSmallPools: false,
 }
@@ -63,202 +62,110 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    filterBySearchText: (searchText: string, collateralDatas: CollateralDataCacheOrApi[]) => {
-      let parsedSearchText = searchText.toLowerCase().trim()
+    filterBySearchText: (searchTerm, collateralDatas) => {
+      const { ...sliceState } = get()[sliceKey]
 
-      let results: { searchTerm: string; results: CollateralDataCacheOrApi[] } = {
-        searchTerm: '',
-        results: [],
-      }
+      const { addressesResult, tokensResult } = searchByText(
+        searchTerm,
+        collateralDatas,
+        [SEARCH_TERM['llamma.coins']],
+        {
+          tokens: [SEARCH_TERM['llamma.coinAddresses']],
+          other: [SEARCH_TERM['llamma.address'], SEARCH_TERM['llamma.controller']],
+        },
+      )
 
-      // search by tokens or token addresses
-      const searchTextByList = parsedSearchTextToList(parsedSearchText)
-
-      const filteredByTokensAndTokenAddresses = collateralDatas.filter(({ llamma }) => {
-        return (
-          differenceWith(searchTextByList, llamma.collateralSymbol.toLowerCase(), (parsedSearchText, token) =>
-            isStartPartOrEnd(parsedSearchText, token)
-          ).length === 0 ||
-          differenceWith(searchTextByList, llamma.collateral, (parsedSearchText, tokenAddress) =>
-            isStartPartOrEnd(parsedSearchText, tokenAddress)
-          ).length === 0
-        )
+      sliceState.setStateByKeys({
+        searchedByTokens: parseSearchTermResults(tokensResult),
+        searchedByAddresses: parseSearchTermResults(addressesResult),
       })
 
-      if (filteredByTokensAndTokenAddresses.length > 0) {
-        results.searchTerm = parsedSearchText
-        results.results = filteredByTokensAndTokenAddresses
-
-        get()[sliceKey].setStateByKey('formValues', {
-          ...get()[sliceKey].formValues,
-          searchTextBy: 'tokens',
-        })
-      } else {
-        // search by pool name, address, lpToken and gauge
-        const fuse = new Fuse<CollateralDataCacheOrApi>(collateralDatas, {
-          ignoreLocation: true,
-          threshold: 0.01,
-          keys: ['pool.address', 'pool.name', 'pool.gauge', 'pool.lpToken'],
-        })
-        const result = fuse.search(parsedSearchText)
-        let filteredByOther = result.map((r) => r.item)
-
-        if (result.length === 0) {
-          filteredByOther = collateralDatas.filter((item) => {
-            return endsWith(item.llamma.collateral, parsedSearchText)
-          })
-
-          if (filteredByOther.length === 0) {
-            // increase threshold to allow more results
-            const fuse = new Fuse<CollateralDataCacheOrApi>(collateralDatas, {
-              ignoreLocation: true,
-              threshold: 0.08,
-              findAllMatches: true,
-              useExtendedSearch: true,
-              keys: ['pool.name', 'tokensAll'],
-            })
-
-            let extendedSearchText = ''
-            const parsedSearchTextSplit = parsedSearchText.split(' ')
-            for (const idx in parsedSearchTextSplit) {
-              const word = parsedSearchTextSplit[idx]
-              extendedSearchText = `${extendedSearchText} '${word}`
-            }
-            const result = fuse.search(extendedSearchText)
-            if (result.length > 0) {
-              filteredByOther = result.map((r) => r.item)
-            }
-          }
-        }
-        results.searchTerm = parsedSearchText
-        results.results = filteredByOther
-        get()[sliceKey].setStateByKey('formValues', {
-          ...get()[sliceKey].formValues,
-          searchTextBy: 'other',
-        })
-      }
-
-      if (results.searchTerm === parsedSearchText) {
-        return results.results
-      } else {
-        return [] as CollateralDataCacheOrApi[]
-      }
+      return uniqBy([...tokensResult, ...addressesResult], (o) => o.item.llamma.id).map((r) => r.item)
     },
-    sortFn: (
-      sortKey: SortKey,
-      order: Order,
-      collateralDatas: CollateralDataCacheOrApi[],
-      loanDetailsMapper: LoanDetailsMapper
-    ) => {
-      const userLoanDetailsMapper = get().loans.userDetailsMapper
+    sortFn: (rChainId, sortKey, order, collateralDatas) => {
+      const { loans } = get()
+      const loanMapper = loans.detailsMapper
+      const userMapper = loans.userDetailsMapper
+
       if (sortKey === 'name') {
         return orderBy(collateralDatas, ({ llamma }) => llamma.collateralSymbol.toLowerCase(), [order])
       } else if (sortKey === 'myHealth') {
-        return orderBy(collateralDatas, ({ llamma }) => +(userLoanDetailsMapper[llamma.id]?.healthNotFull ?? '0'), [
-          order,
-        ])
+        return orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.healthNotFull ?? '0'), [order])
       } else if (sortKey === 'myDebt') {
-        return orderBy(collateralDatas, ({ llamma }) => +(userLoanDetailsMapper[llamma.id]?.userState?.debt ?? '0'), [
-          order,
-        ])
+        return orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.userState?.debt ?? '0'), [order])
       } else if (sortKey === 'rate') {
-        return orderBy(collateralDatas, ({ llamma }) => +(loanDetailsMapper[llamma.id]?.parameters?.rate ?? '0'), [
-          order,
-        ])
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.parameters?.rate ?? '0'), [order])
       } else if (sortKey === 'totalBorrowed') {
-        return orderBy(collateralDatas, ({ llamma }) => +(loanDetailsMapper[llamma.id]?.totalDebt ?? '0'), [order])
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.totalDebt ?? '0'), [order])
       } else if (sortKey === 'cap') {
-        return orderBy(collateralDatas, ({ llamma }) => +(loanDetailsMapper[llamma.id]?.capAndAvailable?.cap ?? '0'), [
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.cap ?? '0'), [order])
+      } else if (sortKey === 'available') {
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.available ?? '0'), [
           order,
         ])
-      } else if (sortKey === 'available') {
-        return orderBy(
-          collateralDatas,
-          ({ llamma }) => +(loanDetailsMapper[llamma.id]?.capAndAvailable?.available ?? '0'),
-          [order]
-        )
       } else if (sortKey === 'totalCollateral') {
         return orderBy(
           collateralDatas,
           ({ llamma }) => {
-            const { totalCollateral, totalStablecoin } = loanDetailsMapper[llamma.id]
+            const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
             const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
-            return totalCollateralUsd + Number(totalStablecoin) ?? 0
+            return totalCollateralUsd + Number(totalStablecoin ?? 0)
           },
-          [order]
+          [order],
         )
       }
 
       return collateralDatas
     },
-    setFormValues: async (pageLoaded, rChainId, formValues, collateralDataCacheOrApi, loansDetailsMapper) => {
-      const storedActiveKey = get()[sliceKey].activeKey
-      const storedFormValues = get()[sliceKey].formValues
+    setFormValues: async (rChainId, curve) => {
+      const { collaterals, storeCache } = get()
+      let { formStatus, initialLoaded, result, searchParams, ...sliceState } = get()[sliceKey]
 
-      // update form values
-      let clonedFormValues = { ...cloneDeep(storedFormValues), ...formValues }
-
-      const activeKey = getActiveKey(rChainId, clonedFormValues)
-      const storedActiveKeyChainId = storedActiveKey ? storedActiveKey.split('-')[0] : ''
-      const chainIdSwitched = storedActiveKeyChainId !== rChainId.toString()
-
-      if (chainIdSwitched) {
-        clonedFormValues = cloneDeep(DEFAULT_FORM_VALUES)
-      }
-
-      get()[sliceKey].setStateByKeys({
+      let activeKey = getActiveKey(rChainId, searchParams)
+      sliceState.setStateByKeys({
         activeKey,
-        formValues: clonedFormValues,
-        formStatus: {
-          ...get()[sliceKey].formStatus,
-          noResult: false,
-          isLoading: true,
-        },
+        formStatus: { ...formStatus, noResult: false, isLoading: true },
+        searchedByTokens: {},
+        searchedByAddresses: {},
       })
 
-      // set result value while getting new filter list
-      let loadingResult: string[] = []
-      if (get()[sliceKey].result[activeKey]) {
-        loadingResult = get()[sliceKey].result[activeKey]
-      }
-      get()[sliceKey].setStateByActiveKey('result', activeKey, loadingResult.length ? loadingResult : undefined)
+      const collateralDatas = collaterals.collateralDatas[rChainId]
+
+      if (!curve || !collateralDatas || (collateralDatas && collateralDatas?.length === 0)) return
 
       // allow UI to update paint
       await sleep(100)
 
-      const { searchText, sortBy } = clonedFormValues
-      let tableCollateralDatas = cloneDeep(collateralDataCacheOrApi)
+      const { searchText, sortBy, sortByOrder } = searchParams
+      let cCollateralDatas = [...collateralDatas]
 
       // searchText
       if (searchText) {
-        tableCollateralDatas = get()[sliceKey].filterBySearchText(searchText, tableCollateralDatas)
+        cCollateralDatas = sliceState.filterBySearchText(searchText, cCollateralDatas)
       }
 
       // sort by table labels 'markets, borrow rate, total borrowed, cap...'
       if (sortBy) {
-        tableCollateralDatas = get()[sliceKey].sortFn(
-          sortBy,
-          clonedFormValues.sortByOrder,
-          tableCollateralDatas,
-          loansDetailsMapper
-        )
+        cCollateralDatas = sliceState.sortFn(rChainId, sortBy, sortByOrder, cCollateralDatas)
       }
 
       // get collateral ids
-      const result: string[] = []
-      for (const idx in tableCollateralDatas) {
-        const collateralData = tableCollateralDatas[idx]
-        result.push(collateralData.llamma.id)
-      }
+      const newResult = cCollateralDatas.map((d) => d.llamma.id)
 
       // set result
-      get()[sliceKey].setStateByActiveKey('result', activeKey, result)
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
-        noResult: chainIdSwitched || !pageLoaded ? false : result.length === 0,
-        isLoading: chainIdSwitched || !pageLoaded,
+      sliceState.setStateByActiveKey('result', activeKey, newResult)
+      sliceState.setStateByKey('formStatus', {
+        ...formStatus,
+        noResult: newResult.length === 0,
+        isLoading: false,
       })
+
+      if (activeKey === `${rChainId}-${TITLE.totalBorrowed}-desc`) {
+        storeCache.setStateByActiveKey('collateralList', activeKey, newResult)
+      }
+
+      if (!initialLoaded) sliceState.setStateByKey('initialLoaded', true)
     },
 
     // slice helpers
@@ -271,43 +178,21 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
     setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
-    resetState: (chainId: ChainId) => {
-      const storedResult = get()[sliceKey].result
-      const formValues = cloneDeep(DEFAULT_FORM_VALUES)
-      const activeKey = getActiveKey(chainId, formValues)
-      get().resetAppState(sliceKey, {
-        ...get()[sliceKey],
-        formValues,
-        activeKey,
-        result: {
-          [activeKey]: storedResult[activeKey],
-        },
-      })
+    resetState: () => {
+      get().resetAppState(sliceKey, { ...DEFAULT_STATE })
     },
   },
 })
 
-export function getCollateralDatasCached(collateralDatasMapperCached: CollateralDataCacheMapper | undefined) {
-  const collateralDatasCached: CollateralDataCache[] = []
-
-  if (collateralDatasMapperCached) {
-    for (const key in collateralDatasMapperCached) {
-      collateralDatasCached.push(collateralDatasMapperCached[key])
-    }
-  }
-
-  return collateralDatasCached
-}
-
-function getActiveKey(chainId: ChainId, formValues: FormValues) {
-  const { filterKey, searchText, sortBy, sortByOrder } = formValues
+export function getActiveKey(chainId: ChainId, searchParams: SearchParams) {
+  const { searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
     parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }
-  return `${chainId}-${filterKey}-${parsedSearchText}-${sortBy}-${sortByOrder}`
+  return `${chainId}-${sortBy}-${sortByOrder}-${parsedSearchText}`
 }
 
 export default createCollateralListSlice

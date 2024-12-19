@@ -6,14 +6,15 @@ import { t } from '@lingui/macro'
 import React, { FunctionComponent, useMemo } from 'react'
 import styled from 'styled-components'
 
+import { COLUMN_KEYS } from '@/components/PagePoolList/utils'
 import { formatNumber } from '@/ui/utils'
 
-import { LazyItem, TableRowProps, TCellInPool } from '@/components/PagePoolList/components/TableRow'
+import { CellInPool } from '@/ui/Table'
+import { LazyItem, type TableRowProps } from '@/components/PagePoolList/components/TableRow'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
 import PoolLabel from '@/components/PoolLabel'
 import TCellRewards from '@/components/PagePoolList/components/TableCellRewards'
-import TableCellInPool from '@/components/PagePoolList/components/TableCellInPool'
 import Box from '@/ui/Box'
 import IconButton from '@/ui/IconButton'
 import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
@@ -34,6 +35,8 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
 
 const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
   index,
+  isLite,
+  columnKeys,
   formValues,
   isInPool,
   imageBaseUrl,
@@ -78,11 +81,15 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
 
   return (
     <LazyItem id={`${index}`} className="row--info">
-      <TCell>
-        <MobileLabelWrapper flex>
-          <TCellInPool as="div" className={`row-in-pool ${isInPool ? 'active' : ''} `}>
-            {isInPool ? <TableCellInPool /> : null}
-          </TCellInPool>
+      <td>
+        <Box grid gridTemplateColumns={isInPool ? 'auto 1fr' : '1fr'}>
+          <CellInPool
+            as="div"
+            isMobile
+            isIn={isInPool}
+            type="pool"
+            tooltip={isInPool ? t`You have a balance in this pool` : ''}
+          />
           <MobileLabelContent>
             <PoolLabel
               isVisible
@@ -106,16 +113,18 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
           </MobileLabelContent>
-        </MobileLabelWrapper>
+        </Box>
 
         <MobileTableContentWrapper className={isShowDetail ? 'show' : ''}>
           <MobileTableContent themeType={themeType}>
             {isShowDetail && (
               <>
                 <ListInfoItems>
-                  <ListInfoItem title={tableLabel.volume.name}>
-                    <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
-                  </ListInfoItem>
+                  {columnKeys.indexOf(COLUMN_KEYS.volume) !== -1 && (
+                    <ListInfoItem title={tableLabel.volume.name}>
+                      <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+                    </ListInfoItem>
+                  )}
                   <ListInfoItem title={tableLabel.tvl.name}>
                     <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
                   </ListInfoItem>
@@ -130,21 +139,30 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
 
                   {!poolData?.gauge.isKilled && (
                     <>
-                      <ListInfoItem
-                        title={t`REWARDS tAPR`}
-                        titleNoCap
-                        titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
-                        tooltip={t`Token APR based on current prices of tokens and reward rates`}
-                      >
-                        <TCellRewards
-                          poolData={poolData}
-                          isHighlightBase={sortBy === 'rewardsBase'}
-                          isHighlightCrv={sortBy === 'rewardsCrv'}
-                          isHighlightOther={sortBy === 'rewardsOther'}
-                          rewardsApy={rewardsApy}
-                          searchText={Object.keys(searchTextByOther).length > 0 ? searchText : ''}
-                        />
-                      </ListInfoItem>
+                      {columnKeys.indexOf(COLUMN_KEYS.rewardsLite) !== -1 ? (
+                        <ListInfoItem
+                          title={t`REWARDS tAPR`}
+                          titleNoCap
+                          tooltip={t`Token APR based on current prices of tokens and reward rates`}
+                        >
+                          <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
+                        </ListInfoItem>
+                      ) : (
+                        <ListInfoItem
+                          title={t`REWARDS tAPR`}
+                          titleNoCap
+                          titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
+                          tooltip={t`Token APR based on current prices of tokens and reward rates`}
+                        >
+                          <TCellRewards
+                            poolData={poolData}
+                            isHighlightBase={sortBy === 'rewardsBase'}
+                            isHighlightCrv={sortBy === 'rewardsCrv'}
+                            isHighlightOther={sortBy === 'rewardsOther'}
+                            rewardsApy={rewardsApy}
+                          />
+                        </ListInfoItem>
+                      )}
                       {poolData && campaignRewardsMapper[poolData.pool.address] && (
                         <ListInfoItem title={t`Additional external rewards`}>
                           <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
@@ -169,23 +187,16 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
             )}
           </MobileTableContent>
         </MobileTableContentWrapper>
-      </TCell>
+      </td>
     </LazyItem>
   )
 }
-
-const MobileLabelWrapper = styled(Box)`
-  .row-in-pool {
-    align-items: center;
-    display: inline-flex;
-    min-width: 1rem;
-  }
-`
 
 const MobileLabelContent = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 4px;
+  padding-left: var(--spacing-narrow);
   width: 100%;
 `
 
@@ -211,10 +222,6 @@ const MobileTableContentWrapper = styled.div`
     max-height: 100rem;
     transition: max-height 1s ease-in-out;
   }
-`
-
-const TCell = styled.td`
-  border-bottom: 1px solid var(--border-400);
 `
 
 export default TableRowMobile

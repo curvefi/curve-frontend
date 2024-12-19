@@ -9,7 +9,6 @@ export type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   height: LayoutHeight
-  navHeight: number
   isXLgUp: boolean
   isLgUp: boolean
   isMdUp: boolean
@@ -38,15 +37,12 @@ export type AppLayoutSlice = {
 
 const DEFAULT_LAYOUT_HEIGHT: LayoutHeight = {
   globalAlert: 0,
-  mainNav: 0,
-  secondaryNav: 0,
-  footer: 0,
+  footer: 170,
 }
-export const layoutHeightKeys = ['globalAlert', 'mainNav', 'secondaryNav', 'footer'] as const
+export const layoutHeightKeys = Object.keys(DEFAULT_LAYOUT_HEIGHT) as (keyof LayoutHeight)[]
 
 const DEFAULT_STATE: SliceState = {
   height: DEFAULT_LAYOUT_HEIGHT,
-  navHeight: 0,
   isXLgUp: false,
   isLgUp: false,
   isMdUp: false,
@@ -78,24 +74,12 @@ const createLayoutSlice = (set: SetState<State>, get: GetState<State>): AppLayou
           state.layout.isLgUp = isLgUp
           state.layout.isXLgUp = isXLgUp
           state.layout.isXXSm = isXXSm
-        })
+        }),
       )
     },
     setLayoutHeight: (key, value) => {
       if (value === null) return
-
       get()[sliceKey].setStateByActiveKey('height', key, value)
-
-      const storedMainNavHeight = get()[sliceKey].height.mainNav
-      const storedSecondaryNavHeight = get()[sliceKey].height.secondaryNav
-
-      let navHeight = storedMainNavHeight + storedSecondaryNavHeight
-      if (key === 'mainNav') {
-        navHeight = value + storedSecondaryNavHeight
-      } else if (key === 'secondaryNav') {
-        navHeight = value + storedMainNavHeight
-      }
-      get()[sliceKey].setStateByKey('navHeight', navHeight)
     },
 
     // helpers

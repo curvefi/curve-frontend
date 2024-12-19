@@ -1,4 +1,4 @@
-import { createGlobalStyle, css } from 'styled-components'
+import { createGlobalStyle } from 'styled-components'
 import { CURVE_ASSETS_URL } from '@/ui/utils'
 
 const GlobalStyle = createGlobalStyle`
@@ -17,12 +17,6 @@ const GlobalStyle = createGlobalStyle`
 
     color: var(--page--text-color);
     background-color: var(--page--background-color);
-    background-image: url(${CURVE_ASSETS_URL + '/branding/curve-app-header.webp'});
-    background-size: auto 478px;
-    background-repeat: repeat-x;
-    background-attachment: fixed;
-    //background-position-y: var(--header-height);
-
     &.scrollSmooth {
       scroll-behavior: smooth;
     }
@@ -36,8 +30,7 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
     padding: 0;
     border: 0;
-    //font-family: 'DM Sans', sans-serif;
-    font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-family: var(--font);
   }
 
   li {
@@ -52,21 +45,9 @@ const GlobalStyle = createGlobalStyle`
   .height--full {
     height: 100%;
   }
-
-  .nowrap {
-    white-space: nowrap;
-  }
-
+  
   .vertical-align-middle {
     vertical-align: middle;
-  }
-
-  .right {
-    text-align: right;
-  }
-
-  .left {
-    text-align: left;
   }
 `
 

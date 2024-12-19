@@ -45,7 +45,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES
+    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
   const init = useStore((state) => state.loanCollateralDecrease.init)
@@ -81,7 +81,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey]
+    [formStatus, setStateByKey],
   )
 
   const handleInpChangeCollateral = (collateral: string) => {
@@ -106,12 +106,12 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
             description={txMessage}
             txHash={network.scanTxPath(resp.hash)}
             onClose={() => reset(false, true)}
-          />
+          />,
         )
       }
       if (notify && typeof notify.dismiss === 'function') notify.dismiss()
     },
-    [activeKey, fetchStepDecrease, network, notifyNotification, reset]
+    [activeKey, fetchStepDecrease, network, notifyNotification, reset],
   )
 
   const stepsObj = useCallback(
@@ -122,7 +122,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
       confirmedHealthWarning: boolean,
       formEstGas: FormEstGas,
       formStatus: FormStatus,
-      formValues: FormValues
+      formValues: FormValues,
     ) => {
       const { collateral, collateralError } = formValues
       const { error, isComplete, step } = formStatus
@@ -166,7 +166,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [healthMode, handleBtnClickRemove]
+    [healthMode, handleBtnClickRemove],
   )
 
   // onMount
@@ -197,7 +197,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         confirmedHealthWarning,
         formEstGas,
         formStatus,
-        formValues
+        formValues,
       )
       setSteps(updatedSteps)
     }

@@ -41,7 +41,7 @@ type Props = {
 
 const SwitchTokensButton = ({ curve, chainId, from, to, disabled, className }: Props) => {
   const { tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH } = useStore(
-    (state) => state.createPool.tokensInPool
+    (state) => state.createPool.tokensInPool,
   )
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
 

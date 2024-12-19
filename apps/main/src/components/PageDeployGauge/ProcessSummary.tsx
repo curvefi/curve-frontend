@@ -1,11 +1,8 @@
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
-import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { shortenTokenAddress } from '@/utils'
 import { useNavigate } from 'react-router-dom'
-
 import ExternalLink from '@/ui/Link/ExternalLink'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -15,90 +12,94 @@ import Spinner from '@/ui/Spinner'
 
 type Props = {
   chainId: ChainId
+  isLite: boolean
 }
 
-const ProcessSummary = ({ chainId }: Props) => {
+const ProcessSummary = ({ chainId, isLite }: Props) => {
   const { deploymentStatus, linkPoolAddress, currentSidechain } = useStore((state) => state.deployGauge)
+  const networks = useStore((state) => state.networks.networks)
 
   const navigate = useNavigate()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (
     <Box flex flexColumn>
-      <Wrapper variant="secondary">
-        <Content>
-          <Step>
-            <StepTitle>
-              <p>{t`Step 1:`}</p>
-            </StepTitle>
-            {(deploymentStatus.sidechain.status === '' ||
-              deploymentStatus.sidechain.status === 'CONFIRMING' ||
-              deploymentStatus.sidechain.status === 'ERROR') && <StepText>{t`Deploy gauge on sidechain`}</StepText>}
-            {deploymentStatus.sidechain.status === 'LOADING' && (
-              <Box flex flexAlignItems="center">
-                <StyledSpinner size={14} />
-                <StepText>{t`Deploying sidechain gauge...`}</StepText>
-              </Box>
-            )}
-            {deploymentStatus.sidechain.status === 'SUCCESS' && deploymentStatus.sidechain.transaction && (
-              <SuccessfulTransactionInfo>
+      {!isLite && (
+        <Wrapper variant="secondary">
+          <Content>
+            <Step>
+              <StepTitle>
+                <p>{t`Step 1:`}</p>
+              </StepTitle>
+              {(deploymentStatus.sidechain.status === '' ||
+                deploymentStatus.sidechain.status === 'CONFIRMING' ||
+                deploymentStatus.sidechain.status === 'ERROR') && <StepText>{t`Deploy gauge on sidechain`}</StepText>}
+              {deploymentStatus.sidechain.status === 'LOADING' && (
                 <Box flex flexAlignItems="center">
-                  <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
-                  <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
+                  <StyledSpinner size={14} />
+                  <StepText>{t`Deploying sidechain gauge...`}</StepText>
                 </Box>
-                <Transaction
-                  variant={'contained'}
-                  href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
-                >
-                  <p>{t`Transaction:`}</p>
-                  {shortenTokenAddress(deploymentStatus.sidechain.transaction.hash)}
-                  <StyledIcon name={'Launch'} size={16} />
-                </Transaction>
-              </SuccessfulTransactionInfo>
-            )}
-          </Step>
-          <Step>
-            <StepTitle>
-              <p>{t`Step 2:`}</p>
-            </StepTitle>
-            {(deploymentStatus.mirror.status === '' ||
-              deploymentStatus.mirror.status === 'CONFIRMING' ||
-              deploymentStatus.mirror.status === 'ERROR') && (
-              <StepText>{t`Deploy mirror gauge on Ethereum using the same sidechain LP token address`}</StepText>
-            )}
-            {deploymentStatus.mirror.status === 'LOADING' && (
-              <Box flex flexAlignItems="center">
-                <StyledSpinner size={14} />
-                <StepText>{t`Deploying mirror gauge...`}</StepText>
-              </Box>
-            )}
-            {deploymentStatus.mirror.status == 'SUCCESS' && deploymentStatus.mirror.transaction && (
-              <SuccessfulTransactionInfo>
+              )}
+              {deploymentStatus.sidechain.status === 'SUCCESS' && deploymentStatus.sidechain.transaction && (
+                <SuccessfulTransactionInfo>
+                  <Box flex flexAlignItems="center">
+                    <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+                    <SuccessMessage>{t`Sidechain gauge successfully deployed`}</SuccessMessage>
+                  </Box>
+                  <Transaction
+                    variant={'contained'}
+                    href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
+                  >
+                    <p>{t`Transaction:`}</p>
+                    {shortenTokenAddress(deploymentStatus.sidechain.transaction.hash)}
+                    <StyledIcon name={'Launch'} size={16} />
+                  </Transaction>
+                </SuccessfulTransactionInfo>
+              )}
+            </Step>
+            <Step>
+              <StepTitle>
+                <p>{t`Step 2:`}</p>
+              </StepTitle>
+              {(deploymentStatus.mirror.status === '' ||
+                deploymentStatus.mirror.status === 'CONFIRMING' ||
+                deploymentStatus.mirror.status === 'ERROR') && (
+                <StepText>{t`Deploy mirror gauge on Ethereum using the same sidechain LP token address`}</StepText>
+              )}
+              {deploymentStatus.mirror.status === 'LOADING' && (
                 <Box flex flexAlignItems="center">
-                  <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
-                  <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
+                  <StyledSpinner size={14} />
+                  <StepText>{t`Deploying mirror gauge...`}</StepText>
                 </Box>
-                <Transaction
-                  variant={'contained'}
-                  href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
-                >
-                  <p>{t`Transaction:`}</p>
-                  {shortenTokenAddress(deploymentStatus.mirror.transaction.hash)}
-                  <StyledIcon name={'Launch'} size={16} />
-                </Transaction>
-              </SuccessfulTransactionInfo>
+              )}
+              {deploymentStatus.mirror.status == 'SUCCESS' && deploymentStatus.mirror.transaction && (
+                <SuccessfulTransactionInfo>
+                  <Box flex flexAlignItems="center">
+                    <StyledCheckmark name={'CheckmarkFilled'} size={16} aria-label={t`Checkmark filled`} />
+                    <SuccessMessage>{t`Mirror gauge successfully deployed`}</SuccessMessage>
+                  </Box>
+                  <Transaction
+                    variant={'contained'}
+                    href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
+                  >
+                    <p>{t`Transaction:`}</p>
+                    {shortenTokenAddress(deploymentStatus.mirror.transaction.hash)}
+                    <StyledIcon name={'Launch'} size={16} />
+                  </Transaction>
+                </SuccessfulTransactionInfo>
+              )}
+            </Step>
+            <Step>
+              <Disclaimer>{t`Step 1 and Step 2 must be completed using the same wallet`}</Disclaimer>
+            </Step>
+            {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
+              <LinkContainer>
+                <InternalLinkButton onClick={() => navigate(linkPoolAddress)} title={t`Visit the pool`} />
+              </LinkContainer>
             )}
-          </Step>
-          <Step>
-            <Disclaimer>{t`Step 1 and Step 2 must be completed using the same wallet`}</Disclaimer>
-          </Step>
-          {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
-            <LinkContainer>
-              <InternalLinkButton onClick={() => navigate(linkPoolAddress)} title={t`Visit the pool`} />
-            </LinkContainer>
-          )}
-        </Content>
-      </Wrapper>
+          </Content>
+        </Wrapper>
+      )}
       <InfoBox />
     </Box>
   )

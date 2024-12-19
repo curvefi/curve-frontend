@@ -39,10 +39,6 @@ const ChipTokenCopyButton = styled.button`
   }
 `
 
-Button.defaultProps = {
-  className: '',
-}
-
 interface ChipTokenProps extends AriaButtonProps {
   className?: string
   isHighlight?: boolean // highlight name if it is part of pool list search result
@@ -78,7 +74,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
 
   return (
     <ChipTokenWrapper className={className} onMouseEnter={() => handleMouseEnter(parsedUsdRate)}>
-      <span>{isHighlight ? <mark>{parsedTokenName}</mark> : parsedTokenName} </span>
+      <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => handleCopyClick(tokenAddress)}>
           <ChipTokenUsdRate>{typeof usdRate === 'undefined' ? <Spinner size={10} /> : parsedUsdRate}</ChipTokenUsdRate>
@@ -128,9 +124,5 @@ const ChipTokenCopyButtonIcon = styled(Icon)`
   top: 1px;
   margin: 0 2px;
 `
-
-ChipToken.defaultProps = {
-  className: '',
-}
 
 export default ChipToken

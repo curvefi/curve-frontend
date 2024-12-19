@@ -1,14 +1,10 @@
 import type { TransferProps } from '@/components/PagePool/types'
 import type { FormValues, LoadMaxAmount } from '@/components/PagePool/Deposit/types'
-
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import cloneDeep from 'lodash/cloneDeep'
-
 import { formatNumber } from '@/ui/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { FieldsWrapper } from '@/components/PagePool/styles'
 import Checkbox from '@/ui/Checkbox'
 import FieldToken from '@/components/PagePool/components/FieldToken'
@@ -33,13 +29,14 @@ const FieldsDeposit = ({
   updateFormValues: (
     updatedFormValues: Partial<FormValues>,
     loadMaxAmount: LoadMaxAmount | null,
-    updatedMaxSlippage: string | null
+    updatedMaxSlippage: string | null,
   ) => void
 } & Pick<
   TransferProps,
   'imageBaseUrl' | 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'
 >) => {
   const { rChainId } = routerParams
+  const network = useStore((state) => state.networks.networks[rChainId])
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -54,7 +51,7 @@ const FieldsDeposit = ({
         isBalancedAmounts: false,
       },
       null,
-      null
+      null,
     )
   }
 
@@ -119,7 +116,7 @@ const FieldsDeposit = ({
       {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
         <FieldsWrapper>
           <Checkbox
-            isDisabled={!poolData || isDisabled || networks[rChainId].poolIsWrappedOnly?.[poolDataCacheOrApi.pool.id]}
+            isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly?.[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
             onChange={(isWrapped) => {
               if (poolData) {

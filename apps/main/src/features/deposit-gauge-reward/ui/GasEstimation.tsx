@@ -1,9 +1,9 @@
-import DetailInfoEstGas from '@/components/DetailInfoEstGas'
-import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/entities/gauge'
-import { FlexContainer } from '@/shared/ui/styled-containers'
-import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import React from 'react'
 import { useFormContext } from 'react-hook-form'
+import DetailInfoEstGas from '@/components/DetailInfoEstGas'
+import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
+import { useEstimateGasDepositReward, useEstimateGasDepositRewardApprove } from '@/entities/gauge'
+import { FlexContainer } from '@/ui/styled-containers'
 
 export const GasEstimation: React.FC<{
   chainId: ChainId
@@ -24,7 +24,7 @@ export const GasEstimation: React.FC<{
     isFetching: isFetchingGasEstimateDepositRewardApprove,
   } = useEstimateGasDepositRewardApprove(
     { chainId, poolId, rewardTokenId, amount },
-    step === DepositRewardStep.APPROVAL && isValid
+    step === DepositRewardStep.APPROVAL && isValid,
   )
 
   const {
@@ -39,7 +39,7 @@ export const GasEstimation: React.FC<{
       amount,
       epoch,
     },
-    step === DepositRewardStep.DEPOSIT && isValid
+    step === DepositRewardStep.DEPOSIT && isValid,
   )
 
   return (

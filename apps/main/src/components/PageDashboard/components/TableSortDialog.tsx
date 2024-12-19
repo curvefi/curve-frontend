@@ -1,9 +1,10 @@
-import type { FormValues, Order, SortId, TableLabel } from '@/components/PageDashboard/types'
+import type { Order, SortId, TableLabel } from '@/components/PageDashboard/types'
 
+import React from 'react'
 import styled from 'styled-components'
-
 import { useOverlayTriggerState } from '@react-stately/overlays'
-import useStore from '@/store/useStore'
+
+import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 
 import { Chip } from '@/ui/Typography'
 import { Radio, RadioGroup } from '@/ui/Radio'
@@ -16,20 +17,18 @@ const sortOrder = {
   desc: { label: 'Descending', icon: <Icon name="ArrowDown" size={24} /> },
 }
 
-const TableSortDialog = ({
-  className,
-  tableLabel,
-  updateFormValues,
-}: {
+type Props = {
   className?: string
   tableLabel: TableLabel
-  updateFormValues: (updatedFormValues: Partial<FormValues>) => void
-}) => {
-  let overlayTriggerState = useOverlayTriggerState({})
-  const formValues = useStore((state) => state.dashboard.formValues)
-  const setFormValues = useStore((state) => state.dashboard.setFormValues)
+}
 
-  const { sortBy, sortByOrder } = formValues
+const TableSortDialog: React.FC<Props> = ({ className = '', tableLabel }) => {
+  let overlayTriggerState = useOverlayTriggerState({})
+
+  const {
+    formValues: { sortBy, sortByOrder },
+    updateFormValues,
+  } = useDashboardContext()
 
   const handleRadioGroupChange = (val: string) => {
     const [sortBy, sortByOrder] = val.split('-')
@@ -91,10 +90,6 @@ const TableSortDialog = ({
       )}
     </Box>
   )
-}
-
-TableSortDialog.defaultProps = {
-  className: '',
 }
 
 const SortHeader = styled.header`

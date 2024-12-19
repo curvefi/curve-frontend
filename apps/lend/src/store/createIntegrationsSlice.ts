@@ -184,7 +184,7 @@ function parseIntegrationsList(
     networks: string[]
     tags: string[]
     twitterUrl: string | null
-  }[]
+  }[],
 ) {
   const parsedIntegrationsList: IntegrationApp[] = []
 

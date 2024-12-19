@@ -1,18 +1,13 @@
 import type { FormType } from '@/components/PagePool/Deposit/types'
 import type { TransferProps } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 import { isValidAddress } from '@/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import { DEFAULT_FORM_STATUS } from '@/components/PagePool/Deposit/utils'
 import { StyledTabSlide } from '@/components/PagePool/styles'
 import { SlideTab, SlideTabs } from '@/ui/TabSlide'
 import AlertBox from '@/ui/AlertBox'
-import AlertCompensation from '@/components/PagePool/Deposit/components/AlertCompensation'
 import FormDeposit from '@/components/PagePool/Deposit/components/FormDeposit'
 import FormDepositStake from '@/components/PagePool/Deposit/components/FormDepositStake'
 import FormStake from '@/components/PagePool/Deposit/components/FormStake'
@@ -20,7 +15,7 @@ import FormStake from '@/components/PagePool/Deposit/components/FormStake'
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const { params, poolAlert, poolData, poolDataCacheOrApi } = transferProps
+  const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const { rChainId } = transferProps.routerParams
   const formType = useStore((state) => state.poolDeposit.formType)
   const resetState = useStore((state) => state.poolDeposit.resetState)
@@ -36,7 +31,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         { label: t`Stake`, formType: 'STAKE' },
         { label: t`Deposit & Stake`, formType: 'DEPOSIT_STAKE' },
       ] as const,
-    []
+    [],
   )
 
   // tabs positions
@@ -66,7 +61,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
       setSelectedTabIdx(idx)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [setStateByKeys]
+    [setStateByKeys],
   )
 
   // onMount
@@ -84,10 +79,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         <StyledTabSlide activeIdx={selectedTabIdx}>
           <SlideTabs ref={tabsRef}>
             {TABS.map(({ formType, label }, idx) => {
-              if (
-                (formType === 'DEPOSIT_STAKE' && !hasDepositAndStake) ||
-                networks[rChainId].forms.indexOf(formType) === -1
-              ) {
+              if (formType === 'DEPOSIT_STAKE' && !hasDepositAndStake) {
                 return <React.Fragment key={label}></React.Fragment>
               }
 
@@ -108,10 +100,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
       )}
 
       {poolAlert && poolAlert.isDisableDeposit ? (
-        <>
-          <AlertCompensation rChainId={rChainId} params={params} poolId={poolDataCacheOrApi.pool.id} />
-          <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-        </>
+        <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
       ) : (
         <>
           {formType === 'DEPOSIT' && <FormDeposit hasDepositAndStake={hasDepositAndStake} {...transferProps} />}

@@ -11,7 +11,6 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
   const collateralToken = tokens[CHAIN][market.collateral]
 
   const borrowToken = tokens[CHAIN][market.borrow]
-  const borrowTokenAmount = 1
 
   beforeEach(() => {
     // prepare wallet
@@ -30,7 +29,8 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
     cy.get('@wallet').connectMetamask()
   })
 
-  it('Create max amount soft liquidation loan', () => {
+  // todo: set up test nodes and wallet integration in CI
+  it.skip('Create max amount soft liquidation loan', () => {
     cy.dataTestId('btn-approval').as('btnApproval').should('be.disabled')
     cy.dataTestId('btn-create').as('btnCreate').should('be.disabled')
 
@@ -46,7 +46,7 @@ describe(`Lend ${MARKET_ID} ${CHAIN} market`, () => {
       .tokenBalance(borrowToken.address)
       .then(($tokenBalance) => {
         cy.get<string>('@debtAmount').then(($debtAmount) =>
-          expect($tokenBalance).to.be.equal(ethers.parseUnits($debtAmount, borrowToken.decimals))
+          expect($tokenBalance).to.be.equal(ethers.parseUnits($debtAmount, borrowToken.decimals)),
         )
       })
     cy.get<ethers.HDNodeWallet>('@wallet').tokenBalance(collateralToken.address).should('eq', BigInt(0))

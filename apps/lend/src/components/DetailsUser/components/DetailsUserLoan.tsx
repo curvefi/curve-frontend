@@ -24,7 +24,7 @@ import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, api, owmDataCachedOrApi, titleMapper, userActiveKey } = pageProps
+  const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
 
   const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
@@ -43,7 +43,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     rChainId,
     rOwmId,
     isBold: true,
-    owmDataCachedOrApi,
+    market: market!,
     userActiveKey,
     size: 'md' as const,
   }
@@ -83,20 +83,19 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
 
           <ContentWrapper paddingTop isBorderBottom>
             <StatsWrapper>
-              <CellUserMain {...pageProps} type="borrow" />
+              <CellUserMain {...pageProps} market={cellProps.market} type="borrow" />
 
               {/* stats */}
               <ListInfoItemsWrapper>
                 {contents.map((groupedContents, idx) => (
                   <ListInfoItems key={`contents${idx}`}>
-                    {groupedContents.map(({ titleKey, content, show, ...props }, idx) => {
-                      if (!_showContent(show)) return null
-                      return (
+                    {groupedContents
+                      .filter(({ show }) => _showContent(show))
+                      .map(({ titleKey, content }, idx) => (
                         <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
                           {content}
                         </ListInfoItem>
-                      )
-                    })}
+                      ))}
                   </ListInfoItems>
                 ))}
               </ListInfoItemsWrapper>

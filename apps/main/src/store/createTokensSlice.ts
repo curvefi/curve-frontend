@@ -1,11 +1,8 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-
 import countBy from 'lodash/countBy'
-
-import { log } from '@/utils'
+import { log } from '@/shared/lib/logging'
 import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -24,6 +21,7 @@ export type TokensSlice = {
   [sliceKey]: SliceState & {
     setTokenImage: (tokenAddress: string, src: string | null) => void
     setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): Promise<string[]>
+    setEmptyPoolListDefault(chainId: ChainId): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -56,15 +54,15 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       get()[sliceKey].setStateByActiveKey('tokensImage', tokenAddress, src)
     },
     setTokensMapper: async (chainId, poolDatas) => {
-      const { pools } = get()
+      const { pools, networks } = get()
       const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
-      const { hideSmallPoolsTvl: chainTvl, nativeTokens } = networks[chainId]
+      const { hideSmallPoolsTvl: chainTvl } = networks.networks[chainId]
       const tvlMapper = pools.tvlMapper[chainId] ?? {}
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
-      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(chainId)
+      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       let partialTokensMapper: TokensMapper = {}
@@ -124,6 +122,34 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       return Object.keys(parsedPartialTokensMapper)
     },
+    setEmptyPoolListDefault: async (chainId) => {
+      const { networks, [sliceKey]: sliceState } = get()
+      const nativeToken = networks.nativeToken[chainId]
+
+      if (!nativeToken) return
+
+      const strChainId = chainId.toString()
+
+      const tokensNameMapper = {
+        [nativeToken.address]: nativeToken.symbol,
+        [nativeToken.wrappedAddress]: nativeToken.wrappedSymbol,
+      }
+      sliceState.setStateByActiveKey('tokensNameMapper', strChainId, tokensNameMapper)
+
+      const tokensMapper: { [tokenAddress: string]: Token } = {
+        [nativeToken.address]: {
+          ...DEFAULT_TOKEN,
+          address: nativeToken.address,
+          symbol: nativeToken.symbol,
+        },
+        [nativeToken.wrappedAddress]: {
+          ...DEFAULT_TOKEN,
+          address: nativeToken.wrappedAddress,
+          symbol: nativeToken.wrappedSymbol,
+        },
+      }
+      sliceState.setStateByActiveKey('tokensMapper', strChainId, tokensMapper)
+    },
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
@@ -148,8 +174,9 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
   }, '')
 }
 
-export function _getDefaultTokenMapper(chainId: ChainId) {
-  const { address, symbol, wrappedAddress, wrappedSymbol } = networks[chainId].nativeTokens
+export function _getDefaultTokenMapper(nativeToken: NativeToken | undefined) {
+  if (!nativeToken) return {}
+  const { address, symbol, wrappedAddress, wrappedSymbol } = nativeToken
   return {
     [address]: { ...DEFAULT_TOKEN, symbol: symbol, address: address },
     [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },

@@ -32,6 +32,7 @@ import LoanInfoLlamma from '@/components/LoanInfoLlamma'
 import TextEllipsis from '@/ui/TextEllipsis'
 import Button from '@/ui/Button'
 import Icon from '@/ui/Icon'
+import ConnectWallet from '@/components/ConnectWallet'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -56,6 +57,7 @@ const Page: NextPage = () => {
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const provider = useStore((state) => state.wallet.getProvider(''))
 
   const [loaded, setLoaded] = useState(false)
 
@@ -85,7 +87,7 @@ const Page: NextPage = () => {
         fetchUserLoanWalletBalances(curve, llamma)
       }
     },
-    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys]
+    [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
 
   useEffect(() => {
@@ -139,7 +141,7 @@ const Page: NextPage = () => {
       }
     },
     REFRESH_INTERVAL['1m'],
-    isPageVisible
+    isPageVisible,
   )
 
   useEffect(() => {
@@ -163,56 +165,68 @@ const Page: NextPage = () => {
 
   return (
     <>
-      <DocumentHead title={t`${rCollateralId}` ?? t`Create`} />
-      {chartExpanded && (
-        <PriceAndTradesExpandedContainer>
-          <Box flex>
-            {isMdUp && <TitleComp />}
-            <ExpandButton
-              variant={'select'}
-              onClick={() => {
-                setChartExpanded()
-              }}
-            >
-              {chartExpanded ? 'Minimize' : 'Expand'}
-              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
-            </ExpandButton>
-          </Box>
-          <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
-          </PriceAndTradesExpandedWrapper>
-        </PriceAndTradesExpandedContainer>
-      )}
-      <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight}>
-          {!isMdUp && !chartExpanded && <TitleComp />}
-          {rChainId && rCollateralId && (
-            <LoanCreate
-              curve={curve}
-              isReady={isReady}
-              isLeverage={isLeverage}
-              loanExists={loanExists}
-              llamma={llamma}
-              llammaId={llammaId}
-              params={params}
-              rChainId={rChainId}
-              rCollateralId={rCollateralId}
-              rFormType={rFormType}
-              fetchInitial={fetchInitial}
-            />
+      <DocumentHead title={rCollateralId ? t`${rCollateralId}` : t`Create`} />
+      {provider ? (
+        <>
+          {chartExpanded && (
+            <PriceAndTradesExpandedContainer>
+              <Box flex padding="0 0 0 var(--spacing-2)">
+                {isMdUp && <TitleComp />}
+                <ExpandButton
+                  variant={'select'}
+                  onClick={() => {
+                    setChartExpanded()
+                  }}
+                >
+                  {chartExpanded ? 'Minimize' : 'Expand'}
+                  <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+                </ExpandButton>
+              </Box>
+              <PriceAndTradesExpandedWrapper variant="secondary">
+                <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+              </PriceAndTradesExpandedWrapper>
+            </PriceAndTradesExpandedContainer>
           )}
-        </AppPageFormsWrapper>
+          <Wrapper isAdvanceMode={isAdvanceMode} chartExpanded={chartExpanded}>
+            <AppPageFormsWrapper navHeight={navHeight}>
+              {!isMdUp && !chartExpanded && <TitleComp />}
+              {rChainId && rCollateralId && (
+                <LoanCreate
+                  curve={curve}
+                  isReady={isReady}
+                  isLeverage={isLeverage}
+                  loanExists={loanExists}
+                  llamma={llamma}
+                  llammaId={llammaId}
+                  params={params}
+                  rChainId={rChainId}
+                  rCollateralId={rCollateralId}
+                  rFormType={rFormType}
+                  fetchInitial={fetchInitial}
+                />
+              )}
+            </AppPageFormsWrapper>
 
-        <AppPageInfoWrapper>
-          {isMdUp && !chartExpanded && <TitleComp />}
-          <AppPageInfoContentWrapper variant="secondary">
-            <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-            {isValidRouterParams && rChainId && (
-              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </Wrapper>
+            <AppPageInfoWrapper>
+              {isMdUp && !chartExpanded && <TitleComp />}
+              <AppPageInfoContentWrapper variant="secondary">
+                <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+                {isValidRouterParams && rChainId && (
+                  <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+                )}
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          </Wrapper>
+        </>
+      ) : (
+        <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+          <ConnectWallet
+            description={t`Connect your wallet to view market`}
+            connectText={t`Connect`}
+            loadingText={t`Connecting`}
+          />
+        </Box>
+      )}
     </>
   )
 }
@@ -224,8 +238,7 @@ const Wrapper = styled(AppPageFormContainer)<{ isAdvanceMode: boolean; chartExpa
 `
 
 const Title = styled(TextEllipsis)`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
   font-weight: bold;
   line-height: 1;

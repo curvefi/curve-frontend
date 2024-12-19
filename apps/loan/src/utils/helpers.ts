@@ -93,23 +93,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
   }
 }
 
-export function logTxReceipt<T>(title: string, chainId: ChainId, txReceipt: T & { blockHash?: string; id?: string }) {
-  const isMultiple = Array.isArray(txReceipt) && txReceipt.length > 0
-
-  const blockHash = isMultiple
-    ? txReceipt.map((tx) => tx?.blockHash || tx?.id).join(', ')
-    : txReceipt?.blockHash || txReceipt?.id
-
-  console.log(
-    `%ctx receipt${isMultiple ? 's' : ''}: ${title}
-%c${blockHash}`,
-    'color:#0FFF50; font-family:monospace; font-size:22px',
-    'color:#0FFF50; font-family:monospace; font-size:16px',
-    '\n',
-    txReceipt
-  )
-}
-
 export const shortenAccount = (account: string, visibleLength = 4): string =>
   account.slice(0, account.startsWith('0x') ? visibleLength + 2 : visibleLength) +
   '…' +

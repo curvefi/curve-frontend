@@ -1,4 +1,5 @@
-import { useGaugeRewardsDistributors } from '@/entities/gauge'
+import { vestResolver } from '@hookform/resolvers/vest'
+import { FormProvider, useForm } from 'react-hook-form'
 import { DepositRewardDefaultValues, depositRewardValidationSuite } from '@/features/deposit-gauge-reward/model'
 import { DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import {
@@ -8,12 +9,12 @@ import {
   GasEstimation,
   HelperFields,
 } from '@/features/deposit-gauge-reward/ui'
+import { useGaugeRewardsDistributors } from '@/entities/gauge'
 import { formDefaultOptions } from '@/shared/model/form'
-import { FormErrorsDisplay } from 'shared/ui/forms'
-import { BlockSkeleton } from '@/shared/ui/skeleton'
-import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/shared/ui/styled-containers'
-import { vestResolver } from '@hookform/resolvers/vest'
-import { FormProvider, useForm } from 'react-hook-form'
+import { BlockSkeleton } from '../../../../../../packages/ui/src/skeleton'
+import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/ui/styled-containers'
+import AlertFormError from '@/components/AlertFormError'
+import { FormErrorsDisplay } from '@/ui/FormErrorsDisplay'
 
 export const DepositReward: React.FC<{
   chainId: ChainId
@@ -40,16 +41,16 @@ export const DepositReward: React.FC<{
         <FormContainer>
           <FormFieldsContainer>
             <AmountTokenInput chainId={chainId} poolId={poolId} />
-            <FormErrorsDisplay errorKeys={['rewardTokenId', 'amount']} />
+            <FormErrorsDisplay errorKeys={['rewardTokenId', 'amount']} component={AlertFormError} />
             <EpochInput chainId={chainId} poolId={poolId} />
-            <FormErrorsDisplay errorKeys={['epoch']} />
+            <FormErrorsDisplay errorKeys={['epoch']} component={AlertFormError} />
             <GroupedFieldsContainer>
               <HelperFields chainId={chainId} poolId={poolId} />
               <GasEstimation chainId={chainId} poolId={poolId} />
             </GroupedFieldsContainer>
           </FormFieldsContainer>
           <DepositStepper chainId={chainId} poolId={poolId} />
-          <FormErrorsDisplay errorKeys={['root.serverError']} />
+          <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
         </FormContainer>
       </form>
     </FormProvider>

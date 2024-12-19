@@ -1,45 +1,28 @@
 body.theme-chad {
   /* ------ Colors  ------ */
-  --primary-100: hsl(248, 52%, 8%);
+  --primary-100: hsla(247, 42%, 27%, 1);
   --primary-100a90: hsl(248, 52%, 8%, 90%);
-  --primary-200: hsl(248, 51%, 13%);
-  --primary-300: hsl(248, 51%, 27%);
-  --primary-400: hsl(248, 51%, 44%);
-  --primary-400a10: hsl(248, 51%, 44%, 10%);
-  --primary-400a20: hsl(248, 51%, 44%, 20%);
-  --primary-400a50: hsl(248, 51%, 44%, 50%);
-  --primary-400l10: hsl(248, 51%, 34%);
-  --primary-500: hsl(248, 51%, 68%);
-  --primary-600: hsl(248, 52%, 86%);
-  --primary-600l10: hsl(248, 52%, 96%);
-  --primary-700: hsl(248, 52%, 93%);
-  --primary_darkBg-400: hsl(248, 52%, 86%);
+  --primary-200: hsla(246, 42%, 36%, 1);
+  --primary-300: hsla(245, 38%, 42%, 1);
+  --primary-400: hsla(245, 38%, 42%, 1);
+  --primary-400a10: color-mix(in srgb, var(--primary-400) 10%, transparent);
+  --primary-400a20: color-mix(in srgb, var(--primary-400) 20%, transparent);
+  --primary-400a50: color-mix(in srgb, var(--primary-400) 50%, transparent);
+  --primary-400l10: var(--primary-400);
+  --primary-500: hsla(242, 56%, 74%, 1);
+  --primary-600: hsla(242, 65%, 81%, 1);
+  --primary-600l10: var(--primary-600);
+  --primary-700: hsla(243, 64%, 86%, 1);
+  --primary_darkBg-400: hsla(244, 65%, 91%, 1);
 
-  --gray-100: hsl(248, 10%, 5%);
-  --gray-100a25: hsl(248, 10%, 5%, 25%);
-  --gray-100a30: hsl(248, 10%, 5%, 30%);
-  --gray-200: hsl(248, 10%, 13%);
-  --gray-300: hsl(248, 10%, 27%);
-  --gray-400: hsl(248, 10%, 44%);
-  --gray-400a25: hsl(248, 10%, 44%, 25%);
-  --gray-500: hsl(248, 10%, 68%);
-  --gray-500a20: hsl(248, 10%, 68%, 20%);
-  --gray-500a25: hsl(248, 10%, 68%, 25%);
-  --gray-600: hsl(248, 10%, 86%);
-  --gray-700: hsl(248, 10%, 99%);
-
-  --danger-400: hsl(0, 100%, 50%);
-  --danger_darkBg-400: hsl(0, 100%, 82%);
-  --danger-600: hsl(357, 84%, 91%);
-
-  --success-400: hsl(117, 100%, 44%);
-  --success-600: hsl(117, 100%, 93%);
-
-  --warning-text-400: hsl(47, 92%, 38%);
+  --danger-400: hsla(357, 85%, 54%, 1);
+  --danger_darkBg-400: hsla(31, 100%, 48%, 1);
+  --danger-600: hsl(357, 81%, 91%);
 
   /* ------ Global ------ */
   --page--text-color: var(--text-600);
-  --page--background-color: var(--primary-700);
+  --page--background-color: hsl(242, 56%, 83%);
+  --page--header--background-color: var(--page--background-color);
 
   --layout--home--background-color: var(--white);
 
@@ -52,32 +35,28 @@ body.theme-chad {
   --focus: var(--primary-400);
   --link-400: hsl(220, 98%, 57%);
   --text-400: var(--white);
-  --text-600: var(--primary-100);
+  --text-600: var(--black);
   --text_dark_background-400: var(--white);
 
   /* ------ Components  ------ */
   /* Box */
   --box--primary--color: var(--text-400);
-  --box--primary--background-color: var(--primary-400);
-  --box--primary--background: linear-gradient(var(--box--primary--background-color) 0%, var(--primary-400) 100%);
-  --box--primary--shadow-color: var(--blacka25);
-  --box--primary--content--background-color: hsl(248, 51%, 54%);
-  --box--primary--content--shadow-color: hsl(248, 51%, 34%);
-  --box_header--primary--background-color: var(--primary-300);
+  --box--primary--background-color: var(--primary-300);
+  --box--primary--background: var(--box--primary--background-color);
+  --box--primary--shadow-color: var(--gray-300);
+  --box--primary--content--background-color: var(--primary-500);
+  --box--primary--content--shadow-color: var(--primary-500);
+  --box_header--primary--background-color: var(--primary-100);
   --box--secondary--background-color: var(--white);
   --box--secondary--border: 0 solid var(--white);
   --box_action--button--font-size: var(--font-size-3);
-  --box_action--button--text-transform: none;
 
   /* Buttons */
   --button--color: var(--text-600);
-  --button--background-color: var(--primary-600);
-  --button--font: var(--font-display);
-  --button--font-size: small;
-  --button--font-weight: var(--normal);
+  --button--background-color: var(--primary-700);
   --button--shadow-color: var(--text-600);
   --button--text-transform: uppercase;
-  --button_filled--hover--background-color: var(--primary-600l10);
+  --button_filled--hover--background-color: var(--primary_darkBg-400);
   --button_filled-hover-contrast--background-color: var(--primary-100a90);
   --button_outlined--color: var(--text-600);
   --button_outlined--border-color: var(--gray-500);
@@ -121,7 +100,7 @@ body.theme-chad {
 
   /* Input */
   --input--color: var(--text-600);
-  --input--disabled--background-color: hsl(248, 51%, 94%, 0.7);
+  --input--disabled--background-color: var(--primary-700);
   --input_button--color: var(--blackl30);
   --input_button--font-size: var(--font-size-3);
   --input_button--hover--color: var(--text-600);
@@ -145,7 +124,7 @@ body.theme-chad {
   --radio--selected--background-color: var(--black);
 
   /* Skeleton */
-  --skeleton--background-color: hsl(248, 51%, 49%);
+  --skeleton--background-color: var(--primary-400);
   --skeleton--background-image: linear-gradient(
     90deg,
     hsl(248, 51%, 60%, 10%),
@@ -171,14 +150,14 @@ body.theme-chad {
   --summary_content--border-color: hsl(249, 10%, 86%);
 
   /* Switch */
-  --switch--active--background-color: hsl(248, 52%, 35%);
-  --switch--active--darkBg-background-color: hsl(248, 71%, 72%);
+  --switch--active--background-color: var(--primary-100);
+  --switch--active--darkBg-background-color: var(--primary-100);
 
   /* Tab */
   --tab--color: var(--text-400);
   --tab--content--background-color: var(--primary-400);
 
-  --tab_secondary--color: var(--primary-600);
+  --tab_secondary--color: var(--gray-600);
   --tab_secondary--active--color: var(--primary-100);
   --tab_secondary--hover--background-color: var(--primary-400a50);
 
@@ -188,8 +167,4 @@ body.theme-chad {
 
   /* Tooltip */
   --tooltip--border-color: var(--border-600);
-  /* Charts */
-  --chart-green: #26a69a;
-  --chart-red: #ef5350;
-  --chart-label: #9b7dff;
 }

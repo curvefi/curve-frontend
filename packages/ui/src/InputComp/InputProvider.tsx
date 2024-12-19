@@ -42,6 +42,7 @@ const InputProvider = ({
         className={`${className || ''} ${isFocusVisible ? 'focus-visible' : ''}`}
         disabled={disabled}
         inputVariant={inputVariant}
+        minHeight={inputVariant === 'small' ? 'medium' : 'x-large'}
       >
         {children}
       </InputWrapper>
@@ -59,7 +60,7 @@ interface InputWrapperProps {
 export const InputWrapper = styled(Box)<InputWrapperProps>`
   ${focusVisible};
 
-  min-height: ${({ minHeight }) => `var(--height-${minHeight || 'x-large'});`}
+  min-height: ${({ minHeight }) => `var(--height-${minHeight || 'x-large'})`};
   padding: ${({ padding }) => padding || `var(--spacing-1) var(--spacing-1) var(--spacing-1) var(--spacing-2)`};
   position: relative;
 

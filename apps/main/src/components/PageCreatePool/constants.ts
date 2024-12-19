@@ -1,7 +1,6 @@
 import type { ImplementationId } from '@/components/PageCreatePool/types'
 import BigNumber from 'bignumber.js'
 
-import { NATIVE_TOKENS } from '@curvefi/api/lib/curve'
 import { t } from '@lingui/macro'
 
 export const CRYPTOSWAP = 'Cryptoswap'
@@ -67,10 +66,10 @@ export const POOL_PRESETS: PRESETS = {
     description: t`Suitable for stablecoins that are fiat-redeemable`,
     defaultParams: {
       ...fillerParams,
-      stableSwapFee: '0.04',
-      stableA: '200',
+      stableSwapFee: '0.01',
+      stableA: '1000',
       maExpTime: '600',
-      offpegFeeMultiplier: '2',
+      offpegFeeMultiplier: '5',
     },
   },
   1: {
@@ -197,7 +196,11 @@ export const POOL_PRESETS: PRESETS = {
   },
 }
 
-export const IMPLEMENTATION_IDS = (chainId: ChainId): { [K in ImplementationId]: ImplementationDetail } => {
+export const IMPLEMENTATION_IDS = (
+  nativeToken: NativeToken | undefined,
+): { [K in ImplementationId]: ImplementationDetail } => {
+  const nativeTokenSymbol = nativeToken?.symbol ?? ''
+
   return {
     0: {
       name: 'Basic',
@@ -212,10 +215,10 @@ export const IMPLEMENTATION_IDS = (chainId: ChainId): { [K in ImplementationId]:
       description: t`For pools with rebase tokens like aTokens, or where there's a fee-on-transfer.`,
     },
     2: {
-      name: `${NATIVE_TOKENS[chainId].symbol} (currently not available)`,
-      descriptionName: t`${NATIVE_TOKENS[chainId].symbol}`,
+      name: `${nativeTokenSymbol} (currently not available)`,
+      descriptionName: t`${nativeTokenSymbol}`,
       titleDescription: t`(only available for pools with pegged assets)`,
-      description: t`For pools containing native ${NATIVE_TOKENS[chainId].symbol} (represented as 0xEE…EE)`,
+      description: t`For pools containing native ${nativeTokenSymbol} (represented as 0xEE…EE)`,
     },
     3: {
       name: 'Optimised',

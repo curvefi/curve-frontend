@@ -1,17 +1,22 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@/ui/utils'
+import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import type { INetworkName } from '@curvefi/lending-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale } from '@/onboard'
+import {
+  getWalletChainId,
+  getWalletSignerAddress,
+  useConnectWallet,
+  useSetChain,
+  useSetLocale,
+} from '@/common/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
-import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import { helpers } from '@/lib/apiLending'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
@@ -42,16 +47,19 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
           const apiNew = await helpers.initApi(chainId, useWallet ? wallet : null)
-          if (!apiNew) throw new Error()
-          updateApi(apiNew, prevApi, wallet)
-          updateConnectState('success', '')
+
+          if (apiNew) {
+            updateApi(apiNew, prevApi, wallet)
+          }
+
+          updateConnectState(apiNew ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)
         }
       }
     },
-    [updateProvider, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState]
+    [updateProvider, wallet, api, updateGlobalStoreByKey, updateApi, updateConnectState],
   )
 
   const handleConnectWallet = useCallback(
@@ -67,7 +75,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
               const walletStates = await Promise.race([
                 connect({ autoSelect: { label: walletName, disableModals: true } }),
                 new Promise<never>((_, reject) =>
-                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s'])
+                  setTimeout(() => reject(new Error('timeout connect wallet')), REFRESH_INTERVAL['3s']),
                 ),
               ])
               resolve(walletStates)
@@ -116,7 +124,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [connect, navigate, parsedParams, setChain, updateConnectState]
+    [connect, navigate, parsedParams, setChain, updateConnectState],
   )
 
   const handleDisconnectWallet = useCallback(
@@ -129,7 +137,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         console.error(error)
       }
     },
-    [disconnect, parsedParams.rChainId, updateConnectState]
+    [disconnect, parsedParams.rChainId, updateConnectState],
   )
 
   const handleNetworkSwitch = useCallback(
@@ -157,7 +165,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         }
       }
     },
-    [navigate, parsedParams, setChain, updateConnectState, wallet]
+    [navigate, parsedParams, setChain, updateConnectState, wallet],
   )
 
   // onMount
@@ -165,7 +173,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (connectState.status === '' && connectState.stage === '') {
       const routerNetwork = params.network?.toLowerCase()
       const routerNetworkId = routerNetwork ? networksIdMapper[routerNetwork as INetworkName] : null
-      const isActiveNetwork = routerNetworkId ? networks[routerNetworkId]?.isActiveNetwork ?? false : false
+      const isActiveNetwork = routerNetworkId ? (networks[routerNetworkId]?.isActiveNetwork ?? false) : false
 
       if (!isActiveNetwork) {
         // network in router is not good, redirect to default network
@@ -204,18 +212,17 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   useEffect(() => {
     if (
       (isSuccess(connectState) || isFailure(connectState)) &&
-      !!api &&
-      !!walletChainId &&
-      (api.chainId !== walletChainId || api.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
+      (!!walletChainId || !!walletSignerAddress || !!api) &&
+      (api?.chainId !== walletChainId || api?.signerAddress?.toLowerCase() !== walletSignerAddress?.toLowerCase())
     ) {
-      if (api.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
+      if (walletSignerAddress && api?.signerAddress.toLowerCase() !== walletSignerAddress?.toLowerCase()) {
         updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [walletChainId, true])
       } else if (api?.chainId !== walletChainId) {
         const foundNetwork = networks[walletChainId as ChainId]?.id
         if (foundNetwork) {
           updateConnectState('loading', CONNECT_STAGE.SWITCH_NETWORK, [parsedParams.rChainId, walletChainId])
           navigate(`${parsedParams.rLocalePathname}/${foundNetwork}/${parsedParams.restFullPathname}`)
-        } else {
+        } else if (walletSignerAddress) {
           updateConnectState('failure', CONNECT_STAGE.SWITCH_NETWORK)
         }
       }

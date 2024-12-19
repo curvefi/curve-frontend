@@ -7,9 +7,9 @@ import React from 'react'
 
 import { linkStyles } from './styles'
 
-interface Props extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
+export interface InternalLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>, LinkProps {}
 
-const InternalLink = ({ children, href, ...props }: React.PropsWithChildren<Props>) => (
+const InternalLink = ({ children, href, ...props }: React.PropsWithChildren<InternalLinkProps>) => (
   <StyledLink {...props} to={href ?? ''}>
     {children}
   </StyledLink>
@@ -18,9 +18,5 @@ const InternalLink = ({ children, href, ...props }: React.PropsWithChildren<Prop
 const StyledLink = styled(Link)`
   ${linkStyles}
 `
-
-InternalLink.defaultProps = {
-  className: '',
-}
 
 export default InternalLink

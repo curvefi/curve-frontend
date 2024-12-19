@@ -9,36 +9,21 @@
  * business logic and data fetching.
  */
 
-import { assertGaugeValidity } from '@/entities/gauge/lib'
-import { GaugeQueryKeyType, type PoolMethodResult } from '@/entities/gauge/types'
+import { type Address, zeroAddress } from 'viem'
+import { DepositRewardApproveQuery } from '@/entities/gauge/types'
 import { BD } from '@/shared/curve-lib'
+import { GaugeQuery } from '@/shared/model/query'
 import useStore from '@/store/useStore'
-import { logQuery } from '@/utils'
-import { QueryFunction } from '@tanstack/react-query'
-import { zeroAddress, type Address } from 'viem'
 
-export const queryGaugeStatus: QueryFunction<PoolMethodResult<'gaugeStatus'>, GaugeQueryKeyType<'status'>> = async ({
-  queryKey,
-}) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
+export const queryGaugeStatus = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
+  const pool = curve.getPool(poolId)
   return pool.gaugeStatus()
 }
 
-export const queryGaugeManager: QueryFunction<
-  Address | null, // PoolMethodResult<'gauge.gaugeManager'>,
-  GaugeQueryKeyType<'manager'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
+export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address | null> => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
+  const pool = curve.getPool(poolId)
   const gaugeManager = (await pool.gauge.gaugeManager()) as Address | null
   if (!gaugeManager || gaugeManager === zeroAddress) {
     return null
@@ -46,56 +31,27 @@ export const queryGaugeManager: QueryFunction<
   return gaugeManager
 }
 
-export const queryGaugeDistributors: QueryFunction<
-  PoolMethodResult<'gauge.gaugeDistributors'>,
-  GaugeQueryKeyType<'distributors'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
+export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
+  const pool = curve.getPool(poolId)
   return pool.gauge.gaugeDistributors()
 }
 
-export const queryGaugeVersion: QueryFunction<
-  PoolMethodResult<'gauge.gaugeVersion'>,
-  GaugeQueryKeyType<'version'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
+export const queryGaugeVersion = async ({ poolId }: GaugeQuery) => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
-  const version = await pool.gauge.gaugeVersion()
-  return version ?? null
+  const pool = curve.getPool(poolId)
+  return (await pool.gauge.gaugeVersion()) ?? null
 }
 
-export const queryIsDepositRewardAvailable: QueryFunction<
-  PoolMethodResult<'gauge.isDepositRewardAvailable'>,
-  GaugeQueryKeyType<'isDepositRewardAvailable'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, ,] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId })
-
-  const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
+export const queryIsDepositRewardAvailable = async ({ poolId }: GaugeQuery) => {
+  const { curve } = useStore.getState()
+  const pool = curve.getPool(poolId)
   return pool.gauge.isDepositRewardAvailable()
 }
 
-export const queryDepositRewardIsApproved: QueryFunction<
-  PoolMethodResult<'gauge.depositRewardIsApproved'>,
-  GaugeQueryKeyType<'depositRewardIsApproved'>
-> = async ({ queryKey }) => {
-  logQuery(queryKey)
-  const [, chainId, , poolId, , , rewardTokenId, amount] = queryKey
-  const _valid = assertGaugeValidity({ chainId, poolId, rewardTokenId, amount })
-
+export const queryDepositRewardIsApproved = async ({ poolId, amount, rewardTokenId }: DepositRewardApproveQuery) => {
   const curve = useStore.getState().curve
-  const pool = curve.getPool(_valid.poolId)
-  const strAmount = BD.from(_valid.amount).toString()
-  return pool.gauge.depositRewardIsApproved(_valid.rewardTokenId, strAmount)
+  const pool = curve.getPool(poolId)
+  const strAmount = BD.from(amount).toString()
+  return pool.gauge.depositRewardIsApproved(rewardTokenId, strAmount)
 }

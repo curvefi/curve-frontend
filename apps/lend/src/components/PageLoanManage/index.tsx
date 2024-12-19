@@ -17,7 +17,7 @@ import LoanCollateralAdd from '@/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/components/PageLoanManage/LoanCollateralRemove'
 
 const ManageLoan = (pageProps: PageContentProps) => {
-  const { rOwmId, rFormType, userActiveKey, owmDataCachedOrApi, rChainId } = pageProps
+  const { rOwmId, rFormType, userActiveKey, market, rChainId } = pageProps
   const params = useParams()
   const navigate = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
@@ -32,12 +32,12 @@ const ManageLoan = (pageProps: PageContentProps) => {
       { label: t`Collateral`, key: 'collateral' },
     ]
 
-    if (owmDataCachedOrApi?.hasLeverage) {
+    if (market?.leverage?.hasLeverage()) {
       forms.push({ label: t`Leverage`, key: 'leverage' })
     }
 
     return forms
-  }, [owmDataCachedOrApi?.hasLeverage])
+  }, [market?.leverage])
 
   const TABS_LOAN: { label: string; formType: LoanFormType }[] = [
     { label: t`Borrow more`, formType: 'loan-increase' },
@@ -64,7 +64,7 @@ const ManageLoan = (pageProps: PageContentProps) => {
         cb()
       }
     },
-    [loanExistsResp, navigate, params, rOwmId]
+    [loanExistsResp, navigate, params, rOwmId],
   )
 
   // init campaignRewardsMapper
@@ -78,10 +78,10 @@ const ManageLoan = (pageProps: PageContentProps) => {
     !rFormType || rFormType === 'loan'
       ? TABS_LOAN
       : rFormType === 'collateral'
-      ? TABS_COLLATERAL
-      : rFormType === 'leverage'
-      ? TABS_LEVERAGE
-      : []
+        ? TABS_COLLATERAL
+        : rFormType === 'leverage'
+          ? TABS_LEVERAGE
+          : []
 
   return (
     <AppFormContent variant="primary" shadowed>

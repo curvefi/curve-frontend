@@ -7,23 +7,19 @@ import type {
   Slippage,
   TransferFormType,
 } from '@/components/PagePool/types'
-
 import { t } from '@lingui/macro'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
-
 import { REFRESH_INTERVAL, ROUTE } from '@/constants'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import usePoolAlert from '@/hooks/usePoolAlert'
 import useTokensMapper from '@/hooks/useTokensMapper'
-import networks from '@/networks'
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
 import useStore from '@/store/useStore'
 import { breakpoints } from '@/ui/utils/responsive'
 import { getChainPoolIdActiveKey } from '@/utils'
 import { getPath } from '@/utils/utilsRouter'
 import { useNavigate } from 'react-router-dom'
-
 import Deposit from '@/components/PagePool/Deposit'
 import PoolStats from '@/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/components/PagePool/Swap'
@@ -46,12 +42,11 @@ import { ExternalLink } from '@/ui/Link'
 import Tabs, { Tab } from '@/ui/Tab'
 import TextEllipsis from '@/ui/TextEllipsis'
 import { Chip } from '@/ui/Typography'
-
 import CampaignRewardsBanner from '@/components/PagePool/components/CampaignRewardsBanner'
 import PoolInfoData from '@/components/PagePool/PoolDetails/ChartOhlcWrapper'
 import PoolParameters from '@/components/PagePool/PoolDetails/PoolParameters'
 import { useGaugeManager } from '@/entities/gauge'
-import { BlockSkeleton } from '@/shared/ui/skeleton'
+import { BlockSkeleton } from '../../../../../packages/ui/src/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
 
@@ -74,7 +69,7 @@ const DEFAULT_SEED: Seed = {
   loaded: false,
 }
 
-const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
+const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
@@ -113,10 +108,9 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const imageBaseUrl = networks[rChainId].imageBaseUrl
+  const { imageBaseUrl, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
   const poolAddress = poolData?.pool.address
 
-  const pricesApi = networks[rChainId].pricesApi
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
 
   const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
@@ -188,24 +182,21 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
       !!signerAddress &&
       !!gaugeManager &&
       isAddressEqual(gaugeManager, signerAddress as Address),
-    [isPendingGaugeManager, signerAddress, gaugeManager]
+    [isPendingGaugeManager, signerAddress, gaugeManager],
   )
 
-  const ACTION_TABS = useMemo<{ key: TransferFormType; label: string }[]>(
-    () => [
-      { key: 'deposit', label: t`Deposit` },
-      { key: 'withdraw', label: themeType === 'chad' ? t`Withdraw Claim` : t`Withdraw/Claim` },
-      { key: 'swap', label: t`Swap` },
-    ],
-    [themeType]
-  )
+  const ACTION_TABS: { key: TransferFormType; label: string }[] = [
+    { key: 'deposit', label: t`Deposit` },
+    { key: 'withdraw', label: t`Withdraw/Claim` },
+    { key: 'swap', label: t`Swap` },
+  ]
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
       const pathname = getPath(params, `${ROUTE.PAGE_POOLS}/${params.pool}/${updatedFormType}`)
       navigate(pathname)
     },
-    [navigate, params]
+    [navigate, params],
   )
 
   useEffect(() => {
@@ -221,7 +212,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
     }
     return (
       <AppPageFormTitleWrapper>
-        <StyledExternalLink href={networks[rChainId].scanAddressPath(pool.address)}>
+        <StyledExternalLink href={scanAddressPath(pool.address)}>
           <Title as="h1">{pool?.name || ''}</Title>
         </StyledExternalLink>
         {pool?.referenceAsset && <StyledChip>{referenceAsset[pool.referenceAsset] ?? pool.referenceAsset}</StyledChip>}
@@ -242,9 +233,9 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
 
   return (
     <>
-      {pricesApiPoolData && pricesApi && chartExpanded && (
+      {!isLite && pricesApiPoolData && pricesApi && chartExpanded && (
         <PriceAndTradesExpandedContainer>
-          <Box flex>
+          <Box flex padding="0 0 0 var(--spacing-3)">
             <TitleComp />
             <ExpandButton variant={'select'} onClick={() => setChartExpanded(!chartExpanded)}>
               {chartExpanded ? 'Minimize' : 'Expand'}
@@ -257,7 +248,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
         </PriceAndTradesExpandedContainer>
       )}
 
-      <Wrapper isAdvanceMode chartExpanded={chartExpanded}>
+      <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper navHeight={navHeight} className="grid-transfer">
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
@@ -326,11 +317,11 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
         <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
           {poolAddress && (
-            <Box margin="0 0 var(--spacing-2) 0">
+            <Box>
               <CampaignRewardsBanner address={poolAddress} />
             </Box>
           )}
-          {pricesApiPoolData && pricesApi && !chartExpanded && (
+          {!isLite && pricesApiPoolData && pricesApi && !chartExpanded && (
             <PriceAndTradesWrapper variant="secondary">
               <PoolInfoData rChainId={rChainId} pricesApiPoolData={pricesApiPoolData} />
             </PriceAndTradesWrapper>
@@ -383,9 +374,7 @@ const Transfer: React.FC<PageTransferProps> = (pageTransferProps) => {
             {selectedTab === 'advanced' &&
               poolData &&
               snapshotsMapper[poolData.pool.address] !== undefined &&
-              !basePoolsLoading && (
-                <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} rPoolId={rPoolId} />
-              )}
+              !basePoolsLoading && <PoolParameters pricesApi={pricesApi} poolData={poolData} rChainId={rChainId} />}
           </AppPageInfoContentWrapper>
         </AppPageInfoWrapper>
       </Wrapper>
@@ -413,8 +402,7 @@ const StyledExternalLink = styled(ExternalLink)`
 `
 
 const Title = styled(TextEllipsis)`
-  background-color: rgba(0, 0, 0, 0.8);
-  margin: var(--spacing-2) 0;
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
 
   @media (max-width: ${breakpoints.xxs}rem) {
@@ -431,7 +419,7 @@ const PriceAndTradesWrapper = styled(Box)`
   padding: 1.5rem 1rem;
   margin-bottom: var(--spacing-1);
   @media (min-width: ${breakpoints.sm}rem) {
-    margin-top: none;
+    margin-top: 0;
     margin-bottom: var(--spacing-3);
   }
   @media (min-width: ${breakpoints.lg}rem) {

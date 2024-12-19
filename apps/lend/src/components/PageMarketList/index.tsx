@@ -13,19 +13,21 @@ import MarketListNoResult from '@/components/PageMarketList/components/MarketLis
 import MarketListItemContent from '@/components/PageMarketList/components/MarketListItemContent'
 import TableSettings from '@/components/PageMarketList/components/TableSettings/TableSettings'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
+import { useOneWayMarketMapping } from '@/entities/chain'
 
 const MarketList = (pageProps: PageMarketList) => {
   const { rChainId, isLoaded, searchParams, api, updatePath } = pageProps
 
   const activeKey = _getActiveKey(rChainId, searchParams)
+  const { data: marketMapping } = useOneWayMarketMapping({ chainId: rChainId })
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
+  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
-  const resultCached = useStore((state) => state.storeCache.marketListResult[activeKey])
   const setFormValues = useStore((state) => state.marketList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
@@ -40,17 +42,14 @@ const MarketList = (pageProps: PageMarketList) => {
   const TABLE_LABELS: { borrow: TableLabel[]; supply: TableLabel[] } = {
     [FilterType.borrow]: [
       { sortIdKey: 'isInMarket', className: 'center noPadding', show: showBorrowSignerCell, isNotSortable: true, width: '20px' },
-      { sortIdKey: 'tokenCollateral', className: 'left', width: '150px' },
-      { sortIdKey: 'tokenBorrow', className: 'left', width: '130px' },
+      { sortIdKey: 'tokenCollateral', className: 'left', width: '200px' },
+      { sortIdKey: 'tokenBorrow', className: 'left' },
       { sortIdKey: 'leverage', className: 'left', width: '120px' },
-      { sortIdKey: 'myHealth', className: '', show: showBorrowSignerCell, width: '120px' },
-      { sortIdKey: 'myDebt', className: '', show: showBorrowSignerCell, width: '120px' },
-      { sortIdKey: 'rateBorrow', className: 'right nowrap' },
-      { sortIdKey: 'available', className: 'right', width: '140px' },
-      { sortIdKey: 'totalDebt', className: 'right', width: '140px' },
-      { sortIdKey: 'cap', className: 'right', width: '140px' },
-      { sortIdKey: 'utilization', className: 'right', width: '140px' },
-      { sortIdKey: 'totalCollateralValue', className: 'right', width: '220px' },
+      { sortIdKey: 'myHealth', className: '', show: showBorrowSignerCell, width: '100px' },
+      { sortIdKey: 'myDebt', className: '', show: showBorrowSignerCell, width: '140px' },
+      { sortIdKey: 'rateBorrow', className: 'right nowrap', width: '100px' },
+      { sortIdKey: 'utilization', className: 'right', width: '150px' },
+      { sortIdKey: 'totalCollateralValue', className: 'right', width: isAdvanceMode ? '220px' : '150px' },
     ],
     [FilterType.supply]: [
       { sortIdKey: 'isInMarket', className: 'center noPadding', show: showSupplySignerCell, isNotSortable: true, width: '20px' },
@@ -63,14 +62,13 @@ const MarketList = (pageProps: PageMarketList) => {
     ],
   }
 
-  const parsedResult =
-    results[activeKey] ?? resultCached ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
+  const parsedResult = results[activeKey] ?? (activeKey.charAt(0) === prevActiveKey.charAt(0) && results[prevActiveKey])
 
   const updateFormValues = useCallback(
     (shouldRefetch?: boolean) => {
-      setFormValues(rChainId, isLoaded ? api : null, shouldRefetch)
+      setFormValues(rChainId, isLoaded ? api : null, marketMapping, shouldRefetch)
     },
-    [isLoaded, rChainId, api, setFormValues]
+    [setFormValues, rChainId, isLoaded, api, marketMapping],
   )
 
   useEffect(() => {
@@ -112,9 +110,10 @@ const MarketList = (pageProps: PageMarketList) => {
         {formStatus.noResult && !formStatus.isLoading ? (
           <MarketListNoResult searchParams={searchParams} signerAddress={signerAddress} updatePath={updatePath} />
         ) : Array.isArray(parsedResult) ? (
-          parsedResult.map((marketListItem) => (
+          parsedResult.map((marketListItem, idx) => (
             <MarketListItemContent
               key={marketListItem.address}
+              idx={idx}
               pageProps={pageProps}
               marketListItem={marketListItem}
               showBorrowSignerCell={showBorrowSignerCell}

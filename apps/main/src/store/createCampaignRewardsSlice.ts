@@ -4,7 +4,6 @@ import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 
 import produce from 'immer'
 
 import campaigns from '@/shared/external-rewards'
-import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -37,6 +36,9 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
     ...DEFAULT_STATE,
     initCampaignRewards: (chainId: ChainId) => {
       let campaignRewardsMapper: CampaignRewardsMapper = {}
+      const {
+        networks: { networks },
+      } = get()
       const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key
@@ -70,7 +72,7 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
         produce((state: State) => {
           state[sliceKey].initiated = true
           state[sliceKey].campaignRewardsMapper = campaignRewardsMapper
-        })
+        }),
       )
     },
 

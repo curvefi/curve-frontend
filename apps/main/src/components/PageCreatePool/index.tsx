@@ -1,11 +1,8 @@
 import { useCallback, useEffect } from 'react'
 import styled from 'styled-components'
 import { t } from '@lingui/macro'
-
 import { curveProps } from '@/lib/utils'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import {
   checkSwapType,
   checkTokensInPool,
@@ -15,7 +12,6 @@ import {
   checkPoolInfo,
 } from '@/components/PageCreatePool/utils'
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
-
 import Spinner from '@/ui/Spinner'
 import Icon from '@/ui/Icon'
 import Box from '@/ui/Box'
@@ -34,7 +30,8 @@ type Props = {
 }
 
 const CreatePool = ({ curve }: Props) => {
-  const { chainId, haveSigner } = curveProps(curve) as { chainId: ChainId; haveSigner: boolean }
+  const networks = useStore((state) => state.networks.networks)
+  const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const {
     poolSymbol,
     swapType,
@@ -85,8 +82,8 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].twocryptoFactory
-        )
+          networks[chainId].twocryptoFactory,
+        ),
       )
     } else {
       updateTokensInPoolValidation(
@@ -101,7 +98,7 @@ const CreatePool = ({ curve }: Props) => {
           tokensInPool.tokenG,
           tokensInPool.tokenH,
           networks[chainId].tricryptoFactory,
-          networks[chainId].twocryptoFactory
+          networks[chainId].twocryptoFactory,
         ) &&
           oraclesReady([
             tokensInPool.tokenA,
@@ -112,7 +109,7 @@ const CreatePool = ({ curve }: Props) => {
             tokensInPool.tokenF,
             tokensInPool.tokenG,
             tokensInPool.tokenH,
-          ])
+          ]),
       )
     }
   }, [
@@ -127,6 +124,7 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool.tokenG,
     tokensInPool.tokenH,
     updateTokensInPoolValidation,
+    networks,
   ])
 
   useEffect(() => {
@@ -142,8 +140,8 @@ const CreatePool = ({ curve }: Props) => {
         tokensInPool.tokenB,
         tokensInPool.tokenC,
         networks[chainId].tricryptoFactory,
-        poolPresetIndex
-      )
+        poolPresetIndex,
+      ),
     )
   }, [
     chainId,
@@ -157,14 +155,15 @@ const CreatePool = ({ curve }: Props) => {
     tokensInPool.tokenB,
     tokensInPool.tokenC,
     updateParametersValidation,
+    networks,
   ])
 
   useEffect(() => {
     if (!chainId) return
     updatePoolInfoValidation(
-      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType)
+      checkPoolInfo(networks[chainId].stableswapFactory, swapType, poolSymbol, poolName, assetType),
     )
-  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation])
+  }, [assetType, chainId, poolName, poolSymbol, swapType, updatePoolInfoValidation, networks])
 
   return (
     <Box flex padding={false} flexJustifyContent={'center'}>
@@ -207,11 +206,11 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Creating Stableswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-stableswap-ng-pool/',
+                  link: 'https://resources.curve.fi/pool-creation/creating-a-stableswap-pool/',
                 }}
                 link2={{
                   title: t`Learn more: Creating Cryptoswap pools`,
-                  link: 'https://resources.curve.fi/factory-pools/creating-a-twocrypto-ng-pool/',
+                  link: 'https://resources.curve.fi/pool-creation/creating-a-cryptoswap-pool/',
                 }}
               />
             )}
@@ -219,7 +218,7 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Understanding Cryptoswap`,
-                  link: 'https://resources.curve.fi/base-features/understanding-crypto-pools',
+                  link: 'https://resources.curve.fi/pools/overview/',
                 }}
                 link2={{
                   title: t`Learn more: Read about Cryptoswap parameters`,
@@ -231,7 +230,7 @@ const CreatePool = ({ curve }: Props) => {
               <InfoBox
                 link1={{
                   title: t`Learn more: Understanding Stableswap`,
-                  link: 'https://resources.curve.fi/base-features/understanding-curve',
+                  link: 'https://resources.curve.fi/pools/overview/',
                 }}
               />
             )}
@@ -260,7 +259,7 @@ const CreatePool = ({ curve }: Props) => {
                       validation.poolType,
                       validation.tokensInPool,
                       validation.parameters,
-                      validation.poolInfo
+                      validation.poolInfo,
                     )
                   }
                   chainId={chainId}
@@ -329,13 +328,9 @@ const NotAvailableWrapper = styled.div`
   flex-direction: column;
   align-content: center;
   justify-content: center;
-  margin-top: var(--spacing-5);
+  margin: var(--spacing-5) auto auto;
   background: var(--page--background-color);
-  padding: var(--spacing-4) var(--spacing-3);
-  width: 90%;
-  @media (min-width: 46.875rem) {
-    width: 700px;
-  }
+  padding: var(--spacing-4) var(--spacing-4);
 `
 
 const NotAvailableTitle = styled.h4`

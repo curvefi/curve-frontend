@@ -8,7 +8,6 @@ import type { FormType, FormStatus, FormValues } from '@/components/PagePool/Dep
 import { t } from '@lingui/macro'
 import cloneDeep from 'lodash/cloneDeep'
 
-import networks from '@/networks'
 import {
   DEFAULT_FORM_LP_TOKEN_EXPECTED,
   DEFAULT_FORM_STATUS,
@@ -20,6 +19,7 @@ import { getAmountsError, parseAmountsForAPI } from '@/components/PagePool/utils
 import { getMaxAmountMinusGas } from '@/utils/utilsGasPrices'
 import { isBonus, isHighSlippage } from '@/utils'
 import { getUserPoolActiveKey } from '@/store/createUserSlice'
+import curvejsApi from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -85,13 +85,11 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
     fetchExpected: async (activeKey, chainId, formType, pool, formValues) => {
       let { amounts, isWrapped } = formValues
       const depositExpectedFn =
-        formType === 'DEPOSIT'
-          ? networks[chainId].api.poolDeposit.depositExpected
-          : networks[chainId].api.poolDeposit.depositAndStakeExpected
+        formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositExpected : curvejsApi.poolDeposit.depositAndStakeExpected
 
       const [fetchedExpected, fetchedParameters] = await Promise.all([
         depositExpectedFn(activeKey, pool, isWrapped, parseAmountsForAPI(amounts)),
-        networks[chainId].api.pool.poolParameters(pool),
+        curvejsApi.pool.poolParameters(pool),
       ])
 
       get()[sliceKey].setStateByKey('formLpTokenExpected', {
@@ -116,8 +114,13 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
 
         // fetch est gas
         cFormValues.amounts[idx].value = userBalance
-        const fn = networks[chainId].api.poolDeposit.depositEstGasApproval
-        const resp = await fn(activeKey, chainId, pool, cFormValues.isWrapped, parseAmountsForAPI(cFormValues.amounts))
+        const resp = await curvejsApi.poolDeposit.depositEstGasApproval(
+          activeKey,
+          chainId,
+          pool,
+          cFormValues.isWrapped,
+          parseAmountsForAPI(cFormValues.amounts),
+        )
         const basePlusPriority = get().gas.gasInfo?.basePlusPriority
 
         if (!resp.error && resp.estimatedGas && basePlusPriority?.[0]) {
@@ -166,8 +169,8 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const amounts = parseAmountsForAPI(cFormAmounts)
       const resp =
         formType === 'DEPOSIT'
-          ? await networks[chainId].api.poolDeposit.depositBonus(activeKey, pool, isWrapped, amounts)
-          : await networks[chainId].api.poolDeposit.depositAndStakeBonus(activeKey, pool, isWrapped, amounts)
+          ? await curvejsApi.poolDeposit.depositBonus(activeKey, pool, isWrapped, amounts)
+          : await curvejsApi.poolDeposit.depositAndStakeBonus(activeKey, pool, isWrapped, amounts)
 
       if (resp.error) {
         get()[sliceKey].setStateByKeys({
@@ -222,8 +225,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           })
         } else if (cFormValues.isBalancedAmounts) {
           // get balanced amounts
-          const fn = networks[chainId].api.poolDeposit.depositBalancedAmounts
-          const resp = await fn(activeKey, pool, cFormValues.isWrapped)
+          const resp = await curvejsApi.poolDeposit.depositBalancedAmounts(activeKey, pool, cFormValues.isWrapped)
 
           if (resp.error) {
             get()[sliceKey].setStateByKey('formStatus', {
@@ -292,7 +294,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         if (!!signerAddress && +cFormValues.lpToken > 0) {
           // validate lpToken balances
           const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
-          const lpTokenError = +cFormValues.lpToken > (+balances.lpToken ?? '0') ? 'lpToken-too-much' : ''
+          const lpTokenError = +cFormValues.lpToken > +(balances.lpToken ?? '0') ? 'lpToken-too-much' : ''
 
           if (lpTokenError) {
             get()[sliceKey].setStateByKey('formStatus', {
@@ -317,22 +319,22 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
       const { amounts, isWrapped, lpToken } = cFormValues
       const resp =
         formType === 'DEPOSIT'
-          ? await networks[chainId].api.poolDeposit.depositEstGasApproval(
+          ? await curvejsApi.poolDeposit.depositEstGasApproval(
               activeKey,
               chainId,
               pool,
               isWrapped,
-              parseAmountsForAPI(amounts)
+              parseAmountsForAPI(amounts),
             )
           : formType === 'DEPOSIT_STAKE'
-          ? await networks[chainId].api.poolDeposit.depositAndStakeEstGasApproval(
-              activeKey,
-              chainId,
-              pool,
-              isWrapped,
-              parseAmountsForAPI(amounts)
-            )
-          : await networks[chainId].api.poolDeposit.stakeEstGasApproval(activeKey, chainId, pool, lpToken)
+            ? await curvejsApi.poolDeposit.depositAndStakeEstGasApproval(
+                activeKey,
+                chainId,
+                pool,
+                isWrapped,
+                parseAmountsForAPI(amounts),
+              )
+            : await curvejsApi.poolDeposit.stakeEstGasApproval(activeKey, chainId, pool, lpToken)
 
       // set estimate gas state
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, {
@@ -366,9 +368,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         const { amounts, isWrapped } = formValues
 
         const approveFn =
-          formType === 'DEPOSIT'
-            ? networks[chainId].api.poolDeposit.depositApprove
-            : networks[chainId].api.poolDeposit.depositAndStakeApprove
+          formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositApprove : curvejsApi.poolDeposit.depositAndStakeApprove
 
         const resp = await approveFn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts))
 
@@ -405,11 +405,16 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { pool } = poolData
         const { amounts, isWrapped } = formValues
-        const depositFn = networks[chainId].api.poolDeposit.deposit
-        const resp = await depositFn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts), maxSlippage)
+        const resp = await curvejsApi.poolDeposit.deposit(
+          activeKey,
+          provider,
+          pool,
+          isWrapped,
+          parseAmountsForAPI(amounts),
+          maxSlippage,
+        )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -449,11 +454,16 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { pool } = poolData
         const { amounts, isWrapped } = formValues
-        const fn = networks[chainId].api.poolDeposit.depositAndStake
-        const resp = await fn(activeKey, provider, pool, isWrapped, parseAmountsForAPI(amounts), maxSlippage)
+        const resp = await curvejsApi.poolDeposit.depositAndStake(
+          activeKey,
+          provider,
+          pool,
+          isWrapped,
+          parseAmountsForAPI(amounts),
+          maxSlippage,
+        )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -495,8 +505,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         await get().gas.fetchGasInfo(curve)
         const { chainId } = curve
         const { lpToken } = formValues
-        const approveFn = networks[chainId].api.poolDeposit.stakeApprove
-        const resp = await approveFn(activeKey, provider, pool, lpToken)
+        const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -531,11 +540,9 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         })
 
         await get().gas.fetchGasInfo(curve)
-        const { chainId } = curve
         const { pool } = poolData
         const { lpToken } = formValues
-        const fn = networks[chainId].api.poolDeposit.stake
-        const resp = await fn(activeKey, provider, pool, lpToken)
+        const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           let cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -598,7 +605,7 @@ export function getActiveKey(
   poolId: string,
   formType: FormType,
   { amounts, isBalancedAmounts, isWrapped, lpToken }: FormValues,
-  maxSlippage: string
+  maxSlippage: string,
 ) {
   let activeKey = `${formType}-${poolId}-`
   if (formType === 'DEPOSIT' || formType === 'DEPOSIT_STAKE') {

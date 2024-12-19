@@ -27,7 +27,7 @@ export const SelectLocale = ({
       if (!selectedLocale) return ''
       return locales.find(({ value }) => value.toLowerCase() === selectedLocale.toLowerCase())?.name ?? ''
     },
-    [locales]
+    [locales],
   )
 
   return mobileHeader ? (
@@ -73,10 +73,6 @@ export const SelectLocale = ({
 }
 
 SelectLocale.displayName = 'SelectLocale'
-SelectLocale.defaultProps = {
-  className: '',
-}
-
 const MobileButton = styled(Button)`
   align-items: center;
   display: flex;

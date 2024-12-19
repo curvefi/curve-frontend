@@ -17,7 +17,7 @@ const ModalDialog = ({
   className,
   footerContent,
   maxWidth,
-  noContentPadding,
+  noContentPadding = false,
   state,
   title,
   testId,
@@ -49,7 +49,7 @@ const ModalDialog = ({
         if (typeof state.close === 'function') state.close()
       },
     },
-    closeButtonRef
+    closeButtonRef,
   )
 
   const showCloseButton = !!state.close
@@ -78,11 +78,6 @@ const ModalDialog = ({
       </Underlay>
     </Overlay>
   )
-}
-
-ModalDialog.defaultProps = {
-  className: '',
-  noContentPadding: false,
 }
 
 const Header = styled.h2<{ showCloseButton?: boolean }>`

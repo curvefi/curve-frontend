@@ -7,21 +7,19 @@ import useStore from '@/store/useStore'
 import { AppPageFormTitleLinks } from '@/ui/AppPage'
 import InternalLink from '@/ui/Link/InternalLink'
 import styled from 'styled-components'
+import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 const PageTitleBorrowSupplyLinks = ({
-  rOwmId,
   params,
   activeKey,
-  owmDataCachedOrApi,
+  market,
 }: {
-  rChainId: ChainId
-  rOwmId: string
   params: Params
   activeKey: 'borrow' | 'supply'
-  owmDataCachedOrApi: OWMDataCacheOrApi
+  market: OneWayMarketTemplate
 }) => {
   const api = useStore((state) => state.api)
-  const userActiveKey = helpers.getUserActiveKey(api, owmDataCachedOrApi)
+  const userActiveKey = helpers.getUserActiveKey(api, market)
 
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
 
@@ -32,7 +30,7 @@ const PageTitleBorrowSupplyLinks = ({
       <StyledLink
         $noStyles
         className={activeKey === 'borrow' ? 'active' : ''}
-        href={borrowPathnameFn(params, rOwmId, '')}
+        href={borrowPathnameFn(params, market.id, '')}
       >
         Borrow
       </StyledLink>{' '}
@@ -40,7 +38,7 @@ const PageTitleBorrowSupplyLinks = ({
       <StyledLink
         $noStyles
         className={activeKey === 'supply' ? 'active' : ''}
-        href={getVaultPathname(params, rOwmId, 'deposit')}
+        href={getVaultPathname(params, market.id, 'deposit')}
       >
         Lend
       </StyledLink>
@@ -49,13 +47,13 @@ const PageTitleBorrowSupplyLinks = ({
 }
 
 const StyledLink = styled(InternalLink)`
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   text-decoration: none;
 
   &.active,
   :hover.active {
     color: inherit;
-    border-bottom: 3px solid var(--nav--page--color);
+    /* border-bottom: 3px solid var(--nav--page--color); */
   }
 `
 

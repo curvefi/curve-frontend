@@ -3,13 +3,10 @@ import { useMemo } from 'react'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import styled from 'styled-components'
-
 import { NETWORK_TOKEN } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 import { Chain, gweiToEther, weiToGwei } from '@/shared/curve-lib'
-import networks from '@/networks'
 import useStore from '@/store/useStore'
-
 import DetailInfo from '@/ui/DetailInfo'
 import IconTooltip from '@/ui/Tooltip/TooltipIcon'
 import { useCurve } from '@/entities/curve'
@@ -21,7 +18,7 @@ export type StepProgress = {
 
 const DetailInfoEstGas = ({
   chainId,
-  isDivider,
+  isDivider = false,
   loading,
   estimatedGas,
   stepProgress,
@@ -34,6 +31,7 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { data: curve } = useCurve()
+  const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[NETWORK_TOKEN])
   const gasInfo = useStore((state) => state.gas.gasInfo)
@@ -79,6 +77,7 @@ const DetailInfoEstGas = ({
     chainTokenUsdRate,
     gasInfo?.l2GasPriceWei,
     gasInfo?.l1GasPriceWei,
+    networks,
   ])
 
   const labelText = t`Estimated TX cost:`
@@ -105,10 +104,6 @@ const DetailInfoEstGas = ({
         (haveUsdRate ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
     </DetailInfo>
   )
-}
-
-DetailInfoEstGas.defaultProps = {
-  isDivider: false,
 }
 
 const StepProgressWrapper = styled.span`

@@ -42,21 +42,21 @@ export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   }
 `
 
-export const AppPageFormsWrapper = styled(Box)<{ navHeight: number }>`
+export const AppPageFormsWrapper = styled(Box)<{ navHeight: number | string }>`
   margin-bottom: 2rem;
 
   @media (min-width: ${breakpoints.md}rem) {
     align-self: flex-start;
-    min-width: var(--loan-form-min-width);
-    max-width: var(--loan-form-min-width);
+    min-width: 23.3125rem;
+    max-width: 23.3125rem;
     //position: sticky;
-    top: ${({ navHeight }) => `${navHeight + 40}px;`};
+    top: ${({ navHeight }) => (typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`)};
   }
 `
 
 export const AppPageFormTitleWrapper = styled.header`
   align-items: center;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   display: inline-flex;
   padding-top: var(--spacing-wide);
   padding-bottom: var(--spacing-2);
@@ -70,8 +70,7 @@ export const AppPageFormTitleWrapper = styled.header`
 `
 
 export const AppPageFormTitleContent = styled(TextEllipsis)`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-5);
   font-weight: bold;
   line-height: 1;
@@ -79,8 +78,7 @@ export const AppPageFormTitleContent = styled(TextEllipsis)`
 `
 
 export const AppPageFormTitleLinks = styled.div`
-  background-color: black;
-  color: var(--nav--page--color);
+  color: var(--page--text-color);
   font-size: var(--font-size-2);
   margin-bottom: var(--spacing-2);
   text-transform: uppercase;
@@ -90,6 +88,7 @@ export const AppPageFormTitleLinks = styled.div`
 
   a.active {
     background-color: black;
+    color: var(--nav--page--color);
   }
 `
 
