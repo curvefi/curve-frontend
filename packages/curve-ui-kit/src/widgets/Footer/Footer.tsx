@@ -15,7 +15,11 @@ const Llama = styled('img')({
   position: 'absolute',
 })
 
-export const Footer = () => {
+type Props = {
+  networkName: string
+}
+
+export const Footer = ({ networkName }: Props) => {
   const sections = getSections()
 
   return (
@@ -58,7 +62,7 @@ export const Footer = () => {
               desktop: 3,
             }}
           >
-            <Section {...section} />
+            <Section {...section} networkName={networkName} />
           </Grid>
         ))}
 
