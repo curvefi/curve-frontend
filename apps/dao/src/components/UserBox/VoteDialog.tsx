@@ -39,8 +39,7 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   const id = pricesProposal?.vote_id
   const type: ProposalType = pricesProposal?.vote_type
 
-  const executeProposalComponent = () => {
-    return (
+  const executeProposalComponent = () => (
       <>
         {executeTx?.status === 'LOADING' && (
           <Box>
@@ -66,7 +65,6 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
         )}
       </>
     )
-  }
 
   // Voting power too low
   if (activeProposal?.active && votingPower.value === 0) {

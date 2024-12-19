@@ -31,9 +31,9 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
   isDarkTheme,
   items,
   ...props
-}) => {
+}) => 
   // TODO: add darkTheme icon or make sure icon work for both dark and light theme
-  return (
+   (
     <Select {...props} className={className} items={items} aria-label="Select network" label="">
       {({ chainId, src, label }) => (
         <Item key={chainId} textValue={chainId.toString()}>
@@ -43,7 +43,7 @@ export const SelectNetwork: React.FC<SelectNetworkProps> = ({
       )}
     </Select>
   )
-}
+
 
 SelectNetwork.displayName = 'SelectNetwork'
 export default SelectNetwork

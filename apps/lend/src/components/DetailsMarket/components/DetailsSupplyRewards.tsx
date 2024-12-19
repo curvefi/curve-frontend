@@ -61,8 +61,7 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
           <RewardsItem>
             <span>{t`Incentives APR`}</span>
           </RewardsItem>
-          {tooltipValues.incentivesObj.map(({ apy, symbol, tokenAddress }) => {
-            return (
+          {tooltipValues.incentivesObj.map(({ apy, symbol, tokenAddress }) => (
               <Box
                 key={symbol}
                 flex
@@ -83,8 +82,7 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
                 </Box>
                 <Chip size="md">{formatNumber(apy, FORMAT_OPTIONS.PERCENT)} </Chip>
               </Box>
-            )
-          })}
+            ))}
         </>
       ) : null}
 

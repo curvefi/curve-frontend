@@ -66,14 +66,12 @@ const Page: NextPage = () => {
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!llamma
 
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(() => {
-    return isAdvanceMode
+  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = useMemo(() => isAdvanceMode
       ? [
           { label: t`LLAMMA Details`, key: 'llamma' },
           { label: t`Your Loan Details`, key: 'user' },
         ]
-      : [{ label: t`Your Loan Details`, key: 'user' }]
-  }, [isAdvanceMode])
+      : [{ label: t`Your Loan Details`, key: 'user' }], [isAdvanceMode])
 
   // onMount
   useEffect(() => {

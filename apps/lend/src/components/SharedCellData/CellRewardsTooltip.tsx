@@ -16,8 +16,7 @@ const CellRewardsTooltip = ({
   noPadding?: boolean
   totalApr: { min: string; max: string; minMax: string }
   tooltipValues: { lendApr: string; lendApy: string; crv: string; crvBoosted: string; incentives: string[] }
-}) => {
-  return (
+}) => (
     <TooltipWrapper className={className} isMobile={isMobile || noPadding}>
       {!isMobile ? (
         <TooltipTitle>
@@ -57,20 +56,17 @@ const CellRewardsTooltip = ({
         <TooltipItem>
           <span>{t`Incentives APR`}</span>{' '}
           <span>
-            {tooltipValues.incentives.map((incentive) => {
-              return (
+            {tooltipValues.incentives.map((incentive) => (
                 <React.Fragment key={incentive}>
                   {incentive}
                   <br />
                 </React.Fragment>
-              )
-            })}
+              ))}
           </span>
         </TooltipItem>
       )}
     </TooltipWrapper>
   )
-}
 
 const TooltipWrapper = styled.div<{ isMobile?: boolean }>`
   text-align: left;

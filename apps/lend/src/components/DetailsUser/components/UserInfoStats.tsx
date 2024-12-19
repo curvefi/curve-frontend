@@ -14,8 +14,7 @@ type Props = {
   tooltipProps?: TooltipProps
 }
 
-const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: PropsWithChildren<Props & BoxProps>) => {
-  return (
+const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: PropsWithChildren<Props & BoxProps>) => (
     <span {...props}>
       {tooltip ? (
         <StyledChip tooltip={tooltip} tooltipProps={tooltipProps} isBlock isBold>
@@ -29,7 +28,6 @@ const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: Pro
       {children ?? '-'}
     </span>
   )
-}
 
 const StyledChip = styled(Chip)`
   display: block;

@@ -22,9 +22,7 @@ const DetailsSupplyRewardsCrv = ({
 
   const [base, boosted] = rewards?.crv ?? []
 
-  const formattedCrvBase = useMemo(() => {
-    return formatNumber(base, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' })
-  }, [base])
+  const formattedCrvBase = useMemo(() => formatNumber(base, { ...FORMAT_OPTIONS.PERCENT, defaultValue: '-' }), [base])
 
   const formattedCrvBoosted = useMemo(() => {
     if (typeof boosted === 'undefined' || +boosted === 0) {

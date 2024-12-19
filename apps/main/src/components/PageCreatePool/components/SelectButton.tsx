@@ -28,8 +28,7 @@ const SelectButton = ({
   description,
   subData,
   handleClick,
-}: Props) => {
-  return (
+}: Props) => (
     <StyledButton
       disabled={disabled}
       variant={variant === 'outlined' ? 'outlined' : 'filled'}
@@ -52,7 +51,6 @@ const SelectButton = ({
         ))}
     </StyledButton>
   )
-}
 
 const Row = styled(Box)`
   display: flex;

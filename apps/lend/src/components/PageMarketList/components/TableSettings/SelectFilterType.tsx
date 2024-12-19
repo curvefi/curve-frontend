@@ -27,8 +27,7 @@ const SelectFilterType = ({
 
   const isXSmDown = useStore((state) => state.layout.isXSmDown)
 
-  const sortSelectMapper = useMemo(() => {
-    return tableLabels.reduce(
+  const sortSelectMapper = useMemo(() => tableLabels.reduce(
       (prev, { sortIdKey }) => {
         if (filterTypeKey === 'borrow' && !showBorrowSignerCell && sortIdKey.startsWith('my')) return prev
         if (filterTypeKey === 'supply' && !showSupplySignerCell && sortIdKey.startsWith('my')) return prev
@@ -45,8 +44,7 @@ const SelectFilterType = ({
         return prev
       },
       {} as { [label: string]: { name: string | React.ReactNode } },
-    )
-  }, [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper])
+    ), [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper])
 
   // only show close button  settings is not on default
   const onSelectDeleteFn = useMemo(() => {

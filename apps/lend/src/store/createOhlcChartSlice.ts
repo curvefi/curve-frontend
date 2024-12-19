@@ -682,8 +682,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
         )
         const controllerEventsData: LlammaControllerApiResponse = await controllerEventsRes.json()
 
-        const formattedLiquidityEventsData = controllerEventsData.data.map((data) => {
-          return {
+        const formattedLiquidityEventsData = controllerEventsData.data.map((data) => ({
             ...data,
             deposit:
               data.deposit === null
@@ -700,8 +699,7 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
                     amount_borrowed: data.withdrawal.amount_borrowed,
                     amount_collateral: data.withdrawal.amount_collateral,
                   },
-          }
-        })
+          }))
 
         if (controllerEventsData) {
           set(

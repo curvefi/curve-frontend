@@ -17,8 +17,7 @@ const SelectFilter = ({
   list: ListItem[]
   filterKey: string
   updatePath: (updatedSearchParams: Partial<SearchParams>) => void
-}) => {
-  return (
+}) => (
     <Select
       aria-label={t`Select type`}
       items={list}
@@ -28,15 +27,12 @@ const SelectFilter = ({
       onSelectionChange={(filterKey) => updatePath({ filterKey: filterKey as Filter })}
       onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: Filter.all }) : undefined}
     >
-      {({ id, displayName }: ListItem) => {
-        return (
+      {({ id, displayName }: ListItem) => (
           <Item key={id} textValue={id}>
             <strong>{displayName}</strong>
           </Item>
-        )
-      }}
+        )}
     </Select>
   )
-}
 
 export default SelectFilter

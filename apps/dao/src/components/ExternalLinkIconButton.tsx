@@ -10,8 +10,7 @@ type ExternalLinkIconButtonProps = {
   children?: React.ReactNode
 }
 
-const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => {
-  return (
+const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
     <TooltipButton
       noWrap
       tooltip={tooltip}
@@ -23,7 +22,6 @@ const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconBut
       }
     />
   )
-}
 
 const StyledExternalLink = styled(ExternalLink)`
   display: flex;

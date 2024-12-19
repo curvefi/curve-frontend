@@ -17,8 +17,7 @@ const DetailInfoExchangeRate = ({
   exchangeRates?: ExchangeRate[] | null
   loading: boolean
   isMultiLine?: boolean
-}) => {
-  return (
+}) => (
     <StyledDetailInfo
       {...rest}
       label={
@@ -31,8 +30,7 @@ const DetailInfoExchangeRate = ({
     >
       {Array.isArray(exchangeRates) && exchangeRates.length > 0 ? (
         <Box grid>
-          {exchangeRates.map(({ from, to, value, label }) => {
-            return (
+          {exchangeRates.map(({ from, to, value, label }) => (
               <Box key={label}>
                 <Chip size="xs" fontVariantNumeric="tabular-nums" opacity={0.7}>
                   {label}
@@ -51,15 +49,13 @@ const DetailInfoExchangeRate = ({
                   {formatNumber(value, { ...getFractionDigitsOptions(value, 5) })}
                 </Chip>
               </Box>
-            )
-          })}
+            ))}
         </Box>
       ) : (
         '-'
       )}
     </StyledDetailInfo>
   )
-}
 
 const StyledDetailInfo = styled(DetailInfo)`
   align-items: flex-start;

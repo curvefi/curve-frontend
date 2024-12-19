@@ -13,12 +13,10 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chainId, coins }) => {
-  return (
+const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chainId, coins }) => (
     <>
       {coins &&
-        llammaControllerData.map((transaction, index) => {
-          return (
+        llammaControllerData.map((transaction, index) => (
             <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
               <LiquidityEvent
                 href={networks[chainId].scanTxPath(transaction.transaction_hash)}
@@ -95,11 +93,9 @@ const LiquidityData: React.FC<LiqudityDataProps> = ({ llammaControllerData, chai
                 </Tooltip>
               </TimestampColumn>
             </TransactionRow>
-          )
-        })}
+          ))}
     </>
   )
-}
 
 const TransactionRow = styled.div`
   display: flex;

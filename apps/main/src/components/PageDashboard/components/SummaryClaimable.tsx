@@ -73,8 +73,7 @@ const SummaryClaimable: React.FC<Props> = ({ title }) => {
           </SummarySpinnerWrapper>
         )}
         {tokens &&
-          Object.entries(tokens).map(([token, { symbol, total, price }]) => {
-            return (
+          Object.entries(tokens).map(([token, { symbol, total, price }]) => (
               <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
                 <Chip
                   size="md"
@@ -84,8 +83,7 @@ const SummaryClaimable: React.FC<Props> = ({ title }) => {
                   {formatNumber(total)}
                 </Chip>
               </StyledStats>
-            )
-          })}
+            ))}
         <Stats isOneLine label={t`USD Total`}>
           <Chip isBold isNumber size="md">
             ≈ {formatNumber(totalUsd, FORMAT_OPTIONS.USD)}

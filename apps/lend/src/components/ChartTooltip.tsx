@@ -5,13 +5,11 @@ import { breakpoints } from '@/ui/utils/responsive'
 import Box from '@/ui/Box'
 import Icon from '@/ui/Icon'
 
-const ChartTooltip = ({ children }: { children: React.ReactNode }) => {
-  return (
+const ChartTooltip = ({ children }: { children: React.ReactNode }) => (
     <Wrapper grid gridRowGap={2}>
       {children}
     </Wrapper>
   )
-}
 
 export const Wrapper = styled(Box)`
   background-color: var(--tooltip--background-color);

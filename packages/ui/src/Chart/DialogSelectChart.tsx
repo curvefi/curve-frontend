@@ -12,8 +12,7 @@ type Props = {
   setChartSelectedIndex: (index: number) => void
 }
 
-const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedIndex, isDisabled }: Props) => {
-  return (
+const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedIndex, isDisabled }: Props) => (
     <>
       {selectChartList.length === 1 ? (
         <ChartsTitle>{selectChartList[0]?.label ?? `Loading`}</ChartsTitle>
@@ -37,7 +36,6 @@ const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedInd
       )}
     </>
   )
-}
 
 const StyledPopover2Dialog = styled(Popover2Dialog)`
   display: flex;

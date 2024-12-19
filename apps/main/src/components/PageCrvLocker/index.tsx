@@ -65,8 +65,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     <>
       <StyledTabSlide activeIdx={selectedTabIdx}>
         <SlideTabs ref={tabsRef}>
-          {TABS.map(({ formType, label }, idx) => {
-            return (
+          {TABS.map(({ formType, label }, idx) => (
               <SlideTab
                 key={label}
                 tabLeft={tabPositions[idx]?.left}
@@ -76,8 +75,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
                 tabIdx={idx}
                 label={label}
               />
-            )
-          })}
+            ))}
         </SlideTabs>
       </StyledTabSlide>
 

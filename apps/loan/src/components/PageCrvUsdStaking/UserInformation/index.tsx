@@ -13,8 +13,7 @@ type UserInformationProps = {
   className?: string
 }
 
-const UserInformation = ({ className }: UserInformationProps) => {
-  return (
+const UserInformation = ({ className }: UserInformationProps) => (
     <UserInformationWrapper className={className}>
       <Title>{t`How to get yield with Savings crvUSD?`}</Title>
       <TextContainerRow>
@@ -68,7 +67,6 @@ const UserInformation = ({ className }: UserInformationProps) => {
       </StyledExternalLink>
     </UserInformationWrapper>
   )
-}
 
 const UserInformationWrapper = styled.div`
   display: flex;

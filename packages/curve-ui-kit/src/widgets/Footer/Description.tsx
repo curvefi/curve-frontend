@@ -11,8 +11,7 @@ import { RCLogoSM } from 'ui/src/images'
 
 const { IconSize, Spacing, FontWeight } = SizesAndSpaces
 
-export const Description = () => {
-  return (
+export const Description = () => (
     <Box
       sx={{
         display: 'flex',
@@ -63,4 +62,3 @@ export const Description = () => {
       </Typography>
     </Box>
   )
-}

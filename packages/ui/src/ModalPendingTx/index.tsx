@@ -12,8 +12,7 @@ type Props = {
   pendingMessage: string
 }
 
-const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => {
-  return (
+const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
     <PendingContainer>
       <PendingWrapper>
         <PendingMessage>{pendingMessage}</PendingMessage>
@@ -26,7 +25,6 @@ const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => {
       </PendingWrapper>
     </PendingContainer>
   )
-}
 
 const PendingContainer = styled.div`
   position: absolute;

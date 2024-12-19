@@ -13,8 +13,7 @@ const DetailInfoPriceImpact = ({
   loading: boolean
   priceImpact: number | null
   isHighImpact: boolean | null
-}) => {
-  return (
+}) => (
     <DetailInfo
       isBold={isHighImpact}
       variant={isHighImpact ? 'error' : undefined}
@@ -30,6 +29,5 @@ const DetailInfoPriceImpact = ({
       {formatNumber(priceImpact, { style: 'percent', ...getFractionDigitsOptions(priceImpact, 5) })}
     </DetailInfo>
   )
-}
 
 export default DetailInfoPriceImpact

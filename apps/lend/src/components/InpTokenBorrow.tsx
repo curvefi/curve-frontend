@@ -39,8 +39,7 @@ const InpTokenBorrow = ({
   maxRecv: string | undefined
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
-}) => {
-  return (
+}) => (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -71,6 +70,5 @@ const InpTokenBorrow = ({
       )}
     </Box>
   )
-}
 
 export default InpTokenBorrow

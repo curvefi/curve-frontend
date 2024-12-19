@@ -14,8 +14,7 @@ import {
 import { ExternalLink } from '@/ui/Link'
 import Box from '@/ui/Box'
 
-const RiskDisclaimer = () => {
-  return (
+const RiskDisclaimer = () => (
     <RiskWrapper>
       <RiskTitle>{t`Curve Pool Risk Disclosures for Liquidity Providers`}</RiskTitle>
       <RiskSection>
@@ -144,7 +143,6 @@ const RiskDisclaimer = () => {
       </RiskSection>
     </RiskWrapper>
   )
-}
 
 const StyledExternalLink = styled(ExternalLink)`
   color: var(--link--color);

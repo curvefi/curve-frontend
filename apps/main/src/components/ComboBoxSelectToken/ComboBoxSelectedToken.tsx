@@ -15,8 +15,7 @@ const ComboBoxSelectedToken = ({
   imageBaseUrl: string
   selected: Token
   testId: string | undefined
-}) => {
-  return (
+}) => (
     <>
       <TokenIconWrapper>
         <TokenIcon
@@ -34,7 +33,6 @@ const ComboBoxSelectedToken = ({
       </LabelTextWrapper>
     </>
   )
-}
 
 const AddressChip = styled(Chip)`
   margin-top: var(--spacing-1);

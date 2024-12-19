@@ -12,8 +12,7 @@ type Props = {
   setCurrentData: (data: string) => void
 }
 
-const DialogSelect = ({ currentData, data, setCurrentData, isDisabled, label }: Props) => {
-  return (
+const DialogSelect = ({ currentData, data, setCurrentData, isDisabled, label }: Props) => (
     <Popover
       buttonProps={{ isDisabled }}
       placement="bottom"
@@ -29,7 +28,6 @@ const DialogSelect = ({ currentData, data, setCurrentData, isDisabled, label }: 
       </StyledPopover2Dialog>
     </Popover>
   )
-}
 
 const StyledDropdownLabel = styled.h3`
   font-size: var(--font-size-2);

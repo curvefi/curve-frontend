@@ -4,8 +4,7 @@ import ChartBandBalancesSettingsContent from '@/components/ChartBandBalances/Cha
 import Icon from '@/ui/Icon'
 import Popover, { Popover2Dialog } from '@/ui/Popover2'
 
-const ChartBandBalancesSettings = () => {
-  return (
+const ChartBandBalancesSettings = () => (
     <Popover
       placement="bottom end"
       offset={0}
@@ -17,6 +16,5 @@ const ChartBandBalancesSettings = () => {
       </Popover2Dialog>
     </Popover>
   )
-}
 
 export default ChartBandBalancesSettings

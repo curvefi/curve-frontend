@@ -89,9 +89,7 @@ const helpers = {
       })
     return results
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),
@@ -353,12 +351,8 @@ const pool = {
 
     return resp
   },
-  poolTokens: (p: Pool, isWrapped: boolean) => {
-    return isWrapped ? p.wrappedCoins : p.underlyingCoins
-  },
-  poolTokenAddresses: (p: Pool, isWrapped: boolean) => {
-    return isWrapped ? p.wrappedCoinAddresses : p.underlyingCoinAddresses
-  },
+  poolTokens: (p: Pool, isWrapped: boolean) => isWrapped ? p.wrappedCoins : p.underlyingCoins,
+  poolTokenAddresses: (p: Pool, isWrapped: boolean) => isWrapped ? p.wrappedCoinAddresses : p.underlyingCoinAddresses,
 }
 
 const router = {

@@ -15,8 +15,7 @@ const AppFormHeader = ({
   activeFormKey: string
   handleClick(formKey: string): void
   showMenuButton?: boolean
-}) => {
-  return (
+}) => (
     <Header>
       {formTypes.length === 1 ? (
         <>
@@ -46,7 +45,6 @@ const AppFormHeader = ({
       {formTypes.length === 1 && <IconButton hidden />}
     </Header>
   )
-}
 
 const Header = styled.header`
   display: flex;

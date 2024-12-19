@@ -8,8 +8,7 @@ type Props = {
   onClick?: (e?: React.MouseEvent) => void
 }
 
-const ErrorMessage = ({ message, onClick }: Props) => {
-  return (
+const ErrorMessage = ({ message, onClick }: Props) => (
     <>
       <Message>{message}</Message>
       {onClick && (
@@ -19,7 +18,6 @@ const ErrorMessage = ({ message, onClick }: Props) => {
       )}
     </>
   )
-}
 
 const Message = styled.p`
   font-weight: var(--semi-bold);

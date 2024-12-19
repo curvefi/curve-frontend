@@ -13,8 +13,7 @@ type Props = {
   onClose?: () => void
 }
 
-const TxInfoBar = ({ description, txHash, onClose }: Props) => {
-  return (
+const TxInfoBar = ({ description, txHash, onClose }: Props) => (
     <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>
       <InfoTitle>
         {description}{' '}
@@ -37,7 +36,6 @@ const TxInfoBar = ({ description, txHash, onClose }: Props) => {
       )}
     </StyledInfoBar>
   )
-}
 
 const StyledIconButton = styled(IconButton)`
   min-height: auto;

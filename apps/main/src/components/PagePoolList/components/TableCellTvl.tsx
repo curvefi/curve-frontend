@@ -8,8 +8,7 @@ type Props = {
   tvl: Tvl | undefined
 }
 
-const TableCellTvl = ({ isHighLight, tvlCached, tvl }: Props) => {
-  return (
+const TableCellTvl = ({ isHighLight, tvlCached, tvl }: Props) => (
     <Chip
       isBold={isHighLight}
       size="md"
@@ -19,6 +18,5 @@ const TableCellTvl = ({ isHighLight, tvlCached, tvl }: Props) => {
       {formatNumber(tvl?.value ?? tvlCached?.value, { currency: 'USD', notation: 'compact' })}
     </Chip>
   )
-}
 
 export default TableCellTvl

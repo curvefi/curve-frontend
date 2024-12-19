@@ -4,12 +4,10 @@ import useStore from '@/store/useStore'
 
 const useTokensNameMapper = (rChainId: ChainId | '') => {
   const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {})
-  const tokensNameMapperStr = useMemo(() => {
-    return Object.keys(tokensNameMapper).reduce((str, address) => {
+  const tokensNameMapperStr = useMemo(() => Object.keys(tokensNameMapper).reduce((str, address) => {
       str += address.charAt(5)
       return str
-    }, '')
-  }, [tokensNameMapper])
+    }, ''), [tokensNameMapper])
   return { tokensNameMapper, tokensNameMapperStr }
 }
 

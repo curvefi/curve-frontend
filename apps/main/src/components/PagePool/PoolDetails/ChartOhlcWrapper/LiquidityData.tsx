@@ -23,9 +23,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
       {lpEventsData
         .filter((transaction) => {
           if (
-            transaction.token_amounts.reduce((acc, data) => {
-              return acc + data
-            }, 0) !== 0
+            transaction.token_amounts.reduce((acc, data) => acc + data, 0) !== 0
           )
             return transaction
         })

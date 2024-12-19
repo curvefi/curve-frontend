@@ -29,9 +29,7 @@ const ManageGauge: React.FC<{ poolId: string; chainId: ChainId }> = ({ poolId, c
     poolId,
   })
 
-  const isGaugeManager = useMemo(() => {
-    return !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress)
-  }, [gaugeManager, signerAddress])
+  const isGaugeManager = useMemo(() => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress), [gaugeManager, signerAddress])
 
   const isRewardsDistributor = useMemo(
     () =>

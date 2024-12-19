@@ -19,8 +19,7 @@ const SelectIntegrationTags = ({
   filterKey: string
   formStatus: FormStatus
   updatePath({ filterKey, filterNetworkId }: { filterKey?: React.Key; filterNetworkId?: React.Key }): void
-}) => {
-  return (
+}) => (
     <Select
       aria-label={t`Select tag`}
       items={integrationsTagsList}
@@ -53,7 +52,6 @@ const SelectIntegrationTags = ({
       }}
     </Select>
   )
-}
 
 SelectIntegrationTags.displayName = 'SelectIntegrationTags'
 

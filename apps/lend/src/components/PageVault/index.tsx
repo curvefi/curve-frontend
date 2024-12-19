@@ -64,8 +64,7 @@ const Vault = (pageProps: PageContentProps) => {
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label, formType }, idx) => {
-                return (
+              {tabs.map(({ label, formType }, idx) => (
                   <AppFormSlideTab
                     key={label}
                     disabled={selectedTabIdx === idx}
@@ -76,8 +75,7 @@ const Vault = (pageProps: PageContentProps) => {
                     tabIdx={idx}
                     label={label}
                   />
-                )
-              })}
+                ))}
             </SlideTabs>
           </SlideTabsWrapper>
         )}

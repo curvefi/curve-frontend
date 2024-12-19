@@ -13,8 +13,7 @@ interface SubNavProps {
   setNavChange: (key: string) => void
 }
 
-const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => {
-  return (
+const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => (
     <NavWrapper nested={nested} className={className}>
       {navItems.map((item) => (
         <ButtonWrapper key={item.key}>
@@ -29,7 +28,6 @@ const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nest
       ))}
     </NavWrapper>
   )
-}
 
 const NavWrapper = styled(Box)<{ nested?: boolean }>`
   display: flex;

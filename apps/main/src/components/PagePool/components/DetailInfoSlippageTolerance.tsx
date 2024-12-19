@@ -9,8 +9,7 @@ import DetailInfo from '@/ui/DetailInfo'
 import AdvancedSettings from '@/components/AdvancedSettings'
 import Icon from '@/ui/Icon'
 
-const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => {
-  return (
+const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (
     <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
       <StyledAdvancedSettings
         {...props}
@@ -23,7 +22,6 @@ const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettings
       />
     </StyledDetailInfo>
   )
-}
 
 const StyledAdvancedSettings = styled(AdvancedSettings)`
   justify-content: flex-end;

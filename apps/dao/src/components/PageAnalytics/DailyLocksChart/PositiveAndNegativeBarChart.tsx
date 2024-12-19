@@ -10,8 +10,7 @@ type PositiveAndNegativeBarChartProps = {
   height?: number
 }
 
-const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = ({ data, height = 500 }) => {
-  return (
+const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = ({ data, height = 500 }) => (
     <ResponsiveContainer width="100%" height={height} debounce={200}>
       <BarChart
         width={500}
@@ -51,6 +50,5 @@ const PositiveAndNegativeBarChart: React.FC<PositiveAndNegativeBarChartProps> = 
       </BarChart>
     </ResponsiveContainer>
   )
-}
 
 export default PositiveAndNegativeBarChart

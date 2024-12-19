@@ -122,8 +122,7 @@ const IntegrationsComp = ({
         </NoResultWrapper>
       ) : (
         <IntegrationsWrapper flexAlignItems="flex-start" grid>
-          {(parsedResults ?? []).map((app, idx) => {
-            return (
+          {(parsedResults ?? []).map((app, idx) => (
               <IntegrationAppComp
                 key={`${app.name}_${idx}`}
                 {...app}
@@ -145,8 +144,7 @@ const IntegrationsComp = ({
                 }
                 imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
               />
-            )
-          })}
+            ))}
         </IntegrationsWrapper>
       )}
     </>

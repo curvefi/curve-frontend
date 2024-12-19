@@ -11,8 +11,7 @@ type Props = {
   maxSlippage: string
 }
 
-const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
-  return (
+const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => (
     <StyledDetailInfo label={t`Slippage tolerance:`}>
       <StyledAdvancedSettings
         maxSlippage={maxSlippage}
@@ -25,7 +24,6 @@ const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
       />
     </StyledDetailInfo>
   )
-}
 
 const StyledAdvancedSettings = styled(AdvancedSettings)`
   justify-content: flex-end;

@@ -72,9 +72,7 @@ const TableRowMobile = ({
             <TokenLabel showAlert {...props} type="collateral" onClick={handleCellClick} />
             <IconButton
               onClick={() =>
-                setShowDetail((prevState) => {
-                  return prevState === collateralId ? '' : collateralId
-                })
+                setShowDetail((prevState) => prevState === collateralId ? '' : collateralId)
               }
             >
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}

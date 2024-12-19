@@ -59,12 +59,10 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
         .handleError((error, { llamma }) => {
           log(`Unable to get details ${llamma.id}, ${error}`)
         })
-        .process(async ({ llamma }) => {
-          return Promise.all([
+        .process(async ({ llamma }) => Promise.all([
             networks[chainId].api.detailInfo.loanPartialInfo(llamma),
             networks[chainId].api.loanCreate.exists(llamma, curve.signerAddress),
-          ])
-        })
+          ]))
 
       // mapper
       const loansDetailsMapper = cloneDeep(get()[sliceKey].detailsMapper ?? {})

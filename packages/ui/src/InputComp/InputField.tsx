@@ -21,8 +21,7 @@ const InputField = ({
   message?: string
   testId?: string
   onChange?: React.ChangeEventHandler<HTMLInputElement>
-}) => {
-  return (
+}) => (
     <>
       <Box className={className}>
         <InputLabel {...labelProps} testId={testId} />
@@ -31,7 +30,6 @@ const InputField = ({
       {message && <InputMessage message={message} />}
     </>
   )
-}
 
 const StyledInput = styled(Input)`
   height: 100%;

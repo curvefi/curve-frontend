@@ -11,8 +11,7 @@ type TokenAlert = {
   message: string | React.ReactNode
 }
 
-const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null => {
-  return useMemo(() => {
+const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null => useMemo(() => {
     const maAlert: TokenAlert = {
       alertType: 'info',
       isInformationOnly: true,
@@ -41,7 +40,6 @@ const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null => {
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
     return tokenAddressWithAlert ? alerts[tokenAddressWithAlert] : null
   }, [tokenAddressAll])
-}
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;

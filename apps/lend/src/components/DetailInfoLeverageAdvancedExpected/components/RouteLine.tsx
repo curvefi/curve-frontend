@@ -3,15 +3,13 @@ import styled from 'styled-components'
 
 import { RCCircle } from '@/images'
 
-const RouteLine = () => {
-  return (
+const RouteLine = () => (
     <RouteTravelDecor>
       <CircleIcon />
       <RouteTravelBar></RouteTravelBar>
       <CircleIcon />
     </RouteTravelDecor>
   )
-}
 
 const RouteTravelBar = styled.div`
   border-left: 2px dotted;

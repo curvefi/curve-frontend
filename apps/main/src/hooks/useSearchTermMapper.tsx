@@ -40,8 +40,7 @@ export function parseSearchTermMapper(
   return parsed
 }
 
-const useSearchTermMapper = (): SearchTermMapper => {
-  return {
+const useSearchTermMapper = (): SearchTermMapper => ({
     'pool.name': {},
     'pool.wrappedCoins': {},
     'pool.underlyingCoins': {},
@@ -50,7 +49,6 @@ const useSearchTermMapper = (): SearchTermMapper => {
     'pool.address': { label: t`Pool` },
     'pool.gauge.address': { label: t`Gauge` },
     'pool.lpToken': { label: t`LP Token` },
-  }
-}
+  })
 
 export default useSearchTermMapper

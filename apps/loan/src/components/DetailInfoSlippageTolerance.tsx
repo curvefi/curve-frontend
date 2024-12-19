@@ -12,8 +12,7 @@ type Props = {
   noLabel?: boolean
 }
 
-const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
-  return (
+const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => (
     <StyledDetailInfo label={noLabel ? undefined : t`Slippage tolerance:`}>
       <StyledAdvancedSettings
         maxSlippage={maxSlippage}
@@ -26,7 +25,6 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
       />
     </StyledDetailInfo>
   )
-}
 
 const StyledAdvancedSettings = styled(AdvancedSettings)`
   justify-content: flex-end;

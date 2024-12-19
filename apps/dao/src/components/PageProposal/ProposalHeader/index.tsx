@@ -11,8 +11,7 @@ type ProposalHeaderProps = {
   voteType: string
 }
 
-const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => {
-  return (
+const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => (
     <Wrapper>
       <SmallLabel
         className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
@@ -38,7 +37,6 @@ const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteT
       />
     </Wrapper>
   )
-}
 
 const Wrapper = styled.div`
   display: flex;

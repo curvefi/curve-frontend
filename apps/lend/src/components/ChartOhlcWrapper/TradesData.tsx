@@ -16,8 +16,7 @@ const TradesData: React.FC<TradesDataProps> = ({ lendTradesData, chainId }) => {
 
   return (
     <>
-      {lendTradesData.map((transaction, index) => {
-        return (
+      {lendTradesData.map((transaction, index) => (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
             <Event href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
               <TradeFrom>
@@ -65,8 +64,7 @@ const TradesData: React.FC<TradesDataProps> = ({ lendTradesData, chainId }) => {
               </Tooltip>
             </TimestampColumn>
           </TransactionRow>
-        )
-      })}
+        ))}
     </>
   )
 }

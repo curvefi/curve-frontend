@@ -18,8 +18,7 @@ interface PoolParametersDaoFeesProps {
   isEymaPools: boolean
 }
 
-const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => {
-  return (
+const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => (
     <Item>
       {t`DAO fee:`}{' '}
       {adminFee && (
@@ -37,7 +36,6 @@ const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => {
       )}
     </Item>
   )
-}
 
 const PoolParametersDaoFees: React.FC<PoolParametersDaoFeesProps> = ({ adminFee, isEymaPools }) => {
   if (typeof adminFee === 'undefined') {

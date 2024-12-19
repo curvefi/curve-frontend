@@ -18,8 +18,7 @@ const TableCellClaimables: React.FC<Props> = ({
   claimableOthers,
   claimablesTotalUsd,
   isMobile,
-}) => {
-  return (
+}) => (
     <>
       {claimableCrv?.map(({ symbol, amount }, idx) => {
         const formatted = `${formatNumber(amount)} CRV`
@@ -40,6 +39,5 @@ const TableCellClaimables: React.FC<Props> = ({
       {isMobile && !claimableCrv && claimableOthers?.length === 0 && t`None`}
     </>
   )
-}
 
 export default TableCellClaimables

@@ -64,8 +64,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
-      {columnKeys.map((columnKey, idx) => {
-        return (
+      {columnKeys.map((columnKey, idx) => (
           <React.Fragment key={`tRow${columnKey}${idx}`}>
             {columnKey === COLUMN_KEYS.inPool && (
               <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
@@ -152,8 +151,7 @@ const TableRow: FunctionComponent<TableRowProps> = ({
               </Td>
             )}
           </React.Fragment>
-        )
-      })}
+        ))}
     </LazyItem>
   )
 }

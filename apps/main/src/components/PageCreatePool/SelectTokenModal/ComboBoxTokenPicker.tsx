@@ -137,9 +137,7 @@ const ComboBoxTokenPicker = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterValue, tokens, disabledKeys, filterBasepools])
 
-  const selectedToken = useMemo(() => {
-    return selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null
-  }, [selectedAddress, tokens])
+  const selectedToken = useMemo(() => selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null, [selectedAddress, tokens])
 
   const handleClose = () => {
     setFilterValue('')

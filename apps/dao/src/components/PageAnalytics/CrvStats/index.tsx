@@ -103,9 +103,7 @@ const CrvStats: React.FC = () => {
   )
 }
 
-const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) => {
-  return (((fees / totalVeCrv) * 52) / crvPrice) * 100
-}
+const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) => (((fees / totalVeCrv) * 52) / crvPrice) * 100
 
 const Wrapper = styled(Box)`
   display: flex;

@@ -24,8 +24,7 @@ const ExpectedSummary = ({
   label: React.ReactNode
   swapFromSymbol: string
   swapToSymbol: string
-}) => {
-  return (
+}) => (
     <Wrapper>
       {label}
       {swapToAmounts.map((amount, idx) => {
@@ -52,7 +51,6 @@ const ExpectedSummary = ({
       </Item>
     </Wrapper>
   )
-}
 
 const Wrapper = styled.section`
   border-bottom: 1px solid var(--button_outlined--border-color);

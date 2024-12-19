@@ -24,8 +24,7 @@ const TableButtonFilters = ({
   isLoading?: boolean
   resultsLength?: number | undefined
   updateRouteFilterKey(filterKey: string): void
-}) => {
-  return (
+}) => (
     <Wrapper flex flexAlignItems="center" className={className}>
       {filters &&
         Object.keys(filters).map((k) => {
@@ -55,7 +54,6 @@ const TableButtonFilters = ({
         })}
     </Wrapper>
   )
-}
 
 const FilterSpinner = styled(Spinner)`
   margin-left: var(--spacing-1);

@@ -4,8 +4,7 @@ import { t } from '@lingui/macro'
 import Box from '@/ui/Box'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 
-const useTitleMapper = (): TitleMapper => {
-  return {
+const useTitleMapper = (): TitleMapper => ({
     isInMarket: { title: '' },
     name: { title: t`Markets` },
     available: { title: t`Available` },
@@ -61,7 +60,6 @@ const useTitleMapper = (): TitleMapper => {
       tooltipProps: { minWidth: '300px' },
     },
     llammaBalances: { title: t`LLAMMA Balances` },
-  }
-}
+  })
 
 export default useTitleMapper

@@ -107,8 +107,7 @@ const FormCompensation = ({
   return (
     <Box grid gridRowGap={2}>
       {error && <AlertFormError errorKey={error} />}
-      {Object.entries(groupedContracts).map(([poolId, contracts]) => {
-        return (
+      {Object.entries(groupedContracts).map(([poolId, contracts]) => (
           <Box key={poolId}>
             <Compensations
               rChainId={rChainId}
@@ -121,8 +120,7 @@ const FormCompensation = ({
               haveBalancesError={!!error}
             />
           </Box>
-        )
-      })}
+        ))}
     </Box>
   )
 }

@@ -19,8 +19,7 @@ type Props = {
   handleRadioGroupChange(updatedSortValue: string, cb: (() => void) | undefined): void
 }
 
-const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => {
-  return (
+const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => (
     <>
       <SortHeader>
         <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
@@ -36,8 +35,7 @@ const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, t
             <RadioWrapper key={key}>
               {tableLabel}
               <RadiosWrapper>
-                {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => {
-                  return (
+                {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
                     <StyledRadio
                       key={orderKey}
                       aria-label={`Sort by ${tableLabel} ${label}`}
@@ -47,8 +45,7 @@ const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, t
                     >
                       {IconComp}
                     </StyledRadio>
-                  )
-                })}
+                  ))}
               </RadiosWrapper>
             </RadioWrapper>
           )
@@ -56,7 +53,6 @@ const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, t
       </RadioGroup>
     </>
   )
-}
 
 const SortHeader = styled.header`
   display: flex;

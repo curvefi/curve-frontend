@@ -11,8 +11,7 @@ type Props = {
   setCurrentTimeOption: (timeOption: TimeOptions) => void
 }
 
-const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: Props) => {
-  return (
+const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: Props) => (
     <Popover
       buttonProps={{ isDisabled }}
       placement="bottom"
@@ -27,7 +26,6 @@ const DialogSelect = ({ currentTimeOption, setCurrentTimeOption, isDisabled }: P
       </StyledPopover2Dialog>
     </Popover>
   )
-}
 
 const StyledPopover2Dialog = styled(Popover2Dialog)`
   display: flex;

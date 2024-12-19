@@ -7,8 +7,7 @@ import { formatNumber } from '@/ui/utils'
 import Chip from '@/ui/Typography/Chip'
 import Icon from '@/ui/Icon'
 
-const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => {
-  return (
+const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?: boolean }) => (
     <VolatileChip
       size="md"
       isBold={isBold}
@@ -18,7 +17,6 @@ const ChipVolatileBaseApy = ({ isBold, showIcon }: { isBold?: boolean; showIcon?
       {formatNumber(5000)}+% {showIcon && <Icon className="svg-tooltip" size={16} name="InformationSquare" />}
     </VolatileChip>
   )
-}
 
 const VolatileChip = styled(Chip)`
   color: var(--danger-400);

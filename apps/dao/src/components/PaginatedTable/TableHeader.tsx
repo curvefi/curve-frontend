@@ -19,8 +19,7 @@ const TableHeader = <T,>({
   setSortBy,
   gridTemplateColumns,
   smallScreenBreakpoint,
-}: TableHeaderProps<T>) => {
-  return (
+}: TableHeaderProps<T>) => (
     <TableHeaderWrapper noTitle={title === undefined} smallScreenBreakpoint={smallScreenBreakpoint}>
       {title && <TableTitle>{title}</TableTitle>}
       <TableContainer columns={columns.length} gridTemplateColumns={gridTemplateColumns}>
@@ -41,7 +40,6 @@ const TableHeader = <T,>({
       </TableContainer>
     </TableHeaderWrapper>
   )
-}
 
 const TableHeaderWrapper = styled.div<{ noTitle: boolean; smallScreenBreakpoint?: number }>`
   background-color: var(--box--secondary--content--background-color);

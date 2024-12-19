@@ -36,11 +36,9 @@ const RouterSwapAlerts = ({
 
   const toUsdRate = usdRatesMapper[toAddress]
 
-  const usdToAmount = useMemo(() => {
-    return !isUndefined(toUsdRate) && !isNaN(toUsdRate)
+  const usdToAmount = useMemo(() => !isUndefined(toUsdRate) && !isNaN(toUsdRate)
       ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
-      : ''
-  }, [formValues.toAmount, toUsdRate])
+      : '', [formValues.toAmount, toUsdRate])
 
   return (
     <>

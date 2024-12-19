@@ -10,8 +10,7 @@ import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 import CopyIconButton from '@/components/CopyIconButton'
 import { ExternalLink } from '@/ui/Link'
 
-const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
-  return (
+const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => (
     <Wrapper className={className}>
       <Box flex flexColumn>
         {gaugeData.pool && (
@@ -83,7 +82,6 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       </Box>
     </Wrapper>
   )
-}
 
 const Wrapper = styled(Box)`
   display: flex;

@@ -72,8 +72,7 @@ const DetailInfoCrvIncentives = ({
 
   return (
     <>
-      {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => {
-        return (
+      {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => (
           <DetailInfo
             key={`${label}${idx}`}
             loading={aprCurr === ''}
@@ -92,8 +91,7 @@ const DetailInfoCrvIncentives = ({
               </>
             )}{' '}
           </DetailInfo>
-        )
-      })}
+        ))}
     </>
   )
 }

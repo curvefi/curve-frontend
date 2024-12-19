@@ -61,8 +61,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
           </Box>
 
           <BaseApyItems as="ul">
-            {baseAPYS.map(({ label, value }) => {
-              return (
+            {baseAPYS.map(({ label, value }) => (
                 <BaseApyItem
                   as="li"
                   key={label}
@@ -83,8 +82,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
                     <strong title={value}>{formatNumber(value, FORMAT_OPTIONS.PERCENT)}</strong>
                   )}
                 </BaseApyItem>
-              )
-            })}
+              ))}
           </BaseApyItems>
         </RewardsContainer>
       )}
@@ -111,8 +109,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
             )}
 
             {haveOther &&
-              other?.map(({ apy, symbol, tokenAddress }) => {
-                return (
+              other?.map(({ apy, symbol, tokenAddress }) => (
                   <StyledStyledStats key={symbol} flex flexJustifyContent="space-between" padding>
                     <Box flex flexAlignItems="center">
                       <StyledExternalLink href={chainId ? scanTokenPath(tokenAddress) : ''}>
@@ -129,8 +126,7 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
                       {formatNumber(apy, FORMAT_OPTIONS.PERCENT)}{' '}
                     </Chip>
                   </StyledStyledStats>
-                )
-              })}
+                ))}
           </Box>
           {!isLite && (
             <BoostingLink>

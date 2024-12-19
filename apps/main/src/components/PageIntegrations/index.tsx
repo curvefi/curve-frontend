@@ -86,9 +86,7 @@ const IntegrationsComp = ({
     }
   }, [integrationsTags, formValues.filterKey])
 
-  const integrationsTagsList = useMemo(() => {
-    return integrationsTags ? Object.entries(integrationsTags).map(([, v]) => v) : []
-  }, [integrationsTags])
+  const integrationsTagsList = useMemo(() => integrationsTags ? Object.entries(integrationsTags).map(([, v]) => v) : [], [integrationsTags])
 
   // update form if url have filter params
   useEffect(() => {
@@ -144,8 +142,7 @@ const IntegrationsComp = ({
         </NoResultWrapper>
       ) : (
         <IntegrationsWrapper flexAlignItems="flex-start" grid>
-          {(parsedResults ?? []).map((app, idx) => {
-            return (
+          {(parsedResults ?? []).map((app, idx) => (
               <IntegrationAppComp
                 key={`${app.name}_${idx}`}
                 {...app}
@@ -167,8 +164,7 @@ const IntegrationsComp = ({
                 }
                 imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
               />
-            )
-          })}
+            ))}
         </IntegrationsWrapper>
       )}
     </>

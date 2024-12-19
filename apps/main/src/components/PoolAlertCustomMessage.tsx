@@ -16,16 +16,14 @@ const PoolAlertCustomMessage = ({
   title: string
   titleIcon: React.ReactElement
   externalLinks: { label: string; url: string }[]
-}) => {
-  return (
+}) => (
     <MessageWrapper className={className} $isManyLinks={externalLinks.length > 2}>
       <Title>
         <CustomIconWrapper>{titleIcon}</CustomIconWrapper>
         {title}
       </Title>{' '}
       <MessageLinksWrapper>
-        {externalLinks.map(({ label, url }) => {
-          return (
+        {externalLinks.map(({ label, url }) => (
             <React.Fragment key={url}>
               <StyledChip isBold>
                 <StyledExternalLink href={url}>
@@ -33,12 +31,10 @@ const PoolAlertCustomMessage = ({
                 </StyledExternalLink>
               </StyledChip>{' '}
             </React.Fragment>
-          )
-        })}
+          ))}
       </MessageLinksWrapper>
     </MessageWrapper>
   )
-}
 
 const MessageWrapper = styled.div<{ $isManyLinks: boolean }>`
   display: flex;

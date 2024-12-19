@@ -10,8 +10,7 @@ type FeesBarChartProps = {
   height?: number
 }
 
-const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
-  return (
+const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => (
     <ResponsiveContainer width="100%" height={height} debounce={200}>
       <BarChart
         width={500}
@@ -50,6 +49,5 @@ const FeesBarChart: React.FC<FeesBarChartProps> = ({ data, height = 500 }) => {
       </BarChart>
     </ResponsiveContainer>
   )
-}
 
 export default FeesBarChart

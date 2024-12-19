@@ -16,8 +16,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   handleSearchClose: () => void
 }
 
-const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => {
-  return (
+const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => (
     <InputProvider
       className={className}
       grid
@@ -52,7 +51,6 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
       </ClearButton>
     </InputProvider>
   )
-}
 
 const ClearButton = styled(IconButton)`
   display: none;

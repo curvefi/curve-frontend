@@ -7,8 +7,7 @@ type SpinnerProps = {
   size?: number
 }
 
-const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => {
-  return (
+const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => (
     <StyledSpinner {...props} isDisabled={isDisabled} size={size}>
       <div></div>
       <div></div>
@@ -16,7 +15,6 @@ const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => {
       <div></div>
     </StyledSpinner>
   )
-}
 
 const spin = keyframes`
   0% {

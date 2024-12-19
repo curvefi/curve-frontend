@@ -68,8 +68,7 @@ const TableSortDialog: React.FC<Props> = ({ className = '', tableLabel }) => {
                 >
                   {tableLabel}{' '}
                   <RadiosWrapper grid gridTemplateColumns="repeat(2, auto)">
-                    {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => {
-                      return (
+                    {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
                         <StyledRadio
                           key={orderKey}
                           aria-label={`Sort by ${tableLabel} ${label}`}
@@ -79,8 +78,7 @@ const TableSortDialog: React.FC<Props> = ({ className = '', tableLabel }) => {
                         >
                           {IconComp}
                         </StyledRadio>
-                      )
-                    })}
+                      ))}
                   </RadiosWrapper>
                 </RadioWrapper>
               )

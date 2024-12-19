@@ -29,8 +29,7 @@ const SelectedLpTokenExpected = ({
   tokens: string[]
   tokensMapper: TokensMapper
   tokenAddresses: string[]
-}) => {
-  return (
+}) => (
     <Box as="ul" grid gridRowGap={2}>
       {tokenAddresses.map((tokenAddress, idx) => {
         const token = tokens[idx]
@@ -56,7 +55,6 @@ const SelectedLpTokenExpected = ({
       })}
     </Box>
   )
-}
 
 const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);

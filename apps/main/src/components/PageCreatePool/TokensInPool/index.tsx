@@ -62,13 +62,11 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const selTokens: CreateToken[] = useMemo(() => {
     if (basePoolsLoading) return []
 
-    const tokensArray = Object.entries(tokensMapper).map((token) => {
-      return {
+    const tokensArray = Object.entries(tokensMapper).map((token) => ({
         ...token[1]!,
         userAddedToken: false,
         basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
-      }
-    })
+      }))
 
     if (haveSigner && Object.keys(userBalances).length > 0 && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray

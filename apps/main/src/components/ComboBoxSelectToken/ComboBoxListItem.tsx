@@ -23,8 +23,7 @@ const ComboBoxListItem = ({
   Token & {
     selectedToken: string
     handleOnSelectChange(selectedToken: string): void
-  }) => {
-  return (
+  }) => (
     <li>
       <ItemButton
         variant="outlined"
@@ -44,7 +43,6 @@ const ComboBoxListItem = ({
       </ItemButton>
     </li>
   )
-}
 
 const ItemButton = styled(Button)`
   ${focusVisible};

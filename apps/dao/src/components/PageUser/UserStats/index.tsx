@@ -10,8 +10,7 @@ interface UserStatsProps {
   holdersLoading: boolean
 }
 
-const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
-  return (
+const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
     <Wrapper>
       <h4>{t`USER STATS`}</h4>
       <MetricsContainer>
@@ -52,7 +51,6 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => {
       </MetricsContainer>
     </Wrapper>
   )
-}
 
 const Wrapper = styled(Box)`
   display: flex;

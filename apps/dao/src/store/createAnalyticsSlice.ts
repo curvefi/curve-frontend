@@ -285,9 +285,7 @@ const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): Analy
           }),
         )
       } else {
-        const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => {
-          return b[sortBy] - a[sortBy]
-        })
+        const sortedEntries = Object.entries(allHolders).sort(([, a], [, b]) => b[sortBy] - a[sortBy])
 
         set(
           produce((state) => {

@@ -9,8 +9,7 @@ interface Props {
   mobile?: boolean
 }
 
-const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => {
-  return (
+const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => (
     <Container mobile={mobile}>
       {rewardItems.map((rewardItem: RewardsPool, index: number) => (
         <CampaignRewardsComp
@@ -21,7 +20,6 @@ const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) =>
       ))}
     </Container>
   )
-}
 
 const Container = styled.div<{ mobile: boolean }>`
   display: flex;

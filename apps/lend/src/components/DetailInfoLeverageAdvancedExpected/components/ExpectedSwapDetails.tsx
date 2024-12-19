@@ -93,14 +93,12 @@ const ExpectedSwapDetails = ({
                 </StyledSpinnerWrapper>
               )}
 
-              {data.map(({ hops, part }, hIdx) => {
-                return (
+              {data.map(({ hops, part }, hIdx) => (
                   <HopWrapper key={`hop${hIdx}`} $isFirst={hIdx === 0}>
                     <HopPart>
                       <span>{formatNumber(part, { style: 'percent' })}</span>
                     </HopPart>
-                    {hops.map((steps, idx) => {
-                      return (
+                    {hops.map((steps, idx) => (
                         <HopSteps
                           key={`route${hIdx}${idx}`}
                           fromTokenAddress={steps[0].fromTokenAddress}
@@ -108,11 +106,9 @@ const ExpectedSwapDetails = ({
                           showNextArrow={hops.length - 1 !== idx}
                           steps={steps}
                         />
-                      )
-                    })}
+                      ))}
                   </HopWrapper>
-                )
-              })}
+                ))}
             </HopsWrapper>
           </Box>
 
@@ -201,12 +197,10 @@ function _parseName(routeName: string, networkId: string) {
 }
 
 function _parseSteps(steps: T1inchRouteStep, networkId: string) {
-  return steps.map(({ name, part, fromTokenAddress, toTokenAddress }) => {
-    return {
+  return steps.map(({ name, part, fromTokenAddress, toTokenAddress }) => ({
       name: _parseName(name, networkId),
       part,
       fromTokenAddress,
       toTokenAddress,
-    }
-  })
+    }))
 }

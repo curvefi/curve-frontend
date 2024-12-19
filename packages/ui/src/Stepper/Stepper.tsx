@@ -10,8 +10,7 @@ import Box from 'ui/src/Box/Box'
 import StepAction from 'ui/src/Stepper/StepAction'
 import StepNumberConnector from 'ui/src/Stepper/StepNumberConnector'
 
-const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => {
-  return (
+const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => (
     <StepsContainer data-testid={`stepper-${testId}`}>
       {steps.map((step, i) => (
         <StepContainer key={i} flex flexAlignItems="center" flexJustifyContent="space-between" fillWidth>
@@ -21,7 +20,6 @@ const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => {
       ))}
     </StepsContainer>
   )
-}
 
 type StepNumberProps = {
   index: number
@@ -29,8 +27,7 @@ type StepNumberProps = {
   steps: Step[]
 }
 
-const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberProps>) => {
-  return (
+const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberProps>) => (
     <StepNumberContainer flex flexColumn flexAlignItems="center">
       <StepNumberConnector visible={index > 0} status={step.status} direction="up" />
       <Number className="custom-font" flex flexAlignItems="center" flexJustifyContent="center" status={step.status}>
@@ -50,7 +47,6 @@ const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberPr
       />
     </StepNumberContainer>
   )
-}
 
 const StepNumberContainer = styled(Box)`
   align-self: stretch;

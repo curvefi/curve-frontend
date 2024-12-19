@@ -8,8 +8,7 @@ type Props = {
   showInPoolColumn: boolean
 }
 
-const TableHeadMobile = ({ showInPoolColumn }: Props) => {
-  return (
+const TableHeadMobile = ({ showInPoolColumn }: Props) => (
     <>
       <colgroup>
         {showInPoolColumn && <ColInPool />}
@@ -22,7 +21,6 @@ const TableHeadMobile = ({ showInPoolColumn }: Props) => {
       </thead>
     </>
   )
-}
 
 TableHeadMobile.displayName = 'TableHeadMobile'
 

@@ -12,8 +12,7 @@ const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey 
   const { prices: currPrices, status } = userLoanDetails ?? {}
 
   // default to empty data to show chart
-  const liqRangeData = useMemo(() => {
-    return [
+  const liqRangeData = useMemo(() => [
       {
         name: '',
         currLabel: 'LR',
@@ -23,8 +22,7 @@ const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey 
         oraclePrice: loanDetailsPrices?.oraclePrice ?? '',
         oraclePriceBand: loanDetailsPrices?.oraclePriceBand ?? 0,
       },
-    ]
-  }, [currPrices, loanDetailsPrices])
+    ], [currPrices, loanDetailsPrices])
 
   return (
     <div>

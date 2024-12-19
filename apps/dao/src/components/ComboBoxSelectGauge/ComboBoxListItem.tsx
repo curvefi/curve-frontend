@@ -20,8 +20,7 @@ const ComboBoxListItem = ({
   GaugeFormattedData & {
     selectedGauge: GaugeFormattedData | null
     handleOnSelectChange(selectedGauge: string): void
-  }) => {
-  return (
+  }) => (
     <li>
       <ItemButton
         variant="outlined"
@@ -37,7 +36,6 @@ const ComboBoxListItem = ({
       </ItemButton>
     </li>
   )
-}
 
 const ItemButton = styled(Button)`
   ${focusVisible};

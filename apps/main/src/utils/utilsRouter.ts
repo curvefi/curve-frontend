@@ -25,9 +25,7 @@ export function useParsedParams(params: Params, chainIdNotRequired?: boolean) {
   let rSubdirectoryUseDefault = true
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
-    const foundSubdirectory = Object.keys(MAIN_ROUTE).find((k) => {
-      return MAIN_ROUTE[k as keyof typeof MAIN_ROUTE].substring(1).toLowerCase() === subdirectory.toLowerCase()
-    })
+    const foundSubdirectory = Object.keys(MAIN_ROUTE).find((k) => MAIN_ROUTE[k as keyof typeof MAIN_ROUTE].substring(1).toLowerCase() === subdirectory.toLowerCase())
     if (foundSubdirectory) {
       rSubdirectory = subdirectory
       rSubdirectoryUseDefault = false

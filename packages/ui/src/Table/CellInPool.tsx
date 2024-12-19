@@ -13,8 +13,7 @@ type Props = {
   tooltip: string
 }
 
-const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => {
-  return (
+const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => (
     <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
       {isIn && (
         <Chip tooltip={tooltip} tooltipProps={{ placement: 'top left' }}>
@@ -23,7 +22,6 @@ const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => {
       )}
     </Td>
   )
-}
 
 const Td = styled.td<{ $isIn?: boolean; $isMobile?: boolean }>`
   ${({ $isIn }) => {

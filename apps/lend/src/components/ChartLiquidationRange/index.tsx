@@ -152,8 +152,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }) => {
-                  return (
+                shape={({ x, y, width, height }) => (
                     <path
                       fill="url(#pattern-stripe)"
                       stroke={chartAxisColor}
@@ -167,8 +166,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
                       className="recharts-rectangle"
                       d={`M ${x},${y} h ${width} v ${height} h ${Math.abs(width)} Z`}
                     />
-                  )
-                }}
+                  )}
                 strokeWidth={1}
               />
             )}

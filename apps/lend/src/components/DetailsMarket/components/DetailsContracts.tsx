@@ -50,8 +50,7 @@ const DetailsContracts = ({
     <>
       <SubTitle>{t`Contracts`}</SubTitle>
       <Box grid gridRowGap={3}>
-        {contracts[type].map((contracts, idx) => {
-          return (
+        {contracts[type].map((contracts, idx) => (
             <div key={`contracts-${idx}`}>
               {contracts.map(({ label, address, invalidText }, idx) => {
                 const key = `${address}-${idx}`
@@ -76,8 +75,7 @@ const DetailsContracts = ({
                 )
               })}
             </div>
-          )
-        })}
+          ))}
       </Box>
     </>
   )

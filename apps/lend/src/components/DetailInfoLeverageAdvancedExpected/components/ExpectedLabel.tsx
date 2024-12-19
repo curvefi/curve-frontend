@@ -21,8 +21,7 @@ const ExpectedLabel = ({
   showDetails: boolean
   swapToSymbol: string
   toggleShowDetails: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
-  return (
+}) => (
     <Label>
       <strong>{label}:</strong>
       <span>
@@ -39,7 +38,6 @@ const ExpectedLabel = ({
       </span>
     </Label>
   )
-}
 
 const Label = styled.h3`
   align-items: center;

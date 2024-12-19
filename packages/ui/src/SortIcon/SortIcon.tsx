@@ -8,14 +8,12 @@ type SortIconProps = {
   activeType: 'asc' | 'desc' | null
 }
 
-export const SortIcon = ({ className, activeType }: SortIconProps) => {
-  return (
+export const SortIcon = ({ className, activeType }: SortIconProps) => (
     <Wrapper className={className}>
       {activeType === 'asc' && <Icon name="ArrowUp" size={16} />}
       {activeType === 'desc' && <Icon name="ArrowDown" size={16} />}
     </Wrapper>
   )
-}
 
 const Wrapper = styled.div`
   display: inline-block;

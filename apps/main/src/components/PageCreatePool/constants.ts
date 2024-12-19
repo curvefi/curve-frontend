@@ -236,8 +236,7 @@ export const DEFAULT_INITIAL_PRICE = {
 
 // MIN-MAX PARAMS
 
-export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => {
-  return {
+export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
     swapFee: {
       min: 0,
       max: 1,
@@ -265,8 +264,7 @@ export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => {
       min: 0.000000000001,
       max: 1000000000000,
     },
-  }
-}
+  })
 
 export const TRICRYPTO_MIN_MAX_PARAMETERS = {
   midFee: {

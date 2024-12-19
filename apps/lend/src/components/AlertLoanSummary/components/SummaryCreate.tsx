@@ -14,8 +14,7 @@ const SummaryCreate = ({
   formValueStateDebt = '',
   collateralSymbol,
   borrowedSymbol,
-}: SummaryProps) => {
-  return (
+}: SummaryProps) => (
     <>
       <strong>{pendingMessage}</strong>
 
@@ -25,6 +24,5 @@ const SummaryCreate = ({
       <Item label={t`Collateral:`} value={`${format(receive)} ${collateralSymbol}`} />
     </>
   )
-}
 
 export default SummaryCreate

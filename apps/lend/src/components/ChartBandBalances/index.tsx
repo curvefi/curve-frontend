@@ -220,8 +220,7 @@ const ChartBandBalances = ({
                     verticalAlign="top"
                     wrapperStyle={{ fontSize: 12 }}
                     height={showLiquidationIndicator ? 60 : 45}
-                    content={() => {
-                      return (
+                    content={() => (
                         <LegendWrapper flex flexCenter flexAlignItems="center">
                           <TipContent>
                             <TipIcon name="StopFilledAlt" size={20} fill="var(--chart_collateral--color)" />
@@ -232,8 +231,7 @@ const ChartBandBalances = ({
                             {borrowed_token?.symbol}
                           </TipContent>
                         </LegendWrapper>
-                      )
-                    }}
+                      )}
                   />
                   <Brush
                     dataKey="n"
@@ -343,8 +341,7 @@ const ChartBandBalances = ({
                   )}
 
                   {/* grouped N */}
-                  {isNGroupeds.map((d) => {
-                    return (
+                  {isNGroupeds.map((d) => (
                       <ReferenceLine
                         isFront
                         key={d.n}
@@ -360,8 +357,7 @@ const ChartBandBalances = ({
                           />
                         }
                       />
-                    )
-                  })}
+                    ))}
                 </ComposedChart>
               </ResponsiveContainer>
             </InnerWrapper>

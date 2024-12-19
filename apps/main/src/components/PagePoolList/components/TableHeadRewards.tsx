@@ -15,8 +15,7 @@ const TableHeadRewards = ({
 }: Omit<TheadSortButtonProps<SortKey>, 'sortIdKey' | 'loading'> & {
   isReadyRewardsApy: boolean
   tableLabels: PoolListTableLabel
-}) => {
-  return (
+}) => (
     <>
       <div>
         {t`Rewards tAPR`}{' '}
@@ -33,6 +32,5 @@ const TableHeadRewards = ({
       </Box>
     </>
   )
-}
 
 export default TableHeadRewards

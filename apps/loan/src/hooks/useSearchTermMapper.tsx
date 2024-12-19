@@ -36,13 +36,11 @@ export function parseSearchTermMapper(
   return parsed
 }
 
-const useSearchTermMapper = (): SearchTermMapper => {
-  return {
+const useSearchTermMapper = (): SearchTermMapper => ({
     'llamma.coins': {},
     'llamma.coinAddresses': { isTokenAddress: true },
     'llamma.address': { label: t`LLAMMA` },
     'llamma.controller': { label: t`Controller` },
-  }
-}
+  })
 
 export default useSearchTermMapper

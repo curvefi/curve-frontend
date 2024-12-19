@@ -51,8 +51,7 @@ const DetailInfoLiqRange = ({
   const { prices: loanPrices } = loanPricesResp ?? {}
   const { prices: currPrices, bands: currBands } = userDetailsResp?.details ?? {}
 
-  const { parsedNewBands, parsedNewPrices } = useMemo(() => {
-    return isFullRepay
+  const { parsedNewBands, parsedNewPrices } = useMemo(() => isFullRepay
       ? { parsedNewBands: [0, 0], parsedNewPrices: [0, 0] }
       : {
           parsedNewBands: newBands,
@@ -60,12 +59,10 @@ const DetailInfoLiqRange = ({
             +(selectedLiqRange?.prices?.[0] ?? newPrices?.[0] ?? '0'),
             +(selectedLiqRange?.prices?.[1] ?? newPrices?.[1] ?? '0'),
           ],
-        }
-  }, [isFullRepay, newBands, newPrices, selectedLiqRange?.prices])
+        }, [isFullRepay, newBands, newPrices, selectedLiqRange?.prices])
 
   // default to empty data to show chart
-  const liqRangeData = useMemo(() => {
-    return [
+  const liqRangeData = useMemo(() => [
       {
         name: '',
         currLabel: 'LR',
@@ -75,8 +72,7 @@ const DetailInfoLiqRange = ({
         oraclePrice: loanPrices?.oraclePrice ?? '',
         oraclePriceBand: loanPrices?.oraclePriceBand ?? 0,
       },
-    ]
-  }, [currPrices, parsedNewPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand])
+    ], [currPrices, parsedNewPrices, loanPrices?.oraclePrice, loanPrices?.oraclePriceBand])
 
   const currBandsLabel = useMemo(() => {
     const [currBand0, currBand1] = currBands ?? []

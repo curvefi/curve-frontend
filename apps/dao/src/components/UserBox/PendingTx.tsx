@@ -8,8 +8,7 @@ type Props = {
   className?: string
 }
 
-const PendingTx = ({ pendingMessage, className }: Props) => {
-  return (
+const PendingTx = ({ pendingMessage, className }: Props) => (
     <Wrapper className={className}>
       <Box flex flexGap="var(--spacing-2)" flexAlignItems="center" flexJustifyContent="center">
         <PendingMessage>{pendingMessage}</PendingMessage>
@@ -17,7 +16,6 @@ const PendingTx = ({ pendingMessage, className }: Props) => {
       </Box>
     </Wrapper>
   )
-}
 
 const Wrapper = styled.div`
   display: flex;

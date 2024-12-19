@@ -53,8 +53,7 @@ const TableHead: React.FC<Props> = ({
   return (
     <>
       <colgroup>
-        {columnKeys.map((columnKey, idx) => {
-          return (
+        {columnKeys.map((columnKey, idx) => (
             <React.Fragment key={`col${columnKey}${idx}`}>
               {columnKey === COLUMN_KEYS.inPool && <ColInPool className="row-in-pool" />}
               {columnKey === COLUMN_KEYS.poolName && <Col className="left pool" />}
@@ -70,13 +69,11 @@ const TableHead: React.FC<Props> = ({
               {columnKey === COLUMN_KEYS.tvl && isLite && <Col className="right tvl" />}
               {columnKey === COLUMN_KEYS.tvl && !isLite && <col className="right" />}
             </React.Fragment>
-          )
-        })}
+          ))}
       </colgroup>
       <StyledThead>
         <tr>
-          {columnKeys.map((columnKey, idx) => {
-            return (
+          {columnKeys.map((columnKey, idx) => (
               <React.Fragment key={`thead${columnKey}${idx}`}>
                 {columnKey === COLUMN_KEYS.inPool && (
                   <th key={columnKey} className="in-pool">
@@ -164,8 +161,7 @@ const TableHead: React.FC<Props> = ({
                   </Th>
                 )}
               </React.Fragment>
-            )
-          })}
+            ))}
         </tr>
       </StyledThead>
     </>

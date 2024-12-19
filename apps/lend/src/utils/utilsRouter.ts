@@ -44,9 +44,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
-    const foundSubdirectory = Object.keys(LEND_ROUTES).find((k) => {
-      return LEND_ROUTES[k as keyof typeof LEND_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase()
-    })
+    const foundSubdirectory = Object.keys(LEND_ROUTES).find((k) => LEND_ROUTES[k as keyof typeof LEND_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase())
     if (foundSubdirectory) {
       rSubdirectory = subdirectory
       rSubdirectoryUseDefault = false

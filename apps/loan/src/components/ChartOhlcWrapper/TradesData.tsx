@@ -12,11 +12,9 @@ import TokenIcon from '@/components/TokenIcon'
 import { Chip } from '@/ui/Typography'
 import Tooltip from '@/ui/Tooltip'
 
-const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) => {
-  return (
+const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) => (
     <>
-      {llammaTradesData.map((transaction, index) => {
-        return (
+      {llammaTradesData.map((transaction, index) => (
           <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
             <Event href={networks[chainId].scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
               <TradeFrom>
@@ -64,11 +62,9 @@ const TradesData: React.FC<TradesDataProps> = ({ llammaTradesData, chainId }) =>
               </Tooltip>
             </TimestampColumn>
           </TransactionRow>
-        )
-      })}
+        ))}
     </>
   )
-}
 
 const TransactionRow = styled.div`
   display: flex;

@@ -42,8 +42,7 @@ const InpTokenRemove = ({
   tokenBalance: string
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
-}) => {
-  return (
+}) => (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -83,6 +82,5 @@ const InpTokenRemove = ({
       )}
     </Box>
   )
-}
 
 export default InpTokenRemove

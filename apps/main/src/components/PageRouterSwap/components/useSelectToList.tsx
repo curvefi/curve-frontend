@@ -4,12 +4,10 @@ import useStore from '@/store/useStore'
 
 const useSelectToList = (rChainId: ChainId | '') => {
   const selectToList = useStore((state) => state.quickSwap.selectToList[rChainId])
-  const selectToListStr = useMemo(() => {
-    return (selectToList ?? []).reduce((str, address) => {
+  const selectToListStr = useMemo(() => (selectToList ?? []).reduce((str, address) => {
       str += address.charAt(5)
       return str
-    }, '')
-  }, [selectToList])
+    }, ''), [selectToList])
   return { selectToList, selectToListStr }
 }
 

@@ -66,9 +66,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
 
   const ohlcDataUnavailable = chartLlammaOhlc.dataDisabled && chartOraclePoolOhlc.dataDisabled
 
-  const currentChart = useMemo(() => {
-    return selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc
-  }, [chartLlammaOhlc, chartOraclePoolOhlc, selectedChartIndex])
+  const currentChart = useMemo(() => selectedChartIndex === 0 ? chartOraclePoolOhlc : chartLlammaOhlc, [chartLlammaOhlc, chartOraclePoolOhlc, selectedChartIndex])
 
   const oraclePriceData = useMemo(() => {
     if (selectedChartIndex === 0) {
@@ -174,8 +172,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     loanCreateDetailInfo,
   ])
 
-  const coins: LendingMarketTokens = useMemo(() => {
-    return market
+  const coins: LendingMarketTokens = useMemo(() => market
       ? {
           borrowedToken: {
             symbol: market?.borrowed_token.symbol,
@@ -186,8 +183,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
             address: market?.collateral_token.address,
           },
         }
-      : null
-  }, [market])
+      : null, [market])
 
   const selectChartList = useCallback(() => {
     if (chartOraclePoolOhlc.fetchStatus === 'LOADING') {

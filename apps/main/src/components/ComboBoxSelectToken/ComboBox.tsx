@@ -129,8 +129,7 @@ const ComboBox = ({
           {/* LIST */}
           <ComboBoxListWrapper ref={listRef} boxHeight={listBoxHeight ?? '50vh'} topContentHeight={topContentHeight}>
             {Array.isArray(result) && result.length > 0 ? (
-              chunk(result, 30).map((tokens, idx) => {
-                return (
+              chunk(result, 30).map((tokens, idx) => (
                   <ComboBoxListChunk
                     key={`tokens-${idx}`}
                     testId={testId}
@@ -142,8 +141,7 @@ const ComboBox = ({
                     dialogClose={dialogClose}
                     handleOnSelectChange={handleOnSelectChange}
                   />
-                )
-              })
+                ))
             ) : !!filterValue ? (
               <ComboBoxListNoResult>{t`No token found for "${filterValue}"`}</ComboBoxListNoResult>
             ) : (

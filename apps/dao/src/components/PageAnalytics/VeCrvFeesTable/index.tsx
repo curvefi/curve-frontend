@@ -42,8 +42,7 @@ const VeCrcFees: React.FC = () => {
             {feesReady && (
               <>
                 <FeesContainer>
-                  {veCrvFees.fees.map((item) => {
-                    return (
+                  {veCrvFees.fees.map((item) => (
                       <FeeRow key={item.date}>
                         <FeeDate>
                           {item.date}
@@ -56,8 +55,7 @@ const VeCrcFees: React.FC = () => {
                           })}
                         </FeeData>
                       </FeeRow>
-                    )
-                  })}
+                    ))}
                 </FeesContainer>
                 <TotalFees>
                   <FeeDate>{t`Total Fees:`}</FeeDate>

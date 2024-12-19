@@ -19,8 +19,7 @@ type StylesProps = {
   link2?: boolean
 }
 
-const InfoBox = ({ link1, link2 }: Props) => {
-  return (
+const InfoBox = ({ link1, link2 }: Props) => (
     <BoxStyles>
       {link1 && (
         <LinkStyles link2 target="_blank" rel="noopener noreferrer" href={link1.link}>
@@ -36,7 +35,6 @@ const InfoBox = ({ link1, link2 }: Props) => {
       )}
     </BoxStyles>
   )
-}
 
 const BoxStyles = styled(Box)`
   padding: var(--spacing-3) var(--spacing-4);

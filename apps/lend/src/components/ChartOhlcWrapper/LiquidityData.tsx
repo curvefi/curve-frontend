@@ -18,8 +18,7 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
   return (
     <>
       {coins &&
-        lendControllerData.map((transaction, index) => {
-          return (
+        lendControllerData.map((transaction, index) => (
             <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
               <LiquidityEvent
                 href={networks[chainId].scanTxPath(transaction.transaction_hash)}
@@ -96,8 +95,7 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
                 </Tooltip>
               </TimestampColumn>
             </TransactionRow>
-          )
-        })}
+          ))}
     </>
   )
 }
