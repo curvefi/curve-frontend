@@ -6,6 +6,7 @@ import { DesignSystem } from './design'
 import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
+import { alpha } from '@mui/system'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 
@@ -75,6 +76,13 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
       dense: {
         height: SizesAndSpaces.ButtonSize.sm,
+      },
+    },
+  },
+  MuiSkeleton: {
+    styleOverrides: {
+      root: {
+        backgroundColor: alpha(design.Text.TextColors.Primary, 0.13),
       },
     },
   },

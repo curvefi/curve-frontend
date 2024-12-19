@@ -55,9 +55,8 @@ export const MobileHeader = <TChainId extends number>({
   }, [startWalletConnection, closeSidebar])
 
   return (
-    <AppBar color="transparent" position="relative" sx={{ width: '100vw' }} ref={mainNavRef}>
+    <AppBar color="transparent" position="relative" ref={mainNavRef}>
       <GlobalBanner {...BannerProps} />
-
       <Toolbar sx={{ ...SECONDARY_BACKGROUND, paddingY: 3 }}>
         <MobileTopBar
           isLite={isLite}
