@@ -15,16 +15,18 @@ import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { NavigationSection } from '@/common/widgets/Header/types'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
-type HeaderProps = { chainId: ChainId; sections: NavigationSection[] }
+type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 const isMdUpQuery = (theme: Theme) => theme.breakpoints.up('tablet')
 
-const Header = ({ chainId, sections }: HeaderProps) => {
+const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
+  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const footerHeight = useHeightResizeObserver(mainNavRef)
 
   useEffect(() => {
@@ -111,6 +113,8 @@ const Header = ({ chainId, sections }: HeaderProps) => {
           value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
         },
       ]}
+      bannerHeight={bannerHeight}
+      BannerProps={BannerProps}
       sections={sections}
     />
   )

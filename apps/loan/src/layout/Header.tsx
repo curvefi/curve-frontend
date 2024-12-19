@@ -12,10 +12,11 @@ import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
-type HeaderProps = { sections: NavigationSection[] }
+type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
-export const Header = ({ sections }: HeaderProps) => {
+export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -37,6 +38,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
   const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
+  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
   const { rLocalePathname } = getLocaleFromUrl()
   const { params: routerParams, location } = routerProps ?? {}
@@ -115,6 +117,8 @@ export const Header = ({ sections }: HeaderProps) => {
         },
         { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
+      BannerProps={BannerProps}
+      bannerHeight={bannerHeight}
       sections={sections}
     />
   )
