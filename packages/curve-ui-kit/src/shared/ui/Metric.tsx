@@ -11,9 +11,9 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
 import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
+import { t } from '@lingui/macro'
 
 const { Spacing } = SizesAndSpaces
-const COPY_ALERT_DURATION = 6000
 
 // Correspond to flexbox align items values.
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
@@ -224,9 +224,9 @@ export const Metric = ({
         </Typography>
       )}
 
-      <Snackbar open={openCopyAlert} autoHideDuration={COPY_ALERT_DURATION} onClose={() => setOpenCopyAlert(false)}>
+      <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)}>
         <Alert variant="filled" severity="success">
-          Copied metric value: {value}
+          {t`Copied metric value`}: {value}
         </Alert>
       </Snackbar>
     </Box>
