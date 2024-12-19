@@ -24,7 +24,8 @@ export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> 
       <Typography
         variant="headingXsBold"
         display="inline-block"
-        sx={{ marginLeft: 2, marginRight: 4, lineHeight: '37px' }}
+        // lineHeight to center vertically with the switch. Extra '&' specificity needed to override default.
+        sx={{ marginLeft: 2, marginRight: 4, '&': { lineHeight: '37px' } }}
       >
         {label}
       </Typography>

@@ -36,6 +36,7 @@ export const MobileHeader = <TChainId extends number>({
   ChainProps,
   isLite = false,
   advancedMode,
+  networkName,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: BaseHeaderProps<TChainId>) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
@@ -51,7 +52,7 @@ export const MobileHeader = <TChainId extends number>({
   }, [startWalletConnection, closeSidebar])
 
   return (
-    <AppBar color="transparent" position="relative" sx={{ width: '100vw' }} ref={mainNavRef}>
+    <AppBar color="transparent" position="relative" ref={mainNavRef}>
       <Toolbar sx={{ ...SECONDARY_BACKGROUND, paddingY: 3 }}>
         <MobileTopBar
           isLite={isLite}
@@ -93,7 +94,7 @@ export const MobileHeader = <TChainId extends number>({
                   title={label}
                   pages={pages.map(({ route, label }) => ({
                     label: label(),
-                    route: externalAppUrl(route, appName as AppName),
+                    route: externalAppUrl(route, networkName, appName as AppName),
                   }))}
                 />
               ))}

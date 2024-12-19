@@ -5,9 +5,9 @@ import MenuItem from '@mui/material/MenuItem'
 import { ChainIcon } from './ChainIcon'
 import Typography from '@mui/material/Typography'
 import { ChainOption } from './ChainSwitcher'
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
-import List from '@mui/material/List'
+import MenuList from '@mui/material/MenuList'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import { CheckedIcon } from 'curve-ui-kit/src/shared/icons/CheckedIcon'
@@ -56,21 +56,23 @@ export function ChainList<TChainId extends number>({
         variant="outlined"
         value={searchValue}
         name="chainName"
+        autoFocus
       />
       <Box sx={{ overflowY: 'auto', flexGrow: '1' }}>
         {entries.length ? (
           entries
             .filter(([key]) => showTestnets || key !== ChainType.test)
             .flatMap(([key, chains]) => (
-              <>
+              <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
-                <List>
+                <MenuList>
                   {chains.map((chain) => (
                     <MenuItem
                       key={chain.chainId}
                       onClick={() => onChange(chain.chainId)}
                       data-testid={`menu-item-chain-${chain.chainId}`}
                       selected={chain.chainId == selectedNetwork?.chainId}
+                      tabIndex={0}
                     >
                       <ChainIcon chain={chain} size={36} />
                       <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
@@ -79,8 +81,8 @@ export function ChainList<TChainId extends number>({
                       {chain.chainId == selectedNetwork?.chainId && <CheckedIcon />}
                     </MenuItem>
                   ))}
-                </List>
-              </>
+                </MenuList>
+              </Fragment>
             ))
         ) : (
           <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>

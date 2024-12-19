@@ -25,6 +25,7 @@ export const createPalette = (
     selected: Layer.TypeAction.Selected,
   },
   background: { default: Layer.App.Background, paper: Layer[1].Fill },
+  divider: Layer[1].Outline,
 })
 
 export type Palette = ReturnType<typeof createPalette>

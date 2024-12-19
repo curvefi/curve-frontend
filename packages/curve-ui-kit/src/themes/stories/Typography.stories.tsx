@@ -1,6 +1,6 @@
-import { Divider, Stack, Typography, List, ListItem } from '@mui/material'
+import { Divider, List, ListItem, Stack, Typography } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { TYPOGRAPHY_VARIANTS, TypographyVariantKey } from '../typography'
+import { TYPOGRAPHY_VARIANTS, TypographyVariantDefinition, TypographyVariantKey } from '../typography'
 import { ReactNode } from 'react'
 
 const meta: Meta<typeof Typography> = {
@@ -9,7 +9,26 @@ const meta: Meta<typeof Typography> = {
   argTypes: {
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'tertiary', 'neutral', 'info', 'success', 'error', 'grey', undefined],
+      options: [
+        'text.primary',
+        'text.secondary',
+        'text.tertiary',
+        'text.disabled',
+        'text.highlight',
+        'error.contrastText',
+        'info.contrastText',
+        'warning.contrastText',
+        'success.contrastText',
+        'primary',
+        'secondary',
+        'tertiary',
+        'neutral',
+        'info',
+        'success',
+        'error',
+        'grey',
+        undefined,
+      ],
       description: 'The color of the component',
     },
   },
@@ -22,6 +41,7 @@ type Story = StoryObj<typeof Typography>
 
 interface TypographyDisplayProps {
   variant: TypographyVariantKey
+
   [key: string]: any
 }
 
@@ -34,7 +54,9 @@ const Item = ({ title, value }: { title: string; value: ReactNode }) =>
   )
 
 const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children, ...args }) => {
-  const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[variant]
+  const { fontFamily, fontWeight, fontSize, lineHeight, letterSpacing } = TYPOGRAPHY_VARIANTS[
+    variant
+  ] as TypographyVariantDefinition
   return (
     <Stack spacing={1}>
       <Typography {...args} variant={variant}>
@@ -46,8 +68,8 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children
           <Item title="Variant" value={variant} />
           <Item title="Font Family" value={fontFamily} />
           <Item title="Font Weight" value={fontWeight} />
-          <Item title="Font Size" value={fontSize} />
-          <Item title="Line Height" value={lineHeight} />
+          <Item title="Font Size" value={(fontSize || 'Medium').toUpperCase()} />
+          <Item title="Line Height" value={(lineHeight ?? fontSize).toUpperCase()} />
           <Item title="Letter Spacing" value={letterSpacing} />
         </List>
       </Typography>

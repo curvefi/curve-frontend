@@ -26,7 +26,7 @@ export function queryFactory<
   TGroup extends string = string,
   TCallback extends CB = CB<TQuery, TField[]>,
 >({
-  queryFn,
+  queryFn: runQuery,
   queryKey,
   staleTime,
   refetchInterval,
@@ -47,15 +47,17 @@ export function queryFactory<
   const isEnabled = (params: TParams) =>
     checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
 
+  const queryFn = ({ queryKey }: QueryFunctionContext<TKey>) => {
+    logQuery(queryKey)
+    const params = getParamsFromQueryKey(queryKey, assertValidity)
+    return runQuery(params)
+  }
+
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
-      queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
-        logQuery(queryKey)
-        const params = getParamsFromQueryKey(queryKey, assertValidity)
-        return queryFn(params)
-      },
-      staleTime: staleTime ? REFRESH_INTERVAL[staleTime] : undefined,
+      queryFn,
+      staleTime: REFRESH_INTERVAL[staleTime ?? '5m'],
       refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
       enabled: enabled && isEnabled(params),
       refetchOnWindowFocus,
@@ -65,10 +67,12 @@ export function queryFactory<
   return {
     assertValidity,
     checkValidity: (data: TParams, fields?: TField[]) => checkValidity(validationSuite, data, fields),
-    isEnabled: isEnabled,
+    isEnabled,
     queryKey,
     getQueryOptions,
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
+    prefetchQuery: (params, staleTime = 0) =>
+      queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
     useQuery: createQueryHook(getQueryOptions),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }

@@ -35,7 +35,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
 
-  const { rChainId, rLocalePathname } = useParamsFromUrl()
+  const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
@@ -48,6 +48,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
+      networkName={rNetwork}
       mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}
@@ -57,7 +58,7 @@ export const Header = ({ sections }: HeaderProps) => {
         () =>
           _parseRouteAndIsActive(
             [
-              ...(hasRouter && (!network || network?.showRouterSwap)
+              ...(hasRouter && (!network || network.showRouterSwap)
                 ? [
                     {
                       route: _parseSwapRoute(rChainId, ROUTE.PAGE_SWAP, routerCached, networks),
@@ -69,7 +70,7 @@ export const Header = ({ sections }: HeaderProps) => {
             ],
             rLocalePathname,
             routerPathname,
-            routerNetwork,
+            rNetwork,
           ),
         [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
       )}

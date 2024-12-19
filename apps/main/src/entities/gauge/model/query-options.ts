@@ -9,7 +9,7 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import { poolValidationSuite } from '@/entities/pool'
+import { poolValidationSuite } from '@/shared/model/query/pool-validation'
 import { GaugeParams, rootKeys } from '@/shared/model/query'
 import { queryFactory } from '@/shared/model/query/factory'
 import {

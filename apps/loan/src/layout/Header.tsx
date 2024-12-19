@@ -21,7 +21,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const navigate = useNavigate()
   useLayoutHeight(mainNavRef, 'mainNav')
 
-  const { rChainId } = getNetworkFromUrl()
+  const { rChainId, rNetwork } = getNetworkFromUrl()
 
   const connectState = useStore((state) => state.connectState)
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -47,6 +47,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
+      networkName={rNetwork}
       mainNavRef={mainNavRef}
       locale={locale}
       isMdUp={isMdUp}

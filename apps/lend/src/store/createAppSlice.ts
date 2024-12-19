@@ -2,12 +2,12 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
 import produce from 'immer'
-import { REFRESH_INTERVAL } from '@/constants'
 import { log } from '@/shared/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { LocaleValue } from '@/lib/i18n'
+import { prefetchMarkets } from '@/entities/chain/chain-query'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -36,8 +36,6 @@ export interface AppSlice extends SliceState {
   updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
   updateApi(api: Api, prevApi: Api | null, wallet: Wallet | null): Promise<void>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
-  getTvl(api: Api): void
-
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
   setAppStateByKeys<T>(sliceKey: SliceKey, sliceState: Partial<T>, showLog?: boolean): void
@@ -108,19 +106,9 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     state.updateGlobalStoreByKey('api', api)
     state.updateGlobalStoreByKey('isLoadingCurve', false)
 
-    await api.oneWayfactory.fetchMarkets()
+    // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
+    await prefetchMarkets({ chainId: api.chainId })
     state.updateGlobalStoreByKey('isLoadingApi', false)
-
-    if (!prevApi || isNetworkSwitched) {
-      // fetch markets TVL (remove once ready from api)
-      const hash = window.location.hash
-      const isPageMarket = hash.split('?')[0].endsWith('markets')
-      const isPageMarketSupply = isPageMarket && hash.endsWith('supply')
-
-      if (!isPageMarket || !isPageMarketSupply) {
-        setTimeout(() => state.getTvl(api), REFRESH_INTERVAL['4s'])
-      }
-    }
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
@@ -129,10 +117,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       }),
     )
   },
-  getTvl: (api: Api) => {
-    get().marketList.setFormValues(api.chainId, api)
-  },
-
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
       produce((state) => {

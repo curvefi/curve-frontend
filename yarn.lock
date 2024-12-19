@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.21":
-  version: 2.65.21
-  resolution: "@curvefi/api@npm:2.65.21"
+"@curvefi/api@npm:^2.65.22":
+  version: 2.65.22
+  resolution: "@curvefi/api@npm:2.65.22"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.11.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/79f4077924bb98eb6034ba6fc8c295463239edaa1d11fe3852dc1d2f07b306a285cf81049c886561e82164fe05390e05afd96bb10e020aa1ab61cccf73904d6a
+  checksum: 10c0/c49173c5fe8239081de35cacbb04d4d42083c096b097c72903668e4d83505bf1deb3de2484f429bd19ab813b186291d7f0fcb345940279149ab7245931774b0f
   languageName: node
   linkType: hard
 
@@ -3350,19 +3350,6 @@ __metadata:
   peerDependencies:
     ethers: ^6.0.0
   checksum: 10c0/bccb87b4238a318c726340f379cceab35a1a8d9cc99b1dd5b65f0d202b49866cc54976e25f668ecb65e2a1ddab2ada81d756cd3a6c7021ae220bc91181714e88
-  languageName: node
-  linkType: hard
-
-"@curvefi/lending-api@npm:^2.3.3":
-  version: 2.3.3
-  resolution: "@curvefi/lending-api@npm:2.3.3"
-  dependencies:
-    axios: "npm:^0.21.1"
-    bignumber.js: "npm:^9.0.1"
-    ethcall: "npm:^6.0.2"
-    ethers: "npm:^6.10.0"
-    memoizee: "npm:^0.4.15"
-  checksum: 10c0/88d112d0cbac5c79c9163166c5a8da3745f3044400838c906b006965348db69eedfbc21aff5ce36468739acd72a9fe7f831c573bc5cecfe7468bd6463d4c166a
   languageName: node
   linkType: hard
 
@@ -15367,7 +15354,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dao@workspace:apps/dao"
   dependencies:
-    "@curvefi/api": "npm:^2.65.21"
+    "@curvefi/api": "npm:^2.65.22"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
@@ -20705,7 +20692,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "lend@workspace:apps/lend"
   dependencies:
-    "@curvefi/lending-api": "npm:^2.3.3"
+    "@curvefi/lending-api": "npm:^2.3.6"
     "@lingui/cli": "npm:^4.6.0"
     "@lingui/detect-locale": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
@@ -21410,7 +21397,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.65.21"
+    "@curvefi/api": "npm:^2.65.22"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"

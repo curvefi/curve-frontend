@@ -24,7 +24,7 @@
     "tsconfig": "*"
   },
   "dependencies": {
-    "@curvefi/lending-api": "^2.3.3",
+    "@curvefi/lending-api": "^2.3.6",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",

@@ -15,6 +15,7 @@ export const LEND_ROUTES = {
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
+  BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_RISK_DISCLAIMER: '/risk-disclaimer',
 }
@@ -30,6 +31,10 @@ export const DAO_ROUTES = {
 
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
+
+const isBeta =
+  typeof window !== 'undefined' &&
+  (window.localStorage.getItem('beta') !== null || !window.location.hostname.includes('curve.fi'))
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {
@@ -47,6 +52,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     label: 'crvUSD',
     pages: [
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
+      ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : []),
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
       { route: CRVUSD_ROUTES.PAGE_RISK_DISCLAIMER, label: () => t`Risk Disclaimer` },
     ],
@@ -80,7 +86,7 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
     return `https://staging${productionHost === 'curve.fi' ? `.${productionHost}` : `-${productionHost}`}/`
   }
   if (windowHost?.endsWith('curvefi.vercel.app')) {
-    const branchPrefix = /curve-dapp(-lend|-crvusd)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
+    const branchPrefix = /curve-dapp(-lend|-crvusd|-dao)?-(.*)-curvefi.vercel.app/.exec(windowHost)?.[2]
     if (branchPrefix) {
       return `https://curve-${previewPrefix}-${branchPrefix}-curvefi.vercel.app`
     }
@@ -91,4 +97,5 @@ function getAppRoot(productionHost: string, previewPrefix: string, developmentPo
   return `https://${productionHost}`
 }
 
-export const externalAppUrl = (route: string, app?: AppName) => (app ? `${APP_LINK[app].root}/#${route}` : `/#${route}`)
+export const externalAppUrl = (route: string, networkName: string | null, app: AppName) =>
+  app ? `${APP_LINK[app].root}/#${networkName ? `/${networkName}` : ''}${route}` : `/#${route}`

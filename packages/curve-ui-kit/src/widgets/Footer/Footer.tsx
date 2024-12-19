@@ -15,7 +15,11 @@ const Llama = styled('img')({
   position: 'absolute',
 })
 
-export const Footer = () => {
+type Props = {
+  networkName: string
+}
+
+export const Footer = ({ networkName }: Props) => {
   const sections = getSections()
 
   return (
@@ -36,8 +40,9 @@ export const Footer = () => {
         rowGap={SizesAndSpaces.Grid.Row_Spacing}
         sx={{
           position: 'relative',
-          maxWidth: SizesAndSpaces.FooterWidth,
+          maxWidth: SizesAndSpaces.MaxWidth.lg,
         }}
+        data-testid="footer-content"
       >
         <Grid
           size={{
@@ -57,7 +62,7 @@ export const Footer = () => {
               desktop: 3,
             }}
           >
-            <Section {...section} />
+            <Section {...section} networkName={networkName} />
           </Grid>
         ))}
 

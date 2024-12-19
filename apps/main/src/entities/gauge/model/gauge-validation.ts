@@ -1,6 +1,6 @@
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
-import { poolValidationGroup } from '@/entities/pool'
+import { poolValidationGroup } from '@/shared/model/query/pool-validation'
 import { BD } from '@/shared/curve-lib'
 import {
   addressValidationFn,

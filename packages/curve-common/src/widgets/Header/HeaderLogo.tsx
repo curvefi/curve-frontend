@@ -27,7 +27,12 @@ export const HeaderLogo = ({ appName, isLite, sx }: HeaderLogoProps) => (
     {appName ? (
       <Box display="inline-flex" flexDirection="column">
         {/* Note: Anti-pattern to change the line height, however we want the subtitle to fit nicely */}
-        <Typography variant="headingSBold" sx={{ lineHeight: '1.2rem', textTransform: 'none' }} color="textPrimary">
+        <Typography
+          variant="headingSBold"
+          // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
+          sx={{ '&': { lineHeight: '1.2rem' }, textTransform: 'none' }}
+          color="textPrimary"
+        >
           {APP_NAMES[appName]}
         </Typography>
         {appName === 'main' ? (

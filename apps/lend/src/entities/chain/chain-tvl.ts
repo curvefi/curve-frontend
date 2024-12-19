@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { useTokenUsdRates } from '@/entities/token/lib'
 import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
-import { calculateChainTvl } from '../model'
-import { useOneWayMarketMapping } from './data-hooks'
+import { calculateChainTvl } from './tvl'
+import { useOneWayMarketMapping } from './chain-hooks'
 import useStore from '@/store/useStore'
 
 export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
-  const marketMapping = useOneWayMarketMapping(chainId).data
+  const marketMapping = useOneWayMarketMapping({ chainId }).data
   const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[chainId])
   const marketsTotalSupplyMapper = useStore((state) => state.markets.totalLiquidityMapper[chainId])
   const marketsTotalDebtMapper = useStore((state) => state.markets.statsTotalsMapper[chainId])

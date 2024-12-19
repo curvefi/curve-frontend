@@ -8,9 +8,11 @@ import { Link, LinkProps } from './Link'
 export type SectionProps = {
   title: string
   links: LinkProps[]
+
+  networkName: string
 }
 
-export const Section = ({ title, links }: SectionProps) => (
+export const Section = ({ title, links, networkName }: SectionProps) => (
   <Grid container spacing={1}>
     <Grid size={12}>
       <Typography
@@ -25,10 +27,12 @@ export const Section = ({ title, links }: SectionProps) => (
       </Typography>
     </Grid>
 
-    {links.map((link) => (
-      <Grid key={link.href} size={{ mobile: 6, tablet: 12 }}>
-        <Link {...link} />
-      </Grid>
-    ))}
+    {links.map((link) => {
+      return (
+        <Grid key={link.href} size={{ mobile: 6, tablet: 12 }}>
+          <Link {...link} networkName={networkName} />
+        </Grid>
+      )
+    })}
   </Grid>
 )
