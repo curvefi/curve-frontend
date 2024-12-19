@@ -1,18 +1,18 @@
-import React from 'react'
+import React, { Ref } from 'react'
 import styled from 'styled-components'
 
 import Button from 'ui/src/Button/Button'
 
-const GlobalBanner = React.forwardRef<
-  HTMLDivElement,
-  {
-    networkName: string
-    showConnectApiErrorMessage: boolean
-    showSwitchNetworkMessage: boolean
-    maintenanceMessage: string | undefined
-    handleNetworkChange(): void
-  }
->(
+export type GlobalBannerProps = {
+  networkName: string
+  showConnectApiErrorMessage: boolean
+  showSwitchNetworkMessage: boolean
+  maintenanceMessage?: string
+  handleNetworkChange(): void
+  ref: Ref<HTMLDivElement>
+}
+
+const GlobalBanner = React.forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'ref'>>(
   (
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
     ref,

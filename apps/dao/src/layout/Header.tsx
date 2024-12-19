@@ -12,10 +12,11 @@ import { Header as NewHeader } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
-type HeaderProps = { sections: NavigationSection[] }
+type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
-export const Header = ({ sections }: HeaderProps) => {
+export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -25,6 +26,7 @@ export const Header = ({ sections }: HeaderProps) => {
 
   const connectState = useStore((state) => state.connectState)
   const isMdUp = useStore((state) => state.layout.isMdUp)
+  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
   const locale = useStore((state) => state.locale)
   const routerProps = useStore((state) => state.routerProps)
   const themeType = useStore((state) => state.themeType)
@@ -86,6 +88,8 @@ export const Header = ({ sections }: HeaderProps) => {
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         label: t`Connect Wallet`,
       }}
+      BannerProps={BannerProps}
+      bannerHeight={bannerHeight}
       sections={sections}
     />
   )

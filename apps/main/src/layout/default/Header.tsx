@@ -11,11 +11,12 @@ import { NavigationSection } from '@/common/widgets/Header/types'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
-type HeaderProps = { sections: NavigationSection[] }
+type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
 const QuickSwap = () => t`Quickswap`
-export const Header = ({ sections }: HeaderProps) => {
+export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const mainNavRef = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
@@ -34,6 +35,7 @@ export const Header = ({ sections }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
+  const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
   const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
@@ -126,6 +128,8 @@ export const Header = ({ sections }: HeaderProps) => {
             ]),
       ]}
       sections={sections}
+      bannerHeight={bannerHeight}
+      BannerProps={BannerProps}
     />
   )
 }

@@ -13,6 +13,7 @@ import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useLocation } from 'react-router-dom'
 import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
+import GlobalBanner from 'ui/src/Banner'
 
 const SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 const HIDE_SCROLLBAR = {
@@ -34,6 +35,8 @@ export const MobileHeader = <TChainId extends number>({
   sections,
   locale,
   ChainProps,
+  BannerProps,
+  bannerHeight = 0,
   isLite = false,
   advancedMode,
   networkName,
@@ -53,6 +56,8 @@ export const MobileHeader = <TChainId extends number>({
 
   return (
     <AppBar color="transparent" position="relative" sx={{ width: '100vw' }} ref={mainNavRef}>
+      <GlobalBanner {...BannerProps} />
+
       <Toolbar sx={{ ...SECONDARY_BACKGROUND, paddingY: 3 }}>
         <MobileTopBar
           isLite={isLite}
@@ -69,7 +74,7 @@ export const MobileHeader = <TChainId extends number>({
           open={isSidebarOpen}
           PaperProps={{
             sx: {
-              top: (t) => `calc(2 * ${t.spacing(3)} + ${DEFAULT_BAR_SIZE})`,
+              top: (t) => `calc(2 * ${t.spacing(3)} + ${DEFAULT_BAR_SIZE} + ${bannerHeight}px)`,
               ...SECONDARY_BACKGROUND,
               ...SIDEBAR_WIDTH,
               ...HIDE_SCROLLBAR,

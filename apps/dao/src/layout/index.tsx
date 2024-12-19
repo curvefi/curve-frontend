@@ -13,7 +13,6 @@ import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
 import { Footer } from 'curve-ui-kit/src/widgets/Footer'
-import GlobalBanner from '@/ui/Banner'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
@@ -60,14 +59,16 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const sections = useMemo(() => getSections(locale), [locale])
   return (
     <Container globalAlertHeight={layoutHeight?.globalAlert}>
-      <Header sections={sections} />
-      <GlobalBanner
-        ref={globalAlertRef}
-        networkName={rNetwork}
-        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
-        showSwitchNetworkMessage={showSwitchNetworkMessage}
-        maintenanceMessage={maintenanceMessage}
-        handleNetworkChange={handleNetworkChange}
+      <Header
+        sections={sections}
+        BannerProps={{
+          ref: globalAlertRef,
+          networkName: rNetwork,
+          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
+          showSwitchNetworkMessage,
+          maintenanceMessage,
+          handleNetworkChange,
+        }}
       />
       <Main minHeight={minHeight}>{children}</Main>
       <Footer networkName={rNetwork} />
