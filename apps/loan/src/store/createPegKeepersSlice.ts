@@ -72,9 +72,9 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
               debtCeilingContract ? debtCeilingContract['debt_ceiling'](pegKeeperAddress) : () => '',
             ])
             results[pegKeeperAddress] = {
-              debt: ethers.utils.formatUnits(debt, 'ether'),
-              estCallerProfit: ethers.utils.formatUnits(estCallerProfit, 'ether'),
-              debtCeiling: ethers.utils.formatUnits(debtCeiling, 'ether'),
+              debt: ethers.formatEther(debt),
+              estCallerProfit: ethers.formatEther(estCallerProfit),
+              debtCeiling: ethers.formatEther(debtCeiling),
             }
           })
 
@@ -95,7 +95,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
         const estCallerProfit = await contract.estimate_caller_profit()
         sliceState.setStateByActiveKey('detailsMapper', pegKeeperAddress, {
           ...detailsMapper[pegKeeperAddress],
-          estCallerProfit: ethers.utils.formatUnits(estCallerProfit, 'ether'),
+          estCallerProfit: ethers.formatEther(estCallerProfit),
         })
       } catch (error) {
         console.error(error)
