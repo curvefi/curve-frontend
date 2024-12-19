@@ -9,51 +9,58 @@ import { Sizing } from 'curve-ui-kit/src/themes/design/0_primitives'
 
 import { RCLogoSM } from 'ui/src/images'
 
-export const Description = () => (
-  <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'column',
-    }}
-  >
-    <Link
-      href="/"
+const { IconSize, Spacing, FontWeight } = SizesAndSpaces
+
+export const Description = () => {
+  return (
+    <Box
       sx={{
         display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        gap: SizesAndSpaces.Spacing.xs,
+        flexDirection: 'column',
       }}
     >
-      <SvgIcon
+      <Link
+        href="/"
         sx={{
-          width: SizesAndSpaces.IconSize.xxl,
-          height: SizesAndSpaces.IconSize.xxl,
-          margin: SizesAndSpaces.Spacing.sm,
+          display: 'flex',
+          alignItems: 'center',
+          textDecoration: 'none',
+          gap: Spacing.xs,
         }}
       >
-        <RCLogoSM />
-      </SvgIcon>
+        <SvgIcon
+          sx={{
+            width: IconSize.xxl,
+            height: IconSize.xxl,
+            margin: Spacing.sm,
+          }}
+        >
+          <RCLogoSM />
+        </SvgIcon>
+
+        <Typography
+          color="textPrimary"
+          sx={{
+            '&': {
+              // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
+              fontSize: Sizing[600],
+            },
+            fontWeight: FontWeight.Bold,
+          }}
+        >
+          Curve
+        </Typography>
+      </Link>
 
       <Typography
-        color="textPrimary"
+        variant="bodySRegular"
+        color="textSecondary"
         sx={{
-          fontSize: Sizing[600], // This is a one-off specifically for the logo text
-          fontWeight: 'bold',
+          textWrap: 'balance',
         }}
       >
-        Curve
+        {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
       </Typography>
-    </Link>
-
-    <Typography
-      variant="bodySRegular"
-      color="textSecondary"
-      sx={{
-        textWrap: 'balance',
-      }}
-    >
-      {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
-    </Typography>
-  </Box>
-)
+    </Box>
+  )
+}
