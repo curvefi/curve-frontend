@@ -27,11 +27,11 @@ const App: NextPage = () => {
       <Route path={`:network${ROUTE.PAGE_MARKETS}`} element={<PageMarketList />} />
       <Route path={`:network${ROUTE.BETA_PAGE_MARKETS}`} element={<PageLlamaMarkets />} />
       <Route path={`:network${ROUTE.PAGE_CRVUSD_STAKING}`} element={<PageCrvUsdStaking />} />
-      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId`} element={<Navigate to="create" />} />
-      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/create`} element={<PageLoanCreate />} />
-      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/create/:formType`} element={<PageLoanCreate />} />
-      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/manage`} element={<Navigate to="create" />} />
-      <Route path={`:network/${ROUTE.PAGE_MARKETS}/:collateralId/manage/:formType`} element={<PageLoanManage />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}/:collateralId`} element={<Navigate to="create" />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}/:collateralId/create`} element={<PageLoanCreate />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}/:collateralId/create/:formType`} element={<PageLoanCreate />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}/:collateralId/manage`} element={<Navigate to="create" />} />
+      <Route path={`:network${ROUTE.PAGE_MARKETS}/:collateralId/manage/:formType`} element={<PageLoanManage />} />
     </>
   )
 
