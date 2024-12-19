@@ -225,7 +225,13 @@ export const Metric = ({
       )}
 
       <Snackbar open={openCopyAlert} autoHideDuration={COPY_ALERT_DURATION} onClose={() => setOpenCopyAlert(false)}>
-        <Alert variant="filled" severity="success">
+        <Alert
+          variant="outlined"
+          severity="success"
+          sx={{
+            backgroundColor: (t) => t.design.Layer[3].Fill,
+          }}
+        >
           Copied metric value: {value}
         </Alert>
       </Snackbar>
