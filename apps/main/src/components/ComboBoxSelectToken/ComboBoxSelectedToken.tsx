@@ -15,26 +15,24 @@ const ComboBoxSelectedToken = ({
   imageBaseUrl: string
   selected: Token
   testId: string | undefined
-}) => {
-  return (
-    <>
-      <TokenIconWrapper>
-        <TokenIcon
-          imageBaseUrl={imageBaseUrl}
-          token={selected.symbol}
-          size="sm"
-          address={selected.ethAddress || selected.address}
-        />
-      </TokenIconWrapper>
-      <LabelTextWrapper grid>
-        <SelectedLabelText data-testid={`label-${testId}`} title={selected.symbol}>
-          {selected.symbol}
-        </SelectedLabelText>{' '}
-        {selected?.haveSameTokenName && <AddressChip size="xs">{shortenTokenAddress(selected.address)}</AddressChip>}
-      </LabelTextWrapper>
-    </>
-  )
-}
+}) => (
+  <>
+    <TokenIconWrapper>
+      <TokenIcon
+        imageBaseUrl={imageBaseUrl}
+        token={selected.symbol}
+        size="sm"
+        address={selected.ethAddress || selected.address}
+      />
+    </TokenIconWrapper>
+    <LabelTextWrapper grid>
+      <SelectedLabelText data-testid={`label-${testId}`} title={selected.symbol}>
+        {selected.symbol}
+      </SelectedLabelText>{' '}
+      {selected?.haveSameTokenName && <AddressChip size="xs">{shortenTokenAddress(selected.address)}</AddressChip>}
+    </LabelTextWrapper>
+  </>
+)
 
 const AddressChip = styled(Chip)`
   margin-top: var(--spacing-1);

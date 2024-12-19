@@ -14,14 +14,12 @@ type StylesProps = {
   theme?: 'plain'
 }
 
-const InfoLinkBar = ({ description, link, theme, className }: Props) => {
-  return (
-    <StyledExternalLink className={className} theme={theme} href={link}>
-      <InfoDescription>{description}</InfoDescription>
-      <StyledExternalIcon />
-    </StyledExternalLink>
-  )
-}
+const InfoLinkBar = ({ description, link, theme, className }: Props) => (
+  <StyledExternalLink className={className} theme={theme} href={link}>
+    <InfoDescription>{description}</InfoDescription>
+    <StyledExternalIcon />
+  </StyledExternalLink>
+)
 
 const StyledExternalIcon = styled(ExternalIcon)`
   margin: auto 0;

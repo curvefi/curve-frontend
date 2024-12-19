@@ -22,12 +22,7 @@ const LiquidityData: React.FC<{ lpEventsData: LpLiquidityEventsData[]; chainId: 
     <>
       {lpEventsData
         .filter((transaction) => {
-          if (
-            transaction.token_amounts.reduce((acc, data) => {
-              return acc + data
-            }, 0) !== 0
-          )
-            return transaction
+          if (transaction.token_amounts.reduce((acc, data) => acc + data, 0) !== 0) return transaction
         })
         .map((transaction, index) => (
           <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>

@@ -18,26 +18,24 @@ interface PoolParametersDaoFeesProps {
   isEymaPools: boolean
 }
 
-const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => {
-  return (
-    <Item>
-      {t`DAO fee:`}{' '}
-      {adminFee && (
-        <Chip
-          isBold
-          size="md"
-          tooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-          tooltipProps={{
-            placement: 'bottom end',
-          }}
-        >
-          {formatNumber(adminFee, { style: 'percent', maximumFractionDigits: 4 })}
-          <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-        </Chip>
-      )}
-    </Item>
-  )
-}
+const DaoFee: React.FC<DaoFeeProps> = ({ adminFee }) => (
+  <Item>
+    {t`DAO fee:`}{' '}
+    {adminFee && (
+      <Chip
+        isBold
+        size="md"
+        tooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
+        tooltipProps={{
+          placement: 'bottom end',
+        }}
+      >
+        {formatNumber(adminFee, { style: 'percent', maximumFractionDigits: 4 })}
+        <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+      </Chip>
+    )}
+  </Item>
+)
 
 const PoolParametersDaoFees: React.FC<PoolParametersDaoFeesProps> = ({ adminFee, isEymaPools }) => {
   if (typeof adminFee === 'undefined') {

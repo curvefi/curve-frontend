@@ -192,18 +192,16 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
               </Stats>
             )}
 
-            {formValues.claimableRewards.map(({ token, symbol, amount }, idx) => {
-              return (
-                <Stats
-                  isOneLine
-                  isBorderBottom={idx !== formValues.claimableRewards.length - 1}
-                  key={token}
-                  label={symbol}
-                >
-                  {formatNumber(amount)}
-                </Stats>
-              )
-            })}
+            {formValues.claimableRewards.map(({ token, symbol, amount }, idx) => (
+              <Stats
+                isOneLine
+                isBorderBottom={idx !== formValues.claimableRewards.length - 1}
+                key={token}
+                label={symbol}
+              >
+                {formatNumber(amount)}
+              </Stats>
+            ))}
           </>
         ) : (
           <p>{t`No claimable rewards`}</p>

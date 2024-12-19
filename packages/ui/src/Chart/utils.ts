@@ -29,13 +29,10 @@ const seconds = {
   '14d': 14 * 24 * 60 * 60,
 }
 
-export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => {
-  return timestamp - seconds[timeOption]
-}
+export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => timestamp - seconds[timeOption]
 
-export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) => {
-  return Math.floor(timestamp - 299 * seconds[timeOption])
-}
+export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) =>
+  Math.floor(timestamp - 299 * seconds[timeOption])
 
 export const getAggNumber = (timeOption: TimeOptions) => {
   if (timeOption === '15m') return 15 // interval 900
@@ -61,9 +58,7 @@ export const getTimeUnit = (timeOption: TimeOptions) => {
   if (timeOption === '14d') return 'day'
 }
 
-export const getMilliseconds = (timeOption: TimeOptions) => {
-  return seconds[timeOption] * 1000
-}
+export const getMilliseconds = (timeOption: TimeOptions) => seconds[timeOption] * 1000
 
 export const getLiquidationRange = (
   price1: string,

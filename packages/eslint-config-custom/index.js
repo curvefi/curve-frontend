@@ -1,7 +1,8 @@
 module.exports = {
   extends: ['next', 'turbo', 'prettier'],
-  plugins: ["no-only-tests"],
+  plugins: ['no-only-tests'],
   rules: {
+    'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     '@next/next/no-img-element': 'off',
     '@next/next/no-html-link-for-pages': 'off',

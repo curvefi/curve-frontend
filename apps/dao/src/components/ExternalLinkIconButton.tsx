@@ -10,20 +10,18 @@ type ExternalLinkIconButtonProps = {
   children?: React.ReactNode
 }
 
-const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => {
-  return (
-    <TooltipButton
-      noWrap
-      tooltip={tooltip}
-      customIcon={
-        <StyledExternalLink href={href}>
-          {children}
-          <Icon name="Launch" size={16} />
-        </StyledExternalLink>
-      }
-    />
-  )
-}
+const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
+  <TooltipButton
+    noWrap
+    tooltip={tooltip}
+    customIcon={
+      <StyledExternalLink href={href}>
+        {children}
+        <Icon name="Launch" size={16} />
+      </StyledExternalLink>
+    }
+  />
+)
 
 const StyledExternalLink = styled(ExternalLink)`
   display: flex;

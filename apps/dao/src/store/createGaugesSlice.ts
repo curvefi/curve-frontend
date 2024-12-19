@@ -301,9 +301,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           }),
         )
       } else {
-        const sortedEntries = [...votes].sort((a, b) => {
-          return b[sortBy] - a[sortBy]
-        })
+        const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
           produce((state) => {

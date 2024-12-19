@@ -72,28 +72,26 @@ const DetailInfoCrvIncentives = ({
 
   return (
     <>
-      {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => {
-        return (
-          <DetailInfo
-            key={`${label}${idx}`}
-            loading={aprCurr === ''}
-            loadingSkeleton={skeleton ?? [140, 23]}
-            label={label}
-            tooltip={
-              <StyledTooltipIcon minWidth="200px" textAlign="left" iconStyles={{ $svgTop: '0.2rem' }}>
-                {tooltip}
-              </StyledTooltipIcon>
-            }
-          >
-            <strong>{aprCurr}</strong>
-            {ratio > 1.25 && (
-              <>
-                <StyledIcon name="ArrowRight" size={16} /> <strong>{aprNew}</strong>
-              </>
-            )}{' '}
-          </DetailInfo>
-        )
-      })}
+      {data.map(({ label, tooltip, skeleton, aprCurr, aprNew, ratio }, idx) => (
+        <DetailInfo
+          key={`${label}${idx}`}
+          loading={aprCurr === ''}
+          loadingSkeleton={skeleton ?? [140, 23]}
+          label={label}
+          tooltip={
+            <StyledTooltipIcon minWidth="200px" textAlign="left" iconStyles={{ $svgTop: '0.2rem' }}>
+              {tooltip}
+            </StyledTooltipIcon>
+          }
+        >
+          <strong>{aprCurr}</strong>
+          {ratio > 1.25 && (
+            <>
+              <StyledIcon name="ArrowRight" size={16} /> <strong>{aprNew}</strong>
+            </>
+          )}{' '}
+        </DetailInfo>
+      ))}
     </>
   )
 }

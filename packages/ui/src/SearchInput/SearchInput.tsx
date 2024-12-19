@@ -16,43 +16,41 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   handleSearchClose: () => void
 }
 
-const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => {
-  return (
-    <InputProvider
-      className={className}
-      grid
-      gridTemplateColumns={'auto 1fr auto'}
-      gridColumnGap={2}
-      flexAlignItems="center"
+const SearchInput = ({ className, id, value, variant, handleInputChange, handleSearchClose, ...props }: Props) => (
+  <InputProvider
+    className={className}
+    grid
+    gridTemplateColumns={'auto 1fr auto'}
+    gridColumnGap={2}
+    flexAlignItems="center"
+    id={id}
+    inputVariant={variant}
+  >
+    {variant === 'small' ? (
+      <Icon name="Search" size={16} aria-label="search-icon" />
+    ) : (
+      <Icon name="Search" size={24} aria-label="search-icon" />
+    )}
+    <InputDebounced
+      {...props}
       id={id}
-      inputVariant={variant}
+      type="search"
+      labelProps={false}
+      value={value}
+      delay={1000}
+      variant={variant}
+      onChange={handleInputChange}
+    />
+    <ClearButton
+      className={!!value ? 'show' : ''}
+      size={variant === 'small' ? 'x-small' : variant}
+      onClick={handleSearchClose}
+      padding={variant === 'small' ? 1 : 2}
     >
-      {variant === 'small' ? (
-        <Icon name="Search" size={16} aria-label="search-icon" />
-      ) : (
-        <Icon name="Search" size={24} aria-label="search-icon" />
-      )}
-      <InputDebounced
-        {...props}
-        id={id}
-        type="search"
-        labelProps={false}
-        value={value}
-        delay={1000}
-        variant={variant}
-        onChange={handleInputChange}
-      />
-      <ClearButton
-        className={!!value ? 'show' : ''}
-        size={variant === 'small' ? 'x-small' : variant}
-        onClick={handleSearchClose}
-        padding={variant === 'small' ? 1 : 2}
-      >
-        <RCEditClear className="svg-tooltip" />
-      </ClearButton>
-    </InputProvider>
-  )
-}
+      <RCEditClear className="svg-tooltip" />
+    </ClearButton>
+  </InputProvider>
+)
 
 const ClearButton = styled(IconButton)`
   display: none;

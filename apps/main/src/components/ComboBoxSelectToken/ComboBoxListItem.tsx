@@ -23,28 +23,26 @@ const ComboBoxListItem = ({
   Token & {
     selectedToken: string
     handleOnSelectChange(selectedToken: string): void
-  }) => {
-  return (
-    <li>
-      <ItemButton
-        variant="outlined"
-        className={selectedToken === item.address ? 'active' : ''}
-        onClick={() => handleOnSelectChange(item.address)}
-      >
-        <IconWrapper>
-          <TokenIcon imageBaseUrl={imageBaseUrl} token={item.symbol} address={item.ethAddress || item.address} />
-        </IconWrapper>
-        <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
-          <LabelText data-testid={`li-${testId}`}>{item.symbol}</LabelText>
-          <Chip isMono opacity={0.5}>
-            {shortenTokenAddress(item.address)}
-          </Chip>
-        </LabelTextWrapper>
-        {showBalances && <SelectTokenListItemUserBalance tokenAddress={item.address} />}
-      </ItemButton>
-    </li>
-  )
-}
+  }) => (
+  <li>
+    <ItemButton
+      variant="outlined"
+      className={selectedToken === item.address ? 'active' : ''}
+      onClick={() => handleOnSelectChange(item.address)}
+    >
+      <IconWrapper>
+        <TokenIcon imageBaseUrl={imageBaseUrl} token={item.symbol} address={item.ethAddress || item.address} />
+      </IconWrapper>
+      <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
+        <LabelText data-testid={`li-${testId}`}>{item.symbol}</LabelText>
+        <Chip isMono opacity={0.5}>
+          {shortenTokenAddress(item.address)}
+        </Chip>
+      </LabelTextWrapper>
+      {showBalances && <SelectTokenListItemUserBalance tokenAddress={item.address} />}
+    </ItemButton>
+  </li>
+)
 
 const ItemButton = styled(Button)`
   ${focusVisible};

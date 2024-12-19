@@ -17,9 +17,7 @@ export function getAmountsError(amounts: Amount[], balances: Balances) {
       const userBalance = balances?.[a.tokenAddress]
       return +(a.value || '0') > +(userBalance || '0')
     })
-    .map((a) => {
-      return shortenTokenName(a.token)
-    })
+    .map((a) => shortenTokenName(a.token))
     .join(', ')
 }
 
