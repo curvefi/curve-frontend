@@ -57,7 +57,7 @@ export function queryFactory<
     queryOptions({
       queryKey: queryKey(params),
       queryFn,
-      staleTime: staleTime ? REFRESH_INTERVAL[staleTime] : undefined,
+      staleTime: REFRESH_INTERVAL[staleTime ?? '5m'],
       refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
       enabled: enabled && isEnabled(params),
       refetchOnWindowFocus,
@@ -67,7 +67,7 @@ export function queryFactory<
   return {
     assertValidity,
     checkValidity: (data: TParams, fields?: TField[]) => checkValidity(validationSuite, data, fields),
-    isEnabled: isEnabled,
+    isEnabled,
     queryKey,
     getQueryOptions,
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),

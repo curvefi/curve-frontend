@@ -40,8 +40,9 @@ export const Footer = ({ networkName }: Props) => {
         rowGap={SizesAndSpaces.Grid.Row_Spacing}
         sx={{
           position: 'relative',
-          maxWidth: SizesAndSpaces.FooterWidth,
+          maxWidth: SizesAndSpaces.MaxWidth.lg,
         }}
+        data-testid="footer-content"
       >
         <Grid
           size={{

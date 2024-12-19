@@ -23,6 +23,8 @@ import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { persister, queryClient } from '@/shared/api/query-client'
+import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -81,9 +83,7 @@ function CurveApp({ Component }: AppProps) {
     const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
     updateWalletStateByKey('onboard', onboardInstance)
 
-    const handleVisibilityChange = () => {
-      updateGlobalStoreByKey('isPageVisible', !document.hidden)
-    }
+    const handleVisibilityChange = () => updateGlobalStoreByKey('isPageVisible', !document.hidden)
 
     setAppLoaded(true)
     handleResizeListener()
@@ -116,15 +116,17 @@ function CurveApp({ Component }: AppProps) {
   return (
     <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
       <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
-        {typeof window === 'undefined' || !appLoaded ? null : (
+        {typeof window !== 'undefined' && appLoaded && (
           <HashRouter>
             <I18nProvider i18n={i18n}>
-              <OverlayProvider>
-                <Page>
-                  <Component />
-                </Page>
-                <GlobalStyle />
-              </OverlayProvider>
+              <QueryProvider persister={persister} queryClient={queryClient}>
+                <OverlayProvider>
+                  <Page>
+                    <Component />
+                  </Page>
+                  <GlobalStyle />
+                </OverlayProvider>
+              </QueryProvider>
             </I18nProvider>
           </HashRouter>
         )}

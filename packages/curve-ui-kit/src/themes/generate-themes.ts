@@ -3,16 +3,16 @@ import { basicMuiTheme, type ThemeKey } from './basic-theme'
 import { createPalette } from './palette'
 import { createTypography } from './typography'
 import { createComponents } from './components'
-import { DesignSystem, PaletteVariants } from './design'
+import { DesignSystem, DesignOptions } from './design'
 
-const paletteMode = (theme: ThemeKey, options: PaletteVariants) =>
+const paletteMode = (theme: ThemeKey, options: DesignOptions) =>
   options.inverted ? (theme == 'dark' ? 'light' : 'dark') : theme == 'chad' ? 'light' : theme
 
-const generateTheme = (theme: ThemeKey, options: PaletteVariants = {}): Theme => {
+const generateTheme = (theme: ThemeKey, options: DesignOptions = {}): Theme => {
   const design = DesignSystem[theme](options)
   return createMuiTheme({
     ...basicMuiTheme,
-    design,
+    design: { ...design, options },
     palette: createPalette(paletteMode(theme, options), design),
     typography: createTypography(design),
     components: createComponents(design),
@@ -22,6 +22,6 @@ const generateTheme = (theme: ThemeKey, options: PaletteVariants = {}): Theme =>
   })
 }
 
-export const lightTheme = generateTheme('light')
-export const darkTheme = generateTheme('dark')
-export const chadTheme = generateTheme('chad')
+export const lightTheme = (options?: DesignOptions) => generateTheme('light', options)
+export const darkTheme = (options?: DesignOptions) => generateTheme('dark', options)
+export const chadTheme = (options?: DesignOptions) => generateTheme('chad', options)
