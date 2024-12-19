@@ -41,15 +41,7 @@
   },
   "packageManager": "yarn@4.5.0",
   "lint-staged": {
-    "apps/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "tests/**/*.{js,jsx,ts,tsx}": [
-      "prettier --write",
-      "eslint --fix"
-    ],
-    "packages/ui/**/*.{js,jsx,ts,tsx}": [
+    "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
       "eslint --fix"
     ]
