@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem'
 import { ChainIcon } from './ChainIcon'
 import Typography from '@mui/material/Typography'
 import { ChainOption } from './ChainSwitcher'
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import groupBy from 'lodash/groupBy'
 import MenuList from '@mui/material/MenuList'
 import Box from '@mui/material/Box'
@@ -63,7 +63,7 @@ export function ChainList<TChainId extends number>({
           entries
             .filter(([key]) => showTestnets || key !== ChainType.test)
             .flatMap(([key, chains]) => (
-              <>
+              <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {chains.map((chain) => (
@@ -82,7 +82,7 @@ export function ChainList<TChainId extends number>({
                     </MenuItem>
                   ))}
                 </MenuList>
-              </>
+              </Fragment>
             ))
         ) : (
           <Alert variant="filled" severity="info" sx={{ marginTop: 3 }}>

@@ -70,7 +70,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         handleNetworkChange={handleNetworkChange}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer />
+      <Footer networkName={rNetwork} />
     </Container>
   )
 }
