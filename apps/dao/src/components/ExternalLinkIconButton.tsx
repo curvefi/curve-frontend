@@ -11,17 +11,17 @@ type ExternalLinkIconButtonProps = {
 }
 
 const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
-    <TooltipButton
-      noWrap
-      tooltip={tooltip}
-      customIcon={
-        <StyledExternalLink href={href}>
-          {children}
-          <Icon name="Launch" size={16} />
-        </StyledExternalLink>
-      }
-    />
-  )
+  <TooltipButton
+    noWrap
+    tooltip={tooltip}
+    customIcon={
+      <StyledExternalLink href={href}>
+        {children}
+        <Icon name="Launch" size={16} />
+      </StyledExternalLink>
+    }
+  />
+)
 
 const StyledExternalLink = styled(ExternalLink)`
   display: flex;

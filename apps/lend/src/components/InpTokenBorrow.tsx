@@ -40,35 +40,35 @@ const InpTokenBorrow = ({
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
 }) => (
-    <Box grid gridRowGap={1} {...inpStyles}>
-      {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
-      <InputProvider
-        grid
-        gridTemplateColumns="1fr auto"
-        padding="4px 8px"
-        inputVariant={inpError ? 'error' : undefined}
-        disabled={inpDisabled}
-        id={id}
-      >
-        <InputDebounced
-          id={`${id}Amt`}
-          testId={testId ?? `${id}Amt`}
-          type="number"
-          labelProps={{ label: `${tokenSymbol} ${inpTopLabel ? '' : t`Borrow amount`}` }}
-          value={inpValue}
-          onChange={handleInpChange}
-        />
-        <InputMaxBtn testId={maxTextId ?? `${id}Max`} onClick={handleMaxClick} />
-      </InputProvider>
-      {+inpValue > 0 && <InpChipUsdRate address={tokenAddress} amount={inpValue} />}
-      {inpError === 'too-much' ? (
-        <StyledInpChip size="xs" isDarkBg isError>
-          {t`Amount > max borrow ${formatNumber(maxRecv || '0')}`}
-        </StyledInpChip>
-      ) : (
-        <StyledInpChip size="xs">{t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`}</StyledInpChip>
-      )}
-    </Box>
-  )
+  <Box grid gridRowGap={1} {...inpStyles}>
+    {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
+    <InputProvider
+      grid
+      gridTemplateColumns="1fr auto"
+      padding="4px 8px"
+      inputVariant={inpError ? 'error' : undefined}
+      disabled={inpDisabled}
+      id={id}
+    >
+      <InputDebounced
+        id={`${id}Amt`}
+        testId={testId ?? `${id}Amt`}
+        type="number"
+        labelProps={{ label: `${tokenSymbol} ${inpTopLabel ? '' : t`Borrow amount`}` }}
+        value={inpValue}
+        onChange={handleInpChange}
+      />
+      <InputMaxBtn testId={maxTextId ?? `${id}Max`} onClick={handleMaxClick} />
+    </InputProvider>
+    {+inpValue > 0 && <InpChipUsdRate address={tokenAddress} amount={inpValue} />}
+    {inpError === 'too-much' ? (
+      <StyledInpChip size="xs" isDarkBg isError>
+        {t`Amount > max borrow ${formatNumber(maxRecv || '0')}`}
+      </StyledInpChip>
+    ) : (
+      <StyledInpChip size="xs">{t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`}</StyledInpChip>
+    )}
+  </Box>
+)
 
 export default InpTokenBorrow

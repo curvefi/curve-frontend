@@ -56,13 +56,17 @@ const FieldDatePicker = ({
   const [quickActionValue, setQuickActionValue] = useState<dayjs.Dayjs | null>(null)
 
   // only add duration <= 4 years
-  const quickActions = useMemo(() => QUICK_ACTIONS.filter(({ unit, value }) => {
-      const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
-      return (
-        (quickActionUtcDate.isSame(minUtcDate, 'd') || quickActionUtcDate.isAfter(minUtcDate, 'd')) &&
-        (quickActionUtcDate.isSame(maxUtcDate, 'd') || quickActionUtcDate.isBefore(maxUtcDate, 'd'))
-      )
-    }), [currUnlockUtcTime, maxUtcDate, minUtcDate])
+  const quickActions = useMemo(
+    () =>
+      QUICK_ACTIONS.filter(({ unit, value }) => {
+        const quickActionUtcDate = currUnlockUtcTime.add(value, unit)
+        return (
+          (quickActionUtcDate.isSame(minUtcDate, 'd') || quickActionUtcDate.isAfter(minUtcDate, 'd')) &&
+          (quickActionUtcDate.isSame(maxUtcDate, 'd') || quickActionUtcDate.isBefore(maxUtcDate, 'd'))
+        )
+      }),
+    [currUnlockUtcTime, maxUtcDate, minUtcDate],
+  )
 
   const isDateUnavailable = (date: DateValue) => {
     const todayUtcDate = dayjs.utc(date.toString()).day()

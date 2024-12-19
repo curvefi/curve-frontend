@@ -12,53 +12,53 @@ import { RCLogoSM } from 'ui/src/images'
 const { IconSize, Spacing, FontWeight } = SizesAndSpaces
 
 export const Description = () => (
-    <Box
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'column',
+    }}
+  >
+    <Link
+      href="/"
       sx={{
         display: 'flex',
-        flexDirection: 'column',
+        alignItems: 'center',
+        textDecoration: 'none',
+        gap: Spacing.xs,
       }}
     >
-      <Link
-        href="/"
+      <SvgIcon
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          textDecoration: 'none',
-          gap: Spacing.xs,
+          width: IconSize.xxl,
+          height: IconSize.xxl,
+          margin: Spacing.sm,
         }}
       >
-        <SvgIcon
-          sx={{
-            width: IconSize.xxl,
-            height: IconSize.xxl,
-            margin: Spacing.sm,
-          }}
-        >
-          <RCLogoSM />
-        </SvgIcon>
-
-        <Typography
-          color="textPrimary"
-          sx={{
-            '&': {
-              // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
-              fontSize: Sizing[600],
-            },
-            fontWeight: FontWeight.Bold,
-          }}
-        >
-          Curve
-        </Typography>
-      </Link>
+        <RCLogoSM />
+      </SvgIcon>
 
       <Typography
-        variant="bodySRegular"
-        color="textSecondary"
+        color="textPrimary"
         sx={{
-          textWrap: 'balance',
+          '&': {
+            // One-off for the logo text (fixed size). Extra '&' specificity needed to override default.
+            fontSize: Sizing[600],
+          },
+          fontWeight: FontWeight.Bold,
         }}
       >
-        {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
+        Curve
       </Typography>
-    </Box>
-  )
+    </Link>
+
+    <Typography
+      variant="bodySRegular"
+      color="textSecondary"
+      sx={{
+        textWrap: 'balance',
+      }}
+    >
+      {t`Curve DAO is building the software that powers the future world economy: decentralised, trustless, inclusive and autonomous.`}
+    </Typography>
+  </Box>
+)

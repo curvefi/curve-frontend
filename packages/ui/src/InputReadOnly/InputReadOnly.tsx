@@ -9,11 +9,11 @@ type Props = {
 }
 
 const InputReadyOnly = ({ children, size = 'md', title }: React.PropsWithChildren<Props>) => (
-    <Wrapper size={size}>
-      <Title>{title}</Title>
-      <Content>{children}</Content>
-    </Wrapper>
-  )
+  <Wrapper size={size}>
+    <Title>{title}</Title>
+    <Content>{children}</Content>
+  </Wrapper>
+)
 
 const Wrapper = styled.div<{ size?: Size }>`
   display: grid;

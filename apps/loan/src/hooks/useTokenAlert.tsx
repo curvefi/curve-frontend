@@ -11,7 +11,8 @@ type TokenAlert = {
   message: string | React.ReactNode
 }
 
-const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null => useMemo(() => {
+const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null =>
+  useMemo(() => {
     const maAlert: TokenAlert = {
       alertType: 'info',
       isInformationOnly: true,

@@ -10,16 +10,16 @@ interface Props {
 }
 
 const CampaignRewardsRow: React.FC<Props> = ({ rewardItems, mobile = false }) => (
-    <Container mobile={mobile}>
-      {rewardItems.map((rewardItem: RewardsPool, index: number) => (
-        <CampaignRewardsComp
-          key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
-          rewardsPool={rewardItem}
-          mobile={mobile}
-        />
-      ))}
-    </Container>
-  )
+  <Container mobile={mobile}>
+    {rewardItems.map((rewardItem: RewardsPool, index: number) => (
+      <CampaignRewardsComp
+        key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
+        rewardsPool={rewardItem}
+        mobile={mobile}
+      />
+    ))}
+  </Container>
+)
 
 const Container = styled.div<{ mobile: boolean }>`
   display: flex;

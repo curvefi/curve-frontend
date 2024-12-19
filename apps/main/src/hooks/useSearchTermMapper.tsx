@@ -41,14 +41,14 @@ export function parseSearchTermMapper(
 }
 
 const useSearchTermMapper = (): SearchTermMapper => ({
-    'pool.name': {},
-    'pool.wrappedCoins': {},
-    'pool.underlyingCoins': {},
-    'pool.wrappedCoinAddresses': { isTokenAddress: true },
-    'pool.underlyingCoinAddresses': { isTokenAddress: true },
-    'pool.address': { label: t`Pool` },
-    'pool.gauge.address': { label: t`Gauge` },
-    'pool.lpToken': { label: t`LP Token` },
-  })
+  'pool.name': {},
+  'pool.wrappedCoins': {},
+  'pool.underlyingCoins': {},
+  'pool.wrappedCoinAddresses': { isTokenAddress: true },
+  'pool.underlyingCoinAddresses': { isTokenAddress: true },
+  'pool.address': { label: t`Pool` },
+  'pool.gauge.address': { label: t`Gauge` },
+  'pool.lpToken': { label: t`LP Token` },
+})
 
 export default useSearchTermMapper

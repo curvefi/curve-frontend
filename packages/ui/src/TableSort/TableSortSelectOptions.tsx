@@ -20,39 +20,39 @@ type Props = {
 }
 
 const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, toggle }: Props) => (
-    <>
-      <SortHeader>
-        <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
-      </SortHeader>
-      <RadioGroup
-        aria-label="Type"
-        onChange={(updatedSortValue) => handleRadioGroupChange(updatedSortValue, toggle)}
-        value={value}
-      >
-        {Object.entries(labelsMapper).map(([key, { name, mobile }]) => {
-          const tableLabel = mobile ? mobile : name
-          return (
-            <RadioWrapper key={key}>
-              {tableLabel}
-              <RadiosWrapper>
-                {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
-                    <StyledRadio
-                      key={orderKey}
-                      aria-label={`Sort by ${tableLabel} ${label}`}
-                      isCustom
-                      className={value === `${key}-${orderKey}` ? 'selected' : ''}
-                      value={`${key}-${orderKey}`}
-                    >
-                      {IconComp}
-                    </StyledRadio>
-                  ))}
-              </RadiosWrapper>
-            </RadioWrapper>
-          )
-        })}
-      </RadioGroup>
-    </>
-  )
+  <>
+    <SortHeader>
+      <StyledChip>Asc</StyledChip> <StyledChip>Desc</StyledChip>
+    </SortHeader>
+    <RadioGroup
+      aria-label="Type"
+      onChange={(updatedSortValue) => handleRadioGroupChange(updatedSortValue, toggle)}
+      value={value}
+    >
+      {Object.entries(labelsMapper).map(([key, { name, mobile }]) => {
+        const tableLabel = mobile ? mobile : name
+        return (
+          <RadioWrapper key={key}>
+            {tableLabel}
+            <RadiosWrapper>
+              {Object.entries(sortOrder).map(([orderKey, { label, icon: IconComp }]) => (
+                <StyledRadio
+                  key={orderKey}
+                  aria-label={`Sort by ${tableLabel} ${label}`}
+                  isCustom
+                  className={value === `${key}-${orderKey}` ? 'selected' : ''}
+                  value={`${key}-${orderKey}`}
+                >
+                  {IconComp}
+                </StyledRadio>
+              ))}
+            </RadiosWrapper>
+          </RadioWrapper>
+        )
+      })}
+    </RadioGroup>
+  </>
+)
 
 const SortHeader = styled.header`
   display: flex;

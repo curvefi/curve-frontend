@@ -113,16 +113,16 @@ const Summary: React.FC = () => {
               <StyledTabSlide activeIdx={selectedTabSlideIdx}>
                 <SlideTabs ref={tabsRef}>
                   {TABS.map(({ key, label }, idx) => (
-                      <SlideTab
-                        key={key}
-                        tabLeft={tabPositions[idx]?.left}
-                        tabWidth={tabPositions[idx]?.width}
-                        tabTop={tabPositions[idx]?.top}
-                        onChange={() => setSelectedTabSlideIdx(idx)}
-                        tabIdx={idx}
-                        label={label}
-                      />
-                    ))}
+                    <SlideTab
+                      key={key}
+                      tabLeft={tabPositions[idx]?.left}
+                      tabWidth={tabPositions[idx]?.width}
+                      tabTop={tabPositions[idx]?.top}
+                      onChange={() => setSelectedTabSlideIdx(idx)}
+                      tabIdx={idx}
+                      label={label}
+                    />
+                  ))}
                 </SlideTabs>
               </StyledTabSlide>
               <div>

@@ -65,28 +65,55 @@ const TableRow: FunctionComponent<TableRowProps> = ({
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
       {columnKeys.map((columnKey, idx) => (
-          <React.Fragment key={`tRow${columnKey}${idx}`}>
-            {columnKey === COLUMN_KEYS.inPool && (
-              <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
-            )}
-            {columnKey === COLUMN_KEYS.poolName && (
-              <Td $first={!showInPoolColumn}>
-                <PoolLabel
-                  isVisible
-                  imageBaseUrl={imageBaseUrl}
-                  poolData={poolDataCachedOrApi}
-                  poolListProps={{
-                    searchText: searchText,
-                    searchTextByTokensAndAddresses,
-                    searchTextByOther,
-                    onClick: handleCellClick,
-                  }}
+        <React.Fragment key={`tRow${columnKey}${idx}`}>
+          {columnKey === COLUMN_KEYS.inPool && (
+            <CellInPool isIn={isInPool} type="pool" tooltip={t`You have a balance in this pool`} />
+          )}
+          {columnKey === COLUMN_KEYS.poolName && (
+            <Td $first={!showInPoolColumn}>
+              <PoolLabel
+                isVisible
+                imageBaseUrl={imageBaseUrl}
+                poolData={poolDataCachedOrApi}
+                poolListProps={{
+                  searchText: searchText,
+                  searchTextByTokensAndAddresses,
+                  searchTextByOther,
+                  onClick: handleCellClick,
+                }}
+              />
+            </Td>
+          )}
+          {columnKey === COLUMN_KEYS.rewardsLite && (
+            <Td className="right">
+              <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
+                {rewardsApy && (
+                  <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
+                )}
+                {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                  <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+                )}
+              </Box>
+            </Td>
+          )}
+          {columnKey === COLUMN_KEYS.rewardsDesktop && (
+            <>
+              <Td className="right">
+                <TableCellRewardsBase
+                  base={rewardsApy?.base}
+                  isHighlight={sortBy === 'rewardsBase'}
+                  poolData={poolData}
                 />
               </Td>
-            )}
-            {columnKey === COLUMN_KEYS.rewardsLite && (
               <Td className="right">
                 <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
+                  {rewardsApy && (
+                    <TableCellRewardsCrv
+                      isHighlight={sortBy === 'rewardsCrv'}
+                      poolData={poolData}
+                      rewardsApy={rewardsApy}
+                    />
+                  )}
                   {rewardsApy && (
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
                   )}
@@ -95,63 +122,36 @@ const TableRow: FunctionComponent<TableRowProps> = ({
                   )}
                 </Box>
               </Td>
-            )}
-            {columnKey === COLUMN_KEYS.rewardsDesktop && (
-              <>
-                <Td className="right">
-                  <TableCellRewardsBase
-                    base={rewardsApy?.base}
-                    isHighlight={sortBy === 'rewardsBase'}
-                    poolData={poolData}
-                  />
-                </Td>
-                <Td className="right">
-                  <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
-                    {rewardsApy && (
-                      <TableCellRewardsCrv
-                        isHighlight={sortBy === 'rewardsCrv'}
-                        poolData={poolData}
-                        rewardsApy={rewardsApy}
-                      />
-                    )}
-                    {rewardsApy && (
-                      <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
-                    )}
-                    {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                      <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
-                    )}
-                  </Box>
-                </Td>
-              </>
-            )}
-            {columnKey === COLUMN_KEYS.rewardsMobile && (
-              <Td className="right">
-                <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
-                  <TCellRewards
-                    poolData={poolData}
-                    isHighlightBase={sortBy === 'rewardsBase'}
-                    isHighlightCrv={sortBy === 'rewardsCrv'}
-                    isHighlightOther={sortBy === 'rewardsOther'}
-                    rewardsApy={rewardsApy}
-                  />
-                  {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                    <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
-                  )}
-                </Box>
-              </Td>
-            )}
-            {columnKey === COLUMN_KEYS.volume && (
-              <Td className="right">
-                <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
-              </Td>
-            )}
-            {columnKey === COLUMN_KEYS.tvl && (
-              <Td className="right" $last>
-                <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
-              </Td>
-            )}
-          </React.Fragment>
-        ))}
+            </>
+          )}
+          {columnKey === COLUMN_KEYS.rewardsMobile && (
+            <Td className="right">
+              <Box flex flexColumn style={{ gap: 'var(--spacing-1)' }}>
+                <TCellRewards
+                  poolData={poolData}
+                  isHighlightBase={sortBy === 'rewardsBase'}
+                  isHighlightCrv={sortBy === 'rewardsCrv'}
+                  isHighlightOther={sortBy === 'rewardsOther'}
+                  rewardsApy={rewardsApy}
+                />
+                {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                  <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+                )}
+              </Box>
+            </Td>
+          )}
+          {columnKey === COLUMN_KEYS.volume && (
+            <Td className="right">
+              <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+            </Td>
+          )}
+          {columnKey === COLUMN_KEYS.tvl && (
+            <Td className="right" $last>
+              <TableCellTvl isHighLight={sortBy === 'tvl'} tvlCached={tvlCached} tvl={tvl} />
+            </Td>
+          )}
+        </React.Fragment>
+      ))}
     </LazyItem>
   )
 }

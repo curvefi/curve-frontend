@@ -8,10 +8,10 @@ type SmallLabelProps = {
 }
 
 const SmallLabel = ({ description, isKilled, className, isNetwork }: SmallLabelProps) => (
-    <BoxedData isKilled={!!isKilled} isNetwork={isNetwork} className={className}>
-      {description}
-    </BoxedData>
-  )
+  <BoxedData isKilled={!!isKilled} isNetwork={isNetwork} className={className}>
+    {description}
+  </BoxedData>
+)
 
 const BoxedData = styled.span<{ isKilled?: boolean; isNetwork?: boolean }>`
   padding: var(--spacing-1) var(--spacing-2);

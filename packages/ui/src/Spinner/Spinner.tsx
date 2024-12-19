@@ -8,13 +8,13 @@ type SpinnerProps = {
 }
 
 const Spinner = ({ isDisabled = false, size, ...props }: SpinnerProps) => (
-    <StyledSpinner {...props} isDisabled={isDisabled} size={size}>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
-    </StyledSpinner>
-  )
+  <StyledSpinner {...props} isDisabled={isDisabled} size={size}>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
+  </StyledSpinner>
+)
 
 const spin = keyframes`
   0% {

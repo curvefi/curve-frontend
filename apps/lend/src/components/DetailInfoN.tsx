@@ -9,6 +9,8 @@ type Props = {
   n: number | null
 }
 
-const DetailInfoN = ({ isLoaded, n }: Props) => <DetailInfo label={t`N:`}>{isLoaded && <strong>{formatNumber(n, { defaultValue: '-' })}</strong>}</DetailInfo>
+const DetailInfoN = ({ isLoaded, n }: Props) => (
+  <DetailInfo label={t`N:`}>{isLoaded && <strong>{formatNumber(n, { defaultValue: '-' })}</strong>}</DetailInfo>
+)
 
 export default DetailInfoN

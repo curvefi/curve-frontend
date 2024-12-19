@@ -259,14 +259,14 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const locks: UserLockRes = await locksRes.json()
 
         const formattedData = locks.locks.map((lock) => ({
-            amount: +lock.amount / 1e18,
-            unlock_time: lock.unlock_time,
-            lock_type: lock.lock_type,
-            locked_balance: +lock.locked_balance / 1e18,
-            block_number: lock.block_number,
-            date: lock.dt,
-            transaction_hash: lock.transaction_hash,
-          }))
+          amount: +lock.amount / 1e18,
+          unlock_time: lock.unlock_time,
+          lock_type: lock.lock_type,
+          locked_balance: +lock.locked_balance / 1e18,
+          block_number: lock.block_number,
+          date: lock.dt,
+          transaction_hash: lock.transaction_hash,
+        }))
 
         set(
           produce((state) => {

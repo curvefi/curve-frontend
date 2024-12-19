@@ -51,31 +51,31 @@ const DetailsContracts = ({
       <SubTitle>{t`Contracts`}</SubTitle>
       <Box grid gridRowGap={3}>
         {contracts[type].map((contracts, idx) => (
-            <div key={`contracts-${idx}`}>
-              {contracts.map(({ label, address, invalidText }, idx) => {
-                const key = `${address}-${idx}`
-                return invalidText ? (
-                  <Box
-                    key={key}
-                    flex
-                    flexJustifyContent="space-between"
-                    padding="var(--spacing-1) 3.24rem var(--spacing-1) 0"
-                  >
-                    <Chip isBold size="sm">{t`Gauge`}</Chip>
-                    <ChipInactive>{invalidText}</ChipInactive>
-                  </Box>
-                ) : (
-                  <DetailInfoAddressLookup
-                    key={key}
-                    isBorderBottom={idx !== contracts.length - 1 && !contracts[idx + 1]?.invalidText}
-                    chainId={rChainId}
-                    title={label}
-                    address={address}
-                  />
-                )
-              })}
-            </div>
-          ))}
+          <div key={`contracts-${idx}`}>
+            {contracts.map(({ label, address, invalidText }, idx) => {
+              const key = `${address}-${idx}`
+              return invalidText ? (
+                <Box
+                  key={key}
+                  flex
+                  flexJustifyContent="space-between"
+                  padding="var(--spacing-1) 3.24rem var(--spacing-1) 0"
+                >
+                  <Chip isBold size="sm">{t`Gauge`}</Chip>
+                  <ChipInactive>{invalidText}</ChipInactive>
+                </Box>
+              ) : (
+                <DetailInfoAddressLookup
+                  key={key}
+                  isBorderBottom={idx !== contracts.length - 1 && !contracts[idx + 1]?.invalidText}
+                  chainId={rChainId}
+                  title={label}
+                  address={address}
+                />
+              )
+            })}
+          </div>
+        ))}
       </Box>
     </>
   )

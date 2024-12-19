@@ -9,15 +9,15 @@ type Props = {
 }
 
 const ErrorMessage = ({ message, onClick }: Props) => (
-    <>
-      <Message>{message}</Message>
-      {onClick && (
-        <IconButton onClick={onClick} size="small">
-          <Icon name="Renew" size={16} />
-        </IconButton>
-      )}
-    </>
-  )
+  <>
+    <Message>{message}</Message>
+    {onClick && (
+      <IconButton onClick={onClick} size="small">
+        <Icon name="Renew" size={16} />
+      </IconButton>
+    )}
+  </>
+)
 
 const Message = styled.p`
   font-weight: var(--semi-bold);

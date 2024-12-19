@@ -15,11 +15,11 @@ interface StyledButtonProps {
 }
 
 const ExternalLinkIconButton = ({ href, children }: ExternalLinkIconButtonProps) => (
-    <StyledButton variant="filled" as="a" href={href} target="_blank" rel="noopener noreferrer">
-      {children}
-      <Icon name="Launch" size={16} />
-    </StyledButton>
-  )
+  <StyledButton variant="filled" as="a" href={href} target="_blank" rel="noopener noreferrer">
+    {children}
+    <Icon name="Launch" size={16} />
+  </StyledButton>
+)
 
 const StyledButton = styled(Button)<StyledButtonProps>`
   display: flex;

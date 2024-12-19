@@ -113,13 +113,13 @@ const PoolLabel = ({ className = '', imageBaseUrl, isVisible = true, poolData, p
                   ? tokens.map((token, idx) => <TokenLabel key={`${token}-${idx}`}>{token} </TokenLabel>)
                   : isVisible &&
                     highlightedTokens.map(({ token, tokenAddress, isHighLight }, idx) => (
-                        <ChipToken
-                          key={`${token}${tokenAddress}${idx}`}
-                          tokenName={token}
-                          tokenAddress={tokenAddress}
-                          isHighlight={isHighLight}
-                        />
-                      ))}
+                      <ChipToken
+                        key={`${token}${tokenAddress}${idx}`}
+                        tokenName={token}
+                        tokenAddress={tokenAddress}
+                        isHighlight={isHighLight}
+                      />
+                    ))}
               </div>
             )}
           </PoolLabelTokensWrapper>

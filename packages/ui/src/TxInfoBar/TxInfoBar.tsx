@@ -14,28 +14,28 @@ type Props = {
 }
 
 const TxInfoBar = ({ description, txHash, onClose }: Props) => (
-    <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>
-      <InfoTitle>
-        {description}{' '}
-        {Array.isArray(txHash) ? (
-          txHash.map((tx) => (
-            <StyledExternalLink href={tx} key={tx}>
-              <RCExternal />
-            </StyledExternalLink>
-          ))
-        ) : (
-          <StyledExternalLink href={txHash}>
+  <StyledInfoBar grid gridTemplateColumns="1fr auto" gridColumnGap="3" flexAlignItems="center" fillWidth>
+    <InfoTitle>
+      {description}{' '}
+      {Array.isArray(txHash) ? (
+        txHash.map((tx) => (
+          <StyledExternalLink href={tx} key={tx}>
             <RCExternal />
           </StyledExternalLink>
-        )}
-      </InfoTitle>
-      {typeof onClose === 'function' && (
-        <StyledIconButton onClick={onClose}>
-          <Icon name="Close" size={24} aria-label="close icon" />
-        </StyledIconButton>
+        ))
+      ) : (
+        <StyledExternalLink href={txHash}>
+          <RCExternal />
+        </StyledExternalLink>
       )}
-    </StyledInfoBar>
-  )
+    </InfoTitle>
+    {typeof onClose === 'function' && (
+      <StyledIconButton onClick={onClose}>
+        <Icon name="Close" size={24} aria-label="close icon" />
+      </StyledIconButton>
+    )}
+  </StyledInfoBar>
+)
 
 const StyledIconButton = styled(IconButton)`
   min-height: auto;

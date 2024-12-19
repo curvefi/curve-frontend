@@ -10,12 +10,12 @@ type Props = {
 }
 
 const WarningBox = ({ message, children, informational = false }: Props) => (
-    <WarningBoxWrapper informational={informational}>
-      <StyledIcon name={'InformationSquareFilled'} size={24} aria-label="Information Icon" />
-      <p>{message}</p>
-      {children}
-    </WarningBoxWrapper>
-  )
+  <WarningBoxWrapper informational={informational}>
+    <StyledIcon name={'InformationSquareFilled'} size={24} aria-label="Information Icon" />
+    <p>{message}</p>
+    {children}
+  </WarningBoxWrapper>
+)
 
 const WarningBoxWrapper = styled.div<{ informational: boolean }>`
   display: flex;

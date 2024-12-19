@@ -12,11 +12,11 @@ const Item = ({
   value,
   ...props
 }: ItemCompProps & { label: string | React.ReactNode; value: string | React.ReactNode | undefined }) => (
-    <ItemComp {...props}>
-      <span>{label}</span>
-      <span>{value}</span>
-    </ItemComp>
-  )
+  <ItemComp {...props}>
+    <span>{label}</span>
+    <span>{value}</span>
+  </ItemComp>
+)
 
 const ItemComp = styled.div<ItemCompProps>`
   align-items: baseline;

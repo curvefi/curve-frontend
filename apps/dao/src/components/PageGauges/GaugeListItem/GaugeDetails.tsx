@@ -11,77 +11,74 @@ import CopyIconButton from '@/components/CopyIconButton'
 import { ExternalLink } from '@/ui/Link'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => (
-    <Wrapper className={className}>
-      <Box flex flexColumn>
-        {gaugeData.pool && (
-          <>
-            <StatsTitleRow>
-              <h6>{t`Pool`}</h6>
-              <h6>{t`24h Volume`}</h6>
-              <h6>{t`TVL`}</h6>
-            </StatsTitleRow>
-            <StatsRow>
-              {gaugeData.pool?.address && (
-                <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
-                    {shortenTokenAddress(gaugeData.pool.address)}
-                  </StyledExternalLink>
-                  <ExternalLinkIconButton
-                    href={networks[1].scanAddressPath(gaugeData.pool.address)}
-                    tooltip={t`View on explorer`}
-                  />
-                  <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.pool.address} />
-                </Box>
-              )}
-              <h5>
-                {gaugeData.pool?.trading_volume_24h
-                  ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      showDecimalIfSmallNumberOnly: true,
-                      currency: 'USD',
-                    })
-                  : 'N/A'}
-              </h5>
-              <h5>
-                {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
-                  ? formatNumber(gaugeData.pool.tvl_usd, {
-                      showDecimalIfSmallNumberOnly: true,
-                      currency: 'USD',
-                    })
-                  : 'N/A'}
-              </h5>
-            </StatsRow>
-          </>
-        )}
-      </Box>
-      <Box flex flexColumn>
-        <StatsTitleRow>
-          <h6>{t`Gauge`}</h6>
-          <h6>{t`Current Week Emissions (CRV)`}</h6>
-          <h6>{t`Created`}</h6>
-        </StatsTitleRow>
-        <StatsRow>
-          <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
-              {shortenTokenAddress(gaugeData.address)}
-            </StyledExternalLink>
-            <ExternalLinkIconButton
-              href={networks[1].scanAddressPath(gaugeData.address)}
-              tooltip={t`View on explorer`}
-            />
-            <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
-          </Box>
-          <h5>
-            {gaugeData.emissions
-              ? formatNumber(gaugeData.emissions, {
-                  showDecimalIfSmallNumberOnly: true,
-                })
-              : 'N/A'}
-          </h5>
-          <h5>{new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}</h5>
-        </StatsRow>
-      </Box>
-    </Wrapper>
-  )
+  <Wrapper className={className}>
+    <Box flex flexColumn>
+      {gaugeData.pool && (
+        <>
+          <StatsTitleRow>
+            <h6>{t`Pool`}</h6>
+            <h6>{t`24h Volume`}</h6>
+            <h6>{t`TVL`}</h6>
+          </StatsTitleRow>
+          <StatsRow>
+            {gaugeData.pool?.address && (
+              <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+                <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.pool.address)}>
+                  {shortenTokenAddress(gaugeData.pool.address)}
+                </StyledExternalLink>
+                <ExternalLinkIconButton
+                  href={networks[1].scanAddressPath(gaugeData.pool.address)}
+                  tooltip={t`View on explorer`}
+                />
+                <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.pool.address} />
+              </Box>
+            )}
+            <h5>
+              {gaugeData.pool?.trading_volume_24h
+                ? formatNumber(gaugeData.pool.trading_volume_24h, {
+                    showDecimalIfSmallNumberOnly: true,
+                    currency: 'USD',
+                  })
+                : 'N/A'}
+            </h5>
+            <h5>
+              {gaugeData.pool?.tvl_usd && gaugeData.pool.tvl_usd !== undefined
+                ? formatNumber(gaugeData.pool.tvl_usd, {
+                    showDecimalIfSmallNumberOnly: true,
+                    currency: 'USD',
+                  })
+                : 'N/A'}
+            </h5>
+          </StatsRow>
+        </>
+      )}
+    </Box>
+    <Box flex flexColumn>
+      <StatsTitleRow>
+        <h6>{t`Gauge`}</h6>
+        <h6>{t`Current Week Emissions (CRV)`}</h6>
+        <h6>{t`Created`}</h6>
+      </StatsTitleRow>
+      <StatsRow>
+        <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
+          <StyledExternalLink href={networks[1].scanAddressPath(gaugeData.address)}>
+            {shortenTokenAddress(gaugeData.address)}
+          </StyledExternalLink>
+          <ExternalLinkIconButton href={networks[1].scanAddressPath(gaugeData.address)} tooltip={t`View on explorer`} />
+          <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
+        </Box>
+        <h5>
+          {gaugeData.emissions
+            ? formatNumber(gaugeData.emissions, {
+                showDecimalIfSmallNumberOnly: true,
+              })
+            : 'N/A'}
+        </h5>
+        <h5>{new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())).toLocaleString()}</h5>
+      </StatsRow>
+    </Box>
+  </Wrapper>
+)
 
 const Wrapper = styled(Box)`
   display: flex;

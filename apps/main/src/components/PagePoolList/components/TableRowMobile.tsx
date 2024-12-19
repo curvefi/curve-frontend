@@ -103,11 +103,7 @@ const TableRowMobile: FunctionComponent<TableRowMobileProps> = ({
                 onClick: handleCellClick,
               }}
             />
-            <IconButton
-              onClick={() =>
-                setShowDetail((prevState) => prevState === poolId ? '' : poolId)
-              }
-            >
+            <IconButton onClick={() => setShowDetail((prevState) => (prevState === poolId ? '' : poolId))}>
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
           </MobileLabelContent>

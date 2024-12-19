@@ -9,7 +9,8 @@ export const breakpoints = {
   xl: 120.063, // >= 1921
 }
 
-export const mediaQueries = (key: keyof typeof breakpoints) => (style: TemplateStringsArray | String | FlattenSimpleInterpolation) =>
+export const mediaQueries =
+  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | String | FlattenSimpleInterpolation) =>
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`
 
 export function getPageWidthClassName(innerWidth: number) {

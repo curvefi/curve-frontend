@@ -15,14 +15,14 @@ const SummaryCreate = ({
   collateralSymbol,
   borrowedSymbol,
 }: SummaryProps) => (
-    <>
-      <strong>{pendingMessage}</strong>
+  <>
+    <strong>{pendingMessage}</strong>
 
-      {title}
+    {title}
 
-      <Item label={t`Debt:`} value={`${format(formValueStateDebt)} ${borrowedSymbol}`} />
-      <Item label={t`Collateral:`} value={`${format(receive)} ${collateralSymbol}`} />
-    </>
-  )
+    <Item label={t`Debt:`} value={`${format(formValueStateDebt)} ${borrowedSymbol}`} />
+    <Item label={t`Collateral:`} value={`${format(receive)} ${collateralSymbol}`} />
+  </>
+)
 
 export default SummaryCreate

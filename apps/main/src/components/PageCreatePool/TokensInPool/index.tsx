@@ -63,10 +63,10 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
     if (basePoolsLoading) return []
 
     const tokensArray = Object.entries(tokensMapper).map((token) => ({
-        ...token[1]!,
-        userAddedToken: false,
-        basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
-      }))
+      ...token[1]!,
+      userAddedToken: false,
+      basePool: basePools.some((pool) => pool.token.toLowerCase() === token[0].toLowerCase()),
+    }))
 
     if (haveSigner && Object.keys(userBalances).length > 0 && Object.keys(tokensArray || {}).length > 0) {
       const volumeSortedTokensArray = tokensArray

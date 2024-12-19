@@ -28,9 +28,9 @@ export const Section = ({ title, links, networkName }: SectionProps) => (
     </Grid>
 
     {links.map((link) => (
-        <Grid key={link.href} size={{ mobile: 6, tablet: 12 }}>
-          <Link {...link} networkName={networkName} />
-        </Grid>
-      ))}
+      <Grid key={link.href} size={{ mobile: 6, tablet: 12 }}>
+        <Link {...link} networkName={networkName} />
+      </Grid>
+    ))}
   </Grid>
 )

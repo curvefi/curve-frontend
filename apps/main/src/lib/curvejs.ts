@@ -351,8 +351,8 @@ const pool = {
 
     return resp
   },
-  poolTokens: (p: Pool, isWrapped: boolean) => isWrapped ? p.wrappedCoins : p.underlyingCoins,
-  poolTokenAddresses: (p: Pool, isWrapped: boolean) => isWrapped ? p.wrappedCoinAddresses : p.underlyingCoinAddresses,
+  poolTokens: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoins : p.underlyingCoins),
+  poolTokenAddresses: (p: Pool, isWrapped: boolean) => (isWrapped ? p.wrappedCoinAddresses : p.underlyingCoinAddresses),
 }
 
 const router = {

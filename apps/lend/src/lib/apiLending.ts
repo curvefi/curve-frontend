@@ -81,7 +81,8 @@ export const helpers = {
       return resp
     }
   },
-  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus => isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
+  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
+    isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
   getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
     const { signerAddress } = api ?? {}
     if (!api || !signerAddress || !market) return ''

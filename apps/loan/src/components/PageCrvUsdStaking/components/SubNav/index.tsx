@@ -14,20 +14,20 @@ interface SubNavProps {
 }
 
 const SubNav: React.FC<SubNavProps> = ({ activeKey, navItems, setNavChange, nested, className }) => (
-    <NavWrapper nested={nested} className={className}>
-      {navItems.map((item) => (
-        <ButtonWrapper key={item.key}>
-          <NavButton
-            onClick={() => setNavChange(item.key)}
-            variant="outlined"
-            className={activeKey === item.key ? 'active' : ''}
-          >
-            {item.label}
-          </NavButton>
-        </ButtonWrapper>
-      ))}
-    </NavWrapper>
-  )
+  <NavWrapper nested={nested} className={className}>
+    {navItems.map((item) => (
+      <ButtonWrapper key={item.key}>
+        <NavButton
+          onClick={() => setNavChange(item.key)}
+          variant="outlined"
+          className={activeKey === item.key ? 'active' : ''}
+        >
+          {item.label}
+        </NavButton>
+      </ButtonWrapper>
+    ))}
+  </NavWrapper>
+)
 
 const NavWrapper = styled(Box)<{ nested?: boolean }>`
   display: flex;

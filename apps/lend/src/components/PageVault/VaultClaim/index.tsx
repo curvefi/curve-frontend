@@ -171,10 +171,10 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
                   )}
 
                   {rewards.map(({ token, symbol, amount }, idx) => (
-                      <Stats isOneLine isBorderBottom={idx !== rewards.length - 1} key={token} label={symbol}>
-                        {formatNumber(amount)}
-                      </Stats>
-                    ))}
+                    <Stats isOneLine isBorderBottom={idx !== rewards.length - 1} key={token} label={symbol}>
+                      {formatNumber(amount)}
+                    </Stats>
+                  ))}
                 </>
               ) : (
                 <p>{t`No claimable rewards`}</p>

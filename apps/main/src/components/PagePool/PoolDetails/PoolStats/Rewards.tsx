@@ -62,27 +62,27 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
 
           <BaseApyItems as="ul">
             {baseAPYS.map(({ label, value }) => (
-                <BaseApyItem
-                  as="li"
-                  key={label}
-                  grid
-                  gridRowGap={2}
-                  padding="var(--spacing-1) var(--spacing-1) var(--spacing-2)"
-                >
-                  <Chip size="md">{label}</Chip>
-                  {poolData?.failedFetching24hOldVprice ? (
-                    <span>
-                      -<IconTooltip>Not available currently</IconTooltip>
-                    </span>
-                  ) : value === '' ? (
-                    ''
-                  ) : +value > LARGE_APY ? (
-                    <ChipVolatileBaseApy isBold showIcon />
-                  ) : (
-                    <strong title={value}>{formatNumber(value, FORMAT_OPTIONS.PERCENT)}</strong>
-                  )}
-                </BaseApyItem>
-              ))}
+              <BaseApyItem
+                as="li"
+                key={label}
+                grid
+                gridRowGap={2}
+                padding="var(--spacing-1) var(--spacing-1) var(--spacing-2)"
+              >
+                <Chip size="md">{label}</Chip>
+                {poolData?.failedFetching24hOldVprice ? (
+                  <span>
+                    -<IconTooltip>Not available currently</IconTooltip>
+                  </span>
+                ) : value === '' ? (
+                  ''
+                ) : +value > LARGE_APY ? (
+                  <ChipVolatileBaseApy isBold showIcon />
+                ) : (
+                  <strong title={value}>{formatNumber(value, FORMAT_OPTIONS.PERCENT)}</strong>
+                )}
+              </BaseApyItem>
+            ))}
           </BaseApyItems>
         </RewardsContainer>
       )}
@@ -110,23 +110,23 @@ const Rewards: React.FC<RewardsProps> = ({ chainId, poolData, rewardsApy }) => {
 
             {haveOther &&
               other?.map(({ apy, symbol, tokenAddress }) => (
-                  <StyledStyledStats key={symbol} flex flexJustifyContent="space-between" padding>
-                    <Box flex flexAlignItems="center">
-                      <StyledExternalLink href={chainId ? scanTokenPath(tokenAddress) : ''}>
-                        <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
-                          {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
-                        </TokenWrapper>
-                      </StyledExternalLink>
+                <StyledStyledStats key={symbol} flex flexJustifyContent="space-between" padding>
+                  <Box flex flexAlignItems="center">
+                    <StyledExternalLink href={chainId ? scanTokenPath(tokenAddress) : ''}>
+                      <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
+                        {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
+                      </TokenWrapper>
+                    </StyledExternalLink>
 
-                      <StyledIconButton size="small" onClick={() => handleCopyClick(tokenAddress)}>
-                        <Icon name="Copy" size={16} />
-                      </StyledIconButton>
-                    </Box>
-                    <Chip isBold isNumber size="md">
-                      {formatNumber(apy, FORMAT_OPTIONS.PERCENT)}{' '}
-                    </Chip>
-                  </StyledStyledStats>
-                ))}
+                    <StyledIconButton size="small" onClick={() => handleCopyClick(tokenAddress)}>
+                      <Icon name="Copy" size={16} />
+                    </StyledIconButton>
+                  </Box>
+                  <Chip isBold isNumber size="md">
+                    {formatNumber(apy, FORMAT_OPTIONS.PERCENT)}{' '}
+                  </Chip>
+                </StyledStyledStats>
+              ))}
           </Box>
           {!isLite && (
             <BoostingLink>

@@ -31,7 +31,8 @@ const seconds = {
 
 export const subtractTimeUnit = (timeOption: TimeOptions, timestamp: number) => timestamp - seconds[timeOption]
 
-export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) => Math.floor(timestamp - 299 * seconds[timeOption])
+export const getThreeHundredResultsAgo = (timeOption: TimeOptions, timestamp: number) =>
+  Math.floor(timestamp - 299 * seconds[timeOption])
 
 export const getAggNumber = (timeOption: TimeOptions) => {
   if (timeOption === '15m') return 15 // interval 900

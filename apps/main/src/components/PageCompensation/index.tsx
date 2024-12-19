@@ -108,19 +108,19 @@ const FormCompensation = ({
     <Box grid gridRowGap={2}>
       {error && <AlertFormError errorKey={error} />}
       {Object.entries(groupedContracts).map(([poolId, contracts]) => (
-          <Box key={poolId}>
-            <Compensations
-              rChainId={rChainId}
-              curve={curve}
-              poolId={poolId}
-              contracts={contracts}
-              balances={balances}
-              provider={provider}
-              vestedTotals={vestedTotals}
-              haveBalancesError={!!error}
-            />
-          </Box>
-        ))}
+        <Box key={poolId}>
+          <Compensations
+            rChainId={rChainId}
+            curve={curve}
+            poolId={poolId}
+            contracts={contracts}
+            balances={balances}
+            provider={provider}
+            vestedTotals={vestedTotals}
+            haveBalancesError={!!error}
+          />
+        </Box>
+      ))}
     </Box>
   )
 }

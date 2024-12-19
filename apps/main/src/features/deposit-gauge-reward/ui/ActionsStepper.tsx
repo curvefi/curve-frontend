@@ -112,7 +112,8 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
     }
   }, [isDepositRewardApproved, isLoadingDepositRewardApproved, setValue, isValid, isSubmitting, step])
 
-  const steps = useMemo<Step[]>(() => [
+  const steps = useMemo<Step[]>(
+    () => [
       {
         key: 'APPROVAL',
         status: getStepStatus(
@@ -139,18 +140,20 @@ export const DepositStepper: FunctionComponent<{ chainId: ChainId; poolId: strin
         content: step === DepositRewardStep.CONFIRMATION ? t`Deposited` : t`Deposit`,
         onClick: handleSubmit(onSubmitDeposit),
       },
-    ], [
-    isLoadingDepositRewardApproved,
-    isDepositRewardApproved,
-    step,
-    isSubmitting,
-    isValid,
-    isPendingDepositRewardApprove,
-    handleSubmit,
-    onSubmitApproval,
-    isPendingDepositReward,
-    onSubmitDeposit,
-  ])
+    ],
+    [
+      isLoadingDepositRewardApproved,
+      isDepositRewardApproved,
+      step,
+      isSubmitting,
+      isValid,
+      isPendingDepositRewardApprove,
+      handleSubmit,
+      onSubmitApproval,
+      isPendingDepositReward,
+      onSubmitDeposit,
+    ],
+  )
 
   return (
     <>

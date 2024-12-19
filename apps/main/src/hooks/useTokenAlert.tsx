@@ -4,7 +4,8 @@ import styled from 'styled-components'
 
 import ExternalLink from '@/ui/Link/ExternalLink'
 
-const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null => useMemo(() => {
+const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
+  useMemo(() => {
     const maAlert: PoolAlert = {
       alertType: 'info',
       isInformationOnly: true,

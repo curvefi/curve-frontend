@@ -43,19 +43,19 @@ const VeCrcFees: React.FC = () => {
               <>
                 <FeesContainer>
                   {veCrvFees.fees.map((item) => (
-                      <FeeRow key={item.date}>
-                        <FeeDate>
-                          {item.date}
-                          {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
-                        </FeeDate>
-                        <FeeData>
-                          {formatNumber(item.fees_usd, {
-                            currency: 'USD',
-                            notation: 'compact',
-                          })}
-                        </FeeData>
-                      </FeeRow>
-                    ))}
+                    <FeeRow key={item.date}>
+                      <FeeDate>
+                        {item.date}
+                        {item.timestamp > currentTime && <span> {t`(in progress)`}</span>}
+                      </FeeDate>
+                      <FeeData>
+                        {formatNumber(item.fees_usd, {
+                          currency: 'USD',
+                          notation: 'compact',
+                        })}
+                      </FeeData>
+                    </FeeRow>
+                  ))}
                 </FeesContainer>
                 <TotalFees>
                   <FeeDate>{t`Total Fees:`}</FeeDate>

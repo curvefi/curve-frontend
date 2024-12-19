@@ -13,18 +13,18 @@ type Props = {
 }
 
 const ModalPendingTx = ({ transactionHash, txLink, pendingMessage }: Props) => (
-    <PendingContainer>
-      <PendingWrapper>
-        <PendingMessage>{pendingMessage}</PendingMessage>
-        <StyledPendingSpinner isDisabled size={24} />
-        <Transaction variant={'contained'} href={txLink}>
-          <p>Transaction:</p>
-          {shortenTokenAddress(transactionHash)}
-          <StyledIcon name={'Launch'} size={16} />
-        </Transaction>
-      </PendingWrapper>
-    </PendingContainer>
-  )
+  <PendingContainer>
+    <PendingWrapper>
+      <PendingMessage>{pendingMessage}</PendingMessage>
+      <StyledPendingSpinner isDisabled size={24} />
+      <Transaction variant={'contained'} href={txLink}>
+        <p>Transaction:</p>
+        {shortenTokenAddress(transactionHash)}
+        <StyledIcon name={'Launch'} size={16} />
+      </Transaction>
+    </PendingWrapper>
+  </PendingContainer>
+)
 
 const PendingContainer = styled.div`
   position: absolute;

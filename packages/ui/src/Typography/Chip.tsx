@@ -10,10 +10,10 @@ const Chip = ({ as, ...props }: React.PropsWithChildren<ChipProps & { as?: strin
   const ref = React.useRef<HTMLDivElement>(null)
 
   const LabelComp = () => (
-      <Label {...rest} {...(tooltip ? {} : { as })} className={className} ref={ref}>
-        {children}
-      </Label>
-    )
+    <Label {...rest} {...(tooltip ? {} : { as })} className={className} ref={ref}>
+      {children}
+    </Label>
+  )
 
   if (tooltip) {
     return (

@@ -25,32 +25,32 @@ const ExpectedSummary = ({
   swapFromSymbol: string
   swapToSymbol: string
 }) => (
-    <Wrapper>
-      {label}
-      {swapToAmounts.map((amount, idx) => {
-        const { value, label } = swapFromAmounts[idx]
+  <Wrapper>
+    {label}
+    {swapToAmounts.map((amount, idx) => {
+      const { value, label } = swapFromAmounts[idx]
 
-        return (
-          <Item key={`${amount}${idx}`} {...($minWidth ? { $minWidth } : {})}>
-            <span>{label}</span>{' '}
-            <span>
-              {format(value, { defaultValue: '-' })} {swapFromSymbol} <Icon name="ArrowRight" size={16} />{' '}
-              {format(amount, { defaultValue: '-' })} {swapToSymbol}
-            </span>
-          </Item>
-        )
-      })}
-      <Item>
-        <span>{nonSwapAmount.label}</span>
-        <span>
-          {format(nonSwapAmount.value, { defaultValue: '-' })} {swapToSymbol}
-        </span>
-      </Item>
-      <Item $isTotal>
-        {format(total, { defaultValue: '-' })} {swapToSymbol}
-      </Item>
-    </Wrapper>
-  )
+      return (
+        <Item key={`${amount}${idx}`} {...($minWidth ? { $minWidth } : {})}>
+          <span>{label}</span>{' '}
+          <span>
+            {format(value, { defaultValue: '-' })} {swapFromSymbol} <Icon name="ArrowRight" size={16} />{' '}
+            {format(amount, { defaultValue: '-' })} {swapToSymbol}
+          </span>
+        </Item>
+      )
+    })}
+    <Item>
+      <span>{nonSwapAmount.label}</span>
+      <span>
+        {format(nonSwapAmount.value, { defaultValue: '-' })} {swapToSymbol}
+      </span>
+    </Item>
+    <Item $isTotal>
+      {format(total, { defaultValue: '-' })} {swapToSymbol}
+    </Item>
+  </Wrapper>
+)
 
 const Wrapper = styled.section`
   border-bottom: 1px solid var(--button_outlined--border-color);

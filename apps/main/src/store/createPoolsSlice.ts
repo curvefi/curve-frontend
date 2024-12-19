@@ -783,9 +783,11 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const network = networks[chainId].id.toLowerCase()
 
       try {
-        const promises = chartCombinations.map((coin: PricesApiCoin[]) => fetch(
+        const promises = chartCombinations.map((coin: PricesApiCoin[]) =>
+          fetch(
             `https://prices.curve.fi/v1/trades/${network}/${poolAddress}?main_token=${coin[0].address}&reference_token=${coin[1].address}&page=1&per_page=100`,
-          ))
+          ),
+        )
         const lpTradesRes = await Promise.all(promises)
         const lpTradesData: LpTradesApiResponse[] = await Promise.all(lpTradesRes.map((res) => res.json()))
         const flattenData: LpTradesData[] = lpTradesData.reduce(

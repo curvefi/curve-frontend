@@ -101,7 +101,8 @@ export const oraclesReady = (tokens: TokenState[]) => {
   return allValid && functionsValid
 }
 
-export const containsOracle = (tokens: TokenState[]) => tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
+export const containsOracle = (tokens: TokenState[]) =>
+  tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
 
 export const checkFormReady = (
   poolTypeValid: boolean,
@@ -116,11 +117,10 @@ export const isTricrypto = (
   tokenA: TokenState,
   tokenB: TokenState,
   tokenC: TokenState,
-) => (
-    tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
-  )
+) => tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
 
-export const checkMetaPool = (address: string, basePools: BasePool[]) => address === '' ? false : basePools.some((item) => item.token === address)
+export const checkMetaPool = (address: string, basePools: BasePool[]) =>
+  address === '' ? false : basePools.some((item) => item.token === address)
 
 export const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
   let basePoolCoins: string[] = []

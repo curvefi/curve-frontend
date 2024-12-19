@@ -13,29 +13,29 @@ type Props = {
 }
 
 const DialogSelect = ({ selectedChartIndex, selectChartList, setChartSelectedIndex, isDisabled }: Props) => (
-    <>
-      {selectChartList.length === 1 ? (
-        <ChartsTitle>{selectChartList[0]?.label ?? `Loading`}</ChartsTitle>
-      ) : (
-        <Popover
-          buttonProps={{ isDisabled }}
-          placement="bottom"
-          offset={0}
-          buttonStyles={{ padding: '0.5rem' }}
-          label={<h3>{selectChartList[selectedChartIndex]?.label ?? `Loading`}</h3>}
-          showExpandIcon
-        >
-          <StyledPopover2Dialog title={`Select Chart`}>
-            <DialogSelectContent
-              data={selectChartList}
-              currentData={selectedChartIndex}
-              setCurrentData={setChartSelectedIndex}
-            />
-          </StyledPopover2Dialog>
-        </Popover>
-      )}
-    </>
-  )
+  <>
+    {selectChartList.length === 1 ? (
+      <ChartsTitle>{selectChartList[0]?.label ?? `Loading`}</ChartsTitle>
+    ) : (
+      <Popover
+        buttonProps={{ isDisabled }}
+        placement="bottom"
+        offset={0}
+        buttonStyles={{ padding: '0.5rem' }}
+        label={<h3>{selectChartList[selectedChartIndex]?.label ?? `Loading`}</h3>}
+        showExpandIcon
+      >
+        <StyledPopover2Dialog title={`Select Chart`}>
+          <DialogSelectContent
+            data={selectChartList}
+            currentData={selectedChartIndex}
+            setCurrentData={setChartSelectedIndex}
+          />
+        </StyledPopover2Dialog>
+      </Popover>
+    )}
+  </>
+)
 
 const StyledPopover2Dialog = styled(Popover2Dialog)`
   display: flex;

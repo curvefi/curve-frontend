@@ -74,16 +74,16 @@ const SummaryClaimable: React.FC<Props> = ({ title }) => {
         )}
         {tokens &&
           Object.entries(tokens).map(([token, { symbol, total, price }]) => (
-              <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
-                <Chip
-                  size="md"
-                  tooltip={`${formatNumber(1)} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`}
-                  tooltipProps={tooltipProps}
-                >
-                  {formatNumber(total)}
-                </Chip>
-              </StyledStats>
-            ))}
+            <StyledStats isOneLine isBorderBottom key={token} label={symbol}>
+              <Chip
+                size="md"
+                tooltip={`${formatNumber(1)} ${symbol} = ${formatNumber(price, FORMAT_OPTIONS.USD)}`}
+                tooltipProps={tooltipProps}
+              >
+                {formatNumber(total)}
+              </Chip>
+            </StyledStats>
+          ))}
         <Stats isOneLine label={t`USD Total`}>
           <Chip isBold isNumber size="md">
             ≈ {formatNumber(totalUsd, FORMAT_OPTIONS.USD)}

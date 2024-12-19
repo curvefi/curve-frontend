@@ -7,10 +7,10 @@ type Props = {
 }
 
 const ProgressBar = ({ className = '', $height, progress = 0 }: Props) => (
-    <Wrapper className={className ?? ''}>
-      <Bar $height={$height} $width={progress}></Bar>
-    </Wrapper>
-  )
+  <Wrapper className={className ?? ''}>
+    <Bar $height={$height} $width={progress}></Bar>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   border: 1px solid var(--border-400);

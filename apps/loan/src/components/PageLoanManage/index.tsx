@@ -102,17 +102,17 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
           <StyledSlideTabsWrapper activeIdx={selectedTabIdx} disabled={typeof loanExists === 'undefined'}>
             <SlideTabs ref={tabsRef}>
               {tabs.map(({ label, formType }, idx) => (
-                  <SlideTab
-                    key={label}
-                    disabled={isUndefined(loanExists)}
-                    tabLeft={tabPositions[idx]?.left}
-                    tabWidth={tabPositions[idx]?.width}
-                    tabTop={tabPositions[idx]?.top}
-                    onChange={() => shouldContinueAction(() => setSelectedTabIdx(idx))}
-                    tabIdx={idx}
-                    label={label}
-                  />
-                ))}
+                <SlideTab
+                  key={label}
+                  disabled={isUndefined(loanExists)}
+                  tabLeft={tabPositions[idx]?.left}
+                  tabWidth={tabPositions[idx]?.width}
+                  tabTop={tabPositions[idx]?.top}
+                  onChange={() => shouldContinueAction(() => setSelectedTabIdx(idx))}
+                  tabIdx={idx}
+                  label={label}
+                />
+              ))}
             </SlideTabs>
           </StyledSlideTabsWrapper>
         )}

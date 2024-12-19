@@ -14,14 +14,14 @@ type Props = {
 }
 
 const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => (
-    <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
-      {isIn && (
-        <Chip tooltip={tooltip} tooltipProps={{ placement: 'top left' }}>
-          <StyledIcon name="CurrencyDollar" size={16} />
-        </Chip>
-      )}
-    </Td>
-  )
+  <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
+    {isIn && (
+      <Chip tooltip={tooltip} tooltipProps={{ placement: 'top left' }}>
+        <StyledIcon name="CurrencyDollar" size={16} />
+      </Chip>
+    )}
+  </Td>
+)
 
 const Td = styled.td<{ $isIn?: boolean; $isMobile?: boolean }>`
   ${({ $isIn }) => {

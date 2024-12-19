@@ -21,21 +21,21 @@ const ComboBoxListItem = ({
     selectedGauge: GaugeFormattedData | null
     handleOnSelectChange(selectedGauge: string): void
   }) => (
-    <li>
-      <ItemButton
-        variant="outlined"
-        className={selectedGauge?.address === item.address ? 'active' : ''}
-        onClick={() => handleOnSelectChange(item.address)}
-      >
-        <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
-          <LabelText data-testid={`li-${testId}`}>{item.title}</LabelText>
-          <Chip isMono opacity={0.5}>
-            {shortenTokenAddress(item.address)}
-          </Chip>
-        </LabelTextWrapper>
-      </ItemButton>
-    </li>
-  )
+  <li>
+    <ItemButton
+      variant="outlined"
+      className={selectedGauge?.address === item.address ? 'active' : ''}
+      onClick={() => handleOnSelectChange(item.address)}
+    >
+      <LabelTextWrapper flex flexDirection="column" flexAlignItems="flex-start">
+        <LabelText data-testid={`li-${testId}`}>{item.title}</LabelText>
+        <Chip isMono opacity={0.5}>
+          {shortenTokenAddress(item.address)}
+        </Chip>
+      </LabelTextWrapper>
+    </ItemButton>
+  </li>
+)
 
 const ItemButton = styled(Button)`
   ${focusVisible};

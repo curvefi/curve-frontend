@@ -97,17 +97,17 @@ const ManageLoan = (pageProps: PageContentProps) => {
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
               {tabs.map(({ label }, idx) => (
-                  <AppFormSlideTab
-                    key={label}
-                    disabled={selectedTabIdx === idx}
-                    tabLeft={tabPositions[idx]?.left}
-                    tabWidth={tabPositions[idx]?.width}
-                    tabTop={tabPositions[idx]?.top}
-                    onChange={() => handleTabClick(() => setSelectedTabIdx(idx))}
-                    tabIdx={idx}
-                    label={label}
-                  />
-                ))}
+                <AppFormSlideTab
+                  key={label}
+                  disabled={selectedTabIdx === idx}
+                  tabLeft={tabPositions[idx]?.left}
+                  tabWidth={tabPositions[idx]?.width}
+                  tabTop={tabPositions[idx]?.top}
+                  onChange={() => handleTabClick(() => setSelectedTabIdx(idx))}
+                  tabIdx={idx}
+                  label={label}
+                />
+              ))}
             </SlideTabs>
           </SlideTabsWrapper>
         )}

@@ -41,11 +41,13 @@ export const SelectLocale = ({
         )}
       </MobileButton>
       <LocaleList className={`collapsed ${mobileHeader.showList ? 'show' : ''}`}>
-        {locales.map((l) => l.value === selectedLocale ? null : (
+        {locales.map((l) =>
+          l.value === selectedLocale ? null : (
             <li key={l.value} onClick={() => handleLocaleChange(l.value)}>
               {l.name}
             </li>
-          ))}
+          ),
+        )}
       </LocaleList>
     </>
   ) : (

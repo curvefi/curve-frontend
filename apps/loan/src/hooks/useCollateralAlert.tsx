@@ -3,7 +3,8 @@ import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils'
 
-const useCollateralAlert = (collateralAddress: string | undefined) => useMemo(() => {
+const useCollateralAlert = (collateralAddress: string | undefined) =>
+  useMemo(() => {
     const alerts: { [collateralAddress: string]: CollateralAlert } = {
       '0x136e783846ef68c8bd00a3369f787df8d683a696': {
         // sfrxeth

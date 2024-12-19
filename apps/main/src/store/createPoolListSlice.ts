@@ -99,14 +99,15 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       } else if (key === 'stableng') {
         return poolDatas.filter(({ pool }) => pool.id.startsWith('factory-stable-ng'))
       } else if (key === 'cross-chain') {
-        return poolDatas.filter(({ pool }) => (
+        return poolDatas.filter(
+          ({ pool }) =>
             pool.address === '0x939721ce04332ca04b100154e0c8fcbb4ebaf695' ||
             pool.address === '0x228f20f430fd7a6f5b1abea69a5ab8eb2973853c' ||
             pool.address === '0x6bb9a6b7066445da6bef268b91810ae750431587' ||
             pool.address === '0x4df0b8323f7b6d45abf39ecbd3f18bd5fcbcb1b2' ||
             pool.address === '0x6e0dc5a4ef555277db3435703f0e287040013763' ||
-            pool.name.startsWith('CrossCurve')
-          ))
+            pool.name.startsWith('CrossCurve'),
+        )
       } else if (key === 'others') {
         return poolDatas.filter(({ pool }) => {
           const referenceAsset = pool.referenceAsset.toLowerCase()

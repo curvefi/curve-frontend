@@ -15,13 +15,13 @@ const ClassicPoolsOnlyDescription = () => {
       <MissingPoolDescription>
         {t`*This UI does not support the following pools:`}{' '}
         {missingPools.map((pool, idx) => (
-            <Fragment key={pool.name}>
-              {idx === 0 ? '' : ', '}
-              <ExternalLink $noStyles href={pool.url}>
-                {pool.name}
-              </ExternalLink>
-            </Fragment>
-          ))}
+          <Fragment key={pool.name}>
+            {idx === 0 ? '' : ', '}
+            <ExternalLink $noStyles href={pool.url}>
+              {pool.name}
+            </ExternalLink>
+          </Fragment>
+        ))}
         {t`. Please click on the pool name to view them on`} {orgUIPath}{' '}
       </MissingPoolDescription>
     )

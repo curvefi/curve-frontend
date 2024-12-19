@@ -13,21 +13,21 @@ type Props = {
 }
 
 const DialogSelect = ({ currentData, data, setCurrentData, isDisabled, label }: Props) => (
-    <Popover
-      buttonProps={{ isDisabled }}
-      placement="bottom"
-      offset={0}
-      buttonStyles={{ padding: '0.5rem' }}
-      label={
-        <StyledDropdownLabel>{currentData === null || currentData === '' ? label : currentData}</StyledDropdownLabel>
-      }
-      showExpandIcon
-    >
-      <StyledPopover2Dialog title={label}>
-        <DialogSelectContent data={data} currentData={currentData} setCurrentData={setCurrentData} />
-      </StyledPopover2Dialog>
-    </Popover>
-  )
+  <Popover
+    buttonProps={{ isDisabled }}
+    placement="bottom"
+    offset={0}
+    buttonStyles={{ padding: '0.5rem' }}
+    label={
+      <StyledDropdownLabel>{currentData === null || currentData === '' ? label : currentData}</StyledDropdownLabel>
+    }
+    showExpandIcon
+  >
+    <StyledPopover2Dialog title={label}>
+      <DialogSelectContent data={data} currentData={currentData} setCurrentData={setCurrentData} />
+    </StyledPopover2Dialog>
+  </Popover>
+)
 
 const StyledDropdownLabel = styled.h3`
   font-size: var(--font-size-2);

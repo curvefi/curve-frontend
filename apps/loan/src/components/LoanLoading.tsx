@@ -6,7 +6,8 @@ type Props = {
   loaded: boolean
 }
 
-const LoanLoading = ({ children, loaded }: React.PropsWithChildren<Props>) => !loaded ? (
+const LoanLoading = ({ children, loaded }: React.PropsWithChildren<Props>) =>
+  !loaded ? (
     <SpinnerWrapper>
       <Spinner />
     </SpinnerWrapper>

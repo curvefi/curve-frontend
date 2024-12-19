@@ -5,13 +5,13 @@ type Props = {
 }
 
 const Script = ({ script }: Props) => (
-    <Wrapper>
-      <SubTitle>Calldata</SubTitle>
-      <CallData>
-        <ScriptText>{script}</ScriptText>
-      </CallData>
-    </Wrapper>
-  )
+  <Wrapper>
+    <SubTitle>Calldata</SubTitle>
+    <CallData>
+      <ScriptText>{script}</ScriptText>
+    </CallData>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

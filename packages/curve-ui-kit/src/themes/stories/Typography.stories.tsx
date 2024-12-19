@@ -80,14 +80,14 @@ const TypographyDisplay: React.FC<TypographyDisplayProps> = ({ variant, children
 const createStory = (category: string): Story => ({
   decorators: [
     (Story, { args }) => (
-        <Stack spacing={5}>
-          {Object.keys(TYPOGRAPHY_VARIANTS)
-            .filter((t) => t.includes(category))
-            .map((variant) => (
-              <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
-            ))}
-        </Stack>
-      ),
+      <Stack spacing={5}>
+        {Object.keys(TYPOGRAPHY_VARIANTS)
+          .filter((t) => t.includes(category))
+          .map((variant) => (
+            <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
+          ))}
+      </Stack>
+    ),
   ],
 })
 

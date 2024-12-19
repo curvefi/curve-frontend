@@ -19,83 +19,83 @@ const LiquidityData: React.FC<LiquidityDataProps> = ({ lendControllerData, chain
     <>
       {coins &&
         lendControllerData.map((transaction, index) => (
-            <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
-              <LiquidityEvent
-                href={networks[chainId].scanTxPath(transaction.transaction_hash)}
-                rel="noopener"
-                target="_blank"
-              >
-                {transaction.deposit !== null && (
-                  <>
-                    <Box flex flexColumn>
-                      <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
-                      <Nrange>
-                        N: {transaction.deposit.n1} / {transaction.deposit.n2}
-                      </Nrange>
-                    </Box>
-                    <LiquidityEventRow>
-                      <Chip isBold isNumber>
-                        {formatNumber(transaction.deposit.amount, {
-                          ...getFractionDigitsOptions(transaction.deposit.amount, 2),
-                        })}
-                      </Chip>
-                      <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
-                      <StyledTokenIcon
-                        size="sm"
-                        imageBaseUrl={imageBaseUrl}
-                        token={coins.collateralToken.address}
-                        address={coins.collateralToken.address}
-                      />
-                    </LiquidityEventRow>
-                  </>
-                )}
-                {transaction.withdrawal !== null && (
-                  <>
-                    <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
-                    <Box flex flexColumn margin="0 0 0 auto">
-                      {+transaction.withdrawal.amount_collateral !== 0 && (
-                        <LiquidityEventRow>
-                          <Chip isBold isNumber>
-                            {formatNumber(transaction.withdrawal.amount_collateral, {
-                              ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
-                            })}
-                          </Chip>
-                          <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
-                          <StyledTokenIcon
-                            size="sm"
-                            imageBaseUrl={imageBaseUrl}
-                            token={coins.collateralToken.address}
-                            address={coins.collateralToken.address}
-                          />
-                        </LiquidityEventRow>
-                      )}
-                      {+transaction.withdrawal.amount_borrowed !== 0 && (
-                        <LiquidityEventRow>
-                          <Chip isBold isNumber>
-                            {formatNumber(transaction.withdrawal.amount_borrowed, {
-                              ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
-                            })}
-                          </Chip>
-                          <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
-                          <StyledTokenIcon
-                            size="sm"
-                            imageBaseUrl={imageBaseUrl}
-                            token={coins.borrowedToken.address}
-                            address={coins.borrowedToken.address}
-                          />
-                        </LiquidityEventRow>
-                      )}
-                    </Box>
-                  </>
-                )}
-              </LiquidityEvent>
-              <TimestampColumn>
-                <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
-                  {convertTimeAgo(transaction.timestamp)}
-                </Tooltip>
-              </TimestampColumn>
-            </TransactionRow>
-          ))}
+          <TransactionRow key={`${transaction.transaction_hash}-lp-${index}`}>
+            <LiquidityEvent
+              href={networks[chainId].scanTxPath(transaction.transaction_hash)}
+              rel="noopener"
+              target="_blank"
+            >
+              {transaction.deposit !== null && (
+                <>
+                  <Box flex flexColumn>
+                    <LiquidityEventTitle>{t`Deposit`}</LiquidityEventTitle>
+                    <Nrange>
+                      N: {transaction.deposit.n1} / {transaction.deposit.n2}
+                    </Nrange>
+                  </Box>
+                  <LiquidityEventRow>
+                    <Chip isBold isNumber>
+                      {formatNumber(transaction.deposit.amount, {
+                        ...getFractionDigitsOptions(transaction.deposit.amount, 2),
+                      })}
+                    </Chip>
+                    <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
+                    <StyledTokenIcon
+                      size="sm"
+                      imageBaseUrl={imageBaseUrl}
+                      token={coins.collateralToken.address}
+                      address={coins.collateralToken.address}
+                    />
+                  </LiquidityEventRow>
+                </>
+              )}
+              {transaction.withdrawal !== null && (
+                <>
+                  <LiquidityEventTitle className="remove">{t`Withdrawal`}</LiquidityEventTitle>
+                  <Box flex flexColumn margin="0 0 0 auto">
+                    {+transaction.withdrawal.amount_collateral !== 0 && (
+                      <LiquidityEventRow>
+                        <Chip isBold isNumber>
+                          {formatNumber(transaction.withdrawal.amount_collateral, {
+                            ...getFractionDigitsOptions(transaction.withdrawal.amount_collateral, 2),
+                          })}
+                        </Chip>
+                        <LiquiditySymbol>{coins.collateralToken.symbol}</LiquiditySymbol>
+                        <StyledTokenIcon
+                          size="sm"
+                          imageBaseUrl={imageBaseUrl}
+                          token={coins.collateralToken.address}
+                          address={coins.collateralToken.address}
+                        />
+                      </LiquidityEventRow>
+                    )}
+                    {+transaction.withdrawal.amount_borrowed !== 0 && (
+                      <LiquidityEventRow>
+                        <Chip isBold isNumber>
+                          {formatNumber(transaction.withdrawal.amount_borrowed, {
+                            ...getFractionDigitsOptions(transaction.withdrawal.amount_borrowed, 2),
+                          })}
+                        </Chip>
+                        <LiquiditySymbol>{coins.borrowedToken.symbol}</LiquiditySymbol>
+                        <StyledTokenIcon
+                          size="sm"
+                          imageBaseUrl={imageBaseUrl}
+                          token={coins.borrowedToken.address}
+                          address={coins.borrowedToken.address}
+                        />
+                      </LiquidityEventRow>
+                    )}
+                  </Box>
+                </>
+              )}
+            </LiquidityEvent>
+            <TimestampColumn>
+              <Tooltip tooltip={`${convertTime(transaction.timestamp)} ${convertFullTime(transaction.timestamp)}`}>
+                {convertTimeAgo(transaction.timestamp)}
+              </Tooltip>
+            </TimestampColumn>
+          </TransactionRow>
+        ))}
     </>
   )
 }

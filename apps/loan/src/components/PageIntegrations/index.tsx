@@ -123,28 +123,28 @@ const IntegrationsComp = ({
       ) : (
         <IntegrationsWrapper flexAlignItems="flex-start" grid>
           {(parsedResults ?? []).map((app, idx) => (
-              <IntegrationAppComp
-                key={`${app.name}_${idx}`}
-                {...app}
-                filterKey={formValues.filterKey}
-                integrationsTags={integrationsTags}
-                integrationsAppNetworks={
-                  !rChainId && (
-                    <Box margin="0.25rem 0 0 0">
-                      {Object.keys(app.networks).map((networkId) => {
-                        if (networkId in networksIdMapper) {
-                          const chainId = networksIdMapper[networkId as NetworkEnum]
-                          const { name, logoSrc } = networks[chainId]
-                          return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
-                        }
-                        return null
-                      })}
-                    </Box>
-                  )
-                }
-                imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
-              />
-            ))}
+            <IntegrationAppComp
+              key={`${app.name}_${idx}`}
+              {...app}
+              filterKey={formValues.filterKey}
+              integrationsTags={integrationsTags}
+              integrationsAppNetworks={
+                !rChainId && (
+                  <Box margin="0.25rem 0 0 0">
+                    {Object.keys(app.networks).map((networkId) => {
+                      if (networkId in networksIdMapper) {
+                        const chainId = networksIdMapper[networkId as NetworkEnum]
+                        const { name, logoSrc } = networks[chainId]
+                        return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
+                      }
+                      return null
+                    })}
+                  </Box>
+                )
+              }
+              imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
+            />
+          ))}
         </IntegrationsWrapper>
       )}
     </>

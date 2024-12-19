@@ -19,20 +19,20 @@ const HopSteps = ({
   showNextArrow: boolean
   steps: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[]
 }) => (
-    <>
-      <Wrapper>
-        <StyledTokenIcon imageBaseUrl={imageBaseUrl} token={fromTokenAddress} address={fromTokenAddress} />
-        <StepsWrapper>
-          {steps.map((l, idx) => (
-              <StepsListItem key={`${l.name}${l.part}${idx}`} isBold>
-                {l.name} <span>({formatNumber(l.part, { style: 'percent' })})</span>
-              </StepsListItem>
-            ))}
-        </StepsWrapper>
-      </Wrapper>
-      {showNextArrow && <Icon name="ChevronDown" size={16} />}
-    </>
-  )
+  <>
+    <Wrapper>
+      <StyledTokenIcon imageBaseUrl={imageBaseUrl} token={fromTokenAddress} address={fromTokenAddress} />
+      <StepsWrapper>
+        {steps.map((l, idx) => (
+          <StepsListItem key={`${l.name}${l.part}${idx}`} isBold>
+            {l.name} <span>({formatNumber(l.part, { style: 'percent' })})</span>
+          </StepsListItem>
+        ))}
+      </StepsWrapper>
+    </Wrapper>
+    {showNextArrow && <Icon name="ChevronDown" size={16} />}
+  </>
+)
 
 const Wrapper = styled(Box)`
   display: grid;
