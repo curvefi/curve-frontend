@@ -2,8 +2,7 @@ import type { FormValues as SwapFormValues } from '@/components/PageLoanManage/L
 import type { LiqRange, Provider, MaxRecvLeverage } from '@/store/types'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/components/PageLoanManage/LoanDeleverage/types'
-
-import { ethers } from 'ethers'
+import { BrowserProvider } from 'ethers'
 import PromisePool from '@supercharge/promise-pool'
 
 import { fulfilledValue, getErrorMessage, log } from '@/utils/helpers'
@@ -94,11 +93,11 @@ const helpers = {
     }
   },
   waitForTransaction: async (hash: string, provider: Provider) => {
-    return (provider as ethers.providers.Web3Provider).waitForTransaction(hash)
+    return (provider as BrowserProvider).waitForTransaction(hash)
   },
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
-      async (hash) => await (provider as ethers.providers.Web3Provider).waitForTransaction(hash),
+      async (hash) => await (provider as BrowserProvider).waitForTransaction(hash),
     )
     if (Array.isArray(errors) && errors.length > 0) {
       throw errors
