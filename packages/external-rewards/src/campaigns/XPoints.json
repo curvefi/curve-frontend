@@ -1,6 +1,6 @@
 {
-  "campaignName": "",
-  "platform": "XPoints",
+  "campaignName": "XPoints",
+  "platform": "USDX Money",
   "description": "Points for providing liquidity.",
   "platformImageId": "usdx-money.png",
   "dashboardLink": "https://app.usdx.money/airdrop",
