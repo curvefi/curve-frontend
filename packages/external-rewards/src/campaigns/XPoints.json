@@ -1,0 +1,33 @@
+{
+  "campaignName": "",
+  "platform": "XPoints",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "usdx-money.png",
+  "dashboardLink": "https://app.usdx.money/airdrop",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 X-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.Money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x3f131bb401c5f322bce82e1f06fb25aca08d3f7e",
+      "network": "ethereum",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Earn 1 X-Point per dollar daily, with up to 2.5x booster multiplier. For more information please visit usdx.Money Dapp.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x541d4752d992046787d3a21be1daff8e816bb02e",
+      "network": "ethereum",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
