@@ -33,7 +33,7 @@ export type DetailProps = Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' |
 export type FormDetailInfoLeverage = FormDetailInfo & {
   repayIsFull: boolean
   expectedBorrowed: ExpectedBorrowed | null
-  routes: Routes | null
+  routeImage: string | null
   priceImpact: string
   isHighPriceImpact: boolean
 }

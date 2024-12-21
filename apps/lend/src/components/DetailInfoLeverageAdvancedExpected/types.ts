@@ -21,6 +21,6 @@ export type DetailInfoLeverageExpectedProps = BreakdownItem & {
   nonSwapAmount: { value: string | undefined; label: string }
   total: string | undefined
   avgPrice: string | undefined
-  routes: Routes | null
+  routeImage: string | null
   type: 'collateral' | 'borrowed'
 }
