@@ -1,13 +1,12 @@
 import type { FormType, VecrvInfo } from '@/components/PageVeCrv/types'
-
 import { t } from '@lingui/macro'
 import React from 'react'
 import styled from 'styled-components'
-
 import { formatNumber } from '@/ui/utils'
-
 import { Chip } from '@/ui/Typography'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@/ui/InputComp'
+import { APP_LINK } from '@ui-kit/shared/routes'
+import { ExternalLink } from '@/ui/Link'
 
 const FieldLockedAmt = ({
   disabled,
@@ -50,7 +49,8 @@ const FieldLockedAmt = ({
       </StyledInputProvider>
       {!!crv && lockedAmtError ? (
         <Chip size="xs" isError>
-          Amount cannot be greater than {formatNumber(crv)}
+          Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
+          <StyledExternalLink href={APP_LINK.main.root}>here</StyledExternalLink>.
         </Chip>
       ) : formType === 'adjust_crv' ? (
         <Chip size="xs">{t`CRV Locked: ${formatNumber(lockedAmount)}`}</Chip>
@@ -65,4 +65,13 @@ const StyledInputProvider = styled(InputProvider)`
   padding: var(--spacing-1) var(--spacing-2);
 `
 
+export const StyledExternalLink = styled(ExternalLink)`
+  color: inherit;
+  font-weight: var(--bold);
+  text-transform: none;
+
+  &:hover {
+    cursor: pointer;
+  }
+`
 export default FieldLockedAmt
