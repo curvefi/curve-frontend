@@ -124,7 +124,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           setStorageValue('APP_CACHE', { walletName: walletState.label, timestamp: Date.now().toString() })
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain({ chainId: ethers.utils.hexValue(parsedParams.rChainId) })
+            const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -167,7 +167,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain({ chainId: ethers.utils.hexValue(newChainId) })
+            const success = await setChain({ chainId: ethers.toQuantity(newChainId) })
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
