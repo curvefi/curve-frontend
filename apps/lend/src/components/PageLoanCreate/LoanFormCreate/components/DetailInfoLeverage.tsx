@@ -48,7 +48,7 @@ const DetailInfoLeverage = ({
 
   const { signerAddress } = api ?? {}
   const { minBands, maxBands, borrowed_token, collateral_token } = market ?? {}
-  const { expectedCollateral, routes } = detailInfo ?? {}
+  const { expectedCollateral, routeImage } = detailInfo ?? {}
   const { userBorrowed, debt } = formValues
   const { symbol: collateralSymbol = '' } = collateral_token ?? {}
   const { haveValues, haveDebt } = _parseValue(formValues)
@@ -86,7 +86,7 @@ const DetailInfoLeverage = ({
                   nonSwapAmount={{ value: expectedCollateral?.userCollateral, label: '' }}
                   total={expectedCollateral?.totalCollateral}
                   avgPrice={expectedCollateral?.avgPrice}
-                  routes={routes}
+                  routeImage={routeImage}
                   type="collateral"
                 />
                 <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedCollateral?.avgPrice} />

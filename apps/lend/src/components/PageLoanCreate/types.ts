@@ -51,7 +51,7 @@ export type DetailInfo = DetailInfoResp & {
 
 export type DetailInfoLeverage = DetailInfoLeverageResp & {
   expectedCollateral: ExpectedCollateral | null
-  routes: Routes | null
+  routeImage: string | null
   loading: boolean
   error: string
 }

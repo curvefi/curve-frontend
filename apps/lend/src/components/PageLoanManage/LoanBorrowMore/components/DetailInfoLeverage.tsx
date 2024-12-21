@@ -42,7 +42,7 @@ const DetailInfoLeverage = ({
   const maxSlippage = useStore((state) => state.maxSlippage)
 
   const { signerAddress } = api ?? {}
-  const { expectedCollateral, routes } = detailInfo ?? {}
+  const { expectedCollateral, routeImage } = detailInfo ?? {}
   const { collateral_token, borrowed_token } = market ?? {}
   const { haveDebt, haveFormErrors } = _parseValues(formValues)
 
@@ -79,7 +79,7 @@ const DetailInfoLeverage = ({
                 total={expectedCollateral?.totalCollateral}
                 avgPrice={expectedCollateral?.avgPrice}
                 type="collateral"
-                routes={routes}
+                routeImage={routeImage}
               />
               <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedCollateral?.avgPrice} />
               <DetailInfoPriceImpact

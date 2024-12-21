@@ -18,7 +18,7 @@ export interface FormStatus extends Fs {
 
 export type FormDetailInfoLeverage = FormDetailInfo & {
   expectedCollateral: ExpectedCollateral | null
-  routes: Routes | null
+  routeImage: string | null
   priceImpact: string
   isHighPriceImpact: boolean
 }
