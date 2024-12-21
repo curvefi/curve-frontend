@@ -54,7 +54,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
       <Container globalAlertHeight={layoutHeight?.globalAlert}>
         <Header sections={sections} />
         <Main minHeight={minHeight}>{children}</Main>
-        <Footer networkName={rNetwork} />
+        <Footer appName="crvusd" networkName={rNetwork} />
       </Container>
     </>
   )
@@ -67,6 +67,7 @@ const getSections = (locale: Locale, network: string) => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
+      { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_DISCLAIMER}?tab=crvusd`, label: t`Risk Disclaimers` },
       { route: `${network ? `/${network}` : ''}${ROUTE.PAGE_INTEGRATIONS}`, label: t`Integrations` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),

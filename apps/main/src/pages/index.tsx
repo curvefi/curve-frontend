@@ -15,7 +15,7 @@ const PageCreatePool = dynamic(() => import('@/components/PageCreatePool/Page'),
 const PageDeployGauge = dynamic(() => import('@/components/PageDeployGauge/Page'), { ssr: false })
 const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
 const PageCompensation = dynamic(() => import('@/components/PageCompensation/Page'), { ssr: false })
-const PageRiskDisclaimer = dynamic(() => import('@/components/PageRiskDisclaimer/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
 
 const App: NextPage = () => {
   const SubRoutes = (
@@ -32,7 +32,7 @@ const App: NextPage = () => {
       <Route path=":network/pools/:pool/:transfer" element={<PagePoolTransfer />} />
       <Route path=":network/swap" element={<PageSwap />} />
       <Route path=":network/compensation" element={<PageCompensation />} />
-      <Route path=":network/risk-disclaimer" element={<PageRiskDisclaimer />} />
+      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
     </>
   )
 
@@ -48,7 +48,7 @@ const App: NextPage = () => {
       <Route path="/pools/*" element={<Navigate to={`/ethereum${ROUTE.PAGE_POOLS}`} replace />} />
       <Route path="/swap" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} replace />} />
       <Route path="/compensation" element={<Navigate to={`/ethereum${ROUTE.PAGE_COMPENSATION}`} replace />} />
-      <Route path="/risk-disclaimer" element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />} />
+      <Route path="/disclaimer" element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />} />
       <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_SWAP}`} />} />
       <Route path="404" element={<Page404 />} />
       <Route path="*" element={<Page404 />} />

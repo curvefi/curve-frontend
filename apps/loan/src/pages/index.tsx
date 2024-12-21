@@ -11,7 +11,7 @@ const PageLlamaMarkets = dynamic(() => import('@/components/PageLlamaMarkets/Pag
 })
 const PageLoanCreate = dynamic(() => import('@/components/PageLoanCreate/Page'), { ssr: false })
 const PageLoanManage = dynamic(() => import('@/components/PageLoanManage/Page'), { ssr: false })
-const PageRiskDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
 const Page404 = dynamic(() => import('@/components/Page404/Page'), { ssr: false })
 const PageIntegrations = dynamic(() => import('@/components/PageIntegrations/Page'), { ssr: false })
 const PagePegKeepers = dynamic(() => import('@/components/PagePegKeepers/Page'), { ssr: false })
@@ -21,7 +21,7 @@ const App: NextPage = () => {
   const SubRoutes = (
     <>
       <Route path=":network" element={<PageMarketList />} />
-      <Route path={`:network${ROUTE.PAGE_RISK_DISCLAIMER}`} element={<PageRiskDisclaimer />} />
+      <Route path={`:network${ROUTE.PAGE_DISCLAIMER}`} element={<PageDisclaimer />} />
       <Route path={`:network${ROUTE.PAGE_INTEGRATIONS}`} element={<PageIntegrations />} />
       <Route path={`:network${ROUTE.PAGE_PEGKEEPERS}`} element={<PagePegKeepers />} />
       <Route path={`:network${ROUTE.PAGE_MARKETS}`} element={<PageMarketList />} />
@@ -44,10 +44,7 @@ const App: NextPage = () => {
         path={ROUTE.PAGE_CRVUSD_STAKING}
         element={<Navigate to={`/ethereum${ROUTE.PAGE_CRVUSD_STAKING}`} replace />}
       />
-      <Route
-        path={ROUTE.PAGE_RISK_DISCLAIMER}
-        element={<Navigate to={`/ethereum${ROUTE.PAGE_RISK_DISCLAIMER}`} replace />}
-      />
+      <Route path={ROUTE.PAGE_DISCLAIMER} element={<Navigate to={`/ethereum${ROUTE.PAGE_DISCLAIMER}`} replace />} />
       <Route path={ROUTE.PAGE_PEGKEEPERS} element={<Navigate to={`/ethereum${ROUTE.PAGE_PEGKEEPERS}`} replace />} />
       <Route path={ROUTE.PAGE_INTEGRATIONS} element={<Navigate to={`/ethereum${ROUTE.PAGE_INTEGRATIONS}`} replace />} />
       <Route path="/" element={<Navigate to={`/ethereum${ROUTE.PAGE_MARKETS}`} replace />} />

@@ -355,6 +355,7 @@ export const SizesAndSpaces = {
   },
   OutlineWidth: '0.125rem', // 2px
   MaxWidth: {
+    sm: '43rem', // 688px
     md: '67rem', // 1072px
     lg: '96rem', // 1536px
   },
