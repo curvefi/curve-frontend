@@ -11,6 +11,8 @@ import { ChainIcon } from './ChainIcon'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { useLocalStorage } from 'curve-ui-kit/src/hooks/useLocalStorage'
+import Snackbar from '@mui/material/Snackbar'
+import Alert from '@mui/material/Alert'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
@@ -35,22 +37,27 @@ export const ChainSwitcher = <TChainId extends number>({
   disabled,
 }: ChainSwitcherProps<TChainId>) => {
   const [isOpen, , close, toggle] = useSwitch()
+  const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
   const [showTestnets, setShowTestnets] = useLocalStorage<boolean>('showTestnets', false)
   const selectedNetwork = useMemo(() => options.find((o) => o.chainId === chainId) ?? options[0], [options, chainId])
 
   useEffect(() => () => close(), [chainId, close]) // close on chain change
 
-  if (options.length <= 1) {
-    return null
-  }
-
+  const onClick = options.length > 1 ? toggle : openSnackbar
   return (
     <>
-      <IconButton size="small" disabled={disabled} onClick={toggle} data-testid="btn-change-chain">
+      <IconButton size="small" disabled={disabled} onClick={onClick} data-testid="btn-change-chain">
         <ChainIcon chain={selectedNetwork} />
-        <KeyboardArrowDownIcon />
+        {options.length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
+
+      <Snackbar open={isSnackbarOpen} onClose={hideSnackbar} anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+        <Alert variant="filled" severity="error">
+          {t`Minting is only available on the Ethereum Mainnet`}
+        </Alert>
+      </Snackbar>
+
       {isOpen != null && (
         <ModalDialog
           open={isOpen}
