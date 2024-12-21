@@ -28,31 +28,29 @@ const SelectButton = ({
   description,
   subData,
   handleClick,
-}: Props) => {
-  return (
-    <StyledButton
-      disabled={disabled}
-      variant={variant === 'outlined' ? 'outlined' : 'filled'}
-      paddingSize={paddingSize}
-      className={`${selected && 'selected'}`}
-      onClick={handleClick}
-    >
-      <Row>
-        <ButtonName>{descriptionName}</ButtonName>
-      </Row>
-      <Row>
-        <ButtonDescription>{description}</ButtonDescription>
-      </Row>
-      {subData &&
-        subData.map((item) => (
-          <Row key={`${name}-${item.name}`}>
-            <ButtonSubName>{item.name}</ButtonSubName>
-            <ButtonSubData>{item.description}</ButtonSubData>
-          </Row>
-        ))}
-    </StyledButton>
-  )
-}
+}: Props) => (
+  <StyledButton
+    disabled={disabled}
+    variant={variant === 'outlined' ? 'outlined' : 'filled'}
+    paddingSize={paddingSize}
+    className={`${selected && 'selected'}`}
+    onClick={handleClick}
+  >
+    <Row>
+      <ButtonName>{descriptionName}</ButtonName>
+    </Row>
+    <Row>
+      <ButtonDescription>{description}</ButtonDescription>
+    </Row>
+    {subData &&
+      subData.map((item) => (
+        <Row key={`${name}-${item.name}`}>
+          <ButtonSubName>{item.name}</ButtonSubName>
+          <ButtonSubData>{item.description}</ButtonSubData>
+        </Row>
+      ))}
+  </StyledButton>
+)
 
 const Row = styled(Box)`
   display: flex;

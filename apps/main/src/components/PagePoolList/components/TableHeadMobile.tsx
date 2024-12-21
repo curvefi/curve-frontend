@@ -8,21 +8,19 @@ type Props = {
   showInPoolColumn: boolean
 }
 
-const TableHeadMobile = ({ showInPoolColumn }: Props) => {
-  return (
-    <>
-      <colgroup>
-        {showInPoolColumn && <ColInPool />}
-        <Col className="left pool" />
-      </colgroup>
-      <thead>
-        <Tr>
-          <Th $first className="left">{t`Pools`}</Th>
-        </Tr>
-      </thead>
-    </>
-  )
-}
+const TableHeadMobile = ({ showInPoolColumn }: Props) => (
+  <>
+    <colgroup>
+      {showInPoolColumn && <ColInPool />}
+      <Col className="left pool" />
+    </colgroup>
+    <thead>
+      <Tr>
+        <Th $first className="left">{t`Pools`}</Th>
+      </Tr>
+    </thead>
+  </>
+)
 
 TableHeadMobile.displayName = 'TableHeadMobile'
 

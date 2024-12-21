@@ -24,38 +24,36 @@ const TableButtonFilters = ({
   isLoading?: boolean
   resultsLength?: number | undefined
   updateRouteFilterKey(filterKey: string): void
-}) => {
-  return (
-    <Wrapper flex flexAlignItems="center" className={className}>
-      {filters &&
-        Object.keys(filters).map((k) => {
-          const { id, color, displayName } = filters[k]
-          const isActive = filterKey === id
-          return (
-            <Button
-              key={id}
-              nowrap
-              disabled={disabled}
-              size="small"
-              className={isActive ? 'active' : ''}
-              variant="select"
-              onClick={() => updateRouteFilterKey(id)}
-            >
-              {color && <FilterIcon size={16} name="StopFilledAlt" fill={color} strokeWidth="1px" stroke="white" />}
-              {displayName}{' '}
-              {isLoading && isActive ? (
-                <FilterSpinner isDisabled size={10} />
-              ) : isActive ? (
-                typeof resultsLength !== 'undefined' && resultsLength
-              ) : (
-                ''
-              )}
-            </Button>
-          )
-        })}
-    </Wrapper>
-  )
-}
+}) => (
+  <Wrapper flex flexAlignItems="center" className={className}>
+    {filters &&
+      Object.keys(filters).map((k) => {
+        const { id, color, displayName } = filters[k]
+        const isActive = filterKey === id
+        return (
+          <Button
+            key={id}
+            nowrap
+            disabled={disabled}
+            size="small"
+            className={isActive ? 'active' : ''}
+            variant="select"
+            onClick={() => updateRouteFilterKey(id)}
+          >
+            {color && <FilterIcon size={16} name="StopFilledAlt" fill={color} strokeWidth="1px" stroke="white" />}
+            {displayName}{' '}
+            {isLoading && isActive ? (
+              <FilterSpinner isDisabled size={10} />
+            ) : isActive ? (
+              typeof resultsLength !== 'undefined' && resultsLength
+            ) : (
+              ''
+            )}
+          </Button>
+        )
+      })}
+  </Wrapper>
+)
 
 const FilterSpinner = styled(Spinner)`
   margin-left: var(--spacing-1);

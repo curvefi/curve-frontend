@@ -13,8 +13,6 @@ const TooltipIcon = ({
     iconStyles?: IconStyles
     customIcon?: React.ReactNode
   }
->) => {
-  return <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
-}
+>) => <TooltipButton {...props} showIcon customIcon={customIcon} tooltip={children}></TooltipButton>
 
 export default TooltipIcon

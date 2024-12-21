@@ -8,16 +8,14 @@ type Props = {
   className?: string
 }
 
-const PendingTx = ({ pendingMessage, className }: Props) => {
-  return (
-    <Wrapper className={className}>
-      <Box flex flexGap="var(--spacing-2)" flexAlignItems="center" flexJustifyContent="center">
-        <PendingMessage>{pendingMessage}</PendingMessage>
-        <StyledPendingSpinner isDisabled size={16} />
-      </Box>
-    </Wrapper>
-  )
-}
+const PendingTx = ({ pendingMessage, className }: Props) => (
+  <Wrapper className={className}>
+    <Box flex flexGap="var(--spacing-2)" flexAlignItems="center" flexJustifyContent="center">
+      <PendingMessage>{pendingMessage}</PendingMessage>
+      <StyledPendingSpinner isDisabled size={16} />
+    </Box>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

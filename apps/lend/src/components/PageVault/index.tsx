@@ -64,20 +64,18 @@ const Vault = (pageProps: PageContentProps) => {
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
             <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label, formType }, idx) => {
-                return (
-                  <AppFormSlideTab
-                    key={label}
-                    disabled={selectedTabIdx === idx}
-                    tabLeft={tabPositions[idx]?.left}
-                    tabWidth={tabPositions[idx]?.width}
-                    tabTop={tabPositions[idx]?.top}
-                    onChange={() => setSelectedTabIdx(idx)}
-                    tabIdx={idx}
-                    label={label}
-                  />
-                )
-              })}
+              {tabs.map(({ label, formType }, idx) => (
+                <AppFormSlideTab
+                  key={label}
+                  disabled={selectedTabIdx === idx}
+                  tabLeft={tabPositions[idx]?.left}
+                  tabWidth={tabPositions[idx]?.width}
+                  tabTop={tabPositions[idx]?.top}
+                  onChange={() => setSelectedTabIdx(idx)}
+                  tabIdx={idx}
+                  label={label}
+                />
+              ))}
             </SlideTabs>
           </SlideTabsWrapper>
         )}

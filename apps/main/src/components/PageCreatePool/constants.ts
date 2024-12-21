@@ -236,37 +236,35 @@ export const DEFAULT_INITIAL_PRICE = {
 
 // MIN-MAX PARAMS
 
-export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => {
-  return {
-    swapFee: {
-      min: 0,
-      max: 1,
-    },
-    a: {
-      min: 1,
-      max: 5000,
-    },
-    maExpTime: {
-      min: 60,
-      max: 3600,
-    },
-    offpegFeeMultiplier: {
-      min: 0,
-      max:
-        swapFee === 0
-          ? 0
-          : new BigNumber(5)
-              .multipliedBy(new BigNumber(10).pow(19))
-              .dividedBy(new BigNumber(swapFee).multipliedBy(new BigNumber(10).pow(10)))
-              .dividedBy(new BigNumber(10).pow(10))
-              .toNumber(), // (5 * 10 ** 19) / (swapFee * 10 ** 10) / 10 ** 10
-    },
-    initialPrice: {
-      min: 0.000000000001,
-      max: 1000000000000,
-    },
-  }
-}
+export const STABLESWAP_MIN_MAX_PARAMETERS = (swapFee: number) => ({
+  swapFee: {
+    min: 0,
+    max: 1,
+  },
+  a: {
+    min: 1,
+    max: 5000,
+  },
+  maExpTime: {
+    min: 60,
+    max: 3600,
+  },
+  offpegFeeMultiplier: {
+    min: 0,
+    max:
+      swapFee === 0
+        ? 0
+        : new BigNumber(5)
+            .multipliedBy(new BigNumber(10).pow(19))
+            .dividedBy(new BigNumber(swapFee).multipliedBy(new BigNumber(10).pow(10)))
+            .dividedBy(new BigNumber(10).pow(10))
+            .toNumber(), // (5 * 10 ** 19) / (swapFee * 10 ** 10) / 10 ** 10
+  },
+  initialPrice: {
+    min: 0.000000000001,
+    max: 1000000000000,
+  },
+})
 
 export const TRICRYPTO_MIN_MAX_PARAMETERS = {
   midFee: {

@@ -44,18 +44,16 @@ export function parseSearchTermMapper(
   return parsed
 }
 
-const useSearchTermMapper = (): SearchTermMapper => {
-  return {
-    'collateral_token.symbol': {},
-    'borrowed_token.symbol': {},
-    'collateral_token.address': { isTokenAddress: true },
-    'borrowed_token.address': { isTokenAddress: true },
-    'addresses.amm': { label: t`AMM` },
-    'addresses.controller': { label: t`Controller` },
-    'addresses.monetary_policy': { label: t`Monetary Policy` },
-    'addresses.vault': { label: t`Vault` },
-    'addresses.gauge': { label: t`Gauge` },
-  }
-}
+const useSearchTermMapper = (): SearchTermMapper => ({
+  'collateral_token.symbol': {},
+  'borrowed_token.symbol': {},
+  'collateral_token.address': { isTokenAddress: true },
+  'borrowed_token.address': { isTokenAddress: true },
+  'addresses.amm': { label: t`AMM` },
+  'addresses.controller': { label: t`Controller` },
+  'addresses.monetary_policy': { label: t`Monetary Policy` },
+  'addresses.vault': { label: t`Vault` },
+  'addresses.gauge': { label: t`Gauge` },
+})
 
 export default useSearchTermMapper

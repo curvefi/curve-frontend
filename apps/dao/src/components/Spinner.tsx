@@ -6,13 +6,11 @@ interface SpinnnerProps {
   height: string
 }
 
-const SpinnerComponent: React.FC<SpinnnerProps> = ({ height }) => {
-  return (
-    <StyledSpinnerWrapper height={height}>
-      <Spinner />
-    </StyledSpinnerWrapper>
-  )
-}
+const SpinnerComponent: React.FC<SpinnnerProps> = ({ height }) => (
+  <StyledSpinnerWrapper height={height}>
+    <Spinner />
+  </StyledSpinnerWrapper>
+)
 
 const StyledSpinnerWrapper = styled(SpinnerWrapper)<SpinnnerProps>`
   display: flex;

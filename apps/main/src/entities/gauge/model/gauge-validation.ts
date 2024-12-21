@@ -66,10 +66,8 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
 
   if (!tokenBalance) return
 
-  enforce(amount).condition((amount) => {
-    return {
-      pass: BD.from(amount).lte(BD.from(tokenBalance)),
-      message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`,
-    }
-  })
+  enforce(amount).condition((amount) => ({
+    pass: BD.from(amount).lte(BD.from(tokenBalance)),
+    message: t`Amount ${formatNumber(amount)} > wallet balance ${formatNumber(tokenBalance)}`,
+  }))
 }

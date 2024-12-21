@@ -3,13 +3,11 @@ import styled from 'styled-components'
 
 type Props = {}
 
-const InfoBox = ({ children, ...rest }: React.PropsWithChildren<Props>) => {
-  return (
-    <Wrapper {...rest}>
-      <Message>{children}</Message>
-    </Wrapper>
-  )
-}
+const InfoBox = ({ children, ...rest }: React.PropsWithChildren<Props>) => (
+  <Wrapper {...rest}>
+    <Message>{children}</Message>
+  </Wrapper>
+)
 
 export const Wrapper = styled.div`
   padding: var(--spacing-2);

@@ -27,26 +27,28 @@ const SelectFilterType = ({
 
   const isXSmDown = useStore((state) => state.layout.isXSmDown)
 
-  const sortSelectMapper = useMemo(() => {
-    return tableLabels.reduce(
-      (prev, { sortIdKey }) => {
-        if (filterTypeKey === 'borrow' && !showBorrowSignerCell && sortIdKey.startsWith('my')) return prev
-        if (filterTypeKey === 'supply' && !showSupplySignerCell && sortIdKey.startsWith('my')) return prev
-        if (!titleMapper[sortIdKey]?.title) return prev
+  const sortSelectMapper = useMemo(
+    () =>
+      tableLabels.reduce(
+        (prev, { sortIdKey }) => {
+          if (filterTypeKey === 'borrow' && !showBorrowSignerCell && sortIdKey.startsWith('my')) return prev
+          if (filterTypeKey === 'supply' && !showSupplySignerCell && sortIdKey.startsWith('my')) return prev
+          if (!titleMapper[sortIdKey]?.title) return prev
 
-        const { title } = titleMapper[sortIdKey]
+          const { title } = titleMapper[sortIdKey]
 
-        if (!prev[sortIdKey]) {
-          prev[sortIdKey] = { name: title }
-        } else {
-          prev[sortIdKey].name = title
-        }
+          if (!prev[sortIdKey]) {
+            prev[sortIdKey] = { name: title }
+          } else {
+            prev[sortIdKey].name = title
+          }
 
-        return prev
-      },
-      {} as { [label: string]: { name: string | React.ReactNode } },
-    )
-  }, [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper])
+          return prev
+        },
+        {} as { [label: string]: { name: string | React.ReactNode } },
+      ),
+    [filterTypeKey, showBorrowSignerCell, showSupplySignerCell, tableLabels, titleMapper],
+  )
 
   // only show close button  settings is not on default
   const onSelectDeleteFn = useMemo(() => {

@@ -11,21 +11,19 @@ type Props = {
   maxSlippage: string
 }
 
-const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
-  return (
-    <StyledDetailInfo label={t`Slippage tolerance:`}>
-      <StyledAdvancedSettings
-        maxSlippage={maxSlippage}
-        buttonIcon={
-          <>
-            {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}&nbsp;
-            <Icon name="Settings" size={16} />
-          </>
-        }
-      />
-    </StyledDetailInfo>
-  )
-}
+const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => (
+  <StyledDetailInfo label={t`Slippage tolerance:`}>
+    <StyledAdvancedSettings
+      maxSlippage={maxSlippage}
+      buttonIcon={
+        <>
+          {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}&nbsp;
+          <Icon name="Settings" size={16} />
+        </>
+      }
+    />
+  </StyledDetailInfo>
+)
 
 const StyledAdvancedSettings = styled(AdvancedSettings)`
   justify-content: flex-end;

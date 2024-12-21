@@ -27,9 +27,7 @@ function TableSortSelect<T extends { sortBy: string; sortByOrder: 'asc' | 'desc'
     }
   }
 
-  const label = useMemo(() => {
-    return getLabel(labelsMapper, sortBy)
-  }, [labelsMapper, sortBy])
+  const label = useMemo(() => getLabel(labelsMapper, sortBy), [labelsMapper, sortBy])
 
   return (
     <Popover

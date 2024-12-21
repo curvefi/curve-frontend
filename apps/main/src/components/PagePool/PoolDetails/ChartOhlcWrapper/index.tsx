@@ -53,9 +53,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
 
     const combinationsArray = combinations(coins, 2)
     // adds combinations in case of basepool
-    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => {
-      return [item, coins[0]]
-    })
+    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => [item, coins[0]])
 
     const combinedArray = [...combinationsArray]
     combinedArray.splice(0, 0, ...extraCombinations)

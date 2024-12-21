@@ -258,17 +258,15 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const locksRes = await fetch(`https://prices.curve.fi/v1/dao/locks/${address}`)
         const locks: UserLockRes = await locksRes.json()
 
-        const formattedData = locks.locks.map((lock) => {
-          return {
-            amount: +lock.amount / 1e18,
-            unlock_time: lock.unlock_time,
-            lock_type: lock.lock_type,
-            locked_balance: +lock.locked_balance / 1e18,
-            block_number: lock.block_number,
-            date: lock.dt,
-            transaction_hash: lock.transaction_hash,
-          }
-        })
+        const formattedData = locks.locks.map((lock) => ({
+          amount: +lock.amount / 1e18,
+          unlock_time: lock.unlock_time,
+          lock_type: lock.lock_type,
+          locked_balance: +lock.locked_balance / 1e18,
+          block_number: lock.block_number,
+          date: lock.dt,
+          transaction_hash: lock.transaction_hash,
+        }))
 
         set(
           produce((state) => {
@@ -579,9 +577,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }),
         )
       } else {
-        const sortedEntries = [...votes].sort((a, b) => {
-          return b[sortBy] - a[sortBy]
-        })
+        const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
           produce((state) => {
@@ -614,9 +610,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           }),
         )
       } else {
-        const sortedEntries = [...data.gauges].sort((a, b) => {
-          return b[sortBy] - a[sortBy]
-        })
+        const sortedEntries = [...data.gauges].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
           produce((state) => {
@@ -667,8 +661,6 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
   },
 })
 
-const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => {
-  return usedVeCrv < futureVeCrv
-}
+const calculateGaugeVoteStale = (usedVeCrv: number, futureVeCrv: number) => usedVeCrv < futureVeCrv
 
 export default createUserSlice

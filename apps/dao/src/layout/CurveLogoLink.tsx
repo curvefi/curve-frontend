@@ -6,13 +6,11 @@ import { breakpoints } from '@/ui/utils/responsive'
 
 import { LogoImg, RCLogoText } from '@/images'
 
-export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => {
-  return (
-    <StyledInternalLink to="/">
-      <CurveLogoImg src={LogoImg} alt="Curve" /> {!hideLabel && <StyledCurveLogoText className={className} />}
-    </StyledInternalLink>
-  )
-}
+export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => (
+  <StyledInternalLink to="/">
+    <CurveLogoImg src={LogoImg} alt="Curve" /> {!hideLabel && <StyledCurveLogoText className={className} />}
+  </StyledInternalLink>
+)
 
 const StyledCurveLogoText = styled(RCLogoText)`
   height: 15.63px;

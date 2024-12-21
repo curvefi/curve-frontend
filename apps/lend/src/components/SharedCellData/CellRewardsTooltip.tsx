@@ -16,61 +16,57 @@ const CellRewardsTooltip = ({
   noPadding?: boolean
   totalApr: { min: string; max: string; minMax: string }
   tooltipValues: { lendApr: string; lendApy: string; crv: string; crvBoosted: string; incentives: string[] }
-}) => {
-  return (
-    <TooltipWrapper className={className} isMobile={isMobile || noPadding}>
-      {!isMobile ? (
-        <TooltipTitle>
-          <TextCaption isBold isCaps>
-            Total APR
-          </TextCaption>
-          {totalApr.minMax}
-        </TooltipTitle>
-      ) : null}
+}) => (
+  <TooltipWrapper className={className} isMobile={isMobile || noPadding}>
+    {!isMobile ? (
+      <TooltipTitle>
+        <TextCaption isBold isCaps>
+          Total APR
+        </TextCaption>
+        {totalApr.minMax}
+      </TooltipTitle>
+    ) : null}
 
-      {/* LEND */}
+    {/* LEND */}
+    <TooltipItem>
+      <span>{t`Lend APR`}</span>{' '}
+      <span>
+        {tooltipValues.lendApr} <TextCaption>({tooltipValues.lendApy})</TextCaption>
+      </span>
+    </TooltipItem>
+
+    {/* CRV */}
+    {tooltipValues.crv && (
       <TooltipItem>
-        <span>{t`Lend APR`}</span>{' '}
         <span>
-          {tooltipValues.lendApr} <TextCaption>({tooltipValues.lendApy})</TextCaption>
+          CRV APR <TextCaption>(unboosted)</TextCaption>
+        </span>{' '}
+        <span>{tooltipValues.crv}</span>
+      </TooltipItem>
+    )}
+    {tooltipValues.crvBoosted && (
+      <TooltipItem>
+        <span>CRV APR {tooltipValues.crvBoosted && <TextCaption>(max boosted)</TextCaption>}</span>{' '}
+        <span>{tooltipValues.crvBoosted}</span>
+      </TooltipItem>
+    )}
+
+    {/* INCENTIVES */}
+    {tooltipValues.incentives.length > 0 && (
+      <TooltipItem>
+        <span>{t`Incentives APR`}</span>{' '}
+        <span>
+          {tooltipValues.incentives.map((incentive) => (
+            <React.Fragment key={incentive}>
+              {incentive}
+              <br />
+            </React.Fragment>
+          ))}
         </span>
       </TooltipItem>
-
-      {/* CRV */}
-      {tooltipValues.crv && (
-        <TooltipItem>
-          <span>
-            CRV APR <TextCaption>(unboosted)</TextCaption>
-          </span>{' '}
-          <span>{tooltipValues.crv}</span>
-        </TooltipItem>
-      )}
-      {tooltipValues.crvBoosted && (
-        <TooltipItem>
-          <span>CRV APR {tooltipValues.crvBoosted && <TextCaption>(max boosted)</TextCaption>}</span>{' '}
-          <span>{tooltipValues.crvBoosted}</span>
-        </TooltipItem>
-      )}
-
-      {/* INCENTIVES */}
-      {tooltipValues.incentives.length > 0 && (
-        <TooltipItem>
-          <span>{t`Incentives APR`}</span>{' '}
-          <span>
-            {tooltipValues.incentives.map((incentive) => {
-              return (
-                <React.Fragment key={incentive}>
-                  {incentive}
-                  <br />
-                </React.Fragment>
-              )
-            })}
-          </span>
-        </TooltipItem>
-      )}
-    </TooltipWrapper>
-  )
-}
+    )}
+  </TooltipWrapper>
+)
 
 const TooltipWrapper = styled.div<{ isMobile?: boolean }>`
   text-align: left;

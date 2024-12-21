@@ -28,9 +28,9 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
 
   if (network.rNetworkIdx !== -1 || chainIdNotRequired) {
     const subdirectory = paths[network.rNetworkIdx + 1]?.split('?')[0] ?? ''
-    const foundSubdirectory = Object.keys(DAO_ROUTES).find((k) => {
-      return DAO_ROUTES[k as keyof typeof DAO_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase()
-    })
+    const foundSubdirectory = Object.keys(DAO_ROUTES).find(
+      (k) => DAO_ROUTES[k as keyof typeof DAO_ROUTES].substring(1).toLowerCase() === subdirectory.toLowerCase(),
+    )
     if (foundSubdirectory) {
       rSubdirectory = subdirectory
       rSubdirectoryUseDefault = false

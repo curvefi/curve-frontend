@@ -3,9 +3,7 @@ import styled from 'styled-components'
 
 import Chip from '@/ui/Typography/Chip'
 
-const ChipInactive = ({ children }: React.PropsWithChildren<{}>) => {
-  return <StyledInactiveChip>{children}</StyledInactiveChip>
-}
+const ChipInactive = ({ children }: React.PropsWithChildren<{}>) => <StyledInactiveChip>{children}</StyledInactiveChip>
 
 const StyledInactiveChip = styled(Chip)`
   opacity: 0.7;

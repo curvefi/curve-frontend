@@ -200,9 +200,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         }
       })
     },
-    filterLeverageMarkets: (markets) => {
-      return markets.filter((m) => m.leverage.hasLeverage())
-    },
+    filterLeverageMarkets: (markets) => markets.filter((m) => m.leverage.hasLeverage()),
     sortByCollateral: (api, markets, marketMapping) => {
       let { searchParams, tableRowsSettings, ...sliceState } = get()[sliceKey]
 

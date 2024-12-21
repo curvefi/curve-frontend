@@ -40,9 +40,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
   searchTerms.forEach((term, idx) => {
     if (idx === 0) return
     let termResults = fuse.search(term)
-    results = results.filter((r) => {
-      return termResults.some((termResult) => termResult.item === r.item)
-    })
+    results = results.filter((r) => termResults.some((termResult) => termResult.item === r.item))
   })
 
   return uniqueResult(results)
