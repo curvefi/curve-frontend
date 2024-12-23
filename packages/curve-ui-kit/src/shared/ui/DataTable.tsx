@@ -59,31 +59,28 @@ export const DataTable = <T extends unknown>({
     getCoreRowModel: getCoreRowModel(),
   })
   return (
-    <Box sx={{ overflowX: 'auto' }}>
-      <Table sx={{ minWidth: MinWidth.table }}>
-        <TableHead
-          sx={(t) => ({
-            zIndex: t.zIndex.appBar - 1,
-            position: 'sticky',
-            insetBlockStart: 0,
-            top: headerHeight,
-            backgroundColor: t.design.Table.Header_Fill,
-          })}
-        >
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
-              {headerGroup.headers.map((header) => (
-                <HeaderCell key={header.id} header={header} />
-              ))}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <DataRow<T> key={row.id} row={row} />
-          ))}
-        </TableBody>
-      </Table>
-    </Box>
+    <Table sx={{ minWidth: MinWidth.table }}>
+      <TableHead
+        sx={(t) => ({
+          zIndex: t.zIndex.appBar - 1,
+          position: 'sticky',
+          top: headerHeight,
+          backgroundColor: t.design.Table.Header_Fill,
+        })}
+      >
+        {table.getHeaderGroups().map((headerGroup) => (
+          <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
+            {headerGroup.headers.map((header) => (
+              <HeaderCell key={header.id} header={header} />
+            ))}
+          </TableRow>
+        ))}
+      </TableHead>
+      <TableBody>
+        {table.getRowModel().rows.map((row) => (
+          <DataRow<T> key={row.id} row={row} />
+        ))}
+      </TableBody>
+    </Table>
   )
 }

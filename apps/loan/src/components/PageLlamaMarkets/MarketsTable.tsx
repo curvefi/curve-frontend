@@ -50,7 +50,6 @@ export const MarketsTable = ({
       maxWidth: MaxWidth.table,
       minWidth: MinWidth.table,
       width: '100%',
-      overflowX: 'auto',
       backgroundColor: (t) => t.design.Layer[1].Fill,
     }}
   >
