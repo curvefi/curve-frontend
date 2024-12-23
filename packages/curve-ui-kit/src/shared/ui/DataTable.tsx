@@ -39,6 +39,7 @@ const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
       }}
       ref={ref}
       // title={JSON.stringify(row.original)}
+      data-testid={`data-table-row-${row.id}`}
     >
       {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
     </TableRow>
@@ -71,7 +72,7 @@ export const DataTable = <T extends unknown>({
     getCoreRowModel: getCoreRowModel(),
   })
   return (
-    <Table sx={{ minWidth: MinWidth.table }}>
+    <Table sx={{ minWidth: MinWidth.table }} data-testid="data-table">
       <TableHead
         sx={(t) => ({
           zIndex: t.zIndex.appBar - 1,
@@ -79,6 +80,7 @@ export const DataTable = <T extends unknown>({
           top: headerHeight,
           backgroundColor: t.design.Table.Header_Fill,
         })}
+        data-testid="data-table-head"
       >
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
