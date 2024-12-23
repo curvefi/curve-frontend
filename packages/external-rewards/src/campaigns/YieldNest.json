@@ -88,6 +88,30 @@
       "multiplier": "2.5x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1733479200",
+      "campaignEnd": "1734688799",
+      "address": "0xd65ed4bce447195187f37ce7d82f56adf1826f8f",
+      "network": "ethereum",
+      "multiplier": "6x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "1734688800",
+      "campaignEnd": "1709337599",
+      "address": "0xd65ed4bce447195187f37ce7d82f56adf1826f8f",
+      "network": "ethereum",
+      "multiplier": "2.5x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
