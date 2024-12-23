@@ -1,4 +1,7 @@
-import { LendingVaultFromApi } from '@/entities/vaults'
+import { LendingVault } from '@/entities/vaults'
+import { CellContext } from '@tanstack/react-table'
 
-export const UtilizationCell = ({ data }: { data: LendingVaultFromApi }) =>
-  (data.borrowed.usdTotal && (100 * data.totalSupplied.usdTotal) / data.borrowed.usdTotal).toFixed(2) + '%'
+export const UtilizationCell = ({ getValue }: CellContext<LendingVault, LendingVault['utilizationPercent']>) => {
+  const value = getValue()
+  return value ? value.toFixed(2) + '%' : '-'
+}

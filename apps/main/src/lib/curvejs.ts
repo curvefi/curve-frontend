@@ -1238,6 +1238,7 @@ const poolWithdraw = {
   claimableRewards: async (p: Pool, chainId: ChainId) => {
     log('claimableRewards', p.name)
     const claimableRewards = await p.claimableRewards()
+    console.log({ p, claimableRewards, chainId })
 
     // ClaimableReward[] = [{token: '0x5a98fcbea516cf06857215779fd812ca3bef1b32', symbol: 'LDO', amount: '15.589367306902830498'}]
     return claimableRewards.filter((r) => {

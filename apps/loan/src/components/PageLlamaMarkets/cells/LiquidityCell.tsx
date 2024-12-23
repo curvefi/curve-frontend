@@ -1,5 +1,8 @@
-import { LendingVaultFromApi } from '@/entities/vaults'
+import { LendingVault } from '@/entities/vaults'
 import { formatNumber } from '@/ui/utils'
+import { CellContext } from '@tanstack/react-table'
 
-export const LiquidityCell = ({ data }: { data: LendingVaultFromApi }) =>
-  formatNumber(data.totalSupplied.usdTotal, { currency: 'USD', notation: 'compact' })
+export const LiquidityCell = ({ getValue }: CellContext<LendingVault, LendingVault['totalSupplied']['usdTotal']>) => {
+  const value = getValue()
+  return value ? formatNumber(value, { currency: 'USD', notation: 'compact' }) : '-'
+}

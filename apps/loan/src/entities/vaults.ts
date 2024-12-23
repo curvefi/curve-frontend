@@ -61,7 +61,7 @@ export type VaultShares = {
   totalShares: number
 }
 
-export type LendingVaultFromApi = {
+type LendingVaultFromApi = {
   id: string
   name: string
   address: string
@@ -83,20 +83,33 @@ export type LendingVaultFromApi = {
   registryId: 'oneway'
 }
 
-export type ExtendedLendingVaultFromApi = {
-  lendingVaultData: LendingVaultFromApi[]
-  tvl: number
+export type LendingVault = LendingVaultFromApi & {
+  utilizationPercent: number
+}
+
+type GetLendingVaultResponse = {
+  data?: {
+    lendingVaultData: LendingVaultFromApi[]
+    tvl: number
+  }
+  success: boolean
 }
 
 export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults } = queryFactory({
-  queryKey: () => ['lending-vaults'] as const,
+  queryKey: () => ['lending-vaults-v2'] as const,
   queryFn: async () => {
     const response = await fetch('https://api.curve.fi/v1/getLendingVaults/all')
-    const { data, success } = (await response.json()) as { data?: ExtendedLendingVaultFromApi; success: boolean }
+    const { data, success } = (await response.json()) as GetLendingVaultResponse
     if (!success || !data) {
       throw new Error('Failed to fetch pools')
     }
-    return data
+    return {
+      ...data,
+      lendingVaultData: data.lendingVaultData.map((vault) => ({
+        ...vault,
+        utilizationPercent: vault.borrowed.usdTotal && (100 * vault.totalSupplied.usdTotal) / vault.borrowed.usdTotal,
+      })),
+    }
   },
   staleTime: '5m',
   validationSuite: createValidationSuite(() => {}), // no arguments to validate
