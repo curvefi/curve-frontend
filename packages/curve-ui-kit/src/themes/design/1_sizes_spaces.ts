@@ -354,6 +354,9 @@ export const SizesAndSpaces = {
     minHeight: '300px',
   },
   OutlineWidth: '0.125rem', // 2px
+  MinWidth: {
+    table: '60rem', // 960px
+  },
   MaxWidth: {
     md: '67rem', // 1072px
     lg: '96rem', // 1536px

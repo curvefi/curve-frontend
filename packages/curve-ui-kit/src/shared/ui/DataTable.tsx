@@ -5,11 +5,13 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
+import Box from '@mui/material/Box'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 import { useIntersectionObserver } from 'ui'
 import { Cell, ColumnDef, flexRender, getCoreRowModel, Header, Row, useReactTable } from '@tanstack/react-table'
 
-const { Sizing, Spacing } = SizesAndSpaces
+const { Sizing, Spacing, MinWidth } = SizesAndSpaces
+
 const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => (
   <TableCell sx={{ justifyContent: 'flex-end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}>
     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -57,29 +59,31 @@ export const DataTable = <T extends unknown>({
     getCoreRowModel: getCoreRowModel(),
   })
   return (
-    <Table>
-      <TableHead
-        sx={(t) => ({
-          zIndex: t.zIndex.appBar - 1,
-          position: 'sticky',
-          insetBlockStart: 0,
-          top: headerHeight,
-          backgroundColor: t.design.Table.Header_Fill,
-        })}
-      >
-        {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
-            {headerGroup.headers.map((header) => (
-              <HeaderCell key={header.id} header={header} />
-            ))}
-          </TableRow>
-        ))}
-      </TableHead>
-      <TableBody>
-        {table.getRowModel().rows.map((row) => (
-          <DataRow<T> key={row.id} row={row} />
-        ))}
-      </TableBody>
-    </Table>
+    <Box sx={{ overflowX: 'auto' }}>
+      <Table sx={{ minWidth: MinWidth.table }}>
+        <TableHead
+          sx={(t) => ({
+            zIndex: t.zIndex.appBar - 1,
+            position: 'sticky',
+            insetBlockStart: 0,
+            top: headerHeight,
+            backgroundColor: t.design.Table.Header_Fill,
+          })}
+        >
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
+              {headerGroup.headers.map((header) => (
+                <HeaderCell key={header.id} header={header} />
+              ))}
+            </TableRow>
+          ))}
+        </TableHead>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <DataRow<T> key={row.id} row={row} />
+          ))}
+        </TableBody>
+      </Table>
+    </Box>
   )
 }
