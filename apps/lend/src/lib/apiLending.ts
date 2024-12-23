@@ -13,18 +13,11 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/shared/config'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, wallet: Wallet | null) => {
-    try {
-      const { networkId } = networks[chainId]
-      const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-
-      if (wallet) {
-        await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
-        return api
-      }
-    } catch (error) {
-      console.error(error)
-    }
+  initApi: async (chainId: ChainId, wallet: Wallet) => {
+    const { networkId } = networks[chainId]
+    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
+    await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
+    return api
   },
   getImageBaseUrl: (chainId: ChainId) => {
     return networks[chainId ?? '1'].imageBaseUrl
