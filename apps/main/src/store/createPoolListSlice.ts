@@ -18,7 +18,7 @@ import uniqBy from 'lodash/uniqBy'
 
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { parseSearchTermResults } from '@/components/PagePoolList/utils'
-import { groupSearchTerms, searchByText } from '@/shared/curve-lib'
+import { groupSearchTerms, searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

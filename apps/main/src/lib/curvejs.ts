@@ -27,7 +27,7 @@ import {
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import useStore from '@/store/useStore'
 
 const helpers = {

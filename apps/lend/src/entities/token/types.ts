@@ -1,5 +1,5 @@
-import { FieldsOf } from '@/shared/lib/validation'
-import { ChainQuery } from '@/shared/model/query'
+import { FieldsOf } from '@ui-kit/lib/validation'
+import { ChainQuery } from '@ui-kit/lib/model/query'
 
 export type TokenQuery = ChainQuery & { tokenAddress: string }
 export type TokenParams = FieldsOf<TokenQuery>

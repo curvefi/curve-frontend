@@ -3,7 +3,7 @@ import type { SummaryProps } from '@/components/AlertLoanSummary/types'
 import { t } from '@lingui/macro'
 import React, { useMemo } from 'react'
 
-import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@/shared/curve-lib'
+import { isGreaterThan, minus, getDecimalLength, formatUnits } from '@ui-kit/utils'
 import { format } from '@/components/AlertLoanSummary/utils'
 
 import Item from '@/components/AlertLoanSummary/components/Item'

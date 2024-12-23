@@ -19,8 +19,8 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/entities/gauge/types'
-import { assertValidity } from '@/shared/lib/validation'
-import { GaugeParams } from '@/shared/model/query'
+import { assertValidity } from '@ui-kit/lib/validation'
+import { GaugeParams } from '@ui-kit/lib/model/query'
 import {
   gaugeAddRewardValidationSuite,
   gaugeDepositRewardApproveValidationSuite,

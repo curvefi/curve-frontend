@@ -1,6 +1,6 @@
 import type { FunctionComponent } from 'react'
 import { ListItem } from '@mui/material'
-import type { AppPage } from 'curve-common/src/widgets/Header/types'
+import type { AppPage } from 'curve-ui-kit/src/widgets/Header/types'
 import Link from '@mui/material/Link'
 import Button from '@mui/material/Button'
 import { Link as RouterLink } from 'react-router-dom'
