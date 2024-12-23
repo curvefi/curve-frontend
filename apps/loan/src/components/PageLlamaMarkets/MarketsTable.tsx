@@ -6,7 +6,7 @@ import { useMemo } from 'react'
 import { BorrowRateCell, LiquidityCell, PoolTitleCell, SupplyYieldCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
-import { createColumnHelper } from '@tanstack/react-table'
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 
 const { Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
@@ -19,20 +19,24 @@ const columns = [
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
     cell: BorrowRateCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
     cell: SupplyYieldCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
     cell: UtilizationCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor('totalSupplied.usdTotal', {
     header: () => t`Available Liquidity`,
     cell: LiquidityCell,
+    meta: { type: 'numeric' },
   }),
-]
+] satisfies ColumnDef<LendingVault, any>[]
 
 export const MarketsTable = ({
   onReload,

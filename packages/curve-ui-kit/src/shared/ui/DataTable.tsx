@@ -5,18 +5,26 @@ import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
-import Box from '@mui/material/Box'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 import { useIntersectionObserver } from 'ui'
-import { Cell, ColumnDef, flexRender, getCoreRowModel, Header, Row, useReactTable } from '@tanstack/react-table'
+import { Column, Cell, ColumnDef, flexRender, getCoreRowModel, Header, Row, useReactTable } from '@tanstack/react-table'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
-const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => (
-  <TableCell sx={{ justifyContent: 'flex-end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}>
-    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-  </TableCell>
-)
+const getAlignment = <T extends any>({ columnDef }: Column<T>) => (columnDef.meta?.type == 'numeric' ? 'right' : 'left')
+
+const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
+  const column = cell.column
+  return (
+    <TableCell
+      sx={{ textAlign: getAlignment(column), alignContent: 'end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}
+    >
+      <Typography variant="tableCellMBold" color="text.primary">
+        {flexRender(column.columnDef.cell, cell.getContext())}
+      </Typography>
+    </TableCell>
+  )
+}
 
 const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
@@ -37,8 +45,11 @@ const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
 }
 
 const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => (
-  <TableCell sx={{ alignContent: 'end', padding: Spacing.sm, paddingTop: 0 }} colSpan={header.colSpan}>
-    <Typography variant="tableHeaderS" color="textSecondary">
+  <TableCell
+    sx={{ textAlign: getAlignment(header.column), alignContent: 'end', padding: Spacing.sm, paddingTop: 0 }}
+    colSpan={header.colSpan}
+  >
+    <Typography variant="tableHeaderS" color="text.secondary">
       {flexRender(header.column.columnDef.header, header.getContext())}
     </Typography>
   </TableCell>
