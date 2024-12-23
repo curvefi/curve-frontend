@@ -13,22 +13,13 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/shared/config'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, wallet: Wallet | null) => {
-    try {
-      const { networkId } = networks[chainId]
-      const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-
-      if (wallet) {
-        await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
-        return api
-      }
-    } catch (error) {
-      console.error(error)
-    }
+  initApi: async (chainId: ChainId, wallet: Wallet) => {
+    const { networkId } = networks[chainId]
+    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
+    await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
+    return api
   },
-  getImageBaseUrl: (chainId: ChainId) => {
-    return networks[chainId ?? '1'].imageBaseUrl
-  },
+  getImageBaseUrl: (chainId: ChainId) => networks[chainId ?? '1'].imageBaseUrl,
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
@@ -83,17 +74,14 @@ export const helpers = {
       return resp
     }
   },
-  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus => {
-    return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'
-  },
+  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
+    isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
   getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
     const { signerAddress } = api ?? {}
     if (!api || !signerAddress || !market) return ''
     return `${market.id}-${shortenAccount(signerAddress)}`
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),
@@ -639,7 +627,9 @@ const loanCreate = {
     log('detailInfoLeverage', userCollateral, userBorrowed, debt, n, maxSlippage, 'futureRates', [0, debt])
     let resp: {
       activeKey: string
-      resp: (DetailInfoLeverageResp & { expectedCollateral: ExpectedCollateral | null; routes: Routes | null }) | null
+      resp:
+        | (DetailInfoLeverageResp & { expectedCollateral: ExpectedCollateral | null; routeImage: string | null })
+        | null
       error: string
     } = { activeKey, resp: null, error: '' }
 
@@ -655,8 +645,8 @@ const loanCreate = {
           market.stats.futureRates(0, debt),
           market.leverage.createLoanBands(userCollateral, userBorrowed, debt, n),
           market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, n),
-          market.leverage.createLoanRoute(userBorrowed, debt),
-          market.leverage.createLoanPriceImpact(userCollateral, userBorrowed, debt),
+          market.leverage.createLoanRouteImage(userBorrowed, debt),
+          market.leverage.createLoanPriceImpact(userBorrowed, debt),
         ])
 
       const bands = fulfilledValue(bandsResp) ?? [0, 0]
@@ -667,7 +657,7 @@ const loanCreate = {
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         bands: _reverseBands(bands),
         prices: fulfilledValue(pricesResp) ?? [],
-        routes: fulfilledValue(routesResp) ?? null,
+        routeImage: fulfilledValue(routesResp) ?? null,
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
@@ -938,7 +928,7 @@ const loanBorrowMore = {
       resp:
         | (DetailInfoLeverageResp & {
             expectedCollateral: Omit<ExpectedCollateral, 'leverage'> | null
-            routes: Routes | null
+            routeImage: string | null
           })
         | null
       error: string
@@ -957,8 +947,8 @@ const loanBorrowMore = {
           market.stats.futureRates(0, debt),
           market.leverage.borrowMoreBands(userCollateral, userBorrowed, debt),
           market.leverage.borrowMorePrices(userCollateral, userBorrowed, debt),
-          market.leverage.borrowMoreRoute(userBorrowed, debt),
-          market.leverage.borrowMorePriceImpact(userCollateral, userBorrowed, debt),
+          market.leverage.borrowMoreRouteImage(userBorrowed, debt),
+          market.leverage.borrowMorePriceImpact(userBorrowed, debt),
         ])
 
       const bands = fulfilledValue(bandsResp) ?? []
@@ -970,7 +960,7 @@ const loanBorrowMore = {
         prices: fulfilledValue(pricesResp) ?? [],
         bands: _reverseBands(bands),
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
-        routes: fulfilledValue(routesResp) ?? null,
+        routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, slippage),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
@@ -1138,7 +1128,7 @@ const loanRepay = {
             repayIsAvailable: boolean
             repayIsFull: boolean
             expectedBorrowed: ExpectedBorrowed | null
-            routes: Routes | null
+            routeImage: string | null
           })
         | null
       error: string
@@ -1174,8 +1164,8 @@ const loanRepay = {
           ? ([0, 0] as [number, number])
           : market.leverage.repayBands(stateCollateral, userCollateral, userBorrowed),
         repayIsFull ? ['', ''] : market.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed),
-        market.leverage.repayRoute(stateCollateral, userCollateral),
-        market.leverage.repayPriceImpact(stateCollateral, userCollateral, userBorrowed),
+        market.leverage.repayRouteImage(stateCollateral, userCollateral),
+        market.leverage.repayPriceImpact(stateCollateral, userCollateral),
         market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed),
       ])
 
@@ -1190,7 +1180,7 @@ const loanRepay = {
         repayIsAvailable: fulfilledValue(repayIsAvailableResp) ?? false,
         repayIsFull,
         expectedBorrowed,
-        routes: fulfilledValue(routesResp) ?? null,
+        routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)

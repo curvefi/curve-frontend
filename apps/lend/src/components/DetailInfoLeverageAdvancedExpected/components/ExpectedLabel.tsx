@@ -21,25 +21,23 @@ const ExpectedLabel = ({
   showDetails: boolean
   swapToSymbol: string
   toggleShowDetails: React.Dispatch<React.SetStateAction<boolean>>
-}) => {
-  return (
-    <Label>
-      <strong>{label}:</strong>
-      <span>
-        {loading ? (
-          <Loader skeleton={[80, 18]} />
-        ) : (
-          <strong>
-            {format(total, { defaultValue: '-' })} {swapToSymbol}
-          </strong>
-        )}
-        <DetailsButton $isOpen={showDetails} variant="outlined" onClick={() => toggleShowDetails((prev) => !prev)}>
-          Details {showDetails ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
-        </DetailsButton>
-      </span>
-    </Label>
-  )
-}
+}) => (
+  <Label>
+    <strong>{label}:</strong>
+    <span>
+      {loading ? (
+        <Loader skeleton={[80, 18]} />
+      ) : (
+        <strong>
+          {format(total, { defaultValue: '-' })} {swapToSymbol}
+        </strong>
+      )}
+      <DetailsButton $isOpen={showDetails} variant="outlined" onClick={() => toggleShowDetails((prev) => !prev)}>
+        Details {showDetails ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+      </DetailsButton>
+    </span>
+  </Label>
+)
 
 const Label = styled.h3`
   align-items: center;

@@ -38,6 +38,8 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "ajv": "^8.17.1",
+    "eslint": "*",
+    "eslint-config-custom": "*",
     "prop-types": "^15.8.1",
     "react-docgen-typescript": "^2.2.2",
     "storybook": "^8.3.5",

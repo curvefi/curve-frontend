@@ -14,12 +14,15 @@ import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useState } from 'react'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
+import GlobalBanner from 'ui/src/Banner'
 
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
   currentApp,
   ChainProps,
   WalletProps,
+  BannerProps,
+  bannerHeight = 0,
   pages,
   appStats,
   themes: [theme, setTheme],
@@ -31,6 +34,8 @@ export const DesktopHeader = <TChainId extends number>({
   return (
     <>
       <AppBar color="transparent" ref={mainNavRef}>
+        <GlobalBanner {...BannerProps} />
+
         <Toolbar
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
           data-testid="main-nav"
@@ -70,7 +75,8 @@ export const DesktopHeader = <TChainId extends number>({
           </Container>
         </Toolbar>
       </AppBar>
-      <Box height={96} />
+      {/* Hardcoded height is tested in header.cy.ts - it creates an empty box to take the place behind the header */}
+      <Box height={96 + bannerHeight} />
     </>
   )
 }

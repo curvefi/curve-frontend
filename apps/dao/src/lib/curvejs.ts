@@ -12,24 +12,21 @@ import { log } from '@/shared/lib/logging'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
-    let curveApi = null
     const { networkId, rpcUrl } = networks[chainId] ?? {}
-
-    try {
-      if (networkId) {
-        curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-
-        if (wallet) {
-          await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
-          return curveApi
-        } else if (rpcUrl) {
-          await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
-          return curveApi
-        }
-      }
-    } catch (error) {
-      console.error(error)
+    if (!networkId) {
+      throw new Error('Unable to initialize curvejs without networkId')
     }
+
+    const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
+    if (wallet) {
+      await curveApi.init('Web3', { network: networkId, externalProvider: getWalletProvider(wallet) }, { chainId })
+      return curveApi
+    }
+    if (rpcUrl) {
+      await curveApi.init('JsonRpc', { url: rpcUrl }, { chainId })
+      return curveApi
+    }
+    throw new Error('Unable to initialize curvejs without wallet or rpcUrl')
   },
   fetchL1GasPrice: async (curve: CurveApi) => {
     let resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
@@ -47,9 +44,7 @@ export const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),

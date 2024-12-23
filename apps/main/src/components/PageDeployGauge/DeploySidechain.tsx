@@ -71,12 +71,14 @@ const DeploySidechain = ({ chainId }: Props) => {
     return list
   }, [currentChainId, curveNetworks])
 
-  const networksList = useMemo(() => {
-    return Object.keys(curveNetworks)
-      .filter((key) => key !== '1')
-      .map((key) => curveNetworks[+key].name)
-      .sort()
-  }, [curveNetworks])
+  const networksList = useMemo(
+    () =>
+      Object.keys(curveNetworks)
+        .filter((key) => key !== '1')
+        .map((key) => curveNetworks[+key].name)
+        .sort(),
+    [curveNetworks],
+  )
 
   return (
     <Wrapper flex flexColumn>

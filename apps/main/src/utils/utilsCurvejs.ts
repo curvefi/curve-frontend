@@ -1,20 +1,10 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
 
-export async function initCurveJs(chainId: ChainId, wallet: Wallet | null) {
-  let curveApi: CurveApi | undefined
-  try {
-    if (chainId) {
-      curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-
-      if (wallet) {
-        await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
-        return curveApi
-      }
-    }
-  } catch (error) {
-    console.error(error)
-  }
+export async function initCurveJs(chainId: ChainId, wallet: Wallet) {
+  const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
+  await curveApi.init('Web3', { network: { chainId }, externalProvider: getWalletProvider(wallet) }, { chainId })
+  return curveApi
 }
 
 export function hasNoWrapped(pool: Pool) {

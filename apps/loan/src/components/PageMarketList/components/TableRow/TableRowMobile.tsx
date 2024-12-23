@@ -70,13 +70,7 @@ const TableRowMobile = ({
           )}
           <Box grid gridTemplateColumns="1fr auto" fillWidth padding="0 0 0 var(--spacing-narrow)">
             <TokenLabel showAlert {...props} type="collateral" onClick={handleCellClick} />
-            <IconButton
-              onClick={() =>
-                setShowDetail((prevState) => {
-                  return prevState === collateralId ? '' : collateralId
-                })
-              }
-            >
+            <IconButton onClick={() => setShowDetail((prevState) => (prevState === collateralId ? '' : collateralId))}>
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
           </Box>

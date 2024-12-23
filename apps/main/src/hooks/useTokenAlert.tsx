@@ -4,8 +4,8 @@ import styled from 'styled-components'
 
 import ExternalLink from '@/ui/Link/ExternalLink'
 
-const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null => {
-  return useMemo(() => {
+const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
+  useMemo(() => {
     const maAlert: PoolAlert = {
       alertType: 'info',
       isInformationOnly: true,
@@ -51,7 +51,6 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null => {
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
     return tokenAddressWithAlert ? alerts[tokenAddressWithAlert] : null
   }, [tokenAddressAll])
-}
 
 const StyledExternalLink = styled(ExternalLink)`
   color: inherit;

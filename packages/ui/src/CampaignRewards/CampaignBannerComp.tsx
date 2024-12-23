@@ -6,24 +6,22 @@ import { ExternalLink } from 'ui/src/Link'
 import { RCPointsIcon } from 'ui/src/images'
 import RewardsCompSmall from './CampaignRewardsComp'
 
-const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool, message }) => {
-  return (
-    <Wrapper>
-      <StyledPointsIcon />
-      <RewardsMessage>
-        {message}
-        <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
-          Learn more
-        </ExternalLink>
-      </RewardsMessage>
-      <RewardsIconsWrapper>
-        {campaignRewardsPool.map((rewardItem, index) => (
-          <RewardsCompSmall key={`${rewardItem.address}-${index}`} rewardsPool={rewardItem} highContrast banner />
-        ))}
-      </RewardsIconsWrapper>
-    </Wrapper>
-  )
-}
+const RewardsBannerComp: React.FC<CampaignRewardsBannerCompProps> = ({ campaignRewardsPool, message }) => (
+  <Wrapper>
+    <StyledPointsIcon />
+    <RewardsMessage>
+      {message}
+      <ExternalLink $noStyles href={campaignRewardsPool[0].dashboardLink}>
+        Learn more
+      </ExternalLink>
+    </RewardsMessage>
+    <RewardsIconsWrapper>
+      {campaignRewardsPool.map((rewardItem, index) => (
+        <RewardsCompSmall key={`${rewardItem.address}-${index}`} rewardsPool={rewardItem} highContrast banner />
+      ))}
+    </RewardsIconsWrapper>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   background-color: var(--primary-400);

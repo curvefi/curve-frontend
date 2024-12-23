@@ -10,7 +10,6 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/default/Header'
-import GlobalBanner from '@/ui/Banner'
 import { Locale } from '@/common/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { Footer } from 'curve-ui-kit/src/widgets/Footer'
@@ -47,21 +46,21 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const minHeight = useMemo(() => layoutHeightKeys.reduce((total, key) => total + layoutHeight[key], 0), [layoutHeight])
 
   return (
-    <>
-      <GlobalBanner
-        ref={globalAlertRef}
-        networkName={rNetwork}
-        showConnectApiErrorMessage={isFailure(connectState, CONNECT_STAGE.CONNECT_API)}
-        showSwitchNetworkMessage={showSwitchNetworkMessage}
-        maintenanceMessage={maintenanceMessage}
-        handleNetworkChange={handleNetworkChange}
+    <Container globalAlertHeight={layoutHeight?.globalAlert}>
+      <Header
+        sections={sections}
+        BannerProps={{
+          ref: globalAlertRef,
+          networkName: rNetwork,
+          showConnectApiErrorMessage: isFailure(connectState, CONNECT_STAGE.CONNECT_API),
+          showSwitchNetworkMessage,
+          maintenanceMessage,
+          handleNetworkChange,
+        }}
       />
-      <Container globalAlertHeight={layoutHeight?.globalAlert}>
-        <Header sections={sections} />
-        <Main minHeight={minHeight}>{children}</Main>
-        <Footer appName="main" networkName={rNetwork} />
-      </Container>
-    </>
+      <Main minHeight={minHeight}>{children}</Main>
+      <Footer appName="main" networkName={rNetwork} />
+    </Container>
   )
 }
 

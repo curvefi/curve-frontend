@@ -11,34 +11,32 @@ type ProposalHeaderProps = {
   voteType: string
 }
 
-const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => {
-  return (
-    <Wrapper>
+const ProposalHeader: React.FC<ProposalHeaderProps> = ({ proposal, voteId, voteType }) => (
+  <Wrapper>
+    <SmallLabel
+      className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
+        proposal?.status === 'Passed' && 'passed'
+      }`}
+      description={<Status className={proposal?.status}>{proposal?.status}</Status>}
+    />
+    {proposal?.status === 'Passed' && (
       <SmallLabel
-        className={`${proposal?.status === 'Active' && 'active'} ${proposal?.status === 'Denied' && 'denied'} ${
-          proposal?.status === 'Passed' && 'passed'
-        }`}
-        description={<Status className={proposal?.status}>{proposal?.status}</Status>}
+        description={
+          <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
+            {proposal?.executed ? t`Executed` : t`Executable`}
+          </ExecutedStatus>
+        }
       />
-      {proposal?.status === 'Passed' && (
-        <SmallLabel
-          description={
-            <ExecutedStatus className={proposal?.executed ? 'executed' : 'executable'}>
-              {proposal?.executed ? t`Executed` : t`Executable`}
-            </ExecutedStatus>
-          }
-        />
-      )}
-      <MetricsComp loading={false} title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
-      <MetricsComp loading={false} title={t`Proposal Type`} data={<MetricsColumnData>{voteType}</MetricsColumnData>} />
-      <TimeRemainingBox
-        loading={!proposal}
-        title={t`Time Remaining`}
-        data={<StyledVoteCountdown startDate={proposal?.startDate} />}
-      />
-    </Wrapper>
-  )
-}
+    )}
+    <MetricsComp loading={false} title={t`Proposal ID`} data={<MetricsColumnData>#{voteId}</MetricsColumnData>} />
+    <MetricsComp loading={false} title={t`Proposal Type`} data={<MetricsColumnData>{voteType}</MetricsColumnData>} />
+    <TimeRemainingBox
+      loading={!proposal}
+      title={t`Time Remaining`}
+      data={<StyledVoteCountdown startDate={proposal?.startDate} />}
+    />
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;

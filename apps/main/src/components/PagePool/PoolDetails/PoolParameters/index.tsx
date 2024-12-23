@@ -44,9 +44,10 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   }, [poolData?.pool?.wrappedCoins])
 
   // TODO: format date by locale
-  const rampUpAEndsTime = useMemo(() => {
-    return future_A_time ? new Date(future_A_time).toLocaleString() : null
-  }, [future_A_time])
+  const rampUpAEndsTime = useMemo(
+    () => (future_A_time ? new Date(future_A_time).toLocaleString() : null),
+    [future_A_time],
+  )
 
   const rampADetails = useMemo(() => {
     if (initial_A_time && initial_A && future_A_time && future_A) {

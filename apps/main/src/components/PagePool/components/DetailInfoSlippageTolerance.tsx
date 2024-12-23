@@ -9,21 +9,19 @@ import DetailInfo from '@/ui/DetailInfo'
 import AdvancedSettings from '@/components/AdvancedSettings'
 import Icon from '@/ui/Icon'
 
-const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => {
-  return (
-    <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
-      <StyledAdvancedSettings
-        {...props}
-        buttonIcon={
-          <>
-            {formatNumber(props.maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
-            <Icon name="Settings" size={16} />
-          </>
-        }
-      />
-    </StyledDetailInfo>
-  )
-}
+const DetailInfoSlippageTolerance = ({ customLabel, ...props }: AdvancedSettingsProps & { customLabel?: string }) => (
+  <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
+    <StyledAdvancedSettings
+      {...props}
+      buttonIcon={
+        <>
+          {formatNumber(props.maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
+          <Icon name="Settings" size={16} />
+        </>
+      }
+    />
+  </StyledDetailInfo>
+)
 
 const StyledAdvancedSettings = styled(AdvancedSettings)`
   justify-content: flex-end;
