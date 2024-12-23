@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { t } from '@lingui/macro'
 
 import Stack from '@mui/material/Stack'
@@ -32,19 +33,21 @@ type Props = {
 }
 
 export const Disclaimer = ({ className }: Props) => {
-  // Tried using NextJS router to get the query but not sure if it works with a hash (#) URL.
+  const navigate = useNavigate()
+  const location = useLocation()
+
   const getTabFromUrl = () => {
     if (typeof window === 'undefined') return DEFAULT_TAB_INDEX
-    const params = new URLSearchParams(window.location.hash.split('?')[1])
+    const params = new URLSearchParams(location.search)
     const tabId = params.get('tab')
     return tabs.find((tab) => tab.id === tabId)?.value ?? DEFAULT_TAB_INDEX
   }
 
   const handleTabChange = (newTabIndex: number) => {
     setTabIndex(newTabIndex)
-    const tabId = tabs.find((tab) => tab.value === newTabIndex)?.id
-    const currentHash = window.location.hash.split('?')[0]
-    window.location.hash = `${currentHash}?tab=${tabId}`
+    const tab = tabs.find((tab) => tab.value === newTabIndex)
+    if (!tab) return
+    navigate(`${location.pathname}?tab=${tab.id}`)
   }
 
   const [tabIndex, setTabIndex] = useState(getTabFromUrl())
