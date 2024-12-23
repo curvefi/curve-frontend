@@ -5,14 +5,14 @@ import Typography from '@mui/material/Typography'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, LineHeight } = SizesAndSpaces
 
 export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
     justifyContent="end"
     sx={{
-      minHeight: '56px', // TODO: place as a constant somewhere.
       borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+      paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
     }}
   >
