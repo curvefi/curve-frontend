@@ -10,16 +10,17 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { data: marketNames, ...rest } = useOneWayMarketNames(params)
   const api = useStore((state) => state.api)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
+  const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
     () =>
-      marketNames && chainId && api && !isLoadingApi
+      marketNames && api && chainId == apiChainId && !isLoadingApi
         ? Object.fromEntries(
             marketNames
-              .filter((marketName) => !networks[chainId].hideMarketsInUI[marketName])
+              .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
               .map((name) => [name, api.getOneWayMarket(name)]),
           )
         : undefined,
-    [api, chainId, marketNames, isLoadingApi],
+    [api, apiChainId, chainId, marketNames, isLoadingApi],
   )
   return { data, ...rest }
 }

@@ -9,7 +9,26 @@ const meta: Meta<typeof Typography> = {
   argTypes: {
     color: {
       control: 'select',
-      options: ['primary', 'secondary', 'tertiary', 'neutral', 'info', 'success', 'error', 'grey', undefined],
+      options: [
+        'text.primary',
+        'text.secondary',
+        'text.tertiary',
+        'text.disabled',
+        'text.highlight',
+        'error.contrastText',
+        'info.contrastText',
+        'warning.contrastText',
+        'success.contrastText',
+        'primary',
+        'secondary',
+        'tertiary',
+        'neutral',
+        'info',
+        'success',
+        'error',
+        'grey',
+        undefined,
+      ],
       description: 'The color of the component',
     },
   },
@@ -22,6 +41,7 @@ type Story = StoryObj<typeof Typography>
 
 interface TypographyDisplayProps {
   variant: TypographyVariantKey
+
   [key: string]: any
 }
 

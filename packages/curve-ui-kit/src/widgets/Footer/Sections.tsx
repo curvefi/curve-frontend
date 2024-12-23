@@ -19,7 +19,7 @@ import { TelegramCNIcon } from 'curve-ui-kit/src/shared/icons/TelegramCNIcon'
 import { TelegramRUIcon } from 'curve-ui-kit/src/shared/icons/TelegramRUIcon'
 import { SectionProps } from './Section'
 
-export const getSections = (): SectionProps[] => [
+export const getSections = (): Omit<SectionProps, 'networkName'>[] => [
   {
     title: t`Community`,
     links: [
@@ -75,9 +75,9 @@ export const getSections = (): SectionProps[] => [
       },
       {
         label: t`Integrations`,
-        href: '#/integrations',
+        // Would've loved to have used ROUTE.PAGE_INTEGRATIONS, but they differ per app.
+        href: '/integrations',
         icon: <IntegrationsIcon />,
-        target: '_self',
       },
       {
         label: t`Technical Docs`,

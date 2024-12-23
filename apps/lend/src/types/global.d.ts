@@ -96,8 +96,6 @@ declare global {
     avgPrice: string
   }
 
-  type Routes = I1inchRoute[]
-
   // PAGE PROPERTIES
   type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
   type RouterParams = {
