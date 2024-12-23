@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { t } from '@lingui/macro'
 
@@ -49,6 +49,11 @@ export const Disclaimer = ({ className }: Props) => {
   }
 
   const [tab, setTab] = useState(getTabFromUrl())
+
+  // Respond to URL changes and 'back' button.
+  useEffect(() => {
+    setTab(getTabFromUrl())
+  }, [location.search])
 
   return (
     <Stack
