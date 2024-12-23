@@ -1,5 +1,5 @@
-import { queryFactory } from '@/shared/model/query'
-import { createValidationSuite } from '@/shared/lib/validation'
+import { queryFactory } from '@ui-kit/lib/model/query'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 
 export type AmmBalances = {
   ammBalanceBorrowed: number

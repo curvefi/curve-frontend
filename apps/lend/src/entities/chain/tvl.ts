@@ -1,6 +1,6 @@
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { logQuery, logSuccess } from '@/shared/lib/logging'
+import { logQuery, logSuccess } from '@ui-kit/lib/logging'
 
 export function calculateChainTvl(
   marketMapping: IDict<OneWayMarketTemplate>,

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 
 import { formatNumber } from '@/ui/utils'
-import { weiToEther } from '@/shared/curve-lib'
+import { weiToEther } from '@ui-kit/utils'
 import usePoolTotalStaked from '@/hooks/usePoolTotalStaked'
 
 import Box from '@/ui/Box'

@@ -60,7 +60,6 @@ export function initOnboard(i18n: any, locale: any, themeType: any, networks: an
     notify: {
       desktop: {
         enabled: true,
-        transactionHandler: () => {},
         position: 'topRight',
       },
     },

@@ -11,7 +11,7 @@ import {
   useConnectWallet,
   useSetChain,
   useSetLocale,
-} from '@/common/features/connect-wallet'
+} from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'

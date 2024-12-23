@@ -1,6 +1,6 @@
 import type { FilterKey } from '@/components/PageIntegrations/types'
 import type { IntegrationsTags } from '@/ui/Integration/types'
-import type { ChainOption } from '@/common/features/switch-chain'
+import type { ChainOption } from '@ui-kit/features/switch-chain'
 
 export function parseSearchParams(
   searchParams: URLSearchParams | undefined,

@@ -7,9 +7,9 @@ import Tooltip from '@mui/material/Tooltip'
 import Link from '@mui/material/Link'
 import { DiscordIcon } from 'curve-ui-kit/src/shared/icons/DiscordIcon'
 import { DodoIcon } from 'curve-ui-kit/src/shared/icons/DodoIcon'
+import type { Locale } from 'curve-ui-kit/src/widgets/Header/types'
 import Box from '@mui/material/Box'
 import SvgIcon from '@mui/material/SvgIcon'
-import type { Locale } from 'curve-common/src/widgets/Header/types'
 
 type SocialButtonProps = {
   label: string

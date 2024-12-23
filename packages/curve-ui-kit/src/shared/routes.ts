@@ -1,4 +1,4 @@
-import { AppRoutes } from 'curve-common/src/widgets/Header/types'
+import { AppRoutes } from 'curve-ui-kit/src/widgets/Header/types'
 import { t } from '@lingui/macro'
 
 export const DEX_ROUTES = {

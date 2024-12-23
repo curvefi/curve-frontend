@@ -30,8 +30,6 @@
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.0.1",
-    "curve-common": "*",
-    "curve-lib": "*",
     "curve-ui-kit": "*",
     "dayjs": "^1.11.7",
     "ethers": "^6.9.0",

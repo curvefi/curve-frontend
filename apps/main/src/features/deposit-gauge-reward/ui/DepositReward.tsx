@@ -10,7 +10,7 @@ import {
   HelperFields,
 } from '@/features/deposit-gauge-reward/ui'
 import { useGaugeRewardsDistributors } from '@/entities/gauge'
-import { formDefaultOptions } from '@/shared/model/form'
+import { formDefaultOptions } from '@ui-kit/lib/model/form'
 import { BlockSkeleton } from '../../../../../../packages/ui/src/skeleton'
 import { FormContainer, FormFieldsContainer, GroupedFieldsContainer } from '@/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'

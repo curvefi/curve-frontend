@@ -3,7 +3,7 @@ import type { ConnectState } from '@/ui/utils'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
+import { useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'

@@ -11,8 +11,8 @@
 
 import { type Address, zeroAddress } from 'viem'
 import { DepositRewardApproveQuery } from '@/entities/gauge/types'
-import { BD } from '@/shared/curve-lib'
-import { GaugeQuery } from '@/shared/model/query'
+import { BD } from '@ui-kit/utils'
+import { GaugeQuery } from '@ui-kit/lib/model/query'
 import useStore from '@/store/useStore'
 
 export const queryGaugeStatus = async ({ poolId }: GaugeQuery) => {

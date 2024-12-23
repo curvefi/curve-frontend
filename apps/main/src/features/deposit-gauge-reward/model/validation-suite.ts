@@ -1,7 +1,7 @@
 import { enforce, test } from 'vest'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/features/deposit-gauge-reward/types'
 import { gaugeDepositRewardValidationGroup } from '@/entities/gauge'
-import { createValidationSuite } from '@/shared/lib/validation'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 
 const depositRewardValidationGroup = (data: DepositRewardFormValues) => {
   gaugeDepositRewardValidationGroup(data)

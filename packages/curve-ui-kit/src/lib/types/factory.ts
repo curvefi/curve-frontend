@@ -4,8 +4,8 @@ import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query/src/
 import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
 import type { Suite } from 'vest'
 import type { CB } from 'vest-utils'
-import type { FieldName, FieldsOf } from '@/shared/lib/validation'
-import type { REFRESH_INTERVAL } from '@/shared/model/time'
+import type { FieldName, FieldsOf } from '../validation'
+import type { REFRESH_INTERVAL } from '../model/time'
 
 // Checks if T is a string literal or an object with one property
 type IsLiteralOrSingleKeyObject<T> =

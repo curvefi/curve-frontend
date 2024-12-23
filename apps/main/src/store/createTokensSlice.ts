@@ -1,7 +1,7 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import countBy from 'lodash/countBy'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import { updateHaveSameTokenNames } from '@/store/createPoolsSlice'
 
 type StateKey = keyof typeof DEFAULT_STATE

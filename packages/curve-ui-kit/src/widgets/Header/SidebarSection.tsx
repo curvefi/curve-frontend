@@ -1,7 +1,7 @@
 import type { FunctionComponent, ReactNode } from 'react'
 import { List, ListSubheader } from '@mui/material'
 import { SidebarItem } from './SidebarItem'
-import type { AppPage } from 'curve-common/src/widgets/Header/types'
+import type { AppPage } from 'curve-ui-kit/src/widgets/Header/types'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 

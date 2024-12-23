@@ -11,7 +11,7 @@
 // import { isLoading } from '@/ui/utils'
 // import { getNetworkFromUrl, getParamsFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 // import { getWalletSignerAddress } from '@/store/createWalletSlice'
-// import { useConnectWallet } from '@/common/features/connect-wallet'
+// import { useConnectWallet } from '@ui-kit/features/connect-wallet'
 // import networks, { visibleNetworksList } from '@/networks'
 // import useLayoutHeight from '@/hooks/useLayoutHeight'
 // import useStore from '@/store/useStore'

@@ -19,13 +19,13 @@ import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { TITLE } from '@/constants'
 import { getTotalApr } from '@/utils/utilsRewards'
 import { helpers } from '@/lib/apiLending'
-import { searchByText } from '@/shared/curve-lib'
+import { searchByText } from '@ui-kit/utils'
 import { sleep } from '@/utils/helpers'
 import networks from '@/networks'
 import { getTokenUsdRateQueryData } from '@/entities/token'
 import { IDict } from '@curvefi/lending-api/lib/interfaces'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
-import { logQuery, logSuccess } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

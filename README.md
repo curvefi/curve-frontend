@@ -53,9 +53,7 @@ This repository is organized as follows:
 - `/apps/loan`: crvUSD [React](https://react.dev/) application.
 - `/apps/lend`: Lend [React](https://react.dev/) application.
 - `/tests`: DApp tests
-- `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@/shared/ui`
-- `/packages/curve-lib`: Shared logic for the DApps, mapped as `@/shared/lib`
-- `/packages/curve-common`: List of features for the DApps, mapped as `@/common`
+- `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
 
 ## Development Guide
 

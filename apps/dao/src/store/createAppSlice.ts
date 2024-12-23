@@ -6,7 +6,7 @@ import type { Locale } from '@/lib/i18n'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
 
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import { setStorageValue } from '@/utils'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE

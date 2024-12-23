@@ -4,7 +4,7 @@ import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 
 import apiLending, { helpers } from '@/lib/apiLending'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 
 type StateKey = keyof typeof DEFAULT_STATE

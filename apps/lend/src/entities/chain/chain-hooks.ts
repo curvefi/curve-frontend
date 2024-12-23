@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 import { useOneWayMarketNames } from './chain-query'
-import { ChainParams } from '@/shared/model/query'
+import { ChainParams } from '@ui-kit/lib/model/query'
 
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params

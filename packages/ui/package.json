@@ -27,7 +27,6 @@
     "tsconfig": "*"
   },
   "peerDependencies": {
-    "curve-lib": "*",
     "eslint": "*",
     "react": "*",
     "react-dom": "*",

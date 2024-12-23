@@ -1,13 +1,13 @@
 import { t } from '@lingui/macro'
 import { enforce, group, test } from 'vest'
-import { poolValidationGroup } from '@/shared/model/query/pool-validation'
-import { BD } from '@/shared/curve-lib'
+import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
+import { BD } from '@ui-kit/utils'
 import {
   addressValidationFn,
   amountValidationFn,
   createValidationSuite,
   tokenIdValidationFn,
-} from '@/shared/lib/validation'
+} from '@ui-kit/lib/validation'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
 import { TIME_FRAMES } from '@/constants'
 import useStore from '@/store/useStore'

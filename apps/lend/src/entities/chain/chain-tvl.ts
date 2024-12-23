@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTokenUsdRates } from '@/entities/token/lib'
-import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
+import { FETCHING, PartialQueryResult, READY } from '@ui-kit/lib/queries'
 import { calculateChainTvl } from './tvl'
 import { useOneWayMarketMapping } from './chain-hooks'
 import useStore from '@/store/useStore'

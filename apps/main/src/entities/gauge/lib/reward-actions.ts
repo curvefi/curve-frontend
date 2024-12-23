@@ -21,8 +21,8 @@ import type {
   DepositRewardMutation,
   DepositRewardParams,
 } from '@/entities/gauge/types'
-import { queryClient } from '@/shared/api/query-client'
-import { GaugeParams } from '@/shared/model/query'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { GaugeParams } from '@ui-kit/lib/model/query'
 import useTokensMapper from '@/hooks/useTokensMapper'
 import useStore from '@/store/useStore'
 

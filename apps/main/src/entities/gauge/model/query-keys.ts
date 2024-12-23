@@ -11,7 +11,7 @@
  */
 
 import type { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '@/entities/gauge/types'
-import { GaugeParams, rootKeys } from '@/shared/model/query'
+import { GaugeParams, rootKeys } from '@ui-kit/lib/model/query'
 
 export const gaugeKeys = {
   estimateGas: () => ['estimateGas'] as const,

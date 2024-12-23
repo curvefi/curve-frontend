@@ -5,7 +5,7 @@ import { PromisePool } from '@supercharge/promise-pool'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { CRVUSD_ADDRESS } from '@/constants'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE

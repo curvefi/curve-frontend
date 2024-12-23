@@ -1,5 +1,5 @@
 import type { AddRewardQuery, DepositRewardApproveQuery, DepositRewardQuery } from '@/entities/gauge/types'
-import { BD } from '@/shared/curve-lib'
+import { BD } from '@ui-kit/utils'
 import useStore from '@/store/useStore'
 
 export const queryEstimateGasDepositRewardApprove = async ({

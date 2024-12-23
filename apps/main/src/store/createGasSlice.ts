@@ -2,9 +2,9 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import cloneDeep from 'lodash/cloneDeep'
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
-import { Chain, gweiToWai } from '@/shared/curve-lib'
+import { Chain, gweiToWai } from '@ui-kit/utils'
 import { httpFetcher } from '@/lib/utils'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import api from '@/lib/curvejs'
 
 type StateKey = keyof typeof DEFAULT_STATE

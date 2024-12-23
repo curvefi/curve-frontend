@@ -1,5 +1,4 @@
 import IconButton from '@mui/material/IconButton'
-import React from 'react'
 import { styled } from '@mui/material/styles'
 
 const Svg = styled('svg')({

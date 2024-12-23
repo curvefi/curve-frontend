@@ -6,7 +6,7 @@ import styled from 'styled-components'
 
 import { NETWORK_TOKEN } from '@/constants'
 import { FORMAT_OPTIONS, formatNumber } from '@/ui/utils'
-import { gweiToEther, weiToGwei } from 'curve-lib'
+import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 

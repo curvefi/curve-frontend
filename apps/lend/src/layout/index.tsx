@@ -5,13 +5,13 @@ import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { layoutHeightKeys } from '@/store/createLayoutSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
 import { isFailure, isLoading } from '@/ui/utils'
-import { getWalletChainId, useConnectWallet } from '@/common/features/connect-wallet'
+import { getWalletChainId, useConnectWallet } from '@ui-kit/features/connect-wallet'
 import useStore from '@/store/useStore'
 import Header from '@/layout/Header'
 import { Footer } from 'curve-ui-kit/src/widgets/Footer'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import { t } from '@lingui/macro'
-import { Locale } from '@/common/widgets/Header/types'
+import { Locale } from '@ui-kit/widgets/Header/types'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const [{ wallet }] = useConnectWallet()
