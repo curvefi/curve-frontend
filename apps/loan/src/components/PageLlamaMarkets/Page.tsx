@@ -27,7 +27,7 @@ export const PageLlamaMarkets = () => {
       {isReady ? (
         <MarketsTable onReload={onReload} data={data.lendingVaultData} headerHeight={headerHeight} />
       ) : (
-        <Skeleton variant="rectangular" width={MaxWidth.lg} height={ModalHeight.height} />
+        <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.height} />
       )}
       <LendTableFooter />
     </Box>

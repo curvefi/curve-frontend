@@ -8,7 +8,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
 import { createColumnHelper } from '@tanstack/react-table'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
 const columns = [
@@ -47,7 +47,10 @@ export const MarketsTable = ({
     sx={{
       marginBlockStart: Spacing.xl,
       marginBlockEnd: Spacing.xxl,
-      maxWidth: MaxWidth.lg,
+      maxWidth: MaxWidth.table,
+      minWidth: MinWidth.table,
+      width: '100%',
+      overflowX: 'auto',
       backgroundColor: (t) => t.design.Layer[1].Fill,
     }}
   >
