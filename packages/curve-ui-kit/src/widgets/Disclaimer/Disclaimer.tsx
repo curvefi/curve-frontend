@@ -17,16 +17,14 @@ import { SCrvUsd } from './Tabs/SCrvUsd'
 
 const { MaxWidth } = SizesAndSpaces
 
-const DEFAULT_TAB_INDEX = 0
 const tabs = [
   { id: 'dex', label: t`Dex` },
   { id: 'lend', label: t`LlamaLend` },
   { id: 'crvusd', label: t`crvUSD` },
   { id: 'scrvusd', label: t`Savings crvUSD` },
-].map((tab, value) => ({
-  ...tab,
-  value,
-}))
+] as const
+type TabId = (typeof tabs)[number]['id']
+const DEFAULT_TAB: TabId = 'dex'
 
 type Props = {
   className?: string
@@ -37,20 +35,20 @@ export const Disclaimer = ({ className }: Props) => {
   const location = useLocation()
 
   const getTabFromUrl = () => {
-    if (typeof window === 'undefined') return DEFAULT_TAB_INDEX
+    if (typeof window === 'undefined') return DEFAULT_TAB
     const params = new URLSearchParams(location.search)
     const tabId = params.get('tab')
-    return tabs.find((tab) => tab.id === tabId)?.value ?? DEFAULT_TAB_INDEX
+    return tabs.find((tab) => tab.id === tabId)?.id ?? DEFAULT_TAB
   }
 
-  const handleTabChange = (newTabIndex: number) => {
-    setTabIndex(newTabIndex)
-    const tab = tabs.find((tab) => tab.value === newTabIndex)
-    if (!tab) return
-    navigate(`${location.pathname}?tab=${tab.id}`)
+  const handleTabChange = (newTab: TabId) => {
+    setTab(newTab)
+    const tabId = tabs.find((tab) => tab.id === newTab)?.id
+    if (!tabId) return
+    navigate(`${location.pathname}?tab=${tabId}`)
   }
 
-  const [tabIndex, setTabIndex] = useState(getTabFromUrl())
+  const [tab, setTab] = useState(getTabFromUrl())
 
   return (
     <Stack
@@ -60,15 +58,20 @@ export const Disclaimer = ({ className }: Props) => {
       }}
     >
       <Stack direction="row" justifyContent="space-between">
-        <TabsSwitcher variant="contained" value={tabIndex} onChange={handleTabChange} options={tabs} />
+        <TabsSwitcher
+          variant="contained"
+          value={tab}
+          onChange={handleTabChange}
+          options={tabs.map((tab) => ({ ...tab, value: tab.id }))}
+        />
         <LastUpdated />
       </Stack>
 
       <TabPanel>
-        {tabIndex === 0 && <Dex />}
-        {tabIndex === 1 && <LlamaLend />}
-        {tabIndex === 2 && <CrvUsd />}
-        {tabIndex === 3 && <SCrvUsd />}
+        {tab === 'dex' && <Dex />}
+        {tab === 'lend' && <LlamaLend />}
+        {tab === 'crvusd' && <CrvUsd />}
+        {tab === 'scrvusd' && <SCrvUsd />}
         <Footer />
       </TabPanel>
     </Stack>
