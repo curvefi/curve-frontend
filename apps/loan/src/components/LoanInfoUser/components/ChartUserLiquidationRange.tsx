@@ -12,8 +12,8 @@ const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: Healt
   const { userPrices: currPrices } = userLoanDetails ?? {}
 
   // default to empty data to show chart
-  const liqRangeData = useMemo(() => {
-    return [
+  const liqRangeData = useMemo(
+    () => [
       {
         name: '',
         currLabel: 'LR',
@@ -23,8 +23,9 @@ const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: Healt
         oraclePrice: loanDetails?.priceInfo?.oraclePrice ?? '',
         oraclePriceBand: loanDetails?.priceInfo?.oraclePriceBand ?? 0,
       },
-    ]
-  }, [currPrices, loanDetails?.priceInfo])
+    ],
+    [currPrices, loanDetails?.priceInfo],
+  )
 
   return (
     <ChartLiquidationRange

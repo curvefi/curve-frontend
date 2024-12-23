@@ -133,9 +133,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     return pool.isCrypto ? '0.1' : '0.03'
   }, [globalMaxSlippage, pool])
 
-  const navHeight = useMemo(() => {
-    return layoutHeight.mainNav + layoutHeight.secondaryNav
-  }, [layoutHeight])
+  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.secondaryNav, [layoutHeight])
 
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {

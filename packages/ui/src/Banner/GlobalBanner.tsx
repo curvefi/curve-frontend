@@ -16,28 +16,26 @@ const GlobalBanner = React.forwardRef<HTMLDivElement, Omit<GlobalBannerProps, 'r
   (
     { networkName, showConnectApiErrorMessage, showSwitchNetworkMessage, maintenanceMessage, handleNetworkChange },
     ref,
-  ) => {
-    return (
-      <Wrapper ref={ref} show={showSwitchNetworkMessage || showConnectApiErrorMessage || !!maintenanceMessage}>
-        {!!maintenanceMessage ? <Message padding="1rem 0">{maintenanceMessage}</Message> : null}
-        {showSwitchNetworkMessage && (
-          <Message>
-            Please switch your wallet&apos;s network to <strong>{networkName}</strong> to use Curve on{' '}
-            <strong>{networkName}</strong>.{' '}
-            <StyledButton size="small" variant="outlined" onClick={handleNetworkChange}>
-              Change network
-            </StyledButton>
-          </Message>
-        )}
-        {showConnectApiErrorMessage && (
-          <Message>
-            There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a
-            wallet, please switch to a different one.
-          </Message>
-        )}
-      </Wrapper>
-    )
-  },
+  ) => (
+    <Wrapper ref={ref} show={showSwitchNetworkMessage || showConnectApiErrorMessage || !!maintenanceMessage}>
+      {!!maintenanceMessage ? <Message padding="1rem 0">{maintenanceMessage}</Message> : null}
+      {showSwitchNetworkMessage && (
+        <Message>
+          Please switch your wallet&apos;s network to <strong>{networkName}</strong> to use Curve on{' '}
+          <strong>{networkName}</strong>.{' '}
+          <StyledButton size="small" variant="outlined" onClick={handleNetworkChange}>
+            Change network
+          </StyledButton>
+        </Message>
+      )}
+      {showConnectApiErrorMessage && (
+        <Message>
+          There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet,
+          please switch to a different one.
+        </Message>
+      )}
+    </Wrapper>
+  ),
 )
 
 GlobalBanner.displayName = 'GlobalBanner'

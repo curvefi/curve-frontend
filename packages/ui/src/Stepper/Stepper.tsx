@@ -10,18 +10,16 @@ import Box from 'ui/src/Box/Box'
 import StepAction from 'ui/src/Stepper/StepAction'
 import StepNumberConnector from 'ui/src/Stepper/StepNumberConnector'
 
-const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => {
-  return (
-    <StepsContainer data-testid={`stepper-${testId}`}>
-      {steps.map((step, i) => (
-        <StepContainer key={i} flex flexAlignItems="center" flexJustifyContent="space-between" fillWidth>
-          <StepNumber index={i} step={step} steps={steps} />
-          <StepAction step={step} />
-        </StepContainer>
-      ))}
-    </StepsContainer>
-  )
-}
+const Stepper = ({ steps, testId }: { steps: Step[]; testId?: string }) => (
+  <StepsContainer data-testid={`stepper-${testId}`}>
+    {steps.map((step, i) => (
+      <StepContainer key={i} flex flexAlignItems="center" flexJustifyContent="space-between" fillWidth>
+        <StepNumber index={i} step={step} steps={steps} />
+        <StepAction step={step} />
+      </StepContainer>
+    ))}
+  </StepsContainer>
+)
 
 type StepNumberProps = {
   index: number
@@ -29,28 +27,20 @@ type StepNumberProps = {
   steps: Step[]
 }
 
-const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberProps>) => {
-  return (
-    <StepNumberContainer flex flexColumn flexAlignItems="center">
-      <StepNumberConnector visible={index > 0} status={step.status} direction="up" />
-      <Number className="custom-font" flex flexAlignItems="center" flexJustifyContent="center" status={step.status}>
-        {step.status === 'succeeded' ? (
-          <RCCheck className="check" />
-        ) : step.status === 'failed' ? (
-          <RCCross />
-        ) : (
-          index + 1
-        )}
-      </Number>
-      <StepNumberConnector
-        visible={index < steps.length - 1}
-        status={step.status}
-        nextStatus={steps[index + 1]?.status}
-        direction="down"
-      />
-    </StepNumberContainer>
-  )
-}
+const StepNumber = ({ index, step, steps }: React.PropsWithChildren<StepNumberProps>) => (
+  <StepNumberContainer flex flexColumn flexAlignItems="center">
+    <StepNumberConnector visible={index > 0} status={step.status} direction="up" />
+    <Number className="custom-font" flex flexAlignItems="center" flexJustifyContent="center" status={step.status}>
+      {step.status === 'succeeded' ? <RCCheck className="check" /> : step.status === 'failed' ? <RCCross /> : index + 1}
+    </Number>
+    <StepNumberConnector
+      visible={index < steps.length - 1}
+      status={step.status}
+      nextStatus={steps[index + 1]?.status}
+      direction="down"
+    />
+  </StepNumberContainer>
+)
 
 const StepNumberContainer = styled(Box)`
   align-self: stretch;

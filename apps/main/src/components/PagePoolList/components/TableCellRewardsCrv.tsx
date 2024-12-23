@@ -6,8 +6,8 @@ type Prop = {
   rewardsApy: RewardsApy | undefined
 }
 
-const TableCellRewardsCrv = ({ isHighlight, poolData, rewardsApy }: Prop) => {
-  return <PoolRewardsCrv poolData={poolData} rewardsApy={rewardsApy} isHighlight={isHighlight} />
-}
+const TableCellRewardsCrv = ({ isHighlight, poolData, rewardsApy }: Prop) => (
+  <PoolRewardsCrv poolData={poolData} rewardsApy={rewardsApy} isHighlight={isHighlight} />
+)
 
 export default TableCellRewardsCrv

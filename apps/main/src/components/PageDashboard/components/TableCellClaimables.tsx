@@ -18,28 +18,26 @@ const TableCellClaimables: React.FC<Props> = ({
   claimableOthers,
   claimablesTotalUsd,
   isMobile,
-}) => {
-  return (
-    <>
-      {claimableCrv?.map(({ symbol, amount }, idx) => {
-        const formatted = `${formatNumber(amount)} CRV`
-        return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
-      })}
+}) => (
+  <>
+    {claimableCrv?.map(({ symbol, amount }, idx) => {
+      const formatted = `${formatNumber(amount)} CRV`
+      return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
+    })}
 
-      {claimableOthers?.map(({ symbol, amount }, idx) => {
-        const formatted = `${formatNumber(amount)} ${symbol}`
-        return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
-      })}
+    {claimableOthers?.map(({ symbol, amount }, idx) => {
+      const formatted = `${formatNumber(amount)} ${symbol}`
+      return <Info key={`${symbol}${idx}`}>{isHighLight ? <strong>{formatted}</strong> : <>{formatted}</>}</Info>
+    })}
 
-      <div>
-        {isHighLight && claimablesTotalUsd > 0 && (
-          <DetailText>{formatNumber(claimablesTotalUsd, { ...FORMAT_OPTIONS.USD })}</DetailText>
-        )}
-      </div>
+    <div>
+      {isHighLight && claimablesTotalUsd > 0 && (
+        <DetailText>{formatNumber(claimablesTotalUsd, { ...FORMAT_OPTIONS.USD })}</DetailText>
+      )}
+    </div>
 
-      {isMobile && !claimableCrv && claimableOthers?.length === 0 && t`None`}
-    </>
-  )
-}
+    {isMobile && !claimableCrv && claimableOthers?.length === 0 && t`None`}
+  </>
+)
 
 export default TableCellClaimables

@@ -61,30 +61,28 @@ const DetailsSupplyRewards = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId:
           <RewardsItem>
             <span>{t`Incentives APR`}</span>
           </RewardsItem>
-          {tooltipValues.incentivesObj.map(({ apy, symbol, tokenAddress }) => {
-            return (
-              <Box
-                key={symbol}
-                flex
-                flexAlignItems="baseline"
-                flexJustifyContent="space-between"
-                padding="0 0 0 var(--spacing-1)"
-              >
-                <Box flex flexAlignItems="center">
-                  <StyledExternalLink href={networks[rChainId].scanTokenPath(tokenAddress)}>
-                    <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
-                      {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
-                    </TokenWrapper>
-                  </StyledExternalLink>
+          {tooltipValues.incentivesObj.map(({ apy, symbol, tokenAddress }) => (
+            <Box
+              key={symbol}
+              flex
+              flexAlignItems="baseline"
+              flexJustifyContent="space-between"
+              padding="0 0 0 var(--spacing-1)"
+            >
+              <Box flex flexAlignItems="center">
+                <StyledExternalLink href={networks[rChainId].scanTokenPath(tokenAddress)}>
+                  <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
+                    {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
+                  </TokenWrapper>
+                </StyledExternalLink>
 
-                  <StyledIconButton size="small" onClick={() => handleClickCopy(tokenAddress)}>
-                    <Icon name="Copy" size={16} />
-                  </StyledIconButton>
-                </Box>
-                <Chip size="md">{formatNumber(apy, FORMAT_OPTIONS.PERCENT)} </Chip>
+                <StyledIconButton size="small" onClick={() => handleClickCopy(tokenAddress)}>
+                  <Icon name="Copy" size={16} />
+                </StyledIconButton>
               </Box>
-            )
-          })}
+              <Chip size="md">{formatNumber(apy, FORMAT_OPTIONS.PERCENT)} </Chip>
+            </Box>
+          ))}
         </>
       ) : null}
 

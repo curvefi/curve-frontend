@@ -39,34 +39,32 @@ const VoteDialog = ({ userAddress, activeProposal, testId, className, votingPowe
   const id = pricesProposal?.vote_id
   const type: ProposalType = pricesProposal?.vote_type
 
-  const executeProposalComponent = () => {
-    return (
-      <>
-        {executeTx?.status === 'LOADING' && (
-          <Box>
-            <PendingTx pendingMessage={t`Executing proposal...`} />
-          </Box>
-        )}
-        {executeTx?.status === 'ERROR' && (
-          <Box margin="0 0 var(--spacing-2) 0">
-            <StyledAlertBox alertType="error" limitHeight>
-              {executeTx?.error}
-            </StyledAlertBox>
-          </Box>
-        )}
-        {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
-        {executeTx?.status !== 'SUCCESS' && (
-          <ExecuteButton
-            variant="icon-filled"
-            onClick={() => executeProposal(id, type)}
-            loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
-          >
-            {t`Execute`}
-          </ExecuteButton>
-        )}
-      </>
-    )
-  }
+  const executeProposalComponent = () => (
+    <>
+      {executeTx?.status === 'LOADING' && (
+        <Box>
+          <PendingTx pendingMessage={t`Executing proposal...`} />
+        </Box>
+      )}
+      {executeTx?.status === 'ERROR' && (
+        <Box margin="0 0 var(--spacing-2) 0">
+          <StyledAlertBox alertType="error" limitHeight>
+            {executeTx?.error}
+          </StyledAlertBox>
+        </Box>
+      )}
+      {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
+      {executeTx?.status !== 'SUCCESS' && (
+        <ExecuteButton
+          variant="icon-filled"
+          onClick={() => executeProposal(id, type)}
+          loading={executeTx?.status === 'CONFIRMING' || executeTx?.status === 'LOADING'}
+        >
+          {t`Execute`}
+        </ExecuteButton>
+      )}
+    </>
+  )
 
   // Voting power too low
   if (activeProposal?.active && votingPower.value === 0) {

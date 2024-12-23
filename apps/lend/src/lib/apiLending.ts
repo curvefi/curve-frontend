@@ -19,9 +19,7 @@ export const helpers = {
     await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
     return api
   },
-  getImageBaseUrl: (chainId: ChainId) => {
-    return networks[chainId ?? '1'].imageBaseUrl
-  },
+  getImageBaseUrl: (chainId: ChainId) => networks[chainId ?? '1'].imageBaseUrl,
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
@@ -76,17 +74,14 @@ export const helpers = {
       return resp
     }
   },
-  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus => {
-    return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'
-  },
+  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
+    isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
   getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
     const { signerAddress } = api ?? {}
     if (!api || !signerAddress || !market) return ''
     return `${market.id}-${shortenAccount(signerAddress)}`
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),
