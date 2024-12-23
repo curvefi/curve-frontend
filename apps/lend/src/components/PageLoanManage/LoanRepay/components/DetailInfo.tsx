@@ -41,7 +41,7 @@ const DetailInfo = ({
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
 
   const { signerAddress } = api ?? {}
-  const { expectedBorrowed, repayIsFull, routes } = (detailInfo ?? {}) as FormDetailInfo & FormDetailInfoLeverage
+  const { expectedBorrowed, repayIsFull, routeImage } = (detailInfo ?? {}) as FormDetailInfo & FormDetailInfoLeverage
   const { swapRequired, haveValues, haveFormErrors } = _parseValues(formValues)
 
   const loading =
@@ -82,7 +82,7 @@ const DetailInfo = ({
                     }}
                     total={expectedBorrowed?.totalBorrowed}
                     avgPrice={expectedBorrowed?.avgPrice}
-                    routes={routes}
+                    routeImage={routeImage}
                     type="borrowed"
                   />
                   <DetailInfoLeverageAvgPrice loading={expectedLoading} avgPrice={expectedBorrowed?.avgPrice} />

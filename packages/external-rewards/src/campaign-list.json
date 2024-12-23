@@ -64,5 +64,8 @@
   },
   {
     "campaign": "Corn.json"
+  },
+  {
+    "campaign": "XPoints.json"
   }
 ]
