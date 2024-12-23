@@ -3,6 +3,7 @@ import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
 import { Dispatch, RefObject } from 'react'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { GlobalBannerProps } from 'ui/src/Banner/GlobalBanner'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'
 
@@ -35,6 +36,8 @@ export type BaseHeaderProps<TChainId = number> = {
   isLite?: boolean
   ChainProps: ChainSwitcherProps<TChainId>
   WalletProps: ConnectWalletIndicatorProps
+  BannerProps: GlobalBannerProps
+  bannerHeight: number | undefined
   pages: AppPage[]
   sections: NavigationSection[]
   themes: [ThemeKey, Dispatch<ThemeKey>]
