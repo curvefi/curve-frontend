@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useMemo, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { t } from '@lingui/macro'
 
@@ -15,12 +15,9 @@ const { Spacing, Sizing, MaxWidth } = SizesAndSpaces
 export const HeaderPage = () => {
   const router = useRouter()
 
-  const [canGoBack, setCanGoBack] = useState(false)
-  // Check if window.history has previous entries from our app
-  // TODO: this doesn't work properly yet.
-  useEffect(() => {
-    setCanGoBack(window.history.length > 1 && document.referrer.includes(window.location.host))
-  }, [])
+  // Check if window.history has previous entries from our app.
+  // TODO: this doesn't work properly yet, but also isn't used yet.
+  const canGoBack = useMemo(() => window.history.length > 1 && document.referrer.includes(window.location.host), [])
 
   return (
     <Stack
