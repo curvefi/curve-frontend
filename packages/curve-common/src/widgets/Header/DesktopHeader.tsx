@@ -1,4 +1,5 @@
-import { AppBar, Toolbar } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
@@ -22,7 +23,7 @@ export const DesktopHeader = <TChainId extends number>({
   ChainProps,
   WalletProps,
   BannerProps,
-  bannerHeight = 0,
+  height,
   pages,
   appStats,
   themes: [theme, setTheme],
@@ -75,8 +76,8 @@ export const DesktopHeader = <TChainId extends number>({
           </Container>
         </Toolbar>
       </AppBar>
-      {/* Hardcoded height is tested in header.cy.ts - it creates an empty box to take the place behind the header */}
-      <Box height={96 + bannerHeight} />
+      {/* create an empty box to take the place behind the header */}
+      <Box height={height} />
     </>
   )
 }

@@ -4,7 +4,7 @@ import { TableFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { BorrowRateCell, LiquidityCell, PoolTitleCell, SupplyYieldCell, UtilizationCell } from './cells'
-import { TableGrid } from '@ui-kit/shared/ui/TableGrid'
+import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
 import { createColumnHelper } from '@tanstack/react-table'
 
@@ -34,7 +34,15 @@ const columns = [
   }),
 ]
 
-export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: LendingVault[] }) => (
+export const MarketsTable = ({
+  onReload,
+  data,
+  headerHeight,
+}: {
+  onReload: () => void
+  data: LendingVault[]
+  headerHeight: string
+}) => (
   <Stack
     sx={{
       marginBlockStart: Spacing.xl,
@@ -49,9 +57,10 @@ export const MarketsTable = ({ onReload, data }: { onReload: () => void; data: L
       onReload={onReload}
       learnMoreUrl="https://docs.curve.fi/lending/overview/"
     />
-    <TableGrid
+    <DataTable
       data={useMemo(() => data.filter((d) => d.usdTotal > 0).sort((a, b) => b.usdTotal - a.usdTotal), [data])}
       columns={columns}
+      headerHeight={headerHeight}
     />
   </Stack>
 )

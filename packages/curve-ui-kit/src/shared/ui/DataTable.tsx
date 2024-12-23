@@ -10,13 +10,13 @@ import { useIntersectionObserver } from 'ui'
 import { Cell, ColumnDef, flexRender, getCoreRowModel, Header, Row, useReactTable } from '@tanstack/react-table'
 
 const { Sizing, Spacing } = SizesAndSpaces
-const TableGridCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => (
+const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => (
   <TableCell sx={{ justifyContent: 'flex-end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}>
     {flexRender(cell.column.columnDef.cell, cell.getContext())}
   </TableCell>
 )
 
-const TableGridRow = <T extends unknown>({ row }: { row: Row<T> }) => {
+const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
   return (
@@ -29,12 +29,12 @@ const TableGridRow = <T extends unknown>({ row }: { row: Row<T> }) => {
       }}
       ref={ref}
     >
-      {entry?.isIntersecting && row.getVisibleCells().map((cell) => <TableGridCell key={cell.id} cell={cell} />)}
+      {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
     </TableRow>
   )
 }
 
-const TableHeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => (
+const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => (
   <TableCell sx={{ alignContent: 'end', padding: Spacing.sm, paddingTop: 0 }} colSpan={header.colSpan}>
     <Typography variant="tableHeaderS" color="textSecondary">
       {flexRender(header.column.columnDef.header, header.getContext())}
@@ -42,35 +42,42 @@ const TableHeaderCell = <T extends unknown>({ header }: { header: Header<T, unkn
   </TableCell>
 )
 
-export const TableGrid = <T extends unknown>({ columns, data }: { data: T[]; columns: ColumnDef<T, any>[] }) => {
+export const DataTable = <T extends unknown>({
+  columns,
+  data,
+  headerHeight,
+}: {
+  data: T[]
+  columns: ColumnDef<T, any>[]
+  headerHeight: string
+}) => {
   const table = useReactTable<T>({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
   })
-  // todo: spacing, top
   return (
     <Table>
       <TableHead
-        sx={{
-          zIndex: 2000,
+        sx={(t) => ({
+          zIndex: t.zIndex.appBar - 1,
           position: 'sticky',
           insetBlockStart: 0,
-          top: 96,
-          backgroundColor: (t) => t.design.Table.Header_Fill,
-        }}
+          top: headerHeight,
+          backgroundColor: t.design.Table.Header_Fill,
+        })}
       >
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
             {headerGroup.headers.map((header) => (
-              <TableHeaderCell key={header.id} header={header} />
+              <HeaderCell key={header.id} header={header} />
             ))}
           </TableRow>
         ))}
       </TableHead>
       <TableBody>
         {table.getRowModel().rows.map((row) => (
-          <TableGridRow<T> key={row.id} row={row} />
+          <DataRow<T> key={row.id} row={row} />
         ))}
       </TableBody>
     </Table>

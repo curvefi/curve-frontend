@@ -8,6 +8,8 @@ import DocumentHead from '@/layout/DocumentHead'
 import { t } from '@lingui/macro'
 import React from 'react'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useHeaderHeight } from '@/common/widgets/Header'
+import useStore from '@/store/useStore'
 
 const onReload = () => invalidateLendingVaults({})
 
@@ -15,13 +17,15 @@ const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
 export const PageLlamaMarkets = () => {
   const { data, error, isFetching } = useLendingVaults({}) // todo: show errors and loading state
+  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
   const isReady = data && !isFetching
+  const headerHeight = useHeaderHeight(bannerHeight)
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl }}>
       <DocumentHead title={t`Llamalend Markets`} />
       <LendTableTitle />
       {isReady ? (
-        <MarketsTable onReload={onReload} data={data.lendingVaultData} />
+        <MarketsTable onReload={onReload} data={data.lendingVaultData} headerHeight={headerHeight} />
       ) : (
         <Skeleton variant="rectangular" width={MaxWidth.lg} height={ModalHeight.height} />
       )}

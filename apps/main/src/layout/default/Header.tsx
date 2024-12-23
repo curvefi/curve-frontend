@@ -6,7 +6,7 @@ import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from 
 import { useParamsFromUrl, useRestPartialPathname } from '@/utils/utilsRouter'
 import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
 import useStore from '@/store/useStore'
-import { Header as NewHeader } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
@@ -128,7 +128,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
             ]),
       ]}
       sections={sections}
-      bannerHeight={bannerHeight}
+      height={useHeaderHeight(bannerHeight)}
       BannerProps={BannerProps}
     />
   )

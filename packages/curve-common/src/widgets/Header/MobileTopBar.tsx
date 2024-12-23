@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
 import React from 'react'
-import type { Theme, SxProps } from '@mui/system'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
 
 export type MobileTopBarProps<TChainId extends number> = {
@@ -12,7 +11,6 @@ export type MobileTopBarProps<TChainId extends number> = {
   isLite: boolean
   currentApp: AppName
   ChainProps: ChainSwitcherProps<TChainId>
-  sx: SxProps<Theme>
 }
 
 export const MobileTopBar = <TChainId extends number>({
@@ -21,9 +19,8 @@ export const MobileTopBar = <TChainId extends number>({
   isSidebarOpen,
   toggleSidebar,
   isLite,
-  sx,
 }: MobileTopBarProps<TChainId>) => (
-  <Box display="flex" flexDirection="row" flexGrow={1} paddingX={2} sx={sx}>
+  <Box display="flex" flexDirection="row" flexGrow={1} paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo isLite={isLite} appName={currentApp} />
     <Box flexGrow={1} />
