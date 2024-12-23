@@ -96,7 +96,7 @@ type GetLendingVaultResponse = {
 }
 
 export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults } = queryFactory({
-  queryKey: () => ['lending-vaults-v2'] as const,
+  queryKey: () => ['lending-vaults-v3'] as const,
   queryFn: async () => {
     const response = await fetch('https://api.curve.fi/v1/getLendingVaults/all')
     const { data, success } = (await response.json()) as GetLendingVaultResponse
@@ -107,7 +107,8 @@ export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults }
       ...data,
       lendingVaultData: data.lendingVaultData.map((vault) => ({
         ...vault,
-        utilizationPercent: vault.borrowed.usdTotal && (100 * vault.totalSupplied.usdTotal) / vault.borrowed.usdTotal,
+        utilizationPercent:
+          vault.totalSupplied.usdTotal && (100 * vault.borrowed.usdTotal) / vault.totalSupplied.usdTotal,
       })),
     }
   },

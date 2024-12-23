@@ -38,7 +38,7 @@ const columns = [
   }),
 ] satisfies ColumnDef<LendingVault, any>[]
 
-export const MarketsTable = ({
+export const LendingMarketsTable = ({
   onReload,
   data,
   headerHeight,

@@ -38,6 +38,7 @@ const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
         borderColor: (t) => t.design.Layer[1].Outline,
       }}
       ref={ref}
+      // title={JSON.stringify(row.original)}
     >
       {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
     </TableRow>
