@@ -14,3 +14,5 @@ export const oneTabletViewport = () =>
 
 export const oneMobileOrTabletViewport = () =>
   [randomInt(MIN_WIDTH, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
+
+export const allViewports = () => [oneDesktopViewport(), oneMobileViewport(), oneTabletViewport()] as const
