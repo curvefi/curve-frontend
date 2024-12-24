@@ -1,5 +1,5 @@
 {
-  "campaignName": "",
+  "campaignName": "Kernel",
   "platform": "Corn",
   "description": "Points for providing liquidity.",
   "platformImageId": "corn.png",
@@ -13,7 +13,7 @@
       "campaignEnd": "1770000000",
       "address": "0xab3291b73a1087265e126e330cede0cfd4b8a693",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -25,7 +25,7 @@
       "campaignEnd": "1770000000",
       "address": "0xb27d447cf1d211ca60676728ac28060ecfb90800",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -37,7 +37,7 @@
       "campaignEnd": "1770000000",
       "address": "0xd2a1ff5b5967c14cb1bb809fb70c0da77c9b55a8",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -49,7 +49,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf024586aacaf91fc4f77468fa758df280b2c9cd4",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -61,7 +61,7 @@
       "campaignEnd": "1770000000",
       "address": "0xa1174d3af66ad2fd7c6d5c7b458b6da38988cd56",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -73,7 +73,7 @@
       "campaignEnd": "1770000000",
       "address": "0xf59aa8acd7944abecf804e455a22b65f285af534",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -85,7 +85,7 @@
       "campaignEnd": "1770000000",
       "address": "0x29c1b0baa9ac0182cf9f6ffceaf143f3ef3546a0",
       "network": "corn",
-      "multiplier": "3x",
+      "multiplier": "6x",
       "tags": ["points"],
       "lock": "false"
     }
