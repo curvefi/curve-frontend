@@ -44,9 +44,7 @@ export const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),

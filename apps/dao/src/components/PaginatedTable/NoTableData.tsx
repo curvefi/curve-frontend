@@ -9,13 +9,11 @@ type NoTableDataProps = {
   refetchData: () => void
 }
 
-const NoTableData: React.FC<NoTableDataProps> = ({ height, noDataMessage, refetchData }) => {
-  return (
-    <Wrapper height={height}>
-      <ErrorMessage message={noDataMessage} onClick={refetchData} />
-    </Wrapper>
-  )
-}
+const NoTableData: React.FC<NoTableDataProps> = ({ height, noDataMessage, refetchData }) => (
+  <Wrapper height={height}>
+    <ErrorMessage message={noDataMessage} onClick={refetchData} />
+  </Wrapper>
+)
 
 const Wrapper = styled(Box)<{ height: string }>`
   display: flex;

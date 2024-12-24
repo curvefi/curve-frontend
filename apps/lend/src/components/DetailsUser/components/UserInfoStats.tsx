@@ -14,22 +14,20 @@ type Props = {
   tooltipProps?: TooltipProps
 }
 
-const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: PropsWithChildren<Props & BoxProps>) => {
-  return (
-    <span {...props}>
-      {tooltip ? (
-        <StyledChip tooltip={tooltip} tooltipProps={tooltipProps} isBlock isBold>
-          {title} <Icon className="svg-tooltip" size={16} name="InformationSquare" />
-        </StyledChip>
-      ) : (
-        <TextCaption isBlock isBold isCaps>
-          {title}
-        </TextCaption>
-      )}
-      {children ?? '-'}
-    </span>
-  )
-}
+const UserInfoStats = ({ title, children, tooltip, tooltipProps, ...props }: PropsWithChildren<Props & BoxProps>) => (
+  <span {...props}>
+    {tooltip ? (
+      <StyledChip tooltip={tooltip} tooltipProps={tooltipProps} isBlock isBold>
+        {title} <Icon className="svg-tooltip" size={16} name="InformationSquare" />
+      </StyledChip>
+    ) : (
+      <TextCaption isBlock isBold isCaps>
+        {title}
+      </TextCaption>
+    )}
+    {children ?? '-'}
+  </span>
+)
 
 const StyledChip = styled(Chip)`
   display: block;

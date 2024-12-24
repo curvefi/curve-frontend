@@ -190,20 +190,18 @@ const ChartBandBalances = ({
                   verticalAlign="top"
                   wrapperStyle={{ fontSize: 12 }}
                   height={showLiquidationIndicator ? 60 : 45}
-                  content={() => {
-                    return (
-                      <LegendWrapper flex flexCenter flexAlignItems="center">
-                        <TipContent>
-                          <TipIcon name="StopFilledAlt" size={20} fill="var(--chart_collateral--color)" />
-                          {getTokenName(llamma).collateral}
-                        </TipContent>
-                        <TipContent>
-                          <TipIcon name="StopFilledAlt" size={20} fill="var(--chart_stablecoin--color)" />
-                          {getTokenName(llamma).stablecoin}
-                        </TipContent>
-                      </LegendWrapper>
-                    )
-                  }}
+                  content={() => (
+                    <LegendWrapper flex flexCenter flexAlignItems="center">
+                      <TipContent>
+                        <TipIcon name="StopFilledAlt" size={20} fill="var(--chart_collateral--color)" />
+                        {getTokenName(llamma).collateral}
+                      </TipContent>
+                      <TipContent>
+                        <TipIcon name="StopFilledAlt" size={20} fill="var(--chart_stablecoin--color)" />
+                        {getTokenName(llamma).stablecoin}
+                      </TipContent>
+                    </LegendWrapper>
+                  )}
                 />
                 <Brush
                   dataKey="n"
@@ -313,25 +311,23 @@ const ChartBandBalances = ({
                 )}
 
                 {/* grouped N */}
-                {isNGroupeds.map((d) => {
-                  return (
-                    <ReferenceLine
-                      isFront
-                      key={d.n}
-                      x={d.n}
-                      opacity={0}
-                      width={100}
-                      label={
-                        <Label
-                          value={data.length > 30 ? '••' : '•••'}
-                          fontSize={20}
-                          fontWeight="bold"
-                          position="inside"
-                        />
-                      }
-                    />
-                  )
-                })}
+                {isNGroupeds.map((d) => (
+                  <ReferenceLine
+                    isFront
+                    key={d.n}
+                    x={d.n}
+                    opacity={0}
+                    width={100}
+                    label={
+                      <Label
+                        value={data.length > 30 ? '••' : '•••'}
+                        fontSize={20}
+                        fontWeight="bold"
+                        position="inside"
+                      />
+                    }
+                  />
+                ))}
               </ComposedChart>
             </ResponsiveContainer>
           </InnerWrapper>

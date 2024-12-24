@@ -13,14 +13,12 @@ const DetailInfoLeverageExpected = ({
   total: string | undefined
   loading: boolean
   swapToSymbol: string | undefined
-}) => {
-  return (
-    <DetailInfo label={t`Expected`} loading={loading} loadingSkeleton={[50, 20]}>
-      <strong>
-        {formatNumber(total, { defaultValue: '-' })} {swapToSymbol}
-      </strong>
-    </DetailInfo>
-  )
-}
+}) => (
+  <DetailInfo label={t`Expected`} loading={loading} loadingSkeleton={[50, 20]}>
+    <strong>
+      {formatNumber(total, { defaultValue: '-' })} {swapToSymbol}
+    </strong>
+  </DetailInfo>
+)
 
 export default DetailInfoLeverageExpected

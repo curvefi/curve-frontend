@@ -21,17 +21,15 @@ const InputField = ({
   message?: string
   testId?: string
   onChange?: React.ChangeEventHandler<HTMLInputElement>
-}) => {
-  return (
-    <>
-      <Box className={className}>
-        <InputLabel {...labelProps} testId={testId} />
-        <StyledInput {...inputProps} testId={testId} onChange={onChange} />
-      </Box>
-      {message && <InputMessage message={message} />}
-    </>
-  )
-}
+}) => (
+  <>
+    <Box className={className}>
+      <InputLabel {...labelProps} testId={testId} />
+      <StyledInput {...inputProps} testId={testId} onChange={onChange} />
+    </Box>
+    {message && <InputMessage message={message} />}
+  </>
+)
 
 const StyledInput = styled(Input)`
   height: 100%;

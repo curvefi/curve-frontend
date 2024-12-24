@@ -86,9 +86,10 @@ const IntegrationsComp = ({
     }
   }, [integrationsTags, formValues.filterKey])
 
-  const integrationsTagsList = useMemo(() => {
-    return integrationsTags ? Object.entries(integrationsTags).map(([, v]) => v) : []
-  }, [integrationsTags])
+  const integrationsTagsList = useMemo(
+    () => (integrationsTags ? Object.entries(integrationsTags).map(([, v]) => v) : []),
+    [integrationsTags],
+  )
 
   // update form if url have filter params
   useEffect(() => {
@@ -144,31 +145,29 @@ const IntegrationsComp = ({
         </NoResultWrapper>
       ) : (
         <IntegrationsWrapper flexAlignItems="flex-start" grid>
-          {(parsedResults ?? []).map((app, idx) => {
-            return (
-              <IntegrationAppComp
-                key={`${app.name}_${idx}`}
-                {...app}
-                filterKey={formValues.filterKey}
-                integrationsTags={integrationsTags}
-                integrationsAppNetworks={
-                  !rChainId && (
-                    <Box margin="0.25rem 0 0 0">
-                      {Object.keys(app.networks).map((networkId) => {
-                        if (networkId in networksIdMapper) {
-                          const chainId = networksIdMapper[networkId as NetworkEnum]
-                          const { name, logoSrc } = networks[chainId]
-                          return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
-                        }
-                        return null
-                      })}
-                    </Box>
-                  )
-                }
-                imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
-              />
-            )
-          })}
+          {(parsedResults ?? []).map((app, idx) => (
+            <IntegrationAppComp
+              key={`${app.name}_${idx}`}
+              {...app}
+              filterKey={formValues.filterKey}
+              integrationsTags={integrationsTags}
+              integrationsAppNetworks={
+                !rChainId && (
+                  <Box margin="0.25rem 0 0 0">
+                    {Object.keys(app.networks).map((networkId) => {
+                      if (networkId in networksIdMapper) {
+                        const chainId = networksIdMapper[networkId as NetworkEnum]
+                        const { name, logoSrc } = networks[chainId]
+                        return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
+                      }
+                      return null
+                    })}
+                  </Box>
+                )
+              }
+              imageUrl={app.imageId ? `${networks[rChainId || '1'].integrations.imageBaseurl}/${app.imageId}` : ''}
+            />
+          ))}
         </IntegrationsWrapper>
       )}
     </>

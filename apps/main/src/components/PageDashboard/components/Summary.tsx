@@ -112,19 +112,17 @@ const Summary: React.FC = () => {
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
               <StyledTabSlide activeIdx={selectedTabSlideIdx}>
                 <SlideTabs ref={tabsRef}>
-                  {TABS.map(({ key, label }, idx) => {
-                    return (
-                      <SlideTab
-                        key={key}
-                        tabLeft={tabPositions[idx]?.left}
-                        tabWidth={tabPositions[idx]?.width}
-                        tabTop={tabPositions[idx]?.top}
-                        onChange={() => setSelectedTabSlideIdx(idx)}
-                        tabIdx={idx}
-                        label={label}
-                      />
-                    )
-                  })}
+                  {TABS.map(({ key, label }, idx) => (
+                    <SlideTab
+                      key={key}
+                      tabLeft={tabPositions[idx]?.left}
+                      tabWidth={tabPositions[idx]?.width}
+                      tabTop={tabPositions[idx]?.top}
+                      onChange={() => setSelectedTabSlideIdx(idx)}
+                      tabIdx={idx}
+                      label={label}
+                    />
+                  ))}
                 </SlideTabs>
               </StyledTabSlide>
               <div>

@@ -4,16 +4,14 @@ type Props = {
   script: string
 }
 
-const Script = ({ script }: Props) => {
-  return (
-    <Wrapper>
-      <SubTitle>Calldata</SubTitle>
-      <CallData>
-        <ScriptText>{script}</ScriptText>
-      </CallData>
-    </Wrapper>
-  )
-}
+const Script = ({ script }: Props) => (
+  <Wrapper>
+    <SubTitle>Calldata</SubTitle>
+    <CallData>
+      <ScriptText>{script}</ScriptText>
+    </CallData>
+  </Wrapper>
+)
 
 const Wrapper = styled.div`
   display: flex;
