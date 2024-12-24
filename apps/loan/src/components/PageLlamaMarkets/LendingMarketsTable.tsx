@@ -65,6 +65,7 @@ export const LendingMarketsTable = ({
     />
     <DataTable
       data={useMemo(() => data.filter((d) => d.usdTotal > 0).sort((a, b) => b.usdTotal - a.usdTotal), [data])}
+      defaultSort={[{ id: 'totalSupplied.usdTotal', desc: true }]}
       columns={columns}
       headerHeight={headerHeight}
     />

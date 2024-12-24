@@ -1,4 +1,4 @@
-import { oneViewport } from '@/support/ui'
+import { isInViewport, oneViewport } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
   beforeEach(() => {
@@ -13,16 +13,11 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
     cy.get('[data-testid="data-table-head"]').last().then(isInViewport).should('be.true')
   })
-})
 
-const isInViewport = ($el: JQuery) => {
-  const height = Cypress.$(cy.state('window')).height()!
-  const width = Cypress.$(cy.state('window')).width()!
-  const rect = $el[0].getBoundingClientRect()
-  return (
-    rect.top + rect.height / 2 > 0 &&
-    rect.top + rect.height / 2 < height &&
-    rect.left + rect.width / 2 > 0 &&
-    rect.left + rect.width / 2 < width
-  )
-}
+  it('should sort', () => {
+    cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('100.00%')
+    cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
+    cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('-')
+  })
+})

@@ -17,3 +17,15 @@ export const oneMobileOrTabletViewport = () =>
   [randomInt(MIN_WIDTH, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
 export const oneViewport = () => oneOf(oneDesktopViewport(), oneMobileViewport(), oneTabletViewport())
+
+export const isInViewport = ($el: JQuery) => {
+  const height = Cypress.$(cy.state('window')).height()!
+  const width = Cypress.$(cy.state('window')).width()!
+  const rect = $el[0].getBoundingClientRect()
+  return (
+    rect.top + rect.height / 2 > 0 &&
+    rect.top + rect.height / 2 < height &&
+    rect.left + rect.width / 2 > 0 &&
+    rect.left + rect.width / 2 < width
+  )
+}
