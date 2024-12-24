@@ -64,6 +64,7 @@ export const Disclaimer = ({ className }: Props) => {
       sx={{
         width: MaxWidth.sm,
       }}
+      data-testid="disclaimer"
     >
       <Stack direction="row" justifyContent="space-between">
         <TabsSwitcher
