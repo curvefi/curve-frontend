@@ -51,14 +51,14 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
     const chains = await getSupportedChains()
     if (!chains.includes(blockchainId)) return [] // backend gives 404 for optimism
 
-    const start = Math.floor(Date.now() / 1000) - TIME_FRAMES.WEEK
-    const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?agg=none&sort_by=DATE_ASC&start=${start}&limit=100`
+    // const start = Math.floor(Date.now() - TIME_FRAMES.WEEK / 1000)
+    const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?agg=none`
     const response = await fetch(url)
     const { data } = (await response.json()) as LendingSnapshotsFromApi
     if (!data) {
       throw new Error('Failed to fetch lending snapshots')
     }
-    return data
+    return data.reverse() // todo: pass &sort_by=DATE_ASC&start=${start} and remove reverse - backend is timing out
   },
   staleTime: '1h',
   validationSuite: contractValidationSuite,

@@ -4,7 +4,7 @@ describe('LlamaLend Markets', () => {
   beforeEach(() => {
     cy.intercept('https://prices.curve.fi/v1/lending/chains', { body: { data: ['ethereum', 'fraxtal', 'arbitrum'] } })
     cy.intercept('https://api.curve.fi/v1/getLendingVaults/all', { fixture: 'llamalend-markets.json' })
-    cy.intercept('https://prices.curve.fi/v1/lending/markets/*/*/snapshots?agg=none&sort_by=DATE_ASC&start=*', {
+    cy.intercept('https://prices.curve.fi/v1/lending/markets/*/*/snapshots?agg=none', {
       fixture: 'lending-snapshots.json',
     }).as('snapshots')
     cy.viewport(...oneViewport())
