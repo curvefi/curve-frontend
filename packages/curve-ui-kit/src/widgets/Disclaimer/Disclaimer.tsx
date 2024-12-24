@@ -26,6 +26,13 @@ const tabs = [
 type TabId = (typeof tabs)[number]['id']
 const DEFAULT_TAB: TabId = 'dex'
 
+const getTabFromUrl = (search: string) => {
+  if (typeof window === 'undefined') return DEFAULT_TAB
+  const params = new URLSearchParams(search)
+  const tabId = params.get('tab')
+  return tabs.find((tab) => tab.id === tabId)?.id ?? DEFAULT_TAB
+}
+
 type Props = {
   className?: string
 }
@@ -34,12 +41,7 @@ export const Disclaimer = ({ className }: Props) => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const getTabFromUrl = () => {
-    if (typeof window === 'undefined') return DEFAULT_TAB
-    const params = new URLSearchParams(location.search)
-    const tabId = params.get('tab')
-    return tabs.find((tab) => tab.id === tabId)?.id ?? DEFAULT_TAB
-  }
+  const [tab, setTab] = useState(getTabFromUrl(location.search))
 
   const handleTabChange = useCallback(
     (newTab: TabId) => {
@@ -51,11 +53,9 @@ export const Disclaimer = ({ className }: Props) => {
     [navigate, location.pathname],
   )
 
-  const [tab, setTab] = useState(getTabFromUrl())
-
   // Respond to URL changes and 'back' button.
   useEffect(() => {
-    setTab(getTabFromUrl())
+    setTab(getTabFromUrl(location.search))
   }, [location.search])
 
   return (
