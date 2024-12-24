@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { t } from '@lingui/macro'
 
@@ -41,12 +41,15 @@ export const Disclaimer = ({ className }: Props) => {
     return tabs.find((tab) => tab.id === tabId)?.id ?? DEFAULT_TAB
   }
 
-  const handleTabChange = (newTab: TabId) => {
-    setTab(newTab)
-    const tabId = tabs.find((tab) => tab.id === newTab)?.id
-    if (!tabId) return
-    navigate(`${location.pathname}?tab=${tabId}`)
-  }
+  const handleTabChange = useCallback(
+    (newTab: TabId) => {
+      setTab(newTab)
+      const tabId = tabs.find((tab) => tab.id === newTab)?.id
+      if (!tabId) return
+      navigate(`${location.pathname}?tab=${tabId}`)
+    },
+    [navigate, location.pathname],
+  )
 
   const [tab, setTab] = useState(getTabFromUrl())
 
