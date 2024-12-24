@@ -3,7 +3,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
-import { BorrowRateCell, LiquidityCell, PoolTitleCell, SupplyYieldCell, UtilizationCell } from './cells'
+import { CompactUsdCell, PoolTitleCell, LineGraphCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
@@ -18,12 +18,12 @@ const columns = [
   }),
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
-    cell: BorrowRateCell,
+    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
-    cell: SupplyYieldCell,
+    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor('utilizationPercent', {
@@ -33,7 +33,7 @@ const columns = [
   }),
   columnHelper.accessor('totalSupplied.usdTotal', {
     header: () => t`Available Liquidity`,
-    cell: LiquidityCell,
+    cell: CompactUsdCell,
     meta: { type: 'numeric' },
   }),
 ] satisfies ColumnDef<LendingVault, any>[]

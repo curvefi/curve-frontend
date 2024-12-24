@@ -29,14 +29,15 @@ const getAlignment = <T extends any>({ columnDef }: Column<T>) => (columnDef.met
 const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
   const column = cell.column
   return (
-    <TableCell
+    <Typography
+      variant="tableCellMBold"
+      color="text.primary"
+      component="td"
       sx={{ textAlign: getAlignment(column), alignContent: 'end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}
       data-testid={`data-table-cell-${column.id}`}
     >
-      <Typography variant="tableCellMBold" color="text.primary">
-        {flexRender(column.columnDef.cell, cell.getContext())}
-      </Typography>
-    </TableCell>
+      {flexRender(column.columnDef.cell, cell.getContext())}
+    </Typography>
   )
 }
 

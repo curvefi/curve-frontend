@@ -1,5 +1,7 @@
 import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@/shared/model/query'
 import { contractValidationSuite } from '@/shared/model/query/contract-validation'
+import { TIME_FRAMES } from 'main/src/constants'
+import { memoize } from 'lodash'
 
 type LendingSnapshotFromApi = {
   rate: number
@@ -29,19 +31,30 @@ type LendingSnapshotFromApi = {
   timestamp: string
 }
 
+export type LendingSnapshot = LendingSnapshotFromApi
+
 type LendingSnapshotsFromApi = {
   chain: string
   market_id: number
-  data: LendingSnapshotFromApi[]
+  data: LendingSnapshot[]
 }
+
+const getSupportedChains = memoize(async () => {
+  const response = await fetch(`https://prices.curve.fi/v1/lending/chains`)
+  const { data } = (await response.json()) as { data: string[] }
+  return data
+})
 
 export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots'] as const,
-  queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshotsFromApi> => {
-    // call with units=none it returns 4h points
-    const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?units=none`
+  queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
+    const chains = await getSupportedChains()
+    if (!chains.includes(blockchainId)) return [] // backend gives 404 for optimism
+
+    const start = Math.floor(Date.now() / 1000) - TIME_FRAMES.WEEK
+    const url = `https://prices.curve.fi/v1/lending/markets/${blockchainId}/${contractAddress}/snapshots?agg=none&sort_by=DATE_ASC&start=${start}&limit=100`
     const response = await fetch(url)
-    const { data } = (await response.json()) as { data: LendingSnapshotsFromApi }
+    const { data } = (await response.json()) as LendingSnapshotsFromApi
     if (!data) {
       throw new Error('Failed to fetch lending snapshots')
     }
