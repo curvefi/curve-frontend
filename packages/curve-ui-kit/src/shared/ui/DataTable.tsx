@@ -33,7 +33,7 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
       variant="tableCellMBold"
       color="text.primary"
       component="td"
-      sx={{ textAlign: getAlignment(column), alignContent: 'end', paddingInline: Spacing.sm, paddingBlock: Spacing.md }}
+      sx={{ textAlign: getAlignment(column), paddingInline: Spacing.sm, paddingBlock: Spacing.md }}
       data-testid={`data-table-cell-${column.id}`}
     >
       {flexRender(column.columnDef.cell, cell.getContext())}

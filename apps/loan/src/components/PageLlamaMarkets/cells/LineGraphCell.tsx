@@ -36,9 +36,8 @@ export const LineGraphCell = ({ vault, type }: { vault: LendingVault; type: Grap
     <Box
       display="flex"
       flexDirection="row"
-      height={Sizing['3xl']}
       alignItems="center"
-      justifyContent="flex-end"
+      justifyContent="end"
       gap={3}
       data-testid={`line-graph-cell-${type}`}
     >
