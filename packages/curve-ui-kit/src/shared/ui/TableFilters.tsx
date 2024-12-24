@@ -1,4 +1,3 @@
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid2'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
@@ -6,6 +5,7 @@ import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 import { ReloadIcon } from '../icons/ReloadIcon'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
+import Box from '@mui/material/Box'
 
 const {
   Spacing,
@@ -23,7 +23,7 @@ export const TableFilters = ({
   learnMoreUrl: string
   onReload: () => void
 }) => (
-  <Card sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}>
+  <Box sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}>
     <Grid container spacing={Column_Spacing}>
       <Grid size={{ tablet: 6, mobile: 12 }}>
         <Typography variant="headingSBold">{title}</Typography>
@@ -45,5 +45,5 @@ export const TableFilters = ({
         </Grid>
       </Grid>
     </Grid>
-  </Card>
+  </Box>
 )

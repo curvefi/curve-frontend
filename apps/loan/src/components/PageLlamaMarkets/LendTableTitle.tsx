@@ -13,7 +13,7 @@ const { MaxWidth, Spacing } = SizesAndSpaces
 
 export const LendTableTitle = () => (
   <Box sx={(t) => ({ backgroundColor: t.design.Layer[3].Fill })}>
-    <Box maxWidth={MaxWidth.md} paddingBlock={Spacing.lg} display="flex" gap={Spacing.sm} marginInline="auto">
+    <Box maxWidth={MaxWidth.tableTitle} paddingBlock={Spacing.lg} display="flex" gap={Spacing.sm} marginInline="auto">
       <Img src={LlamaSunglasses} alt="Llama with sunglasses" priority={false} />
       <Box display="flex" flexDirection="column" gap={Spacing.sm} flexGrow={1}>
         <InvertTheme>

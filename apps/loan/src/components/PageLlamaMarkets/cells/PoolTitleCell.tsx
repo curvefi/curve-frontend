@@ -1,11 +1,12 @@
-import { LendingVaultFromApi } from '@/entities/vaults'
+import { LendingVault } from '@/entities/vaults'
 import Box from '@mui/material/Box'
 import TokenIcons from 'main/src/components/TokenIcons'
-import React from 'react'
+import React, { useMemo } from 'react'
 import Typography from '@mui/material/Typography'
+import { CellContext } from '@tanstack/react-table'
 
-export const PoolTitleCell = ({ data }: { data: LendingVaultFromApi }) => {
-  const coins = Object.values(data.assets)
+export const PoolTitleCell = ({ getValue }: CellContext<LendingVault, LendingVault['assets']>) => {
+  const coins = useMemo(() => Object.values(getValue()), [getValue])
   return (
     <Box display="flex">
       <TokenIcons
