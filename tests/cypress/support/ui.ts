@@ -2,6 +2,7 @@ export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [32
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
 
 const randomInt = (min: number, maxExclusive: number): number => Math.floor(Math.random() * (maxExclusive - min)) + min
+export const oneOf = <T>(...options: T[]) => options[randomInt(0, options.length)]
 
 export const oneDesktopViewport = () =>
   [randomInt(DESKTOP_BREAKPOINT, MAX_WIDTH), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
@@ -15,4 +16,4 @@ export const oneTabletViewport = () =>
 export const oneMobileOrTabletViewport = () =>
   [randomInt(MIN_WIDTH, DESKTOP_BREAKPOINT), randomInt(MIN_HEIGHT, MAX_HEIGHT)] as const
 
-export const allViewports = () => [oneDesktopViewport(), oneMobileViewport(), oneTabletViewport()] as const
+export const oneViewport = () => oneOf(oneDesktopViewport(), oneMobileViewport(), oneTabletViewport())

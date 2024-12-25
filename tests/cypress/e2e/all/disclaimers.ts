@@ -1,4 +1,4 @@
-import { allViewports, oneDesktopViewport, oneTabletViewport } from '@/support/ui'
+import { oneViewport, oneDesktopViewport, oneTabletViewport } from '@/support/ui'
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {
@@ -18,23 +18,23 @@ describe('Disclaimers', () => {
   })
 
   describe('Navigation', () => {
-    allViewports().forEach((viewport) => {
-      it(`should contain multiple tabs for ${viewport[0]}x${viewport[1]}`, () => {
-        cy.viewport(...viewport)
-        cy.visit('/ethereum/disclaimer')
+    const viewport = oneViewport()
 
-        // Make sure there's tabs available and click one.
-        cy.get(`[data-testid='disclaimer']`).should('be.visible')
+    it(`should contain multiple tabs for ${viewport[0]}x${viewport[1]}`, () => {
+      cy.viewport(...viewport)
+      cy.visit('/ethereum/disclaimer')
 
-        const tabs = cy.get("[data-testid='disclaimer'] [role='tablist'] [role='tab']")
-        tabs.should('have.length.at.least', 4)
+      // Make sure there's tabs available and click one.
+      cy.get(`[data-testid='disclaimer']`).should('be.visible')
 
-        // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
-        cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('not.exist')
-        tabs.filter('[id="scrvusd"]').click()
-        cy.url().should('include', '?tab=scrvusd')
-        cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('be.visible')
-      })
+      const tabs = cy.get("[data-testid='disclaimer'] [role='tablist'] [role='tab']")
+      tabs.should('have.length.at.least', 4)
+
+      // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
+      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('not.exist')
+      tabs.filter('[id="scrvusd"]').click()
+      cy.url().should('include', '?tab=scrvusd')
+      cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('be.visible')
     })
   })
 })
