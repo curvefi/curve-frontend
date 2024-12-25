@@ -29,3 +29,5 @@ export const isInViewport = ($el: JQuery) => {
     rect.left + rect.width / 2 < width
   )
 }
+
+export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(prefers-color-scheme: dark)').matches

@@ -1,6 +1,8 @@
-import { isInViewport, oneViewport } from '@/support/ui'
+import { checkIsDarkMode, isInViewport, oneViewport } from '@/support/ui'
 
 describe('LlamaLend Markets', () => {
+  let isDarkMode: boolean
+
   beforeEach(() => {
     cy.intercept('https://prices.curve.fi/v1/lending/chains', { body: { data: ['ethereum', 'fraxtal', 'arbitrum'] } })
     cy.intercept('https://api.curve.fi/v1/getLendingVaults/all', { fixture: 'llamalend-markets.json' })
@@ -8,7 +10,9 @@ describe('LlamaLend Markets', () => {
       fixture: 'lending-snapshots.json',
     }).as('snapshots')
     cy.viewport(...oneViewport())
-    cy.visit('localhost:3001/#/ethereum/beta-markets')
+    cy.visit('localhost:3001/#/ethereum/beta-markets', {
+      onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
+    })
     cy.get('[data-testid="data-table"]').should('be.visible')
   })
 
@@ -26,7 +30,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
-    const [green, red] = ['rgb(39, 184, 108)', 'rgb(237, 36, 47)']
+    const [green, red] = [isDarkMode ? 'rgb(39, 184, 108)' : 'rgb(31, 162, 94)', 'rgb(237, 36, 47)']
     cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.css', 'stroke', green)
     cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.css', 'stroke', red)
 
