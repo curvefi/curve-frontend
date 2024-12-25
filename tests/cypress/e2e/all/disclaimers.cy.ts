@@ -32,7 +32,7 @@ describe('Disclaimers', () => {
 
       // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
       cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('not.exist')
-      tabs.filter('[id="scrvusd"]').click()
+      tabs.last().click()
       cy.url().should('include', '?tab=scrvusd')
       cy.get('div[role="tabpanel"] a').filter('[href="https://docs.curve.fi/scrvusd/overview/"]').should('be.visible')
     })
