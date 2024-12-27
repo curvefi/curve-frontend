@@ -8,13 +8,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const PoolTitleCell = ({ getValue }: CellContext<LendingVault, LendingVault['assets']>) => {
+export const PoolTitleCell = ({ getValue, row }: CellContext<LendingVault, LendingVault['assets']>) => {
   const coins = useMemo(() => Object.values(getValue()), [getValue])
+  const { blockchainId } = row.original
+  const urlPath = `curve-assets/images/assets${blockchainId == 'ethereum' ? '' : `-${blockchainId}`}/`
   return (
     <Box display="flex">
       <TokenIcons
-        // todo: is imageBaseUrl dependent on the chain? It should come from the API then.
-        imageBaseUrl="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/images/assets/"
+        imageBaseUrl={`https://cdn.jsdelivr.net/gh/curvefi/${urlPath}`}
         tokens={coins.map((c) => c.symbol)}
         tokenAddresses={coins.map((c) => c.address)}
       />
