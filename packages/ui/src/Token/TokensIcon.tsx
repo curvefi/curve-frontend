@@ -58,8 +58,7 @@ const Wrapper = styled.div<WrapperProps>`
   display: inline-grid;
   min-width: 53px;
 
-  ${({ iconsPerRow, colSpan }) => {
-    return `
+  ${({ iconsPerRow, colSpan }) => `
         grid-template-columns: repeat(${iconsPerRow}, auto);
 
         > *:nth-child(${iconsPerRow}n-1) {
@@ -69,8 +68,7 @@ const Wrapper = styled.div<WrapperProps>`
         > *:nth-child(${iconsPerRow}n-1):nth-last-of-type(1) {
           grid-column: span ${colSpan};
         }
-      `
-  }}
+      `}
 
   > img {
     border: 1px solid transparent;

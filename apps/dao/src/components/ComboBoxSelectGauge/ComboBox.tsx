@@ -108,20 +108,18 @@ const ComboBox = ({
           {/* LIST */}
           <ComboBoxListWrapper ref={listRef} boxHeight={listBoxHeight ?? '50vh'} topContentHeight={topContentHeight}>
             {Array.isArray(result) && result.length > 0 ? (
-              chunk(result, 30).map((gauges, idx) => {
-                return (
-                  <ComboBoxListChunk
-                    key={`gauges-${idx}`}
-                    testId={testId}
-                    imageBaseUrl={imageBaseUrl}
-                    inputRef={inputRef}
-                    selectedGauge={selectedGauge}
-                    gauges={gauges}
-                    dialogClose={dialogClose}
-                    handleOnSelectChange={handleOnSelectChange}
-                  />
-                )
-              })
+              chunk(result, 30).map((gauges, idx) => (
+                <ComboBoxListChunk
+                  key={`gauges-${idx}`}
+                  testId={testId}
+                  imageBaseUrl={imageBaseUrl}
+                  inputRef={inputRef}
+                  selectedGauge={selectedGauge}
+                  gauges={gauges}
+                  dialogClose={dialogClose}
+                  handleOnSelectChange={handleOnSelectChange}
+                />
+              ))
             ) : !!filterValue ? (
               <ComboBoxListNoResult>{t`No gauge found for "${filterValue}"`}</ComboBoxListNoResult>
             ) : (

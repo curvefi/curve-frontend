@@ -26,25 +26,27 @@ const SelectFilterType = ({
 
   const isXSmDown = useStore((state) => state.layout.isXSmDown)
 
-  const sortSelectMapper = useMemo(() => {
-    return tableLabels.reduce(
-      (prev, { titleKey }) => {
-        if (!someLoanExists && titleKey.startsWith('my')) return prev
-        if (!titleMapper[titleKey]?.title) return prev
+  const sortSelectMapper = useMemo(
+    () =>
+      tableLabels.reduce(
+        (prev, { titleKey }) => {
+          if (!someLoanExists && titleKey.startsWith('my')) return prev
+          if (!titleMapper[titleKey]?.title) return prev
 
-        const { title } = titleMapper[titleKey]
+          const { title } = titleMapper[titleKey]
 
-        if (!prev[titleKey]) {
-          prev[titleKey] = { name: title }
-        } else {
-          prev[titleKey].name = title
-        }
+          if (!prev[titleKey]) {
+            prev[titleKey] = { name: title }
+          } else {
+            prev[titleKey].name = title
+          }
 
-        return prev
-      },
-      {} as { [label: string]: { name: string | React.ReactNode } },
-    )
-  }, [someLoanExists, tableLabels, titleMapper])
+          return prev
+        },
+        {} as { [label: string]: { name: string | React.ReactNode } },
+      ),
+    [someLoanExists, tableLabels, titleMapper],
+  )
 
   // only show close button  settings is not on default
   const onSelectDeleteFn = useMemo(() => {

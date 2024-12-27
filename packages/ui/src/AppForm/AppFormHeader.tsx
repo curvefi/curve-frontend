@@ -15,38 +15,36 @@ const AppFormHeader = ({
   activeFormKey: string
   handleClick(formKey: string): void
   showMenuButton?: boolean
-}) => {
-  return (
-    <Header>
-      {formTypes.length === 1 ? (
-        <>
-          <IconButton hidden />
-          <HeaderTitle>{formTypes[0].label}</HeaderTitle>
-        </>
-      ) : (
-        <>
-          <Tabs>
-            {formTypes.map(({ key, label }) => {
-              const isActiveForm = !activeFormKey && key === activeFormKey
-              return (
-                <StyledTab
-                  key={key}
-                  className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
-                  disabled={isActiveForm || activeFormKey === key}
-                  onClick={() => handleClick(key)}
-                >
-                  {label}
-                </StyledTab>
-              )
-            })}
-          </Tabs>
-          {showMenuButton && <SandwichMenu onItemClick={handleClick} />}
-        </>
-      )}
-      {formTypes.length === 1 && <IconButton hidden />}
-    </Header>
-  )
-}
+}) => (
+  <Header>
+    {formTypes.length === 1 ? (
+      <>
+        <IconButton hidden />
+        <HeaderTitle>{formTypes[0].label}</HeaderTitle>
+      </>
+    ) : (
+      <>
+        <Tabs>
+          {formTypes.map(({ key, label }) => {
+            const isActiveForm = !activeFormKey && key === activeFormKey
+            return (
+              <StyledTab
+                key={key}
+                className={isActiveForm ? 'active' : activeFormKey === key ? 'active' : ''}
+                disabled={isActiveForm || activeFormKey === key}
+                onClick={() => handleClick(key)}
+              >
+                {label}
+              </StyledTab>
+            )
+          })}
+        </Tabs>
+        {showMenuButton && <SandwichMenu onItemClick={handleClick} />}
+      </>
+    )}
+    {formTypes.length === 1 && <IconButton hidden />}
+  </Header>
+)
 
 const Header = styled.header`
   display: flex;

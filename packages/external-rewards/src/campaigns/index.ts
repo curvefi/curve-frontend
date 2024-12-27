@@ -20,6 +20,7 @@ import Inception from './Inception.json'
 import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
 import Corn from './Corn.json'
+import XPoints from './XPoints.json'
 
 export {
   DLCLink,
@@ -44,4 +45,5 @@ export {
   TurtleTotems,
   LevelMoney,
   Corn,
+  XPoints,
 }

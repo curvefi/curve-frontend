@@ -19,29 +19,27 @@ const TableHeader = <T,>({
   setSortBy,
   gridTemplateColumns,
   smallScreenBreakpoint,
-}: TableHeaderProps<T>) => {
-  return (
-    <TableHeaderWrapper noTitle={title === undefined} smallScreenBreakpoint={smallScreenBreakpoint}>
-      {title && <TableTitle>{title}</TableTitle>}
-      <TableContainer columns={columns.length} gridTemplateColumns={gridTemplateColumns}>
-        {columns.map((column, index) => (
-          <TableTitleButton
-            disabled={column.disabled}
-            key={column.key as string}
-            variant="text"
-            onClick={() => !column.disabled && setSortBy(column.key)}
-            className={index === 0 ? 'align-left' : ''}
-          >
-            {column.label}
-            {sortBy.key === column.key && (
-              <StyledIcon size={16} name={sortBy.order === 'asc' ? 'ArrowUp' : 'ArrowDown'} />
-            )}
-          </TableTitleButton>
-        ))}
-      </TableContainer>
-    </TableHeaderWrapper>
-  )
-}
+}: TableHeaderProps<T>) => (
+  <TableHeaderWrapper noTitle={title === undefined} smallScreenBreakpoint={smallScreenBreakpoint}>
+    {title && <TableTitle>{title}</TableTitle>}
+    <TableContainer columns={columns.length} gridTemplateColumns={gridTemplateColumns}>
+      {columns.map((column, index) => (
+        <TableTitleButton
+          disabled={column.disabled}
+          key={column.key as string}
+          variant="text"
+          onClick={() => !column.disabled && setSortBy(column.key)}
+          className={index === 0 ? 'align-left' : ''}
+        >
+          {column.label}
+          {sortBy.key === column.key && (
+            <StyledIcon size={16} name={sortBy.order === 'asc' ? 'ArrowUp' : 'ArrowDown'} />
+          )}
+        </TableTitleButton>
+      ))}
+    </TableContainer>
+  </TableHeaderWrapper>
+)
 
 const TableHeaderWrapper = styled.div<{ noTitle: boolean; smallScreenBreakpoint?: number }>`
   background-color: var(--box--secondary--content--background-color);

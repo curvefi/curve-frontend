@@ -20,7 +20,7 @@ const DetailInfoLeverageAdvancedExpected = ({
   nonSwapAmount,
   total,
   avgPrice,
-  routes,
+  routeImage,
   type,
   $minWidth,
 }: DetailInfoLeverageExpectedProps) => {
@@ -71,7 +71,7 @@ const DetailInfoLeverageAdvancedExpected = ({
             swapToAddress={swapToAddress}
             swapToSymbol={swapToSymbol}
             swapToAmounts={swapToAmounts}
-            routes={routes}
+            routeImage={routeImage}
             avgPrice={avgPrice}
           />
         </Wrapper>
