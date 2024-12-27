@@ -29,34 +29,32 @@ const SelectedLpTokenExpected = ({
   tokens: string[]
   tokensMapper: TokensMapper
   tokenAddresses: string[]
-}) => {
-  return (
-    <Box as="ul" grid gridRowGap={2}>
-      {tokenAddresses.map((tokenAddress, idx) => {
-        const token = tokens[idx]
-        const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
+}) => (
+  <Box as="ul" grid gridRowGap={2}>
+    {tokenAddresses.map((tokenAddress, idx) => {
+      const token = tokens[idx]
+      const haveSameTokenName = poolDataCacheOrApi.tokensCountBy[token] > 1
 
-        return (
-          <Box key={tokenAddress} as="li" flex flexAlignItems="center">
-            <StyledTokenIcon
-              imageBaseUrl={imageBaseUrl}
-              token={token}
-              address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
-            />{' '}
-            {token}
-            {haveSameTokenName && <Chip>{shortenTokenAddress(tokenAddress)}</Chip>}
-            <Spacer />
-            {loading ? (
-              <Loader skeleton={[90, 20]} />
-            ) : (
-              <TextEllipsis smMaxWidth="15rem">{formatNumber(amounts[idx]?.value || '0')}</TextEllipsis>
-            )}
-          </Box>
-        )
-      })}
-    </Box>
-  )
-}
+      return (
+        <Box key={tokenAddress} as="li" flex flexAlignItems="center">
+          <StyledTokenIcon
+            imageBaseUrl={imageBaseUrl}
+            token={token}
+            address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
+          />{' '}
+          {token}
+          {haveSameTokenName && <Chip>{shortenTokenAddress(tokenAddress)}</Chip>}
+          <Spacer />
+          {loading ? (
+            <Loader skeleton={[90, 20]} />
+          ) : (
+            <TextEllipsis smMaxWidth="15rem">{formatNumber(amounts[idx]?.value || '0')}</TextEllipsis>
+          )}
+        </Box>
+      )
+    })}
+  </Box>
+)
 
 const StyledTokenIcon = styled(TokenIcon)`
   margin-right: var(--spacing-1);

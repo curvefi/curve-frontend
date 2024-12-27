@@ -1,10 +1,11 @@
 import type { Location, NavigateFunction, Params } from 'react-router'
 import type { ConnectState } from '@/ui/utils'
+import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@/common/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
@@ -12,7 +13,6 @@ import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { initCurveJs, initLendApi } from '@/utils/utilsCurvejs'
-import { isFailure, isLoading, isSuccess } from '@/ui/utils'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
 
@@ -42,14 +42,13 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           const prevCurveApi = curve
           updateGlobalStoreByKey('isLoadingApi', true)
           updateGlobalStoreByKey('isLoadingCurve', true) // remove -> use connectState
-          const api = await initCurveJs(chainId, useWallet ? wallet : null)
-
-          if (api) {
-            const parsedApi: Curve = { ...api, chainId: 1 }
-            updateCurveJs(parsedApi, prevCurveApi, wallet)
+          if (useWallet && wallet) {
+            const api = await initCurveJs(chainId, wallet)
+            updateCurveJs({ ...api, chainId: 1 }, prevCurveApi, wallet)
+            updateConnectState('success', '')
+          } else {
+            updateConnectState('', '')
           }
-
-          updateConnectState(api ? 'success' : '', '')
         } catch (error) {
           console.error(error)
           updateConnectState('failure', CONNECT_STAGE.CONNECT_API)

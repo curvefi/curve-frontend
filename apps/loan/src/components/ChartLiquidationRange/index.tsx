@@ -140,23 +140,21 @@ const ChartLiquidationRange = ({ data, healthColorKey, isManage, isDetailView, t
                 barSize={30}
                 fill="#1763fd00"
                 stroke={chartAxisColor}
-                shape={({ x, y, width, height }) => {
-                  return (
-                    <path
-                      fill="url(#pattern-stripe)"
-                      stroke={chartAxisColor}
-                      strokeWidth={2}
-                      opacity={0.4}
-                      width={width}
-                      height={height}
-                      x={x}
-                      y={y}
-                      radius="0"
-                      className="recharts-rectangle"
-                      d={`M ${x},${y} h ${width} v ${height} h ${Math.abs(width)} Z`}
-                    />
-                  )
-                }}
+                shape={({ x, y, width, height }) => (
+                  <path
+                    fill="url(#pattern-stripe)"
+                    stroke={chartAxisColor}
+                    strokeWidth={2}
+                    opacity={0.4}
+                    width={width}
+                    height={height}
+                    x={x}
+                    y={y}
+                    radius="0"
+                    className="recharts-rectangle"
+                    d={`M ${x},${y} h ${width} v ${height} h ${Math.abs(width)} Z`}
+                  />
+                )}
                 strokeWidth={1}
               />
             )}

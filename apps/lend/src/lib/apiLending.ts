@@ -13,22 +13,13 @@ import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
 import { USE_API } from '@/shared/config'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, wallet: Wallet | null) => {
-    try {
-      const { networkId } = networks[chainId]
-      const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
-
-      if (wallet) {
-        await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
-        return api
-      }
-    } catch (error) {
-      console.error(error)
-    }
+  initApi: async (chainId: ChainId, wallet: Wallet) => {
+    const { networkId } = networks[chainId]
+    const api = cloneDeep((await import('@curvefi/lending-api')).default) as Api
+    await api.init('Web3', { network: networkId, externalProvider: _getWalletProvider(wallet) }, { chainId })
+    return api
   },
-  getImageBaseUrl: (chainId: ChainId) => {
-    return networks[chainId ?? '1'].imageBaseUrl
-  },
+  getImageBaseUrl: (chainId: ChainId) => networks[chainId ?? '1'].imageBaseUrl,
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
@@ -83,17 +74,14 @@ export const helpers = {
       return resp
     }
   },
-  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus => {
-    return isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending'
-  },
+  getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
+    isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
   getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
     const { signerAddress } = api ?? {}
     if (!api || !signerAddress || !market) return ''
     return `${market.id}-${shortenAccount(signerAddress)}`
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return provider.waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) => provider.waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await provider.waitForTransaction(hash),

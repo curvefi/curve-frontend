@@ -92,9 +92,8 @@ const helpers = {
       return resp
     }
   },
-  waitForTransaction: async (hash: string, provider: Provider) => {
-    return (provider as BrowserProvider).waitForTransaction(hash)
-  },
+  waitForTransaction: async (hash: string, provider: Provider) =>
+    (provider as BrowserProvider).waitForTransaction(hash),
   waitForTransactions: async (hashes: string[], provider: Provider) => {
     const { results, errors } = await PromisePool.for(hashes).process(
       async (hash) => await (provider as BrowserProvider).waitForTransaction(hash),

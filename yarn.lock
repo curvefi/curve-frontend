@@ -3328,16 +3328,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.65.22":
-  version: 2.65.22
-  resolution: "@curvefi/api@npm:2.65.22"
+"@curvefi/api@npm:^2.65.23":
+  version: 2.65.23
+  resolution: "@curvefi/api@npm:2.65.23"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.7"
     axios: "npm:^0.21.1"
     bignumber.js: "npm:^9.0.1"
     ethers: "npm:^6.11.0"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/c49173c5fe8239081de35cacbb04d4d42083c096b097c72903668e4d83505bf1deb3de2484f429bd19ab813b186291d7f0fcb345940279149ab7245931774b0f
+  checksum: 10c0/71191c76bfd79cc9095335df3e430d54b1d9160fd5f53444c0baa836e77e8dedafbaada33a6a3f7095778947b896ccbbe616951f4daa7b969db7c8eeef89693a
   languageName: node
   linkType: hard
 
@@ -15165,6 +15165,8 @@ __metadata:
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     ajv: "npm:^8.17.1"
+    eslint: "npm:*"
+    eslint-config-custom: "npm:*"
     prop-types: "npm:^15.8.1"
     react: "npm:*"
     react-docgen-typescript: "npm:^2.2.2"
@@ -15354,7 +15356,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "dao@workspace:apps/dao"
   dependencies:
-    "@curvefi/api": "npm:^2.65.22"
+    "@curvefi/api": "npm:^2.65.23"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"
@@ -21397,7 +21399,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.65.22"
+    "@curvefi/api": "npm:^2.65.23"
     "@hookform/error-message": "npm:^2.0.1"
     "@hookform/resolvers": "npm:^3.9.0"
     "@lingui/cli": "npm:^4.6.0"

@@ -2,9 +2,7 @@ import type { SwapType, TokenState } from '@/components/PageCreatePool/types'
 
 import { STABLESWAP, CRYPTOSWAP } from '@/components/PageCreatePool/constants'
 
-export const checkSwapType = (swapType: SwapType) => {
-  return swapType !== ''
-}
+export const checkSwapType = (swapType: SwapType) => swapType !== ''
 
 export const checkTokensInPoolUnset = (
   tokenA: TokenState,
@@ -92,13 +90,9 @@ export const checkPoolInfo = (
   return poolSymbol !== '' && poolName !== ''
 }
 
-export const checkOracle = (oracle: string) => {
-  return oracle.length === 42
-}
+export const checkOracle = (oracle: string) => oracle.length === 42
 
-export const validateOracleFunction = (functionName: string) => {
-  return functionName.endsWith('()')
-}
+export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 
 export const oraclesReady = (tokens: TokenState[]) => {
   const oracleTokens = tokens.filter((token) => token.ngAssetType === 1)
@@ -107,18 +101,15 @@ export const oraclesReady = (tokens: TokenState[]) => {
   return allValid && functionsValid
 }
 
-export const containsOracle = (tokens: TokenState[]) => {
-  return tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
-}
+export const containsOracle = (tokens: TokenState[]) =>
+  tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
 
 export const checkFormReady = (
   poolTypeValid: boolean,
   tokensInPoolValid: boolean,
   parametersValid: boolean,
   poolInfoValid: boolean,
-) => {
-  return poolTypeValid && tokensInPoolValid && parametersValid && poolInfoValid
-}
+) => poolTypeValid && tokensInPoolValid && parametersValid && poolInfoValid
 
 export const isTricrypto = (
   tricryptoEnabled: boolean,
@@ -126,15 +117,10 @@ export const isTricrypto = (
   tokenA: TokenState,
   tokenB: TokenState,
   tokenC: TokenState,
-) => {
-  return (
-    tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
-  )
-}
+) => tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
 
-export const checkMetaPool = (address: string, basePools: BasePool[]) => {
-  return address === '' ? false : basePools.some((item) => item.token === address)
-}
+export const checkMetaPool = (address: string, basePools: BasePool[]) =>
+  address === '' ? false : basePools.some((item) => item.token === address)
 
 export const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
   let basePoolCoins: string[] = []
