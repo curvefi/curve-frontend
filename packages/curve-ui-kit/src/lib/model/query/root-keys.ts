@@ -1,4 +1,4 @@
-import { FieldsOf } from '../../'
+import { FieldsOf } from '@ui-kit/lib'
 
 export type ChainQuery<T = number> = { chainId: T }
 export type ChainNameQuery = { blockchainId: string }

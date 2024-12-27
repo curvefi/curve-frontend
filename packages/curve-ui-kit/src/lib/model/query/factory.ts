@@ -1,11 +1,11 @@
 import { QueryFunctionContext, queryOptions } from '@tanstack/react-query'
 import { CB } from 'vest-utils'
-import { queryClient } from '../../api/query-client'
-import { logQuery } from '../../logging'
-import { createQueryHook } from '../../queries'
-import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '../../validation'
-import { REFRESH_INTERVAL } from '../../model/time'
-import { QueryFactoryInput, QueryFactoryOutput } from '../../types'
+import { queryClient } from '@ui-kit/lib/api/query-client'
+import { logQuery } from '@ui-kit/lib/logging'
+import { createQueryHook } from '@ui-kit/lib/queries'
+import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
+import { QueryFactoryInput, QueryFactoryOutput } from '@ui-kit/lib/types'
 
 export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(
   queryKey: TKey,
