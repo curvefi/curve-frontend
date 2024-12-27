@@ -33,7 +33,12 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
       variant="tableCellMBold"
       color="text.primary"
       component="td"
-      sx={{ textAlign: getAlignment(column), paddingInline: Spacing.sm, paddingBlock: Spacing.md }}
+      sx={{
+        textAlign: getAlignment(column),
+        paddingInline: Spacing.sm,
+        paddingBlock: Spacing.md,
+        ...getExtraColumnPadding(column),
+      }}
       data-testid={`data-table-cell-${column.id}`}
     >
       {flexRender(column.columnDef.cell, cell.getContext())}
@@ -61,6 +66,15 @@ const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
   )
 }
 
+/**
+ * In the figma design, the first and last columns seem to be aligned to the table title.
+ * However, the normal padding causes them to be misaligned.
+ */
+const getExtraColumnPadding = <T extends any>(column: Column<T>) => ({
+  ...(column.getIsFirstColumn() && { paddingInlineStart: Spacing.md }),
+  ...(column.getIsLastColumn() && { paddingInlineEnd: Spacing.md }),
+})
+
 const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => {
   const { column } = header
   const sort = column.getIsSorted()
@@ -70,14 +84,16 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
         textAlign: getAlignment(column),
         alignContent: 'end',
         padding: Spacing.sm,
-        paddingTop: 0,
+        paddingBlockStart: 0,
+        ...getExtraColumnPadding(column),
         cursor: 'pointer',
       }}
       colSpan={header.colSpan}
+      width={header.getSize()}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
     >
-      <Typography variant="tableHeaderS" color="text.secondary">
+      <Typography variant="tableHeaderS" color={`text.${sort ? 'primary' : 'secondary'}`}>
         {flexRender(column.columnDef.header, header.getContext())}
         {sort && (
           <ArrowDownIcon
@@ -122,7 +138,7 @@ export const DataTable = <T extends unknown>({
         data-testid="data-table-head"
       >
         {table.getHeaderGroups().map((headerGroup) => (
-          <TableRow key={headerGroup.id} sx={{ height: Sizing['3xl'] }}>
+          <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header) => (
               <HeaderCell key={header.id} header={header} />
             ))}

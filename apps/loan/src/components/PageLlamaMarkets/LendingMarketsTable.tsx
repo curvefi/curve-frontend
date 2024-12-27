@@ -8,7 +8,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table'
 
-const { Spacing, MinWidth, MaxWidth } = SizesAndSpaces
+const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
 const columns = [
@@ -20,21 +20,25 @@ const columns = [
     header: t`7D Borrow Rate`,
     cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" />,
     meta: { type: 'numeric' },
+    size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
     cell: (c) => <LineGraphCell vault={c.row.original} type="lend" />,
     meta: { type: 'numeric' },
+    size: ColumnWidth.md,
   }),
   columnHelper.accessor('utilizationPercent', {
     header: t`Utilization`,
     cell: UtilizationCell,
     meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
   }),
   columnHelper.accessor('totalSupplied.usdTotal', {
     header: () => t`Available Liquidity`,
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
+    size: ColumnWidth.sm,
   }),
 ] satisfies ColumnDef<LendingVault, any>[]
 

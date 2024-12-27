@@ -5,11 +5,7 @@ import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import Typography from '@mui/material/Typography'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { t } from '@lingui/macro'
 
-const { Sizing } = SizesAndSpaces
 const graphSize = { width: 172, height: 48 }
 
 type GraphType = 'borrow' | 'lend'
