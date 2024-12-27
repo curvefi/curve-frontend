@@ -1,6 +1,6 @@
 import type { UseQueryOptions } from '@tanstack/react-query'
 import { QueryKey, useQuery } from '@tanstack/react-query'
-import { queryClient } from '@/shared/api/query-client'
+import { queryClient } from '../api/query-client'
 
 export const createQueryHook =
   <TParams, TData, TQueryKey extends QueryKey>(

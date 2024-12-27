@@ -31,7 +31,6 @@
     "@supercharge/promise-pool": "^2.3.2",
     "bignumber.js": "^9.1.2",
     "curve-common": "*",
-    "curve-lib": "*",
     "curve-ui-kit": "*",
     "dayjs": "^1.11.7",
     "ethers": "^6.13.4",

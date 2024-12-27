@@ -1,4 +1,4 @@
-import { Chain } from 'curve-lib'
+import { Chain } from 'curve-ui-kit/src/utils'
 import { ethers } from 'ethers'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {

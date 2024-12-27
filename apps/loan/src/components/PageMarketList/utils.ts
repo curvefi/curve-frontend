@@ -1,5 +1,5 @@
 import type { SearchParams, SearchTermsResult } from '@/components/PageMarketList/types'
-import type { SearchTermsFuseResult } from '@/shared/curve-lib'
+import type { SearchTermsFuseResult } from '@ui-kit/utils'
 
 export const DEFAULT_SEARCH_PARAMS: SearchParams = {
   sortBy: 'totalBorrowed',

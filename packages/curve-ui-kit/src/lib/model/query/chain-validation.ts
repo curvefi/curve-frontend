@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '../../lib'
+import { createValidationSuite } from '../../validation'
 import { ChainParams } from './root-keys'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>

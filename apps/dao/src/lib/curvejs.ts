@@ -8,7 +8,7 @@ import networks from '@/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getErrorMessage } from '@/utils'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {
