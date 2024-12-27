@@ -59,8 +59,8 @@ export const ChainSwitcher = <TChainId extends number>({
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
         autoHideDuration={Duration.Snackbar}
       >
-        <Alert variant="filled" severity="error">
-          {t`Minting is only available on the Ethereum Mainnet`}
+        <Alert variant="filled" severity="error" data-testid="alert-eth-only">
+          {t`This application is only available on the Ethereum Mainnet`}
         </Alert>
       </Snackbar>
 
