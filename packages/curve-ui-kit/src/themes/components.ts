@@ -79,11 +79,6 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
-  MuiSnackbar: {
-    defaultProps: {
-      autoHideDuration: 6000,
-    },
-  },
   MuiSkeleton: {
     styleOverrides: {
       root: {

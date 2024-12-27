@@ -12,6 +12,7 @@ import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
 import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
 import { t } from '@lingui/macro'
+import { Duration } from '../../themes/design/0_primitives'
 
 const { Spacing } = SizesAndSpaces
 
@@ -224,7 +225,7 @@ export const Metric = ({
         </Typography>
       )}
 
-      <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)}>
+      <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           {t`Copied metric value`}: {value}
         </Alert>

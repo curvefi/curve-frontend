@@ -13,6 +13,7 @@ import { ChainSettings } from './ChainSettings'
 import { useLocalStorage } from 'curve-ui-kit/src/hooks/useLocalStorage'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
+import { Duration } from 'curve-ui-kit/src/themes/design/0_primitives'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
@@ -52,7 +53,12 @@ export const ChainSwitcher = <TChainId extends number>({
         {options.length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
 
-      <Snackbar open={isSnackbarOpen} onClose={hideSnackbar} anchorOrigin={{ horizontal: 'right', vertical: 'top' }}>
+      <Snackbar
+        open={isSnackbarOpen}
+        onClose={hideSnackbar}
+        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        autoHideDuration={Duration.Snackbar}
+      >
         <Alert variant="filled" severity="error">
           {t`Minting is only available on the Ethereum Mainnet`}
         </Alert>
