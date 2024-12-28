@@ -13,7 +13,7 @@ import '@/globals.css'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
-import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
+import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { getLocaleFromUrl, getStorageValue } from '@/utils'
 import { getIsMobile, getPageWidthClassName, isSuccess } from '@/ui/utils'
 import { messages as messagesEn } from '@/locales/en/messages.js'

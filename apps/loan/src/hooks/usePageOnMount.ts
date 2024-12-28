@@ -5,7 +5,7 @@ import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
 import { dynamicActivate, updateAppLocale } from '@/lib/i18n'

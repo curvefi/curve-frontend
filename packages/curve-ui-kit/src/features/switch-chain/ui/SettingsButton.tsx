@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button'
 import { t } from '@lingui/macro'
-import { GearIcon } from 'curve-ui-kit/src/shared/icons/GearIcon'
+import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 
 export const SettingsButton = (props: { onClick: () => void }) => (
   <Button

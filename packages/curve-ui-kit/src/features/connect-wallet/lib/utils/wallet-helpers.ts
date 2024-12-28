@@ -1,6 +1,6 @@
 import type { WalletState as Wallet } from '@web3-onboard/core/dist/types'
 import { BrowserProvider } from 'ethers'
-import { Address } from 'curve-ui-kit/src/shared/ui/AddressLabel'
+import { Address } from '@ui-kit/shared/ui/AddressLabel'
 
 export const getWalletProvider = (wallet: Wallet) => new BrowserProvider(wallet.provider)
 

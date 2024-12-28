@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react'
 import { t } from '@lingui/macro'
 
 import useStore from '@/store/useStore'
-import { useConnectWallet } from '@/common/features/connect-wallet'
+import { useConnectWallet } from '@ui-kit/features/connect-wallet'
 
 import Box from '@/ui/Box'
 
