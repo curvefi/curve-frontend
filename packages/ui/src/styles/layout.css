@@ -69,5 +69,3 @@
 body {
   --wcm-z-index: 1010; /* Wallet Connect has an option to override its theme, but this object is not exposed in Onboard, so the override is handled in the UI library. See https://docs.reown.com/advanced/walletconnectmodal/theming for more overrides*/
 }
-
-

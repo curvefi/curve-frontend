@@ -1,5 +1,5 @@
-import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@/shared/model/query'
-import { contractValidationSuite } from '@/shared/model/query/contract-validation'
+import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 import { memoize } from 'lodash'
 
 type LendingSnapshotFromApi = {

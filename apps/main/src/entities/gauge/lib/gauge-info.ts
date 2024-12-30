@@ -11,8 +11,8 @@
  */
 
 import * as models from '@/entities/gauge/model'
-import { useCombinedQueries } from '@/shared/lib/queries'
-import { GaugeParams } from '@/shared/model/query'
+import { useCombinedQueries } from '@ui-kit/lib/queries'
+import { GaugeParams } from '@ui-kit/lib/model/query'
 
 export const useGauge = ({ chainId, poolId }: GaugeParams) =>
   useCombinedQueries([
