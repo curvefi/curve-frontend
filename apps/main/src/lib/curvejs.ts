@@ -72,7 +72,7 @@ const helpers = {
     }
   },
   fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length, 'test')
+    log('fetchUsdRates', tokenAddresses.length)
     let results: UsdRatesMapper = {}
 
     await PromisePool.for(tokenAddresses)
