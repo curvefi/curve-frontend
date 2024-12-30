@@ -15,6 +15,7 @@ module.exports = {
         'src/pages',
         'src/store',
         '../../packages/curve-ui-kit',
+        '../../packages/curve-common',
       ],
     },
   ],

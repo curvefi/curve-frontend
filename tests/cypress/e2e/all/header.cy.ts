@@ -67,7 +67,8 @@ describe('Header', () => {
 
     it('should change chains', () => {
       if (['loan', 'dao'].includes(Cypress.env('APP'))) {
-        cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
+        cy.get(`[data-testid='btn-change-chain']`).click()
+        cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-main']").invoke('attr', 'href').should('eq', `${mainAppUrl}/#/ethereum`)
         return
       }
@@ -128,7 +129,8 @@ describe('Header', () => {
 
     it('should change chains', () => {
       if (['loan', 'dao'].includes(Cypress.env('APP'))) {
-        cy.get(`[data-testid='btn-change-chain']`).should('not.exist')
+        cy.get(`[data-testid='btn-change-chain']`).click()
+        cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
         cy.get(`[data-testid='sidebar-item-pools']`)
           .invoke('attr', 'href')
