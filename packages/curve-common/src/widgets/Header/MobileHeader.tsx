@@ -24,7 +24,6 @@ const HIDE_SCROLLBAR = {
 }
 
 const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }
-const zIndex = 1300
 
 export const MobileHeader = <TChainId extends number>({
   mainNavRef,
@@ -64,7 +63,7 @@ export const MobileHeader = <TChainId extends number>({
           currentApp={currentApp}
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}
-          sx={{ zIndex }}
+          sx={(t) => ({ zIndex: t.zIndex.appBar })}
         />
 
         <Drawer
@@ -114,7 +113,7 @@ export const MobileHeader = <TChainId extends number>({
             themes={themes}
             advancedMode={advancedMode}
             WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
-            sx={{ ...SIDEBAR_WIDTH, zIndex }}
+            sx={(t) => ({ ...SIDEBAR_WIDTH, zIndex: t.zIndex.appBar })}
           />
         </Drawer>
       </Toolbar>
