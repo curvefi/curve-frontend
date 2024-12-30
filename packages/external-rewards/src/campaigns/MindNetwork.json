@@ -1,0 +1,21 @@
+{
+  "campaignName": "",
+  "platform": "Mind Network",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "mind-network.png",
+  "dashboardLink": "https://dapp.mindnetwork.xyz/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x5fc50c99e175dfeb8faa7613e050645583ac1501",
+      "network": "ethereum",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
