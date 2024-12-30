@@ -11,8 +11,8 @@
   "dependencies": {
     "@carbon/icons-react": "11.17.0",
     "@lingui/detect-locale": "^4.6.0",
-    "bignumber.js": "^9.1.2",
-    "ethers": "^6.13.4",
+    "bignumber.js": "^9.0.1",
+    "ethers": "^6.11.0",
     "lodash": "4.17.21",
     "react-aria": "3.22.0",
     "react-stately": "3.18.0"

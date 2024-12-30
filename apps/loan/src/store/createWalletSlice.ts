@@ -3,8 +3,9 @@ import type { State } from '@/store/useStore'
 import type { CustomNotification, NotificationType } from '@web3-onboard/core/dist/types'
 import type { Provider } from '@/store/types'
 import type { OnboardAPI, UpdateNotification } from '@web3-onboard/core'
+
 import cloneDeep from 'lodash/cloneDeep'
-import { BrowserProvider } from 'ethers'
+import { ethers } from 'ethers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -115,10 +116,11 @@ const createWalletSlice = (set: SetState<State>, get: GetState<State>): WalletSl
 export default createWalletSlice
 
 export function getProvider(wallet: Wallet) {
-  return new BrowserProvider(wallet.provider)
+  return new ethers.providers.Web3Provider(wallet.provider)
 }
 
 export function getWalletChainId(wallet: Wallet | undefined | null) {
   if (!wallet) return null
-  return +(wallet as Wallet).chains[0].id
+  const chainId = (wallet as Wallet).chains[0].id
+  return ethers.BigNumber.from(chainId).toNumber()
 }

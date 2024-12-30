@@ -2,7 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { GasInfo } from '@/store/types'
 
-import { JsonRpcProvider } from 'ethers'
+import { ethers } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { gweiToWai } from '@/shared/curve-lib'
@@ -118,43 +118,38 @@ function parseEthereumGasInfo(gasInfo, chainId: ChainId) {
   }
 }
 
-async function parseGasInfoFromRpcUrl(rpcUrl: string) {
-  if (rpcUrl) {
-    const provider = new JsonRpcProvider(rpcUrl)
+// @ts-ignore
+async function parseGasInfoFromRpcUrl(rpcUrl) {
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl)
 
+  if (provider) {
     const gasInfo = await provider.getFeeData()
     const { gasPrice, maxPriorityFeePerGas, maxFeePerGas } = gasInfo
 
     if (gasPrice) {
-      const base = toNumber(gasPrice)
+      const base = gasPrice.toNumber()
 
       if (maxPriorityFeePerGas && maxFeePerGas) {
         return {
           gasInfo: {
             base,
-            priority: [toNumber(maxPriorityFeePerGas)],
-            max: [toNumber(maxFeePerGas)],
-            basePlusPriority: [toNumber(gasPrice + maxPriorityFeePerGas)],
+            priority: [maxPriorityFeePerGas.toNumber()],
+            max: [maxFeePerGas.toNumber()],
+            basePlusPriority: [gasPrice.add(maxPriorityFeePerGas).toNumber()],
+          },
+          label: ['fast'],
+        }
+      } else {
+        return {
+          gasInfo: {
+            base,
+            priority: [0],
+            max: [0],
+            basePlusPriority: [gasPrice.add(gweiToWai(25)).toNumber()],
           },
           label: ['fast'],
         }
       }
-      return {
-        gasInfo: {
-          base,
-          priority: [0],
-          max: [0],
-          basePlusPriority: [toNumber(gasPrice) + gweiToWai(25)],
-        },
-        label: ['fast'],
-      }
     }
   }
-}
-
-const toNumber = (value: bigint) => {
-  if (value <= Number.MAX_SAFE_INTEGER && value >= Number.MIN_SAFE_INTEGER) {
-    return Number(value)
-  }
-  throw new Error(`Value: "${value}" is out of bounds to be a Number`)
 }
