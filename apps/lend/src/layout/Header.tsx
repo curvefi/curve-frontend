@@ -8,7 +8,7 @@ import { getWalletSignerAddress, useConnectWallet } from '@/common/features/conn
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
-import { Header as NewHeader } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/material/styles'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
@@ -113,7 +113,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
           value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
         },
       ]}
-      bannerHeight={bannerHeight}
+      height={useHeaderHeight(bannerHeight)}
       BannerProps={BannerProps}
       sections={sections}
     />

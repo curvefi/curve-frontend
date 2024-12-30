@@ -1,4 +1,5 @@
-import { AppBar, Toolbar } from '@mui/material'
+import AppBar from '@mui/material/AppBar'
+import Toolbar from '@mui/material/Toolbar'
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import { ConnectWalletIndicator } from '../../features/connect-wallet'
@@ -16,13 +17,15 @@ import { AppName } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
 
+export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
+
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
   currentApp,
   ChainProps,
   WalletProps,
   BannerProps,
-  bannerHeight = 0,
+  height, // height above + banner height
   pages,
   appStats,
   themes: [theme, setTheme],
@@ -75,8 +78,8 @@ export const DesktopHeader = <TChainId extends number>({
           </Container>
         </Toolbar>
       </AppBar>
-      {/* Hardcoded height is tested in header.cy.ts - it creates an empty box to take the place behind the header */}
-      <Box height={96 + bannerHeight} />
+      {/* create an empty box to take the place behind the header */}
+      <Box height={height} />
     </>
   )
 }
