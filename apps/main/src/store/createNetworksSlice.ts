@@ -3,7 +3,7 @@ import type { State } from '@/store/useStore'
 import { Chain } from '@ui-kit/utils'
 import { DEFAULT_NETWORK_CONFIG } from '@/constants'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@/ui/utils'
-import type { ChainOption } from '@/common/features/switch-chain'
+import type { ChainOption } from '@ui-kit/features/switch-chain'
 import curve from '@curvefi/api'
 import sortBy from 'lodash/sortBy'
 

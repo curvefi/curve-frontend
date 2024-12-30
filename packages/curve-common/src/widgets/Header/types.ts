@@ -1,5 +1,5 @@
-import { ChainSwitcherProps } from '../../features/switch-chain'
-import { ConnectWalletIndicatorProps } from '../../features/connect-wallet'
+import { ChainSwitcherProps } from 'curve-ui-kit/src/features/switch-chain'
+import { ConnectWalletIndicatorProps } from 'curve-ui-kit/src/features/connect-wallet'
 import { Dispatch, RefObject } from 'react'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
