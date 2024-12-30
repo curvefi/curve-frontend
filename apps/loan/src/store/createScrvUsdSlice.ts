@@ -189,8 +189,8 @@ async function _fetchSavingsYield(provider?: Provider | null): Promise<PricesYie
       provider.getBlock('latest'),
     ])
     return {
-      last_updated: new Date(block?.timestamp ?? 0).toISOString(),
-      last_updated_block: block?.number ?? 0,
+      last_updated: new Date(block.timestamp).toISOString(),
+      last_updated_block: block.number,
       proj_apr: supply > 0 ? (unlock_amount * 1e-12 * YEAR) / supply : 0,
       supply: supply / 1e18,
     }

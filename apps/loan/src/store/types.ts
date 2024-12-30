@@ -1,4 +1,4 @@
-import { BrowserProvider } from 'ethers'
+import { ethers } from 'ethers'
 
 /* createAppSlice */
 
@@ -52,7 +52,7 @@ export type LiqRangeSliderIdx = LiqRange & { sliderIdx: number }
 export type LiqRangesMapper = { [n: string]: LiqRangeSliderIdx }
 
 /* createWalletSlice */
-export type Provider = BrowserProvider
+export type Provider = ethers.providers.Web3Provider
 
 export type PricesYieldDataResponse = PricesYieldData
 
