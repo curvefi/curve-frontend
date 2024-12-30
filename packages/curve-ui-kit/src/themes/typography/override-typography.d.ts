@@ -5,8 +5,8 @@ type NewTypographyVariants<T> = { [key in TypographyVariantKey]: T }
 type DisabledTypographyVariants = { [key in DisabledTypographyVariantKey[number]]: false }
 
 declare module '@mui/material/styles' {
-  interface TypographyVariants extends NewTypographyVariants<React.CSSProperties> {}
-  interface TypographyVariantsOptions extends Partial<NewTypographyVariants<React.CSSProperties>> {}
+  interface TypographyVariants extends NewTypographyVariants<CSSProperties> {}
+  interface TypographyVariantsOptions extends Partial<NewTypographyVariants<CSSProperties>> {}
 }
 
 declare module '@mui/material/Typography' {
