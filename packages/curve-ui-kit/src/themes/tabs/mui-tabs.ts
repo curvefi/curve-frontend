@@ -47,7 +47,6 @@ export const defineMuiTabs = ({
   styleOverrides: {
     root: {
       minHeight: 0,
-      ['&.MuiTabs-root [role="tablist"]']: { flexWrap: 'wrap' },
       [`&.${contained} .MuiTab-root`]: tabVariant(Contained),
       [`&.${overlined} .MuiTab-root`]: tabVariant(OverLined),
       [`&.${underlined} .MuiTab-root`]: tabVariant(UnderLined),
