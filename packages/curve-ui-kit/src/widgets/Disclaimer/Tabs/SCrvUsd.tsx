@@ -22,7 +22,10 @@ export const SCrvUsd = () => (
     </Section>
 
     <Stack
-      direction="row"
+      direction={{
+        mobile: 'column',
+        tablet: 'row',
+      }}
       gap={Spacing.xs}
       sx={{
         marginInline: Spacing.md,

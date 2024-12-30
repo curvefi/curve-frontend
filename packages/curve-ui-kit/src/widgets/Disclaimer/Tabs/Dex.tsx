@@ -18,7 +18,10 @@ export const Dex = () => (
     </Section>
 
     <Stack
-      direction="row"
+      direction={{
+        mobile: 'column',
+        tablet: 'row',
+      }}
       gap={Spacing.xs}
       sx={{
         marginInline: Spacing.md,

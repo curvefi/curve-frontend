@@ -14,7 +14,7 @@ import { LlamaLend } from './Tabs/LlamaLend'
 import { CrvUsd } from './Tabs/CrvUsd'
 import { SCrvUsd } from './Tabs/SCrvUsd'
 
-const { MaxWidth } = SizesAndSpaces
+const { MaxWidth, Spacing } = SizesAndSpaces
 
 const TABS = [
   { value: 'dex', label: t`Dex` },
@@ -34,11 +34,19 @@ export const Disclaimer = ({ className }: Props) => {
     <Stack
       className={className}
       sx={{
-        width: MaxWidth.sm,
+        maxWidth: MaxWidth.sm,
+        paddingInline: Spacing.md,
       }}
       data-testid="disclaimer"
     >
-      <Stack direction="row" justifyContent="space-between">
+      <Stack
+        direction={{
+          mobile: 'column-reverse',
+          tablet: 'row',
+        }}
+        justifyContent="space-between"
+        spacing={Spacing.md}
+      >
         <TabsSwitcher variant="contained" value={tab} onChange={setTab} options={[...TABS]} />
         <LastUpdated />
       </Stack>
