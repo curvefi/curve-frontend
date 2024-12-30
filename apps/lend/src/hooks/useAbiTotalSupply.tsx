@@ -3,7 +3,7 @@ import type { Contract } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
 
 import { INVALID_ADDRESS, REFRESH_INTERVAL } from '@/constants'
-import { weiToEther } from '@/shared/curve-lib'
+import { weiToEther } from '@ui-kit/utils'
 import useContract from '@/hooks/useContract'
 import usePageVisibleInterval from '@/ui/hooks/usePageVisibleInterval'
 import useStore from '@/store/useStore'

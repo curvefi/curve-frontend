@@ -39,7 +39,7 @@
     "turbo": "^2.1.2",
     "typescript": "^5"
   },
-  "packageManager": "yarn@4.5.0",
+  "packageManager": "yarn@4.6.0",
   "lint-staged": {
     "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",

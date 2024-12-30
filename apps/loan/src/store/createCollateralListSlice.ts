@@ -9,7 +9,7 @@ import uniqBy from 'lodash/uniqBy'
 import { DEFAULT_SEARCH_PARAMS, parseSearchTermResults } from '@/components/PageMarketList/utils'
 import { SEARCH_TERM } from '@/hooks/useSearchTermMapper'
 import { TITLE } from '@/constants'
-import { searchByText } from '@/shared/curve-lib'
+import { searchByText } from '@ui-kit/utils'
 import { sleep } from '@/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE

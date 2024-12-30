@@ -10,7 +10,7 @@ import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/components/PageL
 import { DEFAULT_FORM_VALUES, _parseValues } from '@/components/PageLoanManage/LoanRepay/utils'
 import { NOFITY_MESSAGE, REFRESH_INTERVAL } from '@/constants'
 import { _showNoLoanFound } from '@/utils/helpers'
-import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@/shared/curve-lib'
+import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
 import { formatNumber } from '@/ui/utils'
 import { getActiveStep } from '@/ui/Stepper/helpers'
 import { getCollateralListPathname } from '@/utils/utilsRouter'

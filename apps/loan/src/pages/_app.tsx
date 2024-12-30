@@ -23,7 +23,7 @@ import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
-import { persister, queryClient } from '@/shared/api/query-client'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })

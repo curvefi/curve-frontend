@@ -1,7 +1,7 @@
 import { enforce, group, test } from 'vest'
-import { createValidationSuite } from '../../lib'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 import { ContractParams } from './root-keys'
-import { chainNameValidationGroup } from '@/shared/model/query/chain-name-validation'
+import { chainNameValidationGroup } from './chain-name-validation'
 
 export const contractValidationGroup = ({ blockchainId, contractAddress }: ContractParams) =>
   group('contractValidation', () => {

@@ -5,10 +5,10 @@ import type { GasInfo } from '@/store/types'
 import { JsonRpcProvider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 
-import { gweiToWai } from '@/shared/curve-lib'
+import { gweiToWai } from '@ui-kit/utils'
 import { getEthereumCustomFeeDataValues } from '@/ui/utils/utilsGas'
 import { httpFetcher } from '@/utils/helpers'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import networks from '@/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
