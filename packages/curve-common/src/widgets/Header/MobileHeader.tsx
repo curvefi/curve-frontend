@@ -14,7 +14,7 @@ import { useLocation } from 'react-router-dom'
 import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
-import { MOBILE_SIDEBAR_WIDTH } from 'curve-ui-kit/src/themes/components'
+import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from 'curve-ui-kit/src/themes/components'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -24,6 +24,9 @@ const HIDE_SCROLLBAR = {
 }
 
 const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }
+
+const paddingBlock = 3
+export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(paddingBlock)} + ${DEFAULT_BAR_SIZE}`
 
 export const MobileHeader = <TChainId extends number>({
   mainNavRef,
@@ -57,7 +60,7 @@ export const MobileHeader = <TChainId extends number>({
     <>
       <AppBar color="transparent" ref={mainNavRef}>
         <GlobalBanner {...BannerProps} />
-        <Toolbar sx={(t) => ({ ...SECONDARY_BACKGROUND, paddingY: 3, zIndex: t.zIndex.drawer + 1 })}>
+        <Toolbar sx={(t) => ({ ...SECONDARY_BACKGROUND, paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
             ChainProps={ChainProps}

@@ -17,13 +17,15 @@ import { AppName } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
 
+export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
+
 export const DesktopHeader = <TChainId extends number>({
   mainNavRef,
   currentApp,
   ChainProps,
   WalletProps,
   BannerProps,
-  height,
+  height, // height above + banner height
   pages,
   appStats,
   themes: [theme, setTheme],

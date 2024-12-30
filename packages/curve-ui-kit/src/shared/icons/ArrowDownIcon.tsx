@@ -7,5 +7,5 @@ export const ArrowDownIcon = createSvgIcon(
       fill="currentColor"
     />
   </svg>,
-  'Arrow',
+  'ArrowDown',
 )

@@ -15,6 +15,7 @@ const columns = [
   columnHelper.accessor('assets', {
     header: t`Collateral • Borrow`,
     cell: PoolTitleCell,
+    meta: { variant: 'tableCellL' },
   }),
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
@@ -57,7 +58,6 @@ export const LendingMarketsTable = ({
       marginBlockEnd: Spacing.xxl,
       maxWidth: MaxWidth.table,
       minWidth: MinWidth.table,
-      width: '100%',
       backgroundColor: (t) => t.design.Layer[1].Fill,
     }}
   >

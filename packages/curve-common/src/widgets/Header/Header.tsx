@@ -1,9 +1,8 @@
 import { HeaderProps } from './types'
-import { DesktopHeader } from './DesktopHeader'
-import { MobileHeader } from './MobileHeader'
+import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
+import { calcMobileHeaderHeight, MobileHeader } from './MobileHeader'
 import type { Theme } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { DEFAULT_BAR_SIZE } from 'curve-ui-kit/src/themes/components'
 import { useTheme } from '@mui/material/styles'
 
 const isDesktopQuery = (theme: Theme) => theme.breakpoints.up('desktop')
@@ -17,7 +16,6 @@ export const Header = <TChainId extends number>({ isMdUp, ...props }: HeaderProp
 export const useHeaderHeight = (bannerHeight: number | undefined) => {
   const isDesktop = useMediaQuery(isDesktopQuery, { noSsr: true })
   const theme = useTheme()
-  return isDesktop
-    ? `calc(96px + ${bannerHeight ?? 0}px)` // note: hardcoded height is tested in cypress
-    : `calc(2 * ${theme.spacing(3)} + ${DEFAULT_BAR_SIZE} + ${bannerHeight}px)`
+  const headerHeight = isDesktop ? DESKTOP_HEADER_HEIGHT : calcMobileHeaderHeight(theme)
+  return `calc(${headerHeight} + ${bannerHeight ?? 0}px)`
 }

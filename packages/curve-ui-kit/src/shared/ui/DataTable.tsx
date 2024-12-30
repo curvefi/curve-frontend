@@ -20,17 +20,18 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { useSortFromQueryString } from '../../hooks/useSortFromQueryString'
-import { ArrowDownIcon } from '../icons/ArrowIcon'
+import { ArrowDownIcon } from '../icons/ArrowDownIcon'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
-const getAlignment = <T extends any>({ columnDef }: Column<T>) => (columnDef.meta?.type == 'numeric' ? 'right' : 'left')
+const getAlignment = <T extends unknown>({ columnDef }: Column<T>) =>
+  columnDef.meta?.type == 'numeric' ? 'right' : 'left'
 
 const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
   const column = cell.column
   return (
     <Typography
-      variant="tableCellMBold"
+      variant={column.columnDef.meta?.variant ?? 'tableCellMBold'}
       color="text.primary"
       component="td"
       sx={{
@@ -58,9 +59,9 @@ const DataRow = <T extends unknown>({ row }: { row: Row<T> }) => {
         borderColor: (t) => t.design.Layer[1].Outline,
       }}
       ref={ref}
-      // title={JSON.stringify(row.original)}
       data-testid={`data-table-row-${row.id}`}
     >
+      {/* render cells when visible vertically, so content is lazy loaded */}
       {entry?.isIntersecting && row.getVisibleCells().map((cell) => <DataCell key={cell.id} cell={cell} />)}
     </TableRow>
   )
@@ -86,7 +87,9 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
         padding: Spacing.sm,
         paddingBlockStart: 0,
         ...getExtraColumnPadding(column),
-        cursor: 'pointer',
+        ...(column.columnDef.enableSorting && {
+          cursor: 'pointer',
+        }),
       }}
       colSpan={header.colSpan}
       width={header.getSize()}

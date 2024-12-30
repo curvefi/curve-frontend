@@ -4,6 +4,7 @@ import { Line, LineChart } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
 import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Skeleton from '@mui/material/Skeleton'
 
 const graphSize = { width: 172, height: 48 }
@@ -29,14 +30,7 @@ export const LineGraphCell = ({ vault, type }: { vault: LendingVault; type: Grap
   }
 
   return (
-    <Box
-      display="flex"
-      flexDirection="row"
-      alignItems="center"
-      justifyContent="end"
-      gap={3}
-      data-testid={`line-graph-cell-${type}`}
-    >
+    <Stack direction="row" alignItems="center" justifyContent="end" gap={3} data-testid={`line-graph-cell-${type}`}>
       {value.toPrecision(4)}%
       {snapshots?.length ? (
         <LineChart data={snapshots} {...graphSize}>
@@ -53,6 +47,6 @@ export const LineGraphCell = ({ vault, type }: { vault: LendingVault; type: Grap
       ) : (
         <Box sx={graphSize} />
       )}
-    </Box>
+    </Stack>
   )
 }

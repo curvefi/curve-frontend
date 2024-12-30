@@ -1,5 +1,5 @@
 import { ChainSwitcher, ChainSwitcherProps } from '../../features/switch-chain'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
 import React from 'react'
@@ -20,10 +20,10 @@ export const MobileTopBar = <TChainId extends number>({
   toggleSidebar,
   isLite,
 }: MobileTopBarProps<TChainId>) => (
-  <Box display="flex" flexDirection="row" flexGrow={1} paddingX={2}>
+  <Stack direction="row" paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo isLite={isLite} appName={currentApp} />
-    <Box flexGrow={1} />
+    <Stack flexGrow={1} />
     <ChainSwitcher {...ChainProps} />
-  </Box>
+  </Stack>
 )
