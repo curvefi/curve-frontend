@@ -4,6 +4,7 @@ import { BaseHeaderProps } from './types'
 import React, { useCallback, useEffect, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
+import Stack from '@mui/material/Stack'
 import Box from '@mui/material/Box'
 import { type Theme } from '@mui/material/styles'
 import { HeaderStats } from './HeaderStats'
@@ -23,9 +24,9 @@ const HIDE_SCROLLBAR = {
   scrollbarWidth: 'none', // Firefox
 }
 
-const SECONDARY_BACKGROUND = { backgroundColor: (t: Theme) => t.design.Layer[1].Fill }
-
 const paddingBlock = 3
+
+/** Calculates the height of the mobile header */
 export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(paddingBlock)} + ${DEFAULT_BAR_SIZE}`
 
 export const MobileHeader = <TChainId extends number>({
@@ -58,9 +59,9 @@ export const MobileHeader = <TChainId extends number>({
 
   return (
     <>
-      <AppBar color="transparent" ref={mainNavRef}>
+      <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         <GlobalBanner {...BannerProps} />
-        <Toolbar sx={(t) => ({ ...SECONDARY_BACKGROUND, paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
+        <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
             ChainProps={ChainProps}
@@ -76,7 +77,6 @@ export const MobileHeader = <TChainId extends number>({
             PaperProps={{
               sx: {
                 top: height,
-                ...SECONDARY_BACKGROUND,
                 ...MOBILE_SIDEBAR_WIDTH,
                 ...HIDE_SCROLLBAR,
               },
@@ -87,9 +87,9 @@ export const MobileHeader = <TChainId extends number>({
             data-testid="mobile-drawer"
           >
             <Box>
-              <Box padding={4} display="flex" flexDirection="column">
+              <Stack padding={4}>
                 <HeaderStats appStats={appStats} />
-              </Box>
+              </Stack>
 
               <SidebarSection title={APP_LINK[currentApp].label} pages={pages} />
 

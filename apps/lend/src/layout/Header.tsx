@@ -13,7 +13,6 @@ import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/material/styles'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { NavigationSection } from '@/common/widgets/Header/types'
-import { useHeightResizeObserver } from '@/ui/hooks'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
@@ -25,14 +24,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-  const footerHeight = useHeightResizeObserver(mainNavRef)
-
-  useEffect(() => {
-    setLayoutHeight('globalAlert', footerHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [footerHeight])
 
   const { rLocalePathname, rNetwork } = getParamsFromUrl()
 
