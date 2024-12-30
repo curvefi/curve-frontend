@@ -72,7 +72,7 @@ const helpers = {
     }
   },
   fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
+    log('fetchUsdRates', tokenAddresses.length, 'test')
     let results: UsdRatesMapper = {}
 
     await PromisePool.for(tokenAddresses)
@@ -105,7 +105,7 @@ const helpers = {
 // curve
 const network = {
   fetchAllPoolsList: async (curve: CurveApi, network: NetworkConfig) => {
-    log('fetchAllPoolsList', curve.chainId, network)
+    log('fetchAllPoolsList', curve.chainId)
     // must call api in this order, must use api to get non-cached version of gaugeStatus
     const useApi = network.useApi
     await Promise.allSettled([
