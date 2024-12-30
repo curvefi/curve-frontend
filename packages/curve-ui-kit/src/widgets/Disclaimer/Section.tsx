@@ -39,7 +39,7 @@ export const Section = ({ children }: { children?: ReactNode }) => {
 
   return (
     <Stack
-      gap={Spacing.xs}
+      gap={Spacing.sm}
       sx={{
         '& + &': {
           marginBlockStart: Spacing.md,
