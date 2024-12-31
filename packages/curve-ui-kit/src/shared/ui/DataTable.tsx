@@ -20,6 +20,7 @@ import {
 } from '@tanstack/react-table'
 import { useSortFromQueryString } from '../../hooks/useSortFromQueryString'
 import { ArrowDownIcon } from '../icons/ArrowDownIcon'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces
 
@@ -78,6 +79,7 @@ const getExtraColumnPadding = <T extends any>(column: Column<T>) => ({
 const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> }) => {
   const { column } = header
   const sort = column.getIsSorted()
+  const canSort = column.getCanSort()
   return (
     <Typography
       component="th"
@@ -88,11 +90,12 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
         paddingBlockStart: 0,
         color: `text.${sort ? 'primary' : 'secondary'}`,
         ...getExtraColumnPadding(column),
-        ...(column.getCanSort() && {
+        ...(canSort && {
           cursor: 'pointer',
           '&:hover': {
-            color: `text.${sort ? 'secondary' : 'primary'}`,
+            color: `text.highlight`,
           },
+          transition: `color ${TransitionFunction}`,
         }),
       }}
       colSpan={header.colSpan}
@@ -102,8 +105,15 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
       variant="tableHeaderS"
     >
       {flexRender(column.columnDef.header, header.getContext())}
-      {sort && (
-        <ArrowDownIcon sx={{ ...(sort === 'asc' && { transform: `rotate(180deg)` }), verticalAlign: 'text-bottom' }} />
+      {canSort && (
+        <ArrowDownIcon
+          sx={{
+            ...(sort === 'asc' && { transform: `rotate(180deg)` }),
+            verticalAlign: 'text-bottom',
+            fontSize: sort ? 20 : 0,
+            transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
+          }}
+        />
       )}
     </Typography>
   )

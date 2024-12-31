@@ -24,6 +24,5 @@ export function updateSort(search: string, state: SortingState): string {
   const params = new URLSearchParams(search)
   params.delete('sort')
   state.forEach(({ id, desc }) => params.append('sort', `${desc ? '-' : ''}${id}`))
-  console.log(search, state, params.toString())
   return `?${params.toString()}`
 }
