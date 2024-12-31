@@ -2,8 +2,8 @@
   "campaignName": "YieldCrumbs",
   "platform": "YieldFi",
   "description": "Points for providing liquidity.",
-  "platformImageId": "https://yield.fi/portfolio/",
-  "dashboardLink": "yieldfi.png",
+  "platformImageId": "yieldfi.png",
+  "dashboardLink": "https://yield.fi/portfolio/",
   "pools": [
     {
       "id": "null",
