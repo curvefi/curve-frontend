@@ -10,7 +10,7 @@ import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/components/PageDashboar
 import { getPath } from '@/utils/utilsRouter'
 import { getStepStatus } from '@/ui/Stepper/helpers'
 import { formatNumber } from '@/ui/utils'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 import { useDashboardContext } from '@/components/PageDashboard/dashboardContext'
 import useStore from '@/store/useStore'
 import { Chip } from '@/ui/Typography'
