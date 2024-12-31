@@ -1,7 +1,6 @@
 import { useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import TableHead from '@mui/material/TableHead'
-import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
@@ -80,31 +79,33 @@ const HeaderCell = <T extends unknown>({ header }: { header: Header<T, unknown> 
   const { column } = header
   const sort = column.getIsSorted()
   return (
-    <TableCell
+    <Typography
+      component="th"
       sx={{
         textAlign: getAlignment(column),
         alignContent: 'end',
         padding: Spacing.sm,
         paddingBlockStart: 0,
+        color: `text.${sort ? 'primary' : 'secondary'}`,
         ...getExtraColumnPadding(column),
-        ...(column.columnDef.enableSorting && {
+        ...(column.getCanSort() && {
           cursor: 'pointer',
+          '&:hover': {
+            color: `text.${sort ? 'secondary' : 'primary'}`,
+          },
         }),
       }}
       colSpan={header.colSpan}
       width={header.getSize()}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
+      variant="tableHeaderS"
     >
-      <Typography variant="tableHeaderS" color={`text.${sort ? 'primary' : 'secondary'}`}>
-        {flexRender(column.columnDef.header, header.getContext())}
-        {sort && (
-          <ArrowDownIcon
-            sx={{ ...(sort === 'asc' && { transform: `rotate(180deg)` }), verticalAlign: 'text-bottom' }}
-          />
-        )}
-      </Typography>
-    </TableCell>
+      {flexRender(column.columnDef.header, header.getContext())}
+      {sort && (
+        <ArrowDownIcon sx={{ ...(sort === 'asc' && { transform: `rotate(180deg)` }), verticalAlign: 'text-bottom' }} />
+      )}
+    </Typography>
   )
 }
 
