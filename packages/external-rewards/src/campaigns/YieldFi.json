@@ -1,0 +1,21 @@
+{
+  "campaignName": "YieldCrumbs",
+  "platform": "YieldFi",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "https://yield.fi/portfolio/",
+  "dashboardLink": "yieldfi.png",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x169a5f124a3663a25313ee0f7f3bff028728867f",
+      "network": "ethereum",
+      "multiplier": "2x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
