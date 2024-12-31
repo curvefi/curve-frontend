@@ -10,8 +10,8 @@ import groupBy from 'lodash/groupBy'
 import MenuList from '@mui/material/MenuList'
 import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
-import { CheckedIcon } from 'curve-ui-kit/src/shared/icons/CheckedIcon'
-import { MenuSectionHeader } from 'curve-ui-kit/src/shared/ui/MenuSectionHeader'
+import { CheckedIcon } from '@ui-kit/shared/icons/CheckedIcon'
+import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 
 enum ChainType {
   test = 'test',

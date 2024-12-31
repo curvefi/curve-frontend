@@ -65,3 +65,5 @@ tests/cache
 # storybook
 storybook-static
 *storybook.log
+
+*.tsbuildinfo

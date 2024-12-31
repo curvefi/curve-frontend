@@ -1,4 +1,4 @@
-import { ChainOption } from '@/common/features/switch-chain'
+import { ChainOption } from '@ui-kit/features/switch-chain'
 
 import sortBy from 'lodash/sortBy'
 

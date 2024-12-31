@@ -10,6 +10,7 @@
     "build": "yarn i18n:extract && yarn i18n:compile && next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
@@ -21,7 +22,8 @@
     "eslint-config-custom": "*",
     "react": "*",
     "react-dom": "*",
-    "tsconfig": "*"
+    "tsconfig": "*",
+    "typescript": "*"
   },
   "dependencies": {
     "@curvefi/api": "^2.65.23",
@@ -75,6 +77,7 @@
     "pinst": "^2.1.4",
     "start-server-and-test": "2.0.0",
     "tsconfig": "*",
+    "typescript": "*",
     "webpack": "^5.83.1"
   },
   "resolutions": {

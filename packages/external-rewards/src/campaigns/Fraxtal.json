@@ -1,9 +1,9 @@
 {
-  "campaignName": "",
+  "campaignName": "FXTL",
   "platform": "Fraxtal",
   "description": "Points for providing liquidity.",
   "platformImageId": "fraxtal.png",
-  "dashboardLink": "https://www.frax.com/flox-leaderboard/",
+  "dashboardLink": "https://www.frax.com/flox/leaderboard/",
   "pools": [
     {
       "id": "null",
