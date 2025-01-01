@@ -590,7 +590,7 @@ const sortProposals = (
     const activeProposals = proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS > currentTimestamp)
     const passedProposals = orderBy(
       proposals.filter((proposal) => proposal.startDate + SEVEN_DAYS < currentTimestamp),
-      ['voteId'],
+      ['startDate'],
       ['desc'],
     )
 
