@@ -54,7 +54,25 @@ export function parseLocale(locale?: string): { parsedLocale: Locale['value']; p
   }
 }
 
-export async function dynamicActivate(locale: string, data: any) {
+/**
+ * Activates messages data for a dynamically loaded locale.
+ *
+ * Example:
+ * ```ts
+ * const messages = await import(`@/locales/en/messages`)
+ * await dynamicActivate('en', messages)
+ * ```
+ *
+ * Note: The import must be performed by the calling app since the import path
+ * is relative to the app's location, not this package. Passing the import path
+ * as a parameter (e.g. '@/locales/en/messages') would not work because the path
+ * would be resolved relative to this package's directory structure rather than
+ * the app's, and thus will not be able to be found.
+ *
+ * @param locale - The locale identifier (e.g. 'en', 'zh-Hans')
+ * @param data - The imported locale messages data
+ */
+export async function dynamicActivate(locale: string, data: { messages: Record<string, string> }) {
   i18n.load(locale, data.messages)
   i18n.activate(locale)
 }
