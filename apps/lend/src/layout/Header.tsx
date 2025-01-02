@@ -8,12 +8,11 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
-import { Header as NewHeader } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
-import { type Theme } from '@mui/system'
+import { type Theme } from '@mui/material/styles'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import type { NavigationSection } from '@/common/widgets/Header/types'
-import { useHeightResizeObserver } from '@/ui/hooks'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 
@@ -25,14 +24,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const [{ wallet }] = useConnectWallet()
   const navigate = useNavigate()
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
-  const footerHeight = useHeightResizeObserver(mainNavRef)
-
-  useEffect(() => {
-    setLayoutHeight('globalAlert', footerHeight)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [footerHeight])
 
   const { rLocalePathname, rNetwork } = getParamsFromUrl()
 
@@ -113,7 +105,7 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
           value: (tvl && formatNumber(tvl, { ...FORMAT_OPTIONS.USD, notation: 'compact' })) || '',
         },
       ]}
-      bannerHeight={bannerHeight}
+      height={useHeaderHeight(bannerHeight)}
       BannerProps={BannerProps}
       sections={sections}
     />

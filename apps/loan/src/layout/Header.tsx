@@ -8,7 +8,7 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
-import { Header as NewHeader } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { APP_LINK } from '@ui-kit/shared/routes'
@@ -118,7 +118,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
       BannerProps={BannerProps}
-      bannerHeight={bannerHeight}
+      height={useHeaderHeight(bannerHeight)}
       sections={sections}
     />
   )

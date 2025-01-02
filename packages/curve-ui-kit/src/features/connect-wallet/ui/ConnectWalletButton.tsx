@@ -1,5 +1,5 @@
 import Button from '@mui/material/Button'
-import type { SxProps, Theme } from '@mui/system'
+import type { SxProps, Theme } from '@mui/material/styles'
 
 export type ConnectWalletButtonProps = {
   onConnectWallet: () => void

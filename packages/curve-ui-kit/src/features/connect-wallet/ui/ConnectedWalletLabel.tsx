@@ -2,7 +2,7 @@ import { FunctionComponent } from 'react'
 import Button from '@mui/material/Button'
 import { Address, AddressLabel } from '@ui-kit/shared/ui/AddressLabel'
 
-import type { SxProps, Theme } from '@mui/system'
+import type { SxProps, Theme } from '@mui/material/styles'
 
 export type ConnectedWalletLabelProps = {
   walletAddress: Address
