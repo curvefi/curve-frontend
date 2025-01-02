@@ -1,3 +1,4 @@
+import { BrowserProvider } from 'ethers'
 import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 import type { LlammaTemplate } from '@curvefi/stablecoin-api/lib/llammas'
 import type { Locale } from '@/lib/i18n'
@@ -31,7 +32,7 @@ declare global {
   type Curve = typeof stablecoinApi & { chainId: ChainId }
   type LendApi = typeof lendingApi & { chainId: ChainId }
   type NetworkEnum = INetworkName
-  type Provider = ethers.providers.web3Provider
+  type Provider = BrowserProvider
 
   type RFormType = 'loan' | 'deleverage' | 'collateral' | 'leverage' | ''
   type RouterParams = {

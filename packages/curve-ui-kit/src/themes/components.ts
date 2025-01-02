@@ -9,6 +9,7 @@ import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
+export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 
 export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
   MuiButton: defineMuiButton(design),

@@ -1,5 +1,5 @@
-import { PoolParams, PoolQuery, queryFactory, rootKeys } from '@/shared/model/query'
-import { poolValidationSuite } from '@/shared/model/query/pool-validation'
+import { PoolParams, PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
+import { poolValidationSuite } from '@ui-kit/lib/model/query/pool-validation'
 
 type CrvUsdSnapshotFromApi = {
   rate: number

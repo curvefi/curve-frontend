@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { FETCHING, PartialQueryResult, READY } from '@/shared/lib/queries'
+import { FETCHING, PartialQueryResult, READY } from '@ui-kit/lib/queries'
 import useStore from '@/store/useStore'
 
 export const useChainId = (): PartialQueryResult<ChainId> => {

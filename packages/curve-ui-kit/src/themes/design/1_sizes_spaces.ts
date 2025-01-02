@@ -337,6 +337,12 @@ const MappedModalWidth = {
   xl: '36rem', // 576px
 }
 
+const MappedColumnWidth = {
+  sm: 125,
+  md: 200,
+  lg: 512,
+}
+
 export const SizesAndSpaces = {
   Spacing: MappedSpacing,
   Sizing: MappedSizing,
@@ -348,15 +354,21 @@ export const SizesAndSpaces = {
   LineHeight: MappedLineHeight,
   Typography: MappedTypography,
   ModalWidth: MappedModalWidth,
+  ColumnWidth: MappedColumnWidth,
   ModalHeight: {
     height: '80vh',
     maxHeight: '800px',
     minHeight: '300px',
   },
   OutlineWidth: '0.125rem', // 2px
+  MinWidth: {
+    table: '60rem', // 960px
+    tableHeader: '50rem', // 800px
+  },
   MaxWidth: {
-    sm: '43rem', // 688px
-    md: '67rem', // 1072px
-    lg: '96rem', // 1536px
+    disclaimer: '43rem', // 688px
+    tableTitle: '67rem', // 1072px
+    table: '96rem', // 1536px
+    footer: '96rem', // 1536px
   },
 } as const

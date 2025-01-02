@@ -34,7 +34,7 @@ export const Disclaimer = ({ className }: Props) => {
     <Stack
       className={className}
       sx={{
-        maxWidth: MaxWidth.sm,
+        maxWidth: MaxWidth.disclaimer,
         paddingInline: Spacing.md,
       }}
       data-testid="disclaimer"

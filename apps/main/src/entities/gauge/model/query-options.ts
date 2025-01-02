@@ -9,9 +9,9 @@
  * They encapsulate the data fetching logic, making it easier to manage and reuse across the application.
  */
 
-import { poolValidationSuite } from '@/shared/model/query/pool-validation'
-import { GaugeParams, rootKeys } from '@/shared/model/query'
-import { queryFactory } from '@/shared/model/query/factory'
+import { poolValidationSuite } from '@ui-kit/lib/model/query/pool-validation'
+import { GaugeParams, rootKeys } from '@ui-kit/lib/model/query'
+import { queryFactory } from '@ui-kit/lib/model/query/factory'
 import {
   queryGaugeStatus,
   queryGaugeVersion,

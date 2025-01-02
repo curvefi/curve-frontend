@@ -7,7 +7,7 @@ import { t } from '@lingui/macro'
 import { CONNECT_STAGE, isFailure, isLoading } from '@/ui/utils'
 import { getWalletChainId } from '@/store/createWalletSlice'
 import { getNetworkFromUrl } from '@/utils/utilsRouter'
-import { useConnectWallet } from '@/common/features/connect-wallet'
+import { useConnectWallet } from '@ui-kit/features/connect-wallet'
 import { useHeightResizeObserver } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 

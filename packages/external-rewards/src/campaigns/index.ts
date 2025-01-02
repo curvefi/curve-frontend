@@ -21,6 +21,9 @@ import TurtleTotems from './TurtleTotems.json'
 import LevelMoney from './LevelMoney.json'
 import Corn from './Corn.json'
 import XPoints from './XPoints.json'
+import MindNetwork from './MindNetwork.json'
+import DTrinity from './DTrinity.json'
+import YieldFi from './YieldFi.json'
 
 export {
   DLCLink,
@@ -46,4 +49,7 @@ export {
   LevelMoney,
   Corn,
   XPoints,
+  MindNetwork,
+  DTrinity,
+  YieldFi,
 }
