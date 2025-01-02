@@ -10,13 +10,15 @@ import SmallLabel from '@/components/SmallLabel'
 import TokenIcons from '@/components/TokenIcons'
 
 interface GaugeHeaderProps {
-  gaugeData: GaugeFormattedData
+  gaugeData: GaugeFormattedData | undefined
   dataLoading: boolean
 }
 
 const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => {
   const imageBaseUrlFormatted = useMemo(() => {
     const imageBaseUrl = networks[1].imageBaseUrl
+
+    if (!gaugeData) return imageBaseUrl
 
     if (gaugeData.pool) {
       if (gaugeData.pool.chain === 'ethereum') {
@@ -34,12 +36,12 @@ const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => {
       return `${baseUrlWithoutTrailingSlash}-${gaugeData.market.chain}/`
     }
     return imageBaseUrl
-  }, [gaugeData.pool, gaugeData.market])
+  }, [gaugeData])
 
   return (
     <Wrapper variant="secondary">
       <BoxedDataComp>
-        {gaugeData.tokens && <TokenIcons imageBaseUrl={imageBaseUrlFormatted} tokens={gaugeData.tokens} />}
+        {gaugeData?.tokens && <TokenIcons imageBaseUrl={imageBaseUrlFormatted} tokens={gaugeData?.tokens} />}
         {dataLoading ? (
           <>
             <Loader isLightBg skeleton={[65, 28]} />
@@ -47,11 +49,11 @@ const GaugeHeader = ({ gaugeData, dataLoading }: GaugeHeaderProps) => {
           </>
         ) : (
           <>
-            <h3>{gaugeData.title}</h3>
-            {gaugeData.is_killed && <SmallLabel description={t`Killed`} isKilled />}
-            {gaugeData.platform && <SmallLabel description={gaugeData.platform} />}
-            {gaugeData.pool?.chain && <SmallLabel description={gaugeData.pool.chain} isNetwork />}
-            {gaugeData.market?.chain && <SmallLabel description={gaugeData.market.chain} isNetwork />}
+            <h3>{gaugeData?.title}</h3>
+            {gaugeData?.is_killed && <SmallLabel description={t`Killed`} isKilled />}
+            {gaugeData?.platform && <SmallLabel description={gaugeData?.platform} />}
+            {gaugeData?.pool?.chain && <SmallLabel description={gaugeData?.pool.chain} isNetwork />}
+            {gaugeData?.market?.chain && <SmallLabel description={gaugeData?.market.chain} isNetwork />}
           </>
         )}
       </BoxedDataComp>

@@ -23,6 +23,7 @@ import Corn from './Corn.json'
 import XPoints from './XPoints.json'
 import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
+import YieldFi from './YieldFi.json'
 
 export {
   DLCLink,
@@ -50,4 +51,5 @@ export {
   XPoints,
   MindNetwork,
   DTrinity,
+  YieldFi,
 }
