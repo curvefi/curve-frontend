@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 
-const { Spacing, LineHeight } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
