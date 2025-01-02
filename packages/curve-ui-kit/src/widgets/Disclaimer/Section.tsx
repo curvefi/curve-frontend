@@ -35,7 +35,9 @@ export const Paragraph = ({ children }: { children?: ReactNode }) => (
 export const Section = ({ children }: { children?: ReactNode }) => {
   const childArray = Children.toArray(children)
   const title = childArray.find((child) => typeof child === 'object' && 'type' in child && child.type === Title)
-  const paragraphs = childArray.filter((child) => typeof child === 'object' && 'type' in child && child.type !== Title)
+  const paragraphs = childArray.filter(
+    (child) => typeof child === 'object' && 'type' in child && child.type === Paragraph,
+  )
 
   return (
     <Stack
