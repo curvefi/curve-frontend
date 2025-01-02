@@ -43,6 +43,9 @@ export const Section = ({ children }: { children?: ReactNode }) => {
     <Stack
       gap={Spacing.sm}
       sx={{
+        // Adds extra margin between consecutive Sections.
+        // Not defined in parent since it can host other elements like headers,
+        // where this extra spacing should not apply.
         '& + &': {
           marginBlockStart: Spacing.md,
         },
