@@ -63,8 +63,8 @@ const TableTitle = styled.p`
   font-weight: var(--bold);
   display: flex;
   align-items: center;
-  padding: var(--spacing-3);
-  border-bottom: 1px solid var(--gray-500a20);
+  padding: var(--spacing-3) var(--spacing-3) var(--spacing-2);
+  /* border-bottom: 1px solid var(--gray-500a20); */
 `
 
 const TableTitleButton = styled(Button)`
