@@ -60,7 +60,7 @@ export function parseLocale(locale?: string): { parsedLocale: Locale['value']; p
  * Example:
  * ```ts
  * const messages = await import(`@/locales/en/messages`)
- * await dynamicActivate('en', messages)
+ * dynamicActivate('en', messages)
  * ```
  *
  * Note: The import must be performed by the calling app since the import path
@@ -72,7 +72,7 @@ export function parseLocale(locale?: string): { parsedLocale: Locale['value']; p
  * @param locale - The locale identifier (e.g. 'en', 'zh-Hans')
  * @param data - The imported locale messages data
  */
-export async function dynamicActivate(locale: string, data: { messages: Record<string, string> }) {
+export function dynamicActivate(locale: string, data: { messages: Record<string, string> }) {
   i18n.load(locale, data.messages)
   i18n.activate(locale)
 }
