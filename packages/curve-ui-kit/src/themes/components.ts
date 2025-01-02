@@ -56,10 +56,21 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
           boxShadow: '0 0 0 100px #266798 inset',
           '& svg': { color: 'rgb(232, 240, 254)' },
         },
+
+        '&.Mui-focused': {
+          borderColor: design.Inputs.Base.Default.Border.Active,
+        },
+        '&.Mui-error': {
+          borderColor: design.Inputs.Base.Default.Border.Error,
+        },
       },
       input: {
         height: SizesAndSpaces.ButtonSize.md,
         boxSizing: 'border-box',
+        borderWidth: 1,
+        borderStyle: 'solid',
+        backgroundColor: design.Inputs.Base.Default.Fill,
+        borderColor: design.Inputs.Base.Default.Border.Active,
       },
       inputSizeSmall: {
         height: SizesAndSpaces.ButtonSize.sm,
