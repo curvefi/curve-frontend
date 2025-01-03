@@ -1,7 +1,7 @@
 import type { FormType as LockFormType } from '@/components/PageVeCrv/types'
 import type { DateValue } from '@internationalized/date'
 
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 import PromisePool from '@supercharge/promise-pool/dist'
 
 import networks from '@/networks'

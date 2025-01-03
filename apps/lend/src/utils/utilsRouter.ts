@@ -1,5 +1,5 @@
 import type { Params } from 'react-router'
-import { DEFAULT_LOCALES, LocaleOption, parseLocale } from '@/lib/i18n'
+import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
 import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
 import { LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -87,6 +87,7 @@ export function parseParams(params: Params, chainIdNotRequired?: boolean) {
   } as RouterParams
 }
 
+type LocaleOption = (typeof DEFAULT_LOCALES)[number]
 export function getLocaleFromUrl() {
   const restPathnames = window.location.hash?.substring(2)?.split('/') ?? []
   let resp: { rLocale: LocaleOption | null; rLocalePathname: string } = {

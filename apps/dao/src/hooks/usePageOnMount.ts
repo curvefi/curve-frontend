@@ -6,7 +6,7 @@ import { useCallback, useEffect } from 'react'
 import { useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL } from '@/constants'
-import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
+import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/utilsStorage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId, getWalletSignerAddress } from '@/store/createWalletSlice'
@@ -215,7 +215,10 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (isSuccess(connectState)) {
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
-        dynamicActivate(rLocale)
+        ;(async () => {
+          let data = await import(`@/locales/${rLocale}/messages`)
+          dynamicActivate(rLocale, data)
+        })()
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
       } else if (walletChainId && curve && curve.chainId === walletChainId && parsedParams.rChainId !== walletChainId) {

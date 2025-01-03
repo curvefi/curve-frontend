@@ -1,7 +1,7 @@
 import type { Params } from 'react-router'
 
 import { MAIN_ROUTE, ROUTE } from '@/constants'
-import { DEFAULT_LOCALES, Locale, parseLocale } from '@/lib/i18n'
+import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
 import useStore from '@/store/useStore'
 import { useMemo } from 'react'
 
