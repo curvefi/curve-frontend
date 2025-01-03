@@ -353,7 +353,7 @@ const MappedModalHeight = {
 const MappedColumnWidth = {
   sm: 125,
   md: 200,
-  lg: 512,
+  lg: 350,
 }
 
 export const SizesAndSpaces = {

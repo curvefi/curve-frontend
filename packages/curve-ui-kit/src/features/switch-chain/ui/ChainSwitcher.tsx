@@ -7,7 +7,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { t } from '@lingui/macro'
 import { SettingsButton } from './SettingsButton'
-import { ChainIcon } from './ChainIcon'
+import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 import { ChainList } from './ChainList'
 import { ChainSettings } from './ChainSettings'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
@@ -48,7 +48,7 @@ export const ChainSwitcher = <TChainId extends number>({
   return (
     <>
       <IconButton size="small" disabled={disabled} onClick={toggle} data-testid="btn-change-chain">
-        <ChainIcon chain={selectedNetwork} />
+        <ChainSwitcherIcon chain={selectedNetwork} />
         <KeyboardArrowDownIcon />
       </IconButton>
       {isOpen != null && (

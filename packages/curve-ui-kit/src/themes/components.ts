@@ -50,16 +50,27 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiInputBase: {
     styleOverrides: {
       root: {
-        // color the whole input base when accepting autofill suggestions in chromium browsers
+        // color the whole input base when accepting autofill suggestions in Chromium browsers
         ':has(input:autofill)': {
           backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',
           boxShadow: '0 0 0 100px #266798 inset',
           '& svg': { color: 'rgb(232, 240, 254)' },
         },
+
+        '&.Mui-focused': {
+          borderColor: design.Inputs.Base.Default.Border.Active,
+        },
+        '&.Mui-error': {
+          borderColor: design.Inputs.Base.Default.Border.Error,
+        },
       },
       input: {
         height: SizesAndSpaces.ButtonSize.md,
         boxSizing: 'border-box',
+        borderWidth: 1,
+        borderStyle: 'solid',
+        backgroundColor: design.Inputs.Base.Default.Fill,
+        borderColor: design.Inputs.Base.Default.Border.Active,
       },
       inputSizeSmall: {
         height: SizesAndSpaces.ButtonSize.sm,
@@ -77,6 +88,13 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
       dense: {
         height: SizesAndSpaces.ButtonSize.sm,
+      },
+    },
+  },
+  MuiSlider: {
+    styleOverrides: {
+      thumb: {
+        borderRadius: 0,
       },
     },
   },

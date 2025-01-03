@@ -6,7 +6,12 @@ type ChainIconProps<TChainId> = {
   chain: ChainOption<TChainId>
   size?: number
 }
-export const ChainIcon = <TChainId extends number>({
+
+/**
+ * Display a chain icon for the chain switcher.
+ * This is different from icons/ChainIcon because it requires a fixed size, some padding and no responsive design.
+ */
+export const ChainSwitcherIcon = <TChainId extends number>({
   chain: { chainId, label, src },
   size = 28,
 }: ChainIconProps<TChainId>) => (

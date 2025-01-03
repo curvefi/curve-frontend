@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField'
 import { t } from '@lingui/macro'
 import SearchIcon from '@mui/icons-material/Search'
 import MenuItem from '@mui/material/MenuItem'
-import { ChainIcon } from './ChainIcon'
+import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 import Typography from '@mui/material/Typography'
 import { ChainOption } from './ChainSwitcher'
 import { Fragment, useMemo, useState } from 'react'
@@ -74,7 +74,7 @@ export function ChainList<TChainId extends number>({
                       selected={chain.chainId == selectedNetwork?.chainId}
                       tabIndex={0}
                     >
-                      <ChainIcon chain={chain} size={36} />
+                      <ChainSwitcherIcon chain={chain} size={36} />
                       <Typography sx={{ flexGrow: 1 }} variant="headingXsBold">
                         {chain.label}
                       </Typography>

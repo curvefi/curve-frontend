@@ -15,6 +15,9 @@ const onReload = () => invalidateLendingVaults({})
 
 const { Spacing, MaxWidth, ModalHeight } = SizesAndSpaces
 
+/**
+ * Page for displaying the lending markets table.
+ */
 export const PageLlamaMarkets = () => {
   const { data, error, isFetching } = useLendingVaults({}) // todo: show errors and loading state
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)

@@ -105,11 +105,12 @@ export const { useQuery: useLendingVaults, invalidate: invalidateLendingVaults }
     }
     return {
       ...data,
-      lendingVaultData: data.lendingVaultData.map((vault) => ({
-        ...vault,
-        utilizationPercent:
-          vault.totalSupplied.usdTotal && (100 * vault.borrowed.usdTotal) / vault.totalSupplied.usdTotal,
-      })),
+      lendingVaultData: data.lendingVaultData
+        .filter((vault) => vault.totalSupplied.usdTotal)
+        .map((vault) => ({
+          ...vault,
+          utilizationPercent: (100 * vault.borrowed.usdTotal) / vault.totalSupplied.usdTotal,
+        })),
     }
   },
   staleTime: '5m',

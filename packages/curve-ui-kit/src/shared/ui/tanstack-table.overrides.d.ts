@@ -7,6 +7,7 @@ import { TypographyVariantKey } from '../../themes/typography'
 declare module '@tanstack/table-core' {
   interface ColumnMeta<TData extends RowData, TValue> {
     type?: 'numeric'
+    hidden?: boolean
     variant?: TypographyVariantKey
   }
 }
