@@ -1,5 +1,6 @@
 import { ChainSwitcher, ChainSwitcherProps } from 'curve-ui-kit/src/features/switch-chain'
 import Stack from '@mui/material/Stack'
+import { Box } from '@mui/material'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
@@ -19,7 +20,7 @@ export const MobileTopBar = <TChainId extends number>({
   toggleSidebar,
   isLite,
 }: MobileTopBarProps<TChainId>) => (
-  <Stack direction="row" paddingX={2}>
+  <Stack direction="row" width="100%" paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo isLite={isLite} appName={currentApp} />
     <Stack flexGrow={1} />
