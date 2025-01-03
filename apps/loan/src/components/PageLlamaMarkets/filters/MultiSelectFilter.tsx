@@ -1,43 +1,43 @@
-import { ColumnFilter, ColumnFiltersState } from '@tanstack/react-table'
-import { Dispatch, Fragment, ReactNode, SetStateAction, useMemo } from 'react'
-import { uniq } from 'lodash'
+import { Fragment, ReactNode, useMemo } from 'react'
+import { get, identity, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 
-// todo: doesn't this exist somewhere?
-const getByDeepKey = <T extends unknown>(obj: T, key: DeepKeys<T>) => {
-  const keys = key.split('.')
-  return keys.reduce((acc, k) => (acc as any)[k], obj) as string
+const getSortedStrings = <T extends any>(data: T[], field: DeepKeys<T>) => {
+  const values = data.map((d) => get(d, field) as string) // todo: validate value is string with typescript
+  return sortedUniq(sortBy(values, identity))
 }
 
 export const MultiSelectFilter = <T extends unknown>({
   columnFilters,
-  setColumnFilters,
+  setColumnFilter,
   data,
   defaultText,
   renderItem,
-  id,
+  field,
 }: {
-  columnFilters: ColumnFilter[]
-  setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>
+  columnFilters: Record<string, unknown>
+  setColumnFilter: (id: string, value: unknown) => void
   data: T[]
   defaultText: string
-  id: DeepKeys<T>
+  field: DeepKeys<T>
   renderItem?: (value: string) => ReactNode
 }) => {
-  const options = useMemo(() => uniq(data.map((d) => getByDeepKey(d, id))), [data, id])
+  const options = useMemo(() => getSortedStrings(data, field), [data, field])
+  const id = field.replaceAll('.', '_')
+  const value = (columnFilters[id] ?? []) as string[]
   return (
     <Select
       multiple
       displayEmpty
-      value={(columnFilters.find((f) => f.id === id)?.value as string[]) || []}
-      onChange={(e) => setColumnFilters([{ id, value: e.target.value }])}
+      value={value}
+      onChange={(e) => setColumnFilter(id, e.target.value)}
       fullWidth
       size="small"
       renderValue={(selected) => (
-        <Typography component="span">
+        <Typography component="span" variant="bodyMBold">
           {selected.length && selected.length < options.length
             ? selected.map((optionId, index) => (
                 <Fragment key={optionId}>

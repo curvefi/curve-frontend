@@ -7,10 +7,12 @@ import { FilterIcon } from '../icons/FilterIcon'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import Collapse from '@mui/material/Collapse'
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
+import { kebabCase } from 'lodash'
+import { ColumnFiltersState } from '@tanstack/react-table'
 
 const {
   Spacing,
@@ -30,7 +32,7 @@ export const TableFilters = ({
   onReload: () => void
   children: ReactNode
 }) => {
-  const [isExpanded, , , toggle] = useSwitch()
+  const [isExpanded, setIsExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
   const {
     design: {
       Button: { Outlined, Transition },
@@ -48,7 +50,7 @@ export const TableFilters = ({
         <Grid container size={{ tablet: 6, mobile: 12 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
           <IconButton
             size="small"
-            onClick={toggle}
+            onClick={() => setIsExpanded((prev) => !prev)}
             sx={{
               border: `1px solid ${isExpanded ? Chips.Current.Outline : Chips.Default.Stroke}`,
               backgroundColor: isExpanded ? Chips.Current.Fill : 'transparent',
@@ -68,4 +70,28 @@ export const TableFilters = ({
       <Collapse in={isExpanded}>{isExpanded != null && children}</Collapse>
     </Box>
   )
+}
+
+export function useColumnFilters() {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const setColumnFilter = useCallback(
+    (id: string, value: unknown) =>
+      setColumnFilters((filters) => [
+        ...filters.filter((f) => f.id !== id),
+        {
+          id,
+          value,
+        },
+      ]),
+    [setColumnFilters],
+  )
+  const columnFiltersById = columnFilters.reduce(
+    (acc, filter) => ({
+      ...acc,
+      [filter.id]: filter.value,
+    }),
+    {},
+  )
+
+  return [columnFilters, columnFiltersById, setColumnFilter] as const
 }

@@ -9,7 +9,7 @@ const Icon = styled(Image)({})
 
 export const ChainIcon = ({ blockchainId, size }: { blockchainId: string; size: keyof typeof IconSize }) => {
   // width and height are required, but overridden by responsive design tokens
-  const defaultSize = parseInt(IconSize[size].mobile) * 16 // convert rem to px
+  const defaultSize = parseFloat(IconSize[size].mobile) * 16 // convert rem to px
   return (
     <Icon
       alt={blockchainId}

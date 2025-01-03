@@ -1,14 +1,12 @@
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TableFilters } from '@ui-kit/shared/ui/TableFilters'
+import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/TableFilters'
 import { t } from '@lingui/macro'
-import { useMemo, useState } from 'react'
-import { CompactUsdCell, PoolTitleCell, LineGraphCell, UtilizationCell } from './cells'
+import { CompactUsdCell, LineGraphCell, PoolTitleCell, UtilizationCell } from './cells'
 import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { LendingVault } from '@/entities/vaults'
 import {
   ColumnDef,
-  ColumnFiltersState,
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
@@ -17,11 +15,18 @@ import {
 } from '@tanstack/react-table'
 import { LendingMarketsFilters } from '@/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import { FilterMeta, Row } from '@tanstack/table-core/src/types'
+import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 
 const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
+
+const hidden = (id: DeepKeys<LendingVault>) =>
+  columnHelper.accessor(id, {
+    filterFn: (row, columnId, filterValue) => !filterValue?.length || filterValue.includes(row.getValue(columnId)),
+    meta: { hidden: true },
+  })
+
 const columns = [
   columnHelper.accessor('assets', {
     header: t`Collateral • Borrow`,
@@ -52,29 +57,23 @@ const columns = [
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
-  // hidden columns
-  columnHelper.accessor('blockchainId', {
-    filterFn: (row, columnId, filterValue) => !filterValue?.length || filterValue.includes(row.getValue(columnId)),
-    meta: { hidden: true },
-  }),
+  hidden('blockchainId'),
+  hidden('assets.collateral.symbol'),
+  hidden('assets.borrowed.symbol'),
 ] satisfies ColumnDef<LendingVault, any>[]
 
 const DEFAULT_SORT = [{ id: 'totalSupplied.usdTotal', desc: true }]
 
 export const LendingMarketsTable = ({
   onReload,
-  data: sourceData,
+  data,
   headerHeight,
 }: {
   onReload: () => void
   data: LendingVault[]
   headerHeight: string
 }) => {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const data = useMemo(
-    () => sourceData.filter((d) => d.usdTotal > 0).sort((a, b) => b.usdTotal - a.usdTotal),
-    [sourceData],
-  )
+  const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
@@ -104,9 +103,9 @@ export const LendingMarketsTable = ({
         onReload={onReload}
         learnMoreUrl="https://docs.curve.fi/lending/overview/"
       >
-        <LendingMarketsFilters columnFilters={columnFilters} setColumnFilters={setColumnFilters} data={data} />
+        <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
       </TableFilters>
-      <DataTable table={table} headerHeight={headerHeight} rowHeight={'3xl'} />
+      <DataTable table={table} headerHeight={headerHeight} rowHeight={'3xl'} emptyText={t`No markets found`} />
     </Stack>
   )
 }

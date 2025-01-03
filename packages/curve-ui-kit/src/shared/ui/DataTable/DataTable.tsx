@@ -115,10 +115,12 @@ export const DataTable = <T extends unknown>({
   table,
   headerHeight,
   rowHeight,
+  emptyText,
 }: {
   table: ReturnType<typeof useReactTable<T>>
   headerHeight: string
   rowHeight: keyof typeof Sizing
+  emptyText: string
 }) => (
   <Table sx={{ minWidth: MinWidth.table }} data-testid="data-table">
     <TableHead
@@ -139,6 +141,19 @@ export const DataTable = <T extends unknown>({
       ))}
     </TableHead>
     <TableBody>
+      {table.getRowModel().rows.length === 0 && (
+        <TableRow>
+          <Typography
+            variant="tableCellL"
+            colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
+            component="td"
+            padding={7}
+            textAlign="center"
+          >
+            {emptyText}
+          </Typography>
+        </TableRow>
+      )}
       {table.getRowModel().rows.map((row) => (
         <DataRow<T> key={row.id} row={row} rowHeight={rowHeight} />
       ))}
