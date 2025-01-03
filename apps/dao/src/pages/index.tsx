@@ -12,10 +12,13 @@ const PageAnalytics = dynamic(() => import('@/components/PageAnalytics/Page'), {
 const PageUser = dynamic(() => import('@/components/PageUser/Page'), { ssr: false })
 const PageGauge = dynamic(() => import('@/components/PageGauge/Page'), { ssr: false })
 const PageVeCrv = dynamic(() => import('@/components/PageVeCrv/Page'), { ssr: false })
+const PageDisclaimer = dynamic(() => import('@/components/PageDisclaimer/Page'), { ssr: false })
+
 const App: NextPage = () => {
   const SubRoutes = (
     <>
       <Route path=":network/" element={<PageDao />} />
+      <Route path=":network/disclaimer" element={<PageDisclaimer />} />
       <Route path=":network/proposals" element={<PageDao />} />
       <Route path=":network/proposals/:proposalId" element={<PageProposal />} />
       <Route path=":network/user/:userAddress" element={<PageUser />} />
