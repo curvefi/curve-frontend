@@ -1,6 +1,5 @@
 import { ChainSwitcher, ChainSwitcherProps } from 'curve-ui-kit/src/features/switch-chain'
 import Stack from '@mui/material/Stack'
-import { Box } from '@mui/material'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
