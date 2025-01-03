@@ -19,7 +19,7 @@ export const MobileTopBar = <TChainId extends number>({
   toggleSidebar,
   isLite,
 }: MobileTopBarProps<TChainId>) => (
-  <Stack direction="row" paddingX={2}>
+  <Stack direction="row" width="100%" paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo isLite={isLite} appName={currentApp} />
     <Stack flexGrow={1} />

@@ -22,11 +22,16 @@ export const ModalDialog = ({ children, open, onClose, title, titleAction, foote
   <Dialog open={open} onClose={onClose}>
     <Card
       sx={{
-        ...SizesAndSpaces.ModalHeight,
-        width: SizesAndSpaces.ModalWidth.md,
+        ...SizesAndSpaces.ModalHeight.sm,
+        width: SizesAndSpaces.ModalWidth.sm,
         maxWidth: '100vw',
         display: 'flex',
         flexDirection: 'column',
+
+        [`@media (min-width: ${SizesAndSpaces.ModalWidth.md})`]: {
+          ...SizesAndSpaces.ModalHeight.md,
+          width: SizesAndSpaces.ModalWidth.md,
+        },
       }}
     >
       <CardHeader
