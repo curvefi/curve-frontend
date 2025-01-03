@@ -5,11 +5,18 @@ import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 
-const getSortedStrings = <T extends any>(data: T[], field: DeepKeys<T>) => {
-  const values = data.map((d) => get(d, field) as string) // todo: validate value is string with typescript
+/**
+ * Get all unique string values from a field in an array of objects and sort them alphabetically.
+ * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
+ */
+const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
+  const values = data.map((d) => get(d, field) as string)
   return sortedUniq(sortBy(values, identity))
 }
 
+/**
+ * A filter for tanstack tables that allows multi-select of string values.
+ */
 export const MultiSelectFilter = <T extends unknown>({
   columnFilters,
   setColumnFilter,

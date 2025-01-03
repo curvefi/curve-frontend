@@ -7,6 +7,7 @@ import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 
 const { Spacing } = SizesAndSpaces
 
+/** Display a single badge for a pool. */
 const Badge = ({ children, compact }: { children: ReactNode; compact?: boolean }) => (
   <Typography
     variant="buttonXs"
@@ -28,11 +29,13 @@ const Badge = ({ children, compact }: { children: ReactNode; compact?: boolean }
   </Typography>
 )
 
+/** Displays badges for a pool, such as the chain icon and the pool type. */
 export const PoolBadges = ({ blockchainId }: { blockchainId: string }) => (
   <Stack direction="row" gap={Spacing.sm}>
     <Badge compact>
       <ChainIcon blockchainId={blockchainId} size="md" />
     </Badge>
+    {/* TODO: We should display 'Mint' for some pools but what is the logic? */}
     <Badge>{t`Pool`}</Badge>
   </Stack>
 )

@@ -13,6 +13,10 @@ import { MinimumSliderFilter } from '@/components/PageLlamaMarkets/filters/Minim
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * Displays a token with its icon and symbol.
+ * This is used in the lending markets filters to display collateral and debt tokens.
+ */
 const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; field: 'collateral' | 'borrowed' }) => {
   const { blockchainId, address } = useMemo(
     () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
@@ -28,6 +32,9 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; 
   )
 }
 
+/**
+ * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
+ */
 export const LendingMarketsFilters = ({
   ...props
 }: {

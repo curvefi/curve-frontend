@@ -21,12 +21,14 @@ const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
 
+/** Define a hidden column. */
 const hidden = (id: DeepKeys<LendingVault>) =>
   columnHelper.accessor(id, {
     filterFn: (row, columnId, filterValue) => !filterValue?.length || filterValue.includes(row.getValue(columnId)),
     meta: { hidden: true },
   })
 
+/** Columns for the lending markets table. */
 const columns = [
   columnHelper.accessor('assets', {
     header: t`Collateral • Borrow`,
