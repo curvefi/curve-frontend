@@ -7,7 +7,7 @@ import TableRow from '@mui/material/TableRow'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useIntersectionObserver } from 'ui'
 import { Cell, Column, flexRender, Header, Row, useReactTable } from '@tanstack/react-table'
-import { ArrowDownIcon } from '../../icons/ArrowDownIcon'
+import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 const { Sizing, Spacing, MinWidth } = SizesAndSpaces

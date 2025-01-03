@@ -74,7 +74,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
             routerPathname,
             rNetwork,
           ),
-        [hasRouter, network, networks, rChainId, rLocalePathname, routerCached, routerNetwork, routerPathname],
+        [hasRouter, network, networks, rChainId, rLocalePathname, rNetwork, routerCached, routerPathname],
       )}
       themes={[
         theme,

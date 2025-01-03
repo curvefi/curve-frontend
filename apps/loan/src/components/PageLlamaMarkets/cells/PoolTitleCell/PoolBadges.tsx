@@ -5,7 +5,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Typography from '@mui/material/Typography'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 
-const { Spacing, IconSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 const Badge = ({ children, compact }: { children: ReactNode; compact?: boolean }) => (
   <Typography
