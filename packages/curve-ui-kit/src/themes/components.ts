@@ -1,5 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
-import { defineMuiButton, defineMuiIconButton } from './button'
+import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { DesignSystem } from './design'
@@ -47,6 +47,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
     },
   },
   MuiIconButton: defineMuiIconButton(design),
+  MuiToggleButton: defineMuiToggleButton(design),
   MuiInputBase: {
     styleOverrides: {
       root: {

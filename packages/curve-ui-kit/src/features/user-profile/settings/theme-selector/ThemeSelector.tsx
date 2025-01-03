@@ -15,6 +15,8 @@ export const ThemeSelector = () => {
       <Label>{t`Theme`}</Label>
 
       <ToggleButtonGroup
+        color="primary"
+        size="small"
         value={theme}
         exclusive
         onChange={(_, value) => (value ? setTheme(value) : {})}
