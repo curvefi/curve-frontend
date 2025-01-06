@@ -7,11 +7,12 @@ import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 
-export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
+export const createComponents = (design: DesignSystem, typography: TypographyOptions): ThemeOptions['components'] => ({
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {
@@ -46,6 +47,12 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } },
     },
   },
+  MuiFormControlLabel: {
+    styleOverrides: {
+      root: { margin: '0' }, // by default there is a negative margin 🤦
+      label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
+    },
+  },
   MuiIconButton: defineMuiIconButton(design),
   MuiInputBase: {
     styleOverrides: {
@@ -56,7 +63,6 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
           boxShadow: '0 0 0 100px #266798 inset',
           '& svg': { color: 'rgb(232, 240, 254)' },
         },
-
         '&.Mui-focused': {
           borderColor: design.Inputs.Base.Default.Border.Active,
         },

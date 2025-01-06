@@ -8,11 +8,16 @@ import Typography from '@mui/material/Typography'
 import { PoolBadges } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
 import { PoolWarnings } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
 import { getImageBaseUrl } from '@/ui/utils'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
 
 const { Spacing } = SizesAndSpaces
 
-export const PoolTitleCell = ({ getValue, row }: CellContext<LendingVault, LendingVault['assets']>) => {
-  const coins = useMemo(() => Object.values(getValue()), [getValue])
+export const PoolTitleCell = ({ getValue, row, table }: CellContext<LendingVault, LendingVault['assets']>) => {
+  const showCollateral = table.getColumn(cleanColumnId('assets.collateral.symbol'))!.getIsVisible()
+  const coins = useMemo(() => {
+    const { borrowed, collateral } = getValue()
+    return showCollateral ? [collateral, borrowed] : [borrowed]
+  }, [getValue, showCollateral])
   const { blockchainId } = row.original
   const imageBaseUrl = getImageBaseUrl(blockchainId)
   return (

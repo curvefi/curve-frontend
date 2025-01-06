@@ -4,6 +4,7 @@ import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
 
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.
@@ -33,7 +34,7 @@ export const MultiSelectFilter = <T extends unknown>({
   renderItem?: (value: string) => ReactNode
 }) => {
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
-  const id = field.replaceAll('.', '_')
+  const id = cleanColumnId(field)
   const value = (columnFilters[id] ?? []) as string[]
   return (
     <Select
