@@ -58,7 +58,7 @@ describe('LlamaLend Markets', () => {
     {
       title: 'utilization',
       columnId: 'utilizationPercent',
-      expectedFilterText: 'Min Utilization: 50%',
+      expectedFilterText: 'Min Utilization: 50.00%',
       expectedFirstCell: '84.91%',
     },
   )
