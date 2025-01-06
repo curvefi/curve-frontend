@@ -14,6 +14,7 @@ import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
 import { Duration } from 'curve-ui-kit/src/themes/design/0_primitives'
+import Container from '@mui/material/Container'
 
 export type ChainOption<TChainId> = {
   chainId: TChainId
@@ -58,13 +59,15 @@ export const ChainSwitcher = <TChainId extends number>({
       <Snackbar
         open={isSnackbarOpen}
         onClose={hideSnackbar}
-        anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        sx={{ top: headerHeight, marginTop: 4 }}
-        autoHideDuration={Duration.Snackbar * 100}
+        anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
+        sx={{ top: headerHeight }}
+        autoHideDuration={Duration.Snackbar}
       >
-        <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
-          {t`This application is only available on the Ethereum Mainnet`}
-        </Alert>
+        <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
+          <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
+            {t`This application is only available on the Ethereum Mainnet`}
+          </Alert>
+        </Container>
       </Snackbar>
 
       {isOpen != null && (
