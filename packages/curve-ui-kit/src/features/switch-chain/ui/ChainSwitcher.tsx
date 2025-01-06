@@ -29,6 +29,7 @@ export type ChainSwitcherProps<TChainId> = {
   onChange: (chainId: TChainId) => void
   disabled?: boolean
   theme: ThemeKey
+  headerHeight: string
 }
 
 export const ChainSwitcher = <TChainId extends number>({
@@ -36,6 +37,7 @@ export const ChainSwitcher = <TChainId extends number>({
   chainId,
   onChange,
   disabled,
+  headerHeight,
 }: ChainSwitcherProps<TChainId>) => {
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
@@ -57,9 +59,10 @@ export const ChainSwitcher = <TChainId extends number>({
         open={isSnackbarOpen}
         onClose={hideSnackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+        sx={{ top: headerHeight }}
         autoHideDuration={Duration.Snackbar}
       >
-        <Alert variant="filled" severity="error" data-testid="alert-eth-only">
+        <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
           {t`This application is only available on the Ethereum Mainnet`}
         </Alert>
       </Snackbar>
