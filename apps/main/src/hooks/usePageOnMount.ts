@@ -4,10 +4,10 @@ import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@/common/features/connect-wallet'
+import { useConnectWallet, useSetChain, useSetLocale, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
-import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
+import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { useNetworkFromUrl, useParsedParams } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
@@ -250,7 +250,10 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (isSuccess(connectState)) {
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
-        dynamicActivate(rLocale)
+        ;(async () => {
+          let data = await import(`@/locales/${rLocale}/messages`)
+          dynamicActivate(rLocale, data)
+        })()
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
       } else if (

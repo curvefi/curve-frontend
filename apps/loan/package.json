@@ -10,6 +10,7 @@
     "build": "yarn i18n:extract && yarn i18n:compile && next build",
     "start": "next start",
     "lint": "next lint",
+    "typecheck": "tsc --noEmit",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
     "postpublish": "pinst --enable",
@@ -21,7 +22,8 @@
     "eslint-config-custom": "*",
     "react": "*",
     "react-dom": "*",
-    "tsconfig": "*"
+    "tsconfig": "*",
+    "typescript": "*"
   },
   "dependencies": {
     "@curvefi/lending-api": "^2.4.0",
@@ -29,10 +31,10 @@
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
+    "@tanstack/react-table": "^8.20.6",
     "bignumber.js": "^9.1.2",
     "cross-fetch": "^3.1.5",
     "curve-common": "*",
-    "curve-lib": "*",
     "curve-ui-kit": "*",
     "dayjs": "^1.11.7",
     "ethers": "^6.13.4",
@@ -75,6 +77,7 @@
     "pinst": "^2.1.4",
     "prop-types": "^15.6.0",
     "tsconfig": "*",
+    "typescript": "*",
     "webpack": "^5.83.1"
   },
   "resolutions": {

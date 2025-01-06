@@ -1,7 +1,7 @@
 import type { Dayjs } from 'dayjs'
 
 import { parseDate } from '@internationalized/date'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 export function todayInMilliseconds() {
   const parsedToday = dayjs().format('YYYY-MM-DD')

@@ -7,7 +7,7 @@ import styled from 'styled-components'
 
 import { breakpoints } from '@/ui/utils/responsive'
 import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 import { Chip } from '@/ui/Typography'
 import Button from '@/ui/Button'

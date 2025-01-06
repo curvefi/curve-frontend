@@ -1,14 +1,14 @@
 import type { FormType as LockFormType } from '@/components/PageVeCrv/types'
 import type { DateValue } from '@internationalized/date'
 
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 import PromisePool from '@supercharge/promise-pool/dist'
 
 import networks from '@/networks'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { getErrorMessage } from '@/utils'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib'
 
 export const helpers = {
   initCurveJs: async (chainId: ChainId, wallet: Wallet | null) => {

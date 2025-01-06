@@ -9,15 +9,14 @@ import { useCallback, useEffect, useState } from 'react'
 import { I18nProvider as AriaI18nProvider } from 'react-aria'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales } from '@/common/features/connect-wallet'
-import { initOnboard } from '@/common/features/connect-wallet'
-import { persister, queryClient } from '@/shared/api/query-client'
+import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/default'
-import { dynamicActivate, initTranslation, updateAppLocale } from '@/lib/i18n'
+import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
@@ -91,7 +90,10 @@ function CurveApp({ Component }: AppProps) {
     const { rLocale } = getLocaleFromUrl()
     const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
-    dynamicActivate(parsedLocale)
+    ;(async () => {
+      let data = await import(`@/locales/${parsedLocale}/messages`)
+      dynamicActivate(parsedLocale, data)
+    })()
     updateAppLocale(parsedLocale, updateGlobalStoreByKey)
     ;(async () => {
       const networks = await fetchNetworks()

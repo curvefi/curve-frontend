@@ -8,12 +8,12 @@ import '@/globals.css'
 import { useCallback, useEffect, useState } from 'react'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
+import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
 import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/index'
-import { dynamicActivate, initTranslation } from '@/lib/i18n'
+import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
@@ -23,7 +23,7 @@ import { getStorageValue } from '@/utils/storage'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
-import { persister, queryClient } from '@/shared/api/query-client'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { QueryProvider } from '@/ui/QueryProvider'
 
 i18n.load({ en: messagesEn })
@@ -76,7 +76,10 @@ function CurveApp({ Component }: AppProps) {
     const { rLocale } = getLocaleFromUrl()
     const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
-    dynamicActivate(parsedLocale)
+    ;(async () => {
+      let data = await import(`@/locales/${parsedLocale}/messages`)
+      dynamicActivate(parsedLocale, data)
+    })()
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard

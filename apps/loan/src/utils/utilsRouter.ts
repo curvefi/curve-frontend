@@ -1,8 +1,8 @@
 import type { Params } from 'react-router'
 import type { FormType as ManageFormType } from '@/components/PageLoanManage/types'
-import type { Locale } from '@/lib/i18n'
+import type { Locale } from '@ui-kit/lib/i18n'
 
-import { DEFAULT_LOCALES, parseLocale } from '@/lib/i18n'
+import { DEFAULT_LOCALES, parseLocale } from '@ui-kit/lib/i18n'
 import { ROUTE } from '@/constants'
 import networks, { networksIdMapper } from '@/networks'
 import { CRVUSD_ROUTES } from '@ui-kit/shared/routes'

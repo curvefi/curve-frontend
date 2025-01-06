@@ -98,3 +98,5 @@ export const Sizing = {
   '700': '4rem', // 64px
   '800': '5.5rem', // 88px
 } as const
+
+export const TransitionFunction = `ease-out 0.256s`

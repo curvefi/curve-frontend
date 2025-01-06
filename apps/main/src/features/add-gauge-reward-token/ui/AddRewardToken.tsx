@@ -8,7 +8,7 @@ import type { AddRewardFormValues, AddRewardTokenProps } from '@/features/add-ga
 import { DistributorInput, EstimatedGasInfo, FormActions, TokenSelector } from '@/features/add-gauge-reward-token/ui'
 import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/entities/gauge'
 import { useSignerAddress } from '@/entities/signer'
-import { formDefaultOptions } from '@/shared/model/form'
+import { formDefaultOptions } from '@ui-kit/lib/model/form'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@/ui/styled-containers'
 import AlertFormError from '@/components/AlertFormError'
 import useStore from '@/store/useStore'

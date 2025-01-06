@@ -1,10 +1,10 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
-import type { Locale } from '@/lib/i18n'
+import type { Locale } from '@ui-kit/lib/i18n'
 import { ConnectState, getPageWidthClassName } from '@/ui/utils'
 import isEqual from 'lodash/isEqual'
 import produce from 'immer'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import { setStorageValue } from '@/utils'
 import curvejsApi from '@/lib/curvejs'
 

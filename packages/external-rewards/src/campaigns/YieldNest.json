@@ -1,5 +1,5 @@
 {
-  "campaignName": "",
+  "campaignName": "Seeds",
   "platform": "YieldNest",
   "description": "Points for providing liquidity.",
   "platformImageId": "yieldnest.png",
@@ -106,7 +106,7 @@
       "action": "lp",
       "description": "null",
       "campaignStart": "1734688800",
-      "campaignEnd": "1709337599",
+      "campaignEnd": "1770000000",
       "address": "0xd65ed4bce447195187f37ce7d82f56adf1826f8f",
       "network": "ethereum",
       "multiplier": "2.5x",

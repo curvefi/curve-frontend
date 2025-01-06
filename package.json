@@ -15,6 +15,7 @@
     "dev": "turbo dev --parallel",
     "lint": "turbo lint",
     "lint:fix": "turbo lint -- --fix",
+    "typecheck": "turbo typecheck --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "is-ci || husky",
@@ -39,7 +40,7 @@
     "turbo": "^2.1.2",
     "typescript": "^5"
   },
-  "packageManager": "yarn@4.5.0",
+  "packageManager": "yarn@4.6.0",
   "lint-staged": {
     "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
@@ -51,6 +52,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1"
+    "@types/react-dom": "^18.3.1",
+    "typescript": "^5"
   }
 }

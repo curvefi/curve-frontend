@@ -10,7 +10,6 @@ import Symbiotic from './Symbiotic.json'
 import Usual from './Usual.json'
 import YieldNest from './YieldNest.json'
 import Fraxtal from './Fraxtal.json'
-import Swell from './Swell.json'
 import Resolv from './Resolv.json'
 import Lombard from './Lombard.json'
 import TurtleSeeds from './TurtleSeeds.json'
@@ -22,6 +21,8 @@ import LevelMoney from './LevelMoney.json'
 import Corn from './Corn.json'
 import XPoints from './XPoints.json'
 import MindNetwork from './MindNetwork.json'
+import DTrinity from './DTrinity.json'
+import YieldFi from './YieldFi.json'
 
 export {
   DLCLink,
@@ -36,7 +37,6 @@ export {
   Usual,
   YieldNest,
   Fraxtal,
-  Swell,
   Resolv,
   Lombard,
   TurtleSeeds,
@@ -48,4 +48,6 @@ export {
   Corn,
   XPoints,
   MindNetwork,
+  DTrinity,
+  YieldFi,
 }

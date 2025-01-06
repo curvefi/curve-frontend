@@ -8,12 +8,12 @@ import 'focus-visible'
 import '@/globals.css'
 import { HashRouter } from 'react-router-dom'
 import type { AppProps } from 'next/app'
-import { connectWalletLocales, initOnboard } from '@/common/features/connect-wallet'
-import { persister, queryClient } from '@/shared/api/query-client'
+import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'
+import { persister, queryClient } from '@ui-kit/lib/api/query-client'
 import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
 import GlobalStyle from '@/globalStyle'
 import Page from '@/layout/index'
-import { dynamicActivate, initTranslation } from '@/lib/i18n'
+import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import networks from '@/networks'
 import { getPageWidthClassName } from '@/store/createLayoutSlice'
@@ -69,7 +69,10 @@ function CurveApp({ Component }: AppProps) {
     const { rLocale } = getLocaleFromUrl()
     const parsedLocale = rLocale?.value ?? 'en'
     initTranslation(i18n, parsedLocale)
-    dynamicActivate(parsedLocale)
+    ;(async () => {
+      let data = await import(`@/locales/${parsedLocale}/messages`)
+      dynamicActivate(parsedLocale, data)
+    })()
     updateGlobalStoreByKey('locale', parsedLocale)
 
     // init onboard
