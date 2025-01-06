@@ -91,8 +91,8 @@ describe('LlamaLend Markets', () => {
   })
 
   const tokenTestCase = oneOf(
-    { title: 'collateral', iconIndex: 1, columnId: 'assets_collateral_symbol' },
-    { title: 'debt', iconIndex: 0, columnId: 'assets_borrowed_symbol' },
+    { title: 'collateral', iconIndex: 0, columnId: 'assets_collateral_symbol' },
+    { title: 'debt', iconIndex: 1, columnId: 'assets_borrowed_symbol' },
   )
   const tokenSelector = `[data-testid="data-table-cell-assets"]:first [data-testid^="token-icon-"]`
   it(`should allow filtering by ${tokenTestCase.title} token`, () => {
