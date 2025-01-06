@@ -57,7 +57,14 @@ export const TableColumnVisibilityPopover = ({
           {columns.map(({ columnId, active, label }) => (
             <FormControlLabel
               key={columnId}
-              control={<Switch checked={active} onChange={() => toggleColumnVisibility(columnId)} size="small" />}
+              control={
+                <Switch
+                  data-testid={`visibility-toggle-${cleanColumnId(columnId)}`}
+                  checked={active}
+                  onChange={() => toggleColumnVisibility(columnId)}
+                  size="small"
+                />
+              }
               label={label}
             />
           ))}
@@ -71,7 +78,10 @@ export const TableColumnVisibilityPopover = ({
  * Hook to manage column visibility settings. Currently saved in the state.
  */
 export const useColumnSettings = (groups: ColumnVisibilityGroup[]) => {
+  /** current visibility settings in grouped format */
   const [columnSettings, setColumnSettings] = useState(groups)
+
+  /** toggle visibility of a column by its id */
   const toggleColumnVisibility = useCallback(
     (columnId: string): void =>
       setColumnSettings((prev) =>
@@ -85,6 +95,7 @@ export const useColumnSettings = (groups: ColumnVisibilityGroup[]) => {
     [],
   )
 
+  /** current visibility state as used internally by tanstack */
   const columnVisibility: Record<string, boolean> = useMemo(
     () =>
       columnSettings.reduce(
@@ -97,6 +108,7 @@ export const useColumnSettings = (groups: ColumnVisibilityGroup[]) => {
     [columnSettings],
   )
 
+  /** callback to update visibility state by ID, used by tanstack */
   const onColumnVisibilityChange: OnChangeFn<VisibilityState> = useCallback(
     (newVisibility) => {
       const visibility = typeof newVisibility === 'function' ? newVisibility(columnVisibility) : newVisibility

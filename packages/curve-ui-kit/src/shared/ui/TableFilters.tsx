@@ -30,15 +30,16 @@ const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
+    testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ onClick, active, icon: Icon }, ref) {
+>(function TableButton({ onClick, active, icon: Icon, testId }, ref) {
   return (
     <IconButton
       ref={ref}
       size="small"
       onClick={onClick}
-      data-testid="btn-expand-filters"
+      data-testid={testId}
       sx={(t) => ({
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
@@ -72,7 +73,7 @@ export const TableFilters = ({
   children: ReactNode
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
-  const [settingsOpen, openSettings, closeSettings] = useSwitch()
+  const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
     <Box sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}>
@@ -82,8 +83,18 @@ export const TableFilters = ({
           <Typography variant="bodySRegular">{subtitle}</Typography>
         </Grid>
         <Grid container size={{ tablet: 6, mobile: 12 }} justifyContent="flex-end" spacing={Spacing.xs} flexGrow={1}>
-          <TableButton ref={settingsRef} onClick={openSettings} icon={ToolkitIcon} />
-          <TableButton onClick={() => setFilterExpanded((prev) => !prev)} active={filterExpanded} icon={FilterIcon} />
+          <TableButton
+            ref={settingsRef}
+            onClick={openVisibilitySettings}
+            icon={ToolkitIcon}
+            testId="btn-visibility-settings"
+          />
+          <TableButton
+            onClick={() => setFilterExpanded((prev) => !prev)}
+            active={filterExpanded}
+            icon={FilterIcon}
+            testId="btn-expand-filters"
+          />
           <TableButton onClick={onReload} icon={ReloadIcon} />
           <Button size="small" color="secondary" component={Link} href={learnMoreUrl} target="_blank">
             Learn More
@@ -92,13 +103,13 @@ export const TableFilters = ({
       </Grid>
       <Collapse in={filterExpanded}>{filterExpanded != null && children}</Collapse>
 
-      {settingsOpen != null && settingsRef.current && (
+      {visibilitySettingsOpen != null && settingsRef.current && (
         <TableColumnVisibilityPopover
           anchorEl={settingsRef.current}
           columnVisibilityGroups={columnVisibilityGroups}
           toggleColumnVisibility={toggleColumnVisibility}
-          open={settingsOpen}
-          onClose={closeSettings}
+          open={visibilitySettingsOpen}
+          onClose={closeVisibilitySettings}
         />
       )}
     </Box>

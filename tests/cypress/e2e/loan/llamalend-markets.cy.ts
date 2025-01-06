@@ -94,15 +94,30 @@ describe('LlamaLend Markets', () => {
     { title: 'collateral', iconIndex: 1, columnId: 'assets_collateral_symbol' },
     { title: 'debt', iconIndex: 0, columnId: 'assets_borrowed_symbol' },
   )
+  const tokenSelector = `[data-testid="data-table-cell-assets"]:first [data-testid^="token-icon-"]`
   it(`should allow filtering by ${tokenTestCase.title} token`, () => {
     const { columnId, iconIndex } = tokenTestCase
     cy.get(`[data-testid="btn-expand-filters"]`).click()
     cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
     cy.get(`#menu-${columnId} [data-value="CRV"]`).click()
-    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid^="token-icon-"]`)
-      .eq(iconIndex)
-      .should('have.attr', 'data-testid', `token-icon-CRV`)
+    cy.get(tokenSelector).eq(iconIndex).should('have.attr', 'data-testid', `token-icon-CRV`)
     cy.get(`#menu-${columnId} [data-value="crvUSD"]`).click()
     cy.get(`[data-testid="token-icon-crvUSD"]`).should('be.visible')
+  })
+
+  it('should toggle columns', () => {
+    const columnId = oneOf('totalSupplied_usdTotal', 'utilizationPercent', 'rates_borrowApyPcent', 'rates_lendApyPcent')
+    const headerSelector = `[data-testid="data-table-header-${columnId}"]`
+    cy.get(headerSelector).should('be.visible')
+    cy.get(`[data-testid="btn-visibility-settings"]`).click()
+    cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
+    cy.get(headerSelector).should('not.exist')
+  })
+
+  it('should toggle the collateral token', () => {
+    cy.get(tokenSelector).should('have.length', 2)
+    cy.get(`[data-testid="btn-visibility-settings"]`).click()
+    cy.get(`[data-testid="visibility-toggle-assets_collateral_symbol"]`).click()
+    cy.get(tokenSelector).should('have.length', 1)
   })
 })
