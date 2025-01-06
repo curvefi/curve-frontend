@@ -11,12 +11,14 @@ import CopyIconButton from '@/components/CopyIconButton'
 import ExternalLinkIconButton from '@/components/ExternalLinkIconButton'
 
 interface GaugeMetricsProps {
-  gaugeData: GaugeFormattedData
+  gaugeData: GaugeFormattedData | undefined
   dataLoading: boolean
 }
 
 const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeData.address.toLowerCase()])
+  const gaugeCurveApiData = useStore(
+    (state) => state.gauges.gaugeCurveApiData.data[gaugeData?.address.toLowerCase() || ''],
+  )
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]
     : gaugeCurveApiData?.lendingVaultUrls.deposit
@@ -31,23 +33,23 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             title={t`Gauge`}
             data={
               <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address)}</StyledMetricsColumnData>
+                <StyledMetricsColumnData>{shortenTokenAddress(gaugeData?.address || '')}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={networks[1].scanAddressPath(gaugeData?.address)}
+                    href={networks[1].scanAddressPath(gaugeData?.address || '')}
                     tooltip={t`View on explorer`}
                   />
-                  <CopyIconButton copyContent={gaugeData?.address} tooltip={t`Copy address`} />
+                  <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
                 </BigScreenButtonsWrapper>
               </Box>
             }
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[1].scanAddressPath(gaugeData?.address)}
+              href={networks[1].scanAddressPath(gaugeData?.address || '')}
               tooltip={t`View on explorer`}
             />
-            <CopyIconButton copyContent={gaugeData?.address} tooltip={t`Copy address`} />
+            <CopyIconButton copyContent={gaugeData?.address || ''} tooltip={t`Copy address`} />
           </SmallScreenButtonsWrapper>
         </Box>
         <MetricsComp
@@ -55,7 +57,9 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Created`}
           data={
             <StyledMetricsColumnData>
-              {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(gaugeData?.creation_date).getTime() / 1000))}
+              {formatDateFromTimestamp(
+                convertToLocaleTimestamp(new Date(gaugeData?.creation_date || '').getTime() / 1000),
+              )}
             </StyledMetricsColumnData>
           }
         />

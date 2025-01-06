@@ -5,10 +5,10 @@ import type { INetworkName } from '@curvefi/stablecoin-api/lib/interfaces'
 
 import { ethers } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@/common/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet, useSetChain, useSetLocale } from '@ui-kit/features/connect-wallet'
 
 import { CONNECT_STAGE, REFRESH_INTERVAL, ROUTE } from '@/constants'
-import { dynamicActivate, updateAppLocale } from '@/lib/i18n'
+import { dynamicActivate, updateAppLocale } from '@ui-kit/lib/i18n'
 import { getStorageValue, setStorageValue } from '@/utils/storage'
 import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { getWalletChainId } from '@/store/createWalletSlice'
@@ -123,7 +123,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           setStorageValue('APP_CACHE', { walletName: walletState.label, timestamp: Date.now().toString() })
           const walletChainId = getWalletChainId(walletState)
           if (walletChainId && walletChainId !== parsedParams.rChainId) {
-            const success = await setChain({ chainId: ethers.utils.hexValue(parsedParams.rChainId) })
+            const success = await setChain({ chainId: ethers.toQuantity(parsedParams.rChainId) })
             if (success) {
               updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [parsedParams.rChainId, true])
             } else {
@@ -166,7 +166,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
         const [currChainId, newChainId] = options
         if (wallet) {
           try {
-            const success = await setChain({ chainId: ethers.utils.hexValue(newChainId) })
+            const success = await setChain({ chainId: ethers.toQuantity(newChainId) })
             if (!success) throw new Error('reject network switch')
             updateConnectState('loading', CONNECT_STAGE.CONNECT_API, [newChainId, true])
           } catch (error) {
@@ -256,7 +256,10 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
     if (isSuccess(connectState)) {
       const rLocale = parsedParams.rLocale?.value ?? 'en'
       if (rLocale !== document.documentElement.lang) {
-        dynamicActivate(rLocale)
+        ;(async () => {
+          let data = await import(`@/locales/${rLocale}/messages`)
+          dynamicActivate(rLocale, data)
+        })()
         updateAppLocale(rLocale, updateGlobalStoreByKey)
         updateWalletLocale(rLocale)
       } else if (

@@ -4,7 +4,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/components/PageRouterSwap/types'
 import type { FormValues as PoolSwapFormValues } from '@/components/PagePool/Swap/types'
 import countBy from 'lodash/countBy'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 import chunk from 'lodash/chunk'
 import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
@@ -27,7 +27,7 @@ import {
   getSwapIsLowExchangeRate,
   _parseRoutesAndOutput,
 } from '@/utils/utilsSwap'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import useStore from '@/store/useStore'
 
 const helpers = {

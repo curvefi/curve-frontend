@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
-import { getWalletSignerAddress, useConnectWallet } from '@/common/features/connect-wallet'
+import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/connect-wallet'
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
-import { Header as NewHeader } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
 import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
 import { APP_LINK } from '@ui-kit/shared/routes'
@@ -118,7 +118,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
         { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
       ]}
       BannerProps={BannerProps}
-      bannerHeight={bannerHeight}
+      height={useHeaderHeight(bannerHeight)}
       sections={sections}
     />
   )

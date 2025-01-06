@@ -3,7 +3,7 @@ import type { State } from '@/store/useStore'
 import type { FormEstGas } from '@/components/PageLoanManage/types'
 import type { FormStatus } from '@/components/PageLoanManage/LoanSelfLiquidation/types'
 
-import { isGreaterThanOrEqualTo } from '@/shared/curve-lib'
+import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 import cloneDeep from 'lodash/cloneDeep'
 
 import { FormWarning } from '@/components/AlertFormWarning'

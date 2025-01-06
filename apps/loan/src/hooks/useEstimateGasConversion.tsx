@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import networks from '@/networks'
 import { BN, formatNumber } from '@/ui/utils'
-import { gweiToEther, weiToGwei } from '@/shared/curve-lib'
+import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 import useStore from '@/store/useStore'
 

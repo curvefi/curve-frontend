@@ -1,11 +1,11 @@
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
-import type { Locale } from '@/lib/i18n'
+import type { Locale } from '@ui-kit/lib/i18n'
 
 import produce from 'immer'
 
-import { ethers, Contract } from 'ethers'
+import { ethers, Contract, ContractRunner } from 'ethers'
 import { Interface } from '@ethersproject/abi'
 import { httpFetcher, log } from '@/utils/helpers'
 import { setStorageValue } from '@/utils/storage'
@@ -39,7 +39,7 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  getContract(jsonModuleName: string, contractAddress: string, provider: Provider): Promise<ethers.Contract | null>
+  getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
   fetchCrvUSDTotalSupply(api: Curve): Promise<void>
   fetchDailyVolume(): Promise<void>
   setAppCache<T>(key: AppCacheKeys, value: T): void

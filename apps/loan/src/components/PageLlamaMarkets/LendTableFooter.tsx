@@ -15,7 +15,7 @@ import SvgIcon from '@mui/material/SvgIcon'
 const { Spacing, IconSize } = SizesAndSpaces
 
 const GridItem = ({ children, title, icon: Icon }: { children: ReactNode; title: string; icon: typeof SvgIcon }) => (
-  <Grid size={{ tablet: 4, mobile: 12 }}>
+  <Grid size={{ tablet: 4, mobile: 12 }} sx={{ marginBlock: { mobile: Spacing.lg.mobile } }}>
     <Icon sx={{ fontSize: IconSize.xxl }} />
     <Typography variant="headingXsBold" sx={{ marginBlock: Spacing.sm }}>
       {title}

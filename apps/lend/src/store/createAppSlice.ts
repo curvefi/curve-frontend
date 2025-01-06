@@ -2,11 +2,11 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
 import produce from 'immer'
-import { log } from '@/shared/lib/logging'
+import { log } from '@ui-kit/lib/logging'
 import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
 import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import { LocaleValue } from '@/lib/i18n'
+import { Locale } from '@ui-kit/lib/i18n'
 import { prefetchMarkets } from '@/entities/chain/chain-query'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -23,7 +23,7 @@ type SliceState = {
   isLoadingCurve: true
   isMobile: boolean
   isPageVisible: boolean
-  locale: LocaleValue
+  locale: Locale['value']
   maxSlippage: string
   routerProps: RouterProps | null
   scrollY: number

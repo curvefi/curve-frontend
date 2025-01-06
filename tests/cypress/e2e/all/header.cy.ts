@@ -1,4 +1,4 @@
-import { oneDesktopViewport, oneMobileOrTabletViewport, TABLET_BREAKPOINT } from '@/support/ui'
+import { checkIsDarkMode, oneDesktopViewport, oneMobileOrTabletViewport, TABLET_BREAKPOINT } from '@/support/ui'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border
@@ -21,7 +21,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       cy.visit('/', {
-        onBeforeLoad: (win) => (isDarkMode = win.matchMedia('(prefers-color-scheme: dark)').matches),
+        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded()
     })

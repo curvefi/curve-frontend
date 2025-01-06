@@ -36,9 +36,6 @@
     "campaign": "Fraxtal.json"
   },
   {
-    "campaign": "Swell.json"
-  },
-  {
     "campaign": "Resolv.json"
   },
   {
@@ -67,5 +64,14 @@
   },
   {
     "campaign": "XPoints.json"
+  },
+  {
+    "campaign": "MindNetwork.json"
+  },
+  {
+    "campaign": "DTrinity.json"
+  },
+  {
+    "campaign": "YieldFi.json"
   }
 ]

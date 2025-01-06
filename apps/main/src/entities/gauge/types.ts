@@ -11,8 +11,8 @@
  */
 
 import type { Address } from 'viem'
-import { FieldsOf } from '@/shared/lib/validation'
-import { GaugeQuery } from '@/shared/model/query'
+import { FieldsOf } from '@ui-kit/lib/validation'
+import { GaugeQuery } from '@ui-kit/lib/model/query'
 
 export type AddReward = {
   rewardTokenId: Address

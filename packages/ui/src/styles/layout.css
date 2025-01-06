@@ -60,14 +60,12 @@
   --z-index-page-nav: 1187;
   --z-index-main-content-scrolled: 1186;
   --z-index-page-nav-scrolled: 1185;
-  --z-index-page-mobile-nav: 1101;
-  --z-index-stepper: 1101;
-  --z-index-tab: 1101;
-  --z-index-tooltip: 1101;
+  --z-index-page-mobile-nav: 1;
+  --z-index-stepper: 1;
+  --z-index-tab: 1;
+  --z-index-tooltip: 1;
 }
 
 body {
   --wcm-z-index: 1010; /* Wallet Connect has an option to override its theme, but this object is not exposed in Onboard, so the override is handled in the UI library. See https://docs.reown.com/advanced/walletconnectmodal/theming for more overrides*/
 }
-
-

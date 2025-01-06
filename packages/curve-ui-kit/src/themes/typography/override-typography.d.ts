@@ -1,22 +1,14 @@
-declare module 'global' {
-  type TypographyConfig = import('./create-typography')
-  type TypographyVariantKey = TypographyConfig['TypographyVariantKey']
+import type { CSSProperties } from 'react'
+import type { TypographyVariantKey, DisabledTypographyVariantKey } from './create-typography'
 
-  type NewTypographyVariants<T> = { [key in TypographyVariantKey]: T }
-  type DisabledTypographyVariants = { [key in TypographyConfig['DisabledTypographyVariantKey']]: false }
+type NewTypographyVariants<T> = { [key in TypographyVariantKey]: T }
+type DisabledTypographyVariants = { [key in DisabledTypographyVariantKey[number]]: false }
 
-  // type TypographyVariants = {[key in TypographyVariantKey]: CSSProperties}
+declare module '@mui/material/styles' {
+  interface TypographyVariants extends NewTypographyVariants<CSSProperties> {}
+  interface TypographyVariantsOptions extends Partial<NewTypographyVariants<CSSProperties>> {}
+}
 
-  module '@mui/material/styles' {
-    interface TypographyVariants extends NewTypographyVariants<React.CSSProperties> {}
-    interface TypographyVariantsOptions extends Partial<NewTypographyVariants<React.CSSProperties>> {}
-  }
-
-  module '@mui/material/Typography' {
-    interface TypographyPropsVariantOverrides extends NewTypographyVariants<true>, DisabledTypographyVariants {}
-  }
-
-  // module '@mui/system' {
-  //   interface Typography extends TypographyVariants {}
-  // }
+declare module '@mui/material/Typography' {
+  interface TypographyPropsVariantOverrides extends NewTypographyVariants<true>, DisabledTypographyVariants {}
 }
