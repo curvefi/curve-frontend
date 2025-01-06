@@ -122,7 +122,7 @@ export const DataTable = <T extends unknown>({
   rowHeight: keyof typeof Sizing
   emptyText: string
 }) => (
-  <Table sx={{ minWidth: MinWidth.table }} data-testid="data-table">
+  <Table sx={{ minWidth: MinWidth.table, backgroundColor: (t) => t.design.Layer[1].Fill }} data-testid="data-table">
     <TableHead
       sx={(t) => ({
         zIndex: t.zIndex.appBar - 1,

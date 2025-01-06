@@ -46,6 +46,7 @@ function TokenIcon({
 
   return (
     <Icon
+      data-testid={`token-icon-${token}`}
       className={`${className} ${size}`}
       alt={token}
       onError={(evt) => setTimeout(() => handleOnError(evt, img.address), 0)}

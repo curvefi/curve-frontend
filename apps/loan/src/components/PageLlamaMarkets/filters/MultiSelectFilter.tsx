@@ -37,11 +37,13 @@ export const MultiSelectFilter = <T extends unknown>({
   const value = (columnFilters[id] ?? []) as string[]
   return (
     <Select
+      name={id}
       multiple
       displayEmpty
       value={value}
       onChange={(e) => setColumnFilter(id, e.target.value)}
       fullWidth
+      data-testid={`multi-select-filter-${id}`}
       size="small"
       renderValue={(selected) => (
         <Typography component="span" variant="bodyMBold">

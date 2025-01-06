@@ -95,8 +95,6 @@ export const LendingMarketsTable = ({
         marginBlockStart: Spacing.xl,
         marginBlockEnd: Spacing.xxl,
         maxWidth: MaxWidth.table,
-        minWidth: MinWidth.table,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
       }}
     >
       <TableFilters

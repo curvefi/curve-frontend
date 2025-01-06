@@ -51,6 +51,7 @@ export const TableFilters = ({
           <IconButton
             size="small"
             onClick={() => setIsExpanded((prev) => !prev)}
+            data-testid="btn-expand-filters"
             sx={{
               border: `1px solid ${isExpanded ? Chips.Current.Outline : Chips.Default.Stroke}`,
               backgroundColor: isExpanded ? Chips.Current.Fill : 'transparent',

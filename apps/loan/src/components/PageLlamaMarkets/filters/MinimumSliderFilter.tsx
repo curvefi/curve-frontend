@@ -40,6 +40,7 @@ export const MinimumSliderFilter = <T extends unknown>({
       fullWidth
       size="small"
       displayEmpty
+      data-testid={`minimum-slider-filter-${id}`}
       renderValue={() => (
         <Typography variant="bodyMRegular">
           {`${title}: `}
@@ -53,6 +54,7 @@ export const MinimumSliderFilter = <T extends unknown>({
       <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6}>
         <Typography>{format(0)}</Typography>
         <Slider
+          data-testid={`slider-${id}`}
           aria-label={title}
           getAriaValueText={format}
           value={value}

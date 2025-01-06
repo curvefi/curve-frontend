@@ -12,6 +12,7 @@ export const ChainIcon = ({ blockchainId, size }: { blockchainId: string; size: 
   const defaultSize = parseFloat(IconSize[size].mobile) * 16 // convert rem to px
   return (
     <Icon
+      data-testid={`chain-icon-${blockchainId}`}
       alt={blockchainId}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}
       src={`${CURVE_ASSETS_URL}/chains/${blockchainId}.png`}
