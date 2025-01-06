@@ -1,8 +1,9 @@
-import type { DefaultStateKeys } from '@/store/createAppSlice'
-
 import { I18n, i18n } from '@lingui/core'
 import { en, zh } from 'make-plural/plurals'
-import { setDayjsLocale } from '@/lib/dayjs'
+import numbro from 'numbro'
+import 'numbro/dist/languages.min.js'
+
+import { setDayjsLocale } from './dayjs'
 
 export type Locale = {
   name: string
@@ -53,14 +54,42 @@ export function parseLocale(locale?: string): { parsedLocale: Locale['value']; p
   }
 }
 
-export async function dynamicActivate(locale: string) {
-  const { parsedLocale } = parseLocale(locale)
-  let data = await import(`../locales/${parsedLocale}/messages`)
+/**
+ * Activates messages data for a dynamically loaded locale.
+ *
+ * Example:
+ * ```ts
+ * const messages = await import(`@/locales/en/messages`)
+ * dynamicActivate('en', messages)
+ * ```
+ *
+ * Note: The import must be performed by the calling app since the import path
+ * is relative to the app's location, not this package. Passing the import path
+ * as a parameter (e.g. '@/locales/en/messages') would not work because the path
+ * would be resolved relative to this package's directory structure rather than
+ * the app's, and thus will not be able to be found.
+ *
+ * @param locale - The locale identifier (e.g. 'en', 'zh-Hans')
+ * @param data - The imported locale messages data
+ */
+export function dynamicActivate(locale: string, data: { messages: Record<string, string> }) {
   i18n.load(locale, data.messages)
   i18n.activate(locale)
 }
 
-export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void) {
+export function updateAppLocale(locale: string, updateGlobalStoreByKey: <T>(key: 'locale', value: T) => void) {
   updateGlobalStoreByKey('locale', locale)
   setDayjsLocale(locale as Locale['value'])
+
+  let numbroLang = ''
+  if (locale === 'zh-Hant') numbroLang = 'zh-TW'
+  if (locale === 'zh-Hans') numbroLang = 'zh-CN'
+
+  if (numbroLang) {
+    // @ts-ignore
+    import(`numbro/languages/${numbroLang}`).then((module) => {
+      numbro.registerLanguage(module.default)
+      numbro.setLanguage(numbroLang)
+    })
+  }
 }

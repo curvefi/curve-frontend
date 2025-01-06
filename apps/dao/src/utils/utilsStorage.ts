@@ -2,7 +2,7 @@ import type { Theme } from '@/store/createAppSlice'
 
 import merge from 'lodash/merge'
 
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 export const APP_STORAGE = {
   APP_CACHE: 'dao-app-cache',

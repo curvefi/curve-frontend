@@ -2,7 +2,7 @@ import type { Params } from 'react-router'
 
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { ROUTE } from '@/constants'
-import { DEFAULT_LOCALES, Locale, parseLocale } from '@/lib/i18n'
+import { DEFAULT_LOCALES, Locale, parseLocale } from '@ui-kit/lib/i18n'
 import networks, { networksIdMapper } from '@/networks'
 
 export function getPath({ locale, network, ...rest }: Params, rerouteRoute: string) {

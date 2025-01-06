@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { t } from '@lingui/macro'
 
 import { formatNumber } from '@/ui/utils'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 import { StyledInformationSquare16 } from '@/components/PagePool/PoolDetails/PoolStats/styles'
 import Chip from '@/ui/Typography/Chip'

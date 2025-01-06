@@ -13,7 +13,7 @@ import {
 } from '@/components/PageVeCrv/utils'
 
 import { formatNumber, shortenAccount } from '@/ui/utils'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

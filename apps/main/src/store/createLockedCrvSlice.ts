@@ -13,7 +13,7 @@ import {
 
 import { formatNumber, shortenAccount } from '@/ui/utils'
 import curvejsApi from '@/lib/curvejs'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

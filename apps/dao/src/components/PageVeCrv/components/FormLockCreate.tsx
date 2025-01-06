@@ -12,7 +12,7 @@ import { getActiveStep, getStepStatus } from '@/ui/Stepper/helpers'
 import { formatDisplayDate, toCalendarDate } from '@/utils/utilsDates'
 import { formatNumber } from '@/ui/utils'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
-import dayjs from '@/lib/dayjs'
+import dayjs from '@ui-kit/lib/dayjs'
 import networks from '@/networks'
 import useStore from '@/store/useStore'
 
