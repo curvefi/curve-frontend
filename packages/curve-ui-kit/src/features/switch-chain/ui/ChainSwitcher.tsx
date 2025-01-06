@@ -59,8 +59,8 @@ export const ChainSwitcher = <TChainId extends number>({
         open={isSnackbarOpen}
         onClose={hideSnackbar}
         anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-        sx={{ top: headerHeight }}
-        autoHideDuration={Duration.Snackbar}
+        sx={{ top: headerHeight, marginTop: 4 }}
+        autoHideDuration={Duration.Snackbar * 100}
       >
         <Alert variant="filled" severity="warning" data-testid="alert-eth-only">
           {t`This application is only available on the Ethereum Mainnet`}
