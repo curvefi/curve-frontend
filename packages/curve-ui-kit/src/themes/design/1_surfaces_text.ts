@@ -30,7 +30,7 @@ export const SurfacesAndText = {
         },
       },
       Tables: {
-        Header_Fill: Grays[200],
+        Header: { Fill: Grays[200] },
       },
     },
     Dark: {
@@ -61,7 +61,7 @@ export const SurfacesAndText = {
         },
       },
       Tables: {
-        Header_Fill: Grays[800],
+        Header: { Fill: Grays[800] },
       },
     },
     Chad: {
@@ -73,7 +73,7 @@ export const SurfacesAndText = {
         highlight: Violet[600],
       },
       Tables: {
-        Header_Fill: Violet[400],
+        Header: { Fill: Violet[50] },
       },
       Layer: {
         '1': {
@@ -125,7 +125,7 @@ export const SurfacesAndText = {
         },
       },
       Tables: {
-        Header_Fill: Grays[800],
+        Header: { Fill: Grays[800] },
       },
     },
     Dark: {
@@ -156,7 +156,7 @@ export const SurfacesAndText = {
         },
       },
       Tables: {
-        Header_Fill: Grays[200],
+        Header: { Fill: Grays[200] },
       },
     },
     Chad: {
@@ -168,7 +168,7 @@ export const SurfacesAndText = {
         highlight: Violet[400],
       },
       Tables: {
-        Header_Fill: Violet[800],
+        Header: { Fill: Violet[800] },
       },
       Layer: {
         '1': {

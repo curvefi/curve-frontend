@@ -43,7 +43,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   },
   MuiDialog: {
     styleOverrides: {
-      paper: { [basicMuiTheme.breakpoints.down('tablet')]: { margin: SizesAndSpaces.Spacing.md.mobile } },
+      paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } },
     },
   },
   MuiIconButton: defineMuiIconButton(design),
