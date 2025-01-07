@@ -108,6 +108,16 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
+  MuiPopover: {
+    styleOverrides: {
+      paper: {
+        // todo: add shadow or change color, otherwise invisible: backgroundColor: design.Layer[3].Fill,
+        '& .MuiMenu-list': {
+          maxHeight: SizesAndSpaces.MaxHeight.popover,
+        },
+      },
+    },
+  },
   MuiSwitch: defineMuiSwitch(design),
   MuiTypography: defineMuiTypography(),
 })

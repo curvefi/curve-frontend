@@ -379,4 +379,7 @@ export const SizesAndSpaces = {
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
   },
+  MaxHeight: {
+    popover: '17rem', // 272px
+  },
 } as const
