@@ -11,7 +11,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
 import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
-import { t } from '@lingui/macro'
 import { Duration } from '../../themes/design/0_primitives'
 
 const { Spacing } = SizesAndSpaces
@@ -84,6 +83,8 @@ type Props = {
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
+  /** The text to display when the value is copied to the clipboard */
+  copyText?: string
 
   /** The actual metric value to display */
   value: number
@@ -114,6 +115,7 @@ type Props = {
 export const Metric = ({
   label,
   tooltip,
+  copyText,
 
   value,
   formatter = (value: number) => formatValue(value, decimals),
@@ -227,7 +229,7 @@ export const Metric = ({
 
       <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
-          {t`Copied metric value`}: {value}
+          {copyText}: {value}
         </Alert>
       </Snackbar>
     </Box>
