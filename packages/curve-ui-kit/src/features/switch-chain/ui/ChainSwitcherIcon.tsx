@@ -15,7 +15,7 @@ export const ChainSwitcherIcon = <TChainId extends number>({
   chain: { chainId, label, src },
   size = 28,
 }: ChainIconProps<TChainId>) => (
-  <Box component="span" alignItems="center" display="flex" marginRight="0.25rem" data-testid={`chain-icon-${chainId}`}>
+  <Box component="span" alignItems="center" display="flex" data-testid={`chain-icon-${chainId}`}>
     <Image
       alt={label}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}
