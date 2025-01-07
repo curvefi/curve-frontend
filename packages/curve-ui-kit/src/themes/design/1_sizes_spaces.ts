@@ -232,8 +232,8 @@ const MappedLineHeight = {
     desktop: '1rem', // 16px
   },
   md: {
-    mobile: '1rem', // 16px
-    tablet: '1rem', // 16px
+    mobile: '1.5rem', // 24px
+    tablet: '1.5rem', // 24px
     desktop: '1.5rem', // 24px
   },
   lg: {
@@ -250,51 +250,6 @@ const MappedLineHeight = {
     mobile: '2.5rem', // 40px
     tablet: '2.5rem', // 40px
     desktop: '4rem', // 64px
-  },
-} as const
-
-const MappedTypography = {
-  FontSize: MappedFontSize,
-  FontWeight: {
-    Extra_Light: 200,
-    Light: 300,
-    Normal: 400,
-    Medium: 500,
-    Semi_Bold: 600,
-    Bold: 700,
-    Extra_Bold: 800,
-  },
-  LineHeight: {
-    xs: {
-      mobile: '0.75rem', // 12px
-      tablet: '0.75rem', // 12px
-      desktop: '0.875rem', // 14px
-    },
-    sm: {
-      mobile: '0.875rem', // 14px
-      tablet: '0.875rem', // 14px
-      desktop: '1rem', // 16px
-    },
-    md: {
-      mobile: '1.5rem', // 24px
-      tablet: '1.5rem', // 24px
-      desktop: '1.5rem', // 24px
-    },
-    lg: {
-      mobile: '1.5rem', // 24px
-      tablet: '1.5rem', // 24px
-      desktop: '1.75rem', // 28px
-    },
-    xl: {
-      mobile: '2rem', // 32px
-      tablet: '2rem', // 32px
-      desktop: '2.5rem', // 40px
-    },
-    xxl: {
-      mobile: '2.5rem', // 40px
-      tablet: '2.5rem', // 40px
-      desktop: '4rem', // 64px
-    },
   },
 } as const
 
@@ -334,7 +289,6 @@ export const SizesAndSpaces = {
   FontSize: MappedFontSize,
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
-  Typography: MappedTypography,
   ModalWidth: MappedModalWidth,
   ColumnWidth: MappedColumnWidth,
   ModalHeight: MappedModalHeight,
