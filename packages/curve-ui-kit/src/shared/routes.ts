@@ -54,7 +54,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
       { route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
       ...(isBeta ? [{ route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)` }] : []),
       { route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { route: CRVUSD_ROUTES.PAGE_DISCLAIMER, label: () => t`Risk Disclaimer` },
+      { route: `${CRVUSD_ROUTES.PAGE_DISCLAIMER}?tab=crvusd`, label: () => t`Risk Disclaimer` },
     ],
   },
   lend: {
@@ -62,7 +62,7 @@ export const APP_LINK: Record<AppName, AppRoutes> = {
     label: 'Lend',
     pages: [
       { route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { route: LEND_ROUTES.PAGE_DISCLAIMER, label: () => t`Risk Disclaimer` },
+      { route: `${LEND_ROUTES.PAGE_DISCLAIMER}?tab=lend`, label: () => t`Risk Disclaimer` },
     ],
   },
   dao: {
