@@ -277,7 +277,7 @@ const MappedModalHeight = {
 const MappedColumnWidth = {
   sm: 125,
   md: 200,
-  lg: 512,
+  lg: 350,
 }
 
 export const SizesAndSpaces = {
@@ -301,5 +301,8 @@ export const SizesAndSpaces = {
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
+  },
+  MaxHeight: {
+    popover: '17rem', // 272px
   },
 } as const
