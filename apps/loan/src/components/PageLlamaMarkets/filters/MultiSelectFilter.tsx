@@ -1,10 +1,13 @@
-import { Fragment, ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { get, identity, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.
@@ -46,18 +49,25 @@ export const MultiSelectFilter = <T extends unknown>({
       fullWidth
       data-testid={`multi-select-filter-${id}`}
       size="small"
-      renderValue={(selected) => (
-        <Typography component="span" variant="bodyMBold">
-          {selected.length && selected.length < options.length
-            ? selected.map((optionId, index) => (
-                <Fragment key={optionId}>
-                  {index > 0 && ', '}
-                  {renderItem?.(optionId) ?? optionId}
-                </Fragment>
-              ))
-            : defaultText}
-        </Typography>
-      )}
+      renderValue={(selected) =>
+        selected.length && selected.length < options.length ? (
+          selected.map((optionId, index) => (
+            <MenuItem
+              key={optionId}
+              sx={{
+                display: 'inline-flex', // display inline to avoid wrapping
+                '&': { padding: 0, height: 0, minHeight: 0 }, // reset height and padding, no need when inline
+                gap: Spacing.xs, // default spacing is too large inline
+                ...(index > 0 && { ':before': { content: '", "' } }),
+              }}
+            >
+              {renderItem?.(optionId) ?? optionId}
+            </MenuItem>
+          ))
+        ) : (
+          <Typography variant="bodyMBold">{defaultText}</Typography>
+        )
+      }
     >
       {options.map((optionId) => (
         <MenuItem key={optionId} value={optionId}>

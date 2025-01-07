@@ -128,7 +128,7 @@ export const DataTable = <T extends unknown>({
         zIndex: t.zIndex.appBar - 1,
         position: 'sticky',
         top: headerHeight,
-        backgroundColor: t.design.Table.Header_Fill,
+        backgroundColor: t.design.Table.Header.Fill,
       })}
       data-testid="data-table-head"
     >

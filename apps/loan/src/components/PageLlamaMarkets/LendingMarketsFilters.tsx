@@ -24,8 +24,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; 
   )
   return (
     <>
-      <TokenIcon imageBaseUrl={getImageBaseUrl(blockchainId)} token={symbol} address={address} size="mui-sm" />
-      <Typography component="span" variant="bodyMBold" sx={{ marginInlineStart: 2 }}>
+      <TokenIcon imageBaseUrl={getImageBaseUrl(blockchainId)} token={symbol} address={address} size="mui-md" />
+      <Typography component="span" variant="bodyMBold">
         {symbol}
       </Typography>
     </>
@@ -48,8 +48,8 @@ export const LendingMarketsFilters = ({
         field="blockchainId"
         renderItem={(blockchainId) => (
           <>
-            <ChainIcon blockchainId={blockchainId} size="sm" />
-            <Typography component="span" variant="bodyMBold" sx={{ marginInlineStart: 2 }}>
+            <ChainIcon blockchainId={blockchainId} size="md" />
+            <Typography component="span" variant="bodyMBold">
               {capitalize(blockchainId)}
             </Typography>
           </>

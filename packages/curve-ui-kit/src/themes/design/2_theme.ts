@@ -231,7 +231,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
     },
     Table: {
-      Header_Fill: Light.Tables.Header_Fill,
+      Header: { Fill: Light.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
@@ -557,7 +557,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
     },
     Table: {
-      Header_Fill: Dark.Tables.Header_Fill,
+      Header: { Fill: Dark.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
@@ -828,7 +828,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
     },
     Table: {
-      Header_Fill: Chad.Tables.Header_Fill,
+      Header: { Fill: Chad.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
