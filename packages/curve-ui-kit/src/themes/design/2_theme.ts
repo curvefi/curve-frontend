@@ -552,8 +552,8 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: Layer[3].Fill,
       },
       Current: {
-        Label: Color.Neutral[950],
-        Fill: Color.Neutral[900],
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[950],
       },
     },
     Table: {
