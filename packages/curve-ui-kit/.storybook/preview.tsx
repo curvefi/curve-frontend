@@ -9,7 +9,7 @@ import Box from '@mui/material/Box'
 const themes = {
   light: lightTheme(),
   lightInverted: darkTheme({ inverted: true }),
-  dark: lightTheme(),
+  dark: darkTheme(),
   darkInverted: darkTheme({ inverted: true }),
   chad: chadTheme(),
   chadInverted: chadTheme({ inverted: true }),
