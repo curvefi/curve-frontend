@@ -16,7 +16,11 @@ import {
 import { LendingMarketsFilters } from '@/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { VisibilityGroup, useColumnSettings } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import {
+  isFeatureVisible,
+  useVisibilitySettings,
+  VisibilityGroup,
+} from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
@@ -40,21 +44,13 @@ const columns = [
   }),
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
-    cell: (c) => (
-      <LineGraphCell
-        vault={c.row.original}
-        type="borrow"
-        showChart={c.table.getState().featureVisibility[borrowChartId]}
-      />
-    ),
+    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
-    cell: (c) => (
-      <LineGraphCell vault={c.row.original} type="lend" showChart={c.table.getState().featureVisibility[lendChartId]} />
-    ),
+    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
@@ -106,8 +102,8 @@ export const LendingMarketsTable = ({
   headerHeight: string
 }) => {
   const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
-  const { columnSettings, columnVisibility, featureVisibility, onColumnVisibilityChange, toggleVisibility } =
-    useColumnSettings(DEFAULT_VISIBILITY)
+  const { columnSettings, columnVisibility, featureVisibility, toggleVisibility } =
+    useVisibilitySettings(DEFAULT_VISIBILITY)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
@@ -118,7 +114,6 @@ export const LendingMarketsTable = ({
     getFilteredRowModel: getFilteredRowModel(),
     state: { sorting, columnVisibility, featureVisibility, columnFilters },
     onSortingChange,
-    // onColumnVisibilityChange, // todo: check if needed
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once
   })
 

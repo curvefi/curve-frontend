@@ -5,7 +5,7 @@ import Switch from '@mui/material/Switch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useCallback, useMemo, useState } from 'react'
 import { FormControlLabel } from '@mui/material'
-import { OnChangeFn, VisibilityState } from '@tanstack/react-table'
+import { CellContext } from '@tanstack/react-table'
 
 export type VisibilityOption = {
   id: string
@@ -75,8 +75,8 @@ export const TableVisibilitySettingsPopover = ({
   </Popover>
 )
 
-const flatten = (columnSettings: VisibilityGroup[], type: VisibilityOption['type']): Record<string, boolean> =>
-  columnSettings.reduce(
+const flatten = (visibilitySettings: VisibilityGroup[], type: VisibilityOption['type']): Record<string, boolean> =>
+  visibilitySettings.reduce(
     (acc, group) => ({
       ...acc,
       ...group.options
@@ -87,21 +87,19 @@ const flatten = (columnSettings: VisibilityGroup[], type: VisibilityOption['type
   )
 
 /**
- * Hook to manage column visibility settings. Currently saved in the state.
+ * Hook to manage column and feature visibility settings. Currently saved in the state.
  */
-export const useColumnSettings = (groups: VisibilityGroup[]) => {
+export const useVisibilitySettings = (groups: VisibilityGroup[]) => {
   /** current visibility settings in grouped format */
   const [visibilitySettings, setVisibilitySettings] = useState(groups)
 
-  /** toggle visibility of a column by its id */
+  /** toggle visibility of a column or feature by its id */
   const toggleColumnVisibility = useCallback(
-    (columnId: string): void =>
+    (id: string): void =>
       setVisibilitySettings((prev) =>
         prev.map((group) => ({
           ...group,
-          options: group.options.map((column) =>
-            column.id === columnId ? { ...column, active: !column.active } : column,
-          ),
+          options: group.options.map((option) => (option.id === id ? { ...option, active: !option.active } : option)),
         })),
       ),
     [],
@@ -110,31 +108,16 @@ export const useColumnSettings = (groups: VisibilityGroup[]) => {
   /** current column visibility state as used internally by tanstack */
   const columnVisibility = useMemo(() => flatten(visibilitySettings, 'column'), [visibilitySettings])
 
-  /** current feature visibility state as used by our custom code */
+  /** current feature visibility state as used by `isFeatureVisible` */
   const featureVisibility = useMemo(() => flatten(visibilitySettings, 'feature'), [visibilitySettings])
-
-  /** callback to update visibility state by ID, used by tanstack */
-  const onColumnVisibilityChange: OnChangeFn<VisibilityState> = useCallback(
-    (newVisibility) => {
-      const visibility = typeof newVisibility === 'function' ? newVisibility(columnVisibility) : newVisibility
-      setVisibilitySettings((prev) =>
-        prev.map((category) => ({
-          ...category,
-          options: category.options.map((column) => ({
-            ...column,
-            active: visibility[cleanColumnId(column.id)],
-          })),
-        })),
-      )
-    },
-    [columnVisibility],
-  )
 
   return {
     columnSettings: visibilitySettings,
     columnVisibility,
     featureVisibility,
-    onColumnVisibilityChange,
     toggleVisibility: toggleColumnVisibility,
   }
 }
+
+export const isFeatureVisible = <TData, TValue>(c: CellContext<TData, TValue>, featureId: string) =>
+  c.table.getState().featureVisibility[featureId]

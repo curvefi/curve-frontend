@@ -109,6 +109,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   MuiPaper: {
     styleOverrides: {
       root: {
+        boxShadow: '0px 4px 4px 0px #00000040',
         // Disable elevation making the background color lighter in dark mode (default mui behavior)
         backgroundImage: 'none',
       },
@@ -117,7 +118,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
   MuiPopover: {
     styleOverrides: {
       paper: {
-        // todo: add shadow or change color, otherwise invisible: backgroundColor: design.Layer[3].Fill,
+        backgroundColor: design.Layer[3].Fill,
         '& .MuiMenu-list': {
           maxHeight: SizesAndSpaces.MaxHeight.popover,
         },

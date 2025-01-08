@@ -14,7 +14,7 @@ import { kebabCase } from 'lodash'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import SvgIcon from '@mui/material/SvgIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { VisibilityGroup, TableVisibilitySettingsPopover } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
+import { TableVisibilitySettingsPopover, VisibilityGroup } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
 
 const {
