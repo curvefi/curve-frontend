@@ -34,7 +34,7 @@ export type BaseHeaderProps<TChainId = number> = {
   mainNavRef: RefObject<HTMLDivElement>
   currentApp: AppName
   isLite?: boolean
-  ChainProps: ChainSwitcherProps<TChainId>
+  ChainProps: Omit<ChainSwitcherProps<TChainId>, 'headerHeight'>
   WalletProps: ConnectWalletIndicatorProps
   BannerProps: GlobalBannerProps
   height: string

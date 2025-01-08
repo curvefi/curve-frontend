@@ -146,7 +146,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Feedback = {
     Success: Greens[300],
     Info: Layer[3].Fill,
-    Warning: Reds[300],
+    Warning: Reds[400],
     Error: Reds[500],
   } as const
   return {
@@ -743,7 +743,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Feedback = {
     Success: Greens[400],
     Info: Layer[3].Fill,
-    Warning: Reds[300],
+    Warning: Reds[400],
     Error: Reds[500],
   } as const
   return {
