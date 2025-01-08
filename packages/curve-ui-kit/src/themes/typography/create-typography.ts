@@ -22,7 +22,7 @@ const disabledTypographyKeys = [
   'subtitle2',
 ] as const
 
-const { LineHeight, FontWeight, FontSize } = SizesAndSpaces.Typography
+const { LineHeight, FontWeight, FontSize } = SizesAndSpaces
 
 export type TypographyVariantDefinition = {
   fontFamily: keyof DesignSystem['Text']['FontFamily']

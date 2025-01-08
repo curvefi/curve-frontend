@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, CRVUSD_ADDRESS } from '@/constants'
 import { getLocaleFromUrl, getNetworkFromUrl, getRestFullPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, formatNumber, isLoading } from '@/ui/utils'
@@ -40,8 +40,9 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
+  const location = useLocation()
   const { rLocalePathname } = getLocaleFromUrl()
-  const { params: routerParams, location } = routerProps ?? {}
+  const { params: routerParams } = routerProps ?? {}
 
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''

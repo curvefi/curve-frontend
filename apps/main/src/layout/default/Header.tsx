@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE, ROUTE } from '@/constants'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
 import { useParamsFromUrl, useRestPartialPathname } from '@/utils/utilsRouter'
@@ -31,7 +31,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const themeType = useStore((state) => state.themeType)
   const setThemeType = useStore((state) => state.setThemeType)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerPathname = useStore((state) => state.routerProps)?.location?.pathname ?? ''
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
@@ -41,7 +40,9 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
+  const location = useLocation()
   const network = networks[rChainId]
+  const routerPathname = location?.pathname ?? ''
   const restPartialPathname = useRestPartialPathname()
 
   const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
