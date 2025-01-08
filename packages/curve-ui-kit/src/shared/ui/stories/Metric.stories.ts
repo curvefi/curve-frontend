@@ -65,6 +65,7 @@ const meta: Meta<typeof Metric> = {
     value: 26539422,
     decimals: 1,
     label: 'Metrics label',
+    copyText: 'Copied metric value',
     unit: 'dollar',
   },
 }
