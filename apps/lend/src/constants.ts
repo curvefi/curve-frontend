@@ -6,6 +6,7 @@ export const NETWORK_TOKEN = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
+  PAGE_DISCLAIMER: '/disclaimer',
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
   PAGE_VAULT: '/vault',

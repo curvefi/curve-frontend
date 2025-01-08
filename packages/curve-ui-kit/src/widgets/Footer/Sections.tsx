@@ -17,9 +17,28 @@ import { DocsIcon } from 'curve-ui-kit/src/shared/icons/DocsIcon'
 import { TelegramIcon } from 'curve-ui-kit/src/shared/icons/TelegramIcon'
 import { TelegramCNIcon } from 'curve-ui-kit/src/shared/icons/TelegramCNIcon'
 import { TelegramRUIcon } from 'curve-ui-kit/src/shared/icons/TelegramRUIcon'
+import { RiskDisclaimersIcon } from 'curve-ui-kit/src/shared/icons/RiskDisclaimersIcon'
 import { SectionProps } from './Section'
 
-export const getSections = (): Omit<SectionProps, 'networkName'>[] => [
+import { AppName } from 'curve-ui-kit/src/shared/routes'
+
+function getDisclaimersTab(appName: AppName) {
+  if (appName === 'crvusd') {
+    if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
+      return '?tab=scrvusd'
+    }
+
+    return '?tab=crvusd'
+  }
+
+  if (appName === 'lend') {
+    return '?tab=lend'
+  }
+
+  return ''
+}
+
+export const getSections = (appName: AppName): Omit<SectionProps, 'networkName'>[] => [
   {
     title: t`Community`,
     links: [
@@ -88,6 +107,11 @@ export const getSections = (): Omit<SectionProps, 'networkName'>[] => [
         label: t`Github`,
         href: 'https://github.com/curvefi',
         icon: <GitHubIcon />,
+      },
+      {
+        label: t`Risk Disclaimers`,
+        href: `/disclaimer${getDisclaimersTab(appName)}`,
+        icon: <RiskDisclaimersIcon />,
       },
     ],
   },
