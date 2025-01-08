@@ -31,7 +31,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const themeType = useStore((state) => state.themeType)
   const setThemeType = useStore((state) => state.setThemeType)
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
@@ -42,10 +41,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
   const location = useLocation()
-  const { params: routerParams } = routerProps ?? {}
   const network = networks[rChainId]
   const routerPathname = location?.pathname ?? ''
-  const routerNetwork = routerParams?.network
   const restPartialPathname = useRestPartialPathname()
 
   const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)

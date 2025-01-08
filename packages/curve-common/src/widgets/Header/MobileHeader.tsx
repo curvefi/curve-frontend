@@ -64,7 +64,7 @@ export const MobileHeader = <TChainId extends number>({
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
-            ChainProps={ChainProps}
+            ChainProps={{ ...ChainProps, headerHeight: height }}
             currentApp={currentApp}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
