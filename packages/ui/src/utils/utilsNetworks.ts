@@ -1,6 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import { ethers } from 'ethers'
-import { CDN_ROOT_URL, CURVE_ASSETS_URL, CURVE_CDN_URL, getImageBaseUrl } from '@/utils/utilsConstants'
+import { CDN_ROOT_URL, CURVE_ASSETS_URL, CURVE_CDN_URL, getImageBaseUrl } from './utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   blocknativeSupport: true,

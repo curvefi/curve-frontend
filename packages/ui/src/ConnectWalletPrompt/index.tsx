@@ -5,7 +5,7 @@ import Button from '@mui/material/Button'
 import Spinner from '../Spinner'
 
 import { LogoImg } from '../images'
-import { getBackgroundUrl } from '@/utils'
+import { getBackgroundUrl } from 'ui/src/utils'
 
 type ConnectWalletPromptProps = {
   connectWallet: () => void
