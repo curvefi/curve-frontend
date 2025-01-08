@@ -52,7 +52,7 @@ export const DesktopHeader = <TChainId extends number>({
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
               {advancedMode && <AdvancedModeSwitcher advancedMode={advancedMode} label={t`Advanced`} />}
               <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
-              <ChainSwitcher {...ChainProps} />
+              <ChainSwitcher {...ChainProps} headerHeight={height} />
               <ConnectWalletIndicator {...WalletProps} />
             </Box>
           </Container>

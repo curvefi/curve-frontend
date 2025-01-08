@@ -99,4 +99,8 @@ export const Sizing = {
   '800': '5.5rem', // 88px
 } as const
 
+export const Duration = {
+  Snackbar: 6000,
+}
+
 export const TransitionFunction = `ease-out 0.256s`

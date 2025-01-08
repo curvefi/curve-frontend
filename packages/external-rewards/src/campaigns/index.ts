@@ -23,6 +23,8 @@ import XPoints from './XPoints.json'
 import MindNetwork from './MindNetwork.json'
 import DTrinity from './DTrinity.json'
 import YieldFi from './YieldFi.json'
+import Babylon from './Babylon.json'
+import Vnx from './Vnx.json'
 
 export {
   DLCLink,
@@ -50,4 +52,6 @@ export {
   MindNetwork,
   DTrinity,
   YieldFi,
+  Babylon,
+  Vnx,
 }

@@ -1,6 +1,7 @@
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { Spacing } from '../design/0_primitives'
 import { Breakpoint } from '@mui/material'
+import { CSSObject } from '@mui/styled-engine'
 
 export const basicMuiTheme = createMuiTheme({
   breakpoints: {
@@ -15,5 +16,28 @@ export const basicMuiTheme = createMuiTheme({
   spacing: Object.values(Spacing),
   direction: 'ltr',
 })
+
+/**
+ * Create a responsive object based on the breakpoints defined in the basicMuiTheme.
+ *
+ * @example:
+ *  handleBreakpoints({ width: 100, height: { mobile: '100px', tablet: '200px', desktop: '300px' } }) => {
+ *   '@media (min-width: 0px)': { width: 100, height: '100px' },
+ *   '@media (min-width: 640px)': { width: 100, height: '200px' },
+ *   '@media (min-width: 1200px)': { width: 100, height: '300px' }
+ *  }
+ */
+export const handleBreakpoints = (values: Record<keyof CSSObject, number | string | Responsive>) =>
+  Object.fromEntries(
+    basicMuiTheme.breakpoints.keys.map((breakpoint) => [
+      basicMuiTheme.breakpoints.up(breakpoint),
+      Object.fromEntries(
+        Object.entries(values).map(([key, value]) => [
+          key,
+          typeof value === 'string' || typeof value === 'number' ? value : value[breakpoint],
+        ]),
+      ),
+    ]),
+  )
 
 export type Responsive = Record<Breakpoint, string>
