@@ -31,7 +31,7 @@ const sizeBreakpoint = (
     paddingBlock: paddingBlock[breakpoint],
     paddingInline: paddingInline[breakpoint],
     fontSize: fontSize[breakpoint],
-    fontWeight: FontWeight.Bold[breakpoint],
+    fontWeight: FontWeight.Bold,
     lineHeight: lineHeight[breakpoint],
   },
 })
