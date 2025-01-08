@@ -3,8 +3,10 @@ import type { ImgHTMLAttributes } from 'react'
 import React, { useMemo } from 'react'
 import Image from 'next/image'
 import styled from 'styled-components'
+import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
+import { basicMuiTheme } from 'curve-ui-kit/src/themes/basic-theme'
 
-type Size = 'sm' | ''
+type Size = 'sm' | 'mui-sm' | 'mui-md' | ''
 
 export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
   className?: string
@@ -44,6 +46,7 @@ function TokenIcon({
 
   return (
     <Icon
+      data-testid={`token-icon-${token}`}
       className={`${className} ${size}`}
       alt={token}
       onError={(evt) => setTimeout(() => handleOnError(evt, img.address), 0)}
@@ -55,6 +58,8 @@ function TokenIcon({
   )
 }
 
+const { IconSize } = SizesAndSpaces
+
 const Icon = styled(Image)`
   height: 1.625rem;
   width: 1.625rem;
@@ -63,14 +68,43 @@ const Icon = styled(Image)`
   border-radius: 50%;
 
   &.sm {
-    height: 1.75rem;
     width: 1.75rem;
+    height: 1.75rem;
   }
 
   @media (max-width: 400px) {
     &.sm {
-      height: 1.5rem;
       width: 1.5rem;
+      height: 1.5rem;
+    }
+  }
+
+  &.mui-sm {
+    width: ${IconSize.sm.mobile};
+    height: ${IconSize.sm.mobile};
+  }
+  &.mui-md {
+    width: ${IconSize.md.mobile};
+    height: ${IconSize.md.mobile};
+  }
+  ${basicMuiTheme.breakpoints.up('tablet')} {
+    &.mui-sm {
+      width: ${IconSize.sm.tablet};
+      height: ${IconSize.sm.tablet};
+    }
+    &.mui-md {
+      width: ${IconSize.md.tablet};
+      height: ${IconSize.md.tablet};
+    }
+  }
+  ${basicMuiTheme.breakpoints.up('desktop')} {
+    &.mui-sm {
+      width: ${IconSize.sm.desktop};
+      height: ${IconSize.sm.desktop};
+    }
+    &.mui-md {
+      width: ${IconSize.md.desktop};
+      height: ${IconSize.md.desktop};
     }
   }
 `

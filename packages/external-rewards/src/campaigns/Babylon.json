@@ -1,9 +1,9 @@
 {
-  "campaignName": "",
-  "platform": "Swell",
+  "campaignName": "Babylon Points",
+  "platform": "Babylon",
   "description": "Points for providing liquidity.",
-  "platformImageId": "swell-pearls.png",
-  "dashboardLink": "https://app.swellnetwork.io/stake/swbtc/",
+  "platformImageId": "babylon.png",
+  "dashboardLink": "https://babylonlabs.io/",
   "pools": [
     {
       "id": "null",
@@ -11,9 +11,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x73e4bec1a111869f395cbb24f6676826bf86d905",
-      "network": "ethereum",
-      "multiplier": "5x",
+      "address": "0xab3291b73a1087265e126e330cede0cfd4b8a693",
+      "network": "corn",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -23,9 +23,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xee04382c4ca6c450213923fe0f0dab19b0ff3939",
-      "network": "ethereum",
-      "multiplier": "2x",
+      "address": "0xb27d447cf1d211ca60676728ac28060ecfb90800",
+      "network": "corn",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -35,9 +35,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x84b5a3bd6acb304cb89ffc43117a18bede062376",
-      "network": "ethereum",
-      "multiplier": "2x",
+      "address": "0xa1174d3af66ad2fd7c6d5c7b458b6da38988cd56",
+      "network": "corn",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -47,9 +47,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x278cfb6f06b1efc09d34fc7127d6060c61d629db",
-      "network": "ethereum",
-      "multiplier": "2x",
+      "address": "0xf59aa8acd7944abecf804e455a22b65f285af534",
+      "network": "corn",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -59,9 +59,9 @@
       "description": "null",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x2022d9af896ecf0f1f5b48cddab9e74b5aabcf00",
-      "network": "ethereum",
-      "multiplier": "2x",
+      "address": "0x29c1b0baa9ac0182cf9f6ffceaf143f3ef3546a0",
+      "network": "corn",
+      "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
     }
