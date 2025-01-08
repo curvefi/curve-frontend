@@ -1,6 +1,6 @@
 import { LendingSnapshot, useLendingSnapshots } from '@/entities/lending'
 import { LendingVault } from '@/entities/vaults'
-import { Line, LineChart } from 'recharts'
+import { Line, LineChart, YAxis } from 'recharts'
 import { useTheme } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
 import Stack from '@mui/material/Stack'
@@ -14,6 +14,9 @@ const graphSize = { width: 172, height: 48 }
 
 type GraphType = 'borrow' | 'lend'
 
+/**
+ * Get the color for the line graph. Will be green if the last value is higher than the first, red if lower, and blue if equal.
+ */
 function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType) {
   if (!data.length) return undefined
   const first = data[0][`${type}_apy`]
@@ -21,6 +24,17 @@ function getColor(design: DesignSystem, data: LendingSnapshot[], type: GraphType
   return design.Text.TextColors[last === first ? 'Info' : last < first ? 'Error' : 'Success']
 }
 
+/** Center the y-axis around the first value */
+const calculateDomain =
+  (first: number) =>
+  ([dataMin, dataMax]: [number, number]): [number, number] => {
+    const diff = Math.max(dataMax - first, first - dataMin)
+    return [first - diff, first + diff]
+  }
+
+/**
+ * Line graph cell that displays the average historical APY for a vault and a given type (borrow or lend).
+ */
 export const LineGraphCell = ({
   vault,
   type,
@@ -28,7 +42,7 @@ export const LineGraphCell = ({
 }: {
   vault: LendingVault
   type: GraphType
-  showChart: boolean
+  showChart: boolean // chart is hidden depending on the chart settings
 }) => {
   const { data: snapshots, isLoading } = useLendingSnapshots({
     blockchainId: vault.blockchainId,
@@ -50,7 +64,8 @@ export const LineGraphCell = ({
     <Stack direction="row" alignItems="center" justifyContent="end" gap={3} data-testid={`line-graph-cell-${type}`}>
       {rate.toPrecision(4)}%
       {showChart && snapshots?.length ? (
-        <LineChart data={snapshots} {...graphSize}>
+        <LineChart data={snapshots} {...graphSize} compact>
+          <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey])} />
           <Line
             type="monotone"
             dataKey={snapshotKey}
@@ -63,7 +78,7 @@ export const LineGraphCell = ({
         <Skeleton {...graphSize} />
       ) : (
         showChart && (
-          <Typography sx={{ ...graphSize, alignContent: 'center' }} variant="bodyXsBold">
+          <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
             {t`No historical data`}
           </Typography>
         )
