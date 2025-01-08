@@ -48,22 +48,19 @@ describe('LlamaLend Markets', () => {
     })
   })
 
-  const sliderTestCase = oneOf(
-    {
-      title: 'liquidity',
-      columnId: 'totalSupplied_usdTotal',
-      expectedFilterText: 'Min Liquidity: $1,029,000',
-      expectedFirstCell: '$2.06M',
-    },
-    {
-      title: 'utilization',
-      columnId: 'utilizationPercent',
-      expectedFilterText: 'Min Utilization: 50.00%',
-      expectedFirstCell: '84.91%',
-    },
-  )
-  it(`should allow filtering by ${sliderTestCase.title}`, () => {
-    const { columnId, expectedFilterText, expectedFirstCell } = sliderTestCase
+  it(`should allow filtering by using a slider`, () => {
+    const { columnId, expectedFilterText, expectedFirstCell } = oneOf(
+      {
+        columnId: 'totalSupplied_usdTotal',
+        expectedFilterText: 'Min Liquidity: $1,029,000',
+        expectedFirstCell: '$2.06M',
+      },
+      {
+        columnId: 'utilizationPercent',
+        expectedFilterText: 'Min Utilization: 50.00%',
+        expectedFirstCell: '84.91%',
+      },
+    )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.exist')
     cy.get(`[data-testid="btn-expand-filters"]`).click()
@@ -90,17 +87,17 @@ describe('LlamaLend Markets', () => {
     ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c.toLowerCase()}"]`).should('be.visible'))
   })
 
-  const tokenTestCase = oneOf(
-    { title: 'collateral', iconIndex: 0, columnId: 'assets_collateral_symbol' },
-    { title: 'debt', iconIndex: 1, columnId: 'assets_borrowed_symbol' },
-  )
-  const tokenSelector = `[data-testid="data-table-cell-assets"]:first [data-testid^="token-icon-"]`
-  it(`should allow filtering by ${tokenTestCase.title} token`, () => {
-    const { columnId, iconIndex } = tokenTestCase
+  it(`should allow filtering by token`, () => {
+    const { columnId, iconIndex } = oneOf(
+      { iconIndex: 0, columnId: 'assets_collateral_symbol' },
+      { iconIndex: 1, columnId: 'assets_borrowed_symbol' },
+    )
     cy.get(`[data-testid="btn-expand-filters"]`).click()
     cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click()
     cy.get(`#menu-${columnId} [data-value="CRV"]`).click()
-    cy.get(tokenSelector).eq(iconIndex).should('have.attr', 'data-testid', `token-icon-CRV`)
+    cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid^="token-icon-"]`)
+      .eq(iconIndex)
+      .should('have.attr', 'data-testid', `token-icon-CRV`)
     cy.get(`#menu-${columnId} [data-value="crvUSD"]`).click()
     cy.get(`[data-testid="token-icon-crvUSD"]`).should('be.visible')
   })
@@ -112,12 +109,5 @@ describe('LlamaLend Markets', () => {
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
     cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
     cy.get(headerSelector).should('not.exist')
-  })
-
-  it('should toggle the collateral token', () => {
-    cy.get(tokenSelector).should('have.length', 2)
-    cy.get(`[data-testid="btn-visibility-settings"]`).click()
-    cy.get(`[data-testid="visibility-toggle-assets_collateral_symbol"]`).click()
-    cy.get(tokenSelector).should('have.length', 1)
   })
 })

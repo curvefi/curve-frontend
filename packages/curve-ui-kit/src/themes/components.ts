@@ -8,7 +8,8 @@ import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
-import { definedMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
+import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -67,6 +68,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
         },
         '& .MuiOutlinedInput-notchedOutline': {
           borderWidth: 1,
+          transition: `border-color ${TransitionFunction}`,
         },
         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
           borderColor: design.Inputs.Base.Default.Border.Active,
@@ -84,7 +86,7 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
       },
     },
   },
-  MuiMenuItem: definedMuiMenuItem(design),
+  MuiMenuItem: defineMuiMenuItem(design),
   MuiSlider: {
     styleOverrides: {
       thumb: {
@@ -150,6 +152,10 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiPopover: {
+    defaultProps: {
+      marginThreshold: 8, // allows the popover to be closer to the edge of the screen. Default is 16px
+      elevation: 3,
+    },
     styleOverrides: {
       paper: {
         backgroundColor: design.Layer[3].Fill,

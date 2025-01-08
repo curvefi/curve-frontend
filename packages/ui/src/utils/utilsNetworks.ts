@@ -1,5 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
 import { ethers } from 'ethers'
+import { CDN_ROOT_URL, CURVE_ASSETS_URL, CURVE_CDN_URL, getImageBaseUrl } from '@/utils/utilsConstants'
 
 const NETWORK_BASE_CONFIG_DEFAULT = {
   blocknativeSupport: true,
@@ -9,15 +10,15 @@ const NETWORK_BASE_CONFIG_DEFAULT = {
   gasPricesUrl: '',
   gasPricesDefault: 0,
   integrations: {
-    imageBaseurl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
-    listUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-list.json',
-    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-integrations/integrations-tags.json',
+    imageBaseurl: `${CURVE_ASSETS_URL}/platforms`,
+    listUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-list.json`,
+    tagsUrl: `${CURVE_CDN_URL}/curve-external-integrations/integrations-tags.json`,
   },
   rewards: {
-    baseUrl: 'https://cdn.jsdelivr.net',
-    imageBaseUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/platforms',
-    campaignsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/campaign-list.json',
-    tagsUrl: 'https://cdn.jsdelivr.net/gh/curvefi/curve-external-reward@latest/reward-tags.json',
+    baseUrl: CDN_ROOT_URL,
+    imageBaseUrl: `${CURVE_ASSETS_URL}/platforms`,
+    campaignsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/campaign-list.json`,
+    tagsUrl: `${CURVE_CDN_URL}/curve-external-reward@latest/reward-tags.json`,
   },
   orgUIPath: '',
 }
@@ -203,10 +204,7 @@ export function getBaseNetworksConfig(chainId: number, networkConfig: any): Base
     id: id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
-    imageBaseUrl:
-      id === 'ethereum'
-        ? `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/images/assets/`
-        : `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/images/assets-${id}/`,
+    imageBaseUrl: getImageBaseUrl(id),
     logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,

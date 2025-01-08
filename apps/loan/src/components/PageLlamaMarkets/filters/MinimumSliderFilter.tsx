@@ -52,7 +52,7 @@ export const MinimumSliderFilter = <T extends unknown>({
       )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
     >
-      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6}>
+      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6} alignItems="center">
         <Typography>{format(0)}</Typography>
         <Slider
           data-testid={`slider-${id}`}

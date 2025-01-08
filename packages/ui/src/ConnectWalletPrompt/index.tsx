@@ -5,6 +5,7 @@ import Button from '@mui/material/Button'
 import Spinner from '../Spinner'
 
 import { LogoImg } from '../images'
+import { getBackgroundUrl } from '@/utils'
 
 type ConnectWalletPromptProps = {
   connectWallet: () => void
@@ -23,11 +24,7 @@ const ConnectWalletPrompt: React.FC<ConnectWalletPromptProps> = ({
   loadingText,
   theme = 'light',
 }) => {
-  const BackgroundSvg =
-    theme === 'light'
-      ? 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/curve_illustration-light.svg'
-      : 'https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/curve_illustration-dark.svg'
-
+  const BackgroundSvg = getBackgroundUrl(theme)
   return (
     <Wrapper>
       <ImageWrapper>

@@ -6,7 +6,7 @@ import { ReloadIcon } from '../icons/ReloadIcon'
 import { FilterIcon } from '../icons/FilterIcon'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import Collapse from '@mui/material/Collapse'
 import { forwardRef, ReactNode, useCallback, useRef, useState } from 'react'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
@@ -76,7 +76,7 @@ export const TableFilters = ({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Box sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Stack sx={{ paddingBlock: Spacing.sm, paddingInline: Spacing.md, backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <Grid container spacing={Column_Spacing}>
         <Grid size={{ tablet: 6, mobile: 12 }}>
           <Typography variant="headingSBold">{title}</Typography>
@@ -112,7 +112,7 @@ export const TableFilters = ({
           onClose={closeVisibilitySettings}
         />
       )}
-    </Box>
+    </Stack>
   )
 }
 

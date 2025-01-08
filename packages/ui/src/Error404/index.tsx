@@ -1,14 +1,14 @@
 import styled from 'styled-components'
 
-import { CURVE_ASSETS_URL } from 'ui/src/utils'
 import { breakpoints } from 'ui/src/utils/responsive'
 import Box from 'ui/src/Box'
 import Image from 'next/image'
+import { NOT_FOUND_IMAGE_URL } from '@/utils'
 
 export function Error404() {
   return (
     <Container variant="secondary">
-      <Image src={`${CURVE_ASSETS_URL}/branding/four-oh-llama.jpg`} alt="404" layout="fill" />
+      <Image src={NOT_FOUND_IMAGE_URL} alt="404" layout="fill" />
       <Title>404</Title>
       <Description>Page not found</Description>
     </Container>

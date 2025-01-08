@@ -42,7 +42,7 @@ export const LendingMarketsFilters = ({
   setColumnFilter: (id: string, value: unknown) => void
   data: LendingVault[]
 }) => (
-  <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm}>
+  <Grid container spacing={Spacing.sm}>
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <MultiSelectFilter
         field="blockchainId"
