@@ -4,7 +4,7 @@ import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
-import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

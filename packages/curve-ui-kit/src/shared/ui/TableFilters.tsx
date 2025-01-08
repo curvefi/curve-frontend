@@ -14,7 +14,7 @@ import { kebabCase } from 'lodash'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import SvgIcon from '@mui/material/SvgIcon'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { ColumnVisibilityGroup, TableColumnVisibilityPopover } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
+import { VisibilityGroup, TableVisibilitySettingsPopover } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { ToolkitIcon } from '@ui-kit/shared/icons/ToolkitIcon'
 
 const {
@@ -60,16 +60,16 @@ export const TableFilters = ({
   subtitle,
   onReload,
   learnMoreUrl,
-  columnVisibilityGroups,
-  toggleColumnVisibility,
+  visibilityGroups,
+  toggleVisibility,
   children,
 }: {
   title: string
   subtitle: string
   learnMoreUrl: string
   onReload: () => void
-  columnVisibilityGroups: ColumnVisibilityGroup[]
-  toggleColumnVisibility: (columnId: string) => void
+  visibilityGroups: VisibilityGroup[]
+  toggleVisibility: (columnId: string) => void
   children: ReactNode
 }) => {
   const [filterExpanded, setFilterExpanded] = useLocalStorage<boolean>(`filter-expanded-${kebabCase(title)}`)
@@ -104,10 +104,10 @@ export const TableFilters = ({
       <Collapse in={filterExpanded}>{filterExpanded != null && children}</Collapse>
 
       {visibilitySettingsOpen != null && settingsRef.current && (
-        <TableColumnVisibilityPopover
+        <TableVisibilitySettingsPopover
           anchorEl={settingsRef.current}
-          columnVisibilityGroups={columnVisibilityGroups}
-          toggleColumnVisibility={toggleColumnVisibility}
+          visibilityGroups={visibilityGroups}
+          toggleVisibility={toggleVisibility}
           open={visibilitySettingsOpen}
           onClose={closeVisibilitySettings}
         />

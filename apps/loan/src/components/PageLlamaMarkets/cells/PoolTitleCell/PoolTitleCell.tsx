@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 import { PoolBadges } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolBadges'
 import { PoolWarnings } from '@/components/PageLlamaMarkets/cells/PoolTitleCell/PoolWarnings'
 import { getImageBaseUrl } from '@/ui/utils'
-import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 const { Spacing } = SizesAndSpaces
 

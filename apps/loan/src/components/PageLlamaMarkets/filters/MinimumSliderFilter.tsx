@@ -5,7 +5,7 @@ import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { get } from 'lodash'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { cleanColumnId } from '@ui-kit/shared/ui/TableColumnVisibilityPopover'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**
  * Get the maximum value from a field in an array of objects.

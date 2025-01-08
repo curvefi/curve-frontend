@@ -39,7 +39,7 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
 
 const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   return (
     <TableRow
       sx={{
