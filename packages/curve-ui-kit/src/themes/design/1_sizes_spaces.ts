@@ -183,41 +183,13 @@ const MappedButtonSize = {
 }
 
 const MappedFontWeight = {
-  Extra_Light: {
-    mobile: '200',
-    tablet: '200',
-    desktop: '200',
-  },
-  Light: {
-    mobile: '300',
-    tablet: '300',
-    desktop: '300',
-  },
-  Normal: {
-    mobile: '400',
-    tablet: '400',
-    desktop: '400',
-  },
-  Medium: {
-    mobile: '500',
-    tablet: '500',
-    desktop: '500',
-  },
-  Semi_Bold: {
-    mobile: '600',
-    tablet: '600',
-    desktop: '600',
-  },
-  Bold: {
-    mobile: '700',
-    tablet: '700',
-    desktop: '700',
-  },
-  Extra_Bold: {
-    mobile: '800',
-    tablet: '800',
-    desktop: '800',
-  },
+  Extra_Light: 200,
+  Light: 300,
+  Normal: 400,
+  Medium: 500,
+  Semi_Bold: 600,
+  Bold: 700,
+  Extra_Bold: 800,
 } as const
 
 const MappedLineHeight = {
