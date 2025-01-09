@@ -1,5 +1,5 @@
 import { type ThemeOptions } from '@mui/material/styles'
-import { defineMuiButton, defineMuiIconButton } from './button'
+import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiTypography } from './typography'
 import { defineMuiTab, defineMuiTabs } from './tabs'
 import { DesignSystem } from './design'
@@ -56,6 +56,14 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiIconButton: defineMuiIconButton(design),
+  MuiToggleButton: defineMuiToggleButton(design),
+  MuiToggleButtonGroup: {
+    styleOverrides: {
+      root: ({ ownerState }) => ({
+        gap: ownerState.compact ? '0rem' : '0.25rem',
+      }),
+    },
+  },
   MuiInputBase: {
     styleOverrides: {
       root: {
