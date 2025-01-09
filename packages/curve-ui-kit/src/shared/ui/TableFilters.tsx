@@ -8,11 +8,18 @@ import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import { kebabCase } from 'lodash'
-import { ColumnFiltersState } from '@tanstack/react-table'
+import {
+  AccessorKeyColumnDef,
+  ColumnDef,
+  IdIdentifier,
+  OnChangeFn,
+  StringHeaderIdentifier,
+} from '@tanstack/react-table'
+import { useLocation, useNavigate } from 'react-router'
 
 const {
   Spacing,
@@ -73,16 +80,27 @@ export const TableFilters = ({
   )
 }
 
-export function useColumnFilters() {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+export function useColumnFilters<T>(columns: ColumnDef<T, any>[]) {
+  const { search } = useLocation()
+  const navigate = useNavigate()
+  const columnFilters = useMemo(() => parseColumnFilters(search, columns), [columns, search])
+  const setColumnFilters: OnChangeFn<UrlFilter[]> = useCallback(
+    (newFilters) =>
+      navigate({
+        search: updateFilters(
+          search,
+          typeof newFilters == 'function' ? newFilters(columnFilters) : newFilters,
+          columns,
+        ),
+      }),
+    [navigate, search, columnFilters, columns],
+  )
+
   const setColumnFilter = useCallback(
-    (id: string, value: unknown) =>
+    (id: string, value: string | null) =>
       setColumnFilters((filters) => [
         ...filters.filter((f) => f.id !== id),
-        {
-          id,
-          value,
-        },
+        ...(value != null && value !== '' ? [{ id, value }] : []),
       ]),
     [setColumnFilters],
   )
@@ -95,4 +113,42 @@ export function useColumnFilters() {
   )
 
   return [columnFilters, columnFiltersById, setColumnFilter] as const
+}
+
+export interface UrlFilter {
+  id: string
+  value: string
+}
+
+const getColumnId = <T extends unknown>(column: ColumnDef<T>) =>
+  (
+    (column as AccessorKeyColumnDef<T>).accessorKey ||
+    (column as IdIdentifier<T, unknown>).id ||
+    (column as StringHeaderIdentifier)?.header ||
+    ''
+  ) // display or group column
+    .toString()
+    .replaceAll('.', '_') // todo: use `cleanColumnId` after #583 is merged
+
+function parseColumnFilters<T>(search: string, columns: ColumnDef<T, any>[]): UrlFilter[] {
+  const params = new URLSearchParams(search)
+  const res = columns
+    .map(getColumnId)
+    .map((id) => id && params.has(id) && { id, value: id && params.get(id) })
+    .filter(Boolean) as UrlFilter[]
+  console.log(
+    'parse',
+    search,
+    res,
+    columns.map((c) => c),
+  )
+  return res
+}
+
+export function updateFilters<T>(search: string, state: UrlFilter[], columns: ColumnDef<T, any>[]): string {
+  const params = new URLSearchParams(search)
+  columns.map(getColumnId).forEach((id) => id && params.delete(id))
+  state.forEach(({ id, value }) => value != null && value != '' && params.append(id, value))
+  console.log('update', search, state, params.toString())
+  return `?${params.toString()}`.replaceAll('%2C', ',') // replace unnecessary comma encoding
 }

@@ -17,7 +17,7 @@ import { LendingMarketsFilters } from '@/components/PageLlamaMarkets/LendingMark
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 
-const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
+const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
 
@@ -75,11 +75,11 @@ export const LendingMarketsTable = ({
   data: LendingVault[]
   headerHeight: string
 }) => {
-  const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
+  const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters(columns)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
-    columns,
+    columns: columns,
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

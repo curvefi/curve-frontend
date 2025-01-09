@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { get, identity, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
@@ -28,8 +28,8 @@ export const MultiSelectFilter = <T extends unknown>({
   renderItem,
   field,
 }: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
+  columnFilters: Record<string, string>
+  setColumnFilter: (id: string, value: string | null) => void
   data: T[]
   defaultText: string
   field: DeepKeys<T>
@@ -37,14 +37,14 @@ export const MultiSelectFilter = <T extends unknown>({
 }) => {
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
   const id = field.replaceAll('.', '_')
-  const value = (columnFilters[id] ?? []) as string[]
+  const value = columnFilters[id]?.split(',') ?? []
   return (
     <Select
       name={id}
       multiple
       displayEmpty
       value={value}
-      onChange={(e) => setColumnFilter(id, e.target.value)}
+      onChange={(e) => setColumnFilter(id, (e.target.value as string[]).join(','))}
       fullWidth
       data-testid={`multi-select-filter-${id}`}
       size="small"

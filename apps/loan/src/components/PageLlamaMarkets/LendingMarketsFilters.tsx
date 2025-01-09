@@ -38,8 +38,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LendingVault[]; 
 export const LendingMarketsFilters = ({
   ...props
 }: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
+  columnFilters: Record<string, string>
+  setColumnFilter: (id: string, value: string | null) => void
   data: LendingVault[]
 }) => (
   <Grid container spacing={Spacing.md} paddingBlock={Spacing.sm}>

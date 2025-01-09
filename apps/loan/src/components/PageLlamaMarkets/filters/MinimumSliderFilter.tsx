@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
@@ -24,8 +24,8 @@ export const MinimumSliderFilter = <T extends unknown>({
   format,
   field,
 }: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
+  columnFilters: Record<string, string>
+  setColumnFilter: (id: string, value: string | null) => void
   data: T[]
   title: string
   field: DeepKeys<T>
@@ -33,7 +33,7 @@ export const MinimumSliderFilter = <T extends unknown>({
 }) => {
   const id = field.replaceAll('.', '_')
   const max = useMemo(() => getMaxValueFromData(data, field), [data, field])
-  const [value] = (columnFilters[id] ?? [0, max]) as [number, number] // tanstack expects a [min, max] tuple
+  const [value] = columnFilters[id]?.split(',').map(parseFloat) ?? [0, max] // tanstack expects a [min, max] tuple
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
@@ -58,7 +58,7 @@ export const MinimumSliderFilter = <T extends unknown>({
           aria-label={title}
           getAriaValueText={format}
           value={value}
-          onChange={(_, min) => setColumnFilter(id, [min, max])}
+          onChange={(_, min) => setColumnFilter(id, [min, max].join(''))}
           min={0}
           max={max}
           step={+max.toPrecision(2) / 100}
