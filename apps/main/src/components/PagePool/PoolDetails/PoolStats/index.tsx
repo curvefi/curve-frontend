@@ -42,7 +42,7 @@ const PoolStats: React.FC<PoolStatsProps> = ({
 
   const poolId = poolData?.pool?.id
 
-  const risksPathname = params && getPath(params, `/risk-disclaimer`)
+  const risksPathname = params && getPath(params, `/disclaimer`)
 
   // fetch stats
   useEffect(() => {

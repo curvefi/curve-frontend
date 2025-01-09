@@ -24,7 +24,7 @@ export const createPalette = (
     hover: Layer.TypeAction.Hover,
     selected: Layer.TypeAction.Selected,
   },
-  background: { default: Layer.App.Background, paper: Layer[1].Fill },
+  background: { default: Layer.App.Background, paper: Layer[2].Fill },
   divider: Layer[1].Outline,
 })
 

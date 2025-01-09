@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useEffect, useRef } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { t } from '@lingui/macro'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { CONNECT_STAGE } from '@/constants'
 import { getParamsFromUrl, getRestFullPathname, getRestPartialPathname } from '@/utils/utilsRouter'
 import { _parseRouteAndIsActive, FORMAT_OPTIONS, formatNumber, isLoading } from '@/ui/utils'
@@ -36,7 +36,8 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
 
   const { locale, isAdvancedMode, setAdvancedMode, theme, setTheme } = useUserProfileStore()
 
-  const { params: routerParams, location } = routerProps ?? {}
+  const location = useLocation()
+  const { params: routerParams } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
   const routerNetwork = routerParams?.network
 

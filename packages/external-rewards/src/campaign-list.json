@@ -36,9 +36,6 @@
     "campaign": "Fraxtal.json"
   },
   {
-    "campaign": "Swell.json"
-  },
-  {
     "campaign": "Resolv.json"
   },
   {
@@ -76,5 +73,11 @@
   },
   {
     "campaign": "YieldFi.json"
+  },
+  {
+    "campaign": "Babylon.json"
+  },
+  {
+    "campaign": "Vnx.json"
   }
 ]

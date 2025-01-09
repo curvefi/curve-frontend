@@ -73,7 +73,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
         }}
       />
       <Main minHeight={minHeight}>{children}</Main>
-      <Footer networkName={rNetwork} />
+      <Footer appName="dao" networkName={rNetwork} />
     </Container>
   )
 }
@@ -85,6 +85,7 @@ const getSections = (locale: Locale) => [
       { route: 'https://news.curve.fi/', label: t`News` },
       { route: 'https://resources.curve.fi/lending/understanding-lending/', label: t`User Resources` },
       { route: 'https://docs.curve.fi', label: t`Developer Resources` },
+      { route: '/disclaimer', label: t`Risk Disclaimers` },
       { route: 'https://resources.curve.fi/glossary-branding/branding/', label: t`Branding` },
       ...(locale === 'zh-Hans' || locale === 'zh-Hant' ? [{ route: 'https://www.curve.wiki/', label: t`Wiki` }] : []),
     ],

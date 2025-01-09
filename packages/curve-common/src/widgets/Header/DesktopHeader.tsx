@@ -61,7 +61,7 @@ export const DesktopHeader = <TChainId extends number>({
                 </>
               )}
 
-              <ChainSwitcher {...ChainProps} />
+              <ChainSwitcher {...ChainProps} headerHeight={height} />
               <ConnectWalletIndicator {...WalletProps} />
             </Box>
           </Container>

@@ -146,7 +146,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Feedback = {
     Success: Greens[300],
     Info: Layer[3].Fill,
-    Warning: Reds[300],
+    Warning: Reds[400],
     Error: Reds[500],
   } as const
   return {
@@ -231,7 +231,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
     },
     Table: {
-      Header_Fill: Light.Tables.Header_Fill,
+      Header: { Fill: Light.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
@@ -552,12 +552,12 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: Layer[3].Fill,
       },
       Current: {
-        Label: Color.Neutral[950],
-        Fill: Color.Neutral[900],
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[950],
       },
     },
     Table: {
-      Header_Fill: Dark.Tables.Header_Fill,
+      Header: { Fill: Dark.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
@@ -743,7 +743,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Feedback = {
     Success: Greens[400],
     Info: Layer[3].Fill,
-    Warning: Reds[300],
+    Warning: Reds[400],
     Error: Reds[500],
   } as const
   return {
@@ -828,7 +828,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
     },
     Table: {
-      Header_Fill: Chad.Tables.Header_Fill,
+      Header: { Fill: Chad.Tables.Header.Fill },
     },
     Inputs: {
       Base: {
