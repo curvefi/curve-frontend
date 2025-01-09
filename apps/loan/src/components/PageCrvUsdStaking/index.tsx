@@ -5,6 +5,7 @@ import BigNumber from 'bignumber.js'
 import useStore from '@/store/useStore'
 
 import StatsBanner from '@/components/PageCrvUsdStaking/StatsBanner'
+import Statistics from '@/components/PageCrvUsdStaking/Statistics'
 import DepositWithdraw from '@/components/PageCrvUsdStaking/DepositWithdraw'
 import UserInformation from '@/components/PageCrvUsdStaking/UserInformation'
 import UserPositionBanner from '@/components/PageCrvUsdStaking/UserPositionBanner'
@@ -56,11 +57,12 @@ const CrvUsdStaking = ({ mobileBreakpoint }: { mobileBreakpoint: string }) => {
     <Wrapper>
       <MainContainer mobileBreakpoint={mobileBreakpoint}>
         <StyledDepositWithdraw mobileBreakpoint={mobileBreakpoint} />
-        {isUserScrvUsdBalanceZero ? (
+        {/* {isUserScrvUsdBalanceZero ? (
           <StyledStatsBanner mobileBreakpoint={mobileBreakpoint} />
         ) : (
           <StyledUserPositionBanner mobileBreakpoint={mobileBreakpoint} />
-        )}
+        )} */}
+        <Statistics />
       </MainContainer>
       <StyledUserInformation />
     </Wrapper>

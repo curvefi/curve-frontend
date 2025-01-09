@@ -274,6 +274,7 @@ export const SizesAndSpaces = {
     tableTitle: '67rem', // 1072px
     table: '96rem', // 1536px
     footer: '96rem', // 1536px
+    statistics: '59.5rem', // 952px - "statistics" might not be the best name
   },
   MaxHeight: {
     popover: '17rem', // 272px
