@@ -10,4 +10,4 @@ export const getImageBaseUrl = (blockchainId: string) =>
 export const getBlockchainIconUrl = (blockchainId: string) => `${CURVE_ASSETS_URL}/chains/${blockchainId}.png`
 
 export const getBackgroundUrl = (theme: 'light' | 'dark') =>
-  `${CURVE_ASSETS_URL}/curve_illustration-${theme === 'light' ? 'light' : 'dark'}.svg`
+  `${CURVE_ASSETS_URL}/branding/curve_illustration-${theme === 'light' ? 'light' : 'dark'}.svg`
