@@ -76,7 +76,6 @@ const store: StateCreator<Store> = (set) => ({
     if (isNaN(slippage) || slippage <= 0) return false
 
     // Set slippage for a key, but if none given all existing keys will be overwritten.
-    // Make sure there's at least a 'router' key.
     set(
       produce((state) => {
         if (key) {
