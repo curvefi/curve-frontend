@@ -60,6 +60,7 @@ const store: StateCreator<Store> = (set) => ({
     // Check if we want to delete a slippage value first.
     if (maxSlippage === null) {
       if (!key) return false
+      if (key === 'global') return false
 
       set(
         produce((state) => {
