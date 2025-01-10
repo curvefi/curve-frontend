@@ -1,6 +1,7 @@
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
+import { produce } from 'immer'
 import merge from 'lodash/merge'
 import type { Locale } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
@@ -58,17 +59,15 @@ const store: StateCreator<Store> = (set) => ({
   setMaxSlippage: (maxSlippage: string | null, key?: string) => {
     // Check if we want to delete a slippage value first.
     if (maxSlippage === null) {
-      if (key) {
-        set((state) => {
-          const newMaxSlippage = { ...state.maxSlippage }
-          delete newMaxSlippage[key]
-          return { ...state, maxSlippage: newMaxSlippage }
-        })
+      if (!key) return false
 
-        return true
-      }
+      set(
+        produce((state) => {
+          delete state.maxSlippage[key]
+        }),
+      )
 
-      return false
+      return true
     }
 
     // Instead, we want to add or modify a slippage value.
@@ -77,12 +76,17 @@ const store: StateCreator<Store> = (set) => ({
 
     // Set slippage for a key, but if none given all existing keys will be overwritten.
     // Make sure there's at least a 'router' key.
-    set((state) => ({
-      ...state,
-      maxSlippage: key
-        ? { ...state.maxSlippage, [key]: maxSlippage }
-        : Object.keys(state.maxSlippage).reduce((acc, k) => ({ ...acc, [k]: maxSlippage }), { global: maxSlippage }),
-    }))
+    set(
+      produce((state) => {
+        if (key) {
+          state.maxSlippage[key] = maxSlippage
+        } else {
+          for (const k of Object.keys(state.maxSlippage)) {
+            state.maxSlippage[k] = maxSlippage
+          }
+        }
+      }),
+    )
 
     return true
   },
