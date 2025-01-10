@@ -9,7 +9,7 @@ const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: Healt
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
 
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { userPrices: currPrices } = userLoanDetails ?? {}
 

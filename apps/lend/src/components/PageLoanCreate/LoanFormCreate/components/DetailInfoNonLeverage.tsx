@@ -36,7 +36,7 @@ const DetailInfoNonLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = market ?? {}

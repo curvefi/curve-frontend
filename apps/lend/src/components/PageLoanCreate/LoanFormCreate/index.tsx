@@ -63,11 +63,8 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
-  const {
-    isAdvancedMode,
-    theme,
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

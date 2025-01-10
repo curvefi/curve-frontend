@@ -27,7 +27,7 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Prop
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { userBands, healthFull, healthNotFull, userStatus } = userLoanDetails ?? {}
   const { activeBand } = loanDetails ?? {}

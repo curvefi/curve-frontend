@@ -55,7 +55,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const setStateByKey = useStore((state) => state.loanCollateralIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanCollateralIncrease.resetState)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

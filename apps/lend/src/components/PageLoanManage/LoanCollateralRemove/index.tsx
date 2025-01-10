@@ -48,7 +48,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

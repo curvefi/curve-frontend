@@ -48,7 +48,7 @@ const DetailInfoLiqRange = ({
   const userDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
 
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { prices: loanPrices } = loanPricesResp ?? {}
   const { prices: currPrices, bands: currBands } = userDetailsResp?.details ?? {}

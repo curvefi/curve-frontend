@@ -34,10 +34,8 @@ const Page: NextPage = () => {
   const network = useStore((state) => state.networks.networks[rChainId])
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
 
-  const {
-    maxSlippage: { global: maxSlippage },
-    setMaxSlippage,
-  } = useUserProfileStore()
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [loaded, setLoaded] = useState(false)
 

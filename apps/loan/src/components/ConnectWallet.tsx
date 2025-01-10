@@ -17,7 +17,7 @@ const ConnectWallet: React.FC<ConnectWalletProps> = ({ description, connectText,
   const connectState = useStore((state) => state.connectState)
   const loading = isLoading(connectState)
 
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   return (
     <ConnectWalletPrompt

@@ -66,10 +66,8 @@ const LoanCreate = ({
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
-  const {
-    isAdvancedMode,
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

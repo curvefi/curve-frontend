@@ -29,7 +29,7 @@ const DetailInfo = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 

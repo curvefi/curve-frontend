@@ -34,7 +34,11 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
 
-  const { locale, isAdvancedMode, setAdvancedMode, theme, setTheme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const locale = useUserProfileStore((state) => state.locale)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   const location = useLocation()
   const { params: routerParams } = routerProps ?? {}

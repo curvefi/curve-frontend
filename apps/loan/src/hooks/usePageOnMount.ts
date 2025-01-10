@@ -30,7 +30,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
 
-  const { setLocale } = useUserProfileStore()
+  const setLocale = useUserProfileStore((state) => state.setLocale)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)

@@ -65,7 +65,7 @@ export const PoolRow: FunctionComponent<PoolRowProps> = ({
   const network = useStore((state) => state.networks.networks[rChainId])
   const campaignRewardsMapper = useCampaignRewardsMapper()
 
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const poolDataCachedOrApi = poolData ?? poolDataCached
 

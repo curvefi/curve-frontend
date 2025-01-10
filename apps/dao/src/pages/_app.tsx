@@ -46,7 +46,9 @@ function CurveApp({ Component }: AppProps) {
   const onboard = useStore((state) => state.wallet.onboard)
   const isPageVisible = useStore((state) => state.isPageVisible)
 
-  const { locale, setLocale, theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const locale = useUserProfileStore((state) => state.locale)
+  const setLocale = useUserProfileStore((state) => state.setLocale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 

@@ -31,7 +31,7 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
   const { rChainId } = useNetworkFromUrl()
 
-  const { setLocale } = useUserProfileStore()
+  const setLocale = useUserProfileStore((state) => state.setLocale)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)

@@ -59,7 +59,7 @@ export const AdvancedSettings = ({ className, buttonIcon, maxSlippage }: React.P
   const overlayTriggerState = useOverlayTriggerState({})
   const isMobile = useStore((state) => state.isMobile)
 
-  const { setMaxSlippage } = useUserProfileStore()
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 

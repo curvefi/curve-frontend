@@ -49,9 +49,7 @@ const LoanSelfLiquidation = ({ rChainId, rOwmId, isLoaded, api, market, userActi
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
 
-  const {
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

@@ -33,7 +33,8 @@ function CurveApp({ Component }: AppProps) {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStateByKey = useStore((state) => state.wallet.setStateByKey)
 
-  const { locale, theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 

@@ -27,7 +27,7 @@ const MarketParameters = ({
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}

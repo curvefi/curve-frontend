@@ -26,7 +26,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const setLayoutHeight = useStore((state) => state.layout.setLayoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { locale } = useUserProfileStore()
+  const locale = useUserProfileStore((state) => state.locale)
 
   const [networkSwitch, setNetworkSwitch] = useState('')
 

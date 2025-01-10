@@ -25,7 +25,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const updateLayoutHeight = useStore((state) => state.updateLayoutHeight)
 
-  const { locale } = useUserProfileStore()
+  const locale = useUserProfileStore((state) => state.locale)
 
   useEffect(() => {
     updateLayoutHeight('globalAlert', globalAlertHeight)

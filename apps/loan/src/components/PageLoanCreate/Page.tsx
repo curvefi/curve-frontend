@@ -58,10 +58,8 @@ const Page: NextPage = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
 
-  const {
-    isAdvancedMode,
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [loaded, setLoaded] = useState(false)
 

@@ -40,10 +40,8 @@ const DetailInfoLeverage = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
 
-  const {
-    isAdvancedMode,
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral, routeImage } = detailInfo ?? {}

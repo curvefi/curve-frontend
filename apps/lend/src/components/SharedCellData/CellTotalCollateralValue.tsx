@@ -13,7 +13,7 @@ const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOw
   const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
   const fetchTotalCollateralValue = useStore((state) => state.markets.fetchTotalCollateralValue)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { total = null, tooltipContent = [], error } = totalCollateralValue ?? {}
 

@@ -34,7 +34,9 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const { locale, theme, setTheme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const locale = useUserProfileStore((state) => state.locale)
 
   const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)

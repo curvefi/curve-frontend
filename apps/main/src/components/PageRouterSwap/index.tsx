@@ -83,9 +83,7 @@ const QuickSwap = ({
   const setSelectToList = useStore((state) => state.quickSwap.setSelectToList)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
 
-  const {
-    maxSlippage: { global: globalMaxSlippage },
-  } = useUserProfileStore()
+  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [confirmedLoss, setConfirmedLoss] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])

@@ -56,10 +56,8 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
   const resetState = useStore((state) => state.loanSwap.resetState)
 
-  const {
-    isAdvancedMode,
-    maxSlippage: { global: maxSlippage },
-  } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

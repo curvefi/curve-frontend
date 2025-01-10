@@ -8,7 +8,8 @@ import { Label, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 
 export const ThemeSelector = () => {
-  const { theme, setTheme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
 
   return (
     <Setting>

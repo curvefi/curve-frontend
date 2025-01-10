@@ -5,7 +5,8 @@ import { Label, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 
 export const AdvancedMode = () => {
-  const { isAdvancedMode, setAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   return (
     <Setting>

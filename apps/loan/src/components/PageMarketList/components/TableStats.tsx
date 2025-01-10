@@ -9,7 +9,7 @@ import ListInfoItem, { ListInfoItems } from '@/ui/ListInfo'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const TableStats = () => {
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const stats = [{ title: t`PegKeepers Debt`, content: <CellMarketsTotalDebt /> }]
 

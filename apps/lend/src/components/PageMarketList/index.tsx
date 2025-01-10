@@ -31,7 +31,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const setFormValues = useStore((state) => state.marketList.setFormValues)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 

@@ -31,7 +31,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   // TODO: handle error
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}

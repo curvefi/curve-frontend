@@ -25,7 +25,7 @@ const BaseLayout = ({ children }: { children: React.ReactNode }) => {
   const layoutHeight = useStore((state) => state.layoutHeight)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { locale } = useUserProfileStore()
+  const locale = useUserProfileStore((state) => state.locale)
 
   const { rChainId, rNetwork } = useNetworkFromUrl()
 

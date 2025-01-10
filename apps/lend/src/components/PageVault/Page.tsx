@@ -54,7 +54,7 @@ const Page: NextPage = () => {
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const provider = useStore((state) => state.wallet.getProvider(''))
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token } = market ?? {}

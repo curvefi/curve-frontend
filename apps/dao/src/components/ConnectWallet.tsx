@@ -13,7 +13,7 @@ type ConnectWalletProps = {
 const ConnectWallet: React.FC<ConnectWalletProps> = ({ description, connectText, loadingText }) => {
   const updateConnectWalletStateKeys = useStore((state) => state.wallet.updateConnectWalletStateKeys)
   const connectState = useStore((state) => state.connectState)
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const loading = isLoading(connectState)
 

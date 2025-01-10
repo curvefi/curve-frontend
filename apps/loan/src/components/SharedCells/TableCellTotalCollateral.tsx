@@ -22,7 +22,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { totalCollateral, totalStablecoin } = loanDetails ?? {}
 

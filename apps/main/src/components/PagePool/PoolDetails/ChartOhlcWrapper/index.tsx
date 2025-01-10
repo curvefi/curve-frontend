@@ -19,7 +19,7 @@ const PoolInfoData: React.FC<{ rChainId: ChainId; pricesApiPoolData: PricesApiPo
   rChainId,
   pricesApiPoolData,
 }) => {
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const {
     pricesApiState: {

@@ -36,7 +36,11 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
-  const { locale, isAdvancedMode, setAdvancedMode, theme, setTheme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const locale = useUserProfileStore((state) => state.locale)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   const location = useLocation()
   const { rLocalePathname } = getLocaleFromUrl()

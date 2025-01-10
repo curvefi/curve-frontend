@@ -9,7 +9,7 @@ const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey 
   const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
   const userLoanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
 
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { prices: currPrices, status } = userLoanDetails ?? {}
 

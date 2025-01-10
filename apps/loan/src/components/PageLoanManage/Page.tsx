@@ -58,7 +58,7 @@ const Page: NextPage = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)

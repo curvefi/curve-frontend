@@ -62,7 +62,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
   const resetState = useStore((state) => state.loanIncrease.resetState)
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

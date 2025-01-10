@@ -64,7 +64,7 @@ const Page: NextPage = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = market ?? {}

@@ -65,7 +65,7 @@ export const AdvancedSettings = ({
   testId,
 }: React.PropsWithChildren<AdvancedSettingsProps>) => {
   const overlayTriggerState = useOverlayTriggerState({})
-  const { setMaxSlippage } = useUserProfileStore()
+  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const [formValues, setFormValues] = useState(DEFAULT_FORM_VALUES)
 

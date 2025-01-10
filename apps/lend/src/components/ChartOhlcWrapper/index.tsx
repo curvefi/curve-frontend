@@ -39,7 +39,8 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, userActiv
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
 
-  const { isAdvancedMode, theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const {

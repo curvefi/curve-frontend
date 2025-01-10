@@ -30,7 +30,7 @@ const UserInfos = ({
 }) => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
 
-  const { isAdvancedMode } = useUserProfileStore()
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const {
     coins: [stablecoin],

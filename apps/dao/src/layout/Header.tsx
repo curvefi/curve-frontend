@@ -30,7 +30,9 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const { locale, theme, setTheme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const locale = useUserProfileStore((state) => state.locale)
 
   const location = useLocation()
   const { rLocalePathname } = getLocaleFromUrl()

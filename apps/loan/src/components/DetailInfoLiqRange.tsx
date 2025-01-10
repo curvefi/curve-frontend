@@ -40,7 +40,7 @@ const DetailInfoLiqRange = ({
   userLoanDetails: UserLoanDetails | undefined
   handleLiqRangesEdit?: () => void
 }) => {
-  const { theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { userPrices: currPrices, userBands: currBands } = userLoanDetails ?? {}
 

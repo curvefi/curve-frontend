@@ -49,7 +49,8 @@ function CurveApp({ Component }: AppProps) {
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
   const network = useStore((state) => state.networks.networks[chainId])
 
-  const { locale, theme } = useUserProfileStore()
+  const theme = useUserProfileStore((state) => state.theme)
+  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
