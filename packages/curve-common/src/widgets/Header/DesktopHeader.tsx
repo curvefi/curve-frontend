@@ -17,7 +17,7 @@ import { useState } from 'react'
 import { AppName } from 'curve-ui-kit/src/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
-import { isBeta } from 'curve-ui-kit/src/utils'
+import { isBeta, isCypress } from 'curve-ui-kit/src/utils'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
@@ -52,7 +52,7 @@ export const DesktopHeader = <TChainId extends number>({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {isBeta ? (
+              {isBeta && !isCypress ? (
                 <UserProfileButton />
               ) : (
                 <>

@@ -9,3 +9,5 @@ export * from './searchText'
 export const isBeta =
   typeof window !== 'undefined' &&
   (window.localStorage.getItem('beta') !== null || !window.location.hostname.includes('curve.fi'))
+
+export const isCypress = typeof window !== 'undefined' && (window as any).Cypress
