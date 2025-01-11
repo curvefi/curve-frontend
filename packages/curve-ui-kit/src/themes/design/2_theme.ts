@@ -12,6 +12,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Secondary: Greens,
     Tertiary: Reds,
   } as const
+
   const Layer = {
     '1': Light.Layer[1],
     '2': Light.Layer[2],
@@ -25,6 +26,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     TypeAction: Light.Layer.TypeAction,
   } as const
+
   const Text = {
     TextColors: {
       Primary: Light.Text.primary,
@@ -44,6 +46,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Button: 'Mona Sans',
     },
   } as const
+
   const Button = {
     Focus_Outline: Color.Primary[500],
     Transition,
@@ -143,12 +146,136 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
     },
   } as const
+
   const Feedback = {
     Success: Greens[300],
     Info: Layer[3].Fill,
     Warning: Reds[400],
     Error: Reds[500],
   } as const
+
+  const Tabs = {
+    UnderLined: {
+      Container_Border: Light.Layer[1].Outline,
+      Default: {
+        Label: Text.TextColors.Secondary,
+      },
+      Hover: {
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
+      },
+    },
+    Contained: {
+      Default: {
+        Label: Text.TextColors.Secondary,
+        Fill: Color.Neutral[300],
+      },
+      Hover: {
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[900],
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
+      },
+    },
+    OverLined: {
+      Default: {
+        Label: Text.TextColors.Secondary,
+      },
+      Hover: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Neutral[500],
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
+      },
+    },
+  } as const
+
+  const Chips = {
+    Default: {
+      Label: Text.TextColors.Secondary,
+      Fill: Layer[2].Fill,
+      Stroke: Layer[2].Outline,
+    },
+    Hover: {
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[900],
+    },
+    Current: {
+      Label: Text.TextColors.Highlight,
+      Fill: Layer[2].Fill,
+      Outline: Layer.Highlight.Outline,
+    },
+  } as const
+
+  const Toggles = {
+    Default: {
+      Label: Text.TextColors.Primary,
+    },
+    Hover: {
+      Label: Text.TextColors.Highlight,
+      Fill: Layer[3].Fill,
+    },
+    Current: {
+      Label: Grays[50],
+      Fill: Color.Neutral[900],
+    },
+  } as const
+
+  const Table = {
+    Header: { Fill: Light.Tables.Header.Fill },
+  } as const
+
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: Grays[100],
+        Border: {
+          Default: Grays[400],
+          Active: Light.Text.highlight,
+          Filled: Grays[850],
+          Error: Feedback.Error,
+        },
+      },
+      Nested: {
+        Nested: Grays[10],
+        Fill: Grays[100],
+        Border: {
+          Default: Grays[400],
+          Active: Light.Text.highlight,
+          Filled: Grays[850],
+          Error: Feedback.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: Grays[150],
+      },
+    },
+  } as const
+
+  const Switch = {
+    Default: {
+      Fill: Layer[1].Fill,
+      Outline: Color.Neutral[400],
+      Label: Color.Primary[500],
+    },
+    Checked: {
+      Fill: Color.Primary[500],
+      Outline: Color.Neutral[400],
+      Label: Grays[50],
+    },
+  } as const
+
   return {
     theme: 'light',
     Color,
@@ -156,123 +283,12 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Button,
     Feedback,
     Layer,
-
-    Tabs: {
-      UnderLined: {
-        Container_Border: Light.Layer[1].Outline,
-        Default: {
-          Label: Text.TextColors.Secondary,
-        },
-        Hover: {
-          Label: Text.TextColors.Highlight,
-          Outline: Layer.Highlight.Outline,
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-      Contained: {
-        Default: {
-          Label: Text.TextColors.Secondary,
-          Fill: Color.Neutral[300],
-        },
-        Hover: {
-          Label: Color.Neutral[50],
-          Fill: Color.Neutral[900],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Fill: Layer[1].Fill,
-          Outline: Color.Primary[500],
-        },
-      },
-      OverLined: {
-        Default: {
-          Label: Text.TextColors.Secondary,
-        },
-        Hover: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Neutral[500],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-    },
-    Chips: {
-      Default: {
-        Label: Text.TextColors.Secondary,
-        Fill: Layer[2].Fill,
-        Stroke: Layer[2].Outline,
-      },
-      Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
-      },
-      Current: {
-        Label: Text.TextColors.Highlight,
-        Fill: Layer[2].Fill,
-        Outline: Layer.Highlight.Outline,
-      },
-    },
-    Toggles: {
-      Default: {
-        Label: Text.TextColors.Primary,
-      },
-      Hover: {
-        Label: Text.TextColors.Highlight,
-        Fill: Layer[3].Fill,
-      },
-      Current: {
-        Label: Grays[50],
-        Fill: Color.Neutral[900],
-      },
-    },
-    Table: {
-      Header: { Fill: Light.Tables.Header.Fill },
-    },
-    Inputs: {
-      Base: {
-        Default: {
-          Fill: Grays[100],
-          Border: {
-            Default: Grays[400],
-            Active: Light.Text.highlight,
-            Filled: Grays[850],
-            Error: Feedback.Error,
-          },
-        },
-        Nested: {
-          Nested: Grays[10],
-          Fill: Grays[100],
-          Border: {
-            Default: Grays[400],
-            Active: Light.Text.highlight,
-            Filled: Grays[850],
-            Error: Feedback.Error,
-          },
-        },
-      },
-      Large: {
-        Default: {
-          Fill: Grays[150],
-        },
-      },
-    },
-    Switch: {
-      Default: {
-        Fill: Layer[1].Fill,
-        Outline: Color.Neutral[400],
-        Label: Color.Primary[500],
-      },
-      Checked: {
-        Fill: Color.Primary[500],
-        Outline: Color.Neutral[400],
-        Label: Grays[50],
-      },
-    },
+    Tabs,
+    Chips,
+    Toggles,
+    Table,
+    Inputs,
+    Switch,
   } as const
 }
 
@@ -328,6 +344,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       '600': Reds[200],
     },
   } as const
+
   const Layer = {
     '1': {
       Fill: Dark.Layer[1].Fill,
@@ -353,6 +370,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Selected: Dark.Layer.TypeAction.Selected,
     },
   } as const
+
   const Text = {
     TextColors: {
       Primary: Dark.Text.primary,
@@ -372,6 +390,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Button: 'Mona Sans',
     },
   } as const
+
   const Button = {
     Focus_Outline: Color.Primary[500],
     Transition,
@@ -471,12 +490,134 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
     },
   } as const
+
   const Feedback = {
     Success: Greens[400],
     Info: Layer[3].Fill,
     Warning: Reds[300],
     Error: Reds[500],
   } as const
+
+  const Tabs = {
+    UnderLined: {
+      Container_Border: Dark.Layer[1].Outline,
+      Default: {
+        Label: Text.TextColors.Secondary,
+      },
+      Hover: {
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
+      },
+    },
+    Contained: {
+      Default: {
+        Label: Text.TextColors.Secondary,
+        Fill: Color.Neutral[200],
+      },
+      Hover: {
+        Label: Color.Neutral[50],
+        Fill: Color.Neutral[900],
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
+      },
+    },
+    OverLined: {
+      Default: { Label: Text.TextColors.Secondary },
+      Hover: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Neutral[500],
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
+      },
+    },
+  } as const
+
+  const Chips = {
+    Default: {
+      Label: Text.TextColors.Secondary,
+      Fill: Layer[2].Fill,
+      Stroke: Layer[2].Outline,
+    },
+    Hover: {
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[900],
+    },
+    Current: {
+      Label: Color.Neutral[950],
+      Fill: Layer[2].Fill,
+      Outline: Layer.Highlight.Outline,
+    },
+  } as const
+
+  const Toggles = {
+    Default: {
+      Label: Text.TextColors.Primary,
+    },
+    Hover: {
+      Label: Text.TextColors.Highlight,
+      Fill: Layer[3].Fill,
+    },
+    Current: {
+      Label: Color.Neutral[50],
+      Fill: Color.Neutral[950],
+    },
+  } as const
+
+  const Table = {
+    Header: { Fill: Dark.Tables.Header.Fill },
+  } as const
+
+  const Inputs = {
+    Base: {
+      Default: {
+        Fill: color[850],
+        Border: {
+          Default: color[600],
+          Active: Dark.Text.highlight,
+          Filled: color[75],
+          Error: Feedback.Error,
+        },
+      },
+      Nested: {
+        Nested: color[850],
+        Fill: color[850],
+        Border: {
+          Default: color[600],
+          Active: Dark.Text.highlight,
+          Filled: color[75],
+          Error: Feedback.Error,
+        },
+      },
+    },
+    Large: {
+      Default: {
+        Fill: color[975],
+      },
+    },
+  } as const
+
+  const Switch = {
+    Default: {
+      Fill: Layer[1].Fill,
+      Outline: Color.Neutral[400],
+      Label: Color.Primary[500],
+    },
+    Checked: {
+      Fill: Color.Primary[500],
+      Outline: Color.Neutral[400],
+      Label: color[50],
+    },
+  } as const
+
   return {
     theme: 'dark',
     Color,
@@ -484,121 +625,12 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Button,
     Feedback,
     Layer,
-
-    Tabs: {
-      UnderLined: {
-        Container_Border: Dark.Layer[1].Outline,
-        Default: {
-          Label: Text.TextColors.Secondary,
-        },
-        Hover: {
-          Label: Text.TextColors.Highlight,
-          Outline: Layer.Highlight.Outline,
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-      Contained: {
-        Default: {
-          Label: Text.TextColors.Secondary,
-          Fill: Color.Neutral[200],
-        },
-        Hover: {
-          Label: Color.Neutral[50],
-          Fill: Color.Neutral[900],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Fill: Layer[1].Fill,
-          Outline: Color.Primary[500],
-        },
-      },
-      OverLined: {
-        Default: { Label: Text.TextColors.Secondary },
-        Hover: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Neutral[500],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-    },
-    Chips: {
-      Default: {
-        Label: Text.TextColors.Secondary,
-        Fill: Layer[2].Fill,
-        Stroke: Layer[2].Outline,
-      },
-      Hover: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[900],
-      },
-      Current: {
-        Label: Color.Neutral[950],
-        Fill: Layer[2].Fill,
-        Outline: Layer.Highlight.Outline,
-      },
-    },
-    Toggles: {
-      Default: {
-        Label: Text.TextColors.Primary,
-      },
-      Hover: {
-        Label: Text.TextColors.Highlight,
-        Fill: Layer[3].Fill,
-      },
-      Current: {
-        Label: Color.Neutral[50],
-        Fill: Color.Neutral[950],
-      },
-    },
-    Table: {
-      Header: { Fill: Dark.Tables.Header.Fill },
-    },
-    Inputs: {
-      Base: {
-        Default: {
-          Fill: color[850],
-          Border: {
-            Default: color[600],
-            Active: Dark.Text.highlight,
-            Filled: color[75],
-            Error: Feedback.Error,
-          },
-        },
-        Nested: {
-          Nested: color[850],
-          Fill: color[850],
-          Border: {
-            Default: color[600],
-            Active: Dark.Text.highlight,
-            Filled: color[75],
-            Error: Feedback.Error,
-          },
-        },
-      },
-      Large: {
-        Default: {
-          Fill: color[975],
-        },
-      },
-    },
-    Switch: {
-      Default: {
-        Fill: Layer[1].Fill,
-        Outline: Color.Neutral[400],
-        Label: Color.Primary[500],
-      },
-      Checked: {
-        Fill: Color.Primary[500],
-        Outline: Color.Neutral[400],
-        Label: color[50],
-      },
-    },
+    Tabs,
+    Chips,
+    Toggles,
+    Table,
+    Inputs,
+    Switch,
   } as const
 }
 
@@ -609,6 +641,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Secondary: Greens,
     Tertiary: Reds,
   } as const
+
   const Layer = {
     '1': Chad.Layer[1],
     '2': Chad.Layer[2],
@@ -622,6 +655,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     TypeAction: Chad.Layer.TypeAction,
   } as const
+
   const Text = {
     TextColors: {
       Primary: Chad.Text.primary,
@@ -641,6 +675,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Button: 'Minecraft',
     },
   } as const
+
   const Button = {
     Focus_Outline: Color.Primary[600],
     Transition,
@@ -740,69 +775,33 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
     },
   } as const
+
   const Feedback = {
     Success: Greens[400],
     Info: Layer[3].Fill,
     Warning: Reds[400],
     Error: Reds[500],
   } as const
-  return {
-    theme: 'chad',
-    Color,
-    Text,
-    Button,
-    Feedback,
-    Layer,
 
-    Tabs: {
-      UnderLined: {
-        Container_Border: Layer[1].Outline,
-        Default: {
-          Label: Text.TextColors.Secondary,
-        },
-        Hover: {
-          Label: Text.TextColors.Highlight,
-          Outline: Layer.Highlight.Outline,
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-      Contained: {
-        Default: {
-          Label: Text.TextColors.Secondary,
-          Fill: Color.Primary[200],
-        },
-        Hover: {
-          Label: Color.Neutral[50],
-          Fill: Color.Primary[950],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Fill: Layer[1].Fill,
-          Outline: Color.Primary[500],
-        },
-      },
-      OverLined: {
-        Default: {
-          Label: Text.TextColors.Secondary,
-        },
-        Hover: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Neutral[500],
-        },
-        Current: {
-          Label: Text.TextColors.Primary,
-          Outline: Color.Primary[500],
-        },
-      },
-    },
-    Chips: {
+  const Tabs = {
+    UnderLined: {
+      Container_Border: Layer[1].Outline,
       Default: {
         Label: Text.TextColors.Secondary,
-        Fill: Layer[1].Fill,
-        Stroke: Layer[2].Outline,
+      },
+      Hover: {
+        Label: Text.TextColors.Highlight,
+        Outline: Layer.Highlight.Outline,
+      },
+      Current: {
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
+      },
+    },
+    Contained: {
+      Default: {
+        Label: Text.TextColors.Secondary,
+        Fill: Color.Primary[200],
       },
       Hover: {
         Label: Color.Neutral[50],
@@ -810,65 +809,114 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Current: {
         Label: Text.TextColors.Primary,
-        Fill: Layer[2].Fill,
-        Outline: Layer.Highlight.Outline,
+        Fill: Layer[1].Fill,
+        Outline: Color.Primary[500],
       },
     },
-    Toggles: {
+    OverLined: {
       Default: {
-        Label: Text.TextColors.Primary,
+        Label: Text.TextColors.Secondary,
       },
       Hover: {
-        Label: Text.TextColors.Highlight,
-        Fill: Layer[3].Fill,
+        Label: Text.TextColors.Primary,
+        Outline: Color.Neutral[500],
       },
       Current: {
-        Label: Grays[50],
-        Fill: Color.Primary[800],
+        Label: Text.TextColors.Primary,
+        Outline: Color.Primary[500],
       },
     },
-    Table: {
-      Header: { Fill: Chad.Tables.Header.Fill },
+  } as const
+
+  const Chips = {
+    Default: {
+      Label: Text.TextColors.Secondary,
+      Fill: Layer[1].Fill,
+      Stroke: Layer[2].Outline,
     },
-    Inputs: {
-      Base: {
-        Default: {
-          Fill: Violet[50],
-          Border: {
-            Default: Violet[200],
-            Active: Chad.Text.highlight,
-            Filled: Violet[400],
-            Error: Feedback.Error,
-          },
-        },
-        Nested: {
-          Nested: Violet[50],
-          Fill: Violet[50],
-          Border: {
-            Default: Violet[200],
-            Active: Chad.Text.highlight,
-            Filled: Violet[400],
-            Error: Feedback.Error,
-          },
-        },
-      },
-      Large: {
-        Default: {
-          Fill: Violet[50],
-        },
-      },
+    Hover: {
+      Label: Color.Neutral[50],
+      Fill: Color.Primary[950],
     },
-    Switch: {
+    Current: {
+      Label: Text.TextColors.Primary,
+      Fill: Layer[2].Fill,
+      Outline: Layer.Highlight.Outline,
+    },
+  } as const
+
+  const Toggles = {
+    Default: {
+      Label: Text.TextColors.Primary,
+    },
+    Hover: {
+      Label: Text.TextColors.Highlight,
+      Fill: Layer[3].Fill,
+    },
+    Current: {
+      Label: Grays[50],
+      Fill: Color.Primary[800],
+    },
+  } as const
+
+  const Table = {
+    Header: { Fill: Chad.Tables.Header.Fill },
+  } as const
+
+  const Inputs = {
+    Base: {
       Default: {
-        Fill: Layer[1].Fill,
-        Outline: Color.Neutral[400],
-        Label: Color.Primary[500],
+        Fill: Violet[50],
+        Border: {
+          Default: Violet[200],
+          Active: Chad.Text.highlight,
+          Filled: Violet[400],
+          Error: Feedback.Error,
+        },
       },
-      Checked: {
-        Fill: Color.Primary[500],
-        Outline: Color.Neutral[400],
-        Label: Grays[50],
+      Nested: {
+        Nested: Violet[50],
+        Fill: Violet[50],
+        Border: {
+          Default: Violet[200],
+          Active: Chad.Text.highlight,
+          Filled: Violet[400],
+          Error: Feedback.Error,
+        },
       },
     },
+    Large: {
+      Default: {
+        Fill: Violet[50],
+      },
+    },
+  } as const
+
+  const Switch = {
+    Default: {
+      Fill: Layer[1].Fill,
+      Outline: Color.Neutral[400],
+      Label: Color.Primary[500],
+    },
+    Checked: {
+      Fill: Color.Primary[500],
+      Outline: Color.Neutral[400],
+      Label: Grays[50],
+    },
+  } as const
+
+  return {
+    theme: 'chad',
+    Color,
+    Text,
+    Button,
+    Feedback,
+    Layer,
+    Tabs,
+    Chips,
+    Toggles,
+    Table,
+    Inputs,
+    Switch,
   } as const
 }
