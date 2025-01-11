@@ -13,9 +13,10 @@ export const TABS_HEIGHT_CLASSES = { small, medium, large }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
-export const defineMuiTab = (): Components['MuiTab'] => ({
+export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components['MuiTab'] => ({
   styleOverrides: {
     root: {
+      transition: Transition,
       textTransform: 'uppercase',
       borderTop: '2px solid transparent',
       minHeight: 0,

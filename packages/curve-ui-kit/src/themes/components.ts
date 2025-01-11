@@ -101,7 +101,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
-  MuiTab: defineMuiTab(),
+  MuiTab: defineMuiTab(design),
   MuiTabs: defineMuiTabs(design),
   MuiToolbar: {
     styleOverrides: {

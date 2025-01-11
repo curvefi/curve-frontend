@@ -155,6 +155,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   } as const
 
   const Tabs = {
+    Transition,
     UnderLined: {
       Container_Border: Light.Layer[1].Outline,
       Default: {
@@ -499,6 +500,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   } as const
 
   const Tabs = {
+    Transition,
     UnderLined: {
       Container_Border: Dark.Layer[1].Outline,
       Default: {
@@ -784,6 +786,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   } as const
 
   const Tabs = {
+    Transition,
     UnderLined: {
       Container_Border: Layer[1].Outline,
       Default: {
