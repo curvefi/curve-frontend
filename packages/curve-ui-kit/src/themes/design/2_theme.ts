@@ -5,6 +5,9 @@ const { plain, inverted } = SurfacesAndText
 
 const Transition = `color ${TransitionFunction}, background-color ${TransitionFunction}, filter ${TransitionFunction}`
 
+const InsetOverline = '0 0 auto' as const // Top border only
+const InsetUnderline = 'auto 0 0' as const // Bottom border only
+
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
     Neutral: Grays,
@@ -157,7 +160,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Tabs = {
     Transition,
     UnderLined: {
-      Container_Border: Light.Layer[1].Outline,
+      Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
       },
@@ -186,6 +189,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
       },
@@ -502,7 +506,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   const Tabs = {
     Transition,
     UnderLined: {
-      Container_Border: Dark.Layer[1].Outline,
+      Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
       },
@@ -531,6 +535,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: { Label: Text.TextColors.Secondary },
       Hover: {
         Label: Text.TextColors.Primary,
@@ -788,7 +793,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Tabs = {
     Transition,
     UnderLined: {
-      Container_Border: Layer[1].Outline,
+      Inset: InsetUnderline,
       Default: {
         Label: Text.TextColors.Secondary,
       },
@@ -817,6 +822,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
     },
     OverLined: {
+      Inset: InsetOverline,
       Default: {
         Label: Text.TextColors.Secondary,
       },

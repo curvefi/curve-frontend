@@ -1,5 +1,6 @@
 import type { Components } from '@mui/material/styles'
 import { DesignSystem } from '../design'
+import { TransitionFunction } from '../design/0_primitives'
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const
@@ -13,31 +14,66 @@ export const TABS_HEIGHT_CLASSES = { small, medium, large }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
+/**
+ * Using ::after pseudo-selector for borders instead of CSS border properties for:
+ *
+ * 1. Consistency with MUI tab indicator implementation (absolute positioning)
+ *
+ * 2. Absolute positioning matches Figma design and avoids box model complications:
+ *    - Borders don't affect element dimensions
+ *    - Handles varying border heights and paddings cleanly
+ *
+ * 3. Simpler state management:
+ *    - No need for transparent border fallbacks
+ *    - Works seamlessly for both underline/overline variants
+ *
+ * 4. The ::after element enables separate transitions for opacity and background-color:
+ *    - Hover state can smoothly transition from transparent to outline color via opacity
+ *    - Active state can instantly switch outline colors without transition
+ *    - This solves the limitation where a single CSS property (like border-color)
+ *      cannot have different transition behaviors for hover vs active states
+ *    In other words, this allows you to transition the border on and off state while
+ *    keeping color changes instantenously.
+ */
+
 export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components['MuiTab'] => ({
   styleOverrides: {
     root: {
       transition: Transition,
       textTransform: 'uppercase',
-      borderTop: '2px solid transparent',
+      position: 'relative',
       minHeight: 0,
-      boxSizing: 'border-box',
+      '&::after': {
+        content: '""',
+        position: 'absolute',
+        height: 2,
+        opacity: 0,
+        transition: `opacity ${TransitionFunction}`,
+      },
     },
   },
 })
 
 type TabStyle = { Label?: string; Fill?: string; Outline?: string }
-type TabVariant = { Default: TabStyle; Hover: TabStyle; Current: TabStyle }
+type TabVariant = { Inset?: string; Default: TabStyle; Hover: TabStyle; Current: TabStyle }
 
 const tabStyle = ({ Label, Fill, Outline }: TabStyle) => ({
   color: Label,
   backgroundColor: Fill,
-  borderColor: Outline ?? 'transparent',
+  '::after': {
+    backgroundColor: Outline ?? 'transparant',
+  },
 })
 
-const tabVariant = ({ Current, Default, Hover }: TabVariant) => ({
+const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
   ...tabStyle(Default),
   '&:hover': tabStyle(Hover),
+  '&:hover::after': { opacity: 1 },
   '&.Mui-selected': tabStyle(Current),
+  '&.Mui-selected::after': { opacity: 1 },
+  '::after': Inset && {
+    inset: Inset,
+  },
 })
 
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
