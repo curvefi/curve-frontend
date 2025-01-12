@@ -47,6 +47,7 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
       textTransform: 'uppercase',
       position: 'relative',
       minHeight: 0,
+      opacity: 1,
       '&::after': {
         content: '""',
         position: 'absolute',
