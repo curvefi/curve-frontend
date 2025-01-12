@@ -1,12 +1,13 @@
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Card, CardHeader } from '@mui/material'
-import Typography from '@mui/material/Typography'
 import { useScrvUsdYield } from '@/entities/scrvusdYield'
+import { useScrvUsdRevenue } from '@/entities/scrvusdRevenue'
 
 const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
 
 const Statistics = () => {
   const { data, error, isFetching } = useScrvUsdYield({ timeFrame: '1d' })
+  const { data: revenueData, error: revenueError, isFetching: revenueIsFetching } = useScrvUsdRevenue({})
 
   return (
     <Card
