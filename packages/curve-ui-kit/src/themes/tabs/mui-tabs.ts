@@ -1,6 +1,10 @@
 import type { Components } from '@mui/material/styles'
+import { basicMuiTheme } from '../basic-theme'
 import { DesignSystem } from '../design'
 import { TransitionFunction } from '../design/0_primitives'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 // css classes used by the TabSwitcher component
 const contained = 'variant-contained' as const
@@ -76,6 +80,33 @@ const tabVariant = ({ Current, Default, Hover, Inset }: TabVariant) => ({
   },
 })
 
+const tabPadding = (
+  blockStart: keyof typeof Spacing,
+  blockEnd: keyof typeof Spacing,
+  inlineStart: keyof typeof Spacing,
+  inlineEnd: keyof typeof Spacing,
+) =>
+  Object.entries(basicMuiTheme.breakpoints.keys)
+    .map(([, bp]) => bp)
+    .reduce(
+      (acc, bp) => ({
+        ...acc,
+        [basicMuiTheme.breakpoints.up(bp)]: {
+          paddingBlockStart: Spacing[blockStart][bp],
+          paddingBlockEnd: Spacing[blockEnd][bp],
+          paddingInlineStart: Spacing[inlineStart][bp],
+          paddingInlineEnd: Spacing[inlineEnd][bp],
+        },
+      }),
+      {},
+    )
+
+// Overlined and Underlined have common paddings and sizes.
+const tabSizesNonContained = {
+  [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
+  [`&.${large} .MuiTab-root`]: tabPadding('md', 'xs', 'md', 'md'),
+}
+
 // note: mui tabs do not support custom variants. Customize the standard variant. The custom TabSwitcher component should be used.
 export const defineMuiTabs = ({
   Tabs: { UnderLined, OverLined, Contained },
@@ -84,12 +115,23 @@ export const defineMuiTabs = ({
   styleOverrides: {
     root: {
       minHeight: 0,
-      [`&.${contained} .MuiTab-root`]: tabVariant(Contained),
-      [`&.${overlined} .MuiTab-root`]: tabVariant(OverLined),
-      [`&.${underlined} .MuiTab-root`]: tabVariant(UnderLined),
-      [`&.${small} .MuiTab-root`]: { paddingY: '6px 8px' }, // +2px border == 16px padding, 16px content == 32px total
-      [`&.${medium} .MuiTab-root`]: { paddingY: '10px 12px' }, // +2px border == 24px padding, 16px content == 40px total
-      [`&.${large} .MuiTab-root`]: { paddingY: '14px 16px' }, // +2px border == 32px padding, 16px content == 48px total
+      [`&.${contained}`]: {
+        '& .MuiTab-root': tabVariant(Contained),
+        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
+        [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'lg', 'lg'),
+      },
+
+      [`&.${overlined}`]: {
+        '& .MuiTab-root': tabVariant(OverLined),
+        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
+        ...tabSizesNonContained,
+      },
+
+      [`&.${underlined}`]: {
+        '& .MuiTab-root': tabVariant(UnderLined),
+        [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'sm', 'sm'),
+        ...tabSizesNonContained,
+      },
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
