@@ -46,8 +46,9 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
       transition: Transition,
       textTransform: 'uppercase',
       position: 'relative',
-      minHeight: 0,
+      boxSizing: 'content-box',
       opacity: 1,
+      minHeight: '2rem', // Not responsive, but Sizing.md is ugly in mobile
       '&::after': {
         content: '""',
         position: 'absolute',
@@ -115,7 +116,7 @@ export const defineMuiTabs = ({
 }: DesignSystem): Components['MuiTabs'] => ({
   styleOverrides: {
     root: {
-      minHeight: 0,
+      minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
         [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
