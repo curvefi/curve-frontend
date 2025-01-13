@@ -195,6 +195,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Color.Neutral[200],
         Outline: Color.Neutral[500],
       },
       Current: {
@@ -539,6 +540,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Default: { Label: Text.TextColors.Secondary },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Color.Neutral[200],
         Outline: Color.Neutral[500],
       },
       Current: {
@@ -828,6 +830,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Text.TextColors.Primary,
+        Fill: Color.Neutral[200],
         Outline: Color.Neutral[500],
       },
       Current: {
