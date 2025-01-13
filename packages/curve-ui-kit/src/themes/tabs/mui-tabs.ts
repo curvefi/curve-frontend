@@ -130,6 +130,8 @@ export const defineMuiTabs = ({
       [`&.${overlined}`]: {
         '& .MuiTab-root': tabVariant(OverLined),
         [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
+        // Large overline tabs don't get a hover fill
+        [`&.${large} .MuiTab-root:hover`]: { backgroundColor: 'unset' },
         ...tabSizesNonContained,
       },
 
@@ -142,11 +144,6 @@ export const defineMuiTabs = ({
       // Large tabs don't get a hover border
       [`&.${large} .MuiTab-root::after`]: {
         height: '0px',
-      },
-
-      // Large overline tabs don't get a hover fill
-      [`&.${large}&.${overlined} .MuiTab-root:hover`]: {
-        backgroundColor: 'unset',
       },
     },
     indicator: {
