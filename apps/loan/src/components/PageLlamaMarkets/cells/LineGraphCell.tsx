@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@lingui/macro'
 import { useMemo } from 'react'
 import { meanBy } from 'lodash'
+import Box from '@mui/material/Box'
 
 const graphSize = { width: 172, height: 48 }
 
@@ -63,25 +64,27 @@ export const LineGraphCell = ({
   return (
     <Stack direction="row" alignItems="center" justifyContent="end" gap={3} data-testid={`line-graph-cell-${type}`}>
       {rate.toPrecision(4)}%
-      {showChart && snapshots?.length ? (
-        <LineChart data={snapshots} {...graphSize} compact>
-          <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey])} />
-          <Line
-            type="monotone"
-            dataKey={snapshotKey}
-            stroke={getColor(design, snapshots, type)}
-            strokeWidth={1}
-            dot={<></>}
-          />
-        </LineChart>
-      ) : isLoading ? (
-        <Skeleton {...graphSize} />
-      ) : (
-        showChart && (
-          <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
-            {t`No historical data`}
-          </Typography>
-        )
+      {showChart && (
+        <Box data-testid={`line-graph-${type}`}>
+          {snapshots?.length ? (
+            <LineChart data={snapshots} {...graphSize} compact>
+              <YAxis hide type="number" domain={calculateDomain(snapshots[0][snapshotKey])} />
+              <Line
+                type="monotone"
+                dataKey={snapshotKey}
+                stroke={getColor(design, snapshots, type)}
+                strokeWidth={1}
+                dot={<></>}
+              />
+            </LineChart>
+          ) : isLoading ? (
+            <Skeleton {...graphSize} />
+          ) : (
+            <Typography sx={{ ...graphSize, alignContent: 'center', textAlign: 'left' }} variant="bodyXsBold">
+              {t`No historical data`}
+            </Typography>
+          )}
+        </Box>
       )}
     </Stack>
   )

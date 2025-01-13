@@ -103,11 +103,18 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should toggle columns', () => {
-    const columnId = oneOf('totalSupplied_usdTotal', 'utilizationPercent', 'rates_borrowApyPcent', 'rates_lendApyPcent')
-    const headerSelector = `[data-testid="data-table-header-${columnId}"]`
-    cy.get(headerSelector).should('be.visible')
+    const { toggle, element } = oneOf(
+      // hide the whole column:
+      { toggle: 'totalSupplied_usdTotal', element: 'data-table-header-totalSupplied_usdTotal' },
+      { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
+      // hide the graph inside the cell:
+      { toggle: 'borrowChart', element: 'line-graph-borrow' },
+      { toggle: 'lendChart', element: 'line-graph-lend' },
+    )
+    cy.get(`[data-testid="${element}"]`).scrollIntoView()
+    cy.get(`[data-testid="${element}"]`).should('be.visible')
     cy.get(`[data-testid="btn-visibility-settings"]`).click()
-    cy.get(`[data-testid="visibility-toggle-${columnId}"]`).click()
-    cy.get(headerSelector).should('not.exist')
+    cy.get(`[data-testid="visibility-toggle-${toggle}"]`).click()
+    cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 })
