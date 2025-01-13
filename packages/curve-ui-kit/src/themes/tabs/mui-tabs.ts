@@ -139,9 +139,14 @@ export const defineMuiTabs = ({
         ...tabSizesNonContained,
       },
 
-      // Large tabs get a larger border size.
+      // Large tabs don't get a hover border
       [`&.${large} .MuiTab-root::after`]: {
-        height: BORDER_SIZE_LARGE,
+        height: '0px',
+      },
+
+      // Large overline tabs don't get a hover fill
+      [`&.${large}&.${overlined} .MuiTab-root:hover`]: {
+        backgroundColor: 'unset',
       },
     },
     indicator: {
