@@ -31,6 +31,5 @@ export const PageTabs: FunctionComponent<PageTabsProps> = ({ pages, currentApp, 
       [currentApp, networkName, pages, selectedApp],
     )}
     variant="overlined"
-    textVariant="headingXsBold"
   />
 )
