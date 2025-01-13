@@ -18,6 +18,9 @@ export const TABS_HEIGHT_CLASSES = { small, medium, large }
 
 export type TabSwitcherVariants = keyof typeof TABS_VARIANT_CLASSES
 
+const BORDER_SIZE = '2px' as const
+const BORDER_SIZE_LARGE = '4px' as const
+
 /**
  * Using ::after pseudo-selector for borders instead of CSS border properties for:
  *
@@ -53,7 +56,7 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
       '&::after': {
         content: '""',
         position: 'absolute',
-        height: 2,
+        height: BORDER_SIZE,
         opacity: 0,
         transition: `opacity ${TransitionFunction}`,
       },
@@ -135,11 +138,20 @@ export const defineMuiTabs = ({
         [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'sm', 'sm'),
         ...tabSizesNonContained,
       },
+
+      // Large tabs get a larger border size.
+      [`&.${large} .MuiTab-root::after`]: {
+        height: BORDER_SIZE_LARGE,
+      },
     },
     indicator: {
       backgroundColor: Layer.Highlight.Outline,
       [`.${overlined} &`]: { top: 0 },
       [`.${contained} &`]: { top: 0 },
+
+      [`.${large} &`]: {
+        height: BORDER_SIZE_LARGE,
+      },
     },
   },
 })
