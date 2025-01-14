@@ -23,6 +23,7 @@ describe('LlamaLend Markets', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(isInViewport).should('be.false')
     cy.get('[data-testid^="data-table-row"]').last().scrollIntoView()
     cy.get('[data-testid="data-table-head"]').last().then(isInViewport).should('be.true')
+    cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('equal', 64)
   })
 
   it('should sort', () => {

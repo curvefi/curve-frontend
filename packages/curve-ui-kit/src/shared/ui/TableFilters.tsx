@@ -76,11 +76,7 @@ export const TableFilters = ({
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   return (
-    <Stack
-      paddingBlock={Spacing.sm}
-      paddingInline={Spacing.md}
-      sx={(t) => ({ backgroundColor: t.design.Layer[1].Fill })}
-    >
+    <Stack paddingBlock={Spacing.sm} paddingInline={Spacing.md}>
       <Grid container spacing={Column_Spacing}>
         <Grid size={{ tablet: 6, mobile: 12 }}>
           <Typography variant="headingSBold">{title}</Typography>
