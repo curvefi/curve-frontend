@@ -85,7 +85,6 @@ export function updateAppLocale(locale: string) {
   if (locale === 'zh-Hans') numbroLang = 'zh-CN'
 
   if (numbroLang) {
-    // @ts-ignore
     import(`numbro/languages/${numbroLang}`).then((module) => {
       numbro.registerLanguage(module.default)
       numbro.setLanguage(numbroLang)
