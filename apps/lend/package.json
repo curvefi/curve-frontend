@@ -35,7 +35,6 @@
     "bignumber.js": "^9.1.2",
     "cross-fetch": "^3.1.5",
     "curve-ui-kit": "*",
-    "dayjs": "^1.11.7",
     "ethers": "^6.13.4",
     "external-rewards": "*",
     "focus-visible": "5.2.0",

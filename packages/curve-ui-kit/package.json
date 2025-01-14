@@ -40,6 +40,7 @@
     "@web3-onboard/trezor": "^2.4.6",
     "@web3-onboard/trust": "^2.1.2",
     "@web3-onboard/walletconnect": "^2.6.1",
+    "dayjs": "^1.11.7",
     "ethers": "^6.13.4",
     "react": "*",
     "react-dom": "*"
