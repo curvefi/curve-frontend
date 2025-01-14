@@ -26,6 +26,7 @@ export const Header = ({ walletAddress, onClose }: Props) => (
       sx={{
         height: SizesAndSpaces.IconSize.xl,
       }}
+      alt="Llama Icon"
     />
 
     <Typography variant="headingMLight" flexGrow={1}>
