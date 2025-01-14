@@ -33,7 +33,7 @@ describe('LlamaLend Markets', () => {
   })
 
   it('should show graphs', () => {
-    const [green, red] = [isDarkMode ? 'rgb(50, 206, 121)' : 'rgb(31, 162, 94)', 'rgb(237, 36, 47)']
+    const [green, red] = [isDarkMode ? 'rgb(50, 206, 121)' : 'rgb(22, 125, 74)', 'rgb(237, 36, 47)']
     cy.get('[data-testid="line-graph-cell-lend"] path').first().should('have.css', 'stroke', green)
     cy.get('[data-testid="line-graph-cell-borrow"] path').first().should('have.css', 'stroke', red)
 
