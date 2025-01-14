@@ -272,7 +272,7 @@ const ChartOhlcWrapper: React.FC<ChartOhlcWrapperProps> = ({ rChainId, llamma, l
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
-    <Wrapper className={!isAdvancedMode ? 'normal-mode' : ''} chartExpanded={chartExpanded}>
+    <Wrapper className={isAdvancedMode ? '' : 'normal-mode'} chartExpanded={chartExpanded}>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
