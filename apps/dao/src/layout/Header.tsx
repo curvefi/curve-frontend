@@ -30,8 +30,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const routerProps = useStore((state) => state.routerProps)
   const updateConnectState = useStore((state) => state.updateConnectState)
 
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
   const locale = useUserProfileStore((state) => state.locale)
 
   const location = useLocation()
@@ -45,16 +43,13 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
       currentApp="dao"
       pages={useMemo(
         () => _parseRouteAndIsActive(APP_LINK.dao.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
-      themes={[theme, setTheme]}
       ChainProps={{
-        theme,
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,

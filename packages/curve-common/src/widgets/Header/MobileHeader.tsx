@@ -1,7 +1,7 @@
 import AppBar from '@mui/material/AppBar'
 import Toolbar from '@mui/material/Toolbar'
 import { BaseHeaderProps } from './types'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Drawer from '@mui/material/Drawer'
 import { SidebarSection } from './SidebarSection'
 import Stack from '@mui/material/Stack'
@@ -16,6 +16,7 @@ import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/route
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
 import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from 'curve-ui-kit/src/themes/components'
+import { useUserProfileStore } from 'curve-ui-kit/src/features/user-profile'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -34,14 +35,11 @@ export const MobileHeader = <TChainId extends number>({
   currentApp,
   pages,
   appStats,
-  themes,
   sections,
-  locale,
   ChainProps,
   BannerProps,
   height,
   isLite = false,
-  advancedMode,
   networkName,
   WalletProps: { onConnectWallet: startWalletConnection, ...WalletProps },
 }: BaseHeaderProps<TChainId>) => {
@@ -49,6 +47,12 @@ export const MobileHeader = <TChainId extends number>({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const { pathname } = useLocation()
+
+  const theme = useUserProfileStore((state) => state.theme)
+  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const locale = useUserProfileStore((state) => state.locale)
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when clicking a link
 
@@ -113,11 +117,7 @@ export const MobileHeader = <TChainId extends number>({
               <SocialSidebarSection title={t`Community`} locale={locale} />
             </Box>
 
-            <SideBarFooter
-              themes={themes}
-              advancedMode={advancedMode}
-              WalletProps={{ ...WalletProps, onConnectWallet: onConnect }}
-            />
+            <SideBarFooter WalletProps={{ ...WalletProps, onConnectWallet: onConnect }} />
           </Drawer>
         </Toolbar>
       </AppBar>

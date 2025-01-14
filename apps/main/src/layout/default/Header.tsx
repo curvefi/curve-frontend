@@ -8,11 +8,9 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import useStore from '@/store/useStore'
 import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
 import { NavigationSection } from '@/common/widgets/Header/types'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -34,10 +32,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
   const bannerHeight = useStore((state) => state.layoutHeight.globalAlert)
 
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const locale = useUserProfileStore((state) => state.locale)
-
   const { rChainId, rNetwork, rLocalePathname } = useParamsFromUrl()
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
@@ -51,7 +45,6 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
       currentApp="main"
       isLite={network?.isLite}
@@ -75,10 +68,8 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
           ),
         [hasRouter, network, networks, rChainId, rLocalePathname, rNetwork, routerCached, routerPathname],
       )}
-      themes={[theme, setTheme]}
       ChainProps={{
         options: visibleNetworksList,
-        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,
         onChange: useCallback(

@@ -14,7 +14,6 @@ import { type Theme } from '@mui/material/styles'
 import type { NavigationSection } from '@/common/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type HeaderProps = { chainId: ChainId; sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -34,12 +33,6 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
   const isMdUp = useMediaQuery(isMdUpQuery, { noSsr: true })
   const { data: tvl } = useTvl(chainId)
 
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const locale = useUserProfileStore((state) => state.locale)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
-
   const location = useLocation()
   const { params: routerParams } = routerProps ?? {}
   const routerPathname = location?.pathname ?? ''
@@ -49,18 +42,14 @@ const Header = ({ chainId, sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[isAdvancedMode, setAdvancedMode]}
       currentApp="lend"
       pages={useMemo(
         () => _parseRouteAndIsActive(APP_LINK.lend.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
-      themes={[theme, setTheme]}
       ChainProps={{
         options: visibleNetworksList,
-        theme,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: chainId,
         onChange: useCallback(

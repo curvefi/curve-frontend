@@ -36,11 +36,7 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
 
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
   const locale = useUserProfileStore((state) => state.locale)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
 
   const location = useLocation()
   const { rLocalePathname } = getLocaleFromUrl()
@@ -53,17 +49,13 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[isAdvancedMode, setAdvancedMode]}
       currentApp="crvusd"
       pages={useMemo(
         () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
-      themes={[theme, setTheme]}
       ChainProps={{
-        theme,
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,

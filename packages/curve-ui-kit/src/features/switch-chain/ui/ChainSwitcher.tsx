@@ -2,7 +2,6 @@ import IconButton from '@mui/material/IconButton'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import { useEffect, useMemo } from 'react'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { t } from '@lingui/macro'
@@ -29,7 +28,6 @@ export type ChainSwitcherProps<TChainId> = {
   options: ChainOption<TChainId>[]
   onChange: (chainId: TChainId) => void
   disabled?: boolean
-  theme: ThemeKey
   headerHeight: string
 }
 
