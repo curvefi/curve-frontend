@@ -1,8 +1,8 @@
 import type { Components } from '@mui/material/styles'
-import { basicMuiTheme } from '../basic-theme'
 import { DesignSystem } from '../design'
 import { TransitionFunction } from '../design/0_primitives'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 
 const { Spacing } = SizesAndSpaces
 
@@ -92,20 +92,12 @@ const tabPadding = (
   inlineStart: keyof typeof Spacing,
   inlineEnd: keyof typeof Spacing,
 ) =>
-  Object.entries(basicMuiTheme.breakpoints.keys)
-    .map(([, bp]) => bp)
-    .reduce(
-      (acc, bp) => ({
-        ...acc,
-        [basicMuiTheme.breakpoints.up(bp)]: {
-          paddingBlockStart: Spacing[blockStart][bp],
-          paddingBlockEnd: Spacing[blockEnd][bp],
-          paddingInlineStart: Spacing[inlineStart][bp],
-          paddingInlineEnd: Spacing[inlineEnd][bp],
-        },
-      }),
-      {},
-    )
+  handleBreakpoints({
+    paddingBlockStart: Spacing[blockStart],
+    paddingBlockEnd: Spacing[blockEnd],
+    paddingInlineStart: Spacing[inlineStart],
+    paddingInlineEnd: Spacing[inlineEnd],
+  })
 
 // Overlined and Underlined have common paddings and sizes.
 const tabSizesNonContained = {
