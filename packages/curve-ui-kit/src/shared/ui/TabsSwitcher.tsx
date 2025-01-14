@@ -2,6 +2,13 @@ import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import { TabSwitcherVariants, TABS_VARIANT_CLASSES, TABS_HEIGHT_CLASSES } from '../../themes/tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import type { TypographyVariantKey } from '@ui-kit/themes/typography'
+
+const defaultTextVariants = {
+  small: 'buttonS',
+  medium: 'buttonM',
+  large: 'headingMBold',
+} as const satisfies Record<keyof typeof TABS_HEIGHT_CLASSES, TypographyVariantKey>
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
@@ -27,26 +34,22 @@ export const TabsSwitcher = <T extends string | number>({
   value,
   textVariant,
   ...props
-}: TabsSwitcherProps<T>) => {
-  const defaultTextVariant = size === 'small' ? 'buttonS' : size === 'medium' ? 'buttonM' : 'headingMBold'
-
-  return (
-    <Tabs
-      variant={muiVariant}
-      textColor="inherit"
-      value={value ?? false}
-      onChange={(_, newValue) => onChange?.(newValue)}
-      className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
-      {...props}
-    >
-      {options.map(({ value, label, ...props }) => (
-        <Tab
-          key={value}
-          value={value}
-          label={<Typography variant={textVariant ?? defaultTextVariant}>{label}</Typography>}
-          {...props}
-        />
-      ))}
-    </Tabs>
-  )
-}
+}: TabsSwitcherProps<T>) => (
+  <Tabs
+    variant={muiVariant}
+    textColor="inherit"
+    value={value ?? false}
+    onChange={(_, newValue) => onChange?.(newValue)}
+    className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]}`}
+    {...props}
+  >
+    {options.map(({ value, label, ...props }) => (
+      <Tab
+        key={value}
+        value={value}
+        label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
+        {...props}
+      />
+    ))}
+  </Tabs>
+)
