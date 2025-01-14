@@ -4,7 +4,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 
 import { themes } from '@ui-kit/features/switch-theme/types'
 
-import { Label, Setting } from '../Setting'
+import { SettingLabel, Setting } from '../Setting'
 import useUserProfileStore from '../../store'
 
 export const ThemeSelector = () => {
@@ -13,7 +13,7 @@ export const ThemeSelector = () => {
 
   return (
     <Setting>
-      <Label>{t`Theme`}</Label>
+      <SettingLabel>{t`Theme`}</SettingLabel>
 
       <ToggleButtonGroup
         value={theme}

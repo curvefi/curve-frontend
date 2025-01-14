@@ -6,7 +6,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export const Label = ({ children }: { children?: ReactNode }) => (
+export const SettingLabel = ({ children }: { children?: ReactNode }) => (
   <Typography variant="bodyMBold" color="text.secondary">
     {children}
   </Typography>

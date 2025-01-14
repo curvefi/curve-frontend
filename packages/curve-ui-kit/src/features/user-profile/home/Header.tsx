@@ -18,7 +18,7 @@ type Props = {
 const LlamaImageSrc = (LlamaImg as unknown as { src: string }).src
 
 /** Gap deviates from Figma as personally 'xs' is too narrow. */
-export const Header = ({ walletAddress, onClose }: Props) => (
+export const UserProfileHeader = ({ walletAddress, onClose }: Props) => (
   <Stack direction="row" alignItems="center" gap={SizesAndSpaces.Spacing.sm}>
     <Box
       component="img"

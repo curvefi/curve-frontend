@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import { useConnectWallet, getWalletSignerAddress } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-import { Header } from './Header'
+import { UserProfileHeader } from './Header'
 import { Settings } from '../settings'
 
 const { Spacing } = SizesAndSpaces
@@ -18,7 +18,7 @@ export const Home = ({ onClose }: Props) => {
 
   return (
     <Stack gap={Spacing.md}>
-      <Header walletAddress={walletAddress} onClose={onClose} />
+      <UserProfileHeader walletAddress={walletAddress} onClose={onClose} />
       <Settings />
     </Stack>
   )
