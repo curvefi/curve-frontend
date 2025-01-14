@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@curvefi/lending-api": "^2.4.0",
-    "@curvefi/stablecoin-api": "^1.5.7",
+    "@curvefi/stablecoin-api": "^1.5.8",
     "@lingui/detect-locale": "^4.6.0",
     "@lingui/react": "^4.6.0",
     "@supercharge/promise-pool": "^2.3.2",
