@@ -1,19 +1,19 @@
-import { useState } from 'react'
 import IconButton from '@mui/material/IconButton'
 import PersonIcon from '@mui/icons-material/Person'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 
 import { UserProfile } from './UserProfile'
 
 export const UserProfileButton = () => {
-  const [open, setOpen] = useState(false)
+  const [isOpen, open, close] = useSwitch()
 
   return (
     <>
-      <IconButton size="small" onClick={() => setOpen(true)}>
+      <IconButton size="small" onClick={open}>
         <PersonIcon />
       </IconButton>
 
-      <UserProfile open={open} onClose={() => setOpen(false)} />
+      <UserProfile open={isOpen ?? false} onClose={close} />
     </>
   )
 }
