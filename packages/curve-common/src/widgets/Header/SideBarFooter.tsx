@@ -37,7 +37,6 @@ export const SideBarFooter = ({ WalletProps }: SideBarFooterProps) => {
       >
         <Box display="flex" paddingX={4} marginTop={4}>
           <ConnectWalletIndicator {...WalletProps} sx={{ flexGrow: 1 }} />
-          <UserProfileButton />
         </Box>
 
         <Accordion sx={{ backgroundColor }} disableGutters>
@@ -58,11 +57,10 @@ export const SideBarFooter = ({ WalletProps }: SideBarFooterProps) => {
             <SettingsOption label={t`Mode`}>
               <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t`Mode`} />
             </SettingsOption>
-            (
+
             <SettingsOption label={t`Advanced Mode`}>
               <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} />
             </SettingsOption>
-            )
           </AccordionDetails>
         </Accordion>
       </Box>
