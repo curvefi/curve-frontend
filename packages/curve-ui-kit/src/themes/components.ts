@@ -8,11 +8,13 @@ import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
 import { definedMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
+import { defineMuiAlert } from '@ui-kit/themes/mui-alert'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 
 export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
+  MuiAlert: defineMuiAlert(design),
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
     defaultProps: {

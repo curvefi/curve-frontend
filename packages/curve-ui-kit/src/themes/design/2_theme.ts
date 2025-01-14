@@ -24,6 +24,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Outline: Light.Layer.Highlight,
     },
     TypeAction: Light.Layer.TypeAction,
+    Feedback: Light.Layer.Feedback,
   } as const
   const Text = {
     TextColors: {
@@ -32,10 +33,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Tertiary: Light.Text.tertiary,
       Highlight: Light.Text.highlight,
       Disabled: Light.Text.Disabled,
-      Success: Greens[500],
-      Warning: Reds[400],
-      Error: Reds[500],
-      Info: Layer.Highlight.Outline,
+      Feedback: Light.Text.Feedback,
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -352,6 +350,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Hover: Dark.Layer.TypeAction.Hover,
       Selected: Dark.Layer.TypeAction.Selected,
     },
+    Feedback: Dark.Layer.Feedback,
   } as const
   const Text = {
     TextColors: {
@@ -360,10 +359,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Tertiary: Dark.Text.tertiary,
       Highlight: Dark.Text.highlight,
       Disabled: Dark.Text.Disabled,
-      Success: Greens[400],
-      Info: Layer.Highlight.Outline,
-      Warning: Reds[300],
-      Error: Reds[500],
+      Feedback: Dark.Text.Feedback,
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -621,6 +617,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Outline: Chad.Layer.Highlight,
     },
     TypeAction: Chad.Layer.TypeAction,
+    Feedback: Chad.Layer.Feedback,
   } as const
   const Text = {
     TextColors: {
@@ -629,10 +626,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Tertiary: Chad.Text.tertiary,
       Highlight: Chad.Text.highlight,
       Disabled: Chad.Text.Disabled,
-      Success: Greens[500],
-      Info: Layer.Highlight.Outline,
-      Warning: Reds[400],
-      Error: Reds[500],
+      Feedback: Chad.Text.Feedback,
     },
     FontFamily: {
       Heading: 'Minecraft',
