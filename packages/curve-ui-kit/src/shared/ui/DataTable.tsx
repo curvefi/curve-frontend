@@ -1,6 +1,7 @@
-import { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import TableHead from '@mui/material/TableHead'
+import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
@@ -116,11 +117,13 @@ export const DataTable = <T extends unknown>({
   headerHeight,
   rowHeight,
   emptyText,
+  children,
 }: {
   table: ReturnType<typeof useReactTable<T>>
   headerHeight: string
   rowHeight: keyof typeof Sizing
   emptyText: string
+  children?: ReactNode
 }) => (
   <Table sx={{ minWidth: MinWidth.table, backgroundColor: (t) => t.design.Layer[1].Fill }} data-testid="data-table">
     <TableHead
@@ -132,6 +135,17 @@ export const DataTable = <T extends unknown>({
       })}
       data-testid="data-table-head"
     >
+      {children && (
+        <TableRow>
+          <TableCell
+            colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
+            sx={{ padding: 0, borderBottomWidth: 0 }}
+          >
+            {children}
+          </TableCell>
+        </TableRow>
+      )}
+
       {table.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
           {headerGroup.headers.map((header) => (

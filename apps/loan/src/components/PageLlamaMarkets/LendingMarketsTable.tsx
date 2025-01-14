@@ -125,17 +125,18 @@ export const LendingMarketsTable = ({
         maxWidth: MaxWidth.table,
       }}
     >
-      <TableFilters
-        title={t`Llamalend Markets`}
-        subtitle={t`Select a market to view more details`}
-        onReload={onReload}
-        learnMoreUrl="https://docs.curve.fi/lending/overview/"
-        visibilityGroups={columnSettings}
-        toggleVisibility={toggleVisibility}
-      >
-        <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
-      </TableFilters>
-      <DataTable table={table} headerHeight={headerHeight} rowHeight="3xl" emptyText={t`No markets found`} />
+      <DataTable table={table} headerHeight={headerHeight} rowHeight="3xl" emptyText={t`No markets found`}>
+        <TableFilters
+          title={t`Llamalend Markets`}
+          subtitle={t`Select a market to view more details`}
+          onReload={onReload}
+          learnMoreUrl="https://docs.curve.fi/lending/overview/"
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+        >
+          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+        </TableFilters>
+      </DataTable>
     </Stack>
   )
 }

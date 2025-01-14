@@ -51,8 +51,11 @@ export const TableVisibilitySettingsPopover = ({
   >
     <Stack gap={Spacing.md}>
       {visibilityGroups.map(({ options, label }) => (
-        <Stack key={label} gap={Spacing.md}>
-          <Typography variant="headingXsBold" sx={{ borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}>
+        <Stack key={label} gap={Spacing.sm}>
+          <Typography
+            variant="headingXsBold"
+            sx={{ paddingBottom: Spacing.xs, borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
+          >
             {label}
           </Typography>
           {options.map(({ id, active, label }) => (
