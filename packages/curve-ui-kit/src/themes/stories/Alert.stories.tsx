@@ -4,22 +4,22 @@ import Alert, { AlertProps } from '@mui/material/Alert'
 import Stack from '@mui/material/Stack'
 
 const AlertStory = (props: AlertProps) => (
-    <Stack spacing={5}>
-      <Alert severity="success" {...props}>
-        <AlertTitle>Success</AlertTitle>A success text message is displayed. A little llama is happy 😊
-      </Alert>
-      <Alert severity="info" {...props}>
-        <AlertTitle>Info</AlertTitle>A info text message is displayed. A little llama is curious 🤔
-      </Alert>
-      <Alert severity="warning" {...props}>
-        <AlertTitle>Warning</AlertTitle>A warning text message is displayed. A little llama is cautious 🦙.
-      </Alert>
-      <Alert severity="error" {...props}>
-        <AlertTitle>Error</AlertTitle>
-        An error text message is displayed. A little llama is very sad 😔
-      </Alert>
-    </Stack>
-  )
+  <Stack spacing={5}>
+    <Alert severity="success" {...props}>
+      <AlertTitle>Success</AlertTitle>A success text message is displayed. A little llama is happy 😊
+    </Alert>
+    <Alert severity="info" {...props}>
+      <AlertTitle>Info</AlertTitle>A info text message is displayed. A little llama is curious 🤔
+    </Alert>
+    <Alert severity="warning" {...props}>
+      <AlertTitle>Warning</AlertTitle>A warning text message is displayed. A little llama is cautious 🦙.
+    </Alert>
+    <Alert severity="error" {...props}>
+      <AlertTitle>Error</AlertTitle>
+      An error text message is displayed. A little llama is very sad 😔
+    </Alert>
+  </Stack>
+)
 
 const meta: Meta<typeof AlertStory> = {
   title: 'UI Kit/Primitives/Alert',
