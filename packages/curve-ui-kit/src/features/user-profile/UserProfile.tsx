@@ -10,16 +10,19 @@ type Props = {
 }
 
 export const UserProfile = ({ open, onClose }: Props) => (
-  <Drawer open={open} anchor="right" onClose={onClose}>
-    <Box
-      sx={{
+  <Drawer
+    open={open}
+    anchor="right"
+    onClose={onClose}
+    PaperProps={{
+      sx: {
         minWidth: SizesAndSpaces.ModalWidth.lg,
         paddingInline: SizesAndSpaces.Spacing.md,
         paddingBlock: SizesAndSpaces.Spacing.lg,
         backgroundColor: (t) => t.design.Layer[1].Fill,
-      }}
-    >
-      <Home onClose={onClose} />
-    </Box>
+      },
+    }}
+  >
+    <Home onClose={onClose} />
   </Drawer>
 )
