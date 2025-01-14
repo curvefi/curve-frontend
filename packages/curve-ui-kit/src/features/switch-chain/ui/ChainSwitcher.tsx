@@ -12,7 +12,7 @@ import { ChainSettings } from './ChainSettings'
 import { useLocalStorage } from '@ui-kit/hooks/useLocalStorage'
 import Snackbar from '@mui/material/Snackbar'
 import Alert from '@mui/material/Alert'
-import { Duration } from 'curve-ui-kit/src/themes/design/0_primitives'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Container from '@mui/material/Container'
 
 export type ChainOption<TChainId> = {

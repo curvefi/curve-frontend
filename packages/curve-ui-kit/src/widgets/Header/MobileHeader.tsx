@@ -12,11 +12,11 @@ import { SocialSidebarSection } from './SocialSidebarSection'
 import { SideBarFooter } from './SideBarFooter'
 import { MobileTopBar } from './MobileTopBar'
 import { useLocation } from 'react-router-dom'
-import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
+import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
 import { t } from '@lingui/macro'
 import GlobalBanner from 'ui/src/Banner'
-import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from 'curve-ui-kit/src/themes/components'
-import { useUserProfileStore } from 'curve-ui-kit/src/features/user-profile'
+import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter

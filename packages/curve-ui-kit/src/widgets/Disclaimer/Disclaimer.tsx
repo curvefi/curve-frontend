@@ -2,9 +2,9 @@ import { t } from '@lingui/macro'
 
 import Stack from '@mui/material/Stack'
 
-import { TabsSwitcher } from 'curve-ui-kit/src/shared/ui/TabsSwitcher'
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { useTabFromQueryString } from 'curve-ui-kit/src/hooks/useTabFromQueryString'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useTabFromQueryString } from '@ui-kit/hooks/useTabFromQueryString'
 
 import { LastUpdated } from './LastUpdated'
 import { Footer } from './Footer'

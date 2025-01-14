@@ -1,4 +1,4 @@
-import { AppRoute } from 'curve-common/src/widgets/Header/types'
+import { AppRoute } from 'curve-ui-kit/src/widgets/Header/types'
 
 export const _parseRouteAndIsActive = (
   pages: AppRoute[],

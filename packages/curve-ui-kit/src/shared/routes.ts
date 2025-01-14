@@ -1,4 +1,4 @@
-import { AppRoutes } from 'curve-common/src/widgets/Header/types'
+import { AppRoutes } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
 import { isBeta } from '@ui-kit/utils'
 

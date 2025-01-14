@@ -10,7 +10,6 @@
       "@/ui/*": ["../../../packages/ui/src/*"],
       "@/images": ["../../../packages/ui/src/images/index.ts"],
       "@/images/*": ["../../../packages/ui/src/images/*"],
-      "@/common/*": ["../../../packages/curve-common/src/*"],
       "@/shared/external-rewards": ["../../../packages/external-rewards/src/index.ts"]
     }
   },

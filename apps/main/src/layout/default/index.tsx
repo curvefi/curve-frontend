@@ -10,9 +10,9 @@ import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/default/Header'
-import { Locale } from '@/common/widgets/Header/types'
+import { Locale } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
-import { Footer } from 'curve-ui-kit/src/widgets/Footer'
+import { Footer } from '@ui-kit/widgets/Footer'
 import { layoutHeightKeys } from '@/store/createGlobalSlice'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 

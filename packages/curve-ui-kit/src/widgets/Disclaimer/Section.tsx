@@ -3,7 +3,7 @@ import { ReactNode, Children } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 

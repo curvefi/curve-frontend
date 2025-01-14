@@ -10,7 +10,7 @@ import delay from 'lodash/delay'
 import 'intersection-observer'
 import 'focus-visible'
 import '@/globals.css'
-import { ThemeProvider } from 'curve-ui-kit/src/shared/ui/ThemeProvider'
+import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 
 import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
 import { connectWalletLocales, initOnboard } from '@ui-kit/features/connect-wallet'

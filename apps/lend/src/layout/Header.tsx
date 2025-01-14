@@ -8,10 +8,10 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import networks, { visibleNetworksList } from '@/networks'
 import useStore from '@/store/useStore'
 import { useTvl } from '@/entities/chain'
-import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
+import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { type Theme } from '@mui/material/styles'
-import type { NavigationSection } from '@/common/widgets/Header/types'
+import type { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
 

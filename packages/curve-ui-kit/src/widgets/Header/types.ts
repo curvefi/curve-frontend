@@ -1,7 +1,7 @@
-import { ChainSwitcherProps } from 'curve-ui-kit/src/features/switch-chain'
-import { ConnectWalletIndicatorProps } from 'curve-ui-kit/src/features/connect-wallet'
-import { Dispatch, RefObject } from 'react'
-import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { ChainSwitcherProps } from '@ui-kit/features/switch-chain'
+import { ConnectWalletIndicatorProps } from '@ui-kit/features/connect-wallet'
+import { RefObject } from 'react'
+import { AppName } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from 'ui/src/Banner/GlobalBanner'
 
 export type Locale = 'en' | 'zh-Hans' | 'zh-Hant' | 'pseudo'

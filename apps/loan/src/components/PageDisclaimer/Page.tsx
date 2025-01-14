@@ -7,8 +7,8 @@ import Stack from '@mui/material/Stack'
 import DocumentHead from '@/layout/DocumentHead'
 import { scrollToTop } from '@/utils/helpers'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { Disclaimer } from 'curve-ui-kit/src/widgets/Disclaimer'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 
 const { Spacing } = SizesAndSpaces
 
