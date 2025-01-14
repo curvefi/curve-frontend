@@ -5,7 +5,7 @@ import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 
 const { ButtonSize, Spacing } = SizesAndSpaces
 
-export const definedMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem'] => ({
+export const defineMuiMenuItem = (design: DesignSystem): Components['MuiMenuItem'] => ({
   styleOverrides: {
     root: handleBreakpoints({
       height: ButtonSize.md,

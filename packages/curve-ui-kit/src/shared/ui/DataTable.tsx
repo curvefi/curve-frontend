@@ -1,6 +1,7 @@
-import { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import Typography from '@mui/material/Typography'
 import TableHead from '@mui/material/TableHead'
+import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import Table from '@mui/material/Table'
 import TableRow from '@mui/material/TableRow'
@@ -39,7 +40,7 @@ const DataCell = <T extends unknown>({ cell }: { cell: Cell<T, unknown> }) => {
 
 const DataRow = <T extends unknown>({ row, rowHeight }: { row: Row<T>; rowHeight: keyof typeof Sizing }) => {
   const ref = useRef<HTMLTableRowElement>(null)
-  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true })
+  const entry = useIntersectionObserver(ref, { freezeOnceVisible: true }) // what about "TanStack Virtual"?
   return (
     <TableRow
       sx={{
@@ -116,11 +117,13 @@ export const DataTable = <T extends unknown>({
   headerHeight,
   rowHeight,
   emptyText,
+  children,
 }: {
   table: ReturnType<typeof useReactTable<T>>
   headerHeight: string
   rowHeight: keyof typeof Sizing
   emptyText: string
+  children?: ReactNode
 }) => (
   <Table sx={{ minWidth: MinWidth.table, backgroundColor: (t) => t.design.Layer[1].Fill }} data-testid="data-table">
     <TableHead
@@ -132,6 +135,18 @@ export const DataTable = <T extends unknown>({
       })}
       data-testid="data-table-head"
     >
+      {children && (
+        <TableRow sx={{ height: Sizing['xxl'] }}>
+          <TableCell
+            colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
+            sx={(t) => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0, borderBottomWidth: 0 })}
+            data-testid="table-filters"
+          >
+            {children}
+          </TableCell>
+        </TableRow>
+      )}
+
       {table.getHeaderGroups().map((headerGroup) => (
         <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
           {headerGroup.headers.map((header) => (

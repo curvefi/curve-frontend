@@ -1,7 +1,8 @@
 import { Dispatch, FunctionComponent } from 'react'
 import Switch from '@mui/material/Switch'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
+import { FormControlLabel } from '@mui/material'
+import { t } from '@lingui/macro'
 
 type AdvancedModeSwitcherProps = {
   label?: string
@@ -9,27 +10,20 @@ type AdvancedModeSwitcherProps = {
 }
 
 export const AdvancedModeSwitcher: FunctionComponent<AdvancedModeSwitcherProps> = ({
-  advancedMode: [advancedMode, onChange],
+  advancedMode: [checked, onChange],
   label,
-}) => (
-  <Box display="inline-flex" alignItems="center">
+}) => {
+  const control = (
     <Switch
-      checked={advancedMode}
-      onChange={() => onChange(!advancedMode)}
-      color="primary"
-      inputProps={{ ...(label && { 'aria-label': label }) }}
+      checked={checked}
+      onChange={() => onChange(!checked)}
+      inputProps={{ ...(!label && { 'aria-label': t`Advanced mode` }) }}
       size="small"
     />
-
-    {label && (
-      <Typography
-        variant="headingXsBold"
-        display="inline-block"
-        // lineHeight to center vertically with the switch. Extra '&' specificity needed to override default.
-        sx={{ marginLeft: 2, marginRight: 4, '&': { lineHeight: '37px' } }}
-      >
-        {label}
-      </Typography>
-    )}
-  </Box>
-)
+  )
+  return (
+    <Box display="inline-flex" alignItems="center">
+      {label ? <FormControlLabel control={control} label={label} sx={{ marginLeft: 2 }} /> : control}
+    </Box>
+  )
+}
