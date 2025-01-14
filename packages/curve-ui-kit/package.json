@@ -42,6 +42,7 @@
     "@web3-onboard/walletconnect": "^2.6.1",
     "dayjs": "^1.11.7",
     "ethers": "^6.13.4",
+    "numbro": "^2.4.0",
     "react": "*",
     "react-dom": "*"
   },
