@@ -10,4 +10,4 @@ export const isBeta =
   typeof window !== 'undefined' &&
   (window.localStorage.getItem('beta') !== null || !window.location.hostname.includes('curve.fi'))
 
-export const isCypress = typeof window !== 'undefined' && (window as any).Cypress
+export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
