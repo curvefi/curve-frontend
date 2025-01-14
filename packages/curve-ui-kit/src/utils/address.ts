@@ -15,7 +15,7 @@ export function addressShort(address?: string, digits = 6): string {
     return '0x000...000'
   }
 
-  const pre = digits / 2 + 2
+  const pre = digits / 2 + 2 // +2 for the "0x"
   const post = address.length - digits / 2
 
   return `${address.substring(0, pre)}...${address.substring(post)}`
