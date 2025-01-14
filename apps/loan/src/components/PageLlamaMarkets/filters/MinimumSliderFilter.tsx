@@ -1,10 +1,11 @@
-import { Fragment, useMemo } from 'react'
+import { useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { get } from 'lodash'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -31,7 +32,7 @@ export const MinimumSliderFilter = <T extends unknown>({
   field: DeepKeys<T>
   format: (value: number) => string
 }) => {
-  const id = field.replaceAll('.', '_')
+  const id = cleanColumnId(field)
   const max = useMemo(() => getMaxValueFromData(data, field), [data, field])
   const [value] = (columnFilters[id] ?? [0, max]) as [number, number] // tanstack expects a [min, max] tuple
   return (
@@ -51,7 +52,7 @@ export const MinimumSliderFilter = <T extends unknown>({
       )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
     >
-      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6}>
+      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6} alignItems="center">
         <Typography>{format(0)}</Typography>
         <Slider
           data-testid={`slider-${id}`}

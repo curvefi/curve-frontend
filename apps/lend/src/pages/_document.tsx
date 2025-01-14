@@ -1,6 +1,7 @@
-import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document'
+import Document, { DocumentContext, Head, Html, Main, NextScript } from 'next/document'
 import { ServerStyleSheet } from 'styled-components'
 import { RootCssProperties } from '@ui-kit/themes/typography'
+import { CURVE_LOGO_URL } from '@/ui/utils/utilsConstants'
 
 const injectIpfsPrefix = `
 (function () {
@@ -65,7 +66,7 @@ export default class CurveDocument extends Document {
             property="og:description"
             content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
           />
-          <meta property="og:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+          <meta property="og:image" content={CURVE_LOGO_URL} />
 
           {/* Twitter */}
           <meta property="twitter:card" content="summary" />
@@ -75,7 +76,7 @@ export default class CurveDocument extends Document {
             property="twitter:description"
             content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
           />
-          <meta property="twitter:image" content="https://cdn.jsdelivr.net/gh/curvefi/curve-assets/branding/logo.png" />
+          <meta property="twitter:image" content={CURVE_LOGO_URL} />
 
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
