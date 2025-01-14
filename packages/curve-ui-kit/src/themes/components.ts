@@ -10,6 +10,7 @@ import { alpha } from '@mui/system'
 import type { TypographyOptions } from '@mui/material/styles/createTypography'
 import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { linearProgressClasses } from '@mui/material/LinearProgress'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
@@ -56,6 +57,12 @@ export const createComponents = (design: DesignSystem, typography: TypographyOpt
     },
   },
   MuiIconButton: defineMuiIconButton(design),
+  MuiLinearProgress: {
+    styleOverrides: {
+      root: { backgroundColor: design.Color.Neutral[300] },
+      bar: { backgroundColor: design.Color.Primary[500] },
+    },
+  },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: {
