@@ -43,12 +43,15 @@ type GlobalState = {
   showScrollButton: boolean
 }
 
-// prettier-ignore
 export interface GlobalSlice extends GlobalState {
   getNetworkConfigFromApi(chainId: ChainId | ''): NetworkConfigFromApi
   setNetworkConfigFromApi(curve: CurveApi): void
   setPageWidth: (pageWidth: number) => void
-  updateConnectState(status: ConnectState['status'], stage: ConnectState['stage'], options?: ConnectState['options']): void
+  updateConnectState(
+    status: ConnectState['status'],
+    stage: ConnectState['stage'],
+    options?: ConnectState['options'],
+  ): void
   updateCurveJs(curveApi: CurveApi, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
   updateLayoutHeight: (key: keyof LayoutHeight, value: number) => void
   updateMaxSlippage(key: string, value: string | null): void
