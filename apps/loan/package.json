@@ -28,8 +28,10 @@
   "dependencies": {
     "@curvefi/lending-api": "^2.4.0",
     "@curvefi/stablecoin-api": "^1.5.7",
-    "@lingui/detect-locale": "^4.6.0",
-    "@lingui/react": "^4.6.0",
+    "@lingui/cli": "^4.6.0",
+    "@lingui/loader": "^4.6.0",
+    "@lingui/macro": "^4.6.0",
+    "@lingui/swc-plugin": "^4.0.4",
     "@supercharge/promise-pool": "^2.3.2",
     "@tanstack/react-table": "^8.20.6",
     "bignumber.js": "^9.1.2",
@@ -61,10 +63,6 @@
     "zustand": "^4.5.5"
   },
   "devDependencies": {
-    "@lingui/cli": "^4.6.0",
-    "@lingui/loader": "^4.6.0",
-    "@lingui/macro": "^4.6.0",
-    "@lingui/swc-plugin": "^4.0.4",
     "@next/bundle-analyzer": "^13.5.6",
     "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.14.182",
