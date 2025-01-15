@@ -1,4 +1,4 @@
-export const defaultCatalog = {
+const defaultCatalog = {
   path: 'src/locales/{locale}/messages',
   include: [
     'src/components',
@@ -21,4 +21,5 @@ export const config = {
     default: 'en',
   },
   format: 'po',
+  catalogs: [defaultCatalog],
 } as const

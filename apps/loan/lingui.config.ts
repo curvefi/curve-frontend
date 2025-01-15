@@ -1,6 +1,5 @@
-import { config, defaultCatalog } from '../../lingui.config'
+import { config } from '../../lingui.config'
 
 export default {
   ...config,
-  catalogs: [defaultCatalog],
 }
