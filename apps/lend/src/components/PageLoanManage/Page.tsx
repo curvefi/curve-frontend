@@ -40,6 +40,7 @@ import CampaignRewardsBanner from '@/components/CampaignRewardsBanner'
 import ConnectWallet from '@/components/ConnectWallet'
 import { useOneWayMarket } from '@/entities/chain'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const Page: NextPage = () => {
   const params = useParams()
@@ -52,7 +53,6 @@ const Page: NextPage = () => {
   const market = useOneWayMarket(rChainId, rOwmId).data
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isLoadingApi = useStore((state) => state.isLoadingApi)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const isPageVisible = useStore((state) => state.isPageVisible)
@@ -63,6 +63,8 @@ const Page: NextPage = () => {
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const provider = useStore((state) => state.wallet.getProvider(''))
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = market ?? {}
@@ -174,7 +176,7 @@ const Page: NextPage = () => {
             </PriceAndTradesExpandedContainer>
           )}
 
-          <AppPageFormContainer isAdvanceMode={isAdvanceMode}>
+          <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
             <AppPageFormsWrapper navHeight="var(--header-height)">
               {!isMdUp && <TitleComp />}
               {rChainId && rOwmId && <LoanMange {...pageProps} />}

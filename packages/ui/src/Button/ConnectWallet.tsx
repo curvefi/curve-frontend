@@ -7,7 +7,7 @@ import * as React from 'react'
 import { isLoading, isSuccess, shortenAccount } from 'ui/src/utils'
 
 import Button from 'ui/src/Button/index'
-import { Address } from 'curve-ui-kit/src/shared/ui/AddressLabel'
+import type { Address } from 'curve-ui-kit/src/utils'
 
 type Status = 'success' | 'loading' | ''
 

@@ -16,14 +16,15 @@ import { REFRESH_INTERVAL } from '@/constants'
 import GlobalStyle from '@/globalStyle'
 import usePageVisibleInterval from '@/hooks/usePageVisibleInterval'
 import Page from '@/layout/default'
-import { dynamicActivate, initTranslation, updateAppLocale } from '@ui-kit/lib/i18n'
+import { dynamicActivate, initTranslation } from '@ui-kit/lib/i18n'
 import { messages as messagesEn } from '@/locales/en/messages.js'
 import curvejsApi from '@/lib/curvejs'
 import useStore from '@/store/useStore'
 import { QueryProvider } from '@/ui/QueryProvider'
-import { getStorageValue, isMobile, removeExtraSpaces } from '@/utils'
+import { isMobile, removeExtraSpaces } from '@/utils'
 import { getLocaleFromUrl } from '@/utils/utilsRouter'
 import { ChadCssProperties } from '@ui-kit/themes/typography'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 i18n.load({ en: messagesEn })
 i18n.activate('en')
@@ -32,10 +33,8 @@ function CurveApp({ Component }: AppProps) {
   const curve = useStore((state) => state.curve)
   const chainId = curve?.chainId ?? ''
   const isPageVisible = useStore((state) => state.isPageVisible)
-  const locale = useStore((state) => state.locale)
   const pageWidth = useStore((state) => state.pageWidth)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
-  const themeType = useStore((state) => state.themeType)
   const setPageWidth = useStore((state) => state.setPageWidth)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
   const fetchPools = useStore((state) => state.pools.fetchPools)
@@ -49,6 +48,9 @@ function CurveApp({ Component }: AppProps) {
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
   const updateWalletStoreByKey = useStore((state) => state.wallet.setStateByKey)
   const network = useStore((state) => state.networks.networks[chainId])
+
+  const theme = useUserProfileStore((state) => state.theme)
+  const locale = useUserProfileStore((state) => state.locale)
 
   const [appLoaded, setAppLoaded] = useState(false)
 
@@ -70,8 +72,8 @@ function CurveApp({ Component }: AppProps) {
   useEffect(() => {
     if (!pageWidth) return
 
-    document.body.className = removeExtraSpaces(`theme-${themeType} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
-    document.body.setAttribute('data-theme', themeType || '')
+    document.body.className = removeExtraSpaces(`theme-${theme} ${pageWidth} ${isMobile() ? '' : 'scrollSmooth'}`)
+    document.body.setAttribute('data-theme', theme)
     document.documentElement.lang = locale
   })
 
@@ -79,12 +81,6 @@ function CurveApp({ Component }: AppProps) {
     const handleScrollListener = () => {
       updateShowScrollButton(window.scrollY)
     }
-
-    const { themeType } = getStorageValue('APP_CACHE') ?? {}
-
-    // init theme
-    const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    updateGlobalStoreByKey('themeType', themeType ? themeType : darkModeQuery.matches ? 'dark' : 'default')
 
     // init locale
     const { rLocale } = getLocaleFromUrl()
@@ -94,12 +90,11 @@ function CurveApp({ Component }: AppProps) {
       let data = await import(`@/locales/${parsedLocale}/messages`)
       dynamicActivate(parsedLocale, data)
     })()
-    updateAppLocale(parsedLocale, updateGlobalStoreByKey)
     ;(async () => {
       const networks = await fetchNetworks()
 
       // init onboard
-      const onboardInstance = initOnboard(connectWalletLocales, locale, themeType, networks)
+      const onboardInstance = initOnboard(connectWalletLocales, locale, theme, networks)
       updateWalletStoreByKey('onboard', onboardInstance)
 
       const handleVisibilityChange = () => {
@@ -153,8 +148,8 @@ function CurveApp({ Component }: AppProps) {
   )
 
   return (
-    <div suppressHydrationWarning style={{ ...(themeType === 'chad' && ChadCssProperties) }}>
-      <ThemeProvider theme={themeType === 'default' ? 'light' : themeType}>
+    <div suppressHydrationWarning style={{ ...(theme === 'chad' && ChadCssProperties) }}>
+      <ThemeProvider theme={theme}>
         {typeof window === 'undefined' || !appLoaded ? null : (
           <HashRouter>
             <I18nProvider i18n={i18n}>

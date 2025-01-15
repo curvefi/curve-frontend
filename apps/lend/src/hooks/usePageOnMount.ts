@@ -20,6 +20,7 @@ import { getNetworkFromUrl, parseParams } from '@/utils/utilsRouter'
 import { helpers } from '@/lib/apiLending'
 import networks, { networksIdMapper } from '@/networks'
 import useStore from '@/store/useStore'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 function usePageOnMount(params: Params, location: Location, navigate: NavigateFunction, chainIdNotRequired?: boolean) {
   const [{ wallet }, connect, disconnect] = useConnectWallet()
@@ -32,6 +33,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
   const updateApi = useStore((state) => state.updateApi)
   const updateProvider = useStore((state) => state.wallet.updateProvider)
   const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
+
+  const setLocale = useUserProfileStore((state) => state.setLocale)
 
   const walletChainId = getWalletChainId(wallet)
   const walletSignerAddress = getWalletSignerAddress(wallet)
@@ -239,7 +242,8 @@ function usePageOnMount(params: Params, location: Location, navigate: NavigateFu
           let data = await import(`@/locales/${rLocale}/messages`)
           dynamicActivate(rLocale, data)
         })()
-        updateAppLocale(rLocale, updateGlobalStoreByKey)
+        setLocale(rLocale)
+        updateAppLocale(rLocale)
         updateWalletLocale(rLocale)
       } else if (
         walletChainId &&

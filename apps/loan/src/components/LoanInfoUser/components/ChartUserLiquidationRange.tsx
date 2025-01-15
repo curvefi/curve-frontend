@@ -3,11 +3,13 @@ import React, { useMemo } from 'react'
 import useStore from '@/store/useStore'
 
 import ChartLiquidationRange from '@/components/ChartLiquidationRange'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const theme = useStore((state) => state.themeType)
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+
+  const theme = useUserProfileStore((state) => state.theme)
 
   const { userPrices: currPrices } = userLoanDetails ?? {}
 
@@ -33,7 +35,7 @@ const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: Healt
       isManage
       data={liqRangeData}
       healthColorKey={healthMode.colorKey}
-      theme={theme}
+      theme={theme === 'light' ? 'default' : theme}
     />
   )
 }
