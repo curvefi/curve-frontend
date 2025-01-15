@@ -1,4 +1,4 @@
-import { CURVE_ASSETS_URL } from 'ui'
+import { getBlockchainIconUrl } from 'ui'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { styled } from '@mui/material/styles'
 import Image from 'next/image'
@@ -15,7 +15,7 @@ export const ChainIcon = ({ blockchainId, size }: { blockchainId: string; size: 
       data-testid={`chain-icon-${blockchainId}`}
       alt={blockchainId}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}
-      src={`${CURVE_ASSETS_URL}/chains/${blockchainId}.png`}
+      src={getBlockchainIconUrl(blockchainId)}
       loading="lazy"
       width={defaultSize}
       height={defaultSize}

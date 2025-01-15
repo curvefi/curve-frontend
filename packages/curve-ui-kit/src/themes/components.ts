@@ -7,13 +7,15 @@ import { SizesAndSpaces } from './design/1_sizes_spaces'
 import { defineMuiSwitch } from './mui-switch'
 import { basicMuiTheme } from './basic-theme'
 import { alpha } from '@mui/system'
-import { definedMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
+import { defineMuiMenuItem } from '@ui-kit/themes/mui-menu-item'
 import { defineMuiAlert } from '@ui-kit/themes/mui-alert'
+import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 export const DEFAULT_BAR_SIZE = SizesAndSpaces.ButtonSize.sm
 export const MOBILE_SIDEBAR_WIDTH = { width: '100%', minWidth: 320 } as const
 
-export const createComponents = (design: DesignSystem): ThemeOptions['components'] => ({
+export const createComponents = (design: DesignSystem, typography: TypographyOptions): ThemeOptions['components'] => ({
   MuiAlert: defineMuiAlert(design),
   MuiButton: defineMuiButton(design),
   MuiButtonBase: {
@@ -49,7 +51,19 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       paper: { maxHeight: '100dvh', [basicMuiTheme.breakpoints.down('tablet')]: { margin: 0 } },
     },
   },
+  MuiFormControlLabel: {
+    styleOverrides: {
+      root: { margin: '0' }, // by default there is a negative margin 🤦
+      label: { marginLeft: SizesAndSpaces.Spacing.xs.desktop, ...typography.headingXsBold },
+    },
+  },
   MuiIconButton: defineMuiIconButton(design),
+  MuiLinearProgress: {
+    styleOverrides: {
+      root: { backgroundColor: design.Color.Neutral[300] },
+      bar: { backgroundColor: design.Color.Primary[500] },
+    },
+  },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
     styleOverrides: {
@@ -68,9 +82,9 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
           boxShadow: '0 0 0 100px #266798 inset',
           '& svg': { color: 'rgb(232, 240, 254)' },
         },
-
         '& .MuiOutlinedInput-notchedOutline': {
           borderWidth: 1,
+          transition: `border-color ${TransitionFunction}`,
         },
         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
           borderColor: design.Inputs.Base.Default.Border.Active,
@@ -88,7 +102,7 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
       },
     },
   },
-  MuiMenuItem: definedMuiMenuItem(design),
+  MuiMenuItem: defineMuiMenuItem(design),
   MuiSlider: {
     styleOverrides: {
       thumb: {
@@ -113,15 +127,54 @@ export const createComponents = (design: DesignSystem): ThemeOptions['components
   MuiPaper: {
     styleOverrides: {
       root: {
+        boxShadow: [
+          '0px 0px 0px 1px #2A334524',
+          '0px 1px 1px -0.5px #2A334524',
+          '0px 3px 3px -1.5px #2A334624',
+          '0px 4px 4px -2px #2A334524',
+          '0px 8px 8px -8px #2A334514',
+        ].join(','),
         // Disable elevation making the background color lighter in dark mode (default mui behavior)
         backgroundImage: 'none',
+      },
+      elevation2: {
+        boxShadow: [
+          '0px 0px 0px 1px #2A334524',
+          '0px 1px 1px -0.5px #2A334524',
+          '0px 3px 3px -1.5px #2A334624',
+          '0px 6px 6px -3px #2A334624',
+          '0px 8px 8px -6px #2A334524',
+          '0px 12px 12px -6px #2A334514',
+        ].join(','),
+      },
+      elevation3: {
+        boxShadow: [
+          '0px 0px 0px 1px #2A334524',
+          '0px 1px 1px -0.5px #2A334524',
+          '0px 3px 3px -1.5px #2A334524',
+          '0px 8px 8px -4px #2A334524',
+          '0px 16px 16px -8px #2A334524',
+          '0px 32px 32px -16px #2A33451A',
+        ].join(','),
+      },
+      // this should actually be elevation -1 from our design system, but negative is not supported by mui
+      elevation11: {
+        boxShadow: `1px 1px 0px 0px ${design.Color.Neutral[800]} inset`,
+      },
+      // this should actually be elevation -2 from our design system, but negative is not supported by mui
+      elevation12: {
+        boxShadow: `2px 2px 0px 0px ${design.Color.Neutral[800]} inset`,
       },
     },
   },
   MuiPopover: {
+    defaultProps: {
+      marginThreshold: 8, // allows the popover to be closer to the edge of the screen. Default is 16px
+      elevation: 3,
+    },
     styleOverrides: {
       paper: {
-        // todo: add shadow or change color, otherwise invisible: backgroundColor: design.Layer[3].Fill,
+        backgroundColor: design.Layer[3].Fill,
         '& .MuiMenu-list': {
           maxHeight: SizesAndSpaces.MaxHeight.popover,
         },

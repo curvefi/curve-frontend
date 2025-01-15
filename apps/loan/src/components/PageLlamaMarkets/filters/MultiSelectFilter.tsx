@@ -1,9 +1,10 @@
-import { Fragment, ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 import { get, identity, sortBy, sortedUniq } from 'lodash'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import MenuItem from '@mui/material/MenuItem'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { cleanColumnId } from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -36,7 +37,7 @@ export const MultiSelectFilter = <T extends unknown>({
   renderItem?: (value: string) => ReactNode
 }) => {
   const options = useMemo(() => getSortedStrings(data, field), [data, field])
-  const id = field.replaceAll('.', '_')
+  const id = cleanColumnId(field)
   const value = (columnFilters[id] ?? []) as string[]
   return (
     <Select

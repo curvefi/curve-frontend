@@ -1,4 +1,5 @@
-import Box from '@mui/material/Box'
+import MuiLinearProgress, { linearProgressClasses } from '@mui/material/LinearProgress'
+import { useEffect, useState } from 'react'
 
 const SIZE_MAPPING = {
   small: 4,
@@ -6,11 +7,8 @@ const SIZE_MAPPING = {
   large: 16,
 }
 
-export const LinearProgress = ({ percent, size }: { percent: number; size: keyof typeof SIZE_MAPPING }) => (
-  <Box
-    sx={(t) => ({
-      height: SIZE_MAPPING[size],
-      background: `linear-gradient(to right, ${t.design.Color.Primary[500]} ${percent}%, ${t.design.Color.Neutral[300]} ${percent}%)`,
-    })}
-  />
-)
+export const LinearProgress = ({ percent, size }: { percent: number; size: keyof typeof SIZE_MAPPING }) => {
+  const [value, setValue] = useState(0)
+  useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
+  return <MuiLinearProgress sx={{ height: SIZE_MAPPING[size] }} value={value} variant="determinate" />
+}

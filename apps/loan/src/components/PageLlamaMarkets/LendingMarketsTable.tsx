@@ -16,8 +16,13 @@ import {
 import { LendingMarketsFilters } from '@/components/PageLlamaMarkets/LendingMarketsFilters'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import {
+  isFeatureVisible,
+  useVisibilitySettings,
+  VisibilityGroup,
+} from '@ui-kit/shared/ui/TableVisibilitySettingsPopover'
 
-const { ColumnWidth, Spacing, MinWidth, MaxWidth } = SizesAndSpaces
+const { ColumnWidth, Spacing, MaxWidth } = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LendingVault>()
 
@@ -28,6 +33,8 @@ const hidden = (id: DeepKeys<LendingVault>) =>
     meta: { hidden: true },
   })
 
+const [borrowChartId, lendChartId] = ['borrowChart', 'lendChart']
+
 /** Columns for the lending markets table. */
 const columns = [
   columnHelper.accessor('assets', {
@@ -37,13 +44,13 @@ const columns = [
   }),
   columnHelper.accessor('rates.borrowApyPcent', {
     header: t`7D Borrow Rate`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" />,
+    cell: (c) => <LineGraphCell vault={c.row.original} type="borrow" showChart={isFeatureVisible(c, borrowChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
   columnHelper.accessor('rates.lendApyPcent', {
     header: t`7D Supply Yield`,
-    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" />,
+    cell: (c) => <LineGraphCell vault={c.row.original} type="lend" showChart={isFeatureVisible(c, lendChartId)} />,
     meta: { type: 'numeric' },
     size: ColumnWidth.md,
   }),
@@ -59,12 +66,31 @@ const columns = [
     meta: { type: 'numeric' },
     size: ColumnWidth.sm,
   }),
+  // following columns are used to configure and filter tanstack, but they are displayed together in PoolTitleCell
   hidden('blockchainId'),
   hidden('assets.collateral.symbol'),
   hidden('assets.borrowed.symbol'),
 ] satisfies ColumnDef<LendingVault, any>[]
 
 const DEFAULT_SORT = [{ id: 'totalSupplied.usdTotal', desc: true }]
+
+const DEFAULT_VISIBILITY: VisibilityGroup[] = [
+  {
+    label: t`Markets`,
+    options: [
+      { label: t`Available Liquidity`, id: 'totalSupplied.usdTotal', active: true, type: 'column' },
+      { label: t`Utilization`, id: 'utilizationPercent', active: true, type: 'column' },
+    ],
+  },
+  {
+    label: t`Borrow`,
+    options: [{ label: t`Chart`, id: borrowChartId, active: true, type: 'feature' }],
+  },
+  {
+    label: t`Lend`,
+    options: [{ label: t`Chart`, id: lendChartId, active: true, type: 'feature' }],
+  },
+]
 
 export const LendingMarketsTable = ({
   onReload,
@@ -76,6 +102,8 @@ export const LendingMarketsTable = ({
   headerHeight: string
 }) => {
   const [columnFilters, columnFiltersById, setColumnFilter] = useColumnFilters()
+  const { columnSettings, columnVisibility, featureVisibility, toggleVisibility } =
+    useVisibilitySettings(DEFAULT_VISIBILITY)
 
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const table = useReactTable({
@@ -84,7 +112,7 @@ export const LendingMarketsTable = ({
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    state: { sorting, columnFilters },
+    state: { sorting, columnVisibility, featureVisibility, columnFilters },
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once
   })
@@ -97,15 +125,18 @@ export const LendingMarketsTable = ({
         maxWidth: MaxWidth.table,
       }}
     >
-      <TableFilters
-        title={t`Llamalend Markets`}
-        subtitle={t`Select a market to view more details`}
-        onReload={onReload}
-        learnMoreUrl="https://docs.curve.fi/lending/overview/"
-      >
-        <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
-      </TableFilters>
-      <DataTable table={table} headerHeight={headerHeight} rowHeight={'3xl'} emptyText={t`No markets found`} />
+      <DataTable table={table} headerHeight={headerHeight} rowHeight="3xl" emptyText={t`No markets found`}>
+        <TableFilters
+          title={t`Llamalend Markets`}
+          subtitle={t`Select a market to view more details`}
+          onReload={onReload}
+          learnMoreUrl="https://docs.curve.fi/lending/overview/"
+          visibilityGroups={columnSettings}
+          toggleVisibility={toggleVisibility}
+        >
+          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
+        </TableFilters>
+      </DataTable>
     </Stack>
   )
 }
