@@ -1,5 +1,1 @@
-import { config } from '../../lingui.config'
-
-export default {
-  ...config,
-}
+export { config as default } from '../../lingui.config'
