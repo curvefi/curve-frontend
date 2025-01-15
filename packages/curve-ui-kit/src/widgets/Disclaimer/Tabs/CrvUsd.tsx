@@ -6,7 +6,7 @@ import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 import { Section, Header, Title, Paragraph } from '../Section'
 import { List } from '../List'

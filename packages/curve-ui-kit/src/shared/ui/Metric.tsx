@@ -8,9 +8,9 @@ import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from 'curve-ui-kit/src/themes/typography'
-import { abbreviateNumber, scaleSuffix } from 'curve-ui-kit/src/utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TypographyVariantKey, TYPOGRAPHY_VARIANTS } from '@ui-kit/themes/typography'
+import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import AlertTitle from '@mui/material/AlertTitle'
 

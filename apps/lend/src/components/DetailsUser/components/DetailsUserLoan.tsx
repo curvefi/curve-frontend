@@ -22,14 +22,16 @@ import DetailsUserLoanChartBandBalances from '@/components/DetailsUser/component
 import DetailsUserLoanChartLiquidationRange from '@/components/DetailsUser/components/DetailsUserLoanChartLiquidationRange'
 import ChartOhlcWrapper from '@/components/ChartOhlcWrapper'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@/ui/ListInfo'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
 
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   // TODO: handle error
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
@@ -56,8 +58,8 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
     ],
     [
       { titleKey: TITLE.liquidationRange, content: <CellLiquidationRange {...cellProps} type='range' /> },
-      { titleKey: TITLE.liquidationBandRange, content: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvanceMode },
-      { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvanceMode },
+      { titleKey: TITLE.liquidationBandRange, content: <CellLiquidationRange {...cellProps} type='band' />, show: isAdvancedMode },
+      { titleKey: TITLE.liquidationRangePercent, content: <CellLiquidationRange {...cellProps} type='bandPct' />, show: isAdvancedMode },
     ],
     [
       { titleKey: TITLE.lossCollateral, content: <CellLoanState {...cellProps} /> },
@@ -109,7 +111,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
                 <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} userActiveKey={userActiveKey} />
               </Box>
             )}
-            {isAdvanceMode ? (
+            {isAdvancedMode ? (
               <DetailsUserLoanChartBandBalances {...pageProps} />
             ) : (
               <DetailsUserLoanChartLiquidationRange {...pageProps} />

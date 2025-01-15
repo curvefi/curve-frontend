@@ -34,6 +34,7 @@ import Stepper from '@/ui/Stepper'
 import TextCaption from '@/ui/TextCaption'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { OneWayMarketTemplate } from '@curvefi/lending-api/lib/markets'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { isLeverage?: boolean }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey } = pageProps
@@ -49,11 +50,9 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isPageVisible = useStore((state) => state.isPageVisible)
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const notifyNotification = useStore((state) => state.wallet.notifyNotification)
@@ -63,6 +62,9 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -310,7 +312,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
   useEffect(() => {
     if (isLoaded) updateFormValues({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxSlippage, isAdvanceMode])
+  }, [maxSlippage, isAdvancedMode])
 
   useEffect(() => {
     if (isLoaded) {
@@ -437,7 +439,7 @@ const LoanCreate = ({ isLeverage = false, ...pageProps }: PageContentProps & { i
         </LoanFormConnect>
       )}
 
-      {!isAdvanceMode && (
+      {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
           <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
         </Accordion>

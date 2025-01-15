@@ -2,8 +2,8 @@ import { styled } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 
-import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
-import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { AppName } from '@ui-kit/shared/routes'
 import { LlamaImg } from 'ui/src/images'
 
 import { Description } from './Description'

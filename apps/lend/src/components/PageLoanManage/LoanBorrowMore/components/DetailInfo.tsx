@@ -7,6 +7,7 @@ import DetailInfoLiqRange from '@/components/DetailInfoLiqRange'
 import DetailInfoHealth from '@/components/DetailInfoHealth'
 import DetailInfoRate from '@/components/DetailInfoRate'
 import DetailInfoEstimateGas from '@/components/DetailInfoEstimateGas'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const DetailInfo = ({
   rChainId,
@@ -27,13 +28,14 @@ const DetailInfo = ({
   const detailInfo = useStore((state) => state.loanBorrowMore.detailInfo[activeKey])
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 
   return (
     <>
-      {isAdvanceMode && (
+      {isAdvancedMode && (
         <DetailInfoLiqRange
           isManage
           rChainId={rChainId}

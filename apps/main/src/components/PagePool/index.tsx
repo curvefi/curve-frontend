@@ -49,6 +49,7 @@ import { useGaugeManager } from '@/entities/gauge'
 import { BlockSkeleton } from '../../../../../packages/ui/src/skeleton'
 import { ManageGauge } from '@/widgets/manage-gauge'
 import { isAddressEqual, type Address } from 'viem'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = {
   loading: false,
@@ -82,11 +83,9 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const globalMaxSlippage = useStore((state) => state.maxSlippage[chainIdPoolId])
   const isPageVisible = useStore((state) => state.isPageVisible)
   const isMdUp = useStore((state) => state.isMdUp)
   const layoutHeight = useStore((state) => state.layoutHeight)
-  const themeType = useStore((state) => state.themeType)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -97,6 +96,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
   const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+
+  const globalMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
     chainId: rChainId,

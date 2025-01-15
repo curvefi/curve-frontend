@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import Link from '@mui/material/Link'
 import { APP_NAMES } from './types'
 import type { SxProps, Theme } from '@mui/material/styles'
-import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { AppName } from '@ui-kit/shared/routes'
 
 const Image = styled('img')({
   width: 30,

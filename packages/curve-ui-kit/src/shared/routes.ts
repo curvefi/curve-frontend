@@ -1,5 +1,6 @@
-import { AppRoutes } from 'curve-common/src/widgets/Header/types'
+import { AppRoutes } from '@ui-kit/widgets/Header/types'
 import { t } from '@lingui/macro'
+import { isBeta } from '@ui-kit/utils'
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
@@ -31,10 +32,6 @@ export const DAO_ROUTES = {
 
 export const AppNames = ['main', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
-
-const isBeta =
-  typeof window !== 'undefined' &&
-  (window.localStorage.getItem('beta') !== null || !window.location.hostname.includes('curve.fi'))
 
 export const APP_LINK: Record<AppName, AppRoutes> = {
   main: {

@@ -28,6 +28,7 @@ import Stepper from '@/ui/Stepper'
 import TxInfoBar from '@/ui/TxInfoBar'
 import { getItemsName } from '@/components/PageLoanManage/LoanSwap/utils'
 import AlertFormError from '@/components/AlertFormError'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -40,7 +41,6 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const formEstGas = useStore((state) => state.loanSwap.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanSwap.formStatus)
   const formValues = useStore((state) => state.loanSwap.formValues)
-  const maxSlippage = useStore((state) => state.maxSlippage)
   const maxSwappableActiveKey = useStore((state) => state.loanSwap.maxSwappableActiveKey)
   const maxSwappable = useStore((state) => state.loanSwap.maxSwappable[maxSwappableActiveKey] ?? '')
   const userWalletBalances = useStore(
@@ -55,6 +55,9 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const setFormValues = useStore((state) => state.loanSwap.setFormValues)
   const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
   const resetState = useStore((state) => state.loanSwap.resetState)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.global)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)

@@ -1,41 +1,45 @@
-import { Stack, Tabs } from '@mui/material'
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
+import { Tabs } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react'
-import { TabsSwitcher, TabsSwitcherProps } from '../../shared/ui/TabsSwitcher'
-import { TabSwitcherVariants } from '../tabs'
-import { useState } from 'react'
+import { TabsSwitcher } from '../../shared/ui/TabsSwitcher'
 
 type Story = StoryObj<typeof Tabs>
 
-type TabsDisplayProps = Pick<TabsSwitcherProps<number>, 'variant' | 'size' | 'options'> & {
-  defaultValue: number
-}
-
-const TabsDisplay = ({ defaultValue, ...props }: TabsDisplayProps) => {
-  const [value, setValue] = useState<number>(defaultValue)
-  return <TabsSwitcher {...props} value={value} onChange={setValue} />
-}
-
-const createStory = (variant: TabSwitcherVariants): Story => ({
-  decorators: [
-    (Story, { args }) => (
-      <Stack spacing={5}>
-        <TabsDisplay variant={variant} {...args} />
-      </Stack>
-    ),
-  ],
-})
-
-export const Contained = createStory('contained')
-export const Underlined = createStory('underlined')
-export const Overlined = createStory('overlined')
-
-const meta: Meta<typeof TabsDisplay> = {
+const meta: Meta<typeof TabsSwitcher> = {
   title: 'UI Kit/Primitives/Tabs',
-  component: TabsDisplay,
-  argTypes: {},
+  component: TabsSwitcher,
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['contained', 'underlined', 'overlined'],
+      description: 'The variant of the component',
+    },
+    size: {
+      control: 'select',
+      options: ['small', 'medium', 'large'],
+      description: 'The size of the component',
+    },
+  },
   args: {
-    options: [1, 2, 3, 4].map((value) => ({ label: `Tab ${value}`, value })),
-    defaultValue: 1,
+    variant: 'contained',
+    size: 'small',
   },
 }
+
+export const Contained: Story = {
+  render: (args) => {
+    const [value, setValue] = useState<number>(1)
+
+    return (
+      <TabsSwitcher
+        options={[1, 2, 3, 4].map((value) => ({ label: `Tab ${value}`, value }))}
+        value={value}
+        onChange={setValue}
+        {...args}
+      />
+    )
+  },
+}
+
 export default meta

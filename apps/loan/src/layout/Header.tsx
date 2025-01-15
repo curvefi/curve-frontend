@@ -8,11 +8,11 @@ import { getWalletSignerAddress, useConnectWallet } from '@ui-kit/features/conne
 import networks, { visibleNetworksList } from '@/networks'
 import useLayoutHeight from '@/hooks/useLayoutHeight'
 import useStore from '@/store/useStore'
-import { Header as NewHeader, useHeaderHeight } from '@/common/widgets/Header'
-import { NavigationSection } from '@/common/widgets/Header/types'
-import { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
+import { Header as NewHeader, useHeaderHeight } from '@ui-kit/widgets/Header'
+import { NavigationSection } from '@ui-kit/widgets/Header/types'
 import { APP_LINK } from '@ui-kit/shared/routes'
 import { GlobalBannerProps } from '@/ui/Banner/GlobalBanner'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 type HeaderProps = { sections: NavigationSection[]; BannerProps: GlobalBannerProps }
 
@@ -29,16 +29,14 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
   const crvusdTotalSupply = useStore((state) => state.crvusdTotalSupply)
   const dailyVolume = useStore((state) => state.dailyVolume)
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const isMdUp = useStore((state) => state.layout.isMdUp)
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
-  const locale = useStore((state) => state.locale)
   const routerProps = useStore((state) => state.routerProps)
-  const themeType = useStore((state) => state.themeType)
   const usdRatesMapper = useStore((state) => state.usdRates.tokens)
-  const setAppCache = useStore((state) => state.setAppCache)
   const updateConnectState = useStore((state) => state.updateConnectState)
   const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+
+  const locale = useUserProfileStore((state) => state.locale)
 
   const location = useLocation()
   const { rLocalePathname } = getLocaleFromUrl()
@@ -47,32 +45,17 @@ export const Header = ({ sections, BannerProps }: HeaderProps) => {
   const routerNetwork = routerParams?.network ?? 'ethereum'
   const routerPathname = location?.pathname ?? ''
 
-  const theme = themeType == 'default' ? 'light' : (themeType as ThemeKey)
   return (
     <NewHeader<ChainId>
       networkName={rNetwork}
       mainNavRef={mainNavRef}
-      locale={locale}
       isMdUp={isMdUp}
-      advancedMode={[
-        isAdvanceMode,
-        useCallback(() => setAppCache('isAdvanceMode', !isAdvanceMode), [isAdvanceMode, setAppCache]),
-      ]}
       currentApp="crvusd"
       pages={useMemo(
         () => _parseRouteAndIsActive(APP_LINK.crvusd.pages, rLocalePathname, routerPathname, routerNetwork),
         [rLocalePathname, routerNetwork, routerPathname],
       )}
-      themes={[
-        theme,
-        useCallback(
-          (selectedThemeType: ThemeKey) =>
-            setAppCache('themeType', selectedThemeType == 'light' ? 'default' : selectedThemeType),
-          [setAppCache],
-        ),
-      ]}
       ChainProps={{
-        theme,
         options: visibleNetworksList,
         disabled: isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK),
         chainId: rChainId,

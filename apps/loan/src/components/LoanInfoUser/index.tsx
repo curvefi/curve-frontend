@@ -16,16 +16,18 @@ import PoolInfoData from '@/components/ChartOhlcWrapper'
 import ChartUserBands from '@/components/LoanInfoUser/components/ChartUserBands'
 import ChartUserLiquidationRange from '@/components/LoanInfoUser/components/ChartUserLiquidationRange'
 import UserInfos from '@/components/LoanInfoUser/components/UserInfos'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 interface Props extends Pick<PageLoanManageProps, 'isReady' | 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
 }
 
 const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Props) => {
-  const isAdvanceMode = useStore((state) => state.isAdvanceMode)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const { chartExpanded } = useStore((state) => state.ohlcCharts)
+
+  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const { userBands, healthFull, healthNotFull, userStatus } = userLoanDetails ?? {}
   const { activeBand } = loanDetails ?? {}
@@ -65,7 +67,7 @@ const LoanInfoUser = ({ isReady, llamma, llammaId, rChainId, titleMapper }: Prop
       )}
 
       <div className="wrapper">
-        {isAdvanceMode ? (
+        {isAdvancedMode ? (
           <ChartUserBands llammaId={llammaId} llamma={llamma} />
         ) : (
           <div>
