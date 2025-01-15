@@ -6,16 +6,8 @@ import isNaN from 'lodash/isNaN'
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
 export const BN = BigNumber
 
-export function detectLocale() {
-  if (typeof window !== 'undefined') {
-    const DEFAULT_FALLBACK = () => 'en'
-    return detect(fromUrl('lang'), fromNavigator(), DEFAULT_FALLBACK) ?? 'en-US'
-  } else {
-    return 'en-US'
-  }
-}
-
-const localeDetected = detectLocale() || 'en-US'
+const localeDetected =
+  (typeof window !== 'undefined' && detect(fromUrl('lang'), fromNavigator(), () => 'en')) || 'en-US'
 
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 export interface NumberFormatOptions extends Intl.NumberFormatOptions {
