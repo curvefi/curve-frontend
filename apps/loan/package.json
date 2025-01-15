@@ -27,7 +27,7 @@
   },
   "dependencies": {
     "@curvefi/lending-api": "^2.4.0",
-    "@curvefi/stablecoin-api": "^1.5.7",
+    "@curvefi/stablecoin-api": "^1.5.8",
     "@supercharge/promise-pool": "^2.3.2",
     "@tanstack/react-table": "^8.20.6",
     "bignumber.js": "^9.1.2",

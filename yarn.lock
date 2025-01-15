@@ -3366,9 +3366,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/stablecoin-api@npm:^1.5.7":
-  version: 1.5.7
-  resolution: "@curvefi/stablecoin-api@npm:1.5.7"
+"@curvefi/stablecoin-api@npm:^1.5.8":
+  version: 1.5.8
+  resolution: "@curvefi/stablecoin-api@npm:1.5.8"
   dependencies:
     "@ethersproject/networks": "npm:^5.5.0"
     axios: "npm:^0.21.1"
@@ -3376,7 +3376,7 @@ __metadata:
     ethcall: "npm:^4.2.5"
     ethers: "npm:^5.4.6"
     memoizee: "npm:^0.4.15"
-  checksum: 10c0/4fda5b88629594a1b30953c99d86d8467918e0b5ad16862f208673d1f9b25e1dbbd599092120a2d21c4680ce1dfbe94cc0a6786a623d1de5b697475e761ad70a
+  checksum: 10c0/471a8cba14f5e58a1a0ced060b94ee63f128e2229b12846d3b1ff9832d29a0ea9696f93716fd1cb88a78f39c9bc66c57308bbf1367c4cad8334240fde546860f
   languageName: node
   linkType: hard
 
@@ -20950,7 +20950,7 @@ __metadata:
   resolution: "loan@workspace:apps/loan"
   dependencies:
     "@curvefi/lending-api": "npm:^2.4.0"
-    "@curvefi/stablecoin-api": "npm:^1.5.7"
+    "@curvefi/stablecoin-api": "npm:^1.5.8"
     "@lingui/cli": "npm:^4.6.0"
     "@lingui/loader": "npm:^4.6.0"
     "@lingui/macro": "npm:^4.6.0"
