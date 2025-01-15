@@ -15082,38 +15082,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"curve-common@npm:*, curve-common@workspace:packages/curve-common":
-  version: 0.0.0-use.local
-  resolution: "curve-common@workspace:packages/curve-common"
-  dependencies:
-    "@babel/core": "npm:^7.25.2"
-    "@babel/runtime": "npm:^7.25.6"
-    "@safe-global/safe-apps-provider": "npm:^0.18.3"
-    "@safe-global/safe-apps-sdk": "npm:^9.1.0"
-    "@types/react": "npm:*"
-    "@types/react-dom": "npm:*"
-    "@web3-onboard/bitget": "npm:^2.1.1"
-    "@web3-onboard/coinbase": "npm:^2.4.1"
-    "@web3-onboard/core": "npm:^2.22.3"
-    "@web3-onboard/fortmatic": "npm:^2.1.1"
-    "@web3-onboard/frontier": "npm:^2.1.1"
-    "@web3-onboard/gnosis": "npm:^2.3.2"
-    "@web3-onboard/injected-wallets": "npm:^2.11.2"
-    "@web3-onboard/ledger": "npm:^2.7.1"
-    "@web3-onboard/metamask": "npm:^2.1.3"
-    "@web3-onboard/phantom": "npm:^2.1.1"
-    "@web3-onboard/react": "npm:^2.9.3"
-    "@web3-onboard/torus": "npm:^2.3.1"
-    "@web3-onboard/trezor": "npm:^2.4.6"
-    "@web3-onboard/trust": "npm:^2.1.2"
-    "@web3-onboard/walletconnect": "npm:^2.6.1"
-    ethers: "npm:^6.13.4"
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-  languageName: unknown
-  linkType: soft
-
 "curve-frontend@workspace:.":
   version: 0.0.0-use.local
   resolution: "curve-frontend@workspace:."
@@ -15184,7 +15152,7 @@ __metadata:
     ajv: "npm:^8.17.1"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    ethers: "npm:^6.11.0"
+    ethers: "npm:^6.13.4"
     prop-types: "npm:^15.8.1"
     react: "npm:*"
     react-docgen-typescript: "npm:^2.2.2"
@@ -15392,7 +15360,6 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     "@types/validator": "npm:^13.12.1"
     bignumber.js: "npm:^9.1.2"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
@@ -20730,7 +20697,6 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
@@ -21005,7 +20971,6 @@ __metadata:
     "@types/styled-components": "npm:5.1.14"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"
@@ -21440,7 +21405,6 @@ __metadata:
     "@types/validator": "npm:^13.12.1"
     bignumber.js: "npm:^9.1.2"
     cross-fetch: "npm:^3.1.5"
-    curve-common: "npm:*"
     curve-ui-kit: "npm:*"
     dayjs: "npm:^1.11.7"
     eslint-config-custom: "npm:*"

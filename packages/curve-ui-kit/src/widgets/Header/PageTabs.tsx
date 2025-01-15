@@ -1,7 +1,7 @@
 import { FunctionComponent, useMemo } from 'react'
 import type { AppPage } from './types'
-import { TabsSwitcher } from 'curve-ui-kit/src/shared/ui/TabsSwitcher'
-import { APP_LINK, AppName, externalAppUrl } from 'curve-ui-kit/src/shared/routes'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { APP_LINK, AppName, externalAppUrl } from '@ui-kit/shared/routes'
 import { Link as RouterLink } from 'react-router-dom'
 
 export type PageTabsProps = {

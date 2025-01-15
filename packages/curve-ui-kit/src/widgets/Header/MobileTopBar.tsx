@@ -1,8 +1,8 @@
-import { ChainSwitcher, ChainSwitcherProps } from 'curve-ui-kit/src/features/switch-chain'
+import { ChainSwitcher, ChainSwitcherProps } from '@ui-kit/features/switch-chain'
 import Stack from '@mui/material/Stack'
 import { MenuToggleButton } from './MenuToggleButton'
 import { HeaderLogo } from './HeaderLogo'
-import { AppName } from 'curve-ui-kit/src/shared/routes'
+import { AppName } from '@ui-kit/shared/routes'
 
 export type MobileTopBarProps<TChainId extends number> = {
   toggleSidebar: () => void

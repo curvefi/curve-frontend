@@ -1,4 +1,4 @@
-import { Locale } from '@/common/widgets/Header/types'
+import { Locale } from '@ui-kit/widgets/Header/types'
 
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import styled from 'styled-components'
@@ -12,7 +12,7 @@ import { useHeightResizeObserver } from '@/ui/hooks'
 import useStore from '@/store/useStore'
 
 import Header from '@/layout/Header'
-import { Footer } from 'curve-ui-kit/src/widgets/Footer'
+import { Footer } from '@ui-kit/widgets/Footer'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const BaseLayout = ({ children }: { children: React.ReactNode }) => {

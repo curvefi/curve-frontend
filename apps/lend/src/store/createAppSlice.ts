@@ -3,10 +3,7 @@ import type { State } from '@/store/useStore'
 import type { ConnectState } from '@/ui/utils'
 import produce from 'immer'
 import { log } from '@ui-kit/lib/logging'
-import { setStorageValue } from '@/utils/utilsStorage'
 import isEqual from 'lodash/isEqual'
-import type { ThemeKey } from 'curve-ui-kit/src/themes/basic-theme'
-import { Locale } from '@ui-kit/lib/i18n'
 import { prefetchMarkets } from '@/entities/chain/chain-query'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
