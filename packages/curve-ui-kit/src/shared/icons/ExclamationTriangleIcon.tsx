@@ -17,5 +17,5 @@ export const ExclamationTriangleIcon = createSvgIcon(
       fill="currentColor"
     />
   </svg>,
-  'InfoCircled',
+  'ExclamationTriangle',
 )
